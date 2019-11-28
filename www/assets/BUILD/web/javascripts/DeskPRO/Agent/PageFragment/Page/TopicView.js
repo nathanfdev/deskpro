@@ -173,7 +173,7 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
       if (!checkbox.prop('checked') || checkbox.prop('disabled')) {
         checkbox.prop('checked', e.detail.root);
         self.saveNoContent(e.detail.root);
-        this.toggleContent(e.detail.root);
+        self.toggleContent(e.detail.root);
       }
       checkbox.prop('disabled', e.detail.root);
     });

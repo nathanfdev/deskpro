@@ -93,6 +93,7 @@ export class HcOmniSearch extends React.Component {
       doSpin:          false, // a search is in progress
       lastSearch:      moment(), // the last time a user executed a search (typed something in)
       userTyping:      false,
+      isClosed:        true,
       searchQuery:     '',
       lastSearchLogId: searchLogId || null,
       activeTab:       'article',
@@ -121,6 +122,7 @@ export class HcOmniSearch extends React.Component {
     }, 700);
 
     $input.on('keyup change', event => throttleChanges(event));
+    $input.on('click focus', () => this.setState({ isClosed: false }));
     $close.click(this.onClear);
 
     // 1000ms pause before showing "no results"
@@ -157,10 +159,7 @@ export class HcOmniSearch extends React.Component {
     event.preventDefault();
 
     this.setState({
-      data:        {},
-      doSpin:      false,
-      userTyping:  false,
-      searchQuery: ''
+      isClosed: true
     });
   };
 
@@ -351,7 +350,7 @@ export class HcOmniSearch extends React.Component {
 
     $input.removeClass('opened');
 
-    if (searchQuery.length < 3  && !isNumericQuery) {
+    if (this.state.isClosed || (searchQuery.length < 3 && !isNumericQuery)) {
       return null;
     }
 

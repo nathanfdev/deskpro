@@ -4,47 +4,56 @@
 {% block page_top %}
   <div class="row align-items-end mb-4">
     <div class="col-sm-9">
-      <div class="dp-po-post-day">
-        <span class="dp-po-post-day-month">{{ post.date_published | date('M') }}</span>
-        <span class="dp-po-post-day-date">{{ post.date_published | date('j') }}</span>
-        <span class="dp-po-post-day-year">{{ post.date_published | date('Y') }}</span>
-      </div>
-
-      <div class="dp-po-title">
-        <img class="dp-po-title-svg" src="{{ asset('img/page-icons/news.svg', 'help_center') }}">
-        <h2 class="dp-po-title-text">{{ post.realTitle }}</h2>
-      </div>
-
-      <div class="row align-items-end">
-        <div class="col-sm-10">
-          {% include 'Theme:PublishCommon:post-avatars.html.twig' with {
-            item: post
-          } %}
-
-          <div class="dp-po-post-info">
-            <ul class="dp-po-post-info-list">
-              <li class="dp-po-post-info-item">
-                {{ phrase('helpcenter.general.published_by', {person: post.last_author}) | raw }}
-              </li>
-              <li class="dp-po-post-info-item">
-                {{ phrase('helpcenter.news.news-type') }}: <b>{{ post.category }}</b>
-              </li>
-            </ul>
+      <div class="dp-po-news-head">
+        <div class="dp-po-news-head-left">
+          <div class="dp-po-post-day">
+            <span class="dp-po-post-day-month">{{ post.date_published | date('M') }}</span>
+            <span class="dp-po-post-day-date">{{ post.date_published | date('j') }}</span>
+            <span class="dp-po-post-day-year">{{ post.date_published | date('Y') }}</span>
           </div>
         </div>
-        <div class="col-sm-2">
-          <div class="dp-po-post-extra">
-            <ul class="dp-po-post-extra-list">
-              <li class="dp-po-post-extra-item">
-                <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
-              </li>
-              <li class="dp-po-post-extra-item">
-                <a href="{{ path('portal_news_pdf', {slug: post.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
-              </li>
-            </ul>
+        <div class="dp-po-news-head-right">
+          <div class="dp-po-title">
+            <img class="dp-po-title-svg" src="{{ asset('img/page-icons/news.svg', 'help_center') }}">
+            <h2 class="dp-po-title-text">{{ post.realTitle }}</h2>
+          </div>
+          <div class="row align-items-end">
+            <div class="col-sm-10">
+              {% include 'Theme:PublishCommon:post-avatars.html.twig' with {
+                item: post
+              } %}
+
+              <div class="dp-po-post-info">
+                <ul class="dp-po-post-info-list">
+                  <li class="dp-po-post-info-item">
+                    {{ phrase('helpcenter.general.published_by', {person: post.last_author}) | raw }}
+                  </li>
+                  <li class="dp-po-post-info-item">
+                    {{ phrase('helpcenter.news.news-type') }}: <b>{{ post.category }}</b>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="d-none d-sm-block">
+                <div class="dp-po-post-extra">
+                  <ul class="dp-po-post-extra-list">
+                    <li class="dp-po-post-extra-item">
+                      <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+                    </li>
+                    <li class="dp-po-post-extra-item">
+                      <a href="{{ path('portal_news_pdf', {slug: post.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+
+
     </div>
     <div class="col-sm-3">
       {# TODO active subscription state #}

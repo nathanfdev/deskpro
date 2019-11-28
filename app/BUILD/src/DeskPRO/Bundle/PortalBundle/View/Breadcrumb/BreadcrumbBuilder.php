@@ -206,7 +206,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->url_generator->generate('portal_guides'),
             Breadcrumbs::TOPICS,
-            ['phrase' => 'portal.general.nav-downloads']
+            ['phrase' => 'portal.general.nav-guides']
         );
 
         return $this;
@@ -376,6 +376,17 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->object_router->getPortalPath($a),
             Breadcrumbs::COMMUNITY_VIEW,
+            $a
+        );
+
+        return $this;
+    }
+
+    public function addCommunityForum(CommunityForum $a)
+    {
+        $this->b->add(
+            $this->object_router->getPortalPath($a),
+            $a->getTitle(),
             $a
         );
 

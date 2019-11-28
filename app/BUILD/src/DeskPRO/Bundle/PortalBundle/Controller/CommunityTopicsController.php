@@ -609,6 +609,11 @@ class CommunityTopicsController extends AbstractPublishController
      */
     public function pdfAction(CommunityTopic $topic, $visitor_id)
     {
+        if (!$this->isHelpCenterTheme()) {
+            // doesnt exist in old theme
+            return $this->redirectToRoute('portal_community_topic_view', ['slug' => $topic->getSlug()]);
+        }
+
         /** @var PdfRendererInterface $pdfRenderer */
         $pdfRenderer = $this->get('pdf_renderer');
 

@@ -1,0 +1,48 @@
+<div class="dp-po-guides-block-article" id="{{ topic.slug }}">
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="dp-po-guides-block-article-left">
+                <div class="dp-po-guides-block-header">
+                    <div>
+                        <h2 class="dp-po-guides-block-title dp-po-clipboard">{{ topic.title }} <a
+                                    href="javascript:void(0)" class="dp-po-clipboard-link" data-toggle="tooltip"
+                                    data-placement="top" title="Copy to Clipboard"><i
+                                        class="dp-po-icon far fa-anchor"></i></a></h2>
+                        {% if topic.parent %}
+                        <a href="" class="dp-po-guides-block-chapter"><i
+                                    class="dp-po-icon fal fa-angle-right"></i>
+                            {{ topic.parent.title }}</a>
+                        {% endif %}
+                    </div>
+                    <div class="dp-po-guides-block-extra">
+                        <ul class="dp-po-guides-block-extra-list">
+                            <li class="dp-po-guides-block-extra-item">
+                                <a href="" class="dp-po-guides-block-extra-link"><i
+                                            class="dp-po-icon fal fa-print"></i></a>
+                            </li>
+                            <li class="dp-po-guides-block-extra-item">
+                                <a href="" class="dp-po-guides-block-extra-link">
+                                    <i class="dp-po-icon fal fa-file-pdf"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="dp-po-post-content dp-po-guides-block-content">
+                    {{ topic.content|content|raw }}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="dp-po-guides-block-article-right">
+                <div class="dp-po-guides-meta">
+                    {% include 'Theme:PublishCommon:post-avatars.html.twig' with {
+                        item: topic
+                    } %}
+                    <p>Published: <strong>{{ topic.date_published|date('d/m/Y') }}</strong></p>
+                    <p>Last updated: <strong>{{ topic.date_updated|date('d/m/Y') }}</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

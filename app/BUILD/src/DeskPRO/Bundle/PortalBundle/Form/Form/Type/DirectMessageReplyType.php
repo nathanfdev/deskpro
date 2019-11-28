@@ -41,7 +41,7 @@ class DirectMessageReplyType extends AbstractType
                     return $value;
                 },
                 function ($value) {
-                    return nl2br($value);
+                    return nl2br(htmlspecialchars($value));
                 }
             ))
         ;

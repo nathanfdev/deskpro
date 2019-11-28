@@ -447,6 +447,21 @@ class PublishController extends AbstractController
         ]);
     }
 
+    public function officialResponseAction($typename, $commentId)
+    {
+        $entity  = $this->_getCommentEntityName($typename);
+        $comment = $this->em->find($entity, $commentId);
+
+        if ($typename === 'community') {
+            $comment->getObject()->setOfficialResponse($comment);
+            $this->em->flush();
+        }
+
+        return $this->createJsonResponse([
+            'success' => true,
+        ]);
+    }
+
     protected function _getCommentEntityName($typename)
     {
         switch ($typename) {

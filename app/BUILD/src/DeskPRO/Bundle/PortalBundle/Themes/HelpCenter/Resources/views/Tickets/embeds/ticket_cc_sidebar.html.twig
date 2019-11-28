@@ -1,4 +1,6 @@
-<img src="{{ avatar_url(person, 30) }}" />
+<div class="dp-po-avatar">
+	{{ hc_avatar(person) }}
+</div>
 <div class="dp-po-ticket-meta-cc-title">
 	<span class="dp-po-ticket-meta-cc-name">{{person.display_name_user}}</span>
 	{% if person.getEmailAddress() %}

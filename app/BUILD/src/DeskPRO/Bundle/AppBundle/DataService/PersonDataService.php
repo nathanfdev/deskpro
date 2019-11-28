@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
+use Orb\Validator\StringEmail;
 use Pagerfanta\Adapter\CallbackAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -221,12 +222,29 @@ class PersonDataService extends AbstractDataService
             ->andWhere('p.is_user = 1');
 
         if ($search) {
-            $qb->andWhere('p.override_display_name LIKE :override OR p.first_name LIKE :first OR p.last_name LIKE :last');
-            $qb->setParameters([
-                'override' => '%'.$search.'%',
-                'first'    => '%'.$search.'%',
-                'last'     => '%'.$search.'%',
-            ]);
+            $qb->join('p.emails', 'eml');
+
+            if (StringEmail::isValueValid($search)) {
+                $qb->andWhere('eml.email = :email');
+                $qb->setParameter('email', $search);
+            } else {
+                $cond = $qb->andWhere('COALESCE(p.override_display_name, p.name) LIKE :name OR p.first_name LIKE :first OR p.last_name LIKE :last OR eml.email LIKE :email');
+                $qb->setParameters([
+                    'name'  => '%'.$search.'%',
+                    'first' => '%'.$search.'%',
+                    'last'  => '%'.$search.'%',
+                    'email' => '%'.$search.'%',
+                ]);
+
+                // phone number like
+                if (preg_match('/^(\+\d+)?[0-9\- ]+$/', $search)) {
+                    $qb->join('p.phone_numbers', 'pn');
+                    $cond->orWhere('pn.number LIKE :phoneNumber');
+
+                    $normalPhone = preg_replace('/[^0-9\-\+]/', '', $search);
+                    $qb->setParameter('phoneNumber', '%'.$normalPhone.'%');
+                }
+            }
         }
 
         $qbCount = clone $qb;

@@ -31,6 +31,9 @@
 					{% endif %}
 				</h4>
 			{% endif %}
+            <span class="comment-official-response" {% if comment.getObject().official_response != comment %}style="display: none"{% endif %}>
+                ({{ phrase('agent.general.official_response') }})
+            </span>
 			<time
 				{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
 				datetime="{{comment.date_created|date('c', 'UTC')}}"

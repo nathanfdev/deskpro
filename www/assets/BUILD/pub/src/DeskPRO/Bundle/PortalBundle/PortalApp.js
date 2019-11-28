@@ -6,9 +6,9 @@ import $ from 'jquery';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import PortalPage from './PageWidget/PortalPage';
 import { portalPhrases } from './PortalPhrases';
-import App from './Modules/Application/Components/AppContainer';
+import App from './Modules/Application/Components/PortalAppContainer';
 
-const possibleLocale = window.DESKPRO_LOCALE.replace(/-/, '_').split(/_/)[0] || 'en';
+const possibleLocale = (window.DESKPRO_LOCALE || 'en').replace(/-/, '_').split(/_/)[0] || 'en';
 import(
   /* webpackPreload: true */
   `react-intl/locale-data/${possibleLocale}`
@@ -42,6 +42,7 @@ class PortalApp {
     this.locale = window.DESKPRO_LOCALE.replace(/_/, '-');
     page.renderWhenReady();
     this.portalPage = page;
+    window.DESKPRO_PORTAL_PAGE = page;
   }
 
   render(props, node) {

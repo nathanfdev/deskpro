@@ -1706,6 +1706,11 @@ $collection->create('agent_public_comment_newticketinfo', [
     'controller' => 'AgentBundle:Publish:getNewTicketCommentInfo',
 ]);
 
+$collection->create('agent_public_comment_official_response', [
+    'path'       => '/publish/comments/official-response/{typename}/{commentId}.json',
+    'controller' => 'AgentBundle:Publish:officialResponse',
+]);
+
 $collection->create('agent_publish_validatingcomments_mass', [
     'path'       => '/publish/comments/validating-mass-actions/{action}',
     'controller' => 'AgentBundle:Publish:validatingCommentsMassActions',

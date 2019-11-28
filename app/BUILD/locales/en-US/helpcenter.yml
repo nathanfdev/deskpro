@@ -136,7 +136,6 @@ helpcenter.community.form_tell_us_more: 'Tell us more'
 helpcenter.community.form_title: Title
 helpcenter.community.form_topic_title: 'Title'
 helpcenter.community.forum-name: 'Forum name'
-helpcenter.community.last-status-changes: 'Latest status changes'
 helpcenter.community.my-activity: 'My Activity'
 helpcenter.community.no_matching: 'No matching community topics'
 helpcenter.community.none: 'No community topics could be found'
@@ -153,13 +152,16 @@ helpcenter.community.title: 'Title'
 helpcenter.community.view-all-status-changes: 'View all status changes'
 helpcenter.community.view-list: 'List View'
 helpcenter.community.view-status-change: 'Status Change'
-helpcenter.community.view-topics: 'View {{count}} topics'
+helpcenter.community.view-topics:
+  one: "View 1 Topic"
+  other: "View {{count}} Topics"
 helpcenter.community.votes: 'Votes'
 helpcenter.direct_messages.back_to_messages: 'Back to my messages'
 helpcenter.direct_messages.block_user: 'block user'
 helpcenter.direct_messages.create_thread: Create
 helpcenter.direct_messages.new_message: 'New Message'
 helpcenter.direct_messages.none: 'No messages'
+helpcenter.direct_messages.recipient: 'Recipient'
 helpcenter.direct_messages.reply.cancel: Cancel
 helpcenter.direct_messages.reply.message: Message
 helpcenter.direct_messages.reply.send_message: 'Send Message'
@@ -189,7 +191,7 @@ helpcenter.error.create-new-account: 'Create a new account'
 helpcenter.error.general-title: 'An Error Occurred'
 helpcenter.error.helpdesk: Helpdesk
 helpcenter.error.permission-denied-title: 'You are not allowed to perform this action'
-helpcenter.error.search: Search
+helpcenter.label.search: Search
 helpcenter.flashes.article-unpublish: 'This article will unpublish on {{date}}.'
 helpcenter.form.delete-question: 'Delete?'
 helpcenter.forms.label-choose-a-file: 'Choose a file'
@@ -235,6 +237,7 @@ helpcenter.general.comments-count:
 helpcenter.general.comments-title:
   one: 'Comments (1)'
   other: 'Comments ({{count}})'
+helpcenter.general.copy-to-clipboard: 'Copy to Clipboard'
 helpcenter.general.click-here-to-view: 'Click here to view'
 helpcenter.general.comments-pending-validation: 'This comment is being reviewed. It will be displayed shortly'
 helpcenter.general.created_by: 'Created by'
@@ -374,6 +377,7 @@ helpcenter.tickets.list_status_agent: 'Our agent will respond'
 helpcenter.tickets.list_status_resolved: 'Resolved'
 helpcenter.tickets.list_status_user: 'You need to respond'
 helpcenter.tickets.my-tickets: 'My tickets'
+helpcenter.tickets.my-messages: 'My messages'
 helpcenter.tickets.organization-tickets: '{{org_name}} tickets'
 helpcenter.tickets.our-agent-will-respond: 'Our agent will respond'
 helpcenter.tickets.reference_number: 'Reference number: {{ref}}'

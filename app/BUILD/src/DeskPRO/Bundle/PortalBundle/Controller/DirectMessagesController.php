@@ -169,6 +169,16 @@ class DirectMessagesController extends AbstractController
 
     /**
      * @Route("/dm/send", name="portal_dm_send")
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function sendNewAction()
+    {
+        // placeholder route for when we might possibly allow sending arbitrary messages
+        return $this->redirectToRoute('portal_dm');
+    }
+
+    /**
      * @Route("/dm/send/to/{to}", name="portal_dm_send_to")
      * @ParamConverter("to", class="DeskPRO:Person")
      * @Security("is_granted('ROLE_USER')")
@@ -186,13 +196,17 @@ class DirectMessagesController extends AbstractController
             'message' => '',
         ];
 
-        $person = $request->attributes->get('to', '');
-        if ($person) {
-            $defaultData['person'] = $person;
-            $thread                = $this->getEm()->getRepository(DirectMessageThread::class)->getOneForUsers($this->getUser(), $person);
+        $personTo = $request->attributes->get('to');
+        if ($personTo) {
+            $defaultData['person'] = $personTo;
+            $thread                = $this->getEm()->getRepository(DirectMessageThread::class)->getOneForUsers($this->getUser(), $personTo);
             if ($thread) {
                 return $this->redirectToRoute('portal_dm_view', ['id' => $thread->getId()]);
             }
+        } else {
+            // must always arrive here from a link to a specific person
+            // currently we have no way to send arbitrary messages by selecting the person
+            throw $this->createNotFoundException();
         }
 
         $form = $this->createForm(DirectMessageNewThreadType::class, $defaultData);
@@ -202,7 +216,6 @@ class DirectMessagesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $data        = $form->getData();
-                $personTo    = $data['person'];
                 $thread      = $this->getDirectMessageThreadDataService()->createThread($this->getUser(), $personTo);
                 $participant = $this->getEm()->getRepository(DirectMessageParticipant::class)->findOneBy([
                     'thread' => $thread,
@@ -235,6 +248,7 @@ class DirectMessagesController extends AbstractController
             [
                 'breadcrumbs' => $breadcrumbs,
                 'form'        => $form->createView(),
+                'personTo'    => $personTo,
             ]
         );
     }

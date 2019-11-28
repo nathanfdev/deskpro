@@ -48,6 +48,9 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
     if (!window.DESKPRO_PERSON_PERMS['agent_tickets.create']) {
       clone.find("li[data-action='create-ticket']").hide();
     }
+    if (this.options.contentType !== 'community') {
+      clone.find("li[data-action='official-response']").hide();
+    }
 
     var self = this;
 		this._commentMenu = new DeskPRO.UI.Menu({
@@ -77,6 +80,17 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 							}
 						});
 						break;
+          case 'official-response':
+            $.ajax({
+              url: BASE_URL + 'agent/publish/comments/official-response/' + commentEl.data('content-type') + '/' + commentEl.data('comment-id') + '.json',
+              type: 'GET',
+              dataType: 'json',
+              success: function(data) {
+                commentEl.parent().find('.comment-official-response').hide();
+                commentEl.find('.comment-official-response').show();
+              }
+            });
+            break;
 				}
 			}
 		});

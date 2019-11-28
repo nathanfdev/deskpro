@@ -67,9 +67,14 @@ class CommunityTopic extends AbstractEntityHandler
 
         // persist others related entities which contains own oids
         foreach ($model->getAttachments() as $attachmentModel) {
-            $this->helpers->getAttachmentHelper()->createOrUpdateAttachment(
+            $attachment = $this->helpers->getAttachmentHelper()->createOrUpdateAttachment(
                 $this->mappers->getCommunityTopicAttachmentMapper(), $attachmentModel, $entity
             );
+
+            if ($attachmentModel->isInline()) {
+                $entity->setContent($this->helpers->getAttachmentHelper()->replaceContent($attachmentModel, $attachment, $entity->getContentHtml()));
+                $this->persister->persistAndFlush($entity, $model);
+            }
         }
     }
 }

@@ -296,7 +296,9 @@
     {% elseif col.id == 'date_user' %}
         {% if ticket.date_last_user_reply %}
             {% if ticket.person %}
-                <img src="{{ avatar_url(ticket.person) }}" class="avatar">
+                <div class="dp-po-avatar">
+                    {{ hc_avatar(ticket.person) }}
+                </div>
                 <span class="person">{{ ticket.person.display_name_user }}</span>
             {% endif %}
             <span class="date">{{ ticket.date_last_user_reply|date }}</span>
@@ -304,7 +306,9 @@
     {% elseif col.id == 'date_agent' %}
         {% if ticket.date_last_agent_reply %}
             {% if ticket.agent %}
-                <img src="{{ avatar_url(ticket.agent) }}" class="avatar" role="presentation" />
+                <div class="dp-po-avatar">
+                    {{ hc_avatar(ticket.agent) }}
+                </div>
                 <span class="person">{{ ticket.agent.display_name_user }}</span>
             {% endif %}
             <span class="date">{{ ticket.date_last_agent_reply|date }}</span>

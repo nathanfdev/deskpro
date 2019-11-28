@@ -69,6 +69,12 @@ pageMeta.baseId = '{{ baseId }}';
             'selected': state.topic.parent_id
             } %}
 		</div>
+		{% if app.hasBeta('helpcenter') %}
+			<br class="clear" />
+			<div class="col">
+				<input type="radio" name="newtopic[no_content]" value="0" id="{{ baseId }}_radio_is_section" disabled /> Topic with content <input type="radio" name="newtopic[no_content]" value="1" id="{{ baseId }}_radio_not_section" checked disabled> Topic Section
+			</div>
+		{% endif %}
 		<br class="clear" />
 	</div>
 </div>

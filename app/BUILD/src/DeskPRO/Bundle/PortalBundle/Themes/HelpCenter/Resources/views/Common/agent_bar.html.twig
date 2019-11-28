@@ -95,24 +95,11 @@ if impersonation is OFF "impersonator" is the agent
     {% endif %}
 </div>
 
-
-<div class="deskpro-agent-top-bar-wrapper" id="agent-bar">
-
-    <div class="deskpro-agent-top-bar">
-        <div class="datb-user-impersonator" style="display: none;">
-            <i class="fas fa-user"></i>
-            <span>{{ phrase('helpcenter.general.impersonation-mode-off') }}:</span>
-            <a href="#" class="datb-user-impersonator-toggle">{{ phrase('helpcenter.general.turn-on') }}</a>
-        </div>
-
-
-        {% if impersonation_on %}
-        <div class="datb-user-impersonator on">
-            <i class="fas fa-user-secret"></i>
-            <span>{{ phrase('helpcenter.general.impersonation_mode') }}: <span class="datb-impersonated-user-email">{{ app.user.primary_email_address }}</span></span>
-            <a href="{{ logout_path('portal') }}&_dp_impersonate_exit=1" class="datb-user-impersonator-toggle"><i class="fas fa-times-circle"></i></a>
-        </div>
-        {% endif %}
-    </div>
+{% if impersonation_on %}
+<div class="dp-po-impersonation" >
+    <p class="dp-po-impersonation-badge"><i class="dp-po-icon fas fa-user-secret"></i> {{ phrase('helpcenter.general.impersonation_mode') }}</p>
+    <p class="dp-po-impersonation-user">{{ app.user.primary_email_address }} <a href="{{ logout_path('portal') }}&_dp_impersonate_exit=1"
+                                                                               class="dp-po-impersonation-close"><i class="dp-po-icon fas fa-times-circle"></i></a></p>
 </div>
+{% endif %}
 {% endif %}

@@ -281,9 +281,14 @@ class TicketHandler extends AbstractEntityHandler
 
         // persist others related entities which contains own oids
         foreach ($model->getAttachments() as $attachmentModel) {
-            $this->helpers->getAttachmentHelper()->createOrUpdateAttachment(
+            $attachment = $this->helpers->getAttachmentHelper()->createOrUpdateAttachment(
                 $this->mappers->getTicketAttachmentMapper(), $attachmentModel, $messageEntity
             );
+
+            if ($attachmentModel->isInline()) {
+                $messageEntity->setMessageHtml($this->helpers->getAttachmentHelper()->replaceContent($attachmentModel, $attachment, $messageEntity->getMessageHtml()));
+                $this->persister->persistAndFlush($messageEntity, $model);
+            }
         }
     }
 

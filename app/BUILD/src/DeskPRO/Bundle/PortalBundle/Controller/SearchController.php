@@ -56,6 +56,10 @@ class SearchController extends AbstractController
     {
         $q = $request->get('q');
 
+        if ($q && $this->isHelpCenterTheme()) {
+            return $this->searchTypeAction('auto', $request);
+        }
+
         $isSearch      = false;
         $person        = $this->getUser() ?: new PersonGuest();
         $stickyResults = [];
@@ -137,8 +141,22 @@ class SearchController extends AbstractController
         $perPage = 10;
         $types   = $type === 'ticket' ? ['ticket'] : null;
 
-        $isSearch    = true;
-        $results     = $this->fetchSearchResults($request, $types, $person, $q, $curPage, $perPage, $type);
+        $isSearch = true;
+        if ($type === 'auto') {
+            // Focus the first one with results
+            $allTypes = ['article', 'news', 'download', 'community', 'topic', 'ticket', 'chat_conversation'];
+            $results  = $this->fetchSearchResults($request, $allTypes, $person, $q, $curPage, $perPage, $type);
+
+            $type = null;
+            foreach ($results as $t => $rs) {
+                if (!empty($rs['pageinfo']['total_results']) && $rs['pageinfo']['total_results'] >= 1) {
+                    $type = $t;
+                    break;
+                }
+            }
+        } else {
+            $results = $this->fetchSearchResults($request, $types, $person, $q, $curPage, $perPage, $type);
+        }
         $searchLogId = $results['meta'][self::SEARCH_LOG_ID_VAR];
         // we don't need meta here
         unset($results['meta']);

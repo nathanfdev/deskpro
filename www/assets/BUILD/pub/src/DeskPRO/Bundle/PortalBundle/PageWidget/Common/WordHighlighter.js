@@ -136,7 +136,7 @@ export class WordHighlighter {
             procNode.unshift(endbit);
           }
         }
-      } else if (node.nodeType === 1 && node.childNodes && !/(script|style)/i.test(node.tagName)) {
+      } else if (node.nodeType === 1 && node.childNodes && !/(script|style|a|button|textarea|code|pre|embed)/i.test(node.tagName)) {
         children = $.makeArray(node.childNodes);
         for (i = 0; i < children.length; i++) {
           procNode.unshift(children[i]);

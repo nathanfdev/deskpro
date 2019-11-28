@@ -1,3 +1,4 @@
+import './publicPath';
 import $ from 'jquery';
 import factory from 'iframe-resizer';
 

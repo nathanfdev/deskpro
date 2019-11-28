@@ -114,6 +114,7 @@ class AuditLogController extends BaseController
         $available = [
             'object_id',
             'object_type',
+            'object_name',
             'date_created_from',
             'date_created_to',
             'action',

@@ -1,108 +1,95 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block page_content %}
-<div class="dp-po">
-    <main class="dp-po-main dp-po-knowledgebase-home">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="guides topic-view"  id="react_portal_bundle">
+    <div class="dp-po">
+        <main class="dp-po-main dp-po-guides" id="react_helpcenter_bundle">
+            {% if guides | length > 1 %}
+                {% include 'Theme:Guides:embeds/guides_carousel.html.twig' %}
+            {% endif %}
+            <div class="dp-po-guides-section">
+                <div class="dp-po-guides-wrap">
+                    <div class="container-fluid">
                         <div class="row">
-                            <div class="topic-list col-sm-3">
-                                <div class="current-guide">
-                                    <div class="guide">{{ guide.title }}</div>
-                                    {% if guide.guide_pdf %}
-                                    <a class="guide-pdf" href="{{ guide.guide_pdf }}" target="_blank" rel="noopener noreferrer">
-                                        <span>{{ phrase('helpcenter.guides.download-pdf') }}</span>
-                                        <i class="far fa-file-pdf"></i>
-                                    </a>
-                                    {% endif %}
-                                </div>
-                                <hr>
-                                {% show topic_list with {guide: guide, topic: topic} %}
-                            </div>
-                            <div class="topic col-sm-9">
-                                <div class="dp-po-title">
-                                    <img class="dp-po-title-svg" src="{{ asset('img/page-icons/guides.svg', 'help_center') }}" />
-                                    <h2 class="do-po-title-text">{{ topic.title }}</h2>
-                                </div>
-                                <div class="row align-items-end">
-                                    <div class="col-sm-10">
-                                        <div class="dp-po-post-info">
-                                            <ul class="dp-po-post-info-list">
-                                                <li class="dp-po-post-info-item">
-                                                    <label for="publication-date">{{  phrase('helpcenter.general.published') }}: </label>
-                                                    <b>{{ topic.date_published|date('d/m/Y') }}</b>
+                            <div class="col-sm-3">
+                                <div class="dp-po-guides-search">
+{#                                    <form class="dp-po-guides-search-form">#}
+{#                                        <input type="text" name="" placeholder="Search table of contents"></input>#}
+{#                                        <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>#}
+{#                                    </form>#}
+                                    <div class="dp-po-guides-search-block">
+                                        <ul class="dp-po-guides-search-content-list">
+                                            {% for section in guide.active_topics %}
+                                                <li class="dp-po-guides-search-content-item">
+                                                    <a href="{{ portal_url(section) }}" class="dp-po-guides-search-content-link"> {{ section.title }}</a>
+                                                    <ul class="dp-po-guides-search-content-suplist">
+                                                        {% for topic in section.children %}
+                                                            <li class="dp-po-guides-search-content-supitem">
+                                                                <a href="{{ portal_url(topic) }}" class="dp-po-guides-search-content-suplink">{{ topic.title }}</a>
+                                                                <ul class="dp-po-guides-search-content-sublist">
+                                                                    {% for subtopic in topic.children %}
+                                                                        <li class="dp-po-guides-search-content-subitem">
+                                                                            <a href="{{ portal_url(subtopic) }}" class="dp-po-guides-search-content-sublink">{{ subtopic.title }}</a>
+                                                                            <ul class="dp-po-guides-search-content-underlist">
+                                                                                {% for undertopic in subtopic.children %}
+                                                                                    <li class="dp-po-guides-search-content-underitem">
+                                                                                        <a href="{{ portal_url(undertopic) }}" class="dp-po-guides-search-content-underlink">{{ undertopic.title }}</a>
+                                                                                    </li>
+                                                                                {% endfor %}
+                                                                            </ul>
+                                                                        </li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
                                                 </li>
-                                                <li class="dp-po-post-info-item">
-                                                    <label for="last-update-date">{{ phrase('helpcenter.general.updated') }}: </label>
-                                                    <b>{{ topic.date_updated|date('d/m/Y') }}</b>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                            {% endfor %}
+                                        </ul>
                                     </div>
-                                    <hr>
-                                    {% if topic.status != 'published' and topic.status != 'archived' and app.user.is_agent %}
-                                        <div class="sub-note">{{ phrase('helpcenter.guides.view-as-agent') }}</div>
-                                    {% endif %}
                                 </div>
-                                <div class="topic-content">
-                                    {{ topic.content|content|raw }}
-                                </div>
-                                {% if brand_setting('user.publish_comments') and (topic.calc_num_comments or new_comment_form) %}
-                                    <div class="comment-box" id="comments">
-                                        <div class="titled-header">
-                                            <h1>{{ phrase('helpcenter.general.comments-title', {count: topic.calc_num_comments}) }}</h1>
-                                        </div>
-                                        {% show topic_comments %}
-                                        {% show comment_form %}
-                                    </div>
-                                {% endif %}
-                                {% if brand_setting('user.publish_comments') %}
-                                    {% if topicData.comments | length %}
-                                        {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: topicData.comments } %}
-                                    {% endif %}
-
-                                    {% include 'Theme:PublishCommon:comments-form.html.twig' %}
-                                {% endif %}
                             </div>
-                        </div>
-                        <div class="comment-column"></div>
-                        <div class="content-summary">
-
+                            <div class="col-sm-9">
+                                <div class="dp-po-guides-loading" style="display: none">
+                                    <i class="dp-icon fa-3x far fa-spinner fa-pulse"></i>
+                                </div>
+                                <div class="dp-po-guides-block">
+                                    {% include 'Theme:Guides:embeds/topic.html.twig' %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
-</div>
-<script>
-  var topic = '{{ topic_json|raw }}';
-  var guides = '{{ guides_json|raw }}';
-  var commentsCaptcha = '{{ captcha|json_encode|raw }}';
-  var topicCommentForm = {{ new_comment_form ? 'true' : 'false' }};
-  var loggedIn = {{ app.user ? 'true' : 'false' }};
-  var currentTheme = '{{ current_theme() }}';
-  var routePath = window.location.hash.replace(/#\//, '');
-  if (routePath[0] != '/')
-    routePath = '/' + routePath;
+        </main>
+    </div>
+    <script>
+      var topic = '{{ topic_json|raw }}';
+      var guides = '{{ guides_json|raw }}';
+      var commentsCaptcha = '{{ captcha|json_encode|raw }}';
+      var topicCommentForm = {{ new_comment_form ? 'true' : 'false' }};
+      var loggedIn = {{ app.user ? 'true' : 'false' }};
+      var routePath = window.location.hash.replace(/#\//, '');
+      var topicList = '{{ helpcenter.topics(guide)|json_encode|escape('js')|raw }}';
+      var twoLevelSection = {{ helpcenter.guideTwoLevelSection(guide) ? 'true' : 'false' }};
+      if (routePath[0] != '/')
+        routePath = '/' + routePath;
 
-  var reactProps = {
-    routePath: routePath
-  };
+      var reactProps = {
+        routePath: routePath
+      };
 
-  function start() {
-    if (typeof window.PortalBundle === 'undefined') {
-      setTimeout(start.bind(this), 100);
-    } else {
-      window.PortalBundle.render(reactProps, document.getElementById('react_portal_bundle'));
-    }
-  }
+      window.document.getElementsByClassName('dp-po-guides-loading')[0].style.display = 'block';
 
-  start();
+      function start() {
+        if (typeof window.HelpcenterBundle === 'undefined') {
+          setTimeout(start.bind(this), 100);
+        } else {
+          window.HelpcenterBundle.render(reactProps, document.getElementById('react_helpcenter_bundle'));
+        }
+      }
+
+      start();
 
 
-</script>
-
+    </script>
 {% endblock page_content %}

@@ -12,6 +12,7 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Entity\DirectMessageParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\PortalBundle\SavedForm\SavedFormView;
@@ -268,6 +269,12 @@ class AbstractController extends BaseController
             $ticketsAwaitingReply = $ticketRepo->getWaitingForReplyForPerson($person, 0);
         }
 
+        $unreadDirectMessages = 0;
+        if ($this->getBrandSetting('portal.members_community')) {
+            $directMessageParticipantRepo = $this->getRepo(DirectMessageParticipant::class);
+            $unreadDirectMessages         = $directMessageParticipantRepo->getUnreadThreadCount($person);
+        }
+
         $shouldDisplay = count($savedForms) || $langDiff || count($ticketsAwaitingReply);
 
         return [
@@ -276,6 +283,7 @@ class AbstractController extends BaseController
             'display_alerts'         => $shouldDisplay,
             'lang_diff'              => $langDiff,
             'tickets_awaiting_reply' => $ticketsAwaitingReply,
+            'unread_direct_messages' => $unreadDirectMessages,
         ];
     }
 

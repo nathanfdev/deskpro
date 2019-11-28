@@ -28,6 +28,8 @@ class NewTopic
     public $content_input = '';
     /** @var string */
     public $content_input_type = '';
+    /** @var boolean */
+    public $no_content = true;
 
     /** @var string */
     public $slug;
@@ -76,6 +78,9 @@ class NewTopic
         $parent = $this->_em->find(Topic::class, $this->parent_id);
         if ($parent) {
             $topic->setParent($parent);
+            $topic->setNoContent($this->no_content);
+        } else {
+            $topic->setNoContent(true);
         }
 
         $this->_em->persist($topic);

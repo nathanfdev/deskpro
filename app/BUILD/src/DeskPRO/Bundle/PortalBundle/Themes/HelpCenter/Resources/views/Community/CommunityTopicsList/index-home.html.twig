@@ -18,7 +18,7 @@
             community_forums: community_forums,
         } %}
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-auto">
         {% include 'Theme:Community:CommunityTopicsList/subscribe-button.html.twig' with {
             is_subscribed: is_subscribed,
             title: phrase('helpcenter.community.section-title')
@@ -58,7 +58,9 @@
                                         <li class="dp-po-community-row-activity-item">
                                             <a href="{{ path('portal_community_topic_view', {slug: activity.topic.slug}) }}" class="dp-po-community-row-activity-link">
                                                 {% if activity.comment %}
-                                                    <img src="{{ avatar_url(activity.comment.person, 30) }}" class="dp-po-community-row-activity-img rounded-circle">
+                                                    <div class="dp-po-avatar dp-po-avatar-round">
+                                                        {{ hc_avatar(activity.comment.person) }}
+                                                    </div>
                                                     <h4 class="dp-po-community-row-activity-title">
                                                         {{ activity.comment.content|truncate(80) }}
                                                     </h4>
@@ -66,7 +68,9 @@
                                                         {{ date_ago(activity.comment.date_created) }}
                                                     </span>
                                                 {% else %}
-                                                    <img src="{{ avatar_url(activity.topic.person, 30) }}" class="dp-po-community-row-activity-img rounded-circle">
+                                                    <div class="dp-po-avatar dp-po-avatar-round">
+                                                        {{ hc_avatar(activity.topic.person) }}
+                                                    </div>
                                                     <h4 class="dp-po-community-row-activity-title">
                                                         {{ activity.topic.content_plain|truncate(80) }}
                                                     </h4>

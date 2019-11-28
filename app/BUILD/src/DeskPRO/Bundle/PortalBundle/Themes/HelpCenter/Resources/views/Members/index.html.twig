@@ -11,9 +11,16 @@
         <div class="dp-po-section dp-po-block">
           <div class="row">
             <div class="col-sm-6">
-              <form class="dp-po-member-search">
-                <input type="text" name="q" placeholder="Search" value="{{ q }}" />
-                <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+              <form>
+                <div class="d-flex align-items-center">
+                  <div class="dp-po-member-search">
+                    <input type="text" name="q" placeholder="" value="{{ q }}" />
+                    <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+                  </div>
+                  <div class="ml-1">
+                    <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.label.search') }}</button>
+                  </div>
+                </div>
               </form>
             </div>
             <div class="col-sm-6 text-right">
@@ -76,13 +83,13 @@
               <div class="dp-po-table-row">
                   <span class="dp-po-table-cell dp-po-table-cell-large">
                     <div class="dp-po-avatar dp-po-avatar-round">
-                      <a href="{{ path('portal_members_view', { id: person.id }) }}">
+                      <a href="{{ path('portal_members_view', { id: person.id }) }}" class="d-flex align-items-center">
                         {{ hc_avatar(person, '', 30) }}{% if person.community_name %}{{ person.community_name }}{% else %}#{{ person.id }}{% endif %}
                       </a>
                     </div>
                   </span>
                 <span class="dp-po-table-cell dp-po-table-cell-large">{{person.primary_email}}</span>
-                <span class="dp-po-table-cell">{% if person.phone_numbers | length > 0 %}{{ person.phone_numbers[0] }}{%  else %}{{ phrase('helpcenter.members.phone-number-none') }}{% endif %}</span>
+                <span class="dp-po-table-cell">{% if person.phone_numbers | length > 0 %}{{ person.phone_numbers[0].getFullFormatted() }}{%  else %}{{ phrase('helpcenter.members.phone-number-none') }}{% endif %}</span>
                 <span class="dp-po-table-cell dp-po-table-cell-large">{% if person.organization %}{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
                 {% if app.getSetting('portal.members_community') %}
                   <span class="dp-po-table-cell dp-po-table-cell-small dp-po-table-message text-right">
@@ -126,7 +133,12 @@
             </div>
           </div>#}
         </div>
-        {% show members_pager %}
+
+        <div class="dp-po-section">
+          {% include 'Theme:Common:pager.html.twig' with {
+            pager: pager
+          } %}
+        </div>
 
       </div>
     </main>

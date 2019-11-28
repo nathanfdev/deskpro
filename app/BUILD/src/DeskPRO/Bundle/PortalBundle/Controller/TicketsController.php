@@ -214,12 +214,12 @@ class TicketsController extends AbstractController
         $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
 
         // create timeline with pagination
-        $page     = $request->get('page', 1);
-        $per_page = 50;
+        $page     = $request->get('page', 'last');
+        $per_page = 10;
         $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket, $page, $per_page, $this->getUser());
         $pager    = new Pagerfanta(new TicketTimelinePagerfantaAdapter($timeline));
         $pager->setMaxPerPage($per_page);
-        $pager->setCurrentPage($page);
+        $pager->setCurrentPage($page === 'last' ? $pager->getNbPages() : $page);
 
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);

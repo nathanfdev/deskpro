@@ -5,7 +5,6 @@ import { Fieldset, createValue } from '@deskpro/react-forms';
 import $ from 'jquery';
 import Immutable from 'immutable';
 import { loadAll, loadWithParams, isLoadedCollectionSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
 import {
   liveDemoSelector,
@@ -22,6 +21,8 @@ import { customChatFieldsOrderedSelector } from '../../../../Application/Selecto
 import { history } from '../../../../../Services/history';
 import { ChatBeginLoadingSpinner } from './ChatBeginLoadingSpinner';
 import { ChatBeginSimple } from './ChatBeginSimple';
+
+const deps = import('../../../../../page-widget-deps');
 
 @connect(state => ({
   liveDemo:                 liveDemoSelector(state),
@@ -148,11 +149,13 @@ export class ChatBeginContainer extends React.Component {
   }
 
   componentDidUpdate() {
-    this.formWidget = new PortalFormWidget($(this.node), null, {
-      context: [parent.document, window.widgetFrame.document]
-    });
+    deps.then(({PortalFormWidget}) => {
+      this.formWidget = new PortalFormWidget($(this.node), null, {
+        context: [parent.document, window.widgetFrame.document]
+      });
 
-    this.formWidget.renderWhenReady();
+      this.formWidget.renderWhenReady();
+    });
   }
 
   componentWillUnmount() {

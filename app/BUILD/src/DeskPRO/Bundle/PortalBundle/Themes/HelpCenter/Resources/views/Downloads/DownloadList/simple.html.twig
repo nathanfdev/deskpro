@@ -1,5 +1,5 @@
 {% if pager|length > 0 %}
-<ul class="download-list">
+<div class="dp-po-download-listing">
     {% for dl in pager %}
         <div class="dp-po-download-listing-item">
             <a href="{{ portal_path(dl) }}" class="dp-po-download-listing-link">
@@ -10,7 +10,7 @@
                 <div class="dp-po-download-listing-content">
                     <h3 class="dp-po-download-listing-title">{{ dl.title }}</h3>
                     <div class="dp-po-avatar dp-po-avatar-round">
-                        <img src="{{ avatar_url(dl.person) }}">
+                        {{ hc_avatar(dl.person) }}
                         <strong>{{ dl.person }}</strong>
                     </div>
                     <div class="dp-po-download-listing-count">
@@ -31,7 +31,7 @@
             </a>
         </div>
     {% endif %}
-</ul>
+</div>
 {% else %}
     <strong>{{ phrase('helpcenter.downloads.none') }}</strong>
 {% endif %}

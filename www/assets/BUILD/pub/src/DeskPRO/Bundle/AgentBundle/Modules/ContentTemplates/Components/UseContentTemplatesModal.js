@@ -41,6 +41,9 @@ class UseContentTemplatesModalContainer extends React.Component {
     }
 
     dispatch(openNewContentPage(contentTemplate));
+    this.setState({
+      selectedTemplate: null
+    });
     closeMenu();
   };
 
@@ -65,7 +68,7 @@ class UseContentTemplatesModalContainer extends React.Component {
 class UseContentTemplatesModal extends React.Component {
 
   static propTypes = {
-    selectedTemplate:   PropTypes.object,
+    selectedTemplate:   PropTypes.number,
     contentTemplates:   PropTypes.object,
     closeMenu:          PropTypes.func,
     type:               PropTypes.string,
