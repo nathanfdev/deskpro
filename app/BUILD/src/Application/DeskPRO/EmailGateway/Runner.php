@@ -516,14 +516,19 @@ class Runner
                 ],
             ];
 
-            if ($allowRetry) {
-                $doRetry = true;
-                if (strpos(strtolower($e->getMessage()), 'deadlock') === false) {
+            if (($e instanceof ProcessingException) && $e->getCode() === ProcessingException::EMAIL_ACCOUNT_NOT_FOUND) {
+                $doRetry = false;
+                $sourceLogger->logWarn('Not trying again (email account not found)');
+            } else {
+                if ($allowRetry) {
+                    $doRetry = true;
+                    if (strpos(strtolower($e->getMessage()), 'deadlock') === false) {
+                        SystemErrorHandler::logException($e, true);
+                    }
+                } else {
+                    $sourceLogger->logWarn('Not trying again (allow_retry is false)');
                     SystemErrorHandler::logException($e, true);
                 }
-            } else {
-                $sourceLogger->logWarn('Not trying again (allow_retry is false)');
-                SystemErrorHandler::logException($e, true);
             }
 
             if (App::getDb()->isTransactionActive()) {
