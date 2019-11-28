@@ -470,17 +470,25 @@ class Runner
         }
 
         $sourceLogger->logDebug('Running processors');
-        $runnerExec = new RunnerExecSource(
-            $source,
-            $reader,
-            $this->accountManager,
-            $sourceLogger
-        );
-        $runnerExec->setFromHeaders($this->getFromHeaders());
 
         $didRollback = false;
         $doRetry     = false;
         try {
+            if (!$source->getEmailAccount()) {
+                throw new ProcessingException(
+                    'Email account not found/assigned to email source',
+                    ProcessingException::EMAIL_ACCOUNT_NOT_FOUND
+                );
+            }
+
+            $runnerExec = new RunnerExecSource(
+                $source,
+                $reader,
+                $this->accountManager,
+                $sourceLogger
+            );
+            $runnerExec->setFromHeaders($this->getFromHeaders());
+
             $result = $runnerExec->run();
             App::$container->getEm()->flush();
             $sourceLogger->logDebug('--> Processors complete');
