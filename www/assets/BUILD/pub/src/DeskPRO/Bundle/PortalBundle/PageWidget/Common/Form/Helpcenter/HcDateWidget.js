@@ -1,224 +1,172 @@
-import forEach from 'lodash/forEach';
-import includes from 'lodash/includes';
-import $ from 'jquery';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import moment from 'moment';
-import momentHijri from 'moment-hijri';
 import 'DeskPRO/Bundle/AppBundle/moment-locales';
-import 'jquery-datetimepicker-iframe/jquery.datetimepicker';
-import 'kbw-calendars-iframe/dist/js/jquery.calendars';
-import 'kbw-calendars-iframe/dist/js/jquery.calendars.plus';
-import 'kbw-calendars-iframe/dist/js/jquery.plugin';
-import 'kbw-calendars-iframe/dist/js/jquery.calendars.picker';
-import 'kbw-calendars-iframe/dist/js/jquery.calendars.picker-ar';
-import 'kbw-calendars-iframe/dist/js/jquery.calendars.islamic';
-import 'kbw-calendars-iframe/dist/js/jquery.calendars.islamic-ar';
+import ReactDatePicker from '@deskpro/react-datepicker-hijri';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import moment from 'moment';
+import $ from '../../../../../../../../../web/bower_components/oclazyload/examples/requireJSExample/js/jquery';
+
+class HcDateInput extends React.Component {
+  static propTypes = {
+    dateFormat: PropTypes.string,
+    startDate:  PropTypes.object,
+    onChange:   PropTypes.func,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      date: props.startDate
+    };
+  }
+
+  setDate = (date) => {
+    this.props.onChange(date);
+    this.setState({
+      date
+    });
+  };
+
+  handleChangeRaw = (value) => {
+    const date = moment(value, this.props.dateFormat);
+    this.props.onChange(date);
+    this.setState({
+      date
+    });
+  };
+
+  render() {
+    const { startDate, onChange, ...props } = this.props;
+    const { date } = this.state;
+
+    return (
+      <ReactDatePicker
+        onChange={newDate => this.setDate(newDate)}
+        onChangeRaw={event => this.handleChangeRaw(event.target.value)}
+        selected={date}
+        {...props}
+      />
+    );
+  }
+}
 
 export class HcDateWidget extends PageWidget {
-
   renderWidget() {
     const $el = this.$element;
+    this.$element.hide();
+    this.$rElement = $('<div class="dp-react-widget dp-pc_field form-control"></div>').insertAfter(this.$element);
 
     const calendar = $el.data('calendar');
 
-    if (!calendar || calendar === 'gregorian') {
-      let dayOfWeekStart = 0;
-      if (window.DESKPRO_LOCALE) {
-        // datetime picker has locale for month/day names
-        $.datetimepicker.setLocale(window.DESKPRO_LOCALE.toLowerCase().split('_')[0]);
-
-        // we have to use moment for formatting tho
-        moment.locale(window.DESKPRO_LOCALE.toLowerCase().replace('_', '-'));
-        dayOfWeekStart = moment.localeData(window.DESKPRO_LOCALE.toLowerCase().replace('_', '-')).firstDayOfWeek();
-      }
-
-      $.datetimepicker.setDateFormatter({
-        parseDate: (date, format) => {
-          const d = moment(date, format);
-          return d.isValid() ? d.toDate() : false;
-        },
-        formatDate: (date, format) => moment(date).format(format)
-      });
-
-      // this widget can work with a DATE form type or a DATETIME
-      // it works by following "id" naming conventions from symfony's form component ("choice" widgets for the date)
-      // it hides the original widgets and connects them with events to a new text input that uses jquery-datetimepicker
-      const idDiv = $el.find('.fallback-input').find('div:first');
-      const id = idDiv.attr('id');
-
-      let $sYear;
-      let $sMonth;
-      let $sDay;
-      let $sHour;
-      let $sMinute;
-      let isTimeIncluded;
-
-      if ($el.hasClass('dpx-date-time')) {
-        $sYear = $(`#${id}_date_year`);
-        $sMonth = $(`#${id}_date_month`);
-        $sDay = $(`#${id}_date_day`);
-        $sHour = $(`#${id}_time_hour`);
-        $sMinute = $(`#${id}_time_minute`);
-
-        isTimeIncluded = true;
-      } else {
-        $sYear = $(`#${id}_year`);
-        $sMonth = $(`#${id}_month`);
-        $sDay = $(`#${id}_day`);
-
-        isTimeIncluded = false;
-      }
-
-      const minDate = ($el.data('min-date').length === 0) ? null : moment($el.data('min-date'));
-      const maxDate = ($el.data('max-date').length === 0) ? null : moment($el.data('max-date'));
-
-      const $textBox = $('<input type="text">');
-
-      const format  = isTimeIncluded ? 'L LT' : 'L';
-      const options = {
-        parentID:   $el.parent(),
-        timepicker: isTimeIncluded,
-
-        ownerDocument: this.options.ownerDocument || document,
-        contentWindow: this.options.contentWindow || window,
-
-        format,
-        formatTime: 'LT',
-        formatDate: 'L',
-        dayOfWeekStart,
-
-        closeOnDateSelect: true,
-        scrollInput:       false,
-        onChangeDateTime:  () => {
-          const m = moment($textBox.datetimepicker('getValue'));
-
-          // reset items to proper set new value
-          [$sMonth, $sDay, $sYear, $sHour, $sMinute].forEach($item => $item && $item.val(''));
-
-          $sMonth.val(m.month() + 1).trigger('change');
-          $sDay.val(m.date()).trigger('change');
-          $sYear.val(m.year()).trigger('change');
-
-          if (isTimeIncluded) {
-            $sHour.val(m.hour()).trigger('change');
-            $sMinute.val(m.minute()).trigger('change');
-          }
-        }
-      };
-
-      // days of week
-      let weekdays = $el.data('weekdays');
-      if (weekdays) {
-        if (typeof weekdays === 'string') {
-          weekdays = weekdays.split(',');
-        } else {
-          weekdays = [weekdays];
-        }
-      } else {
-        weekdays = [0, 1, 2, 3, 4, 5, 6];
-      }
-
-      weekdays = weekdays.map((weekDay) => {
-        // php stores 1 as monday and sunday as 7, but our cal uses 0 for sunday, 1 for monday, and so on.
-        const d = parseInt(weekDay, 10);
-        return d === 6 ? 0 : d + 1;
-      });
-
-      if (weekdays.length > 0) {
-        // disable all days of week
-        options.onGenerate = function () {
-          const that = this;
-          forEach([0, 1, 2, 3, 4, 5, 6], (weekDay) => {
-            if (!includes(weekdays, weekDay)) {
-              $(that).find(`.xdsoft_day_of_week${weekDay}`).addClass('xdsoft_disabled');
-            }
-          });
-        };
-      }
-
-      // min and max date
-      if (minDate && maxDate) {
-        options.minDate = minDate.format(format);
-        options.maxDate = maxDate.format(format);
-      }
-
-      $textBox.datetimepicker(options);
-
-      const onSetDate = () => {
-        const day   = $sDay.val();
-        const month = $sMonth.val();
-        const year  = $sYear.val();
-
-        const onUpdateValue = (newDate) => {
-          const oldValue = moment($textBox.datetimepicker('getValue'));
-          const newValue = moment(newDate);
-
-          if (oldValue.format() !== newValue.format()) {
-            $textBox.val(newValue.format(format));
-          }
-        };
-
-        if (day && month && year) {
-          if (isTimeIncluded) {
-            const minute = $sMinute.val();
-            const hour   = $sHour.val();
-
-            if (minute.length && hour.length) {
-              onUpdateValue(new Date(year, month - 1, day, hour, minute));
-            }
-          } else {
-            onUpdateValue(new Date(year, month - 1, day));
-          }
-        }
-      };
-
-      // find the initial value and set it on the text box
-      onSetDate();
-
-      $sDay.on('change', onSetDate);
-      $sMonth.on('change', onSetDate);
-      $sYear.on('change', onSetDate);
-
-      if (isTimeIncluded) {
-        $sHour.on('change', onSetDate);
-        $sMinute.on('change', onSetDate);
-      }
-
-      $textBox
-        .addClass('dpx-date-input')
-        .addClass('form-control')
-        .on('keyup', () => $textBox.datetimepicker('hide'))
-        .on('blur', () => $textBox.datetimepicker('validate'));
-
-      $el.hide();
-      $textBox.insertAfter($el);
-    } else if (calendar === 'hijri') {
-      const idDiv = $el.find('.fallback-input').find('div:first');
-      const id = idDiv.attr('id');
-      const $sYear = $(`#${id}_year`);
-      const $sMonth = $(`#${id}_month`);
-      const $sDay = $(`#${id}_day`);
-      const $textBox = $('<input type="text">');
-      if ($sYear.val() && $sMonth.val() && $sDay.val()) {
-        const m = momentHijri(`${$sYear.val()}/${$sMonth.val()}/${$sDay.val()}`, 'YYYY/M/D');
-        $textBox.val(m.format('iYYYY/iM/iD'));
-      }
-      $textBox.calendarsPicker({
-        calendar:      $.calendars.instance('islamic', 'ar'),
-        ownerDocument: this.options.ownerDocument || document,
-        contentWindow: this.options.contentWindow || window,
-        firstDay:      0,
-
-        onSelect(dates) {
-          const date = dates[0];
-          const m = momentHijri(`${date.year()}/${date.month()}/${date.day()}`, 'iYYYY/iM/iD');
-          $sDay.val(m.date()).trigger('change');
-          $sMonth.val(m.month() + 1).trigger('change');
-          $sYear.val(m.year()).trigger('change');
-        }
-      });
-      $el.hide();
-      $textBox.insertAfter($el);
+    if (window.DESKPRO_LOCALE) {
+      moment.locale(window.DESKPRO_LOCALE.toLowerCase().replace('_', '-'));
+    } else {
+      moment.locale('en');
     }
+
+    let $sYear;
+    let $sMonth;
+    let $sDay;
+    let $sHour;
+    let $sMinute;
+    let showTimeSelect;
+
+    const idDiv = $el.find('.fallback-input').find('div:first');
+    const id = idDiv.attr('id');
+
+    if ($el.hasClass('dpx-date-time')) {
+      $sYear = $(`#${id}_date_year`);
+      $sMonth = $(`#${id}_date_month`);
+      $sDay = $(`#${id}_date_day`);
+      $sHour = $(`#${id}_time_hour`);
+      $sMinute = $(`#${id}_time_minute`);
+
+      showTimeSelect = true;
+    } else {
+      $sYear = $(`#${id}_year`);
+      $sMonth = $(`#${id}_month`);
+      $sDay = $(`#${id}_day`);
+
+      showTimeSelect = false;
+    }
+
+    const format  = showTimeSelect ? 'L LT' : 'L';
+
+    let filterDate;
+    let weekdays = $el.data('weekdays');
+    if (weekdays) {
+      if (typeof weekdays === 'string') {
+        weekdays = weekdays.split(',');
+      } else {
+        weekdays = [weekdays];
+      }
+      filterDate = (date) => {
+        const day = date.day();
+        return weekdays.indexOf((day - 1).toString()) !== -1;
+      };
+    }
+
+    const minDate = ($el.data('min-date').length === 0) ? null : moment($el.data('min-date'));
+    const maxDate = ($el.data('max-date').length === 0) ? null : moment($el.data('max-date'));
+
+    const getDate = () => {
+      const day   = $sDay.val();
+      const month = $sMonth.val();
+      const year  = $sYear.val();
+
+      if (day && month && year) {
+        if (showTimeSelect) {
+          const minute = $sMinute.val();
+          const hour   = $sHour.val();
+
+          if (minute.length && hour.length) {
+            return moment().year(year).month(month - 1).date(day)
+              .hours(hour)
+              .minutes(minute);
+          }
+        } else {
+          return moment().year(year).month(month - 1).date(day);
+        }
+      }
+      return null;
+    };
+
+    const onUpdateValue = (m) => {
+      // reset items to proper set new value
+      [$sMonth, $sDay, $sYear, $sHour, $sMinute].forEach($item => $item && $item.val(''));
+
+      $sMonth.val(m.month() + 1).trigger('change');
+      $sDay.val(m.date()).trigger('change');
+      $sYear.val(m.year()).trigger('change');
+
+      if (showTimeSelect) {
+        $sHour.val(m.hour()).trigger('change');
+        $sMinute.val(m.minute()).trigger('change');
+      }
+    };
+
+    const startDate = getDate();
+
+    const component = React.createElement(
+      HcDateInput,
+      {
+        calendar,
+        minDate,
+        maxDate,
+        filterDate,
+        showTimeSelect,
+        startDate,
+        dateFormat:               format,
+        timeFormat:               'HH:mm',
+        nextMonthButtonLabel:     portalPhrases.get('helpcenter.forms.date-picker-next-month'),
+        previousMonthButtonLabel: portalPhrases.get('helpcenter.forms.date-picker-previous-month'),
+        timeCaption:              portalPhrases.get('helpcenter.forms.date-picker-time'),
+        onChange:                 date => onUpdateValue(date),
+      }
+    );
+
+    ReactDOM.render(component, this.$rElement.get(0));
   }
 }
