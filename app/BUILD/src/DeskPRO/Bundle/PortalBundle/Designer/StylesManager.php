@@ -135,14 +135,21 @@ class StylesManager
      *
      * @return Blob|null
      */
-    public function getEditThemeSetCssBlob($direction = 'LTR')
+    public function getEditThemeSetCssBlob($direction = 'LTR', $themeId = 'standard')
     {
         $direction = strtoupper($direction);
 
-        $criteria = [
-            'theme_set' => $this->editThemeSet,
-            'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
-        ];
+        if ($themeId === 'helpcenter') {
+            $criteria = [
+                'theme_set' => $this->editThemeSet,
+                'name'      => $direction === 'RTL' ? 'helpcenter-rtl.css' : 'helpcenter.css',
+            ];
+        } else {
+            $criteria = [
+                'theme_set' => $this->editThemeSet,
+                'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
+            ];
+        }
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
             return $asset->getBlob();
         }

@@ -122,7 +122,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
         $textDirection = strtoupper($textDirection);
 
         $blob = $this->isPreviewMode($this->container)
-                ? $this->getStylesManager()->getEditThemeSetCssBlob($textDirection)
+                ? $this->getStylesManager()->getEditThemeSetCssBlob($textDirection, 'helpcenter')
                 : $this->getStylesManager()->getCssBlob($textDirection, 'helpcenter');
 
         if ($blob) {

@@ -80,14 +80,21 @@ class PortalStylesCompiler
      *
      * @return ThemeSetAsset|null
      */
-    public function getCssAsset(ThemeSet $themeSet, $direction = 'LTR')
+    public function getCssAsset(ThemeSet $themeSet, $direction = 'LTR', $themeId = 'standard')
     {
         $direction = strtoupper($direction);
 
-        $criteria = [
-            'theme_set' => $themeSet,
-            'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
-        ];
+        if ($themeId === 'helpcenter') {
+            $criteria = [
+                'theme_set' => $themeSet,
+                'name'      => $direction === 'RTL' ? 'helpcenter-rtl.css' : 'helpcenter.css',
+            ];
+        } else {
+            $criteria = [
+                'theme_set' => $themeSet,
+                'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
+            ];
+        }
 
         return $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria);
     }
@@ -133,10 +140,15 @@ class PortalStylesCompiler
     {
         $css = $this->compileCss($direction, $variables);
 
-        $name = $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css';
-        $tag  = $direction === 'RTL' ? 'portal_rtl_css' : 'portal_css';
+        if ($themeSet->getThemeId() === 'helpcenter') {
+            $name = $direction === 'RTL' ? 'helpcenter-rtl.css' : 'helpcenter.css';
+            $tag  = $direction === 'RTL' ? 'helpcenter_rtl_css' : 'helpcenter_css';
+        } else {
+            $name = $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css';
+            $tag  = $direction === 'RTL' ? 'portal_rtl_css' : 'portal_css';
+        }
 
-        $asset   = $this->getCssAsset($themeSet, $direction);
+        $asset   = $this->getCssAsset($themeSet, $direction, $themeSet->getThemeId());
         $oldBlob = null;
 
         if ($asset) {
