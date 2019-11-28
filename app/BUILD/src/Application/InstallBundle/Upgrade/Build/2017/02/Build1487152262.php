@@ -78,9 +78,9 @@ FIND;
             $connection->insert('agent_chat', ['type' => 'agent', 'date_created' => $chat['date_created']]);
             $newChatId = $connection->lastInsertId();
 
-            $participantsInsert = <<<'INSERT'
+            $participantsInsert = <<<'SQL'
 INSERT INTO `agent_chat_participant` (`agent_chat_id`, `person_id`) VALUES (:agent_chat_id, :person_id)
-INSERT;
+SQL;
             $statement = $connection->prepare($participantsInsert);
             foreach ($participants as $participant) {
                 $statement->execute(['agent_chat_id' => $newChatId, 'person_id' => $participant]);

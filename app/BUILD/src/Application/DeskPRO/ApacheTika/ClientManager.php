@@ -4,6 +4,7 @@ namespace Application\DeskPRO\ApacheTika;
 
 use Application\DeskPRO\Exception\MissingConfigurationException;
 use Application\DeskPRO\Settings\Settings;
+use Symfony\Component\DependencyInjection\Container;
 use Vaites\ApacheTika\Clients\WebClient;
 
 /**
@@ -11,29 +12,32 @@ use Vaites\ApacheTika\Clients\WebClient;
  */
 class ClientManager
 {
+
     /**
-     * @var \Application\DeskPRO\Settings\Settings
+     * @var Container
      */
-    private $settings;
+    private $container;
 
     /**
      * @var WebClient
      */
     private $client;
 
-    /**
-     * @param Settings $settings
-     */
-    public function __construct(Settings $settings)
+    public function __construct(Container $container)
     {
-        $this->settings = $settings;
+        $this->container = $container;
+    }
+
+    private function getSettings()
+    {
+        return $this->container->get('deskpro.core.settings');
     }
 
     private function createClient()
     {
         $client = new WebClient(
-            $this->settings->get('elastica.tika.ip_address'),
-            $this->settings->get('elastica.tika.port')
+            $this->getSettings()->get('elastica.tika.ip_address'),
+            $this->getSettings()->get('elastica.tika.port')
         );
 
         return $client;
@@ -105,6 +109,6 @@ class ClientManager
 
     public function isEnabled()
     {
-        return $this->settings->get('elastica.tika.enabled');
+        return $this->getSettings()->get('elastica.tika.enabled');
     }
 }

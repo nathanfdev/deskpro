@@ -32,11 +32,6 @@ class PortalKernel extends BaseKernel
             new \Nelmio\CorsBundle\NelmioCorsBundle(),
             new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
 
-            new \Application\DeskPRO\DeskPROBundle(),
-            new \Application\EmailBundle\EmailBundle(),
-            new \DeskPRO\Bundle\SendmailBundle\SendmailBundle(),
-            new \Application\AgentBundle\AgentBundle(),
-
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \DeskPRO\Bundle\BrandBundle\BrandBundle(),
             new \DeskPRO\Bundle\PortalBundle\PortalBundle(),
@@ -46,6 +41,11 @@ class PortalKernel extends BaseKernel
             new \DeskPRO\Bundle\ReportBundle\ReportBundle(),
             new \DeskPRO\Bundle\VoiceBundle\VoiceBundle(),
             new \DeskPRO\Bundle\MessengerBundle\MessengerBundle(),
+
+            new \Application\DeskPRO\DeskPROBundle(),
+            new \Application\EmailBundle\EmailBundle(),
+            new \DeskPRO\Bundle\SendmailBundle\SendmailBundle(),
+            new \Application\AgentBundle\AgentBundle(),
         ];
 
         if ('dev' === $this->getEnvironment()
