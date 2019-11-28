@@ -23,14 +23,6 @@ class DeskproRequirements extends RequirementCollection
                 $installedPhpVersion, self::REQUIRED_PHP_MIN_VERSION),
             sprintf('Install PHP %s or newer (installed version is %s)', self::REQUIRED_PHP_MIN_VERSION, $installedPhpVersion)
         );
-        $this->addRequirement(
-            version_compare($installedPhpVersion, '7.3.0', '<'),
-            sprintf('Max PHP version must be 7.2.x (%s installed)', $installedPhpVersion),
-            sprintf('You are running PHP version "<strong>%s</strong>", but it\'s not supported by Deskpro yet. Please install PHP 7.1.x for now to run.
-                Before using Deskpro, upgrade your PHP installation, preferably to the latest version.',
-                $installedPhpVersion),
-            sprintf('Install PHP 7.1.x (installed version is %s)', $installedPhpVersion)
-        );
 
         $this->addPhpIniRequirement(
             'date.timezone', true, false,

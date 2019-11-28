@@ -2063,7 +2063,7 @@ class TicketSearch extends SearcherAbstract
                         if (!empty($choice_info['agent_ids'])) {
                             $choice = $choice_info['agent_ids'];
                         } else {
-                            continue;
+                            continue 2;
                         }
 
                         $wheres[] = $this->_choiceMatch($field, $op, $choice);
@@ -2581,7 +2581,7 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_DAY_CREATED:
                         $days = (is_array($choice) && isset($choice['days'])) ? $choice['days'] : $choice;
                         if (!$days || !is_array($days)) {
-                            continue;
+                            continue 2;
                         }
                         $wheres[] = $this->_choiceMatch("DATE_FORMAT(tickets.date_created, '%w')", $op, $days, true);
                         break;

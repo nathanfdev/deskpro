@@ -368,6 +368,10 @@ class SystemErrorHandler
      */
     public static function handleError($errno, $errstr, $errfile, $errline)
     {
+        if (strpos($errstr, 'Did you mean to use "continue 2"?') !== false) {
+            return;
+        }
+
         self::$lastError = [
             'type'    => $errno,
             'message' => $errstr,
