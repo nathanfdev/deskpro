@@ -29,6 +29,10 @@ define([
     'server.report_file':             { cancel: true }
   };
 
+  if (window.ADMIN_DASH_IFRAME_SRC) {
+    routeModify.home = null;
+  }
+
   const newRoutes = [
     {
       id:           'setup.cloud_custom_domain',

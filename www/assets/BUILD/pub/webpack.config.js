@@ -201,8 +201,6 @@ const config = {
     new webpack.ProvidePlugin({
       $:      'jquery',
       jQuery: 'jquery',
-      'window.jQuery': 'jquery',
-      'window.$': 'jquery',
     }),
     new webpack.LoaderOptionsPlugin({
       debug: true
