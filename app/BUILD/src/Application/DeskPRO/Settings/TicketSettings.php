@@ -6,9 +6,16 @@
 
 namespace Application\DeskPRO\Settings;
 
+use Application\DeskPRO\Validator\Constraints\TicketSettingsRefConstraint;
 use DeskPRO\Component\Util\UnserializeUtil;
 use Orb\Util\Arrays;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
+/**
+ * Class TicketSettings
+ *
+ * @package Application\DeskPRO\Settings
+ */
 class TicketSettings
 {
     /**
@@ -349,5 +356,13 @@ class TicketSettings
 
         $this->settings->setSetting('core_email.from_email_headers', implode(',', $this->from_email_headers));
         $this->settings->setSetting('core_tickets.email_reply_as_note', $this->email_reply_as_note);
+    }
+
+    /**
+     * @param ClassMetadata $metadata
+     */
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('ref_custom_pattern', new TicketSettingsRefConstraint());
     }
 }

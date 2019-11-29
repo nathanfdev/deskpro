@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_Ctrl_Base, Util, angular) {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'DeskPRO/Util/Strings', 'angular'], function(Admin_Ctrl_Base, Util, Strings, angular) {
   class Admin_TicketSettings_Ctrl_TicketSettings extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketSettings_Ctrl_TicketSettings';
@@ -122,6 +122,11 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_
         return this.stopSpinner('saving').then(() => this.Growl.success(this.getRegisteredMessage('saved_settings')));
       }).error((info, code) => {
         this.stopSpinner('saving', true);
+        const errors = info.errors.errors.reduce((acc, error) => {
+          return `${acc}<p>${Strings.escapeHtml(error.message).replace(/[\[\]]/g, '')}</p>`;
+        }, '');
+        this.Growl.error(errors);
+
         return this.applyErrorResponseToView(info);
       });
 
