@@ -194,6 +194,9 @@ helpcenter.error.permission-denied-title: 'You are not allowed to perform this a
 helpcenter.label.search: Search
 helpcenter.flashes.article-unpublish: 'This article will unpublish on {{date}}.'
 helpcenter.form.delete-question: 'Delete?'
+helpcenter.forms.date-picker-next-month: 'Next Month'
+helpcenter.forms.date-picker-previous-month: 'Previous Month'
+helpcenter.forms.date-picker-time: Time
 helpcenter.forms.label-choose-a-file: 'Choose a file'
 helpcenter.forms.label-drag-and-drop: 'Drag and drop'
 helpcenter.forms.label_category: Category

@@ -187,7 +187,7 @@
 
 {%- block date_widget -%}
     {% if not (nodpx is defined and nodpx) %}
-        <div class="dpx-date with-dpx {{ form.vars.calendar }}{% if widget != 'single_text' %} form-control not-single-text{% endif %}" data-calendar="{{ form.vars.calendar }}" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
+        <div class="bb dpx-date with-dpx {{ form.vars.calendar }}{% if widget != 'single_text' %} form-control not-single-text{% endif %}" data-calendar="{{ form.vars.calendar }}" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
     {% endif %}
         {%- if widget == 'single_text' -%}
             {{ block('form_widget_simple') }}
