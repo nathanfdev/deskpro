@@ -83,6 +83,11 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     protected $splash_image_property;
 
     /**
+     * @var string
+     */
+    protected $color;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -178,9 +183,16 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
         $data['brand'] = $this->brand ? $this->brand->getId() : null;
         if ($splashImage = $this->getSplashImage()) {
             if ($splashImage->getUrnNs() === $splashImage::$unsplashNs) {
-                $data['custom_splash_image'] = $this->getSplashImage()->getOptions()['url'].'&w=200';
+                $data['custom_splash_image'] = $splashImage->getOptions()['url'].'&w=200';
             } elseif ($splashImage->getUrnNs() === $splashImage::$blobNs) {
-                $data['custom_splash_image'] = $this->getSplashImage()->getBlob()->getThumbnailUrl(200, true);
+                $data['custom_splash_image'] = $splashImage->getBlob()->getThumbnailUrl(200, true);
+            }
+        }
+        if ($iconProperty = $this->getIcon()) {
+            if ($iconProperty->getUrnNs() === $iconProperty::$faNs) {
+                $data['icon_property']['urn']   = $iconProperty->getUrn();
+                $data['icon_property']['style'] = $iconProperty->getOptions()['style'];
+                $data['icon_property']['color'] = $iconProperty->getOptions()['color'];
             }
         }
 

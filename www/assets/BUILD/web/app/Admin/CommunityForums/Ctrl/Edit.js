@@ -25,6 +25,11 @@ define([
       this.community_statuses = {active: [], closed: []};
       this.community_selected_statuses = {active: [], closed: []};
 
+      this.$scope.picker = false;
+      this.$scope.colors = [
+        '#e11d21', '#eb6420', '#fbca04', '#009800', '#006b75', '#207de5', '#0052cc', '#5319e7',
+        '#f7c6c7', '#fad8c7', '#fef2c0', '#bfe5bf', '#bfdadc', '#c7def8', '#bfd4f2', '#d4c5f9'
+      ];
 
       this.sortedStatusesOptions = {
         axis:   'y',
@@ -85,12 +90,25 @@ define([
       const self = this;
       promises.push(this.Api.sendDataGet({ usergroups: '/user_groups' }).then(result => this.usergroups = result.data.usergroups.groups));
 
+      const icon = {
+        urn: '/'
+      };
+      const iconPicker = $('#community_forum_icon_picker');
       if (this.$stateParams.id) {
         promises.push(this.Api.sendDataGet({
           community_forum: `/community_forums/${this.$stateParams.id}`,
         }).then((result) => {
           this.community_forum = result.data.community_forum.community_forum;
           const ids = _.pluck(this.community_forum.usergroups, 'id');
+
+          if (this.community_forum.icon_property) {
+            icon.urn   = this.community_forum.icon_property.urn;
+            icon.style = this.community_forum.icon_property.style;
+            icon.color = this.community_forum.icon_property.color;
+          }
+
+          window.AdminBundle.renderIconPicker(iconPicker, icon);
+
           return Array.from(ids).map(id =>
             (this.selected_usergroups[id] = true));
         })
@@ -101,7 +119,10 @@ define([
               this.custom_fields = result.data.data;
             })
         );
+      } else {
+        window.AdminBundle.renderIconPicker(iconPicker, icon);
       }
+
 
       promises.push(this.CommunityStatusesData.loadList().then((recs) => {
           [].concat(recs.active_statuses.values(), recs.closed_statuses.values()).forEach(status => {
@@ -197,6 +218,18 @@ define([
 
       if (!this.$scope.form_props.$valid) {
         return;
+      }
+
+      const iconPicker = $('#community_forum_icon_picker');
+      const icon = {
+        urn: iconPicker.find('input[name="icon[urn]"]').val(),
+        options: {
+          color: iconPicker.find('input[name="icon[color]"]').val(),
+          style: iconPicker.find('input[name="icon[style]"]').val()
+        }
+      };
+      if (icon.urn) {
+        this.community_forum.icon_property = icon;
       }
 
       this.startSpinner('saving_community_forum');

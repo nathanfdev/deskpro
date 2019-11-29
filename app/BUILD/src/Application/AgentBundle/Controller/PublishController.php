@@ -963,6 +963,9 @@ class PublishController extends AbstractController
             }
 
             if (isset($icon)) {
+                if ($cat->getIcon()) {
+                    $this->db->delete('icon_property', ['id' => $cat->getIcon()->getId()]);
+                }
                 $this->em->persist($icon);
                 $this->em->flush();
                 $this->db->update($table, [

@@ -39,7 +39,7 @@
                                     {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
                                 </div>
                             {% else %}
-                                <div class="dp-po-community-row-icon" style="background-color: var(--brand-primary);">
+                                <div class="dp-po-community-row-icon" style="background-color: {{ forum.color | default('var(--brand-primary);') }};">
                                     <i class="dp-po-icon dp-po-icon-white fad fa-comments"></i>
                                 </div>
                             {% endif %}
