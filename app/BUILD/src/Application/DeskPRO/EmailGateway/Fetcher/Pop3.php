@@ -384,6 +384,11 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
             }
         }
 
+        $rawMessage       = new RawMessage();
+        $rawMessage->id   = $messageNum;
+        $rawMessage->uid  = $messageId;
+        $rawMessage->size = $messageSize;
+
         // If we have a uid and this server has unique ids,
         // then detect an edge case where we've already ready the id
         // but it wasnt properly deleted
@@ -394,7 +399,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 WHERE id = ? AND email_account_id = ?
             ', [$messageId, $this->account->getId()]);
             if ($count) {
-                $this->_doneRead($messageNum);
+                $this->_doneRead($rawMessage);
 
                 return $this->_readNext();
             }
@@ -407,11 +412,6 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
             'debug'
         );
 
-        $rawMessage       = new RawMessage();
-        $rawMessage->id   = $messageNum;
-        $rawMessage->uid  = $messageId;
-        $rawMessage->size = $messageSize;
-
         if ($this->maxSize && $rawMessage->size && $rawMessage->size > $this->maxSize) {
             $rawMessage->content = $this->getStorage()->getProtocol()->top($messageNum)."\n\n";
         } else {
@@ -423,7 +423,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                     $this->getStorage()->getProtocol()->retrieveToStream($messageNum, $fp);
                     fclose($fp);
 
-                    $this->_doneRead($messageNum);
+                    $this->_doneRead($rawMessage);
                     $this->doneReadFinished = $messageNum;
 
                     // Disconnect from server so message is deleted now
