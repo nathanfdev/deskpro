@@ -100,6 +100,8 @@ class CheckVoiceWorkers extends AbstractJob
     {
         $endedTasks = [];
 
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+
         foreach ($tasks as $task) {
             $phoneCallId = $task->getAttribute('phone_call');
             if (!$phoneCallId) {
@@ -107,14 +109,22 @@ class CheckVoiceWorkers extends AbstractJob
                 continue;
             }
 
-            $phoneCall = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository(VoicePhoneCall::class)->find($phoneCallId);
+            /** @var VoicePhoneCall $phoneCall */
+            $phoneCall = $em->getRepository(VoicePhoneCall::class)->find($phoneCallId);
             if (!$phoneCall) {
                 $endedTasks[] = $task;
                 continue;
             }
 
-            if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_ENDED
-                || $phoneCall->getStatus() === VoicePhoneCall::STATUS_VOICEMAIL
+            $endedStatuses = [
+                VoicePhoneCall::STATUS_ENDED,
+                VoicePhoneCall::STATUS_VOICEMAIL,
+                VoicePhoneCall::STATUS_CANCELED,
+                VoicePhoneCall::STATUS_FAILED,
+            ];
+
+            if (in_array($phoneCall->getStatus(), $endedStatuses)
+                || (!$phoneCall->getCallSid() && $phoneCall->getDateCreated() < new \DateTime('-5 minutes'))
             ) {
                 $endedTasks[] = $task;
             }

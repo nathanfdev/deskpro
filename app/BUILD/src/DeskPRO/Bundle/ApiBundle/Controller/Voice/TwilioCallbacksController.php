@@ -1490,15 +1490,19 @@ class TwilioCallbacksController extends BaseController
                 LegacySystemEvent::EVENT_NAME,
                 new LegacySystemEvent('agent.voice.outgoing-call-init')
             );
-        } elseif ($exception) {
+        } else {
             $errorCodeGen = $this->get('form_error.error_code_generator.api');
 
-            if ($exception instanceof BlacklistException) {
-                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_BLACKLIST, [], ['call_to']);
-            } elseif ($exception instanceof InsufficientBalanceException) {
-                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
+            if ($exception) {
+                if ($exception instanceof BlacklistException) {
+                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_BLACKLIST, [], ['call_to']);
+                } elseif ($exception instanceof InsufficientBalanceException) {
+                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
+                } else {
+                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
+                }
             } else {
-                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
+                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_UNABLE_TO_CALL_THIS_NUMBER, [], ['call_to']);
             }
 
             $this->get('event_dispatcher')->dispatch(
