@@ -518,7 +518,8 @@ class Runner
 
             if (($e instanceof ProcessingException) && $e->getCode() === ProcessingException::EMAIL_ACCOUNT_NOT_FOUND) {
                 $doRetry = false;
-                $sourceLogger->logWarn('Not trying again (email account not found)');
+                $result['status'] = 'rejected';
+                $result['error_code'] = 'invalid_address';
             } else {
                 if ($allowRetry) {
                     $doRetry = true;
