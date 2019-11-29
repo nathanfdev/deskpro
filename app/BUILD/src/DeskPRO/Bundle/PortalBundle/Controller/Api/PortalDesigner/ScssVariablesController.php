@@ -49,6 +49,9 @@ class ScssVariablesController extends AbstractApiController
         $variables    = json_decode($request->getContent(), true);
         if (!is_array($variables)) {
             $variables = [];
+        } else {
+            // Prevent error when brand-neutral is not set
+            $variables = array_merge(['brand-neutral' => '#F8AF3C'], $variables);
         }
 
         $this->getManager()->beginTransaction();
