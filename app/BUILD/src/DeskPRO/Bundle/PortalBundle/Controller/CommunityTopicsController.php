@@ -140,14 +140,6 @@ class CommunityTopicsController extends AbstractPublishController
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildCommunity();
 
-        // SUBSCRIPTION
-
-        $isSubscribed = false;
-        if ($this->getUser() && $this->getBrandSetting('user.community_subscriptions', false)) {
-            // waiting info regarding article category subscriptions
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('community', $this->getUser());
-        }
-
         // FILTER FORUMS
 
         $communityForums    = $this->get('data.community')->getCommunityForumsForPerson($person);
@@ -189,7 +181,7 @@ class CommunityTopicsController extends AbstractPublishController
                 'page_title'                => $this->createPageTitle()->community(),
                 'rss_link'                  => $rssLink,
                 'filter_js'                 => $filterJs,
-                'is_subscribed'             => $isSubscribed,
+                'is_subscribed'             => $this->isSubscribedRootCategory(),
                 'lockout'                   => $check->isLockoutRecommended(),
                 'lockout_time'              => $check->getLockoutTime(true),
                 'topic_count_per_forum'     => $topicCountPerForum,
@@ -275,6 +267,8 @@ class CommunityTopicsController extends AbstractPublishController
      * @param Request $request
      * @param $filter_uri
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function browseAction(Request $request, $filter_uri)
@@ -333,14 +327,6 @@ class CommunityTopicsController extends AbstractPublishController
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildCommunity();
 
-        // SUBSCRIPTION
-
-        $isSubscribed = false;
-        if ($this->getUser() && $this->getBrandSetting('user.community_subscriptions', false)) {
-            // waiting info regarding article category subscriptions
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('community', $this->getUser());
-        }
-
         // FILTER CATEGORIES
 
         $communityForums = $this->get('data.community')->getCommunityForumsForPerson($person);
@@ -364,7 +350,7 @@ class CommunityTopicsController extends AbstractPublishController
             'page_title'           => $this->createPageTitle()->community(),
             'filter_js'            => $filterJs,
             'rerendering_saved'    => false, // wont happen here because we always rerender on index
-            'is_subscribed'        => $isSubscribed,
+            'is_subscribed'        => $this->isSubscribedRootCategory(),
             'lockout'              => $request->get('lockout', false),
             'lockout_time'         => 0,
             'filter_params'        => $this->generateFilterJs($filter, $communityForums, $page, false),
@@ -442,6 +428,8 @@ class CommunityTopicsController extends AbstractPublishController
      *
      * @param CommunityForum $forum
      * @param Request        $request
+     *
+     * @return Response
      */
     public function createTopicAction(CommunityForum $forum, Request $request)
     {
@@ -489,6 +477,8 @@ class CommunityTopicsController extends AbstractPublishController
      * @param CommunityTopic $topic
      * @param string         $visitor_id
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function viewAction(Request $request, CommunityTopic $topic, $visitor_id)
@@ -529,17 +519,6 @@ class CommunityTopicsController extends AbstractPublishController
 
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($topic);
 
-        // SUBSCRIPTION
-
-        $isSubscribed = false;
-        if (
-            $this->getBrandSetting('user.community_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_COMMUNITY, $topic)
-        ) {
-            // waiting on info on the kb subs
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($topic, $this->getUser());
-        }
-
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
         $check->markAsCheckOnly();
         $this->get('anti_abuse')->check($check);
@@ -565,7 +544,8 @@ class CommunityTopicsController extends AbstractPublishController
             'topic'              => $topic,
             'content'            => $topic,
             'linked_tickets'     => $ticketCommunityTopicsLinks,
-            'is_subscribed'      => $isSubscribed,
+            'is_subscribed'      => $this->isSubscribedTopic($topic),
+            'is_subscribed_root' => $this->isSubscribedRootCategory(),
             'content_id'         => $topic->getId(),
             'content_type'       => CommunityTopic::CONTENT_TYPE,
             'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
@@ -654,6 +634,8 @@ class CommunityTopicsController extends AbstractPublishController
      * @param string         $visitor_id
      * @param string         $up_or_down
      *
+     * @throws \Exception
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|JsonResponse
      */
     public function communityRateAction(Request $request, CommunityTopic $topic, $visitor_id, $up_or_down)
@@ -710,6 +692,8 @@ class CommunityTopicsController extends AbstractPublishController
      * @AutoPostOnGetRequest()
      *
      * @param CommunityTopic $topic
+     *
+     * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -954,5 +938,36 @@ class CommunityTopicsController extends AbstractPublishController
 
             return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request, $redirectToBrowseTopic);
         }
+    }
+
+    /**
+     * @return bool
+     */
+    private function isSubscribedRootCategory()
+    {
+        if ($this->getUser() && $this->getBrandSetting('user.community_subscriptions', false)) {
+            // waiting info regarding article category subscriptions
+            return $this->getSubscriptionsHelper()->isSubscribedRootCategory('community', $this->getUser());
+        }
+
+        return false;
+    }
+
+    /**
+     * @param CommunityTopic $topic
+     *
+     * @return bool
+     */
+    private function isSubscribedTopic(CommunityTopic $topic)
+    {
+        if (
+            $this->getBrandSetting('user.community_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_COMMUNITY, $topic)
+        ) {
+            // waiting on info on the kb subs
+            return $this->getSubscriptionsHelper()->isSubscribedContent($topic, $this->getUser());
+        }
+
+        return false;
     }
 }

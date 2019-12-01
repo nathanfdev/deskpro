@@ -20,12 +20,18 @@
                     </div>
                 </div>
                 <div class="col-sm-auto">
-                    {% include 'Theme:Community:CommunityTopicsList/subscribe-button.html.twig' with {
-                        is_subscribed: is_subscribed,
-                        title: current_forum.title,
-                        icon: 'fal fa-file-spreadsheet'
-
+                    {% if brand_setting('user.community_subscriptions') %}
+                    {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                        subscriptionInfo: [
+                            {
+                                toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
+                                icon: 'fal fa-file-spreadsheet',
+                                title: phrase('helpcenter.community.section-title'),
+                                active: is_subscribed
+                            },
+                        ]
                     } %}
+                    {% endif %}
                 </div>
             </div>
         </div>

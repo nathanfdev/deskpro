@@ -53,11 +53,24 @@
                 button_label: phrase('helpcenter.community.create-topic-full'),
             } %}
 
-            {% include 'Theme:Community:CommunityTopicsList/subscribe-button.html.twig' with {
-                is_subscribed: is_subscribed,
-                icon: 'fal fa-file-alt',
-                title: topic.title
+            {% if brand_setting('user.community_subscriptions') %}
+            {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                subscriptionInfo: [
+                    {
+                        toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
+                        icon: 'fal fa-file-spreadsheet',
+                        title: phrase('helpcenter.community.section-title'),
+                        active: is_subscribed_root
+                    },
+                    {
+                        toggleUrl: portal_path(topic, 'toggle_subscription'),
+                        active: is_subscribed,
+                        icon: 'fal fa-file-alt',
+                        title: topic.title | truncate(20)
+                    }
+                ]
             } %}
+            {% endif %}
         </div>
     </div>
 {% endblock page_top %}

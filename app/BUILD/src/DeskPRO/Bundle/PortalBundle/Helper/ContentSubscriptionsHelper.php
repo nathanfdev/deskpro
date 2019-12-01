@@ -207,38 +207,38 @@ class ContentSubscriptionsHelper
     {
         if (
             'kb' === $input
-            || is_object($input) && Article::class === get_class($input)
-            || is_object($input) && ArticleCategory::class === get_class($input)
+            || is_object($input) && $input instanceof Article
+            || is_object($input) && $input instanceof ArticleCategory
         ) {
             return 'kb_subscriptions';
         }
 
         if (
             'news' === $input
-            || is_object($input) && News::class === get_class($input)
-            || is_object($input) && NewsCategory::class === get_class($input)
+            || is_object($input) && $input instanceof News
+            || is_object($input) && $input instanceof NewsCategory
         ) {
             return 'news_subscriptions';
         }
 
         if (
             'downloads' === $input
-            || is_object($input) && Download::class === get_class($input)
-            || is_object($input) && DownloadCategory::class === get_class($input)
+            || is_object($input) && $input instanceof Download
+            || is_object($input) && $input instanceof DownloadCategory
         ) {
             return 'download_subscriptions';
         }
 
         if (
             'community' === $input
-            || is_object($input) && CommunityTopic::class === get_class($input)
+            || is_object($input) && $input instanceof CommunityTopic
         ) {
             return 'community_topic_subscriptions';
         }
 
         if (
             'topic' === $input
-            || is_object($input) && Topic::class === get_class($input)
+            || is_object($input) && $input instanceof Topic
         ) {
             return 'topic_subscriptions';
         }
@@ -250,38 +250,38 @@ class ContentSubscriptionsHelper
     {
         if (
             'kb' === $input
-            || is_object($input) && Article::class === get_class($input)
-            || is_object($input) && ArticleCategory::class === get_class($input)
+            || is_object($input) && $input instanceof Article
+            || is_object($input) && $input instanceof ArticleCategory
         ) {
             return 'article_id';
         }
 
         if (
             'news' === $input
-            || is_object($input) && News::class === get_class($input)
-            || is_object($input) && NewsCategory::class === get_class($input)
+            || is_object($input) && $input instanceof News
+            || is_object($input) && $input instanceof NewsCategory
         ) {
             return 'news_id';
         }
 
         if (
             'downloads' === $input
-            || is_object($input) && Download::class === get_class($input)
-            || is_object($input) && DownloadCategory::class === get_class($input)
+            || is_object($input) && $input instanceof Download
+            || is_object($input) && $input instanceof DownloadCategory
         ) {
             return 'download_id';
         }
 
         if (
             'community' === $input
-            || is_object($input) && CommunityTopic::class === get_class($input)
+            || is_object($input) && $input instanceof CommunityTopic
         ) {
             return 'topic_id';
         }
 
         if (
             'topic' === $input
-            || is_object($input) && Topic::class === get_class($input)
+            || is_object($input) && $input instanceof Topic
         ) {
             return 'topic_id';
         }
