@@ -392,11 +392,14 @@ class LoginController extends AbstractController
         $this->em()->persist($person);
         $this->em()->flush();
 
+        $usersource = $this->auth_manager->getUsersources()->getFirstOrNull();
+
         $this->session->invalidate();
         $this->session->set('auth_person_id', $identity->getIdentity());
         $this->session->set('dp_interface', DP_INTERFACE);
         $this->session->setFlash('is_from_login', 'yes');
-        $this->session->set('auth_by', $this->auth_manager->getAuthBy());
+        $this->session->set('auth_usersource_id', $usersource ? $usersource->getId() : null);
+        $this->session->set('auth_usersource_type', $this->auth_manager->getAuthBy());
         $this->session->save();
 
         App::setCurrentPerson($person);

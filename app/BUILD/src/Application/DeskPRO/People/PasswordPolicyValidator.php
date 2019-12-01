@@ -121,7 +121,7 @@ class PasswordPolicyValidator
             return false;
         }
 
-        $authBy = $this->session->get('auth_by');
+        $authBy = $this->session->get('auth_usersource_type');
         if ($authBy && $authBy !== 'Application\DeskPRO\Usersource\Adapter\DeskPRO') {
             return false;
         }
