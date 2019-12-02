@@ -3,6 +3,7 @@
 namespace DpSys\Boot\BootTask;
 
 use DeskPRO\Component\Filesystem\SafeFile;
+use Doctrine\ORM\UnitOfWork;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Debug\Debug;
 use Zend\Code\Reflection\MethodReflection;
@@ -17,8 +18,11 @@ class LibBootTask implements BootTaskInterface
         // We include this here because a PHP warning to do with `continue 2` is emitted
         // which normally in the debug loader is a fatal error.
         // So we do it manually here ourselves so we can ignore the warning
-        if (@class_exists(MethodReflection::class)) {
-            // noop, just triggering autoload
+        foreach ([
+            MethodReflection::class,
+            UnitOfWork::class
+        ] as $className) {
+            @class_exists($className);
         }
 
         if ($env->isDebug()) {
