@@ -54,7 +54,7 @@ SQL;
     private function getMessages($chat)
     {
         $sql = <<<'SQL'
-SELECT `author_id`, `person_name`, `content`, `date_created`, `date_received` 
+SELECT `author_id`, `person_name`, `content`, `date_created`, `date_received`
   FROM `chat_messages`
  WHERE `conversation_id` = ?
  ORDER BY `date_created` ASC
@@ -112,11 +112,11 @@ SQL;
         }
         $connection->batchInsert('agent_chat_message', $newMessages);
         // note here we are explicitly using that $message var contains last from $messages
-        $update = <<<UPDATE
-UPDATE `agent_chat` 
+        $update = <<<SQL
+UPDATE `agent_chat`
    SET `date_last_message` = GREATEST(`date_last_message`, '{$message['date_created']}')
  WHERE `id` = {$newChatId}
-UPDATE;
+SQL;
 
         $this->execDbQuery('default', $update);
     }

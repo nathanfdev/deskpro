@@ -202,9 +202,9 @@ class CustomFieldsTermsHandler implements ValueTermHandlerInterface, SqlTermHand
                             $date = array_filter(array_map(function ($value) {
                                 $value = (is_string($value))
                                     ? Carbon::parse($value)
-                                    : (is_int($value))
+                                    : ((is_int($value))
                                         ? Carbon::parse("@$value")
-                                        : $value;
+                                        : $value);
 
                                 return ($value instanceof \DateTime)
                                     ? $value->setTimezone(new \DateTimeZone('UTC'))
