@@ -19,7 +19,6 @@ class ViewTopic extends React.Component {
     if (window.topic) {
       topic = JSON.parse(window.topic);
     }
-    // topic.content = this.addImagesLazyload(topic.content);
     topic.content = this.addIdToh1(topic.content);
     const topicList = JSON.parse(window.topicList);
     this.state = {
@@ -164,8 +163,6 @@ class ViewTopic extends React.Component {
     }
   };
 
-  addImagesLazyload = html => html.replace(/<img([^>]*) src="([^"]+)"([^>]+)>/g, '<img$1 data-src="$2"$3>');
-
   addReactImageLazyload = () => {
     const guideBlock = document.getElementsByClassName('dp-po-guides-block')[0];
     const images = guideBlock.querySelectorAll('.dp-po-guides-block-content img');
@@ -183,6 +180,13 @@ class ViewTopic extends React.Component {
       });
 
       images.forEach((lazyImage) => {
+        if (!lazyImage.attributes.width && (lazyImage.dataset.width || lazyImage.dataset.with)) {
+          if (lazyImage.dataset.with) {
+            lazyImage.setAttribute('width', lazyImage.dataset.with);
+          } else if (lazyImage.dataset.width) {
+            lazyImage.setAttribute('width', lazyImage.dataset.width);
+          }
+        }
         lazyImageObserver.observe(lazyImage);
       });
     }
@@ -242,7 +246,6 @@ class ViewTopic extends React.Component {
       }
 
       const topic = response.data.data;
-      topic.content = this.addImagesLazyload(topic.content);
       topic.content = this.addIdToh1(topic.content);
       topics[topic.id] = topic;
       this.setState({
@@ -264,7 +267,6 @@ class ViewTopic extends React.Component {
       const topics = {};
       const res = response.data.data;
       res.forEach((topic) => {
-        // topic.content = this.addImagesLazyload(topic.content);
         topic.content = this.addIdToh1(topic.content);
         topics[topic.id] = topic;
       });

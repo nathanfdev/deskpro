@@ -34,7 +34,8 @@ class Build1574181135 extends AbstractBuild implements OnlineBuildInterface
                         for ($i = 0; $i < count($matches[0]); ++$i) {
                             $attributes[$matches[1][$i]] = $matches[2][$i];
                         }
-                        $attributes['data-with']   = $blob['dim_w'];
+                        $attributes['data-width']  = $blob['dim_w'];
+                        $attributes['width']       = $blob['dim_w'];
                         $attributes['data-height'] = $blob['dim_h'];
                         if (isset($attributes['src'])) {
                             $attributes['data-src'] = $attributes['src'];
