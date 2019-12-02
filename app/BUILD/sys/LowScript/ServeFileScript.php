@@ -1438,7 +1438,7 @@ class ServeFileScript extends LowScriptAbstract
         $filename = str_replace('..', '', $filename);
 
         foreach ($paths as $prefix => $basePath) {
-            if ($prefix === 'default' || strpos($appName, $prefix) === 0) {
+            if ($prefix === 'default' || (is_string($prefix) && strpos($appName, $prefix) === 0)) {
                 $path = $basePath.'/'.$appName.'/'.$typeF.$filename;
                 if (file_exists($path)) {
                     return [

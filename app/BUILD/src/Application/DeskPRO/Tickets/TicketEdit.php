@@ -258,7 +258,7 @@ class TicketEdit implements PersonContextInterface
                     $agent = App::getCurrentPerson();
 
                     if (!$agent) {
-                        continue;
+                        continue 2;
                     }
 
                     $this->ticket->setFlagForPerson($agent, $action);
@@ -299,7 +299,7 @@ class TicketEdit implements PersonContextInterface
                     $person = App::getEntityRepository('DeskPRO:Perosn')->find($action['add_participant']);
 
                     if (!$person) {
-                        continue;
+                        continue 2;
                     }
 
                     $this->ticket->addParticipant($person);
@@ -315,7 +315,7 @@ class TicketEdit implements PersonContextInterface
                     $agent = App::getCurrentPerson();
 
                     if (!$agent) {
-                        continue;
+                        continue 2;
                     }
 
                     $message            = new Entity\TicketMessage();
