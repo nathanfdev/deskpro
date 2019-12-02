@@ -616,8 +616,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			simpleTabs.addEvent('beforeTabSwitch', function(eventData) {
 				if(eventData.tabEl) {
 					var classShow = eventData.tabEl.data('classShow');
-					self.wrapper.find('.tabs-control').hide();
-					self.wrapper.find('.' + classShow).show();
+          if (classShow) {
+            self.wrapper.find('.tabs-control', this).hide();
+            self.wrapper.find('.' + classShow, this).show();
+          }
 				}
 			});
 		});
