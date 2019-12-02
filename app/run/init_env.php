@@ -167,8 +167,9 @@ if (!defined('DPC_IS_CLOUD') && !$DP_ENV->getConfig('database.host')) {
     @ini_set('display_errors', '0');
 }
 
-// Increase error reporting
-error_reporting(E_ALL & ~E_DEPRECATED);
+// Init error reporting
+// This is reset again in LibBootTask to something higher
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING & E_COMPILE_WARNING);
 
 #------------------------------
 # Memory Limits

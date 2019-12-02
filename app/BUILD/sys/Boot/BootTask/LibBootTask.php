@@ -5,7 +5,9 @@ namespace DpSys\Boot\BootTask;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\ORM\UnitOfWork;
 use DpSys\LowError\SystemErrorHandler;
-use Symfony\Component\Debug\Debug;
+use JMS\Serializer\SerializationContext;
+use Michelf\Markdown;
+use Michelf\MarkdownExtra;
 use Zend\Code\Reflection\MethodReflection;
 
 /**
@@ -15,30 +17,35 @@ class LibBootTask implements BootTaskInterface
 {
     public function run(\DpRun\DpEnv $env, array $resources)
     {
-        // We include this here because a PHP warning to do with `continue 2` is emitted
-        // which normally in the debug loader is a fatal error.
-        // So we do it manually here ourselves so we can ignore the warning
+        // Manually load these classes with @
+        // Otherwise when they get cached with opcache they
+        // produce a PHP warnings that somehow escapesour handleError
         foreach ([
+            UnitOfWork::class,
+            SerializationContext::class,
             MethodReflection::class,
-            UnitOfWork::class
+            Markdown::class,
+            MarkdownExtra::class,
         ] as $className) {
             @class_exists($className);
         }
 
-        if ($env->isDebug()) {
-            Debug::enable(-1, true);
-        } else {
-            set_error_handler(['DpSys\LowError\SystemErrorHandler', 'handleError'], E_ALL);
-            set_exception_handler(['DpSys\LowError\SystemErrorHandler', 'handleException']);
-            SystemErrorHandler::enableFatalErrorHandler();
+        set_error_handler(['DpSys\LowError\SystemErrorHandler', 'handleError'], E_ALL);
+        set_exception_handler(['DpSys\LowError\SystemErrorHandler', 'handleException']);
+        SystemErrorHandler::enableFatalErrorHandler();
 
+        if (!$env->isDebug() && $env->getEnvId() === 'prod') {
             $bugsnagSettings = $env->getConfig('settings.bugsnag');
             if ($bugsnagSettings && @$bugsnagSettings['backend_api_key']) {
                 SystemErrorHandler::setBugsnagConfig($bugsnagSettings);
             }
         }
 
-        error_reporting(E_ALL & ~E_DEPRECATED);
+        // We boot into: E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING
+        // We increase it here because our own error logger
+        // will filter out deprecated and notices from vendors,
+        // while still complaining about our own that we should fix
+        error_reporting(E_ALL);
 
         if ($env->isDebug() || php_sapi_name() === 'cli') {
             ini_set('display_errors', 1);
