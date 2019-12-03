@@ -52,21 +52,6 @@ define([
       return this.loadListPromise;
     }
 
-    loadPerForumList(forumId) {
-      const deferred = this.$q.defer();
-
-      this.Api2.sendGet(
-        `/community_forums/${forumId}/statuses`).success((data) => {
-          this.perForumRecs[forumId] = data.data;
-          return deferred.resolve(this.perForumRecs[forumId]);
-        },
-        () => deferred.reject());
-
-      this.loadPerForumListPromise = deferred.promise;
-
-      return this.loadPerForumListPromise;
-    }
-
     /**
         * Removed entity from entity manager
       *

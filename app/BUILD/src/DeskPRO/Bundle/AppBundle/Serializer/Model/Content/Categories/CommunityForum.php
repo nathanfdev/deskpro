@@ -3,6 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Categories;
 
 use Application\DeskPRO\Entity\CommunityForum as CommunityForumEntity;
+use Application\DeskPRO\Entity\CommunityForumToCustomDefCommunityTopic;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\Usergroup;
 use JMS\Serializer\Annotation as JMS;
 
@@ -43,7 +45,7 @@ class CommunityForum extends CategoryAbstract
      *
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\CustomDefCommunityTopic>>")
      *
-     * @var Usergroup[]
+     * @var CustomDefCommunityTopic[]
      */
     protected $customFields;
 
@@ -59,6 +61,8 @@ class CommunityForum extends CategoryAbstract
         $this->parent       = $entity->getParent();
         $this->children     = $entity->getChildren();
         $this->usergroups   = $entity->getUserGroups();
-        $this->customFields = $entity->getTopicFields();
+        $this->customFields = $entity->getTopicFields()->map(function (CommunityForumToCustomDefCommunityTopic $pivot) {
+            return $pivot->getField();
+        });
     }
 }

@@ -1,22 +1,21 @@
 <?php
 
-namespace Application\DeskPRO\Community\Form\Type;
+namespace Application\DeskPRO\CustomFields\Form\Type;
 
 use Application\DeskPRO\Entity\CommunityForum;
-use Application\DeskPRO\Entity\CommunityForumToStatus;
-use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
+use Application\DeskPRO\Entity\CommunityForumToCustomDefCommunityTopic;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class CommunityForumToStatusEmbeddedType.
+ * Class CommunityFieldToForumType.
  */
-class CommunityForumToStatusEmbeddedType extends AbstractType
+class CommunityFieldToForumType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -24,10 +23,9 @@ class CommunityForumToStatusEmbeddedType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('status', EntityType::class, [
-                'class' => CommunityTopicStatusCategory::class,
+            ->add('forum', EntityType::class, [
+                'class' => CommunityForum::class,
             ])
-            ->add('display_order', IntegerType::class)
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
@@ -40,7 +38,7 @@ class CommunityForumToStatusEmbeddedType extends AbstractType
      */
     public function onPostSubmit(FormEvent $event)
     {
-        $event->getData()->setForum($event->getForm()->getConfig()->getOption('forum'));
+        $event->getData()->setField($event->getForm()->getConfig()->getOption('custom_field'));
     }
 
     /**
@@ -50,10 +48,10 @@ class CommunityForumToStatusEmbeddedType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => CommunityForumToStatus::class,
+                'data_class' => CommunityForumToCustomDefCommunityTopic::class,
             ])
-            ->setRequired('forum')
-            ->setAllowedTypes('forum', CommunityForum::class)
+            ->setRequired('custom_field')
+            ->setAllowedTypes('custom_field', CustomDefCommunityTopic::class)
         ;
     }
 }
