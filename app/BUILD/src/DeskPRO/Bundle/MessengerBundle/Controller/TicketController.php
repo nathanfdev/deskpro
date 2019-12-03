@@ -72,8 +72,8 @@ class TicketController extends AbstractMessengerController
             unset($requestData['person_id']);
         }
 
-        if (!$person && isset($requestData['email'])) {
-            $person = $personRepository->findOneByEmail($requestData['email']);
+        if (!$person && isset($requestData['person']) && isset($requestData['person']['user_email'])) {
+            $person = $personRepository->findOneByEmail($requestData['person']['user_email']);
         }
 
         $requestData['message'] = ['message' => $requestData['message'], 'format' => 'html'];
