@@ -10,6 +10,7 @@ use Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\CommunityTopic;
@@ -904,6 +905,13 @@ class PublishController extends AbstractController
         if ($this->in->getString('icon.urn')) {
             $icon = new IconProperty();
             $icon->setUrn($this->in->getString('icon.urn'));
+            if ($icon->getUrnNs() === IconProperty::$blobNs) {
+                $authId = $icon->getUrnPath();
+                $blob   = $this->em->getRepository(Blob::class)->getByAuthId($authId);
+                if ($blob) {
+                    $icon->setBlob($blob);
+                }
+            }
             $options = [];
             if ($this->in->getString('icon.style')) {
                 $options['style'] = $this->in->getString('icon.style');
