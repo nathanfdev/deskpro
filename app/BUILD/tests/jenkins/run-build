@@ -6,7 +6,7 @@ cd $ROOT_DIR
 
 DATABASE_NAME=$DATABASE_PREFIX
 API_THREADS_NUM=${2:-6}
-PORTAL_THREADS_NUM=${3:-6}
+PORTAL_THREADS_NUM=1
 THREADS_NUM=$(( API_THREADS_NUM > PORTAL_THREADS_NUM ? API_THREADS_NUM : PORTAL_THREADS_NUM ))
 
 SECONDS=0
@@ -39,7 +39,7 @@ if [ "$1" = "sequential-build" ] ; then
 
     echo "Building legacy assets"
     chmod 0755 $ROOT_DIR/www/assets/BUILD/web/node_modules/gulp-smartsprites/smartsprites-0.2.9/smartsprites.sh
-    $ROOT_DIR/bin/console dp:assetic -r ALL --kernel dp --env prod --verbose
+    $ROOT_DIR/bin/console dp:assetic -r ALL --kernel dp --env prod --verbose --barg is-building
 elif [ "$1" = "fresh-build" ] ; then
     echo "Building from the ground up"
     $ROOT_DIR/dev/bin/init-project

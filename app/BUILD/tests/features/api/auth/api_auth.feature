@@ -80,20 +80,19 @@ Feature: API Authentication
     Then the JSON node "code" should be equal to "invalid_session_id"
     And the JSON node "message" should be equal to "Invalid session ID."
 
-  @skip-ci
   # test is skipped, api is for agents only for now
-  Scenario: I have a valid api key (user "user" id=3 in the "api" data set)
-    Given a valid api key exists with the code "XYZ" for user
-    When I add Authorization header of my Api Key
-    And I send a GET request to "/api/v2/me"
-    Then the response status code should be 200
-    And the JSON node "data.auth_method" should be equal to "api_key"
-    And the JSON node "data.person_id" should be equal to 3
-    And the JSON node "data.person.id" should be equal to 3
-    And the JSON node "data.api_version" should be equal to 2
-    And the JSON node "data.client_type" should be equal to "standard"
-    And the JSON node "data.client_version" should be equal to 0
-    And I should have an authenticated token with the role ROLE_API
+#  Scenario: I have a valid api key (user "user" id=3 in the "api" data set)
+#    Given a valid api key exists with the code "XYZ" for user
+#    When I add Authorization header of my Api Key
+#    And I send a GET request to "/api/v2/me"
+#    Then the response status code should be 200
+#    And the JSON node "data.auth_method" should be equal to "api_key"
+#    And the JSON node "data.person_id" should be equal to 3
+#    And the JSON node "data.person.id" should be equal to 3
+#    And the JSON node "data.api_version" should be equal to 2
+#    And the JSON node "data.client_type" should be equal to "standard"
+#    And the JSON node "data.client_version" should be equal to 0
+#    And I should have an authenticated token with the role ROLE_API
 
   Scenario: Auth fails if ApiKey has no flag api_v2
     Given there are no User records

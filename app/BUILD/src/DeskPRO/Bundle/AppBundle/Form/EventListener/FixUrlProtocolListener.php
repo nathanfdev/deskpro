@@ -17,7 +17,7 @@ class FixUrlProtocolListener extends \Symfony\Component\Form\Extension\Core\Even
     public function onSubmit(FormEvent $event)
     {
         $data = $event->getData();
-        if (preg_match('#^\\\\[\w\d-_\\\]+$#', $data)) {
+        if (preg_match('#^\\\\[\w\d\\-_\\\]+$#', $data)) {
             // shared folder
             return;
         }

@@ -310,9 +310,8 @@ class DataContext extends BaseContext
         $records = $this->om()->locate($type);
         foreach ($records as $record) {
             $this->em()->remove($record);
+            $this->em()->flush();
         }
-
-        $this->em()->flush();
     }
 
     /**
@@ -370,11 +369,22 @@ class DataContext extends BaseContext
      * @Given I have this :type records:
      *
      * @param string    $type
-     * @param TableNode $table
+     * @param TableNode|array $table
      */
-    public function theFollowingRecordsExist($type, TableNode $table)
+    public function theFollowingRecordsExist($type, $table)
     {
-        $recordsData = $table->getHash();
+        if ($table instanceof TableNode) {
+            $recordsData = $table->getHash();
+        } elseif (is_array($table)) {
+            $rows = $table;
+            $keys = array_shift($rows);
+            $recordsData = [];
+            foreach ($rows as $row) {
+                $recordsData[] = array_combine($keys, $row);
+            }
+        } else {
+            throw new \InvalidArgumentException('Must be a TableNode or a plain array');
+        }
         foreach ($recordsData as $data) {
             // Remember reference and don't pass it to the factory
             $reference = false;
@@ -575,7 +585,7 @@ class DataContext extends BaseContext
      */
     private static function isReference($string)
     {
-        return is_string($string) && (preg_match('/^{[\w-@.]+}$/', $string) || preg_match('/^~[\w-@.]+~$/', $string));
+        return is_string($string) && (preg_match('/^\\{[\w\\-@\\.]+\\}$/', $string) || preg_match('/^\\~[\w\\-@\\.]+\\~$/', $string));
     }
 
     /**
@@ -585,7 +595,7 @@ class DataContext extends BaseContext
      */
     private static function isArray($string)
     {
-        return is_string($string) && preg_match('/^\[.+\]$/', $string);
+        return is_string($string) && preg_match('/^\\[.+\\]$/', $string);
     }
 
     /**

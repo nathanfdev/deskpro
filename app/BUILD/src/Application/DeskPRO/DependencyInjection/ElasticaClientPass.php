@@ -10,7 +10,7 @@ namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\Elastica\Client;
 use Application\DeskPRO\Elastica\IndexFactory;
-use Application\DeskPRO\Elastica\LazyListener;
+use Application\DeskPRO\Elastica\NoOpListener;
 use Elastica\Index;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -49,15 +49,13 @@ class ElasticaClientPass implements CompilerPassInterface
                     $listenerServiceId = 'fos_elastica.listener.deskpro.' . $tag['type'];
                     if ($container->hasDefinition($listenerServiceId)) {
                         $origDef = $container->getDefinition($listenerServiceId);
-                        $origDef->setPublic(true);
                         $container->removeDefinition($listenerServiceId);
 
-                        $newDef = new Definition(LazyListener::class, [new Reference('service_container'), $listenerServiceId.'.real']);
+                        $newDef = new Definition(NoOpListener::class);
 
                         $newDef->setTags($origDef->getTags());
                         $origDef->clearTags();
 
-                        $container->setDefinition($listenerServiceId.'.real', $origDef);
                         $container->setDefinition($listenerServiceId, $newDef);
                     }
                 }
