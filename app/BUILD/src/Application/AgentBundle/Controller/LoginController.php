@@ -299,10 +299,13 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             throw $this->createNotFoundException();
         }
 
+        $usersource = $this->auth_manager->getUsersources()->getFirstOrNull();
+
         $this->session->invalidate();
         $this->session->set('auth_person_id', $person->getId());
         $this->session->set('dp_interface', DP_INTERFACE);
-        $this->session->set('auth_by', $this->auth_manager->getAuthBy());
+        $this->session->set('auth_usersource_id', $usersource ? $usersource->getId() : null);
+        $this->session->set('auth_usersource_type', $this->auth_manager->getAuthBy());
         $this->session->save();
 
         $this->deleteCookies();
