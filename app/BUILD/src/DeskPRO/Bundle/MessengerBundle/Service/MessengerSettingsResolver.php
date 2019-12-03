@@ -41,9 +41,10 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
     const STYLE_PRIMARY_COLOR = 'messenger.styles.primary_color';
 
-    const OPTIONS_AUTOSTART = 'messenger.options.autostart';
-    const OPTIONS_SUBTEXT   = 'messenger.options.subtext';
-    const OPTIONS_TITLE     = 'messenger.options.title';
+    const OPTIONS_AUTOSTART         = 'messenger.options.autostart';
+    const OPTIONS_AUTOSTART_TIMEOUT = 'messenger.options.autostart_timeout';
+    const OPTIONS_SUBTEXT           = 'messenger.options.subtext';
+    const OPTIONS_TITLE             = 'messenger.options.title';
 
     const OPTIONS_CHAT_TITLE       = 'messenger.options.chat.title';
     const OPTIONS_CHAT_BUTTON_TEXT = 'messenger.options.chat.button_text';
@@ -185,6 +186,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         return $mOptions
             ->setAutoStart($this->getSettings(self::OPTIONS_AUTOSTART, $brand, $mOptions->isAutoStart()))
+            ->setAutoStartTimeout($this->getSettings(self::OPTIONS_AUTOSTART_TIMEOUT, $brand, $mOptions->getAutoStartTimeout()))
             ->setSubtext($this->getSettings(self::OPTIONS_SUBTEXT, $brand, $mOptions->getSubtext()))
             ->setTitle($this->getSettings(self::OPTIONS_TITLE, $brand, $mOptions->getTitle()))
             ->setChat($this->getMessengerOptionsChat($brand))

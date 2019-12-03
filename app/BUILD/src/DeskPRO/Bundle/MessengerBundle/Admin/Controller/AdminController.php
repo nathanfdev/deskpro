@@ -162,6 +162,7 @@ class AdminController extends AbstractBrandAwareSettingsController
 
             ->updateSetting(MSR::OPTIONS_TITLE, $messengerOptions->getTitle(), $brand)
             ->updateSetting(MSR::OPTIONS_AUTOSTART, $messengerOptions->isAutoStart(), $brand)
+            ->updateSetting(MSR::OPTIONS_AUTOSTART_TIMEOUT, $messengerOptions->getAutoStartTimeout(), $brand)
             ->updateSetting(MSR::OPTIONS_SUBTEXT, $messengerOptions->getSubtext(), $brand)
 
             ->updateSetting(MSR::OPTIONS_TICKETS_TITLE, $optionsTickets->getTitle(), $brand)

@@ -21,6 +21,16 @@ class MessengerOptions
     private $autoStart = false;
 
     /**
+     * Indicates the timeout (in seconds) when the messenger window should be risen automatically.
+     *
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("autoStartTimeout")
+     *
+     * @var int
+     */
+    private $autoStartTimeout = 0;
+
+    /**
      * A title.
      *
      * @JMS\Type("string")
@@ -74,6 +84,26 @@ class MessengerOptions
     public function setAutoStart($autoStart)
     {
         $this->autoStart = (bool) $autoStart;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAutoStartTimeout()
+    {
+        return $this->autoStartTimeout;
+    }
+
+    /**
+     * @param int $timeout
+     *
+     * @return $this
+     */
+    public function setAutoStartTimeout($timeout)
+    {
+        $this->autoStartTimeout = (int) $timeout;
 
         return $this;
     }
