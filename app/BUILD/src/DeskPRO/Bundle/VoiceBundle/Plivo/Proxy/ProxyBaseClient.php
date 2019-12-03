@@ -51,7 +51,7 @@ class ProxyBaseClient extends BaseClient
     /**
      * {@inheritdoc}
      */
-    public function prepareRequestMessage(PlivoRequest $request)
+    public function prepareRequestMessage(PlivoRequest $request, $fullUrl = null)
     {
         $url = ($this->proxyHost ?: self::BASE_API_URL).$request->getUrl();
 
