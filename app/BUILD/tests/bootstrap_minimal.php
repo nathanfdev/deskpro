@@ -8,6 +8,14 @@
 libxml_disable_entity_loader(true);
 
 //------------------------------
+// Erorr handling
+//------------------------------
+
+@ini_set('log_errors', true);
+@ini_set('display_errors', '1');
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING & E_COMPILE_WARNING);
+
+//------------------------------
 // Paths
 //------------------------------
 
@@ -28,14 +36,6 @@ define('DP_ROOT', $DP_ENV->getAppDir());
 define('DP_WEB_ROOT', $DP_ENV->getAppWwwAssetDir());
 define('DP_BUILD_NUM',  0);
 define('DP_BUILD_TIME', 1323444089);
-
-//------------------------------
-// Erorr handling
-//------------------------------
-
-@ini_set('log_errors', true);
-@ini_set('display_errors', '1');
-error_reporting(E_ALL);
 
 //------------------------------
 // Boot libs

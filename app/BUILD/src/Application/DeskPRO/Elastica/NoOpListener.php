@@ -6,8 +6,9 @@ use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
- * This listener defers getting the real listener service until
- * it's actually used. This resolves circular depends:
+ * This listener is a noop. Elastica bundle initialises
+ * several listeners that we don't use because we handle
+ * it ourselves in deskpro.search.entity_listener
  *
  * doctrine.dbal.default_connection =
  * -> fos_elastica.listener.deskpro.article
@@ -20,46 +21,29 @@ use Symfony\Component\DependencyInjection\Container;
  *
  * See ElasticaClientPass for where this is configured.
  */
-class LazyListener
+class NoOpListener
 {
-    /**
-     * @var Container
-     */
-    private $container;
-
-    /**
-     * @var string
-     */
-    private $serviceId;
-
-    public function __construct(Container $container, $serviceId)
+    public function __construct()
     {
-        $this->container = $container;
-        $this->serviceId = $serviceId;
     }
 
     public function postPersist(LifecycleEventArgs $eventArgs)
     {
-        return $this->container->get($this->serviceId)->postPersist($eventArgs);
     }
 
     public function postUpdate(LifecycleEventArgs $eventArgs)
     {
-        return $this->container->get($this->serviceId)->postUpdate($eventArgs);
     }
 
     public function preRemove(LifecycleEventArgs $eventArgs)
     {
-        return $this->container->get($this->serviceId)->preRemove($eventArgs);
     }
 
     public function preFlush()
     {
-        return $this->container->get($this->serviceId)->preFlush();
     }
 
     public function postFlush()
     {
-        return $this->container->get($this->serviceId)->postFlush();
     }
 }
