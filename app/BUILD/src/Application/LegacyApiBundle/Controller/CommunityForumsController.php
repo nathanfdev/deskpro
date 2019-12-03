@@ -8,6 +8,7 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Community\CommunityForumEdit;
 use Application\DeskPRO\Community\Form\Type\CommunityForumType;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CommunityForumToStatus;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
@@ -107,6 +108,21 @@ class CommunityForumsController extends AbstractController implements ProtectedC
             if ($this->in->getString('community_forum.icon_property.urn')) {
                 $icon = new IconProperty();
                 $icon->setUrn($this->in->getString('community_forum.icon_property.urn'));
+                if ($icon->getUrnNs() === IconProperty::$blobNs) {
+                    $authId = $icon->getUrnPath();
+                    $blob   = $this->em->getRepository(Blob::class)->getByAuthId($authId);
+                    if ($blob) {
+                        $rawFile = $this->get('blob.storage')->copyBlobRecordToString($blob);
+                        $blob    = $this->get('blob.storage')->createBlobRecordFromString(
+                            $rawFile,
+                            $blob->getFilename(),
+                            $blob->getContentType()
+                        );
+                        $this->em->persist($blob);
+                        $this->em->persist($icon);
+                        $icon->setBlob($blob);
+                    }
+                }
                 $options = [];
                 if ($this->in->getString('community_forum.icon_property.options.style')) {
                     $options['style'] = $this->in->getString('community_forum.icon_property.options.style');

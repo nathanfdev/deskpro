@@ -102,9 +102,10 @@ define([
           const ids = _.pluck(this.community_forum.usergroups, 'id');
 
           if (this.community_forum.icon_property) {
-            icon.urn   = this.community_forum.icon_property.urn;
-            icon.style = this.community_forum.icon_property.style;
-            icon.color = this.community_forum.icon_property.color;
+            icon.urn      = this.community_forum.icon_property.urn;
+            icon.style    = this.community_forum.icon_property.style;
+            icon.color    = this.community_forum.icon_property.color;
+            icon.imageUrl = this.community_forum.icon_property.url;
           }
 
           window.AdminBundle.renderIconPicker(iconPicker, icon);

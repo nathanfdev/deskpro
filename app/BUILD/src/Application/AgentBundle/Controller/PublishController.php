@@ -6,6 +6,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
@@ -909,6 +910,12 @@ class PublishController extends AbstractController
                 $authId = $icon->getUrnPath();
                 $blob   = $this->em->getRepository(Blob::class)->getByAuthId($authId);
                 if ($blob) {
+                    $rawFile = $this->get('blob.storage')->copyBlobRecordToString($blob);
+                    $blob    = $this->get('blob.storage')->createBlobRecordFromString(
+                        $rawFile,
+                        $blob->getFilename(),
+                        $blob->getContentType()
+                    );
                     $icon->setBlob($blob);
                 }
             }

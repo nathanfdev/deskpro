@@ -22,7 +22,11 @@ class ThemeSetAssetRepository extends EntityRepository
     public function getCustomIcons()
     {
         $qb = $this->createQueryBuilder('t');
-        $qb->where('t.tags LIKE :tag')->setParameter('tag', 'custom_icon,%');
+        $qb
+            ->where('t.tags LIKE :tag OR t.tags LIKE :tag2')
+            ->setParameter('tag', 'custom_icon,%')
+            ->setParameter('tag2', 'custom_icon')
+        ;
 
         $qb->innerJoin(Blob::class, 'b');
 
