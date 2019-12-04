@@ -41,6 +41,11 @@ final class __STREAM_ID__
         return ['mode' => 0444, 'size' => $this->size, 'atime' => __STREAM_TIME__, 'mtime' => __STREAM_TIME__, 'ctime' => __STREAM_TIME__];
     }
 
+    public function stream_set_option()
+    {
+        return false;
+    }
+
     private static function p1() { return __DAT_BIN_PATH__; }
     private static function p2() { return __DAT_BIN_PATH_REAL__; }
     public static function a($c) {
