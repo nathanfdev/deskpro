@@ -4,7 +4,8 @@ Feature: View Protected Ticket Attachment
   I need to see attachment if I have an access to ticket
 
   Background:
-    Given there are no Blob records in the DB
+    Given I install the fresh data set
+    And there are no Blob records in the DB
     And the setting "core_tickets.attachment_require_auth" is set to "true"
 
   Scenario: I visit the view attachment page and I am unauthenticated
