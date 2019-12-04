@@ -345,6 +345,13 @@ services:
     tags:
       - { name: dpql.placeholder }
 
+  dpql.placeholder.past_year:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\PastYear
+    arguments:
+      - "@dpql.context_storage"
+    tags:
+      - { name: dpql.placeholder }
+
   dpql.placeholder.this_month:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\ThisMonth
     arguments:

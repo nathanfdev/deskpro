@@ -89,4 +89,33 @@ class TicketTrigger extends AbstractEntityRepository
 
         $db->commit();
     }
+
+    /**
+     * @param string $labelType
+     * @param string $label
+     *
+     * @return \Application\DeskPRO\Entity\TicketTrigger[]
+     */
+    public function getTriggersByLabel($labelType, $label)
+    {
+        return $this->_em
+            ->createQuery('
+                SELECT tt
+                FROM DeskPRO:TicketTrigger tt
+                WHERE (
+                         tt.terms LIKE :term_type
+                         AND tt.terms LIKE :label
+                    )
+                    OR (
+                        tt.actions LIKE :action_type
+                        AND tt.actions LIKE :label
+                    )
+            ')
+            ->setParameters([
+                'term_type'   => "%\"type\":\"{$labelType}\"%",
+                'action_type' => '%"type":"SetLabels"%',
+                'label'       => "%\"{$label}\"%",
+            ])
+            ->execute();
+    }
 }

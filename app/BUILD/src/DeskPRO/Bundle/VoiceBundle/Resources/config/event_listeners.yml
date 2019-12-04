@@ -37,6 +37,7 @@ services:
   dp.voice.listener.chat_agent_notify:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\ChatAgentNotifyListener
     arguments:
+      - "@doctrine.orm.default_entity_manager"
       - "@dp.voice.chat_task_helper"
       - "@serializer"
       - "@dp.voice.task_router.storage"

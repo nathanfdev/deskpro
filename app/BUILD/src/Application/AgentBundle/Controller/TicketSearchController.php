@@ -72,7 +72,7 @@ class TicketSearchController extends AbstractController
         $ticket_approval_filters = [];
         foreach ($all_filters as $i => $filter) {
             $isTicketFilter = (bool) count(array_filter($filter->getTerms(), function ($term) {
-                return ((isset($term['type'])) && TicketApproval::FILTER_NAME == $term['type']);
+                return (isset($term['type'])) && TicketApproval::FILTER_NAME == $term['type'];
             }));
             if ($isTicketFilter) {
                 $ticket_approval_filters[$filter->getId()] = $filter;
@@ -159,23 +159,23 @@ class TicketSearchController extends AbstractController
         $ticketStatuses = App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true);
 
         $data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', [
-            'brands'                         => $brands,
-            'sys_filters'                    => $sys_filters,
-            'sys_filters_hold'               => $sys_filters_hold,
-            'archive_filters'                => $archive_filters,
-            'ticket_approval_filters'        => $ticket_approval_filters,
-            'ticket_approval_filter_counts'  => $ticket_approval_filter_counts,
-            'problem_filters'                => $problem_filters,
-            'archive_filter_counts'          => $archive_filter_counts,
-            'problem_filter_counts'          => $problem_filter_counts,
-            'filter_id_matches'              => $filter_id_matches,
-            'custom_filters'                 => $custom_filters,
-            'flags'                          => $flags,
-            'flag_counts'                    => $flag_counts,
-            'filter_show_options'            => $filter_show_options,
-            'labels_index'                   => $index,
-            'labels_cloud'                   => $cloud,
-            'initial_inbox_grouping'         => $initial_inbox_grouping,
+            'brands'                        => $brands,
+            'sys_filters'                   => $sys_filters,
+            'sys_filters_hold'              => $sys_filters_hold,
+            'archive_filters'               => $archive_filters,
+            'ticket_approval_filters'       => $ticket_approval_filters,
+            'ticket_approval_filter_counts' => $ticket_approval_filter_counts,
+            'problem_filters'               => $problem_filters,
+            'archive_filter_counts'         => $archive_filter_counts,
+            'problem_filter_counts'         => $problem_filter_counts,
+            'filter_id_matches'             => $filter_id_matches,
+            'custom_filters'                => $custom_filters,
+            'flags'                         => $flags,
+            'flag_counts'                   => $flag_counts,
+            'filter_show_options'           => $filter_show_options,
+            'labels_index'                  => $index,
+            'labels_cloud'                  => $cloud,
+            'initial_inbox_grouping'        => $initial_inbox_grouping,
 
             'open_problems'   => $open_problems,
             'closed_problems' => $closed_problems,
@@ -1791,7 +1791,7 @@ class TicketSearchController extends AbstractController
                     default:
                         if ($fieldId = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $displayField)) {
                             if (isset($customTextData[$fieldId])) {
-                                $row[] = $customTextData[$fieldId]['rendered'];
+                                $row[] = Strings::collapseWhitespace($customTextData[$fieldId]['rendered']);
                             } else {
                                 $row[] = '';
                             }
@@ -1815,7 +1815,9 @@ class TicketSearchController extends AbstractController
                                 $row[] = $value;
                             } elseif (is_object($value)) {
                                 if ($value instanceof \DateTime) {
-                                    $row[] = $value->format('c');
+                                    $dt = clone $value;
+                                    $dt->setTimezone($this->person->getDateTimezone());
+                                    $row[] = $dt->format('c');
                                 } else {
                                     $row[] = '';
                                 }

@@ -48,6 +48,7 @@ use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\Settings\EmailAccountsSettings;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
+use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
@@ -61,10 +62,10 @@ use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\Tickets;
+use Application\DeskPRO\Tickets\TicketSaveActions\SaveTicketLogs;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketCommunityTopicLinkRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
@@ -5475,6 +5476,16 @@ class TicketController extends AbstractController
 
                 if ($collection->countActions()) {
                     $collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+                    (new SaveTicketLogs($this->em))
+                        ->processTicket(
+                            $ticket,
+                            $this->container->getTicketManager()
+                                ->createAgentExecutorContext(
+                                    $this->person,
+                                    ExecutorContext::EVENT_UPDATE,
+                                    'web'
+                                )
+                        );
                     $this->em->flush();
                 }
 

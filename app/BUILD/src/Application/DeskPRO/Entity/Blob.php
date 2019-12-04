@@ -242,7 +242,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
         $filename = Strings::utf8_bad_strip($filename);
         $filename = Strings::utf8_accents_to_ascii($filename);
-        $filename = trim(mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '_', $filename));
+        $filename = trim(preg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '_', $filename));
 
         // trim filename down to max length of 255 chars
         $pos = strrpos($filename, '.');

@@ -136,7 +136,6 @@ helpcenter.community.form_tell_us_more: 'Tell us more'
 helpcenter.community.form_title: Title
 helpcenter.community.form_topic_title: 'Title'
 helpcenter.community.forum-name: 'Forum name'
-helpcenter.community.last-status-changes: 'Latest status changes'
 helpcenter.community.my-activity: 'My Activity'
 helpcenter.community.no_matching: 'No matching community topics'
 helpcenter.community.none: 'No community topics could be found'
@@ -195,11 +194,16 @@ helpcenter.error.permission-denied-title: 'You are not allowed to perform this a
 helpcenter.label.search: Search
 helpcenter.flashes.article-unpublish: 'This article will unpublish on {{date}}.'
 helpcenter.form.delete-question: 'Delete?'
+helpcenter.forms.date-picker-next-month: 'Next Month'
+helpcenter.forms.date-picker-previous-month: 'Previous Month'
+helpcenter.forms.date-picker-time: Time
 helpcenter.forms.label-choose-a-file: 'Choose a file'
 helpcenter.forms.label-drag-and-drop: 'Drag and drop'
 helpcenter.forms.label_category: Category
 helpcenter.forms.label_full_name: 'Your Name'
 helpcenter.forms.label_kb_article: Article
+helpcenter.forms.label_news_post: 'News Post'
+helpcenter.forms.label_download: 'Download'
 helpcenter.forms.label_password: Password
 helpcenter.forms.label_save: Save
 helpcenter.general.add-comment: 'Add a comment'

@@ -3,14 +3,36 @@ import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 export class CloseTicketWidget extends PageWidget {
   renderWidget() {
     window.document.getElementById('closeTicketBtn').addEventListener('click', (e) => {
+      const url = e.target.dataset.url;
       function reqListener() {
-        if (this.status === 200) {
+        if (this.status === 200 && this.responseURL.match(url)) {
+          const doc = document.createDocumentFragment();
+          const div = document.createElement('div');
+          div.innerHTML = this.response;
+          doc.appendChild(div);
+
+          const header = window.document.querySelector('#closeConfirm .modal-header');
+          while (header.firstChild) {
+            header.removeChild(header.firstChild);
+          }
+          header.appendChild(doc.querySelector('.dp-po-title'));
+          const body = window.document.querySelector('#closeConfirm .modal-body');
+          while (body.firstChild) {
+            body.removeChild(body.firstChild);
+          }
+          const children = doc.querySelector('.dp-po-ticket-modal-body').children;
+          for (let i = 0; i < children.length; i++) {
+            body.appendChild(children[i]);
+          }
+          window.document.querySelector('#closeConfirm .modal-footer').remove();
+        } else if (this.status === 200) {
           window.location.href = this.responseURL;
         }
       }
 
       const oReq = new XMLHttpRequest();
-      oReq.open('POST', e.target.dataset.url);
+      oReq.open('POST', url);
+      oReq.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       oReq.onload = reqListener.bind(oReq);
       oReq.send();
     });

@@ -1,0 +1,66 @@
+<div class="dp-po-title">
+    <i class="dp-po-icon fad fa-comments-alt dp-po-title-svg"></i>
+    <h2 class="dp-po-title-text">{{ phrase('helpcenter.tickets.rate_support') }}</h2>
+</div>
+<div class="dp-po-section dp-po-block dp-po-ticket-modal-body">
+    <div class="dp-po-ticket-modal-agent">
+        <div class="dp-po-avatar dp-po-avatar-round">
+            {{ hc_avatar(message.person, '', 30) }}
+            {{ phrase('helpcenter.tickets.rate-intro', {name: '<strong>' ~ message.person.display_name_user ~ '</strong>&nbsp;', subject: ticket.subject}, true) }}
+        </div>
+    </div>
+
+    <p class="mt-4">{{ phrase('helpcenter.tickets.rate-question') }}</p>
+    <form class="dp-po-form" action="{{ path('portal_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
+        <div class="form-group">
+            <div>
+                <div>
+                    <div class="radios">
+                        <label class="title">
+                            <input type="radio" id="feedback_rating_p" name="rating" value="-1" {% if feedback.rating == -1 %}checked="checked"{% elseif setrating %}disabled="disabled"{% endif %} />
+                            <i></i>
+                            <span class="label">
+                                                    <div class="dp-po-ticket-modal-rating dp-po-ticket-modal-rating-one">
+                                                        <i class="dp-po-icon fad fa-star"></i>
+                                                        <i class="dp-po-icon fad fa-star"></i>
+                                                        <i class="dp-po-icon fad fa-star"></i>
+                                                    </div>
+                                                    {{ phrase('helpcenter.tickets.rate-negative') }}
+                                                </span>
+                        </label>
+                        <label class="title">
+                            <input id="feedback_rating_0" type="radio" name="rating" value="0" {% if feedback.rating == 0 and rating is not null %}checked="checked"{% elseif setrating %}disabled="disabled"{% endif %} />
+                            <i></i>
+                            <span class="label">
+                                                    <div class="dp-po-ticket-modal-rating dp-po-ticket-modal-rating-two">
+                                                        <i class="dp-po-icon fad fa-star"></i>
+                                                        <i class="dp-po-icon fad fa-star"></i>
+                                                        <i class="dp-po-icon fad fa-star"></i>
+                                                    </div>
+                                                    {{ phrase('helpcenter.tickets.rate-neutral') }}
+                                                </span>
+                        </label>
+                        <label class=" title">
+                            <input type="radio" id="feedback_rating_n" name="rating" value="1" {% if feedback.rating == 1 %}checked="checked"{% elseif setrating %}disabled="disabled"{% endif %} />
+                            <i></i>
+                            <span class="label">
+                                                    <div class="dp-po-ticket-modal-rating dp-po-ticket-modal-rating-three">
+                                                        <i class="dp-po-icon fad fa-star"></i>
+                                                        <i class="dp-po-icon fad fa-star"></i>
+                                                        <i class="dp-po-icon fad fa-star"></i>
+                                                    </div>
+                                                    {{ phrase('helpcenter.tickets.rate-positive') }}
+                                                </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="feedback_comment">{{ phrase('helpcenter.tickets.feedback_message_leave_comment') }}</label>
+            <textarea class="form-control" id="feedback_comment" name="message"
+                      placeholder="{{ phrase('helpcenter.tickets.feedback_message_your_comment') }}">{{ feedback.message }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.tickets.submit_feedback') }}</button>
+    </form>
+</div>

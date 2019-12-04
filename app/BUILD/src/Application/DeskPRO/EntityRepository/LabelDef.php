@@ -9,11 +9,28 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
+use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\DBAL\Connection;
+use Orb\Util\Arrays;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LabelDef extends AbstractEntityRepository
 {
+    const LABEL_TYPE_MAP = [
+        'plain' => [
+            'tickets'       => 'label',
+            'people'        => 'person_label',
+            'organizations' => 'org_label',
+        ],
+        'class' => [
+            'tickets'       => 'CheckLabel',
+            'people'        => 'CheckUserLabel',
+            'organizations' => 'CheckOrgLabel',
+        ],
+    ];
+
     protected static $types = [
         'articles'      => ['table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'],
         'deals'         => ['table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'],
@@ -463,7 +480,7 @@ class LabelDef extends AbstractEntityRepository
                 );
 
                 // Same one -- we are just changing case
-                if ($def_new && $def_old && $def_old === $def_old) {
+                if ($def_new && $def_old && $def_new === $def_old) {
                     $def_new->label = $new_label;
                 } else {
                     $this->getEntityManager()->getConnection()->executeUpdate(
@@ -490,6 +507,90 @@ class LabelDef extends AbstractEntityRepository
                 $this->getEntityManager()->persist($def_new);
             }
 
+            // Update entities that use label.
+            if (array_key_exists($type, self::LABEL_TYPE_MAP['plain'])) {
+                if ($type === 'tickets') {
+                    // Find ticket filters and update their terms with ticket labels.
+                    $ticketFilters = $this->getEntityManager()
+                        ->getRepository(\DeskPRO\Bundle\AppBundle\Entity\TicketFilter::class)
+                        ->getFiltersByLabel($old_label);
+
+                    foreach ($ticketFilters as $filter) {
+                        $filter->terms = $this->getUpdatedTerms(
+                            $filter->terms,
+                            $old_label,
+                            $new_label,
+                            $type
+                        );
+
+                        $this->getEntityManager()->persist($filter);
+                    }
+
+                    // Find ticket macros and update their actions.
+                    $ticketMacros = $this->getEntityManager()
+                        ->getRepository(Entity\TicketMacro::class)
+                        ->getMacrosByLabel($old_label);
+
+                    foreach ($ticketMacros as $macros) {
+                        $macros->actions = $this->getUpdatedMacrosActions(
+                            $macros->actions,
+                            $old_label,
+                            $new_label
+                        );
+
+                        $this->getEntityManager()->persist($macros);
+                    }
+                }
+
+                // Find ticket escalations and update their terms and actions with labels.
+                $escalations = $this->getEntityManager()
+                    ->getRepository(Entity\TicketEscalation::class)
+                    ->getEscalationsByLabel(self::LABEL_TYPE_MAP['plain'][$type], $old_label);
+
+                foreach ($escalations as $escalation) {
+                    $escalation->terms = $this->getUpdatedTerms(
+                        $escalation->terms,
+                        $old_label,
+                        $new_label,
+                        $type
+                    );
+                    $escalation->terms_any = $this->getUpdatedTerms(
+                        $escalation->terms_any,
+                        $old_label,
+                        $new_label,
+                        $type
+                    );
+                    $escalation->actions = $this->getUpdatedActions(
+                        $escalation->actions->getActionsArray(),
+                        $old_label,
+                        $new_label
+                    );
+
+                    $this->getEntityManager()->persist($escalation);
+                }
+
+                // Find ticket triggers and update their terms and actions with labels.
+                $ticketTriggers = $this->getEntityManager()
+                    ->getRepository(Entity\TicketTrigger::class)
+                    ->getTriggersByLabel(self::LABEL_TYPE_MAP['class'][$type], $old_label);
+
+                foreach ($ticketTriggers as $trigger) {
+                    $trigger->terms = $this->getUpdatedTriggerTerms(
+                        $trigger->terms->getTerms(),
+                        $old_label,
+                        $new_label,
+                        $type
+                    );
+                    $trigger->actions = $this->getUpdatedActions(
+                        $trigger->actions->getActionsArray(),
+                        $old_label,
+                        $new_label
+                    );
+
+                    $this->getEntityManager()->persist($trigger);
+                }
+            }
+
             $this->getEntityManager()->flush();
             $this->getEntityManager()->getConnection()->commit();
         } catch (\Exception $e) {
@@ -501,5 +602,134 @@ class LabelDef extends AbstractEntityRepository
     public static function valid($type = null)
     {
         return null === $type ? array_keys(self::$types) : isset(self::$types[$type]);
+    }
+
+    /**
+     * @param array $terms
+     * @param string $oldLabel
+     * @param string $newLabel
+     * @param string $type
+     *
+     * @return array
+     */
+    private function getUpdatedTerms($terms, $oldLabel, $newLabel, $type)
+    {
+        $updatedTerms = [];
+        foreach ($terms as $term) {
+            if (in_array($term['type'], self::LABEL_TYPE_MAP['plain'], true) &&
+                $term['type'] === self::LABEL_TYPE_MAP['plain'][$type]
+            ) {
+                $this->updateLabel($term, $oldLabel, 'options.label', $newLabel);
+                $this->updateLabel($term, $oldLabel, 'options.labels', $newLabel);
+            }
+
+            $updatedTerms[] = $term;
+        }
+
+        return $updatedTerms;
+    }
+
+    /**
+     * @param array $terms
+     * @param string $oldLabel
+     * @param string $newLabel
+     * @param string $type
+     *
+     * @return TriggerTerms
+     */
+    private function getUpdatedTriggerTerms($terms, $oldLabel, $newLabel, $type)
+    {
+        $updatedTerms = new TriggerTerms();
+
+        foreach ($terms as $term) {
+            $composite = new TriggerTermComposite([], TriggerTermComposite::OP_AND);
+
+            foreach ($term['set_terms'] as $setTerm) {
+                if (in_array($setTerm['type'], self::LABEL_TYPE_MAP['class'], true) &&
+                    $setTerm['type'] === self::LABEL_TYPE_MAP['class'][$type]
+                ) {
+                    $this->updateLabel($setTerm, $oldLabel, 'options.labels', $newLabel);
+                }
+
+                $composite->add($updatedTerms->getTermFromArray($setTerm));
+            }
+
+            if ($composite->count()) {
+                $updatedTerms->addTerm($composite);
+            }
+        }
+
+        return $updatedTerms;
+    }
+
+    /**
+     * @param array $actions
+     * @param string $oldLabel
+     * @param string $newLabel
+     *
+     * @return TriggerActions
+     */
+    private function getUpdatedActions($actions, $oldLabel, $newLabel)
+    {
+        $updatedActions = new TriggerActions();
+
+        foreach ($actions as $action) {
+            if ($action['type'] === 'SetLabels') {
+                $this->updateLabel($action, $oldLabel, 'options.add_labels', $newLabel);
+                $this->updateLabel($action, $oldLabel, 'options.remove_labels', $newLabel);
+            }
+
+            $updatedActions->addActionFromArray($action);
+        }
+
+        return $updatedActions;
+    }
+
+    /**
+     * @param array $actions
+     * @param string $oldLabel
+     * @param string $newLabel
+     *
+     * @return array
+     */
+    private function getUpdatedMacrosActions($actions, $oldLabel, $newLabel)
+    {
+        $updatedActions = [];
+
+        foreach ($actions as $action) {
+            if (in_array($action['type'], ['add_labels', 'remove_labels'], true)) {
+                $this->updateLabel($action, $oldLabel, 'options.labels', $newLabel);
+            }
+
+            $updatedActions[] = $action;
+        }
+
+        return $updatedActions;
+    }
+
+    /**
+     * @param array &$haystack
+     * @param string $needle
+     * @param string $path
+     * @param string $replace
+     */
+    private function updateLabel(&$haystack, $needle, $path, $replace)
+    {
+        $labelsArray = Arrays::get($haystack, $path);
+
+        if (is_array($labelsArray)) {
+            $posToChange = array_search($needle, $labelsArray, true);
+
+            if ($posToChange !== false) {
+                array_splice(
+                    $labelsArray,
+                    $posToChange,
+                    1,
+                    $replace
+                );
+            }
+
+            Arrays::set($haystack, $path, $labelsArray);
+        }
     }
 }

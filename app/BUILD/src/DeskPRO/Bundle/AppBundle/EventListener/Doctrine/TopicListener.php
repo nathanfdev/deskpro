@@ -77,7 +77,8 @@ class TopicListener implements EventSubscriber
                     for ($i = 0; $i < count($matches[0]); ++$i) {
                         $attributes[$matches[1][$i]] = $matches[2][$i];
                     }
-                    $attributes['data-with']   = $blob->getDimW();
+                    $attributes['data-width']  = $blob->getDimW();
+                    $attributes['width']       = $blob->getDimW();
                     $attributes['data-height'] = $blob->getDimH();
                     $attributes['data-src']    = $attributes['src'];
                     $attributes['src']         = $this->generateSvg($blob->getDimW(), $blob->getDimH());

@@ -20,7 +20,7 @@ class PortalIconRenderer
     {
         if ($icon->getUrnNs() === IconProperty::$blobNs) {
             if ($icon->getBlob()) {
-                return '<img src="'.$icon->getBlob()->{$asDownloadUrl ? 'getDownloadUrl' : 'getFileUrl'}().'" alt="icon" class="'.($isRounded ? 'rounded-circle' : '').'" />';
+                return '<span class="dp-po-icon"><img src="'.$icon->getBlob()->getDownloadUrl().'" alt="icon" class="'.($isRounded ? 'rounded-circle' : '').'" /></span>';
             }
         }
         if ($icon->getUrnNs() === IconProperty::$faNs) {

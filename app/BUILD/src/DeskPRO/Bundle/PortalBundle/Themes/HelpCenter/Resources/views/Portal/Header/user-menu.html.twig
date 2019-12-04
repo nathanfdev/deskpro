@@ -59,9 +59,15 @@
                 </section>
             </div>
         {% else %}
+            {% set user_notification_count = pageData.alerts.tickets_awaiting_reply | length + pageData.alerts.unread_direct_messages %}
             <a href="javascript:void(0)" class="dp-po-user-login dp-po-avatar" data-toggle="dropdown" aria-haspopup="true"
                aria-expanded="false">
-                {{ hc_avatar(app.user) }}
+                <span class="dp-po-user-login-figure">
+                    {{ hc_avatar(app.user) }}
+                    {% if user_notification_count > 0 %}
+                        <span class="dp-po-user-login-count">{{ user_notification_count }}</span>
+                    {% endif %}
+                </span>
                 <i class="dp-po-icon far fa-angle-down"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right dp-po-user-dropdown dp-po-user-menu">
@@ -78,6 +84,9 @@
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_tickets') }}">
                                 <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.my-tickets') }}
+                                {% if pageData.alerts.tickets_awaiting_reply | length > 0 %}
+                                    ({{ pageData.alerts.tickets_awaiting_reply | length }})
+                                {% endif %}
                             </a>
                         </li>
                     {% endif %}
@@ -85,6 +94,9 @@
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_dm') }}">
                                 <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.my-messages') }}
+                                {% if pageData.alerts.unread_direct_messages > 0 %}
+                                    ({{ pageData.alerts.unread_direct_messages }})
+                                {% endif %}
                             </a>
                         </li>
                     {% endif %}

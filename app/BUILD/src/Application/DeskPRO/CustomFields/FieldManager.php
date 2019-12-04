@@ -396,6 +396,42 @@ class FieldManager
     }
 
     /**
+     * Render field data to their html and text values.
+     *
+     * Similar to getRenderedToText but renders both text and html into renderedText and renderedHtml.
+     *
+     * @param array $field_data
+     *
+     * @return array
+     */
+    public function getRendered($field_data = [])
+    {
+        $custom_fields = [];
+        foreach ($this->getFields() as $f_def) {
+            $value = !empty($field_data[$f_def['id']]) && $field_data[$f_def['id']] !== 0 && $field_data[$f_def['id']] !== '0' ? $field_data[$f_def['id']] : null;
+
+            $renderedText = $value !== null ? $f_def->getHandler()->renderText($value) : null;
+            $renderedHtml = $value !== null ? $f_def->getHandler()->renderHtml($value) : null;
+
+            $custom_fields[$f_def['id']] = [
+                'renderedText'  => trim($renderedText),
+                'renderedHtml'  => trim($renderedHtml),
+                'elId'          => \Orb\Util\Util::requestUniqueIdString(),
+                'hasValue'      => ($value !== null),
+                'id'            => $f_def['id'],
+                'name'          => 'field_'.$f_def['id'],
+                'handler'       => $f_def->getHandler(),
+                'field_def'     => $f_def,
+                'title'         => $f_def['title'],
+                'value'         => $value,
+                'field_handler' => strtolower(\Orb\Util\Util::getBaseClassname($f_def->getHandler())),
+            ];
+        }
+
+        return $custom_fields;
+    }
+
+    /**
      * return field title and value for CustomData.
      *
      * @param CustomDataAbstract $data

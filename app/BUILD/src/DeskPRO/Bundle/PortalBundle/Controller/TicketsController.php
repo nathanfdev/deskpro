@@ -344,10 +344,17 @@ class TicketsController extends AbstractController
             $this->addFlash('success', $this->phrase('portal.flashes.ticket_resolved'));
 
             if ($this->get('settings_resolver')->getGlobalSettings()->get('core_tickets.enable_feedback')) {
-                return $this->redirectToRoute('portal_tickets_feedback', [
-                    'auth'       => $ticket->getAuth(),
-                    'ticket_ref' => $ticket->getRef(),
-                ]);
+                if ($request->isXmlHttpRequest()) {
+                    return $this->rateTicketAction($request, $ticket->getRef(), $ticket->getAuth());
+                } else {
+                    return $this->redirectToRoute(
+                        'portal_tickets_feedback',
+                        [
+                            'auth'       => $ticket->getAuth(),
+                            'ticket_ref' => $ticket->getRef(),
+                        ]
+                    );
+                }
             }
 
             return $this->redirectToRoute('portal_tickets_view', [
@@ -600,7 +607,12 @@ class TicketsController extends AbstractController
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
-        return $this->renderThemeView('Theme:Tickets:feedback.html.twig', [
+        $template = 'Theme:Tickets:feedback.html.twig';
+        if ($request->isXmlHttpRequest()) {
+            $template = 'Theme:Tickets:ajax-feedback.html.twig';
+        }
+
+        return $this->renderThemeView($template, [
             'page_title'  => $this->get('portal_view.page_title_generator')->tickets($ticket),
             'breadcrumbs' => $breadcrumbs,
             'ticket'      => $ticket,

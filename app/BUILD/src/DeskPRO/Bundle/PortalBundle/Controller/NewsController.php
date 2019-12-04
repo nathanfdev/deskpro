@@ -77,14 +77,6 @@ class NewsController extends AbstractPublishController
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildNews();
 
-        // SUBSCRIPTION
-
-        $isSubscribed = false;
-        if ($this->getUser() && $this->getBrandSetting('user.news_subscriptions', false)) {
-            // waiting info regarding article category subscriptions
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('news', $this->getUser());
-        }
-
         // RENDER THEME
 
         $newsData = new LazyPropObject([
@@ -116,7 +108,7 @@ class NewsController extends AbstractPublishController
                 'breadcrumbs'   => $breadcrumbs,
                 'rss_link'      => $rssLink,
                 'ics_link'      => $icsLink,
-                'is_subscribed' => $isSubscribed,
+                'is_subscribed' => $this->isSubscribedRootCategory(),
                 'filter_date'   => $filterDate,
                 'filter_year'   => $filterYear,
             ]
@@ -174,16 +166,6 @@ class NewsController extends AbstractPublishController
             $breadcrumbs = $this->getBreadcrumbGenerator()->buildNews();
         }
 
-        // SUBSCRIPTIONS
-
-        $isSubscribed = false;
-        if (
-            $this->getBrandSetting('user.news_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORY, $category)
-        ) {
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
-        }
-
         // PAGER
 
         $count = $this->getBrandSetting('portal.per_page_content');
@@ -195,7 +177,7 @@ class NewsController extends AbstractPublishController
             'Theme:News:browse.html.twig',
             [
                 'category'      => $category,
-                'is_subscribed' => $isSubscribed,
+                'is_subscribed' => $this->isSubscribedCategory($category),
                 'pager'         => $pager,
                 'page'          => $page,
                 'count'         => $count,
@@ -255,16 +237,6 @@ class NewsController extends AbstractPublishController
 
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($post);
 
-        // SUBSCRIPTIONS
-
-        $isSubscribed = false;
-        if (
-            $this->getBrandSetting('user.news_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS, $post)
-        ) {
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
-        }
-
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
         $check->markAsCheckOnly();
         $this->get('anti_abuse')->check($check);
@@ -289,23 +261,25 @@ class NewsController extends AbstractPublishController
         // RENDER THEME
 
         $viewVars = [
-            'post'               => $post,
-            'content'            => $post,
-            'postData'           => $postData,
-            'is_subscribed'      => $isSubscribed,
-            'rating'             => $rating,
-            'category'           => $post->getCategory(),
-            'content_id'         => $post->getId(),
-            'content_type'       => News::CONTENT_TYPE,
-            'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-            'page_title'         => $this->createPageTitle()->news($post),
-            'breadcrumbs'        => $breadcrumbs,
-            'show_rating_counts' => $showRatingCounts,
-            'rating_counts'      => $ratingCounts,
-            'lockout'            => $check->isLockoutRecommended(),
-            'lockout_time'       => $check->getLockoutTime(true),
-            'main_class'         => 'dp-po-news-post',
-            'helpcenter'         => $this->get('helpcenter_data_helper'),
+            'post'                   => $post,
+            'content'                => $post,
+            'postData'               => $postData,
+            'is_subscribed'          => $this->isSubscribedNewsPost($post),
+            'is_subscribed_root'     => $this->isSubscribedRootCategory(),
+            'is_subscribed_category' => $this->isSubscribedCategory($post->getCategory()),
+            'rating'                 => $rating,
+            'category'               => $post->getCategory(),
+            'content_id'             => $post->getId(),
+            'content_type'           => News::CONTENT_TYPE,
+            'new_comment_form'       => $newCommentForm ? $newCommentForm->createView() : null,
+            'page_title'             => $this->createPageTitle()->news($post),
+            'breadcrumbs'            => $breadcrumbs,
+            'show_rating_counts'     => $showRatingCounts,
+            'rating_counts'          => $ratingCounts,
+            'lockout'                => $check->isLockoutRecommended(),
+            'lockout_time'           => $check->getLockoutTime(true),
+            'main_class'             => 'dp-po-news-post',
+            'helpcenter'             => $this->get('helpcenter_data_helper'),
         ];
 
         if (!$this->getUser() || $this->getUser()->getId()) {
@@ -324,6 +298,8 @@ class NewsController extends AbstractPublishController
      * @Route("/news/view/{slug}", name="portal_news_view_LEGACY")
      *
      * @param string $slug
+     *
+     * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -525,5 +501,52 @@ class NewsController extends AbstractPublishController
             $person,
             ['date' => $request->query->get('date')]
         );
+    }
+
+    /**
+     * @return bool
+     */
+    private function isSubscribedRootCategory()
+    {
+        if ($this->getUser() && $this->getBrandSetting('user.news_subscriptions', false)) {
+            // waiting info regarding article category subscriptions
+            return $this->getSubscriptionsHelper()->isSubscribedRootCategory('news', $this->getUser());
+        }
+
+        return false;
+    }
+
+    /**
+     * @param NewsCategory $category
+     *
+     * @return bool
+     */
+    private function isSubscribedCategory(NewsCategory $category)
+    {
+        if (
+            $this->getBrandSetting('user.news_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORY, $category)
+        ) {
+            return $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        return false;
+    }
+
+    /**
+     * @param News $post
+     *
+     * @return bool
+     */
+    private function isSubscribedNewsPost(News $post)
+    {
+        if (
+            $this->getBrandSetting('user.news_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS, $post)
+        ) {
+            return $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
+        }
+
+        return false;
     }
 }

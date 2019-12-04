@@ -62,4 +62,19 @@ class HttpContext extends BaseContext
     {
         $this->assertSession()->responseHeaderContains($header, $value);
     }
+
+    /**
+     * Checks, that current page PORTAL PATH is equal to specified.
+     * This is the same as Mink but we allow for locale code at the start.
+     *
+     * Example: Then I should be on portal portal page "/"
+     * Example: And I should be on portal portal page "/bats"
+     *
+     * @Then /^(?:|I )should be on portal page "(?P<page>[^"]+)"$/
+     */
+    public function assertPortalPageAddress($page)
+    {
+        $input = preg_quote(ltrim($page, '/'), '/');
+        $this->getMinkContext()->assertUrlRegExp("/^(\/[a-zA-Z]{2}([\\-_][a-zA-Z]{2})?)?\/$input$/");
+    }
 }

@@ -1,6 +1,7 @@
 @import "../../../../../../node_modules/medium-editor/dist/css/medium-editor.min.css";
 @import "../../../../../../node_modules/medium-editor/dist/css/themes/default.min.css";
 @import "../../../../../../node_modules/@deskpro/content-editor/styles/content.css";
+@import "../../../../../../node_modules/@deskpro/react-datepicker-hijri/dist/react-datepicker.css";
 
 @import "helpcenter_vars";
 @import "../../../../../../node_modules/bi-app-sass/bi-app/bi-app-ltr";
@@ -11,3 +12,10 @@
 
 @import "medium-rte";
 
+.react-datepicker__time-list {
+  padding-inline-start: 0;
+}
+.react-datepicker__input-container input {
+  border: none;
+  background: none;
+}

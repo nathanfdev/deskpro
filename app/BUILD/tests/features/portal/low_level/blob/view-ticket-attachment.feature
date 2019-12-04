@@ -17,7 +17,7 @@ Feature: View Protected Ticket Attachment
     And I mark blob "blob_1196DYWABSMCWMAAAKN0T" as not temp
     When I go to "/ticket-attachment/1196DYWABSMCWMAAAKN0T"
     Then the response status code should be 404
-    Then I should be on "/ticket-attachment/1196DYWABSMCWMAAAKN0T"
+    Then I should be on portal page "/ticket-attachment/1196DYWABSMCWMAAAKN0T"
 
   Scenario: I visit the view attachment page and I am authenticated as user and have an access to ticket
     Given I'm authenticated as user
@@ -55,7 +55,7 @@ Feature: View Protected Ticket Attachment
       | {t1}   | {user} | {m1}    | {blob_1196DYWABSMCWMAAAKN0T} |
     When I go to "/ticket-attachment/1196DYWABSMCWMAAAKN0T"
     Then the response status code should be 403
-    Then I should be on "/ticket-attachment/1196DYWABSMCWMAAAKN0T"
+    Then I should be on portal page "/ticket-attachment/1196DYWABSMCWMAAAKN0T"
 
   Scenario: I visit the view attachment page and I am authenticated as agent and have an access to ticket
     Given I'm authenticated as agent

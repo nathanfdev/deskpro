@@ -24,4 +24,4 @@ Feature: Downloads
     Then I should be on "/downloads/files/example-download?start_download=1"
     And the response status code should be 200
 
-    
+

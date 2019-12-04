@@ -8,12 +8,14 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Community\CommunityForumEdit;
 use Application\DeskPRO\Community\Form\Type\CommunityForumType;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CommunityForumToStatus;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use Orb\Util\Arrays;
 
 /**
@@ -103,6 +105,41 @@ class CommunityForumsController extends AbstractController implements ProtectedC
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'community_forum'), true);
 
         if ($form->isValid()) {
+            if ($this->in->getString('community_forum.icon_property.urn')) {
+                $icon = new IconProperty();
+                $icon->setUrn($this->in->getString('community_forum.icon_property.urn'));
+                if ($icon->getUrnNs() === IconProperty::$blobNs) {
+                    $authId = $icon->getUrnPath();
+                    $blob   = $this->em->getRepository(Blob::class)->getByAuthId($authId);
+                    if ($blob) {
+                        $rawFile = $this->get('blob.storage')->copyBlobRecordToString($blob);
+                        $blob    = $this->get('blob.storage')->createBlobRecordFromString(
+                            $rawFile,
+                            $blob->getFilename(),
+                            $blob->getContentType()
+                        );
+                        $this->em->persist($blob);
+                        $this->em->persist($icon);
+                        $icon->setBlob($blob);
+                    }
+                }
+                $options = [];
+                if ($this->in->getString('community_forum.icon_property.options.style')) {
+                    $options['style'] = $this->in->getString('community_forum.icon_property.options.style');
+                }
+                if ($this->in->getString('community_forum.icon_property.options.color')) {
+                    $options['color'] = $this->in->getString('community_forum.icon_property.options.color');
+                }
+                if ($options) {
+                    $icon->setOptions($options);
+                }
+                $this->em->persist($icon);
+                if ($communityForumEdit->community_forum->getIcon()) {
+                    $this->em->remove($communityForumEdit->community_forum->getIcon());
+                }
+                $communityForumEdit->community_forum->setIcon($icon);
+            }
+
             $communityForumEdit->save($this->em);
             $this->em->commit();
         } else {

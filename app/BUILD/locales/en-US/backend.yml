@@ -5875,6 +5875,7 @@ api.error_codes.voice_no_department_permission: 'Agent {{agent}} has no permissi
 api.error_codes.voice_permissions: 'Check your voice permissions.'
 api.error_codes.voice_blacklist: 'This number is blocked for security & regulatory reasons, please contact the Deskpro Support Team.'
 api.error_codes.voice_invalid_number: 'Invalid phone number.'
+api.error_codes.voice_unable_to_call_this_number: 'Unable to call this number.'
 api.error_codes.unverified_number: 'Verify this number or upgrade your account.'
 api.error_codes.insufficient_balance: 'Insufficient balance.'
 api.error_codes.user_has_no_org: 'Cannot submit request as this user does not belong to an organization.'

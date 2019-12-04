@@ -14,6 +14,7 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 		this.parent(el);
+		this.isSaving = false;
 
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
@@ -50,6 +51,11 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 	},
 
 	submit: function() {
+	  if (this.isSaving) {
+	    return;
+    }
+
+	  this.isSaving = true;
 		var self = this;
 		var formData = this.form.serializeArray();
 
@@ -88,7 +94,8 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
             }
 					}
 				}
-			}
+        this.isSaving = false;
+      }
 		});
 	},
 

@@ -1,4 +1,3 @@
-@new
 Feature: New ticket dupe check
 
   Background:

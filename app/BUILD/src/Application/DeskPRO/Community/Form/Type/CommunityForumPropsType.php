@@ -23,6 +23,7 @@ class CommunityForumPropsType extends AbstractType
     {
         $builder
             ->add('title', 'text', ['required' => true])
+            ->add('description', 'text', ['required' => false])
             ->add('usergroups', 'entity', [
                 'class'         => 'DeskPRO:Usergroup',
                 'required'      => false,
@@ -43,6 +44,7 @@ class CommunityForumPropsType extends AbstractType
                 'allow_add'    => true,
                 'allow_delete' => true,
             ])
+            ->add('color', 'text')
             ->add('brand', EntityType::class, [
                 'class' => Brand::class,
             ])

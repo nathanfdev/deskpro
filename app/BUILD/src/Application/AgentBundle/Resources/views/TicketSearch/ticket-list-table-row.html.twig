@@ -135,12 +135,12 @@
 
 		{% for field in app.getCustomFieldManager('tickets').getFields() %}
 			<% if (field == 'ticket_fields[{{ field.id }}]') { %>
-				<span class="prop-val"><%- ticket_display.field{{ field.id }} %></span>
+				<span class="prop-val"><%= ticket_display.field{{ field.id }}_html %></span>
 			<% } %>
 		{% endfor %}
 		{% for field in app.getCustomFieldManager('people').getFields() %}
 			<% if (field == 'person_fields[{{ field.id }}]') { %>
-				<span class="prop-val"><%- ticket_display.person.field{{ field.id }} %></span>
+				<span class="prop-val"><%= ticket_display.person.field{{ field.id }}_html %></span>
 			<% } %>
 		{% endfor %}
 		</div>

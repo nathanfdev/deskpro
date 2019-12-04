@@ -163,4 +163,39 @@ class TicketEscalation extends AbstractEntityRepository
 
         return $esc;
     }
+
+    /**
+     * @param string $labelType
+     * @param string $label
+     *
+     * @return TicketEscalationEntity[]
+     */
+    public function getEscalationsByLabel($labelType, $label)
+    {
+        $optionsLabelKey = $labelType === 'label' ? 'label' : 'labels';
+
+        return $this->_em
+            ->createQuery('
+                SELECT te
+                FROM DeskPRO:TicketEscalation te
+                WHERE (
+                        te.terms LIKE :term_type
+                        AND te.terms LIKE :label
+                    )
+                    OR (
+                         te.terms_any LIKE :term_type
+                         AND te.terms_any LIKE :label
+                    )
+                    OR (
+                        te.actions LIKE :action_type
+                        AND te.actions LIKE :label
+                    )
+            ')
+            ->setParameters([
+                'term_type'   => "%\"type\":\"{$optionsLabelKey}\"%",
+                'action_type' => '%"type":"SetLabels"%',
+                'label'       => "%\"{$label}\"%",
+            ])
+            ->execute();
+    }
 }
