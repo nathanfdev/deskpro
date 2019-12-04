@@ -219,7 +219,7 @@
                             These templates let you put HTML code at the very top or very bottom of the page.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            {% if app.hasBeta('template_editor') %}
+                            {% if app.hasBeta('helpcenter') %}
                                 <div>
                                     <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-header.html.twig'}") }}">
                                         Edit Header
@@ -255,7 +255,7 @@
                             Edit the homepage template to add or remove elements from the main portal homepage.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            {% if app.hasBeta('template_editor') %}
+                            {% if app.hasBeta('helpcenter') %}
                                 <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:home.html.twig'}") }}">
                                     Edit Homepage Template
                                 </a>
@@ -271,7 +271,7 @@
                             Edit the sidebar template to add or remove elements from the site-wide sidebar.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            {% if app.hasBeta('template_editor') %}
+                            {% if app.hasBeta('helpcenter') %}
                                 <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:sidebar.html.twig'}") }}">
                                     Edit Sidebar Template
                                 </a>
@@ -346,7 +346,7 @@
                             ng-change="Portal.editTemplate()"
                             ng-options="t.value as t.name group by t.group for t in Portal.template_options">
                     </select>
-                    {% if app.hasBeta('template_editor') %}
+                    {% if app.hasBeta('helpcenter') %}
                         <a class="btn btn-default" href="{{ ng_href('portal.templates_editor') }}">
                             Open template editor
                         </a>
