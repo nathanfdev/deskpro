@@ -3,8 +3,11 @@
     box-sizing: border-box !important;
   }
 
+  .approvals-wrapper {
+    overflow-x: auto;
+  }
+
   table {
-    width: 100%;
     margin-bottom: 10px;
     .delete-follow-up {
       cursor: pointer;

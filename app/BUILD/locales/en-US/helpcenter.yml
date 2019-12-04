@@ -202,6 +202,8 @@ helpcenter.forms.label-drag-and-drop: 'Drag and drop'
 helpcenter.forms.label_category: Category
 helpcenter.forms.label_full_name: 'Your Name'
 helpcenter.forms.label_kb_article: Article
+helpcenter.forms.label_news_post: 'News Post'
+helpcenter.forms.label_download: 'Download'
 helpcenter.forms.label_password: Password
 helpcenter.forms.label_save: Save
 helpcenter.general.add-comment: 'Add a comment'

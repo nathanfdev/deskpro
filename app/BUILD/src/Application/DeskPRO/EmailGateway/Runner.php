@@ -470,17 +470,25 @@ class Runner
         }
 
         $sourceLogger->logDebug('Running processors');
-        $runnerExec = new RunnerExecSource(
-            $source,
-            $reader,
-            $this->accountManager,
-            $sourceLogger
-        );
-        $runnerExec->setFromHeaders($this->getFromHeaders());
 
         $didRollback = false;
         $doRetry     = false;
         try {
+            if (!$source->getEmailAccount()) {
+                throw new ProcessingException(
+                    'Email account not found/assigned to email source',
+                    ProcessingException::EMAIL_ACCOUNT_NOT_FOUND
+                );
+            }
+
+            $runnerExec = new RunnerExecSource(
+                $source,
+                $reader,
+                $this->accountManager,
+                $sourceLogger
+            );
+            $runnerExec->setFromHeaders($this->getFromHeaders());
+
             $result = $runnerExec->run();
             App::$container->getEm()->flush();
             $sourceLogger->logDebug('--> Processors complete');
@@ -508,14 +516,21 @@ class Runner
                 ],
             ];
 
-            if ($allowRetry) {
-                $doRetry = true;
-                if (strpos(strtolower($e->getMessage()), 'deadlock') === false) {
+            if (($e instanceof ProcessingException) && $e->getCode() === ProcessingException::EMAIL_ACCOUNT_NOT_FOUND) {
+                $doRetry = false;
+
+                $result['status']     = 'rejected';
+                $result['error_code'] = 'invalid_address';
+            } else {
+                if ($allowRetry) {
+                    $doRetry = true;
+                    if (strpos(strtolower($e->getMessage()), 'deadlock') === false) {
+                        SystemErrorHandler::logException($e, true);
+                    }
+                } else {
+                    $sourceLogger->logWarn('Not trying again (allow_retry is false)');
                     SystemErrorHandler::logException($e, true);
                 }
-            } else {
-                $sourceLogger->logWarn('Not trying again (allow_retry is false)');
-                SystemErrorHandler::logException($e, true);
             }
 
             if (App::getDb()->isTransactionActive()) {

@@ -26,6 +26,6 @@ export class Carousel extends PageWidget {
           }
         }]
       });
-    });
+    })
   }
 }

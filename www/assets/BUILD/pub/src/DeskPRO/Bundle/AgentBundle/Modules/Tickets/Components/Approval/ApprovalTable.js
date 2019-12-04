@@ -27,7 +27,7 @@ class ApprovalTable extends React.Component {
       padding:  '1px 8px'
     };
 
-    let approvalsList = [];
+    let approvalsList;
     if (this.props.approvals.toArray().length > 0) {
       approvalsList = this.props.approvals.toArray().map(approval => (
         <ApprovalTableRow

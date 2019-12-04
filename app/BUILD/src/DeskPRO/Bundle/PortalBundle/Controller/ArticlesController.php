@@ -72,14 +72,6 @@ class ArticlesController extends AbstractPublishController
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
 
-        // SUBSCRIPTION
-
-        $isSubscribed = false;
-        if ($this->getUser() && $this->getBrandSetting('user.kb_subscriptions', false)) {
-            // waiting info regarding article category subscriptions
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('kb', $this->getUser());
-        }
-
         $kbData = new LazyPropObject([
             'data' => function () {
                 return $this->getKbData(null);
@@ -96,7 +88,7 @@ class ArticlesController extends AbstractPublishController
                 'breadcrumbs'   => $breadcrumbs,
                 'page_title'    => $this->get('portal_view.page_title_generator')->kb(),
                 'rss_link'      => $rssLink,
-                'is_subscribed' => $isSubscribed,
+                'is_subscribed' => $this->isSubscribedRootCategory(),
                 'kb_data'       => $kbData,
             ]
         );
@@ -150,17 +142,6 @@ class ArticlesController extends AbstractPublishController
             $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
         }
 
-        // SUBSCRIPTION
-
-        $isSubscribed = false;
-        if (
-            $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORY, $category)
-        ) {
-            // waiting info regarding article category subscriptions
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
-        }
-
         $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
 
         // PAGER
@@ -188,7 +169,7 @@ class ArticlesController extends AbstractPublishController
                 'category'      => $category,
                 'breadcrumbs'   => $breadcrumbs,
                 'page_title'    => $this->get('portal_view.page_title_generator')->kb($category),
-                'is_subscribed' => $isSubscribed,
+                'is_subscribed' => $this->isSubscribedCategory($category),
                 'pager'         => $pager,
                 'count'         => $count,
                 'page'          => $page,
@@ -244,17 +225,6 @@ class ArticlesController extends AbstractPublishController
 
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($article);
 
-        // SUBSCRIPTION
-
-        $isSubscribed = false;
-        if (
-            $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE, $article)
-        ) {
-            // waiting on info on the kb subs
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
-        }
-
         $canShare = $this->isGranted(ShareContentVoter::SHARE_ARTICLES);
 
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
@@ -305,24 +275,26 @@ class ArticlesController extends AbstractPublishController
         }
 
         $viewVars = [
-            'main_class'         => 'dp-po-knowledgebase-article',
-            'content'            => $article,
-            'article'            => $article,
-            'articleData'        => $articleData,
-            'custom_data'        => $customData,
-            'rating'             => $rating,
-            'is_subscribed'      => $isSubscribed,
-            'category'           => $article->getPrimaryCategory(),
-            'breadcrumbs'        => $breadcrumbs,
-            'content_id'         => $article->getId(),
-            'content_type'       => Article::CONTENT_TYPE,
-            'page_title'         => $this->get('portal_view.page_title_generator')->kb($article),
-            'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-            'show_rating_counts' => $showRatingCounts,
-            'rating_counts'      => $ratingCounts,
-            'can_share'          => $canShare,
-            'lockout'            => $check->isLockoutRecommended(),
-            'lockout_time'       => $check->getLockoutTime(true),
+            'main_class'             => 'dp-po-knowledgebase-article',
+            'content'                => $article,
+            'article'                => $article,
+            'articleData'            => $articleData,
+            'custom_data'            => $customData,
+            'rating'                 => $rating,
+            'is_subscribed_root'     => $this->isSubscribedRootCategory(),
+            'is_subscribed_category' => $this->isSubscribedCategory($article->getPrimaryCategory()),
+            'is_subscribed'          => $this->isSubscribedArticle($article),
+            'category'               => $article->getPrimaryCategory(),
+            'breadcrumbs'            => $breadcrumbs,
+            'content_id'             => $article->getId(),
+            'content_type'           => Article::CONTENT_TYPE,
+            'page_title'             => $this->get('portal_view.page_title_generator')->kb($article),
+            'new_comment_form'       => $newCommentForm ? $newCommentForm->createView() : null,
+            'show_rating_counts'     => $showRatingCounts,
+            'rating_counts'          => $ratingCounts,
+            'can_share'              => $canShare,
+            'lockout'                => $check->isLockoutRecommended(),
+            'lockout_time'           => $check->getLockoutTime(true),
         ];
 
         if (!$this->getUser() || $this->getUser()->getId()) {
@@ -593,5 +565,54 @@ class ArticlesController extends AbstractPublishController
             'articles_count'           => $this->getBrandSetting('portal.per_page_content'),
             'with_tree'                => true,
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    private function isSubscribedRootCategory()
+    {
+        if ($this->getUser() && $this->getBrandSetting('user.kb_subscriptions', false)) {
+            // waiting info regarding article category subscriptions
+            return $this->getSubscriptionsHelper()->isSubscribedRootCategory('kb', $this->getUser());
+        }
+
+        return false;
+    }
+
+    /**
+     * @param ArticleCategory $category
+     *
+     * @return bool
+     */
+    private function isSubscribedCategory(ArticleCategory $category)
+    {
+        if (
+            $this->getBrandSetting('user.kb_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORY, $category)
+        ) {
+            // waiting info regarding article category subscriptions
+            return $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Article $article
+     *
+     * @return bool
+     */
+    private function isSubscribedArticle(Article $article)
+    {
+        if (
+            $this->getBrandSetting('user.kb_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE, $article)
+        ) {
+            // waiting on info on the kb subs
+            return $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
+        }
+
+        return false;
     }
 }

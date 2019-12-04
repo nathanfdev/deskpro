@@ -193,6 +193,9 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 $data['icon_property']['urn']   = $iconProperty->getUrn();
                 $data['icon_property']['style'] = $iconProperty->getOptions()['style'];
                 $data['icon_property']['color'] = $iconProperty->getOptions()['color'];
+            } elseif ($iconProperty->getUrnNs() === $iconProperty::$blobNs) {
+                $data['icon_property']['urn'] = $iconProperty->getUrn();
+                $data['icon_property']['url'] = $iconProperty->getBlob()->getDownloadUrl();
             }
         }
 
@@ -344,7 +347,6 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'color',
-                'unique'     => true,
             ]
         );
         $metadata->mapField(

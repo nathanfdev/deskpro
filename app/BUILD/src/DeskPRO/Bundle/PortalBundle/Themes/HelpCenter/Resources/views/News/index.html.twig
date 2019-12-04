@@ -80,10 +80,9 @@
 {# Page sidebar #}
 {# ------------------------------------------ #}
 {% block page_sidebar %}
-    {# TODO active subscription state #}
     {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
         subscriptionInfo: [
-            { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section-title'), active: false },
+            { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section-title'), active: is_subscribed },
         ]
     } %}
 
