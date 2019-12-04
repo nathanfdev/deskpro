@@ -65,6 +65,15 @@ class ThemeSetAsset
     private $mimeType;
 
     /**
+     * The tags of the asset.
+     *
+     * @JMS\Type("array")
+     *
+     * @var string[]
+     */
+    private $tags;
+
+    /**
      * ThemeSetAsset constructor.
      *
      * @param ThemeSetAssetEntity $asset
@@ -77,6 +86,7 @@ class ThemeSetAsset
         $this->name     = $asset->getName();
         $this->themeSet = $asset->getThemeSet();
         $this->mimeType = $asset->getBlob()->getContentType();
+        $this->tags     = $asset->getTags();
         $this->url      = $url;
         $this->blobId   = $blobAuthId;
     }

@@ -236,7 +236,8 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 		var icon = {
 		  urn: iconPicker.find('input[name=icon_urn]').val(),
       color: iconPicker.find('input[name=icon_color]').val(),
-      style: iconPicker.find('input[name=icon_style]').val()
+      style: iconPicker.find('input[name=icon_style]').val(),
+      imageUrl: iconPicker.find('input[name=icon_url]').val(),
     };
 		window.AgentLegacyBundle.renderIconPicker(iconPicker, icon);
 

@@ -55,6 +55,7 @@ class ThemeSetAssetHandler extends AbstractEntityHandler
             $url = $entity->getBlob()->getDownloadUrl(true, true);
         } elseif (in_array('inline-image', $entity->getTags())
             || in_array('attachment', $entity->getTags())
+            || in_array('custom_icon', $entity->getTags())
         ) {
             $url        = $entity->getBlob()->getDownloadUrl(true, true);
             $blobAuthId = $entity->getBlob()->getAuthId();
