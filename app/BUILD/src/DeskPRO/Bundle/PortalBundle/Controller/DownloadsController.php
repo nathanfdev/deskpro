@@ -74,14 +74,6 @@ class DownloadsController extends AbstractController
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloads();
 
-        // SUBSCRIPTION
-
-        $isSubscribed = false;
-        if ($this->getUser() && $this->getBrandSetting('user.downloads_subscriptions', false)) {
-            // waiting info regarding article category subscriptions
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('downloads', $this->getUser());
-        }
-
         // RENDER THEME
 
         return $this->renderThemeView(
@@ -93,7 +85,7 @@ class DownloadsController extends AbstractController
                 'show_category_link' => true,
                 'page_title'         => $this->createPageTitle()->downloads(),
                 'rss_link'           => $rssLink,
-                'is_subscribed'      => $isSubscribed,
+                'is_subscribed'      => $this->isSubscribedRootCategory(),
                 'helpcenter'         => $this->get('helpcenter_data_helper'),
             ]
         );
@@ -143,16 +135,6 @@ class DownloadsController extends AbstractController
             $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloads();
         }
 
-        // SUBSCRIBE
-
-        $isSubscribed = false;
-        if (
-            $this->getBrandSetting('user.downloads_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD_CATEGORY, $category)
-        ) {
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
-        }
-
         // PAGER
 
         $count = $this->getBrandSetting('portal.per_page_content');
@@ -168,7 +150,7 @@ class DownloadsController extends AbstractController
                 'count'         => $count,
                 'page'          => $page,
                 'pager'         => $pager,
-                'is_subscribed' => $isSubscribed,
+                'is_subscribed' => $this->isSubscribedCategory($category),
                 'page_title'    => $this->createPageTitle()->downloads($category),
                 'rss_link'      => $rssLink,
                 'helpcenter'    => $this->get('helpcenter_data_helper'),
@@ -186,6 +168,8 @@ class DownloadsController extends AbstractController
      * @param Request  $request
      * @param Download $file
      * @param string   $visitor_id
+     *
+     * @throws \Exception
      *
      * @return Response
      */
@@ -225,16 +209,6 @@ class DownloadsController extends AbstractController
         // NUM RATINGS
 
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($file);
-
-        // SUBSCRIPTION
-
-        $isSubscribed = false;
-        if (
-            $this->getBrandSetting('user.downloads_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD, $file)
-        ) {
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
-        }
 
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
         $check->markAsCheckOnly();
@@ -292,22 +266,24 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Downloads:view.html.twig',
             [
-                'file'               => $file,
-                'content'            => $file,
-                'custom_data'        => $customData,
-                'content_type'       => Download::CONTENT_TYPE,
-                'content_id'         => $file->getId(),
-                'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-                'breadcrumbs'        => $breadcrumbs,
-                'rating'             => $rating,
-                'is_subscribed'      => $isSubscribed,
-                'page_title'         => $this->createPageTitle()->downloads($file),
-                'show_rating_counts' => $showRatingCounts,
-                'rating_counts'      => $ratingCounts,
-                'lockout'            => $check->isLockoutRecommended(),
-                'lockout_time'       => $check->getLockoutTime(true),
-                'sd'                 => $request->get('sd'),
-                'downloadData'       => $downloadData,
+                'file'                   => $file,
+                'content'                => $file,
+                'custom_data'            => $customData,
+                'content_type'           => Download::CONTENT_TYPE,
+                'content_id'             => $file->getId(),
+                'new_comment_form'       => $newCommentForm ? $newCommentForm->createView() : null,
+                'breadcrumbs'            => $breadcrumbs,
+                'rating'                 => $rating,
+                'is_subscribed'          => $this->isSubscribedDownload($file),
+                'is_subscribed_category' => $this->isSubscribedCategory($file->getCategory()),
+                'is_subscribed_root'     => $this->isSubscribedRootCategory(),
+                'page_title'             => $this->createPageTitle()->downloads($file),
+                'show_rating_counts'     => $showRatingCounts,
+                'rating_counts'          => $ratingCounts,
+                'lockout'                => $check->isLockoutRecommended(),
+                'lockout_time'           => $check->getLockoutTime(true),
+                'sd'                     => $request->get('sd'),
+                'downloadData'           => $downloadData,
             ]
         );
     }
@@ -395,6 +371,8 @@ class DownloadsController extends AbstractController
      *
      * @param Request $request
      * @param string  $id
+     *
+     * @throws \Exception
      *
      * @return Response
      */
@@ -563,5 +541,52 @@ class DownloadsController extends AbstractController
         $this->addFlash('success', $this->phrase('portal.flashes.download_unsubscribe_everything'));
 
         return $this->redirectToRoute('portal_home');
+    }
+
+    /**
+     * @return bool
+     */
+    private function isSubscribedRootCategory()
+    {
+        if ($this->getUser() && $this->getBrandSetting('user.downloads_subscriptions', false)) {
+            // waiting info regarding article category subscriptions
+            return $this->getSubscriptionsHelper()->isSubscribedRootCategory('downloads', $this->getUser());
+        }
+
+        return false;
+    }
+
+    /**
+     * @param DownloadCategory $category
+     *
+     * @return bool
+     */
+    private function isSubscribedCategory(DownloadCategory $category)
+    {
+        if (
+            $this->getBrandSetting('user.downloads_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD_CATEGORY, $category)
+        ) {
+            return $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Download $file
+     *
+     * @return bool
+     */
+    private function isSubscribedDownload(Download $file)
+    {
+        if (
+            $this->getBrandSetting('user.downloads_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD, $file)
+        ) {
+            return $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
+        }
+
+        return false;
     }
 }
