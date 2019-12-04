@@ -1,4 +1,3 @@
-@new
 Feature: New ticket form
   I want to check department submission
 
