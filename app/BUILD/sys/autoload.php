@@ -45,6 +45,7 @@ foreach ([
     'PEAR_' => DP_APP_DIR.'/vendor-src/pear/lib',
     'EWSType_' => DP_APP_DIR.'/vendor-src/php-ews',
     'Services_Twilio' => DP_APP_DIR.'/vendor-src/twilio-php',
+    'PhpCsFixer' => DP_APP_DIR.'/vendor-src/friendsofphp/php-cs-fixer',
 ] as $prefix => $dir) {
     $loader->add($prefix, $dir);
 }
