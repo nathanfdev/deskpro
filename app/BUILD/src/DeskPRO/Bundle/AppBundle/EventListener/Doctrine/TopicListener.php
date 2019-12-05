@@ -32,11 +32,9 @@ class TopicListener implements EventSubscriber
             return;
         }
 
-        $em = $args->getEntityManager();
-        if ($args->hasChangedField('content')) {
-            $content = $this->cacheImagesSize($args->getNewValue('content'), $em);
-            $args->setNewValue('content', $content);
-        }
+        $em      = $args->getEntityManager();
+        $content = $this->cacheImagesSize($entity->getContentHtml(), $em);
+        $entity->setContent($content);
     }
 
     /**
