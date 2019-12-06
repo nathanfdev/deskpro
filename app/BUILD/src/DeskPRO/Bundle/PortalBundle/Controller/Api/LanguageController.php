@@ -36,6 +36,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.forms.date-picker-time',
             'helpcenter.forms.label-choose-a-file',
             'helpcenter.forms.label-drag-and-drop',
+            'helpcenter.general.copied',
             'helpcenter.general.copy-to-clipboard',
             'helpcenter.general.nav-chats',
             'helpcenter.general.nav-community',
