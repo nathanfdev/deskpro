@@ -519,17 +519,12 @@ class TicketsController extends AbstractController
             $message = $ticketMessageRepo->getLastAgentReply($ticket);
         }
 
-        // message must exist and belong to the ticket requested
-        if (!$message || $message->getTicketId() !== $ticket->getId()) {
-            if (!$this->getBrandSetting('core.iface_portal')) {
-                throw new NotFoundHttpException();
-            }
-
-            return $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
+        if (!$message) {
+            $message = $ticketMessageRepo->getFirstTicketMessage($ticket);
         }
 
-        // message must not be an agent note and the person on the message must be an agent
-        if ($message->is_agent_note || !$message->getPerson()->isAgent()) {
+        // message must exist and belong to the ticket requested
+        if (!$message || $message->getTicketId() !== $ticket->getId()) {
             if (!$this->getBrandSetting('core.iface_portal')) {
                 throw new NotFoundHttpException();
             }
