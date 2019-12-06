@@ -307,7 +307,16 @@ class ChatHandler
      */
     private function handleChatTypingStartCommand(ChatConversation $chat, array $request)
     {
-        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), ChatEvent::TYPING_START_EVENT_TYPE));
+        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent(
+            $chat->getId(),
+            ChatEvent::TYPING_START_EVENT_TYPE,
+            [
+                'message' => $request['message'],
+                'origin'  => $request['origin'],
+            ]
+        ));
+
+        $this->eventDispatcher->dispatch(UserChatEvent::USER_TYPING, new UserChatEvent($chat, $request['message']));
 
         return new ApiWrapper($chat);
     }
