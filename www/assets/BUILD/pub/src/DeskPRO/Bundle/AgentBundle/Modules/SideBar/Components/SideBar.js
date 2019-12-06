@@ -100,7 +100,7 @@ export class SideBarContainer extends SeparateComponent {
   }
 
   static canUseCommunity() {
-    return window.DESKPRO_PERSON_PERMS['agent_publish.use'] && window.DESKPRO_PERSON_PERMS['agent_publish.validate'];
+    return window.DESKPRO_PERSON_PERMS['agent_publish.use'];
   }
 
   static canUsePublish() {
