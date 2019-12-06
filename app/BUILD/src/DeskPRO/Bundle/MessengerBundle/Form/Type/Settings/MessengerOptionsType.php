@@ -8,6 +8,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MessengerOptionsType extends AbstractType
@@ -25,6 +27,8 @@ class MessengerOptionsType extends AbstractType
             ->add('tickets', MessengerOptionsTicketsType::class)
             ->add('chat', MessengerOptionsChatType::class)
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);
     }
 
     /**
@@ -35,5 +39,14 @@ class MessengerOptionsType extends AbstractType
         $resolver->setDefaults([
             'data_class' => MessengerOptions::class,
         ]);
+    }
+
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        if ((int) $data['autoStartTimeout'] < 0) {
+            $data['autoStartTimeout'] = 0;
+        }
+        $event->setData($data);
     }
 }
