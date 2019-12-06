@@ -16,7 +16,7 @@ class MessengerOptionsTickets
      *
      * @var string
      */
-    private $title = 'Start a conversation';
+    private $title = 'Contact us';
 
     /**
      * A short description summoned to help a user.
@@ -25,7 +25,7 @@ class MessengerOptionsTickets
      *
      * @var string
      */
-    private $description = 'Start a chat with one of our agents';
+    private $description = 'Fill up the form and create a ticket';
 
     /**
      * A text which will be shown on a button inside tickets block.
@@ -35,7 +35,7 @@ class MessengerOptionsTickets
      *
      * @var string
      */
-    private $buttonText = 'Start a new conversation';
+    private $buttonText = 'Contact us';
 
     /**
      * @return string
