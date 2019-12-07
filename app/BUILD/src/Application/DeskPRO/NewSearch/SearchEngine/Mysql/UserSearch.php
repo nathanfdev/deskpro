@@ -259,6 +259,7 @@ class UserSearch implements UserSearchInterface
             }
 
             $searchPlaces->add($qb->expr()->like('tickets_messages.message', '?'.$paramsIndex));
+            $searchPlaces->add($qb->expr()->like('tickets.subject', '?'.$paramsIndex));
             $params[$paramsIndex++] = '%'.str_replace(['%', '_', '\\'], ['\\%', '\\_', '\\\\'], $w).'%';
 
             if ($searchParams >= self::MAX_WORDS) {
