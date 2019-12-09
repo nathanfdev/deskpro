@@ -1061,6 +1061,9 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			    showSaving.hide();
 				},
 				success: function(data) {
+          if (this.collabOnLocalSaveListener) {
+            this.collabOnLocalSaveListener();
+          }
 					this.getEl('content_ed').html(data.content_html);
 					this._initPostArea();
 					this._initArticleArea();
@@ -1127,6 +1130,27 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
         var contentInput = null;
         var showSaving = this.getEl('article_save').find('.mark-loading');
 
+        self.collabOnLocalSaveListener = undefined;
+
+        function onLocalSaveSubscriber(callback) {
+          self.collabOnLocalSaveListener = callback;
+        }
+
+        function onRemoteSave(collabStatus) {
+          if (collabStatus === 'disabled') {
+            DeskPRO_Window.showConfirm(
+              self.getMetaData('collabDisabledModalText'),
+              function() {
+                DeskPRO_Window.loadPage(BASE_URL + 'agent/kb/article/' + self.getMetaData('article_id'), {ignoreExist:true});
+                self.closeSelf();
+              },
+              undefined,
+              self.getMetaData('collabDisabledModalReload'),
+              self.getMetaData('collabDisabledModalCancel')
+            );
+          }
+        }
+
         function createEditor() {
           self.reactContentNode = txt[0];
           if (self.meta.isCollabEnabled) {
@@ -1135,6 +1159,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
               contentInput,
               undefined,
               undefined,
+              onLocalSaveSubscriber,
+              onRemoteSave,
               self.meta.collabEditorOptions.documentUrn,
               self.meta.collabEditorOptions.userUrn,
               self.meta.collabEditorOptions.token

@@ -280,6 +280,7 @@ class LanguagesController extends CrudController
             'agent.publish.image_browser',
             'agent.publish.collab_users_editing',
             'agent.publish.collab_disconnected',
+            'agent.publish.collab_disabled',
             'agent.publish.pick_icon',
             'agent.search.manage_tickets',
             'agent.search.type_ticket',

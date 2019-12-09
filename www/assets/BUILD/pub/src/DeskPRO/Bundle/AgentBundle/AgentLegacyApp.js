@@ -390,6 +390,8 @@ class AgentLegacyApp {
     value,
     onFocus,
     onBlur,
+    onLocalSave,
+    onRemoteSave,
     documentUrn,
     userUrn,
     joinToken
@@ -399,7 +401,9 @@ class AgentLegacyApp {
       documentUrn,
       auth:              joinToken,
       userIdentity:      userUrn,
-      connectionManager: CollabManager.getConnectionManager()
+      connectionManager: CollabManager.getConnectionManager(),
+      onLocalSave,
+      onRemoteSave
     };
 
     ReactDOM.render(
