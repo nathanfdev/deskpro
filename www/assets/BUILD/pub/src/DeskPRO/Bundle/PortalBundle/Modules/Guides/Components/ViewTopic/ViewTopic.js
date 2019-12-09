@@ -40,6 +40,7 @@ class ViewTopic extends React.Component {
     this.changeInternalLinks();
     this.addAnchorLinks();
     this.addCodeBlocksCopy();
+    this.addReactImageLazyload();
     this.tabs();
     window.addEventListener('scroll', () => {
       if (!this.ticking) {
@@ -303,6 +304,28 @@ class ViewTopic extends React.Component {
     return container.innerHTML;
   };
 
+  addReactImageLazyload = () => {
+    const guideBlock = document.getElementsByClassName('topic-view')[0];
+    const images = guideBlock.querySelectorAll('.topic-content img');
+    if ('IntersectionObserver' in window) {
+      const lazyImageObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const lazyImage = entry.target;
+            lazyImage.src = lazyImage.dataset.src;
+            // lazyImage.srcset = lazyImage.dataset.srcset;
+            lazyImage.classList.remove('lazy');
+            lazyImageObserver.unobserve(lazyImage);
+          }
+        });
+      });
+
+      images.forEach((lazyImage) => {
+        lazyImageObserver.observe(lazyImage);
+      });
+    }
+  };
+
   internalLink = (e, path) => {
     e.preventDefault();
     const guideSlug = path.replace(/^(\/[^/]+)?\/guides\//, '').replace(/\/.*/, '');
@@ -342,6 +365,7 @@ class ViewTopic extends React.Component {
       this.changeInternalLinks();
       this.addAnchorLinks();
       this.addCodeBlocksCopy();
+      this.addReactImageLazyload();
       this.tabs();
       window.scrollTo(0, 0);
       setTimeout(this.defineSizes, 100);
