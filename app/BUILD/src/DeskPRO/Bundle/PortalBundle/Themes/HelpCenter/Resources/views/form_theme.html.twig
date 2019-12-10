@@ -364,9 +364,6 @@
             {%- set options = choices -%}
             {{- block('choice_widget_options') -}}
         </select>
-        {% if not multiple %}
-            <i class="far fa-angle-down fa-lg"></i>
-        {% endif %}
     </div>
 {%- endblock choice_widget_collapsed -%}
 
@@ -575,7 +572,6 @@ HIERARCHY
             {% set options = choices -%}
             {{- block('deskpro_hierarchical_choice_widget_options') -}}
         </select>
-        <i class="far fa-angle-down fa-lg"></i>
     </div>
 {%- endblock deskpro_hierarchical_choice_widget_collapsed %}
 
@@ -642,9 +638,6 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
             {% set options = choices -%}
             {{- block('deskpro_custom_field_choice_widget_options') -}}
         </select>
-        {% if not multiple %}
-            <i class="far fa-angle-down fa-lg"></i>
-        {% endif %}
     </div>
 {%- endblock deskpro_custom_field_choice_widget_collapsed %}
 
@@ -761,7 +754,6 @@ END HIERARCHY
             {% set options = choices -%}
             {{- block('entity_hierarchy_widget_options') -}}
         </select>
-        <i class="far fa-angle-down fa-lg"></i>
     </div>
 {%- endblock entity_hierarchy_collapsed %}
 

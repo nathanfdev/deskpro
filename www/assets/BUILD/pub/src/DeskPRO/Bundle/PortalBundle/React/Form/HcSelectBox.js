@@ -5,8 +5,8 @@ import clone from 'lodash/clone';
 import find from 'lodash/find';
 import uniqueId from 'lodash/uniqueId';
 import $ from 'jquery';
+import { DropDownInput } from '@deskpro/portal-components';
 import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
-import PortalSimpleSelectBox from './PortalSimpleSelectBox';
 
 export class LevelSelectActionStore extends FormActionStore {
 
@@ -31,12 +31,17 @@ export class LevelSelectActionStore extends FormActionStore {
         parent = null;
       }
 
-      options.push({
-        id:       $optEl.data('id'),
-        title:    $optEl.data('title') || $optEl.data('name') || $optEl.text(),
-        parent,
-        children: []
-      });
+      const label = $optEl.data('title') || $optEl.data('name') || $optEl.text();
+
+      if (label) {
+        options.push({
+          id:       $optEl.data('id'),
+          value:    $optEl.data('id'),
+          label:    $optEl.data('title') || $optEl.data('name') || $optEl.text(),
+          parent,
+          children: []
+        });
+      }
     });
 
     const walkerFn = (parent = null, path = []) => {
@@ -62,8 +67,7 @@ export class LevelSelectActionStore extends FormActionStore {
 export class HcSelectBox extends React.Component {
 
   static propTypes = {
-    widgetOptions: PropTypes.object,
-    actionStore:   PropTypes.object
+    actionStore: PropTypes.object
   };
 
   constructor(props) {
@@ -96,8 +100,8 @@ export class HcSelectBox extends React.Component {
     });
   }
 
-  onClickOption = (option) => {
-    this.props.actionStore.setValue(option.id);
+  onClickOption = (value) => {
+    this.props.actionStore.setValue(value);
   };
 
   getValuePath(value) {
@@ -122,27 +126,14 @@ export class HcSelectBox extends React.Component {
     this.optionData = this.props.actionStore.getOptionData();
   }
 
-  renderSelect(group, parentId = null, level = 1) {
-    const { widgetOptions } = this.props;
-    let subGroup = null;
-
-    if (this.state.valuePath.length) {
-      subGroup = find(group, i => this.state.valuePath.indexOf(i.id) !== -1);
-    }
-
-    const options = group.map(g => ({ id: g.id, title: g.title }));
-
+  renderSelect(group) {
     return (
       <div>
-        <PortalSimpleSelectBox
-          widgetOptions={widgetOptions}
-          options={options}
-          value={subGroup}
-          level={level}
+        <DropDownInput
+          dataSource={{ getOptions: group }}
+          value={this.state.value}
           onChange={this.onClickOption}
         />
-
-        {subGroup && subGroup.children.length ? this.renderSelect(subGroup.children, subGroup.id, level + 1) : null}
       </div>
     );
   }

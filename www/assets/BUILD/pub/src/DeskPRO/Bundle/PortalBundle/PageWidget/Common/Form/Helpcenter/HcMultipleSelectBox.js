@@ -1,11 +1,11 @@
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import * as HcSelectBox from '../../../../React/Form/HcSelectBox';
+import * as HcMultipleSelectBox from '../../../../React/Form/HcMultipleSelectBox';
 
-export class HcDpxSelectBox extends PageWidget {
+export class HcDpxMultipleSelectBox extends PageWidget {
   renderWidget() {
     this.$element.hide();
     this.$rElement = $('<div class="dp-react-widget dp-pc_field as-dpui"></div>').insertAfter(this.$element);
-    this.actionStore = HcSelectBox.createComponent(this.$element, this.$rElement, this.options);
+    this.actionStore = HcMultipleSelectBox.createComponent(this.$element, this.$rElement, this.options);
   }
 }
