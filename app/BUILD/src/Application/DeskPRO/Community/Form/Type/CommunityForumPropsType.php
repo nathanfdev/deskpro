@@ -44,6 +44,15 @@ class CommunityForumPropsType extends AbstractType
                 'allow_add'    => true,
                 'allow_delete' => true,
             ])
+            ->add('topic_fields', CollectionType::class, [
+                'entry_type'    => CommunityForumToFieldEmbeddedType::class,
+                'entry_options' => [
+                    'forum' => $options['forum'],
+                ],
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+            ])
             ->add('color', 'text')
             ->add('brand', EntityType::class, [
                 'class' => Brand::class,

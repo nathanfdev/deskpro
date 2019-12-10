@@ -48,6 +48,7 @@ define([
   'Admin/CustomFields/Kb/Ctrl/List',
   'Admin/CustomFields/Download/Ctrl/Edit',
   'Admin/CustomFields/Download/Ctrl/List',
+  'Admin/CustomFields/Community/Ctrl/List',
   'Admin/CustomFields/Community/Ctrl/Edit',
   'Admin/Labels/Ctrl/List',
   'Admin/Labels/Ctrl/Edit',
