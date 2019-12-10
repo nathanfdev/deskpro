@@ -157,7 +157,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         return $mChatTicketDefaults
             ->setSubject($this->getSettings(self::CHAT_TICKET_DEFAULTS_SUBJECT, $brand, $mChatTicketDefaults->getSubject()))
-            ->setDepartment($this->getSettings(self::CHAT_TICKET_DEFAULTS_DEP, $brand, $mChatTicketDefaults->getDepartment()))
+            ->setDepartment($this->getSettings(self::CHAT_TICKET_DEFAULTS_DEP, $brand, $this->getDefaultDepartment('ticket')))
             ;
     }
 
