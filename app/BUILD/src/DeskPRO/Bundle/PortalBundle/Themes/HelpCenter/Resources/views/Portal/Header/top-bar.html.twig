@@ -4,7 +4,7 @@
             <div class="d-flex flex-row">
                 <div>
                     <div class="dp-po-brand-left">
-                        <div class="dp-po-homelink">
+                        <div class="dp-po-homelink d-none d-sm-block">
                             {% if portal_custom_logo() %}
                                 <a href="{{ brand_setting('core.site_url') | default(path('portal_home')) }}">
                                     <span class="dp-po-logo">
@@ -16,6 +16,15 @@
                                 <span class="dp-po-brand-name text-truncate">{{ brand_setting('core.deskpro_name')|e }}</span>
                             </a>
                         </div>
+                        <div class="dp-po-homelink d-block d-sm-none">
+                            <a href="{{ brand_setting('core.site_url') | default(path('portal_home')) }}">
+                                {% if portal_custom_favicon() %}
+                                    <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_favicon().url }}" class="logo" />
+                                {% elseif portal_custom_logo() %}
+                                    <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" />
+                                {% endif %}
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="flex-nowrap ml-auto">
@@ -23,7 +32,7 @@
                         {% include 'Theme:Common:agent_bar.html.twig' %}
                         <div class="dp-po-language" id="hc-language-changer">
                             <a class="dp-po-language-link" href="">
-                                <img src="{{ asset_data_url('images/flags/locale_en-US.png', 'legacy_web') }}" alt=""> English
+                                <img src="{{ asset_data_url('images/flags/locale_en-US.png', 'legacy_web') }}" alt=""> <span class="dp-po-language-link-text">English</span>
                                 <i class="dp-po-icon far fa-angle-down"></i>
                             </a>
                         </div>
