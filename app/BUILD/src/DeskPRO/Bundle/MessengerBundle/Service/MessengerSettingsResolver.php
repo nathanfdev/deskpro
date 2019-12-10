@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\MessengerBundle\Service;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Settings\AbstractBrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChat;
@@ -121,7 +122,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         return $mTickets
             ->setEnabled($this->getSettings(self::TICKETS_ENABLED, $brand, $mTickets->isEnabled()))
             ->setSubject($this->getSettings(self::TICKETS_SUBJECT, $brand, $mTickets->getSubject()))
-            ->setDepartment($this->getSettings(self::TICKETS_DEPARTMENT, $brand, $mTickets->getDepartment()))
+            ->setDepartment($this->getSettings(self::TICKETS_DEPARTMENT, $brand, $this->getDefaultDepartment('ticket')))
             ;
     }
 
@@ -137,7 +138,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         return $mChat
             ->setEnabled($this->getSettings(self::CHAT_ENABLED, $brand, $mChat->isEnabled()))
             ->setBusyMessage($this->getSettings(self::CHAT_BUSY_MESSAGE, $brand, $mChat->getBusyMessage()))
-            ->setDepartment($this->getSettings(self::CHAT_DEFAULT_DEPARTMENT, $brand, $mChat->getDepartment()))
+            ->setDepartment($this->getSettings(self::CHAT_DEFAULT_DEPARTMENT, $brand, $this->getDefaultDepartment('chat')))
             ->setNoAnswerBehavior($this->getSettings(self::CHAT_NO_ANSWER_BEHAVIOR, $brand, $mChat->getNoAnswerBehavior()))
             ->setPrompt($this->getSettings(self::CHAT_PROMPT, $brand, $mChat->getPrompt()))
             ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
@@ -237,5 +238,10 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getSettings($name, Brand $brand, $default = null)
     {
         return $this->settingsResolver->getSetting($name, $brand, $default);
+    }
+
+    private function getDefaultDepartment($type = 'chat')
+    {
+        return $this->em->getRepository(Department::class)->getDefaultDepartment($type)->getId();
     }
 }
