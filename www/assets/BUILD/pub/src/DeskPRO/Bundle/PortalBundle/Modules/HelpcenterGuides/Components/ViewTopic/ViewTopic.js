@@ -31,6 +31,7 @@ class ViewTopic extends React.Component {
     };
     this.contentChanged = false;
     this.ticking = false;
+    this.targetSlug = props.params.slug;
     window.onload = this.defineSizes;
     moment.locale(window.DESKPRO_LOCALE);
   }
@@ -272,17 +273,20 @@ class ViewTopic extends React.Component {
       });
       this.setState({
         topics,
-        flashes: [],
-        loaded:  true,
+        flashes: []
       });
       this.changeInternalLinks();
       this.addCodeBlocksCopy();
       this.addReactImageLazyload();
-      scroller.scrollTo(`topic_${this.props.params.slug}`, {
-        smooth:    true,
-        isDynamic: true,
-        offset:    -129,
-      });
+      setTimeout(() => {
+        this.setState({
+          loaded: true,
+        });
+        scroller.scrollTo(`topic_${this.targetSlug}`, {
+          isDynamic: true,
+          offset:    -129,
+        });
+      }, 500);
     });
   };
 

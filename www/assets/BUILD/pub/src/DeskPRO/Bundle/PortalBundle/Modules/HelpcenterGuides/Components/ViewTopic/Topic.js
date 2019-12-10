@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import moment from 'moment';
+import { copyTextToClipboard } from 'DeskPRO/Component/Util/ClipBoard';
 import { TopicSummary } from '../index';
 
 class Topic extends React.PureComponent {
@@ -17,6 +18,30 @@ class Topic extends React.PureComponent {
 
   static defaultProps = {
     data: {}
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      copied: false
+    };
+  }
+
+  copyLinkToClipBoard = (e) => {
+    e.preventDefault();
+    const { topic, guideSlug } = this.props;
+    let baseUrl = window.DESKPRO_BASE_URL;
+    if (baseUrl) {
+      baseUrl = baseUrl.replace(/\/+$/, '');
+    }
+    const url = `${window.location.origin}${baseUrl}/guides/${guideSlug}/${topic.slug}`;
+    if (copyTextToClipboard(url)) {
+      this.setState({
+        copied: true
+      });
+      setTimeout(() => { this.setState({ copied: false }); }, 1000);
+    }
+    return false;
   };
 
   render() {
@@ -53,9 +78,10 @@ class Topic extends React.PureComponent {
                       data-toggle="tooltip"
                       data-placement="top"
                       href={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
-                      title={intl.formatMessage({ id: 'helpcenter.general.copy-to-clipboard' })}
+                      onClick={this.copyLinkToClipBoard}
                     >
-                      <i className="dp-po-icon far fa-anchor" />
+                      <i className="dp-po-icon far fa-anchor" title={intl.formatMessage({ id: 'helpcenter.general.copy-to-clipboard' })} />
+                      {this.state.copied && <FormattedMessage id="helpcenter.general.copied" />}
                     </a>
                   </h2>
                   { topic.parent &&
