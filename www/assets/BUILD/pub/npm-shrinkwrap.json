@@ -646,9 +646,9 @@
       }
     },
     "@deskpro/portal-components": {
-      "version": "0.3.12",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.12.tgz",
-      "integrity": "sha512-Y9meHq0Y/E1hnqANN7pLWdPWF6ggNvRVQfo+hUorbjV8w+Mmxw0S8FR/WHp64vmCbBf7zZd4j+h+BC7EcNlS0A==",
+      "version": "0.3.13",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.13.tgz",
+      "integrity": "sha512-pMBp25nuLDNuvRUDopTClgGE4CAOGikxm8sM+xV2EXmDo80pr1kwfdzg93CBp7+uhbw+gROM9cg7QMbjQ+EHcg==",
       "requires": {
         "@deskpro/js-utils": "1.0.7",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
