@@ -1,0 +1,172 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Tickets:macros.html.twig' as macros %}
+
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main dp-po-tickets-home">
+            <div class="container">
+                <div class="dp-po-title">
+                    <img class="dp-po-title-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}">
+                    <h2 class="dp-po-title-text">{{ phrase('helpcenter.approvals.my-approvals') }}</h2>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="dp-po-ticket-sidebar">
+
+                            <div class="dp-po-ticket-pages">
+                                <ul class="dp-po-ticket-pages-list">
+                                    <li class="dp-po-ticket-pages-item">
+                                        <a href="{{ path('portal_tickets') }}" class="dp-po-ticket-pages-link">
+                                            <i class="dp-po-icon fal fa-envelope-open-text"></i> {{ phrase('helpcenter.tickets.my-tickets') }}
+                                        </a>
+                                    </li>
+                                    {% if person.organization and person.organization_manager %}
+                                        <li class="dp-po-ticket-pages-item">
+                                            <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-ticket-pages-link">
+                                                <i class="dp-po-icon fal fa-atom-alt"></i> {{ phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    <li class="dp-po-ticket-pages-item">
+                                        <a href="{{ path('portal_chats') }}" class="dp-po-ticket-pages-link">
+                                            <i class="dp-po-icon fal fa-comments-alt"></i> {{ phrase('helpcenter.chats.my-chats') }}
+                                        </a>
+                                    </li>
+                                    <li class="dp-po-ticket-pages-item active">
+                                        <a href="{{ path('ticket_approvals') }}" class="dp-po-ticket-pages-link">
+                                            <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my-approvals') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                        {% if approval.status == 'pending' %}
+                            {% set approval_type = 'neutral' %}
+                        {% elseif approval.status == 'approved'%}
+                            {% set approval_type = 'success' %}
+                        {% elseif approval.status == 'rejected'%}
+                            {% set approval_type = 'danger' %}
+                        {% else %}
+                            {% set approval_type = 'default' %}
+                        {% endif %}
+
+                        <div class="dp-po-section dp-po-block dp-po-ticket-approval-view">
+                            <div class="dp-po-ticket-approval-header">
+                                <div class="dp-po-ticket-approval-header-title">
+                                    {{ approval.template.name }}
+                                </div>
+                                <div class="dp-po-ticket-approval-header-status dp-po-ticket-approval-header-status-{{ approval_type }}">
+                                    {{ phrase('helpcenter.approvals.'~approval.status~'-status') }}
+                                </div>
+                            </div>
+
+                            {% for response in approval.responses %}
+                                {% if response.vote == 1 %}
+                                    {% set approver_type = 'success' %}
+                                {% elseif response.vote == -1 %}
+                                    {% set approver_type = 'danger' %}
+                                {% endif %}
+
+                                <div class="dp-po-ticket-approval-response dp-po-ticket-approval-response-{{ approver_type }}">
+                                    <span class="dp-po-ticket-approval-response-type">
+                                      {% if response.vote == 1 %}{{ phrase('helpcenter.approvals.approved_by') }}{% else %}{{ phrase('helpcenter.approvals.rejected_by') }}{% endif %}:
+                                    </span>
+                                    <span class="dp-po-ticket-approval-response-name">{{ response.approver.communityName }}</span>
+                                    <span class="dp-po-ticket-approval-response-date">({{ response.createdAt | date("m-d-Y H:i") }})</span>
+                                    {% if response.message %}<span class="dp-po-ticket-approval-response-message">"{{ response.message }}"</span>{% endif %}
+                                </div>
+                            {% endfor %}
+
+                            {% if approval.description %}
+                                <div class="dp-po-ticket-approval-description">
+                                    {{ approval.description }}
+                                </div>
+                            {% endif %}
+
+                            <div class="dp-po-ticket-approval-info">
+                                <div class="dp-po-ticket-approval-info-item">
+                                    <span class="dp-po-ticket-approval-info-item-label">
+                                        {{ phrase('helpcenter.approvals.view_requesting_agent') }}:
+                                    </span>
+                                    <span class="dp-po-ticket-approval-info-item-value">
+                                        <span class="dp-po-ticket-approval-info-item-person-name">
+                                            {{ approval.createdBy ? approval.createdBy.communityName : phrase('portal.tickets.approvals.system') }}
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="dp-po-ticket-approval-info-item">
+                                    <span class="dp-po-ticket-approval-info-item-label">
+                                        {{ phrase('helpcenter.approvals.view_user') }}:
+                                    </span>
+                                    <span class="dp-po-ticket-approval-info-item-value">
+                                        <span class="dp-po-ticket-approval-info-item-person-name">
+                                            {{ approval.ticket.person.communityName }}
+                                        </span>
+                                        {% if not approval.ticket.person.isAgent %}
+                                            ({{ approval.ticket.person.email_address }})
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="dp-po-ticket-approval-info-item">
+                                    <span class="dp-po-ticket-approval-info-item-label">
+                                        {{ phrase('helpcenter.approvals.view_approved') }}:
+                                    </span>
+                                    <span class="dp-po-ticket-approval-info-item-value">
+                                        <span class="dp-po-ticket-approval-info-item-response-count {% if approval.status in ['pending', 'approved'] %}dp-po-ticket-approval-info-item-response-count-success{% endif %}">
+                                            {{ approval.approvedResponsesCount }}/{{ approval.requiredApprovals }}
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="dp-po-ticket-approval-info-item">
+                                    <span class="dp-po-ticket-approval-info-item-label">
+                                        {{ phrase('helpcenter.approvals.view_rejected') }}:
+                                    </span>
+                                    <span class="dp-po-ticket-approval-info-item-value">
+                                        <span class="dp-po-ticket-approval-info-item-response-count {% if approval.status in ['pending', 'rejected'] %}dp-po-ticket-approval-info-item-response-count-danger{% endif %}">
+                                            {{ approval.rejectedResponsesCount }}/{{ approval.requiredRejections }}
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="dp-po-ticket-approval-info-item">
+                                    <span class="dp-po-ticket-approval-info-item-label">
+                                        {% if approval.status == 'pending' %}
+                                            {{ phrase('helpcenter.approvals.view_awaiting_response') }}:
+                                        {% else %}
+                                            {{ phrase('helpcenter.approvals.view_no_response') }}:
+                                        {% endif %}
+                                    </span>
+                                    <span class="dp-po-ticket-approval-info-item-value">
+                                        {% for approver in approval.approversPendingResponse %}
+                                            <span class="{% if approval.status == 'pending' %}dp-po-ticket-approval-info-item-comma-list{% else %}dp-po-ticket-approval-info-item-list{% endif %}"><span class="dp-po-ticket-approval-info-item-person-name">{{ approver.communityName }}</span>{% if not approval.ticket.person.isAgent %} ({{ approval.ticket.person.email_address }}){% endif %}</span>
+                                        {% endfor %}
+                                    </span>
+                                </div>
+                                <div class="dp-po-ticket-approval-info-criteria">
+                                    <span class="dp-po-ticket-approval-info-criteria-label">
+                                        {{ phrase('helpcenter.approvals.view_criteria') }} -
+                                    </span>
+                                    <span class="dp-po-ticket-approval-info-criteria-item">
+                                        {{ phrase('helpcenter.approvals.view_to_approve') }}: <span class="{% if approval.status != 'cancelled' %}dp-po-ticket-approval-info-criteria-item-success{% endif %}">{{ approval.requiredApprovals }}/{{ approval.approversCount }}</span>
+                                    </span>
+                                    <span class="dp-po-ticket-approval-info-criteria-delimeter">|</span>
+                                    <span class="dp-po-ticket-approval-info-criteria-item">
+                                        {{ phrase('helpcenter.approvals.view_to_reject') }}: <span class="{% if approval.status != 'cancelled' %}dp-po-ticket-approval-info-criteria-item-danger{% endif %}">{{ approval.requiredRejections }}/{{ approval.approversCount }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% if not approval.hasResponded(app.user) and approval.isStatus('pending') %}
+                            <div class="dp-po-section dp-po-block dp-po-ticket-approval-view">
+                                {% include 'Theme:Approvals:response_form.html.twig' with {approval: approval, form: form} %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock page_content %}

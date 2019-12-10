@@ -107,6 +107,15 @@
                             </a>
                         </li>
                     {% endif %}
+
+                    {% if helpcenter.getUserInfo().ticket_approval_count > 0 and app.getSetting('core_tickets.ticket_approvals') %}
+                        <li class="dp-po-user-menu-item">
+                            <span class="disc"></span>
+                            <a class="dp-po-user-menu-link" href="{{ path('ticket_approvals') }}">
+                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}"> {{ phrase('helpcenter.approvals.my-approvals') }}
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
                 <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="btn btn-primary">{{ phrase('helpcenter.account.logout-btn') }}</a>
             </div>

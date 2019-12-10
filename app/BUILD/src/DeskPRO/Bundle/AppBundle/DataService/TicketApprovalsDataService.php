@@ -16,6 +16,13 @@ use Psr\Log\LoggerInterface;
  */
 class TicketApprovalsDataService extends AbstractDataService
 {
+    const LAST_24_HOURS    = 'last_24_hours';
+    const LAST_WEEK        = 'last_week';
+    const LAST_MONTH       = 'last_month';
+    const LAST_6_MONTH     = 'last_6_month';
+    const LAST_YEAR        = 'last_year';
+    const MORE_THAN_1_YEAR = 'more_than_1_year';
+
     /**
      * @var LoggerInterface
      */
@@ -77,13 +84,14 @@ class TicketApprovalsDataService extends AbstractDataService
      * @param string|null $query
      * @param int         $page
      * @param int         $maxPerPage
+     * @param string      $sortParam
+     * @param string      $sortDirection
+     * @param array       $timeIntervals
      *
      * @return Pagerfanta
      */
-    public function getPager(Person $person, $status, $query, $page, $maxPerPage)
+    public function getPager(Person $person, $status, $query, $page, $maxPerPage, $sortParam = null, $sortDirection = null, array $timeIntervals = [])
     {
-        $em = $this->em;
-
         return $this->generateAndCache(
             [
                 __FUNCTION__,
@@ -92,11 +100,12 @@ class TicketApprovalsDataService extends AbstractDataService
                 $query,
                 (int) $page,
                 (int) $maxPerPage,
+                $sortParam,
+                $sortDirection,
+                $timeIntervals,
             ],
-            function () use ($em, $person, $status, $query, $page, $maxPerPage) {
-                $qb = $em->createQueryBuilder();
-                $responseQb = $em->createQueryBuilder();
-
+            function () use ($person, $status, $query, $page, $maxPerPage, $sortParam, $sortDirection, $timeIntervals) {
+                $responseQb = $this->em->createQueryBuilder();
                 $responseQb
                     ->select('r_r.vote')
                     ->from(ApprovalResponse::class, 'r_r')
@@ -105,19 +114,31 @@ class TicketApprovalsDataService extends AbstractDataService
                     ->setMaxResults(1)
                 ;
 
+                $qb = $this->em->createQueryBuilder();
                 $qb
-                    ->select('ta AS approval, a, t, ag, p')
+                    ->select('ta AS approval, t, ag, p')
                     ->addSelect(sprintf('(%s) AS my_vote', $responseQb->getDQL()))
                     ->from(TicketApproval::class, 'ta')
                     ->innerJoin('ta.approvers', 'a')
                     ->innerJoin('ta.ticket', 't')
                     ->leftJoin('t.agent', 'ag')
                     ->innerJoin('t.person', 'p')
+                    ->leftJoin('ta.createdBy', 'c')
                     ->andWhere('a = :person')
                     ->andWhere('ta.status = :status')
                     ->setParameter('person', $person)
                     ->setParameter('status', $status)
                 ;
+
+                if ($sortParam === 'user') {
+                    $qb->orderBy('p.id', $sortDirection);
+                } elseif ($sortParam === 'agent') {
+                    $qb->orderBy('c.id', $sortDirection);
+                } elseif ($sortParam === 'completed') {
+                    $qb->orderBy('ta.completedAt', $sortDirection);
+                } elseif ($sortParam === 'cancelled') {
+                    $qb->orderBy('ta.cancelledAt', $sortDirection);
+                }
 
                 if (!empty($query)) {
                     $qb
@@ -125,6 +146,46 @@ class TicketApprovalsDataService extends AbstractDataService
                         ->setParameter('query', '%'.$query.'%')
                         ->setParameter('ref', $query)
                     ;
+                }
+
+                if ($timeIntervals) {
+                    $orX = $qb->expr()->orX();
+
+                    $now         = new \DateTime();
+                    $last24hours = new \DateTime('-24 hours');
+                    $lastWeek    = new \DateTime('-7 days');
+                    $lastMonth   = new \DateTime('-1 month');
+                    $last6Month  = new \DateTime('-6 months');
+                    $lastYear    = new \DateTime('-1 year');
+
+                    foreach ($timeIntervals as $timeInterval) {
+                        if ($timeInterval === self::LAST_24_HOURS) {
+                            $orX->add('ta.completedAt BETWEEN :now AND :last_24_hours');
+                            $qb->setParameter('now', $now);
+                            $qb->setParameter('last_24_hours', $last24hours);
+                        } elseif ($timeInterval === self::LAST_WEEK) {
+                            $orX->add('ta.completedAt BETWEEN :last_24_hours AND :last_week');
+                            $qb->setParameter('last_24_hours', $last24hours);
+                            $qb->setParameter('last_week', $lastWeek);
+                        } elseif ($timeInterval === self::LAST_MONTH) {
+                            $orX->add('ta.completedAt BETWEEN :last_week AND :last_month');
+                            $qb->setParameter('last_week', $lastWeek);
+                            $qb->setParameter('last_month', $lastMonth);
+                        } elseif ($timeInterval === self::LAST_6_MONTH) {
+                            $orX->add('ta.completedAt BETWEEN :last_month AND :last_6_month');
+                            $qb->setParameter('last_month', $lastMonth);
+                            $qb->setParameter('last_6_month', $last6Month);
+                        } elseif ($timeInterval === self::LAST_YEAR) {
+                            $orX->add('ta.completedAt BETWEEN :last_6_month AND :last_year');
+                            $qb->setParameter('last_6_month', $last6Month);
+                            $qb->setParameter('last_year', $lastYear);
+                        } elseif ($timeInterval === self::MORE_THAN_1_YEAR) {
+                            $orX->add('ta.completedAt < :last_year');
+                            $qb->setParameter('last_year', $lastYear);
+                        }
+                    }
+
+                    $qb->andWhere($orX);
                 }
 
                 $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
