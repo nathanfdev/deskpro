@@ -89,10 +89,12 @@ class BrandContext extends BaseContext
 
         $themeSet = new ThemeSet();
         $themeSet->setThemeId('standard');
+        $themeSet->setBrand($brand);
         $this->em()->persist($themeSet);
 
         $editThemeSet = new ThemeSet();
         $editThemeSet->setThemeId('standard');
+        $editThemeSet->setBrand($brand);
         $this->em()->persist($editThemeSet);
 
         $brand->setName($name);

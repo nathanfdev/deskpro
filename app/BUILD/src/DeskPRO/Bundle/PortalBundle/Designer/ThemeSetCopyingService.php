@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -47,6 +43,7 @@ class ThemeSetCopyingService
     public function copy(ThemeSet $source, ThemeSet $destination)
     {
         $destination->setThemeId($source->getThemeId());
+        $destination->setTitle($source->getTitle());
         $destination->setOptions($source->getOptions());
         $this->em->persist($destination);
 

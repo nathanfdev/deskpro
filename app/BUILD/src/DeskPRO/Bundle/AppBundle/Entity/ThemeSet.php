@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Template;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,16 +25,42 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id;
 
     /**
      * @var string
+     *
      * @ORM\Column(name="theme_id", type="string")
      * @Assert\NotNull()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $theme_id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", nullable=true)
+     * @Assert\NotNull()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     */
+    protected $title;
+
+    /**
+     * @var \Application\DeskPRO\Entity\Brand
+     *
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Brand", inversedBy="brands")
+     * @ORM\JoinColumn(name="brand_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $brand;
 
     /**
      * @var array
@@ -50,6 +78,13 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
     protected $assets;
 
     /**
+     * @ORM\OneToMany(targetEntity="Application\DeskPRO\Entity\Template", mappedBy="theme_set", cascade={"persist", "remove"}, orphanRemoval=true)
+     *
+     * @var ArrayCollection|Template[]
+     */
+    protected $templates;
+
+    /**
      * A theme_id that temporarily overrides getThemeId but is not persisted.
      * This is to support rendering old templates when new helpcenter theme is active.
      * See also \DeskPRO\Bundle\PortalBundle\Controller\Api\TicketController::newTicketAction.
@@ -63,7 +98,9 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct()
     {
-        $this->assets = new ArrayCollection();
+        $this->assets    = new ArrayCollection();
+        $this->templates = new ArrayCollection();
+
         $this->setOptions([]);
     }
 
@@ -93,6 +130,26 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
+    }
+
+    /**
      * @param string $overrideThemeId
      *
      * @return ThemeSet
@@ -100,6 +157,26 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
     public function setOverrideThemeId($overrideThemeId)
     {
         $this->overrideThemeId = $overrideThemeId;
+
+        return $this;
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand($brand)
+    {
+        $this->setModelField('brand', $brand);
 
         return $this;
     }
@@ -181,6 +258,42 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
         if ($this->assets->contains($asset)) {
             $asset->setThemeSet(null);
             $this->assets->removeElement($asset);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Template[]|ArrayCollection
+     */
+    public function getTemplates()
+    {
+        return $this->templates;
+    }
+
+    /**
+     * @param Template $template
+     *
+     * @return $this
+     */
+    public function addTemplate(Template $template)
+    {
+        $template->setThemeSet($this);
+        $this->templates->add($template);
+
+        return $this;
+    }
+
+    /**
+     * @param Template $template
+     *
+     * @return $this
+     */
+    public function removeTemplate(Template $template)
+    {
+        if ($this->templates->contains($template)) {
+            $template->setThemeSet(null);
+            $this->templates->removeElement($template);
         }
 
         return $this;

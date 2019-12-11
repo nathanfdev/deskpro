@@ -8,6 +8,9 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
         const thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
         eval(`${thisName} = this;`);
       }
+
+      super(...args);
+
       this.init = this.init.bind(this);
       this.save = this.save.bind(this);
       this.editTheme = this.editTheme.bind(this);
@@ -66,7 +69,9 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.error = this.error.bind(this);
       this.success = this.success.bind(this);
       this.serverError = this.serverError.bind(this);
-      super(...args);
+      this.cloneTheme = this.cloneTheme.bind(this);
+      this.importTheme = this.importTheme.bind(this);
+      this.importAndReplaceTheme = this.importAndReplaceTheme.bind(this);
     }
 
     static initClass() {
@@ -123,7 +128,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.preview_as = 'myself';
       this.preview_as_email = null;
       this.selected_theme = null;
-      return this.theme_set = null;
+      this.theme_set = null;
     }
 
     save() {
@@ -154,7 +159,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
         method: 'PUT',
         url:    `${this.$scope.baseUrl}/portal/api/style/edit-theme-set/info`,
         data:   {
-          theme_id: this.selected_theme
+          id: this.selected_theme
         }
       });
       this.recompiling = true;
@@ -284,6 +289,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
           this.loadSplashImage(),
           this.loadThemeOptions(),
           this.loadTemplateOptions(),
+          this.loadCustomThemeSets(),
           this.loadThemeSet(),
           this.loadWelcomeBox()
         ]).then(() => d.resolve());
@@ -483,6 +489,14 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       );
     }
 
+    loadCustomThemeSets() {
+      return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/custom-theme-sets`).success((data) => {
+        data.forEach((themeSet) => {
+          this.available_themes.push(themeSet);
+        });
+      });
+    }
+
     loadThemeSet() {
       return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/info`).success((data) => {
         this.theme_set = data;
@@ -644,7 +658,6 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
     promptEmail() {
       const { baseUrl } = this.$scope;
-
       const modalInstance = this.$modal.open({
         templateUrl: this.getTemplatePath('Portal/Editor/email-modal.html'),
         controller:  ['$scope', '$modalInstance', '$http', 'preview_as', function ($scope, $modalInstance, $http, preview_as) {
@@ -652,7 +665,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
           $scope.preview_as = preview_as;
           $scope.ok = function () { return $modalInstance.close(this.email); };
           $scope.cancel = () => $modalInstance.dismiss('cancel');
-          return $scope.loadEmails = val =>
+          $scope.loadEmails = val =>
             $http.get(`${baseUrl}/portal/api/emails?term=${val}&target=${preview_as}`)
                  .then(response => response.data)
           ;
@@ -673,7 +686,48 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       }
       return this.error('Server error occurred. Unable to save data.');
     }
+
+    cloneTheme() {
+      const { baseUrl } = this.$scope;
+      const modalInstance = this.$modal.open({
+        templateUrl: this.getTemplatePath('Portal/Editor/clone-theme-modal.html'),
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+          $scope.title = '';
+          $scope.ok = function () { return $modalInstance.close(this.title); };
+          $scope.cancel = () => $modalInstance.dismiss('cancel');
+        }
+        ]
+      });
+
+      modalInstance.result.then((title) => {
+        this.$http.post(`${baseUrl}/portal/api/style/edit-theme-set/clone`, { title }).success((data) => {
+          this.available_themes.push(data);
+          this.Growl.success('Theme is cloned');
+        });
+      });
+    }
+
+    importTheme(files) {
+      this.$upload.upload({ url: `${this.$scope.baseUrl}/portal/api/style/edit-theme-set/import`, file: files[0] }).success((data) => {
+        this.available_themes.push(data);
+        this.Growl.success('Theme is imported');
+      });
+    }
+
+    importAndReplaceTheme(files) {
+      this.$upload.upload({ url: `${this.$scope.baseUrl}/portal/api/style/edit-theme-set/import-and-replace`, file: files[0] }).success((data) => {
+        if (data.title) {
+          this.selected_theme = data.id;
+        } else {
+          this.selected_theme = data.theme_id;
+        }
+
+        this.editTheme();
+        this.Growl.success('Theme is imported');
+      });
+    }
   }
+
   AdminPortalCtrlPortalEditor.initClass();
 
   return AdminPortalCtrlPortalEditor.EXPORT_CTRL();
