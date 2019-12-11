@@ -831,7 +831,10 @@ class Ticket
     public function setTicketSlas($ticketSlas = null)
     {
         $this->ticketSlas     = $ticketSlas;
-        $this->worstSlaStatus = TicketEntity::calctWorstSlaStatus($ticketSlas);
+
+        if (!$ticketSlas instanceof CallbackDeferredProperty) {
+            $this->worstSlaStatus = TicketEntity::calctWorstSlaStatus($ticketSlas);
+        }
 
         return $this;
     }

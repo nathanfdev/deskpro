@@ -23,14 +23,6 @@ class DeskproRequirements extends RequirementCollection
                 $installedPhpVersion, self::REQUIRED_PHP_MIN_VERSION),
             sprintf('Install PHP %s or newer (installed version is %s)', self::REQUIRED_PHP_MIN_VERSION, $installedPhpVersion)
         );
-        $this->addRequirement(
-            version_compare($installedPhpVersion, '7.2.0alpha', '<'),
-            sprintf('Max PHP version must be 7.1.x (%s installed)', $installedPhpVersion),
-            sprintf('You are running PHP version "<strong>%s</strong>", but it\'s not supported by Deskpro yet. Please install PHP 7.1.x for now to run.
-                Before using Deskpro, upgrade your PHP installation, preferably to the latest version.',
-                $installedPhpVersion),
-            sprintf('Install PHP 7.1.x (installed version is %s)', $installedPhpVersion)
-        );
 
         $this->addPhpIniRequirement(
             'date.timezone', true, false,
@@ -361,9 +353,9 @@ class DeskproRequirements extends RequirementCollection
         }
 
         $this->addRecommendation(
-            function_exists('mcrypt_create_iv') || function_exists('openssl_cipher_iv_length'),
-            'it is recommended to install openssl or mcrypt extension',
-            'Install and enable the <strong>mcrypt</strong> or <strong>openssl</strong> extension.'
+            function_exists('openssl_cipher_iv_length'),
+            'it is recommended to install openssl',
+            'Install and enable the <strong>openssl</strong> extension.'
         );
 
         $check_fn = [

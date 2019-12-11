@@ -21,7 +21,7 @@ class ConnectionFactory extends BaseConnectionFactory
         global $DP_ENV;
 
         if ($DP_ENV && $DP_ENV->getRuntimeVar('is_building', false)) {
-            $mock = \Mockery::mock(new PDOStub());
+            $mock = \Mockery::mock(PDOStub::class);
             $mock->shouldReceive('setAttribute')->andReturn();
             $mock->shouldReceive('getAttribute')->andReturn();
             $mock->shouldReceive('beginTransaction')->andReturn();

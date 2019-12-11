@@ -45,6 +45,7 @@ foreach ([
     'PEAR_' => DP_APP_DIR.'/vendor-src/pear/lib',
     'EWSType_' => DP_APP_DIR.'/vendor-src/php-ews',
     'Services_Twilio' => DP_APP_DIR.'/vendor-src/twilio-php',
+    'PhpCsFixer' => DP_APP_DIR.'/vendor-src/friendsofphp/php-cs-fixer',
 ] as $prefix => $dir) {
     $loader->add($prefix, $dir);
 }
@@ -80,6 +81,7 @@ $loader->addClassMap([
     'tnef'                                            => DP_APP_DIR.'/vendor-src/tnef-decoder/tnef.php',
     'PDODblibBundle'                                  => DP_APP_DIR.'/vendor-src/ouster',
     'Swift_Transport_Esmtp_Auth_XOAuth2Authenticator' => DP_APP_DIR.'/vendor-src/swiftmailer/XOAuth2Authenticator.php',
+    'Pelago\Emogrifier'                               => DP_APP_DIR.'/vendor-src/pelago/emogrifier/Classes/Emogrifier.php',
 ]);
 
 foreach ([
@@ -112,7 +114,7 @@ spl_autoload_register(
         }
 
         static $paths = null;
-        if (!$paths) {
+        if ($paths === null) {
             if ($DP_ENV) {
                 $paths = $DP_ENV->getConfig('paths.app_paths', []);
             } else {
@@ -124,7 +126,7 @@ spl_autoload_register(
         $appname = array_shift($parts);
 
         foreach ($paths as $prefix => $base_path) {
-            if ($prefix === 'default' || strpos($appname, $prefix) === 0) {
+            if ($prefix === 'default' || (is_string($prefix) && strpos($appname, $prefix) === 0)) {
                 $path = $base_path.'/'.$appname.'/native/'.implode('/', $parts).'.php';
                 if (file_exists($path)) {
                     require_once $path;

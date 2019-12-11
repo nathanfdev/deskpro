@@ -9,7 +9,6 @@ namespace Application\DeskPRO\EmailGateway\Protocol;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Zend\Mail\Protocol\Exception;
-use Zend\Stdlib\ErrorHandler;
 
 class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
 {
@@ -70,7 +69,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
             $port = $ssl === 'SSL' ? 993 : 143;
         }
 
-        ErrorHandler::start();
+        $errno = $errstr = null;
         $this->socket = @stream_socket_client(
             $host.':'.$port,
             $errno,
@@ -84,13 +83,14 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
                 ],
             ])
         );
-        $error = ErrorHandler::stop();
+
         if (!$this->socket) {
             throw new Exception\RuntimeException(sprintf(
                 'cannot connect to host%s',
-                ($error ? sprintf('; error = %s (errno = %d )', $error->getMessage(), $error->getCode()) : '')
-            ), 0, $error);
+                ($errstr ? sprintf('; error = %s (errno = %d )', $errstr, $errno) : '')
+            ), 0);
         }
+
         stream_set_timeout($this->socket, $this->stream_timeout);
 
         if (!$this->_assumedNextLine('* OK')) {

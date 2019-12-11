@@ -18,11 +18,17 @@ class ContentEditor extends React.PureComponent {
       useCollab.onUsers = this.onCollubUsers;
       useCollab.onOnline = this.onCollabOnline;
       useCollab.onOffline = this.onCollabOffline;
+      useCollab.onCollabDisabled = this.onCollabDisabled;
     }
 
     this.state = {
       collabUsers:      [],
       collabOnline:     false,
+      /**
+       * Document too large or etc ...
+       * But we still might track users
+       */
+      collabDisabled:   false,
       showForceConnect: false
     };
   }
@@ -66,6 +72,12 @@ class ContentEditor extends React.PureComponent {
     });
   }
 
+  onCollabDisabled = () => {
+    this.setState({
+      collabDisabled: true
+    });
+  }
+
   onForceConnect = () => {
     const { useCollab } = this.props;
 
@@ -105,7 +117,7 @@ class ContentEditor extends React.PureComponent {
     );
   }
 
-  getForceConnectBlock = () => {
+  getCollabForceConnectBlock = () => {
     const { useCollab } = this.props;
 
     if (!useCollab || !useCollab.connectionManager) {
@@ -113,21 +125,37 @@ class ContentEditor extends React.PureComponent {
     }
 
     return (
-      <div className="collab-force-connect">
-        <span><FormattedMessage id="agent.publish.collab_disconnected" /> </span>
+      <div className="collab-warning-block">
+        <span><i className="fas fa-exclamation-triangle" /><FormattedMessage id="agent.publish.collab_disconnected" /> </span>
         <button className="clean-white" onClick={this.onForceConnect}><FormattedMessage id="agent.general.retry" /></button>
+      </div>
+    );
+  }
+
+  getCollabDisabledWarningBlock = () => {
+    const { useCollab } = this.props;
+
+    if (!useCollab || !useCollab.connectionManager) {
+      return null;
+    }
+
+    return (
+      <div className="collab-warning-block">
+        <span><i className="fas fa-exclamation-triangle" /><FormattedMessage id="agent.publish.collab_disabled" />
+        </span>
       </div>
     );
   }
 
   render() {
     const { value, useCollab } = this.props;
-    const { collabUsers, collabOnline, showForceConnect } = this.state;
+    const { collabUsers, collabOnline, collabDisabled, showForceConnect } = this.state;
 
     return (
       // Need div position:relative to properly show overlay diff
       <div>
-        { useCollab && showForceConnect && this.getForceConnectBlock() }
+        { useCollab && showForceConnect && this.getCollabForceConnectBlock() }
+        { useCollab && collabOnline && collabDisabled && !showForceConnect && this.getCollabDisabledWarningBlock() }
         <div style={{ position: 'relative' }} ref={this.wrapperRef}>
           {useCollab && !collabOnline && <div className="collab-offline-overlay" />}
           {useCollab && this.getCollabUsersList(collabUsers)}

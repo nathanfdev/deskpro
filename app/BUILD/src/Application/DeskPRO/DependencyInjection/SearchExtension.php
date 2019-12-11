@@ -26,10 +26,10 @@ class SearchExtension extends Extension
         $definition->addTag('doctrine.event_subscriber');
         $container->setDefinition('deskpro.search.entity_listener', $definition);
 
-        $definition = new Definition('Application\\DeskPRO\\Elastica\\ClientFactory', [new Reference('deskpro.core.settings')]);
+        $definition = new Definition('Application\\DeskPRO\\Elastica\\ClientFactory', [new Reference('service_container')]);
         $container->setDefinition('deskpro.elastica.client_factory', $definition);
 
-        $definition = new Definition('Application\\DeskPRO\\ApacheTika\\ClientManager', [new Reference('deskpro.core.settings')]);
+        $definition = new Definition('Application\\DeskPRO\\ApacheTika\\ClientManager', [new Reference('service_container')]);
         $container->setDefinition('deskpro.apache_tika.client_manager', $definition);
     }
 

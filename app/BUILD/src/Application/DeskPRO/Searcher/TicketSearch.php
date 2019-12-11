@@ -533,6 +533,7 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'ticket.total_user_waiting';
                         break;
                     case self::TERM_CREATION_SYSTEM:
+                        $this->affected_fields[] = 'ticket.creation_system';
                         break;
                     case 'escalation_eliminator':
                         break;
@@ -2063,7 +2064,7 @@ class TicketSearch extends SearcherAbstract
                         if (!empty($choice_info['agent_ids'])) {
                             $choice = $choice_info['agent_ids'];
                         } else {
-                            continue;
+                            continue 2;
                         }
 
                         $wheres[] = $this->_choiceMatch($field, $op, $choice);
@@ -2534,6 +2535,8 @@ class TicketSearch extends SearcherAbstract
                         break;
 
                     case self::TERM_CREATION_SYSTEM:
+                        $this->affected_fields[] = 'ticket.creation_system';
+                        $wheres[] = $this->_choiceMatch("{$tickets_table}.creation_system", $op, $choice, true);
                         $set_status = true;
                         break;
 
@@ -2581,7 +2584,7 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_DAY_CREATED:
                         $days = (is_array($choice) && isset($choice['days'])) ? $choice['days'] : $choice;
                         if (!$days || !is_array($days)) {
-                            continue;
+                            continue 2;
                         }
                         $wheres[] = $this->_choiceMatch("DATE_FORMAT(tickets.date_created, '%w')", $op, $days, true);
                         break;

@@ -101,7 +101,6 @@ class DpKernel extends BaseKernel
             new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
             new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
 
-            new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
             new \DeskPRO\Bundle\SendmailBundle\SendmailBundle(),
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
@@ -119,6 +118,7 @@ class DpKernel extends BaseKernel
             new \Application\LegacyApiBundle\LegacyApiBundle(),
             new \DeskPRO\Bundle\UpdateBundle\UpdateBundle(),
             new \DeskPRO\Bundle\MessengerBundle\MessengerBundle(),
+            new \Application\DeskPRO\DeskPROBundle(),
         ];
 
         if (defined('DPC_IS_CLOUD')) {

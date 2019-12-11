@@ -13,7 +13,7 @@
     "@deskpro/messenger-setup": "0.1.11",
     "@deskpro/portal-components": "0.3.22",
     "@deskpro/portal-style": "0.3.22",
-    "@deskpro/product-content-editor": "0.1.14",
+    "@deskpro/product-content-editor": "0.1.15",
     "@deskpro/react-components": "1.4.7",
     "@deskpro/react-datepicker-hijri": "1.5.0",
     "@deskpro/react-forms": "^2.0.0-beta41",

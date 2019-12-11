@@ -73,7 +73,7 @@ class BrandSettingContext extends BaseContext
             ['brand', 'name', 'value'],
             [$brand, $name, $value],
         ];
-        $this->dataContext->theFollowingRecordsExist('BrandSetting', new TableNode($table));
+        $this->dataContext->theFollowingRecordsExist('BrandSetting', $table);
     }
 
     /**

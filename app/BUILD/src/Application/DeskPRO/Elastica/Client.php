@@ -8,7 +8,7 @@ namespace Application\DeskPRO\Elastica;
  * @package DeskPRO
  */
 
-use FOS\ElasticaBundle\Client as BaseClient;
+use FOS\ElasticaBundle\Elastica\Client as BaseClient;
 
 class Client extends BaseClient
 {

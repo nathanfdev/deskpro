@@ -68,7 +68,7 @@ dp_build_runcmd('bin/console cache:warmup --kernel api --env prod --no-debug --v
 ########################################################################################################################
 
 echo "Legacy assets\n";
-dp_build_runcmd('bin/console dp:assetic -r ALL --kernel dp --env prod --verbose');
+dp_build_runcmd('bin/console dp:assetic -r ALL --kernel dp --env prod --verbose --barg is-building');
 
 ####################################################################################################################php####
 # Schema file
@@ -90,7 +90,7 @@ dp_build_runcmd('bin/console dpdev:gen:opt-lang --env prod --barg is-building');
 
 if (!$is_quick) {
     echo "Generating template map\n";
-    dp_build_runcmd('bin/console dpdev:gen:template-map --env prod');
+    dp_build_runcmd('bin/console dpdev:gen:template-map --env prod --barg is-building');
 }
 
 ########################################################################################################################
@@ -99,7 +99,7 @@ if (!$is_quick) {
 
 if (!$is_quick) {
     echo "Generating warmup map\n";
-    dp_build_runcmd('bin/console dpdev:gen:warmup-file --env prod');
+    dp_build_runcmd('bin/console dpdev:gen:warmup-file --env prod --barg is-building');
 }
 
 ########################################################################################################################
@@ -153,4 +153,4 @@ dp_build_runcmd('dev/bin/build/encode-files');
 ########################################################################################################################
 
 echo "Generating file integrity map\n";
-dp_build_runcmd('bin/console dpdev:gen:integrity-map');
+dp_build_runcmd('bin/console dpdev:gen:integrity-map --barg is-building');

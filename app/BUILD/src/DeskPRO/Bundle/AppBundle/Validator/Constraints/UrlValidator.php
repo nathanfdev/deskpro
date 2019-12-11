@@ -26,7 +26,7 @@ class UrlValidator extends \Symfony\Component\Validator\Constraints\UrlValidator
         }
 
         if ($constraint->allowFile) {
-            if (preg_match('#^\\\\[\w\d-_\\\]+$#', $value)) {
+            if (preg_match('#^\\\\[\w\d\\-_\\\]+$#', $value)) {
                 // shared folder
                 return;
             }

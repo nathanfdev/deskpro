@@ -11,6 +11,7 @@ import { Modal, Label, Button, ConfirmButton, Input } from '@deskpro/react-compo
 import $ from 'jquery';
 import { allContentTemplatesSelector, isContentTemplatesLoadedSelector } from '../Selectors/contentTemplates';
 import { editContentTemplate, deleteContentTemplate, loadContentTemplates, openContentTemplateEditor } from '../Actions/contentTemplateActions';
+import ContentTemplatesFilter from './ContentTemplatesFilter';
 
 @connect(state => ({
   contentTemplates:       allContentTemplatesSelector(state),
@@ -115,7 +116,9 @@ class ManageContentTemplatesModal extends React.Component {
     this.rowRenderer = this.rowRenderer.bind(this);
     this.state = {
       confirmDeletion: null,
-      editTemplate:    null
+      editTemplate:    null,
+      filter: '',
+      showMode: 'all'
     };
   }
 
@@ -133,7 +136,14 @@ class ManageContentTemplatesModal extends React.Component {
 
   rowRenderer({ key, index, style }) {
     const { contentTemplates, agents, editTemplate } = this.props;
-    const contentTemplate = contentTemplates.toArray()[index];
+    const { filter, showMode } = this.state;
+
+    const regExp = new RegExp(filter, 'igu');
+    const templateList =  contentTemplates
+      .filter(template => template.get('title').match(regExp))
+      .filter(template => showMode === 'all' || template.get('type') === showMode);
+
+    const contentTemplate = templateList.toArray()[index];
     if (!contentTemplate) {
       return null;
     }
@@ -201,9 +211,27 @@ class ManageContentTemplatesModal extends React.Component {
     });
   };
 
+  handleFilter = (filter) => {
+    this.setState({ filter });
+    if (this.listRef) {
+      this.listRef.forceUpdateGrid();
+    }
+  };
+
+  handleShowMode = (checked, showMode) => {
+    this.setState({ showMode });
+    if (this.listRef) {
+      this.listRef.forceUpdateGrid();
+    }
+  };
+
   render() {
     const { width, closeMenu, contentTemplates, contentTemplatesLoaded } = this.props;
-    const { confirmDeletion, editTemplate } = this.state;
+    const { confirmDeletion, editTemplate, filter, showMode } = this.state;
+
+    const regExp = new RegExp(filter, 'igu');
+    const filteredTemplates = contentTemplates.filter(template => template.get('title').match(regExp));
+    const templateList = filteredTemplates.filter(template => showMode === 'all' || template.get('type') === showMode);
 
     let { height } = this.props;
     if (isNaN(height)) {
@@ -275,6 +303,15 @@ class ManageContentTemplatesModal extends React.Component {
 
         <div className="header">
           <div className="search">
+            <Isvg
+              className="search"
+              src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/search.svg`}
+            />
+            <Input
+              className="input--large"
+              value={filter}
+              onChange={this.handleFilter}
+            />
             <a className="close-icon" onClick={closeMenu}>
               <Isvg
                 className="close-icon"
@@ -288,9 +325,19 @@ class ManageContentTemplatesModal extends React.Component {
         </div>
         <div className="body">
           <Loader loaded={contentTemplatesLoaded}>
+            {templateList.size > 0 &&
+              <ContentTemplatesFilter
+                templates={contentTemplates}
+                filteredTemplates={filteredTemplates}
+                showMode={showMode}
+                filter={filter}
+                handleShowMode={this.handleShowMode}
+                handleFilter={this.handleFilter}
+              />
+            }
             <List
               className="snippets__list"
-              rowCount={contentTemplates.size}
+              rowCount={templateList.size}
               width={width - 5}
               height={height}
               rowHeight={60}
@@ -350,6 +397,7 @@ class ContentTemplateItem extends React.Component {
         <div className="content-templates__element">
           <div>
             <span className="title">{contentTemplate.get('title')}</span>
+            <span className="type">{contentTemplate.get('type')}</span>
             <div className="author">
               <a data-route={`person:/agent/people/${agentId}`}>
                 {agents.getIn([agentId, 'name'])}

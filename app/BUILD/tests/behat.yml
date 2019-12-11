@@ -6,6 +6,9 @@
 #    export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://dev.dpnew.devput.com:8080/"}}}'
 #
 # ----------------------------------------------------------------------------------------------------------------------
+default:
+    calls:
+        error_reporting: 128
 
 api:
     suites:

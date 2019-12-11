@@ -39,15 +39,14 @@ echo "---"
 bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /dev/null
 # ---
 
-././../../bin/console cache:warmup --kernel api --env=test
-././../../bin/console cache:warmup --kernel api --env=test --no-debug
-././../../bin/console cache:warmup --kernel portal --env=test
-././../../bin/console cache:warmup --kernel portal --env=test --no-debug
+././../../bin/console cache:warmup --kernel api --env=test --no-debug --barg is-building
+././../../bin/console cache:warmup --kernel portal --env=test --no-debug --barg is-building
 
 #################################################
 # RUN SYSTEM API TESTS
 #################################################
 
+SECONDS=0
 echo "Running a single system-api behat thread to generate caches w/o concurrency"
 (export DP_PARALLEL_TESTING_PROCESS_NUM=1 && bin/behat --profile=system-api --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-system-api.txt") &
 wait
