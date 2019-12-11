@@ -121,6 +121,15 @@ class OrganizationsController extends CrudController
         }
     }
 
+    protected function applySorting(QueryBuilder $qb, $alias, Request $request)
+    {
+        parent::applySorting($qb, $alias, $request);
+
+        // ordering by parent has different results depending on mysql version
+        // so this just forces a determined order
+        $qb->addOrderBy($alias.'.id', 'ASC');
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -2,7 +2,8 @@ Feature: Downloads
   Check Download EULA
 
   Background:
-    Given the setting "user.attachment_require_auth_downloads" is set to "true"
+    Given I install the fresh data set
+    And the setting "user.attachment_require_auth_downloads" is set to "true"
     And the following languages are enabled:
       | default |
     And only the following custom download fields exist:
@@ -23,4 +24,4 @@ Feature: Downloads
     Then I should be on "/downloads/files/example-download?start_download=1"
     And the response status code should be 200
 
-    
+

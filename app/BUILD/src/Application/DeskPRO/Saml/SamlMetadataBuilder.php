@@ -9,7 +9,7 @@ use DateTime;
  *
  * We added the $custom_xml argument, which simply injects directly into the metadata XML
  */
-class SamlMetadataBuilder extends \OneLogin_Saml2_Metadata
+class SamlMetadataBuilder extends \OneLogin\Saml2\Metadata
 {
     const TIME_VALID  = 172800;  // 2 days
     const TIME_CACHED = 604800; // 1 week

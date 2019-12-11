@@ -31,21 +31,21 @@ FIND;
 
         $dashboardIds = $connection->fetchAllCol($find);
 
-        $sql = <<<'UPDATE'
+        $sql = <<<'SQL'
 UPDATE `report_dashboard_permission` as `rdp`
 SET `rdp`.`name` = 'full'
 WHERE `rdp`.`person_id` IN (?)
   AND `rdp`.`dashboard_id` IN (?)      
-UPDATE;
+SQL;
 
         $connection->executeQuery($sql, [$agentIds, $dashboardIds], [Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY]);
 
-        $sql = <<<'DELETE'
+        $sql = <<<'SQL'
 DELETE FROM `report_dashboard_permission`
 WHERE `person_id` NOT IN (?)
   AND `dashboard_id` IN (?)
   AND `name` = 'view'      
-DELETE;
+SQL;
 
         $connection->executeQuery($sql, [$agentIds, $dashboardIds], [Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY]);
     }

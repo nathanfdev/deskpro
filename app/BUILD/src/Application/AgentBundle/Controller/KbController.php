@@ -268,7 +268,7 @@ class KbController extends AbstractController
                     case 'draft':
                         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
                             ++$perm_failures;
-                            continue;
+                            continue 2;
                         }
 
                         $article->status_code = 'hidden.draft';
@@ -277,7 +277,7 @@ class KbController extends AbstractController
                     case 'delete':
                         if (!$this->person->PermissionsManager->PublishChecker->canDelete($article)) {
                             ++$perm_failures;
-                            continue;
+                            continue 2;
                         }
 
                         $article->status_code = 'hidden.deleted';
@@ -286,7 +286,7 @@ class KbController extends AbstractController
                     case 'move':
                         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
                             ++$perm_failures;
-                            continue;
+                            continue 2;
                         }
 
                         if ($from) {
@@ -863,7 +863,7 @@ class KbController extends AbstractController
             switch ($action) {
                 case 'delete':
                     if (!$this->person->PermissionsManager->PublishChecker->canValidate($p_article)) {
-                        continue;
+                        continue 2;
                     }
                     $this->em->remove($p_article);
                     break;
@@ -888,7 +888,7 @@ class KbController extends AbstractController
             switch ($action) {
                 case 'restart-review':
                     if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
-                        continue;
+                        continue 2;
                     }
                     $article->restartReviewDate();
                     break;

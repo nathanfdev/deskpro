@@ -104,7 +104,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             'httponly' => isset($cookieDefaults['httponly']) ? $cookieDefaults['httponly'] : false,
         ], $options);
 
-        session_name($this->options['name']);
+        @session_name($this->options['name']);
 
         $this->setMetadataBag();
     }

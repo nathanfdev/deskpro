@@ -263,4 +263,9 @@ class DbStreamWrapper
     {
         return false;
     }
+
+    public function stream_set_option()
+    {
+        return false;
+    }
 }

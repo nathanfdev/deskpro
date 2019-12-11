@@ -71,7 +71,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ApiKey", inversedBy="api_logs")
-     * @ORM\JoinColumn(name="api_key_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="api_key_id", referencedColumnName="id", onDelete="SET NULL")
      *
      * @var ApiKey
      */

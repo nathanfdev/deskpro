@@ -3596,7 +3596,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public static function calctWorstSlaStatus($ticketSlas)
     {
-        if (!count($ticketSlas)) {
+        if (!$ticketSlas || !count($ticketSlas)) {
             return;
         }
 

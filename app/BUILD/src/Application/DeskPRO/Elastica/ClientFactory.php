@@ -6,6 +6,7 @@ use Application\DeskPRO\Exception\MissingConfigurationException;
 use Application\DeskPRO\Settings\Settings;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * DeskPRO.
@@ -13,16 +14,21 @@ use Orb\Util\OptionsArray;
 class ClientFactory
 {
     /**
-     * @var \Application\DeskPRO\Settings\Settings
+     * @var Container
      */
-    private $settings;
+    private $container;
+
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
 
     /**
-     * @param Settings $settings
+     * @return Settings
      */
-    public function __construct(Settings $settings)
+    private function getSettings()
     {
-        $this->settings = $settings;
+        return $this->container->get('deskpro.core.settings');
     }
 
     /**
@@ -46,14 +52,14 @@ class ClientFactory
      */
     public function createClientById($id)
     {
-        if ($this->settings->get("elastica.clients.$id.url")) {
-            $config = self::createConfigFromUrl($this->settings->get("elastica.clients.$id.url"));
+        if ($this->getSettings()->get("elastica.clients.$id.url")) {
+            $config = self::createConfigFromUrl($this->getSettings()->get("elastica.clients.$id.url"));
         } else {
             $config = [
-                'host'      => $this->settings->get("elastica.clients.$id.host"),
-                'port'      => $this->settings->get("elastica.clients.$id.port"),
-                'path'      => $this->settings->get("elastica.clients.$id.path") ?: null,
-                'transport' => $this->settings->get("elastica.clients.$id.transport") ?: null,
+                'host'      => $this->getSettings()->get("elastica.clients.$id.host"),
+                'port'      => $this->getSettings()->get("elastica.clients.$id.port"),
+                'path'      => $this->getSettings()->get("elastica.clients.$id.path") ?: null,
+                'transport' => $this->getSettings()->get("elastica.clients.$id.transport") ?: null,
             ];
         }
 

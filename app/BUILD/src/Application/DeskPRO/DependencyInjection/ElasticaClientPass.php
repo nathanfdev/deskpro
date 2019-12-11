@@ -10,6 +10,7 @@ namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\Elastica\Client;
 use Application\DeskPRO\Elastica\IndexFactory;
+use Application\DeskPRO\Elastica\NoOpListener;
 use Elastica\Index;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -39,5 +40,26 @@ class ElasticaClientPass implements CompilerPassInterface
         $indexDef->setFactory([new Reference('deskpro.elastica.default_index_factory'), 'getIndex']);
         $indexDef->setArguments(['deskpro']);
         $container->setDefinition('fos_elastica.index.deskpro', $indexDef);
+
+        // Make listeners lazy
+        $serviceIds = $container->findTaggedServiceIds('fos_elastica.provider');
+        foreach ($serviceIds as $serviceId => $tags) {
+            foreach ($tags as $tag) {
+                if ($tag['index'] == 'deskpro' && !empty($tag['type'])) {
+                    $listenerServiceId = 'fos_elastica.listener.deskpro.' . $tag['type'];
+                    if ($container->hasDefinition($listenerServiceId)) {
+                        $origDef = $container->getDefinition($listenerServiceId);
+                        $container->removeDefinition($listenerServiceId);
+
+                        $newDef = new Definition(NoOpListener::class);
+
+                        $newDef->setTags($origDef->getTags());
+                        $origDef->clearTags();
+
+                        $container->setDefinition($listenerServiceId, $newDef);
+                    }
+                }
+            }
+        }
     }
 }
