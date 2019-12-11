@@ -220,7 +220,7 @@
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
                             {% if app.hasBeta('helpcenter') %}
-                                <div>
+                                <div ng-show="Portal.selected_theme == 'helpcenter'">
                                     <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-header.html.twig'}") }}">
                                         Edit Header
                                     </a>
@@ -229,11 +229,19 @@
                                         Edit Footer
                                     </a>
                                 </div>
+                                <div ng-hide="Portal.selected_theme == 'helpcenter'">
+                                    <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header</button>
+
+                                    <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer</button>
+                                </div>
                                 <br />
-                                <div style="margin-top: 4px;">
+                                <div style="margin-top: 4px;" ng-show="Portal.selected_theme == 'helpcenter'">
                                     <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-head-include.html.twig'}") }}">
                                         Edit Head Include
                                     </a>
+                                </div>
+                                <div style="margin-top: 4px;" ng-hide="Portal.selected_theme == 'helpcenter'">
+                                    <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-head-include.html.twig')">Edit Head Include</button>
                                 </div>
                             {% else %}
                                 <div>
@@ -256,11 +264,16 @@
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
                             {% if app.hasBeta('helpcenter') %}
-                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:home.html.twig'}") }}">
-                                    Edit Homepage Template
-                                </a>
+                                <div ng-show="Portal.selected_theme == 'helpcenter'">
+                                    <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:home.html.twig'}") }}">
+                                        Edit Homepage Template
+                                    </a>
+                                </div>
+                                <div ng-hide="Portal.selected_theme == 'helpcenter'">
+                                    <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:home.html.twig')">Edit Homepage Template</button>
+                                </div>
                             {% else %}
-                                <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:home.html.twig')">Edit Homepage Template</button></div>
+                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:home.html.twig')">Edit Homepage Template</button>
                             {% endif %}
                         </div>
                     </div>
@@ -338,18 +351,31 @@
                 </div>
 
                 <div class="template-picker" ng-show="Portal.isOpen('expert') && !(Portal.selected_template && Portal.selected_template_info_loaded) && !(Portal.css_template_selected && Portal.css_template_info.loaded)">
-                    <select ui-select2='{ containerCssClass : "select2-container-template-picker", dropdownCssClass : "select2-dropdown-template-picker" }'
-                            class="template-picker"
-                            style="width: 300px;"
-                            data-placeholder="Choose a template"
-                            ng-model="Portal.selected_template"
-                            ng-change="Portal.editTemplate()"
-                            ng-options="t.value as t.name group by t.group for t in Portal.template_options">
-                    </select>
                     {% if app.hasBeta('helpcenter') %}
-                        <a class="btn btn-default" href="{{ ng_href('portal.templates_editor') }}">
-                            Open template editor
-                        </a>
+                        <div ng-show="Portal.selected_theme == 'helpcenter'">
+                            <a class="btn btn-default" href="{{ ng_href('portal.templates_editor') }}">
+                                Open template editor
+                            </a>
+                        </div>
+                        <div ng-hide="Portal.selected_theme == 'helpcenter'">
+                            <select ui-select2='{ containerCssClass : "select2-container-template-picker", dropdownCssClass : "select2-dropdown-template-picker" }'
+                                    class="template-picker"
+                                    style="width: 300px;"
+                                    data-placeholder="Choose a template"
+                                    ng-model="Portal.selected_template"
+                                    ng-change="Portal.editTemplate()"
+                                    ng-options="t.value as t.name group by t.group for t in Portal.template_options">
+                            </select>
+                        </div>
+                    {% else %}
+                        <select ui-select2='{ containerCssClass : "select2-container-template-picker", dropdownCssClass : "select2-dropdown-template-picker" }'
+                                class="template-picker"
+                                style="width: 300px;"
+                                data-placeholder="Choose a template"
+                                ng-model="Portal.selected_template"
+                                ng-change="Portal.editTemplate()"
+                                ng-options="t.value as t.name group by t.group for t in Portal.template_options">
+                        </select>
                     {% endif %}
                 </div>
 
