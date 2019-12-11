@@ -1,12 +1,19 @@
 {% if alerts.display_alerts %}
     <div class="dp-po">
         {% if alerts.lang_diff %}
-            <span class="alert" data-dismiss-handler="{{ path('portal_dismiss_lang_alert') }}">
-              <div class="click-to-dismiss"><i class="fas fa-times"></i></div>
-                {{ phrase('helpcenter.general.lang-diff', { active_lang: alerts.lang_diff.active_lang.title, person_lang: alerts.lang_diff.person_lang.title }) }}
-              <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.active_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang-change-to-current', { lang: alerts.lang_diff.active_lang.title }) }}</a>
-              <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.person_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang-switch', { lang: alerts.lang_diff.person_lang.title }) }}</a>
-            </span>
+            <div class="dp-po-message-bar dp-po-message-bar-error">
+                <div class="container">
+                    <div class="dp-po-message-bar-wrap">
+                        <p class="dp-po-message-bar-icon"> <i class="dp-po-icon far fa-times-circle"></i></p>
+                        <p class="dp-po-message-bar-text">
+                            {{ phrase('helpcenter.general.lang-diff', { active_lang: alerts.lang_diff.active_lang.title, person_lang: alerts.lang_diff.person_lang.title }) }}
+                            <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.active_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang-change-to-current', { lang: alerts.lang_diff.active_lang.title }) }}</a>
+                            <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.person_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang-switch', { lang: alerts.lang_diff.person_lang.title }) }}</a>
+                        </p>
+                        <a href="{{ path('portal_dismiss_lang_alert') }}" class="dp-po-message-bar-close"><i class="dp-po-icon fal fa-times"></i></a>
+                    </div>
+                </div>
+            </div>
         {% endif %}
 
         {% for saved in alerts.saved_forms %}
