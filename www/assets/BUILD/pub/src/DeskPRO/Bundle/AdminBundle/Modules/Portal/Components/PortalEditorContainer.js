@@ -91,7 +91,13 @@ class PortalEditorContainer extends React.Component {
       saveSubmit: true
     });
 
-    const name = this.props.params.name.replace('|', '/');
+    let name;
+    if (this.props.params) {
+      name = this.props.params.name.replace('|', '/');
+    } else {
+      name = this.props.portalEditor.getIn(['currentTemplate', 'name']);
+    }
+    console.log(name);
 
     const template = {
       code: this.props.portalEditor.getIn(['template', 'template_code', 'code'])
