@@ -533,6 +533,7 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'ticket.total_user_waiting';
                         break;
                     case self::TERM_CREATION_SYSTEM:
+                        $this->affected_fields[] = 'ticket.creation_system';
                         break;
                     case 'escalation_eliminator':
                         break;
@@ -2534,6 +2535,8 @@ class TicketSearch extends SearcherAbstract
                         break;
 
                     case self::TERM_CREATION_SYSTEM:
+                        $this->affected_fields[] = 'ticket.creation_system';
+                        $wheres[] = $this->_choiceMatch("{$tickets_table}.creation_system", $op, $choice, true);
                         $set_status = true;
                         break;
 
