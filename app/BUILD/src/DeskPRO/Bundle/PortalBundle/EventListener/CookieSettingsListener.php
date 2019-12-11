@@ -22,7 +22,7 @@ class CookieSettingsListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         if ($request->isSecure()) {
-            ini_set('session.cookie_secure', true);
+            @ini_set('session.cookie_secure', true);
         }
     }
 
@@ -36,7 +36,7 @@ class CookieSettingsListener implements EventSubscriberInterface
         $response = $event->getResponse();
 
         if ($request->isSecure()) {
-            ini_set('session.cookie_secure', true);
+            @ini_set('session.cookie_secure', true);
 
             // convert all cookies on the response into secure cookies
             /** @var \Symfony\Component\HttpFoundation\Cookie $cookie */

@@ -116,7 +116,7 @@ class RecountRatings
                     case 'download':  $table = 'downloads'; break;
                     case 'news':      $table = 'news'; break;
                     case 'community': $table = 'community_topics'; break;
-                    default: continue;
+                    default: continue 2;
                 }
 
                 if ($page == 0) {

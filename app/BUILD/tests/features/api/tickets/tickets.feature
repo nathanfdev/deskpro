@@ -284,13 +284,6 @@ Feature: /tickets endpoint
     And the JSON node "errors.fields.cc.fields.cc_0.errors[0].code" should be equal to "system_email"
     And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "dev@deskprodev.com"
 
-  @skip-ci
-  # This scenario passed because the api data set defined a require custom field
-  Scenario: I try to create a ticket providing empty data
-    When I send a POST request to "/api/v2/tickets"
-    Then the response should be in JSON
-    And the response status code should be 400
-
   Scenario: I create a ticket with message
     When I send a POST request to "/api/v2/tickets" with body:
     """

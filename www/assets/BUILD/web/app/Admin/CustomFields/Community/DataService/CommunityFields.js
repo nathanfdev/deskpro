@@ -1,13 +1,13 @@
 define([
   'Admin/Main/DataService/BaseListEdit',
-  'Admin/CustomFields/FieldFormMapper',
+  'Admin/CustomFields/Community/CommunityFieldFormMapper',
 ], (
   BaseListEdit,
   FieldFormMapper
 ) => {
   class CommunityFields extends BaseListEdit {
     static initClass() {
-      this.$inject = ['Api', '$q', 'Api2', '$state'];
+      this.$inject = ['Api', '$q'];
     }
 
     init() {}
@@ -15,11 +15,11 @@ define([
     _doLoadList() {
       const deferred = this.$q.defer();
 
-      this.Api2.sendDataGet([
-        `/community_forums/${this.$state.params.forumId}`
+      this.Api.sendDataGet([
+        '/community_fields'
       ]).then((res) => {
         const custom_fields = [];
-        for (const f of Array.from(res.data.data)) {
+        for (const f of Array.from(res.data.api_community_fields.custom_fields)) {
           custom_fields.push(f);
         }
 
@@ -31,13 +31,25 @@ define([
 
 
     /*
+     * Update display orders
+     *
+     * @param {Array} Array of IDs in order
+     * @return {promise}
+     */
+    saveDisplayOrder(display_orders) {
+      return this.Api.sendPostJson('/community_fields/display-order', { display_orders });
+    }
+
+
+    /*
       * Remove a field
       *
       * @param {Integer} id Filter id
       * @return {promise}
     */
-    deleteFieldById(id, forumId = null) {
-      return this.Api2.sendDelete(`/community_forums/${forumId ? forumId : this.$state.params.forumId}/custom_fields/${id}`).then(() => this.removeListModelById(id));
+    deleteFieldById(id) {
+      const promise = this.Api.sendDelete(`/community_fields/${id}`).then(() => this.removeListModelById(id));
+      return promise;
     }
 
 
@@ -51,11 +63,10 @@ define([
       const deferred = this.$q.defer();
 
       if (id) {
-        this.Api2.sendGet(`/community_forums/${this.$state.params.forumId}/custom_fields/${id}`).then((result) => {
+        this.Api.sendGet(`/community_fields/${id}`).then((result) => {
           const data = {};
-          console.log(result.data.data);
-          data.field = result.data.data;
-          data.field_type = result.data.data.type_name;
+          data.field = result.data.field;
+          data.field_type = result.data.field.type_name;
           data.form = this.getFormMapper().getFormFromModel(data.field);
           return deferred.resolve(data);
         });
@@ -98,9 +109,9 @@ define([
       const postData = mapper.getPostDataFromForm(fieldModel.type_name, formModel);
 
       if (fieldModel.id) {
-        promise = this.Api2.sendPutJson(`/community_forums/${this.$state.params.forumId}/custom_fields/${fieldModel.id}`, postData);
+        promise = this.Api.sendPostJson(`/community_fields/${fieldModel.id}`, postData);
       } else {
-        promise = this.Api2.sendPostJson(`/community_forums/${this.$state.params.forumId}/custom_fields`, postData).success(data => fieldModel.id = data.field_id);
+        promise = this.Api.sendPutJson('/community_fields', postData).success(data => fieldModel.id = data.field_id);
       }
 
       promise.success(() => {

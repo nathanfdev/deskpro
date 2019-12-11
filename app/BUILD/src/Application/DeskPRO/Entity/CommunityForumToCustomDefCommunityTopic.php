@@ -8,14 +8,17 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class CommunityForumToCustomDefCommunityTopic
- *
- * @package Application\DeskPRO\Entity
+ * Class CommunityForumToCustomDefCommunityTopic.
  *
  * @JMS\ExclusionPolicy("all")
  */
 class CommunityForumToCustomDefCommunityTopic extends DomainObject
 {
+    /**
+     * @var int
+     */
+    protected $id;
+
     /**
      * @var CommunityForum
      */
@@ -35,6 +38,14 @@ class CommunityForumToCustomDefCommunityTopic extends DomainObject
     protected $display_order = 0;
 
     /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @return CommunityForum
      */
     public function getForum()
@@ -44,9 +55,10 @@ class CommunityForumToCustomDefCommunityTopic extends DomainObject
 
     /**
      * @param CommunityForum $forum
+     *
      * @return CommunityForumToCustomDefCommunityTopic
      */
-    public function setForum(CommunityForum $forum)
+    public function setForum(CommunityForum $forum = null)
     {
         $this->setModelField('forum', $forum);
 
@@ -63,9 +75,10 @@ class CommunityForumToCustomDefCommunityTopic extends DomainObject
 
     /**
      * @param CustomDefCommunityTopic $field
+     *
      * @return CommunityForumToCustomDefCommunityTopic
      */
-    public function setField(CustomDefCommunityTopic $field)
+    public function setField(CustomDefCommunityTopic $field = null)
     {
         $this->setModelField('field', $field);
 
@@ -82,6 +95,7 @@ class CommunityForumToCustomDefCommunityTopic extends DomainObject
 
     /**
      * @param int $display_order
+     *
      * @return CommunityForumToCustomDefCommunityTopic
      */
     public function setDisplayOrder($display_order)
@@ -92,15 +106,37 @@ class CommunityForumToCustomDefCommunityTopic extends DomainObject
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = \Application\DeskPRO\EntityRepository\CommunityForumToStatus::class;
-        $metadata->setPrimaryTable(['name' => 'community_forum_to_custom_def_community_topic']);
+        $metadata->setPrimaryTable([
+            'name'              => 'community_forum_to_custom_def_community_topic',
+            'uniqueConstraints' => [
+                'unique_key_idx' => [
+                    'columns' => [
+                        'forum_id',
+                        'field_id',
+                    ],
+                ],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
+        $metadata->mapField(
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            ]
+        );
         $metadata->mapField(
             [
                 'fieldName'  => 'display_order',
@@ -113,33 +149,31 @@ class CommunityForumToCustomDefCommunityTopic extends DomainObject
         );
 
         $metadata->mapManyToOne([
-            'id' => true,
-            'fieldName' => 'forum',
+            'fieldName'    => 'forum',
             'targetEntity' => CommunityForum::class,
-            'inversedBy' => 'statuses',
-            'joinColumns' => [
+            'inversedBy'   => 'topic_fields',
+            'joinColumns'  => [
                 [
-                    'name' => 'forum_id',
+                    'name'                 => 'forum_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => false,
-                    'onDelete' => 'CASCADE',
-                    'columnDefinition' => null,
+                    'nullable'             => false,
+                    'onDelete'             => 'CASCADE',
+                    'columnDefinition'     => null,
                 ],
             ],
         ]);
 
         $metadata->mapManyToOne([
-            'id' => true,
-            'fieldName' => 'field',
+            'fieldName'    => 'field',
             'targetEntity' => CustomDefCommunityTopic::class,
-            'inversedBy' => 'forums',
-            'joinColumns' => [
+            'inversedBy'   => 'forums',
+            'joinColumns'  => [
                 [
-                    'name' => 'field_id',
+                    'name'                 => 'field_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => false,
-                    'onDelete' => 'CASCADE',
-                    'columnDefinition' => null,
+                    'nullable'             => false,
+                    'onDelete'             => 'CASCADE',
+                    'columnDefinition'     => null,
                 ],
             ],
         ]);

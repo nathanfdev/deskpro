@@ -4,9 +4,11 @@ namespace Application\DeskPRO\CustomFields\Form\Type;
 
 use Application\DeskPRO\CustomFields\Form\AliasType;
 use Application\DeskPRO\CustomFields\Form\StringObject;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,6 +22,8 @@ class CustomFieldTypeAbstract extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $field = $builder->getData()->getField();
+
         //------------------------------
         // Basic fields
         //------------------------------
@@ -33,7 +37,7 @@ class CustomFieldTypeAbstract extends AbstractType
             'null_handling_strategy' => 'null',
             'constraints'            => [
                 new AppAssert\ObjectAlias([
-                    'owner' => $builder->getData()->getField(),
+                    'owner' => $field,
                 ]),
             ],
         ]);
@@ -55,6 +59,20 @@ class CustomFieldTypeAbstract extends AbstractType
 
         // Used only by CustomDefPerson
         $builder->add('is_public', 'checkbox', ['required' => false]);
+
+        // used only by CustomDefCommunityTopic
+        if ($field instanceof CustomDefCommunityTopic) {
+            $builder->add('is_global', 'checkbox', ['required' => false]);
+            $builder->add('forums', CollectionType::class, [
+                'entry_type'    => CommunityFieldToForumType::class,
+                'entry_options' => [
+                    'custom_field' => $field,
+                ],
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'by_reference' => true,
+            ]);
+        }
     }
 
     /**

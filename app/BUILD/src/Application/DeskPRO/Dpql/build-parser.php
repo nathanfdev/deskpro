@@ -8,36 +8,36 @@ ini_set('display_errors', true);
 
 chdir(__DIR__);
 
-register_shutdown_function('shutdown_function');
-
 $_SERVER['argv'] = [basename(__FILE__), 'Parser.y'];
 $_SERVER['argc'] = 2;
 
 if (!file_exists('PHP/ParserGenerator.php')) {
-    echo 'ParserGenerator is not installed';
-    exit;
-}
+    echo "ParserGenerator is not installed\n";
+} else {
 
-require_once 'PHP/ParserGenerator.php';
-$me = new PHP_ParserGenerator();
-$me->main(); // this calls exit so need to hack around that with a shutdown function
+    register_shutdown_function('shutdown_function');
 
-function shutdown_function()
-{
-    $prefixCode = '/**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
- */
+    require_once 'PHP/ParserGenerator.php';
+    $me = new PHP_ParserGenerator();
+    $me->main(); // this calls exit so need to hack around that with a shutdown function
 
-namespace Application\\DeskPRO\\Dpql;
-';
+    function shutdown_function()
+    {
+        $prefixCode = '/**
+     * DeskPRO
+     *
+     * @package DeskPRO
+     * @subpackage Dpql
+     */
 
-    $contents = file_get_contents('Parser.php');
-    $contents = preg_replace('#^(<\?php)#i', '$1'."\n$prefixCode", $contents);
-    $contents = preg_replace('#(implements\s+)(ArrayAccess)#i', '$1\\\\$2', $contents);
-    file_put_contents('Parser.php', $contents);
+    namespace Application\\DeskPRO\\Dpql;
+    ';
 
-    echo 'Parser build complete.'.PHP_EOL;
+        $contents = file_get_contents('Parser.php');
+        $contents = preg_replace('#^(<\?php)#i', '$1' . "\n$prefixCode", $contents);
+        $contents = preg_replace('#(implements\s+)(ArrayAccess)#i', '$1\\\\$2', $contents);
+        file_put_contents('Parser.php', $contents);
+
+        echo 'Parser build complete.' . PHP_EOL;
+    }
 }

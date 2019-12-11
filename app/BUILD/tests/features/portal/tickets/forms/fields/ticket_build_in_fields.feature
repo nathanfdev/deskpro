@@ -1,9 +1,9 @@
-@new
 Feature: New ticket form
   I want to check built in fields
 
   Background:
-    Given I'm authenticated as user
+    Given I install the fresh data set
+    And I'm authenticated as user
     And I have only default brand
     And user has defaultBrand brand
     And the "{defaultBrand}" setting "core_tickets.use_ref" is set to "1"

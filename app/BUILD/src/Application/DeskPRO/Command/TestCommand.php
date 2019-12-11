@@ -41,6 +41,14 @@ class TestCommand extends ContainerAwareCommand
         echo 'Build Dir: '.$DP_ENV->getAppDir();
         echo "\n";
 
+        try {
+            $db = $this->getContainer()->getDb();
+            echo 'DB:        ' . $db->fetchColumn("SELECT DATABASE()");
+            echo "\n";
+        } catch (\Exception $e) {
+            echo "DB Error:  {$e->getMessage()}\n";
+        }
+
         return 0;
     }
 }

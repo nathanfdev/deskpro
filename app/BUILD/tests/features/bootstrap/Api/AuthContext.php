@@ -335,53 +335,34 @@ class AuthContext extends BaseContext
             ['name' => 'api_limits.global.hour', 'value' => -1]
         );
 
-        $key = $this->repository(ApiKey::class)->findOneBy(compact('code'));
-        if (!$key) {
-            $key         = new ApiKey();
-            $key->code   = $code;
-            $key->person = $person;
-            $key->addFlag(ApiKey::FLAG_API_V2);
-            if ($super) {
-                $key->addFlag(ApiKey::FLAG_SUPER_KEY);
-            }
+        // delete any existing
+        $this->em()->getConnection()->executeUpdate('DELETE FROM api_keys WHERE code = ?', [$code]);
 
-            $key_action = new ApiKeyAction();
-            $key_action->setAction('*');
-            $key->addApiKeyAction($key_action);
-
-            $key_limit = new ApiKeyLimit();
-            $key_limit
-                ->setType(AbstractLimit::TYPE_KEY)
-                ->setStartTime(new \DateTime())
-                ->setInterval(AbstractLimit::INTERVAL_HOUR)
-                ->setApiKey($key)
-                ->setLimit(-1)
-                ->setCurrent(-1)
-            ;
-
-            $this->persistAndFlush($key);
-            $this->persistAndFlush($key_limit);
-            $this->persistAndFlush($key_action);
-        } else {
-            if ($key->person !== $person) {
-                $key->person = $person;
-                if ($super) {
-                    $key->addFlag(ApiKey::FLAG_SUPER_KEY);
-                }
-                $this->persistAndFlush($key);
-            }
-
-            if (!in_array(ApiKey::FLAG_API_V2, $key->flags)) {
-                $key->addFlag(ApiKey::FLAG_API_V2);
-                $this->persistAndFlush($key);
-            }
-
-            // reset rate limit settings of existing api key
-            $limit = $this->repository(ApiKeyLimit::class)->findOneBy(['api_key' => $key]);
-            $limit->setCurrent(-1);
-            $limit->setLimit(-1);
-            $this->persistAndFlush($limit);
+        $key         = new ApiKey();
+        $key->code   = $code;
+        $key->person = $person;
+        $key->addFlag(ApiKey::FLAG_API_V2);
+        if ($super) {
+            $key->addFlag(ApiKey::FLAG_SUPER_KEY);
         }
+
+        $key_action = new ApiKeyAction();
+        $key_action->setAction('*');
+        $key->addApiKeyAction($key_action);
+
+        $key_limit = new ApiKeyLimit();
+        $key_limit
+            ->setType(AbstractLimit::TYPE_KEY)
+            ->setStartTime(new \DateTime())
+            ->setInterval(AbstractLimit::INTERVAL_HOUR)
+            ->setApiKey($key)
+            ->setLimit(-1)
+            ->setCurrent(-1)
+        ;
+
+        $this->persistAndFlush($key);
+        $this->persistAndFlush($key_limit);
+        $this->persistAndFlush($key_action);
 
         DataContext::setReference('apiKey', $key);
 

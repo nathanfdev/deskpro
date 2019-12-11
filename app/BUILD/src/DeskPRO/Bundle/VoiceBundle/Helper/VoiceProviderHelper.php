@@ -74,7 +74,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
         UrlGeneratorInterface    $router,
         TaskRouter               $taskRouter,
         TwilioAdapter            $twilioAdapter,
-        PlivoAdapter             $plivoAdapter,
+        VoiceProviderInterface   $plivoAdapter,
         VoiceEventHelper         $voiceEventHelper,
         EventDispatcherInterface $dispatcher
     ) {

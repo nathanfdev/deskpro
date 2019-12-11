@@ -81,6 +81,14 @@ class CustomDefCommunityTopic extends CustomDefAbstract
     }
 
     /**
+     * @return string
+     */
+    public function getSysName()
+    {
+        return $this->sys_name;
+    }
+
+    /**
      * Set parent.
      *
      * @param CustomDefCommunityTopic $parent
@@ -131,7 +139,11 @@ class CustomDefCommunityTopic extends CustomDefAbstract
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
-        $data['brand'] = $this->brand ? $this->brand->getId() : null;
+        $data['brand']  = $this->brand ? $this->brand->getId() : null;
+        $data['forums'] = [];
+        foreach ($this->forums as $forum) {
+            $data['forums'][] = $forum->getForum()->getId();
+        }
 
         return $data;
     }
@@ -141,9 +153,19 @@ class CustomDefCommunityTopic extends CustomDefAbstract
      */
     public function getForums()
     {
-        return $this->forums->map(function (CommunityForumToCustomDefCommunityTopic $pivot) {
-            return $pivot->getForum();
-        });
+        return $this->forums;
+    }
+
+    /**
+     * @param $forums
+     *
+     * @return $this
+     */
+    public function setForums($forums)
+    {
+        $this->setModelField('forums', $forums);
+
+        return $this;
     }
 
     /**
@@ -156,6 +178,7 @@ class CustomDefCommunityTopic extends CustomDefAbstract
 
     /**
      * @param bool $is_global
+     *
      * @return CustomDefCommunityTopic
      */
     public function setIsGlobal($is_global)
@@ -404,6 +427,8 @@ class CustomDefCommunityTopic extends CustomDefAbstract
                 'fieldName'     => 'forums',
                 'targetEntity'  => CommunityForumToCustomDefCommunityTopic::class,
                 'mappedBy'      => 'field',
+                'cascade'       => ['persist', 'remove'],
+                'orphanRemoval' => true,
             ]
         );
     }

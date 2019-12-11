@@ -37,12 +37,7 @@ services:
       - "@dp.voice.logger"
 
   plivo_adapter:
-    class: DeskPRO\Bundle\VoiceBundle\Plivo\PlivoAdapter
-    arguments:
-      - "@doctrine.orm.entity_manager"
-      - "@voice_settings_resolver"
-      - "@router"
-      - "@dp.voice.logger"
+    class: DeskPRO\Bundle\VoiceBundle\NotImplementedVoiceProvider
 
   dp.voice.task_builder:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskBuilder

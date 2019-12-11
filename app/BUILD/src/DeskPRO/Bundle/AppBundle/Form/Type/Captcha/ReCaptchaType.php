@@ -5,7 +5,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Captcha;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha\ValidRecaptcha2;
-use ReCaptchaSecureToken\ReCaptchaToken;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -49,12 +48,7 @@ class ReCaptchaType extends AbstractType
 
         $secure_token = null;
         if (self::isCloudRecapchaEnabled()) {
-            $secure = new ReCaptchaToken([
-                'site_key'    => $site_key,
-                'site_secret' => $this->getCloudRecaptchaSecret(),
-            ]);
-            $session_id   = uniqid('recaptcha');
-            $secure_token = $secure->secureToken($session_id);
+            // TODO cloud recaptcha
         }
 
         $view->vars['secure_token'] = $secure_token;

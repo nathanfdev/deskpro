@@ -1,8 +1,8 @@
-@new
 Feature: New ticket dupe check
 
   Background:
-    Given I'm authenticated as user
+    Given I install the fresh data set
+    And I'm authenticated as user
     And I have only default brand
     And user has defaultBrand brand
     And I disable anti-abuse rate limiting
