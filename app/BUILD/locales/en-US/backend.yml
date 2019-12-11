@@ -3141,6 +3141,7 @@ agent.general.by_person_at_date: 'By {{person}} at {{date}}'
 agent.general.by_user: 'By user'
 agent.general.calendar: Calendar
 agent.general.cancel: Cancel
+agent.general.reload_now: 'Reload now'
 agent.general.cancelled: Cancelled
 agent.general.categories: Categories
 agent.general.category: Category
@@ -3176,6 +3177,7 @@ agent.general.clear: Clear
 agent.general.click_learn_more: 'Click here to learn more'
 agent.general.click_to_upload_picture: 'Click to upload a new picture'
 agent.general.close_lc: close
+agent.general.close: Close
 agent.general.close_tab: 'Close Tab'
 agent.general.color: Color
 agent.general.comment: Comment
@@ -4482,6 +4484,8 @@ agent.publish.change_category: 'Change Category'
 agent.publish.click_to_set_date: '(click to set date)'
 agent.publish.collab_users_editing: '{{count}} more people editing'
 agent.publish.collab_disconnected: 'You have been disconnected'
+agent.publish.collab_disabled: 'This document is too large for real-time collaborative editing'
+agent.publish.collab_disabled_persisted: 'This document is too large for real-time collaborative editing. Another user has saved a change that will not appear below until you reload.'
 agent.publish.comment_by: 'Comment by {{name}}'
 agent.publish.comment_requires_validation: 'This comment requires validation'
 agent.publish.comments_list_title:

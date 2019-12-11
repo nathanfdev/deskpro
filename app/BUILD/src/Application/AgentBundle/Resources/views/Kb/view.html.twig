@@ -16,6 +16,9 @@ pageMeta.canDelete = {% if not perms.can_delete %}false{% else %}true{% endif %}
 pageMeta.isCollabEnabled = {% if is_collab_enabled %}true{% else %}false{% endif %};
 {% if app.hasBeta('content_editor') and perms.can_edit and is_collab_enabled %}
   pageMeta.collabEditorOptions = {{collab_editor_options|json_encode|raw}};
+  pageMeta.collabDisabledModalText = '{{ phrase('agent.publish.collab_disabled_persisted') }}';
+  pageMeta.collabDisabledModalReload = '{{ phrase('agent.general.reload_now') }}';
+  pageMeta.collabDisabledModalCancel = '{{ phrase('agent.general.cancel') }}';
 {% endif %}
 
 {% set baseId = el_uid() %}
