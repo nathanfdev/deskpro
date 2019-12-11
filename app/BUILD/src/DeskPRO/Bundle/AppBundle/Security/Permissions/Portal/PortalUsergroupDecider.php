@@ -7,6 +7,7 @@ use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Given a user (or guest) find out what usergroups they can access.
@@ -39,14 +40,21 @@ class PortalUsergroupDecider
     private $em;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager      $em
+     * @param ContainerInterface $container
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, ContainerInterface $container)
     {
-        $this->conn = $em->getConnection();
-        $this->em   = $em;
+        $this->conn      = $em->getConnection();
+        $this->em        = $em;
+        $this->container = $container;
     }
 
     /**
@@ -145,8 +153,15 @@ class PortalUsergroupDecider
             function () {
                 // everyone gets the everyone group if it exists and is enabled
                 $everyoneGroup = $this->em->getRepository('DeskPRO:Usergroup')->findOneBy(['sys_name' => 'everyone']);
-                if ($everyoneGroup && $everyoneGroup->is_enabled) {
-                    return [$everyoneGroup->id];
+                if ($everyoneGroup) {
+                    if ($everyoneGroup->is_enabled
+                        // everyone group is disabled and no way to log in
+                        // allow the everyone group or the portal will be completely broken
+                        // see https://deskpro.myjetbrains.com/youtrack/issue/DP-3051
+                        || !$this->container->get('dp_authentication_manager.user')->isAuthVisible()
+                    ) {
+                        return [$everyoneGroup->id];
+                    }
                 }
 
                 return [];

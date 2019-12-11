@@ -4,57 +4,123 @@ namespace Application\DeskPRO\CustomFields\Form\Model;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Form\StringObject;
+use Application\DeskPRO\Entity\CommunityForumToCustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AliasesOwner;
 use DeskPRO\Bundle\AppBundle\ObjectAlias\Comparators;
 
+/**
+ * Class CustomFieldAbstract.
+ */
 abstract class CustomFieldAbstract
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     public $title;
 
-    /** @var StringObject */
+    /**
+     * @var StringObject
+     */
     public $alias = null;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $description = '';
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $handler_class;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $default_value;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $required = false;
-    /** @var bool */
+
+    /**
+     * @var bool
+     */
     public $agent_required = false;
 
-    /** @var null|string */
+    /**
+     * @var null|string
+     */
     public $custom_css_classname = '';
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $custom_css = '';
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $validation_type = '';
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $agent_validation_type = '';
-    /** @var bool */
+
+    /**
+     * @var bool
+     */
     public $is_enabled = false;
-    /** @var bool */
+
+    /**
+     * @var bool
+     */
     public $is_agent_field = false;
+
+    /**
+     * @var bool
+     */
+    public $agent_validation_resolve = false;
+
+    /**
+     * @var int
+     */
+    public $display_order = 0;
+
     /**
      * Used only by CustomDefPerson.
      *
      * @var bool
      */
     public $is_public = false;
-    /** @var bool */
-    public $agent_validation_resolve = false;
-    public $display_order            = 0;
 
-    /** @var \Application\DeskPRO\Entity\CustomDefAbstract|null */
+    /**
+     * Used only by CustomDefCommunityTopic.
+     *
+     * @var bool
+     */
+    public $is_global = false;
+
+    /**
+     * Used only by CustomDefCommunityTopic.
+     *
+     * @var CommunityForumToCustomDefCommunityTopic[]
+     */
+    public $forums = [];
+
+    /**
+     * @var \Application\DeskPRO\Entity\CustomDefAbstract|null
+     */
     protected $_field = null;
-    /** @var bool */
+
+    /**
+     * @var bool
+     */
     protected $_is_new = false;
 
     /**
@@ -75,6 +141,8 @@ abstract class CustomFieldAbstract
         $this->default_value            = $field->default_value;
 
         $this->is_public = $field instanceof CustomDefPerson ? $field->is_public : false;
+        $this->is_global = $field instanceof CustomDefCommunityTopic ? $field->isGlobal() : false;
+        $this->forums    = $field instanceof CustomDefCommunityTopic ? $field->getForums() : [];
 
         if ($field->getOption('required')) {
             $this->required = true;
@@ -138,6 +206,10 @@ abstract class CustomFieldAbstract
 
         if ($field instanceof CustomDefPerson) {
             $field->is_public = $this->is_public;
+        }
+        if ($field instanceof CustomDefCommunityTopic) {
+            $field->setIsGlobal($this->is_global);
+            $field->setForums($this->forums);
         }
 
         if ($this->isNewField()) {

@@ -1389,6 +1389,7 @@ admin.community.explain_active_status: 'An active status is a status assigned to
 admin.community.explain_closed_status: 'A closed status is a status assigned to community topic that are finished. Users cannot vote or comment on closed community topic.'
 admin.community.community_forums: 'Community Forums'
 admin.community.community_statuses: 'Community Statuses'
+admin.community.community_custom_fields: 'Community Custom Fields'
 admin.community.community_topics_using_this_category: 'Community Topics using this category'
 admin.community.notice_has_children: 'This category has children. Delete the child categories first, and then you can delete this one.'
 admin.community.notice_parent_selected: 'Note: The parent category selected is currently a top-level category. By creating this child-category, any existing community topic will be moved over.'

@@ -1666,7 +1666,19 @@ return [
     1575462198 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/12/Build1575462198.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1575462198',
-        'skipPostBuild' => false,
+        'skipPostBuild' => true,
+        'isOnlineBuild' => true,
+    ],
+    1575943958 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/12/Build1575943958.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1575943958',
+        'skipPostBuild' => true,
+        'isOnlineBuild' => false,
+    ],
+    1575944100 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/12/Build1575944100.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1575944100',
+        'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
 ];

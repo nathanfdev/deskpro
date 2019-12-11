@@ -8844,9 +8844,9 @@ a.assign-self-link {
   }
 
   ul, ol {
-    padding: 0 0 0 40px;
+    padding: 0 0 0 26px;
     margin: 13px 0;
-    list-style-position: inside;
+    list-style-position: outside;
   }
 
   ul ul, ol ul {
@@ -8898,6 +8898,24 @@ a.assign-self-link {
     th {
       background: #e6e6e6;
     }
+  }
+
+  blockquote {
+    margin: 0.75em 0;
+    border-left: 3px solid rgba(0, 0, 0, 0.1) !important;
+    padding: 0.5em 1em;
+    background: rgba(0, 0, 0, 0.02);
+    font-style: italic;
+    color: #9D9D9D !important;
+  }
+
+  :not(pre) > code {
+    padding: 0.1em 0.25em;
+    background: rgba(0, 0, 0, 0.01);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+    color: #404040;
+    font-size: 100%;
   }
 }
 .fr-box * {

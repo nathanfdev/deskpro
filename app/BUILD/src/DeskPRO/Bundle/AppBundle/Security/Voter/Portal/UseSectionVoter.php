@@ -55,13 +55,13 @@ class UseSectionVoter extends AbstractVoter
         switch ($attribute) {
             case static::USE_ARTICLES:
                 return $this->getActiveBrandSetting('core.apps_kb')
-                    && ($permissionBag->get('articles.use') || $permissionBag->getAllowedArticleCategories());
+                    && ($permissionBag->get('articles.use') && $permissionBag->getAllowedArticleCategories());
             case static::USE_COMMUNITY:
                 return $this->getActiveBrandSetting('core.apps_community')
-                    && ($permissionBag->get('community.use') || $permissionBag->getAllowedCommunityForumIds());
+                    && ($permissionBag->get('community.use') && $permissionBag->getAllowedCommunityForumIds());
             case static::USE_GUIDES:
                 return $this->getActiveBrandSetting('core.apps_guides')
-                    && ($permissionBag->get('guides.use') || $permissionBag->getAllowedGuides());
+                    && ($permissionBag->get('guides.use') && $permissionBag->getAllowedGuides());
             case static::USE_CHAT:
                 // check global settings
                 if (!$this->getActiveBrandSetting('core.apps_chat')
@@ -95,10 +95,10 @@ class UseSectionVoter extends AbstractVoter
                 return $brandPermissionBag->get('chat.use');
             case static::USE_DOWNLOADS:
                 return $this->getActiveBrandSetting('core.apps_downloads')
-                    && ($permissionBag->get('downloads.use') || $permissionBag->getAllowedDownloadCategories());
+                    && ($permissionBag->get('downloads.use') && $permissionBag->getAllowedDownloadCategories());
             case static::USE_NEWS:
                 return $this->getActiveBrandSetting('core.apps_news')
-                    && ($permissionBag->get('news.use') || $permissionBag->getAllowedNewsCategories());
+                    && ($permissionBag->get('news.use') && $permissionBag->getAllowedNewsCategories());
             case static::USE_TICKETS:
                 return $permissionBag->get('tickets.use');
             case static::VIEW_TICKETS_LINK:

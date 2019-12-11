@@ -199,6 +199,22 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
             }
         }
 
+        $data['topic_statuses'] = [];
+        foreach ($this->topic_statuses as $forumToStatus) {
+            $data['topic_statuses'][] = [
+                'status'        => $forumToStatus->getStatus()->getId(),
+                'display_order' => $forumToStatus->getDisplayOrder(),
+            ];
+        }
+
+        $data['topic_fields'] = [];
+        foreach ($this->topic_fields as $forumToField) {
+            $data['topic_fields'][] = [
+                'field'         => $forumToField->getField()->getId(),
+                'display_order' => $forumToField->getDisplayOrder(),
+            ];
+        }
+
         return $data;
     }
 
@@ -218,13 +234,38 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     }
 
     /**
-     * @return CustomDefCommunityTopic[]|ArrayCollection
+     * @return CommunityForumToCustomDefCommunityTopic[]|ArrayCollection
      */
     public function getTopicFields()
     {
-        return $this->topic_fields->map(function (CommunityForumToCustomDefCommunityTopic $pivot) {
-            return $pivot->getField();
-        });
+        return $this->topic_fields;
+    }
+
+    /**
+     * @param CommunityForumToCustomDefCommunityTopic $field
+     *
+     * @return $this
+     */
+    public function addTopicField(CommunityForumToCustomDefCommunityTopic $field)
+    {
+        if (!$this->topic_fields->contains($field)) {
+            $this->topic_fields->add($field);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param CommunityForumToCustomDefCommunityTopic $field
+     *
+     * @return $this
+     */
+    public function removeTopicField(CommunityForumToCustomDefCommunityTopic $field)
+    {
+        $this->topic_fields->removeElement($field);
+        $field->setForum(null);
+
+        return $this;
     }
 
     /**
@@ -485,14 +526,17 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'targetEntity' => CommunityForumToStatus::class,
                 'mappedBy'     => 'forum',
                 'orderBy'      => ['display_order' => 'ASC'],
+                'cascade'      => ['persist', 'remove'],
             ]
         );
         $metadata->mapOneToMany(
             [
-                'fieldName'    => 'topic_fields',
-                'targetEntity' => CommunityForumToCustomDefCommunityTopic::class,
-                'mappedBy'     => 'forum',
-                'orderBy'      => ['display_order' => 'ASC'],
+                'fieldName'     => 'topic_fields',
+                'targetEntity'  => CommunityForumToCustomDefCommunityTopic::class,
+                'mappedBy'      => 'forum',
+                'orderBy'       => ['display_order' => 'ASC'],
+                'cascade'       => ['persist', 'remove'],
+                'orphanRemoval' => true,
             ]
         );
         $metadata->mapManyToOne(

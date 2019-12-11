@@ -98,7 +98,7 @@ export class LanguageChanger extends React.Component {
       <div className="dp-po-language" onMouseOver={this.updateTopPos}>
         <a href="#" className="dp-po-language-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <img src={portalUrlGenerator.getFlagPath(this.getLangFlag(activeLangCode))} alt="" />
-          {this.getLangTitle(activeLangCode)} <i className="dp-po-icon far fa-angle-down" />
+          <span className="dp-po-language-link-text"> {this.getLangTitle(activeLangCode)} <i className="dp-po-icon far fa-angle-down" /> </span>
         </a>
 
         <div className="dropdown-menu dropdown-menu-left">
