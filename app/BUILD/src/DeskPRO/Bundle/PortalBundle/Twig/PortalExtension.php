@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
@@ -18,10 +16,10 @@ use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
-use DeskPRO\Component\Filesystem\SafeFile;
-use Exception;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
+use DeskPRO\Component\Filesystem\SafeFile;
+use Exception;
 use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -183,9 +181,10 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('current_theme', [$this, 'getCurrentTheme']),
             new \Twig_SimpleFunction('agent_can_edit', [$this, 'agentCanEdit']),
             new \Twig_SimpleFunction('asset_data_url', [$this, 'getAssetDataUrl']),
+            new \Twig_SimpleFunction('is_category_subscribed', [$this, 'isCategorySubscribed']),
 
             // Copied from legacy templating, used to render notification rows
-            new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']])
+            new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -617,6 +616,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      *
      * @param mixed $obj
      * @param int   $size
+     * @param mixed $fallbackOnDefault
      *
      * @throws \Exception
      *
@@ -911,13 +911,29 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         return $this->getPerson()->PermissionsManager->PublishChecker->canEdit($object);
     }
 
+    public function isCategorySubscribed($type, $category = null)
+    {
+        if (!in_array($type, ['news', 'kb', 'downloads'])) {
+            return false;
+        }
+        if ($this->getPerson() && $this->getBrandSetting('user.'.$type.'_subscriptions', false)) {
+            if ($category) {
+                return $this->container->get('subscriptions_helper')->isSubscribedCategory($type, $this->getPerson());
+            }
+
+            return $this->container->get('subscriptions_helper')->isSubscribedRootCategory($type, $this->getPerson());
+        }
+
+        return false;
+    }
+
     /**
      * @param string $path
      * @param string $packageName
      */
     public function getAssetDataUrl($path, $packageName)
     {
-        /** @var $DP_ENV \DpRun\DpEnv */
+        /* @var $DP_ENV \DpRun\DpEnv */
         global $DP_ENV;
 
         $path = ltrim($path, '/');
@@ -927,14 +943,15 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         switch ($packageName) {
             case 'legacy_web':
                 $basePath = $DP_ENV->getAppWwwAssetDir().'/web';
-                $file = $basePath.'/'.$path;
-                $data = SafeFile::fileGetContents($file, $basePath);
+                $file     = $basePath.'/'.$path;
+                $data     = SafeFile::fileGetContents($file, $basePath);
+
                 break;
 
             case 'help_center':
                 $basePath = $DP_ENV->getAppWwwAssetDir().'/pub/build/DeskPRO/Bundle/PortalBundle/portal-style';
-                $file = $basePath.'/'.$path;
-                $data = SafeFile::fileGetContents($file, $basePath);
+                $file     = $basePath.'/'.$path;
+                $data     = SafeFile::fileGetContents($file, $basePath);
         }
 
         if ($data) {
