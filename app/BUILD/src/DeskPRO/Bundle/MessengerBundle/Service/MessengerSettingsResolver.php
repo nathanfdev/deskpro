@@ -244,6 +244,8 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
     private function getDefaultDepartment($type = 'chat')
     {
-        return $this->em->getRepository(Department::class)->getDefaultDepartment($type)->getId();
+        $department = $this->em->getRepository(Department::class)->getDefaultDepartment($type);
+
+        return $department ? $department->getId() : 0;
     }
 }
