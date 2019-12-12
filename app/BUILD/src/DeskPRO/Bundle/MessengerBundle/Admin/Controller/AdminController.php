@@ -111,8 +111,12 @@ class AdminController extends AbstractBrandAwareSettingsController
      */
     protected function handleForm(Request $request, AbstractBrandAwareSettings $model)
     {
-        $form = $this->createForm($this->getType(), $model, ['brand' => $model->getBrand()]);
-        $form->submit($request->request->all());
+        $form        = $this->createForm($this->getType(), $model, ['brand' => $model->getBrand()]);
+        $requestData = $request->request->all();
+        if (isset($requestData['messenger']['maxFileSize'])) {
+            unset($requestData['messenger']['maxFileSize']);
+        }
+        $form->submit($requestData);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
