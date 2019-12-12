@@ -31,6 +31,16 @@ class MessengerOptions
     private $autoStartTimeout = 0;
 
     /**
+     * This is Deskpro global setting need to be serialized with all other settings.
+     *
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("maxFileSize")
+     *
+     * @var
+     */
+    private $maxFileSize;
+
+    /**
      * A title.
      *
      * @JMS\Type("string")
@@ -94,6 +104,26 @@ class MessengerOptions
     public function getAutoStartTimeout()
     {
         return $this->autoStartTimeout;
+    }
+
+    /**
+     * @param int $fileSize
+     *
+     * @return $this;
+     */
+    public function setMaxFileSize($fileSize)
+    {
+        $this->maxFileSize = (int) $fileSize;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxFileSize()
+    {
+        return $this->maxFileSize;
     }
 
     /**

@@ -16,6 +16,7 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerStyles;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Env;
 
 /**
  * Class MessengerSettingsResolver.
@@ -186,6 +187,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         $mOptions = new MessengerOptions();
 
         return $mOptions
+            ->setMaxFileSize(min(Env::getEffectiveMaxUploadSize(), $this->getSettings('core.attach_user_maxsize', null, 1024 * 1024 * 10)))
             ->setAutoStart($this->getSettings(self::OPTIONS_AUTOSTART, $brand, $mOptions->isAutoStart()))
             ->setAutoStartTimeout($this->getSettings(self::OPTIONS_AUTOSTART_TIMEOUT, $brand, $mOptions->getAutoStartTimeout()))
             ->setSubtext($this->getSettings(self::OPTIONS_SUBTEXT, $brand, $mOptions->getSubtext()))
@@ -235,7 +237,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
      *
      * @return mixed
      */
-    public function getSettings($name, Brand $brand, $default = null)
+    public function getSettings($name, Brand $brand = null, $default = null)
     {
         return $this->settingsResolver->getSetting($name, $brand, $default);
     }
