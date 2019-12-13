@@ -25,20 +25,35 @@
                 </div>
 
                 <div class="col-sm-2">
-                    <div class="dp-po-post-extra">
-                        <ul class="dp-po-post-extra-list">
-                            <li class="dp-po-post-extra-item">
-                                <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
-                            </li>
-                            <li class="dp-po-post-extra-item">
-                                <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
-                            </li>
-                        </ul>
+                    <div class="d-none d-sm-block">
+                        <div class="dp-po-post-extra">
+                            <ul class="dp-po-post-extra-list">
+                                <li class="dp-po-post-extra-item">
+                                    <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+                                </li>
+                                <li class="dp-po-post-extra-item">
+                                    <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-sm-3">
+            <div class="d-none d-sm-block">
+                {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                    subscriptionInfo: [
+                        { toggleUrl: portal_path(article, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_kb_article'), active: is_subscribed },
+                        { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.forms.label_category'), active: is_subscribed_category },
+                        { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section-title'), active: is_subscribed_root },
+                    ]
+                } %}
+            </div>
+        </div>
+    </div>
+    <div class="d-block d-sm-none">
+        <div class="dp-po-post-mobile-area">
             {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
                 subscriptionInfo: [
                     { toggleUrl: portal_path(article, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_kb_article'), active: is_subscribed },
@@ -46,8 +61,103 @@
                     { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section-title'), active: is_subscribed_root },
                 ]
             } %}
+            <a href="javascript:void(0)" data-toggle="modal" data-target="#postExtraMobile"><i class="far fa-ellipsis-v"></i></a>
         </div>
     </div>
+
+     <!-- Mobile Modal -->
+    <div class="modal fade mobile-modal" id="postExtraMobile" tabindex="-1" role="dialog" aria-labelledby="postExtraMobile"
+    aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="dp-po-post-extra-mobile">
+                        <ul class="dp-po-post-extra-mobile-list">
+                            <li class="dp-po-post-extra-mobile-item">
+                            <a href="" data-toggle="modal" data-target="#postShareMobile" class="dp-po-post-extra-mobile-link"><i
+                                class="dp-po-icon fas fa-share-alt"></i> Share</a>
+                            </li>
+                            <li class="dp-po-post-extra-mobile-item">
+                            <a href="" class="dp-po-post-extra-mobile-link"><i class="dp-po-icon fal fa-print"></i> Print this article</a>
+                            </li>
+                            <li class="dp-po-post-extra-mobile-item">
+                            <a href="" class="dp-po-post-extra-mobile-link"><i class="dp-po-icon fal fa-file-pdf"></i> Download this
+                                article</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Modal -->
+    <div class="modal fade mobile-modal" id="postShareMobile" tabindex="-1" role="dialog" aria-labelledby="postShareMobile"
+    aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="dp-po-post-share-mobile">
+                    <ul class="dp-po-post-share-mobile-list">
+                        <li class="dp-po-post-share-mobile-item">
+                        <a href="" class="dp-po-post-share-mobile-link">
+                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/linkedin.png" />
+                            Linkedin
+                        </a>
+                        </li>
+                        <li class="dp-po-post-share-mobile-item">
+                        <a href="" class="dp-po-post-share-mobile-link">
+                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/facebook.png" />
+                            Facebook
+                        </a>
+                        </li>
+                        <li class="dp-po-post-share-mobile-item">
+                        <a href="" class="dp-po-post-share-mobile-link">
+                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/whatsapp.png" />
+                            Whatsapp
+                        </a>
+                        </li>
+                        <li class="dp-po-post-share-mobile-item">
+                        <a href="" class="dp-po-post-share-mobile-link">
+                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/instagram.png" />
+                            Instagram
+                        </a>
+                        </li>
+                        <li class="dp-po-post-share-mobile-item">
+                        <a href="" class="dp-po-post-share-mobile-link">
+                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/pinterest.png" />
+                            Pinterest
+                        </a>
+                        </li>
+                        <li class="dp-po-post-share-mobile-item">
+                        <a href="" class="dp-po-post-share-mobile-link">
+                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/messenger.png" />
+                            Messenger
+                        </a>
+                        </li>
+                    </ul>
+                    <div class="dp-po-post-share-mobile-url">
+                        <h3 class="dp-po-post-share-mobile-title">Copy this link</h3>
+                        <input type="text" value="https://deskpro.github.io/portal-components/portal-style/demos/homepage.html" readonly>
+                    </div>
+                </div>
+
+            </div>
+            </div>
+        </div>
+    </div>
+
+
 {% endblock page_top %}
 
 {# ------------------------------------------ #}
