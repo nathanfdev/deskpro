@@ -27,6 +27,13 @@ export default class DpxRte extends PageWidget {
     const $inlineAttachProto = $el.find('[id$=\'ticket_message_inline_attachments\']');
     const $rElement          = $(`<div class="dp-medium-rte-wrapper as-dpui${addClass ? ` ${addClass}` : ''}"></div>`).appendTo(this.$element);
 
+    const onFocus = () => {
+      $rElement.addClass('focused');
+    };
+    const onBlur = () => {
+      $rElement.removeClass('focused');
+    };
+
     $textarea.hide();
     const widget = this.options.isWidget;
 
@@ -37,7 +44,9 @@ export default class DpxRte extends PageWidget {
       $inlineAttachProto: $inlineAttachProto[0] ? $inlineAttachProto : null,
       widgetOptions:      this.options,
       $toolbarContainer:  $rElement,
-      ctrlEnterSubmit:    !!$el.data('ctrl-enter-submit')
+      ctrlEnterSubmit:    !!$el.data('ctrl-enter-submit'),
+      onFocus,
+      onBlur,
     });
 
     ReactDOM.render(component, $rElement.get(0));

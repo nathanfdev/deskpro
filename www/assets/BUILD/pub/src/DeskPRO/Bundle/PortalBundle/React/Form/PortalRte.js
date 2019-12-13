@@ -20,7 +20,14 @@ export default class PortalRte extends React.Component {
 
     // Inline attachment form prototype must be supplied
     // if inline attachments (e.g. pasting, dragging images etc) is to be supported.
-    $inlineAttachProto: PropTypes.object
+    $inlineAttachProto: PropTypes.object,
+    onFocus:            PropTypes.func,
+    onBlur:             PropTypes.func,
+  };
+
+  static defaultProps = {
+    onFocus() {},
+    onBlur() {},
   };
 
   constructor(props) {
@@ -138,6 +145,8 @@ export default class PortalRte extends React.Component {
           onChange={this.onChangeMessage}
           onPasteImage={this.onPasteImage}
           onSubmit={this.onSubmit}
+          onFocus={this.props.onFocus}
+          onBlur={this.props.onBlur}
           ctrlEnterSubmit={ctrlEnterSubmit}
           options={{
             contentWindow,
