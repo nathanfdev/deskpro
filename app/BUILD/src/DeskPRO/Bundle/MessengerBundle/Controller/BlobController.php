@@ -32,9 +32,11 @@ class BlobController extends AbstractMessengerController
      */
     public function imageUploadAction(Request $request)
     {
-        $exts = ['gif', 'png', 'jpg', 'jpeg'];
-        $set  = new RestrictionSet();
-        $set->setAllowedExts($exts);
+        $exts     = ['gif', 'png', 'jpg', 'jpeg'];
+        $set      = new RestrictionSet();
+        $brand    = $this->get('brand_stack')->getActive()->getBrand();
+        $settings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
+        $set->setAllowedExts($exts)->setMaxSize($settings->getMessenger()->getMaxFileSize());
 
         return new View($this->wrap($this->upload($request->files->get('file'), $set, 'only_images')));
     }
@@ -54,8 +56,10 @@ class BlobController extends AbstractMessengerController
                  'pdf', 'doc', 'docx', 'xls', 'csv', 'xlsx', 'txt',
                  'rar', 'zip', 'tar.gz', '7zip', 'gzip', 'bzip',
                  'mp4', 'avi', 'wmv', 'mpeg', 'mov', '3gp', 'flv', ];
-        $set = new RestrictionSet();
-        $set->setAllowedExts($exts);
+        $set      = new RestrictionSet();
+        $brand    = $this->get('brand_stack')->getActive()->getBrand();
+        $settings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
+        $set->setAllowedExts($exts)->setMaxSize($settings->getMessenger()->getMaxFileSize());
 
         return new View($this->wrap($this->upload($request->files->get('file'), $set, 'only_files')));
     }
