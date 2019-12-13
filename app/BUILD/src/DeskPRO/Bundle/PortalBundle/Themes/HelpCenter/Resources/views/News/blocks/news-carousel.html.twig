@@ -20,9 +20,8 @@
                     </div>
                     <div class="dp-po-news-carousel-content {% if has_splash(item) %}with-splash{% endif %}">
                         <h3 class="dp-po-news-carousel-title">{{ item.title }}</h3>
-                        <p class="dp-po-news-carousel-desc">{{ item.getExcerptHtml(40)|raw }}
+                        <p class="dp-po-news-carousel-desc">{{ item.getExcerptHtml(40)|raw }}</p>
                     </div>
-                    </p>
                     {% if item.person %}
                         <div class="dp-po-news-carousel-avatar dp-po-avatar">
                             {{ hc_avatar(item.person) }}
