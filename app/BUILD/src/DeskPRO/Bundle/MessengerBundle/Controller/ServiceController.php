@@ -61,7 +61,7 @@ class ServiceController extends AbstractMessengerController
         $l = [];
         foreach ($layouts as $k => $layout) {
             /** @var Layout $layout */
-            $layoutData           = ['department' => $k ?: null];
+            $layoutData           = ['department' => $k ?: 0];
             $layoutData['fields'] = [];
             foreach ($layout->all() as $f) {
                 if ($f->getFieldType() === 'attachments') {
