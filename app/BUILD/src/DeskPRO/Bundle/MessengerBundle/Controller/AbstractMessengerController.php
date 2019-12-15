@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator;
+use DeskPRO\Bundle\MessengerBundle\Security\EventListener\VisitorIdListener;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\MessengerModelInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -23,6 +23,6 @@ abstract class AbstractMessengerController extends BaseController
 
     protected function getVisitorId(Request $request)
     {
-        return $request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME);
+        return $request->headers->get(VisitorIdListener::VISITOR_HEADER_NAME);
     }
 }

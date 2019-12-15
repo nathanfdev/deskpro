@@ -3,11 +3,6 @@ parameters:
     - zip
 
 services:
-  messenger_authenticator:
-    class: DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator
-    arguments:
-      - "@app_secret"
-
   messenger.handlers.chat:
     class: DeskPRO\Bundle\MessengerBundle\Handler\ChatHandler
     arguments:
@@ -38,3 +33,8 @@ services:
     arguments:
       - "@brand_aware_settings_resolver"
       - "@doctrine.orm.entity_manager"
+
+  messenger.visitorid_listener:
+    class: DeskPRO\Bundle\MessengerBundle\Security\EventListener\VisitorIdListener
+    tags:
+      - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 300}

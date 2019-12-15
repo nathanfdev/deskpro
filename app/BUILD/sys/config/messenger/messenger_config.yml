@@ -44,7 +44,9 @@ framework:
   default_locale:  "%locale%"
   trusted_hosts:   ~
   session:
-    handler_id:  session.handler.dbal
+    handler_id:      session.handler.dbal
+    name:            dpsid-portal
+    cookie_httponly: true
   fragments:       ~
   http_method_override: true
 
@@ -117,19 +119,19 @@ security:
       id: dp_person_user_provider
 
   firewalls:
-    api_anonymous_home:
+    api_messenger_anonymous_home:
       pattern: ^/api/messenger/?$
       stateless: true
       anonymous: ~
-    api_anonymous_setup:
+    api_messenger_anonymous_setup:
       pattern: ^/api/messenger/service/setup/?$
-      stateless: false
-      anonymous: ~
-    api:
-      pattern: ^/api/messenger
       stateless: true
-      simple_preauth:
-        authenticator: messenger_authenticator
+      anonymous: ~
+    # we need a transfer session listener for it to make it more correct
+    portal:
+      pattern: ^/api/messenger
+      anonymous: ~
+      stateless: false
 
 sensio_framework_extra:
   cache:    { annotations: true }

@@ -8,7 +8,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
-use DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator;
+use DeskPRO\Bundle\MessengerBundle\Security\EventListener\VisitorIdListener;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\TechInfo;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\UserInfo;
 use Doctrine\ORM\EntityManager;
@@ -97,7 +97,7 @@ class UserController extends AbstractMessengerController
      */
     public function getLastActionAlertsAction($lastActionAlert, Request $request)
     {
-        $visitorId = $request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME);
+        $visitorId = $request->headers->get(VisitorIdListener::VISITOR_HEADER_NAME);
 
         if ($chat = $this->get('messenger.service.tech')->getLastChatByVisitorId($visitorId)) {
             $this->get('event_dispatcher')->dispatch(UserChatEvent::POLLING, new UserChatEvent($chat));
