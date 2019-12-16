@@ -10,6 +10,17 @@
                                                 {{ render_icon_from(category) }}
                                                 <h2 class="dp-po-category-title-text">{{ object_phrase(category) }} <span class="count">({{ category_children_pagers[category.id]|length }})</span></h2>
                                         </a>
+                                        <a href="javascript:void(0)" class="dp-po-category-title-expand">
+                                                <i class="dp-po-icon fal fa-angle-down"></i>
+                                        </a>
+                                        <!--
+                                        $('.dp-po-category-title-expand').on('click', function () {
+                                                $(this).toggleClass('active');
+                                                $(this).parents('.dp-po-category-title').next('.dp-po-kb-category-list').slideToggle();
+                                                $(this).parents('.dp-po-category-title').siblings('.dp-po-viewall').toggleClass('active');
+                                                return false;
+                                        })
+                                        -->
                                 </div>
                                 {% include 'Theme:Articles:ArticleList/simple.html.twig' with {
                                         pager: category_children_pagers[category.id],
