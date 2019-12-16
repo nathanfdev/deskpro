@@ -58,7 +58,10 @@ class PortalCacheHelper
     {
         $currentRequest = $this->requestStack->getMasterRequest();
 
-        if (!$currentRequest->headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)) {
+        if (!$currentRequest
+            || !$currentRequest->headers
+            || !$currentRequest->headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)
+        ) {
             return;
         }
 
