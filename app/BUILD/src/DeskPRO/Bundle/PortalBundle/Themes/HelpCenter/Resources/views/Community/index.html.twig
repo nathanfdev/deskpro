@@ -4,7 +4,7 @@
     <div class="dp-po">
         <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
             <div class="container">
-                {% include 'Theme:Community:CommunityTopicsList/index-#{mode}.html.twig' with {
+                {% include "Theme:Community:CommunityTopicsList/index-#{mode}.html.twig" with {
                     community_forums: community_forums,
                     latest_comments_per_forum: latest_comments_per_forum|default({}),
                 } %}

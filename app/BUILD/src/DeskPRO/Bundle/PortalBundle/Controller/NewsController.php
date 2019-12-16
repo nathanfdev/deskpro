@@ -467,10 +467,23 @@ class NewsController extends AbstractPublishController
 
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($post);
 
+        // OTHER ARTICLE DATA
+        $postData = new LazyPropObject([
+            'comments' => function () use ($post) {
+                return $this->getNewsDataService()->getPostComments($post, $this->getUser());
+            },
+            'related_content' => function () use ($post) {
+                $relatedFinder = new RelatedContentFinder($this->getCurrentPerson(), $post);
+
+                return $relatedFinder->getRelatedEntities(true);
+            },
+        ]);
+
         $contentHtml = $this->renderThemeView(
             'Theme:News:pdf.html.twig',
             [
                 'post'               => $post,
+                'postData'           => $postData,
                 'rating'             => $rating,
                 'category'           => $post->getCategory(),
                 'breadcrumbs'        => $breadcrumbs,
