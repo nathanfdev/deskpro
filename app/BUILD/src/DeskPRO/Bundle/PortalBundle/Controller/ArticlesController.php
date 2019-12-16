@@ -452,10 +452,23 @@ class ArticlesController extends AbstractPublishController
 
         list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($article);
 
+        // OTHER ARTICLE DATA
+        $articleData = new LazyPropObject([
+            'comments' => function () use ($article) {
+                return $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
+            },
+            'related_content' => function () use ($article) {
+                $relatedFinder = new RelatedContentFinder($this->getCurrentPerson(), $article);
+
+                return $relatedFinder->getRelatedEntities(true);
+            },
+        ]);
+
         $contentHtml = $this->renderThemeView(
             'Theme:Articles:pdf.html.twig',
             [
                 'article'            => $article,
+                'articleData'        => $articleData,
                 'rating'             => $rating,
                 'category'           => $article->getPrimaryCategory(),
                 'breadcrumbs'        => $breadcrumbs,
