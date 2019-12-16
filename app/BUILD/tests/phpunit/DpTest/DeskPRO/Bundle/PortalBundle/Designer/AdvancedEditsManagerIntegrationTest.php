@@ -56,7 +56,7 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
         $this->service = new AdvancedEditsManager(
             $this->em,
             $this->getContainer()->get('blob.storage'),
-            $this->getContainer()->get('brand_stack'),
+            $this->getContainer()->get('dp.portal.designer.brand_theme_manager'),
             $twig,
             __DIR__.'/scss/main.scss'
         );

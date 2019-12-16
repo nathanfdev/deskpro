@@ -73,6 +73,7 @@ class DefaultBrandFinder
             $brand->id = 1;
             $theme_set = new ThemeSet();
             $theme_set->setThemeId(StandardTheme::THEME_ID);
+            $theme_set->setBrand($brand);
             $brand->setThemeSet($theme_set);
         }
 

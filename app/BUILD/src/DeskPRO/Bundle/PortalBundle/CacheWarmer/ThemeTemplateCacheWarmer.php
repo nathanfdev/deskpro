@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\CacheWarmer;
 
@@ -68,6 +66,7 @@ class ThemeTemplateCacheWarmer implements CacheWarmerInterface
         $the_brand     = new Brand();
         $the_brand->id = $i++;
         $theme_set     = new ThemeSet();
+        $theme_set->setBrand($the_brand);
         $theme_set->setThemeId($theme_id);
         $the_brand->setThemeSet($theme_set);
         $this->container->get('brand_stack')->push($the_brand);

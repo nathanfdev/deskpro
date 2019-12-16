@@ -13,6 +13,14 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@deskpro.blob_storage"
 
+  dp.portal.designer.theme_set_import:
+    class: DeskPRO\Bundle\PortalBundle\Designer\ThemeSetImport
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@deskpro.app_env"
+      - "@deskpro.blob_storage"
+      - "@brand_stack"
+
   dp.portal.designer.theme_file_getter:
     class: DeskPRO\Bundle\PortalBundle\Designer\PortalThemeFileGetter
     arguments:
@@ -35,7 +43,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@blob.storage"
-      - "@brand_stack"
+      - "@dp.portal.designer.brand_theme_manager"
       - "@twig"
       - "@=service('deskpro.app_env').getAppWwwAssetDir()"
 

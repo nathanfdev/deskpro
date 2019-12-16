@@ -81,10 +81,12 @@ class ApiDb extends AbstractDbSet
 
         $themeSet = new ThemeSet();
         $themeSet->setThemeId('standard');
+        $themeSet->setBrand($brand);
         $this->getEm()->persist($themeSet);
 
         $editThemeSet = new ThemeSet();
         $editThemeSet->setThemeId('standard');
+        $editThemeSet->setBrand($brand);
         $this->getEm()->persist($editThemeSet);
 
         $brand->setThemeSet($themeSet);

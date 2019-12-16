@@ -1,15 +1,8 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
-use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -87,6 +80,18 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->setModelField('name', $name);
+
+        return $this;
     }
 
     public function getTemplateCode()
@@ -196,8 +201,21 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
             'columnName' => 'date_updated',
         ]);
 
-        $builder = new ClassMetadataBuilder($metadata);
-        $builder->createManyToOne('theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->build();
+        $metadata->mapManyToOne([
+            'fieldName'    => 'theme_set',
+            'targetEntity' => ThemeSet::class,
+            'mappedBy'     => null,
+            'inversedBy'   => 'templates',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'theme_set_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

@@ -862,6 +862,25 @@ $transition: all 0.15s ease;
   .sp-dd {
     display: none;
   }
+
+  .upload-file-button {
+    position: relative;
+
+    input[type="file"] {
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      cursor: default;
+    }
+  }
+
+  .import-theme-button {
+    margin: 10px 0;
+  }
 }
 
 .select2-dropdown-template-picker {

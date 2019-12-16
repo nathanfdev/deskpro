@@ -27,6 +27,24 @@
                             ng-change="Portal.editTheme()"
                             ng-options="item.id as item.title for item in Portal.available_themes {% if not app.getSetting('beta_features.helpcenter') %} | filter:{id: '!helpcenter'} {% endif %}">
                     </select>
+
+                    <div class="import-theme-button">
+                        <div class="btn btn-default upload-file-button" ng-click="Portal.cloneTheme()">
+                            Clone to new theme
+                        </div>
+                    </div>
+                    <div class="import-theme-button">
+                        <div class="btn btn-default upload-file-button">
+                            Import Theme
+                            <input type="file" ng-file-select="Portal.importTheme($files)">
+                        </div>
+                    </div>
+                    <div class="import-theme-button">
+                        <div class="btn btn-default upload-file-button">
+                            Import Theme & Replace Current
+                            <input type="file" ng-file-select="Portal.importAndReplaceTheme($files)">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Welcome -->
@@ -392,6 +410,10 @@
                 </dp-code-editor>
 
                 <br/><br/>
+
+                <div>
+                    <a class="btn btn-default" href="{{ baseUrl }}/portal/api/style/edit-theme-set/export" target="_blank">Export theme</a>
+                </div>
             </div><!-- End panel wrapper -->
 
         </div><!-- End editor panel -->
