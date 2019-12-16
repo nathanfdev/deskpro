@@ -109,12 +109,12 @@
 
         {% if (ticket.person) %}
             <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_requester') }}</h3>
-            {% include "Theme:Tickets:embeds/person_sidebar.html.twig" with {person: ticket.person, avatar_link: false }%}
+            {% include 'Theme:Tickets:embeds/person_sidebar.html.twig' with {person: ticket.person, avatar_link: false }%}
         {% endif %}
 
         {% if (ticket.agent) %}
             <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_assigned_agent') }}</h3>
-            {% include "Theme:Tickets:embeds/person_sidebar.html.twig" with {person: ticket.agent, avatar_link: false }%}
+            {% include 'Theme:Tickets:embeds/person_sidebar.html.twig' with {person: ticket.agent, avatar_link: false }%}
         {% endif %}
 
         <div class="dp-po-ticket-meta-cc">
@@ -124,7 +124,7 @@
                     {% for participant in ticket.getCcs() %}
                         {% if participant.id %}
                             <li class="dp-po-ticket-meta-cc-item">
-                                {% include "Theme:Tickets:embeds/ticket_cc_sidebar.html.twig" with {person: participant.person, avatar_link: path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id }) }%}
+                                {% include 'Theme:Tickets:embeds/ticket_cc_sidebar.html.twig' with {person: participant.person, avatar_link: path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id }) }%}
                             </li>
                         {% endif %}
                     {% endfor %}

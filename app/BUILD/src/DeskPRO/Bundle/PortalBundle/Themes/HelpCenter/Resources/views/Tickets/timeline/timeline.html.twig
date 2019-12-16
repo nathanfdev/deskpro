@@ -3,7 +3,7 @@
       {% if line.type == 'ticket_reopened' %}
         <div class="dp-po-ticket-block dp-po-ticket-block-timeline">
           <div class="dp-po-avatar dp-po-avatar-round">
-            {% include "Theme:Common:person_inline.html.twig" with {person: line.person, include_email: line.type == 'user_message'} %}
+            {% include 'Theme:Common:person_inline.html.twig' with {person: line.person, include_email: line.type == 'user_message'} %}
           </div>
           <div class="dp-po-ticket-block-status">
             {{ phrase('helpcenter.tickets.timeline_re_opened') }}
@@ -17,7 +17,7 @@
       {% elseif line.type == 'ticket_closed' %}
         <div class="dp-po-ticket-block dp-po-ticket-block-timeline">
           <div class="dp-po-avatar dp-po-avatar-round">
-            {% include "Theme:Common:person_inline.html.twig" with {person: line.person, include_email: line.type == 'user_message'} %}
+            {% include 'Theme:Common:person_inline.html.twig' with {person: line.person, include_email: line.type == 'user_message'} %}
           </div>
           <div class="dp-po-ticket-block-status">
             {{ phrase('helpcenter.tickets.timeline_marked') }}

@@ -83,6 +83,7 @@ class TemplatesMenu extends React.Component {
           {
             templates
               .filter(template => !filter || template.get('name').toLowerCase().indexOf(filter.toLowerCase()) !== -1)
+              .sortBy(template => template.get('name'))
               .map(template =>
                 <MenuItem
                   key={template.get('value')}
@@ -109,6 +110,7 @@ class TemplatesMenu extends React.Component {
         !filter || group.get('templates')
           .find(template => template.get('name').toLowerCase().indexOf(filter.toLowerCase()) !== -1)
       )
+      .sortBy(group => group.get('title'))
       .map((template, group) => (
         <MenuItem
           key={`template${group}`}
@@ -117,14 +119,17 @@ class TemplatesMenu extends React.Component {
           className={classNames({ active: this.isActive(template) })}
           onClick={() => this.setActive(template)}
         />
-      )).toArray();
+      ))
+      .toArray();
   };
 
   updateFilter = (filter) => {
     this.setState({
       filter
     });
-    if (this.state.selectedLeft && this.state.selectedLeft.get('templates').filter(template => !filter || template.get('name').toLowerCase().indexOf(filter.toLowerCase()) !== -1).size === 0) {
+    if (this.state.selectedLeft
+      && this.state.selectedLeft.get('templates')
+        .filter(template => !filter || template.get('name').toLowerCase().indexOf(filter.toLowerCase()) !== -1).size === 0) {
       const selectedLeft = this.props.templates.toSeq()
         .filter(group =>
           !filter || group.get('templates')
