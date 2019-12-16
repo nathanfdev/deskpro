@@ -44,14 +44,21 @@
     </article>
 
     {% show kb_attachments %}
-    {% show related_content %}
+
+    {% if articleData.related_content %}
+        {% include 'Theme:PublishCommon:related-content.html.twig' with {
+            related_content: articleData.related_content
+        } %}
+    {% endif %}
 
     {% if brand_setting('user.publish_comments') and article.num_comments %}
         <div class="comment-box" id="comments">
             <div class="titled-header">
                 <h1>{{ phrase('helpcenter.general.comments-title', {count: article.calc_num_comments}) }}</h1>
             </div>
-            {% show kb_article_comments %}
+            {% if articleData.comments | length %}
+                {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: articleData.comments } %}
+            {% endif %}
         </div>
     {% endif %}
 {% endblock page_body %}
