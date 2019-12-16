@@ -6,6 +6,7 @@ import find from 'lodash/find';
 import uniqueId from 'lodash/uniqueId';
 import $ from 'jquery';
 import { DropDownInput } from '@deskpro/portal-components';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
 
 export class LevelSelectActionStore extends FormActionStore {
@@ -133,6 +134,7 @@ export class HcSelectBox extends React.Component {
           dataSource={{ getOptions: group }}
           value={this.state.value}
           onChange={this.onClickOption}
+          i18n={{ back: portalPhrases.get('helpcenter.general.back') }}
         />
       </div>
     );
