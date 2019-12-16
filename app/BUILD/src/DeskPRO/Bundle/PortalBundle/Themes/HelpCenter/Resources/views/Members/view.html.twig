@@ -61,7 +61,7 @@
                                     <ul class="dp-po-profile-activity-list">
                                         {% for activity in activities %}
                                             <li class="dp-po-profile-activity-item">
-                                                {% include 'Theme:Members:Activity/type_#{activity.type}.html.twig' with {
+                                                {% include "Theme:Members:Activity/type_#{activity.type}.html.twig" with {
                                                     activity: activity,
                                                     truncateDescription: 100,
                                                 } %}

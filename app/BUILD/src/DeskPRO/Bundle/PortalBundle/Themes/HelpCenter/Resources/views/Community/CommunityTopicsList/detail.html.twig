@@ -1,4 +1,4 @@
-{% include 'Theme:Community:CommunityTopicsList/topics-#{topics_list.view}.html.twig' with {
+{% include "Theme:Community:CommunityTopicsList/topics-#{topics_list.view}.html.twig" with {
     topics: topics_list.topics_data.pager,
     filtered: topics_list.topics_data.filtered,
     is_compact: topics_list.is_compact,
