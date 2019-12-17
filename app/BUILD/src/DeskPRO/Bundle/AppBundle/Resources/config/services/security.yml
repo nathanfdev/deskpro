@@ -44,8 +44,9 @@ services:
 
   portal_usergroup_decider:
     class: DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalUsergroupDecider
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@service_container"
 
   ###
   ### Security Services

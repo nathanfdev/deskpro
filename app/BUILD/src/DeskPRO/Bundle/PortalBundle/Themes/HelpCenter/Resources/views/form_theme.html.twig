@@ -350,7 +350,7 @@
         {% set required = false %}
     {%- endif -%}
     <div class="with-dpx">
-        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        <select dpx-select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
             {%- if placeholder is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? placeholder|trans({}, translation_domain) }}</option>
             {%- endif -%}
@@ -364,9 +364,6 @@
             {%- set options = choices -%}
             {{- block('choice_widget_options') -}}
         </select>
-        {% if not multiple %}
-            <i class="far fa-angle-down fa-lg"></i>
-        {% endif %}
     </div>
 {%- endblock choice_widget_collapsed -%}
 
@@ -561,7 +558,7 @@ HIERARCHY
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}
-        <select data-hierarchy="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %} class="as-no-dpui">
+        <select data-hierarchy="" {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %} class="as-no-dpui">
             {% if empty_value is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}
@@ -575,7 +572,6 @@ HIERARCHY
             {% set options = choices -%}
             {{- block('deskpro_hierarchical_choice_widget_options') -}}
         </select>
-        <i class="far fa-angle-down fa-lg"></i>
     </div>
 {%- endblock deskpro_hierarchical_choice_widget_collapsed %}
 
@@ -628,7 +624,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
         {% set required = false %}
     {%- endif -%}
     <div class="with-dpx">
-        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        <select {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %}>
             {% if empty_value is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}
@@ -642,9 +638,6 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
             {% set options = choices -%}
             {{- block('deskpro_custom_field_choice_widget_options') -}}
         </select>
-        {% if not multiple %}
-            <i class="far fa-angle-down fa-lg"></i>
-        {% endif %}
     </div>
 {%- endblock deskpro_custom_field_choice_widget_collapsed %}
 
@@ -747,7 +740,7 @@ END HIERARCHY
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}
-        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        <select dpx-select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
             {% if empty_value is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}
@@ -761,7 +754,6 @@ END HIERARCHY
             {% set options = choices -%}
             {{- block('entity_hierarchy_widget_options') -}}
         </select>
-        <i class="far fa-angle-down fa-lg"></i>
     </div>
 {%- endblock entity_hierarchy_collapsed %}
 

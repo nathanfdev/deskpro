@@ -9,7 +9,7 @@ use Application\DeskPRO\NewSearch\Manager\Traits\ExtractsMatchersFromQuery;
 use Application\DeskPRO\NewSearch\Repository\AbstractRepository;
 use DpSys\LowError\SystemErrorHandler;
 use Elastica\Response;
-use FOS\ElasticaBundle\Manager\RepositoryManager;
+use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
@@ -94,7 +94,7 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
             $sort = 'score';
         }
 
-        /** @var RepositoryManager $repositoryManager */
+        /** @var RepositoryManagerInterface $repositoryManager */
         $repositoryManager = $this->container->get('fos_elastica.manager');
 
         // go over objects
@@ -230,7 +230,7 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
         }
         if (version_compare($version, '2.0.0') < 0 || version_compare($version, '6.0.0') >= 0) {
             throw new \Exception(
-                "Deskpro is not compatible with your ElasticSearch {$version} server. 
+                "Deskpro is not compatible with your ElasticSearch {$version} server.
                 Please use DeskPRO with an ElasticSearch 2.x or 5.x server."
             );
         }

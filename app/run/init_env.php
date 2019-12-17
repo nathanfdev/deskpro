@@ -8,12 +8,6 @@ if (version_compare(phpversion(), '5.5.0', '<')) {
     echo "(ERR_CODE:MPHPVFT)";
     exit(1);
 }
-if (version_compare(phpversion(), '7.2.0alpha', '>')) {
-    echo "You are using PHP 7.2.x that is incompatible with this software for now.\n\n";
-    echo "Please refer to the server requirements here: https://www.deskpro.com/requirements.\n";
-    echo "(ERR_CODE:MPHPVFT)";
-    exit(1);
-}
 
 #------------------------------
 # Normalize env
@@ -173,8 +167,9 @@ if (!defined('DPC_IS_CLOUD') && !$DP_ENV->getConfig('database.host')) {
     @ini_set('display_errors', '0');
 }
 
-// Increase error reporting
-error_reporting(E_ALL);
+// Init error reporting
+// This is reset again in LibBootTask to something higher
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING & E_COMPILE_WARNING);
 
 #------------------------------
 # Memory Limits

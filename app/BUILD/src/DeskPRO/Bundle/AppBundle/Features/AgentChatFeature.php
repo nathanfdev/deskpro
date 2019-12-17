@@ -301,9 +301,9 @@ FIND;
     private function insertParticipants(EntityManager $em, $newChatId, $participants)
     {
         $connection         = $em->getConnection();
-        $participantsInsert = <<<'INSERT'
+        $participantsInsert = <<<'SQL'
 INSERT INTO `agent_chat_participant` (`agent_chat_id`, `person_id`) VALUES (:agent_chat_id, :person_id)
-INSERT;
+SQL;
         $statement = $connection->prepare($participantsInsert);
         foreach ($participants as $participant) {
             $statement->execute(['agent_chat_id' => $newChatId, 'person_id' => $participant]);
@@ -339,11 +339,11 @@ INSERT;
         }
         $connection->batchInsert('agent_chat_message', $newMessages);
         // note here we are explicitly using that $message var contains last from $messages
-        $update = <<<UPDATE
+        $update = <<<SQL
 UPDATE `agent_chat` 
    SET `date_last_message` = IF(`date_last_message` > '{$message['date_created']}', `date_last_message`, '{$message['date_created']}')
  WHERE `id` = {$newChatId}
-UPDATE;
+SQL;
 
         $connection->executeQuery($update);
     }

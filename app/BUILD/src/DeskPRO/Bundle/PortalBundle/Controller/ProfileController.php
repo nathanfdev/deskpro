@@ -83,6 +83,13 @@ class ProfileController extends AbstractController
                 if ($email = $person->getEmailAddress()) {
                     /** @var Person $personCheck */
                     if ($personCheck = $this->get('data.person')->getPersonForEmail($email)) {
+                        $this->runAntiAbuseCheck($request);
+
+                        if ($personCheck->isAgent() || $personCheck->isAdmin()) {
+                            // redirect to the /agent forgot password functionality
+                            return $this->redirectToRoute('agent_login', ['forgot' => $email]);
+                        }
+
                         // uncomment this conditional if the "set password" email should only be sent to accounts
                         // that cannot login. accounts that get here that can login are given a form error instead.
                         //if (!$personCheck->isUser()) {
@@ -103,9 +110,7 @@ class ProfileController extends AbstractController
             }
 
             if ($form->isValid()) {
-                $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
-                $event->setResponse($this->redirectToRoute('portal_user_registration'));
-                $this->getAntiAbuseService()->check($event);
+                $this->runAntiAbuseCheck($request);
 
                 if ($this->isSavedFormSubRequest($request)) {
                     // this is coming from the validation controller, so this time we actually want to save the user
@@ -493,5 +498,12 @@ class ProfileController extends AbstractController
         $this->getEm()->flush();
 
         return $this->redirectToRoute('portal_user_profile_emails');
+    }
+
+    protected function runAntiAbuseCheck(Request $request)
+    {
+        $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $event->setResponse($this->redirectToRoute('portal_user_registration'));
+        $this->getAntiAbuseService()->check($event);
     }
 }

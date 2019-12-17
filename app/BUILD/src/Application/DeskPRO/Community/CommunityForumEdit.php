@@ -27,9 +27,6 @@ class CommunityForumEdit
     public function save(EntityManager $em)
     {
         $em->persist($this->community_forum);
-        $this->community_forum->getTopicStatuses()->map(function ($junc) use ($em) {
-            $em->persist($junc);
-        });
         $em->flush();
     }
 }

@@ -70,7 +70,7 @@ return [
 
     'spanish' => [
         '%From%'    => 'De',
-        '%Sent%'    => 'Enviado',
+        '%Sent%'    => 'Enviado(| el)',
         '%Date%'    => 'Fecha',
         '%To%'      => 'Para',
         '%Subject%' => 'Asunto',

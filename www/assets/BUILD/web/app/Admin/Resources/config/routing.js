@@ -1835,7 +1835,7 @@ define(function() {
   routes.push({
     id:           'portal.kb_custom_fields.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'CustomFields/Common/edit.html',
+    templateName: 'Edit.js',
     controller:   'Admin_CustomFields_Kb_Ctrl_Edit',
   });
 
@@ -2007,6 +2007,39 @@ define(function() {
   });
 
   // ###
+  // # Community::CustomFields
+  // ###
+  routes.push({
+    id:           'portal.community_custom_fields',
+    url:          '/community/custom_fields',
+    templateName: 'CustomFields/Community/list.html',
+    controller:   'Admin_CustomFields_Community_Ctrl_List'
+  });
+
+  routes.push({
+    id:           'portal.community_custom_fields.gocreate',
+    url:          '/go-create',
+    templateName: 'CustomFields/Community/edit.html',
+    controller:   ['$state', function ($state) {
+      $state.go('portal.community_custom_fields.create');
+    }]
+  });
+
+  routes.push({
+    id:           'portal.community_custom_fields.create',
+    url:          '/create',
+    templateName: 'CustomFields/Community/edit.html',
+    controller:   'Admin_CustomFields_Community_Ctrl_Edit'
+  });
+
+  routes.push({
+    id:           'portal.community_custom_fields.edit',
+    url:          '/{id:[0-9]+}',
+    templateName: 'CustomFields/Community/edit.html',
+    controller:   'Admin_CustomFields_Community_Ctrl_Edit',
+  });
+
+  // ###
   // # Community::Forums
   // ###
   routes.push({
@@ -2053,14 +2086,14 @@ define(function() {
   routes.push({
     id:           'portal.community_forums.custom_fields.create',
     url:          '/{forumId:[0-9]+}/new',
-    templateName: 'CustomFields/Community/edit.html',
+    templateName: 'CustomFields/Common/edit.html',
     controller:   'Admin_CustomFields_CommunityForums_Ctrl_Edit'
   });
 
   routes.push({
     id:           'portal.community_forums.custom_fields.edit',
     url:          '/{forumId:[0-9]+}/{id:[0-9]+}',
-    templateName: 'CustomFields/Community/edit.html',
+    templateName: 'CustomFields/Common/edit.html',
     controller:   'Admin_CustomFields_CommunityForums_Ctrl_Edit',
     data:         { stateMarkId: "portal.community_forums.edit "}
   });

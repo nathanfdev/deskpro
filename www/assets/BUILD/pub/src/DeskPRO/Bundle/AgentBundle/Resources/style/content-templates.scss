@@ -11,9 +11,13 @@
 
     .title {
       font-weight: $pf-semi-bold;
-      display: block;
       font-size: 14px;
     }
+    .type {
+      margin-left: 5px;
+      color: $dp-greyscale-450;
+    }
+
     .author {
       padding-top: 5px;
 
@@ -61,3 +65,25 @@
     }
   }
 }
+
+.template_filtering {
+  .title {
+    margin: 5px 0 10px;
+    font-weight: bolder;
+  }
+
+  .template_filters {
+    display: flex;
+
+    .filter_item {
+      display: inline-flex;
+      flex-grow: 1;
+    }
+  }
+
+  hr {
+    margin-left: -10px;
+    margin-right: 10px;
+  }
+}
+

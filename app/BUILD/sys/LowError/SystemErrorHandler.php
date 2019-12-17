@@ -368,6 +368,10 @@ class SystemErrorHandler
      */
     public static function handleError($errno, $errstr, $errfile, $errline)
     {
+        if (self::isIgnoredVendorNotice($errno, $errstr, $errfile, $errline)) {
+            return;
+        }
+
         self::$lastError = [
             'type'    => $errno,
             'message' => $errstr,
@@ -442,7 +446,7 @@ class SystemErrorHandler
 
             case E_WARNING:
             case E_USER_WARNING:
-                $pri     = 'WARN';
+                $pri     = 'WARNING';
                 $errname = 'E_WARNING';
                 break;
 
@@ -453,8 +457,33 @@ class SystemErrorHandler
                 break;
 
             case E_STRICT:
-                $pri     = 'STRICT';
+                $pri     = 'NOTICE';
                 $errname = 'E_STRICT';
+                break;
+
+            case E_COMPILE_WARNING:
+                $pri = 'WARNING';
+                $errno = 'E_COMPILE_WARNING';
+                break;
+
+            case E_COMPILE_ERROR:
+                $pri = 'ERR';
+                $errno = 'E_COMPILE_ERROR';
+                break;
+
+            case E_CORE_WARNING:
+                $pri = 'WARNING';
+                $errno = 'E_CORE_WARNING';
+                break;
+
+            case E_CORE_ERROR:
+                $pri = 'ERR';
+                $errno = 'E_CORE_ERROR';
+                break;
+
+            case E_PARSE:
+                $pri     = 'ERR';
+                $errname = 'E_PARSE';
                 break;
 
             case E_RECOVERABLE_ERROR:
@@ -581,7 +610,7 @@ class SystemErrorHandler
             $no_log_error  = true;
         }
 
-        $summary = "[$errname:$errno] $errstr ($errfile:$errline)";
+        $summary = "[$errname] $errstr ($errfile:$errline)";
 
         $url = '';
         if (defined('DP_REQUEST_URL')) {
@@ -632,26 +661,45 @@ class SystemErrorHandler
         }
         self::$isLogging = true;
 
-        if (!empty($GLOBALS['DP_CONTAINER_IS_BUILDING'])) {
-            return;
-        }
-
         self::processErrorInfo($errinfo);
         unset($errinfo['exception']);
 
-        if (!(isset($errinfo['no_send_error']) && $errinfo['no_send_error'])) {
-            //==BEGIN:MONITORING==
-            if (extension_loaded('newrelic')) {
-                if (isset($errinfo['exception'])) {
-                    newrelic_notice_error($errinfo['summary'], $errinfo['exception']);
-                } else {
-                    newrelic_notice_error($errinfo['summary']);
-                }
-            }
-            //==END:MONITORING==
+        self::$isLogging = false;
+    }
+
+    /**
+     * True if the provided path is a Deskpro source file.
+     *
+     * @param string $file
+     * @return boolean
+     */
+    private static function isSrcFile($file)
+    {
+        if (DIRECTORY_SEPARATOR !== '/') {
+            $file = str_replace(DIRECTORY_SEPARATOR, '/', $file);
         }
 
-        self::$isLogging = false;
+        return (bool) preg_match('/\/(BUILD|\d+)\/(src|sys)\//', $file);
+    }
+
+    private static function isIgnoredVendorNotice($errno, $errstr, $errfile, $errline)
+    {
+        // We dont ignore our own
+        if (self::isSrcFile($errfile)) {
+            return false;
+        }
+
+        // ignore all deprecated and notices
+        if ($errno === E_USER_DEPRECATED || $errno === E_DEPRECATED || $errno === E_NOTICE) {
+            return true;
+        }
+
+        // ignore warnings except for this one
+        if ($errno == E_WARNING && strpos($errstr, 'Did you mean to use "continue 2"?') !== false) {
+            return true;
+        }
+
+        return false;
     }
 
     //###################################################################################################################
@@ -1483,13 +1531,17 @@ class SystemErrorHandler
     public static function runWithoutErrorHandler($cb, array &$errors = [])
     {
         set_error_handler(function ($type, $message, $file, $line) use (&$errors) {
+            if (!self::isIgnoredVendorNotice($type, $message, $file, $line)) {
+                return;
+            }
+
             $errors[] = [
                 'type'    => $type,
                 'message' => $message,
                 'file'    => $file,
                 'line'    => $line,
             ];
-        }, E_ALL | E_STRICT);
+        }, E_ALL);
 
         try {
             return call_user_func($cb);

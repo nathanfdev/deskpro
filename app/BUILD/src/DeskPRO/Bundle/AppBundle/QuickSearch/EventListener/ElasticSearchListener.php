@@ -6,7 +6,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
 use DpSys\LowError\SystemErrorHandler;
-use FOS\ElasticaBundle\Manager\RepositoryManager;
+use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use FOS\ElasticaBundle\Repository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class ElasticSearchListener implements EventSubscriberInterface
 {
     /**
-     * @var RepositoryManager
+     * @var RepositoryManagerInterface
      */
     private $elasticManager;
 
@@ -29,10 +29,10 @@ class ElasticSearchListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param RepositoryManager $elasticManager
+     * @param RepositoryManagerInterface $elasticManager
      * @param SettingsResolver  $settingsResolver
      */
-    public function __construct(RepositoryManager $elasticManager, SettingsResolver $settingsResolver)
+    public function __construct(RepositoryManagerInterface $elasticManager, SettingsResolver $settingsResolver)
     {
         $this->elasticManager   = $elasticManager;
         $this->settingsResolver = $settingsResolver;

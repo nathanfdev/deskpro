@@ -39,9 +39,10 @@ class HelpcenterApp {
 
   run() {
     const page = new HelpCenterPage();
-    this.locale = window.DESKPRO_LOCALE.replace(/_/, '-');
+    this.locale = window.DESKPRO_LOCALE.replace(/_/, '-').split(/_/)[0] || 'en';
     page.renderWhenReady();
     this.portalPage = page;
+    window.DESKPRO_PORTAL_PAGE = page;
   }
 
   render(props, node) {

@@ -7,19 +7,23 @@ import DpxJavascript from './Common/Form/DpxJavascript';
 import HcFileUpload from './Common/Form/Helpcenter/HcFileUpload';
 import HcProfilePicture from './Common/Form/Helpcenter/HcProfilePicture';
 import DpxRte from './Common/Form/DpxRte';
+import { HcDpxSelectBox } from './Common/Form/Helpcenter/HcSelectBox';
+import { HcDpxMultipleSelectBox } from './Common/Form/Helpcenter/HcMultipleSelectBox';
 
 export default class HelpcenterFormWidget extends PageWidget {
 
   init() {
+    this.addWidgetDef(HcDateWidget, '.dpx-date');
+    this.addWidgetDef(HcDateWidget, '.dpx-date-time');
+    this.addWidgetDef(HcDpxSelectBox, 'select[dpx-select], select.dpx-select');
+    this.addWidgetDef(HcDpxMultipleSelectBox, 'select[dpx-select-multiple], select.dpx-select-multiple');
+    this.addWidgetDef(HcFileUpload, '.helpcenter-file-upload');
+    this.addWidgetDef(DpxRte, '[data-rte]');
     this.addWidgetDef(DpxFormDraft, 'form[data-save-draft]');
     this.addWidgetDef(DpxCustomFieldAttach, '.dpx-custom-field-attach');
     this.addWidgetDef(DpxDoubleSubmitPrevention, '[type="submit"]');
     this.addWidgetDef(DpxJavascript, '.dpx-javascript');
-    this.addWidgetDef(HcFileUpload, '.helpcenter-file-upload');
     this.addWidgetDef(HcProfilePicture, '.helpcenter-profile_picture');
-    this.addWidgetDef(HcDateWidget, '.dpx-date');
-    this.addWidgetDef(HcDateWidget, '.dpx-date-time');
-    this.addWidgetDef(DpxRte, '[data-rte]');
 
     if (this.$element.is('form')) {
       HelpcenterFormWidget.initForms(this.$element);

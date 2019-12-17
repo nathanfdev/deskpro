@@ -27,8 +27,9 @@ Feature: KB
 
   Scenario: I navigate to a KB article as participant of usergroup
     Given everyone user group disabled
-    And registered user group disabled
     And testo user group exists
+    And I set permission "articles.use" = 0 for "registered" usergroup
+    And I set permission "articles.use" = 1 for "testo" usergroup
     And I grant the KB_general KB category permission for usergroup testo
     And I login with user credentials
     When I am on "/"

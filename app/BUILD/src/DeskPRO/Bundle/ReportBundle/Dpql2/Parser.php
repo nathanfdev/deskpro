@@ -1,4 +1,8 @@
 <?php
+namespace DeskPRO\Bundle\ReportBundle\Dpql2;
+
+use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\DpqlStatementFactory;
+
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2;
 

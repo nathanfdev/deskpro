@@ -34,7 +34,7 @@ class HttpVerifyRequirementsBootTask
         $checker = require $env->getAppDir().'/sys/SoftwareRequirements/load_checker.php';
 
         if (count($checker->getFailedRequirements())) {
-            echo "This server does not meet the minimum server requirements required by DeskPRO.\n\n";
+            echo "This server does not meet the minimum server requirements required by Deskpro.\n\n";
             echo "Execute the dp:web-server-info command from the command-line to get the URL to your requirements status page.\n";
             echo "Refer to this article on usage: https://support.deskpro.com/en/kb/articles/553\n";
             exit(0);

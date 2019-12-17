@@ -102,7 +102,7 @@ class CommunityForumsController extends AbstractController implements ProtectedC
 
         $communityForumEdit = new CommunityForumEdit($communityForum);
         $form               = $this->createForm(CommunityForumType::class, $communityForumEdit, ['cascade_validation' => true, 'forum' => $communityForum]);
-        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'community_forum'), true);
+        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'community_forum'), false);
 
         if ($form->isValid()) {
             if ($this->in->getString('community_forum.icon_property.urn')) {

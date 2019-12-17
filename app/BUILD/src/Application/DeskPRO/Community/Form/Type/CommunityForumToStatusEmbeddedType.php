@@ -33,6 +33,11 @@ class CommunityForumToStatusEmbeddedType extends AbstractType
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
     public function onPostSubmit(FormEvent $event)
     {
         $event->getData()->setForum($event->getForm()->getConfig()->getOption('forum'));
@@ -50,13 +55,5 @@ class CommunityForumToStatusEmbeddedType extends AbstractType
             ->setRequired('forum')
             ->setAllowedTypes('forum', CommunityForum::class)
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'community_forum_to_status_embedded';
     }
 }

@@ -3087,6 +3087,81 @@ $collection->create(
     ]
 );
 
+//#######################################################################################################################
+// Community Fields
+//#######################################################################################################################
+
+$collection->create(
+    'api_community_fields_get',
+    [
+        'path'         => '/community_fields/{id}',
+        'controller'   => 'LegacyApiBundle:CommunityFields:getCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_community_fields_create',
+    [
+        'path'       => '/community_fields',
+        'controller' => 'LegacyApiBundle:CommunityFields:saveCustomField',
+        'defaults'   => ['id' => '0'],
+        'methods'    => ['PUT'],
+    ]
+);
+
+$collection->create(
+    'api_community_fields_delete',
+    [
+        'path'         => '/community_fields/{id}',
+        'controller'   => 'LegacyApiBundle:CommunityFields:deleteCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['DELETE'],
+    ]
+);
+
+$collection->create(
+    'api_community_fields_save',
+    [
+        'path'         => '/community_fields/{id}',
+        'controller'   => 'LegacyApiBundle:CommunityFields:saveCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['POST'],
+    ]
+);
+
+$collection->create(
+    'api_community_fields_save_batch',
+    [
+        'path'       => '/community_fields/batch',
+        'controller' => 'LegacyApiBundle:CommunityFields:saveBatchCustomField',
+        'methods'    => ['PUT'],
+    ]
+);
+
+$collection->create(
+    'api_community_fields',
+    [
+        'path'       => '/community_fields',
+        'controller' => 'LegacyApiBundle:CommunityFields:list',
+        'methods'    => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_community_fields_update_order',
+    [
+        'path'       => '/community_fields/display-order',
+        'controller' => 'LegacyApiBundle:CommunityFields:saveDisplayOrder',
+        'methods'    => ['POST'],
+    ]
+);
+
+//#######################################################################################################################
+// Tasks
+//#######################################################################################################################
+
 $collection->create(
     'api_tasks',
     [

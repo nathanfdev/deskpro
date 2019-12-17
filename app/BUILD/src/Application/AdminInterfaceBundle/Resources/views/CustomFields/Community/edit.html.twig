@@ -1,13 +1,39 @@
 {% extends 'AdminInterfaceBundle:CustomFields:Common/edit.html.twig' %}
-{% block form_header %}
-	<article class="form-horizontal dp-form">
-		<div class="panel panel-fill indent">
-			<div class="panel-body">
-				<div class="form-group">
-					<i class="fas fa-arrow-left"></i>
-					<a href="{{ ng_href('portal.community_forums.edit', '{id: EditCtrl.forum.id}') }}">Back to editing the forum</a>
-				</div>
-			</div>
-		</div>
-	</article>
-{% endblock form_header %}
+{% block extra_types_choose %}
+{% endblock %}
+{% block extra_types_titleswitch %}
+{% endblock %}
+{% block pre_bottomdefault_fields %}
+    <div class="form-group">
+        <div class="col-lg-3">
+            <h3>Auto-add to new forums</h3>
+        </div>
+        <div class="col-lg-9">
+            <label><input type="checkbox" ng-model="EditCtrl.form.is_global" /> When enabled, this field will be added to all new forums you create by default. (You can still edit the forum later to remove it.)</label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-lg-3">
+            <h3>Community Forums</h3>
+        </div>
+        <div class="col-lg-9">
+            <div class="inner-group">
+                <div style="padding-top:6px;" ui-sortable="CommunityForumsEdit.sortedCustomFieldsOptions">
+                    <label
+                            class="with-drag-handle"
+                            data-id="{{ ng_var('forum.id') }}"
+                            ng-repeat="forum in EditCtrl.community_forums"
+                            style="font-weight: normal; display: block;"
+                    >
+                        <input type="checkbox" ng-model="EditCtrl.selectedForums[forum.id]">
+                        {{ ng_var('forum.title') }}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottomdefault_fields %}
+{% endblock %}

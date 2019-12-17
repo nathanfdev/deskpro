@@ -20,9 +20,10 @@ export class Carousel extends PageWidget {
           settings:   {
             slidesToShow:   1,
             slidesToScroll: 1,
-            infinite:       true,
             dots:           true,
             arrows:         false,
+            rows:           0,
+            variableWidth:  true,
           }
         }]
       });

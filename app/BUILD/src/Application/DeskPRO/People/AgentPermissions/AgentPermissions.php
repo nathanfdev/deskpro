@@ -140,7 +140,7 @@ class AgentPermissions implements PermissionsSetInterface
 
         return method_exists($this->$prop, $getter)
             ? $this->$prop->$getter()
-            : property_exists($this->$prop, $name) ? (bool) $this->$prop->$name : false;
+            : (property_exists($this->$prop, $name) ? (bool) $this->$prop->$name : false);
     }
 
     /**
