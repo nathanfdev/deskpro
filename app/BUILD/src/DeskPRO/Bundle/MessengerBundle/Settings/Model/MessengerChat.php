@@ -81,6 +81,14 @@ class MessengerChat
     private $ticketDefaults;
 
     /**
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm")
+     * @JMS\SerializedName("preChatForm")
+     *
+     * @var PreChatForm
+     */
+    private $preChatForm;
+
+    /**
      * @return bool
      */
     public function isEnabled()
@@ -216,6 +224,26 @@ class MessengerChat
     public function setTicketDefaults(MessengerChatTicketDefaults $ticketDefaults)
     {
         $this->ticketDefaults = $ticketDefaults;
+
+        return $this;
+    }
+
+    /**
+     * @return PreChatForm
+     */
+    public function getPreChatForm()
+    {
+        return $this->preChatForm;
+    }
+
+    /**
+     * @param PreChatForm $preChatForm
+     *
+     * @return $this
+     */
+    public function setPreChatForm(PreChatForm $preChatForm)
+    {
+        $this->preChatForm = $preChatForm;
 
         return $this;
     }

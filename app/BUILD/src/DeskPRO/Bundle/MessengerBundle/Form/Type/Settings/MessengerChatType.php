@@ -81,6 +81,7 @@ class MessengerChatType extends AbstractType
 
             ])
             ->add('ticketDefaults', MessengerChatTicketDefaultsType::class, ['brand' => $brand])
+            ->add('preChatForm', MessengerPreChatFormType::class)
         ;
     }
 

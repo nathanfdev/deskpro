@@ -15,6 +15,7 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerStyles;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Env;
 
@@ -39,6 +40,13 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
     const CHAT_TICKET_DEFAULTS_SUBJECT = 'messenger.chat.ticket_defaults.subject';
     const CHAT_TICKET_DEFAULTS_DEP     = 'messenger.chat.ticket_defaults.department';
+
+    const PRE_CHAT_FORM_ENABLED        = 'messenger.chat.pre_chat_form.enabled';
+    const PRE_CHAT_FORM_NAME_ENABLED   = 'messenger.chat.pre_chat_form.name.enabled';
+    const PRE_CHAT_FORM_EMAIL_ENABLED  = 'messenger.chat.pre_chat_form.email.enabled';
+    const PRE_CHAT_FORM_NAME_REQUIRED  = 'messenger.chat.pre_chat_form.name.required';
+    const PRE_CHAT_FORM_EMAIL_REQUIRED = 'messenger.chat.pre_chat_form.email.required';
+    const PRE_CHAT_FORM_DEPARTMENT     = 'messenger.chat.pre_chat_form.department';
 
     const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
     const STYLE_PRIMARY_COLOR = 'messenger.styles.primary_color';
@@ -144,6 +152,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setPrompt($this->getSettings(self::CHAT_PROMPT, $brand, $mChat->getPrompt()))
             ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
             ->setTicketDefaults($this->getMessengerChatTicketDefaults($brand))
+            ->setPreChatForm($this->getPreChatForm($brand))
             ;
     }
 
@@ -160,6 +169,25 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setSubject($this->getSettings(self::CHAT_TICKET_DEFAULTS_SUBJECT, $brand, $mChatTicketDefaults->getSubject()))
             ->setDepartment($this->getSettings(self::CHAT_TICKET_DEFAULTS_DEP, $brand, $this->getDefaultDepartment('ticket')))
             ;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return PreChatForm
+     */
+    protected function getPreChatForm(Brand $brand)
+    {
+        $mPreChatForm = new PreChatForm();
+
+        return $mPreChatForm
+            ->setEnabled($this->getSettings(self::PRE_CHAT_FORM_ENABLED, $brand, $mPreChatForm->isEnabled()))
+            ->setIsNameEnabled($this->getSettings(self::PRE_CHAT_FORM_NAME_ENABLED, $brand, $mPreChatForm->isNameEnabled()))
+            ->setIsEmailEnabled($this->getSettings(self::PRE_CHAT_FORM_EMAIL_ENABLED, $brand, $mPreChatForm->isEmailEnabled()))
+            ->setIsNameRequired($this->getSettings(self::PRE_CHAT_FORM_NAME_REQUIRED, $brand, $mPreChatForm->isNameRequired()))
+            ->setIsEmailRequired($this->getSettings(self::PRE_CHAT_FORM_EMAIL_REQUIRED, $brand, $mPreChatForm->isEmailRequired()))
+            ->setIsDepartmentSelectable($this->getSettings(self::PRE_CHAT_FORM_DEPARTMENT, $brand, $mPreChatForm->isDepartmentSelectable()))
+        ;
     }
 
     /**

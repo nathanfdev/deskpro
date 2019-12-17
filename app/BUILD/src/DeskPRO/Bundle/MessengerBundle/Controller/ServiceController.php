@@ -58,7 +58,7 @@ class ServiceController extends AbstractMessengerController
         /** @var LayoutCollection $layouts */
         $layouts = $this->container->getTicketLayoutManager()->getUserLayouts(true);
 
-        $l = [];
+        $ticketFormConfig = [];
         foreach ($layouts as $k => $layout) {
             /** @var Layout $layout */
             $layoutData           = ['department' => $k ?: 0];
@@ -76,10 +76,10 @@ class ServiceController extends AbstractMessengerController
                 $layoutData['fields'][] = $ar;
             }
 
-            $l[] = $layoutData;
+            $ticketFormConfig[] = $layoutData;
         }
 
-        $data['tickets']['formConfig'] = $l;
+        $data['tickets']['formConfig'] = $ticketFormConfig;
 
         $data['bundleUrl'] = [
             'manifest' => $this->container->get('templating.helper.assets')->getUrl('asset-manifest.json', 'messenger_assets'),
