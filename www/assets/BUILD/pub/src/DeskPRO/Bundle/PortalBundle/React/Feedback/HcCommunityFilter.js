@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { HcFilterControls } from './Controls/HcFilterControls';
+import { HcMobileFilterControls } from './Controls/HcMobileFilterControls';
 import { portalHttp } from '../../Http/PortalHttp';
 import { portalUrlCorrector } from '../../Http/PortalUrlCorrector';
 import { FilterModel } from './FilterModel';
@@ -80,6 +81,12 @@ export class HcCommunityFilter extends React.Component {
   render() {
     return (
       <div className="community-filter-interactive">
+        <HcMobileFilterControls
+          filterModel={this.state.filter}
+          available={this.state.available}
+          updateFilter={this.onUpdateFilter}
+          doSpin={this.state.doSpin}
+        />
         <HcFilterControls
           filterModel={this.state.filter}
           available={this.state.available}

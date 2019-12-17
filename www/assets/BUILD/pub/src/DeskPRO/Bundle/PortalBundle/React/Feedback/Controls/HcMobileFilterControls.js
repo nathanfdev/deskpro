@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { HcTabRow } from './HcTabRow';
-import { HcSearch } from './HcSearch';
-import { HcFilters } from './HcFilters';
+import { HcMobileTabRow } from './HcMobileTabRow';
+import { HcMobileFilters } from './HcMobileFilters';
 
-export class HcFilterControls extends React.Component {
+export class HcMobileFilterControls extends React.Component {
 
   static propTypes = {
     available:    PropTypes.object,
@@ -41,13 +40,6 @@ export class HcFilterControls extends React.Component {
     this.updateFilter(filterModel);
   };
 
-  onSearch = (q) => {
-    const { filterModel } = this.props;
-    filterModel.setQ(q);
-
-    this.updateFilter(filterModel);
-  };
-
   onSetActivity = (activityId) => {
     const { filterModel } = this.props;
     filterModel.toggleActivity(activityId);
@@ -62,13 +54,6 @@ export class HcFilterControls extends React.Component {
     this.updateFilter(filterModel);
   };
 
-  onSetViewMode = (mode) => {
-    const { filterModel } = this.props;
-    filterModel.setViewMode(mode);
-
-    this.updateFilter(filterModel);
-  };
-
   updateFilter(filter) {
     this.props.updateFilter(filter);
   }
@@ -77,24 +62,19 @@ export class HcFilterControls extends React.Component {
     const { available, filterModel } = this.props;
 
     return (
-      <div className="d-none d-sm-block">
-        <div className="dp-po-community-header">
-          <HcTabRow
+      <div className="d-block d-sm-none">
+        <div className="dp-po-community-header-mobile">
+          <HcMobileTabRow
             available={available}
             filter={filterModel}
             setView={this.onSetView}
           />
-          <HcSearch
-            filter={filterModel}
-            setSearch={this.onSearch}
-          />
-          <HcFilters
+          <HcMobileFilters
             filter={filterModel}
             onSetStatus={this.onSetStatus}
             onSetStatusCategory={this.onSetStatusCategory}
             onSetActivity={this.onSetActivity}
             onResetActivities={this.onResetActivities}
-            onSetViewMode={this.onSetViewMode}
             setSort={this.onSetSort}
           />
         </div>

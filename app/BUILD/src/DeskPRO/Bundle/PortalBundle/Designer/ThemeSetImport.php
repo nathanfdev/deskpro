@@ -214,6 +214,7 @@ class ThemeSetImport
         $templatesDir = $this->tmpDir.DIRECTORY_SEPARATOR.'templates'.DIRECTORY_SEPARATOR;
         foreach ($themeSet->getTemplates() as $template) {
             $baseName = str_replace('/', '', $template->getName());
+            $baseName = str_replace(':', '', $baseName);
 
             $sourcePath   = $templatesDir.$template->getId().'-'.$baseName;
             $compiledPath = $templatesDir.$template->getId().'-compiled-'.$baseName;
