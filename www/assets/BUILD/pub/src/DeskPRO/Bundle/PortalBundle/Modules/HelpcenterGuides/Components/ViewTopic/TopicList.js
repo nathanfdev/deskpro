@@ -79,7 +79,7 @@ class TopicList extends React.Component {
               grabTopicFromApi={grabTopicFromApi}
               filter={filter}
               filterTopic={this.filterTopic}
-              expanded={(filter !== '' || this.isExpandedTopic(topic))}
+              expanded={!!(filter !== '' || this.isExpandedTopic(topic))}
             />
             )
           )}

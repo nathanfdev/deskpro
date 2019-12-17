@@ -20,6 +20,12 @@ export class TitleAnchorWidget extends PageWidget {
       return;
     }
 
+    // Also ignore guides
+    if ($element.parents('.dp-po-guides-block-content').length > 0) {
+      return;
+    }
+
+
     const text = $element[0].textContent;
     if (!text) {
       return;

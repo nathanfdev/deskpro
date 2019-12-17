@@ -55,7 +55,7 @@ class TopicSummary extends React.Component {
                 activeClass="active"
                 className={classNames('dp-po-guides-contents-link')}
                 to={h1.id}
-                offset={-129}
+                offset={-210}
                 spy
                 onSetActive={this.handleSetActive}
               ><i className="dp-po-icon fal fa-angle-right" />{h1.innerText}</Link>
