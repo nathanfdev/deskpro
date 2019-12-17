@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width">
     {% include 'Theme:Internal:head-include.html.twig' %}
     <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
+    <style>
+
+    </style>
 </head>
 <body>
 {% include 'Theme:Internal:custom-header.html.twig' %}
@@ -23,6 +26,14 @@
 
         <section class="with-dpx">
             <div class="column-full">
+
+                {% if feedback.id %}
+                    <div class="flashes">
+                        <div class="flash flash-success">
+                            {{ phrase('portal.flashes.ticket_feedback_thank_you') }}
+                        </div>
+                    </div>
+                {% endif %}
 
                 <div class="ticket-success-blurb">
                 <div class="icon-mark"></div>
@@ -52,7 +63,13 @@
                                 </div>
                                 <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
                                 <br />
-                                <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.tickets.feedback.submit') }}</button>
+                                <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">
+                                    {% if feedback.id %}
+                                        {{ phrase('portal.tickets.view_btn_edit') }}
+                                    {% else %}
+                                        {{ phrase('portal.tickets.feedback.submit') }}
+                                    {% endif %}
+                                </button>
                             </form>
                         {% else %}
                             {# this is shown when clicking an email link, #}
@@ -63,7 +80,13 @@
                                 <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
 
                                 <br />
-                                <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.tickets.feedback.submit') }}</button>
+                                <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">
+                                    {% if feedback.id %}
+                                        {{ phrase('portal.tickets.view_btn_edit') }}
+                                    {% else %}
+                                        {{ phrase('portal.tickets.feedback.submit') }}
+                                    {% endif %}
+                                </button>
                             </form>
                         {% endif %}
                     </article>
