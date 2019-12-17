@@ -26,6 +26,7 @@ import { Carousel } from './Carousel';
 import { SearchTabs } from './SearchTabs';
 import { TitleAnchorWidget } from './TitleAnchorWidget';
 import { RemoveCCTicketReply } from './RemoveCCTicketReply';
+import { MobileCategories } from './MobileCategories';
 
 class HelpCenterPage extends PageWidget {
 
@@ -60,6 +61,7 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(SearchTabs, '.dp-po-search-tabs-link');
     this.addWidgetDef(TitleAnchorWidget, '.dp-po-post-content :header');
     this.addWidgetDef(RemoveCCTicketReply, '.remove-cc-from-reply');
+    this.addWidgetDef(MobileCategories, '.dp-po-category-title-expand');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

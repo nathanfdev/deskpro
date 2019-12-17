@@ -78,10 +78,12 @@
                 <div class="modal-body">
                     <div class="dp-po-post-extra-mobile">
                         <ul class="dp-po-post-extra-mobile-list">
+                            {% if app.getSetting('core.show_share_widget') %}
                             <li class="dp-po-post-extra-mobile-item">
                             <a href="" data-toggle="modal" data-target="#postShareMobile" class="dp-po-post-extra-mobile-link"><i
                                 class="dp-po-icon fas fa-share-alt"></i> Share</a>
                             </li>
+                            {% endif %}
                             <li class="dp-po-post-extra-mobile-item">
                             <a href="" class="dp-po-post-extra-mobile-link"><i class="dp-po-icon fal fa-print"></i> Print this article</a>
                             </li>
@@ -109,46 +111,60 @@
             <div class="modal-body">
                 <div class="dp-po-post-share-mobile">
                     <ul class="dp-po-post-share-mobile-list">
+                        {% if app.getSetting('core.show_share_linkedin') %}
                         <li class="dp-po-post-share-mobile-item">
-                        <a href="" class="dp-po-post-share-mobile-link">
-                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/linkedin.png" />
+                        <a href="{{ share_social_url(item, 'linkedin') }}" class="dp-po-post-share-mobile-link">
+                            <img class="dp-po-icon" src="{{ asset('img/brand-icons/linkedin.png', 'help_center') }}" />
                             Linkedin
                         </a>
                         </li>
+                        {% endif %}
+                        {% if app.getSetting('core.show_share_facebook') %}
                         <li class="dp-po-post-share-mobile-item">
-                        <a href="" class="dp-po-post-share-mobile-link">
-                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/facebook.png" />
+                        <a href="{{ share_social_url(item, 'facebook') }}" class="dp-po-post-share-mobile-link">
+                            <img class="dp-po-icon" src="{{ asset('img/brand-icons/facebook.png', 'help_center') }}" />
                             Facebook
                         </a>
                         </li>
+                        {% endif %}
+                        {% if app.getSetting('core.show_share_whatsapp') %}
                         <li class="dp-po-post-share-mobile-item">
-                        <a href="" class="dp-po-post-share-mobile-link">
-                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/whatsapp.png" />
+                        <a href="{{ share_social_url(item, 'whatsapp') }}" class="dp-po-post-share-mobile-link">
+                            <img class="dp-po-icon" src="{{ asset('img/brand-icons/whatsapp.png', 'help_center') }}" />
                             Whatsapp
                         </a>
                         </li>
+                        {% endif %}
+                        {% if app.getSetting('core.show_share_twitter') %}
                         <li class="dp-po-post-share-mobile-item">
-                        <a href="" class="dp-po-post-share-mobile-link">
-                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/instagram.png" />
-                            Instagram
+                        <a href="{{ share_social_url(item, 'twitter') }}" class="dp-po-post-share-mobile-link">
+                            <img class="dp-po-icon" src="{{ asset('img/brand-icons/twitter.png', 'help_center') }}" />
+                            Whatsapp
                         </a>
                         </li>
-                        <li class="dp-po-post-share-mobile-item">
-                        <a href="" class="dp-po-post-share-mobile-link">
-                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/pinterest.png" />
-                            Pinterest
-                        </a>
-                        </li>
-                        <li class="dp-po-post-share-mobile-item">
-                        <a href="" class="dp-po-post-share-mobile-link">
-                            <img class="dp-po-icon" src="/portal-components/portal-style/static/img/brand-icons/messenger.png" />
-                            Messenger
-                        </a>
-                        </li>
+                        {% endif %}
+{#                        <li class="dp-po-post-share-mobile-item">#}
+{#                        <a href="" class="dp-po-post-share-mobile-link">#}
+{#                            <img class="dp-po-icon" src="{{ asset('img/brand-icons/instagram.png', 'help_center') }}" />#}
+{#                            Instagram#}
+{#                        </a>#}
+{#                        </li>#}
+{#                        <li class="dp-po-post-share-mobile-item">#}
+{#                        <a href="" class="dp-po-post-share-mobile-link">#}
+{#                            <img class="dp-po-icon" src="{{ asset('img/brand-icons/pinterest.png', 'help_center') }}" />#}
+{#                            Pinterest#}
+{#                        </a>#}
+{#                        </li>#}
+{#                        <li class="dp-po-post-share-mobile-item">#}
+{#                        <a href="" class="dp-po-post-share-mobile-link">#}
+{#                            <img class="dp-po-icon" src="{{ asset('img/brand-icons/messenger.png', 'help_center') }}" />#}
+{#                            Messenger#}
+{#                        </a>#}
+{#                        </li>#}
                     </ul>
                     <div class="dp-po-post-share-mobile-url">
                         <h3 class="dp-po-post-share-mobile-title">Copy this link</h3>
-                        <input type="text" value="https://deskpro.github.io/portal-components/portal-style/demos/homepage.html" readonly>
+                        <input type="text" value="{{ portal_url(article) }}" readonly>
                     </div>
                 </div>
 
