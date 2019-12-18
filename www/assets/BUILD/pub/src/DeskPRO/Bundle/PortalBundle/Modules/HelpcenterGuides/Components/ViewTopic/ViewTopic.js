@@ -104,9 +104,9 @@ class ViewTopic extends React.Component {
     }
     if (!this.sizes) {
       this.sizes = {
-        topMargin:    this.elements.guidesMain.getBoundingClientRect().top - document.documentElement.scrollTop,
-        searchWidth:  this.elements.search.getBoundingClientRect().width,
-        articleWidth: this.elements.articleRight.getBoundingClientRect().width,
+        topMargin:    this.elements.guidesMain && this.elements.guidesMain.getBoundingClientRect().top - document.documentElement.scrollTop,
+        searchWidth:  this.elements.search && this.elements.search.getBoundingClientRect().width,
+        articleWidth: this.elements.articleRight && this.elements.articleRight.getBoundingClientRect().width,
       };
     }
   };
