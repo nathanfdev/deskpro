@@ -25,6 +25,7 @@ define([
       this.filter_date_mode = 'none';
       this.page = 1;
       this.massActionsOp = 'reprocess';
+      this.massActionsApplyToAll = false;
 
       if (LocalStore.has(this.storeFilterId)) {
         this.filter = LocalStore.getObject(this.storeFilterId, this.filter);
@@ -141,6 +142,7 @@ define([
         return Array.from(this.results).map(r =>
           (this.massActions[r.id] = true));
       }
+      return [];
     }
 
     hasAnyMassActions() {
@@ -148,6 +150,10 @@ define([
         if (this.massActions[r.id]) { return true; }
       }
       return false;
+    }
+
+    onMassActionOpChange() {
+      this.massActionsApplyToAll = false;
     }
 
     performMassActions() {
@@ -159,7 +165,10 @@ define([
         if (this.massActions[r.id]) { ids.push(r.id); }
       }
 
-      return this.Api.sendPostJson(url, { ids }).then(() => {
+      const filter = this.filter || {};
+      const applyToAll = this.massActionsApplyToAll;
+
+      return this.Api.sendPostJson(url, { ids, filter, applyToAll }).then(() => {
         this.Growl.success(this.getRegisteredMessage(`${this.massActionsOp}_done`));
         return this.loadResults(true);
       });

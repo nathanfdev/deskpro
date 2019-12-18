@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\Email\EmailSource;
 
+use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\EntityManager;
 
 class Finder
@@ -50,17 +51,19 @@ class Finder
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\EmailSource[]
+     * @param int|null $hydrationMode
+     * @return \Application\DeskPRO\Entity\EmailSource[]|array[]
      */
-    public function getResults()
+    public function getResults($hydrationMode = null)
     {
         $q = $this->getQb();
-        $q->select('s, acct')
+        $q->select('s, acct, lb')
+          ->leftJoin('s.log_blob', 'lb')
           ->orderBy('s.id', 'DESC')
           ->setMaxResults($this->filter->getPerPage())
           ->setFirstResult(($this->filter->getPage() - 1) * $this->filter->getPerPage());
 
-        return $q->getQuery()->execute();
+        return $q->getQuery()->execute(null, $hydrationMode);
     }
 
     /**
@@ -80,6 +83,16 @@ class Finder
         if ($opt = $this->filter->getAccount()) {
             $q->andWhere('s.email_account = :email_account');
             $q->setParameter('email_account', $opt);
+        }
+
+        if ($opt = $this->filter->getClientIp()) {
+            $q->andWhere('s.client_ip LIKE :client_ip');
+            $q->setParameter('client_ip', "%{$opt}%");
+        }
+
+        if ($opt = $this->filter->getClientHost()) {
+            $q->andWhere('s.client_host LIKE :client_host');
+            $q->setParameter('client_host', "%{$opt}%");
         }
 
         $d1 = $this->filter->getDateStart();

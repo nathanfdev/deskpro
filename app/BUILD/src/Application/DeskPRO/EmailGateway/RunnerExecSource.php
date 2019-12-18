@@ -135,6 +135,12 @@ class RunnerExecSource
         if ($h = $reader->getHeader('From')) {
             $this->source->header_from = implode(', ', $h->getAllParts());
         }
+        if ($h = $reader->getHeader('X-DP-CLIENTIP')) {
+            $this->source->client_ip = implode(', ', $h->getAllParts());
+        }
+        if ($h = $reader->getHeader('X-DP-CLIENTHOST')) {
+            $this->source->client_host = implode(', ', $h->getAllParts());
+        }
 
         if ($reader->getRealFromAddress()) {
             $this->source->from_email = $reader->getRealFromAddress()->getEmail() ?: '';
