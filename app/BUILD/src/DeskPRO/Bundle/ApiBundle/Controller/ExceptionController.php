@@ -6,6 +6,7 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\AbuseCaptchaFormException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\FormExceptionInterface;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
+use DpSys\LowError\SystemErrorHandler;
 use FOS\RestBundle\View\View;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
@@ -67,6 +68,13 @@ class ExceptionController extends BaseController
         if ($exception instanceof \Exception) {
             $code    = $this->get('form_error.code_factory')->getErrorCodeForException($exception);
             $message = $this->get('form_error.message_factory.api')->createMessage($code, $parameters);
+
+            if ($status === 500 && !$this->isDevMode()) {
+                $code    = 'error';
+                $message = '500 server error';
+
+                SystemErrorHandler::logException($exception);
+            }
         } else {
             // this is a quick stub for dev mode.
             $code    = $exception->getCode();
@@ -118,7 +126,7 @@ class ExceptionController extends BaseController
     protected function addExceptionInfo($exception, array $representation)
     {
         // in dev environment, display a stack trace, dont show if we have a test.client
-        if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client')) {
+        if ($this->isDevMode()) {
             if ($exception instanceof FlattenException) {
                 $backtrace = $exception->getTrace();
             } else {
@@ -164,5 +172,13 @@ class ExceptionController extends BaseController
             ],
             $exception->getStatusCode()
         );
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isDevMode()
+    {
+        return $this->container->getParameter('kernel.debug') && !$this->container->has('test.client');
     }
 }
