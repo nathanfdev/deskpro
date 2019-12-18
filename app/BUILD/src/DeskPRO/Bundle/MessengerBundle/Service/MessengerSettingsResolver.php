@@ -47,6 +47,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const PRE_CHAT_FORM_NAME_REQUIRED  = 'messenger.chat.pre_chat_form.name.required';
     const PRE_CHAT_FORM_EMAIL_REQUIRED = 'messenger.chat.pre_chat_form.email.required';
     const PRE_CHAT_FORM_DEPARTMENT     = 'messenger.chat.pre_chat_form.department';
+    const PRE_CHAT_FORM_FIELDS         = 'messenger.chat.pre_chat_form.fields';
 
     const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
     const STYLE_PRIMARY_COLOR = 'messenger.styles.primary_color';
@@ -187,6 +188,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setIsNameRequired($this->getSettings(self::PRE_CHAT_FORM_NAME_REQUIRED, $brand, $mPreChatForm->isNameRequired()))
             ->setIsEmailRequired($this->getSettings(self::PRE_CHAT_FORM_EMAIL_REQUIRED, $brand, $mPreChatForm->isEmailRequired()))
             ->setIsDepartmentSelectable($this->getSettings(self::PRE_CHAT_FORM_DEPARTMENT, $brand, $mPreChatForm->isDepartmentSelectable()))
+            ->setFields(unserialize($this->getSettings(self::PRE_CHAT_FORM_FIELDS, $brand, serialize($mPreChatForm->getFields()))))
         ;
     }
 

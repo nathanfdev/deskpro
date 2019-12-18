@@ -10,11 +10,11 @@ use JMS\Serializer\Annotation as JMS;
 class PreChatFormCustomField
 {
     /**
-     * @JMS\Type("int")
+     * @JMS\Type("boolean")
      *
-     * @var int
+     * @var bool
      */
-    private $id;
+    private $enabled;
 
     /**
      * @JMS\Type("boolean")
@@ -22,6 +22,21 @@ class PreChatFormCustomField
      * @var bool
      */
     private $required;
+
+    /**
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("displayOrder")
+     *
+     * @var int
+     */
+    private $displayOrder;
+
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $id;
 
     /**
      * @return int
@@ -44,6 +59,26 @@ class PreChatFormCustomField
     }
 
     /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->displayOrder;
+    }
+
+    /**
+     * @param int $displayOrder
+     *
+     * @return $this
+     */
+    public function setDisplayOrder($displayOrder)
+    {
+        $this->displayOrder = $displayOrder;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isRequired()
@@ -59,6 +94,26 @@ class PreChatFormCustomField
     public function setRequired($required)
     {
         $this->required = $required;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
 
         return $this;
     }

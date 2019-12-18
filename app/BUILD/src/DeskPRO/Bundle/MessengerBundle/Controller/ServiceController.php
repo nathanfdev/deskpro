@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
+use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutCollection;
@@ -54,9 +55,12 @@ class ServiceController extends AbstractMessengerController
         $brand    = $this->get('brand_stack')->getActive()->getBrand();
         $settings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
         $data     = $this->get('serializer')->toArray($settings,  new SideloadSerializationContext());
+        $em       = $this->get('doctrine.orm.default_entity_manager');
 
         /** @var LayoutCollection $layouts */
         $layouts = $this->container->getTicketLayoutManager()->getUserLayouts(true);
+
+        $customTicketFields = $em->getRepository(CustomDefTicket::class)->getTopFields();
 
         $ticketFormConfig = [];
         foreach ($layouts as $k => $layout) {
@@ -70,13 +74,66 @@ class ServiceController extends AbstractMessengerController
                 $ar             = $f->exportToArray();
                 $ar['field_id'] = $f->getId();
                 if ($f->getFieldType() === 'ticket_field') {
-                    $ar['data'] = $this->get('serializer')->toArray($this->getRepository(CustomDefTicket::class)
-                        ->find($f->getFieldId()), new SideloadSerializationContext());
+                    $ar['data'] = $this->get('serializer')->toArray($customTicketFields[$f->getFieldId()], new SideloadSerializationContext());
                 }
                 $layoutData['fields'][] = $ar;
             }
 
             $ticketFormConfig[] = $layoutData;
+        }
+
+        $preChatForm = $settings->getChat()->getPreChatForm();
+        if ($preChatForm->isEnabled()) {
+            $fields = $em->getRepository(CustomDefChat::class)->getTopFields();
+            $config = [
+                'department' => 0,
+                'fields'     => [],
+            ];
+            if ($preChatForm->isNameEnabled()) {
+                array_push(
+                    $config['fields'],
+                    [
+                        'field_type' => 'text',
+                        'field_id'   => 'name',
+                        'required'   => $preChatForm->isNameRequired(),
+                    ]
+                );
+            }
+            if ($preChatForm->isDepartmentSelectable()) {
+                array_push(
+                    $config['fields'],
+                    [
+                        'field_type' => 'email',
+                        'field_id'   => 'email',
+                        'required'   => $preChatForm->isNameRequired(),
+                    ]
+                );
+            }
+            array_push(
+                $config['fields'],
+                [
+                    'field_type' => 'department',
+                    'field_id'   => 'chat_department',
+                    'is_hidden'  => !$preChatForm->isDepartmentSelectable(),
+                    'required'   => true,
+                ]
+            );
+            foreach ($preChatForm->getFields() as $field) {
+                if (!isset($fields[$field->getId()])) {
+                    continue;
+                }
+                $customField = $fields[$field->getId()];
+                array_push(
+                    $config['fields'],
+                    [
+                        'field_type' => 'chat_field',
+                        'field_id'   => 'chat_field_'.$customField->getId(),
+                        'data'       => $this->get('serializer')->toArray($customField, new SideloadSerializationContext()),
+                    ]
+                );
+            }
+
+            $data['chat']['preChatForm'] = [$config];
         }
 
         $data['tickets']['formConfig'] = $ticketFormConfig;

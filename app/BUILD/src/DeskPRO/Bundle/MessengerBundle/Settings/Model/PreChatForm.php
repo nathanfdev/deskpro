@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -77,7 +76,7 @@ class PreChatForm
 
     public function __construct()
     {
-        $this->fields = new ArrayCollection();
+        $this->fields = [];
     }
 
     /**
@@ -209,49 +208,15 @@ class PreChatForm
     }
 
     /**
-     * @param int $fieldId
-     *
-     * @return ArrayCollection|\Doctrine\Common\Collections\Collection
-     */
-    public function getField($fieldId)
-    {
-        return $this->fields->filter(function (PreChatFormCustomField $field) use ($fieldId) {
-            return $field->getId() === $fieldId;
-        })->first();
-    }
-
-    /**
-     * @param PreChatFormCustomField $field
+     * @param PreChatFormCustomField[] $fields
      *
      * @return $this
      */
-    public function addField(PreChatFormCustomField $field)
+    public function setFields(array $fields)
     {
-        $this->fields->add($field);
-
-        return $this;
-    }
-
-    /**
-     * @param PreChatFormCustomField $field
-     *
-     * @return $this
-     */
-    public function removeField(PreChatFormCustomField $field)
-    {
-        $this->fields->removeElement($field);
-
-        return $this;
-    }
-
-    /**
-     * @param ArrayCollection|PreChatFormCustomField[] $fields
-     *
-     * @return $this
-     */
-    public function setFields(ArrayCollection $fields)
-    {
-        $this->fields = $fields;
+        foreach ($fields as $f) {
+            $this->fields[$f->getId()] = $f;
+        }
 
         return $this;
     }

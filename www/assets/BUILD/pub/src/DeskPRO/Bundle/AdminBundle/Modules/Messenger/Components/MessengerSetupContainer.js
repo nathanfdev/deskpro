@@ -51,7 +51,11 @@ class MessengerSetupContainer extends React.Component {
       config = settings.withMutations(value);
     } else if (name) {
       const keyPath = name.split('.');
-      config = settings.setIn(keyPath, value);
+      if (typeof value === 'object') {
+        config = settings.mergeIn(keyPath, value);
+      } else {
+        config = settings.setIn(keyPath, value);
+      }
     }
     if (config) {
       this.setState({ settings: config });
@@ -70,7 +74,12 @@ class MessengerSetupContainer extends React.Component {
       saving: true
     });
 
-    const promise = dispatch(saveSettings(brandId, settings));
+    const postData = settings.setIn(
+      ['chat', 'preChatForm', 'fields'],
+      settings.getIn(['chat', 'preChatForm', 'fields']).filter(f => f && f.get('id'))
+    );
+
+    const promise = dispatch(saveSettings(brandId, postData));
 
     promise
       .success(() => {
