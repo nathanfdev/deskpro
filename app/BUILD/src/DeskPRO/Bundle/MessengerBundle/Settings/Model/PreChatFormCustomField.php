@@ -10,18 +10,11 @@ use JMS\Serializer\Annotation as JMS;
 class PreChatFormCustomField
 {
     /**
-     * @JMS\Type("string")
+     * @JMS\Type("int")
      *
-     * @var string
+     * @var int
      */
-    private $fieldType;
-
-    /**
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $fieldId;
+    private $id;
 
     /**
      * @JMS\Type("boolean")
@@ -31,41 +24,21 @@ class PreChatFormCustomField
     private $required;
 
     /**
-     * @return string
+     * @return int
      */
-    public function getFieldType()
+    public function getId()
     {
-        return $this->fieldType;
+        return $this->id;
     }
 
     /**
-     * @param string $fieldType
+     * @param int $id
      *
      * @return $this
      */
-    public function setFieldType($fieldType)
+    public function setId($id)
     {
-        $this->fieldType = $fieldType;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFieldId()
-    {
-        return $this->fieldId;
-    }
-
-    /**
-     * @param string $fieldId
-     *
-     * @return $this
-     */
-    public function setFieldId($fieldId)
-    {
-        $this->fieldId = $fieldId;
+        $this->id = $id;
 
         return $this;
     }

@@ -7,11 +7,14 @@ import { connect } from 'react-redux';
 import { Button } from '@deskpro/react-components';
 import { getSettings, saveSettings } from '../Actions/messengerActions';
 import { allChatDepartmentsSelector, allTicketDepartmentsSelector } from '../../Application/Selectors/departments';
+import { allChatCustomFields } from '../../Application/Selectors/chats';
 import { loadChatDepartments, loadTicketDepartments } from '../../Application/Actions/departmentsActions';
+import { loadChatCustomFieldsAction } from '../../Application/Actions/chatActions';
 
 @connect(state => ({
   chatDepartments:   allChatDepartmentsSelector(state),
   ticketDepartments: allTicketDepartmentsSelector(state),
+  chatCustomFields:  allChatCustomFields(state),
 }))
 class MessengerSetupContainer extends React.Component {
 
@@ -20,6 +23,7 @@ class MessengerSetupContainer extends React.Component {
     params:            PropTypes.object.isRequired,
     chatDepartments:   PropTypes.object,
     ticketDepartments: PropTypes.object,
+    chatCustomFields:  PropTypes.object,
   };
 
   state = {
@@ -31,6 +35,7 @@ class MessengerSetupContainer extends React.Component {
 
     dispatch(loadChatDepartments());
     dispatch(loadTicketDepartments());
+    dispatch(loadChatCustomFieldsAction());
 
     this.props.dispatch(getSettings(this.props.params.brandId)).then((response) => {
       const newSettings = this.state.settings.merge(response.data.data);
@@ -89,6 +94,7 @@ class MessengerSetupContainer extends React.Component {
     const { settings, saving } = this.state;
     const {
       chatDepartments,
+      chatCustomFields,
       ticketDepartments,
     } = this.props;
     return (
@@ -97,6 +103,7 @@ class MessengerSetupContainer extends React.Component {
           settings={settings}
           handleChange={this.onChange}
           chatDepartments={chatDepartments}
+          chatCustomFields={chatCustomFields}
           ticketDepartments={ticketDepartments}
         />
         <Button loading={saving} onClick={this.handleSubmit} type="cta" size="large">Save</Button>
