@@ -8,17 +8,6 @@ import HelpCenterPage from './PageWidget/HelpCenterPage';
 import { portalPhrases } from './PortalPhrases';
 import App from './Modules/Application/Components/AppContainer';
 
-const possibleLocale = window.DESKPRO_LOCALE.replace(/-/, '_').split(/_/)[0] || 'en';
-import(
-  /* webpackPreload: true */
-  `react-intl/locale-data/${possibleLocale}`
-)
-  .then(({ "default": data }) => addLocaleData(data))
-  .catch(err => {
-    console.log(`Failed to load ${possibleLocale}, fallback on en`);
-    import(`react-intl/locale-data/en`).then(({ "default": data }) => addLocaleData(data));
-  });
-
 // Async load FA
 import('@fortawesome/fontawesome-pro/js/all.min');
 
