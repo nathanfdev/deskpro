@@ -19,7 +19,7 @@ class ViewTopic extends React.Component {
     if (window.topic) {
       topic = JSON.parse(window.topic);
     }
-    topic.content = this.addIdToh1(topic.content);
+    topic.content = this.addIdToh1(topic.content, topic.slug);
     const topicList = JSON.parse(window.topicList);
     this.state = {
       fixed:     false,
@@ -193,14 +193,14 @@ class ViewTopic extends React.Component {
     }
   };
 
-  addIdToh1 = (html) => {
+  addIdToh1 = (html, slug) => {
     const container = document.createElement('div');
     container.innerHTML = html;
 
     Array.from(container.querySelectorAll('h1')).forEach((h1) => {
       const newH1 = document.createElement('h1');
       newH1.innerText = `${h1.innerText} `;
-      newH1.id = h1.innerText.toLowerCase().replace(/[():]/g, '').replace(/ /g, '-');
+      newH1.id = `${slug}_${h1.innerText.toLowerCase().replace(/[():]/g, '').replace(/ /g, '-')}`;
       newH1.className = 'anchor';
       container.replaceChild(newH1, h1);
     });
@@ -247,7 +247,7 @@ class ViewTopic extends React.Component {
       }
 
       const topic = response.data.data;
-      topic.content = this.addIdToh1(topic.content);
+      topic.content = this.addIdToh1(topic.content, topic.slug);
       topics[topic.id] = topic;
       this.setState({
         topics,
@@ -268,7 +268,7 @@ class ViewTopic extends React.Component {
       const topics = {};
       const res = response.data.data;
       res.forEach((topic) => {
-        topic.content = this.addIdToh1(topic.content);
+        topic.content = this.addIdToh1(topic.content, topic.slug);
         topics[topic.id] = topic;
       });
       this.setState({
