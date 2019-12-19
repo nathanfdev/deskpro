@@ -886,7 +886,7 @@ class EmailStatusController extends AbstractController
                             'ticket_id'     => $deletedTicketStatusId,
                             'by_person_id'  => $this->person->getId(),
                             'new_ticket_id' => 0,
-                            'reason'        => 'Mass Purge Operation',
+                            'reason'        => 'Mass Abort Operation',
                             'date_created'  => date('Y-m-d H:i:s'),
                         ]
                     );
