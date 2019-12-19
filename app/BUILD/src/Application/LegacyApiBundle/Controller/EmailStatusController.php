@@ -833,6 +833,10 @@ class EmailStatusController extends AbstractController
                 break;
 
             case 'purge_all':
+                if (!$applyToAll && !$ids) {
+                    return $this->createApiSuccessResponse();
+                }
+
                 $sources               = $this->getSourcesFromMassAction($applyToAll, $filter, $ids);
                 $bs                    = $this->container->getBlobStorage();
                 $deletedTicketStatusId = $this->getContainer()->getTicketStatuses()->getDeletedStatus()->getId();
@@ -867,6 +871,10 @@ class EmailStatusController extends AbstractController
                 break;
 
             case 'abort_all':
+                if (!$applyToAll && !$ids) {
+                    return $this->createApiSuccessResponse();
+                }
+
                 $sources               = $this->getSourcesFromMassAction($applyToAll, $filter, $ids);
                 $deletedTicketStatusId = $this->getContainer()->getTicketStatuses()->getDeletedStatus()->getId();
 
