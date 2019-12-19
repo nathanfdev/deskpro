@@ -12,7 +12,6 @@ use Application\DeskPRO\Email\SendmailSource\Finder as SendmailSourceFinder;
 use Application\DeskPRO\Email\SendmailSource\FinderFilter as SendmailSourceFinderFilter;
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\EmailSource;
-use Application\DeskPRO\Entity\Ticket;
 use Application\EmailBundle\Entity\SendmailSource;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;

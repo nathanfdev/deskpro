@@ -90,13 +90,13 @@ class Finder
         }
 
         if ($opt = $this->filter->getClientIp()) {
-            $q->andWhere('s.client_ip LIKE :client_ip');
-            $q->setParameter('client_ip', "%{$opt}%");
+            $q->andWhere('s.client_ip = :client_ip');
+            $q->setParameter('client_ip', $opt);
         }
 
         if ($opt = $this->filter->getClientHost()) {
-            $q->andWhere('s.client_host LIKE :client_host');
-            $q->setParameter('client_host', "%{$opt}%");
+            $q->andWhere('s.client_host = :client_host');
+            $q->setParameter('client_host', $opt);
         }
 
         $d1 = $this->filter->getDateStart();
