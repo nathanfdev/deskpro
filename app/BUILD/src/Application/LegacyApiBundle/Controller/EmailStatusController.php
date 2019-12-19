@@ -779,7 +779,7 @@ class EmailStatusController extends AbstractController
     {
         $ids = $this->in->getArrayOfUInts('ids');
         $filter = $this->in->getArrayValue('filter');
-        $applyToAll = $this->in->getBool('applyToAll');
+        $applyToAll = $this->in->getBool('apply_to_all');
 
         switch ($action) {
             case 'reprocess':

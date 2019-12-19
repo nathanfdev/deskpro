@@ -168,7 +168,7 @@ define([
       const filter = this.filter || {};
       const applyToAll = this.massActionsApplyToAll;
 
-      return this.Api.sendPostJson(url, { ids, filter, applyToAll }).then(() => {
+      return this.Api.sendPostJson(url, { ids, filter, apply_to_all: applyToAll }).then(() => {
         this.Growl.success(this.getRegisteredMessage(`${this.massActionsOp}_done`));
         return this.loadResults(true);
       });
