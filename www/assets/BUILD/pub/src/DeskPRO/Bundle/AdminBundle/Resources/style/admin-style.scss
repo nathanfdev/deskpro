@@ -197,12 +197,12 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
 
   .flat-spinner {
     i {
-      display: inline-block;
       background: url('../img/loading-small-flat.gif') center;
       background-size: 15px 15px;
-      width: 15px;
+      display: inline-block;
       height: 15px;
       margin: 0 auto;
+      width: 15px;
     }
   }
 
