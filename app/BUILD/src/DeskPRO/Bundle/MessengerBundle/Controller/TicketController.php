@@ -56,6 +56,7 @@ class TicketController extends AbstractMessengerController
 
         $requestData = $request->request->all();
         $formOptions = [
+            'csrf_protection'     => false,
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
         ];
