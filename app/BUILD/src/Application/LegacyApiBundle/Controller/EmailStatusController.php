@@ -925,10 +925,9 @@ class EmailStatusController extends AbstractController
     private function getSourcesFromMassAction($applyToAll, $filter, array $ids)
     {
         if ($applyToAll) {
-            $filter = EmailSourceFinderFilter::fromArray($filter);
-            $filter->setPerPage(PHP_INT_MAX);
-            $finder = new EmailSourceFinder($this->em, $filter);
-            $sources = $finder->getResults(Query::HYDRATE_ARRAY);
+            $filter  = EmailSourceFinderFilter::fromArray($filter);
+            $finder  = new EmailSourceFinder($this->em, $filter);
+            $sources = $finder->getResults(false, Query::HYDRATE_ARRAY);
         } else {
             $sources = $this->em
                 ->createQueryBuilder()

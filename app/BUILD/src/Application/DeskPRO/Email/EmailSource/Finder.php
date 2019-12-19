@@ -51,17 +51,21 @@ class Finder
     }
 
     /**
+     * @param bool     $limit
      * @param int|null $hydrationMode
      * @return \Application\DeskPRO\Entity\EmailSource[]|array[]
      */
-    public function getResults($hydrationMode = null)
+    public function getResults($limit = true, $hydrationMode = null)
     {
         $q = $this->getQb();
         $q->select('s, acct, lb')
           ->leftJoin('s.log_blob', 'lb')
-          ->orderBy('s.id', 'DESC')
-          ->setMaxResults($this->filter->getPerPage())
-          ->setFirstResult(($this->filter->getPage() - 1) * $this->filter->getPerPage());
+          ->orderBy('s.id', 'DESC');
+
+        if ($limit) {
+            $q->setMaxResults($this->filter->getPerPage())
+              ->setFirstResult(($this->filter->getPage() - 1) * $this->filter->getPerPage());
+        }
 
         return $q->getQuery()->execute(null, $hydrationMode);
     }
