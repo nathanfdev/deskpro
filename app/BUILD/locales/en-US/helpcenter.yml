@@ -252,6 +252,7 @@ helpcenter.general.edit-this-page: 'Edit this page'
 helpcenter.general.enter_comment_placeholder: 'Enter your comment here...'
 helpcenter.general.eula: EULA
 helpcenter.general.everything: Everything
+helpcenter.general.filter: Filter
 helpcenter.general.first-published: 'First published'
 helpcenter.general.go-to-page: 'Go to page'
 helpcenter.general.go: 'Go'
@@ -320,6 +321,7 @@ helpcenter.general.share: Share
 helpcenter.general.show: Show
 helpcenter.general.show_more: 'Show more'
 helpcenter.general.software_power_by: 'Powered by'
+helpcenter.general.sort: Sort
 helpcenter.general.ics_subscribe: 'iCalendar'
 helpcenter.general.submit: 'Submit'
 helpcenter.general.tagged_with: 'tagged with'
