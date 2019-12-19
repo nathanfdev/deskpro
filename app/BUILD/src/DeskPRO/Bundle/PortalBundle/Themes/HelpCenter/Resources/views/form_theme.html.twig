@@ -308,7 +308,7 @@
             </select>
             <i class="far fa-angle-down fa-lg"></i>
         {% else %}
-            <input class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
+            <input id="{{ id }}" class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
         {% endif %}
 {% endblock deskpro_person_email_choice_widget %}
 

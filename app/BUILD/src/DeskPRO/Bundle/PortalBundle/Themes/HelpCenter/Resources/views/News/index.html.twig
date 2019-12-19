@@ -23,7 +23,7 @@
                     {% if ics_link is defined and ics_link|length > 0 %}
                         <li class="dp-po-news-extra-item">
                             <a href="{{ ics_link }}" class="dp-po-news-extra-link" title="{{ phrase('helpcenter.general.ics_subscribe') }}">
-                                <i class="dp-po-icon fal fa-calendar-alt"></i>
+                                <i class="dp-po-icon fal fa-calendar-alt" title="calendar"></i>
                             </a>
                         </li>
                     {% endif %}
@@ -39,7 +39,7 @@
             ]
         } %}
         <a href="javascript:void(0)" data-toggle="modal" data-target="#postExtraMobile"><i
-            class="far fa-align-center"></i></a>
+            class="far fa-align-center" title="menu"></i></a>
         </div>
     </div>
     <div class="dp-po-section dp-po-block">
@@ -55,7 +55,7 @@
                             {% if has_splash(item) %}
                                 <figure class="dp-po-news-listing-figure">
                                     <img src="{{ get_splash_url(item, 300) }}"
-                                         class="dp-po-news-listing-photo img-fluid" />
+                                         class="dp-po-news-listing-photo img-fluid" role="presentation" alt="" />
                                 </figure>
                             {% endif %}
                             <div class="dp-po-news-listing-content">
@@ -99,7 +99,7 @@
                 <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
                     <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-cat') }}</h3>
                     <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#news_categories" role="button" aria-expanded="true" aria-controls="news_categories">
-                        <i class="dp-po-icon far fa-angle-down"></i>
+                        <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
                     </a>
                     <div class="collapse show" id="news_categories">
                         <ul class="dp-po-news-filter-type-list">
@@ -129,7 +129,7 @@
                     <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-date') }}</h3>
                     <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#date_filter" role="button"
                     aria-expanded="false" aria-controls="date_filter">
-                        <i class="dp-po-icon far fa-angle-down"></i>
+                        <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
                     </a>
                     <div class="collapse {{ filter_date ? 'show' }}" id="date_filter">
                         <div class="dp-po-news-filter-date-option">
@@ -185,7 +185,7 @@
         <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
             <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-cat') }}</h3>
             <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#news_categories" role="button" aria-expanded="true" aria-controls="news_categories">
-                <i class="dp-po-icon far fa-angle-down"></i>
+                <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
             </a>
             <div class="collapse show" id="news_categories">
                 <ul class="dp-po-news-filter-type-list">
@@ -215,7 +215,7 @@
             <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-date') }}</h3>
             <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#date_filter" role="button"
             aria-expanded="false" aria-controls="date_filter">
-                <i class="dp-po-icon far fa-angle-down"></i>
+                <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
             </a>
             <div class="collapse {{ filter_date ? 'show' }}" id="date_filter">
                 <div class="dp-po-news-filter-date-option">

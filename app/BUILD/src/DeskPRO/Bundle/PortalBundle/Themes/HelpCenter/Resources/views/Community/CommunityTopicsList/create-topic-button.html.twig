@@ -17,7 +17,7 @@
         </a>
         {% if community_forums is defined %}
           <a class="dp-po-community-title-button-dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
+            <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down" title="dropdown"></i>
           </a>
         {% endif %}
       {% endif %}
@@ -35,7 +35,7 @@
                 {{ phrase('helpcenter.community.create-topic-in-forum', {forum: current_forum.title}) }}
             </a>
             <a class="dp-po-community-title-button-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
+                <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down" title="dropdown"></i>
             </a>
         {% else %}
             <a href="javascript:void(0);" class="dp-po-community-title-button-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -44,7 +44,7 @@
             </a>
             {% if community_forums is defined %}
                 <a class="dp-po-community-title-button-dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
+                    <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down" title="dropdown"></i>
                 </a>
             {% endif %}
         {% endif %}
