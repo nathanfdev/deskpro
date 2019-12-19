@@ -119,7 +119,7 @@ class ServiceController extends AbstractMessengerController
                 ]
             );
             foreach ($preChatForm->getFields() as $field) {
-                if (!isset($fields[$field->getId()])) {
+                if (!isset($fields[$field->getId()]) || !$field->isEnabled()) {
                     continue;
                 }
                 $customField = $fields[$field->getId()];

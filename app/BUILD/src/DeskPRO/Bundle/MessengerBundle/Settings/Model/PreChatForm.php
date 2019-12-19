@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -60,7 +61,7 @@ class PreChatForm
 
     /**
      * @var array
-     * @JMS\Type("collection<DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatFormCustomField>")
+     * @JMS\Type("map<DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatFormCustomField>")
      */
     private $fields;
 
@@ -76,7 +77,7 @@ class PreChatForm
 
     public function __construct()
     {
-        $this->fields = [];
+        $this->fields = new ArrayCollection();
     }
 
     /**
@@ -212,7 +213,7 @@ class PreChatForm
      *
      * @return $this
      */
-    public function setFields(array $fields)
+    public function setFields(ArrayCollection $fields)
     {
         foreach ($fields as $f) {
             $this->fields[$f->getId()] = $f;
