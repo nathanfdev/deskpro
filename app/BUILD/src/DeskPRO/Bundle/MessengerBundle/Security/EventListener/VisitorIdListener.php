@@ -23,6 +23,7 @@ class VisitorIdListener
             $event->isMasterRequest()
             && !RegexUtils::safePregMatch('#^/api/messenger/?$#', $pathInfo)
             && !RegexUtils::safePregMatch('#^/api/messenger/service/setup/?$#', $pathInfo)
+            && !RegexUtils::safePregMatch('#^/api/messenger/service/blob/?$#', $pathInfo)
             && RegexUtils::safePregMatch('#^/api/messenger#', $pathInfo)
         ) {
             if (!$request->headers->has(self::VISITOR_HEADER_NAME)) {

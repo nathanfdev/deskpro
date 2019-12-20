@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\TicketLayout\Layout;
@@ -13,8 +14,12 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as Router;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class ServiceController.
@@ -68,9 +73,6 @@ class ServiceController extends AbstractMessengerController
             $layoutData           = ['department' => $k ?: 0];
             $layoutData['fields'] = [];
             foreach ($layout->all() as $f) {
-                if ($f->getFieldType() === 'attachments') {
-                    continue;
-                }
                 $ar             = $f->exportToArray();
                 $ar['field_id'] = $f->getId();
                 if ($f->getFieldType() === 'ticket_field') {
@@ -137,6 +139,9 @@ class ServiceController extends AbstractMessengerController
         }
 
         $data['tickets']['formConfig'] = $ticketFormConfig;
+        $data['tickets']['uploadTo']   = $this->generateUrl(
+            'messenger_blob_upload', [], UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
         $data['bundleUrl'] = [
             'manifest' => $this->container->get('templating.helper.assets')->getUrl('asset-manifest.json', 'messenger_assets'),
@@ -145,5 +150,70 @@ class ServiceController extends AbstractMessengerController
         ];
 
         return View::create($data, Response::HTTP_OK);
+    }
+
+    /**
+     * @Router\Route("/blob", name="messenger_blob_upload")
+     * @Router\Method("POST")
+     *
+     * @param Request $request
+     * @param string  $restrictionSet
+     *
+     * @return JsonResponse
+     */
+    public function uploadBlobAction(Request $request, $restrictionSet = null)
+    {
+        $file = $request->files->get('file[blob]', null, true);
+        if (!$file instanceof UploadedFile) {
+            return new JsonResponse([
+                'success' => false,
+                'error'   => [
+                    'code' => 'no_file_in_request',
+                ],
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $error = $this->get('attachment_accepter')->getError($file, $restrictionSet ? $restrictionSet.'.user' : 'user');
+        if ($error) {
+            $error_code = $error['error_code'];
+            $params     = [];
+
+            $error_detail = $error['error_detail'];
+            if ($error_detail) {
+                $params = ['detail' => $error_detail];
+            }
+
+            $phrase = sprintf('portal.forms.error_accept_%s', $error_code);
+
+            return new JsonResponse([
+                'success' => false,
+                'error'   => [
+                    'message' => $this->get('language_manager')->phrase($phrase, $params),
+                    'code'    => $error_code,
+                    'detail'  => $error_detail,
+                ],
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $props = [];
+        if ($request->query->get('tag', '')) {
+            $props['tag'] = trim($request->query->get('tag', ''));
+        }
+
+        /** @var Blob $blob */
+        $blob = $this->get('attachment_accepter')->accept($file, true, $props);
+
+        return new JsonResponse([
+            'success' => true,
+            'blob'    => [
+                'id'        => $blob->getId(),
+                'filename'  => $blob->getFilename(),
+                'authcode'  => $blob->getAuthcode(),
+                'size'      => $blob->getReadableFilesize(),
+                'icon_html' => '',
+                'is_image'  => $blob->isImage(),
+                'url'       => $blob->getDownloadUrl(true),
+            ],
+        ]);
     }
 }
