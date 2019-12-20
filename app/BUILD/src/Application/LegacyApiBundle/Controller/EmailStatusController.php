@@ -854,6 +854,15 @@ class EmailStatusController extends AbstractController
                         ]
                     );
 
+                    $this->db->executeQuery(
+                        'UPDATE tickets_search_active SET status = :hidden, ticket_status_id = :deletedStatusId WHERE id = :id',
+                        [
+                            'hidden'          => 'hidden',
+                            'deletedStatusId' => $deletedTicketStatusId,
+                            'id'              => $source['ticket_id'],
+                        ]
+                    );
+
                     $this->db->replace(
                         'tickets_deleted',
                         [
@@ -880,6 +889,15 @@ class EmailStatusController extends AbstractController
                 foreach ($sources as $source) {
                     $this->db->executeQuery(
                         'UPDATE tickets SET status = :hidden, ticket_status_id = :deletedStatusId WHERE id = :id',
+                        [
+                            'hidden'          => 'hidden',
+                            'deletedStatusId' => $deletedTicketStatusId,
+                            'id'              => $source['ticket_id'],
+                        ]
+                    );
+
+                    $this->db->executeQuery(
+                        'UPDATE tickets_search_active SET status = :hidden, ticket_status_id = :deletedStatusId WHERE id = :id',
                         [
                             'hidden'          => 'hidden',
                             'deletedStatusId' => $deletedTicketStatusId,

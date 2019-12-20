@@ -10,7 +10,10 @@ class Build1576670277 extends AbstractBuild implements OnlineBuildInterface, Ski
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'ALTER TABLE email_sources ADD client_ip VARCHAR(130) DEFAULT NULL, ADD client_host VARCHAR(255) DEFAULT NULL');
+        $this->execSlowAlterTable(
+            'email_sources',
+            "ADD client_ip VARCHAR(130) DEFAULT NULL, ADD client_host VARCHAR(255) DEFAULT NULL"
+        );
     }
 
     public function run()
