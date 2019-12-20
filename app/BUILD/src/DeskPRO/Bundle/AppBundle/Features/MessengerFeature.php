@@ -57,7 +57,7 @@ HTML;
      */
     public function getAvailability()
     {
-        return [self::AVAILABLE_AT_QA];
+        return [self::AVAILABLE_EVERYWHERE];
     }
 
     /**
