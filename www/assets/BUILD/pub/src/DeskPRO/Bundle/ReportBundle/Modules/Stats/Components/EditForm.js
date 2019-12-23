@@ -5,6 +5,7 @@ import * as reduxForm from '@deskpro/redux-components';
 import { formValues, Field, FieldArray, FormSection } from 'redux-form';
 import classNames from 'classnames';
 import { varTypes } from './helper';
+import {omit, every} from 'lodash';
 
 class VarsFieldComponent extends React.PureComponent {
 
@@ -280,7 +281,13 @@ export class EditFormComponent extends React.Component {
   }
 
   static isExtendedQuery(props) {
-    return props.queryValues.raw ? props.queryValues.raw.indexOf('LAYER WITH') !== -1 || props.initialValues.additional_info : false;
+    const queryParts = omit(props.queryValues, 'raw');
+
+    return props.queryValues.raw
+      ? props.queryValues.raw.indexOf('LAYER WITH') !== -1
+        || props.initialValues.additional_info
+        || every(queryParts, item => !item)
+      : false;
   }
 
   constructor(props) {
@@ -294,7 +301,7 @@ export class EditFormComponent extends React.Component {
 
   componentDidMount() {
     this.props.initialize(this.props.initialValues);
-    this.props.change('query_input_mode', this.state.queryInputMode);
+    this.props.change('input_mode', this.state.queryInputMode);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -319,7 +326,7 @@ export class EditFormComponent extends React.Component {
       return;
     }
 
-    this.props.change('query_input_mode', to);
+    this.props.change('input_mode', to);
 
     if (to === 'dpql') {
       const dpql = EditFormComponent.toDpql(this.props.queryValues || {});
@@ -379,7 +386,7 @@ export class EditFormComponent extends React.Component {
           />
           <reduxForm.Textarea disabled={!isCustom} autosize onChange={() => {}} label="Description" name="description" id="description" />
           <FieldArray name="labels" component={renderLabels} />
-          <Field component="input" type="hidden" name="query_input_mode" />
+          <Field component="input" type="hidden" name="input_mode" />
           <div className="query-builder-input">
             <Tabs active={this.state.queryInputMode} onChange={this.queryModeChange}>
               <TabLink name="form">Query Builder</TabLink>

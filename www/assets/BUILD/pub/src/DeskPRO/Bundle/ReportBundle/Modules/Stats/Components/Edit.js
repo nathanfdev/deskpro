@@ -103,7 +103,7 @@ class EditContainer extends React.Component {
       description:   formData.description,
       display_types: displayTypes.length ? displayTypes : ['table'],
       vars:          formData.vars,
-      inputMode:     formData.query_input_mode,
+      inputMode:     formData.input_mode,
       labels,
       ...formData.query
     };
@@ -118,6 +118,7 @@ class EditContainer extends React.Component {
         .then((response) => {
           const current = transformReportDataToApi(reportData);
           current.id = response.data.data.id ? response.data.data.id : reportData.id;
+          current.query_parts = response.data.data.query_parts;
           current.is_custom = true;
           current.extended_query = reportData.raw ? reportData.raw.indexOf('LAYER WITH') !== -1 : false;
           this.setState({
