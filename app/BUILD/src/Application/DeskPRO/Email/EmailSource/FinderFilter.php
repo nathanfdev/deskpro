@@ -65,7 +65,38 @@ class FinderFilter
     /**
      * @var string
      */
+    private $client_ip = '';
+
+    /**
+     * @var string
+     */
+    private $client_host = '';
+
+    /**
+     * @var string
+     */
     private $error_code = '';
+
+    /**
+     * @param array $filter
+     * @return FinderFilter
+     */
+    public static function fromArray($filter)
+    {
+        $instance = new self();
+
+        if (!is_array($filter)) {
+            return $instance;
+        }
+
+        foreach (array_keys(get_object_vars($instance)) as $property) {
+            if (array_key_exists($property, $filter)) {
+                $instance->{$property} = $filter[$property];
+            }
+        }
+
+        return $instance;
+    }
 
     /**
      * @param $page
@@ -222,6 +253,30 @@ class FinderFilter
     }
 
     /**
+     * @param $clientIp
+     *
+     * @return $this
+     */
+    public function setClientIp($clientIp)
+    {
+        $this->client_ip = $clientIp;
+
+        return $this;
+    }
+
+    /**
+     * @param $clientHost
+     *
+     * @return $this
+     */
+    public function setClientHost($clientHost)
+    {
+        $this->client_host = $clientHost;
+
+        return $this;
+    }
+
+    /**
      * @param $error_code
      *
      * @return $this
@@ -311,5 +366,21 @@ class FinderFilter
     public function getPerPage()
     {
         return $this->per_page;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientIp()
+    {
+        return $this->client_ip;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientHost()
+    {
+        return $this->client_host;
     }
 }

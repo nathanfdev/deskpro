@@ -83,17 +83,27 @@
 						<tr>
 							<td width="50">To</td>
 							<td width="150">
-								<input type="text" class="form-control" style="width: 200px; display: inline-block;"  ng-model="ListCtrl.filter.to" />
+								<input type="text" class="form-control" style="width: 150px; display: inline-block;"  ng-model="ListCtrl.filter.to" />
 							</td>
 
 							<td width="50" style="padding-left: 15px;">From</td>
 							<td width="150">
-								<input type="text" class="form-control" style="width: 200px; display: inline-block;"  ng-model="ListCtrl.filter.from" />
+								<input type="text" class="form-control" style="width: 150px; display: inline-block;"  ng-model="ListCtrl.filter.from" />
 							</td>
 
 							<td width="80" style="padding-left: 15px;">Subject</td>
 							<td width="150">
-								<input type="text" class="form-control" style="width: 200px; display: inline-block;"  ng-model="ListCtrl.filter.subject" />
+								<input type="text" class="form-control" style="width: 150px; display: inline-block;"  ng-model="ListCtrl.filter.subject" />
+							</td>
+
+							<td width="40" style="padding-left: 15px;">IP</td>
+							<td width="150">
+								<input type="text" class="form-control" style="width: 150px; display: inline-block;"  ng-model="ListCtrl.filter.client_ip" />
+							</td>
+
+							<td width="60" style="padding-left: 15px;">Host</td>
+							<td width="150">
+								<input type="text" class="form-control" style="width: 150px; display: inline-block;"  ng-model="ListCtrl.filter.client_host" />
 							</td>
 						</tr>
 					</table>
@@ -109,11 +119,13 @@
 					<col width="1%" />
 					<col width="1%" />
 					<col width="1%" />
-					<col width="25%" />
-					<col width="25%" />
-					<col width="25%" />
-					<col width="100%" />
-					<col width="5%" />
+					<col width="20%" />
+					<col width="20%" />
+					<col width="20%" />
+					<col width="20%" />
+					<col width="8%" />
+					<col width="8%" />
+					<col width="8%" />
 					<col width="1%" />
 				</colgroup>
 				<thead>
@@ -125,6 +137,8 @@
 						<th>To</th>
 						<th>Cc</th>
 						<th>Account</th>
+						<th><abbr title="Client IP">IP</abbr></th>
+						<th><abbr title="Client Host">Host</abbr></th>
 						<th>Subject</th>
 						<th>Ticket</th>
 						<th>Status <i class="fas fa-question-circle qmark-icon" ng-click="showStatusHelp()" tooltip="Click for more details" tooltip-placement="left" style="cursor: pointer;"></i></th>
@@ -143,6 +157,8 @@
 								{{ ng_var('result.email_account.use_email_address') }}
 							</a>
 						</td>
+						<td class="overflow-ellipsis">{{ ng_var('result.client_ip') }}</td>
+						<td class="overflow-ellipsis">{{ ng_var('result.client_host') }}</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_subject') }}</td>
 						<td nowrap>
 							<div ng-if="result.object_info.ticket_id">
@@ -170,9 +186,11 @@
 			</table>
 
 			<div ng-show="ListCtrl.hasAnyMassActions()">
-				With selected: <select ng-model="ListCtrl.massActionsOp" ui-select2>
+				With selected: <select ng-model="ListCtrl.massActionsOp" ng-change="ListCtrl.onMassActionOpChange()" ui-select2>
 					<option value="reprocess">Reprocess Emails</option>
 					<option value="delete">Delete Emails</option>
+					<option value="purge_all">Purge Emails &amp; All Data</option>
+					<option value="abort_all">Abort Emails &amp; All Data</option>
 				</select>
 				<button ng-hide="massActionsLoading" class="btn btn-primary" type="button" ng-click="ListCtrl.performMassActions()">Perform Actions &rarr;</button>
 				<span ng-show="massActionsLoading"><i class="spinner-flat"></i></span>
@@ -186,6 +204,20 @@
 						<i class="fas fa-question-circle"></i> Delete: Deleting the email will remove the raw email source and processing
 						log from the system. If the email is already processed (e.g., a ticket or ticket message was created),
 						that will remain. If the email is NOT already processed, it never will be.
+					</div>
+					<div ng-switch-when="purge_all">
+						<label style="color: #000;margin-bottom: 8px;display: block;">
+							<input type="checkbox" ng-model="ListCtrl.massActionsApplyToAll" />
+							Apply to <strong>ALL {{ ng_var('ListCtrl.num_results') }}</strong> messages
+						</label>
+						<i class="fas fa-question-circle"></i> Purge Emails &amp; All Data: Delete all emails
+					</div>
+					<div ng-switch-when="abort_all">
+						<label style="color: #000;margin-bottom: 8px;display: block;">
+							<input type="checkbox" ng-model="ListCtrl.massActionsApplyToAll" />
+							Apply to <strong>ALL {{ ng_var('ListCtrl.num_results') }}</strong> messages
+						</label>
+						<i class="fas fa-question-circle"></i> Abort Emails &amp; All Data: Abort all emails
 					</div>
 				</div>
 			</div>
@@ -208,6 +240,8 @@
 
 	<div dp-register-message="reprocess_done">The selected emails have been scheduled for reprocessing.</div>
 	<div dp-register-message="delete_done">The selected emails have been deleted.</div>
+	<div dp-register-message="purge_all_done">The selected emails have been purged.</div>
+	<div dp-register-message="abort_all_done">The selected emails have been aborted.</div>
 
 	{{ ng_tpl('AdminInterfaceBundle:EmailStatus:emailsource-status-code-modal.html.twig', 'EmailStatus/emailsource-status-code-modal.html') }}
 {% endblock %}

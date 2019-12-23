@@ -87,6 +87,8 @@ class GenTestIncomingEmailCommand extends ContainerAwareCommand
         $source->header_cc      = Strings::extractRegexMatch('#^Cc:\s*(.*?)$#m', $raw_headers) ?: '';
         $source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $raw_headers) ?: '';
         $source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_headers) ?: '';
+        $source->client_ip      = Strings::extractRegexMatch('#^X\-DP\-CLIENTIP:\s*(.*?)$#m', $raw_headers) ?: '';
+        $source->client_host    = Strings::extractRegexMatch('#^X\-DP\-CLIENTHOST:\s*(.*?)$#m', $raw_headers) ?: '';
 
         $output->writeln('<info>Saving blob...</info>');
 
