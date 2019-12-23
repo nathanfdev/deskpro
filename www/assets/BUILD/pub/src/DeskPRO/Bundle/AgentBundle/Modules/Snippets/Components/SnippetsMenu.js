@@ -633,11 +633,17 @@ export class SnippetsMenu extends React.Component {
 
   selectFocused = (e) => {
     const snippet = this.props.snippets.toSeq().slice(this.focusedIndex).first();
-    const translation = SnippetsMenuContainer.getSnippetTranslationToUse(snippet, this.props.langPref, this.props.type);
-    if (translation) {
-      const langId = translation.get('language');
-      this.props.insertSnippet(e, snippet, langId);
+    if (!snippet) {
+      return;
     }
+
+    const translation = SnippetsMenuContainer.getSnippetTranslationToUse(snippet, this.props.langPref, this.props.type);
+    if (!translation) {
+      return;
+    }
+
+    const langId = translation.get('language');
+    this.props.insertSnippet(e, snippet, langId);
   };
 
   render() {
