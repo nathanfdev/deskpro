@@ -12,6 +12,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatFormCustomField;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as Router;
@@ -120,7 +121,15 @@ class ServiceController extends AbstractMessengerController
                     'required'   => true,
                 ]
             );
-            foreach ($preChatForm->getFields() as $field) {
+            $preChatFields = $preChatForm->getFields()->toArray();
+            usort($preChatFields, function ($a, $b) {
+                /*
+                 * @var PreChatFormCustomField $a
+                 * @var PreChatFormCustomField $b
+                 */
+                return $a->getDisplayOrder() - $b->getDisplayOrder();
+            });
+            foreach ($preChatFields as $field) {
                 if (!isset($fields[$field->getId()]) || !$field->isEnabled()) {
                     continue;
                 }
