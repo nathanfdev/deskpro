@@ -12,6 +12,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatFormCustomField;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -61,8 +62,32 @@ class ServiceController extends AbstractMessengerController
         $brand    = $this->get('brand_stack')->getActive()->getBrand();
         $settings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
         $data     = $this->get('serializer')->toArray($settings,  new SideloadSerializationContext());
-        $em       = $this->get('doctrine.orm.default_entity_manager');
 
+        $preChatForm = $settings->getChat()->getPreChatForm();
+
+        $data['chat']['preChatForm']         = $this->getPreChatFormConfig($preChatForm);
+        $data['tickets']['formConfig']       = $this->getTicketFormConfig();
+        $data['chat']['brandMessageEnabled'] = $preChatForm->isBrandMessageEnabled();
+
+        $data['tickets']['uploadTo'] = $data['chat']['uploadTo'] = $this->generateUrl(
+            'messenger_blob_upload', [], UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        $data['bundleUrl'] = [
+            'manifest' => $this->container->get('templating.helper.assets')->getUrl('asset-manifest.json', 'messenger_assets'),
+            'path'     => $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets'),
+            'isDev'    => $this->get('settings_resolver')->getGlobalSettings()->get('messenger.is_dev', false),
+        ];
+
+        return View::create($data, Response::HTTP_OK);
+    }
+
+    /**
+     * @return array
+     */
+    private function getTicketFormConfig()
+    {
+        $em = $this->get('doctrine.orm.default_entity_manager');
         /** @var LayoutCollection $layouts */
         $layouts = $this->container->getTicketLayoutManager()->getUserLayouts(true);
 
@@ -85,7 +110,17 @@ class ServiceController extends AbstractMessengerController
             $ticketFormConfig[] = $layoutData;
         }
 
-        $preChatForm = $settings->getChat()->getPreChatForm();
+        return $ticketFormConfig;
+    }
+
+    /**
+     * @param PreChatForm $preChatForm
+     *
+     * @return array
+     */
+    private function getPreChatFormConfig(PreChatForm $preChatForm)
+    {
+        $em = $this->get('doctrine.orm.default_entity_manager');
         if ($preChatForm->isEnabled()) {
             /** @var CustomDefChat[] $fields */
             $fields = $em->getRepository(CustomDefChat::class)->getTopFields();
@@ -144,23 +179,10 @@ class ServiceController extends AbstractMessengerController
                 );
             }
 
-            $data['chat']['preChatForm'] = [$config];
+            return [$config];
+        } else {
+            return [];
         }
-
-        $data['tickets']['formConfig']       = $ticketFormConfig;
-        $data['chat']['brandMessageEnabled'] = $preChatForm->isBrandMessageEnabled();
-
-        $data['tickets']['uploadTo'] = $data['chat']['uploadTo'] = $this->generateUrl(
-            'messenger_blob_upload', [], UrlGeneratorInterface::ABSOLUTE_URL
-        );
-
-        $data['bundleUrl'] = [
-            'manifest' => $this->container->get('templating.helper.assets')->getUrl('asset-manifest.json', 'messenger_assets'),
-            'path'     => $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets'),
-            'isDev'    => $this->get('settings_resolver')->getGlobalSettings()->get('messenger.is_dev', false),
-        ];
-
-        return View::create($data, Response::HTTP_OK);
     }
 
     /**
