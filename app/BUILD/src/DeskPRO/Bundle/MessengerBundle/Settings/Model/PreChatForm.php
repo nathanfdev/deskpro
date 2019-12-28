@@ -23,11 +23,11 @@ class PreChatForm
      * Show brand message.
      *
      * @JMS\Type("boolean")
-     * @JMS\SerializedName("brandMessage")
+     * @JMS\SerializedName("brandMessageEnabled")
      *
      * @var bool
      */
-    private $brandMessage = false;
+    private $brandMessageEnabled = false;
 
     /**
      * Is name enabled as pre-chat field?
@@ -115,7 +115,7 @@ class PreChatForm
      */
     public function isBrandMessageEnabled()
     {
-        return $this->brandMessage;
+        return $this->brandMessageEnabled;
     }
 
     /**
@@ -125,7 +125,7 @@ class PreChatForm
      */
     public function setBrandMessageEnabled($enabled)
     {
-        $this->brandMessage = (bool) $enabled;
+        $this->brandMessageEnabled = (bool) $enabled;
 
         return $this;
     }

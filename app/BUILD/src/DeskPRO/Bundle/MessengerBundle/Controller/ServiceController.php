@@ -87,6 +87,7 @@ class ServiceController extends AbstractMessengerController
 
         $preChatForm = $settings->getChat()->getPreChatForm();
         if ($preChatForm->isEnabled()) {
+            /** @var CustomDefChat[] $fields */
             $fields = $em->getRepository(CustomDefChat::class)->getTopFields();
             $config = [
                 'department' => 0,
@@ -123,13 +124,12 @@ class ServiceController extends AbstractMessengerController
             );
             $preChatFields = $preChatForm->getFields()->toArray();
             usort($preChatFields, function ($a, $b) {
-                /*
-                 * @var PreChatFormCustomField $a
-                 * @var PreChatFormCustomField $b
-                 */
+                /* @var PreChatFormCustomField $a */
+                /* @var PreChatFormCustomField $b */
                 return $a->getDisplayOrder() - $b->getDisplayOrder();
             });
             foreach ($preChatFields as $field) {
+                /** @var PreChatFormCustomField $field */
                 if (!isset($fields[$field->getId()]) || !$field->isEnabled()) {
                     continue;
                 }
@@ -147,8 +147,10 @@ class ServiceController extends AbstractMessengerController
             $data['chat']['preChatForm'] = [$config];
         }
 
-        $data['tickets']['formConfig'] = $ticketFormConfig;
-        $data['tickets']['uploadTo']   = $this->generateUrl(
+        $data['tickets']['formConfig']       = $ticketFormConfig;
+        $data['chat']['brandMessageEnabled'] = $preChatForm->isBrandMessageEnabled();
+
+        $data['tickets']['uploadTo'] = $data['chat']['uploadTo'] = $this->generateUrl(
             'messenger_blob_upload', [], UrlGeneratorInterface::ABSOLUTE_URL
         );
 
