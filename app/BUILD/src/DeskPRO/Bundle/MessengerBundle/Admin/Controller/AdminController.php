@@ -156,6 +156,7 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::CHAT_ENABLED, $messengerChat->isEnabled(), $brand)
 
             ->updateSetting(MSR::PRE_CHAT_FORM_ENABLED, $messengerChatPreChatForm->isEnabled(), $brand)
+            ->updateSetting(MSR::PRE_CHAT_FORM_BRAND_MESSAGE, $messengerChatPreChatForm->isBrandMessageEnabled(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_NAME_ENABLED, $messengerChatPreChatForm->isNameEnabled(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_EMAIL_ENABLED, $messengerChatPreChatForm->isEmailEnabled(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_NAME_REQUIRED, $messengerChatPreChatForm->isNameRequired(), $brand)

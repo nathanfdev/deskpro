@@ -11,13 +11,23 @@ use JMS\Serializer\Annotation as JMS;
 class PreChatForm
 {
     /**
-     * Are tickets enabled.
+     * Is pre-chat form enabled.
      *
      * @JMS\Type("boolean")
      *
      * @var bool
      */
     private $enabled = false;
+
+    /**
+     * Show brand message.
+     *
+     * @JMS\Type("boolean")
+     * @JMS\SerializedName("brandMessage")
+     *
+     * @var bool
+     */
+    private $brandMessage = false;
 
     /**
      * Is name enabled as pre-chat field?
@@ -96,6 +106,26 @@ class PreChatForm
     public function setEnabled($enabled)
     {
         $this->enabled = (bool) $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBrandMessageEnabled()
+    {
+        return $this->brandMessage;
+    }
+
+    /**
+     * @param bool $brandMessage
+     *
+     * @return $this
+     */
+    public function setBrandMessageEnabled($enabled)
+    {
+        $this->brandMessage = (bool) $enabled;
 
         return $this;
     }

@@ -42,6 +42,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_TICKET_DEFAULTS_DEP     = 'messenger.chat.ticket_defaults.department';
 
     const PRE_CHAT_FORM_ENABLED        = 'messenger.chat.pre_chat_form.enabled';
+    const PRE_CHAT_FORM_BRAND_MESSAGE  = 'messenger.chat.pre_chat_form.brand_message_enabled';
     const PRE_CHAT_FORM_NAME_ENABLED   = 'messenger.chat.pre_chat_form.name.enabled';
     const PRE_CHAT_FORM_EMAIL_ENABLED  = 'messenger.chat.pre_chat_form.email.enabled';
     const PRE_CHAT_FORM_NAME_REQUIRED  = 'messenger.chat.pre_chat_form.name.required';
@@ -183,6 +184,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         return $mPreChatForm
             ->setEnabled($this->getSettings(self::PRE_CHAT_FORM_ENABLED, $brand, $mPreChatForm->isEnabled()))
+            ->setBrandMessageEnabled($this->getSettings(self::PRE_CHAT_FORM_BRAND_MESSAGE, $brand, $mPreChatForm->isBrandMessageEnabled()))
             ->setIsNameEnabled($this->getSettings(self::PRE_CHAT_FORM_NAME_ENABLED, $brand, $mPreChatForm->isNameEnabled()))
             ->setIsEmailEnabled($this->getSettings(self::PRE_CHAT_FORM_EMAIL_ENABLED, $brand, $mPreChatForm->isEmailEnabled()))
             ->setIsNameRequired($this->getSettings(self::PRE_CHAT_FORM_NAME_REQUIRED, $brand, $mPreChatForm->isNameRequired()))
