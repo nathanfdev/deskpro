@@ -35,6 +35,14 @@ class CommunityTopicSubscription extends DomainObject
     protected $root_category;
 
     /**
+     * Used with root_category when user subscribed to all brand root category.
+     * Ideally we can remove root_category and just check brand but to support backward compatibility leave it
+     *
+     * @var \Application\DeskPRO\Entity\Brand
+     */
+    protected $rootCategoryBrand;
+
+    /**
      * @param CommunityTopic $topic
      */
     public function setTopic(CommunityTopic $topic = null)
@@ -51,11 +59,23 @@ class CommunityTopicSubscription extends DomainObject
     }
 
     /**
+     * @deprecated use setRootCategoryBrand instead
+     * 
      * @param bool $root_category
      */
     public function setRootCategory($root_category)
     {
         $this->setModelField('root_category', $root_category);
+    }
+
+    /**
+     *
+     * @param \Application\DeskPRO\Entity\Brand $brand
+     */
+    public function setRootCategoryBrand(Brand $brand = null)
+    {
+        $this->setModelField('rootCategoryBrand', $brand);
+        $this->setRootCategory($brand !== null);
     }
 
     /**
@@ -144,6 +164,24 @@ class CommunityTopicSubscription extends DomainObject
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'root_category',
+            ]
+        );
+
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'rootCategoryBrand',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'root_category_brand_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
             ]
         );
     }
