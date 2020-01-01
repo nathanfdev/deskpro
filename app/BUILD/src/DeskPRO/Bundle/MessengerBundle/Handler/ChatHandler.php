@@ -239,7 +239,7 @@ class ChatHandler
         if ($request['rate'] === true) {
             $chat->setRatingOverall(10);
         } else {
-            $chat->setRatingOverall(1);
+            $chat->setRatingOverall(0);
         }
 
         $eventData['rate'] = $request['rate'];
@@ -467,6 +467,7 @@ class ChatHandler
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw new MessengerApiException([], 'Failed to create a ticket', 400, $e);
         }
 
