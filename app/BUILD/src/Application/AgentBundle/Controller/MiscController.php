@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\AgentBundle\Controller;
 
@@ -231,6 +229,7 @@ class MiscController extends AbstractController
         if ($this->container->getAppManager()->isPackageInstalled('deskpro_ms_translator')) {
             $ms_translator = $this->container->getAppManager()->getService('ms_translator');
             $lang_codes    = $ms_translator->getLanguagesForTranslate();
+
             try {
                 $lang_names = $ms_translator->getLanguageNames(
                     $ms_translator->getLanguagesForTranslate(),
@@ -386,15 +385,18 @@ JS;
                 $urlPattern = $m[1];
                 if (RegexUtils::safePregMatch("#$urlPattern#", $url)) {
                     $isValid = true;
+
                     break;
                 }
             } elseif (preg_match('#(.+)\*$#', $urlPattern, $m)) {
                 if (StringUtils::startsWith($m[1], $url)) {
                     $isValid = true;
+
                     break;
                 }
             } elseif ($urlPattern === $url) {
                 $isValid = true;
+
                 break;
             }
         }
@@ -421,15 +423,19 @@ JS;
         switch (strtolower($method)) {
             case 'get':
                 $method = 'GET';
+
                 break;
             case 'post':
                 $method = 'POST';
+
                 break;
             case 'put':
                 $method = 'PUT';
+
                 break;
             case 'delete':
                 $method = 'DELETE';
+
                 break;
             default:
                 $method = 'GET';
@@ -464,21 +470,27 @@ JS;
                 switch ($in_auth_type) {
                     case 'basic':
                         $auth_type = CURLAUTH_BASIC;
+
                         break;
                     case 'digest':
                         $auth_type = CURLAUTH_DIGEST;
+
                         break;
                     case 'gssnegotiate':
                         $auth_type = CURLAUTH_GSSNEGOTIATE;
+
                         break;
                     case 'ntlm':
                         $auth_type = CURLAUTH_NTLM;
+
                         break;
                     case 'any':
                         $auth_type = CURLAUTH_ANY;
+
                         break;
                     case 'safe':
                         $auth_type = CURLAUTH_ANYSAFE;
+
                         break;
                     default:
                         throw $this->createNotFoundException();

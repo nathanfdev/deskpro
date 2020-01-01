@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
+use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\UserChatAgentsOnlineEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
@@ -24,9 +25,20 @@ class UserChatAgentsOnlineGenerator extends AbstractGenerator
         /* @var UserChatAgentsOnlineEvent $event */
         $messages = [];
 
-        $actionAlert = new ActionAlert(NotificationService::TARGET_USER_BROADCAST, $event->getAgentIds(), $event->getName());
-        $actionAlert->setBroadcast();
-        $messages[] = $actionAlert;
+        if ($event instanceof AgentStatusChangedEvent) {
+            $actionAlert = new ActionAlert(NotificationService::TARGET_USER_BROADCAST,
+                [
+                    'online'   => $event->getOnline(),
+                    'agent_id' => $event->getPersonId(),
+                ],
+                $event->getName());
+            $actionAlert->setBroadcast();
+            $messages[] = $actionAlert;
+        } else {
+            $actionAlert = new ActionAlert(NotificationService::TARGET_USER_BROADCAST, $event->getAgentIds(), $event->getName());
+            $actionAlert->setBroadcast();
+            $messages[] = $actionAlert;
+        }
 
         return $messages;
     }
@@ -36,7 +48,7 @@ class UserChatAgentsOnlineGenerator extends AbstractGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        if ($event instanceof UserChatAgentsOnlineEvent) {
+        if ($event instanceof UserChatAgentsOnlineEvent || $event instanceof AgentStatusChangedEvent) {
             return true;
         }
 
