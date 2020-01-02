@@ -93,9 +93,10 @@ class TicketApprovalsController extends AbstractController
      */
     public function viewAction(Request $request, TicketApproval $approval)
     {
-        $approvalResponse = (new ApprovalResponse())
-            ->setApprover($this->getUser())
-        ;
+        $person = $this->getUser();
+
+        $approvalResponse = new ApprovalResponse();
+        $approvalResponse->setApprover($person);
 
         $form = $this
             ->createForm(ApprovalResponseType::class, $approvalResponse, [
@@ -112,32 +113,41 @@ class TicketApprovalsController extends AbstractController
                 $approvalResponse->setVote(ApprovalResponse::VOTE_REJECT);
             }
 
-            if (!$approval->hasResponded($this->getUser())) {
+            if (!$approval->hasResponded($person)) {
                 $this->getApprovalManager()->addApprovalResponse(
                     $approval,
                     $approvalResponse,
-                    $this->getApprovalManager()->createContext(ExecutorContext::METHOD_WEB, $this->getUser())
+                    $this->getApprovalManager()->createContext(ExecutorContext::METHOD_WEB, $person)
                 );
 
                 if ($approvalResponse->isApproved()) {
                     $this->addFlash('success', $this->phrase('portal.flashes.ticket-approvals.approved-by', [
-                        'person'   => $this->getUser()->getCommunityName(),
+                        'person'   => $person->getCommunityName(),
                         'template' => $approval->getTemplate()->getName(),
                     ]));
                 } else {
                     $this->addFlash('success', $this->phrase('portal.flashes.ticket-approvals.rejected-by', [
-                        'person'   => $this->getUser()->getCommunityName(),
+                        'person'   => $person->getCommunityName(),
                         'template' => $approval->getTemplate()->getName(),
                     ]));
                 }
             }
         }
 
+        $canViewTicket = false;
+        if ($person->isAgent()) {
+            $canViewTicket = $person->PermissionsManager->TicketChecker->canView($approval->getTicket());
+        }
+        if ($person === $approval->getTicket()->getPerson()) {
+            $canViewTicket = true;
+        }
+
         return $this->renderThemeView('Theme:Approvals:view.html.twig', [
-            'person'      => $this->getUser(),
-            'breadcrumbs' => $this->getBreadcrumbGenerator()->buildTicketApprovalView($approval),
-            'approval'    => $approval,
-            'form'        => $form->createView(),
+            'person'          => $person,
+            'breadcrumbs'     => $this->getBreadcrumbGenerator()->buildTicketApprovalView($approval),
+            'approval'        => $approval,
+            'form'            => $form->createView(),
+            'can_view_ticket' => $canViewTicket,
         ]);
     }
 

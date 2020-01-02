@@ -145,6 +145,18 @@
                                         {% endfor %}
                                     </span>
                                 </div>
+                                {% if can_view_ticket %}
+                                    <div class="dp-po-ticket-approval-info-item">
+                                        <span class="dp-po-ticket-approval-info-item-label">
+                                            {{ phrase('helpcenter.approvals.view_ticket') }}:
+                                        </span>
+                                        <span class="dp-po-ticket-approval-info-item-value">
+                                            <a href="{{ portal_path(approval.ticket) }}" class="dp-po-ticket-approval-info-item-ticket-link">
+                                                {{ approval.ticket.subject }}
+                                            </a>
+                                        </span>
+                                    </div>
+                                {% endif %}
                                 <div class="dp-po-ticket-approval-info-criteria">
                                     <span class="dp-po-ticket-approval-info-criteria-label">
                                         {{ phrase('helpcenter.approvals.view_criteria') }} -
