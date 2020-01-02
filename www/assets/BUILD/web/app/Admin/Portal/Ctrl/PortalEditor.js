@@ -129,6 +129,27 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.preview_as_email = null;
       this.selected_theme = null;
       this.theme_set = null;
+
+      $('.select-theme').on('mousedown', (e) => {
+        e.preventDefault();
+        e.currentTarget.blur();
+        window.focus();
+
+        const modalInstance = this.$modal.open({
+          templateUrl: this.getTemplatePath('Portal/Editor/select-theme-modal.html'),
+          controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) => {
+            $scope.available_themes = this.available_themes;
+            $scope.selected_theme = this.selected_theme;
+            $scope.selectTheme = (theme) => { $modalInstance.close(theme); };
+            $scope.cancel = () => $modalInstance.dismiss('cancel');
+          }]
+        });
+
+        modalInstance.result.then((theme) => {
+          this.selected_theme = theme.id;
+          this.editTheme();
+        });
+      });
     }
 
     save() {
