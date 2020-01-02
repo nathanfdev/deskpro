@@ -32,12 +32,12 @@
                         {% include 'Theme:Common:agent_bar.html.twig' %}
                         <div class="dp-po-language" id="hc-language-changer">
                             <a class="dp-po-language-link" href="">
-                                <img src="{{ asset_data_url('images/flags/locale_en-US.png', 'legacy_web') }}" alt=""> <span class="dp-po-language-link-text">English</span>
+                                <img src="{{ asset_data_url('images/flags/locale_en-US.png', 'legacy_web') }}" alt="flag"> <span class="dp-po-language-link-text">English</span>
                                 <i class="dp-po-icon far fa-angle-down"></i>
                             </a>
                         </div>
                         <div class="dp-po-header-button">
-                            <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary" title="{{ phrase('helpcenter.general.nav-newticket') }}">{{ phrase('helpcenter.general.nav-newticket') }}</a>
+                            <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary">{{ phrase('helpcenter.general.nav-newticket') }}</a>
                         </div>
                         {% include 'Theme:Portal:Header/user-menu.html.twig' %}
                     </div>

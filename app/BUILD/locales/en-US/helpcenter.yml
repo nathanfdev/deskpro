@@ -252,6 +252,7 @@ helpcenter.general.edit-this-page: 'Edit this page'
 helpcenter.general.enter_comment_placeholder: 'Enter your comment here...'
 helpcenter.general.eula: EULA
 helpcenter.general.everything: Everything
+helpcenter.general.expand: Expand
 helpcenter.general.filter: Filter
 helpcenter.general.first-published: 'First published'
 helpcenter.general.go-to-page: 'Go to page'
@@ -288,11 +289,14 @@ helpcenter.general.nav-newticket: 'Contact Us'
 helpcenter.general.nav-support-center: 'Help Center'
 helpcenter.general.nav-tickets-desc: 'View all the tickets'
 helpcenter.general.nav-tickets: 'Tickets'
+helpcenter.general.next: Next
 helpcenter.general.no-search-query: 'Please type a search query into the search box.'
 helpcenter.general.no-search-results: 'We couldn''t find any results for "{{query}}"'
 helpcenter.general.no-search-results-explain: 'Try a different search or have a look at our <a href="{{kb_url}}">Knowledgebase</a>'
 helpcenter.general.on: 'on'
 helpcenter.general.or: 'or'
+helpcenter.general.previous: Previous
+helpcenter.general.print: Print
 helpcenter.general.prop_comments_asc: 'Least comments first'
 helpcenter.general.prop_comments_desc: 'Most comments first'
 helpcenter.general.prop_date_asc: 'Oldest first'

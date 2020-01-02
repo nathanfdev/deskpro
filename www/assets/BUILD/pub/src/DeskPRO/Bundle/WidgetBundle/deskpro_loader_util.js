@@ -216,6 +216,7 @@ function recordPageHit(helpdeskUrl, opts) { // eslint-disable-line no-unused-var
     const img = document.createElement('img');
     img.setAttribute('src', imgSrc);
     img.setAttribute('role', 'presentation');
+    img.setAttribute('alt', '');
     img.setAttribute('width', 1);
     img.setAttribute('height', 1);
     img.setAttribute('style', 'position:absolute;bottom:0;left:0;width:1px;height:1px;overflow:hidden;border:none;margin:0;padding:0;');
