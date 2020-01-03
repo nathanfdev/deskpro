@@ -458,7 +458,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				// drop could have an auth, which we handle manually (ie not fileupload jquery plugin)
 				$el.on('drop', function(event) {
           var self = this;
-          
+
 					// handle already uploaded blob
 					var blobData = event.originalEvent.dataTransfer.getData('blobData');
 					if (blobData) {
@@ -2170,6 +2170,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var successFn = (function(data) {
 			try {
+        if (routeData.tabPlaceholderId && !DeskPRO_Window.TabBar.getTab(routeData.tabPlaceholderId)) {
+          console.log("Tab page loaded but tab placeholder was closed. Skip page initialization and drop it.");
+          return;
+        }
+
 				var page = this.createPageFragment(data);
 			} catch (e) {
 				if (routeData.tabPlaceholderId) {
