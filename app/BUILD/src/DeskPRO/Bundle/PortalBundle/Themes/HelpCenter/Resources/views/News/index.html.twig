@@ -23,12 +23,23 @@
                     {% if ics_link is defined and ics_link|length > 0 %}
                         <li class="dp-po-news-extra-item">
                             <a href="{{ ics_link }}" class="dp-po-news-extra-link" title="{{ phrase('helpcenter.general.ics_subscribe') }}">
-                                <i class="dp-po-icon fal fa-calendar-alt"></i>
+                                <i class="dp-po-icon fal fa-calendar-alt" title="calendar"></i>
                             </a>
                         </li>
                     {% endif %}
                 </ul>
             </div>
+        </div>
+    </div>
+    <div class="d-block d-sm-none">
+        <div class="dp-po-post-mobile-area">
+        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+            subscriptionInfo: [
+                { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section-title'), active: is_subscribed },
+            ]
+        } %}
+        <a href="javascript:void(0)" data-toggle="modal" data-target="#postExtraMobile"><i
+            class="far fa-align-center" title="menu"></i></a>
         </div>
     </div>
     <div class="dp-po-section dp-po-block">
@@ -44,7 +55,7 @@
                             {% if has_splash(item) %}
                                 <figure class="dp-po-news-listing-figure">
                                     <img src="{{ get_splash_url(item, 300) }}"
-                                         class="dp-po-news-listing-photo img-fluid" />
+                                         class="dp-po-news-listing-photo img-fluid" role="presentation" alt="" />
                                 </figure>
                             {% endif %}
                             <div class="dp-po-news-listing-content">
@@ -74,84 +85,170 @@
             }
         } %}
     </div>
+    <!-- Mobile Modal -->
+    <div class="modal fade mobile-modal" id="postExtraMobile" tabindex="-1" role="dialog"
+        aria-labelledby="postExtraMobile" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
+                    <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-cat') }}</h3>
+                    <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#news_categories" role="button" aria-expanded="true" aria-controls="news_categories">
+                        <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
+                    </a>
+                    <div class="collapse show" id="news_categories">
+                        <ul class="dp-po-news-filter-type-list">
+                            <li class="dp-po-news-filter-type-item">
+                                {% if not viewCategory %}<i class="dp-po-icon fa fa-long-arrow-right"></i>{% endif %}
+                                <div class="dp-po-form-check">
+                                    <a href="{{ path('user_news_home') }}" class="dp-po-news-filter-type-link {% if not viewCategory %}active{% endif %}">
+                                        {{ phrase('helpcenter.news.all-news') }}
+                                    </a>
+                                </div>
+                            </li>
+                            {% for cat in newsData.categories %}
+                                <li class="dp-po-news-filter-type-item">
+                                    {% if viewCategory and viewCategory.id == cat.id %}<i class="dp-po-icon fa fa-long-arrow-right"></i>{% endif %}
+                                    <div class="dp-po-form-check">
+                                        <a href="{{ portal_path(cat) }}" class="dp-po-news-filter-type-link {% if viewCategory and viewCategory.id == cat.id %}active{% endif %}">
+                                            {{ object_phrase(cat) }}
+                                        </a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-date">
+                    <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-date') }}</h3>
+                    <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#date_filter" role="button"
+                    aria-expanded="false" aria-controls="date_filter">
+                        <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
+                    </a>
+                    <div class="collapse {{ filter_date ? 'show' }}" id="date_filter">
+                        <div class="dp-po-news-filter-date-option">
+                            <ul class="dp-po-news-filter-date-year-list">
+                                <li class="dp-po-news-filter-date-year-item">
+                                    <a href="{{ _self.news_date_filter_path({date: ''}) }}"
+                                    class="dp-po-news-filter-date-year-link text-uppercase {{ not filter_date ? 'active' }}">
+                                        {{ phrase('helpcenter.news.any-date') }}
+                                    </a>
+                                </li>
+                                {% for y in newsData.ymCounts %}
+                                    <li class="dp-po-news-filter-date-year-item">
+                                        <a href="{{ _self.news_date_filter_path({date: y.year}) }}"
+                                        class="dp-po-news-filter-date-year-link {{ filter_date matches "/#{y.year}.*/" ? 'active' }}">
+                                            {{ y.year }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <ul class="dp-po-news-filter-date-month-list">
+                                {% for y in newsData.ymCounts if y.year == filter_year %}
+                                    {% for m in y.months %}
+                                        {% set date = "#{y.year}-#{'%02d'|format(m.month)}" %}
+                                        <li class="dp-po-news-filter-date-month-item">
+                                            <a href="{{ _self.news_date_filter_path({date: date}) }}"
+                                            class="dp-po-news-filter-date-month-link {{ filter_date matches "/#{date}.*/" ? 'active' }}" style="{{ filter_date and 0 == m.count ? 'color: #DDD;' }}">
+                                                {{ date("#{m.year}-#{m.month}-01") | date('M') | upper }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
 {% endblock page_body %}
 
 {# ------------------------------------------ #}
 {# Page sidebar #}
 {# ------------------------------------------ #}
 {% block page_sidebar %}
-    {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-        subscriptionInfo: [
-            { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section-title'), active: is_subscribed },
-        ]
-    } %}
+    <div class="d-none d-sm-block">
+        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+            subscriptionInfo: [
+                { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section-title'), active: is_subscribed },
+            ]
+        } %}
 
-    <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
-        <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-cat') }}</h3>
-        <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#news_categories" role="button" aria-expanded="true" aria-controls="news_categories">
-            <i class="dp-po-icon far fa-angle-down"></i>
-        </a>
-        <div class="collapse show" id="news_categories">
-            <ul class="dp-po-news-filter-type-list">
-                <li class="dp-po-news-filter-type-item">
-                    {% if not viewCategory %}<i class="dp-po-icon fa fa-long-arrow-right"></i>{% endif %}
-                    <div class="dp-po-form-check">
-                        <a href="{{ path('user_news_home') }}" class="dp-po-news-filter-type-link {% if not viewCategory %}active{% endif %}">
-                            {{ phrase('helpcenter.news.all-news') }}
-                        </a>
-                    </div>
-                </li>
-                {% for cat in newsData.categories %}
+        <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
+            <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-cat') }}</h3>
+            <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#news_categories" role="button" aria-expanded="true" aria-controls="news_categories">
+                <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
+            </a>
+            <div class="collapse show" id="news_categories">
+                <ul class="dp-po-news-filter-type-list">
                     <li class="dp-po-news-filter-type-item">
-                        {% if viewCategory and viewCategory.id == cat.id %}<i class="dp-po-icon fa fa-long-arrow-right"></i>{% endif %}
+                        {% if not viewCategory %}<i class="dp-po-icon fa fa-long-arrow-right"></i>{% endif %}
                         <div class="dp-po-form-check">
-                            <a href="{{ portal_path(cat) }}" class="dp-po-news-filter-type-link {% if viewCategory and viewCategory.id == cat.id %}active{% endif %}">
-                                {{ object_phrase(cat) }}
+                            <a href="{{ path('user_news_home') }}" class="dp-po-news-filter-type-link {% if not viewCategory %}active{% endif %}">
+                                {{ phrase('helpcenter.news.all-news') }}
                             </a>
                         </div>
                     </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-
-    <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-date">
-        <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-date') }}</h3>
-        <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#date_filter" role="button"
-           aria-expanded="false" aria-controls="date_filter">
-            <i class="dp-po-icon far fa-angle-down"></i>
-        </a>
-        <div class="collapse {{ filter_date ? 'show' }}" id="date_filter">
-            <div class="dp-po-news-filter-date-option">
-                <ul class="dp-po-news-filter-date-year-list">
-                    <li class="dp-po-news-filter-date-year-item">
-                        <a href="{{ _self.news_date_filter_path({date: ''}) }}"
-                           class="dp-po-news-filter-date-year-link text-uppercase {{ not filter_date ? 'active' }}">
-                            {{ phrase('helpcenter.news.any-date') }}
-                        </a>
-                    </li>
-                    {% for y in newsData.ymCounts %}
-                        <li class="dp-po-news-filter-date-year-item">
-                            <a href="{{ _self.news_date_filter_path({date: y.year}) }}"
-                               class="dp-po-news-filter-date-year-link {{ filter_date matches "/#{y.year}.*/" ? 'active' }}">
-                                {{ y.year }}
-                            </a>
+                    {% for cat in newsData.categories %}
+                        <li class="dp-po-news-filter-type-item">
+                            {% if viewCategory and viewCategory.id == cat.id %}<i class="dp-po-icon fa fa-long-arrow-right"></i>{% endif %}
+                            <div class="dp-po-form-check">
+                                <a href="{{ portal_path(cat) }}" class="dp-po-news-filter-type-link {% if viewCategory and viewCategory.id == cat.id %}active{% endif %}">
+                                    {{ object_phrase(cat) }}
+                                </a>
+                            </div>
                         </li>
                     {% endfor %}
                 </ul>
-                <ul class="dp-po-news-filter-date-month-list">
-                    {% for y in newsData.ymCounts if y.year == filter_year %}
-                        {% for m in y.months %}
-                            {% set date = "#{y.year}-#{'%02d'|format(m.month)}" %}
-                            <li class="dp-po-news-filter-date-month-item">
-                                <a href="{{ _self.news_date_filter_path({date: date}) }}"
-                                   class="dp-po-news-filter-date-month-link {{ filter_date matches "/#{date}.*/" ? 'active' }}" style="{{ filter_date and 0 == m.count ? 'color: #DDD;' }}">
-                                    {{ date("#{m.year}-#{m.month}-01") | date('M') | upper }}
+            </div>
+        </div>
+
+        <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-date">
+            <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-date') }}</h3>
+            <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#date_filter" role="button"
+            aria-expanded="false" aria-controls="date_filter">
+                <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
+            </a>
+            <div class="collapse {{ filter_date ? 'show' }}" id="date_filter">
+                <div class="dp-po-news-filter-date-option">
+                    <ul class="dp-po-news-filter-date-year-list">
+                        <li class="dp-po-news-filter-date-year-item">
+                            <a href="{{ _self.news_date_filter_path({date: ''}) }}"
+                            class="dp-po-news-filter-date-year-link text-uppercase {{ not filter_date ? 'active' }}">
+                                {{ phrase('helpcenter.news.any-date') }}
+                            </a>
+                        </li>
+                        {% for y in newsData.ymCounts %}
+                            <li class="dp-po-news-filter-date-year-item">
+                                <a href="{{ _self.news_date_filter_path({date: y.year}) }}"
+                                class="dp-po-news-filter-date-year-link {{ filter_date matches "/#{y.year}.*/" ? 'active' }}">
+                                    {{ y.year }}
                                 </a>
                             </li>
                         {% endfor %}
-                    {% endfor %}
-                </ul>
+                    </ul>
+                    <ul class="dp-po-news-filter-date-month-list">
+                        {% for y in newsData.ymCounts if y.year == filter_year %}
+                            {% for m in y.months %}
+                                {% set date = "#{y.year}-#{'%02d'|format(m.month)}" %}
+                                <li class="dp-po-news-filter-date-month-item">
+                                    <a href="{{ _self.news_date_filter_path({date: date}) }}"
+                                    class="dp-po-news-filter-date-month-link {{ filter_date matches "/#{date}.*/" ? 'active' }}" style="{{ filter_date and 0 == m.count ? 'color: #DDD;' }}">
+                                        {{ date("#{m.year}-#{m.month}-01") | date('M') | upper }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

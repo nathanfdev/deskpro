@@ -173,6 +173,16 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     protected $parsed_headers = [];
 
     /**
+     * @var string
+     */
+    protected $client_ip;
+
+    /**
+     * @var string
+     */
+    protected $client_host;
+
+    /**
      * The current status of the message:
      * - inserted: Only inserted
      * - processing: Currently processing
@@ -688,6 +698,20 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'type'       => 'text',
             'nullable'   => false,
             'columnName' => 'header_subject',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'client_ip',
+            'type'       => 'string',
+            'length'     => 130,
+            'nullable'   => true,
+            'columnName' => 'client_ip',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'client_host',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'   => true,
+            'columnName' => 'client_host',
         ]);
         $metadata->mapField([
             'fieldName'  => 'status',

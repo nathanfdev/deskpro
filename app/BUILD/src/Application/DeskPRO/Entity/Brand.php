@@ -59,9 +59,14 @@ class Brand extends DomainObject
     protected $edit_theme_set;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $departments;
+
+    /**
+     * @var ArrayCollection|ThemeSet[]
+     */
+    protected $themeSets;
 
     /**
      * Constructor.
@@ -69,6 +74,7 @@ class Brand extends DomainObject
     public function __construct()
     {
         $this->departments = new ArrayCollection();
+        $this->themeSets   = new ArrayCollection();
     }
 
     /**
@@ -256,8 +262,37 @@ class Brand extends DomainObject
         $builder->mapString('name');
         $builder->mapString('slug', 255, false, true);
         $builder->mapString('url', 255, true, true);
-        $builder->createOneToOne('theme_set', ThemeSet::class)->cascadePersist()->build();
-        $builder->createOneToOne('edit_theme_set', ThemeSet::class)->build();
+
+        $metadata->mapOneToOne([
+            'fieldName'     => 'theme_set',
+            'targetEntity'  => ThemeSet::class,
+            'inversedBy'    => null,
+            'cascade'       => ['persist', 'remove'],
+            'joinColumns'   => [
+                [
+                    'name'                 => 'theme_set_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'columnDefinition'     => null,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
+        $metadata->mapOneToOne([
+            'fieldName'     => 'edit_theme_set',
+            'targetEntity'  => ThemeSet::class,
+            'inversedBy'    => null,
+            'cascade'       => ['persist', 'remove'],
+            'joinColumns'   => [
+                [
+                    'name'                 => 'edit_theme_set_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'columnDefinition'     => null,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
 
         $metadata->addEntityListener(Events::prePersist, BrandListener::class, Events::prePersist);
         $metadata->addEntityListener(Events::preUpdate, BrandListener::class, Events::preUpdate);
@@ -290,6 +325,14 @@ class Brand extends DomainObject
                         ],
                     ],
                 ],
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'themeSets',
+                'targetEntity' => ThemeSet::class,
+                'cascade'      => ['persist', 'remove'],
+                'mappedBy'     => 'brand',
             ]
         );
     }

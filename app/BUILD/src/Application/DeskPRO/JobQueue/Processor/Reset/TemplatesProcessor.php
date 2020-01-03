@@ -26,18 +26,26 @@ class TemplatesProcessor extends Base
         // Suddenly the new ticket form doesn't show any departments.
         $this->connection->executeUpdate('UPDATE theme_sets set options = \'[]\'');
 
+        // Reset brand
+        $brand = new Brand();
+        $brand->setName('Default');
+
         // Reset themes
         $standardTheme = new ThemeSet();
         $standardTheme->setThemeId('standard');
+        $standardTheme->setBrand($brand);
         $this->em->persist($standardTheme);
 
         $sidebarTheme = new ThemeSet();
         $sidebarTheme->setThemeId('sidebar');
+        $sidebarTheme->setBrand($brand);
         $this->em->persist($sidebarTheme);
 
-        // Reset brand
-        $brand = new Brand();
-        $brand->setName('Default');
+        $helpCenterTheme = new ThemeSet();
+        $helpCenterTheme->setThemeId('helpcenter');
+        $helpCenterTheme->setBrand($brand);
+        $this->em->persist($helpCenterTheme);
+
         $brand->setThemeSet($standardTheme);
         $this->em->persist($brand);
         $this->em->flush();

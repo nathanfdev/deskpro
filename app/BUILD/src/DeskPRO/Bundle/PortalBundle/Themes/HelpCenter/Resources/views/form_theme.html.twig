@@ -126,11 +126,11 @@
             {% set label = name|humanize %}
         {% endif %}
         {% if type == 'submit' %}
-            {% set attr = attr|merge({class: 'btn btn-primary'}) %}
+            {% set attr = attr|merge({class: (attr.class is defined ? attr.class~' ' : '')~'btn btn-primary'}) %}
         {% elseif type == 'reset' %}
-            {% set attr = attr|merge({class: 'btn btn-outline-secondary btn-reset'}) %}
+            {% set attr = attr|merge({class: (attr.class is defined ? attr.class~' ' : '')~'btn btn-outline-secondary btn-reset'}) %}
         {% else %}
-            {% set attr = attr|merge({class: 'btn btn-secondary'}) %}
+            {% set attr = attr|merge({class: (attr.class is defined ? attr.class~' ' : '')~'btn btn-secondary'}) %}
         {% endif %}
         <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
     {% endspaceless %}
@@ -308,7 +308,7 @@
             </select>
             <i class="far fa-angle-down fa-lg"></i>
         {% else %}
-            <input class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
+            <input id="{{ id }}" class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
         {% endif %}
 {% endblock deskpro_person_email_choice_widget %}
 

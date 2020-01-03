@@ -34,7 +34,7 @@ class PortalTemplatesRepository extends ApiRepository {
   }
 
   deleteAsset(themeSetAssetId) {
-    return this.api.sendDelete(`DP_API/${this.url}/email_assets/${themeSetAssetId}`);
+    return this.api.sendDelete(`/portal/api/style/edit-theme-set/assets/${themeSetAssetId}`);
   }
 }
 export default PortalTemplatesRepository;

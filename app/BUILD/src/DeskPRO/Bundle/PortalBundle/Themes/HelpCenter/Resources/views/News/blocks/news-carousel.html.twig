@@ -1,8 +1,8 @@
 <div class="dp-po-news-carousel">
     <div
         class="dp-po-news-carousel-list dpx-carousel unloaded"
-        data-next-button-template="<button class='dp-po-news-carousel-arrow dp-po-news-carousel-arrow-right'><i class='dp-po-icon far fa-angle-right'></i></button>"
-        data-prev-button-template="<button class='dp-po-news-carousel-arrow dp-po-news-carousel-arrow-left'><i class='dp-po-icon far fa-angle-left'></i></button>"
+        data-next-button-template="<button class='dp-po-news-carousel-arrow dp-po-news-carousel-arrow-right'><i class='dp-po-icon far fa-angle-right' title='{{ phrase('helpcenter.general.next') }}'></i></button>"
+        data-prev-button-template="<button class='dp-po-news-carousel-arrow dp-po-news-carousel-arrow-left'><i class='dp-po-icon far fa-angle-left' title='{{ phrase('helpcenter.general.previous') }}'></i></button>"
     >
         {% for item in posts %}
             <div class="dp-po-news-carousel-item">{# Add dp-po-news-carousel-item-banner if banner #}
@@ -14,15 +14,14 @@
                     <div class="dp-po-news-carousel-cover {% if has_splash(item) %}with-splash{% endif %}">
                         {% if has_splash(item) %}
                                     <img src="{{ get_splash_url(item, 300) }}"
-                                         class="dp-po-news-carousel-photo img-fluid" />
+                                         class="dp-po-news-carousel-photo img-fluid" role="presentation" alt="" />
                         {% endif %}
                         <span class="badge badge-info" style="{{ category_color_css(item.category) }}">{{ object_phrase(item.category) }}</span>
                     </div>
                     <div class="dp-po-news-carousel-content {% if has_splash(item) %}with-splash{% endif %}">
                         <h3 class="dp-po-news-carousel-title">{{ item.title }}</h3>
-                        <p class="dp-po-news-carousel-desc">{{ item.getExcerptHtml(40)|raw }}
+                        <p class="dp-po-news-carousel-desc">{{ item.getExcerptHtml(40)|raw }}</p>
                     </div>
-                    </p>
                     {% if item.person %}
                         <div class="dp-po-news-carousel-avatar dp-po-avatar">
                             {{ hc_avatar(item.person) }}

@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-sm">
         <div class="dp-po-title">
-            <img src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
+            <img class="icon-svg" src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
             <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
         </div>
     </div>
@@ -14,11 +14,29 @@
         </div>
     {% endif %}
     <div class="col-sm-auto">
-        {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
-            community_forums: community_forums,
-        } %}
+        <div class="d-none d-sm-block">
+            {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+                community_forums: community_forums,
+            } %}
+        </div>
     </div>
     <div class="col-sm-auto">
+        <div class="d-none d-sm-block">
+            {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                subscriptionInfo: [
+                    {
+                        toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
+                        icon: 'fal fa-file-spreadsheet',
+                        title: phrase('helpcenter.community.section-title'),
+                        active: is_subscribed
+                    }
+                ]
+            } %}
+        </div>
+    </div>
+</div>
+<div class="d-block d-sm-none">
+    <div class="dp-po-post-mobile-area">
         {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
             subscriptionInfo: [
                 {
@@ -29,6 +47,11 @@
                 }
             ]
         } %}
+        <div class="dp-po-community-create">
+            {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+                community_forums: community_forums,
+            } %}
+        </div>
     </div>
 </div>
 <div class="row">

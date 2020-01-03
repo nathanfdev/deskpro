@@ -261,13 +261,26 @@ export class SnippetsMenuContainer extends React.Component {
         if (!this.state.filter) {
           return true;
         }
+
         const re = new RegExp(this.state.filter, 'i');
-        return snippet.get('labels').find(label => label.match(re))
-          || snippet.get('title').match(re)
-          || snippet.get('shortcut_code').match(re)
-          || SnippetsMenuContainer
-              .getSnippetTranslationToUse(snippet, langContext, type)
-            .get('content').match(re);
+        if (snippet.get('labels').find(label => label.match(re))) {
+          return true;
+        }
+        if (snippet.get('title').match(re)) {
+          return true;
+        }
+        if (snippet.get('shortcut_code').match(re)) {
+          return true;
+        }
+
+        const translation = SnippetsMenuContainer.getSnippetTranslationToUse(snippet, langContext, type);
+        if (translation) {
+          if (translation.get('content').match(re)) {
+            return true;
+          }
+        }
+
+        return false;
       });
 
     const snippets = filteredSnippets.filter((snippet) => {
@@ -620,9 +633,16 @@ export class SnippetsMenu extends React.Component {
 
   selectFocused = (e) => {
     const snippet = this.props.snippets.toSeq().slice(this.focusedIndex).first();
-    const langId = SnippetsMenuContainer
-      .getSnippetTranslationToUse(snippet, this.props.langPref, this.props.type)
-      .get('language');
+    if (!snippet) {
+      return;
+    }
+
+    const translation = SnippetsMenuContainer.getSnippetTranslationToUse(snippet, this.props.langPref, this.props.type);
+    if (!translation) {
+      return;
+    }
+
+    const langId = translation.get('language');
     this.props.insertSnippet(e, snippet, langId);
   };
 

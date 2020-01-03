@@ -62,6 +62,27 @@ class FinderFilter
     private $error_code = '';
 
     /**
+     * @param array $filter
+     * @return FinderFilter
+     */
+    public static function fromArray($filter)
+    {
+        $instance = new self();
+
+        if (!is_array($filter)) {
+            return $instance;
+        }
+
+        foreach (array_keys(get_object_vars($instance)) as $property) {
+            if (array_key_exists($property, $filter)) {
+                $instance->{$property} = $filter[$property];
+            }
+        }
+
+        return $instance;
+    }
+
+    /**
      * @param $page
      *
      * @return $this

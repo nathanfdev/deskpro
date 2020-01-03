@@ -10,6 +10,9 @@
                             {{ render_icon_from(category) }}
                             <h2 class="dp-po-category-title-text">{{ object_phrase(category) }} <span>({{ category_children_pagers[category.id]|length }})</span></h2>
                         </a>
+                        <a href="javascript:void(0)" class="dp-po-category-title-expand">
+                            <i class="dp-po-icon fal fa-angle-down"></i>
+                        </a>
                     </div>
                 </div>
             {% endfor %}

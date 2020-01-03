@@ -4,36 +4,57 @@
     </script>
     <div class="row">
         <div class="col">
-            {% include "Theme:Community:CommunityTopicsList/forum-selection.html.twig" with {
-                forums: community_forums,
-                current_forum: current_forum,
-            } %}
+            {% include 'Theme:Community:CommunityTopicsList/forum-selection.html.twig' with { forums: community_forums, current_forum: current_forum } %}
         </div>
-        <div class="col-sm-auto">
-            <div class="row justify-content-end">
-                <div class="col-sm-auto">
-                    <div class="dp-po-community-title">
-                        {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
-                            community_forums: community_forums,
-                            current_forum: current_forum,
+        <div class="d-none d-sm-block">
+            <div class="col-sm-auto">
+                <div class="row justify-content-end">
+                    <div class="col-sm-auto">
+                        <div class="dp-po-community-title">
+                            {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+                                community_forums: community_forums,
+                                current_forum: current_forum,
+                            } %}
+                        </div>
+                    </div>
+                    <div class="col-sm-auto">
+                        {% if brand_setting('user.community_subscriptions') %}
+                        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                            subscriptionInfo: [
+                                {
+                                    toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
+                                    icon: 'fal fa-file-spreadsheet',
+                                    title: phrase('helpcenter.community.section-title'),
+                                    active: is_subscribed
+                                },
+                            ]
                         } %}
+                        {% endif %}
                     </div>
                 </div>
-                <div class="col-sm-auto">
-                    {% if brand_setting('user.community_subscriptions') %}
-                    {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-                        subscriptionInfo: [
-                            {
-                                toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
-                                icon: 'fal fa-file-spreadsheet',
-                                title: phrase('helpcenter.community.section-title'),
-                                active: is_subscribed
-                            },
-                        ]
-                    } %}
-                    {% endif %}
-                </div>
             </div>
+        </div>
+    </div>
+    <div class="d-block d-sm-none">
+        <div class="dp-po-post-mobile-area">
+        {% if brand_setting('user.community_subscriptions') %}
+            {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                subscriptionInfo: [
+                    {
+                        toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
+                        icon: 'fal fa-file-spreadsheet',
+                        title: phrase('helpcenter.community.section-title'),
+                        active: is_subscribed
+                    },
+                ]
+            } %}
+        {% endif %}
+
+
+        {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+            community_forums: community_forums,
+            current_forum: current_forum,
+        } %}
         </div>
     </div>
     <div class="row">

@@ -2,7 +2,7 @@
 {% block page_body %}
 
     <div class="breadcrumbs">
-        {% show pdf_breadcrumbs %}
+        {% include 'Theme:Common:pdf_breadcrumbs.html.twig' %}
     </div>
 
     <article class="news kb-article">
@@ -54,14 +54,21 @@
     </article>
 
     {% show news_attachments %}
-    {% show related_content %}
+
+    {% if postData.related_content %}
+        {% include 'Theme:PublishCommon:related-content.html.twig' with {
+            related_content: postData.related_content
+        } %}
+    {% endif %}
 
     {% if brand_setting('user.publish_comments') and post.calc_num_comments %}
         <div class="comment-box" id="comments">
             <div class="titled-header">
                 <h1>{{ phrase('helpcenter.general.comments-title', {count: post.calc_num_comments}) }}</h1>
             </div>
-            {% show news_comments %}
+            {% if postData.comments | length %}
+                {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: postData.comments } %}
+            {% endif %}
         </div>
     {% endif %}
 {% endblock page_body %}

@@ -34,7 +34,7 @@ class AdvancedEditsManager
     /**
      * @var BrandStack
      */
-    private $brandStack;
+    private $brandThemeManager;
 
     /**
      * @var \Twig_Environment
@@ -58,22 +58,22 @@ class AdvancedEditsManager
      *
      * @param EntityManager      $entityManager
      * @param DeskproBlobStorage $blobStorage
-     * @param BrandStack         $brandStack
+     * @param BrandThemeManager  $brandThemeManager
      * @param \Twig_Environment  $twig
      * @param string             $assetDir
      */
     public function __construct(
-        EntityManager      $entityManager,
+        EntityManager $entityManager,
         DeskproBlobStorage $blobStorage,
-        BrandStack         $brandStack,
-        \Twig_Environment  $twig,
+        BrandThemeManager $brandThemeManager,
+        \Twig_Environment $twig,
         $assetDir
     ) {
-        $this->entityManager = $entityManager;
-        $this->blobStorage   = $blobStorage;
-        $this->brandStack    = $brandStack;
-        $this->twig          = $twig;
-        $this->assetDir      = $assetDir;
+        $this->entityManager     = $entityManager;
+        $this->blobStorage       = $blobStorage;
+        $this->brandThemeManager = $brandThemeManager;
+        $this->twig              = $twig;
+        $this->assetDir          = $assetDir;
     }
 
     /**
@@ -295,7 +295,7 @@ CODE;
      */
     private function getThemeSet()
     {
-        return $this->brandStack->getActive()->getBrand()->getThemeSet();
+        return $this->brandThemeManager->getCurrentThemeSet();
     }
 
     /**
@@ -303,7 +303,7 @@ CODE;
      */
     private function getEditThemeSet()
     {
-        return $this->brandStack->getActive()->getBrand()->getEditThemeSet();
+        return $this->brandThemeManager->getCurrentEditThemeSet();
     }
 
     /**
