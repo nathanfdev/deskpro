@@ -1292,8 +1292,8 @@ ul.pane-tabs {
 				cursor: pointer;
 				position: relative;
 				z-index: 1;
-                float: left;
-                margin-top: 10px;
+        float: left;
+        margin-top: 9px;
 
 				&:hover {
 					color: lighten(@agent_source_bubble_bg_color, 25%);
@@ -1312,6 +1312,16 @@ ul.pane-tabs {
           overflow: hidden;
 		}
 	}
+
+  &#publish_section_kb, &#publish_section_comments {
+    ul.nav-list {
+      .item {
+        i.dp-toggle-icon, i.icon-folder-close-alt {
+          margin-top: 5px;
+        }
+      }
+    }
+  }
 
 	.none-yet {
 		margin: 4px;
