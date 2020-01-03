@@ -45,7 +45,7 @@ Feature: Ticket Participants
   Scenario: An agent cant view a ticket they participate in through portal
     Given I login with agent credentials
     When I visit "/tickets/{ticket1}"
-    Then the response status code should be 403
+    Then the response status code should be 200
 
   Scenario: A user can view a ticket they participate in
     Given I login with user credentials

@@ -138,7 +138,7 @@ class TicketApprovalsController extends AbstractController
         if ($person->isAgent()) {
             $canViewTicket = $person->PermissionsManager->TicketChecker->canView($approval->getTicket());
         }
-        if ($person === $approval->getTicket()->getPerson()) {
+        if ($approval->getTicket()->isInvolved($person)) {
             $canViewTicket = true;
         }
 
