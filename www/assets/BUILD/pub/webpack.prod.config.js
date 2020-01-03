@@ -96,7 +96,9 @@ const config = {
         ],
         include: [
           path.resolve(__dirname, 'src/DeskPRO'),
-          path.resolve(__dirname, 'node_modules/source-map')
+          // some other libs arent transpiled, so we need to do it here
+          path.resolve(__dirname, 'node_modules/@deskpro/fa-picker/dist'),
+          path.resolve(__dirname, 'node_modules/source-map'),
         ]
       },
       {

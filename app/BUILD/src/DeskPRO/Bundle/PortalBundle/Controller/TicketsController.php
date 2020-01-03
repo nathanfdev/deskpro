@@ -522,13 +522,16 @@ class TicketsController extends AbstractController
             $message = $ticketMessageRepo->getLastAgentReply($ticket);
         }
 
-        // message must exist and belong to the ticket requested
-        if (!$message || $message->getTicketId() !== $ticket->getId()) {
-            return $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
+        if (!$message) {
+            $message = $ticketMessageRepo->getFirstTicketMessage($ticket);
         }
 
-        // message must not be an agent note and the person on the message must be an agent
-        if ($message->is_agent_note || !$message->getPerson()->isAgent()) {
+        // message must exist and belong to the ticket requested
+        if (!$message || $message->getTicketId() !== $ticket->getId()) {
+            if (!$this->getBrandSetting('core.iface_portal')) {
+                throw new NotFoundHttpException();
+            }
+
             return $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
         }
 
@@ -609,7 +612,9 @@ class TicketsController extends AbstractController
                 if ($isPostRequest) {
                     $this->addFlash('success', $this->phrase('portal.flashes.ticket_feedback_thank_you'));
 
-                    return $this->redirectToRoute('portal_home');
+                    if ($this->getBrandSetting('core.iface_portal')) {
+                        return $this->redirectToRoute('portal_home');
+                    }
                 }
             }
         }
@@ -617,6 +622,11 @@ class TicketsController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
         $template = 'Theme:Tickets:feedback.html.twig';
+
+        if (!$this->getBrandSetting('core.iface_portal')) {
+            $template = 'Theme:Tickets:feedback-simple.html.twig';
+        }
+
         if ($request->isXmlHttpRequest()) {
             $template = 'Theme:Tickets:ajax-feedback.html.twig';
         }

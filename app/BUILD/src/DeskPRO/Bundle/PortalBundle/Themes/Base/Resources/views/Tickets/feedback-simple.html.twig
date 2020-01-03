@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html {% if language.is_rtl %}class="as-rtl" dir="rtl"{% endif %}>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</title>
+    <meta name="viewport" content="width=device-width">
+    {% include 'Theme:Internal:head-include.html.twig' %}
+    <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
+    <style>
+
+    </style>
+</head>
+<body>
+{% include 'Theme:Internal:custom-header.html.twig' %}
+{% include 'Theme:Internal:body-include.html.twig' %}
+
+<div class="dp-page-body">
+    <div class="world with-searchbox">
+
+        <section class="page-top-section">
+            <div class="column-full">
+                {% show section alerts %}
+            </div>
+        </section>
+
+        <section class="with-dpx">
+            <div class="column-full">
+
+                {% if feedback.id %}
+                    <div class="flashes">
+                        <div class="flash flash-success">
+                            {{ phrase('portal.flashes.ticket_feedback_thank_you') }}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="ticket-success-blurb">
+                <div class="icon-mark"></div>
+                <h1>{{ phrase('user.tickets.rate_support') }}</h1>
+                  <span class="agent-avatar agent-avatar-mid"
+                  style="background-image: url({{ avatar_url(message.person, 36) }}); background-size: contain;"></span>
+                  <p>{{ phrase('portal.tickets.rate-intro', {name: message.person.display_name_user, subject: ticket.subject}) }}</p>
+                <div class="footer">
+                    <article class="news kb-article dpx-form padded">
+                        {% if not setrating %}
+                            {# this is shown when the user resolves a ticket #}
+                            <p>{{ phrase('portal.tickets.rate-question') }}</p>
+                            <form class="form-ticket" action="{{ path('portal_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
+                                <div class="dp-choice-widget-group with-dpx">
+                                    <div class="radio-button dpx-radio-button" tabindex="0">
+                                        <input type="radio" id="feedback_rating_p" name="rating" value="1" {% if feedback.rating == 1 %}checked="checked"{% endif %} />
+                                        <label style="text-align: left" class="title" for="feedback_rating_p">{{ phrase('portal.tickets.rate-positive') }}</label>
+                                    </div>
+                                    <div class="radio-button dpx-radio-button" tabindex="0">
+                                        <input id="feedback_rating_0" type="radio" name="rating" value="0" {% if feedback.rating == 0 %}checked="checked"{% endif %} />
+                                        <label class="title" style="text-align: left" for="feedback_rating_0">{{ phrase('portal.tickets.rate-neutral') }}</label>
+                                    </div>
+                                    <div class="radio-button dpx-radio-button" tabindex="0">
+                                        <input type="radio" id="feedback_rating_n" name="rating" value="-1" {% if feedback.rating == -1 %}checked="checked"{% endif %} />
+                                        <label class="title" style="text-align: left" for="feedback_rating_n">{{ phrase('portal.tickets.rate-negative') }}</label>
+                                    </div>
+                                </div>
+                                <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
+                                <br />
+                                <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">
+                                    {% if feedback.id %}
+                                        {{ phrase('portal.tickets.view_btn_edit') }}
+                                    {% else %}
+                                        {{ phrase('portal.tickets.feedback.submit') }}
+                                    {% endif %}
+                                </button>
+                            </form>
+                        {% else %}
+                            {# this is shown when clicking an email link, #}
+                            <p>{{ phrase('user.tickets.rate-thanks-vialink') }}</p>
+
+                            <form action="{{ path('portal_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
+                                <input type="hidden" name="rating" value="{{ feedback.rating }}" />
+                                <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
+
+                                <br />
+                                <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">
+                                    {% if feedback.id %}
+                                        {{ phrase('portal.tickets.view_btn_edit') }}
+                                    {% else %}
+                                        {{ phrase('portal.tickets.feedback.submit') }}
+                                    {% endif %}
+                                </button>
+                            </form>
+                        {% endif %}
+                    </article>
+                </div>
+            </div>
+
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
