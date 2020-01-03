@@ -226,6 +226,7 @@ class GuidesController extends AbstractPublishController
             'guides_json'      => Strings::escapeForJson($serializer->serialize($guides, 'json', new SideloadSerializationContext())),
             'guides'           => $guides,
             'helpcenter'       => $this->get('helpcenter_data_helper'),
+            'body_class'       => 'guides-body',
             'new_comment_form' => $newCommentForm ? $newCommentForm->createView() : null,
         ];
 

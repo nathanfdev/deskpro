@@ -4,7 +4,7 @@
     {% include 'Theme:Internal:head-include.html.twig' %}
     <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</title>
 </head>
-<body class="dp-Template {% if (is_agent() or is_admin() or is_impersonating()) and portal_mode() != 'preview' and portal_mode() != 'focus-window' %}with-agent-bar{% endif %} portal-mode-{{ portal_mode() }}">
+<body class="dp-Template {% if (is_agent() or is_admin() or is_impersonating()) and portal_mode() != 'preview' and portal_mode() != 'focus-window' %}with-agent-bar{% endif %} portal-mode-{{ portal_mode() }}{% if body_class is defined %} {{ body_class }}{% endif %}">
 {% include 'Theme:Internal:custom-header.html.twig' %}
 {% include 'Theme:Internal:body-include.html.twig' %}
 
