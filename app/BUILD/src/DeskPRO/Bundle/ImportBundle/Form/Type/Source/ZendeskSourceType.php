@@ -24,7 +24,7 @@ class ZendeskSourceType extends AbstractType
                 [
                     'required'        => false,
                     'widget'          => 'single_text',
-                    'format'          => 'dd/MM/yyyy',
+                    'format'          => 'yyyy-MM-dd',
                 ]
             )
             ->add('ticket_brand_field', TextType::class)
