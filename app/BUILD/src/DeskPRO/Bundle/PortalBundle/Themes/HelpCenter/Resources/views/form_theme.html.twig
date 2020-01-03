@@ -126,11 +126,11 @@
             {% set label = name|humanize %}
         {% endif %}
         {% if type == 'submit' %}
-            {% set attr = attr|merge({class: 'btn btn-primary'}) %}
+            {% set attr = attr|merge({class: (attr.class is defined ? attr.class~' ' : '')~'btn btn-primary'}) %}
         {% elseif type == 'reset' %}
-            {% set attr = attr|merge({class: 'btn btn-outline-secondary btn-reset'}) %}
+            {% set attr = attr|merge({class: (attr.class is defined ? attr.class~' ' : '')~'btn btn-outline-secondary btn-reset'}) %}
         {% else %}
-            {% set attr = attr|merge({class: 'btn btn-secondary'}) %}
+            {% set attr = attr|merge({class: (attr.class is defined ? attr.class~' ' : '')~'btn btn-secondary'}) %}
         {% endif %}
         <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
     {% endspaceless %}

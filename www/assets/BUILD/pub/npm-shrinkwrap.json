@@ -651,9 +651,9 @@
       }
     },
     "@deskpro/portal-components": {
-      "version": "0.3.30",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.30.tgz",
-      "integrity": "sha512-tl4bhIYt89Yw/wG2b2ibr2ol2vCJdqV8RkZvnOjyL+ZEzrLjS7GonYafer3mSa3BQJKIFijES4Hbc4NzckapPw==",
+      "version": "0.3.32",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.32.tgz",
+      "integrity": "sha512-KKbElZy7RBW/tfni31/PRC15zIe7jq8xJf2RQvFSaE8p/0TkcyLLZqTabcV0dJ/Y2ygiU8uOQBbdWbrIm3iURg==",
       "requires": {
         "@deskpro/js-utils": "1.0.7",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -737,9 +737,9 @@
       }
     },
     "@deskpro/portal-style": {
-      "version": "0.3.30",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.3.30.tgz",
-      "integrity": "sha512-Bq4IIRCb9xi2nS2gAxoNIKZlPLMaMWb6PIkoe4Cohu7kDFABCCCvkDsxE0RlVdSxh44WrkGCE0gWrfBtNI8Jgw==",
+      "version": "0.3.32",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.3.32.tgz",
+      "integrity": "sha512-OZ++WVWHt0MfdJLHVliOs5A9DW7G3MNkVx83VnUk/u7JrvxZCMT2xmFw35EUgp10k5umU4+NIa+e+GS96sWGOA==",
       "requires": {
         "bootstrap": "^4.3.1"
       }
@@ -33285,9 +33285,9 @@
           }
         },
         "postcss": {
-          "version": "7.0.25",
-          "resolved": "https://registry.npmjs.org/postcss/-/postcss-7.0.25.tgz",
-          "integrity": "sha512-NXXVvWq9icrm/TgQC0O6YVFi4StfJz46M1iNd/h6B26Nvh/HKI+q4YZtFN/EjcInZliEscO/WL10BXnc1E5nwg==",
+          "version": "7.0.26",
+          "resolved": "https://registry.npmjs.org/postcss/-/postcss-7.0.26.tgz",
+          "integrity": "sha512-IY4oRjpXWYshuTDFxMVkJDtWIk2LhsTlu8bZnbEJA4+bYT16Lvpo8Qv6EvDumhYRgzjZl489pmsY3qVgJQ08nA==",
           "requires": {
             "chalk": "^2.4.2",
             "source-map": "^0.6.1",

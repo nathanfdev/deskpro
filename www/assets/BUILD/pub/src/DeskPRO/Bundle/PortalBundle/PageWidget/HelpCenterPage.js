@@ -13,6 +13,7 @@ import { HtmlLinkToPostWidget } from './HtmlLinkToPostWidget';
 import { HcOmniSearchWidget } from './HcOmniSearchWidget';
 import { HelpcenterLanguageChangerWidget } from './HelpcenterLanguageChangerWidget';
 import { HelpcenterLoginDropdownWidget } from './HelpcenterLoginDropdownWidget';
+import { HelpcenterSidebarFilters } from './HelpcenterSidebarFilters';
 import { LogoutButtonWidget } from './LogoutButtonWidget';
 import { MobileMenuWidget } from './MobileMenuWidget';
 import { HcArticleHighlighter } from './HcArticleHighlighter';
@@ -62,6 +63,7 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(TitleAnchorWidget, '.dp-po-post-content :header');
     this.addWidgetDef(RemoveCCTicketReply, '.remove-cc-from-reply');
     this.addWidgetDef(MobileCategories, '.dp-po-category-title-expand');
+    this.addWidgetDef(HelpcenterSidebarFilters, '.dpx-sidebar-filters');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);
