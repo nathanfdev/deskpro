@@ -47,6 +47,7 @@ framework:
         handler_id:      session.handler.dbal
         name:            dpsid-portal
         cookie_httponly: true
+        cookie_secure:   true
     fragments:       ~
     http_method_override: true
 
