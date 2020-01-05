@@ -122,7 +122,7 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @Route("/search/{type}", name="portal_type_search", defaults={"type": "content"}, requirements={"type":"(?!omni).*"})
+     * @Route("/search/{type}", name="portal_type_search", defaults={"type": "content"}, requirements={"type":"(?!omni|similar|labels).*"})
      *
      * @param $type
      * @param Request $request
@@ -324,11 +324,11 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @Route("/search/similar/{content_type}", name="portal_search_similar", defaults={"content_type":null})
-     * @Route("/search/similar/{content_type}", name="user_search_similarto", defaults={"content_type":null})
+     * @Route("/search/similar/{contentType}", name="portal_search_similar", defaults={"contentType":null})
+     * @Route("/search/similar/{contentType}", name="user_search_similarto", defaults={"contentType":null})
      *
-     * @param Request $request
-     * @param null    $contentType
+     * @param Request     $request
+     * @param null|string $contentType
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
