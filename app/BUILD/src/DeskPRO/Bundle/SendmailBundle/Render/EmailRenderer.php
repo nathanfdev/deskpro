@@ -119,7 +119,7 @@ class EmailRenderer
         $context->setIncludesStrategy(SideloadSerializationContext::INCLUDE_STRATEGY_DATA);
         $context->setInlineSideloads(true);
 
-        // wrap to make sideloading works
+        // wrap to make side loading works
         $model = new ApiWrapper($model);
 
         $vars = $this->getSerializer()->toArray($model, $context)['data'];
@@ -127,7 +127,7 @@ class EmailRenderer
 
         $blobAuthIds = [];
 
-        // We look for <attachement id='{id}'> and remove it from the template
+        // We look for <attachment id='{id}'> and remove it from the template
         $code = preg_replace_callback('#<attachment[^>]*id=("([^"]+)"|\'([^\']+)\')[^>]*>#',
             function ($matches) use (&$blobAuthIds) {
                 $blobAuthIds[] = $matches[2] ? $matches[2] : $matches[3];
@@ -139,7 +139,7 @@ class EmailRenderer
 
         $blobSysNames = [];
 
-        // We look for <attachement sys='{id}'> and remove it from the template
+        // We look for <attachment sys='{id}'> and remove it from the template
         $code = preg_replace_callback('#<attachment[^>]*sys=("([^"]+)"|\'([^\']+)\')[^>]*>#',
             function ($matches) use (&$blobSysNames) {
                 $blobSysNames[] = $matches[2] ? $matches[2] : $matches[3];
@@ -176,6 +176,7 @@ class EmailRenderer
      * @param EmailBaseType $model
      * @param Language      $language
      * @param array         $templates
+     * @param mixed $string_only
      *
      * @throws \Exception
      */
