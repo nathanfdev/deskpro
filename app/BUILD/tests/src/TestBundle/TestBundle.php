@@ -3,6 +3,7 @@
 namespace DpTestSrc\TestBundle;
 
 use DpTestSrc\TestBundle\DependencyInjection\Compiler\DisableAuditLogCompilerPass;
+use DpTestSrc\TestBundle\DependencyInjection\Compiler\DisableSecureCookieCompilerPass;
 use DpTestSrc\TestBundle\DependencyInjection\TestExtension;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -29,6 +30,7 @@ class TestBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new DisableAuditLogCompilerPass());
+        $container->addCompilerPass(new DisableSecureCookieCompilerPass());
     }
 
     /**

@@ -122,12 +122,12 @@ class TicketApprovalsController extends AbstractController
 
                 if ($approvalResponse->isApproved()) {
                     $this->addFlash('success', $this->phrase('portal.flashes.ticket-approvals.approved-by', [
-                        'person'   => $person->getCommunityName(),
+                        'person'   => $approval->getCreatedBy()->getCommunityName(),
                         'template' => $approval->getTemplate()->getName(),
                     ]));
                 } else {
                     $this->addFlash('success', $this->phrase('portal.flashes.ticket-approvals.rejected-by', [
-                        'person'   => $person->getCommunityName(),
+                        'person'   => $approval->getCreatedBy()->getCommunityName(),
                         'template' => $approval->getTemplate()->getName(),
                     ]));
                 }
@@ -138,7 +138,7 @@ class TicketApprovalsController extends AbstractController
         if ($person->isAgent()) {
             $canViewTicket = $person->PermissionsManager->TicketChecker->canView($approval->getTicket());
         }
-        if ($person === $approval->getTicket()->getPerson()) {
+        if ($approval->getTicket()->isInvolved($person)) {
             $canViewTicket = true;
         }
 
@@ -175,7 +175,7 @@ class TicketApprovalsController extends AbstractController
                 $this->getApprovalManager()->createContext(ExecutorContext::METHOD_WEB, $this->getUser())
             );
             $this->addFlash('success', $this->phrase('portal.flashes.ticket-approvals.approved-by', [
-                'person'   => $this->getUser()->getCommunityName(),
+                'person'   => $approval->getCreatedBy()->getCommunityName(),
                 'template' => $approval->getTemplate()->getName(),
             ]));
         } catch (\DomainException $e) {
@@ -209,7 +209,7 @@ class TicketApprovalsController extends AbstractController
                 $this->getApprovalManager()->createContext(ExecutorContext::METHOD_WEB, $this->getUser())
             );
             $this->addFlash('success', $this->phrase('portal.flashes.ticket-approvals.rejected-by', [
-                'person'   => $this->getUser()->getCommunityName(),
+                'person'   => $approval->getCreatedBy()->getCommunityName(),
                 'template' => $approval->getTemplate()->getName(),
             ]));
         } catch (\DomainException $e) {

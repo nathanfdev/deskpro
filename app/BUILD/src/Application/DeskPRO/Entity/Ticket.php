@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -2182,6 +2178,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * Render a custom field.
      *
      * !depreciated
+     *
+     * @param mixed $field_id
+     * @param mixed $context
      */
     public function renderCustomField($field_id, $context = 'html')
     {
@@ -3694,6 +3693,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Find an access code.
      *
+     * @param mixed $auth
+     *
      * @return TicketAccessCode
      */
     public function findAccessCode($auth)
@@ -4000,6 +4001,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 } else {
                     return 300;
                 }
+
                 break;
             case TicketStatus::STATUS_TYPE_PENDING:
                 return 400;
@@ -4464,13 +4466,33 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         if ($context === 'user') {
             return $this->isOwner($person)
             || (!$person->isAgent() && $this->isParticipant($person))
-            || $this->isOrganizationManager($person);
+            || $this->isOrganizationManager($person)
+            || $this->hasApprovalWithViewSubject($person);
         } else {
             return $this->isOwner($person)
             || $this->isParticipant($person)
             || $this->getAgent() === $person
-            || $this->isOrganizationManager($person);
+            || $this->isOrganizationManager($person)
+            || $this->hasApprovalWithViewSubject($person);
         }
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return bool
+     */
+    public function hasApprovalWithViewSubject(Person $person)
+    {
+        foreach ($this->getApprovals() as $approval) {
+            if ($approval->hasApprover($person)) {
+                if ($approval->canApproversViewSubject()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public function hasVisibleStatus()
@@ -4559,6 +4581,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                             $event_type,
                             'web'
                         );
+
                         break;
                     case 'user':
                         if (!$person && $this->person) {
@@ -4569,6 +4592,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                             $event_type,
                             'portal'
                         );
+
                         break;
                     case 'api':
                         $context = $tm->createAgentExecutorContext(
@@ -4576,9 +4600,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                             $event_type,
                             'api'
                         );
+
                         break;
                     default:
                         $context = $tm->createSystemExecutorContext();
+
                         break;
                 }
             }
@@ -4590,6 +4616,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 $this->__dp_is_processing_ticket = false;
             } catch (\Exception $e) {
                 $this->__dp_is_processing_ticket = false;
+
                 throw $e;
             }
         }
@@ -5052,6 +5079,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @param int|null $templateId NULL for any template
      * @param string $status
      * @param int|null $includesApproverId NULL for all approvals
+     *
      * @return bool
      */
     public function isApprovalsMatchingTicketFilter(Person $personContext, $templateId, $status, $includesApproverId)
