@@ -76,14 +76,14 @@ class CsvImporter
      * @param Features             $featureFlags     // Temporary until SendmailBundle is permanently activated
      */
     public function __construct(
-        EntityManager        $em,
-        Importer             $importer,
-        Parser               $parser,
-        Mailer               $mailer,
-        MailerUtils          $mailerUtils,
-        Translate            $translator,
+        EntityManager $em,
+        Importer $importer,
+        Parser $parser,
+        Mailer $mailer,
+        MailerUtils $mailerUtils,
+        Translate $translator,
         UserViewModelFactory $viewModelFactory,
-        Features             $featureFlags
+        Features $featureFlags
     ) {
         $this->em               = $em;
         $this->importer         = $importer;
@@ -116,8 +116,8 @@ class CsvImporter
                 continue;
             }
 
-            $mapField    = $info['map'];
-            $columnValue = $data[$columnId];
+            $mapField    = trim($info['map']);
+            $columnValue = trim($data[$columnId]);
 
             if ($columnValue === '') {
                 continue;
@@ -128,6 +128,7 @@ class CsvImporter
                 case 'primary_email':
                 case 'secondary_email':
                     $personData['emails'][] = $columnValue;
+
                     break;
                 case 'first_name':
                 case 'last_name':
@@ -137,6 +138,7 @@ class CsvImporter
                 case 'organization':
                 case 'organization_position':
                     $personData[$mapField] = $columnValue;
+
                     break;
                 case 'language':
                     if (is_numeric($columnValue)) {
@@ -150,6 +152,7 @@ class CsvImporter
                     }
 
                     $personData[$mapField] = $columnValue;
+
                     break;
                 case 'brand':
                     $brandName = $columnValue;
@@ -164,6 +167,7 @@ class CsvImporter
                             $brandName = null;
                         }
                     }
+
                     break;
 
                 // contact data
@@ -171,21 +175,25 @@ class CsvImporter
                     $personData['contact_data']['website'][] = [
                         'url' => $columnValue,
                     ];
+
                     break;
                 case 'twitter':
                     $personData['contact_data']['twitter'][] = [
                         'username' => $columnValue,
                     ];
+
                     break;
                 case 'linkedin':
                     $personData['contact_data']['linked_in'][] = [
                         'url' => $columnValue,
                     ];
+
                     break;
                 case 'facebook':
                     $personData['contact_data']['facebook'][] = [
                         'url' => $columnValue,
                     ];
+
                     break;
                 case 'im':
                     if (empty($info['type'])) {
@@ -196,12 +204,14 @@ class CsvImporter
                         'service'  => $info['type'],
                         'username' => $columnValue,
                     ];
+
                     break;
                 case 'phone':
                     $personData['contact_data']['phone'][] = [
                         'number' => $columnValue,
                         'type'   => isset($info['type']) ? $info['type'] : 'phone',
                     ];
+
                     break;
                 case 'address':
                 case 'address1':
@@ -212,6 +222,7 @@ class CsvImporter
                     }
 
                     $personData['contact_data']['address'][$label]['address'] = $columnValue;
+
                     break;
                 case 'city':
                 case 'state':
@@ -220,6 +231,7 @@ class CsvImporter
                     $label = isset($info['label']) ? $info['label'] : 0;
 
                     $personData['contact_data']['address'][$label][$mapField] = $columnValue;
+
                     break;
             }
 
