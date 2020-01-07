@@ -19,7 +19,7 @@ class Zendesk extends BaseSource {
         </Field>
       </Fieldset>
       <Field select="start_time" label="Start Time">
-        <DatePicker />
+        <DatePicker format="YYYY-MM-DD" placeholder="YYYY-MM-DD"/>
       </Field>
       <Field select="ticket_brand_field" label="Ticket Brand Custom Field">
         <Input type="text" placeholder="Brand" />
