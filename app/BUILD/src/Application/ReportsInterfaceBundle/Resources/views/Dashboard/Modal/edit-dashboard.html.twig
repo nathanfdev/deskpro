@@ -289,8 +289,8 @@
                     <div class="bucket-column">
                         <input type="text" ng-model="shareLink.title" placeholder="Share link title">
                     </div>
-                    <div ng-if="error" class="alert alert-error">
-                        {{ ng_var('error') }}
+                    <div ng-if="error_title" class="alert alert-error">
+                        {{ ng_var('error_title') }}
                     </div>
                 </div>
 
@@ -320,6 +320,9 @@
                 <div ng-if="shareLink.who_can_use == 'whitelist'" class="bucket">
                     <div class="bucket-column">
                         <input type="text" ng-model="shareLink.ip_whitelist" placeholder="Comma-separated list of IP addresses (CIDR format)" />
+                    </div>
+                    <div ng-if="error_ip_whitelist" class="alert alert-error">
+                        {{ ng_var('error_ip_whitelist') }}
                     </div>
                 </div>
             </form>
