@@ -762,12 +762,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             switch ($type) {
                 case 'js':
                     $html[] = '<script type="text/javascript" src="'.$url.'"></script>';
+
                     break;
                 case 'css':
                     if (!isset($options['media'])) {
                         $options['media'] = 'screen,print';
                     }
                     $html[] = '<link rel="stylesheet" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
+
                     break;
                 case 'less':
                     if (!isset($options['media'])) {
@@ -781,6 +783,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
                     } else {
                         $html[] = '<link rel="stylesheet/less" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
                     }
+
                     break;
             }
         }
@@ -798,12 +801,15 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         switch ($id) {
             case 'country_names':
                 return Countries::getCountryNames();
+
                 break;
             case 'countries':
                 return Countries::getCountryArray();
+
                 break;
             case 'us_states':
                 return Countries::getUsStates();
+
                 break;
             case 'timezones':
                 $tzs = \DateTimeZone::listIdentifiers();
@@ -815,6 +821,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
                 }
 
                 return $tzs;
+
                 break;
             default:
                 return;
@@ -954,26 +961,31 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             case 'full':
                 //D, jS M Y
                 $format = $this->container->getSetting('core.date_full');
+
                 break;
 
             case 'fulltime':
                 //D, jS M Y g:ia
                 $format = $this->container->getSetting('core.date_fulltime');
+
                 break;
 
             case 'day':
                 //M j Y
                 $format = $this->container->getSetting('core.date_day');
+
                 break;
 
             case 'day_short':
                 //M j
                 $format = $this->container->getSetting('core.date_day_short');
+
                 break;
 
             case 'time':
                 //g:i a
                 $format = $this->container->getSetting('core.date_time');
+
                 break;
         }
 
@@ -1100,26 +1112,31 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             case 'full':
                 //D, jS M Y
                 $format = $this->container->getSetting('core.date_full');
+
                 break;
 
             case 'fulltime':
                 //D, jS M Y g:ia
                 $format = $this->container->getSetting('core.date_fulltime');
+
                 break;
 
             case 'day':
                 //M j Y
                 $format = $this->container->getSetting('core.date_day');
+
                 break;
 
             case 'day_short':
                 //M j
                 $format = $this->container->getSetting('core.date_day_short');
+
                 break;
 
             case 'time':
                 //g:i a
                 $format = $this->container->getSetting('core.date_time');
+
                 break;
         }
 
@@ -1210,7 +1227,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         // Primitive types
         if (!is_object($var)) {
             $varType = gettype($var);
-            // Classes
+        // Classes
         } else {
             $varType = get_class($var);
 
@@ -1267,7 +1284,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
             return strpos($varType, $type) !== false;
 
-            // Classes
+        // Classes
         } else {
             $varType = get_class($var);
 
@@ -1494,9 +1511,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             }
             $vars = array_merge($displayArray, $vars);
 
-            $return = $handler->renderHtml($displayArray['value'], $vars);
-
-            return $return;
+            return $handler->renderHtml(@$displayArray['value'], $vars);
         }
     }
 
@@ -1582,10 +1597,12 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
                 case 'right':
                     $ltr = '&rarr;';
                     $rtl = '&larr;';
+
                     break;
                 case 'left':
                     $ltr = '&larr;';
                     $rtl = '&rarr;';
+
                     break;
                 default:
                     return 'unknown';

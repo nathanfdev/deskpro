@@ -187,6 +187,8 @@ abstract class HandlerAbstract
     /**
      * Get the default template name (minus suffix that defines format).
      *
+     * @param mixed $context
+     *
      * @return string
      */
     public function getDefaultRenderTemplateName($context = 'html')
@@ -215,6 +217,8 @@ abstract class HandlerAbstract
      * Get additional template vars to set.
      *
      * @var array
+     *
+     * @param mixed $context
      */
     public function getRenderTemplateVars($context = 'html')
     {
@@ -223,6 +227,8 @@ abstract class HandlerAbstract
 
     /**
      * Render the field to HTML for use in a web page.
+     *
+     * @param null|mixed $data
      */
     public function renderHtml($data = null, array $template_vars = [])
     {
@@ -233,6 +239,7 @@ abstract class HandlerAbstract
         $templating = $this->getTemplateEngine();
 
         $vars = array_merge($this->getRenderTemplateVars('html'), $template_vars, [
+            'elId'               => $this->field_def->getId(),
             'data'               => $data,
             'field_def'          => $this->field_def,
             'field_handler'      => $this,
@@ -245,6 +252,8 @@ abstract class HandlerAbstract
 
     /**
      * Render the field.
+     *
+     * @param null|mixed $data
      */
     public function renderText($data = null, array $template_vars = [])
     {
@@ -255,6 +264,7 @@ abstract class HandlerAbstract
         $templating = $this->getTemplateEngine();
 
         $vars = array_merge($this->getRenderTemplateVars('text'), $template_vars, [
+            'elId'               => $this->field_def->getId(),
             'data'               => $data,
             'field_def'          => $this->field_def,
             'field_handler'      => $this,
@@ -288,6 +298,7 @@ abstract class HandlerAbstract
         }
 
         $vars = array_merge($this->getRenderTemplateVars(), $templateVars, [
+            'elId'               => $this->field_def->getId(),
             'formView'           => $formView,
             'field_def'          => $this->field_def,
             'field_handler'      => $this,
@@ -315,10 +326,12 @@ abstract class HandlerAbstract
         switch ($context) {
             case self::CONTEXT_HTML:
                 $method = 'renderHtml';
+
                 break;
 
             case self::CONTEXT_TEXT:
                 $method = 'renderText';
+
                 break;
 
             default:
@@ -397,6 +410,8 @@ abstract class HandlerAbstract
      * If an empty array is returned, then that means the field is valid.
      *
      * @param array $formData
+     * @param mixed $context
+     * @param null|mixed $contextData
      *
      * @return array
      */
