@@ -391,7 +391,7 @@ class EmailTemplatesEditorContainer extends React.Component {
     Object.keys(extraTemplates).forEach((key) => {
       promises.push(this.props.dispatch(actions.saveTemplate(key, { body: extraTemplates[key] })));
     });
-    Promise.all(promises).then(
+    return Promise.all(promises).then(
       () => {
         this.setState({
           saveSubmit: false
@@ -750,8 +750,11 @@ class EmailTemplatesEditor extends React.Component {
   };
 
   markAsConverted = () => {
-    this.props.markAsConverted().then(() => {
-      window.location.href = 'admin-interface#/emails/email_templates_legacy';
+    this.props.saveTemplate().then(() => {
+      console.log(this);
+      this.props.markAsConverted().then(() => {
+        window.location.href = 'admin-interface#/emails/email_templates_legacy';
+      });
     });
   };
 

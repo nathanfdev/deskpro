@@ -65,7 +65,7 @@ some emails might not be able to be migrated automatically.<br />
 There will be a link in the new Email Template Editor
 to allow to carry them over.
 
-You will be able to disable this Beta and restoring your previous state. However any modifications applied during the beta 
+You will be able to disable this Beta and restoring your previous state. However any modifications applied during the beta
 will be discarded.
 
 HTML;
@@ -443,6 +443,7 @@ CODE
             foreach ($triggers as $trigger) {
                 $id      = $trigger['id'];
                 $changed = false;
+
                 try {
                     $actions = json_decode($trigger['actions'], true);
                 } catch (\Exception $e) {
@@ -459,9 +460,11 @@ CODE
                                 $newTemplate = $this->migratedCustomTemplates[$action['options']['template']];
                             }
 
-                            $actions['@DATA']['actions'][$actionId]['type']                = $emailActions[$action['type']];
-                            $actions['@DATA']['actions'][$actionId]['options']['template'] = $newTemplate;
-                            $changed                                                       = true;
+                            if ($newTemplate) {
+                                $actions['@DATA']['actions'][$actionId]['type']                = $emailActions[$action['type']];
+                                $actions['@DATA']['actions'][$actionId]['options']['template'] = $newTemplate;
+                                $changed                                                       = true;
+                            }
                         }
                     }
                 }
@@ -537,6 +540,7 @@ CODE
             foreach ($triggers as $trigger) {
                 $id      = $trigger['id'];
                 $changed = false;
+
                 try {
                     $actions = json_decode($trigger['actions'], true);
                 } catch (\Exception $e) {
