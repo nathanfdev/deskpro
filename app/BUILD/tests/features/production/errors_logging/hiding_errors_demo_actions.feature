@@ -4,7 +4,10 @@ Feature: Hiding internal actions
   I want to forbid accessing them by guests and users
 
   Background:
-    Given I install the fresh data set
+    Given I have only default brand
+    And the following languages are enabled:
+      | default |
+    And the default brand is using the helpcenter theme
     And I disable anti-abuse rate limiting
 
   Scenario Outline: I access an API internal action as guest
