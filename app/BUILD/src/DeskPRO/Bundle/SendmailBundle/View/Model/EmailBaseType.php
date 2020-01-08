@@ -53,7 +53,11 @@ abstract class EmailBaseType
         $inflector = new CamelCaseToUnderscore();
 
         if ($this->templateFile) {
-            return 'SendmailBundle:'.$this->templateFile;
+            if (strpos($this->templateFile, 'SendmailBundle:') !== 0) {
+                return 'SendmailBundle:'.$this->templateFile;
+            }
+
+            return $this->templateFile;
         }
 
         return 'SendmailBundle:email.'.strtolower($inflector->filter($reflect->getShortName())).'.html.twig';
