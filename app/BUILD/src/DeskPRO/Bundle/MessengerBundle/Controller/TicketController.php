@@ -79,6 +79,9 @@ class TicketController extends AbstractMessengerController
 
         $requestData['message'] = ['message' => $requestData['message'], 'format' => 'html'];
 
+        if ($person) {
+            $formOptions['person'] = $person;
+        }
         $form = $this->container->get('form.factory')->create(
             TicketWithLayoutsWebFullType::class,
             $ticket,
