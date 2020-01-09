@@ -90,7 +90,23 @@ HTML;
      */
     public function getAvailability()
     {
-        return [self::AVAILABLE_AT_QA];
+        return [self::AVAILABLE_EVERYWHERE];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEnabledOnInstall()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDateReleased()
+    {
+        return new \DateTime('2020-01-01');
     }
 
     /**

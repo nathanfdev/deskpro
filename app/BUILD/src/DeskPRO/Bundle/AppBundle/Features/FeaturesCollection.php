@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Features;
 
 use DeskPRO\Component\Util\AbstractCollection;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 
 /**
  * Class FeaturesCollection.
@@ -15,13 +16,19 @@ class FeaturesCollection extends AbstractCollection
     private $accessChecker;
 
     /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
      * Constructor.
      *
      * @param FeaturesAccessChecker $accessChecker
      */
-    public function __construct(FeaturesAccessChecker $accessChecker)
+    public function __construct(FeaturesAccessChecker $accessChecker, SettingsResolver $settingsResolver)
     {
         $this->accessChecker = $accessChecker;
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -61,6 +68,23 @@ class FeaturesCollection extends AbstractCollection
     }
 
     /**
+     * Feature released before installation and enabled by default should not be editable (turned off)
+     *
+     * @return mixed
+     */
+    public function getAvailableAndEditableFeatures()
+    {
+        $features = $this->getAvailableFeatures();
+
+        $this->installTimestamp = $this->settingsResolver->getGlobalSettings()->get('core.install_timestamp');
+        if (!$this->installTimestamp) {
+            return $features;
+        }
+
+        return array_filter($features, [$this, 'filterEditable']);
+    }
+
+    /**
      * @param $feature
      *
      * @return BetaFeatureInterface|null
@@ -92,5 +116,22 @@ class FeaturesCollection extends AbstractCollection
     private function filterAvailable(BetaFeatureInterface $feature)
     {
         return $this->accessChecker->isAvailable($feature->getAvailability());
+    }
+
+    /**
+     * @param BetaFeatureInterface $feature
+     *
+     * @return bool
+     */
+    private function filterEditable(BetaFeatureInterface $feature)
+    {
+        if (!$this->installTimestamp) {
+            $this->installTimestamp = $this->settingsResolver->getGlobalSettings()->get('core.install_timestamp');
+        }
+
+        return !($feature->isEnabled()
+                && $this->installTimestamp
+                && $feature->getDateReleased()
+                && $feature->getDateReleased()->getTimestamp() < $this->installTimestamp);
     }
 }

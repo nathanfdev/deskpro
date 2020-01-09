@@ -17,7 +17,7 @@ class NewSearchFeature extends AbstractBetaFeature
      */
     public function getTitle()
     {
-        return 'New Search';
+        return 'New Search (Experimental)';
     }
 
     /**

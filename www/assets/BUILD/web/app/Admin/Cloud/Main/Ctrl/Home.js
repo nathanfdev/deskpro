@@ -70,7 +70,7 @@ define([
         return this.is_server_problem = problem_triggers.filter(x => !!x).length > 0;
       });
 
-      this.Api2.sendGet('features').then(res => (res.data.data != null ? res.data.data.forEach((feature) => {
+      this.Api2.sendGet('features?filter_editable=1').then(res => (res.data.data != null ? res.data.data.forEach((feature) => {
         if (feature.processing) {
           this.pollFeatures();
         }
@@ -87,7 +87,7 @@ define([
     }
 
     actualPoll() {
-      return this.Api2.sendGet('features').then((res) => {
+      return this.Api2.sendGet('features?filter_editable=1').then((res) => {
         this.pollTimer = null;
         return res.data.data.forEach((feature) => {
           if ((this.features[feature.id].processing === true) && (feature.processing === false)) {
