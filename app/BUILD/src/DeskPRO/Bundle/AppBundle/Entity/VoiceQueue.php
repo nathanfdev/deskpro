@@ -155,6 +155,23 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged, GroupSequenc
     private $voicemailAgentTeam;
 
     /**
+     * @ORM\Column(name="voicemail_disabled", type="boolean")
+     *
+     * @var bool
+     */
+    private $voicemailDisabled = false;
+
+    /**
+     * @ORM\JoinColumn(name="voicemail_disabled_asset", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
+     *
+     * @Assert\Valid()
+     *
+     * @var AbstractVoiceAsset
+     */
+    private $voicemailDisabledAsset;
+
+    /**
      * @ORM\Column(name="answer_timeout", type="integer")
      *
      * @Assert\GreaterThanOrEqual("10", groups="AnswerTimeout")
@@ -530,6 +547,46 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged, GroupSequenc
     public function setVoicemailTimeout($voicemailTimeout)
     {
         $this->setModelField('voicemailTimeout', $voicemailTimeout);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVoicemailDisabled()
+    {
+        return $this->voicemailDisabled;
+    }
+
+    /**
+     * @param bool $voicemailDisabled
+     *
+     * @return $this
+     */
+    public function setVoicemailDisabled($voicemailDisabled)
+    {
+        $this->setModelField('voicemailDisabled', $voicemailDisabled);
+
+        return $this;
+    }
+
+    /**
+     * @return AbstractVoiceAsset
+     */
+    public function getVoicemailDisabledAsset()
+    {
+        return $this->voicemailDisabledAsset;
+    }
+
+    /**
+     * @param AbstractVoiceAsset $voicemailDisabledAsset
+     *
+     * @return $this
+     */
+    public function setVoicemailDisabledAsset(AbstractVoiceAsset $voicemailDisabledAsset = null)
+    {
+        $this->setModelField('voicemailDisabledAsset', $voicemailDisabledAsset);
 
         return $this;
     }
