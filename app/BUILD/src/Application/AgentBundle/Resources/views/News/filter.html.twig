@@ -149,38 +149,36 @@
 									   value="{{ category.title }}" {% if not perms.can_edit %} disabled {% endif %} />
 							</td>
 						</tr>
-						{% if app.hasBeta('helpcenter') %}
-							<tr>
-								<th width="100">{{ phrase('agent.general.color') }}</th>
-								<td style="position: relative" id="{{ tplvars.baseId }}_color_picker">
-									<label for="picker-input" style="background-color: {{ category.color }}"></label>
-									<input
-											id="picker-input"
-											type="text"
-											name="category[color]"
-											autocomplete="{{ "now" | date("U") }}"
-											value="{{ category.color }}" {% if not perms.can_edit %} disabled {% endif %} />
-									<div style="position: absolute; display:none" class="picker-modal">
-										<ul class="picker">
-											{% for color in colors|slice(0, colors|length / 2) %}
+						<tr>
+							<th width="100">{{ phrase('agent.general.color') }}</th>
+							<td style="position: relative" id="{{ tplvars.baseId }}_color_picker">
+								<label for="picker-input" style="background-color: {{ category.color }}"></label>
+								<input
+										id="picker-input"
+										type="text"
+										name="category[color]"
+										autocomplete="{{ "now" | date("U") }}"
+										value="{{ category.color }}" {% if not perms.can_edit %} disabled {% endif %} />
+								<div style="position: absolute; display:none" class="picker-modal">
+									<ul class="picker">
+										{% for color in colors|slice(0, colors|length / 2) %}
+										<li>
+											<span data-color="{{ color }}" class="picker-color" style="background-color: {{ color }}">
+											</span>
+										</li>
+										{% endfor %}
+									</ul>
+									<ul class="picker">
+										{% for color in colors|slice(colors|length / 2, colors|length / 2) %}
 											<li>
-												<span data-color="{{ color }}" class="picker-color" style="background-color: {{ color }}">
-												</span>
+											<span data-color="{{ color }}" class="picker-color" style="background-color: {{ color }}">
+											</span>
 											</li>
-											{% endfor %}
-										</ul>
-										<ul class="picker">
-											{% for color in colors|slice(colors|length / 2, colors|length / 2) %}
-												<li>
-												<span data-color="{{ color }}" class="picker-color" style="background-color: {{ color }}">
-												</span>
-												</li>
-											{% endfor %}
-										</ul>
-									</div>
-								</td>
-							</tr>
-						{% endif %}
+										{% endfor %}
+									</ul>
+								</div>
+							</td>
+						</tr>
 						<tr class="vtop">
 							<th>{{ phrase('agent.general.permissions') }}</th>
 							<td>

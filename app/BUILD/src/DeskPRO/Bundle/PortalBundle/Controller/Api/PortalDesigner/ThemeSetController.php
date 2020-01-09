@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\ZipType;
@@ -30,24 +31,21 @@ class ThemeSetController extends AbstractApiController
      */
     public function getCustomThemeSetsAction()
     {
-        $themeSetIds = ['standard', 'sidebar'];
-        if ($this->get('deskpro.feature_flags')->hasBeta('helpcenter')) {
-            $themeSetIds[] = 'helpcenter';
-        }
-
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('t')
             ->from(ThemeSet::class, 't')
+            ->leftJoin(Brand::class, 'b', 'WITH', 'b.edit_theme_set = t.id')
             ->where(
                 't.brand = :current_brand',
-                't.title IS NOT NULL'
+                'b.id IS NULL',
+                'NOT (t.theme_id = \'helpcenter\' AND t.title IS NULL)'
             )
             ->setParameter('current_brand', $this->container->get('brand_stack')->getActive()->getBrand())
         ;
 
         $themeSets = $qb->getQuery()->getResult();
-
+        // Standard and sidebar theme are not added in the view anymore we need to re add them for legacy installs
         return new View($themeSets);
     }
 

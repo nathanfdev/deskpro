@@ -7,7 +7,7 @@
         </a>
     </div>
     <div class="themes">
-        <div ng-repeat="theme in available_themes {% if not app.getSetting('beta_features.helpcenter') %} | filter:{id: '!helpcenter'} {% endif %}" ng-click="selectTheme(theme);" class="theme">
+        <div ng-repeat="theme in available_themes" ng-click="selectTheme(theme);" class="theme">
             <div class="theme-header">
                 <div class="theme-title">
                     {{ ng_var('theme.title') }}

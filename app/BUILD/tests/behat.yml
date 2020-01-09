@@ -186,9 +186,13 @@ production:
                 - %paths.base%/features/production
             contexts:
                 - Behat\MinkExtension\Context\MinkContext
+                - DpBehat\Data\DataContext
                 - DpBehat\Api\JsonContext
                 - DpBehat\Api\RestContext
+                - DpBehat\Api\BrandContext
                 - DpBehat\Portal\AuthContext
+                - DpBehat\LanguageContext
+                - DpBehat\Portal\PortalBrandThemeContext
                 - DpBehat\Data\PeopleContext
                 - DpBehat\Http\HttpContext
                 - DpBehat\System\Alerts\EventsContext
