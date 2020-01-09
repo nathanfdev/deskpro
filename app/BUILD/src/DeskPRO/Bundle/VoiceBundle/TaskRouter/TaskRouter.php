@@ -57,11 +57,11 @@ class TaskRouter
      * @param LoggerInterface          $logger
      */
     public function __construct(
-        ContainerInterface       $container,
-        StorageAdapterInterface  $storage,
+        ContainerInterface $container,
+        StorageAdapterInterface $storage,
         EventDispatcherInterface $dispatcher,
-        LockInterface            $lock,
-        LoggerInterface          $logger
+        LockInterface $lock,
+        LoggerInterface $logger
     ) {
         $this->container  = $container;
         $this->storage    = $storage;
@@ -100,7 +100,7 @@ class TaskRouter
         try {
             $this->lock->acquire(true);
         } catch (\Exception $e) {
-            $this->logger->info('[TaskRouter] Failed to aquire lock: '.$e->getMessage());
+            $this->logger->info(sprintf('[TaskRouter] Failed to acquire lock, action = evaluate, message = %s', $e->getMessage()));
 
             return;
         }
@@ -278,7 +278,17 @@ class TaskRouter
             return false;
         }
 
-        $this->lock->acquire(true);
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf(
+                '[TaskRouter] Failed to acquire lock, action = acceptTask, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
+                $taskId, $workerType, $workerTypeId, $e->getMessage()
+            ));
+
+            return false;
+        }
+
         $this->logger->info(sprintf(
             '[TaskRouter] Accept task, task_id = %s, worker_type = %s, worker_id = %s',
             $taskId, $workerType, $workerTypeId
@@ -354,7 +364,17 @@ class TaskRouter
             return false;
         }
 
-        $this->lock->acquire(true);
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf(
+                '[TaskRouter] Failed to acquire lock, action = rejectTask, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
+                $taskId, $workerType, $workerTypeId, $e->getMessage()
+            ));
+
+            return false;
+        }
+
         $this->logger->info(sprintf(
             '[TaskRouter] Reject task, task_id = %s, worker_type = %s, worker_id = %s',
             $taskId, $workerType, $workerTypeId
@@ -413,7 +433,17 @@ class TaskRouter
             return false;
         }
 
-        $this->lock->acquire(true);
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf(
+                '[TaskRouter] Failed to acquire lock, action = endTask, task_id = %s, message = %s',
+                $taskId, $e->getMessage()
+            ));
+
+            return false;
+        }
+
         $this->logger->info(sprintf('[TaskRouter] End task, task_id = %s', $taskId));
 
         try {
@@ -469,27 +499,41 @@ class TaskRouter
     /**
      * @param int    $taskId
      * @param string $workerType
-     * @param int    $workerId
+     * @param int    $workerTypeId
      * @param bool   $ignoreRejected
      *
      * @return bool
      */
-    public function canWorkerAcceptTask($taskId, $workerType, $workerId, $ignoreRejected = true)
+    public function canWorkerAcceptTask($taskId, $workerType, $workerTypeId, $ignoreRejected = true)
     {
-        $this->lock->acquire(true);
+        if (!$taskId) {
+            return false;
+        }
+
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf(
+                '[TaskRouter] Failed to acquire lock, action = canWorkerAcceptTask, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
+                $taskId, $workerType, $workerTypeId, $e->getMessage()
+            ));
+
+            return false;
+        }
+
         $this->logger->info(sprintf(
             '[TaskRouter] Check if worker can accept the task, task_id = %s, worker_type = %s, worker_id = %s',
-            $taskId, $workerType, $workerId
+            $taskId, $workerType, $workerTypeId
         ));
 
         try {
             $task   = $this->storage->getTask($taskId);
-            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+            $worker = $this->storage->getWorkerByType($workerType, $workerTypeId);
 
             if (!$task || !$worker) {
                 $this->logger->info(sprintf(
                     '[TaskRouter] No worker or task found, skipping, task_id = %s, worker_type = %s, worker_id = %s',
-                    $taskId, $workerType, $workerId
+                    $taskId, $workerType, $workerTypeId
                 ));
 
                 return false;
@@ -500,7 +544,7 @@ class TaskRouter
             if (!$workflow) {
                 $this->logger->info(sprintf(
                     '[TaskRouter] Unable to get workflow for the task, skipping, task_id = %s, worker_type = %s, worker_id = %s',
-                    $taskId, $workerType, $workerId
+                    $taskId, $workerType, $workerTypeId
                 ));
 
                 return false;
@@ -511,7 +555,7 @@ class TaskRouter
                 if ($availableWorker->getId() === $worker->getId()) {
                     $this->logger->info(sprintf(
                         '[TaskRouter] Worker is able to accept the task, task_id = %s, worker_type = %s, worker_id = %s',
-                        $taskId, $workerType, $workerId
+                        $taskId, $workerType, $workerTypeId
                     ));
 
                     return true;
@@ -520,7 +564,7 @@ class TaskRouter
 
             $this->logger->info(sprintf(
                 '[TaskRouter] Worker does not have access to accept the task, task_id = %s, worker_type = %s, worker_id = %s',
-                $taskId, $workerType, $workerId
+                $taskId, $workerType, $workerTypeId
             ));
 
             return false;
@@ -534,30 +578,40 @@ class TaskRouter
     /**
      * @param int    $taskId
      * @param string $workerType
-     * @param int    $workerId
+     * @param int    $workerTypeId
      *
      * @return bool
      */
-    public function completeTaskForWorker($taskId, $workerType, $workerId)
+    public function completeTaskForWorker($taskId, $workerType, $workerTypeId)
     {
         if (!$taskId) {
             return false;
         }
 
-        $this->lock->acquire(true);
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf(
+                '[TaskRouter] Failed to acquire lock, action = completeTaskForWorker, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
+                $taskId, $workerType, $workerTypeId, $e->getMessage()
+            ));
+
+            return false;
+        }
+
         $this->logger->info(sprintf(
             '[TaskRouter] Complete task for worker, task_id = %s, worker_type = %s, worker_id = %s',
-            $taskId, $workerType, $workerId
+            $taskId, $workerType, $workerTypeId
         ));
 
         try {
             $task   = $this->storage->getTask($taskId);
-            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+            $worker = $this->storage->getWorkerByType($workerType, $workerTypeId);
 
             if (!$task || !$worker) {
                 $this->logger->info(sprintf(
                     '[TaskRouter] No worker or task found, skipping, task_id = %s, worker_type = %s, worker_id = %s',
-                    $taskId, $workerType, $workerId
+                    $taskId, $workerType, $workerTypeId
                 ));
 
                 return false;
@@ -579,7 +633,7 @@ class TaskRouter
 
             $this->logger->info(sprintf(
                 '[TaskRouter] The task is completed for the worker, task_id = %s, worker_type = %s, worker_id = %s',
-                $taskId, $workerType, $workerId
+                $taskId, $workerType, $workerTypeId
             ));
 
             return true;
@@ -597,7 +651,21 @@ class TaskRouter
      */
     public function resetWorkersForTask($taskId)
     {
-        $this->lock->acquire(true);
+        if (!$taskId) {
+            return false;
+        }
+
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf(
+                '[TaskRouter] Failed to acquire lock, action = resetWorkersForTask, task_id = %s, message = %s',
+                $taskId, $e->getMessage()
+            ));
+
+            return false;
+        }
+
         $this->logger->info(sprintf("[TaskRouter] Reset task's workers, task_id = %s", $taskId));
 
         try {
@@ -648,26 +716,40 @@ class TaskRouter
     /**
      * @param int    $taskId
      * @param string $workerType
-     * @param int    $workerId
+     * @param int    $workerTypeId
      *
      * @return bool
      */
-    public function reserveAnotherWorkerForTask($taskId, $workerType, $workerId)
+    public function reserveAnotherWorkerForTask($taskId, $workerType, $workerTypeId)
     {
-        $this->lock->acquire(true);
+        if (!$taskId) {
+            return false;
+        }
+
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf(
+                '[TaskRouter] Failed to acquire lock, action = reserveAnotherWorkerForTask, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
+                $taskId, $workerType, $workerTypeId, $e->getMessage()
+            ));
+
+            return false;
+        }
+
         $this->logger->info(sprintf(
             '[TaskRouter] Reserve another worker for the task, task_id = %s, worker_type = %s, worker_id = %s',
-            $taskId, $workerType, $workerId
+            $taskId, $workerType, $workerTypeId
         ));
 
         try {
             $task   = $this->storage->getTask($taskId);
-            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+            $worker = $this->storage->getWorkerByType($workerType, $workerTypeId);
 
             if (!$task || !$worker) {
                 $this->logger->info(sprintf(
                     '[TaskRouter] No worker or task found, skipping, task_id = %s, worker_type = %s, worker_id = %s',
-                    $taskId, $workerType, $workerId
+                    $taskId, $workerType, $workerTypeId
                 ));
 
                 return false;
@@ -687,7 +769,7 @@ class TaskRouter
 
             $this->logger->info(sprintf(
                 '[TaskRouter] Worker is reserved, task_id = %s, worker_type = %s, worker_id = %s',
-                $taskId, $workerType, $workerId
+                $taskId, $workerType, $workerTypeId
             ));
 
             return true;
@@ -701,26 +783,40 @@ class TaskRouter
     /**
      * @param int    $taskId
      * @param string $workerType
-     * @param int    $workerId
+     * @param int    $workerTypeId
      *
      * @return bool
      */
-    public function rejectAnotherWorkerReservation($taskId, $workerType, $workerId)
+    public function rejectAnotherWorkerReservation($taskId, $workerType, $workerTypeId)
     {
-        $this->lock->acquire(true);
+        if (!$taskId) {
+            return false;
+        }
+
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf(
+                '[TaskRouter] Failed to acquire lock, action = rejectAnotherWorkerReservation, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
+                $taskId, $workerType, $workerTypeId, $e->getMessage()
+            ));
+
+            return false;
+        }
+
         $this->logger->info(sprintf(
             '[TaskRouter] Reject worker reservation for the task, task_id = %s, worker_type = %s, worker_id = %s',
-            $taskId, $workerType, $workerId
+            $taskId, $workerType, $workerTypeId
         ));
 
         try {
             $task   = $this->storage->getTask($taskId);
-            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+            $worker = $this->storage->getWorkerByType($workerType, $workerTypeId);
 
             if (!$task || !$worker) {
                 $this->logger->info(sprintf(
                     '[TaskRouter] No worker or task found, skipping, task_id = %s, worker_type = %s, worker_id = %s',
-                    $taskId, $workerType, $workerId
+                    $taskId, $workerType, $workerTypeId
                 ));
 
                 return false;
@@ -742,7 +838,7 @@ class TaskRouter
 
             $this->logger->info(sprintf(
                 '[TaskRouter] Worker reservation is rejected, task_id = %s, worker_type = %s, worker_id = %s',
-                $taskId, $workerType, $workerId
+                $taskId, $workerType, $workerTypeId
             ));
 
             return true;
@@ -756,26 +852,40 @@ class TaskRouter
     /**
      * @param int    $taskId
      * @param string $workerType
-     * @param int    $workerId
+     * @param int    $workerTypeId
      *
      * @return bool
      */
-    public function joinTask($taskId, $workerType, $workerId)
+    public function joinTask($taskId, $workerType, $workerTypeId)
     {
-        $this->lock->acquire(true);
+        if (!$taskId) {
+            return false;
+        }
+
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf(
+                '[TaskRouter] Failed to acquire lock, action = joinTask, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
+                $taskId, $workerType, $workerTypeId, $e->getMessage()
+            ));
+
+            return false;
+        }
+
         $this->logger->info(sprintf(
             '[TaskRouter] Join task, task_id = %s, worker_type = %s, worker_id = %s',
-            $taskId, $workerType, $workerId
+            $taskId, $workerType, $workerTypeId
         ));
 
         try {
             $task   = $this->storage->getTask($taskId);
-            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+            $worker = $this->storage->getWorkerByType($workerType, $workerTypeId);
 
             if (!$task || !$worker) {
                 $this->logger->info(sprintf(
                     '[TaskRouter] No worker or task found, skipping, task_id = %s, worker_type = %s, worker_id = %s',
-                    $taskId, $workerType, $workerId
+                    $taskId, $workerType, $workerTypeId
                 ));
 
                 return false;
@@ -784,7 +894,7 @@ class TaskRouter
             if (!$task->isAccepted()) {
                 $this->logger->info(sprintf(
                     '[TaskRouter] Task is not active, unable to join, task_id = %s, task_status = %s, worker_type = %s, worker_id = %s',
-                    $taskId, $task->getStatus(), $workerType, $workerId
+                    $taskId, $task->getStatus(), $workerType, $workerTypeId
                 ));
 
                 return false;
@@ -806,7 +916,7 @@ class TaskRouter
 
             $this->logger->info(sprintf(
                 '[TaskRouter] Worker joined the task, task_id = %s, worker_type = %s, worker_id = %s',
-                $taskId, $workerType, $workerId
+                $taskId, $workerType, $workerTypeId
             ));
 
             return true;
@@ -819,24 +929,34 @@ class TaskRouter
 
     /**
      * @param string $workerType
-     * @param int    $workerId
+     * @param int    $workerTypeId
      *
      * @return bool
      */
-    public function updateLastWorkerActivity($workerType, $workerId)
+    public function updateLastWorkerActivity($workerType, $workerTypeId)
     {
-        $this->lock->acquire(true);
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf(
+                '[TaskRouter] Failed to acquire lock, action = updateLastWorkerActivity, worker_type = %s, worker_id = %s, message = %s',
+                $workerType, $workerTypeId, $e->getMessage()
+            ));
+
+            return false;
+        }
+
         $this->logger->info(sprintf(
             '[TaskRouter] Update last worker activity, worker_type = %s, worker_id = %s',
-            $workerType, $workerId
+            $workerType, $workerTypeId
         ));
 
         try {
-            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+            $worker = $this->storage->getWorkerByType($workerType, $workerTypeId);
             if (!$worker) {
                 $this->logger->info(sprintf(
                     '[TaskRouter] No worker found, skipping, worker_type = %s, worker_id = %s',
-                    $workerType, $workerId
+                    $workerType, $workerTypeId
                 ));
 
                 return false;
@@ -847,7 +967,7 @@ class TaskRouter
 
             $this->logger->info(sprintf(
                 '[TaskRouter] Updated worker activity, worker_type = %s, worker_id = %s',
-                $workerType, $workerId
+                $workerType, $workerTypeId
             ));
 
             return true;
