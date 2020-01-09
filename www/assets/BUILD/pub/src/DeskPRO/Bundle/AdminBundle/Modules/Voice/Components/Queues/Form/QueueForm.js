@@ -45,23 +45,26 @@ class QueueForm extends BaseForm {
     const greetAsset = queue && queue.get('greet_asset');
     const loopAsset = queue && queue.get('loop_asset');
     const voicemailAsset = queue && queue.get('voicemail_asset');
+    const voicemailDisabledAsset = queue && queue.get('voicemail_disabled_asset');
 
     return {
-      name:                 queue ? queue.get('name') : '',
-      department:           queue ? queue.get('department') : null,
-      brand:                queue ? queue.get('brand') : null,
-      agents:               queue ? queue.get('agents').toArray().map(voiceAgent => voiceAgent.toJS()) : [],
-      routing_model:        queue ? queue.get('routing_model') : 'round_robin',
-      max_queue_size:       queue ? queue.get('max_queue_size') : 1,
-      greet_asset:          greetAsset ? greetAsset.toJS() : null,
-      loop_asset:           loopAsset ? loopAsset.toJS() : null,
-      voicemail_asset:      voicemailAsset ? voicemailAsset.toJS() : null,
-      voicemail_department: queue ? queue.get('voicemail_department') : null,
-      voicemail_agent:      queue ? queue.get('voicemail_agent') : null,
-      voicemail_agent_team: queue ? queue.get('voicemail_agent_team') : null,
-      voicemail_timeout:    queue ? queue.get('voicemail_timeout') : 15,
-      answer_timeout:       queue ? queue.get('answer_timeout') : 15,
-      recording_enabled:    queue ? queue.get('recording_enabled') : true,
+      name:                     queue ? queue.get('name') : '',
+      department:               queue ? queue.get('department') : null,
+      brand:                    queue ? queue.get('brand') : null,
+      agents:                   queue ? queue.get('agents').toArray().map(voiceAgent => voiceAgent.toJS()) : [],
+      routing_model:            queue ? queue.get('routing_model') : 'round_robin',
+      max_queue_size:           queue ? queue.get('max_queue_size') : 1,
+      greet_asset:              greetAsset ? greetAsset.toJS() : null,
+      loop_asset:               loopAsset ? loopAsset.toJS() : null,
+      voicemail_asset:          voicemailAsset ? voicemailAsset.toJS() : null,
+      voicemail_department:     queue ? queue.get('voicemail_department') : null,
+      voicemail_agent:          queue ? queue.get('voicemail_agent') : null,
+      voicemail_agent_team:     queue ? queue.get('voicemail_agent_team') : null,
+      voicemail_timeout:        queue ? queue.get('voicemail_timeout') : 15,
+      voicemail_disabled:       queue ? queue.get('voicemail_disabled') : false,
+      voicemail_disabled_asset: voicemailDisabledAsset ? voicemailDisabledAsset.toJS() : null,
+      answer_timeout:           queue ? queue.get('answer_timeout') : 15,
+      recording_enabled:        queue ? queue.get('recording_enabled') : true,
     };
   }
 
@@ -132,10 +135,16 @@ class QueueForm extends BaseForm {
             <Field select="voicemail_asset" className="audio-asset" label="Voicemail">
               <AudioWidgetFormContainer />
             </Field>
-
             <Field select="voicemail_timeout" className="voice-voicemail-timeout" label="Maximum Queue Wait Time (in Seconds)">
               <Input type="number" />
             </Field>
+            <Field select="voicemail_disabled">
+              <Checkbox label="Disable voicemail recording (you can specify a custom audio message)" />
+            </Field>
+            {formData.value.voicemail_disabled &&
+            <Field select="voicemail_disabled_asset" className="audio-asset">
+              <AudioWidgetFormContainer />
+            </Field>}
 
             <div>
               Missed calls will ask the user to leave a message and a new voice ticket will be created with the following properties:

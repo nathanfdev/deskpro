@@ -86,6 +86,14 @@ class VoiceQueueType extends AbstractType
                 'property_path' => 'voicemailTimeout',
                 'empty_data'    => '30',
             ])
+            ->add('voicemail_disabled', ApiBooleanType::class, [
+                'required'      => false,
+                'property_path' => 'voicemailDisabled',
+            ])
+            ->add('voicemail_disabled_asset', VoiceAssetAuthType::class, [
+                'property_path' => 'voicemailDisabledAsset',
+                'required'      => false,
+            ])
             ->add('routing_model', ChoiceType::class, [
                 'required'          => true,
                 'property_path'     => 'routingModel',

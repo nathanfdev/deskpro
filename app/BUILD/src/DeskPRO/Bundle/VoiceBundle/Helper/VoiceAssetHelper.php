@@ -43,9 +43,9 @@ class VoiceAssetHelper
      */
     public function __construct(
         StorageAdapterInterface $taskStorage,
-        VoiceTaskHelper         $taskHelper,
-        RouterInterface         $router,
-        Packages                $assetPackages
+        VoiceTaskHelper $taskHelper,
+        RouterInterface $router,
+        Packages $assetPackages
     ) {
         $this->taskStorage   = $taskStorage;
         $this->taskHelper    = $taskHelper;
@@ -103,5 +103,55 @@ class VoiceAssetHelper
         }
 
         return;
+    }
+
+    /**
+     * @param string $taskId
+     *
+     * @return AbstractVoiceAsset|null
+     */
+    public function getVoicemailDisabledAsset($taskId)
+    {
+        if (!$taskId) {
+            return;
+        }
+
+        $task = $this->taskStorage->getTask($taskId);
+        if ($task) {
+            $queue = $this->taskHelper->getVoiceQueue($task);
+            $asset = null;
+            if ($queue) {
+                // get custom queue voicemail asset
+                $asset = $queue->getVoicemailDisabledAsset();
+            }
+
+            return $asset;
+        }
+
+        return;
+    }
+
+    /**
+     * @param string $taskId
+     *
+     * @return bool
+     */
+    public function isVoicemailEnabled($taskId)
+    {
+        if (!$taskId) {
+            return false;
+        }
+
+        $task = $this->taskStorage->getTask($taskId);
+        if ($task) {
+            $queue = $this->taskHelper->getVoiceQueue($task);
+            if ($queue) {
+                return !$queue->isVoicemailDisabled();
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
