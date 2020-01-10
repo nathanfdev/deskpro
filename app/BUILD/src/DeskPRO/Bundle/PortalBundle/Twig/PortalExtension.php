@@ -879,11 +879,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
-     * @param ContentAbstract $object
+     * @param HasSplashImageProperty $object
      *
      * @return bool
      */
-    public function hasSplashImage(ContentAbstract $object)
+    public function hasSplashImage(HasSplashImageProperty $object)
     {
         return (bool) $object->getSplashImage();
     }
@@ -908,14 +908,14 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
-     * @param ContentAbstract $object
+     * @param HasSplashImageProperty $object
      * @param string          $orientation
      *
      * @throws Exception
      *
      * @return string
      */
-    public function getSplashBgcss(ContentAbstract $object, $orientation = 'landscape')
+    public function getSplashBgcss(HasSplashImageProperty $object, $orientation = 'landscape')
     {
         $splashImage = $object->getSplashImage();
         if ($splashImage) {

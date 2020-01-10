@@ -142,6 +142,7 @@ class GuideController extends PublishController
                 if ($topic['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
                     $topic['status_code'] = 'hidden.unpublished';
                 }
+
                 break;
 
             case 'title':
@@ -149,11 +150,13 @@ class GuideController extends PublishController
                 /** @var TopicRevision $rev */
                 $rev = ContentRevisionUtil::findOrCreate($topic, 'title', $this->person);
                 $rev->setTitle($topic->getTitle());
+
                 break;
 
             case 'slug':
                 $topic->setSlug(Strings::slugifyTitle($this->in->getString('slug')) ?: 'view');
                 $data['slug'] = $topic['slug'];
+
                 break;
 
             case 'add-related':
@@ -162,6 +165,7 @@ class GuideController extends PublishController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'remove-related':
@@ -170,6 +174,7 @@ class GuideController extends PublishController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'content':
@@ -201,15 +206,18 @@ class GuideController extends PublishController
                 $data['guide_id'] = $guide->getId();
                 $topic->setParent(null);
                 $data['parent_id'] = 0;
+
                 break;
 
             case 'delete':
                 $topic->status_code = 'hidden.deleted';
+
                 break;
 
             case 'undelete':
                 $topic->status_code = 'published';
                 $topic->setSlug(null);
+
                 break;
 
             case 'auto-unpub':
@@ -218,25 +226,30 @@ class GuideController extends PublishController
 
                 $topic->date_end   = $date;
                 $topic->end_action = $action;
+
                 break;
 
             case 'remove-auto-unpub':
                 $topic->date_end   = null;
                 $topic->end_action = null;
+
                 break;
 
             case 'auto-pub':
                 $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
 
                 $topic->setDatePublished($date);
+
                 break;
 
             case 'remove-auto-pub':
                 $topic->setDatePublished(null);
+
                 break;
 
             case 'no_content':
                 $topic->setNoContent($this->in->getBoolInt('no_content'));
+
                 break;
         }
 
@@ -435,6 +448,11 @@ class GuideController extends PublishController
             'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($guide),
         ];
 
+        $colors = [
+            '#e11d21', '#eb6420', '#fbca04', '#009800', '#006b75', '#207de5', '#0052cc', '#5319e7',
+            '#f7c6c7', '#fad8c7', '#fef2c0', '#bfe5bf', '#bfdadc', '#c7def8', '#bfd4f2', '#d4c5f9',
+        ];
+
         return $this->render($tpl, [
             'results'            => $results,
             'display_fields'     => $displayFields,
@@ -446,6 +464,7 @@ class GuideController extends PublishController
             'cur_page'           => 1,
             'showing_to'         => $totalResults,
             'brands'             => $brands,
+            'colors'             => $colors,
             'perms'              => $perms,
         ]);
     }

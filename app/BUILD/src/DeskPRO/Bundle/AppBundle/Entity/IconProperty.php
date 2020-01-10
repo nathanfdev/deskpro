@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Blob;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -34,6 +35,7 @@ class IconProperty implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var string
+     * @JMS\Expose()
      * @ORM\Column(name="urn", type="string")
      * @Assert\NotNull()
      */
@@ -41,11 +43,13 @@ class IconProperty implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var array
+     * @JMS\Expose()
      * @ORM\Column(name="options", type="json_array", nullable=true)
      */
     protected $options;
 
     /**
+     * @JMS\Expose()
      * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob", fetch="EAGER")
      * @ORM\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="CASCADE")
      *
