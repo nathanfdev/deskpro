@@ -35,7 +35,7 @@ class FeaturesController extends BaseController
      *         200="Returned if everything is ok"
      *     },
      *     parameters={
-     *         {"name"="filter_editable", "description"="Filter only editable features", "dataType"="bool", "required"=false}
+     *         {"name"="filter_editable", "description"="Filter only editable features", "dataType"="boolean", "required"=false}
      *     },
      *     output="array<DeskPRO\Bundle\ApiBundle\Model\Feature>"
      * )
