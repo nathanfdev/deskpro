@@ -34,7 +34,7 @@ class PhoneCallLockHelper
      */
     public function createPhoneLock($callId)
     {
-        $store   = new RetryTillSaveStore(new PdoStore($this->connection));
+        $store   = new RetryTillSaveStore(new PdoStore($this->connection), 500);
         $factory = new Factory($store);
 
         return $factory->createLock('voice-phone-call-'.$callId, 30);

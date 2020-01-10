@@ -35,7 +35,12 @@ class TaskRouter
     /**
      * @var LockInterface
      */
-    private $lock;
+    private $evaluateLock;
+
+    /**
+     * @var LockInterface
+     */
+    private $actionsLock;
 
     /**
      * @var WorkflowInterface[]
@@ -53,21 +58,24 @@ class TaskRouter
      * @param ContainerInterface       $container
      * @param StorageAdapterInterface  $storage
      * @param EventDispatcherInterface $dispatcher
-     * @param LockInterface            $lock
+     * @param LockInterface            $evaluateLock
+     * @param LockInterface            $actionsLock
      * @param LoggerInterface          $logger
      */
     public function __construct(
         ContainerInterface $container,
         StorageAdapterInterface $storage,
         EventDispatcherInterface $dispatcher,
-        LockInterface $lock,
+        LockInterface $evaluateLock,
+        LockInterface $actionsLock,
         LoggerInterface $logger
     ) {
-        $this->container  = $container;
-        $this->storage    = $storage;
-        $this->dispatcher = $dispatcher;
-        $this->lock       = $lock;
-        $this->logger     = $logger;
+        $this->container    = $container;
+        $this->storage      = $storage;
+        $this->dispatcher   = $dispatcher;
+        $this->evaluateLock = $evaluateLock;
+        $this->actionsLock  = $actionsLock;
+        $this->logger       = $logger;
     }
 
     /**
@@ -98,7 +106,7 @@ class TaskRouter
     public function evaluate()
     {
         try {
-            $this->lock->acquire(true);
+            $this->evaluateLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf('[TaskRouter] Failed to acquire lock, action = evaluate, message = %s', $e->getMessage()));
 
@@ -261,7 +269,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->lock->release();
+            $this->actionsLock->release();
         }
     }
 
@@ -279,7 +287,7 @@ class TaskRouter
         }
 
         try {
-            $this->lock->acquire(true);
+            $this->actionsLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf(
                 '[TaskRouter] Failed to acquire lock, action = acceptTask, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
@@ -347,7 +355,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->lock->release();
+            $this->actionsLock->release();
         }
     }
 
@@ -365,7 +373,7 @@ class TaskRouter
         }
 
         try {
-            $this->lock->acquire(true);
+            $this->actionsLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf(
                 '[TaskRouter] Failed to acquire lock, action = rejectTask, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
@@ -418,7 +426,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->lock->release();
+            $this->actionsLock->release();
         }
     }
 
@@ -434,7 +442,7 @@ class TaskRouter
         }
 
         try {
-            $this->lock->acquire(true);
+            $this->actionsLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf(
                 '[TaskRouter] Failed to acquire lock, action = endTask, task_id = %s, message = %s',
@@ -492,7 +500,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->lock->release();
+            $this->actionsLock->release();
         }
     }
 
@@ -511,7 +519,7 @@ class TaskRouter
         }
 
         try {
-            $this->lock->acquire(true);
+            $this->actionsLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf(
                 '[TaskRouter] Failed to acquire lock, action = canWorkerAcceptTask, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
@@ -571,7 +579,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->lock->release();
+            $this->actionsLock->release();
         }
     }
 
@@ -589,7 +597,7 @@ class TaskRouter
         }
 
         try {
-            $this->lock->acquire(true);
+            $this->actionsLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf(
                 '[TaskRouter] Failed to acquire lock, action = completeTaskForWorker, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
@@ -640,7 +648,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->lock->release();
+            $this->actionsLock->release();
         }
     }
 
@@ -656,7 +664,7 @@ class TaskRouter
         }
 
         try {
-            $this->lock->acquire(true);
+            $this->actionsLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf(
                 '[TaskRouter] Failed to acquire lock, action = resetWorkersForTask, task_id = %s, message = %s',
@@ -709,7 +717,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->lock->release();
+            $this->actionsLock->release();
         }
     }
 
@@ -727,7 +735,7 @@ class TaskRouter
         }
 
         try {
-            $this->lock->acquire(true);
+            $this->actionsLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf(
                 '[TaskRouter] Failed to acquire lock, action = reserveAnotherWorkerForTask, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
@@ -776,7 +784,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->lock->release();
+            $this->actionsLock->release();
         }
     }
 
@@ -794,7 +802,7 @@ class TaskRouter
         }
 
         try {
-            $this->lock->acquire(true);
+            $this->actionsLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf(
                 '[TaskRouter] Failed to acquire lock, action = rejectAnotherWorkerReservation, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
@@ -845,7 +853,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->lock->release();
+            $this->actionsLock->release();
         }
     }
 
@@ -863,7 +871,7 @@ class TaskRouter
         }
 
         try {
-            $this->lock->acquire(true);
+            $this->actionsLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf(
                 '[TaskRouter] Failed to acquire lock, action = joinTask, task_id = %s, worker_type = %s, worker_id = %s, message = %s',
@@ -923,7 +931,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->lock->release();
+            $this->actionsLock->release();
         }
     }
 
@@ -936,7 +944,7 @@ class TaskRouter
     public function updateLastWorkerActivity($workerType, $workerTypeId)
     {
         try {
-            $this->lock->acquire(true);
+            $this->actionsLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf(
                 '[TaskRouter] Failed to acquire lock, action = updateLastWorkerActivity, worker_type = %s, worker_id = %s, message = %s',
@@ -974,7 +982,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->lock->release();
+            $this->actionsLock->release();
         }
     }
 }
