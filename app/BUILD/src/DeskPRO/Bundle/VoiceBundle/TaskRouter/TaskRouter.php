@@ -269,7 +269,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->actionsLock->release();
+            $this->evaluateLock->release();
         }
     }
 
