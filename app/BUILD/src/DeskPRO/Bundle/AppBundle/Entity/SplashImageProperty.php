@@ -37,6 +37,8 @@ class SplashImageProperty implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var string
+     * @JMS\Expose()
+     * @JMS\Type("string")
      * @ORM\Column(name="urn", type="string")
      * @Assert\NotNull()
      */
@@ -44,11 +46,15 @@ class SplashImageProperty implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var array
+     * @JMS\Expose()
+     * @JMS\Type("array")
      * @ORM\Column(name="options", type="json_array", nullable=true)
      */
     protected $options;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Blob>")
      * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob", fetch="EAGER")
      * @ORM\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="CASCADE")
      *

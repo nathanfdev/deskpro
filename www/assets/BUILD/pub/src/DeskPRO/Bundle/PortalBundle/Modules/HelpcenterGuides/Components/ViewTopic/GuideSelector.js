@@ -38,6 +38,8 @@ class GuideSelector extends React.Component {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
 
+    console.log(guides);
+
     return (
       <div className={classNames('dp-po-guides-carousel', { fixed })}>
         <div className="dp-po-guides-carousel-list">

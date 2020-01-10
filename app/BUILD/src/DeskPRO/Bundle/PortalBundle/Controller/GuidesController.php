@@ -215,6 +215,11 @@ class GuidesController extends AbstractPublishController
             },
         ]);
 
+        $context = new SideloadSerializationContext(['icon_property', 'splash_image_property'], $this->getContainer()->get('security.token_storage'));
+        $context->setIdsOnly(false);
+        $context->setInlineSideloads(true);
+        $context->setRequest($request);
+
         $viewVars = [
             'topic'            => $topic,
             'content'          => $topic,
@@ -223,7 +228,7 @@ class GuidesController extends AbstractPublishController
             'breadcrumbs'      => $breadcrumbs,
             'captcha'          => $captcha,
             'guide'            => $topic->getGuide(),
-            'guides_json'      => Strings::escapeForJson($serializer->serialize($guides, 'json', new SideloadSerializationContext())),
+            'guides_json'      => Strings::escapeForJson($serializer->serialize($guides, 'json', $context)),
             'guides'           => $guides,
             'helpcenter'       => $this->get('helpcenter_data_helper'),
             'body_class'       => 'guides-body',
