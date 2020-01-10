@@ -16,6 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  *
+ * @JMS\ExclusionPolicy("ALL")
+ *
  * @category Entities
  */
 class IconProperty implements EntityInterface, NotifyPropertyChanged

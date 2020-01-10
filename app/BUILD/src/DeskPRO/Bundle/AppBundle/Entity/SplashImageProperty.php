@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Blob;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -14,6 +15,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="splash_image_property")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
+ *
+ * @JMS\ExclusionPolicy("ALL")
  *
  * @category Entities
  */
