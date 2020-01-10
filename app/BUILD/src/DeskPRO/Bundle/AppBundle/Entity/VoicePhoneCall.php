@@ -530,6 +530,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @return bool
      */
+    public function isPending()
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    /**
+     * @return bool
+     */
     public function isActive()
     {
         return $this->status === self::STATUS_ACTIVE;
