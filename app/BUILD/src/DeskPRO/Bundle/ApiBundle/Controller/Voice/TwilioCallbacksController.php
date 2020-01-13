@@ -1481,75 +1481,86 @@ class TwilioCallbacksController extends BaseController
             $callSid, $callId, $agentId
         ));
 
-        $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
-        if (!$phoneCall) {
-            throw $this->createBadRequestException('Phone call not found');
-        }
+        $twiml     = new Twiml();
+        $phoneCall = null;
 
-        $this->get('dp.voice.callbacks_helper')->setOutgoingAgentParticipant(
-            $callId,
-            $callSid,
-            $agentId,
-            $details
-        );
-
-        $twiml = new Twiml();
-
-        // make an outbound call
-        $callUuid = $this->get('twilio_adapter')->callNumber(
-            $phoneCall,
-            $phoneCall->getExternalNumber(),
-            [
-                'url'                  => $this->getOutboundCallbackUrl($account, $phoneCall),
-                'method'               => 'POST',
-                'statusCallback'       => $this->getPhoneNumberStatusCallbackUrl($account, $phoneCall),
-                'statusCallbackMethod' => 'POST',
-            ],
-            $exception
-        );
-
-        if ($callUuid) {
-            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callUuid, $details);
-
-            // create and join a new conference
-            $twiml->enqueue($phoneCall->getQueueName(), [
-                'waitUrl'       => $this->getAgentWaitCallbackUrl($account, $phoneCall),
-                'waitUrlMethod' => 'POST',
-            ]);
-
-            // outgoing request id is created, not we can cancel outgoing call to prevent race conditions
-            $this->get('event_dispatcher')->dispatch(
-                LegacySystemEvent::EVENT_NAME,
-                new LegacySystemEvent('agent.voice.outgoing-call-init')
-            );
-        } else {
-            $errorCodeGen = $this->get('form_error.error_code_generator.api');
-
-            if ($exception) {
-                if ($exception instanceof BlacklistException) {
-                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_BLACKLIST, [], ['call_to']);
-                } elseif ($exception instanceof InsufficientBalanceException) {
-                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
-                } else {
-                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
-                }
-            } else {
-                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_UNABLE_TO_CALL_THIS_NUMBER, [], ['call_to']);
+        try {
+            $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
+            if (!$phoneCall) {
+                throw $this->createBadRequestException('Phone call not found');
             }
 
-            $this->get('event_dispatcher')->dispatch(
-                LegacySystemEvent::EVENT_NAME,
-                new LegacySystemEvent('agent.voice.outgoing-provider-error', [
-                    'call_id' => $phoneCall->getId(),
-                    'errors'  => $errorMessage,
-                ])
+            $this->get('dp.voice.callbacks_helper')->setOutgoingAgentParticipant(
+                $callId,
+                $callSid,
+                $agentId,
+                $details
             );
 
+            // make an outbound call
+            $callUuid = $this->get('twilio_adapter')->callNumber(
+                $phoneCall,
+                $phoneCall->getExternalNumber(),
+                [
+                    'url'                  => $this->getOutboundCallbackUrl($account, $phoneCall),
+                    'method'               => 'POST',
+                    'statusCallback'       => $this->getPhoneNumberStatusCallbackUrl($account, $phoneCall),
+                    'statusCallbackMethod' => 'POST',
+                ],
+                $exception
+            );
+
+            if ($callUuid) {
+                $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callUuid, $details);
+
+                // create and join a new conference
+                $twiml->enqueue($phoneCall->getQueueName(), [
+                    'waitUrl'       => $this->getAgentWaitCallbackUrl($account, $phoneCall),
+                    'waitUrlMethod' => 'POST',
+                ]);
+
+                // outgoing request id is created, not we can cancel outgoing call to prevent race conditions
+                $this->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent('agent.voice.outgoing-call-init')
+                );
+            } else {
+                $errorCodeGen = $this->get('form_error.error_code_generator.api');
+
+                if ($exception) {
+                    if ($exception instanceof BlacklistException) {
+                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_BLACKLIST, [], ['call_to']);
+                    } elseif ($exception instanceof InsufficientBalanceException) {
+                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
+                    } else {
+                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
+                    }
+                } else {
+                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_UNABLE_TO_CALL_THIS_NUMBER, [], ['call_to']);
+                }
+
+                $this->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent('agent.voice.outgoing-provider-error', [
+                        'call_id' => $phoneCall->getId(),
+                        'errors'  => $errorMessage,
+                    ])
+                );
+
+                $twiml->hangup();
+
+                // mark phone call as ended
+                $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+                $this->getManager()->flush();
+            }
+        } catch (\Exception $e) {
             $twiml->hangup();
 
             // mark phone call as ended
-            $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
-            $this->getManager()->flush();
+            if ($phoneCall) {
+                $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+                $this->getManager()->flush();
+            }
         }
 
         $response = new Response($twiml);
