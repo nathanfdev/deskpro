@@ -172,9 +172,11 @@ class ViewTopic extends React.Component {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const lazyImage = entry.target;
-            lazyImage.src = lazyImage.dataset.src;
-            // lazyImage.srcset = lazyImage.dataset.srcset;
-            lazyImage.classList.remove('lazy');
+            if (lazyImage.dataset.src) {
+              lazyImage.src = lazyImage.dataset.src;
+              // lazyImage.srcset = lazyImage.dataset.srcset;
+              lazyImage.classList.remove('lazy');
+            }
             lazyImageObserver.unobserve(lazyImage);
           }
         });
