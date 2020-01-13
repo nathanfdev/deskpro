@@ -14,10 +14,12 @@ class TopicListItem extends React.Component {
     expanded:         PropTypes.bool,
     grabTopicFromApi: PropTypes.func,
     filterTopic:      PropTypes.func,
+    withSplash:       PropTypes.bool,
   };
 
   static defaultProps = {
     expandable: true,
+    withSplash: false,
   };
 
   getLevelPrefix = (delta = 0) => {
@@ -54,7 +56,7 @@ class TopicListItem extends React.Component {
   };
 
   renderChildren = () => {
-    const { topic, guideSlug, topicSlug, expanded, filter, filterTopic, grabTopicFromApi } = this.props;
+    const { topic, guideSlug, topicSlug, expanded, filter, filterTopic, grabTopicFromApi, withSplash } = this.props;
     if (!Object.values(topic.children).length) {
       return null;
     }
@@ -81,6 +83,7 @@ class TopicListItem extends React.Component {
               grabTopicFromApi={grabTopicFromApi}
               filter={filter}
               filterTopic={filterTopic}
+              withSplash={withSplash}
               expanded={(filter !== '' || child.slug === topicSlug || Object.values(child.children)
                 .find(c => c.slug === topicSlug || Object.values(c.children).find(cc => cc.slug === topicSlug)))}
             />
@@ -91,7 +94,7 @@ class TopicListItem extends React.Component {
   };
 
   render() {
-    const { topic, guideSlug, topicSlug } = this.props;
+    const { topic, guideSlug, topicSlug, withSplash } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -106,7 +109,7 @@ class TopicListItem extends React.Component {
           activeClass="active"
           href={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`}
           to={`topic_${topic.slug}`}
-          offset={-129}
+          offset={withSplash ? -255 : -129}
           spy
           isDynamic
           onClick={this.handleClick}

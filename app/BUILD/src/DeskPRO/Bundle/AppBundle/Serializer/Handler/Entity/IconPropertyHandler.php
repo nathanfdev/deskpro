@@ -15,9 +15,7 @@ class IconPropertyHandler extends AbstractEntityHandler
 
     public function createModel($entity, SideloadSerializationContext $context)
     {
-        /** @var IconProperty $entity */
-        $model = new IconPropertyModel($entity);
-
-        return $model;
+        /* @var IconProperty $entity */
+        return new IconPropertyModel($entity);
     }
 }

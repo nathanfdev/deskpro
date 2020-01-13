@@ -7,10 +7,6 @@ export class IconRenderer extends React.PureComponent {
     default: PropTypes.node,
   };
 
-  static getUrnPath(iconProperty) {
-    return iconProperty.urn.split(':').pop();
-  }
-
   render() {
     const { object } = this.props;
 
@@ -32,6 +28,9 @@ export class IconRenderer extends React.PureComponent {
         iconStyle = iconProperty.options.style;
       }
       const style = {};
+      if (object.color) {
+        style.backgroundColor = `#${object.color}`;
+      }
 
       if (iconStyle) {
         return (
