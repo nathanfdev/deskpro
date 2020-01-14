@@ -88,15 +88,7 @@ class VoiceClientController extends BaseController
         $em->persist($phoneCall);
         $em->flush();
 
-        // create a task for the call
-        // so we can reserve the agent's worker
-        $task = $this->get('dp.voice.task_builder')->createVoiceTaskForOutgoingCall($phoneCall, $this->getUser());
-        $phoneCall->setTaskSid($task->getId());
-
         $em->flush();
-
-        // todo check that agent can accept tasks, e.g. not on a call
-        $this->get('dp.voice.task_router')->joinTask($task->getId(), 'agent', $this->getUser()->getId());
 
         return new View($this->wrap($phoneCall));
     }
