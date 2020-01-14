@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
+use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -28,8 +29,19 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
+        $session = $request->getSession();
+
+        if ($request->attributes->get('usersource_id')) {
+            $usersource = $this->container->get('doctrine.orm.entity_manager')->getRepository(Usersource::class)->find($request->attributes->get('usersource_id'));
+            if ($usersource) {
+                $session->set('dp_interface', DP_INTERFACE);
+                $session->set('auth_usersource_id', $usersource->getId());
+                $session->set('auth_usersource_type', $usersource->getSourceType());
+            }
+        }
+
         if ($token instanceof AgentImpersonateToken) {
-            $request->getSession()->set('auth_person_id', $token->getAgent()->getId());
+            $session->set('auth_person_id', $token->getAgent()->getId());
 
             if ($request->isXmlHttpRequest()) {
                 return $this->getResponseForAjax('/');
@@ -40,7 +52,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
 
         // do this after the AgentImpersonateToken bit above
         // this allows agents/admin to login to portal and seamlessly move to other interfaces
-        $request->getSession()->set('auth_person_id', $token->getUser()->getId());
+        $session->set('auth_person_id', $token->getUser()->getId());
 
         if (
             $token->hasAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
