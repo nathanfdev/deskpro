@@ -325,8 +325,7 @@ class ViewTopic extends React.Component {
         this.setState({
           loaded: true,
         });
-        const offset = this.withSplash ? -380 : -129;
-        console.log(offset);
+        const offset = this.withSplash ? -255 : -129;
         scroller.scrollTo(`topic_${this.targetSlug}`, {
           isDynamic: true,
           offset,
