@@ -72,12 +72,14 @@ class CheckVoiceWorkers extends AbstractJob
             $chatId = $task->getAttribute('chat');
             if (!$chatId) {
                 $endedTasks[] = $task;
+
                 continue;
             }
 
             $chat = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository(ChatConversation::class)->find($chatId);
             if (!$chat) {
                 $endedTasks[] = $task;
+
                 continue;
             }
 
@@ -106,6 +108,7 @@ class CheckVoiceWorkers extends AbstractJob
             $phoneCallId = $task->getAttribute('phone_call');
             if (!$phoneCallId) {
                 $endedTasks[] = $task;
+
                 continue;
             }
 
@@ -113,6 +116,7 @@ class CheckVoiceWorkers extends AbstractJob
             $phoneCall = $em->getRepository(VoicePhoneCall::class)->find($phoneCallId);
             if (!$phoneCall) {
                 $endedTasks[] = $task;
+
                 continue;
             }
 
@@ -127,6 +131,14 @@ class CheckVoiceWorkers extends AbstractJob
                 || (!$phoneCall->getCallSid() && $phoneCall->getDateCreated() < new \DateTime('-5 minutes'))
             ) {
                 $endedTasks[] = $task;
+            }
+
+            // auto fix stuck pending phone calls
+            if ($phoneCall->isPending() && $phoneCall->getDateCreated() < new \DateTime('-1 hour')) {
+                $endedTasks[] = $task;
+
+                $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+                $em->flush();
             }
         }
 

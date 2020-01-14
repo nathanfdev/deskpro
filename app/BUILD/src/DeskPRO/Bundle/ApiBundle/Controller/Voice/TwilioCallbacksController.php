@@ -69,6 +69,9 @@ class TwilioCallbacksController extends BaseController
      */
     public function phoneNumberCallbackAction(TwilioVoiceAccount $account, Request $request)
     {
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf('[TwilioCallbacks] Begin phone number callback, uuid = %s', $request->get('CallSid')));
+
         if ($request->query->get('Outbound')) {
             // outbound call
             return $this->phoneNumberAgentOutgoingCallback($account, $request);
@@ -1403,15 +1406,26 @@ class TwilioCallbacksController extends BaseController
      */
     private function phoneNumberAgentIncomingCallback(Request $request)
     {
+        $callId          = $request->query->get('CallId');
+        $callSid         = $request->get('CallSid');
+        $agentId         = $request->query->get('AgentId');
+        $forwardedNumber = $request->get('To');
+        $details         = $request->query->all();
+
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf(
+            '[TwilioCallbacks] Begin agent incoming callback, uuid = %s, call_id = %s, agent_id = %s, forwarded_number = %s',
+            $callSid, $callId, $agentId, $forwardedNumber
+        ));
+
         $twiml = new Twiml();
 
         try {
-            $details   = $request->query->all();
             $phoneCall = $this->get('dp.voice.callbacks_helper')->joinIncomingPhoneCall(
-                $request->query->get('CallId'),
-                $request->get('CallSid'),
-                $request->query->get('AgentId'),
-                $request->get('To'),
+                $callId,
+                $callSid,
+                $agentId,
+                $forwardedNumber,
                 $details
             );
 
@@ -1471,13 +1485,23 @@ class TwilioCallbacksController extends BaseController
      */
     private function phoneNumberUserIncomingCallback(Request $request)
     {
+        $callSid    = $request->get('CallSid');
+        $fromNumber = $request->get('From');
+        $toNumber   = $request->get('To');
+
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf(
+            '[TwilioCallbacks] Begin user incoming callback, uuid = %s, from = %s, to = %s',
+            $callSid, $fromNumber, $toNumber
+        ));
+
         $twiml = new Twiml();
 
         try {
             $phoneCall = $this->get('dp.voice.callbacks_helper')->createIncomingPhoneCall(
-                $request->get('CallSid'),
-                $request->get('From'),
-                $request->get('To'),
+                $callSid,
+                $fromNumber,
+                $toNumber,
                 $request->query->all()
             );
 
@@ -1512,77 +1536,96 @@ class TwilioCallbacksController extends BaseController
     {
         /** @var VoicePhoneCall $phoneCall */
         $callId  = $request->query->get('CallId');
+        $callSid = $request->query->get('CallSid');
+        $agentId = $request->query->get('AgentId');
         $details = $request->query->all();
 
-        $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
-        if (!$phoneCall) {
-            throw $this->createBadRequestException('Phone call not found');
-        }
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf(
+            '[TwilioCallbacks] Begin agent outgoing callback, uuid = %s, call_id = %s, agent_id = %s',
+            $callSid, $callId, $agentId
+        ));
 
-        $this->get('dp.voice.callbacks_helper')->setOutgoingAgentParticipant(
-            $callId,
-            $request->query->get('CallSid'),
-            $request->query->get('AgentId'),
-            $details
-        );
+        $twiml     = new Twiml();
+        $phoneCall = null;
 
-        $twiml = new Twiml();
-
-        // make an outbound call
-        $callUuid = $this->get('twilio_adapter')->callNumber(
-            $phoneCall,
-            $phoneCall->getExternalNumber(),
-            [
-                'url'                  => $this->getOutboundCallbackUrl($account, $phoneCall),
-                'method'               => 'POST',
-                'statusCallback'       => $this->getPhoneNumberStatusCallbackUrl($account, $phoneCall),
-                'statusCallbackMethod' => 'POST',
-            ],
-            $exception
-        );
-
-        if ($callUuid) {
-            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callUuid, $details);
-
-            // create and join a new conference
-            $twiml->enqueue($phoneCall->getQueueName(), [
-                'waitUrl'       => $this->getAgentWaitCallbackUrl($account, $phoneCall),
-                'waitUrlMethod' => 'POST',
-            ]);
-
-            // outgoing request id is created, not we can cancel outgoing call to prevent race conditions
-            $this->get('event_dispatcher')->dispatch(
-                LegacySystemEvent::EVENT_NAME,
-                new LegacySystemEvent('agent.voice.outgoing-call-init')
-            );
-        } else {
-            $errorCodeGen = $this->get('form_error.error_code_generator.api');
-
-            if ($exception) {
-                if ($exception instanceof BlacklistException) {
-                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_BLACKLIST, [], ['call_to']);
-                } elseif ($exception instanceof InsufficientBalanceException) {
-                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
-                } else {
-                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
-                }
-            } else {
-                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_UNABLE_TO_CALL_THIS_NUMBER, [], ['call_to']);
+        try {
+            $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
+            if (!$phoneCall) {
+                throw $this->createBadRequestException('Phone call not found');
             }
 
-            $this->get('event_dispatcher')->dispatch(
-                LegacySystemEvent::EVENT_NAME,
-                new LegacySystemEvent('agent.voice.outgoing-provider-error', [
-                    'call_id' => $phoneCall->getId(),
-                    'errors'  => $errorMessage,
-                ])
+            $this->get('dp.voice.callbacks_helper')->setOutgoingAgentParticipant(
+                $callId,
+                $callSid,
+                $agentId,
+                $details
             );
 
+            // make an outbound call
+            $callUuid = $this->get('twilio_adapter')->callNumber(
+                $phoneCall,
+                $phoneCall->getExternalNumber(),
+                [
+                    'url'                  => $this->getOutboundCallbackUrl($account, $phoneCall),
+                    'method'               => 'POST',
+                    'statusCallback'       => $this->getPhoneNumberStatusCallbackUrl($account, $phoneCall),
+                    'statusCallbackMethod' => 'POST',
+                ],
+                $exception
+            );
+
+            if ($callUuid) {
+                $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callUuid, $details);
+
+                // create and join a new conference
+                $twiml->enqueue($phoneCall->getQueueName(), [
+                    'waitUrl'       => $this->getAgentWaitCallbackUrl($account, $phoneCall),
+                    'waitUrlMethod' => 'POST',
+                ]);
+
+                // outgoing request id is created, not we can cancel outgoing call to prevent race conditions
+                $this->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent('agent.voice.outgoing-call-init')
+                );
+            } else {
+                $errorCodeGen = $this->get('form_error.error_code_generator.api');
+
+                if ($exception) {
+                    if ($exception instanceof BlacklistException) {
+                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_BLACKLIST, [], ['call_to']);
+                    } elseif ($exception instanceof InsufficientBalanceException) {
+                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
+                    } else {
+                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
+                    }
+                } else {
+                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_UNABLE_TO_CALL_THIS_NUMBER, [], ['call_to']);
+                }
+
+                $this->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent('agent.voice.outgoing-provider-error', [
+                        'call_id' => $phoneCall->getId(),
+                        'errors'  => $errorMessage,
+                    ])
+                );
+
+                $twiml->hangup();
+
+                // mark phone call as ended
+                $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+                $this->getManager()->flush();
+            }
+        } catch (\Exception $e) {
             $twiml->hangup();
 
             // mark phone call as ended
-            $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
-            $this->getManager()->flush();
+            if ($phoneCall) {
+                $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+                $this->getManager()->flush();
+            }
         }
 
         $response = new Response($twiml);
@@ -1603,17 +1646,27 @@ class TwilioCallbacksController extends BaseController
      */
     private function phoneNumberAgentConferenceCallback(TwilioVoiceAccount $account, Request $request)
     {
+        $callSid         = $request->get('CallSid');
+        $callId          = $request->query->get('CallId');
+        $agentId         = $request->query->get('AgentId');
+        $forwardedNumber = $request->get('To');
+
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf(
+            '[TwilioCallbacks] Begin agent conference callback, uuid = %s, call_id = %s, agent_id = %s, forwarded_number = %s',
+            $callSid, $callId, $agentId, $forwardedNumber
+        ));
+
         $twiml = new Twiml();
 
         /** @var VoicePhoneCall $phoneCall */
-        $callId    = $request->query->get('CallId');
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
         if ($phoneCall) {
             $this->get('dp.voice.callbacks_helper')->joinIncomingPhoneCall(
                 $phoneCall->getId(),
-                $request->get('CallSid'),
-                $request->query->get('AgentId'),
-                $request->get('To'),
+                $callSid,
+                $agentId,
+                $forwardedNumber,
                 $request->query->all()
             );
 
