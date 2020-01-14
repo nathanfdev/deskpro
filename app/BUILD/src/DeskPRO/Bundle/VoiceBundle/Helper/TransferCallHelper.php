@@ -41,10 +41,10 @@ class TransferCallHelper
      * @param VoiceProviderHelper   $voiceProviderHelper
      */
     public function __construct(
-        EntityManager         $em,
+        EntityManager $em,
         UrlGeneratorInterface $router,
-        VoiceAssetHelper      $voiceAssetHelper,
-        VoiceProviderHelper   $voiceProviderHelper
+        VoiceAssetHelper $voiceAssetHelper,
+        VoiceProviderHelper $voiceProviderHelper
     ) {
         $this->em                  = $em;
         $this->router              = $router;
@@ -58,13 +58,22 @@ class TransferCallHelper
     public function transferToVoicemail(VoicePhoneCall $phoneCall)
     {
         $account = $phoneCall->getNumber()->getAccount();
-        $asset   = $this->voiceAssetHelper->getVoicemailAsset($phoneCall->getTaskSid());
 
-        $voicemailUrl = $this->router->generate($account->getRouterPrefix().'_voicemail', [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-            'asset'       => $asset ? $asset->getId() : null,
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
+        if ($this->voiceAssetHelper->isVoicemailEnabled($phoneCall->getTaskSid())) {
+            $asset        = $this->voiceAssetHelper->getVoicemailAsset($phoneCall->getTaskSid());
+            $voicemailUrl = $this->router->generate($account->getRouterPrefix().'_voicemail', [
+                'account'     => $account->getId(),
+                'accountAuth' => $account->getAccountAuth(),
+                'asset'       => $asset ? $asset->getId() : null,
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
+        } else {
+            $asset        = $this->voiceAssetHelper->getVoicemailDisabledAsset($phoneCall->getTaskSid());
+            $voicemailUrl = $this->router->generate($account->getRouterPrefix().'_voicemail_disabled', [
+                'account'     => $account->getId(),
+                'accountAuth' => $account->getAccountAuth(),
+                'asset'       => $asset ? $asset->getId() : null,
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
+        }
 
         $this->voiceProviderHelper->transferUser($phoneCall, $voicemailUrl, 'POST');
     }

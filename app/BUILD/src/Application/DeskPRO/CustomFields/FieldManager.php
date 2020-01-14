@@ -10,6 +10,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
 
@@ -311,6 +312,7 @@ class FieldManager
      *
      * @param array $field_data  An array of structured data from the database
      * @param null  $field_group Optionally a form group to add form fields to
+     * @param mixed $use_default
      *
      * @return array
      */
@@ -350,12 +352,14 @@ class FieldManager
                             $form_data['field_'.$field_id][] = $k;
                         }
                     }
+
                     break;
 
                 default:
                     if (!empty($data['value']) || (isset($data['value']) && ($data['value'] === 0 || $data['value'] === '0'))) {
                         $form_data['field_'.$field_id] = $data['value'];
                     }
+
                     break;
             }
         }
@@ -704,6 +708,7 @@ class FieldManager
 
             if (!$data = $handler->getDataFromForm($form)) {
                 $this->removeCustomDataOnObject($object, $field_def);
+
                 continue;
             }
 
@@ -734,6 +739,8 @@ class FieldManager
     /**
      * Returns an array of data objects of type $data_class based on form input.
      *
+     * @param mixed $data_class
+     *
      * @return \Application\DeskPRO\Entity\CustomDataAbstract[]
      */
     public function getStrucutredDataFromForm(array $form, $data_class)
@@ -755,6 +762,7 @@ class FieldManager
                     foreach ($this->field_to_children[$field_def->getId()] as $c) {
                         if ($c->getId() == $set_field_id) {
                             $set_field = $c;
+
                             break;
                         }
                     }
@@ -802,6 +810,7 @@ class FieldManager
             foreach ($this->field_to_children[$fieldDef->getId()] as $c) {
                 if ($c->getId() == $set_field_id) {
                     $set_field = $c;
+
                     break;
                 }
             }
@@ -820,16 +829,24 @@ class FieldManager
             }
 
             /** @var CustomDataAbstract[]|ArrayCollection $customData */
-            $customData = $object->getCustomData();
-            $existItems = [];
+            $customData    = $object->getCustomData();
+            $existItems    = [];
+            $blobIds       = [];
+            $removeBlobIds = [];
             foreach ($customData as $customDatum) {
                 if ($customDatum->getRootField() !== $fieldDef) {
                     continue;
                 }
                 if (!in_array($customDatum->getData(), $value)) {
                     $customData->removeElement($customDatum);
+                    if ($fieldDef->isFileType()) {
+                        $removeBlobIds[] = $customDatum->getValue();
+                    }
                 } else {
                     $existItems[] = $customDatum->getData();
+                    if ($fieldDef->isFileType()) {
+                        $blobIds[] = $customDatum->getValue();
+                    }
                 }
             }
             foreach ($value as $item) {
@@ -838,7 +855,25 @@ class FieldManager
                     $customDatum->setData($item);
 
                     $object->addCustomData($customDatum);
+                    if ($fieldDef->isFileType()) {
+                        $blobIds[] = $customDatum->getValue();
+                    }
                 }
+            }
+
+            if (!empty($blobIds)) {
+                $this->db->executeUpdate(
+                    "UPDATE blobs SET is_temp = 0 WHERE id IN (?)",
+                    [$blobIds],
+                    [Connection::PARAM_INT_ARRAY]
+                );
+            }
+            if (!empty($removeBlobIds)) {
+                $this->db->executeUpdate(
+                    "UPDATE blobs SET is_temp = 1 WHERE id IN (?)",
+                    [$removeBlobIds],
+                    [Connection::PARAM_INT_ARRAY]
+                );
             }
 
             return $customData;

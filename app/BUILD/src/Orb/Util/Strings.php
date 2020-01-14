@@ -475,15 +475,16 @@ class Strings
      * Get the exention from a string. This is the last bits after the
      * '.', i.e. as part of a path.
      *
-     * @param string $string The string to work on
+     * @param string $string      The string to work on
+     * @param bool   $toLowerCase Convert result to the lower case.
      *
      * @return string
      */
-    public static function getExtension($string)
+    public static function getExtension($string, $toLowerCase = true)
     {
         $matches = null;
         if (preg_match('#\.([a-zA-Z0-9_\-]+)$#', $string, $matches)) {
-            return strtolower($matches[1]);
+            return $toLowerCase ? strtolower($matches[1]) : $matches[1];
         }
 
         return '';

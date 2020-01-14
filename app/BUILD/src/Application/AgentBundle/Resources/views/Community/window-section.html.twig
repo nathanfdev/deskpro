@@ -6,7 +6,7 @@
 {% block pane_content %}
 	<div class="pane-content pane-content-main">
 
-		{% if app.user.hasPerm('agent_publish.validate') %}
+		{% if app.user.hasPerm('agent_publish.use') %}
 			<section class="pane-section">
 				<header>
 					<h1>{{ phrase('agent.general.pending') }}</h1>

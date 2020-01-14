@@ -20,6 +20,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequestInterface
 {
+    public static $whitelistedRouteNames = [
+        'portal_tickets_feedback',
+        'user_tickets_feedback',
+    ];
+
     /**
      * @var SettingsResolver
      */
@@ -127,7 +132,7 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
     protected function isWhitelisted(Request $request, $routes = null)
     {
         if (!$routes) {
-            $routes = DisabledHelpdeskListener::$whitelistedRouteNames;
+            $routes = array_merge(DisabledHelpdeskListener::$whitelistedRouteNames, self::$whitelistedRouteNames);
         }
         $routeName = $request->attributes->get('_route');
 

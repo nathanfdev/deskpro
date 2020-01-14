@@ -659,6 +659,71 @@ class TwilioCallbacksController extends BaseController
 
     /**
      * @ApiDoc(
+     *     description="Voicemail disabled callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     filters={
+     *          {"name"="asset", "pattern"="\d", "description"="voice asset id", "dataType"="integer"}
+     *     },
+     *     noInput=true,
+     *     output="string"
+     * )
+     *
+     * @Rest\Post("/voicemail_disabled", name="twilio_voicemail_disabled")
+     *
+     * @param TwilioVoiceAccount $account
+     * @param Request            $request
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function voicemailDisabledAction(TwilioVoiceAccount $account, Request $request)
+    {
+        $callSid = $request->get('CallSid');
+        $twiml   = new Twiml();
+
+        /** @var VoicePhoneCall $phoneCall */
+        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+            'callSid' => $callSid,
+        ]);
+        if (!$phoneCall) {
+            $twiml->hangup();
+        } else {
+            $this->get('event_dispatcher')->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent('agent.voice.reached-voicemail', [
+                    'call_id' => $phoneCall->getId(),
+                ])
+            );
+
+            $asset   = null;
+            $assetId = $request->query->get('asset');
+            if ($assetId) {
+                $asset = $this->getRepository(AbstractVoiceAsset::class)->find($assetId);
+            }
+
+            // get voicemail message
+            if ($asset) {
+                $this->playGreetAsset($twiml, $asset);
+            } else {
+                $twiml->say('No one is able to answer the call. Please call back later.', [
+                    'voice' => 'alice',
+                ]);
+            }
+
+            $twiml->hangup();
+        }
+
+        $response = new Response($twiml);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
      *     description="Voicemail record callback",
      *     statusCodes={
      *         200="Returned if everything is ok"
