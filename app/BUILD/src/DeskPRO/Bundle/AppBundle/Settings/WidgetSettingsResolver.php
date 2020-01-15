@@ -98,14 +98,14 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
-        EntityManager              $em,
-        Packages                   $assetPackages,
-        RouterInterface            $router,
-        OriginalUrlGenerator       $originalUrlGenerator,
-        TokenStorageInterface      $tokenStorage,
-        PortalPermissionsManager   $permissionsManager,
-        UrlCorrectorFactory        $urlCorrectorFactory,
-        LanguageManager            $languageManager
+        EntityManager $em,
+        Packages $assetPackages,
+        RouterInterface $router,
+        OriginalUrlGenerator $originalUrlGenerator,
+        TokenStorageInterface $tokenStorage,
+        PortalPermissionsManager $permissionsManager,
+        UrlCorrectorFactory $urlCorrectorFactory,
+        LanguageManager $languageManager
     ) {
         parent::__construct($settingsResolver);
 
@@ -275,6 +275,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setWidgetLoader($loaderUrl)
             ->setWidgetBundle($widgetUrl)
             ->setHelpdesk($helpdeskUrl)
+            ->setBaseUrl($baseUrl)
         ;
 
         return $model;

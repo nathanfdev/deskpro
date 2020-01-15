@@ -31,6 +31,13 @@ class WidgetUrlSettings
     private $helpdesk;
 
     /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $baseUrl;
+
+    /**
      * @return string
      */
     public function getWidgetLoader()
@@ -86,6 +93,26 @@ class WidgetUrlSettings
     public function setHelpdesk($helpdesk)
     {
         $this->helpdesk = $helpdesk;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
+    }
+
+    /**
+     * @param string $baseUrl
+     *
+     * @return $this
+     */
+    public function setBaseUrl($baseUrl)
+    {
+        $this->baseUrl = $baseUrl;
 
         return $this;
     }
