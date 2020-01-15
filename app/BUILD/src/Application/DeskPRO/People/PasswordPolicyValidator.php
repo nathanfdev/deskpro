@@ -9,6 +9,7 @@ namespace Application\DeskPRO\People;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\PasswordHistory as PasswordHistoryRepos;
 use Application\DeskPRO\Settings\PasswordPolicy;
+use Application\DeskPRO\Usersource\UsersourceManager;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -44,16 +45,29 @@ class PasswordPolicyValidator
     private $session;
 
     /**
-     * @param PasswordPolicy       $user_policy
-     * @param PasswordPolicy       $agent_policy
-     * @param PasswordHistoryRepos $history_repos
+     * @var UsersourceManager
      */
-    public function __construct(PasswordPolicy $user_policy, PasswordPolicy $agent_policy, PasswordHistoryRepos $history_repos, Session $session)
-    {
-        $this->user_policy   = $user_policy;
-        $this->agent_policy  = $agent_policy;
-        $this->history_repos = $history_repos;
-        $this->session       = $session;
+    private  $usersourceManager;
+
+    /**
+     * @param PasswordPolicy $user_policy
+     * @param PasswordPolicy $agent_policy
+     * @param PasswordHistoryRepos $history_repos
+     * @param Session $session
+     * @param UsersourceManager $usersourceManager
+     */
+    public function __construct(
+        PasswordPolicy $user_policy,
+        PasswordPolicy $agent_policy,
+        PasswordHistoryRepos $history_repos,
+        Session $session,
+        UsersourceManager $usersourceManager
+    ) {
+        $this->user_policy       = $user_policy;
+        $this->agent_policy      = $agent_policy;
+        $this->history_repos     = $history_repos;
+        $this->session           = $session;
+        $this->usersourceManager = $usersourceManager;
     }
 
     /**
@@ -121,9 +135,24 @@ class PasswordPolicyValidator
             return false;
         }
 
+        $authById = $this->session->get('auth_usersource_id');
         $authBy = $this->session->get('auth_usersource_type');
-        if ($authBy && $authBy !== 'Application\DeskPRO\Usersource\Adapter\DeskPRO') {
-            return false;
+
+        if ($authBy) {
+            if ($authBy !== 'Application\DeskPRO\Usersource\Adapter\DeskPRO') {
+                return false;
+            }
+
+            $usersource = $this->usersourceManager
+                ->getAll()
+                ->mustBeEnabled()
+                ->ofType($authBy)
+                ->forInterface($person->is_agent ? 'agent' : 'user')
+                ->getFirstOrNull();
+
+            if (!$usersource) {
+                return false;
+            }
         }
 
         // Matches special expired date

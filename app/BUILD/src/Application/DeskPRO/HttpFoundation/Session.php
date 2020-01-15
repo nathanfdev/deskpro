@@ -149,8 +149,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                             $sid,
                         ]
                     );
-                    $agentSessData = base64_decode($agent_session['sess_data']);
-                    $personId      = preg_replace('/^.+s:14:"auth_person_id";i:(\d+);.+$/', '\\1', $agentSessData);
+                    $agentSessData = unserialize(str_replace('_sf2_attributes|', '', base64_decode($agent_session['sess_data'])));
+                    $personId      = $agentSessData['auth_person_id'];
+                    $this->set('auth_usersource_id', $agentSessData['auth_usersource_id']);
+                    $this->set('auth_usersource_type', $agentSessData['auth_usersource_type']);
 
                     if ($personId) {
                         $person = App::getEntityRepository('DeskPRO:Person')->find($personId);
