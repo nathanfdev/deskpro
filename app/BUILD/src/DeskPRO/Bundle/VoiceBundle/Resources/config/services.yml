@@ -51,9 +51,15 @@ services:
       - "@dp.voice.event_dispatcher"
       - "@dp.voice.task_router.logger"
 
-  dp.voice.task_router_lock:
+  dp.voice.task_router_evaluate_lock:
     class: Symfony\Component\Lock\Lock
-    factory: ['DeskPRO\Bundle\VoiceBundle\TaskRouter\LockFactory', createTaskRouterLock]
+    factory: ['DeskPRO\Bundle\VoiceBundle\TaskRouter\LockFactory', createTaskRouterEvaluateLock]
+    arguments:
+      - "@service_container"
+
+  dp.voice.task_router_actions_lock:
+    class: Symfony\Component\Lock\Lock
+    factory: ['DeskPRO\Bundle\VoiceBundle\TaskRouter\LockFactory', createTaskRouterActionsLock]
     arguments:
       - "@service_container"
 
@@ -63,7 +69,8 @@ services:
       - "@service_container"
       - "@dp.voice.task_router.storage"
       - "@dp.voice.event_dispatcher"
-      - "@dp.voice.task_router_lock"
+      - "@dp.voice.task_router_evaluate_lock"
+      - "@dp.voice.task_router_actions_lock"
       - "@dp.voice.task_router.logger"
 
   dp.voice.task_router.storage:

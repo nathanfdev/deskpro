@@ -145,22 +145,22 @@ class VoiceCallbacksHelper
      * @param LoggerInterface            $logger
      */
     public function __construct(
-        EntityManager              $em,
-        Serializer                 $serializer,
-        TaskBuilder                $taskBuilder,
-        TaskRouter                 $taskRouter,
-        VoiceSettingsResolver      $voiceSettingsResolver,
-        TicketManager              $ticketManager,
-        VoiceProviderHelper        $voiceProviderHelper,
-        VoiceTicketHelper          $voiceTicketHelper,
-        TransferCallHelper         $transferCallHelper,
-        WorkerHelper               $workerHelper,
-        VoiceTaskHelper            $taskHelper,
-        StorageAdapterInterface    $storageAdapter,
+        EntityManager $em,
+        Serializer $serializer,
+        TaskBuilder $taskBuilder,
+        TaskRouter $taskRouter,
+        VoiceSettingsResolver $voiceSettingsResolver,
+        TicketManager $ticketManager,
+        VoiceProviderHelper $voiceProviderHelper,
+        VoiceTicketHelper $voiceTicketHelper,
+        TransferCallHelper $transferCallHelper,
+        WorkerHelper $workerHelper,
+        VoiceTaskHelper $taskHelper,
+        StorageAdapterInterface $storageAdapter,
         BrandAwareSettingsResolver $settingsResolver,
-        ExceptionErrorsGenerator   $errorsGenerator,
-        EventDispatcherInterface   $dispatcher,
-        LoggerInterface            $logger
+        ExceptionErrorsGenerator $errorsGenerator,
+        EventDispatcherInterface $dispatcher,
+        LoggerInterface $logger
     ) {
         $this->em                    = $em;
         $this->serializer            = $serializer;
@@ -193,12 +193,8 @@ class VoiceCallbacksHelper
      */
     public function createIncomingPhoneCall($callSid, $fromNumber, $toNumber, array $details)
     {
-        if (!preg_match('/^\+/', $fromNumber)) {
-            $fromNumber = '+'.$fromNumber;
-        }
-        if (!preg_match('/^\+/', $toNumber)) {
-            $toNumber = '+'.$toNumber;
-        }
+        $fromNumber = $this->formatNumber($fromNumber);
+        $toNumber   = $this->formatNumber($toNumber);
 
         $number = $this->em->getRepository(VoiceNumber::class)->findOneBy([
             'number' => $toNumber,
@@ -452,9 +448,20 @@ class VoiceCallbacksHelper
             throw new OutOfServiceException();
         }
 
-        // get the caller person
         $agent = $this->getAgent($agentId);
+
+        // create a task for the call
+        // so we can reserve the agent's worker
+        $task = $this->taskBuilder->createVoiceTaskForOutgoingCall($phoneCall, $agent);
+        $phoneCall->setTaskSid($task->getId());
+
+        if (!$this->taskRouter->joinTask($task->getId(), 'agent', $agent->getId())) {
+            throw new OutOfServiceException();
+        }
+
+        // get the caller person
         $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_OUTGOING, $callSid);
+        $phoneCall->setStatus(VoicePhoneCall::STATUS_PENDING);
 
         // create agent participant
         $participant = new VoicePhoneCallParticipantAgent();
@@ -1171,5 +1178,21 @@ class VoiceCallbacksHelper
                 }
             }
         }
+    }
+
+    /**
+     * @param string $number
+     *
+     * @return string
+     */
+    private function formatNumber($number)
+    {
+        if (!preg_match('/^sip:/', $number)) {
+            if (!preg_match('/^\+/', $number)) {
+                $number = '+'.$number;
+            }
+        }
+
+        return $number;
     }
 }
