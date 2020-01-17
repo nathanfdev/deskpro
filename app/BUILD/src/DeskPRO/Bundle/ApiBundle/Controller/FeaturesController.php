@@ -14,6 +14,7 @@ use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class FeaturesController.
@@ -33,18 +34,25 @@ class FeaturesController extends BaseController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
+     *     parameters={
+     *         {"name"="filter_editable", "description"="Filter only editable features", "dataType"="boolean", "required"=false}
+     *     },
      *     output="array<DeskPRO\Bundle\ApiBundle\Model\Feature>"
      * )
      *
      * @return View
      * @Rest\Get("")
      */
-    public function getFeaturesAction()
+    public function getFeaturesAction(Request $request)
     {
         $collection = $this->get('deskpro.features_collection');
         $features   = [];
 
-        foreach ($collection->getAvailableFeatures() as $feature) {
+        $_features = $request->get('filter_editable')
+            ? $collection->getAvailableAndEditableFeatures()
+            : $collection->getAvailableFeatures();
+
+        foreach ($_features as $feature) {
             $features[] = $this->getFeatureModel($feature);
         }
 

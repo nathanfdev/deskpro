@@ -77,6 +77,14 @@ class DisabledFeature implements BetaFeatureInterface
     /**
      * {@inheritdoc}
      */
+    public function getDateReleased()
+    {
+        return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isEnabledOnInstall()
     {
         return false;

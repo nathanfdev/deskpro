@@ -62,6 +62,14 @@ interface BetaFeatureInterface extends FeatureInterface
     public function isEnabledOnInstall();
 
     /**
+     * Feature release date (release from beta)
+     * From this date feature enabled by default for new installs
+     *
+     * @return \DateTime|false
+     */
+    public function getDateReleased();
+
+    /**
      * Require broadcast agent reload after enable/disable.
      *
      * @return bool

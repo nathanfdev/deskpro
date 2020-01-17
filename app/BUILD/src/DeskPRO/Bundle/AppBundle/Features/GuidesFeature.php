@@ -20,7 +20,7 @@ class GuidesFeature extends AbstractBetaFeature
      */
     public function getTitle()
     {
-        return 'Guides';
+        return 'Guides (Beta)';
     }
 
     /**

@@ -17,7 +17,7 @@ class ContentEditorFeature extends AbstractBetaFeature
      */
     public function getTitle()
     {
-        return 'Improved content editor';
+        return 'Improved Content Editor (Experimental)';
     }
 
     /**
@@ -25,7 +25,7 @@ class ContentEditorFeature extends AbstractBetaFeature
      */
     public function getShortDescription()
     {
-        return 'Improved content editor in the agent interface';
+        return 'Editor in the agent interface';
     }
 
     /**
