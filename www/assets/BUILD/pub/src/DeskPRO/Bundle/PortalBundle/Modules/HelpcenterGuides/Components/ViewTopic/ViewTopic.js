@@ -39,6 +39,7 @@ class ViewTopic extends React.Component {
   componentDidMount() {
     this.changeInternalLinks();
     this.addCodeBlocksCopy();
+    this.addGuideBlocks();
     window.addEventListener('scroll', () => {
       if (!this.ticking) {
         window.requestAnimationFrame(() => {
@@ -148,11 +149,41 @@ class ViewTopic extends React.Component {
     });
   };
 
+  addGuideBlocks = () => {
+    const blocks = document.querySelectorAll('.block.info,.block.warning');
+    Array.prototype.forEach.call(blocks, this.addGuideBlock);
+  };
+
+  addGuideBlock = (block) => {
+    if (block.querySelector('h4')) {
+      return;
+    }
+    let mode;
+    let title;
+    let icon;
+    if (block.classList.contains('info')) {
+      mode = 'note';
+      title = 'Note';
+      icon = 'fa-info-circle';
+    } else {
+      mode = 'warning';
+      title = 'Warning';
+      icon = 'fa-exclamation-circle';
+    }
+    const codeBlock = (
+      <div className={`dp-po-post-content-${mode}`} >
+        <h4 className={`dp-po-post-content-${mode}-title`}>
+          <i className={classNames('dp-po-icon', 'fal', icon)} /> {title}
+        </h4>
+        <p dangerouslySetInnerHTML={{ __html: block.innerHTML }} />
+      </div>
+    );
+    ReactDOM.render(codeBlock, block);
+  };
+
   addCodeBlocksCopy = () => {
     const blocks = document.querySelectorAll('pre code');
-    Array.prototype.forEach.call(blocks, (block) => {
-      this.addCodeBlockCopy(block);
-    });
+    Array.prototype.forEach.call(blocks, this.addCodeBlockCopy);
   };
 
   addCodeBlockCopy = (block) => {
@@ -257,6 +288,7 @@ class ViewTopic extends React.Component {
       });
       this.changeInternalLinks();
       this.addCodeBlocksCopy();
+      this.addGuideBlocks();
       this.addReactImageLazyload();
     });
   };
@@ -279,6 +311,7 @@ class ViewTopic extends React.Component {
       });
       this.changeInternalLinks();
       this.addCodeBlocksCopy();
+      this.addGuideBlocks();
       this.addReactImageLazyload();
       setTimeout(() => {
         this.setState({
