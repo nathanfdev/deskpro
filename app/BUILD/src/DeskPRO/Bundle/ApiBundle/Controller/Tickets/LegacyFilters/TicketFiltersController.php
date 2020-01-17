@@ -110,7 +110,7 @@ class TicketFiltersController extends CrudController
 
         $offset      = $request->query->getInt('offset');
         $currentPage = $request->query->getInt('page', 1);
-        $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
+        $maxPerPage  = $this->getCountParam($request);
 
         $total = $searcher->getCount();
         $ids   = $searcher->getMatches([

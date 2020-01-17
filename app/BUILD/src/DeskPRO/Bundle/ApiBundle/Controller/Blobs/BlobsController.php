@@ -250,33 +250,9 @@ class BlobsController extends CrudController
         // return QueryBuilder result or Pagerfanta depending on if pagination is enabled for the controller
         if (static::$listPaginate) {
             $page  = (int) $request->query->getInt('page', 1);
-            $count = (int) $request->query->getInt('count', static::$listPerPage);
+            $count = $this->getCountParam($request);
 
-            if ($count > static::$listMaxResults) {
-                throw $this->createBadRequestException(
-                    'You can select maximum '.static::$listMaxResults.' entities'
-                );
-            } elseif ($count <= 0) {
-                throw $this->createBadRequestException('You must select at least 1 entity');
-            }
-
-            if ($limit) {
-                // adding limit to the initial qb will
-                // make the initial COUNT have a limit, which
-                // might speed it up a bit
-                $qb->setMaxResults($limit);
-
-                $pagerAdapter = new DoctrineORMAdapter($qb);
-                $pager        = new LimitedPager($pagerAdapter, $limit);
-            } else {
-                $pagerAdapter = new DoctrineORMAdapter($qb);
-                $pager        = new Pagerfanta($pagerAdapter);
-            }
-
-            $pager->setMaxPerPage($count);
-            $pager->setCurrentPage($page);
-
-            $result = $pager;
+            $result = $this->getPaginatedResult($qb, 0, $count, $limit, $page);
         } else {
             if ($limit) {
                 $qb->setMaxResults($limit);
