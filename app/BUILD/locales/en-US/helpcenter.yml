@@ -156,6 +156,12 @@ helpcenter.community.view-topics:
   one: "View 1 Topic"
   other: "View {{count}} Topics"
 helpcenter.community.votes: 'Votes'
+helpcenter.duration_short.years: Y
+helpcenter.duration_short.months: M
+helpcenter.duration_short.days: D
+helpcenter.duration_short.hours: h
+helpcenter.duration_short.minutes: m
+helpcenter.duration_short.seconds: s
 helpcenter.direct_messages.back_to_messages: 'Back to my messages'
 helpcenter.direct_messages.block_user: 'block user'
 helpcenter.direct_messages.create_thread: Create
