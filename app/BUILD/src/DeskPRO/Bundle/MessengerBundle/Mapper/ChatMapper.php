@@ -135,7 +135,31 @@ class ChatMapper
             'is_sys'       => $message->getIsSys(),
             'is_html'      => $message->isHtml(),
             'uuid'         => $uuid,
+            'meta'         => $this->transformMeta($metadata),
         ];
+    }
+
+    /**
+     * @param $metadata
+     *
+     * @return array
+     */
+    private function transformMeta($metadata)
+    {
+        if (isset($metadata['type']) && $metadata['type'] === 'file') {
+            $res = [
+                'type'        => $metadata['type'],
+                'downloadUrl' => $metadata['blob']['download_url'],
+                'isImage'     => $metadata['blob']['is_image'],
+                'filesize'    => $metadata['blob']['filesize_readable'],
+            ];
+        } else {
+            $res = [
+                'type' => 'message',
+            ];
+        }
+
+        return $res;
     }
 
     /**
