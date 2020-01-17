@@ -16,8 +16,9 @@ class MessengerStylesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('backgroundColor', TextType::class)
             ->add('primaryColor', TextType::class)
+            ->add('backgroundColor', TextType::class)
+            ->add('textColor', TextType::class)
         ;
     }
 

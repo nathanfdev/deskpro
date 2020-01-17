@@ -50,8 +50,9 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const PRE_CHAT_FORM_DEPARTMENT     = 'messenger.chat.pre_chat_form.department';
     const PRE_CHAT_FORM_FIELDS         = 'messenger.chat.pre_chat_form.fields';
 
-    const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
     const STYLE_PRIMARY_COLOR = 'messenger.styles.primary_color';
+    const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
+    const STYLE_TEXT_COLOR    = 'messenger.styles.text_color';
 
     const OPTIONS_AUTOSTART         = 'messenger.options.autostart';
     const OPTIONS_AUTOSTART_TIMEOUT = 'messenger.options.autostart_timeout';
@@ -80,7 +81,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
-        EntityManager              $em
+        EntityManager $em
     ) {
         parent::__construct($settingsResolver);
         $this->em = $em;
@@ -204,8 +205,9 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         $mStyles = new MessengerStyles();
 
         return $mStyles
-            ->setBackgroundColor($this->getSettings(self::STYLE_BG_COLOR, $brand, $mStyles->getBackgroundColor()))
             ->setPrimaryColor($this->getSettings(self::STYLE_PRIMARY_COLOR, $brand, $mStyles->getPrimaryColor()))
+            ->setBackgroundColor($this->getSettings(self::STYLE_BG_COLOR, $brand, $mStyles->getBackgroundColor()))
+            ->setTextColor($this->getSettings(self::STYLE_TEXT_COLOR, $brand, $mStyles->getTextColor()))
             ;
     }
 

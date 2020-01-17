@@ -10,6 +10,16 @@ use JMS\Serializer\Annotation as JMS;
 class MessengerStyles
 {
     /**
+     * Primary colour of messenger.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("primaryColor")
+     *
+     * @var string
+     */
+    private $primaryColor = '#3d88f3';
+
+    /**
      * Background colour for messenger.
      *
      * @JMS\Type("string")
@@ -20,14 +30,34 @@ class MessengerStyles
     private $backgroundColor = '#aaa';
 
     /**
-     * Primary colour of messenger.
+     * Icon and text colour for messenger.
      *
      * @JMS\Type("string")
-     * @JMS\SerializedName("primaryColor")
+     * @JMS\SerializedName("textColor")
      *
      * @var string
      */
-    private $primaryColor = '#3d88f3';
+    private $textColor = '#ffffff';
+
+    /**
+     * @return string
+     */
+    public function getPrimaryColor()
+    {
+        return $this->primaryColor;
+    }
+
+    /**
+     * @param string $primaryColor
+     *
+     * @return $this
+     */
+    public function setPrimaryColor($primaryColor)
+    {
+        $this->primaryColor = $primaryColor;
+
+        return $this;
+    }
 
     /**
      * @return string
@@ -52,19 +82,19 @@ class MessengerStyles
     /**
      * @return string
      */
-    public function getPrimaryColor()
+    public function getTextColor()
     {
-        return $this->primaryColor;
+        return $this->textColor;
     }
 
     /**
-     * @param string $primaryColor
+     * @param string $textColor
      *
      * @return $this
      */
-    public function setPrimaryColor($primaryColor)
+    public function setTextColor($textColor)
     {
-        $this->primaryColor = $primaryColor;
+        $this->textColor = $textColor;
 
         return $this;
     }
