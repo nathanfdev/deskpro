@@ -23,8 +23,11 @@ use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -430,16 +433,32 @@ class ChatHandler
             $ticketMessage .= '<br/>'.($message->getIsUser() ? 'user: ' : 'agent: ').$message->getContentHtml();
         }
 
-        $subjectPattern = $this->settingsResolver->getSettings(
-            MessengerSettingsResolver::CHAT_TICKET_DEFAULTS_SUBJECT,
-                    $this->brandStack->getActive()->getBrand(),
-                    'Missed chat with {name}'
+        $subjectType = $this->settingsResolver->getSettings(
+            MessengerSettingsResolver::CHAT_TICKET_DEFAULTS_SUBJECT_TYPE,
+            $this->brandStack->getActive()->getBrand(),
+            MessengerChatTicketDefaults::MISSED_CHAT_TICKET_SUBJECT_TYPE_SET
         );
 
-        $subjectPattern = RegexUtils::safePregReplace('#\{[a-zA-Z0-9]+\}#', '%s', $subjectPattern);
+        if ($subjectType === MessengerChatTicketDefaults::MISSED_CHAT_TICKET_SUBJECT_TYPE_SET) {
+            $subjectPattern = $this->settingsResolver->getSettings(
+                MessengerSettingsResolver::CHAT_TICKET_DEFAULTS_SUBJECT,
+                $this->brandStack->getActive()->getBrand(),
+                'Missed chat with {name}'
+            );
+
+            $subject = RegexUtils::safePregReplace('#\{[a-zA-Z0-9]+\}#', '%s', $subjectPattern);
+        } else {
+            $subject = Strings::html2Text($ticketMessage);
+            if (str_word_count($subject) > 5) {
+                $words   = str_word_count($subject, 2);
+                $pos     = Arrays::getNthKey($words, 5);
+                $subject = substr($subject, 0, $pos);
+                $subject = RegexUtils::safePregReplace('#[^a-zA-Z0-9]$#', '', $subject);
+            }
+        }
 
         $ticket
-            ->setSubject(sprintf($subjectPattern, $username))
+            ->setSubject(sprintf($subject, $username))
             ->setDateCreated(new \DateTime())
             ->setCreationSystem(Ticket::CREATED_MESSENGER_UNANSWERED)
             ->setDepartment($department)
