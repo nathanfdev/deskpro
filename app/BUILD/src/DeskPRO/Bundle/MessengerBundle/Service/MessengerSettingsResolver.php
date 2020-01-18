@@ -38,8 +38,9 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_BUSY_MESSAGE       = 'messenger.chat.busy';
     const CHAT_DEFAULT_DEPARTMENT = 'messenger.chat.department';
 
-    const CHAT_TICKET_DEFAULTS_SUBJECT = 'messenger.chat.ticket_defaults.subject';
-    const CHAT_TICKET_DEFAULTS_DEP     = 'messenger.chat.ticket_defaults.department';
+    const CHAT_TICKET_DEFAULTS_SUBJECT      = 'messenger.chat.ticket_defaults.subject';
+    const CHAT_TICKET_DEFAULTS_SUBJECT_TYPE = 'messenger.chat.ticket_defaults.subject_type';
+    const CHAT_TICKET_DEFAULTS_DEP          = 'messenger.chat.ticket_defaults.department';
 
     const PRE_CHAT_FORM_ENABLED        = 'messenger.chat.pre_chat_form.enabled';
     const PRE_CHAT_FORM_BRAND_MESSAGE  = 'messenger.chat.pre_chat_form.brand_message_enabled';
@@ -170,6 +171,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         return $mChatTicketDefaults
             ->setSubject($this->getSettings(self::CHAT_TICKET_DEFAULTS_SUBJECT, $brand, $mChatTicketDefaults->getSubject()))
+            ->setSubjectType($this->getSettings(self::CHAT_TICKET_DEFAULTS_SUBJECT_TYPE, $brand, $mChatTicketDefaults->getSubjectType()))
             ->setDepartment($this->getSettings(self::CHAT_TICKET_DEFAULTS_DEP, $brand, $this->getDefaultDepartment('ticket')))
             ;
     }

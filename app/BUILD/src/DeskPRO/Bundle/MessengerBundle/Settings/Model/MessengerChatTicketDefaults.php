@@ -10,6 +10,9 @@ use JMS\Serializer\Annotation as JMS;
  */
 class MessengerChatTicketDefaults
 {
+    const MISSED_CHAT_TICKET_SUBJECT_TYPE_SET  = 'setSubject';
+    const MISSED_CHAT_TICKET_SUBJECT_TYPE_AUTO = 'autoSubject';
+
     /**
      * Is chat enabled.
      *
@@ -27,6 +30,16 @@ class MessengerChatTicketDefaults
      * @var string
      */
     private $subject = 'Missed chat from {name}';
+
+    /**
+     * A short prompt to chat.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("subjectType")
+     *
+     * @var string
+     */
+    private $subjectType = self::MISSED_CHAT_TICKET_SUBJECT_TYPE_SET;
 
     /**
      * @return int
@@ -64,6 +77,26 @@ class MessengerChatTicketDefaults
     public function setSubject($subject)
     {
         $this->subject = $subject;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubjectType()
+    {
+        return $this->subjectType;
+    }
+
+    /**
+     * @param string $subjectType
+     *
+     * @return $this
+     */
+    public function setSubjectType($subjectType)
+    {
+        $this->subjectType = $subjectType;
 
         return $this;
     }
