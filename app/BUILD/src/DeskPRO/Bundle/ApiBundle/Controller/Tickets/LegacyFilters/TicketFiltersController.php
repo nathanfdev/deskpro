@@ -30,10 +30,11 @@ class TicketFiltersController extends CrudController
 {
     use TicketsPagerTrait;
 
-    public static $exposeOnly = ['list', 'get', 'count'];
-    public static $entity     = LegacyTicketFilter::class;
-    public static $listSort   = 'title';
-    public static $listOrder  = 'asc';
+    public static $exposeOnly     = ['list', 'get', 'count'];
+    public static $entity         = LegacyTicketFilter::class;
+    public static $listMaxResults = 50;
+    public static $listSort       = 'title';
+    public static $listOrder      = 'asc';
 
     /**
      * @ApiDoc(

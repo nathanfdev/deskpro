@@ -52,7 +52,7 @@ abstract class CrudController extends BaseController
     public static $listOrder      = 'desc';
     public static $listPaginate   = true;
     public static $listPerPage    = 10;
-    public static $listMaxResults = 50;
+    public static $listMaxResults = 200;
     public static $listLimit      = 0;
 
     /**
