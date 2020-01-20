@@ -131,7 +131,7 @@ class RawMessageUtil
             try {
                 switch ($header_name) {
                     case 'Message-ID':
-                        $message->setId($header_values[0]);
+                        $message->setId(trim($header_values[0], "<>"));
                         break;
 
                     case 'Date':
@@ -139,7 +139,7 @@ class RawMessageUtil
                         break;
 
                     case 'Return-Path':
-                        $message->setReturnPath($header_values[0]);
+                        $message->setReturnPath(trim($header_values[0], "<>"));
                         break;
 
                     case 'DKIM-Signature':
