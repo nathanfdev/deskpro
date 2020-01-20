@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use Doctrine\ORM\EntityManager;
@@ -41,43 +42,76 @@ class VoiceCloudProxy
     }
 
     /**
-     * Inits plivo proxy settings.
+     * Get plivo proxy settings.
      *
      * @param Person $person
+     *
+     * @throws \RuntimeException
      */
-    public function initPlivoProxy(Person $person)
+    public function loadPlivoProxySettings(Person $person)
     {
         throw new \RuntimeException('Not supported');
     }
 
     /**
-     * Inits plivo proxy settings.
+     * Get twilio proxy settings.
      *
      * @param Person $person
+     *
+     * @return array
      */
-    public function initTwilioProxy(Person $person)
+    public function loadTwilioProxySettings(Person $person)
     {
         if (defined('DPC_IS_CLOUD')) {
-            $data = $this->callMemberAreaCloud($person);
+            return $this->callMemberAreaCloud($person);
         } else {
-            $data = $this->callMemberAreaOnPrem($person);
+            return $this->callMemberAreaOnPrem($person);
         }
+    }
 
-        $apiHost     = "{$data['twilioProxyServiceUrl']}/twilio/twilio-api-proxy/{$data['accessToken']}/{$data['authToken']}";
-        $pricingHost = "{$data['twilioProxyServiceUrl']}/twilio/twilio-pricing-proxy/{$data['accessToken']}/{$data['authToken']}";
-        $clientHost  = "{$data['twilioProxyServiceUrl']}/twilio/twilio-client/generate-token/{$data['accessToken']}/{$data['authToken']}";
+    /**
+     * Creates a proxy account if not exists.
+     *
+     * @param string $proxyUrl
+     * @param string $accessToken
+     * @param string $authToken
+     *
+     * @return TwilioVoiceAccount
+     */
+    public function createTwilioProxyAccount($proxyUrl, $accessToken, $authToken)
+    {
+        $apiHost     = "{$proxyUrl}/twilio/twilio-api-proxy/{$accessToken}/{$authToken}";
+        $pricingHost = "{$proxyUrl}/twilio/twilio-pricing-proxy/{$accessToken}/{$authToken}";
+        $clientHost  = "{$proxyUrl}/twilio/twilio-client/generate-token/{$accessToken}/{$authToken}";
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
         $settingsRepo = $this->em->getRepository(Setting::class);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_API_HOST, $apiHost);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_PRICING_HOST, $pricingHost);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_CLIENT_HOST, $clientHost);
-        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_USERNAME, $data['accessToken']);
-        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_PASSWORD, $data['authToken']);
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_USERNAME, $accessToken);
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_PASSWORD, $authToken);
 
         // reload settings because we need these settings
         // to create account app in voice account doctrine listener
         $this->settingsResolver->getGlobalSettings(true);
+
+        $account = $this->em->getRepository(TwilioVoiceAccount::class)->findOneBy([
+            'accountId' => VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER,
+            'authToken' => '_',
+        ]);
+
+        if (!$account) {
+            $account = new TwilioVoiceAccount();
+            $account->setAccountId(VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER);
+            $account->setAuthToken('_');
+            $account->setAccountName('Deskpro Voice Account');
+
+            $this->em->persist($account);
+            $this->em->flush();
+        }
+
+        return $account;
     }
 
     /**
@@ -128,11 +162,13 @@ class VoiceCloudProxy
 
         if (!$data || !empty($data['error'])) {
             SystemErrorHandler::logException(new \Exception(json_encode($data)));
+
             throw new InsufficientBalanceException(@$data['code']);
         }
 
         if (empty($data['accessToken']) || empty($data['accessToken'])) {
             SystemErrorHandler::logException(new \Exception(json_encode($data)));
+
             throw new AccessDeniedException('dpms');
         }
 
@@ -197,6 +233,7 @@ class VoiceCloudProxy
 
         if (!$data || !empty($data['error']) || empty($data['twilioProxyServiceUrl'])) {
             SystemErrorHandler::logException(new \Exception(json_encode($data)), false, null, true);
+
             throw new InsufficientBalanceException(@$data['code']);
         }
 
