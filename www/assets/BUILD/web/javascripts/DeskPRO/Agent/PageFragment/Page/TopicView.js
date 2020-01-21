@@ -163,9 +163,13 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
 			);
 		}
 
-		this.getEl('no_content').on('change', function(e) {
-      self.toggleContent(e.target.checked);
-      self.saveNoContent(e.target.checked);
+		this.getEl('no_content_block').find('input.no_content_input').on('change', function(e) {
+      self.toggleContent(parseInt(e.target.value, 10));
+      self.saveNoContent(parseInt(e.target.value, 10));
+    });
+		this.getEl('with_content_block').find('input.no_content_input').on('change', function(e) {
+      self.toggleContent(parseInt(e.target.value, 10));
+      self.saveNoContent(parseInt(e.target.value, 10));
     });
 
 		window.document.addEventListener('dpMoveTopic' + this.meta.topic_id, function(e) {
@@ -646,10 +650,15 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
 	toggleContent: function (value) {
     if (value) {
       this.getEl('no_content_block').show();
-      this.getEl('with_content_block').hide()
+      this.getEl('with_content_block').hide();
+      console.log(this.getEl('no_content_block').find('input.no_content_input.section'));
+      this.getEl('no_content_block').find('input.no_content_input.section').prop('checked', true);
+      this.getEl('with_content_block').find('input.no_content_input.section').prop('checked', true);
     } else {
       this.getEl('no_content_block').hide();
       this.getEl('with_content_block').show();
+      this.getEl('no_content_block').find('input.no_content_input.content').prop('checked', true);
+      this.getEl('with_content_block').find('input.no_content_input.content').prop('checked', true);
     }
   },
 
