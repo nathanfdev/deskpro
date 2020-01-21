@@ -162,7 +162,7 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::PRE_CHAT_FORM_EMAIL_REQUIRED, $messengerChatPreChatForm->isEmailRequired(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_DEPARTMENT, $messengerChatPreChatForm->isDepartmentSelectable(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_FIELDS, serialize($messengerChatPreChatForm->getFields()), $brand)
-            ->updateSetting(MSR::PRE_CHAT_FORM_BRAND_MESSAGE_ENABLED, $messengerChatPreChatForm->isBrandMessageEnabled(), $brand)
+            ->updateSetting(MSR::PRE_CHAT_FORM_BRAND_MESSAGE_ENABLED, $messengerChatPreChatForm->isFormMessageEnabled(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_BRAND_MESSAGE, $messengerChatPreChatForm->getFormMessage(), $brand)
 
             ->updateSetting(MSR::CHAT_TICKET_DEFAULTS_SUBJECT, $messengerChatTicketDefaults->getSubject(), $brand)

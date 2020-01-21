@@ -67,7 +67,7 @@ class ServiceController extends AbstractMessengerController
 
         $data['chat']['preChatForm']        = $this->getPreChatFormConfig($preChatForm);
         $data['tickets']['formConfig']      = $this->getTicketFormConfig();
-        $data['chat']['formMessageEnabled'] = $preChatForm->isBrandMessageEnabled();
+        $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();
         $data['chat']['formMessage']        = $preChatForm->getFormMessage();
 
         $data['tickets']['uploadTo'] = $data['chat']['uploadTo'] = $this->generateUrl(

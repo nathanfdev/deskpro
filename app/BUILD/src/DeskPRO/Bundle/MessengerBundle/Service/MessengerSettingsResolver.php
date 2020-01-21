@@ -196,7 +196,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setIsNameRequired($this->getSettings(self::PRE_CHAT_FORM_NAME_REQUIRED, $brand, $mPreChatForm->isNameRequired()))
             ->setIsEmailRequired($this->getSettings(self::PRE_CHAT_FORM_EMAIL_REQUIRED, $brand, $mPreChatForm->isEmailRequired()))
             ->setIsDepartmentSelectable($this->getSettings(self::PRE_CHAT_FORM_DEPARTMENT, $brand, $mPreChatForm->isDepartmentSelectable()))
-            ->setBrandMessageEnabled($this->getSettings(self::CHAT_FORM_MESSAGE_ENABLED, $brand, $mPreChatForm->isBrandMessageEnabled()))
+            ->setFormMessageEnabled($this->getSettings(self::CHAT_FORM_MESSAGE_ENABLED, $brand, $mPreChatForm->isFormMessageEnabled()))
             ->setFormMessage($this->getSettings(self::CHAT_FORM_MESSAGE, $brand, $mPreChatForm->getFormMessage()))
             ->setFields(unserialize($this->getSettings(self::PRE_CHAT_FORM_FIELDS, $brand, serialize($mPreChatForm->getFields()))))
         ;

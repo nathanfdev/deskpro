@@ -20,17 +20,17 @@ class PreChatForm
     private $enabled = false;
 
     /**
-     * Show brand message.
+     * Show form message.
      *
      * @JMS\Type("boolean")
-     * @JMS\SerializedName("brandMessageEnabled")
+     * @JMS\SerializedName("formMessageEnabled")
      *
      * @var bool
      */
-    private $brandMessageEnabled = false;
+    private $formMessageEnabled = false;
 
     /**
-     * Show brand message.
+     * Show form message.
      *
      * @JMS\Type("string")
      * @JMS\SerializedName("formMessage")
@@ -123,9 +123,9 @@ class PreChatForm
     /**
      * @return bool
      */
-    public function isBrandMessageEnabled()
+    public function isFormMessageEnabled()
     {
-        return $this->brandMessageEnabled;
+        return $this->formMessageEnabled;
     }
 
     /**
@@ -133,9 +133,9 @@ class PreChatForm
      *
      * @return $this
      */
-    public function setBrandMessageEnabled($enabled)
+    public function setFormMessageEnabled($enabled)
     {
-        $this->brandMessageEnabled = (bool) $enabled;
+        $this->formMessageEnabled = (bool) $enabled;
 
         return $this;
     }
