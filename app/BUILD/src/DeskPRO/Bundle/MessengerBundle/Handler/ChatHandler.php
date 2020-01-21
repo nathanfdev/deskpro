@@ -501,8 +501,10 @@ class ChatHandler
      */
     private function handleChatEndCommand(ChatConversation $chat, array $request = [])
     {
-        /** @var UserChatManager $chatManager */
-        $chatManager = $this->container->getSystemObject('user_chat_manager');
-        $chatManager->userAbandoned($chat);
+        if (!$chat->isEnded()) {
+            /** @var UserChatManager $chatManager */
+            $chatManager = $this->container->getSystemObject('user_chat_manager');
+            $chatManager->userAbandoned($chat);
+        }
     }
 }
