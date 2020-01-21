@@ -153,6 +153,14 @@ class ChatMapper
                 'isImage'     => $metadata['blob']['is_image'],
                 'filesize'    => $metadata['blob']['filesize_readable'],
             ];
+        } elseif (isset($metadata['chat_assigned'])) {
+            $res = [
+                'type' => 'chat.agentAssigned',
+            ];
+        } elseif (isset($metadata['chat_unassigned'])) {
+            $res = [
+                'type' => 'chat.agentUnassigned',
+            ];
         } else {
             $res = [
                 'type' => 'message',
