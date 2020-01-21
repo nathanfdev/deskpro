@@ -136,6 +136,7 @@ class ServiceController extends AbstractMessengerController
                         'field_type' => 'text',
                         'field_id'   => 'name',
                         'required'   => $preChatForm->isNameRequired(),
+                        'data'       => ['title' => 'Name'],
                     ]
                 );
             }
@@ -146,6 +147,7 @@ class ServiceController extends AbstractMessengerController
                         'field_type' => 'email',
                         'field_id'   => 'email',
                         'required'   => $preChatForm->isNameRequired(),
+                        'data'       => ['title' => 'Email'],
                     ]
                 );
             }
