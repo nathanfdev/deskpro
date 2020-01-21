@@ -22,8 +22,8 @@ class MessengerPreChatFormType extends AbstractType
     {
         $builder
             ->add('enabled', ApiBooleanType::class)
-            ->add('brandMessageEnabled', ApiBooleanType::class)
-            ->add('brandMessage', TextType::class)
+            ->add('formMessageEnabled', ApiBooleanType::class)
+            ->add('formMessage', TextType::class)
             ->add('isNameEnabled', ApiBooleanType::class)
             ->add('isEmailEnabled', ApiBooleanType::class)
             ->add('isNameRequired', ApiBooleanType::class)

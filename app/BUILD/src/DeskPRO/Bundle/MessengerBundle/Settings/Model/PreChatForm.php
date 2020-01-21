@@ -33,11 +33,11 @@ class PreChatForm
      * Show brand message.
      *
      * @JMS\Type("string")
-     * @JMS\SerializedName("brandMessage")
+     * @JMS\SerializedName("formMessage")
      *
      * @var string
      */
-    private $brandMessage = 'Welcome to Deskpro. Please fill out the details below so we can direct you to the right person as quickly as possible.';
+    private $formMessage = 'Welcome to Deskpro. Please fill out the details below so we can direct you to the right person as quickly as possible.';
 
     /**
      * Is name enabled as pre-chat field?
@@ -143,19 +143,19 @@ class PreChatForm
     /**
      * @return string
      */
-    public function getBrandMessage()
+    public function getFormMessage()
     {
-        return $this->brandMessage;
+        return $this->formMessage;
     }
 
     /**
-     * @param string $brandMessage
+     * @param string $formMessage
      *
      * @return $this
      */
-    public function setBrandMessage($brandMessage)
+    public function setFormMessage($formMessage)
     {
-        $this->brandMessage = $brandMessage;
+        $this->formMessage = $formMessage;
 
         return $this;
     }
