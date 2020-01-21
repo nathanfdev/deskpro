@@ -6,6 +6,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,6 +23,7 @@ class MessengerPreChatFormType extends AbstractType
         $builder
             ->add('enabled', ApiBooleanType::class)
             ->add('brandMessageEnabled', ApiBooleanType::class)
+            ->add('brandMessage', TextType::class)
             ->add('isNameEnabled', ApiBooleanType::class)
             ->add('isEmailEnabled', ApiBooleanType::class)
             ->add('isNameRequired', ApiBooleanType::class)
