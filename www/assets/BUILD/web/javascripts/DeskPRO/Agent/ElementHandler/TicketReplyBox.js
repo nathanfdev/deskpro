@@ -1053,7 +1053,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       loadingEl.fadeIn();
 
       $.ajax({
-        url: '/agent/tickets/' + self.page.meta.ticket_id + '/forward/send',
+        url: BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/forward/send',
         data: formData,
         type: 'POST',
         dataType: 'json',
