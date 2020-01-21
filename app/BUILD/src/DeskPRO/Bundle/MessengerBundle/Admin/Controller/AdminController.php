@@ -176,6 +176,7 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::STYLE_PRIMARY_COLOR, $messengerStyles->getPrimaryColor(), $brand)
             ->updateSetting(MSR::STYLE_BG_COLOR, $messengerStyles->getBackgroundColor(), $brand)
             ->updateSetting(MSR::STYLE_TEXT_COLOR, $messengerStyles->getTextColor(), $brand)
+            ->updateSetting(MSR::STYLE_POSITION, $messengerStyles->getPosition(), $brand)
 
             ->updateSetting(MSR::OPTIONS_TITLE, $messengerOptions->getTitle(), $brand)
             ->updateSetting(MSR::OPTIONS_AUTOSTART, $messengerOptions->isAutoStart(), $brand)

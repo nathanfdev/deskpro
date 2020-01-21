@@ -9,6 +9,9 @@ use JMS\Serializer\Annotation as JMS;
  */
 class MessengerStyles
 {
+    const POSITION_RIGHT = 'right';
+    const POSITION_LEFT  = 'left';
+
     /**
      * Primary colour of messenger.
      *
@@ -38,6 +41,8 @@ class MessengerStyles
      * @var string
      */
     private $textColor = '#ffffff';
+
+    private $position = self::POSITION_RIGHT;
 
     /**
      * @return string
@@ -95,6 +100,26 @@ class MessengerStyles
     public function setTextColor($textColor)
     {
         $this->textColor = $textColor;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param string $position
+     *
+     * @return $this
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
 
         return $this;
     }

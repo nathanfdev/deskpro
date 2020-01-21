@@ -57,6 +57,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const STYLE_PRIMARY_COLOR = 'messenger.styles.primary_color';
     const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
     const STYLE_TEXT_COLOR    = 'messenger.styles.text_color';
+    const STYLE_POSITION      = 'messenger.styles.position';
 
     const OPTIONS_AUTOSTART         = 'messenger.options.autostart';
     const OPTIONS_AUTOSTART_TIMEOUT = 'messenger.options.autostart_timeout';
@@ -214,6 +215,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setPrimaryColor($this->getSettings(self::STYLE_PRIMARY_COLOR, $brand, $mStyles->getPrimaryColor()))
             ->setBackgroundColor($this->getSettings(self::STYLE_BG_COLOR, $brand, $mStyles->getBackgroundColor()))
             ->setTextColor($this->getSettings(self::STYLE_TEXT_COLOR, $brand, $mStyles->getTextColor()))
+            ->setPosition($this->getSettings(self::STYLE_POSITION, $brand, $mStyles->getPosition()))
             ;
     }
 
