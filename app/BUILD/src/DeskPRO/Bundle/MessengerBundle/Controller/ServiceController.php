@@ -61,13 +61,14 @@ class ServiceController extends AbstractMessengerController
     {
         $brand    = $this->get('brand_stack')->getActive()->getBrand();
         $settings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
-        $data     = $this->get('serializer')->toArray($settings,  new SideloadSerializationContext());
+        $data     = $this->get('serializer')->toArray($settings, new SideloadSerializationContext());
 
         $preChatForm = $settings->getChat()->getPreChatForm();
 
-        $data['chat']['preChatForm']         = $this->getPreChatFormConfig($preChatForm);
-        $data['tickets']['formConfig']       = $this->getTicketFormConfig();
-        $data['chat']['brandMessageEnabled'] = $preChatForm->isBrandMessageEnabled();
+        $data['chat']['preChatForm']        = $this->getPreChatFormConfig($preChatForm);
+        $data['tickets']['formConfig']      = $this->getTicketFormConfig();
+        $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();
+        $data['chat']['formMessage']        = $preChatForm->getFormMessage();
 
         $data['tickets']['uploadTo'] = $data['chat']['uploadTo'] = $this->generateUrl(
             'messenger_blob_upload', [], UrlGeneratorInterface::ABSOLUTE_URL
@@ -135,6 +136,7 @@ class ServiceController extends AbstractMessengerController
                         'field_type' => 'text',
                         'field_id'   => 'name',
                         'required'   => $preChatForm->isNameRequired(),
+                        'data'       => ['title' => 'Name'],
                     ]
                 );
             }
@@ -145,6 +147,7 @@ class ServiceController extends AbstractMessengerController
                         'field_type' => 'email',
                         'field_id'   => 'email',
                         'required'   => $preChatForm->isNameRequired(),
+                        'data'       => ['title' => 'Email'],
                     ]
                 );
             }

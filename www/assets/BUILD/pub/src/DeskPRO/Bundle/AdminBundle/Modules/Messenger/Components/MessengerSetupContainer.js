@@ -114,8 +114,9 @@ class MessengerSetupContainer extends React.Component {
           chatDepartments={chatDepartments}
           chatCustomFields={chatCustomFields}
           ticketDepartments={ticketDepartments}
-        />
-        <Button loading={saving} onClick={this.handleSubmit} type="cta" size="large">Save</Button>
+        >
+          <Button loading={saving} onClick={this.handleSubmit} type="cta" size="large">Save</Button>
+        </MessengerSetup>
       </div>
     );
   }

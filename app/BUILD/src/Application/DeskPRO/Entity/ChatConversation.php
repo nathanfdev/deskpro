@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -480,6 +476,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
      * Add a message to this convo.
      *
      * @param
+     * @param mixed $message
      */
     public function addMessage($message)
     {
@@ -638,6 +635,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
      * Add a participant.
      *
      * @param $person_or_id
+     * @param mixed $suppress_sys_msg
      *
      * @return Person
      */
@@ -665,6 +663,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
      * Remove a participant.
      *
      * @param  $person_or_id
+     * @param mixed $suppress_sys_msg
      *
      * @return Person
      */
@@ -1482,6 +1481,13 @@ class ChatConversation extends DomainObject implements LabelsOwner
     public function getStatus()
     {
         return $this->status;
+    }
+    /**
+     * @return string
+     */
+    public function isEnded()
+    {
+        return $this->status === 'ended';
     }
 
     /**

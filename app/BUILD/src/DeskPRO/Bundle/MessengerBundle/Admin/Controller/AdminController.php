@@ -156,13 +156,14 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::CHAT_ENABLED, $messengerChat->isEnabled(), $brand)
 
             ->updateSetting(MSR::PRE_CHAT_FORM_ENABLED, $messengerChatPreChatForm->isEnabled(), $brand)
-            ->updateSetting(MSR::PRE_CHAT_FORM_BRAND_MESSAGE, $messengerChatPreChatForm->isBrandMessageEnabled(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_NAME_ENABLED, $messengerChatPreChatForm->isNameEnabled(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_EMAIL_ENABLED, $messengerChatPreChatForm->isEmailEnabled(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_NAME_REQUIRED, $messengerChatPreChatForm->isNameRequired(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_EMAIL_REQUIRED, $messengerChatPreChatForm->isEmailRequired(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_DEPARTMENT, $messengerChatPreChatForm->isDepartmentSelectable(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_FIELDS, serialize($messengerChatPreChatForm->getFields()), $brand)
+            ->updateSetting(MSR::PRE_CHAT_FORM_FORM_MESSAGE_ENABLED, $messengerChatPreChatForm->isFormMessageEnabled(), $brand)
+            ->updateSetting(MSR::PRE_CHAT_FORM_FORM_MESSAGE, $messengerChatPreChatForm->getFormMessage(), $brand)
 
             ->updateSetting(MSR::CHAT_TICKET_DEFAULTS_SUBJECT, $messengerChatTicketDefaults->getSubject(), $brand)
             ->updateSetting(MSR::CHAT_TICKET_DEFAULTS_SUBJECT_TYPE, $messengerChatTicketDefaults->getSubjectType(), $brand)
@@ -175,6 +176,7 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::STYLE_PRIMARY_COLOR, $messengerStyles->getPrimaryColor(), $brand)
             ->updateSetting(MSR::STYLE_BG_COLOR, $messengerStyles->getBackgroundColor(), $brand)
             ->updateSetting(MSR::STYLE_TEXT_COLOR, $messengerStyles->getTextColor(), $brand)
+            ->updateSetting(MSR::STYLE_POSITION, $messengerStyles->getPosition(), $brand)
 
             ->updateSetting(MSR::OPTIONS_TITLE, $messengerOptions->getTitle(), $brand)
             ->updateSetting(MSR::OPTIONS_AUTOSTART, $messengerOptions->isAutoStart(), $brand)

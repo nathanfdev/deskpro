@@ -20,14 +20,24 @@ class PreChatForm
     private $enabled = false;
 
     /**
-     * Show brand message.
+     * Show form message.
      *
      * @JMS\Type("boolean")
-     * @JMS\SerializedName("brandMessageEnabled")
+     * @JMS\SerializedName("formMessageEnabled")
      *
      * @var bool
      */
-    private $brandMessageEnabled = false;
+    private $formMessageEnabled = false;
+
+    /**
+     * Show form message.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("formMessage")
+     *
+     * @var string
+     */
+    private $formMessage = 'Welcome to Deskpro. Please fill out the details below so we can direct you to the right person as quickly as possible.';
 
     /**
      * Is name enabled as pre-chat field?
@@ -113,19 +123,39 @@ class PreChatForm
     /**
      * @return bool
      */
-    public function isBrandMessageEnabled()
+    public function isFormMessageEnabled()
     {
-        return $this->brandMessageEnabled;
+        return $this->formMessageEnabled;
     }
 
     /**
-     * @param bool $brandMessage
+     * @param bool $enabled
      *
      * @return $this
      */
-    public function setBrandMessageEnabled($enabled)
+    public function setFormMessageEnabled($enabled)
     {
-        $this->brandMessageEnabled = (bool) $enabled;
+        $this->formMessageEnabled = (bool) $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormMessage()
+    {
+        return $this->formMessage;
+    }
+
+    /**
+     * @param string $formMessage
+     *
+     * @return $this
+     */
+    public function setFormMessage($formMessage)
+    {
+        $this->formMessage = $formMessage;
 
         return $this;
     }
