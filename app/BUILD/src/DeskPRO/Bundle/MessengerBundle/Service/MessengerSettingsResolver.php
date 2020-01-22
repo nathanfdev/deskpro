@@ -37,22 +37,20 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_NO_ANSWER_BEHAVIOR   = 'messenger.chat.no_answer';
     const CHAT_BUSY_MESSAGE         = 'messenger.chat.busy';
     const CHAT_DEFAULT_DEPARTMENT   = 'messenger.chat.department';
-    const CHAT_FORM_MESSAGE_ENABLED = 'messenger.chat.pre_chat_form.form_message_enabled';
-    const CHAT_FORM_MESSAGE         = 'messenger.chat.pre_chat_form.form_message';
 
     const CHAT_TICKET_DEFAULTS_SUBJECT      = 'messenger.chat.ticket_defaults.subject';
     const CHAT_TICKET_DEFAULTS_SUBJECT_TYPE = 'messenger.chat.ticket_defaults.subject_type';
     const CHAT_TICKET_DEFAULTS_DEP          = 'messenger.chat.ticket_defaults.department';
 
-    const PRE_CHAT_FORM_ENABLED                = 'messenger.chat.pre_chat_form.enabled';
-    const PRE_CHAT_FORM_NAME_ENABLED           = 'messenger.chat.pre_chat_form.name.enabled';
-    const PRE_CHAT_FORM_EMAIL_ENABLED          = 'messenger.chat.pre_chat_form.email.enabled';
-    const PRE_CHAT_FORM_NAME_REQUIRED          = 'messenger.chat.pre_chat_form.name.required';
-    const PRE_CHAT_FORM_EMAIL_REQUIRED         = 'messenger.chat.pre_chat_form.email.required';
-    const PRE_CHAT_FORM_DEPARTMENT             = 'messenger.chat.pre_chat_form.department';
-    const PRE_CHAT_FORM_FIELDS                 = 'messenger.chat.pre_chat_form.fields';
-    const PRE_CHAT_FORM_BRAND_MESSAGE_ENABLED  = 'messenger.chat.pre_chat_form.brand_message_enabled';
-    const PRE_CHAT_FORM_BRAND_MESSAGE          = 'messenger.chat.pre_chat_form.brand_message';
+    const PRE_CHAT_FORM_ENABLED              = 'messenger.chat.pre_chat_form.enabled';
+    const PRE_CHAT_FORM_NAME_ENABLED         = 'messenger.chat.pre_chat_form.name.enabled';
+    const PRE_CHAT_FORM_EMAIL_ENABLED        = 'messenger.chat.pre_chat_form.email.enabled';
+    const PRE_CHAT_FORM_NAME_REQUIRED        = 'messenger.chat.pre_chat_form.name.required';
+    const PRE_CHAT_FORM_EMAIL_REQUIRED       = 'messenger.chat.pre_chat_form.email.required';
+    const PRE_CHAT_FORM_DEPARTMENT           = 'messenger.chat.pre_chat_form.department';
+    const PRE_CHAT_FORM_FIELDS               = 'messenger.chat.pre_chat_form.fields';
+    const PRE_CHAT_FORM_FORM_MESSAGE_ENABLED = 'messenger.chat.pre_chat_form.form_message_enabled';
+    const PRE_CHAT_FORM_FORM_MESSAGE         = 'messenger.chat.pre_chat_form.form_message';
 
     const STYLE_PRIMARY_COLOR = 'messenger.styles.primary_color';
     const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
@@ -196,8 +194,8 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setIsNameRequired($this->getSettings(self::PRE_CHAT_FORM_NAME_REQUIRED, $brand, $mPreChatForm->isNameRequired()))
             ->setIsEmailRequired($this->getSettings(self::PRE_CHAT_FORM_EMAIL_REQUIRED, $brand, $mPreChatForm->isEmailRequired()))
             ->setIsDepartmentSelectable($this->getSettings(self::PRE_CHAT_FORM_DEPARTMENT, $brand, $mPreChatForm->isDepartmentSelectable()))
-            ->setFormMessageEnabled($this->getSettings(self::CHAT_FORM_MESSAGE_ENABLED, $brand, $mPreChatForm->isFormMessageEnabled()))
-            ->setFormMessage($this->getSettings(self::CHAT_FORM_MESSAGE, $brand, $mPreChatForm->getFormMessage()))
+            ->setFormMessageEnabled($this->getSettings(self::PRE_CHAT_FORM_FORM_MESSAGE_ENABLED, $brand, $mPreChatForm->isFormMessageEnabled()))
+            ->setFormMessage($this->getSettings(self::PRE_CHAT_FORM_FORM_MESSAGE, $brand, $mPreChatForm->getFormMessage()))
             ->setFields(unserialize($this->getSettings(self::PRE_CHAT_FORM_FIELDS, $brand, serialize($mPreChatForm->getFields()))))
         ;
     }
