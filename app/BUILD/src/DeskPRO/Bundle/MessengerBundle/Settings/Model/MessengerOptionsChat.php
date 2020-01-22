@@ -48,6 +48,16 @@ class MessengerOptionsChat
     private $showAgentPhotos = false;
 
     /**
+     * Indicates whenever start conversation module should show a button or an input field.
+     *
+     * @JMS\Type("boolean")
+     * @JMS\SerializedName("startWithInputField")
+     *
+     * @var bool
+     */
+    private $startWithInputField = false;
+
+    /**
      * @return string
      */
     public function getTitle()
@@ -123,6 +133,26 @@ class MessengerOptionsChat
     public function setShowAgentPhotos($showAgentPhotos)
     {
         $this->showAgentPhotos = $showAgentPhotos;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStartWithInputField()
+    {
+        return $this->startWithInputField;
+    }
+
+    /**
+     * @param bool $startWithInputField
+     *
+     * @return $this
+     */
+    public function setStartWithInputField($startWithInputField)
+    {
+        $this->startWithInputField = $startWithInputField;
 
         return $this;
     }

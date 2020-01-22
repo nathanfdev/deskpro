@@ -18,6 +18,7 @@ class MessengerOptionsChatType extends AbstractType
     {
         $builder
             ->add('showAgentPhotos', ApiBooleanType::class)
+            ->add('startWithInputField', ApiBooleanType::class)
             ->add('title', TextType::class)
             ->add('buttonText', TextType::class)
             ->add('description', TextType::class)

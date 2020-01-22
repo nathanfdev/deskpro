@@ -60,10 +60,11 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const OPTIONS_SUBTEXT           = 'messenger.options.subtext';
     const OPTIONS_TITLE             = 'messenger.options.title';
 
-    const OPTIONS_CHAT_TITLE       = 'messenger.options.chat.title';
-    const OPTIONS_CHAT_BUTTON_TEXT = 'messenger.options.chat.button_text';
-    const OPTIONS_CHAT_DESCRIPTION = 'messenger.options.chat.description';
-    const OPTIONS_CHAT_SHOW_PHOTOS = 'messenger.options.chat.show_photos';
+    const OPTIONS_CHAT_TITLE            = 'messenger.options.chat.title';
+    const OPTIONS_CHAT_BUTTON_TEXT      = 'messenger.options.chat.button_text';
+    const OPTIONS_CHAT_DESCRIPTION      = 'messenger.options.chat.description';
+    const OPTIONS_CHAT_SHOW_PHOTOS      = 'messenger.options.chat.show_photos';
+    const OPTIONS_CHAT_START_WITH_INPUT = 'messenger.options.chat.start_with_input';
 
     const OPTIONS_TICKETS_TITLE       = 'messenger.options.tickets.title';
     const OPTIONS_TICKETS_BUTTON_TEXT = 'messenger.options.tickets.button_text';
@@ -247,6 +248,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setButtonText($this->getSettings(self::OPTIONS_CHAT_BUTTON_TEXT, $brand, $mOptionsChat->getButtonText()))
             ->setDescription($this->getSettings(self::OPTIONS_CHAT_DESCRIPTION, $brand, $mOptionsChat->getDescription()))
             ->setShowAgentPhotos($this->getSettings(self::OPTIONS_CHAT_SHOW_PHOTOS, $brand, $mOptionsChat->isShowAgentPhotos()))
+            ->setStartWithInputField($this->getSettings(self::OPTIONS_CHAT_START_WITH_INPUT, $brand, $mOptionsChat->isStartWithInputField()))
             ;
     }
 

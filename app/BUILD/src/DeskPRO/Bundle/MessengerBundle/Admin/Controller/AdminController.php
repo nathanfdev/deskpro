@@ -186,6 +186,7 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::OPTIONS_TICKETS_DESCRIPTION, $optionsTickets->getDescription(), $brand)
 
             ->updateSetting(MSR::OPTIONS_CHAT_SHOW_PHOTOS, $optionsChat->isShowAgentPhotos(), $brand)
+            ->updateSetting(MSR::OPTIONS_CHAT_START_WITH_INPUT, $optionsChat->isStartWithInputField(), $brand)
             ->updateSetting(MSR::OPTIONS_CHAT_TITLE, $optionsChat->getTitle(), $brand)
             ->updateSetting(MSR::OPTIONS_CHAT_DESCRIPTION, $optionsChat->getDescription(), $brand)
             ->updateSetting(MSR::OPTIONS_CHAT_BUTTON_TEXT, $optionsChat->getButtonText(), $brand)

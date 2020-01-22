@@ -16,7 +16,7 @@ class MessengerOptionsTickets
      *
      * @var string
      */
-    private $title = 'Contact us';
+    private $title = 'Email us';
 
     /**
      * A short description summoned to help a user.
@@ -35,7 +35,7 @@ class MessengerOptionsTickets
      *
      * @var string
      */
-    private $buttonText = 'Contact us';
+    private $buttonText = 'Send a message';
 
     /**
      * @return string
