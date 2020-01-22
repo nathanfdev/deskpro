@@ -30,7 +30,7 @@ class MessengerStyles
      *
      * @var string
      */
-    private $backgroundColor = '#aaa';
+    private $backgroundColor = '#f7f7f7';
 
     /**
      * Icon and text colour for messenger.
