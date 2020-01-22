@@ -12,6 +12,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatFormCustomField;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -63,10 +64,11 @@ class ServiceController extends AbstractMessengerController
         $settings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
         $data     = $this->get('serializer')->toArray($settings, new SideloadSerializationContext());
 
-        $preChatForm = $settings->getChat()->getPreChatForm();
+        $preChatForm     = $settings->getChat()->getPreChatForm();
+        $ticketsSettings = $settings->getTickets();
 
         $data['chat']['preChatForm']        = $this->getPreChatFormConfig($preChatForm);
-        $data['tickets']['formConfig']      = $this->getTicketFormConfig();
+        $data['tickets']['formConfig']      = $this->getTicketFormConfig($ticketsSettings);
         $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();
         $data['chat']['formMessage']        = $preChatForm->getFormMessage();
 
@@ -84,9 +86,11 @@ class ServiceController extends AbstractMessengerController
     }
 
     /**
+     * @param MessengerTickets $ticketsSettings
+     *
      * @return array
      */
-    private function getTicketFormConfig()
+    private function getTicketFormConfig(MessengerTickets $ticketsSettings)
     {
         $em = $this->get('doctrine.orm.default_entity_manager');
         /** @var LayoutCollection $layouts */
@@ -100,8 +104,9 @@ class ServiceController extends AbstractMessengerController
             $layoutData           = ['department' => $k ?: 0];
             $layoutData['fields'] = [];
             foreach ($layout->all() as $f) {
-                $ar             = $f->exportToArray();
-                $ar['field_id'] = $f->getId();
+                $ar              = $f->exportToArray();
+                $ar['field_id']  = $f->getId();
+                $ar['is_hidden'] = $ticketsSettings->getDepartmentOption() === MessengerTickets::TICKET_DEPARTMENT_OPTION_HIDDEN;
                 if ($f->getFieldType() === 'ticket_field') {
                     $ar['data'] = $this->get('serializer')->toArray($customTicketFields[$f->getFieldId()], new SideloadSerializationContext());
                 }
