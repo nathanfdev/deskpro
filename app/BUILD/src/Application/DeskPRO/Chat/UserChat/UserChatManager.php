@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\Chat\UserChat;
 
@@ -111,14 +109,17 @@ class UserChatManager
                     case 'min_length':
                         $code = 'text_min';
                         $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
                         break;
                     case 'max_length':
                         $code = 'text_max';
                         $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
                         break;
                     case 'regex_fail':
                         $code = 'text_regex';
                         $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
                         break;
                     default:
                         $msg = $trans->getPhraseText('user.error.form_'.$code);
@@ -132,6 +133,8 @@ class UserChatManager
 
     /**
      * Get an open chat for the users session.
+     *
+     * @param mixed $allow_timeout
      *
      * @return ChatConversation
      */
@@ -152,12 +155,14 @@ class UserChatManager
         $convo['ended_by']   = '';
 
         $this->em->beginTransaction();
+
         try {
             $this->em->persist($convo);
             $this->em->flush();
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -206,6 +211,7 @@ class UserChatManager
         }
 
         $this->em->beginTransaction();
+
         try {
             $convo->addParticipant($person);
             $this->em->persist($convo);
@@ -234,6 +240,7 @@ class UserChatManager
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
     }
@@ -266,6 +273,7 @@ class UserChatManager
         }
 
         $this->em->beginTransaction();
+
         try {
             $convo->removeParticipant($person);
             $this->em->persist($convo);
@@ -290,6 +298,7 @@ class UserChatManager
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
     }
@@ -319,6 +328,7 @@ class UserChatManager
         $old_dep_id = $convo->department_id;
 
         $this->em->beginTransaction();
+
         try {
             $convo->department = $dep;
             $this->em->persist($convo);
@@ -344,6 +354,7 @@ class UserChatManager
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
     }
@@ -375,6 +386,7 @@ class UserChatManager
         }
 
         $this->em->beginTransaction();
+
         try {
             $convo->agent = $agent;
             $this->em->persist($convo);
@@ -404,6 +416,7 @@ class UserChatManager
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
     }
@@ -527,6 +540,7 @@ class UserChatManager
         }
 
         $this->em->beginTransaction();
+
         try {
             $this->addSystemMessage(
                 $convo,
@@ -545,6 +559,7 @@ class UserChatManager
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
     }
@@ -557,6 +572,7 @@ class UserChatManager
     public function userTimeout(ChatConversation $convo)
     {
         $this->em->beginTransaction();
+
         try {
             $this->addSystemMessage(
                 $convo,
@@ -570,6 +586,7 @@ class UserChatManager
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
     }
@@ -582,6 +599,7 @@ class UserChatManager
     public function waitTimeout(ChatConversation $convo)
     {
         $this->em->beginTransaction();
+
         try {
             $this->addSystemMessage(
                 $convo,
@@ -595,6 +613,7 @@ class UserChatManager
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
     }
@@ -607,6 +626,7 @@ class UserChatManager
     public function userAbandoned(ChatConversation $convo)
     {
         $this->em->beginTransaction();
+
         try {
             $this->addSystemMessage(
                 $convo,
@@ -620,6 +640,7 @@ class UserChatManager
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
     }
@@ -670,7 +691,9 @@ class UserChatManager
             )
         );
 
-        if ($reason !== 'timeout' && $reason !== 'wait_timeout' && $reason != 'abandoned') {
+        // autotranscript is only for cases when it's not a timeout or abandoned chat (so a user will be able to
+        // order transcript manually)
+        if ($convo->ended_by !== 'timeout' && $convo->ended_by !== 'wait_timeout' && $convo->ended_by != 'abandoned') {
             if ($this->autoSendChatTranscript($convo)) {
                 $this->eventDispatcher->dispatch(
                     ChatEvent::EVENT_NAME,
@@ -825,6 +848,7 @@ class UserChatManager
         }
 
         $this->em->beginTransaction();
+
         try {
             $this->em->persist($msg);
             $this->em->persist($convo);
@@ -832,6 +856,7 @@ class UserChatManager
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -911,6 +936,7 @@ class UserChatManager
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -974,6 +1000,7 @@ class UserChatManager
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
     }
