@@ -358,9 +358,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.44",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.44.tgz",
-      "integrity": "sha512-bJVNsGEYezXegi6enPTZ2CMN+U/X9qJFEaWAnK1dPYNUkVQpc0ivts2WsgjMoJhLeiaGqE+8UmcAZv9rmoUygA==",
+      "version": "0.1.45",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.45.tgz",
+      "integrity": "sha512-go4j/YA1L3isCImkmr1qnxc+zv77fvoQlY+pg95GMEGoOtIWCZ/znlvgSV4ycf6V0ABUhidK7zCJH6m5cRv77w==",
       "requires": {
         "@deskpro/portal-components": "0.3.38",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -19352,9 +19352,9 @@
       "integrity": "sha512-ReZxvNHIOv88FlT7rxcXIIC0fPt4KZqZbOlivyWtXLt8ESx84zd3kMC6iK5jVeS2qt+g7ftS7ye4fi06X5rtRQ=="
     },
     "axios": {
-      "version": "0.19.1",
-      "resolved": "https://registry.npmjs.org/axios/-/axios-0.19.1.tgz",
-      "integrity": "sha512-Yl+7nfreYKaLRvAvjNPkvfjnQHJM1yLBY3zhqAwcJSwR/6ETkanUgylgtIvkvz0xJ+p/vZuNw8X7Hnb7Whsbpw==",
+      "version": "0.19.2",
+      "resolved": "https://registry.npmjs.org/axios/-/axios-0.19.2.tgz",
+      "integrity": "sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==",
       "requires": {
         "follow-redirects": "1.5.10"
       }
