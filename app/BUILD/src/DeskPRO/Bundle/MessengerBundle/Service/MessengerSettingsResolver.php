@@ -27,9 +27,10 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const EMBED_ENABLED_ON_PORTAL = 'messenger.embed.show_on_portal';
     const EMBED_AUTHORIZE_DOMAINS = 'messenger.embed.authorize_domains';
 
-    const TICKETS_ENABLED    = 'messenger.tickets.enabled';
-    const TICKETS_SUBJECT    = 'messenger.tickets.subject';
-    const TICKETS_DEPARTMENT = 'messenger.tickets.department';
+    const TICKETS_ENABLED           = 'messenger.tickets.enabled';
+    const TICKETS_SUBJECT           = 'messenger.tickets.subject';
+    const TICKETS_DEPARTMENT        = 'messenger.tickets.department';
+    const TICKETS_DEPARTMENT_OPTION = 'messenger.tickets.department_option';
 
     const CHAT_ENABLED              = 'messenger.chat.enabled';
     const CHAT_PROMPT               = 'messenger.chat.prompt';
@@ -139,6 +140,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setEnabled($this->getSettings(self::TICKETS_ENABLED, $brand, $mTickets->isEnabled()))
             ->setSubject($this->getSettings(self::TICKETS_SUBJECT, $brand, $mTickets->getSubject()))
             ->setDepartment($this->getSettings(self::TICKETS_DEPARTMENT, $brand, $this->getDefaultDepartment('ticket')))
+            ->setDepartmentOption($this->getSettings(self::TICKETS_DEPARTMENT_OPTION, $brand, $mTickets->getDepartmentOption()))
             ;
     }
 
