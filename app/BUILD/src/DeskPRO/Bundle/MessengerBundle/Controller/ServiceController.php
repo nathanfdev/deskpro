@@ -140,7 +140,7 @@ class ServiceController extends AbstractMessengerController
                     ]
                 );
             }
-            if ($preChatForm->isDepartmentSelectable()) {
+            if ($preChatForm->isEmailEnabled()) {
                 array_push(
                     $config['fields'],
                     [
