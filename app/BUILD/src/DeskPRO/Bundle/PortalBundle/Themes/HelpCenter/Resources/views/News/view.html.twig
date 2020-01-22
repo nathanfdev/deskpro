@@ -116,7 +116,9 @@
       {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: postData.comments } %}
     {% endif %}
 
-    {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+    {% if new_comment_form %}
+      {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+    {% endif %}
   {% endif %}
 {% endblock page_body %}
 

@@ -70,7 +70,9 @@
                                 {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: downloadData.comments } %}
                             {% endif %}
 
-                            {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+                            {% if new_comment_form %}
+                              {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+                            {% endif %}
                         {% endif %}
                     </div>
                     <div class="col-sm-3 dp-po-sticky">
