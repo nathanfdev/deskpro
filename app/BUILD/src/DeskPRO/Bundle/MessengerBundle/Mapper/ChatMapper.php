@@ -161,6 +161,14 @@ class ChatMapper
             $res = [
                 'type' => 'chat.agentUnassigned',
             ];
+        } elseif (isset($metadata['user_joined'])) {
+            $res = [
+                'type' => 'chat.userJoined',
+            ];
+        } elseif (isset($metadata['user_left'])) {
+            $res = [
+                'type' => 'chat.userLeft',
+            ];
         } else {
             $res = [
                 'type' => 'message',
