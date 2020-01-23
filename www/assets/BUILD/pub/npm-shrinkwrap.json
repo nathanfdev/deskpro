@@ -358,9 +358,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.47",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.47.tgz",
-      "integrity": "sha512-XLpVUMONg1BeYa8nYGig7SSIi8S+M6eQOw+LMq/1ATsvplTM4fNYpkDeXVTyqekI+gFXUP/Pj5zo1njWKUGdhA==",
+      "version": "0.1.48",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.48.tgz",
+      "integrity": "sha512-7pSEY04seMwyV3oQBsrbVmU84QALK35zZPqa85XEKnySvXVTBMuYemNTGsnVIK/bxi50Iko/UfgmZH8s/37WSg==",
       "requires": {
         "@deskpro/portal-components": "0.3.40",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -466,9 +466,9 @@
           }
         },
         "hoist-non-react-statics": {
-          "version": "3.3.1",
-          "resolved": "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz",
-          "integrity": "sha512-wbg3bpgA/ZqWrZuMOeJi8+SKMhr7X9TesL/rXMjTzh0p0JUBo3II8DHboYbuIXWRlttrUFxwcu/5kygrCw8fJw==",
+          "version": "3.3.2",
+          "resolved": "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz",
+          "integrity": "sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==",
           "requires": {
             "react-is": "^16.7.0"
           }
@@ -643,9 +643,9 @@
       }
     },
     "@deskpro/messenger-setup": {
-      "version": "0.1.44",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger-setup/-/messenger-setup-0.1.44.tgz",
-      "integrity": "sha512-Cp2kD5JmbxGjWQwygPJ5o57f/zZ10CJtIvse37VVeW8SbMFPYrMsRHhrjbkDVoRwOTHNTIca6z/x1i6h9JrzzQ==",
+      "version": "0.1.48",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger-setup/-/messenger-setup-0.1.48.tgz",
+      "integrity": "sha512-Zh9kl0auIgburtkFNNm8wCvcNExdheJLqOv/+gvd9PetzrAIlrVcNdga7OnJjGDeU9ruttmgABPUidj7g13GyQ==",
       "requires": {
         "@fortawesome/free-solid-svg-icons": "^5.4.1",
         "array-move": "^2.2.1",
