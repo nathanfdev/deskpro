@@ -48,14 +48,21 @@ class ChatMapper
 
     /**
      * @param mixed $data
+     * @param ChatConversation $chat
      *
-     * @throws MessengerApiException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return ChatMessage
      */
-    public function createChatMessage($data)
+    public function createChatMessage($data, $chat)
     {
         $message = new ChatMessage();
+        // we need to handle this staff with jwt and other things probably
+        if ($chat->getPerson()) {
+            $message->setAuthor($chat->getPerson());
+        }
 
         $errors = [];
 
@@ -85,21 +92,15 @@ class ChatMapper
             }
         }
         if (isset($data['origin']) && $data['origin'] === ChatMessage::ORIGIN_AGENT) {
-            $message->setIsUser(false);
+            $message->setIsUser(false)->setOrigin(ChatMessage::ORIGIN_AGENT);
         } elseif (isset($data['origin']) && $data['origin'] === ChatMessage::ORIGIN_USER) {
-            $message->setIsUser(true);
+            $message->setIsUser(true)->setOrigin(ChatMessage::ORIGIN_USER);
         } else {
             $errors['origin'] = sprintf(
                 'Unexpected value. Only %s and %s are allowed.',
                 ChatMessage::ORIGIN_USER,
                 ChatMessage::ORIGIN_AGENT
             );
-        }
-
-        if ($message->getAuthor()) {
-            $message->setOrigin($message->getAuthor()->isAgent() ? ChatMessage::ORIGIN_AGENT : ChatMessage::ORIGIN_USER);
-        } else {
-            $message->setOrigin($message->getIsUser() ? ChatMessage::ORIGIN_USER : ChatMessage::ORIGIN_AGENT);
         }
 
         if ($errors) {

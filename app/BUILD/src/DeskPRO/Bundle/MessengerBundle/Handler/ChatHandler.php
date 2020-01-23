@@ -170,7 +170,7 @@ class ChatHandler
      */
     private function handleChatMessageCommand(ChatConversation $chat, array $request)
     {
-        $message = $this->chatMapper->createChatMessage($request);
+        $message = $this->chatMapper->createChatMessage($request, $chat);
         $chat->addMessage($message);
         $this->em->persist($message);
         $this->em->persist($chat);

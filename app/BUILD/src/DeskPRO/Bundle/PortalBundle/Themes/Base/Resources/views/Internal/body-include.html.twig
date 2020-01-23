@@ -34,6 +34,7 @@
       user: {
         name: "{{ app.user.display_name }}",
         email: "{{ app.user.email }}",
+        avatar: "{{ avatar_url(app.user) }}",
       },
       {% endif %}
       helpdeskURL: "{{ root_url(false) }}",
