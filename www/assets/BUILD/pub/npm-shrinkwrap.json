@@ -358,9 +358,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.49",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.49.tgz",
-      "integrity": "sha512-InDwGwMgiyLkjQeEuJK+TwrGe6IRBxkvEhFNivATuuuw9PV6mH4VjaFFKwJ0ygk9tgOm2dotRTMOeh3v9fvndg==",
+      "version": "0.1.50",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.50.tgz",
+      "integrity": "sha512-kuREhOmAb7QFvPTEYevNXzyEDwFvWhx6Tf0OW+Py6ctVyGfy23jDjLo2NYuC/KAWgCxSpAf9SNDq/bPi3Kj17w==",
       "requires": {
         "@deskpro/portal-components": "0.3.40",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -635,17 +635,17 @@
       }
     },
     "@deskpro/messenger-loader": {
-      "version": "0.1.44",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.44.tgz",
-      "integrity": "sha512-DypEYMMuKRhV/XfArZnBppIJBMYui/2GKPmcJBbXpaS5DuZOG104DpyJ5CaU3hy6L1XQIA2RWBJ7gu0NLphjBw==",
+      "version": "0.1.50",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.50.tgz",
+      "integrity": "sha512-vlJ1hcFHm8QmDOb+1gA89tCxXqPZGdrcl+3ld6aY4TEyJx2KwJjFsoIR1fAvHYb/7lfpIgtQQjXvqX9d+3d1Yg==",
       "requires": {
         "whatwg-fetch": "^3.0.0"
       }
     },
     "@deskpro/messenger-setup": {
-      "version": "0.1.48",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger-setup/-/messenger-setup-0.1.48.tgz",
-      "integrity": "sha512-Zh9kl0auIgburtkFNNm8wCvcNExdheJLqOv/+gvd9PetzrAIlrVcNdga7OnJjGDeU9ruttmgABPUidj7g13GyQ==",
+      "version": "0.1.50",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger-setup/-/messenger-setup-0.1.50.tgz",
+      "integrity": "sha512-srSdRbs7FiyLsvjjFclGjjjQrDmIEop0ipnAcl1MGE7zbwbEP6U45xdVARZTX9QNgf4tuuSAeoDXNUpJoM36Ag==",
       "requires": {
         "@fortawesome/free-solid-svg-icons": "^5.4.1",
         "array-move": "^2.2.1",
