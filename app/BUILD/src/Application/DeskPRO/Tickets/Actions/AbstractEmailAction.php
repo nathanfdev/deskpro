@@ -331,7 +331,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         }
 
         $model = call_user_func_array([$factory, $action], $arguments);
-        if ($model instanceof TicketEmailType) {
+        if ($model instanceof TicketEmailType && $context->getPersonContext()) {
             $model->setActionPerformer($factory->convertParameter($context->getPersonContext()));
         }
 
