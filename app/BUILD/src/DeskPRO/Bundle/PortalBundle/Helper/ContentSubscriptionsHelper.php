@@ -18,6 +18,7 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use Application\DeskPRO\Entity\Brand;
 use Doctrine\ORM\EntityManager;
 
 class ContentSubscriptionsHelper
@@ -32,9 +33,10 @@ class ContentSubscriptionsHelper
      */
     private $brandStack;
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, BrandStack $brandStack)
     {
         $this->em = $em;
+        $this->brandStack = $brandStack;
     }
 
     /**
@@ -45,11 +47,13 @@ class ContentSubscriptionsHelper
      */
     public function isSubscribedRootCategory($contentType, Person $person)
     {
+        $brand = $this->brandStack->getActive()->getBrand();
+        
         return (bool) $this->getDb()->fetchColumn("
                 SELECT id
                 FROM {$this->getSubscriptionsTableName($contentType)}
-                WHERE person_id = ? AND root_category = 1
-            ", [$person->getId()]);
+                WHERE person_id = ? AND root_category = 1 AND root_category_brand_id = ?
+            ", [$person->getId(), $brand->getId()]);
     }
 
     /**
@@ -94,9 +98,12 @@ class ContentSubscriptionsHelper
             return true;
         }
 
+        $brand = $this->brandStack->getActive()->getBrand();
+
         return (bool) $this->getDb()->insert($this->getSubscriptionsTableName($contentType), [
-            'person_id'     => $person->getId(),
-            'root_category' => 1,
+            'person_id'              => $person->getId(),
+            'root_category'          => 1,
+            'root_category_brand_id' => $brand->getId()
         ]);
     }
 
@@ -109,9 +116,11 @@ class ContentSubscriptionsHelper
     public function unsubscribeFromRootCategory($contentType, Person $person)
     {
         if ($this->isSubscribedRootCategory($contentType, $person)) {
+            $brand = $this->brandStack->getActive()->getBrand();
             return (bool) $this->getDb()->delete($this->getSubscriptionsTableName($contentType), [
-                'person_id'     => $person->getId(),
-                'root_category' => 1,
+                'person_id'              => $person->getId(),
+                'root_category'          => 1,
+                'root_category_brand_id' => $brand->getId()
             ]);
         }
 
@@ -287,17 +296,6 @@ class ContentSubscriptionsHelper
         }
 
         throw new \InvalidArgumentException(sprintf('could not find subscriptions table name for input "%s"', $input));
-    }
-
-    /**
-     * @param      $setting
-     * @param null $default
-     *
-     * @return mixed
-     */
-    protected function getBrandSetting($setting, $default = null)
-    {
-        return $this->brandStack->getActive()->getSetting($setting, $default);
     }
 
     /**
