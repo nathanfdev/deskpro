@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
@@ -169,6 +165,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
                 throw new BlobStorageException('Cumulative timeout exceeded: '.$this->cumulativeTimeout, BlobStorageException::CUMULATIVE_TIMEOUT_EXCEEDED);
             }
             $time = microtime(true);
+
             try {
                 $this->s3->putObject([
                     'Bucket'             => $this->bucket,
@@ -178,6 +175,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
                     'ContentDisposition' => $disposition,
                     'ACL'                => 'public-read',
                 ]);
+
                 break;
             } catch (\Exception $e) {
                 if ($try == 0) {
@@ -219,13 +217,13 @@ class AmazonS3Storage extends AbstractStorageAdapter
 
     /**
      * @param \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param string                                $source_path
+     * @param string                                $sourcePath
      *
      * @return int
      */
-    public function writeBlobFromFile(Blob $blob, $source_path)
+    public function writeBlobFromFile(Blob $blob, $sourcePath)
     {
-        return $this->writeBlobString($blob, file_get_contents($source_path));
+        return $this->writeBlobString($blob, file_get_contents($sourcePath));
     }
 
     /**
@@ -244,6 +242,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
                     'Bucket' => $this->bucket,
                     'Key'    => $this->resolvePath($blob->getPath()),
                 ]);
+
                 break;
             } catch (\Exception $e) {
                 if ($try == 0) {
@@ -260,13 +259,13 @@ class AmazonS3Storage extends AbstractStorageAdapter
 
     /**
      * @param \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param $target_path
+     * @param $targetPath
      *
      * @return int
      */
-    public function readBlobToFile(Blob $blob, $target_path)
+    public function readBlobToFile(Blob $blob, $targetPath)
     {
-        return file_put_contents($target_path, $this->readBlobString($blob));
+        return file_put_contents($targetPath, $this->readBlobString($blob));
     }
 
     /**

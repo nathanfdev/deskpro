@@ -234,9 +234,14 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $filename = '_.'.substr($filename, 1);
         }
 
+        $special_chars = ['?', '[', ']', '/', '\\', '=', '<', '>', ':', ';', ',', "'", '"', '&', '$', '#', '*', '(', ')', '|', '~', '`', '!', '{', '}', '%', '+', chr(0)];
+
         $filename = Strings::utf8_bad_strip($filename);
-        $filename = Strings::utf8_accents_to_ascii($filename);
-        $filename = trim(preg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '_', $filename));
+        $filename = preg_replace("#\x{00a0}#siu", ' ', $filename);
+        $filename = str_replace($special_chars, '', $filename);
+        $filename = str_replace([ '%20', '+' ], '-', $filename);
+        $filename = preg_replace('/[\r\n\t -]+/', '-', $filename);
+        $filename = trim($filename, '.-');
 
         // trim filename down to max length of 255 chars
         $pos = strrpos($filename, '.');
