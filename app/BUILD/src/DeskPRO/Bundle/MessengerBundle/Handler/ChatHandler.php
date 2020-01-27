@@ -276,7 +276,18 @@ class ChatHandler
      */
     private function handleChatTranscriptCommand(ChatConversation $chat, array $request)
     {
-        $chat->setShouldSendTranscript(true);
+        if (!isset($request['transcript'])) {
+            $transcript = true;
+        } else {
+            $transcript = (bool) $request['transcript'];
+        }
+
+        $chat->setShouldSendTranscript($transcript);
+        if (!$transcript) {
+            $this->em->flush();
+
+            return new ApiWrapper($chat);
+        }
 
         $errors = [];
 
@@ -294,7 +305,6 @@ class ChatHandler
             throw new MessengerApiException($errors);
         }
 
-        $this->em->persist($chat);
         $this->em->flush();
 
         $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), ChatEvent::CHAT_TRANSCRIPT_EVENT_TYPE));
