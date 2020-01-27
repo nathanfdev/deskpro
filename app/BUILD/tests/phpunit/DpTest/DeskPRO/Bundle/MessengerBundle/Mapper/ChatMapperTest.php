@@ -2,6 +2,7 @@
 
 namespace DpTest\DeskPRO\Bundle\MessengerBundle\Mapper;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DpTest\MessengerTestCase;
 
@@ -17,7 +18,9 @@ class ChatMapperTest extends MessengerTestCase
             'origin'  => 'user',
         ];
 
-        $result = $mapper->createChatMessage($data);
+        $chat = new ChatConversation();
+
+        $result = $mapper->createChatMessage($data, $chat);
         $this->assertEquals(true, $result->getIsUser());
         $this->assertEquals('<div>This is the test message with script</div>', $result->getContent());
         $this->assertEquals(0, $result->getAuthorId());
