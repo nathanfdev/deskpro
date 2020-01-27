@@ -1895,7 +1895,7 @@ class TicketSearch extends SearcherAbstract
                             }
 
                             if ($team_ids) {
-                                if (count($choice) == 1) {
+                                if (count($team_ids) == 1) {
                                     $this->specific_fields[] = self::TERM_AGENT_TEAM;
                                 }
 
