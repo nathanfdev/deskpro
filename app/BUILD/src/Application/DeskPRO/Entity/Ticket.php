@@ -2367,14 +2367,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Gets the email address that should be used for this ticket.
      *
-     * @return PersonEmail
+     * @return PersonEmail|null
      */
     public function getTicketPersonEmail()
     {
         if ($this->person_email) {
             return $this->person_email;
+        } elseif ($this->getPerson() && $this->getPerson()->getPrimaryEmail()) {
+            return $this->getPerson()->getPrimaryEmail();
         } else {
-            return $this->person['primary_email'];
+            return null;
         }
     }
 

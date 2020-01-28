@@ -377,16 +377,16 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
             return $email->getEmail();
         }, $reader->getDeliveredAddresses());
 
-        $ticketAddresses = array_merge(
+        $ticketAddresses = array_filter(array_merge(
             [
-                $ticket->getTicketPersonEmail()->getEmail(),
-                $ticket->getEmailAccount()->getAddress(),
+                $ticket->getTicketPersonEmail() ? $ticket->getTicketPersonEmail()->getEmail() : null,
+                $ticket->getEmailAccount() ? $ticket->getEmailAccount()->getAddress() : null,
             ],
             array_map(function ($participant) {
                 /** @var \Application\DeskPRO\Entity\TicketParticipant $participant */
                 return $participant->getEmailAddress();
             }, $ticket->getParticipants()->toArray())
-        );
+        ));
 
         return empty(array_diff($readerAddresses, $ticketAddresses));
     }
