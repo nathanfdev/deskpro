@@ -1,10 +1,6 @@
 <?php
 
-/**
- * Orb.
- *
- * @category Util
- */
+
 
 namespace Orb\Util;
 
@@ -411,6 +407,7 @@ class Strings
      *
      * @param int $index_start The start index inclusive
      * @param int $index_end   The end index, exclusive. Null means end of the string
+     * @param mixed $string
      *
      * @return string
      */
@@ -475,15 +472,16 @@ class Strings
      * Get the exention from a string. This is the last bits after the
      * '.', i.e. as part of a path.
      *
-     * @param string $string The string to work on
+     * @param string $string      The string to work on
+     * @param bool   $toLowerCase Convert result to the lower case.
      *
      * @return string
      */
-    public static function getExtension($string)
+    public static function getExtension($string, $toLowerCase = true)
     {
         $matches = null;
         if (preg_match('#\.([a-zA-Z0-9_\-]+)$#', $string, $matches)) {
-            return strtolower($matches[1]);
+            return $toLowerCase ? strtolower($matches[1]) : $matches[1];
         }
 
         return '';
@@ -864,6 +862,8 @@ class Strings
      * @param int    $length      The max length of a word before it wraps
      * @param string $break       The character to insert at break points
      * @param string $split_cahrs The characters that separate words
+     * @param mixed $max_len
+     * @param mixed $split_chars
      *
      * @return string
      */
@@ -1003,10 +1003,18 @@ class Strings
         if (($pos = strrpos($input, $delim)) === false) {
             // Handle special delims that could
             switch ($delim) {
-                case '{': $delim = '}'; break;
-                case '<': $delim = '>'; break;
-                case '[': $delim = ']'; break;
-                case '(': $delim = ')'; break;
+                case '{': $delim = '}';
+
+break;
+                case '<': $delim = '>';
+
+break;
+                case '[': $delim = ']';
+
+break;
+                case '(': $delim = ')';
+
+break;
             }
             $pos = strrpos($input, $delim);
         }
@@ -1285,6 +1293,7 @@ class Strings
      * and replaces empty divs or ps with simple newlines.
      *
      * @param string $string
+     * @param mixed $html
      *
      * @return string
      */
@@ -1420,6 +1429,7 @@ class Strings
      *
      * @param string $html
      * @param string $attr
+     * @param mixed $new_window
      *
      * @return string
      */
@@ -1601,7 +1611,7 @@ class Strings
                 $value = substr($value, 0, $pos);
             }
 
-        // Less common case of multiple body tags, we'll treat it as one big doc and just get rid of html/meta etc tags
+            // Less common case of multiple body tags, we'll treat it as one big doc and just get rid of html/meta etc tags
         } else {
             $value = preg_replace('#<(style|head|meta)[^>]*>.*?</\\1>#is', '', $value);
             $value = preg_replace('#<(html|body)[^>]*>#is', '', $value);
@@ -1775,6 +1785,7 @@ class Strings
      *
      * @param string $string
      * @param string $from_charset
+     * @param null|mixed $_mode
      *
      * @return string
      */
@@ -2062,6 +2073,8 @@ class Strings
      * Trims every line in a string.
      *
      * @param $string
+     * @param null|mixed $chars
+     * @param mixed $mode
      *
      * @return string
      */
@@ -2202,6 +2215,8 @@ class Strings
      *
      * @param $string
      * @param $prefix
+     * @param mixed $suffix
+     * @param mixed $trim
      */
     public static function modifyLines($string, $prefix = '', $suffix = '', $trim = false)
     {
@@ -2219,6 +2234,7 @@ class Strings
      * @param string $array
      * @param string $key_title
      * @param string $val_title
+     * @param mixed $line_sep
      *
      * @return string
      */

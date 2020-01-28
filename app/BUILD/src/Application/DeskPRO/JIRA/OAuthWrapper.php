@@ -1,9 +1,5 @@
 <?php
 
-/**
- * https://bitbucket.org/atlassian_tutorial/atlassian-oauth-examples/src/d625161454d1ca97b4515c6147b093fac9a68f7e/php/?at=default.
- */
-
 namespace Application\DeskPRO\JIRA;
 
 use Application\DeskPRO\Service\JIRA;
@@ -36,7 +32,8 @@ class OAuthWrapper
     {
         $this->service = $service;
 
-        if (!$this->base_url = rtrim($this->service->getUrl(), '/')) {
+        $this->base_url = rtrim($this->service->getUrl(), '/').'/';
+        if ($this->base_url === '/') {
             throw new ApiGeneralException('JIRA base url is required', 1000);
         }
 
@@ -104,7 +101,10 @@ class OAuthWrapper
     protected function requestCredentials($url, $token = false, $tokenSecret = false)
     {
         $client = $this->getClient($token, $tokenSecret);
+
         try {
+            $url = ltrim($url, '/');
+
             $response = $client->post($url);
             $body     = (string) $response->getBody();
         } catch (ClientException $e) {

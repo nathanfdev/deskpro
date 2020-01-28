@@ -60,6 +60,14 @@ abstract class AbstractBetaFeature implements BetaFeatureInterface
     /**
      * {@inheritdoc}
      */
+    public function getDateReleased()
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getRoutePath()
     {
     }

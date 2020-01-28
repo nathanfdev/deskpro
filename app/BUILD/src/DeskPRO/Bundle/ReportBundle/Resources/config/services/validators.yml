@@ -5,3 +5,7 @@ services:
     - "@reports.dashboard_widget.service"
     tags:
     - { name: validator.constraint_validator }
+  validator.ip_cidr:
+    class: DeskPRO\Bundle\ReportBundle\Validator\Constraints\IpCIDRValidator
+    tags:
+      - { name: validator.constraint_validator }

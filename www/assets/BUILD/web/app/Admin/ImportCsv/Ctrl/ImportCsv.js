@@ -23,7 +23,7 @@ define(['Admin/Main/Ctrl/Base', 'moment'], function(Admin_Ctrl_Base, moment) {
       this.$scope.importSettings = { fieldMappings: [], additionalMappings: [], skipFirst: 1, updateIfExists: 1, welcomeEmail: false, showExtraMappings: {} };
       this.showExtraMappingsCases = [
         'organization', 'phone', 'website', 'im', 'twitter', 'linkedin', 'facebook', 'address1', 'address2', 'city',
-        'state', 'zip', 'country', 'new_custom', 'language'
+        'state', 'zip', 'country', 'new_custom', 'org_new_custom', 'language'
       ];
 
       for (const key of Array.from(this.showExtraMappingsCases)) {

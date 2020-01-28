@@ -10,12 +10,9 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
-use DeskPRO\Bundle\AppBundle\Serializer\OffsetList;
-use DeskPRO\Component\Pagerfanta\LimitedPager;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -117,35 +114,9 @@ class SnippetsUsageController extends CrudController
         if (static::$listPaginate) {
             $page   = (int) $request->query->getInt('page', 1);
             $offset = (int) $request->query->getInt('offset');
-            $count  = (int) $request->query->getInt('count', static::$listPerPage);
+            $count  = $this->getCountParam($request);
 
-            if ($count > static::$listMaxResults) {
-                throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
-            } elseif ($count <= 0) {
-                throw $this->createBadRequestException('You must select at least 1 entity');
-            }
-
-            if ($offset) {
-                $result = new OffsetList($qb, $count, $offset);
-            } else {
-                if ($limit) {
-                    // adding limit to the initial qb will
-                    // make the initial COUNT have a limit, which
-                    // might speed it up a bit
-                    $qb->setMaxResults($limit);
-
-                    $pagerAdapter = new DoctrineORMAdapter($qb);
-                    $pager        = new LimitedPager($pagerAdapter, $limit);
-                } else {
-                    $pagerAdapter = new DoctrineORMAdapter($qb);
-                    $pager        = new Pagerfanta($pagerAdapter);
-                }
-
-                $pager->setMaxPerPage($count);
-                $pager->setCurrentPage($page);
-
-                $result = $pager;
-            }
+            $result = $this->getPaginatedResult($qb, $offset, $count, $limit, $page);
         } else {
             if ($limit) {
                 $qb->setMaxResults($limit);

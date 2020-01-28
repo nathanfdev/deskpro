@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\EmailBundle\Mail\RawMessage;
 
@@ -131,15 +129,18 @@ class RawMessageUtil
             try {
                 switch ($header_name) {
                     case 'Message-ID':
-                        $message->setId($header_values[0]);
+                        $message->setId(trim($header_values[0], "<>"));
+
                         break;
 
                     case 'Date':
                         $message->setDate(strtotime($header_values[0]));
+
                         break;
 
                     case 'Return-Path':
-                        $message->setReturnPath($header_values[0]);
+                        $message->setReturnPath(trim($header_values[0], "<>"));
+
                         break;
 
                     case 'DKIM-Signature':
@@ -149,6 +150,7 @@ class RawMessageUtil
                         foreach ($header_values as $v) {
                             $headers->addTextHeader($header_name, $v);
                         }
+
                         break;
                 }
             } catch (\Exception $e) {

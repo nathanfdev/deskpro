@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
@@ -93,7 +91,8 @@ class CommunitySubscriptions extends AbstractJob
                 SELECT person_id, root_category
                 FROM community_topic_subscriptions
                 WHERE root_category = 1
-            ', [], 'person_id', null, 'root_category', [Connection::PARAM_INT_ARRAY]);
+                AND root_category_brand_id = :brand_id
+            ', ['brand_id' => $brand->getId()], 'person_id', null, 'root_category');
         }
 
         if ($updatedCommunityTopicIds) {

@@ -85,6 +85,14 @@ HTML;
     /**
      * {@inheritdoc}
      */
+    public function getDateReleased()
+    {
+        return new \DateTime('2020-01-01');
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
     public function needAgentReload()
     {
         return true;
@@ -118,6 +126,7 @@ HTML;
 
         $parts = [];
         $em->beginTransaction();
+
         try {
             $em->getRepository(AgentChat::class)->createQueryBuilder('ac')->delete()->getQuery()->execute();
 

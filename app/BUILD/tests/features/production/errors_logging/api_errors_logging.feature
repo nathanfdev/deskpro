@@ -4,7 +4,10 @@ Feature: Production errors logging with System Alerts
   I want to log PHP errors and unhandled exceptions
 
   Background:
-    Given I install the fresh data set
+    Given I have only default brand
+    And the following languages are enabled:
+      | default |
+    And the default brand is using the helpcenter theme
     And I log in as admin from the portal
     And I have no logged system alert events
     And I disable anti-abuse rate limiting

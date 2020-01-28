@@ -17,7 +17,7 @@ class NewFiltersFeature extends AbstractBetaFeature
      */
     public function getTitle()
     {
-        return 'New Filters';
+        return 'New Filters (Experimental)';
     }
 
     /**

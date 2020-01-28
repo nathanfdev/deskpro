@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 
 use Application\DeskPRO\Entity\Article;
@@ -22,6 +18,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
+use DeskPRO\Bundle\PortalBundle\Themes\HelpCenter\HelpCenterTheme;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class BreadcrumbBuilder
@@ -29,35 +26,55 @@ class BreadcrumbBuilder
     /**
      * @var Breadcrumbs
      */
-    private $b;
+    private $breadcrumbs;
+
     /**
      * @var ObjectRouter
      */
-    private $object_router;
+    private $objectRouter;
+
     /**
      * @var UrlGeneratorInterface
      */
-    private $url_generator;
+    private $urlGenerator;
 
     /**
      * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
-    public function __construct(ObjectRouter $object_router, UrlGeneratorInterface $url_generator, LanguageManager $language_manager, PortalBrandThemeLoader $brandThemeLoader)
-    {
-        $this->object_router = $object_router;
-        $this->url_generator = $url_generator;
-        $this->b             = new Breadcrumbs();
-        $themeId             = $brandThemeLoader->getPortalBrandTheme()->getActiveTheme()->getId();
-        if ($themeId !== 'helpcenter') {
-            $this->b->add(
-                $this->url_generator->generate('portal_home'),
+    /**
+     * @var PortalBrandThemeLoader
+     */
+    private $brandThemeLoader;
+
+    /**
+     * Constructor.
+     *
+     * @param ObjectRouter           $objectRouter
+     * @param UrlGeneratorInterface  $urlGenerator
+     * @param LanguageManager        $languageManager
+     * @param PortalBrandThemeLoader $brandThemeLoader
+     */
+    public function __construct(
+        ObjectRouter $objectRouter,
+        UrlGeneratorInterface $urlGenerator,
+        LanguageManager $languageManager,
+        PortalBrandThemeLoader $brandThemeLoader
+    ) {
+        $this->objectRouter     = $objectRouter;
+        $this->urlGenerator     = $urlGenerator;
+        $this->brandThemeLoader = $brandThemeLoader;
+        $this->breadcrumbs      = new Breadcrumbs();
+
+        if ($this->getThemeId() !== HelpCenterTheme::THEME_ID) {
+            $this->breadcrumbs->add(
+                $this->urlGenerator->generate('portal_home'),
                 Breadcrumbs::PORTAL,
                 ['phrase' => 'portal.general.nav-portal']
             );
         }
-        $this->language_manager = $language_manager;
+        $this->languageManager = $languageManager;
     }
 
     //####################################################################################################################
@@ -66,8 +83,8 @@ class BreadcrumbBuilder
 
     public function addChat()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_chats'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_chats'),
             Breadcrumbs::CHAT,
             ['phrase' => 'portal.general.nav-chat']
         );
@@ -77,8 +94,8 @@ class BreadcrumbBuilder
 
     public function addChatView(ChatConversation $chat)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($chat),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($chat),
             Breadcrumbs::CHAT_VIEW,
             ['phrase' => 'portal.general.nav-chatlog']
         );
@@ -92,8 +109,8 @@ class BreadcrumbBuilder
 
     public function addKb()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_kb'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_kb'),
             Breadcrumbs::KB,
             ['phrase' => 'portal.general.nav-kb']
         );
@@ -103,10 +120,10 @@ class BreadcrumbBuilder
 
     public function addKbCat(ArticleCategory $cat)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($cat),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($cat),
             Breadcrumbs::KB_CAT,
-            ['title' => $this->language_manager->objectPhrase($cat)]
+            ['title' => $this->languageManager->objectPhrase($cat)]
         );
 
         return $this;
@@ -114,8 +131,8 @@ class BreadcrumbBuilder
 
     public function addKbView(Article $a)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($a),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($a),
             Breadcrumbs::KB_VIEW,
             $a
         );
@@ -129,8 +146,8 @@ class BreadcrumbBuilder
 
     public function addNews()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_news'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_news'),
             Breadcrumbs::NEWS,
             ['phrase' => 'portal.general.nav-news']
         );
@@ -140,10 +157,10 @@ class BreadcrumbBuilder
 
     public function addNewsCat(NewsCategory $cat)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($cat),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($cat),
             Breadcrumbs::NEWS_CAT,
-            ['title' => $this->language_manager->objectPhrase($cat)]
+            ['title' => $this->languageManager->objectPhrase($cat)]
         );
 
         return $this;
@@ -151,8 +168,8 @@ class BreadcrumbBuilder
 
     public function addNewsView(News $a)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($a),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($a),
             Breadcrumbs::NEWS_VIEW,
             $a
         );
@@ -166,8 +183,8 @@ class BreadcrumbBuilder
 
     public function addDownloads()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_downloads'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_downloads'),
             Breadcrumbs::DOWNLOADS,
             ['phrase' => 'portal.general.nav-downloads']
         );
@@ -177,10 +194,10 @@ class BreadcrumbBuilder
 
     public function addDownloadCat(DownloadCategory $cat)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($cat),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($cat),
             Breadcrumbs::DOWNLOADS_CAT,
-            ['title' => $this->language_manager->objectPhrase($cat)]
+            ['title' => $this->languageManager->objectPhrase($cat)]
         );
 
         return $this;
@@ -188,8 +205,8 @@ class BreadcrumbBuilder
 
     public function addDownloadView(Download $a)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($a),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($a),
             Breadcrumbs::DOWNLOADS_VIEW,
             $a
         );
@@ -203,8 +220,8 @@ class BreadcrumbBuilder
 
     public function addTopics()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_guides'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_guides'),
             Breadcrumbs::TOPICS,
             ['phrase' => 'portal.general.nav-guides']
         );
@@ -214,10 +231,10 @@ class BreadcrumbBuilder
 
     public function addGuide(Guide $guide)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($guide),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($guide),
             Breadcrumbs::GUIDE,
-            ['title' => $this->language_manager->objectPhrase($guide)]
+            ['title' => $this->languageManager->objectPhrase($guide)]
         );
 
         return $this;
@@ -225,8 +242,8 @@ class BreadcrumbBuilder
 
     public function addTopic(Topic $topic)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($topic),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($topic),
             Breadcrumbs::TOPIC,
             $topic
         );
@@ -240,8 +257,8 @@ class BreadcrumbBuilder
 
     public function addYourAccount()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_user_profile'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_user_profile'),
             Breadcrumbs::PROFILE,
             ['phrase' => 'portal.general.nav-your-account']
         );
@@ -251,8 +268,8 @@ class BreadcrumbBuilder
 
     public function addProfile()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_user_profile'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_user_profile'),
             Breadcrumbs::PROFILE,
             ['phrase' => 'portal.general.nav-profile']
         );
@@ -262,8 +279,8 @@ class BreadcrumbBuilder
 
     public function addEditEmails()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_user_profile_emails'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_user_profile_emails'),
             Breadcrumbs::PROFILE_EMAILS,
             ['phrase' => 'portal.general.nav-emails']
         );
@@ -273,8 +290,8 @@ class BreadcrumbBuilder
 
     public function addRegistration()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_user_registration'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_user_registration'),
             Breadcrumbs::REGISTER,
             ['phrase' => 'portal.general.nav-register']
         );
@@ -284,8 +301,8 @@ class BreadcrumbBuilder
 
     public function addLogin()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_login'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_login'),
             Breadcrumbs::LOGIN,
             ['phrase' => 'portal.general.nav-login']
         );
@@ -295,8 +312,8 @@ class BreadcrumbBuilder
 
     public function addPasswordReset()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_reset_password'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_reset_password'),
             Breadcrumbs::PASSWORD_RESET,
             ['phrase' => 'portal.general.nav-reset-password']
         );
@@ -306,8 +323,8 @@ class BreadcrumbBuilder
 
     public function addPasswordSet()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_set_password'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_set_password'),
             Breadcrumbs::PASSWORD_SET,
             ['phrase' => 'portal.general.nav-set-password']
         );
@@ -321,14 +338,14 @@ class BreadcrumbBuilder
 
     public function addSearch($query)
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_search', ['q' => $query]),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_search', ['q' => $query]),
             Breadcrumbs::SEARCH,
             ['phrase' => 'portal.general.search-section-title']
         );
 
-        $this->b->add(
-            $this->url_generator->generate('portal_search', ['q' => $query]),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_search', ['q' => $query]),
             Breadcrumbs::SEARCH,
             ['name' => sprintf('"%s"', $query)]
         );
@@ -338,15 +355,15 @@ class BreadcrumbBuilder
 
     public function addLabelSearch($type, $label)
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_search_labels', ['type' => $type, 'label' => $label]),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_search_labels', ['type' => $type, 'label' => $label]),
             Breadcrumbs::SEARCH,
             ['phrase' => 'portal.general.search-labels-section-title']
         );
 
         if ($label) {
-            $this->b->add(
-                $this->url_generator->generate('portal_search_labels', ['type' => $type, 'label' => $label]),
+            $this->breadcrumbs->add(
+                $this->urlGenerator->generate('portal_search_labels', ['type' => $type, 'label' => $label]),
                 Breadcrumbs::SEARCH,
                 ['name' => sprintf('"%s"', $label)]
             )
@@ -362,8 +379,8 @@ class BreadcrumbBuilder
 
     public function addCommunity()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_community'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_community'),
             Breadcrumbs::COMMUNITY,
             ['phrase' => 'portal.general.nav-community']
         );
@@ -373,8 +390,8 @@ class BreadcrumbBuilder
 
     public function addCommunityView(CommunityTopic $a)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($a),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($a),
             Breadcrumbs::COMMUNITY_VIEW,
             $a
         );
@@ -384,8 +401,8 @@ class BreadcrumbBuilder
 
     public function addCommunityForum(CommunityForum $a)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($a),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($a),
             $a->getTitle(),
             $a
         );
@@ -395,8 +412,8 @@ class BreadcrumbBuilder
 
     public function addCommunityCreate(CommunityForum $a)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($a),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($a),
             $a->getTitle(),
             $a
         );
@@ -409,8 +426,8 @@ class BreadcrumbBuilder
     //####################################################################################################################
     public function addMembersList()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_members'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_members'),
             Breadcrumbs::MEMBERS,
             ['phrase' => 'portal.general.nav-members']
         );
@@ -423,8 +440,8 @@ class BreadcrumbBuilder
     //####################################################################################################################
     public function addDirectMessagesList()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_dm'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_dm'),
             Breadcrumbs::DIRECT_MESSAGES,
             ['phrase' => 'portal.general.nav-dm']
         );
@@ -436,10 +453,13 @@ class BreadcrumbBuilder
     // Tickets
     //####################################################################################################################
 
+    /**
+     * @return $this
+     */
     public function addNewTicket()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_new_ticket'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_new_ticket'),
             Breadcrumbs::TICKETS_NEW,
             ['phrase' => 'portal.general.nav-newticket']
         );
@@ -447,10 +467,13 @@ class BreadcrumbBuilder
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function addTicketList()
     {
-        $this->b->add(
-            $this->url_generator->generate('portal_tickets'),
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('portal_tickets'),
             Breadcrumbs::TICKETS,
             ['phrase' => 'portal.general.nav-tickets']
         );
@@ -458,34 +481,53 @@ class BreadcrumbBuilder
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function addTicketApprovalList()
     {
-        $this->b->add(
-            $this->url_generator->generate('ticket_approvals'),
+        if ($this->getThemeId() === HelpCenterTheme::THEME_ID) {
+            $phrase = 'helpcenter.approvals.my-approvals';
+        } else {
+            $phrase = 'portal.general.nav-approvals';
+        }
+
+        $this->breadcrumbs->add(
+            $this->urlGenerator->generate('ticket_approvals'),
             Breadcrumbs::TICKETS,
-            ['phrase' => 'portal.general.nav-approvals']
+            ['phrase' => $phrase]
         );
 
         return $this;
     }
 
-    public function addTicketView(Ticket $t)
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function addTicketView(Ticket $ticket)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($t),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($ticket),
             Breadcrumbs::TICKETS_VIEW,
-            $t
+            $ticket
         );
 
         return $this;
     }
 
-    public function addApprovalView(TicketApproval $a)
+    /**
+     * @param TicketApproval $approval
+     *
+     * @return $this
+     */
+    public function addApprovalView(TicketApproval $approval)
     {
-        $this->b->add(
-            $this->object_router->getPortalPath($a),
+        $this->breadcrumbs->add(
+            $this->objectRouter->getPortalPath($approval),
             Breadcrumbs::APPROVALS_VIEW,
-            $a
+            $approval
         );
 
         return $this;
@@ -496,6 +538,14 @@ class BreadcrumbBuilder
      */
     public function done()
     {
-        return $this->b;
+        return $this->breadcrumbs;
+    }
+
+    /**
+     * @return string
+     */
+    private function getThemeId()
+    {
+        return $this->brandThemeLoader->getPortalBrandTheme()->getActiveTheme()->getId();
     }
 }

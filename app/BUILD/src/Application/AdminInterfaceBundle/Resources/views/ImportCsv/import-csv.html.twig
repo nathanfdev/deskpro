@@ -156,13 +156,20 @@
 										<option value="zip">Post Code</option>
 										<option value="country">Country</option>
 									</optgroup>
-									<optgroup label="Custom Fields">
+									<optgroup label="Person Custom Fields">
 										<option ng-repeat="field in fileUploadResults.custom_fields"
 												ng-value="'custom_' + field.id">
-											{{ ng_var('field.title') }}
+											Person: {{ ng_var('field.title') }}
 										</option>
-										<option value="new_custom">New Custom Field</option>
+										<option value="new_custom">New Person Custom Field</option>
 									</optgroup>
+                                    <optgroup label="Organization Custom Fields">
+                                        <option ng-repeat="field in fileUploadResults.org_custom_fields"
+                                                ng-value="'org_custom_' + field.id">
+                                            Organization: {{ ng_var('field.title') }}
+                                        </option>
+                                        <option value="org_new_custom">New Organization Custom Field</option>
+                                    </optgroup>
 								</select>
 								<span ng-if="importSettings.showExtraMappings.phone[$index]">
 									<select
@@ -236,7 +243,7 @@
 									<input type="text" ng-model="importSettings.additionalMappings[$index].label"
 											placeholder="Label">
 								</span>
-								<span ng-if="importSettings.showExtraMappings.new_custom[$index]">
+								<span ng-if="importSettings.showExtraMappings.new_custom[$index] || importSettings.showExtraMappings.org_new_custom[$index]">
 									<input type="text" ng-model="importSettings.additionalMappings[$index].title"
 											placeholder="Title">
 									{{ ng_var('importSettings.additionalMappings[$index].handler_class') }}

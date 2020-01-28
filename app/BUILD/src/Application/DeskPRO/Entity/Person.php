@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -718,6 +712,14 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @return string
+     */
+    public function getInitials()
+    {
+        return strtoupper(substr($this->first_name, 0, 1).substr($this->last_name, 0, 1));
+    }
+
+    /**
      * @param string $community_name
      *
      * @return $this
@@ -1113,6 +1115,7 @@ class Person extends DomainObject implements
 
     /**
      * @param string
+     * @param null|mixed $creationSystem
      *
      * @return $this
      */
@@ -1454,6 +1457,8 @@ class Person extends DomainObject implements
      * long, we'll try to initialize it or try other ways to shorten the name
      * to the specified number of characters.
      *
+     * @param mixed $max_len
+     *
      * @return string
      */
     public function getDisplayContactShort($max_len = 40)
@@ -1493,6 +1498,7 @@ class Person extends DomainObject implements
                             continue 2;
                         }
                         $display[] = $this->name;
+
                         break;
 
                     case 'fi':
@@ -1500,6 +1506,7 @@ class Person extends DomainObject implements
                             continue 2;
                         }
                         $display[] = $this->first_name[0];
+
                         break;
 
                     case 'fn':
@@ -1507,6 +1514,7 @@ class Person extends DomainObject implements
                             continue 2;
                         }
                         $display[] = $this->first_name;
+
                         break;
 
                     case 'li':
@@ -1514,6 +1522,7 @@ class Person extends DomainObject implements
                             continue 2;
                         }
                         $display[] = $this->last_name[0];
+
                         break;
 
                     case 'ln':
@@ -1521,6 +1530,7 @@ class Person extends DomainObject implements
                             continue 2;
                         }
                         $display[] = $this->last_name;
+
                         break;
 
                     case '(e)':
@@ -1534,10 +1544,12 @@ class Person extends DomainObject implements
                         } else {
                             $display[] = $this->getPrimaryEmailAddress();
                         }
+
                         break;
 
                     default:
                         $display[] = $el;
+
                         break;
                 }
             }
@@ -1727,6 +1739,7 @@ class Person extends DomainObject implements
      *
      * @param  $pref
      * @param  $value
+     * @param mixed $pref_name
      *
      * @return PersonPref
      */
@@ -2116,6 +2129,7 @@ class Person extends DomainObject implements
      *
      * @param int   $field_id
      * @param mixed $value
+     * @param mixed $value_type
      *
      * @return mixed
      */
@@ -2214,6 +2228,9 @@ class Person extends DomainObject implements
      * Render a custom field.
      *
      * @deprecated
+     *
+     * @param mixed $field_id
+     * @param mixed $context
      */
     public function renderCustomField($field_id, $context = 'html')
     {
@@ -2758,6 +2775,7 @@ class Person extends DomainObject implements
                 $this->emails->remove($index);
                 $em->remove($email);
                 $the_email = $email;
+
                 break;
             }
         }
@@ -2826,6 +2844,8 @@ class Person extends DomainObject implements
 
     /**
      * Get the email record for a specific address.
+     *
+     * @param mixed $email_address
      *
      * @return PersonEmail
      */
@@ -2961,6 +2981,7 @@ class Person extends DomainObject implements
 
             $this->labels->removeElement($label);
             $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+
             break;
         }
     }
@@ -3023,6 +3044,10 @@ class Person extends DomainObject implements
      * existance of an image, use hasPicture.
      *
      * @deprecated Use the AvatarResolver instead
+     *
+     * @param mixed $size
+     * @param null|mixed $secure
+     * @param mixed $default
      *
      * @return null|string
      */

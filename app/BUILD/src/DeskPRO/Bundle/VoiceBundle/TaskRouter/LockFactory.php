@@ -17,9 +17,22 @@ class LockFactory
      *
      * @return \Symfony\Component\Lock\Lock
      */
-    public static function createTaskRouterLock(ContainerInterface $container)
+    public static function createTaskRouterEvaluateLock(ContainerInterface $container)
     {
         $store   = new RetryTillSaveStore(new PdoStore($container->get('doctrine.dbal.default_connection')), 750, 2);
+        $factory = new Factory($store);
+
+        return $factory->createLock('voice-task-router', 30);
+    }
+
+    /**
+     * @param ContainerInterface $container
+     *
+     * @return \Symfony\Component\Lock\Lock
+     */
+    public static function createTaskRouterActionsLock(ContainerInterface $container)
+    {
+        $store   = new RetryTillSaveStore(new PdoStore($container->get('doctrine.dbal.default_connection')), 500);
         $factory = new Factory($store);
 
         return $factory->createLock('voice-task-router', 30);

@@ -70,6 +70,7 @@ class ChatTranscripts extends AbstractJob
                 foreach ($chatMessages as $chatMessage) {
                     if (!$chatMessage->getIsSys() || ($chatMessage->getAuthor() && $chatMessage->getAuthor()->isAgent())) {
                         $noAgentAnswer = false;
+
                         break;
                     }
                 }
@@ -89,7 +90,7 @@ class ChatTranscripts extends AbstractJob
                         $viewModel = $container->get('email.user_viewmodel_factory')
                             ->createChatTranscriptModel($chat, $chatMessages);
                         $container->get('email.email_sender')
-                            ->send($viewModel, ['to' => $person, 'from' => $account]);
+                            ->send($viewModel, ['to' => $person, 'from_account' => $account]);
                     } else {
                         $vars = [
                             'convo'          => $chat,

@@ -258,7 +258,7 @@ class TwilioAccountsController extends AbstractVoiceCrudController
             $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 
             try {
-                $this->get('dp.voice.cloud_proxy')->initTwilioProxy($this->getUser());
+                $proxySettings = $this->get('dp.voice.cloud_proxy')->loadTwilioProxySettings($this->getUser());
             } catch (InsufficientBalanceException $e) {
                 return new View([
                     'code'    => 'invalid_input',
@@ -280,20 +280,11 @@ class TwilioAccountsController extends AbstractVoiceCrudController
                 throw $this->createAccessDeniedException($e->getMessage());
             }
 
-            $account = $this->getRepository(TwilioVoiceAccount::class)->findOneBy([
-                'accountId' => VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER,
-                'authToken' => '_',
-            ]);
-
-            if (!$account) {
-                $account = new TwilioVoiceAccount();
-                $account->setAccountId(VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER);
-                $account->setAuthToken('_');
-                $account->setAccountName('Deskpro Voice Account');
-
-                $this->getManager()->persist($account);
-                $this->getManager()->flush();
-            }
+            $account = $this->get('dp.voice.cloud_proxy')->createTwilioProxyAccount(
+                $proxySettings['twilioProxyServiceUrl'],
+                $proxySettings['accessToken'],
+                $proxySettings['authToken']
+            );
 
             return new View($this->wrap($account), Response::HTTP_CREATED);
         }

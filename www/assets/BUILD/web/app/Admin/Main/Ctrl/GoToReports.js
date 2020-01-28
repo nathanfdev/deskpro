@@ -5,8 +5,12 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     init() {
+      if (window.parent && window.parent.DP_FRAME_OVERLAYS && window.parent.DP_FRAME_OVERLAYS['reports-interface']) {
+        window.parent.DP_FRAME_OVERLAYS['reports-interface'].open();
+        return window.parent.DP_FRAME_OVERLAYS.admin.close();
+      }
       if (!window.parent || !window.parent.DP_FRAME_OVERLAYS || !window.parent.DP_FRAME_OVERLAYS.reports) {
-        return window.location.href = `${window.DP_BASE_URL}reports/`;
+        return window.location.href = window.DP_HAS_NEW_REPORTS ? `${window.DP_BASE_URL}agent/#r:/` : `${window.DP_BASE_URL}reports/`;
       }
       window.parent.DP_FRAME_OVERLAYS.reports.open();
       return window.parent.DP_FRAME_OVERLAYS.admin.close();

@@ -25,11 +25,11 @@ class LanguageChoice extends React.Component {
   }
   render() {
     return (
-      <a className="dropdown-item" onClick={this.onClick} href="#">
+      <a className="dropdown-item" onClick={this.onClick} href="#lang">
         <img
           className="dp-po-icon"
           src={portalUrlGenerator.getFlagPath(this.props.getLangFlag(this.props.langCode))}
-          alt={this.props.getLangTitle(this.props.langCode)}
+          alt={`${this.props.getLangTitle(this.props.langCode)} flag`}
         />
         <span className="text">
           {this.props.getLangTitle(this.props.langCode)}
@@ -96,8 +96,8 @@ export class LanguageChanger extends React.Component {
 
     return (
       <div className="dp-po-language" onMouseOver={this.updateTopPos}>
-        <a href="#" className="dp-po-language-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img src={portalUrlGenerator.getFlagPath(this.getLangFlag(activeLangCode))} alt="" />
+        <a href="#lang" className="dp-po-language-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <img src={portalUrlGenerator.getFlagPath(this.getLangFlag(activeLangCode))} alt="flag" />
           <span className="dp-po-language-link-text"> {this.getLangTitle(activeLangCode)} <i className="dp-po-icon far fa-angle-down" /> </span>
         </a>
 

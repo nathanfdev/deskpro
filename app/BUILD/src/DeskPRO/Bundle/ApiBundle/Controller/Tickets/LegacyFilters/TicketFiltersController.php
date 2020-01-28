@@ -30,10 +30,11 @@ class TicketFiltersController extends CrudController
 {
     use TicketsPagerTrait;
 
-    public static $exposeOnly = ['list', 'get', 'count'];
-    public static $entity     = LegacyTicketFilter::class;
-    public static $listSort   = 'title';
-    public static $listOrder  = 'asc';
+    public static $exposeOnly     = ['list', 'get', 'count'];
+    public static $entity         = LegacyTicketFilter::class;
+    public static $listMaxResults = 50;
+    public static $listSort       = 'title';
+    public static $listOrder      = 'asc';
 
     /**
      * @ApiDoc(
@@ -110,7 +111,7 @@ class TicketFiltersController extends CrudController
 
         $offset      = $request->query->getInt('offset');
         $currentPage = $request->query->getInt('page', 1);
-        $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
+        $maxPerPage  = $this->getCountParam($request);
 
         $total = $searcher->getCount();
         $ids   = $searcher->getMatches([

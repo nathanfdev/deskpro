@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -234,7 +230,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     public function setFilename($filename)
     {
         $filename = $filename ?: '';
-        $origExt  = strtolower(Strings::getExtension($filename));
+        $origExt  = Strings::getExtension($filename, false);
 
         if ($filename[0] == '.') {
             $filename = '_.'.substr($filename, 1);
@@ -248,7 +244,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         $pos = strrpos($filename, '.');
         if ($pos !== false) {
             $name      = substr($filename, 0, $pos);
-            $extension = strtolower(substr($filename, $pos + 1));
+            $extension = substr($filename, $pos + 1);
 
             $name = substr($name, 0, 255 - strlen($extension) - 1);
 
@@ -406,6 +402,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      * Get the standard download URL for this blob.
      *
      * @param bool $absolute
+     * @param mixed $use_file_url
      *
      * @return string
      */
