@@ -31,6 +31,9 @@ use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Class ChatHandler
+ */
 class ChatHandler
 {
     const MESSAGE_TYPE_NEW_MESSAGE = 'chat.message';
@@ -364,16 +367,27 @@ class ChatHandler
         $this->eventDispatcher->dispatch(UserChatEvent::USER_TRACK, new UserChatEvent($chat, $trackMsg));
     }
 
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return ApiWrapper
+     */
     private function handleChatTicketSaveCommand(ChatConversation $chat, array $request)
     {
         $ticketRepository = $this->em->getRepository(Ticket::class);
         $ticket           = $ticketRepository->findOneBy(['linked_chat' => $chat]);
         if ($ticket) {
+            $this->endChatTimeout($chat);
+
             return new ApiWrapper($ticket);
         }
 
         $ticket = new Ticket();
-        $person = null;
 
         /** @var DepartmentRepository $departmentRepository */
         $departmentRepository = $this->em->getRepository(Department::class);
@@ -381,23 +395,25 @@ class ChatHandler
         $personRepository = $this->em->getRepository(Person::class);
 
         $errors = [];
-        // try to find person
-        if (isset($request['person_id'])) {
-            $person = $this->em->find(Person::class, $request['person_id']);
-        }
-        if (!$person && isset($request['email'])) {
-            $person = $personRepository->findOneByEmail($request['email']);
-        }
 
-        if (!$person && (!isset($request['email']) || !trim($request['email']))) {
-            $errors['email']     = 'Either email or person_id parameter is required';
-            $errors['person_id'] = 'Either email or person_id parameter is required';
+        if (!$person = $this->getUser()) {
+            // try to find person
+            if (isset($request['person_id'])) {
+                $person = $this->em->find(Person::class, $request['person_id']);
+            }
+            if (!$person && isset($request['email'])) {
+                $person = $personRepository->findOneByEmail($request['email']);
+            }
+
+            if (!$person && (!isset($request['email']) || !trim($request['email']))) {
+                $errors['email']     = 'Either email or person_id parameter is required';
+                $errors['person_id'] = 'Either email or person_id parameter is required';
+            }
         }
 
         $department = null;
         if (isset($request['department_id'])) {
-            $department = $departmentRepository->findOneBy(['id' => $request['department_id'], 'is_tickets_enabled' => 1]);
-            if ($department) {
+            if ($departmentRepository->findOneBy(['id' => $request['department_id'], 'is_tickets_enabled' => 1])) {
                 $ticket->setDepartment($department);
             } else {
                 $errors['department_id'] = 'Wrong id, department wasn\'t found';
@@ -500,6 +516,8 @@ class ChatHandler
             throw new MessengerApiException([], 'Failed to create a ticket', 400, $e);
         }
 
+        $this->endChatTimeout($chat);
+
         return new ApiWrapper($ticket);
     }
 
@@ -515,6 +533,36 @@ class ChatHandler
             /** @var UserChatManager $chatManager */
             $chatManager = $this->container->getSystemObject('user_chat_manager');
             $chatManager->userAbandoned($chat);
+        }
+    }
+
+    /**
+     * @return object|string|void|null
+     */
+    private function getUser()
+    {
+        if ($this->container->has('security.token_storage')) {
+            if (null === $token = $this->container->get('security.token_storage')->getToken()) {
+                return;
+            }
+
+            if (!\is_object($user = $token->getUser())) {
+                // e.g. anonymous authentication
+                return;
+            }
+
+            return $user;
+        }
+
+        return null;
+    }
+
+    private function endChatTimeout($chat)
+    {
+        if (!$chat->isEnded()) {
+            /** @var UserChatManager $chatManager */
+            $chatManager = $this->container->getSystemObject('user_chat_manager');
+            $chatManager->waitTimeout($chat);
         }
     }
 }
