@@ -12,6 +12,7 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\MessengerBundle\Form\Type\Settings\MessengerType;
 use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver as MSR;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChat;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -142,6 +143,13 @@ class AdminController extends AbstractBrandAwareSettingsController
         $optionsTickets              = $messengerOptions->getTickets();
         $optionsChat                 = $messengerOptions->getChat();
         $messengerTickets            = $model->getTickets();
+
+        if (
+            !$messengerTickets->isEnabled() &&
+            $messengerChat->getNoAnswerBehavior() === MessengerChat::NO_ANSWER_CREATE_TICKET
+        ) {
+            $messengerChat->setNoAnswerBehavior(MessengerChat::NO_ANSWER_SAVE_TICKET);
+        }
         $this
             ->getSettingRepository()
 
