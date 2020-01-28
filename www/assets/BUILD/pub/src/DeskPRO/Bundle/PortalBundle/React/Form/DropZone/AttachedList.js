@@ -18,7 +18,7 @@ export class AttachedList extends React.Component {
     }
 
     return (
-      <ul>
+      <ul className="dp-pc_file-upload__attached">
         {files.map((file, key) => (file.info
             ? <AttachedFile file={file} key={key} inputName={inputName} onDelete={onDelete} />
             : <UploadingFile file={file} key={key} />

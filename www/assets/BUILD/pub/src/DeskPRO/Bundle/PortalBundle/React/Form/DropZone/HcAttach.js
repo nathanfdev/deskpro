@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import $ from 'jquery';
 import classNames from 'classnames';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
@@ -59,20 +60,19 @@ export default class HcAttach extends React.Component {
     });
 
     $(document).bind('dragover', (e) => {
-      console.log('dragover');
-      let dropZones = $('.dropzone'),
-        timeout = window.dropZoneTimeout;
+      const dropZones = $('.dp-pc_file-upload__dropzone');
+      const timeout = window.dropZoneTimeout;
       if (timeout) {
         clearTimeout(timeout);
       } else {
         dropZones.addClass('in');
       }
       const hoveredDropZone = $(e.target).closest(dropZones);
-      dropZones.not(hoveredDropZone).removeClass('hover');
-      hoveredDropZone.addClass('hover');
+      dropZones.not(hoveredDropZone).removeClass('active');
+      hoveredDropZone.addClass('active');
       window.dropZoneTimeout = setTimeout(() => {
         window.dropZoneTimeout = null;
-        dropZones.removeClass('in hover');
+        dropZones.removeClass('in active');
       }, 100);
     });
   }
@@ -221,7 +221,6 @@ export default class HcAttach extends React.Component {
           type="file"
           ref={(node) => { this.refFileUpload = node; }}
           name="file[blob]"
-          style={{ display: 'none' }}
         />
         <div
           className="choose"
@@ -278,7 +277,7 @@ export default class HcAttach extends React.Component {
             </DropZone>
           }
           <AttachedList files={files} inputName={inputName} onDelete={this.onDelete} />
-          {lastError}
+          <span className="dp-pc_file-upload__error">{lastError}</span>
         </div>
       </div>
     );
