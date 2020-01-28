@@ -56,7 +56,7 @@ export class HcDateWidget extends PageWidget {
   renderWidget() {
     const $el = this.$element;
     this.$element.hide();
-    this.$rElement = $('<div class="dp-react-widget dp-pc_field form-control"></div>').insertAfter(this.$element);
+    this.$rElement = $('<div class="dp-react-widget form-control"></div>').insertAfter(this.$element);
 
     const calendar = $el.data('calendar');
 

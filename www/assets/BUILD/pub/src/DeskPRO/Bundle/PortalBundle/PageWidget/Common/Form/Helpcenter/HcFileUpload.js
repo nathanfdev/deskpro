@@ -57,11 +57,12 @@ export default class HcFileUpload extends PageWidget {
       files,
       csrfToken,
       onChange: this.onChange,
-      multiple: false,
+      multiple: true,
       i18n:     {
         dragNDrop:   portalPhrases.get('helpcenter.forms.label-drag-and-drop'),
         or:          portalPhrases.get('helpcenter.general.or'),
         chooseAFile: portalPhrases.get('helpcenter.forms.label-choose-a-file'),
+        chooseFiles: portalPhrases.get('helpcenter.forms.label-choose-files'),
       }
     });
 

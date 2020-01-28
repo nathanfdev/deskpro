@@ -35,6 +35,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.forms.date-picker-previous-month',
             'helpcenter.forms.date-picker-time',
             'helpcenter.forms.label-choose-a-file',
+            'helpcenter.forms.label-choose-files',
             'helpcenter.forms.label-drag-and-drop',
             'helpcenter.general.back',
             'helpcenter.general.copied',
