@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
@@ -13,6 +9,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\People\PersonGuest;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\SnippetUseLogRepository;
@@ -29,6 +26,7 @@ use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
+use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Pagerfanta;
@@ -84,7 +82,7 @@ class TicketsController extends AbstractController
                 ];
         }
         /* @var TicketListTable[] $tables */
-        $tables = $this->makeTicketListTables($type,  $ticketCategories, $person, $request);
+        $tables = $this->makeTicketListTables($type, $ticketCategories, $person, $request);
 
         $ticketListJs = 'window.DESKPRO_TICKET_LIST_TABLES = '.$tables->compileJsObj().';';
 
@@ -450,6 +448,9 @@ class TicketsController extends AbstractController
      * @Route("/tickets/{ticket_ref}/remove-cc/{cc_id}", name="portal_tickets_cc_remove")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      * @AutoPostOnGetRequest()
+     *
+     * @param mixed $ticket_ref
+     * @param mixed $cc_id
      */
     public function removeCcAction(Request $request, $ticket_ref, $cc_id)
     {
@@ -519,13 +520,16 @@ class TicketsController extends AbstractController
             $message = $ticketMessageRepo->getLastAgentReply($ticket);
         }
 
-        // message must exist and belong to the ticket requested
-        if (!$message || $message->getTicketId() !== $ticket->getId()) {
-            return $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
+        if (!$message) {
+            $message = $ticketMessageRepo->getFirstTicketMessage($ticket);
         }
 
-        // message must not be an agent note and the person on the message must be an agent
-        if ($message->is_agent_note || !$message->getPerson()->isAgent()) {
+        // message must exist and belong to the ticket requested
+        if (!$message || $message->getTicketId() !== $ticket->getId()) {
+            if (!$this->getBrandSetting('core.iface_portal')) {
+                throw new NotFoundHttpException();
+            }
+
             return $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
         }
 
@@ -565,12 +569,15 @@ class TicketsController extends AbstractController
                         switch ($use->getRating()) {
                             case 1:
                                 $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() - 1);
+
                                 break;
                             case 0:
                                 $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() - 1);
+
                                 break;
                             case -1:
                                 $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() - 1);
+
                                 break;
                             default:
                                 break;
@@ -580,12 +587,15 @@ class TicketsController extends AbstractController
                     switch ($rating) {
                         case 1:
                             $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() + 1);
+
                             break;
                         case 0:
                             $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() + 1);
+
                             break;
                         case -1:
                             $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() + 1);
+
                             break;
                         default:
                             break;
@@ -600,7 +610,9 @@ class TicketsController extends AbstractController
                 if ($isPostRequest) {
                     $this->addFlash('success', $this->phrase('portal.flashes.ticket_feedback_thank_you'));
 
-                    return $this->redirectToRoute('portal_home');
+                    if ($this->getBrandSetting('core.iface_portal')) {
+                        return $this->redirectToRoute('portal_home');
+                    }
                 }
             }
         }
@@ -608,6 +620,11 @@ class TicketsController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
         $template = 'Theme:Tickets:feedback.html.twig';
+
+        if (!$this->getBrandSetting('core.iface_portal')) {
+            $template = 'Theme:Tickets:feedback-simple.html.twig';
+        }
+
         if ($request->isXmlHttpRequest()) {
             $template = 'Theme:Tickets:ajax-feedback.html.twig';
         }
@@ -627,6 +644,8 @@ class TicketsController extends AbstractController
      * @Route("/tickets/{ticket_ref}/unresolve", name="portal_tickets_unresolve")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      * @AutoPostOnGetRequest()
+     *
+     * @param mixed $ticket_ref
      */
     public function unresolveTicketAction(Request $request, $ticket_ref)
     {
@@ -653,6 +672,65 @@ class TicketsController extends AbstractController
         $this->addFlash('success', $this->phrase('portal.flashes.ticket_re_opened'));
 
         return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+    }
+
+    /**
+     * @Route("/tickets/pdf/{ticketRef}", name="portal_tickets_pdf")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     *
+     * @param Request $request
+     * @param string  $ticketRef
+     */
+    public function pdfAction(Request $request, $ticketRef = null)
+    {
+        if (!$ticket = $this->getTicketByRefOrId($ticketRef)) {
+            throw $this->createNotFoundException(sprintf('no ticket with ref or id "%s" found', $ticketRef));
+        }
+
+        $this->denyAccessUnlessGranted(TicketsVoter::TICKET_VIEW, $ticket);
+
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
+
+        $ticketView = $this->getTicketsViewService()->getUserTicketView($ticket);
+
+        $ticketMessagesBlock = $this->renderView(
+            'DeskPRO:pdf_agent:ticket-messages-batch.html.twig',
+            [
+                'ticket'                     => $ticket,
+                'ticket_messages'            => $ticket->getDisplayableMessages(),
+            ]
+        );
+
+        $layout = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout(
+            $ticket->getDepartmentId()
+        );
+
+        $viewLayout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
+
+        $fieldManager = $this->container->getTicketFieldManager();
+        $customFields = $fieldManager->getDisplayArrayForObject($ticket);
+
+        $contentHtml = $this->renderThemeView('Theme:Tickets:pdf.html.twig', [
+            'ticket'                => $ticket,
+            'ticket_view'           => $ticketView,
+            'breadcrumbs'           => $breadcrumbs,
+            'ticket_messages_block' => $ticketMessagesBlock,
+            'layout'                => $viewLayout,
+            'custom_fields'         => $customFields,
+        ]);
+
+        /** @var PdfRendererInterface $pdfRenderer */
+        $pdfRenderer = $this->get('pdf_renderer');
+
+        $pdf = $pdfRenderer->render($contentHtml);
+
+        $response = new Response();
+
+        $response->setContent($pdf);
+        $response->headers->set('Content-Disposition', 'attachment; filename=Ticket_'.$ticket->id.'.pdf');
+        $response->headers->set('Content-Type', 'application/pdf');
+
+        return $response;
     }
 
     /**
@@ -761,6 +839,7 @@ class TicketsController extends AbstractController
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
+
             throw $e;
         }
 
@@ -814,6 +893,7 @@ class TicketsController extends AbstractController
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
+
             throw $e;
         }
 

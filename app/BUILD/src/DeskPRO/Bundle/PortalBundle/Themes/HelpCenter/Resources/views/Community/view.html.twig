@@ -17,7 +17,7 @@
                     {{ topic.realTitle }}
                     {% if topic.statusCategory %}
                         <a class="dp-po-post-user-category-link" href="{{ path('portal_community_browse', {filter_uri: "type-#{topic.forum.id}/#{topic.statusCategory.status_type}-#{topic.statusCategory.id}"}) }}">
-                            <span class="badge" style="background-color: {{ topic.statusCategory.color }};">
+                            <span class="badge badge-secondary" style="background-color: {{ topic.statusCategory.color }};">
                                 {{ topic.statusCategory.title }}
                             </span>
                         </a>
@@ -36,10 +36,10 @@
                     <div class="dp-po-post-extra">
                         <ul class="dp-po-post-extra-list">
                             <li class="dp-po-post-extra-item">
-                                <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+                                <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print" title="{{ phrase('helpcenter.general.print') }}"></i></a>
                             </li>
                             <li class="dp-po-post-extra-item">
-                                <a href="{{ path('portal_community_topic_pdf', {slug: topic.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                                <a href="{{ path('portal_community_topic_pdf', {slug: topic.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i></a>
                             </li>
                         </ul>
                     </div>

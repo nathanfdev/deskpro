@@ -1,12 +1,11 @@
 <ul class="dp-po-community-view-activity-list">
     {% for comment in activities_per_topic[topic.id]|default([]) %}
-        {% set dateAgo = date_ago(comment.date_created, null, false) %}
+        {% set dateAgo = short_date_ago(comment.date_created, null, false) %}
         <li class="dp-po-community-view-activity-item">
             <a href="javascript:void(0)" class="dp-po-community-view-activity-link" data-toggle="tooltip"
                data-placement="bottom" title="Latest comment, {{ comment.person.display_name }} {{ dateAgo }}">
                 {{ hc_avatar(comment.person, 'dp-po-community-view-activity') }}
-{#                <img class="dp-po-community-view-activity-image" src="{{ avatar_url(comment.person) }}">#}
-{#                {% if not is_compact %}{{ dateAgo }}{% endif %}#} {# fixme: formatting of date_ago does not fit design #}
+                {% if not is_compact %}{{ dateAgo | raw }}{% endif %}
             </a>
         </li>
     {% endfor %}

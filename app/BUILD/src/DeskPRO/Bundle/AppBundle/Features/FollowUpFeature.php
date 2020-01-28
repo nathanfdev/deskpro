@@ -71,4 +71,12 @@ HTML;
     {
         return true;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDateReleased()
+    {
+        return new \DateTime('2020-01-01');
+    }
 }

@@ -69,7 +69,6 @@ class SearchBox extends React.Component {
         onFocus={onFocus}
         onBlur={onBlur}
         value={text}
-        required="required"
         {...props}
       />);
     } else {

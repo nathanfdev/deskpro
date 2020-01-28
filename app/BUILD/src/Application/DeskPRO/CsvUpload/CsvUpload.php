@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CsvUpload;
 
 use Application\DeskPRO\App;
@@ -71,6 +67,8 @@ class CsvUpload
      * @param string $filename
      * @param string $user_filename
      * @param bool   $skip_first
+     * @param mixed $welcome_email
+     * @param mixed $update_if_exists
      *
      * @return array
      */
@@ -81,6 +79,7 @@ class CsvUpload
         foreach ($field_maps as $map_field) {
             if (!empty($map_field['map']) && $map_field['map'] == 'primary_email') {
                 $has_email = true;
+
                 break;
             }
         }
@@ -229,15 +228,17 @@ class CsvUpload
 
         fclose($fp);
 
-        $custom_fields      = App::getApi('custom_fields.people')->getEnabledFields();
-        $show_welcome_email = !defined('DPC_IS_CLOUD');
+        $customFields         = App::getApi('custom_fields.people')->getEnabledFields();
+        $orgCustomFields      = App::getApi('custom_fields.organizations')->getEnabledFields();
+        $show_welcome_email   = !defined('DPC_IS_CLOUD');
 
         return [
             'filename'           => $filename,
             'user_filename'      => $user_filename,
             'columns'            => $columns,
             'examples'           => $examples,
-            'custom_fields'      => $custom_fields,
+            'custom_fields'      => $customFields,
+            'org_custom_fields'  => $orgCustomFields,
             'show_welcome_email' => $show_welcome_email,
             'options'            => $originalOptions,
         ];

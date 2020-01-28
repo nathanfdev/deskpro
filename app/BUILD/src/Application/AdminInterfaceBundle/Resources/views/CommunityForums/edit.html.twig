@@ -163,77 +163,75 @@
 								</div>
 							</div>
 						</div>
-						{% if app.hasBeta('helpcenter') %}
-							<div class="form-group">
-								<div class="col-lg-3">
-									<h3>{{ phrase('agent.general.icon') }}</h3>
-								</div>
-								<div class="col-lg-9">
-									<div class="bucket">
-										<div id="community_forum_icon_picker" class="category-icon">
-											<input type="hidden" name="icon_urn" ng-model="CommunityForumsEdit.community_forum.icon_property.urn" />
-											<input type="hidden" name="icon_style" ng-model="CommunityForumsEdit.community_forum.icon_property.style" />
-											<input type="hidden" name="icon_color" ng-model="CommunityForumsEdit.community_forum.icon_property.color" />
-											<input type="hidden" name="icon_url" ng-model="CommunityForumsEdit.community_forum.icon_property.url" />
-											<button class="dp-btn btn-default" type="button">
-												{{ phrase('agent.publish.pick_icon') }}
-											</button>
-										</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('agent.general.icon') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="bucket">
+									<div id="community_forum_icon_picker" class="category-icon">
+										<input type="hidden" name="icon_urn" ng-model="CommunityForumsEdit.community_forum.icon_property.urn" />
+										<input type="hidden" name="icon_style" ng-model="CommunityForumsEdit.community_forum.icon_property.style" />
+										<input type="hidden" name="icon_color" ng-model="CommunityForumsEdit.community_forum.icon_property.color" />
+										<input type="hidden" name="icon_url" ng-model="CommunityForumsEdit.community_forum.icon_property.url" />
+										<button class="dp-btn btn-default" type="button">
+											{{ phrase('agent.publish.pick_icon') }}
+										</button>
 									</div>
 								</div>
 							</div>
-							<div class="form-group">
-								<div class="col-lg-3">
-									<h3>{{ phrase('agent.general.color') }}</h3>
-								</div>
-								<div class="col-lg-9">
-									<div class="inner-group" dp-error-class="form_props.color">
-										<label for="picker-input" style="background-color: {{ ng_var('CommunityForumsEdit.community_forum.color') }}"></label>
-										<input
-												id="picker-input"
-												type="text"
-												class="form-control"
-												name="color"
-												ng-model="CommunityForumsEdit.community_forum.color"
-												ng-focus="picker = true"
-												ng-blur="picker = false"
-												style="width: 50%;">
-										<div ng-show="picker" style="position: absolute;">
-											<ul class="picker">
-												<li ng-repeat="color in colors.slice(0, colors.length / 2)">
-                                                    <span ng-mouseenter="CommunityForumsEdit.community_forum.color = color" class="picker-color" style="background-color: {{ ng_var('color') }}">
-                                                    </span>
-												</li>
-											</ul>
-											<ul class="picker">
-												<li ng-repeat="color in colors.slice(colors.length / 2)">
-                                                    <span ng-mouseenter="CommunityForumsEdit.community_forum.color = color" class="picker-color" style="background-color: {{ ng_var('color') }}">
-                                                    </span>
-												</li>
-											</ul>
-										</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('agent.general.color') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.color">
+									<label for="picker-input" style="background-color: {{ ng_var('CommunityForumsEdit.community_forum.color') }}"></label>
+									<input
+											id="picker-input"
+											type="text"
+											class="form-control"
+											name="color"
+											ng-model="CommunityForumsEdit.community_forum.color"
+											ng-focus="picker = true"
+											ng-blur="picker = false"
+											style="width: 50%;">
+									<div ng-show="picker" style="position: absolute;">
+										<ul class="picker">
+											<li ng-repeat="color in colors.slice(0, colors.length / 2)">
+												<span ng-mouseenter="CommunityForumsEdit.community_forum.color = color" class="picker-color" style="background-color: {{ ng_var('color') }}">
+												</span>
+											</li>
+										</ul>
+										<ul class="picker">
+											<li ng-repeat="color in colors.slice(colors.length / 2)">
+												<span ng-mouseenter="CommunityForumsEdit.community_forum.color = color" class="picker-color" style="background-color: {{ ng_var('color') }}">
+												</span>
+											</li>
+										</ul>
 									</div>
 								</div>
 							</div>
-							<div class="form-group">
-								<div class="col-lg-3">
-									<h3>{{ phrase('agent.general.splash_image') }}</h3>
-								</div>
-								<div class="col-lg-9">
-									<div ng-hide="CommunityForumsEdit.community_forum.custom_splash_image">
-										<input type="file" ng-file-select="CommunityForumsEdit.uploadSplashImage($files)" />
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('agent.general.splash_image') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<div ng-hide="CommunityForumsEdit.community_forum.custom_splash_image">
+									<input type="file" ng-file-select="CommunityForumsEdit.uploadSplashImage($files)" />
 
-										<button class="btn btn-default" ng-click="CommunityForumsEdit.openUnsplashModal()" type="button" >Browse Free Images</button>
+									<button class="btn btn-default" ng-click="CommunityForumsEdit.openUnsplashModal()" type="button" >Browse Free Images</button>
+								</div>
+								<div class="bucket" ng-if="CommunityForumsEdit.community_forum.custom_splash_image">
+									<div class="splash-image">
+										<img ng-src="{{ '{{ CommunityForumsEdit.community_forum.custom_splash_image }}' }}">
 									</div>
-									<div class="bucket" ng-if="CommunityForumsEdit.community_forum.custom_splash_image">
-										<div class="splash-image">
-											<img ng-src="{{ '{{ CommunityForumsEdit.community_forum.custom_splash_image }}' }}">
-										</div>
-										<a href ng-click="CommunityForumsEdit.deleteSplashImage()">Delete splash image</a>
-									</div>
+									<a href ng-click="CommunityForumsEdit.deleteSplashImage()">Delete splash image</a>
 								</div>
 							</div>
-						{% endif %}
+						</div>
 					</div>
 				</div>
 			</article>

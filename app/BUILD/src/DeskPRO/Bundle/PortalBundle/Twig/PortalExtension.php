@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -822,7 +820,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             throw new \InvalidArgumentException('the category_color_css twig function requires one of: CategoryAbstract or CommunityTopicStatusCategory but did not get one');
         }
         if ($category->getColor()) {
-            return 'background-color: #'.$category->getColor().';';
+            return 'background-color: '.$category->getColor().';';
         }
     }
 

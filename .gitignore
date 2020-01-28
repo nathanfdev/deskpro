@@ -126,6 +126,7 @@ bin/deskpro-importer-tools
 
 # new admin backend installed in init-project
 /app/BUILD/admin-api
+/app/BUILD/deskpro-product
 /www/assets/BUILD/admin-frontend
 
 ###################### Legacy

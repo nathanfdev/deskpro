@@ -98,6 +98,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('enabled_languages', [$this, 'enabledLanguages']),
             new \Twig_SimpleFunction('date', [$this, 'date']),
             new \Twig_SimpleFunction('date_ago', [$this, 'dateAgo'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('short_date_ago', [$this, 'shortDateAgo'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('date_diff', [$this, 'dateDiff'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('theme_option', [$this, 'getThemeSetting']),
             new \Twig_SimpleFunction('generate_color', [$this, 'generateColor'], ['is_safe' => ['html']]),
@@ -246,21 +247,25 @@ class PortalSupportExtension extends \Twig_Extension
                 if ($sec->isGranted('USE_ARTICLES') && $this->container->get('data.articles')->hasAny()) {
                     return true;
                 }
+
                 break;
             case 'news':
                 if ($sec->isGranted('USE_NEWS') && $this->container->get('data.news')->hasAny()) {
                     return true;
                 }
+
                 break;
             case 'downloads':
                 if ($sec->isGranted('USE_DOWNLOADS') && $this->container->get('data.downloads')->hasAny()) {
                     return true;
                 }
+
                 break;
             case 'community':
                 if ($sec->isGranted('USE_COMMUNITY') && $this->container->get('data.community')->hasAny()) {
                     return true;
                 }
+
                 break;
             case 'guides':
                 $person = null;
@@ -585,6 +590,74 @@ class PortalSupportExtension extends \Twig_Extension
         return $agoString;
     }
 
+    public function shortDateAgo($date, $timezone = null)
+    {
+        $date = $this->ensureDateTime($date);
+
+        if (!$date instanceof \DateTime) {
+            $date_str = (string) $date;
+
+            return "invalid_date($date_str)";
+        }
+
+        $locale   = null;
+        $language = $this->container->get('language_manager')->getLanguageStack()->getActiveOrDefault();
+        if ($language) {
+            $locale = $language->getLocale();
+        }
+        $translator = $this->container->get('language_manager')->getTranslator();
+
+        $carbon = Carbon::createFromTimestamp($date->getTimestamp(), $timezone);
+        $carbon->setLocale($locale);
+        $diffInterval = $carbon->diff(Carbon::now($timezone));
+
+        switch (true) {
+            case $diffInterval->y > 0:
+                $unit  = $translator->getPhraseText('helpcenter.duration_short.years');
+                $count = $diffInterval->y;
+
+                break;
+
+            case $diffInterval->m > 0:
+                $unit  = $translator->getPhraseText('helpcenter.duration_short.months');
+                $count = $diffInterval->m;
+
+                break;
+
+            case $diffInterval->d > 0:
+                $unit  = $translator->getPhraseText('helpcenter.duration_short.days');
+                $count = $diffInterval->d;
+
+                break;
+
+            case $diffInterval->h > 0:
+                $unit  = $translator->getPhraseText('helpcenter.duration_short.hours');
+                $count = $diffInterval->h;
+
+                break;
+
+            case $diffInterval->i > 0:
+                $unit  = $translator->getPhraseText('helpcenter.duration_short.minutes');
+                $count = $diffInterval->i;
+
+                break;
+
+            default:
+                $count = $diffInterval->s;
+                $unit  = $translator->getPhraseText('helpcenter.duration_short.seconds');
+
+                break;
+        }
+
+        // a standard <time> element, set $include_html_wrapper to false to get the raw ago string
+        return sprintf(
+            '<time class="date-ago" datetime="%s" title="%s">%s</time>',
+            $carbon->toIso8601String(),
+            $this->date($date, 'fulltime'),
+            "$count$unit"
+        );
+    }
+
     /**
      * @param $date1
      * @param $date2
@@ -630,26 +703,31 @@ class PortalSupportExtension extends \Twig_Extension
             case 'full':
                 //D, jS M Y
                 $format = $brand->getSetting('core.date_full');
+
                 break;
 
             case 'fulltime':
                 //D, jS M Y g:ia
                 $format = $brand->getSetting('core.date_fulltime');
+
                 break;
 
             case 'day':
                 //M j Y
                 $format = $brand->getSetting('core.date_day');
+
                 break;
 
             case 'day_short':
                 //M j
                 $format = $brand->getSetting('core.date_day_short');
+
                 break;
 
             case 'time':
                 //g:i a
                 $format = $brand->getSetting('core.date_time');
+
                 break;
         }
 

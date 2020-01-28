@@ -1,14 +1,12 @@
 {% if theme_option('welcome_box') %}
-<div class="wrapper">
-    <div class="column-full">
-        <div class="welcome-block-wrapper">
-            <div class="welcome-block-second-border">
-                <div class="welcome-block">
-                    <h1>{{ (theme_option('welcome_box').title|raw) | default(brand_setting('core.deskpro_name')) }}</h1>
-                    {{ theme_option('welcome_box').message|raw }}
-                </div>
-            </div>
-        </div>
+<div class="dp-po-homepage-welcome-box">
+    <div class="dp-po-block">
+        <h1>
+            {{ (theme_option('welcome_box').title|raw) | default(brand_setting('core.deskpro_name')) }}
+        </h1>
+        <p>
+            {{ theme_option('welcome_box').message|raw }}
+        </p>
     </div>
 </div>
 {% endif %}

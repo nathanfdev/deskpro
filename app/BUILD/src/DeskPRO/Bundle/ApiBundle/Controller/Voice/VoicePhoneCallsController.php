@@ -16,8 +16,10 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketM
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -134,5 +136,14 @@ class VoicePhoneCallsController extends CrudController
         );
 
         return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        $qb->andWhere("$alias.status != :outgoing_status");
+        $qb->setParameter('outgoing_status', VoicePhoneCall::TYPE_OUTGOING);
     }
 }

@@ -1,0 +1,80 @@
+{% import 'AgentBundle:Common:macro-flagname.html.twig' as flag %}
+
+<style type="text/css">
+    body {
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+    }
+
+    .ticket_list_table {
+        page-break-inside: avoid;
+    }
+
+    .ticket_list_table td {
+        overflow: wrap;
+    }
+
+    #ticket_properties {
+        margin-bottom: 15px;
+    }
+
+    .ticket-prop {
+        padding: 5px;
+    }
+
+    .ticket-prop-label {
+        width: 210px;
+        text-overflow: ellipsis;
+        float: left;
+    }
+    .ticket-prop-val {
+        float: left;
+    }
+    .ticket-prop-over {
+        clear: both;
+    }
+    .clearfix {
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+        clear: both;
+    }
+</style>
+{{ include_code_plugin('agent_print') }}
+
+{% macro row(fieldName, title, content, isHtml) %}
+    {# wrapping in a div so css can target the row to e.g. display none it #}
+
+    <div class="ticket-prop ticket-prop-{{ fieldName }}">
+        <div class="ticket-prop-label">{{ title }}</div>
+        <div class="ticket-prop-val">
+            {% if isHtml %}{{ content|raw }}{% else %}{{ content }}{% endif %}
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+{% endmacro %}
+
+<h1>{{ ticket.subject }}</h1>
+<div id="ticket_properties">
+    {{ _self.row('ref', phrase('agent.general.ticket_ref'), ticket.ref) }}
+    {{ _self.row('status', phrase('agent.general.status'), display_ticket_status(ticket)) | convert_encoding('UTF-8', 'HTML-ENTITIES') | raw }}
+
+    {{ _self.row('date-created', phrase('agent.general.created'), ticket.date_created|date('fulltime') ) }}
+
+    {% set rowVal %}
+        {{ ticket.person.display_name }}
+        <span>&lt;{{ ticket.person_email_address }}&gt;</span>
+    {% endset %}
+    {{ _self.row('user', phrase('agent.general.user'), rowVal, true) }}
+
+    {{ _self.row('agent', phrase('agent.general.agent'), ticket.agent.display_name|default(phrase('agent.general.no_agent_assigned')) ) }}
+
+    {% for f in custom_fields if layout.has('ticket_' ~ f.name) %}
+        {% set aliases %}{% for a in f.field_def.getAliases() %}ticket-prop-field-{{ a.getQualifiedName() }}{% endfor %}{% endset %}
+        {{ _self.row('field ' ~ aliases, f.title, render_custom_field(f), true) }}
+    {% endfor %}
+
+</div>
+<br><br>
+
+{{ ticket_messages_block|raw }}

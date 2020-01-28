@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -209,7 +205,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         if (!$ticket_ids) {
             $this->getLogger()->logDebug('[SubjectMatchDetector] -- Found nothing');
 
-            return;
+            return null;
         }
 
         $this->getLogger()->logDebug('[SubjectMatchDetector] -- Matching tickets: '.implode(', ', $ticket_ids));
@@ -217,9 +213,11 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         $tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
         $from    = $reader->getFromAddress()->getEmail();
 
+        /** @var Ticket $ticket */
         foreach ($tickets as $ticket) {
-            if (($p = $ticket->findUserByEmail($from))) {
-                $this->getLogger()->logDebug('[SubjectMatchDetector] -- Found ticket '.$ticket->id.' with user '.$p->id.' '.$p->getDisplayContact());
+            if (($p = $ticket->findUserByEmail($from)) && $this->hasSameParticipants($reader, $ticket)) {
+                $this->getLogger()
+                    ->logDebug('[SubjectMatchDetector] -- Found ticket '.$ticket->id.' with user '.$p->id);
                 $this->_found_person = $p;
 
                 return $ticket;
@@ -228,7 +226,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
         $this->getLogger()->logDebug('[SubjectMatchDetector] -- Could not match user email address on ticket: '.$from);
 
-        return;
+        return null;
     }
 
     /**
@@ -249,7 +247,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         $subject_orig = $subject;
 
         if (strpos($subject, ':') === false) {
-            return;
+            return null;
         }
 
         $extra_join  = '';
@@ -294,7 +292,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         if (!$ticket_ids) {
             $this->getLogger()->logDebug('[SubjectMatchDetector] -- Found nothing');
 
-            return;
+            return null;
         }
 
         $this->getLogger()->logDebug('[SubjectMatchDetector] -- Matching tickets: '.implode(', ', $ticket_ids));
@@ -302,18 +300,22 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         $tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
         $from    = $reader->getFromAddress()->getEmail();
 
+        /** @var Ticket $ticket */
         foreach ($tickets as $ticket) {
             if (($p = $ticket->findUserByEmail($from)) || ($p = $ticket->findAgentByEmail($from))) {
-                $this->getLogger()->logDebug('[SubjectMatchDetector] -- Found ticket '.$ticket->id.' with user '.$p->id);
-                $this->_found_person = $p;
+                if ($this->hasSameParticipants($reader, $ticket)) {
+                    $this->getLogger()
+                        ->logDebug('[SubjectMatchDetector] -- Found ticket '.$ticket->id.' with user '.$p->id);
+                    $this->_found_person = $p;
 
-                return $ticket;
+                    return $ticket;
+                }
             }
         }
 
         $this->getLogger()->logDebug('[SubjectMatchDetector] -- Could not match user email address on ticket: '.$from);
 
-        return;
+        return null;
     }
 
     /**
@@ -356,5 +358,32 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         }
 
         return $this->logger;
+    }
+
+    /**
+     * @param AbstractReader $reader
+     * @param Ticket         $ticket
+     *
+     * @return bool
+     */
+    protected function hasSameParticipants($reader, $ticket)
+    {
+        $readerAddresses = array_map(function ($email) {
+            /* @var \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress $email */
+            return $email->getEmail();
+        }, $reader->getDeliveredAddresses());
+
+        $ticketAddresses = array_merge(
+            [
+                $ticket->getTicketPersonEmail()->getEmail(),
+                $ticket->getEmailAccount()->getAddress(),
+            ],
+            array_map(function ($participant) {
+                /* @var \Application\DeskPRO\Entity\TicketParticipant $participant */
+                return $participant->getEmailAddress();
+            }, $ticket->getParticipants()->toArray())
+        );
+
+        return empty(array_diff($readerAddresses, $ticketAddresses));
     }
 }

@@ -182,6 +182,11 @@ define([
       });
 
       options.push({
+        title: 'Ticket Language',
+        value: 'CheckLanguage'
+      });
+
+      options.push({
         title: 'SLAs',
         value: 'CheckSlaStatus'
       });
@@ -1056,6 +1061,15 @@ define([
       options.propName = 'subject';
       options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
       const def = this.getStandardInput(options);
+      return def;
+    }
+
+    getCheckLanguage(options) {
+      if (options == null) { options = {}; }
+      options.propName = 'language_ids';
+      options.dataName = 'langs';
+      options.operators = ['is', 'not', 'changed', 'changed_to', 'changed_from'];
+      const def = this.getStandardSelect(options);
       return def;
     }
 

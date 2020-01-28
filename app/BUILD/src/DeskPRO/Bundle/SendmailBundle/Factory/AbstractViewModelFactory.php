@@ -63,7 +63,12 @@ abstract class AbstractViewModelFactory
         if (is_array($entity) || $entity instanceof \Traversable) {
             $result = [];
             foreach ($entity as $item) {
-                $result[] = $this->convertParameter($item);
+                $model = $this->convertParameter($item);
+                if ($model instanceof Person) {
+                    // TicketParticipant fix
+                    $model = $this->convertParameter($model);
+                }
+                $result[] = $model;
             }
 
             return $result;
@@ -77,70 +82,92 @@ abstract class AbstractViewModelFactory
         switch ($className) {
             case Article::class:
                 $handler = $this->container->get('api_serializer.handler.article');
+
                 break;
             case ArticleComment::class:
                 $handler = $this->container->get('api_serializer.handler.article_comment');
+
                 break;
             case ChatConversation::class:
                 $handler = $this->container->get('api_serializer.handler.chat');
+
                 break;
             case ChatMessage::class:
                 $handler = $this->container->get('api_serializer.handler.chat_message');
+
                 break;
             case Download::class:
                 $handler = $this->container->get('api_serializer.handler.download');
+
                 break;
             case CommunityTopic::class:
                 $handler = $this->container->get('api_serializer.handler.community_topic');
+
                 break;
             case CommunityTopicComment::class:
                 $handler = $this->container->get('api_serializer.handler.community_topic_comment');
+
                 break;
             case LayoutField::class:
                 $handler = $this->container->get('api_serializer.handler.layout_field');
+
                 break;
             case News::class:
                 $handler = $this->container->get('api_serializer.handler.news');
+
                 break;
             case Organization::class:
                 $handler = $this->container->get('api_serializer.handler.organization');
+
                 break;
             case Person::class:
             case PersonGuest::class:
                 $handler = $this->container->get('api_serializer.handler.person');
+
                 break;
             case Task::class:
                 $handler = $this->container->get('api_serializer.handler.task');
+
                 break;
             case Ticket::class:
                 $handler = $this->container->get('api_serializer.handler.ticket');
+
                 break;
             case TicketMessage::class:
                 $handler = $this->container->get('api_serializer.handler.ticket_message');
+
                 break;
             case TicketFeedback::class:
                 $handler = $this->container->get('api_serializer.handler.ticket_feedback');
+
                 break;
             case TicketParticipant::class:
                 $handler = $this->container->get('api_serializer.handler.ticket_participant');
+
                 break;
             case Topic::class:
                 $handler = $this->container->get('api_serializer.handler.topic');
+
                 break;
             case TopicComment::class:
                 $handler = $this->container->get('api_serializer.handler.topic_comment');
+
                 break;
             case FieldDisplayArray::class:
                 $handler = $this->container->get('api_serializer.handler.field_display_array');
+
                 break;
             case TicketApproval::class:
                 $handler = $this->container->get('api_serializer.handler.ticket_approval');
+
                 break;
             case ApprovalResponse::class:
                 $handler = $this->container->get('api_serializer.handler.approval_response');
+
                 break;
             default:
                 throw new \Exception('Unset handler for class '.$className);
+
                 break;
         }
 
@@ -198,8 +225,10 @@ abstract class AbstractViewModelFactory
      * @param Person $recipient
      * @param string $status
      * @param $mode
-     * @return array
+     *
      * @throws \Exception
+     *
+     * @return array
      */
     protected function getTicketApprovalArguments($type, Ticket $ticket, Person $recipient, $status, $mode = null)
     {
@@ -232,6 +261,7 @@ abstract class AbstractViewModelFactory
                     ->setMessage('I approve this')
                 ;
                 $approval->addResponse($approvalResponse);
+
                 break;
             case AbstractBaseApproval::STATUS_REJECTED:
                 $approval
@@ -243,6 +273,7 @@ abstract class AbstractViewModelFactory
                     ->setMessage('I reject this')
                 ;
                 $approval->addResponse($approvalResponse);
+
                 break;
             case AbstractBaseApproval::STATUS_CANCELLED:
                 $approval
@@ -250,6 +281,7 @@ abstract class AbstractViewModelFactory
                     ->setRequiredRejections(1)
                     ->cancel($recipient)
                 ;
+
                 break;
             case AbstractBaseApproval::STATUS_PENDING:
                 $approval
@@ -271,6 +303,7 @@ abstract class AbstractViewModelFactory
                     ;
                     $approval->addResponse($approvalResponse);
                 }
+
                 break;
         }
 

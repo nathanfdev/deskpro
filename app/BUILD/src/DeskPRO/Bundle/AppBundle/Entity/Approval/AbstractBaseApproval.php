@@ -439,6 +439,18 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
+     * @param Person $person
+     *
+     * @return ApprovalResponse|null
+     */
+    public function getApproverResponse(Person $person)
+    {
+        return$this->responses->filter(function (ApprovalResponse $response) use ($person) {
+            return $response->getApprover()->isEqualTo($person);
+        })->first();
+    }
+
+    /**
      * @param ApprovalResponse $response
      *
      * @throws \Exception

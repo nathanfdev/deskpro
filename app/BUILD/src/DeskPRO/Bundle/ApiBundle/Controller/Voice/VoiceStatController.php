@@ -49,33 +49,31 @@ class VoiceStatController extends BaseController
         $dateEnd->modify('+1 month -1 second');
 
         $billingSummary = new BillingSummary($this->get('dp.voice.billing_summary')->getDeskproBillingSummary($account, $dateStart, $dateEnd));
-        if (!$account->isManagedAccount()) {
-            if ($account instanceof TwilioVoiceAccount) {
-                $billingSummary->setProviderStatRecords(
-                    $this->get('twilio_adapter')->getUsage($account, $dateStart, $dateEnd, [
-                        'calls',
-                        'calls-inbound',
-                        'calls-inbound-tollfree',
-                        'calls-inbound-local',
-                        'calls-inbound-mobile',
-                        'calls-outbound',
-                        'calls-sip',
-                        'calls-sip-inbound',
-                        'calls-sip-outbound',
-                        'calls-client',
-                        'calls-recordings',
-                        'calls-globalconference',
-                        'phonenumbers',
-                        'phonenumbers-tollfree',
-                        'phonenumbers-mobile',
-                        'phonenumbers-local',
-                        'agent-conference',
-                        'totalprice',
-                        'transcriptions',
-                        'marketplace-voicebase-transcription',
-                    ])
-                );
-            }
+        if ($account instanceof TwilioVoiceAccount) {
+            $billingSummary->setProviderStatRecords(
+                $this->get('twilio_adapter')->getUsage($account, $dateStart, $dateEnd, [
+                    'calls',
+                    'calls-inbound',
+                    'calls-inbound-tollfree',
+                    'calls-inbound-local',
+                    'calls-inbound-mobile',
+                    'calls-outbound',
+                    'calls-sip',
+                    'calls-sip-inbound',
+                    'calls-sip-outbound',
+                    'calls-client',
+                    'calls-recordings',
+                    'calls-globalconference',
+                    'phonenumbers',
+                    'phonenumbers-tollfree',
+                    'phonenumbers-mobile',
+                    'phonenumbers-local',
+                    'agent-conference',
+                    'totalprice',
+                    'transcriptions',
+                    'marketplace-voicebase-transcription',
+                ])
+            );
         }
 
         return new View($this->wrap($billingSummary));

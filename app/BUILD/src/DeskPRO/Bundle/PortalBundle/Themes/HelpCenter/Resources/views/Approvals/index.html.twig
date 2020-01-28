@@ -1,0 +1,313 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main dp-po-tickets-home dp-po-tickets-approvals">
+            <div class="container">
+                <div class="dp-po-title">
+                    <img class="dp-po-title-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}">
+                    <h2 class="dp-po-title-text">{{ phrase('helpcenter.approvals.my-approvals') }}</h2>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="dp-po-ticket-sidebar">
+
+                            <div class="dp-po-ticket-pages">
+                                <ul class="dp-po-ticket-pages-list">
+                                    <li class="dp-po-ticket-pages-item">
+                                        <a href="{{ path('portal_tickets') }}" class="dp-po-ticket-pages-link">
+                                            <i class="dp-po-icon fal fa-envelope-open-text"></i> {{ phrase('helpcenter.tickets.my-tickets') }}
+                                        </a>
+                                    </li>
+                                    {% if person.organization and person.organization_manager %}
+                                        <li class="dp-po-ticket-pages-item">
+                                            <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-ticket-pages-link">
+                                                <i class="dp-po-icon fal fa-atom-alt"></i> {{ phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    <li class="dp-po-ticket-pages-item">
+                                        <a href="{{ path('portal_chats') }}" class="dp-po-ticket-pages-link">
+                                            <i class="dp-po-icon fal fa-comments-alt"></i> {{ phrase('helpcenter.chats.my-chats') }}
+                                        </a>
+                                    </li>
+                                    <li class="dp-po-ticket-pages-item active">
+                                        <a href="{{ path('ticket_approvals') }}" class="dp-po-ticket-pages-link">
+                                            <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my-approvals') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <form method="get" class="dp-po-ticket-filter dpx-sidebar-filters">
+                                <div class="row mb-4">
+                                    <div class="col-sm-6">
+                                        <h4 class="dp-po-ticket-filter-title">{{ phrase('helpcenter.tickets.filter-by') }}</h4>
+                                    </div>
+                                    <div class="col-sm-6 text-right">
+                                        <a href="#" class="dp-po-ticket-filter-clearall dpx-clear-all">{{ phrase('helpcenter.general.clear-all') }}</a>
+                                    </div>
+                                </div>
+
+                                <ul class="dp-po-ticket-filter-list">
+                                    <li class="dp-po-ticket-filter-item dpx-filter-group">
+                                        <div class="form-group dp-po-form-check">
+                                            <input type="checkbox" class="form-check-input dpx-group-checkbox" id="statusCheck" checked>
+                                            <label class="form-check-label" for="statusCheck">{{ phrase('helpcenter.general.status') }}</label>
+                                        </div>
+                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseStatus" role="button"
+                                           aria-expanded="false" aria-controls="collapseStatus">
+                                            <i class="dp-po-icon far fa-angle-down"></i>
+                                        </a>
+                                        <div class="collapse show" id="collapseStatus">
+                                            <ul class="dp-po-ticket-filter-list">
+                                                {% for status in ['pending', 'approved', 'rejected', 'cancelled'] %}
+                                                    <li class="dp-po-ticket-filter-item">
+                                                        <div class="form-group dp-po-form-check">
+                                                            <input type="checkbox" name=status[]" value="{{ status }}" class="form-check-input" id="{{ status }}Check" {% if status in statuses %}checked="checked" {% endif %}>
+                                                            <label class="form-check-label" for="{{ status }}Check">{{ phrase('helpcenter.approvals.'~status~'-status') }}</label>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li class="dp-po-ticket-filter-item dpx-filter-group">
+                                        <div class="form-group dp-po-form-check">
+                                            <input type="checkbox" class="form-check-input dpx-group-checkbox" id="timeCompletionCheck">
+                                            <label class="form-check-label" for="timeCompletionCheck">{{ phrase('helpcenter.general.time_of_completion') }}</label>
+                                        </div>
+                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseTimeCompletion" role="button"
+                                           aria-expanded="false" aria-controls="collapseTimeCompletion">
+                                            <i class="dp-po-icon far fa-angle-down"></i>
+                                        </a>
+                                        <div class="collapse show" id="collapseTimeCompletion">
+                                            <ul class="dp-po-ticket-filter-list">
+                                                {% for timeInterval in ['last_24_hours', 'last_week', 'last_month', 'last_6_month', 'last_year', 'more_than_1_year'] %}
+                                                    <li class="dp-po-ticket-filter-item">
+                                                        <div class="form-group dp-po-form-check">
+                                                            <input type="checkbox" name="time_completion[]" value="{{ timeInterval }}" class="form-check-input" id="{{ timeInterval }}Check" {% if timeInterval in time_completion %}checked="checked" {% endif %}>
+                                                            <label class="form-check-label" for="{{ timeInterval }}Check">{{ phrase('helpcenter.general.'~timeInterval) }}</label>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                                <button type="submit" class="btn btn-primary">Apply</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="dp-po-section dp-po-block">
+                            {% set search_displayed = false %}
+                            {% for table_info in approval_list_tables %}
+                                {% if table_info.pager|length > 0 %}
+                                    {{ _self.approval_table(table_info, not search_displayed, search_query) }}
+                                    {% set search_displayed = true %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if not search_displayed %}
+                                <div class="row">
+                                    <div class="col-sm-4"></div>
+                                    <div class="col-sm-8">
+                                        <form class="dp-po-ticket-search" method="get">
+                                            <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-approvals') }}" value="{{ search_query }}" />
+                                            <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="dp-po-ticket-search-no-results">
+                                        {{ phrase('helpcenter.approvals.no_ticket_approvals_found') }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    {%- macro sort_link(table_info, column) -%}
+        {% set sort = table_info.sort %}
+        {% set sort_param = table_info.status~'_sort' %}
+        {% set sort_dir = table_info.direction %}
+        {% set sort_dir_param = table_info.status~'_direction' %}
+
+        {% set queryParams = app.request.query.all|merge({(sort_param):column}) %}
+        {% set isActive = column == sort %}
+        {% if isActive %}
+            {% set linkDir = sort_dir == 'desc' ? 'asc' : 'desc' %}
+        {% else %}
+            {% set linkDir = 'desc' %}
+        {% endif %}
+        {% set queryParams = app.request.query.all|merge({(sort_param):column, (sort_dir_param):linkDir, status: table_info.status}) %}
+        {% set url = path(app.request.attributes.get('_route'), queryParams) %}
+        {% set sort_icon = sort_dir == 'desc' ? '<i class="dp-po-icon far fa-long-arrow-down"></i>' : '<i class="dp-po-icon far fa-long-arrow-up"></i>' %}
+        <a href="{{ url }}" {% if isActive %}class="active" {% endif %}>{% if isActive %}{{ sort_icon|raw }}{% else %}<i class="dp-po-icon far fa-arrows-v"></i>{% endif %}</a>
+    {%- endmacro -%}
+
+    {% macro approval_table(table_info, with_search, search_query) %}
+        {% if table_info.status == 'pending' %}
+            {% set table_type = 'neutral' %}
+        {% elseif table_info.status == 'approved'%}
+            {% set table_type = 'success' %}
+        {% elseif table_info.status == 'rejected'%}
+            {% set table_type = 'danger' %}
+        {% else %}
+            {% set table_type = 'default' %}
+        {% endif %}
+
+        {% if table_info.pager|length > 0 %}
+            {% if with_search %}
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ table_type }}" id="{{ table_info.status }}">
+                            <span class="dp-po-ticketbadge-number">{{ table_info.pager|length }}</span>{{ phrase('helpcenter.approvals.'~table_info.status~'-status') }}
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <form class="dp-po-ticket-search" method="get">
+                            <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-approvals') }}" value="{{ search_query }}" />
+                            <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ table_type }}" id="{{ table_info.status }}">
+                    <span class="dp-po-ticketbadge-number">{{ table_info.pager|length }}</span>{{ phrase('helpcenter.approvals.'~table_info.status~'-status') }}
+                </div>
+            {% endif %}
+
+            <div class="dp-po-table dp-po-table-col-{% if table_info.status == 'pending' %}6{% else %}8{% endif %} dp-po-table-ticket dp-po-table-ticket-{{ table_type }} mb-4">
+                <div class="dp-po-table-row dp-po-table-row-head">
+                    <span class="dp-po-table-cell dp-po-table-cell-indicator"></span>
+                    <span class="dp-po-table-cell dp-po-table-cell-small" data-col="id">
+                        {{ phrase('portal.tickets.approvals.list_column_id') }}
+                    </span>
+                    <span class="dp-po-table-cell dp-po-table-cell-large" data-col="description">
+                        {{ phrase('portal.tickets.approvals.list_column_subject') }}
+                    </span>
+                    <span class="dp-po-table-cell dp-po-table-cell-medium" data-col="agent">
+                        {{ phrase('portal.tickets.approvals.list_column_agent') }}{{ _self.sort_link(table_info, 'agent') }}
+                    </span>
+                    <span class="dp-po-table-cell dp-po-table-cell-medium" data-col="user">
+                        {{ phrase('portal.tickets.approvals.list_column_user') }}{{ _self.sort_link(table_info, 'user') }}
+                    </span>
+                    {% if table_info.status == 'pending' %}
+                        <span class="dp-po-table-cell dp-po-table-cell-medium" data-col="approvers">
+                            {{ phrase('portal.tickets.approvals.list_column_approvers') }}
+                        </span>
+                    {% else %}
+                        {% if table_info.status == 'cancelled' %}
+                            <span class="dp-po-table-cell dp-po-table-cell-medium" data-col="cancelled">
+                                {{ phrase('portal.tickets.approvals.list_column_cancelled') }}{{ _self.sort_link(table_info, 'cancelled') }}
+                            </span>
+                        {% else %}
+                            <span class="dp-po-table-cell dp-po-table-cell-medium" data-col="completed">
+                                {{ phrase('portal.tickets.approvals.list_column_completed') }}{{ _self.sort_link(table_info, 'completed') }}
+                            </span>
+                        {% endif %}
+                        <span class="dp-po-table-cell dp-po-table-cell-small" data-col="your_vote">
+                            {{ phrase('portal.tickets.approvals.list_column_your_vote') }}
+                        </span>
+                    {% endif %}
+                </div>
+                {% for row in table_info.pager %}
+                    {% set approval = row.approval %}
+                    {% set ticket = approval.ticket %}
+                    {% set myVote = row.my_vote %}
+                    {% set viewUrl = path('ticket_approvals_view', {id: approval.id}) %}
+                    {% set approveUrl = path('ticket_approvals_approve', {id: approval.id}) %}
+                    {% set rejectUrl = path('ticket_approvals_reject', {id: approval.id}) %}
+                    {% set showVoteButtons = not myVote and table_info.status == 'pending' %}
+                    <div class="dp-po-table-row {% if showVoteButtons %}with-vote-buttons{% endif %}">
+                        <span class="dp-po-table-cell dp-po-table-cell-indicator"><i class="dp-po-icon fas fa-circle"></i></span>
+                        <span class="dp-po-table-cell dp-po-table-cell-small">
+                            <a href="{{ viewUrl }}" class="dp-po-table-cell-link">
+                                <b>{{ approval.id }}</b>
+                            </a>
+                        </span>
+                        <span class="dp-po-table-cell dp-po-table-cell-large">
+                            <a href="{{ viewUrl }}" class="dp-po-table-cell-link">
+                                {{ approval.description }}
+                            </a>
+                        </span>
+                        <span class="dp-po-table-cell dp-po-table-cell-medium dp-po-hide-on-hover">
+                            <a href="{{ viewUrl }}" class="dp-po-table-cell-link">
+                                {{ approval.createdBy ? approval.createdBy.communityName : phrase('portal.tickets.approvals.system') }}
+                            </a>
+                        </span>
+                        <span class="dp-po-table-cell dp-po-table-cell-medium dp-po-hide-on-hover">
+                            <a href="{{ viewUrl }}" class="dp-po-table-cell-link">
+                                {{ ticket.person.communityName }}
+                            </a>
+                        </span>
+                        {% if table_info.status == 'pending' %}
+                            {% if showVoteButtons %}
+                                <span class="dp-po-table-cell dp-po-table-cell-medium dp-po-show-on-hover">
+                                    <a href="{{ approveUrl }}" class="dp-po-approve-button">
+                                        <img class="dp-po-normal" src="{{ asset('img/page-icons/approvals-approved.svg', 'help_center') }}">
+                                        <img class="dp-po-hovered" src="{{ asset('img/page-icons/approvals-approve.svg', 'help_center') }}">
+                                    </a>
+                                    <a href="{{ rejectUrl }}" class="dp-po-approve-button">
+                                        <img src="{{ asset('img/page-icons/approvals-reject.svg', 'help_center') }}">
+                                    </a>
+                                </span>
+                            {% endif %}
+                            <span class="dp-po-table-cell dp-po-table-cell-medium-2 dp-po-hide-on-hover">
+                                {% set display_count = 4 %}
+                                {% set hidden_count = approval.approvers | length - display_count %}
+                                {% for approver in approval.approvers | slice(0, display_count) %}
+                                    {% set approver_type = 'default' %}
+                                    {% set response = approval.getApproverResponse(approver) %}
+                                    {% if response %}
+                                        {% if response.vote == 1 %}
+                                            {% set approver_type = 'success' %}
+                                        {% elseif response.vote == -1 %}
+                                            {% set approver_type = 'danger' %}
+                                        {% endif %}
+                                    {% endif %}
+                                    <span class="dp-po-table-cell-initials dp-po-table-cell-initials-{{ approver_type }}">{{ approver.initials }}</span>
+                                {% endfor %}
+                                {% if hidden_count > 0 %}
+                                    <span class="dp-po-table-cell-initials-count">+{{ hidden_count }}</span>
+                                {% endif %}
+                            </span>
+                        {% else %}
+                            <span class="dp-po-table-cell dp-po-table-cell-medium">
+                                <a href="{{ viewUrl }}" class="dp-po-table-cell-link">
+                                    {% if table_info.status == 'cancelled' %}
+                                        {{ approval.cancelledAt ? approval.cancelledAt | date("m-d-Y") : '' }}
+                                    {% else %}
+                                        {{ approval.completedAt ? approval.completedAt | date("m-d-Y") : '' }}
+                                    {% endif %}
+                                </a>
+                            </span>
+                            <span class="dp-po-table-cell dp-po-table-cell-small">
+                                {% if 1 == myVote %}
+                                    <img src="{{ asset('img/page-icons/approvals-approved.svg', 'help_center') }}">
+                                {% elseif -1 == myVote %}
+                                    <img src="{{ asset('img/page-icons/approvals-reject.svg', 'help_center') }}">
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% include 'Theme:Common:pager.html.twig' with {
+                pager: table_info.pager,
+                pager_options: { pageParameter: '['~table_info.status~'_page]', routeParams: {'_fragment': table_info.status} }
+            } %}
+        {% endif %}
+    {% endmacro %}
+
+
+{% endblock page_content %}

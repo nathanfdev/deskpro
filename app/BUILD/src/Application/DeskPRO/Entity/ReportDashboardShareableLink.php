@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\ReportBundle\Validator\Constraints\IpCIDR;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -54,7 +55,7 @@ class ReportDashboardShareableLink extends DomainObject
 
     /**
      * @Assert\All(constraints={
-     *     @Assert\Ip()
+     *     @IpCIDR()
      * })
      *
      * @var array

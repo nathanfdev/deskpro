@@ -229,12 +229,15 @@ class ReplySnippetAction extends AbstractReplyAction
                             switch ($item->reply_pos) {
                                 case self::REPLY_POS_APPEND:
                                     $snippetText[] = $text;
+
                                     break;
                                 case self::REPLY_POS_PREPEND:
                                     array_unshift($snippetText, $text);
+
                                     break;
                                 case self::REPLY_POS_OVERWRITE:
                                     $snippetText = [$text];
+
                                     break;
                             }
 
@@ -256,12 +259,15 @@ class ReplySnippetAction extends AbstractReplyAction
                             switch ($item->reply_pos) {
                                 case self::REPLY_POS_APPEND:
                                     $snippetText[] = $text;
+
                                     break;
                                 case self::REPLY_POS_PREPEND:
                                     array_unshift($snippetText, $text);
+
                                     break;
                                 case self::REPLY_POS_OVERWRITE:
                                     $snippetText = [$text];
+
                                     break;
                             }
 
@@ -332,7 +338,12 @@ class ReplySnippetAction extends AbstractReplyAction
                 } elseif ($agentTranslation && $agentTranslation->getContent()) {
                     $text               = $agentTranslation->getContent();
                     $snippetTranslation = $agentTranslation;
+                } elseif ($snippet->getTranslations()->count() > 0) {
+                    // use first translation as fallback
+                    $snippetTranslation = $snippet->getTranslations()->first();
+                    $text               = $snippetTranslation->getContent();
                 }
+
                 $text = trim($text);
                 if (!$text) {
                     continue;
@@ -365,12 +376,15 @@ class ReplySnippetAction extends AbstractReplyAction
             switch ($item->reply_pos) {
                 case self::REPLY_POS_APPEND:
                     $snippetText[] = $text;
+
                     break;
                 case self::REPLY_POS_PREPEND:
                     array_unshift($snippetText, $text);
+
                     break;
                 case self::REPLY_POS_OVERWRITE:
                     $snippetText = [$text];
+
                     break;
             }
         }

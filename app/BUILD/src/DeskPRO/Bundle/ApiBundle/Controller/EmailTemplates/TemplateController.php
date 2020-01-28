@@ -41,6 +41,8 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
  */
 class TemplateController extends BaseController
 {
+    protected $migratedCustomTemplates = [];
+
     /**
      * @ApiDoc(
      *     section="Email Templates",
@@ -385,10 +387,11 @@ class TemplateController extends BaseController
      * @Rest\Delete("/legacy_template/{id}")
      *
      * @param $id
+     * @param bool $replace
      *
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function deleteLegacyTemplateAction($id)
+    public function deleteLegacyTemplateAction($id, $replace = false)
     {
         $em        = $this->getManager();
         $templates = $em->getRepository(Template::class)->getLegacyTemplates();
@@ -403,7 +406,7 @@ class TemplateController extends BaseController
                         $triggerId = $info[1];
                         /** @var TicketTrigger $trigger */
                         $trigger = $em->getRepository(TicketTrigger::class)->find($triggerId);
-                        $this->upgradeTrigger($trigger, $template[0]->getName(), false);
+                        $this->upgradeTrigger($trigger, $template[0]->getName(), $replace);
                         $em->persist($trigger);
                     }
                 }
@@ -448,7 +451,8 @@ class TemplateController extends BaseController
         if (!$template) {
             throw $this->createNotFoundException();
         }
-        $this->deleteLegacyTemplateAction($template->getId());
+        $this->migratedCustomTemplates[$name] = str_replace('DeskPRO:', 'SendmailBundle:', $name);
+        $this->deleteLegacyTemplateAction($template->getId(), true);
     }
 
     private function upgradeTrigger(TicketTrigger $trigger, $templateName, $replace = true)
@@ -469,16 +473,20 @@ class TemplateController extends BaseController
             if ($action instanceof AbstractEmailAction) {
                 if ($replace) {
                     $manifestKey = array_search($options['template'], array_column($manifest, 'name'));
-                    $info        = $manifest[$manifestKey];
-
-                    if ($info === false || !isset($info['newTemplate'])) {
-                        throw new \Exception('template not present in manifest');
+                    $newTemplate = '';
+                    if ($manifestKey) {
+                        $newTemplate = $manifest[$manifestKey]['newTemplate'];
+                    } elseif (isset($this->migratedCustomTemplates[$options['template']])) {
+                        $newTemplate = $this->migratedCustomTemplates[$options['template']];
                     }
-                    $options['template'] = $info['newTemplate'];
 
-                    $class        = get_class($action);
-                    $class        = str_replace('Email', 'NewEmail', $class);
-                    $newActions[] = new $class($options->all());
+                    if ($newTemplate) {
+                        $options['template'] = $newTemplate;
+
+                        $class        = get_class($action);
+                        $class        = str_replace('Email', 'NewEmail', $class);
+                        $newActions[] = new $class($options->all());
+                    }
                 }
                 unset($actions[$key]);
             }

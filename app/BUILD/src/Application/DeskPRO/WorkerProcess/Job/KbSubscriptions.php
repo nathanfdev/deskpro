@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -60,6 +56,7 @@ class KbSubscriptions extends AbstractJob
 
             if (!$brandSettingsResolver->getSetting('user.kb_subscriptions')) {
                 $brandStack->pop();
+
                 continue;
             }
 
@@ -68,6 +65,7 @@ class KbSubscriptions extends AbstractJob
             if (!$this->published && !$this->updated) {
                 $this->logStatus('No new articles for '.$brand.' brand');
                 $brandStack->pop();
+
                 continue;
             }
             //------------------------------
@@ -121,7 +119,8 @@ class KbSubscriptions extends AbstractJob
                     SELECT person_id, root_category
                     FROM kb_subscriptions
                     WHERE root_category = 1
-                ', [], 'person_id', null, 'root_category', [Connection::PARAM_INT_ARRAY]);
+                    AND root_category_brand_id = :brand_id
+                ', ['brand_id' => $brand->getId()], 'person_id', null, 'root_category');
             }
 
             if ($articleIds) {
@@ -140,6 +139,7 @@ class KbSubscriptions extends AbstractJob
 
             if (!$userToArticles) {
                 $brandStack->pop();
+
                 continue;
             }
 
@@ -172,6 +172,7 @@ class KbSubscriptions extends AbstractJob
                         $catUgs = isset($catGroups[$cat->getId()]) ? $catGroups[$cat->getId()] : [];
                         if (Arrays::isIn($personUgs, $catUgs)) {
                             $add = true;
+
                             break;
                         }
                     }

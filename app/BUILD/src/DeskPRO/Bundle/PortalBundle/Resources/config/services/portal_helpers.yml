@@ -15,7 +15,7 @@ services:
 
   subscriptions_helper:
     class: DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@brand_stack"]
 
   language_changer:
     class: DeskPRO\Bundle\PortalBundle\Helper\LanguageChanger

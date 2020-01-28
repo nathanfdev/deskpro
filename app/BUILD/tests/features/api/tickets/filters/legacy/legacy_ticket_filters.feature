@@ -15,7 +15,7 @@ Feature: /ticket_filters endpoint
       | f2 | Filter 2 | 1          | 1         | agent_team  | 2             |
       | f3 | Filter 3 | 1          | 1         | participant | 3             |
 
-    When I send a GET request to "/api/v2/ticket_filters?count=100"
+    When I send a GET request to "/api/v2/ticket_filters?count=50"
     Then the response status code should be 200
     And the response should be in JSON
 

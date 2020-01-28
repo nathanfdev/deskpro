@@ -50,7 +50,9 @@ class LanguageHandler extends AbstractEntityHandler
      */
     public function createModel($entity, SideloadSerializationContext $context)
     {
-        $baseUrl   = $helpdeskUrl   = rtrim($this->settingsResolver->getSetting('core.deskpro_url'), '/');
+        $baseUrl   = defined('DPC_IS_CLOUD')
+            ? ''
+            : rtrim($this->settingsResolver->getSetting('core.deskpro_url'), '/');
         $flagImage = $baseUrl.$this->assetsHelper->getUrl('images/flags/'.$entity->getFlagImage(), 'legacy_web');
 
         return new LanguageModel($entity, $flagImage);

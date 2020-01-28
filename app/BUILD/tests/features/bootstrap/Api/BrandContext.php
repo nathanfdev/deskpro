@@ -97,6 +97,16 @@ class BrandContext extends BaseContext
         $editThemeSet->setBrand($brand);
         $this->em()->persist($editThemeSet);
 
+        $helpcenterThemeSet = new ThemeSet();
+        $helpcenterThemeSet->setThemeId('helpcenter');
+        $helpcenterThemeSet->setBrand($brand);
+        $this->em()->persist($helpcenterThemeSet);
+
+        $helpcenterEditThemeSet = new ThemeSet();
+        $helpcenterEditThemeSet->setThemeId('helpcenter');
+        $helpcenterEditThemeSet->setBrand($brand);
+        $this->em()->persist($helpcenterEditThemeSet);
+
         $brand->setName($name);
         $brand->setThemeSet($themeSet);
         $brand->setEditThemeSet($editThemeSet);

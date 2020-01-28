@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
@@ -33,6 +34,7 @@ class TicketsVoter extends AbstractVoter
      */
     protected function voteOnAttribute($attribute, $ticket, TokenInterface $token)
     {
+        /** @var Person $user */
         $user = $token->getUser();
 
         if (!$ticket instanceof Ticket) {
@@ -50,14 +52,18 @@ class TicketsVoter extends AbstractVoter
             case static::TICKET_VIEW_AUTH:
                 // view the ticket as a "guest" if you know the auth code
                 $decision = $this->isLoggedIn($user);
+
                 break;
 
             case static::TICKET_LIST:
                 $decision = $this->isLoggedIn($user);
+
                 break;
 
             case static::TICKET_VIEW:
-                $decision = $ticket->isInvolved($user, 'user');
+                $decision = $ticket->isInvolved($user, 'user')
+                    || ($user->isAgent() && $user->PermissionsManager->TicketChecker->canView($ticket));
+
                 break;
 
             case static::TICKET_EDIT:
@@ -66,9 +72,11 @@ class TicketsVoter extends AbstractVoter
                     && $ticket->isOwner($user)
                     && $ticket->hasVisibleStatus()
                 ;
+
                 break;
             case static::TICKET_REOPEN_RESOLVED:
                 $decision = $this->canReopenResolved($user, $ticket);
+
                 break;
         }
 

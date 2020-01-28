@@ -129,6 +129,21 @@ class VoiceQueue
 
     /**
      * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $voicemailDisabled = false;
+
+    /**
+     * @JMS\Expose()
+     *
+     * @var AbstractVoiceAsset
+     */
+    private $voicemailDisabledAsset;
+
+    /**
+     * @JMS\Expose()
      * @JMS\Type("integer")
      *
      * @var int
@@ -150,21 +165,23 @@ class VoiceQueue
      */
     public function __construct(VoiceQueueEntity $entity)
     {
-        $this->id                  = $entity->getId();
-        $this->name                = $entity->getName();
-        $this->department          = $entity->getDepartment();
-        $this->brand               = $entity->getBrand();
-        $this->routingModel        = $entity->getRoutingModel();
-        $this->answerTimeout       = $entity->getAnswerTimeout();
-        $this->greetAsset          = $entity->getGreetAsset();
-        $this->loopAsset           = $entity->getLoopAsset();
-        $this->voicemailAsset      = $entity->getVoicemailAsset();
-        $this->voicemailDepartment = $entity->getVoicemailDepartment();
-        $this->voicemailAgent      = $entity->getVoicemailAgent();
-        $this->voicemailAgentTeam  = $entity->getVoicemailAgentTeam();
-        $this->voicemailTimeout    = $entity->getVoicemailTimeout();
-        $this->maxQueueSize        = $entity->getMaxQueueSize();
-        $this->recordingEnabled    = $entity->isRecordingEnabled();
+        $this->id                     = $entity->getId();
+        $this->name                   = $entity->getName();
+        $this->department             = $entity->getDepartment();
+        $this->brand                  = $entity->getBrand();
+        $this->routingModel           = $entity->getRoutingModel();
+        $this->answerTimeout          = $entity->getAnswerTimeout();
+        $this->greetAsset             = $entity->getGreetAsset();
+        $this->loopAsset              = $entity->getLoopAsset();
+        $this->voicemailAsset         = $entity->getVoicemailAsset();
+        $this->voicemailDepartment    = $entity->getVoicemailDepartment();
+        $this->voicemailAgent         = $entity->getVoicemailAgent();
+        $this->voicemailAgentTeam     = $entity->getVoicemailAgentTeam();
+        $this->voicemailTimeout       = $entity->getVoicemailTimeout();
+        $this->voicemailDisabled      = $entity->isVoicemailDisabled();
+        $this->voicemailDisabledAsset = $entity->getVoicemailDisabledAsset();
+        $this->maxQueueSize           = $entity->getMaxQueueSize();
+        $this->recordingEnabled       = $entity->isRecordingEnabled();
     }
 
     /**

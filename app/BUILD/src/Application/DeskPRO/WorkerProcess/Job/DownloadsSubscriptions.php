@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -59,6 +55,7 @@ class DownloadsSubscriptions extends AbstractJob
 
             if (!$brandSettingsResolver->getSetting('user.downloads_subscriptions')) {
                 $brandStack->pop();
+
                 continue;
             }
 
@@ -67,6 +64,7 @@ class DownloadsSubscriptions extends AbstractJob
             if (!$this->published && !$this->updated) {
                 $this->logStatus('No new downloads for '.$brand.' brand');
                 $brandStack->pop();
+
                 continue;
             }
             //------------------------------
@@ -118,7 +116,8 @@ class DownloadsSubscriptions extends AbstractJob
                     SELECT person_id, root_category
                     FROM download_subscriptions
                     WHERE root_category = 1
-                ', [], 'person_id', null, 'root_category', [Connection::PARAM_INT_ARRAY]);
+                    AND root_category_brand_id = :brand_id
+                ', ['brand_id' => $brand->getId()], 'person_id', null, 'root_category');
             }
 
             if ($downloadsIds) {
@@ -137,6 +136,7 @@ class DownloadsSubscriptions extends AbstractJob
 
             if (!$userToDownloads) {
                 $brandStack->pop();
+
                 continue;
             }
 

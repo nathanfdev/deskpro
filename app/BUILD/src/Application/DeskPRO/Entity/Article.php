@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -383,8 +377,8 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
     /**
      * @param ArticleCategory $cat
-     *
      * @param int $displayOrder
+     *
      * @return $this
      */
     public function addToCategory(ArticleCategory $cat, $displayOrder = 0)
@@ -419,11 +413,32 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      */
     public function setCategories($cats)
     {
-        $pivots = array_map(function (ArticleCategory $category) {
-            return ArticleToCategory::create($this, $category);
-        }, $cats instanceof Collection ? $cats->toArray() : $cats);
+        // ArticleToCategory uses composed key (article_id, category_id)
+        // we can't just clear collection, add new items and rely on orphalRemoval
+        // because Doctrine will try to insert new relation with same composed key first
+        // https://github.com/doctrine/orm/issues/5109
+        $catIds = [];
+        foreach ($cats as $category) {
+            $catIds[] = $category->getId();
+        }
 
-        $this->setModelField('categories', new ArrayCollection($pivots));
+        $existsCatIds = [];
+        foreach ($this->categories as $article2Cat) {
+            $existsCatIds[] = $article2Cat->getCategory()->getId();
+        }
+
+        foreach ($this->categories as $article2Cat) {
+            if (!in_array($article2Cat->getCategory()->getId(), $catIds)) {
+                $this->categories->removeElement($article2Cat);
+            }
+        }
+        foreach ($cats as $category) {
+            if (!in_array($category->getId(), $existsCatIds)) {
+                $this->categories->add(ArticleToCategory::create($this, $category));
+            }
+        }
+
+        $this->_onPropertyChanged('categories', null, $this->categories);
 
         return $this;
     }
@@ -655,6 +670,8 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     }
 
     /**
+     * @param mixed $split
+     *
      * @return string|[]
      */
     public function getReviewInterval($split = false)
@@ -687,6 +704,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
     /**
      * @param string $interval
+     * @param mixed $restartReviewDate
      *
      * @return $this
      */
@@ -955,11 +973,12 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapOneToMany(
             [
-                'fieldName'    => 'categories',
-                'targetEntity' => ArticleToCategory::class,
-                'mappedBy'     => 'article',
-                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'orderBy'      => ['display_order' => Criteria::ASC],
+                'fieldName'     => 'categories',
+                'targetEntity'  => ArticleToCategory::class,
+                'mappedBy'      => 'article',
+                'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'orderBy'       => ['display_order' => Criteria::ASC],
+                'orphanRemoval' => true,
             ]
         );
         $metadata->mapOneToMany(

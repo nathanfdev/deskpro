@@ -52,11 +52,11 @@ class WidgetLoader
      * @param LanguageStack          $languageStack
      */
     public function __construct(
-        AppEnvInterface        $appEnv,
+        AppEnvInterface $appEnv,
         WidgetSettingsResolver $settingsResolver,
-        Serializer             $serializer,
-        TokenStorage           $tokenStorage,
-        LanguageStack          $languageStack
+        Serializer $serializer,
+        TokenStorage $tokenStorage,
+        LanguageStack $languageStack
     ) {
         $this->appEnv           = $appEnv;
         $this->settingsResolver = $settingsResolver;
@@ -105,6 +105,7 @@ class WidgetLoader
 
         $options = array_merge($options, [
             'helpdeskUrl' => $urlSettings->getHelpdesk(),
+            'baseUrl'     => $urlSettings->getBaseUrl(),
         ]);
 
         $encodedOptions = json_encode($options);

@@ -20,7 +20,7 @@ class MessengerFeature extends AbstractBetaFeature
      */
     public function getTitle()
     {
-        return 'Messenger widget v2';
+        return 'Messenger (Experimental)';
     }
 
     /**

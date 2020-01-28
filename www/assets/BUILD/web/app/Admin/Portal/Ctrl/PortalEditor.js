@@ -87,8 +87,6 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.savingMulti = false;
       this.advanced = { main_scss: '', custom_scss: '', javascript: '' };
       this.available_themes = [
-        { id: 'standard', title: 'Standard' },
-        { id: 'sidebar', title: 'Sidebar' },
         { id: 'helpcenter', title: 'HelpCenter' }
       ];
       this.$scope.brand_id = this.$stateParams.brandId;
@@ -129,6 +127,27 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.preview_as_email = null;
       this.selected_theme = null;
       this.theme_set = null;
+
+      $('.select-theme').on('mousedown', (e) => {
+        e.preventDefault();
+        e.currentTarget.blur();
+        window.focus();
+
+        const modalInstance = this.$modal.open({
+          templateUrl: this.getTemplatePath('Portal/Editor/select-theme-modal.html'),
+          controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) => {
+            $scope.available_themes = this.available_themes;
+            $scope.selected_theme = this.selected_theme;
+            $scope.selectTheme = (theme) => { $modalInstance.close(theme); };
+            $scope.cancel = () => $modalInstance.dismiss('cancel');
+          }]
+        });
+
+        modalInstance.result.then((theme) => {
+          this.selected_theme = theme.id;
+          this.editTheme();
+        });
+      });
     }
 
     save() {
@@ -154,7 +173,6 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
     editTheme() {
-      console.log('editTheme');
       const request = this.$http({
         method: 'PUT',
         url:    `${this.$scope.baseUrl}/portal/api/style/edit-theme-set/info`,
@@ -492,6 +510,11 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     loadCustomThemeSets() {
       return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/custom-theme-sets`).success((data) => {
         data.forEach((themeSet) => {
+          // Original themes re-added need some changes
+          if (themeSet.title === null) {
+            themeSet.id = themeSet.theme_id;
+            themeSet.title = themeSet.theme_id.charAt(0).toUpperCase() + themeSet.theme_id.slice(1);
+          }
           this.available_themes.push(themeSet);
         });
       });

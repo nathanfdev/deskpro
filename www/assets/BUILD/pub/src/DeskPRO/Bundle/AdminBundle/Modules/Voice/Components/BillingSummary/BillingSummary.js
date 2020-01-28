@@ -160,9 +160,13 @@ class BillingSummary extends React.Component {
             </div>
           </div>
 
-          <DeskproBillingGroup stat={records.get('deskpro_stat')} />
+          <DeskproBillingGroup
+            stat={records.get('deskpro_stat')}
+            groups={[twilioStatGroups[0]]}
+            records={records.get('provider_stat_records')}
+          />
 
-          {records.get('provider_stat_records') &&
+          {account.get('account_id') !== '__ACCOUNT_ID__' && records.get('provider_stat_records') &&
           <ProviderBillingGroup
             groupTitle="Twilio"
             groups={twilioStatGroups}
@@ -174,71 +178,14 @@ class BillingSummary extends React.Component {
   }
 }
 
-class DeskproBillingGroup extends React.Component {
+class BaseProviderBillingGroup extends React.Component {
 
   static propTypes = {
-    stat: PropTypes.object
+    records: PropTypes.array
   };
 
-  render() {
-    const { stat } = this.props;
-
-    return (
-      <div className="billing-summary-group">
-        <div className="group-header">
-          <div className="group-info">
-            <div className="col-5">
-              <span className="title">
-                Deskpro
-              </span>
-            </div>
-            <div className="col-1" />
-            <div className="col-1 align-right">
-              Total:
-            </div>
-            <div className="col-1">
-              <span className="price">
-                ${stat.get('total_calls_price')}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="group-body">
-          <div className="group-row">
-            <div className="group-info">
-              <div className="col-5">
-                <span className="title">
-                  Calls
-                </span>
-              </div>
-              <div className="col-1">
-                <span className="count">
-                  {stat.get('total_calls_count')} calls
-                </span>
-              </div>
-              <div className="col-1" />
-              <div className="col-1">
-                <span className="price">
-                  ${stat.get('total_calls_price')}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
-
-class ProviderBillingGroup extends React.Component {
-
-  static propTypes = {
-    groupTitle: PropTypes.string,
-    groups:     PropTypes.array,
-    records:    PropTypes.object
-  };
-
-  getRecord = category => this.props.records.filter(r => r.get('category') === category).first() || Immutable.fromJS({});
+  getRecord = category =>
+    this.props.records.filter(r => r.get('category') === category).first() || Immutable.fromJS({});
 
   getPrice = (group) => {
     const record = this.getRecord(group.category);
@@ -310,6 +257,91 @@ class ProviderBillingGroup extends React.Component {
     const countUnit = this.getCountUnit(group);
 
     return `${count} ${countUnit}`;
+  };
+}
+
+class DeskproBillingGroup extends BaseProviderBillingGroup {
+
+  static propTypes = {
+    stat:   PropTypes.object,
+    groups: PropTypes.array
+  };
+
+  render() {
+    const { stat, groups } = this.props;
+
+    return (
+      <div className="billing-summary-group">
+        <div className="group-header">
+          <div className="group-info">
+            <div className="col-5">
+              <span className="title">
+                Deskpro
+              </span>
+            </div>
+            <div className="col-1" />
+            <div className="col-1 align-right">
+              Total:
+            </div>
+            <div className="col-1">
+              <span className="price">
+                ${stat.get('total_calls_price')}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="group-body">
+          <div className="group-row">
+            <div className="group-info">
+              <div className="col-5">
+                <span className="title">
+                  Calls
+                </span>
+              </div>
+              <div className="col-1">
+                <span className="count">
+                  {stat.get('total_calls_count')} calls
+                </span>
+              </div>
+              <div className="col-1" />
+              <div className="col-1">
+                <span className="price">
+                  ${stat.get('total_calls_price')}
+                </span>
+              </div>
+            </div>
+            {groups.map(group =>
+              <div className="group-info">
+                <div className="col-5">
+                  <span className="title">
+                    {group.title}
+                  </span>
+                </div>
+                <div className="col-1">
+                  <span className="count">
+                    {this.formatCount(group)}
+                  </span>
+                </div>
+                <div className="col-1" />
+                <div className="col-1">
+                  <span className="price">
+                    {this.formatCount(group)}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+class ProviderBillingGroup extends BaseProviderBillingGroup {
+
+  static propTypes = {
+    groupTitle: PropTypes.string,
+    groups:     PropTypes.array
   };
 
   renderStatGroup = (statGroup, level = 0) => {

@@ -161,6 +161,11 @@ define([
         value: 'TicketApproval'
       });
 
+      options.push({
+        title: 'Ticket Language',
+        value: 'FilterLanguage'
+      });
+
       set_options.push({
         title:      'Ticket Criteria',
         subOptions: options
@@ -385,6 +390,7 @@ define([
           ticket_labels:   '/labels/definitions/tickets',
           user_fields:     '/user_fields',
           user_labels:     '/labels/definitions/people',
+          langs:           '/langs',
           org_fields:      '/org_fields',
           org_labels:      '/labels/definitions/organizations',
           ticket_accounts: '/email_accounts',
@@ -413,6 +419,7 @@ define([
           options_data.org_labels        = data.org_labels;
           options_data.user_fields       = data.user_fields != null ? data.user_fields.custom_fields : undefined;
           options_data.user_labels       = data.user_labels;
+          options_data.langs             = data.langs != null ? data.langs.languages : undefined;
           options_data.ticket_prods      = data.ticket_prods != null ? data.ticket_prods.products : undefined;
           options_data.ticket_accounts   = data.ticket_accounts.email_accounts;
           options_data.usergroups        = data.usergroups.groups;
@@ -828,6 +835,14 @@ define([
       options.propName = 'subject';
       options.operators = ['is', 'not', 'contains', 'notcontains'];
       const def = this.getStandardInput(options);
+      return def;
+    }
+
+    getFilterLanguage(options) {
+      if (options == null) { options = {}; }
+      options.propName = 'language_ids';
+      options.dataName = 'langs';
+      const def = this.getStandardSelect(options);
       return def;
     }
 

@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ImportBundle\Form\Type\Source;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -18,7 +19,14 @@ class ZendeskSourceType extends AbstractType
     {
         $builder
             ->add('account', ZendeskAccountType::class)
-            ->add('start_time', TextType::class)
+            ->add('start_time',
+                DateType::class,
+                [
+                    'required'        => false,
+                    'widget'          => 'single_text',
+                    'format'          => 'yyyy-MM-dd',
+                ]
+            )
             ->add('ticket_brand_field', TextType::class)
         ;
     }

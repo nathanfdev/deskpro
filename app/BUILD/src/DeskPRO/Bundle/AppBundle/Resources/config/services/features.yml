@@ -7,7 +7,9 @@ services:
 
   deskpro.features_collection:
     class: DeskPRO\Bundle\AppBundle\Features\FeaturesCollection
-    arguments: ["@deskpro.features_access_checker"]
+    arguments:
+      - "@deskpro.features_access_checker"
+      - "@settings_resolver"
 
   deskpro.toggle_feature_manager:
     class: DeskPRO\Bundle\AppBundle\Features\ToggleFeatureManager

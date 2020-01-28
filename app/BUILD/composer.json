@@ -2,10 +2,6 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/ImmRanneft/mpdf.git"
-    },
-    {
-      "type": "vcs",
       "url": "https://github.com/deskpro/oauth1-client.git"
     },
     {
@@ -19,7 +15,7 @@
     }
   },
   "require": {
-    "php": ">=5.5.0",
+    "php": ">=5.6",
     "alchemy/zippy": "^0.4.6",
     "arcturial/clickatell": "^3.0",
     "aws/aws-sdk-php": "^3.25",
@@ -74,7 +70,7 @@
     "leth/ip-address": "1.0.1",
     "mongofill/mongofill": "dev-master",
     "monolog/monolog": "1.*",
-    "mpdf/mpdf": "8.0.3",
+    "mpdf/mpdf": "8.0.4",
     "nelmio/api-doc-bundle": "~2.10",
     "nelmio/cors-bundle": "^1.4",
     "nesbot/carbon": "^1.21",

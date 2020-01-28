@@ -77,13 +77,13 @@
                 <ul class="dp-po-user-menu-list">
                     <li class="dp-po-user-menu-item">
                         <a class="dp-po-user-menu-link" href="{{ path('portal_user_profile') }}">
-                            <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/account.svg', 'help_center') }}"> {{ phrase('helpcenter.general.view_profile') }}
+                            <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/account.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.general.view_profile') }}
                         </a>
                     </li>
                     {% if helpcenter.getUserInfo().ticket_count > 0 and can_use_tickets() %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_tickets') }}">
-                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.my-tickets') }}
+                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.tickets.my-tickets') }}
                                 {% if pageData.alerts.tickets_awaiting_reply | length > 0 %}
                                     ({{ pageData.alerts.tickets_awaiting_reply | length }})
                                 {% endif %}
@@ -93,7 +93,7 @@
                     {% if app.getSetting('portal.members_community') %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_dm') }}">
-                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.my-messages') }}
+                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.tickets.my-messages') }}
                                 {% if pageData.alerts.unread_direct_messages > 0 %}
                                     ({{ pageData.alerts.unread_direct_messages }})
                                 {% endif %}
@@ -103,7 +103,16 @@
                     {% if helpcenter.getUserInfo().chat_count > 0 and can_use_chat() %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_chats') }}">
-                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}"> {{ phrase('helpcenter.chats.my-chats') }}
+                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.chats.my-chats') }}
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if helpcenter.getUserInfo().ticket_approval_count > 0 and app.getSetting('core_tickets.ticket_approvals') %}
+                        <li class="dp-po-user-menu-item">
+                            <span class="disc"></span>
+                            <a class="dp-po-user-menu-link" href="{{ path('ticket_approvals') }}">
+                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}"> {{ phrase('helpcenter.approvals.my-approvals') }}
                             </a>
                         </li>
                     {% endif %}
