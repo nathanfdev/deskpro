@@ -358,9 +358,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.54",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.54.tgz",
-      "integrity": "sha512-KQYK1FWHOSinKA9DxTIk5XFm/Y1gcr6oPAv/aOvj7NQUFUAOaieoUvTUC4UmG2tsujWChaQujLidWoS03KE1yA==",
+      "version": "0.1.55",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.55.tgz",
+      "integrity": "sha512-0T/0R8y1jmeDADPpqo2PJw66JJttPPA48UWiQ5qxW+OfPPyiuPQFipZdTGD1POBckuhh+jSOWZQVG2i+34GXAA==",
       "requires": {
         "@deskpro/portal-components": "0.3.43",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -635,9 +635,9 @@
       }
     },
     "@deskpro/messenger-loader": {
-      "version": "0.1.50",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.50.tgz",
-      "integrity": "sha512-vlJ1hcFHm8QmDOb+1gA89tCxXqPZGdrcl+3ld6aY4TEyJx2KwJjFsoIR1fAvHYb/7lfpIgtQQjXvqX9d+3d1Yg==",
+      "version": "0.1.52",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.52.tgz",
+      "integrity": "sha512-p20PxqEWoTy863iaQKCi0dm3o9QRuyQJmo+NGbMDI0k/PnVvyn3jn+nwUAtYnfK9l/g2WgVqX6n4nGYaWzwocw==",
       "requires": {
         "whatwg-fetch": "^3.0.0"
       }
