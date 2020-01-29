@@ -260,6 +260,13 @@ doctrine:
             dir: '%kernel.root_dir%/../src/DeskPRO/Bundle/ReportBundle/Entity'
             prefix: 'DeskPRO\Bundle\ReportBundle\Entity'
 
+monolog:
+  handlers:
+    # Inspired by this commit #ab7e6a9 to updater/loggers.yml
+    logger.email_log_collector:
+      type: service
+      id: email.log_collector
+      channels: ['dp.email.out.mailer', 'dp.email.out.transport', 'dp.email.out.queue', 'dp.email.out.raw_transport']
 
 #rms_push_notifications:
 #  ios:
