@@ -262,7 +262,8 @@ doctrine:
 
 monolog:
   handlers:
-    # Inspired by this commit #ab7e6a9 to updater/loggers.yml
+    # Add EmailBundle LogCollector as monolog handler for below channels to properly collect logs during email sending through api/v2
+    # Inspired by commit #ab7e6a9
     logger.email_log_collector:
       type: service
       id: email.log_collector
