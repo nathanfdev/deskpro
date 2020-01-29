@@ -60,9 +60,10 @@ class ServiceController extends AbstractMessengerController
      */
     public function messengerSetupAction(Request $request)
     {
-        $brand    = $this->get('brand_stack')->getActive()->getBrand();
-        $settings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
-        $data     = $this->get('serializer')->toArray($settings, new SideloadSerializationContext());
+        $brand                     = $this->get('brand_stack')->getActive()->getBrand();
+        $messengerSettingsResolver = $this->get('messenger.service.settings_resolver');
+        $settings                  = $messengerSettingsResolver->getMessengerSettings($brand);
+        $data                      = $this->get('serializer')->toArray($settings, new SideloadSerializationContext());
 
         $preChatForm     = $settings->getChat()->getPreChatForm();
         $ticketsSettings = $settings->getTickets();

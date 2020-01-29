@@ -29,11 +29,16 @@
     window.parent.DESKPRO_MESSENGER_ASSET_URL = "{{ asset('', 'messenger_assets') }}";
     window.parent.DESKPRO_MESSENGER_OPTIONS = {
 			{% if app.user %}
-      user: {
-        name: "{{ app.user.display_name }}",
-				email: "{{ app.user.email }}",
-        avatar: "{{ avatar_url(app.user) }}",
-			},
+				{% if is_widget_jwt_enabled() %}
+					jwt: "{{ create_widget_jwt_token(app.user) }}",
+				{% else %}
+					user: {
+						name: "{{ app.user.display_name }}",
+						email: "{{ app.user.email }}",
+						avatar: "{{ avatar_url(app.user) }}",
+					},
+				{% endif %}
+
 			{% endif %}
       helpdeskURL: "{{ root_url(false) }}",
       baseUrl: "{{ asset('', 'messenger_assets') }}"

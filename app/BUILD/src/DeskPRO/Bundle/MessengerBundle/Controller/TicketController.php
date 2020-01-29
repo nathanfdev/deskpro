@@ -66,12 +66,7 @@ class TicketController extends AbstractMessengerController
         $personRepository = $this
             ->get('doctrine.orm.default_entity_manager')
             ->getRepository(Person::class);
-        $person = null;
-
-        if (isset($requestData['person_id'])) {
-            $person = $this->get('doctrine.orm.default_entity_manager')->find(Person::class, $requestData['person_id']);
-            unset($requestData['person_id']);
-        }
+        $person = $this->getUser();
 
         if (!$person && isset($requestData['person']) && isset($requestData['person']['user_email'])) {
             $person = $personRepository->findOneByEmail($requestData['person']['user_email']);

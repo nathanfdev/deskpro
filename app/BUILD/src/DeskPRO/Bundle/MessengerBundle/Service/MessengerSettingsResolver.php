@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Settings\AbstractBrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChat;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerEmbed;
@@ -24,6 +25,9 @@ use Orb\Util\Env;
  */
 class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
+    // just fo the bc and code reuse
+    const JWT_SECRET              = WidgetSettingsResolver::JWT_SECRET;
+
     const EMBED_ENABLED_ON_PORTAL = 'messenger.embed.show_on_portal';
     const EMBED_AUTHORIZE_DOMAINS = 'messenger.embed.authorize_domains';
 

@@ -396,7 +396,7 @@ class ChatHandler
 
         $errors = [];
 
-        if (!$person = $this->getUser()) {
+        if (!$person = $this->getUser($request)) {
             // try to find person
             if (isset($request['person_id'])) {
                 $person = $this->em->find(Person::class, $request['person_id']);
@@ -541,20 +541,26 @@ class ChatHandler
      */
     private function getUser()
     {
+        $user = null;
+
         if ($this->container->has('security.token_storage')) {
-            if (null === $token = $this->container->get('security.token_storage')->getToken()) {
-                return;
-            }
-
-            if (!\is_object($user = $token->getUser())) {
+            $token = $this->container->get('security.token_storage')->getToken();
+            if (!$token || !\is_object($user = $token->getUser())) {
                 // e.g. anonymous authentication
-                return;
+                $user = null;
             }
-
-            return $user;
+        }
+        // find user in JWT token in headers
+        if (!$user) {
+            $request = $this->container->get('request');
+            if ($request->headers->has('X-JWT-TOKEN')) {
+                if ($jwt = $request->headers->get('X-JWT-TOKEN')) {
+                    $user = $this->container->get('widget_jwt_decoder')->getPersonFromJwtPayload($jwt);
+                }
+            }
         }
 
-        return null;
+        return $user;
     }
 
     private function endChatTimeout($chat)

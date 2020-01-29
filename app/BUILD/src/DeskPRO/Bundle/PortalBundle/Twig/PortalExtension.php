@@ -15,6 +15,7 @@ use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
+use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Exception;
@@ -166,6 +167,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('portal_mode', [$this, 'getPortalMode'], ['is_safe' => ['html', 'javascript']]),
             new \Twig_SimpleFunction('is_portal_widget_enabled', [$this, 'isPortalWidgetEnabled']),
             new \Twig_SimpleFunction('is_portal_messenger_enabled', [$this, 'isPortalMessengerEnabled']),
+            new \Twig_SimpleFunction('is_widget_jwt_enabled', [$this, 'isWidgetJwtEnabled']),
+            new \Twig_SimpleFunction('create_widget_jwt_token', [$this, 'createWidgetJwtToken']),
             new \Twig_SimpleFunction('portal_widget_loader', [$this, 'getWidgetLoader'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('should_show_nav_buttons', [$this, 'shouldShowNavButtons']),
             new \Twig_SimpleFunction('can_login', [$this, 'canLogin']),
@@ -735,6 +738,31 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
 
         return $messengerSettings->getEmbed() && $messengerSettings->getEmbed()->isShowOnPortal() &&
             $this->container->get('deskpro.feature_flags')->hasBeta('messenger');
+    }
+
+    /**
+     * @throws \Throwable
+     *
+     * @return bool
+     */
+    public function isWidgetJwtEnabled()
+    {
+        $brand            = $this->getBrandStack()->getActive()->getBrand();
+        $settingsResolver = $this->container->get('messenger.service.settings_resolver');
+
+        return $settingsResolver->getSettings(MessengerSettingsResolver::JWT_SECRET, $brand, false);
+    }
+
+    /**
+     * @param $person
+     *
+     * @throws Exception
+     *
+     * @return string
+     */
+    public function createWidgetJwtToken($person)
+    {
+        return $this->container->get('widget_jwt_decoder')->encodePerson($person);
     }
 
     /**
