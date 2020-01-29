@@ -17,7 +17,7 @@ class MessengerEmbed
      *
      * @var bool
      */
-    private $showOnPortal = false;
+    private $showOnPortal = true;
 
     /**
      * A comma separated list of authorized domains.
@@ -28,6 +28,14 @@ class MessengerEmbed
      * @var string
      */
     private $authorizeDomains = '';
+
+    /**
+     * A jwt secret key
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("jwtSecret")
+     */
+    private $jwtSecret = '';
 
     /**
      * @return bool
@@ -65,6 +73,26 @@ class MessengerEmbed
     public function setAuthorizeDomains($authorizeDomains)
     {
         $this->authorizeDomains = (string) $authorizeDomains;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJwtSecret()
+    {
+        return $this->jwtSecret;
+    }
+
+    /**
+     * @param string $jwtSecret
+     *
+     * @return $this
+     */
+    public function setJwtSecret($jwtSecret)
+    {
+        $this->jwtSecret = $jwtSecret;
 
         return $this;
     }

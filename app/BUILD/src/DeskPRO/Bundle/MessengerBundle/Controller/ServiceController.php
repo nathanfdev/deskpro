@@ -68,6 +68,7 @@ class ServiceController extends AbstractMessengerController
         $preChatForm     = $settings->getChat()->getPreChatForm();
         $ticketsSettings = $settings->getTickets();
 
+        unset($data['embed']['jwtSecret']); // should use serializer views
         $data['chat']['preChatForm']        = $this->getPreChatFormConfig($preChatForm);
         $data['tickets']['formConfig']      = $this->getTicketFormConfig($ticketsSettings);
         $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();

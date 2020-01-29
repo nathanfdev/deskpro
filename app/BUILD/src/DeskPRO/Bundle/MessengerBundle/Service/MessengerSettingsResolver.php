@@ -126,6 +126,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         $embed
             ->setAuthorizeDomains($this->getSettings(self::EMBED_AUTHORIZE_DOMAINS, $brand, $embed->getAuthorizeDomains()))
             ->setShowOnPortal($this->getSettings(self::EMBED_ENABLED_ON_PORTAL, $brand, $embed->isShowOnPortal()))
+            ->setJwtSecret($this->getSettings(self::JWT_SECRET, $brand, $embed->getJwtSecret()))
         ;
 
         return $embed;

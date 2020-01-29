@@ -155,6 +155,7 @@ class AdminController extends AbstractBrandAwareSettingsController
 
             ->updateSetting(MSR::EMBED_AUTHORIZE_DOMAINS, $messengerEmbed->getAuthorizeDomains(), $brand)
             ->updateSetting(MSR::EMBED_ENABLED_ON_PORTAL, $messengerEmbed->isShowOnPortal(), $brand)
+            ->updateSetting(MSR::JWT_SECRET, $messengerEmbed->getJwtSecret(), $brand)
 
             ->updateSetting(MSR::CHAT_TIMEOUT, $messengerChat->getTimeout(), $brand)
             ->updateSetting(MSR::CHAT_PROMPT, $messengerChat->getPrompt(), $brand)

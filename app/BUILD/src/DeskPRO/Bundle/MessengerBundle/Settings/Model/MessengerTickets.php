@@ -20,7 +20,7 @@ class MessengerTickets
      *
      * @var bool
      */
-    private $enabled = false;
+    private $enabled = true;
 
     /**
      * @JMS\Type("string")
