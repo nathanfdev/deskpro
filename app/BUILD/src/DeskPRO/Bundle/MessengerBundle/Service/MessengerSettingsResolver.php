@@ -170,6 +170,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
             ->setTicketDefaults($this->getMessengerChatTicketDefaults($brand))
             ->setPreChatForm($this->getPreChatForm($brand))
+            ->setUsergroups(unserialize($this->getSettings(self::CHAT_USERGROUPS, $brand, serialize($mChat->getUsergroups()))))
             ;
     }
 

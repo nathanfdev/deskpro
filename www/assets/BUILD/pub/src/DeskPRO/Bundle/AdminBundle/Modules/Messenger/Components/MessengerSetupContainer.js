@@ -8,13 +8,16 @@ import { Button } from '@deskpro/react-components';
 import { getSettings, saveSettings } from '../Actions/messengerActions';
 import { allChatDepartmentsSelector, allTicketDepartmentsSelector } from '../../Application/Selectors/departments';
 import { allChatCustomFields } from '../../Application/Selectors/chats';
+import { allUserGroupsSelector } from '../../Application/Selectors/people';
 import { loadChatDepartments, loadTicketDepartments } from '../../Application/Actions/departmentsActions';
 import { loadChatCustomFieldsAction } from '../../Application/Actions/chatActions';
+import { loadUserGroups } from '../../Application/Actions/peopleActions';
 
 @connect(state => ({
   chatDepartments:   allChatDepartmentsSelector(state),
   ticketDepartments: allTicketDepartmentsSelector(state),
   chatCustomFields:  allChatCustomFields(state),
+  usergroups:        allUserGroupsSelector(state),
 }))
 class MessengerSetupContainer extends React.Component {
 
@@ -24,6 +27,11 @@ class MessengerSetupContainer extends React.Component {
     chatDepartments:   PropTypes.object,
     ticketDepartments: PropTypes.object,
     chatCustomFields:  PropTypes.object,
+    usergroups:        PropTypes.object,
+  };
+
+  static defaultProps = {
+    usergroups: new Immutable.Map()
   };
 
   state = {
@@ -36,6 +44,7 @@ class MessengerSetupContainer extends React.Component {
     dispatch(loadChatDepartments());
     dispatch(loadTicketDepartments());
     dispatch(loadChatCustomFieldsAction());
+    dispatch(loadUserGroups());
 
     this.props.dispatch(getSettings(this.props.params.brandId)).then((response) => {
       const newSettings = this.state.settings.merge(response.data.data);
@@ -51,7 +60,7 @@ class MessengerSetupContainer extends React.Component {
       config = settings.withMutations(value);
     } else if (name) {
       const keyPath = name.split('.');
-      if (typeof value === 'object') {
+      if (typeof value === 'object' && !Immutable.Iterable.isIterable(value)) {
         config = settings.mergeIn(keyPath, value);
       } else {
         config = settings.setIn(keyPath, value);
@@ -105,6 +114,7 @@ class MessengerSetupContainer extends React.Component {
       chatDepartments,
       chatCustomFields,
       ticketDepartments,
+      usergroups,
     } = this.props;
     return (
       <div>
@@ -114,6 +124,7 @@ class MessengerSetupContainer extends React.Component {
           chatDepartments={chatDepartments}
           chatCustomFields={chatCustomFields}
           ticketDepartments={ticketDepartments}
+          usergroups={usergroups}
         >
           <Button loading={saving} onClick={this.handleSubmit} type="cta" size="large">Save</Button>
         </MessengerSetup>

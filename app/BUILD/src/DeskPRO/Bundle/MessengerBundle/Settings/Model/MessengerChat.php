@@ -89,6 +89,14 @@ class MessengerChat
     private $preChatForm;
 
     /**
+     * @JMS\Type("array<integer>")
+     * @JMS\SerializedName("usergroups")
+     *
+     * @var array
+     */
+    private $usergroups = [];
+
+    /**
      * @return bool
      */
     public function isEnabled()
@@ -244,6 +252,26 @@ class MessengerChat
     public function setPreChatForm(PreChatForm $preChatForm)
     {
         $this->preChatForm = $preChatForm;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUsergroups()
+    {
+        return $this->usergroups;
+    }
+
+    /**
+     * @param array $usergroups
+     *
+     * @return $this
+     */
+    public function setUsergroups(array $usergroups)
+    {
+        $this->usergroups = $usergroups;
 
         return $this;
     }
