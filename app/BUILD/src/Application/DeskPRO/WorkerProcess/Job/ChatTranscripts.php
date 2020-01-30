@@ -80,7 +80,7 @@ class ChatTranscripts extends AbstractJob
                 if (!$brand) {
                     $brand = $brandStack->getActive()->getBrand();
                 }
-                $account = App::$container->getEmailAccountManager()->getDefaultOutAccountWithFallback($brand)->getUseEmailAddress();
+                $account = App::$container->getEmailAccountManager()->getDefaultOutAccountWithFallback($brand);
 
                 $brandStack->push($brand);
 
@@ -99,7 +99,7 @@ class ChatTranscripts extends AbstractJob
 
                         $message = App::getMailer()->createMessage();
                         $message->setTo($email, $name);
-                        $message->setFrom($account);
+                        $message->setFrom($account->getUseEmailAddress());
                         $message->setTemplate('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
                         $message->setSuppressAutoreplies(true);
                         App::getMailer()->send($message);
