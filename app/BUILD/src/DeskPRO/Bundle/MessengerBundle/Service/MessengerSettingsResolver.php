@@ -64,14 +64,16 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
     const OPTIONS_AUTOSTART         = 'messenger.options.autostart';
     const OPTIONS_AUTOSTART_TIMEOUT = 'messenger.options.autostart_timeout';
+    const OPTIONS_AUTOSTART_STYLE   = 'messenger.options.autostart_style';
     const OPTIONS_SUBTEXT           = 'messenger.options.subtext';
     const OPTIONS_TITLE             = 'messenger.options.title';
 
-    const OPTIONS_CHAT_TITLE            = 'messenger.options.chat.title';
-    const OPTIONS_CHAT_BUTTON_TEXT      = 'messenger.options.chat.button_text';
-    const OPTIONS_CHAT_DESCRIPTION      = 'messenger.options.chat.description';
-    const OPTIONS_CHAT_SHOW_PHOTOS      = 'messenger.options.chat.show_photos';
-    const OPTIONS_CHAT_START_WITH_INPUT = 'messenger.options.chat.start_with_input';
+    const OPTIONS_CHAT_TITLE             = 'messenger.options.chat.title';
+    const OPTIONS_CHAT_BUTTON_TEXT       = 'messenger.options.chat.button_text';
+    const OPTIONS_CHAT_INPUT_PLACEHOLDER = 'messenger.options.chat.input_placeholder';
+    const OPTIONS_CHAT_DESCRIPTION       = 'messenger.options.chat.description';
+    const OPTIONS_CHAT_SHOW_PHOTOS       = 'messenger.options.chat.show_photos';
+    const OPTIONS_CHAT_START_WITH_INPUT  = 'messenger.options.chat.start_with_input';
 
     const OPTIONS_TICKETS_TITLE       = 'messenger.options.tickets.title';
     const OPTIONS_TICKETS_BUTTON_TEXT = 'messenger.options.tickets.button_text';
@@ -238,6 +240,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setMaxFileSize(min(Env::getEffectiveMaxUploadSize(), $this->getSettings('core.attach_user_maxsize', null, 1024 * 1024 * 10)))
             ->setAutoStart($this->getSettings(self::OPTIONS_AUTOSTART, $brand, $mOptions->isAutoStart()))
             ->setAutoStartTimeout($this->getSettings(self::OPTIONS_AUTOSTART_TIMEOUT, $brand, $mOptions->getAutoStartTimeout()))
+            ->setAutoStartStyle($this->getSettings(self::OPTIONS_AUTOSTART_STYLE, $brand, $mOptions->getAutoStartStyle()))
             ->setSubtext($this->getSettings(self::OPTIONS_SUBTEXT, $brand, $mOptions->getSubtext()))
             ->setTitle($this->getSettings(self::OPTIONS_TITLE, $brand, $mOptions->getTitle()))
             ->setChat($this->getMessengerOptionsChat($brand))
@@ -257,6 +260,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         return $mOptionsChat
             ->setTitle($this->getSettings(self::OPTIONS_CHAT_TITLE, $brand, $mOptionsChat->getTitle()))
             ->setButtonText($this->getSettings(self::OPTIONS_CHAT_BUTTON_TEXT, $brand, $mOptionsChat->getButtonText()))
+            ->setInputPlaceholder($this->getSettings(self::OPTIONS_CHAT_INPUT_PLACEHOLDER, $brand, $mOptionsChat->getInputPlaceholder()))
             ->setDescription($this->getSettings(self::OPTIONS_CHAT_DESCRIPTION, $brand, $mOptionsChat->getDescription()))
             ->setShowAgentPhotos($this->getSettings(self::OPTIONS_CHAT_SHOW_PHOTOS, $brand, $mOptionsChat->isShowAgentPhotos()))
             ->setStartWithInputField($this->getSettings(self::OPTIONS_CHAT_START_WITH_INPUT, $brand, $mOptionsChat->isStartWithInputField()))

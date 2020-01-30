@@ -38,6 +38,16 @@ class MessengerOptionsChat
     private $buttonText = 'Start a new conversation';
 
     /**
+     * A placeholder which will be shown on an input inside chat block.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("inputPlaceholder")
+     *
+     * @var string
+     */
+    private $inputPlaceholder = 'Type your message here';
+
+    /**
      * Indicates whenever agent avatar should be shown or not.
      *
      * @JMS\Type("boolean")
@@ -113,6 +123,26 @@ class MessengerOptionsChat
     public function setButtonText($buttonText)
     {
         $this->buttonText = $buttonText;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInputPlaceholder()
+    {
+        return $this->inputPlaceholder;
+    }
+
+    /**
+     * @param string $inputPlaceholder
+     *
+     * @return $this
+     */
+    public function setInputPlaceholder($inputPlaceholder)
+    {
+        $this->inputPlaceholder = $inputPlaceholder;
 
         return $this;
     }

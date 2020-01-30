@@ -21,6 +21,7 @@ class MessengerOptionsChatType extends AbstractType
             ->add('startWithInputField', ApiBooleanType::class)
             ->add('title', TextType::class)
             ->add('buttonText', TextType::class)
+            ->add('inputPlaceholder', TextType::class)
             ->add('description', TextType::class)
         ;
     }

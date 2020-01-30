@@ -191,6 +191,7 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::OPTIONS_TITLE, $messengerOptions->getTitle(), $brand)
             ->updateSetting(MSR::OPTIONS_AUTOSTART, $messengerOptions->isAutoStart(), $brand)
             ->updateSetting(MSR::OPTIONS_AUTOSTART_TIMEOUT, $messengerOptions->getAutoStartTimeout(), $brand)
+            ->updateSetting(MSR::OPTIONS_AUTOSTART_STYLE, $messengerOptions->getAutoStartStyle(), $brand)
             ->updateSetting(MSR::OPTIONS_SUBTEXT, $messengerOptions->getSubtext(), $brand)
 
             ->updateSetting(MSR::OPTIONS_TICKETS_TITLE, $optionsTickets->getTitle(), $brand)
@@ -202,6 +203,7 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::OPTIONS_CHAT_TITLE, $optionsChat->getTitle(), $brand)
             ->updateSetting(MSR::OPTIONS_CHAT_DESCRIPTION, $optionsChat->getDescription(), $brand)
             ->updateSetting(MSR::OPTIONS_CHAT_BUTTON_TEXT, $optionsChat->getButtonText(), $brand)
+            ->updateSetting(MSR::OPTIONS_CHAT_INPUT_PLACEHOLDER, $optionsChat->getInputPlaceholder(), $brand)
         ;
     }
 }

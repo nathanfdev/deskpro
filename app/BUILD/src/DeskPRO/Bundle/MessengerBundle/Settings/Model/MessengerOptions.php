@@ -10,6 +10,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class MessengerOptions
 {
+    const STYLE_AVATAR_TEXT_BUTTON = 'avatar-text-button';
+    const STYLE_AVATAR_TEXT_INPUT  = 'avatar-text-input';
+    const STYLE_AVATAR_BUTTON      = 'avatar-button';
+    const STYLE_TEXT_BUTTON        = 'text-button';
+    const STYLE_TEXT_INPUT         = 'text-input';
+    const STYLE_AVATAR_WIDGET      = 'avatar-widget';
+
     /**
      * Indicates whenever messenger window should be risen automatically.
      *
@@ -29,6 +36,16 @@ class MessengerOptions
      * @var int
      */
     private $autoStartTimeout = 0;
+
+    /**
+     * Indicates the style when the messenger window is risen automatically.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("autoStartStyle")
+     *
+     * @var string
+     */
+    private $autoStartStyle = '';
 
     /**
      * This is Deskpro global setting need to be serialized with all other settings.
@@ -107,6 +124,38 @@ class MessengerOptions
     }
 
     /**
+     * @param int $timeout
+     *
+     * @return $this
+     */
+    public function setAutoStartTimeout($timeout)
+    {
+        $this->autoStartTimeout = (int) $timeout;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAutoStartStyle()
+    {
+        return $this->autoStartStyle;
+    }
+
+    /**
+     * @param string $style
+     *
+     * @return $this
+     */
+    public function setAutoStartStyle($style)
+    {
+        $this->autoStartStyle = $style;
+
+        return $this;
+    }
+
+    /**
      * @param int $fileSize
      *
      * @return $this;
@@ -124,18 +173,6 @@ class MessengerOptions
     public function getMaxFileSize()
     {
         return $this->maxFileSize;
-    }
-
-    /**
-     * @param int $timeout
-     *
-     * @return $this
-     */
-    public function setAutoStartTimeout($timeout)
-    {
-        $this->autoStartTimeout = (int) $timeout;
-
-        return $this;
     }
 
     /**
