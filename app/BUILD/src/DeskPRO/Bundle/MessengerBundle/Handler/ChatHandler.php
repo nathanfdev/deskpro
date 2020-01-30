@@ -18,6 +18,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\MessengerBundle\Common\TraitUserGet;
 use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
@@ -36,6 +37,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class ChatHandler
 {
+    use TraitUserGet;
+
     const MESSAGE_TYPE_NEW_MESSAGE = 'chat.message';
     const CHAT_END                 = 'chat.end';
     const CHAT_SAVE_TICKET         = 'chat.ticket.save';
@@ -97,11 +100,6 @@ class ChatHandler
      * @var AttachmentHelper
      */
     private $attachmentHelper;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
 
     /**
      * ChatHandler constructor.
@@ -542,33 +540,6 @@ class ChatHandler
             $chatManager = $this->container->getSystemObject('user_chat_manager');
             $chatManager->endChat($chat, $chat->getPerson(), 'user');
         }
-    }
-
-    /**
-     * @return object|string|void|null
-     */
-    private function getUser()
-    {
-        $user = null;
-
-        if ($this->container->has('security.token_storage')) {
-            $token = $this->container->get('security.token_storage')->getToken();
-            if (!$token || !\is_object($user = $token->getUser())) {
-                // e.g. anonymous authentication
-                $user = null;
-            }
-        }
-        // find user in JWT token in headers
-        if (!$user) {
-            $request = $this->container->get('request');
-            if ($request->headers->has('X-JWT-TOKEN')) {
-                if ($jwt = $request->headers->get('X-JWT-TOKEN')) {
-                    $user = $this->container->get('widget_jwt_decoder')->getPersonFromJwtPayload($jwt);
-                }
-            }
-        }
-
-        return $user;
     }
 
     /**

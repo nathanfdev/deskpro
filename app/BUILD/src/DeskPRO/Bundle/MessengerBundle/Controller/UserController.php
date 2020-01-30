@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Security\EventListener\VisitorIdListener;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\TechInfo;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\UserInfo;
+use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver as MSR;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -124,11 +125,15 @@ class UserController extends AbstractMessengerController
      */
     public function getInfoAction(Request $request)
     {
-        $techInfo            = new TechInfo($this->get('avatar_resolver'), $this->get('brand_stack'));
-        $techService         = $this->get('messenger.service.tech');
-        $notificationService = $this->get('deskpro.notification.service');
+        $techInfo                  = new TechInfo($this->get('avatar_resolver'), $this->get('brand_stack'));
+        $techService               = $this->get('messenger.service.tech');
+        $notificationService       = $this->get('deskpro.notification.service');
+        $msr                       = $this->get('messenger.service.settings_resolver');
+        $brand                     = $this->get('brand_stack')->getActive()->getBrand();
+        $groups                    = unserialize($msr->getSettings(MSR::CHAT_USERGROUPS, $brand, 'a:0:{}'));
 
         $techInfo
+            ->setCanUseChat(count(array_intersect($groups, $techService->getUsergroups())) > 0)
             ->setChatDepartments($techService->getChatDepartments())
             ->setTicketDepartments($techService->getTicketDepartments())
             ->setAgentsOnline($techService->getAgentsOnline())

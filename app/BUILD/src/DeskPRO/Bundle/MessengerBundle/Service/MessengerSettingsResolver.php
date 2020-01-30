@@ -37,6 +37,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const TICKETS_DEPARTMENT_OPTION = 'messenger.tickets.department_option';
 
     const CHAT_ENABLED              = 'messenger.chat.enabled';
+    const CHAT_USERGROUPS           = 'messenger.chat.usergroups';
     const CHAT_PROMPT               = 'messenger.chat.prompt';
     const CHAT_TIMEOUT              = 'messenger.chat.timeout';
     const CHAT_NO_ANSWER_BEHAVIOR   = 'messenger.chat.no_answer';
