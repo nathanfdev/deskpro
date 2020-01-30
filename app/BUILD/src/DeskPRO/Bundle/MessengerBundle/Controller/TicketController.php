@@ -11,7 +11,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiFullType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -68,17 +68,17 @@ class TicketController extends AbstractMessengerController
             ->getRepository(Person::class);
         $person = $this->getUser();
 
-        if (!$person && isset($requestData['person']) && isset($requestData['person']['user_email'])) {
-            $person = $personRepository->findOneByEmail($requestData['person']['user_email']);
+        if (!$person && isset($requestData['person']) && isset($requestData['person']['email'])) {
+            $person = $personRepository->findOneByEmail($requestData['person']['email']);
         }
 
         $requestData['message'] = ['message' => $requestData['message'], 'format' => 'html'];
 
-        if ($person) {
-            $formOptions['person'] = $person;
-        }
+        $person                = $person ?: new Person();
+        $formOptions['person'] = $person;
+
         $form = $this->container->get('form.factory')->create(
-            TicketWithLayoutsApiFullType::class,
+            TicketWithLayoutsApiType::class,
             $ticket,
             $formOptions
         );
@@ -90,7 +90,7 @@ class TicketController extends AbstractMessengerController
 
         $manager = $this->getContainer()->getTicketManager();
         $context = $manager->createUserExecutorContext($person, ExecutorContext::EVENT_NEW, ExecutorContext::METHOD_API, ['api_v2' => true]);
-
+        $em      = $this->get('doctrine.orm.default_entity_manager')->persist($person);
         $manager->saveTicket($ticket, $context);
 
         return View::create(new ApiWrapper($ticket));
