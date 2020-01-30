@@ -86,10 +86,9 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         try {
-            if (preg_match('#^/b/([\w-]+)/\S*(?<=file\.php)(/.*|$)$#', $this->request->getPathInfo(), $matches)) {
+            $pathInfo = $this->getPathInfo();
+            if (preg_match('#^/b/([\w-]+)/\S*(?<=file\.php)(/.*|$)$#', $pathInfo, $matches)) {
                 $pathInfo = $matches[2];
-            } else {
-                $pathInfo = $this->getPathInfo();
             }
 
             $this->addLogMessage('pathinfo: %s', $pathInfo);
