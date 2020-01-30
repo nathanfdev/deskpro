@@ -3,7 +3,9 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\Blob as BlobEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class Blob.
@@ -86,15 +88,28 @@ class Blob
      * Blob constructor.
      *
      * @param BlobEntity $blob
+     * @param SideloadSerializationContext $context
      */
-    public function __construct(BlobEntity $blob)
+    public function __construct(BlobEntity $blob, SideloadSerializationContext $context)
     {
+        $container         = $context->getContainer();
+        $this->downloadUrl = $container === null
+            ? $blob->getDownloadUrl(true, false)
+            : $container->getRouter()
+                ->generate(
+                    'serve_blob',
+                    [
+                        'blob_auth_id' => $blob->getAuthId(),
+                        'filename'     => $blob->getFilenameSafe(),
+                    ],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+
         $this->contentType      = $blob->getContentType();
         $this->isImage          = $blob->isImage();
         $this->blobId           = $blob->getId();
         $this->blobAuth         = $blob->getAuthcode();
         $this->blobAuthId       = $blob->getId().'-'.$blob->getAuthcode();
-        $this->downloadUrl      = $blob->getDownloadUrl(true, false);
         $this->filename         = $blob->getFilenameSafe();
         $this->filesizeReadable = $blob->getReadableFilesize();
     }

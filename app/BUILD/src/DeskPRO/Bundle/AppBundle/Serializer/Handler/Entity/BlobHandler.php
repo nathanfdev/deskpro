@@ -26,6 +26,6 @@ class BlobHandler extends AbstractEntityHandler
      */
     public function createModel($entity, SideloadSerializationContext $context)
     {
-        return new BlobModel($entity);
+        return new BlobModel($entity, $context);
     }
 }
