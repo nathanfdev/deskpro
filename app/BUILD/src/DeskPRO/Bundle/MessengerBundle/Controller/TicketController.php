@@ -11,8 +11,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -78,7 +78,7 @@ class TicketController extends AbstractMessengerController
             $formOptions['person'] = $person;
         }
         $form = $this->container->get('form.factory')->create(
-            TicketWithLayoutsWebFullType::class,
+            TicketWithLayoutsApiFullType::class,
             $ticket,
             $formOptions
         );
