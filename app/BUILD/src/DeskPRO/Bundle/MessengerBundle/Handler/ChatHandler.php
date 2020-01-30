@@ -294,14 +294,22 @@ class ChatHandler
 
         $errors = [];
 
-        if (!$chat->getPersonEmail() && (!isset($request['email']) || !trim($request['email']))) {
-            $errors['email'] = 'You have to set email to receive transcript';
-        } elseif (isset($request['email']) && trim($request['email'])) {
-            $chat->setPersonEmail($request['email']);
-        }
-
-        if (isset($request['name']) && trim($request['name'])) {
-            $chat->setPersonName($request['name']);
+        if ($person = $this->getUser()) {
+            $chat->setPerson($person);
+        } else {
+            if (!$chat->getPersonEmail() && (!isset($request['email']) || !trim($request['email']))) {
+                $errors['email'] = 'You have to set email to receive transcript';
+            } elseif (isset($request['email']) && trim($request['email'])) {
+                if (!$person = $this->getPerson($request['email'])) {
+                    $person = new Person();
+                    $person->setEmail($request['email'], false);
+                    if (isset($request['name']) && trim($request['name'])) {
+                        $person->setName($request['name']);
+                    }
+                    $this->em->persist($person);
+                }
+                $chat->setPerson($person);
+            }
         }
 
         if ($errors) {
@@ -532,7 +540,7 @@ class ChatHandler
         if (!$chat->isEnded()) {
             /** @var UserChatManager $chatManager */
             $chatManager = $this->container->getSystemObject('user_chat_manager');
-            $chatManager->userAbandoned($chat);
+            $chatManager->endChat($chat, $chat->getPerson(), 'user');
         }
     }
 
@@ -563,6 +571,21 @@ class ChatHandler
         return $user;
     }
 
+    /**
+     * @param $email
+     *
+     * @return mixed
+     */
+    private function getPerson($email)
+    {
+        return $this->em->getRepository(Person::class)->findOneByEmail($email);
+    }
+
+    /**
+     * @param $chat
+     *
+     * @throws \Exception
+     */
     private function endChatTimeout($chat)
     {
         if (!$chat->isEnded()) {
