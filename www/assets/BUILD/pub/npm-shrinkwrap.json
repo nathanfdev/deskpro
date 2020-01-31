@@ -358,9 +358,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.61",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.61.tgz",
-      "integrity": "sha512-HoplqRWrXU/R8C/4KTIO9X3cBwmnY7svyLIDOLbAcmoXZDtJeZ1c1LBdwpjDlSDBP4M6cAQ5QcWJqiilBsIdOQ==",
+      "version": "0.1.65",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.65.tgz",
+      "integrity": "sha512-X3bhlznsqMuLoCC1gmxGQrn8OmsWSBs6cvr2mgmnwA697Hm4+IZtmkfhIGsMvi0pMpcUwsAJcmisUpymLisSRA==",
       "requires": {
         "@deskpro/portal-components": "0.3.51",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -643,9 +643,9 @@
       }
     },
     "@deskpro/messenger-setup": {
-      "version": "0.1.64",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger-setup/-/messenger-setup-0.1.64.tgz",
-      "integrity": "sha512-6hL91y39Spln1AMSF20YcuvXRNWTBST82Z5zaRr1BJIPWSZa7ot73B7wh7JGRqjb06x3qJCuYMh+vuM0jY1ZnA==",
+      "version": "0.1.65",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger-setup/-/messenger-setup-0.1.65.tgz",
+      "integrity": "sha512-MND0+3Ycz5cnOloFhtrZPCJueulF4F0l1/2qwqMm3DJSsSmmO8o6cvnU5/MeZWyuODIIE42a9NF/TGy/reaUgA==",
       "requires": {
         "@fortawesome/free-solid-svg-icons": "^5.4.1",
         "array-move": "^2.2.1",

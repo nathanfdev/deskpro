@@ -77,11 +77,13 @@ HTML;
     public function beforeEnable(ContainerInterface $container, $newInstall = false)
     {
         /** @var EntityManager $em */
-        $em        = $container->get('doctrine.orm.default_entity_manager');
-        $usergroup = $em->getRepository(Usergroup::class)->findOneBy(['sys_name' => 'everyone']);
-        $brands    = $em->getRepository(Brand::class)->findAll();
-        $db        = $em->getConnection();
-        $ug        = serialize([$usergroup->getId()]);
+        $em         = $container->get('doctrine.orm.default_entity_manager');
+        $usergroups = $em->getRepository(Usergroup::class)->findBy(['is_agent_group' => false, 'is_enabled' => true]);
+        $brands     = $em->getRepository(Brand::class)->findAll();
+        $db         = $em->getConnection();
+        $ug         = serialize(array_map(function ($u) {
+            return $u->getId();
+        }, $usergroups));
         foreach ($brands as $brand) {
             $db->executeUpdate('
                 INSERT IGNORE INTO settings_brand
