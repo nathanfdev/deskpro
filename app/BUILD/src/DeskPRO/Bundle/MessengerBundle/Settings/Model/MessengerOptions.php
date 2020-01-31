@@ -45,7 +45,7 @@ class MessengerOptions
      *
      * @var string
      */
-    private $autoStartStyle = '';
+    private $autoStartStyle = self::STYLE_AVATAR_TEXT_BUTTON;
 
     /**
      * This is Deskpro global setting need to be serialized with all other settings.
