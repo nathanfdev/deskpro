@@ -40,6 +40,7 @@ class ChatHandler
     use TraitUserGet;
 
     const MESSAGE_TYPE_NEW_MESSAGE = 'chat.message';
+    const MESSAGE_ATTAHCMENT       = 'chat.attachment';
     const CHAT_END                 = 'chat.end';
     const CHAT_SAVE_TICKET         = 'chat.ticket.save';
     const CHAT_USER_TIMEOUT        = 'chat.userTimeout';
@@ -55,6 +56,7 @@ class ChatHandler
      */
     private $availableCommands = [
         self::MESSAGE_TYPE_NEW_MESSAGE,
+        self::MESSAGE_ATTAHCMENT,
         self::CHAT_END,
         self::CHAT_USER_TIMEOUT,
         self::CHAT_TRANSCRIPT,
@@ -165,20 +167,39 @@ class ChatHandler
      * @param ChatConversation $chat
      * @param array            $request
      *
+     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return array
      */
     private function handleChatMessageCommand(ChatConversation $chat, array $request)
     {
         $message = $this->chatMapper->createChatMessage($request, $chat);
+        $blobIds = (isset($request['blobs'])) ? array_map('intval', $request['blobs'] ?: []) : [];
+        $this->attachmentHelper->processInlineBlobs($message->getContent(), $blobIds);
+
+        return $this->processMessage($message, $chat);
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @return array
+     */
+    private function handleChatAttachmentCommand(ChatConversation $chat, array $request)
+    {
+        $message = $this->chatMapper->createChatAttachment($request, $chat);
+
+        return $this->processMessage($message, $chat);
+    }
+
+    private function processMessage(ChatMessage $message, ChatConversation $chat)
+    {
         $chat->addMessage($message);
         $this->em->persist($message);
         $this->em->persist($chat);
-
-        $blobIds = (isset($request['blobs'])) ? array_map('intval', $request['blobs'] ?: []) : [];
-
-        $this->attachmentHelper->processInlineBlobs($message->getContent(), $blobIds);
 
         $this->em->flush();
 

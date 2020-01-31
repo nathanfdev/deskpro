@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Mapper;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Person;
@@ -47,7 +48,7 @@ class ChatMapper
     }
 
     /**
-     * @param mixed $data
+     * @param array $data
      * @param ChatConversation $chat
      *
      * @throws \Doctrine\ORM\ORMException
@@ -56,27 +57,16 @@ class ChatMapper
      *
      * @return ChatMessage
      */
-    public function createChatMessage($data, $chat)
+    public function createChatMessage($data, ChatConversation $chat)
     {
-        $message = new ChatMessage();
-        // we need to handle this staff with jwt and other things probably
-        if ($chat->getPerson()) {
-            $message->setAuthor($chat->getPerson());
-        }
-
-        $errors = [];
-
-        if (isset($data['uuid']) && trim($data['uuid'])) {
-            $uuid = $data['uuid'];
-        } else {
-            $uuid = RandUtils::uuidV4();
-        }
+        $message = $this->getBasicMessage($chat);
+        $errors  = [];
 
         if (isset($data['blobs']) && !is_array($data['blobs'])) {
-            $errors['blobs'] = 'Blobs should be array';
+            $errors['blobs'] = 'Blobs should be an array';
         }
 
-        $message->setMetadata(['uuid' => $uuid]);
+        $message->setMetadata(['uuid' => $this->getUuid($data)]);
 
         if (isset($data['message']) && trim($data['message'])) {
             $message->setContent($this->cleanText($data['message']))->setIsHtml(true);
@@ -111,6 +101,56 @@ class ChatMapper
     }
 
     /**
+     * @param array            $data
+     * @param ChatConversation $chat
+     */
+    public function createChatAttachment($data, ChatConversation $chat)
+    {
+        $message = $this->getBasicMessage($chat);
+        $errors  = [];
+        if (!$blob = $this->em->find(Blob::class, $data['blob']['id'])) {
+            throw new MessengerApiException('Wrong blob id!');
+        }
+        $blob->setIsTemp(false);
+
+        if (isset($data['blob']) && !is_array($data['blob'])) {
+            $errors['blob'] = 'Blob should be an array';
+        }
+
+        $content = sprintf('File: <a href="%s" target="_blank">%s</a> (%s)',
+            $data['blob']['download_url'],
+            $data['blob']['filename'],
+            $data['blob']['filesize_readable']
+        );
+
+        if ($data['blob']['is_image']) {
+            $content = sprintf('%s<div class="file-thumb"><img src="%s?s=50" /></div>', $content, $data['blob']['download_url']);
+        }
+
+        $message
+            ->setMetadata([
+                'uuid'    => $this->getUuid($data),
+                'type'    => 'file',
+                'blob_id' => $data['blob']['id'],
+                'blob'    => [
+                    'blob_id'           => $data['blob']['id'],
+                    'blob_auth'         => $data['blob']['auth'],
+                    'blob_auth_id'      => $data['blob']['auth_id'],
+                    'filesize_readable' => $data['blob']['filesize_readable'],
+                    'filename'          => $data['blob']['filename'],
+                    'download_url'      => $data['blob']['download_url'],
+                    'is_image'          => $data['blob']['is_image'],
+                ],
+            ])
+            ->setContent($content)
+            ->setIsHtml(true)
+            ->setIsUser(true)
+            ->setOrigin(ChatMessage::ORIGIN_USER);
+
+        return $message;
+    }
+
+    /**
      * @param ChatMessage $message
      *
      * @return array
@@ -138,6 +178,22 @@ class ChatMapper
             'uuid'         => $uuid,
             'meta'         => $this->transformMeta($metadata),
         ];
+    }
+
+    private function getUuid($data)
+    {
+        return isset($data['uuid']) && trim($data['uuid']) ? $data['uuid'] : RandUtils::uuidV4();
+    }
+
+    private function getBasicMessage(ChatConversation $chat)
+    {
+        $message = new ChatMessage();
+        // we need to handle this staff with jwt and other things probably
+        if ($chat->getPerson()) {
+            $message->setAuthor($chat->getPerson());
+        }
+
+        return $message;
     }
 
     /**
