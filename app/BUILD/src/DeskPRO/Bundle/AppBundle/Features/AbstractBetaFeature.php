@@ -13,7 +13,7 @@ abstract class AbstractBetaFeature implements BetaFeatureInterface
     /**
      * @var SettingsResolver
      */
-    private $settingsResolver;
+    protected $settingsResolver;
 
     /**
      * AbstractFeature constructor.

@@ -2,6 +2,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\Features;
 
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Usergroup;
+use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Class MessengerFeature.
  */
@@ -65,7 +71,25 @@ HTML;
      */
     public function isEnabledOnInstall()
     {
-        return false;
+        return true;
+    }
+
+    public function beforeEnable(ContainerInterface $container, $newInstall = false)
+    {
+        /** @var EntityManager $em */
+        $em        = $container->get('doctrine.orm.default_entity_manager');
+        $usergroup = $em->getRepository(Usergroup::class)->findOneBy(['sys_name' => 'everyone']);
+        $brands    = $em->getRepository(Brand::class)->findAll();
+        $db        = $em->getConnection();
+        $ug        = serialize([$usergroup->getId()]);
+        foreach ($brands as $brand) {
+            $db->executeUpdate('
+                INSERT IGNORE INTO settings_brand
+                    (name, value, brand_id)
+                VALUES
+                    (?, ?, ?)
+            ', [MessengerSettingsResolver::CHAT_USERGROUPS, $ug, $brand->getId()]);
+        }
     }
 
     /**
