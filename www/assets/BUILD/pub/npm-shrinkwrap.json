@@ -643,9 +643,9 @@
       }
     },
     "@deskpro/messenger-setup": {
-      "version": "0.1.62",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger-setup/-/messenger-setup-0.1.62.tgz",
-      "integrity": "sha512-6n9XxSu7l5Sy1AW//tRN/1QM04YmodLtyLlPHqlzQ6uFBZoWX4Dvh1xn4qdyKWrtuibN585xkPy43qxuKHL3Wg==",
+      "version": "0.1.63",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger-setup/-/messenger-setup-0.1.63.tgz",
+      "integrity": "sha512-/KPsNh7cT8IPlghgJOTg7uLqqXH+OnC7nsF7b08TDM8dYQE74hyJjtcZqWlql4Sbjzi+kYrFiJNRM/nc87mhgg==",
       "requires": {
         "@fortawesome/free-solid-svg-icons": "^5.4.1",
         "array-move": "^2.2.1",
