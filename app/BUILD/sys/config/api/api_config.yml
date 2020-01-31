@@ -260,6 +260,14 @@ doctrine:
             dir: '%kernel.root_dir%/../src/DeskPRO/Bundle/ReportBundle/Entity'
             prefix: 'DeskPRO\Bundle\ReportBundle\Entity'
 
+monolog:
+  handlers:
+    # Add EmailBundle LogCollector as monolog handler for below channels to properly collect logs during email sending through api/v2
+    # Inspired by commit #ab7e6a9
+    logger.email_log_collector:
+      type: service
+      id: email.log_collector
+      channels: ['dp.email.out.mailer', 'dp.email.out.transport', 'dp.email.out.queue', 'dp.email.out.raw_transport']
 
 #rms_push_notifications:
 #  ios:
