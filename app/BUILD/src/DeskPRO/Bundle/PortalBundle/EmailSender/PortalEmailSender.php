@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 
@@ -37,7 +35,7 @@ class PortalEmailSender
             if ($person->isAgent()) {
                 $resetUrl = $this->getRouter()->generate(
                     'agent_login',
-                    ['code' => $reset['code']],
+                    ['reset_code' => $reset['code']],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
             } else {
@@ -366,9 +364,9 @@ class PortalEmailSender
         return $account->getUseEmailAddress();
     }
 
-// the email format we are using right now is the same as what is used in DpKernel (<dp:subject> tags)
-// but we will be moving towards more twig-based stuff for new portal. This method will be refactored
-// to look more like sendToPerson() but use the new syntax. Keeping for reference.
+    // the email format we are using right now is the same as what is used in DpKernel (<dp:subject> tags)
+    // but we will be moving towards more twig-based stuff for new portal. This method will be refactored
+    // to look more like sendToPerson() but use the new syntax. Keeping for reference.
 //    protected function sendMessage()
 //    {
 //        $context = $this->getTwig()->mergeGlobals($context);
