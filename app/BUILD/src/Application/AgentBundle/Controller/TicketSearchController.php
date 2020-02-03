@@ -35,7 +35,6 @@ use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
@@ -550,6 +549,7 @@ class TicketSearchController extends AbstractController
 
             if (!$ticket_batch || empty($ticket_batch['ticket_ids'])) {
                 $batches[$batch_id] = '';
+
                 continue;
             }
 
@@ -582,6 +582,7 @@ class TicketSearchController extends AbstractController
                 $this->em->getConnection()->commit();
             } catch (\Exception $e) {
                 $this->em->getConnection()->rollback();
+
                 throw $e;
             }
         }
@@ -1651,6 +1652,7 @@ class TicketSearchController extends AbstractController
             switch ($displayField) {
                 case 'id':
                     $row[] = 'ticket_id';
+
                     break;
                 case 'language_id':
                 case 'department_id':
@@ -1661,6 +1663,7 @@ class TicketSearchController extends AbstractController
                 case 'email_account_id':
                     $row[] = $displayField;
                     $row[] = preg_replace('/id$/', 'title', $displayField);
+
                     break;
                 case 'person_id':
                 case 'agent_id':
@@ -1668,10 +1671,12 @@ class TicketSearchController extends AbstractController
                 case 'organization_id':
                     $row[] = $displayField;
                     $row[] = preg_replace('/id$/', 'name', $displayField);
+
                     break;
                 case 'person_email_id':
                     $row[] = $displayField;
                     $row[] = preg_replace('/_id$/', '', $displayField);
+
                     break;
                 default:
                     if ($fieldId = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $displayField)) {
@@ -1679,6 +1684,7 @@ class TicketSearchController extends AbstractController
                     } else {
                         $row[] = $displayField;
                     }
+
                     break;
             }
         }
@@ -1736,6 +1742,7 @@ class TicketSearchController extends AbstractController
                         } else {
                             $row[] = $row[] = '';
                         }
+
                         break;
                     case 'person_id':
                     case 'agent_id':
@@ -1750,6 +1757,7 @@ class TicketSearchController extends AbstractController
                             $row[] = '';
                             $row[] = '';
                         }
+
                         break;
                     case 'agent_team_id':
                     case 'organization_id':
@@ -1764,29 +1772,34 @@ class TicketSearchController extends AbstractController
                             $row[] = '';
                             $row[] = '';
                         }
+
                         break;
                     case 'person_email_id':
                         preg_match('/^(.*)_id$/', $displayField, $matches);
                         list(, $name) = $matches;
                         $entity       = $ticket->{$name};
 
-                        if ($entity) {
+                        if ($entity && $this->person->canViewEmails()) {
                             $row[] = $entity->id;
                             $row[] = $entity->email;
                         } else {
                             $row[] = '';
                             $row[] = '';
                         }
+
                         break;
                     case 'labels':
                         $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
+
                         break;
                     case 'status':
                         $row[] = VirtualTicketStatus::getById($ticket->getStatus())->getTitle();
+
                         break;
                     case 'sub_status':
                         $ticketStatus = $ticket->getTicketStatus();
                         $row[]        = $ticketStatus instanceof VirtualTicketStatus ? '' : $ticketStatus->getTitle();
+
                         break;
                     default:
                         if ($fieldId = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $displayField)) {
@@ -1825,6 +1838,7 @@ class TicketSearchController extends AbstractController
                                 $row[] = '';
                             }
                         }
+
                         break;
                 }
             }
@@ -2129,10 +2143,12 @@ class TicketSearchController extends AbstractController
                     }
 
                     $this->db->beginTransaction();
+
                     try {
                         if (!$actionsCollection->applyCheckPermission($ticket, $this->person)) {
                             $permissionErrors[] = $ticket->getId();
                             $this->db->rollback();
+
                             continue;
                         }
 
@@ -2146,6 +2162,7 @@ class TicketSearchController extends AbstractController
                         if ($ticket->isResolved() && count($this->getTicketLayoutErrors($ticket))) {
                             $validationErrors[] = $ticket->getId();
                             $this->db->rollback();
+
                             continue;
                         }
 
@@ -2156,6 +2173,7 @@ class TicketSearchController extends AbstractController
                         $this->db->commit();
                     } catch (\Exception $e) {
                         $this->db->rollback();
+
                         throw $e;
                     }
                 }
@@ -2194,12 +2212,14 @@ class TicketSearchController extends AbstractController
                 foreach ($tickets as $ticket) {
                     if (!$this->person->getPermissionsManager()->get('TicketChecker')->canView($ticket)) {
                         $permissionErrors[] = $ticket->getId();
+
                         continue;
                     }
 
                     try {
                         if (!$collection->applyCheckPermission($ticket, $this->person)) {
                             $permissionErrors[] = $ticket->getId();
+
                             continue;
                         }
 
@@ -2208,6 +2228,7 @@ class TicketSearchController extends AbstractController
                             && strpos($collection->getActionType('Status')->getFullStatus(), TicketStatus::STATUS_TYPE_HIDDEN) === false
                         ) {
                             $validationErrors[] = $ticket->getId();
+
                             continue;
                         } else {
                             $collection->apply(null, $ticket, $this->person);
@@ -2249,6 +2270,7 @@ class TicketSearchController extends AbstractController
                         $success[] = $ticket->getId();
                     } catch (\Exception $e) {
                         $this->em->getConnection()->rollback();
+
                         throw $e;
                     }
                 }

@@ -129,7 +129,9 @@ pageMeta.baseId = '{{ baseId }}';
           <li>
             <a>
             <span class="user-name"></span>
+            {% if can_view_email_addresses() %}
             <address>&lt;<span class="user-email"></span>&gt;</address>
+            {% endif %}
             <div class="bound-fade"></div>
           </a></li>
         </script>
@@ -155,7 +157,9 @@ pageMeta.baseId = '{{ baseId }}';
           <a class="as-popover dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': topic_person.id}) }}">
             <span class="text">
               <span class="user-name">{{topic_person.display_name}}</span>
+              {% if can_view_email_addresses() %}
               (<span class="user-email">{{topic_person.email}}</span>)
+              {% endif %}
             </span>
           </a>
       </span>

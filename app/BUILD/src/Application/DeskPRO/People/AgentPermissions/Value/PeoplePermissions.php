@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category People
- */
+
 
 namespace Application\DeskPRO\People\AgentPermissions\Value;
 
@@ -34,10 +30,12 @@ class PeoplePermissions implements PermissionValueInterface
     public $merge = false;
     /** @var bool */
     public $create_labels = false;
+    /** @var bool */
+    public $view_email_addresses = false;
 
     public function getNames()
     {
-        return ['use', 'create', 'edit', 'validate', 'manage_emails', 'reset_password', 'notes', 'delete', 'disable', 'login_as', 'merge', 'create_labels'];
+        return ['use', 'create', 'edit', 'validate', 'manage_emails', 'reset_password', 'notes', 'delete', 'disable', 'login_as', 'merge', 'create_labels', 'view_email_addresses'];
     }
 
     public function getDestructiveNames()

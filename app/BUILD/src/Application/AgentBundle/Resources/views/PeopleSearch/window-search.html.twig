@@ -38,6 +38,7 @@
 		{# Email #}
 		{####################}
 
+        {% if can_view_email_addresses() %}
 		<div class="input-row">
 			<div class="input-row-title">
 				<strong>{{ phrase('agent.general.email_address') }}</strong>
@@ -46,6 +47,7 @@
 				<input class="full" type="text" name="person_email" value="" />
 			</div>
 		</div>
+        {% endif %}
 
 		{####################}
 		{# Org #}

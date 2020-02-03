@@ -17,7 +17,7 @@
 	<tr>
 		<td class="dp-td-heading">{{ phrase('agent.general.ticket_starter') }}</td>
 		<td>
-			{{ ticket_person.display_name }} &lt;{% if ticket.person_email %}{{ ticket.person_email }}{% else %}{{ ticket_person.primary_email }}{% endif %}&gt;
+			{{ ticket_person.display_name }} {% if can_view_email_addresses(recipient.id) %}&lt;{% if ticket.person_email %}{{ ticket.person_email }}{% else %}{{ ticket_person.primary_email }}{% endif %}&gt;{% endif %}
 		</td>
 	</tr>
 	{% if participants|length %}
@@ -25,7 +25,7 @@
 			<td class="dp-td-heading">{{ phrase('agent.general.ccs') }}</td>
 			<td>
 				{% for p in participants %}
-					&bull; {{ p.display_contact }}<br/>
+					&bull; {% if can_view_email_addresses(recipient.id) %}{{ p.display_contact }}{% else %}{{ p.display_name }}{% endif %}<br/>
 				{% endfor %}
 			</td>
 		</tr>

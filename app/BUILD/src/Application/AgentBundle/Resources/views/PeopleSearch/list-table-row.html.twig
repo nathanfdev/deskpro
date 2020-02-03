@@ -9,7 +9,9 @@
     <span ng-switch-when="name_with_title" class="prop-val">{{ ng_var('person.name_with_title') }}</span>
 
     {# Email #}
+    {% if can_view_email_addresses() %}
     <span ng-switch-when="email" class="prop-val">{{ ng_var('person.email') }}</span>
+    {% endif %}
 
     {# Organization #}
     <span ng-switch-when="org" class="prop-val">{{ ng_var('person.organization.name') }}</span>

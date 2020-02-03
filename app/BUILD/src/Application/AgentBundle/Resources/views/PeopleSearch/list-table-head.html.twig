@@ -11,7 +11,9 @@
         <span ng-switch-when="name_with_title">{{ phrase('agent.general.name') }}</span>
 
         {# Email #}
+        {% if can_view_email_addresses() %}
         <span ng-switch-when="email">{{ phrase('agent.general.email') }}</span>
+        {% endif %}
 
         {# Tickets count #}
         <span ng-switch-when="num_tickets">{{ phrase('agent.general.number_of_tickets') }}</span>

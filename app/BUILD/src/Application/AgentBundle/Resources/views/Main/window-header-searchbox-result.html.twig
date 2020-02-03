@@ -37,7 +37,9 @@
 		<div class="userinfo">
 			<a class="name click-through" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- ticket.person.picture_url_16 %>'); background-size: contain;"><%- ticket.person.display_name %></span></a>
+            {% if can_view_email_addresses() %}
 			<span class="email" ng-if="result.person.primary_email">&lt;<%- ticket.person.primary_email.email %>&gt;</span>
+            {% endif %}
 			<div class="bound-fade"></div>
 		</div>
 	</article>
@@ -52,7 +54,9 @@
 	<div class="userinfo" style="height: auto; overflow: auto;">
 		<a class="name click-through" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- person.picture_url_16 %>'); background-size: contain;"><%- person.display_name %></span></a>
+        {% if can_view_email_addresses() %}
 		<span class="email" ng-if="result.primary_email">&lt;<%- (person.primary_email || {}).email %>&gt;</span>
+        {% endif %}
 		<div class="bound-fade" style="width: auto;">
 			<% if (person.tickets_count > 0) { %>
                 <span class="sub-items-link" ng-click="loadPersonTickets(result); $event.stopPropagation()">

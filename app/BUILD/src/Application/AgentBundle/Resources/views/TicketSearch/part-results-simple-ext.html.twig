@@ -46,7 +46,7 @@
 				({% if ticket_person.organization_position %}{{ ticket_person.organization_position }}, {% endif %}{{ ticket_person.organization.name }})
 			</span>
 		{% endif %}
-		{% if ticket_person.primary_email %}
+		{% if ticket_person.primary_email and can_view_email_addresses() %}
 			<span class="email"><b class="person-{{ticket_person.id}}-pemail">{{ ticket_person.primary_email_address }}</b></span>
 		{% endif %}
 		<div class="bound-fade"></div>

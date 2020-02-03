@@ -56,7 +56,7 @@ body {
 {% if ticket.person.id != app.user.id %}
     <table class="ticket_attribute">
         <tr><th>{{ phrase('agent.general.ticket_starter') }}</th></tr>
-        <tr><td>{{ ticket.person.display_name_user }} &lt;{{ ticket.person.email_address }}&gt;</td></tr>
+        <tr><td>{{ ticket.person.display_name_user }} {% if can_view_email_addresses() %}&lt;{{ ticket.person.email_address }}&gt;{% endif %}</td></tr>
     </table>
 {% endif %}
 

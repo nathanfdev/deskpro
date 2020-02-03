@@ -122,12 +122,14 @@ pageMeta.baseId = '{{ baseId }}';
                                     <a class="user-link clean-white as-popover preload" data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box;">
                                         <span style="background-image: url('{{ convo.person.getPictureUrl(20) }}'); background-size: contain;">
                                             {{ convo.person_name ?: convo.person.display_name }}
+                                            {% if can_view_email_addresses() %}
                                             <span class="email"><b class="pemail-{{convo.person.id}}" data-hide="@parent">{{ convo.person.email_address }}</b></span>
+                                            {% endif %}
                                         </span>
                                     </a>
                                 {% else %}
 									<a class="user-link clean-white anon" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box;">
-										{% if convo.person_email %}
+										{% if convo.person_email and can_view_email_addresses() %}
 											<span style="background-image: url('{{ gravatar_for_email(convo.person_email, 20) }}'); background-size: contain;">
 										{% else %}
 											<span style="background-image: url('{{ path('serve_default_picture', {s: 20}) }}'); background-size: contain;">
@@ -138,7 +140,7 @@ pageMeta.baseId = '{{ baseId }}';
                                             {% else %}
                                                 {{ phrase('agent.general.anonymous') }}
                                             {% endif %}
-                                            <span class="email"><b data-hide="@parent">{% if convo.person_email %}{{ convo.person_email }}{% else %}{{ phrase('agent.chat.no_email') }}{% endif %}</b></span>
+                                            <span class="email"><b data-hide="@parent">{% if convo.person_email and can_view_email_addresses() %}{{ convo.person_email }}{% else %}{{ phrase('agent.chat.no_email') }}{% endif %}</b></span>
 										</span>
 									</a>
 								{% endif %}

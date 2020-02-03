@@ -14,16 +14,20 @@
 	<small>
 		{% if is_new_ticket %}
 			{% if ticket.person.id != performer.id %}
-				{{ phrase('agent.tickets.notify_new_ticket_by_for', {name: performer.display_name, user: ticket.person.display_name ~ ' (' ~ ticket.person.email_address ~ ')' }) }}
+				{{ phrase('agent.tickets.notify_new_ticket_by_for', {name: performer.display_name, user: ticket.person.display_name ~ show_email_address(ticket.person.email_addres, ' (%s)') }) }}
 			{% else %}
-            	{{ phrase('agent.chat.new_ticket_by', {'name':performer.display_name,'email':performer.primary_email_address}) }}
+                {% if can_view_email_addresses() %}
+            	    {{ phrase('agent.chat.new_ticket_by', {'name':performer.display_name,'email':performer.primary_email_address}) }}
+                {% else %}
+                    {{ phrase('agent.chat.new_ticket_by_no_email', {'name':performer.display_name}) }}
+                {% endif %}
 			{% endif %}
 		{% elseif is_new_agent_note %}
 			{{ phrase('agent.chat.new_agent_note_by', {'name':performer.display_name}) }}
 		{% elseif is_new_agent_reply %}
 			{{ phrase('agent.chat.new_agent_reply_by', {'name':performer.display_name}) }}
 		{% elseif is_new_user_reply %}
-            {{ phrase('agent.chat.new_user_reply_by', {'name':performer.display_name,'email':performer.primary_email_address}) }}
+            {{ phrase('agent.chat.new_user_reply_by', {'name':performer.display_name,'email':show_email_address(performer.primary_email_address, ' (%s)')}) }}
 		{% else %}
 			{% if performer %}({{ performer.display_name }}){% endif %}
 			{% for log in log_items %}

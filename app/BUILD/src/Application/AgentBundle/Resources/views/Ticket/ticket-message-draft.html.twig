@@ -12,7 +12,7 @@
 	<div class="content">
 		<header>
 			<span class="message-counter">{{ phrase('agent.tickets.draft') }}</span>
-			<h4	class="agent-link" data-agent-id="{{ draft.person.id }}">{{draft.person.display_name}} <span class="email-part">&lt;{{ draft.person.getPrimaryEmailAddress() }}&gt;</span></h4>
+			<h4	class="agent-link" data-agent-id="{{ draft.person.id }}">{{draft.person.display_name}} {% if can_view_email_addresses() %}<span class="email-part">&lt;{{ draft.person.getPrimaryEmailAddress() }}&gt;</span>{% endif %}</h4>
 			<time class="full-time">{{draft.date_created|date('fulltime')}}</time>
 			<time
 				{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}

@@ -23,7 +23,9 @@
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 					<li><a>
 						<span class="user-name"></span>
+						{% if can_view_email_addresses() %}
 						<address>&lt;<span class="user-email"></span>&gt;</address>
+						{% endif %}
 						<div class="bound-fade"></div>
 					</a></li>
 				</script>
@@ -79,6 +81,7 @@
 							<td width="50%">{{ person.name }}</td>
 							{% if other_person %}<td width="50%">{{ other_person.name }}</td>{% endif %}
 						</tr>
+                        {% if can_view_email_addresses() %}
 						<tr class="mergeable">
 							<th nowrap="nowrap"><div>{{ phrase('agent.general.email') }}</div></th>
 							<td width="50%">
@@ -102,6 +105,7 @@
 								</td>
 							{% endif %}
 						</tr>
+                        {% endif %}
 						<tr>
 							<th nowrap="nowrap"><div>{{ phrase('agent.general.organization') }}</div></th>
 							<td width="50%">{{ person.organization ? person.organization.name : '' }}</td>

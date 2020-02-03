@@ -2,14 +2,14 @@
     <a id="{{ baseId }}_profile_link" class="dp-btn as-popover user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
                                 <span class="text" style="background-image: url({{ ticket.person.getPictureUrl(25) }});">
                                     {{ ticket.person.getNameWithTitle() }}
-                                    {% if ticket.person.emails|length > 1 or ticket.person_email_address %}
+                                    {% if (ticket.person.emails|length > 1 or ticket.person_email_address) and can_view_email_addresses() %}
                                         <span class="email" id="{{ baseId }}_user_email_text">
                                             ({{ ticket.person_email.email|default(ticket.person_email_address) }})
                                         </span>
                                     {% endif %}
                                 </span>
     </a>
-    {% if ticket.person.emails|length > 1 %}
+    {% if ticket.person.emails|length > 1 and can_view_email_addresses() %}
         <a class="dp-btn dp-dropdown-toggle" style="padding: 7px;"
            id="{{ baseId }}_user_email_menu_trigger">
             <span class="dp-caret dp-caret-down"></span>

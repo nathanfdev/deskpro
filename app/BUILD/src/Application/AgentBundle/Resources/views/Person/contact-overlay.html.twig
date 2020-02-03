@@ -1,5 +1,6 @@
 {% extends 'AgentBundle:Common:profile-contact-overlay.html.twig' %}
 {% block list_extra %}
+    {% if can_view_email_addresses() %}
 	<div class="row-type email {% if person.emails|length %}with-values{% endif %}">
 		<h4>{{ phrase('agent.general.email_address') }}</h4>
 		<div class="contact-info">
@@ -56,4 +57,5 @@
 			<br class="clear" /></li>
 		</script>
 	</div>
+    {% endif %}
 {% endblock %}

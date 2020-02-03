@@ -479,7 +479,7 @@
                                         {% elseif action.action_type == 'agent_login_as' %}
                                             Agent logged in as this user:<br />
                                             <span style="font-size: 10px;">#{{ action.details.agent_id }} {{ action.details.agent_name }}
-                                                ({{ action.details.agent_email }})</span>
+                                                {{ show_email_address(action.details.agent_email, '(%s)') }}</span>
                                         {% elseif action.action_type == 'merged' %}
                                             {{ phrase('agent.people.act_merged', {'name': action.details.other_person_name, 'id': action.details.other_person_id}) }}
 
