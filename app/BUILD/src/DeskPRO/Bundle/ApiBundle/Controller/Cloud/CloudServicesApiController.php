@@ -132,4 +132,47 @@ class CloudServicesApiController extends BaseController
 
         return ['count' => count($sendmails)];
     }
+
+    /**
+     * @Rest\Get("/site-sync-data")
+     */
+    public function siteSyncDataAction()
+    {
+        $conn = $this->get('database_connection');
+
+        $agents = $conn->fetchAll(<<<EOL
+SELECT
+    p.id,
+    e.email,
+    p.first_name,
+    p.last_name,
+    DATE_FORMAT(p.date_last_login, '%Y-%m-%dT%TZ') AS date_last_login
+FROM
+    people p
+LEFT JOIN
+    people_emails e ON p.primary_email_id = e.id
+WHERE
+    p.is_agent = 1
+AND
+    p.is_deleted = 0
+;
+EOL
+);
+
+        $stats = $conn->fetchAssoc(<<<EOL
+SELECT
+    (SELECT COUNT(*) FROM people p WHERE p.is_deleted = 0 AND p.is_user = 1 AND p.is_agent = 0) AS user_count,
+    (SELECT COUNT(*) FROM tickets t) AS ticket_count,
+    (SELECT COUNT(*) FROM tickets t WHERE t.date_created BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()) AS ticket_count_last_7_days,
+    (SELECT COUNT(*) FROM tickets_messages m) AS message_count,
+    (SELECT COUNT(*) FROM tickets_messages m WHERE m.date_created BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()) AS message_count_last_7_days
+;
+EOL
+        );
+
+        return [
+            'agents' => $agents,
+            'stats' => $stats,
+        ];
+    }
 }
