@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\LegacyApiBundle\Controller;
 
@@ -44,6 +42,9 @@ class CsvUploadController extends AbstractController
         $result = $csv_upload->upload($file, $options);
         if (isset($result['custom_fields'])) {
             $result['custom_fields'] = $this->getApiData($result['custom_fields']);
+        }
+        if (isset($result['org_custom_fields'])) {
+            $result['org_custom_fields'] = $this->getApiData($result['org_custom_fields']);
         }
 
         return $this->createApiResponse($result);
