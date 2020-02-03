@@ -12,6 +12,7 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerEmbed;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsChat;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsProactive;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerStyles;
@@ -75,6 +76,12 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const OPTIONS_CHAT_DESCRIPTION       = 'messenger.options.chat.description';
     const OPTIONS_CHAT_SHOW_PHOTOS       = 'messenger.options.chat.show_photos';
     const OPTIONS_CHAT_START_WITH_INPUT  = 'messenger.options.chat.start_with_input';
+
+    const OPTIONS_PROACTIVE_GREETING_TITLE    = 'messenger.options.proactive.greeting_title';
+    const OPTIONS_PROACTIVE_TITLE             = 'messenger.options.proactive.title';
+    const OPTIONS_PROACTIVE_BUTTON_TEXT       = 'messenger.options.proactive.button_text';
+    const OPTIONS_PROACTIVE_INPUT_PLACEHOLDER = 'messenger.options.proactive.input_placeholder';
+    const OPTIONS_PROACTIVE_DESCRIPTION       = 'messenger.options.proactive.description';
 
     const OPTIONS_TICKETS_TITLE       = 'messenger.options.tickets.title';
     const OPTIONS_TICKETS_BUTTON_TEXT = 'messenger.options.tickets.button_text';
@@ -246,6 +253,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setSubtext($this->getSettings(self::OPTIONS_SUBTEXT, $brand, $mOptions->getSubtext()))
             ->setTitle($this->getSettings(self::OPTIONS_TITLE, $brand, $mOptions->getTitle()))
             ->setChat($this->getMessengerOptionsChat($brand))
+            ->setProactive($this->getMessengerOptionsProactive($brand))
             ->setTickets($this->getMessengerOptionsTickets($brand))
             ;
     }
@@ -266,6 +274,24 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setDescription($this->getSettings(self::OPTIONS_CHAT_DESCRIPTION, $brand, $mOptionsChat->getDescription()))
             ->setShowAgentPhotos($this->getSettings(self::OPTIONS_CHAT_SHOW_PHOTOS, $brand, $mOptionsChat->isShowAgentPhotos()))
             ->setStartWithInputField($this->getSettings(self::OPTIONS_CHAT_START_WITH_INPUT, $brand, $mOptionsChat->isStartWithInputField()))
+            ;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return MessengerOptionsProactive
+     */
+    protected function getMessengerOptionsProactive(Brand $brand)
+    {
+        $mOptionsProactive = new MessengerOptionsProactive();
+
+        return $mOptionsProactive
+            ->setGreetingTitle($this->getSettings(self::OPTIONS_PROACTIVE_GREETING_TITLE, $brand, $mOptionsProactive->getGreetingTitle()))
+            ->setTitle($this->getSettings(self::OPTIONS_PROACTIVE_TITLE, $brand, $mOptionsProactive->getTitle()))
+            ->setButtonText($this->getSettings(self::OPTIONS_PROACTIVE_BUTTON_TEXT, $brand, $mOptionsProactive->getButtonText()))
+            ->setInputPlaceholder($this->getSettings(self::OPTIONS_PROACTIVE_INPUT_PLACEHOLDER, $brand, $mOptionsProactive->getInputPlaceholder()))
+            ->setDescription($this->getSettings(self::OPTIONS_PROACTIVE_DESCRIPTION, $brand, $mOptionsProactive->getDescription()))
             ;
     }
 

@@ -141,6 +141,7 @@ class AdminController extends AbstractBrandAwareSettingsController
         $messengerStyles             = $model->getStyles();
         $messengerOptions            = $model->getMessenger();
         $optionsTickets              = $messengerOptions->getTickets();
+        $optionsProactive            = $messengerOptions->getProactive();
         $optionsChat                 = $messengerOptions->getChat();
         $messengerTickets            = $model->getTickets();
 
@@ -198,6 +199,12 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::OPTIONS_TICKETS_TITLE, $optionsTickets->getTitle(), $brand)
             ->updateSetting(MSR::OPTIONS_TICKETS_BUTTON_TEXT, $optionsTickets->getButtonText(), $brand)
             ->updateSetting(MSR::OPTIONS_TICKETS_DESCRIPTION, $optionsTickets->getDescription(), $brand)
+
+            ->updateSetting(MSR::OPTIONS_PROACTIVE_GREETING_TITLE, $optionsProactive->getGreetingTitle(), $brand)
+            ->updateSetting(MSR::OPTIONS_PROACTIVE_TITLE, $optionsProactive->getTitle(), $brand)
+            ->updateSetting(MSR::OPTIONS_PROACTIVE_DESCRIPTION, $optionsProactive->getDescription(), $brand)
+            ->updateSetting(MSR::OPTIONS_PROACTIVE_BUTTON_TEXT, $optionsProactive->getButtonText(), $brand)
+            ->updateSetting(MSR::OPTIONS_PROACTIVE_INPUT_PLACEHOLDER, $optionsProactive->getInputPlaceholder(), $brand)
 
             ->updateSetting(MSR::OPTIONS_CHAT_SHOW_PHOTOS, $optionsChat->isShowAgentPhotos(), $brand)
             ->updateSetting(MSR::OPTIONS_CHAT_START_WITH_INPUT, $optionsChat->isStartWithInputField(), $brand)

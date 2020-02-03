@@ -43,6 +43,7 @@ class MessengerOptionsType extends AbstractType
             ->add('title', TextType::class)
             ->add('subtext', TextType::class)
             ->add('tickets', MessengerOptionsTicketsType::class)
+            ->add('proactive', MessengerOptionsProactiveType::class)
             ->add('chat', MessengerOptionsChatType::class)
         ;
 

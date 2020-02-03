@@ -86,6 +86,16 @@ class MessengerOptions
     private $chat;
 
     /**
+     * Advanced proactive options.
+     *
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsProactive")
+     * @Assert\Valid()
+     *
+     * @var MessengerOptionsProactive
+     */
+    private $proactive;
+
+    /**
      * Advanced chat options.
      *
      * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsTickets")
@@ -231,6 +241,26 @@ class MessengerOptions
     public function setChat(MessengerOptionsChat $chat)
     {
         $this->chat = $chat;
+
+        return $this;
+    }
+
+    /**
+     * @return MessengerOptionsProactive
+     */
+    public function getProactive()
+    {
+        return $this->proactive;
+    }
+
+    /**
+     * @param MessengerOptionsProactive $proactive
+     *
+     * @return $this
+     */
+    public function setProactive(MessengerOptionsProactive $proactive)
+    {
+        $this->proactive = $proactive;
 
         return $this;
     }
