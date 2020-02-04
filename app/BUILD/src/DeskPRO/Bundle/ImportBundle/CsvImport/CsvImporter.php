@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ImportBundle\CsvImport;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
@@ -78,14 +79,14 @@ class CsvImporter
      * @param Features             $featureFlags     // Temporary until SendmailBundle is permanently activated
      */
     public function __construct(
-        EntityManager        $em,
-        Importer             $importer,
-        Parser               $parser,
-        Mailer               $mailer,
-        MailerUtils          $mailerUtils,
-        Translate            $translator,
+        EntityManager $em,
+        Importer $importer,
+        Parser $parser,
+        Mailer $mailer,
+        MailerUtils $mailerUtils,
+        Translate $translator,
         UserViewModelFactory $viewModelFactory,
-        Features             $featureFlags
+        Features $featureFlags
     ) {
         $this->em               = $em;
         $this->importer         = $importer;
@@ -132,6 +133,7 @@ class CsvImporter
                 case 'primary_email':
                 case 'secondary_email':
                     $personData['emails'][] = $columnValue;
+
                     break;
                 case 'first_name':
                 case 'last_name':
@@ -140,6 +142,7 @@ class CsvImporter
                 case 'password':
                 case 'organization_position':
                     $personData[$mapField] = $columnValue;
+
                     break;
                 case 'organization':
                     $orgData['name']       = $columnValue;
@@ -158,6 +161,7 @@ class CsvImporter
                     }
 
                     $personData[$mapField] = $columnValue;
+
                     break;
                 case 'brand':
                     $brandName = $columnValue;
@@ -172,6 +176,7 @@ class CsvImporter
                             $brandName = null;
                         }
                     }
+
                     break;
 
                 // contact data
@@ -179,21 +184,25 @@ class CsvImporter
                     $personData['contact_data']['website'][] = [
                         'url' => $columnValue,
                     ];
+
                     break;
                 case 'twitter':
                     $personData['contact_data']['twitter'][] = [
                         'username' => $columnValue,
                     ];
+
                     break;
                 case 'linkedin':
                     $personData['contact_data']['linked_in'][] = [
                         'url' => $columnValue,
                     ];
+
                     break;
                 case 'facebook':
                     $personData['contact_data']['facebook'][] = [
                         'url' => $columnValue,
                     ];
+
                     break;
                 case 'im':
                     if (empty($info['type'])) {
@@ -204,12 +213,14 @@ class CsvImporter
                         'service'  => $info['type'],
                         'username' => $columnValue,
                     ];
+
                     break;
                 case 'phone':
                     $personData['contact_data']['phone'][] = [
                         'number' => $columnValue,
                         'type'   => isset($info['type']) ? $info['type'] : 'phone',
                     ];
+
                     break;
                 case 'address':
                 case 'address1':
@@ -220,6 +231,7 @@ class CsvImporter
                     }
 
                     $personData['contact_data']['address'][$label]['address'] = $columnValue;
+
                     break;
                 case 'city':
                 case 'state':
@@ -228,6 +240,7 @@ class CsvImporter
                     $label = isset($info['label']) ? $info['label'] : 0;
 
                     $personData['contact_data']['address'][$label][$mapField] = $columnValue;
+
                     break;
             }
 
@@ -235,7 +248,8 @@ class CsvImporter
             $addCustomData = function (array &$customDefs, &$objectData, $prefix = '') use ($mapField, $info, $columnValue) {
                 $customFieldName = null;
                 if (preg_match('/^'.$prefix.'custom_(\d+)$/', $mapField, $match)) {
-                    $customField = $this->em->find(CustomDefPerson::class, $match[1]);
+                    $entityClass = $prefix === 'org_' ? CustomDefOrganization::class : CustomDefPerson::class;
+                    $customField = $this->em->find($entityClass, $match[1]);
                     if ($customField) {
                         $customFieldName = $customField->getTitle();
                     }
@@ -243,7 +257,7 @@ class CsvImporter
                     if (!empty($info['title'])) {
                         $customFieldName = $info['title'];
                         $customDefs[]    = [
-                            'name'        => $customFieldName,
+                            'title'       => $customFieldName,
                             'widget_type' => !empty($info['handler_class']) ? $info['handler_class'] : 'text',
                         ];
                     }
@@ -281,6 +295,15 @@ class CsvImporter
         $collection = new ArrayCollection();
 
         // persist org data
+        foreach ($orgCustomDefs as $customDefData) {
+            $defOid   = $customDefData['title'];
+            $defModel = $this->parser->parseRawData($defOid, $customDefData, OrganizationCustomDefModel::class);
+
+            if ($defModel) {
+                $collection->add($defModel);
+            }
+        }
+
         if (isset($orgData['name'])) {
             $orgOid   = $orgData['name'];
             $orgModel = $this->parser->parseRawData($orgOid, $orgData, OrganizationModel::class);
@@ -289,29 +312,20 @@ class CsvImporter
             }
         }
 
-        foreach ($orgCustomDefs as $customDefData) {
-            $defOid   = $customDefData['name'];
-            $defModel = $this->parser->parseRawData($defOid, $customDefData, OrganizationCustomDefModel::class);
-
-            if ($defModel) {
-                $collection->add($defModel);
-            }
-        }
-
         // persist person data
-        $personOid   = reset($personData['emails']);
-        $personModel = $this->parser->parseRawData($personOid, $personData, PersonModel::class);
-        if ($personModel) {
-            $collection->add($personModel);
-        }
-
         foreach ($personCustomDefs as $customDefData) {
-            $defOid   = $customDefData['name'];
+            $defOid   = $customDefData['title'];
             $defModel = $this->parser->parseRawData($defOid, $customDefData, PersonCustomDefModel::class);
 
             if ($defModel) {
                 $collection->add($defModel);
             }
+        }
+
+        $personOid   = reset($personData['emails']);
+        $personModel = $this->parser->parseRawData($personOid, $personData, PersonModel::class);
+        if ($personModel) {
+            $collection->add($personModel);
         }
 
         $this->importer->writeData($collection, $brandName);

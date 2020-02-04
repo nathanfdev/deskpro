@@ -40,25 +40,7 @@ abstract class AbstractCustomDefHandler extends AbstractEntityHandler
         }
 
         // Create and update children
-        $deleteChoices = function ($model, $parentId) use ($entity) {
-            /* @var CustomDefChoice $model */
-            $titles = array_map(function (CustomDefChoice $choice) {
-                return $choice->getTitle();
-            }, $model->getChoices());
-
-            foreach ($entity->getChildren() as $choiceDef) {
-                if ($choiceDef->getOption('parent_id') != $parentId) {
-                    continue;
-                }
-
-                if (!in_array($choiceDef->getTitle(), $titles)) {
-                    $entity->removeChild($choiceDef);
-                    $this->persister->removeAndFlush($choiceDef);
-                }
-            }
-        };
-
-        $choiceIterator = function (CustomDefChoice $choiceModel, $parentDefId = 0) use ($entity, &$choiceIterator, &$deleteChoices) {
+        $choiceIterator = function (CustomDefChoice $choiceModel, $parentDefId = 0) use ($entity, &$choiceIterator) {
             $choiceDef = $entity->getChildren()
                 ->filter(function (DeskPROEntity\CustomDefAbstract $choiceDef) use ($choiceModel, $parentDefId) {
                     return $choiceDef->getTitle() === $choiceModel->getTitle()
@@ -86,15 +68,11 @@ abstract class AbstractCustomDefHandler extends AbstractEntityHandler
             foreach ($choiceModel->getChoices() as $subChoice) {
                 $choiceIterator($subChoice, $choiceDef->getId());
             }
-
-            $deleteChoices($choiceModel, $choiceDef->getId());
         };
 
         foreach ($model->getChoices() as $choice) {
             $choiceIterator($choice);
         }
-
-        $deleteChoices($model, 0);
 
         return $entity;
     }

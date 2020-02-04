@@ -322,15 +322,12 @@ class CustomDefHandlerTest extends AbstractEntityHandlerTest
         ]);
 
         $this->assertNotNull($updatedDef);
-        $this->assertEquals(3, $updatedDef->getChildren()->count());
+        $this->assertEquals(5, $updatedDef->getChildren()->count());
         $this->assertEquals('Choice 1', $updatedDef->getChildren()[0]->getTitle());
-        $this->assertEquals('Choice 1b', $updatedDef->getChildren()[1]->getTitle());
-        $this->assertEquals('Choice 3', $updatedDef->getChildren()[2]->getTitle());
-
-        $this->assertEquals($createdDef->getId(), $updatedDef->getId());
-        $this->assertEquals($choiceDef1->getId(), $updatedDef->getChildren()[0]->getId());
-        $this->assertNotEquals($choiceDef2->getId(), $updatedDef->getChildren()[1]->getId());
-        $this->assertNotEquals($choiceDef3->getId(), $updatedDef->getChildren()[2]->getId());
+        $this->assertEquals('Choice 1a', $updatedDef->getChildren()[1]->getTitle());
+        $this->assertEquals('Choice 2', $updatedDef->getChildren()[2]->getTitle());
+        $this->assertEquals('Choice 1b', $updatedDef->getChildren()[3]->getTitle());
+        $this->assertEquals('Choice 3', $updatedDef->getChildren()[4]->getTitle());
     }
 
     /**

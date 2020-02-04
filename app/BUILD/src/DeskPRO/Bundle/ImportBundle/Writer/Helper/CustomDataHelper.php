@@ -203,12 +203,6 @@ class CustomDataHelper
             // remember current choice to delete
             $newChoiceIds[] = $choiceDef->getId();
         }
-
-        foreach ($allCustomData as $customData) {
-            if ($customData->root_field === $customDef && !in_array($customData->getFieldId(), $newChoiceIds)) {
-                $allCustomData->removeElement($customData);
-            }
-        }
     }
 
     /**
@@ -234,13 +228,16 @@ class CustomDataHelper
             case CustomDefAbstract::TYPE_TEXT:
             case CustomDefAbstract::TYPE_TEXTAREA:
                 $customData->setInput($fieldModel->getValue());
+
                 break;
             case CustomDefAbstract::TYPE_TOGGLE:
                 $customData->setValue($fieldModel->getValue() ? 1 : 0);
+
                 break;
             case CustomDefAbstract::TYPE_DATE:
             case CustomDefAbstract::TYPE_DATETIME:
                 $customData->setValue(strtotime($fieldModel->getValue()));
+
                 break;
         }
     }
