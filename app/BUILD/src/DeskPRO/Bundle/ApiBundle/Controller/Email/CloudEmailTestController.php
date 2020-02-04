@@ -5,6 +5,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Email;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,5 +47,42 @@ class CloudEmailTestController extends BaseController
         $this->container->getMailer()->queueMessage($message);
 
         return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Rest\Get("/incoming/{subject}/check")
+     *
+     * @param string $subject
+     *
+     * @return View
+     */
+    public function checkIncomingEmail($subject)
+    {
+        $subject = base64_decode($subject);
+
+        /** @var Connection $conn */
+        $conn = $this->container->getEm()->getConnection();
+
+        try {
+            $sourceCount = $conn
+                ->executeQuery('SELECT COUNT(*) FROM email_sources es WHERE es.header_subject = :subject', ['subject' => $subject])
+                ->fetchColumn(0)
+            ;
+
+            $ticketCount = $conn
+                ->executeQuery('SELECT COUNT(*) FROM tickets t WHERE t.original_subject = :subject', ['subject' => $subject])
+                ->fetchColumn(0)
+            ;
+
+            return View::create([
+                'sourceExists' => ($sourceCount > 0),
+                'ticketExists' => ($ticketCount > 0),
+            ]);
+        } catch (DBALException $e) {
+            return View::create(
+                ['message' => 'Failed to run checking queries'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }
