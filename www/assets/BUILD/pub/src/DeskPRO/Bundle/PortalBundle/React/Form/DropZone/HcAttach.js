@@ -221,6 +221,7 @@ export default class HcAttach extends React.Component {
           type="file"
           ref={(node) => { this.refFileUpload = node; }}
           name="file[blob]"
+          tabIndex="-1"
         />
         <div
           className="choose"
