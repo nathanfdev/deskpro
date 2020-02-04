@@ -64,13 +64,41 @@ class CloudEmailTestController extends BaseController
         $conn = $this->container->getEm()->getConnection();
 
         try {
-            $sourceCount = $conn
-                ->executeQuery('SELECT COUNT(*) FROM email_sources es WHERE es.header_subject = :subject', ['subject' => $subject])
+            $idThresholdOffset = 500;
+
+            $sourceLastId = $conn
+                ->executeQuery('SELECT es.id FROM email_sources es ORDER BY es.id DESC LIMIT 1')
                 ->fetchColumn(0)
             ;
 
+            $idThreshold = $sourceLastId >= $idThresholdOffset
+                ? $sourceLastId - $idThresholdOffset
+                : 0
+            ;
+
+            $sourceCount = $conn
+                ->executeQuery(
+                    'SELECT COUNT(*) FROM email_sources es WHERE es.header_subject = :subject AND es.id > :idThreshold',
+                    ['subject' => $subject, 'idThreshold' => $idThreshold]
+                )
+                ->fetchColumn(0)
+            ;
+
+            $ticketLastId = $conn
+                ->executeQuery('SELECT t.id FROM tickets t ORDER BY t.id DESC LIMIT 1')
+                ->fetchColumn(0)
+            ;
+
+            $idThreshold = $ticketLastId >= $idThresholdOffset
+                ? $ticketLastId - $idThresholdOffset
+                : 0
+            ;
+
             $ticketCount = $conn
-                ->executeQuery('SELECT COUNT(*) FROM tickets t WHERE t.original_subject = :subject', ['subject' => $subject])
+                ->executeQuery(
+                    'SELECT COUNT(*) FROM tickets t WHERE t.original_subject = :subject AND t.id > :idThreshold',
+                    ['subject' => $subject, 'idThreshold' => $idThreshold]
+                )
                 ->fetchColumn(0)
             ;
 
