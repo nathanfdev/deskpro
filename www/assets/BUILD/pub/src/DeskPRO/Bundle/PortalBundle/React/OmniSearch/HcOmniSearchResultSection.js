@@ -235,13 +235,13 @@ export class HcOmniSearchResultTickets extends React.Component {
         <a href={item.url} className="dp-po-search-link">
           {item.name}
           <div className="dp-po-time">
-            <i className="dp-po-icon far fa-clock" />
             <TimeAgo
               className="dpdesignportal-event-time"
               formatter={timeAgoFormatter}
               minPeriod={60000}
               date={moment(item.date)}
             />
+            <i className="dp-po-icon far fa-clock" />
           </div>
         </a>
       </li>
