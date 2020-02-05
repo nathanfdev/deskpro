@@ -1,12 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import $ from 'jquery';
+import classNames from 'classnames';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import DropZone from 'DeskPRO/Component/Uploader/DropZone';
+import { Progress } from '@deskpro/portal-components';
 import { AttachedList } from './AttachedList';
 
-export default class PortalAttach extends React.Component {
+export default class HcAttach extends React.Component {
 
   static propTypes = {
     files:         PropTypes.array,
@@ -22,7 +25,8 @@ export default class PortalAttach extends React.Component {
 
   static defaultProps = {
     uploadUrl: 'dpblob',
-    multiple:  true
+    multiple:  true,
+    progress:  0,
   };
 
   constructor(props) {
@@ -53,6 +57,23 @@ export default class PortalAttach extends React.Component {
       this.setState({
         files: []
       });
+    });
+
+    $(document).bind('dragover', (e) => {
+      const dropZones = $('.dp-pc_file-upload__dropzone');
+      const timeout = window.dropZoneTimeout;
+      if (timeout) {
+        clearTimeout(timeout);
+      } else {
+        dropZones.addClass('in');
+      }
+      const hoveredDropZone = $(e.target).closest(dropZones);
+      dropZones.not(hoveredDropZone).removeClass('active');
+      hoveredDropZone.addClass('active');
+      window.dropZoneTimeout = setTimeout(() => {
+        window.dropZoneTimeout = null;
+        dropZones.removeClass('in active');
+      }, 100);
     });
   }
 
@@ -94,7 +115,8 @@ export default class PortalAttach extends React.Component {
     const $button = $form.find('button[type=submit]');
     $button.removeAttr('disabled').removeClass('disabled');
     this.setState({
-      files: newFiles
+      files:    newFiles,
+      progress: 0,
     });
   };
 
@@ -123,8 +145,16 @@ export default class PortalAttach extends React.Component {
     const $button = $form.find('button[type=submit]');
     $button.removeAttr('disabled').removeClass('disabled');
     this.setState({
-      files: this.state.files.filter(f => f.file !== file),
-      lastError
+      files:    this.state.files.filter(f => f.file !== file),
+      lastError,
+      progress: 0,
+    });
+  };
+
+  onProgress = (e, data) => {
+    const progress = parseInt(data.loaded / data.total * 100, 10);
+    this.setState({
+      progress,
     });
   };
 
@@ -135,6 +165,30 @@ export default class PortalAttach extends React.Component {
     $input.trigger('blobs', [newFiles]);
     this.setState({
       files: newFiles
+    });
+  };
+
+  handleBlur = () => {
+    this.setState({
+      focused: false
+    });
+  };
+
+  handleFocus = () => {
+    this.setState({
+      focused: true
+    });
+  };
+
+  handleMouseEnter = () => {
+    this.setState({
+      hovered: true
+    });
+  };
+
+  handleMouseLeave = () => {
+    this.setState({
+      hovered: false
     });
   };
 
@@ -155,13 +209,36 @@ export default class PortalAttach extends React.Component {
   }
 
   renderButton() {
+    const { multiple } = this.props;
+
     return (
-      <span className="attach-file button">
-        <i className="fas fa-upload" />
-        <span className="text">{portalPhrases.get('portal.forms.label_drag')}</span>
-        <span className="fake-button">{portalPhrases.get('portal.forms.label_choose')}</span>
-        <input type="file" ref={(node) => { this.refFileUpload = node; }} name="file[blob]" />
-      </span>
+      <div
+        className={classNames('dp-pc_file-upload__dropzone')}
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+      >
+        <input
+          type="file"
+          ref={(node) => { this.refFileUpload = node; }}
+          name="file[blob]"
+          tabIndex="-1"
+        />
+        <div
+          className="choose"
+          tabIndex="0"
+          onFocus={this.handleFocus}
+          onBlur={this.handleBlur}
+        >
+          <i className="far fa-file-alt" />
+          {multiple ? portalPhrases.get('helpcenter.forms.label-choose-files') : portalPhrases.get('helpcenter.forms.label-choose-a-file')}
+        </div>
+        <div className="or">{portalPhrases.get('helpcenter.general.or')}</div>
+        <div className="dnd">
+          <i className="far fa-clone" />
+          {portalPhrases.get('helpcenter.forms.label-drag-and-drop')}
+        </div>
+        <Progress percent={this.state.progress} />
+      </div>
     );
   }
 
@@ -176,26 +253,33 @@ export default class PortalAttach extends React.Component {
     }
 
     return (
-      <div className="new-ticket-attachments">
-        {(multiple || !files.length) &&
-          <DropZone
-            ref={(node) => {
-              this.refDropZone = node;
-            }}
-            getExternalInput={() => this.refFileUpload}
-            uploadUrl={`${portalUrlGenerator.path('/')}${uploadUrl}`}
-            uploadParams={params}
-            context={context}
-            onSend={this.onUploadStarted}
-            onSuccess={this.onUploadSuccess}
-            onFail={this.onUploadFail}
-            getDropZoneNode={() => this.refDropZone}
-          >
-            {widgetOptions.isWidget ? this.renderLink() : this.renderButton()}
-          </DropZone>
+      <div className="dp-pc_field">
+        <div
+          className={
+          classNames('dp-pc_file-upload', { focused: this.state.focused, hovered: this.state.hovered })
         }
-        <AttachedList files={files} inputName={inputName} onDelete={this.onDelete} />
-        {lastError}
+        >
+          {(multiple || !files.length) &&
+            <DropZone
+              ref={(node) => {
+                this.refDropZone = node;
+              }}
+              getExternalInput={() => this.refFileUpload}
+              uploadUrl={`${portalUrlGenerator.path('/')}${uploadUrl}`}
+              uploadParams={params}
+              context={context}
+              onSend={this.onUploadStarted}
+              onSuccess={this.onUploadSuccess}
+              onProgress={this.onProgress}
+              onFail={this.onUploadFail}
+              getDropZoneNode={widgetOptions.getDropZoneNode}
+            >
+              {widgetOptions.isWidget ? this.renderLink() : this.renderButton()}
+            </DropZone>
+          }
+          <AttachedList files={files} inputName={inputName} onDelete={this.onDelete} />
+          <span className="dp-pc_file-upload__error">{lastError}</span>
+        </div>
       </div>
     );
   }

@@ -18,19 +18,20 @@ export default class DropZone extends AbstractFileUpload {
 
   initializeFileUpload() {
     const { uploadUrl, uploadParams } = this.props;
-    const { onSubmit, onSend, onSuccess, onFail, getDropZoneNode } = this.props;
+    const { onSubmit, onSend, onSuccess, onProgress, onFail, getDropZoneNode } = this.props;
     const overlayNode = getDropZoneNode ? getDropZoneNode() : this.node;
 
     const $input = $(this.getInput());
     $input.fileupload({
-      fileInput: $input,
-      url:       uploadUrl,
-      formData:  uploadParams,
-      dropZone:  $(overlayNode),
-      submit:    onSubmit,
-      send:      onSend,
-      done:      onSuccess,
-      fail:      onFail
+      fileInput:   $input,
+      url:         uploadUrl,
+      formData:    uploadParams,
+      dropZone:    $(overlayNode),
+      submit:      onSubmit,
+      send:        onSend,
+      done:        onSuccess,
+      progressall: onProgress,
+      fail:        onFail
     });
   }
 
