@@ -497,7 +497,7 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
 
     public function getContentHtml()
     {
-        return $this['content'];
+        return $this->content;
     }
 
     public function getContentPlain()

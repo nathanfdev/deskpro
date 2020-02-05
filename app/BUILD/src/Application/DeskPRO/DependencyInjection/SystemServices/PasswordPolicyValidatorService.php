@@ -23,7 +23,8 @@ class PasswordPolicyValidatorService
             $password_settings->getUserPolicy(),
             $password_settings->getAgentPolicy(),
             $container->getEm()->getRepository('DeskPRO:PasswordHistory'),
-            $container->get('session')
+            $container->get('session'),
+            $container->getSystemService('usersource_manager')
         );
     }
 }

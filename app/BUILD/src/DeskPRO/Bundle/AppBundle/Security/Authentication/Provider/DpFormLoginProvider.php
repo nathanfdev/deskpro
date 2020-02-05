@@ -111,6 +111,12 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             $authenticatedToken = new DpFormLoginToken($person, $person->getPassword(), array_merge(['ROLE_USER'], $person->getRoles()));
             $authenticatedToken->setAttributes($token->getAttributes());
 
+            $this->session->set('auth_person_id', $person->getId());
+            $this->session->set('dp_interface', DP_INTERFACE);
+            $this->session->set('auth_usersource_id', $usersource ? $usersource->getId() : null);
+            $this->session->set('auth_usersource_type', $usersource ? $usersource->getSourceType() : null);
+            $this->session->save();
+
             return $authenticatedToken;
         }
 
