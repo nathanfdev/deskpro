@@ -12,6 +12,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatCreateType;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Handler\ChatHandler;
 use DeskPRO\Bundle\MessengerBundle\Security\EventListener\VisitorIdListener;
 use Doctrine\ORM\EntityManager;
@@ -97,6 +98,17 @@ class ChatController extends AbstractMessengerController
             ClientMessageEvent::SEND,
             new ClientMessageEvent('chat.new', $chat)
         );
+
+        // If an email validation code was generated then user needs to validate the entered email first,
+        // so skip agent notify until the user validates it
+        if ($chat->getEmailValidationCode()) {
+            $this->get('event_dispatcher')->dispatch(UserChatEvent::VALIDATE_EMAIL, new UserChatEvent($chat));
+        } else {
+            // create a task to find an agent
+            $task = $this->get('dp.voice.task_builder')->createChatTaskForQueue($chat);
+            $chat->setTaskId($task->getId());
+        }
+        $this->em()->flush();
 
         return View::create($this->wrap($chat), Response::HTTP_CREATED);
     }
