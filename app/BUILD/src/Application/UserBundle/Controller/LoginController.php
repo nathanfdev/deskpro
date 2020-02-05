@@ -307,6 +307,7 @@ class LoginController extends AbstractController
         }
 
         $check = new LoginAbuseCheck($inputEmail, $request->getClientIp());
+
         try {
             $this->container->get('anti_abuse')->check($check);
         } catch (AntiAbuseException $e) {
@@ -432,6 +433,7 @@ class LoginController extends AbstractController
                     $this->em()->getConnection()->commit();
                 } catch (\Exception $e) {
                     $this->em()->getConnection()->rollBack();
+
                     throw $e;
                 }
             }        // Form wasnt inputted (eg direct url)
@@ -785,7 +787,7 @@ class LoginController extends AbstractController
 
                 return $r;
 
-                // Otherwise its an error
+            // Otherwise its an error
             } else {
                 $this->session->setFlash('login_failed', true);
 
@@ -1178,7 +1180,7 @@ class LoginController extends AbstractController
             if ($person->isAgent()) {
                 $resetUrl = $this->container->get('router')->generate(
                     'agent_login',
-                    ['code' => $tmpdata->getCode(), 'brand' => $person->getBrands()->first()],
+                    ['reset_code' => $tmpdata->getCode(), 'brand' => $person->getBrands()->first()],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
             } else {
@@ -1365,6 +1367,7 @@ class LoginController extends AbstractController
 
         if ($result->isValid()) {
             $loginProcessor = new LoginProcessor($source, $result->getIdentity(), $usersourceTest);
+
             try {
                 $person = $loginProcessor->getPerson(null, true);
             } catch (Exception $e) {

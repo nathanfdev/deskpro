@@ -15,6 +15,7 @@ use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\Usersource\Adapter\DeskproOauth2Proxy;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use Orb\Auth\DPOAuth2Proxy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -114,10 +115,29 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
 
             if ($codeData and $person) {
-                if ($this->in->getString('new_password')) {
+                if ($newPassword = $this->in->getString('new_password')) {
+                    $violations = $this->container->getValidator()
+                        ->validateValue($newPassword, new DpPassword(['person' => $person]));
+
+                    if ($violations->count()) {
+                        $errors = [];
+                        foreach ($violations as $violation) {
+                            $errors[] = $violation->getMessage();
+                        }
+
+                        return $this->render(
+                            'AgentBundle:Login:reset-password.html.twig',
+                            [
+                                'errors'       => $errors,
+                                'reset_code'   => $code,
+                                'route_prefix' => $this->routePrefix,
+                            ]
+                        );
+                    }
+
                     $hasDoneReset = true;
 
-                    $person->setPassword($this->in->getString('new_password'));
+                    $person->setPassword($newPassword);
                     $this->db->executeUpdate(
                         "
                         UPDATE people
@@ -146,7 +166,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                     return $this->render(
                         'AgentBundle:Login:reset-password.html.twig',
                         [
-                            'reset_code'   => $this->in->getString('reset_code'),
+                            'reset_code'   => $code,
                             'route_prefix' => $this->routePrefix,
                         ]
                     );
