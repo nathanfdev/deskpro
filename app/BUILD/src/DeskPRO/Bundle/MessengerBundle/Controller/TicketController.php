@@ -11,7 +11,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -56,6 +56,7 @@ class TicketController extends AbstractMessengerController
 
         $requestData = $request->request->all();
         $formOptions = [
+            'attachAuth'          => true,
             'csrf_protection'     => false,
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
@@ -78,7 +79,7 @@ class TicketController extends AbstractMessengerController
         $formOptions['person'] = $person;
 
         $form = $this->container->get('form.factory')->create(
-            TicketWithLayoutsApiType::class,
+            TicketWithLayoutsApiFullType::class,
             $ticket,
             $formOptions
         );
@@ -90,7 +91,7 @@ class TicketController extends AbstractMessengerController
 
         $manager = $this->getContainer()->getTicketManager();
         $context = $manager->createUserExecutorContext($person, ExecutorContext::EVENT_NEW, ExecutorContext::METHOD_API, ['api_v2' => true]);
-        $em      = $this->get('doctrine.orm.default_entity_manager')->persist($person);
+        $this->get('doctrine.orm.default_entity_manager')->persist($person);
         $manager->saveTicket($ticket, $context);
 
         return View::create(new ApiWrapper($ticket));

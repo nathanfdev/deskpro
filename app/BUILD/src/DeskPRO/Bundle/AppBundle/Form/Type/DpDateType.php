@@ -109,6 +109,10 @@ class DpDateType extends AbstractType
 
             $event->setData($data);
         } catch (\Exception $e) {
+            if ($data = \DateTime::createFromFormat('d/m/Y', $data)) {
+                $data = $data->format('Y-m-d');
+                $event->setData($data);
+            }
             // unable to parse, leave as is
         }
     }
