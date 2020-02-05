@@ -295,42 +295,6 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('sub choice 1', $choiceDef->getTitle());
     }
 
-    public function test_remove_choice_data()
-    {
-        $customDef = new Entity\CustomDefArticle();
-        $customDef->setTitle('field 1');
-        $customDef->setWidgetType('choice');
-
-        $this->em()->persist($customDef);
-        $this->em()->flush();
-
-        $customField1 = new Model\CustomField();
-        $customField1->setName('field 1');
-        $customField1->setValue('choice 1, choice 2, choice 3');
-
-        $model = $this->createBaseModel();
-        $model->addCustomField($customField1);
-
-        $this->writer->writeModel($model);
-        $this->em()->clear();
-
-        $entity = $this->getBaseEntity();
-        $this->assertNotNull($entity);
-        $this->assertCount(3, $entity->getCustomData());
-
-        $customField1->setValue('choice 1, choice 4');
-
-        $model = $this->createBaseModel();
-        $model->addCustomField($customField1);
-
-        $this->writer->writeModel($model);
-        $this->em()->clear();
-
-        $entity = $this->getBaseEntity();
-        $this->assertNotNull($entity);
-        $this->assertCount(2, $entity->getCustomData());
-    }
-
     public function test_default_category()
     {
         $category = new Entity\ArticleCategory();
