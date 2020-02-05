@@ -59,7 +59,7 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
             'connect-src' => '*',
             'media-src'   => ['*', 'data:', 'blob:'],
             'object-src'  => '*',
-            'child-src'   => ['*', 'blob:'],
+            'worker-src'  => ['*', 'blob:'],
             'form-action' => '*',
             'frame-src'   => ['*'],
         ];
@@ -71,7 +71,6 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
             // so no X-Frame-Options header and use wildcard frame frame-ancestors
             $csp['frame-ancestors'] = '*';
         } else {
-            $response->headers->add(['X-Frame-Options' => 'sameorigin']);
             $csp['frame-ancestors'] = 'self';
         }
 

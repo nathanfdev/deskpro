@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -406,6 +400,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      * Get the standard download URL for this blob.
      *
      * @param bool $absolute
+     * @param mixed $use_file_url
      *
      * @return string
      */

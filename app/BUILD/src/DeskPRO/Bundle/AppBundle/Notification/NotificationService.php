@@ -21,7 +21,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class NotificationService
 {
-    const TARGET_BROADCAST = 'agent_public';
+    const TARGET_BROADCAST      = 'agent_public';
+    const TARGET_USER_BROADCAST = 'user_public';
 
     /**
      * @var EntityManager

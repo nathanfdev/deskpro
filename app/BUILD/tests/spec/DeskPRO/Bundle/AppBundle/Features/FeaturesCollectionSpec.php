@@ -2,10 +2,10 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Features;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
 use DeskPRO\Bundle\AppBundle\Features\FeatureInterface;
 use DeskPRO\Bundle\AppBundle\Features\FeaturesAccessChecker;
-use Application\DeskPRO\NewSettings\SettingsResolver;
 use PhpSpec\ObjectBehavior;
 
 /**

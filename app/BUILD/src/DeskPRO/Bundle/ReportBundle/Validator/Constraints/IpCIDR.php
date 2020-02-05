@@ -9,8 +9,6 @@ use Symfony\Component\Validator\Constraints\Ip;
  *
  * @Annotation
  * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
- *
- * @package DeskPRO\Bundle\ReportBundle\Validator\Constraints
  */
 class IpCIDR extends Ip
 {

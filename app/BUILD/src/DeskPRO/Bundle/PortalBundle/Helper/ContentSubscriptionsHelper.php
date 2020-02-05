@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use Application\DeskPRO\Entity\Article;
@@ -18,7 +14,6 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
-use Application\DeskPRO\Entity\Brand;
 use Doctrine\ORM\EntityManager;
 
 class ContentSubscriptionsHelper
@@ -35,7 +30,7 @@ class ContentSubscriptionsHelper
 
     public function __construct(EntityManager $em, BrandStack $brandStack)
     {
-        $this->em = $em;
+        $this->em         = $em;
         $this->brandStack = $brandStack;
     }
 
@@ -103,7 +98,7 @@ class ContentSubscriptionsHelper
         return (bool) $this->getDb()->insert($this->getSubscriptionsTableName($contentType), [
             'person_id'              => $person->getId(),
             'root_category'          => 1,
-            'root_category_brand_id' => $brand->getId()
+            'root_category_brand_id' => $brand->getId(),
         ]);
     }
 
@@ -117,10 +112,11 @@ class ContentSubscriptionsHelper
     {
         if ($this->isSubscribedRootCategory($contentType, $person)) {
             $brand = $this->brandStack->getActive()->getBrand();
+
             return (bool) $this->getDb()->delete($this->getSubscriptionsTableName($contentType), [
                 'person_id'              => $person->getId(),
                 'root_category'          => 1,
-                'root_category_brand_id' => $brand->getId()
+                'root_category_brand_id' => $brand->getId(),
             ]);
         }
 

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;

@@ -2,8 +2,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Features;
 
-use DeskPRO\Component\Util\AbstractCollection;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Component\Util\AbstractCollection;
 
 /**
  * Class FeaturesCollection.
@@ -27,7 +27,7 @@ class FeaturesCollection extends AbstractCollection
      */
     public function __construct(FeaturesAccessChecker $accessChecker, SettingsResolver $settingsResolver)
     {
-        $this->accessChecker = $accessChecker;
+        $this->accessChecker    = $accessChecker;
         $this->settingsResolver = $settingsResolver;
     }
 

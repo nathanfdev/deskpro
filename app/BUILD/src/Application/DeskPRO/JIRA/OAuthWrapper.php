@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\JIRA;
 
 use Application\DeskPRO\Service\JIRA;

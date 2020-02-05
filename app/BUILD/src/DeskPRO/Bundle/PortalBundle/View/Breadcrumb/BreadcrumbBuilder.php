@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 
 use Application\DeskPRO\Entity\Article;

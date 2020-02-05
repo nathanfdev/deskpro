@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1577707394 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
@@ -28,15 +29,16 @@ class Build1577707394 extends AbstractBuild implements OnlineBuildInterface, Ski
 
     public function run()
     {
-        $connection = $this->getDbConnection('default');
-        $brands = $connection->fetchAll('SELECT * FROM brands ORDER BY id ASC');
+        $connection   = $this->getDbConnection('default');
+        $brands       = $connection->fetchAll('SELECT * FROM brands ORDER BY id ASC');
         $defaultBrand = current($brands);
-        $tables = ['kb_subscriptions', 'news_subscriptions', 'download_subscriptions', 'community_topic_subscriptions'];
+        $tables       = ['kb_subscriptions', 'news_subscriptions', 'download_subscriptions', 'community_topic_subscriptions'];
         
         foreach ($tables as $table) {
             foreach ($brands as $brand) {
-                if ($brand['id'] === $defaultBrand['id'])
+                if ($brand['id'] === $defaultBrand['id']) {
                     continue;
+                }
 
                 // Duplicate subscription for all brands so no subscriptions will be lost
                 $this->execDbQuery('default', "

@@ -3,11 +3,6 @@ parameters:
     - zip
 
 services:
-  messenger_authenticator:
-    class: DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator
-    arguments:
-      - "@app_secret"
-
   messenger.handlers.chat:
     class: DeskPRO\Bundle\MessengerBundle\Handler\ChatHandler
     arguments:
@@ -18,6 +13,7 @@ services:
       - "@messenger.service.settings_resolver"
       - "@attachment_helper"
       - "@tickets.statuses"
+      - "@service_container"
 
   messenger.service.action_alerts:
     class: DeskPRO\Bundle\MessengerBundle\Service\ActionAlertsService
@@ -30,10 +26,17 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@permissions_manager"
+      - "@portal_usergroup_decider"
       - "@brand_stack"
+      - "@service_container"
 
   messenger.service.settings_resolver:
     class: DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver
     arguments:
       - "@brand_aware_settings_resolver"
       - "@doctrine.orm.entity_manager"
+
+  messenger.visitorid_listener:
+    class: DeskPRO\Bundle\MessengerBundle\Security\EventListener\VisitorIdListener
+    tags:
+      - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 300}

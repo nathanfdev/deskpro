@@ -29,3 +29,8 @@ agent_ticket_view:
     person_id: '\d+'
   options:
     fragment: 't'
+
+portal_kb_view:
+  path: '/kb/articles/{slug}'
+  requirements:
+    slug: '.+'

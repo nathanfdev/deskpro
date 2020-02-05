@@ -109,6 +109,7 @@ HTML;
         $connection = $em->getConnection();
 
         $em->beginTransaction();
+
         try {
             $queries[] = 'SET FOREIGN_KEY_CHECKS = 0;';
             $queries[] = 'TRUNCATE TABLE snippet_visible_departments;';
@@ -125,6 +126,7 @@ HTML;
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
+
             throw $e;
         }
     }
@@ -141,6 +143,7 @@ HTML;
         $langId = $connection->fetchColumn('SELECT value FROM settings WHERE name= \'core.default_language_id\'') ?: 1;
 
         $em->beginTransaction();
+
         try {
             $connection->query(
                 "INSERT INTO snippets
@@ -216,6 +219,7 @@ HTML;
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
+
             throw $e;
         }
     }

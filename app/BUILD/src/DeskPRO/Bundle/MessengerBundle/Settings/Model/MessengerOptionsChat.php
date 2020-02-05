@@ -38,6 +38,16 @@ class MessengerOptionsChat
     private $buttonText = 'Start a new conversation';
 
     /**
+     * A placeholder which will be shown on an input inside chat block.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("inputPlaceholder")
+     *
+     * @var string
+     */
+    private $inputPlaceholder = 'Type your message here';
+
+    /**
      * Indicates whenever agent avatar should be shown or not.
      *
      * @JMS\Type("boolean")
@@ -46,6 +56,16 @@ class MessengerOptionsChat
      * @var bool
      */
     private $showAgentPhotos = false;
+
+    /**
+     * Indicates whenever start conversation module should show a button or an input field.
+     *
+     * @JMS\Type("boolean")
+     * @JMS\SerializedName("startWithInputField")
+     *
+     * @var bool
+     */
+    private $startWithInputField = false;
 
     /**
      * @return string
@@ -108,6 +128,26 @@ class MessengerOptionsChat
     }
 
     /**
+     * @return string
+     */
+    public function getInputPlaceholder()
+    {
+        return $this->inputPlaceholder;
+    }
+
+    /**
+     * @param string $inputPlaceholder
+     *
+     * @return $this
+     */
+    public function setInputPlaceholder($inputPlaceholder)
+    {
+        $this->inputPlaceholder = $inputPlaceholder;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isShowAgentPhotos()
@@ -123,6 +163,26 @@ class MessengerOptionsChat
     public function setShowAgentPhotos($showAgentPhotos)
     {
         $this->showAgentPhotos = $showAgentPhotos;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStartWithInputField()
+    {
+        return $this->startWithInputField;
+    }
+
+    /**
+     * @param bool $startWithInputField
+     *
+     * @return $this
+     */
+    public function setStartWithInputField($startWithInputField)
+    {
+        $this->startWithInputField = $startWithInputField;
 
         return $this;
     }

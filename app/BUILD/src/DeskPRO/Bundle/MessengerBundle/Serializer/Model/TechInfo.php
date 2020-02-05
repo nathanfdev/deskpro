@@ -44,6 +44,11 @@ class TechInfo implements MessengerModelInterface
     private $brandStack;
 
     /**
+     * @var boolean
+     */
+    private $canUseChat = false;
+
+    /**
      * TechInfo constructor.
      *
      * @param AvatarResolver $avatarResolver
@@ -60,66 +65,70 @@ class TechInfo implements MessengerModelInterface
      */
     public function toArray()
     {
-        $self            = $this;
-        $chatDepartments = array_filter(array_map(function ($department) use ($self) {
-            /* @var Department $department */
-            return $self->departmentToArray($department);
-        }, $this->chatDepartments), 'boolval');
-
-        $ticketDepartments = array_filter(array_map(function ($department) use ($self) {
-            /* @var Department $department */
-            return array_filter($self->departmentToArray($department), 'boolval');
-        }, $this->ticketDepartments), 'boolval');
+        $chatDepartments = [];
+        foreach ($this->chatDepartments as $department) {
+            $this->departmentToArray($department, $chatDepartments);
+        }
+        $ticketDepartments = [];
+        foreach ($this->ticketDepartments as $department) {
+            $this->departmentToArray($department, $ticketDepartments);
+        }
 
         $self         = $this;
         $agentsOnline = array_map(function ($agent) use ($self) {
             /* @var Person $agent */
-            return [
-                'name'             => $agent->getDisplayNameUser(),
-                'id'               => $agent->getId(),
-                'avatar'           => $self->avatarResolver->getAvatar($agent),
-                'chat_departments' => array_map('intval', $agent->getAllowedDepartments('chat')),
-            ];
+            $agentInfo = new AgentInfo($agent, $self->avatarResolver);
+
+            return $agentInfo->toArray();
         }, $this->agentsOnline);
 
+        $filter = function ($dep) {
+            return !isset($dep['children']) || empty($dep['children']);
+        };
+
         return [
-            'chat_departments'   => $chatDepartments,
-            'ticket_departments' => $ticketDepartments,
+            'canUseChat'         => $this->canUseChat,
+            'chat_departments'   => array_values(array_filter($chatDepartments, $filter)),
+            'ticket_departments' => array_values(array_filter($ticketDepartments, $filter)),
             'agents_online'      => $agentsOnline,
             'client'             => $this->clientsSetup->getClients()[0],
         ];
     }
 
-    private function departmentToArray(Department $department)
+    private function departmentToArray(Department $department, &$departments)
     {
         $return = [
-            'title'  => $department->getTitle(),
-            'avatar' => $this->avatarResolver->getAvatar($department),
             'id'     => $department->getId(),
-            ];
-        $self = $this;
-        if ($department->getChildren()->count()) {
-            $children =
-                array_values(array_map(
-                    [$this, 'departmentToArray'],
-                    $department->getChildren()
-                        ->filter(
-                            function ($department) use ($self) {
-                                /* @var Department $department */
-                                return $department->hasBrand($self->brandStack->getActive()->getBrand());
-                            }
-                        )
-                        ->toArray()
-                ));
+            'title'  => $department->getTitle(),
+            'parent' => $department->getParentId() ?: null,
+            'avatar' => $this->avatarResolver->getAvatarModel($department),
+            'brands' => $department->getBrands()->map(function ($brand) {
+                return $brand->getId();
+            }),
+        ];
 
-            if ($children) {
-                $return['children'] = $children;
-            } else {
-                $return = [];
+        $self = $this;
+
+        if ($department->getChildren()->count()) {
+            $children = $department->getChildren()
+                ->filter(
+                    function ($department) use ($self) {
+                        /* @var Department $department */
+                        return $department->hasBrand($self->brandStack->getActive()->getBrand());
+                    }
+                )
+                ->toArray();
+            $ids = [];
+            foreach ($children as $child) {
+                $this->departmentToArray($child, $departments);
+                $ids[] = $child->getId();
+            }
+            if ($ids) {
+                $return['children'] = $ids;
             }
         }
 
-        return $return;
+        $departments[] = $return;
     }
 
     /**
@@ -164,5 +173,17 @@ class TechInfo implements MessengerModelInterface
     public function setClientsSetup(NotificationConfiguration $clientsSetup)
     {
         $this->clientsSetup = $clientsSetup;
+    }
+
+    /**
+     * @param bool $canUseChat
+     *
+     * @return $this
+     */
+    public function setCanUseChat($canUseChat)
+    {
+        $this->canUseChat = $canUseChat;
+
+        return $this;
     }
 }

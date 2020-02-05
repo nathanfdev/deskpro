@@ -1,16 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import toastr from 'toastr';
 import MessengerSetup from '@deskpro/messenger-setup';
 import Immutable from 'immutable';
 import { connect } from 'react-redux';
 import { Button } from '@deskpro/react-components';
 import { getSettings, saveSettings } from '../Actions/messengerActions';
 import { allChatDepartmentsSelector, allTicketDepartmentsSelector } from '../../Application/Selectors/departments';
+import { allChatCustomFields } from '../../Application/Selectors/chats';
+import { allUserGroupsSelector } from '../../Application/Selectors/people';
 import { loadChatDepartments, loadTicketDepartments } from '../../Application/Actions/departmentsActions';
+import { loadChatCustomFieldsAction } from '../../Application/Actions/chatActions';
+import { loadUserGroups } from '../../Application/Actions/peopleActions';
 
 @connect(state => ({
   chatDepartments:   allChatDepartmentsSelector(state),
   ticketDepartments: allTicketDepartmentsSelector(state),
+  chatCustomFields:  allChatCustomFields(state),
+  usergroups:        allUserGroupsSelector(state),
 }))
 class MessengerSetupContainer extends React.Component {
 
@@ -19,6 +26,12 @@ class MessengerSetupContainer extends React.Component {
     params:            PropTypes.object.isRequired,
     chatDepartments:   PropTypes.object,
     ticketDepartments: PropTypes.object,
+    chatCustomFields:  PropTypes.object,
+    usergroups:        PropTypes.object,
+  };
+
+  static defaultProps = {
+    usergroups: new Immutable.Map()
   };
 
   state = {
@@ -30,6 +43,8 @@ class MessengerSetupContainer extends React.Component {
 
     dispatch(loadChatDepartments());
     dispatch(loadTicketDepartments());
+    dispatch(loadChatCustomFieldsAction());
+    dispatch(loadUserGroups());
 
     this.props.dispatch(getSettings(this.props.params.brandId)).then((response) => {
       const newSettings = this.state.settings.merge(response.data.data);
@@ -45,7 +60,11 @@ class MessengerSetupContainer extends React.Component {
       config = settings.withMutations(value);
     } else if (name) {
       const keyPath = name.split('.');
-      config = settings.setIn(keyPath, value);
+      if (typeof value === 'object' && !Immutable.Iterable.isIterable(value)) {
+        config = settings.mergeIn(keyPath, value);
+      } else {
+        config = settings.setIn(keyPath, value);
+      }
     }
     if (config) {
       this.setState({ settings: config });
@@ -53,14 +72,49 @@ class MessengerSetupContainer extends React.Component {
   };
 
   handleSubmit = () => {
-    this.props.dispatch(saveSettings(this.props.params.brandId, this.state.settings));
+    const { settings, saving } = this.state;
+    const { dispatch, params: { brandId } } = this.props;
+
+    if (saving) {
+      return;
+    }
+
+    this.setState({
+      saving: true
+    });
+
+    const postData = settings.setIn(
+      ['chat', 'preChatForm', 'fields'],
+      settings.getIn(['chat', 'preChatForm', 'fields']).filter(f => f && f.get('id'))
+    );
+
+    const promise = dispatch(saveSettings(brandId, postData));
+
+    promise
+      .success(() => {
+        this.setState({
+          saving: false
+        }, () => {
+          toastr.success('Settings saved!');
+        });
+      })
+      .error(() => {
+        this.setState({
+          saving: false
+        }, () => {
+          toastr.error('Error when saving settings!');
+        });
+      })
+    ;
   };
 
   render() {
-    const { settings } = this.state;
+    const { settings, saving } = this.state;
     const {
       chatDepartments,
+      chatCustomFields,
       ticketDepartments,
+      usergroups,
     } = this.props;
     return (
       <div>
@@ -68,9 +122,12 @@ class MessengerSetupContainer extends React.Component {
           settings={settings}
           handleChange={this.onChange}
           chatDepartments={chatDepartments}
+          chatCustomFields={chatCustomFields}
           ticketDepartments={ticketDepartments}
-        />
-        <Button onClick={this.handleSubmit} type="cta" size="large">Save</Button>
+          usergroups={usergroups}
+        >
+          <Button loading={saving} onClick={this.handleSubmit} type="cta" size="large">Save</Button>
+        </MessengerSetup>
       </div>
     );
   }

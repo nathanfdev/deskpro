@@ -126,6 +126,7 @@ HTML;
 
         $parts = [];
         $em->beginTransaction();
+
         try {
             $em->getRepository(AgentChat::class)->createQueryBuilder('ac')->delete()->getQuery()->execute();
 

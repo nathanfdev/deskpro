@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Organization\OrganizationCreatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\People\UserChatAgentsOnlineEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Snippet\SnippetsUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketFollowUpUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
@@ -46,6 +47,7 @@ class NotificationEventManagerSpec extends ObjectBehavior
                 MarkAllMessagesEvent::EVENT_NAME       => 'handleEvent',
                 TicketUpdatedEvent::EVENT_NAME         => 'handleEvent',
                 UpdateOnlineEvent::EVENT_NAME          => 'handleEvent',
+                UserChatAgentsOnlineEvent::EVENT_NAME  => 'handleEvent',
                 AgentStatusChangedEvent::EVENT_NAME    => 'handleEvent',
                 LegacySystemEvent::EVENT_NAME          => 'handleEvent',
                 OrganizationCreatedEvent::EVENT_NAME   => 'handleEvent',

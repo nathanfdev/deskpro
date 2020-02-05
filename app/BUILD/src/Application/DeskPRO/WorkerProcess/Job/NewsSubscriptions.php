@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -59,6 +55,7 @@ class NewsSubscriptions extends AbstractJob
 
             if (!$brandSettingsResolver->getSetting('user.news_subscriptions')) {
                 $brandStack->pop();
+
                 continue;
             }
 
@@ -67,6 +64,7 @@ class NewsSubscriptions extends AbstractJob
             if (!$this->published && !$this->updated) {
                 $this->logStatus('No new news posts for '.$brand.' brand');
                 $brandStack->pop();
+
                 continue;
             }
 
@@ -139,6 +137,7 @@ class NewsSubscriptions extends AbstractJob
 
             if (!$userToNews) {
                 $brandStack->pop();
+
                 continue;
             }
 

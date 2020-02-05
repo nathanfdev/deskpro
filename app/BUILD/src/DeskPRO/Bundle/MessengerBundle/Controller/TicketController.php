@@ -11,10 +11,9 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiFullType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
-use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,6 +56,7 @@ class TicketController extends AbstractMessengerController
 
         $requestData = $request->request->all();
         $formOptions = [
+            'csrf_protection'     => false,
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
         ];
@@ -66,52 +66,19 @@ class TicketController extends AbstractMessengerController
         $personRepository = $this
             ->get('doctrine.orm.default_entity_manager')
             ->getRepository(Person::class);
-        $person = null;
+        $person = $this->getUser();
 
-        if (isset($requestData['person_id'])) {
-            $person = $this->get('doctrine.orm.default_entity_manager')->find(Person::class, $requestData['person_id']);
-            unset($requestData['person_id']);
+        if (!$person && isset($requestData['person']) && isset($requestData['person']['email'])) {
+            $person = $personRepository->findOneByEmail($requestData['person']['email']);
         }
-
-        if (!$person && isset($requestData['email'])) {
-            $person = $personRepository->findOneByEmail($requestData['email']);
-        }
-
-        // determine username for person
-        if (isset($requestData['name'])) {
-            $username = $requestData['name'];
-            unset($requestData['name']);
-        } else {
-            $username = 'anonymous user';
-        }
-
-        // if email was sent but person wasn't found - create person
-        if (!$person) {
-            $person = new Person();
-            $person->setEmail($requestData['email']);
-            $person->setName($username);
-        }
-
-        if (isset($requestData['email'])) {
-            unset($requestData['email']);
-        }
-
-        $errors = [];
-        if (!$person && !isset($requestData['email'])) {
-            $errors['email']     = 'Either email or person_id parameter is required';
-            $errors['person_id'] = 'Either email or person_id parameter is required';
-        }
-
-        if ($errors) {
-            throw new MessengerApiException($errors);
-        }
-
-        $formOptions['person'] = $person;
 
         $requestData['message'] = ['message' => $requestData['message'], 'format' => 'html'];
 
+        $person                = $person ?: new Person();
+        $formOptions['person'] = $person;
+
         $form = $this->container->get('form.factory')->create(
-            TicketWithLayoutsApiFullType::class,
+            TicketWithLayoutsApiType::class,
             $ticket,
             $formOptions
         );
@@ -123,7 +90,7 @@ class TicketController extends AbstractMessengerController
 
         $manager = $this->getContainer()->getTicketManager();
         $context = $manager->createUserExecutorContext($person, ExecutorContext::EVENT_NEW, ExecutorContext::METHOD_API, ['api_v2' => true]);
-
+        $em      = $this->get('doctrine.orm.default_entity_manager')->persist($person);
         $manager->saveTicket($ticket, $context);
 
         return View::create(new ApiWrapper($ticket));

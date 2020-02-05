@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -59,6 +55,7 @@ class DownloadsSubscriptions extends AbstractJob
 
             if (!$brandSettingsResolver->getSetting('user.downloads_subscriptions')) {
                 $brandStack->pop();
+
                 continue;
             }
 
@@ -67,6 +64,7 @@ class DownloadsSubscriptions extends AbstractJob
             if (!$this->published && !$this->updated) {
                 $this->logStatus('No new downloads for '.$brand.' brand');
                 $brandStack->pop();
+
                 continue;
             }
             //------------------------------
@@ -138,6 +136,7 @@ class DownloadsSubscriptions extends AbstractJob
 
             if (!$userToDownloads) {
                 $brandStack->pop();
+
                 continue;
             }
 

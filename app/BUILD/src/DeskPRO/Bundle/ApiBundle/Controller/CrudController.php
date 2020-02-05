@@ -643,10 +643,10 @@ abstract class CrudController extends BaseController
                 $qb->setMaxResults($limit);
 
                 $pagerAdapter = new DoctrineORMAdapter($qb);
-                $pager = new LimitedPager($pagerAdapter, $limit);
+                $pager        = new LimitedPager($pagerAdapter, $limit);
             } else {
                 $pagerAdapter = new DoctrineORMAdapter($qb);
-                $pager = new Pagerfanta($pagerAdapter);
+                $pager        = new Pagerfanta($pagerAdapter);
             }
 
             $pager->setMaxPerPage($count);

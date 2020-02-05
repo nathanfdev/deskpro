@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity;
@@ -151,6 +147,7 @@ class SearchController extends AbstractController
             foreach ($results as $t => $rs) {
                 if (!empty($rs['pageinfo']['total_results']) && $rs['pageinfo']['total_results'] >= 1) {
                     $type = $t;
+
                     break;
                 }
             }
@@ -264,18 +261,23 @@ class SearchController extends AbstractController
         switch ($type) {
             case 'all':
                 $searchTypes = ['article', 'community', 'download', 'news'];
+
                 break;
             case 'articles':
                 $searchTypes = ['article'];
+
                 break;
             case 'community':
                 $searchTypes = ['community'];
+
                 break;
             case 'downloads':
                 $searchTypes = ['download'];
+
                 break;
             case 'news':
                 $searchTypes = ['news'];
+
                 break;
             default:
                 $searchTypes = [];
@@ -509,6 +511,7 @@ class SearchController extends AbstractController
      * @param         $curPage
      * @param         $perPage
      * @param bool    $details
+     * @param mixed $detailledType
      *
      * @throws \Exception
      *

@@ -24,7 +24,7 @@ class ReportWidgetData extends AbstractDefaultData
             'description'   => 'Agents are online',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT_DISTINCT(sessions.person.id) as \'stat_value\',  IF(DPQL_COUNT_DISTINCT(sessions.person.id) = 1, \'online agent\', \'online agents\') as \'stat_description\' 
+            'query'         => 'SELECT DPQL_COUNT_DISTINCT(sessions.person.id) as \'stat_value\',  IF(DPQL_COUNT_DISTINCT(sessions.person.id) = 1, \'online agent\', \'online agents\') as \'stat_description\'
 FROM sessions WHERE sessions.person.is_agent = 1 AND sessions.date_last > DPQL_NOW() - INTERVAL 6 MINUTE',
             'variables' => '[]',
         ],
@@ -34,18 +34,36 @@ FROM sessions WHERE sessions.person.is_agent = 1 AND sessions.date_last > DPQL_N
             'description'   => 'Count of tickets created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', IF(DPQL_COUNT() = 1, \'ticket created\', \'tickets created\') as \'stat_description\' 
+            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', IF(DPQL_COUNT() = 1, \'ticket created\', \'tickets created\') as \'stat_description\'
 FROM tickets WHERE tickets.date_created = ${date}',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'chats-created-x-date' => [
             'title'         => 'Count of chats created ${date}',
-            'labels'        => 'tickets',
+            'labels'        => 'chat',
             'description'   => 'Count of chats created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', IF(DPQL_COUNT() = 1, \'chat created\', \'chats created\') as \'stat_description\' 
+            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', IF(DPQL_COUNT() = 1, \'chat created\', \'chats created\') as \'stat_description\'
 FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+        ],
+        'chats-feedback-grouped-by-agent-x-date' => [
+            'title'         => 'Chat feedback grouped by agent created ${date}',
+            'labels'        => 'chat',
+            'description'   => 'Chat feedback grouped by agent created ${date}',
+            'display_types' => 'table',
+            'display_order' => 40,
+            'query'         => '
+            SELECT
+                SUM(IF(chat_conversations.rating_overall > 0,1,0)) AS Postive,
+                SUM(IF(chat_conversations.rating_overall <= 0,1,0)) AS Negative
+            FROM chat_conversations
+            WHERE chat_conversations.rating_overall <> NULL
+              AND chat_conversations.agent <> NULL
+              AND chat_conversations.date_created = ${date}
+            GROUP BY chat_conversations.agent
+            ',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'avg-response-time-x-date' => [
@@ -54,7 +72,7 @@ FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
             'description'   => 'Average response time of tickets created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_FORMAT(AVG(tickets.total_to_first_reply) / 60, \'number\', 0) as \'stat_value\', IF(DPQL_COUNT() = 1, \'minute to reply\', \'minutes to reply\') as \'stat_description\' 
+            'query'         => 'SELECT DPQL_FORMAT(AVG(tickets.total_to_first_reply) / 60, \'number\', 0) as \'stat_value\', IF(DPQL_COUNT() = 1, \'minute to reply\', \'minutes to reply\') as \'stat_description\'
 FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_first_agent_reply <> NULL',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
@@ -70,7 +88,7 @@ FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_first_agent_r
     DPQL_FORMAT(
 	(
     	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
-    	  / 
+    	  /
     	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.date_created = ${date})
     	),
     \'percent\', 0)
@@ -128,8 +146,8 @@ ORDER BY @\'Replies\' DESC
             'description'   => '',
             'display_types' => 'simple_bars',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT() AS \'Tickets\', DPQL_HOUR(tickets.date_created) as \'Created Hour\' 
-            FROM  tickets 
+            'query'         => 'SELECT DPQL_COUNT() AS \'Tickets\', DPQL_HOUR(tickets.date_created) as \'Created Hour\'
+            FROM  tickets
             WHERE tickets.date_created = ${date}
             GROUP BY @\'Created Hour\'
             ORDER BY @\'Created Hour\'',
@@ -141,8 +159,8 @@ ORDER BY @\'Replies\' DESC
             'description'   => '',
             'display_types' => 'simple_bars',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT() AS \'Replies\' 
-            FROM  tickets_messages 
+            'query'         => 'SELECT DPQL_COUNT() AS \'Replies\'
+            FROM  tickets_messages
             WHERE
                 tickets_messages.date_created = %PAST_24_HOURS%
                 AND tickets_messages.is_agent_note = 0
@@ -514,7 +532,7 @@ ORDER BY tickets_messages.date_created',
                 'query'         => '
 SELECT DPQL_COUNT() AS \'Total Messages\'
 FROM tickets_messages
-WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = ${date} 
+WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = ${date}
 SPLIT BY tickets_messages.person
 GROUP BY CONCAT(\'Week \', WEEKOFYEAR(tickets_messages.date_created), \', \', DPQL_YEAR(tickets_messages.date_created)) AS \'Period\'
 ORDER BY tickets_messages.date_created',
@@ -980,7 +998,7 @@ LIMIT 100
             'display_order' => 300,
             'query'         => '
                 SELECT
-                  DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
+                  DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\',
                   DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\', ${billingSelectBits} ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date}
@@ -995,7 +1013,7 @@ LIMIT 100
             'display_order' => 301,
             'query'         => '
                 SELECT
-                    DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\', 
+                    DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\',
                     DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\',
                     DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount(${billingCurrency})\'
                 FROM ticket_charges
@@ -1011,7 +1029,7 @@ LIMIT 100
             'display_types' => 'table,simple_bars',
             'display_order' => 302,
             'query'         => '
-                SELECT 
+                SELECT
                     DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
                     FROM ticket_charges
                     WHERE ticket_charges.date_created = ${date} AND ticket_charges.amount > 0
@@ -1087,8 +1105,8 @@ LIMIT 100
             'display_types' => 'table',
             'display_order' => 307,
             'query'         => '
-                SELECT 
-                    DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
+                SELECT
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\',
                     DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\',
                     ${billingSelectBits} ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                 FROM ticket_charges
@@ -1105,8 +1123,8 @@ LIMIT 100
             'display_types' => 'table',
             'display_order' => 308,
             'query'         => '
-                SELECT 
-                    DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\', 
+                SELECT
+                    DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\',
                     DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\',
                     DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
                 FROM ticket_charges
@@ -1139,11 +1157,11 @@ LIMIT 100
             'display_types' => 'table,simple_bars',
             'display_order' => 310,
             'query'         => '
-                SELECT 
+                SELECT
                     DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\'
                 FROM ticket_charges
-                WHERE ticket_charges.date_created = ${date} 
-                  AND ticket_charges.organization_id <> NULL 
+                WHERE ticket_charges.date_created = ${date}
+                  AND ticket_charges.organization_id <> NULL
                   AND ticket_charges.charge_time > 0
                 GROUP BY ticket_charges.organization
             ',
@@ -1156,8 +1174,8 @@ LIMIT 100
             'display_types' => 'table',
             'display_order' => 311,
             'query'         => '
-                SELECT 
-                    DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
+                SELECT
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\',
                     DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\',
                     ${billingSelectBits} ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                 FROM ticket_charges
@@ -1174,9 +1192,9 @@ LIMIT 100
             'display_types' => 'table',
             'display_order' => 312,
             'query'         => '
-                SELECT 
-                    DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\', 
-                    DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\', 
+                SELECT
+                    DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\',
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\',
                     DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date}
@@ -1191,7 +1209,7 @@ LIMIT 100
             'display_types' => 'table,simple_bars',
             'display_order' => 313,
             'query'         => '
-                SELECT 
+                SELECT
                     DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date} AND ticket_charges.amount > 0
@@ -1206,7 +1224,7 @@ LIMIT 100
             'display_types' => 'table,simple_bars',
             'display_order' => 314,
             'query'         => '
-                SELECT 
+                SELECT
                     DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\'
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date} AND ticket_charges.charge_time > 0
@@ -1222,7 +1240,7 @@ LIMIT 100
             'display_order' => 315,
             'query'         => '
                 SELECT
-                    DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\',
                     DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\',
                     ${billingSelectBits} ticket_charges.date_created, ticket_charges.ticket
                 FROM ticket_charges
@@ -1267,7 +1285,7 @@ LIMIT 100
             'query'         => '
                 SELECT DPQL_COUNT_DISTINCT(sessions.person.id) AS \'stat_value\', IF(DPQL_COUNT_DISTINCT(sessions.person.id) = 1, \'Voice Agent Online\', \'Voice agents online\') AS \'stat_description\'
                 FROM sessions
-                WHERE sessions.date_last > DPQL_NOW() - INTERVAL 1 MINUTE 
+                WHERE sessions.date_last > DPQL_NOW() - INTERVAL 1 MINUTE
                 AND sessions.person.is_agent = 1
                 AND sessions.person.is_disabled = 0
                 AND sessions.person.is_deleted = 0
@@ -1284,7 +1302,7 @@ LIMIT 100
             'query'         => '
                 SELECT DPQL_COUNT_DISTINCT(agent_data.person.id) AS \'stat_value\', \'Forwarding Agents\' AS \'stat_description\'
                 FROM agent_data
-                WHERE agent_data.agent_can_use_forwarding = 1 
+                WHERE agent_data.agent_can_use_forwarding = 1
                 AND agent_data.person.is_agent = 1
                 AND agent_data.person.is_disabled = 0
                 AND agent_data.person.is_deleted = 0
@@ -1305,7 +1323,7 @@ LIMIT 100
             'query'         => '
                 SELECT DPQL_COUNT(voice_queue_agents.is_enabled = 1) AS \'Voice agents online\'
                 FROM voice_queue_agents
-                WHERE  voice_queue_agents.agent.agent_data.agent_calls_enabled = 1 
+                WHERE  voice_queue_agents.agent.agent_data.agent_calls_enabled = 1
                 AND agent_data.person.is_agent = 1
                 AND agent_data.person.is_disabled = 0
                 AND agent_data.person.is_deleted = 0
@@ -1318,7 +1336,7 @@ LIMIT 100
                 LAYER WITH
                 SELECT DPQL_COUNT(voice_queue_agents.is_enabled = 1) AS \'Forwarding Agents\'
                 FROM voice_queue_agents
-                WHERE voice_queue_agents.agent.agent_data.agent_can_use_forwarding = 1 
+                WHERE voice_queue_agents.agent.agent_data.agent_can_use_forwarding = 1
                 AND agent_data.person.is_agent = 1
                 AND agent_data.person.is_disabled = 0
                 AND agent_data.person.is_deleted = 0
@@ -1359,8 +1377,8 @@ LIMIT 100
             'query'         => '
                 SELECT DPQL_COUNT() AS \'stat_value\', \'Answered Calls\' AS \'stat_description\'
                 FROM voice_phone_calls
-                WHERE voice_phone_calls.date_ended = ${date} 
-                AND voice_phone_calls.date_started <> NULL 
+                WHERE voice_phone_calls.date_ended = ${date}
+                AND voice_phone_calls.date_started <> NULL
                 AND voice_phone_calls.type = \'Inbound\'
             ',
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
@@ -1373,8 +1391,8 @@ LIMIT 100
             'display_order' => 323,
             'query'         => '
                 SELECT DPQL_COUNT() AS \'stat_value\', \'Missed Calls\' AS \'stat_description\'
-                FROM voice_phone_calls 
-                WHERE voice_phone_calls.date_ended = ${date} 
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.date_ended = ${date}
                 AND voice_phone_calls.date_started = NULL
             ',
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
@@ -1388,7 +1406,7 @@ LIMIT 100
             'query'         => '
                 SELECT DPQL_COUNT() AS \'stat_value\', \'Voicemail Calls\' AS \'stat_description\'
                 FROM voice_phone_calls
-                WHERE voice_phone_calls.date_ended = ${date} 
+                WHERE voice_phone_calls.date_ended = ${date}
                 AND voice_phone_calls.status = \'voicemail\'
             ',
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
@@ -1402,8 +1420,8 @@ LIMIT 100
             'query'         => '
                 SELECT DPQL_COUNT() AS \'stat_value\', \'Outbound Calls\' AS \'stat_description\'
                 FROM voice_phone_calls
-                WHERE voice_phone_calls.date_ended = ${date} 
-                AND voice_phone_calls.date_started <> NULL 
+                WHERE voice_phone_calls.date_ended = ${date}
+                AND voice_phone_calls.date_started <> NULL
                 AND voice_phone_calls.type = \'outbound\'
             ',
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
@@ -1417,8 +1435,8 @@ LIMIT 100
             'query'         => '
                 SELECT IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_started) - UNIX_TIMESTAMP(voice_phone_calls.date_created)) / 60, \'0\') AS \'stat_value\', \'Avg Inbound Wait Time (min)\' AS \'stat_description\'
                 FROM voice_phone_calls
-                WHERE voice_phone_calls.type = \'inbound\' 
-                AND voice_phone_calls.date_started <> NULL 
+                WHERE voice_phone_calls.type = \'inbound\'
+                AND voice_phone_calls.date_started <> NULL
                 AND voice_phone_calls.date_ended = ${date}
             ',
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
@@ -1432,8 +1450,8 @@ LIMIT 100
             'query'         => '
                 SELECT IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_ended) - UNIX_TIMESTAMP(voice_phone_calls.date_started)) / 60, \'0\') AS \'stat_value\', \'Avg Inbound Duration (min)\' AS \'stat_description\'
                 FROM voice_phone_calls
-                WHERE voice_phone_calls.type = \'inbound\' 
-                AND voice_phone_calls.date_started <> NULL 
+                WHERE voice_phone_calls.type = \'inbound\'
+                AND voice_phone_calls.date_started <> NULL
                 AND voice_phone_calls.date_ended = ${date}
             ',
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
@@ -1447,8 +1465,8 @@ LIMIT 100
             'query'         => '
                 SELECT IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_ended) - UNIX_TIMESTAMP(voice_phone_calls.date_started)) / 60, \'0\') AS \'stat_value\', \'Avg Outbound Duration (min)\' AS \'stat_description\'
                 FROM voice_phone_calls
-                WHERE voice_phone_calls.type = \'outbound\' 
-                AND voice_phone_calls.date_started <> NULL 
+                WHERE voice_phone_calls.type = \'outbound\'
+                AND voice_phone_calls.date_started <> NULL
                 AND voice_phone_calls.date_ended = ${date}
             ',
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
@@ -1475,16 +1493,16 @@ LIMIT 100
             'display_types' => 'table',
             'display_order' => 330,
             'query'         => '
-                SELECT 
-                    DPQL_COUNT(voice_phone_call_participants.person_id) AS \'Calls Handled\', 
-                    IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_call_participants.date_left) - UNIX_TIMESTAMP(voice_phone_call_participants.date_created)) / 60, \'0\') AS \'Average Call Length (min)\', 
+                SELECT
+                    DPQL_COUNT(voice_phone_call_participants.person_id) AS \'Calls Handled\',
+                    IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_call_participants.date_left) - UNIX_TIMESTAMP(voice_phone_call_participants.date_created)) / 60, \'0\') AS \'Average Call Length (min)\',
                     IFNULL(SUM(UNIX_TIMESTAMP(voice_phone_call_participants.date_left) - UNIX_TIMESTAMP(voice_phone_call_participants.date_created)) / 60, \'0\') AS \'Total Call Time(min)\'
                 FROM voice_phone_call_participants
                 WHERE voice_phone_call_participants.person_id IN (
                     SELECT people.id
                     FROM people
                     WHERE people.is_agent = 1
-                ) 
+                )
                 AND voice_phone_call_participants.date_left = ${date}
                 GROUP BY voice_phone_call_participants.person
             ',
@@ -1497,17 +1515,17 @@ LIMIT 100
             'display_types' => 'table',
             'display_order' => 331,
             'query'         => '
-                SELECT 
-                    DPQL_COUNT(voice_phone_calls.id) AS \'Total Calls\', 
-                    DPQL_COUNT(voice_phone_calls.date_started <> NULL AND voice_phone_calls.status = \'ended\') AS \'Answered Calls\', 
-                    DPQL_COUNT(voice_phone_calls.date_started = NULL AND voice_phone_calls.status = \'ended\') AS \'Missed Calls\', 
-                    DPQL_COUNT(voice_phone_calls.status = \'voicemail\') AS \'Voicemail Calls\', 
-                    IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_started) - UNIX_TIMESTAMP(voice_phone_calls.date_created)) / 60, \'0\') AS \'Average Wait Time (min)\', 
-                    IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_ended) - UNIX_TIMESTAMP(voice_phone_calls.date_started)) / 60, \'0\') AS \'Average Call Length (min)\', 
+                SELECT
+                    DPQL_COUNT(voice_phone_calls.id) AS \'Total Calls\',
+                    DPQL_COUNT(voice_phone_calls.date_started <> NULL AND voice_phone_calls.status = \'ended\') AS \'Answered Calls\',
+                    DPQL_COUNT(voice_phone_calls.date_started = NULL AND voice_phone_calls.status = \'ended\') AS \'Missed Calls\',
+                    DPQL_COUNT(voice_phone_calls.status = \'voicemail\') AS \'Voicemail Calls\',
+                    IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_started) - UNIX_TIMESTAMP(voice_phone_calls.date_created)) / 60, \'0\') AS \'Average Wait Time (min)\',
+                    IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_ended) - UNIX_TIMESTAMP(voice_phone_calls.date_started)) / 60, \'0\') AS \'Average Call Length (min)\',
                     DPQL_FORMAT(SUM(voice_phone_calls.cost), 3) AS \'Cost (USD)\'
                 FROM voice_phone_calls
                 WHERE voice_phone_calls.phone_call_logs.target_queue <> NULL
-                AND voice_phone_calls.date_ended = ${date} 
+                AND voice_phone_calls.date_ended = ${date}
                 AND voice_phone_calls.phone_call_logs.action_type = \'call.ended\'
                 GROUP BY voice_phone_calls.phone_call_logs.target_queue
             ',
@@ -1565,14 +1583,14 @@ LIMIT 100
             'query'         => '
                 SELECT DPQL_COUNT(IF(approval_responses.vote = 1, 1, NULL)) AS \'Approvals\', \'Responses\' AS \'value_axis_title\'
                 FROM approval_responses
-                WHERE approval_responses.approval.created_at = ${date} 
+                WHERE approval_responses.approval.created_at = ${date}
                 GROUP BY ${grouping}
-                
+
                 LAYER WITH
-                
+
                 SELECT DPQL_COUNT(IF(approval_responses.vote = -1, 1, NULL)) AS \'Rejections\'
                 FROM approval_responses
-                WHERE approval_responses.approval.created_at = ${date} 
+                WHERE approval_responses.approval.created_at = ${date}
                 GROUP BY ${grouping}
             ',
             'variables' => '[{"type":"fields","name":"grouping","default":"approval_template","value":"","field_type":"ticket_approvals","field_value":"","table":"approval_responses.approval"},{"type":"dates","name":"date","default":"today"}]',

@@ -3,13 +3,13 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\ReportBundle\Validator\Constraints\IpCIDR;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints as Assert;
-use DeskPRO\Bundle\ReportBundle\Validator\Constraints\IpCIDR;
 
 /**
  * Class ReportDashboardShareableLink.

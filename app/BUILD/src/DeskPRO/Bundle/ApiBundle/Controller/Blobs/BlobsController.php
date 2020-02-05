@@ -13,11 +13,9 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AcceptAttachmentType;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Component\Filesystem\SafeFile;
-use DeskPRO\Component\Pagerfanta\LimitedPager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Data\ContentTypes;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,6 +91,7 @@ class BlobsController extends CrudController
 
             return View::create($this->wrap($blob), Response::HTTP_CREATED);
         }
+
         throw $this->createBadRequestException();
     }
 
@@ -316,6 +315,7 @@ class BlobsController extends CrudController
     {
         if (!$entity = $this->getManager()->getRepository(Blob::class)->getByAuthId($authId)) {
             $message or $message = "#{$authId} Not Found";
+
             throw $this->createNotFoundException($message);
         }
 
@@ -437,6 +437,7 @@ class BlobsController extends CrudController
         $archive = $this->getArchive($blob);
 
         $found = false;
+
         try {
             $zip = $this->get('archive_factory')->createZipArchive();
             $zip->open($archive);
@@ -450,6 +451,7 @@ class BlobsController extends CrudController
                     } else {
                         throw new \Exception('Compressed file is too big');
                     }
+
                     break;
                 }
             }

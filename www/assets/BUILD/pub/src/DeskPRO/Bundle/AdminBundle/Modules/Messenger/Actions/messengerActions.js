@@ -10,6 +10,6 @@ export const saveSettings = createAction(
   'MESSENGER_SAVE_SETTINGS_ACTION',
   (brandId, settings) => {
     const data = settings.toJS();
-    api.sendPost(`DP_API/messenger/settings/${brandId}/setup`, data);
+    return api.sendPost(`DP_API/messenger/settings/${brandId}/setup`, data);
   }
 );

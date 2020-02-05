@@ -6,6 +6,7 @@ use Application\DeskPRO\DBAL\Connection;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationService;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -48,7 +49,11 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
         $targetId = $message->getTarget();
 
         if ($message instanceof ActionAlert && $message->isBroadcast()) {
-            $targetId = -100;
+            if ($message->getTarget() === NotificationService::TARGET_BROADCAST) {
+                $targetId = -100;
+            } else {
+                $targetId = -200;
+            }
         }
 
         $this->messages[$table][] = [

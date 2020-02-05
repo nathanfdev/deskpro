@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\EntityRepository\TopicSubscription as TopicSubscriptionRepository;
@@ -60,7 +54,7 @@ class TopicSubscription extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @deprecated use setRootCategoryBrand instead
-     * 
+     *
      * @param bool $root_category
      */
     public function setRootCategory($root_category)
@@ -69,7 +63,6 @@ class TopicSubscription extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     *
      * @param \Application\DeskPRO\Entity\Brand $brand
      */
     public function setRootCategoryBrand(Brand $brand = null)

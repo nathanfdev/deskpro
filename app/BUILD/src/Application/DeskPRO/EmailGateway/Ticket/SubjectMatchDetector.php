@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -372,8 +368,8 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
      */
     protected function hasSameParticipants($reader, $ticket)
     {
-        $readerAddresses = array_map(function($email) {
-            /** @var \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress $email */
+        $readerAddresses = array_map(function ($email) {
+            /* @var \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress $email */
             return $email->getEmail();
         }, $reader->getDeliveredAddresses());
 
@@ -383,7 +379,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
                 $ticket->getEmailAccount() ? $ticket->getEmailAccount()->getAddress() : null,
             ],
             array_map(function ($participant) {
-                /** @var \Application\DeskPRO\Entity\TicketParticipant $participant */
+                /* @var \Application\DeskPRO\Entity\TicketParticipant $participant */
                 return $participant->getEmailAddress();
             }, $ticket->getParticipants()->toArray())
         ));

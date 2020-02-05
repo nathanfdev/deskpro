@@ -72,7 +72,7 @@ class DeskproDeliveryHandler extends MultiplexDeliverHandler
 
         $channel = 'private-'.$message->getTarget();
         if ($message instanceof ActionAlert && $message->isBroadcast()) {
-            $channel = 'agent_public';
+            $channel = $message->getTarget() === 'agent_public' ? 'agent_public' : 'user_public';
         }
 
         $data = [

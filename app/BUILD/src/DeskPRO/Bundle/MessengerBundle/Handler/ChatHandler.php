@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Handler;
 
+use Application\DeskPRO\Chat\UserChat\UserChatManager;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Department;
@@ -11,25 +12,36 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
-use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
+use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\MessengerBundle\Common\TraitUserGet;
 use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Class ChatHandler
+ */
 class ChatHandler
 {
+    use TraitUserGet;
+
     const MESSAGE_TYPE_NEW_MESSAGE = 'chat.message';
-    const CHAT_ENDED               = 'chat.ended';
+    const MESSAGE_ATTAHCMENT       = 'chat.attachment';
+    const CHAT_END                 = 'chat.end';
     const CHAT_SAVE_TICKET         = 'chat.ticket.save';
     const CHAT_USER_TIMEOUT        = 'chat.userTimeout';
     const CHAT_TRANSCRIPT          = 'chat.transcript';
@@ -44,7 +56,8 @@ class ChatHandler
      */
     private $availableCommands = [
         self::MESSAGE_TYPE_NEW_MESSAGE,
-        self::CHAT_ENDED,
+        self::MESSAGE_ATTAHCMENT,
+        self::CHAT_END,
         self::CHAT_USER_TIMEOUT,
         self::CHAT_TRANSCRIPT,
         self::CHAT_RATING,
@@ -100,6 +113,7 @@ class ChatHandler
      * @param MessengerSettingsResolver $settingsResolver
      * @param AttachmentHelper          $attachmentHelper
      * @param TicketStatusDataService   $ticketStatuses
+     * @param ContainerInterface        $container
      */
     public function __construct(
         ChatMapper $mapper,
@@ -108,7 +122,8 @@ class ChatHandler
         BrandStack $brandStack,
         MessengerSettingsResolver $settingsResolver,
         AttachmentHelper $attachmentHelper,
-        TicketStatusDataService $ticketStatuses
+        TicketStatusDataService $ticketStatuses,
+        ContainerInterface $container
     ) {
         $this->chatMapper       = $mapper;
         $this->em               = $em;
@@ -117,6 +132,7 @@ class ChatHandler
         $this->settingsResolver = $settingsResolver;
         $this->attachmentHelper = $attachmentHelper;
         $this->ticketStatuses   = $ticketStatuses;
+        $this->container        = $container;
     }
 
     /**
@@ -151,20 +167,39 @@ class ChatHandler
      * @param ChatConversation $chat
      * @param array            $request
      *
+     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return array
      */
     private function handleChatMessageCommand(ChatConversation $chat, array $request)
     {
-        $message = $this->chatMapper->createChatMessage($request);
+        $message = $this->chatMapper->createChatMessage($request, $chat);
+        $blobIds = (isset($request['blobs'])) ? array_map('intval', $request['blobs'] ?: []) : [];
+        $this->attachmentHelper->processInlineBlobs($message->getContent(), $blobIds);
+
+        return $this->processMessage($message, $chat);
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @return array
+     */
+    private function handleChatAttachmentCommand(ChatConversation $chat, array $request)
+    {
+        $message = $this->chatMapper->createChatAttachment($request, $chat);
+
+        return $this->processMessage($message, $chat);
+    }
+
+    private function processMessage(ChatMessage $message, ChatConversation $chat)
+    {
         $chat->addMessage($message);
         $this->em->persist($message);
         $this->em->persist($chat);
-
-        $blobIds = (isset($request['blobs'])) ? array_map('intval', $request['blobs'] ?: []) : [];
-
-        $this->attachmentHelper->processInlineBlobs($message->getContent(), $blobIds);
 
         $this->em->flush();
 
@@ -214,7 +249,7 @@ class ChatHandler
     {
         $errors = [];
         if (!isset($request['rate'])) {
-            $errors['rate'] = 'parameter wasn\'t sent';
+            $errors['rate'] = 'Rate parameter wasn\'t sent';
         }
         if (!$chat->getDateEnded()) {
             $errors['chat'] = 'Cant\'t rate not ended chat';
@@ -226,10 +261,10 @@ class ChatHandler
 
         $eventData = [];
 
-        if ($request['rate'] === true) {
+        if ((bool) $request['rate'] === true) {
             $chat->setRatingOverall(10);
         } else {
-            $chat->setRatingOverall(1);
+            $chat->setRatingOverall(0);
         }
 
         $eventData['rate'] = $request['rate'];
@@ -263,25 +298,43 @@ class ChatHandler
      */
     private function handleChatTranscriptCommand(ChatConversation $chat, array $request)
     {
-        $chat->setShouldSendTranscript(true);
+        if (!isset($request['transcript'])) {
+            $transcript = true;
+        } else {
+            $transcript = (bool) $request['transcript'];
+        }
+
+        $chat->setShouldSendTranscript($transcript);
+        if (!$transcript) {
+            $this->em->flush();
+
+            return new ApiWrapper($chat);
+        }
 
         $errors = [];
 
-        if (!$chat->getPersonEmail() && (!isset($request['email']) || !trim($request['email']))) {
-            $errors['email'] = 'You have to set email to receive transcript';
-        } elseif (isset($request['email']) && trim($request['email'])) {
-            $chat->setPersonEmail($request['email']);
-        }
-
-        if (isset($request['name']) && trim($request['name'])) {
-            $chat->setPersonName($request['name']);
+        if ($person = $this->getUser()) {
+            $chat->setPerson($person);
+        } else {
+            if (!$chat->getPersonEmail() && (!isset($request['email']) || !trim($request['email']))) {
+                $errors['email'] = 'You have to set email to receive transcript';
+            } elseif (isset($request['email']) && trim($request['email'])) {
+                if (!$person = $this->getPerson($request['email'])) {
+                    $person = new Person();
+                    $person->setEmail($request['email'], false);
+                    if (isset($request['name']) && trim($request['name'])) {
+                        $person->setName($request['name']);
+                    }
+                    $this->em->persist($person);
+                }
+                $chat->setPerson($person);
+            }
         }
 
         if ($errors) {
             throw new MessengerApiException($errors);
         }
 
-        $this->em->persist($chat);
         $this->em->flush();
 
         $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), ChatEvent::CHAT_TRANSCRIPT_EVENT_TYPE));
@@ -297,7 +350,16 @@ class ChatHandler
      */
     private function handleChatTypingStartCommand(ChatConversation $chat, array $request)
     {
-        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), ChatEvent::TYPING_START_EVENT_TYPE));
+        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent(
+            $chat->getId(),
+            ChatEvent::TYPING_START_EVENT_TYPE,
+            [
+                'message' => $request['message'],
+                'origin'  => $request['origin'],
+            ]
+        ));
+
+        $this->eventDispatcher->dispatch(UserChatEvent::USER_TYPING, new UserChatEvent($chat, $request['message']));
 
         return new ApiWrapper($chat);
     }
@@ -332,16 +394,27 @@ class ChatHandler
         $this->eventDispatcher->dispatch(UserChatEvent::USER_TRACK, new UserChatEvent($chat, $trackMsg));
     }
 
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return ApiWrapper
+     */
     private function handleChatTicketSaveCommand(ChatConversation $chat, array $request)
     {
         $ticketRepository = $this->em->getRepository(Ticket::class);
         $ticket           = $ticketRepository->findOneBy(['linked_chat' => $chat]);
         if ($ticket) {
+            $this->endChatTimeout($chat);
+
             return new ApiWrapper($ticket);
         }
 
         $ticket = new Ticket();
-        $person = null;
 
         /** @var DepartmentRepository $departmentRepository */
         $departmentRepository = $this->em->getRepository(Department::class);
@@ -349,23 +422,25 @@ class ChatHandler
         $personRepository = $this->em->getRepository(Person::class);
 
         $errors = [];
-        // try to find person
-        if (isset($request['person_id'])) {
-            $person = $this->em->find(Person::class, $request['person_id']);
-        }
-        if (!$person && isset($request['email'])) {
-            $person = $personRepository->findOneByEmail($request['email']);
-        }
 
-        if (!$person && (!isset($request['email']) || !trim($request['email']))) {
-            $errors['email']     = 'Either email or person_id parameter is required';
-            $errors['person_id'] = 'Either email or person_id parameter is required';
+        if (!$person = $this->getUser($request)) {
+            // try to find person
+            if (isset($request['person_id'])) {
+                $person = $this->em->find(Person::class, $request['person_id']);
+            }
+            if (!$person && isset($request['email'])) {
+                $person = $personRepository->findOneByEmail($request['email']);
+            }
+
+            if (!$person && (!isset($request['email']) || !trim($request['email']))) {
+                $errors['email']     = 'Either email or person_id parameter is required';
+                $errors['person_id'] = 'Either email or person_id parameter is required';
+            }
         }
 
         $department = null;
         if (isset($request['department_id'])) {
-            $department = $departmentRepository->findOneBy(['id' => $request['department_id'], 'is_tickets_enabled' => 1]);
-            if ($department) {
+            if ($departmentRepository->findOneBy(['id' => $request['department_id'], 'is_tickets_enabled' => 1])) {
                 $ticket->setDepartment($department);
             } else {
                 $errors['department_id'] = 'Wrong id, department wasn\'t found';
@@ -411,16 +486,32 @@ class ChatHandler
             $ticketMessage .= '<br/>'.($message->getIsUser() ? 'user: ' : 'agent: ').$message->getContentHtml();
         }
 
-        $subjectPattern = $this->settingsResolver->getSettings(
-            MessengerSettingsResolver::CHAT_TICKET_DEFAULTS_SUBJECT,
-                    $this->brandStack->getActive()->getBrand(),
-                    'Missed chat with {name}'
+        $subjectType = $this->settingsResolver->getSettings(
+            MessengerSettingsResolver::CHAT_TICKET_DEFAULTS_SUBJECT_TYPE,
+            $this->brandStack->getActive()->getBrand(),
+            MessengerChatTicketDefaults::MISSED_CHAT_TICKET_SUBJECT_TYPE_SET
         );
 
-        $subjectPattern = RegexUtils::safePregReplace('#\{[a-zA-Z0-9]+\}#', '%s', $subjectPattern);
+        if ($subjectType === MessengerChatTicketDefaults::MISSED_CHAT_TICKET_SUBJECT_TYPE_SET) {
+            $subjectPattern = $this->settingsResolver->getSettings(
+                MessengerSettingsResolver::CHAT_TICKET_DEFAULTS_SUBJECT,
+                $this->brandStack->getActive()->getBrand(),
+                'Missed chat with {name}'
+            );
+
+            $subject = RegexUtils::safePregReplace('#\{[a-zA-Z0-9]+\}#', '%s', $subjectPattern);
+        } else {
+            $subject = Strings::html2Text($ticketMessage);
+            if (str_word_count($subject) > 5) {
+                $words   = str_word_count($subject, 2);
+                $pos     = Arrays::getNthKey($words, 5);
+                $subject = substr($subject, 0, $pos);
+                $subject = RegexUtils::safePregReplace('#[^a-zA-Z0-9]$#', '', $subject);
+            }
+        }
 
         $ticket
-            ->setSubject(sprintf($subjectPattern, $username))
+            ->setSubject(sprintf($subject, $username))
             ->setDateCreated(new \DateTime())
             ->setCreationSystem(Ticket::CREATED_MESSENGER_UNANSWERED)
             ->setDepartment($department)
@@ -448,9 +539,51 @@ class ChatHandler
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw new MessengerApiException([], 'Failed to create a ticket', 400, $e);
         }
 
+        $this->endChatTimeout($chat);
+
         return new ApiWrapper($ticket);
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @throws \Exception
+     */
+    private function handleChatEndCommand(ChatConversation $chat, array $request = [])
+    {
+        if (!$chat->isEnded()) {
+            /** @var UserChatManager $chatManager */
+            $chatManager = $this->container->getSystemObject('user_chat_manager');
+            $chatManager->endChat($chat, $chat->getPerson(), 'user');
+        }
+    }
+
+    /**
+     * @param $email
+     *
+     * @return mixed
+     */
+    private function getPerson($email)
+    {
+        return $this->em->getRepository(Person::class)->findOneByEmail($email);
+    }
+
+    /**
+     * @param $chat
+     *
+     * @throws \Exception
+     */
+    private function endChatTimeout($chat)
+    {
+        if (!$chat->isEnded()) {
+            /** @var UserChatManager $chatManager */
+            $chatManager = $this->container->getSystemObject('user_chat_manager');
+            $chatManager->waitTimeout($chat);
+        }
     }
 }

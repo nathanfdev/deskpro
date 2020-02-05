@@ -10,6 +10,9 @@ use JMS\Serializer\Annotation as JMS;
  */
 class MessengerTickets
 {
+    const TICKET_DEPARTMENT_OPTION_CHOOSE = 'choose';
+    const TICKET_DEPARTMENT_OPTION_HIDDEN = 'hidden';
+
     /**
      * Are tickets enabled.
      *
@@ -17,7 +20,7 @@ class MessengerTickets
      *
      * @var bool
      */
-    private $enabled = false;
+    private $enabled = true;
 
     /**
      * @JMS\Type("string")
@@ -29,9 +32,17 @@ class MessengerTickets
     /**
      * @JMS\Type("integer")
      *
-     * @var string
+     * @var integer
      */
     private $department;
+
+    /**
+     * @JMS\Type("string")
+     * @JMS\SerializedName("departmentOption")
+     *
+     * @var string
+     */
+    private $departmentOption = self::TICKET_DEPARTMENT_OPTION_CHOOSE;
 
     /**
      * @return string
@@ -89,6 +100,26 @@ class MessengerTickets
     public function setEnabled($enabled)
     {
         $this->enabled = (bool) $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDepartmentOption()
+    {
+        return $this->departmentOption;
+    }
+
+    /**
+     * @param string $departmentOption
+     *
+     * @return $this
+     */
+    public function setDepartmentOption($departmentOption)
+    {
+        $this->departmentOption = $departmentOption;
 
         return $this;
     }

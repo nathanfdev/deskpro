@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -80,7 +74,7 @@ class DownloadsSubscription extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @deprecated use setRootCategoryBrand instead
-     * 
+     *
      * @param bool $root_category
      */
     public function setRootCategory($root_category)
@@ -89,7 +83,6 @@ class DownloadsSubscription extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     *
      * @param \Application\DeskPRO\Entity\Brand $brand
      */
     public function setRootCategoryBrand(Brand $brand = null)

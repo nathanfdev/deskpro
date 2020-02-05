@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\MessengerBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -21,14 +22,35 @@ class UserInfo implements MessengerModelInterface
     private $chats;
 
     /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $email;
+
+    /**
+     * @var int
+     */
+    private $personId;
+
+    /**
      * UserInfo constructor.
      *
      * @param string $visitorId
+     * @param Person $person
      */
-    public function __construct($visitorId)
+    public function __construct($visitorId, Person $person = null)
     {
         $this->visitorId = $visitorId;
         $this->chats     = new ArrayCollection();
+        if ($person) {
+            $this->name     = $person->getDisplayName();
+            $this->personId = $person->getId();
+            $this->email    = $person->getEmailAddress();
+        }
     }
 
     public function toArray()
@@ -36,6 +58,9 @@ class UserInfo implements MessengerModelInterface
         return [
             'visitor_id' => $this->visitorId,
             'chats'      => $this->chats->toArray(),
+            'person_id'  => $this->personId,
+            'email'      => $this->email,
+            'name'       => $this->name,
         ];
     }
 

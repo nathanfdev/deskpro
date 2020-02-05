@@ -1,8 +1,6 @@
 <?php
 
-/**
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -17,6 +15,7 @@ use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use DpSys\LowError\SystemErrorHandler;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -1086,5 +1085,27 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
         }
 
         return 0;
+    }
+
+    public function getExcerptHtml($wordsLimit = 50)
+    {
+        $content = Strings::html2Text($this->getContent());
+        if ($pos = strpos($content, '![more]')) {
+            $excerpt = substr($content, $pos);
+        } elseif ($pos = strpos($content, "\n\n")) {
+            $excerpt = substr($content, 0, $pos);
+        } else {
+            $excerpt = $content;
+        }
+
+        if (str_word_count($excerpt) > $wordsLimit) {
+            $words   = str_word_count($excerpt, 2);
+            $pos     = Arrays::getNthKey($words, $wordsLimit);
+            $excerpt = substr($excerpt, 0, $pos);
+            $excerpt = RegexUtils::safePregReplace('#[^a-zA-Z0-9]$#', '', $excerpt);
+            $excerpt .= '...';
+        }
+
+        return $excerpt;
     }
 }

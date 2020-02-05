@@ -43,7 +43,7 @@ class ChatTypingGenerator extends ChatGenerator
             $name   = $chat->getPersonName() ?: $chat->getPersonEmail() ?: 'user';
         }
 
-        return [
+        $message = [
             'chat'        => $chat->getId(),
             'origin'      => $data['origin'],
             'name'        => $name,
@@ -52,5 +52,11 @@ class ChatTypingGenerator extends ChatGenerator
                 ? $data['date_typing']->format(\DateTime::ISO8601)
                 : date(\DateTime::ISO8601, time()),
         ];
+
+        if (!$isAgent) {
+            $message['message'] = $data['message'];
+        }
+
+        return $message;
     }
 }

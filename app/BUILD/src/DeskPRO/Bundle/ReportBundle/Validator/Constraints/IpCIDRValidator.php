@@ -9,8 +9,6 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
  * Class IpCIDRValidator
- *
- * @package DeskPRO\Bundle\ReportBundle\Validator\Constraints
  */
 class IpCIDRValidator extends IpValidator
 {

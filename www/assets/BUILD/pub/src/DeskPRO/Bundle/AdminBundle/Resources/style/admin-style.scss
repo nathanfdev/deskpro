@@ -6,7 +6,6 @@ $fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
 @import '../../../../../../node_modules/flag-icon-css/sass/flag-icon';
 @import "../../../../../../node_modules/react-select/scss/select";
 @import "../../../../../../node_modules/react-select/scss/components";
-@import '../../../../../../node_modules/@deskpro/react-components/src/styles/main';
 @import '../../../AppBundle/Resources/style/variables';
 @import '../../../AppBundle/Resources/style/widget-modal';
 @import 'email-templates';
@@ -198,12 +197,12 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
 
   .flat-spinner {
     i {
-      display: inline-block;
       background: url('../img/loading-small-flat.gif') center;
       background-size: 15px 15px;
-      width: 15px;
+      display: inline-block;
       height: 15px;
       margin: 0 auto;
+      width: 15px;
     }
   }
 

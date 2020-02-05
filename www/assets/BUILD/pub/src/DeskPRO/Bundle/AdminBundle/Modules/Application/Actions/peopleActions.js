@@ -35,6 +35,12 @@ export const loadAgentGroups = createAction(
   () => dispatch => dispatch(loadAll('AgentGroup'))
 );
 
+export const loadUserGroups = createAction(
+  'ADMIN_LOAD_USER_GROUPS',
+  () => dispatch => dispatch(loadAll('UserGroup'))
+);
+
+
 export const loadTeamAgents = createAction(
   'ADMIN_LOAD_AGENT_TEAM_AGENTS',
   agentTeamId => api.sendGet(`DP_API/people?agent_team=${agentTeamId}`)

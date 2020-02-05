@@ -20,7 +20,7 @@ class ChatTranscript extends EmailBaseType
     /**
      * The chat messages.
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\ChatMessage>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\ChatMessage>")
      *
      * @var ChatMessage[]
      */

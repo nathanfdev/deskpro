@@ -29,10 +29,19 @@ class Blob implements MessengerModelInterface
      */
     public function toArray()
     {
+        $downloadUrl = $this->blob->getDownloadUrl(true);
+
         return [
-            'link'      => $this->blob->getDownloadUrl(true),
-            'blob_id'   => $this->blob->getId(),
-            'blob_auth' => $this->blob->getAuthId(),
+            'link'  => $downloadUrl,
+            'blob'  => [
+                'id'                => $this->blob->getId(),
+                'auth_id'           => $this->blob->getAuthId(),
+                'auth'              => $this->blob->getAuthcode(),
+                'filename'          => $this->blob->getFilename(),
+                'filesize_readable' => $this->blob->getFilesize(),
+                'download_url'      => $downloadUrl,
+                'is_image'          => $this->blob->isImage(),
+            ],
         ];
     }
 }
