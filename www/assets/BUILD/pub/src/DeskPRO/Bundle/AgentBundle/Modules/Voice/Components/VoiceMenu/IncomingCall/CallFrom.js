@@ -65,7 +65,7 @@ class CallFrom extends React.Component {
         <div className="call-from-number" x-ms-format-detection="none">
           {number || 'Unknown number'}
         </div>
-        <div className={classNames({ 'call-from-avatars': possibleCallerPeople.length > 1 })}>
+        <div className={classNames({ 'call-from-avatars': finalPeople.length > 1 })}>
           {finalPeople.map((possiblePerson, key) =>
             <div className="call-from-avatar">
               <Avatar key={key} person={possiblePerson} size={60} />

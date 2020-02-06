@@ -469,7 +469,8 @@ $voice-green-border-color: #47BF61;
         .call-from {
           background-color: #F3FFF5;
           border-bottom: 1px solid $voice-green-border-color;
-          min-height: 80px;
+          height: 260px;
+          overflow-y: auto;
 
           .call-from-number {
             font-weight: 600;
@@ -487,6 +488,7 @@ $voice-green-border-color: #47BF61;
             .call-from-details {
               display: inline-block;
               margin-left: 20px;
+              margin-top: 15px;
               vertical-align: top;
             }
           }
