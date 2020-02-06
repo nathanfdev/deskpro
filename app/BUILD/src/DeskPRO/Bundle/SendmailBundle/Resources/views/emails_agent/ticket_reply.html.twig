@@ -22,8 +22,9 @@
 {% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
-
 	{% set message = ticket_messages|first %}
+	<span class="preheader -emogrifier-keep">{% if message.primary_translation %}{{ message.primary_translation.message|raw }}{% else %}{{ message.message|raw }}{% endif %}</span>
+
 	{% if message.person.is_agent %}
 		{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
 	{% else %}
