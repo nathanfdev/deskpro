@@ -9,8 +9,6 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-
     <h3>{{ phrase('agent.emails.agent_approval_approved') }}</h3>
 
     <h3 class="dp-approval-name">{{ approval.name }} ({{ approval.id }})</h3>
@@ -83,8 +81,6 @@
         </tr>
         </tbody>
     </table>
-
-</container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

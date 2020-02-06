@@ -9,20 +9,18 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{{ phrase('user.emails.community-topic_new-comment', {name: comment.user_display_contact|default('Anonymous') }) }}
+	{{ phrase('user.emails.community-topic_new-comment', {name: comment.user_display_contact|default('Anonymous') }) }}
 
-		<br /><br />
+	<br /><br />
 
-        {{ comment.content_html|raw }}
+	{{ comment.content_html|raw }}
 
-		<br /><br />
+	<br /><br />
 
-		{{ phrase('user.emails.label_view-online') }}:
-		<a href="{{ community_topic_link }}">
-			{{ community_topic_link }}
-		</a>
-	</container>
+	{{ phrase('user.emails.label_view-online') }}:
+	<a href="{{ community_topic_link }}">
+		{{ community_topic_link }}
+	</a>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

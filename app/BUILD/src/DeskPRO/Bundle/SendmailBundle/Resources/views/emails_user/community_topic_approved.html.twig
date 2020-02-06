@@ -9,20 +9,18 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{{ phrase('user.emails.community-topic_thank-you', {'title':tpoic.title}) }}
+	{{ phrase('user.emails.community-topic_thank-you', {'title':tpoic.title}) }}
 
-		<br /><br />
+	<br /><br />
 
-		{{ phrase('user.emails.community-topic_approved') }}
+	{{ phrase('user.emails.community-topic_approved') }}
 
-		<br /><br />
+	<br /><br />
 
-		{{ phrase('user.emails.label_view-online') }}:
-		<a href="{{ community_topic_link }}">
-            {{ community_topic_link }}
-		</a>
-	</container>
+	{{ phrase('user.emails.label_view-online') }}:
+	<a href="{{ community_topic_link }}">
+		{{ community_topic_link }}
+	</a>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

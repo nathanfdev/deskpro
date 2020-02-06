@@ -9,20 +9,18 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
-        <br /><br />
+    <br /><br />
 
-        {{ phrase('user.emails.register-welcome-byagent') }}<br/>
-        <a href="{{ portal_home }}">{{ portal_home }}</a><br/>
+    {{ phrase('user.emails.register-welcome-byagent') }}<br/>
+    <a href="{{ portal_home }}">{{ portal_home }}</a><br/>
 
-        <br/>
+    <br/>
 
-        {% if new_password %}
-            {{ phrase('user.emails.register-password', {password: new_password}) }}<br/>
-        {% endif %}
-    </container>
+    {% if new_password %}
+        {{ phrase('user.emails.register-password', {password: new_password}) }}<br/>
+    {% endif %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

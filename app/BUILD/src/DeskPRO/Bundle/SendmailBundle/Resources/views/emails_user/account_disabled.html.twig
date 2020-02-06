@@ -8,11 +8,10 @@
 {% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
-    <container>
+
         {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}<br>
         <br />
         {{ phrase('user.profile.account_disabled_message') }}
-    </container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

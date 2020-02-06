@@ -10,11 +10,9 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('agent.emails.new_chat_message_from', {name: author.display_name}) }}:
-        <br /><br />
-        {{ chat_message.content_html|safe_link_urls_html|link_agent_short_code_html }}
-    </container>
+    {{ phrase('agent.emails.new_chat_message_from', {name: author.display_name}) }}:
+    <br /><br />
+    {{ chat_message.content_html|safe_link_urls_html|link_agent_short_code_html }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

@@ -9,14 +9,12 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('portal.emails.ticket_validate') }}
+    {{ phrase('portal.emails.ticket_validate') }}
 
-        <br /><br />
+    <br /><br />
 
-        {{ phrase('portal.emails.profile_email_link-validate') }}:
-        {% if verify_url %}<a href="{{ verify_url }}">{{ verify_url }}</a>{% else %}<a href="{{ url_full('user_validate_ticket', {'access_code': access_code}) }}">{{ url_full('user_validate_ticket', {'access_code': access_code}) }}</a>{% endif %}
-    </container>
+    {{ phrase('portal.emails.profile_email_link-validate') }}:
+    {% if verify_url %}<a href="{{ verify_url }}">{{ verify_url }}</a>{% else %}<a href="{{ url_full('user_validate_ticket', {'access_code': access_code}) }}">{{ url_full('user_validate_ticket', {'access_code': access_code}) }}</a>{% endif %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

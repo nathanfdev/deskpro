@@ -9,16 +9,14 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{{ phrase('user.emails.ticket_validate') }}
+	{{ phrase('user.emails.ticket_validate') }}
 
-		<br /><br />
+	<br /><br />
 
-		{{ phrase('user.emails.profile_email_link-validate') }}:
-		<a href="{{ verify_url }}">
-			{{ verify_url }}
-		</a>
-	</container>
+	{{ phrase('user.emails.profile_email_link-validate') }}:
+	<a href="{{ verify_url }}">
+		{{ verify_url }}
+	</a>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

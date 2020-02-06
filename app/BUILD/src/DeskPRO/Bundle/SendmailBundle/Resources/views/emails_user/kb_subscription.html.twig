@@ -17,28 +17,26 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{% if new_articles %}
-			<h1>{{ phrase('user.emails.kb-new-articles', {count: new_articles|length}) }}</h1>
-			<ul>
-				{% for article in new_articles %}
-					<li><a href="{{ url_full('portal_kb_view', {slug: article.slug}) }}">{{ article.title }}</a></li>
-				{% endfor %}
-			</ul>
-		{% endif %}
+	{% if new_articles %}
+		<h1>{{ phrase('user.emails.kb-new-articles', {count: new_articles|length}) }}</h1>
+		<ul>
+			{% for article in new_articles %}
+				<li><a href="{{ url_full('portal_kb_view', {slug: article.slug}) }}">{{ article.title }}</a></li>
+			{% endfor %}
+		</ul>
+	{% endif %}
 
-		{% if updated_articles %}
-			<h1>{{ phrase('user.emails.kb-updated-articles', {count: updated_articles|length}) }}</h1>
-			<ul>
-				{% for article in updated_articles %}
-					<li><a href="{{ url_full('portal_kb_view', {slug: article.slug}) }}">{{ article.title }}</a></li>
-				{% endfor %}
-			</ul>
-		{% endif %}
+	{% if updated_articles %}
+		<h1>{{ phrase('user.emails.kb-updated-articles', {count: updated_articles|length}) }}</h1>
+		<ul>
+			{% for article in updated_articles %}
+				<li><a href="{{ url_full('portal_kb_view', {slug: article.slug}) }}">{{ article.title }}</a></li>
+			{% endfor %}
+		</ul>
+	{% endif %}
 
-		<div class="dp-hr">&nbsp;</div>
-		{{ phrase('user.emails.kb-explain', {deskpro_url: portal_home }) }}
-	</container>
+	<div class="dp-hr">&nbsp;</div>
+	{{ phrase('user.emails.kb-explain', {deskpro_url: portal_home }) }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

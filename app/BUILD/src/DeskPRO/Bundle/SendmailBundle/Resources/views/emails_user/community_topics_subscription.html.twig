@@ -11,17 +11,15 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		<h1>{{ phrase('user.emails.community-updated-items', {count: updated_topics|length}) }}</h1>
-		<ul>
-			{% for topic in updated_topics %}
-				<li><a href="{{ url_full('portal_community_topic_view', {slug: topic.slug}) }}">{{ topic.title }}</a></li>
-			{% endfor %}
-		</ul>
+	<h1>{{ phrase('user.emails.community-updated-items', {count: updated_topics|length}) }}</h1>
+	<ul>
+		{% for topic in updated_topics %}
+			<li><a href="{{ url_full('portal_community_topic_view', {slug: topic.slug}) }}">{{ topic.title }}</a></li>
+		{% endfor %}
+	</ul>
 
-		<div class="dp-hr">&nbsp;</div>
-		{{ phrase('user.emails.community-explain', {deskpro_url: portal_home }) }}
-	</container>
+	<div class="dp-hr">&nbsp;</div>
+	{{ phrase('user.emails.community-explain', {deskpro_url: portal_home }) }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

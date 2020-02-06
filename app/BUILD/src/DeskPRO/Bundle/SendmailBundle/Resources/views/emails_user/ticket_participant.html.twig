@@ -9,16 +9,14 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{% if is_first %}
-			{{ phrase('portal.emails.ticket_cc-new', {'name':ticket.person.display_name_user}) }}
-			<br /><br />
-		{% endif %}
+	{% if is_first %}
+		{{ phrase('portal.emails.ticket_cc-new', {'name':ticket.person.display_name_user}) }}
+		<br /><br />
+	{% endif %}
 
-		{% for message in ticket_messages %}
-			{{ message.message|raw }}
-		{% endfor %}
-	</container>
+	{% for message in ticket_messages %}
+		{{ message.message|raw }}
+	{% endfor %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 
