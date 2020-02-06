@@ -66,8 +66,6 @@ class ChatMapper
             $errors['blobs'] = 'Blobs should be an array';
         }
 
-        $message->setMetadata(['uuid' => $this->getUuid($data)]);
-
         if (isset($data['message']) && trim($data['message'])) {
             $message->setContent($this->cleanText($data['message']))->setIsHtml(true);
         } else {
@@ -92,6 +90,8 @@ class ChatMapper
                 ChatMessage::ORIGIN_AGENT
             );
         }
+
+        $message->setMetadata(['uuid' => $this->getUuid($data), 'is_user_message' => $message->getIsUser()]);
 
         if ($errors) {
             throw new MessengerApiException($errors);
