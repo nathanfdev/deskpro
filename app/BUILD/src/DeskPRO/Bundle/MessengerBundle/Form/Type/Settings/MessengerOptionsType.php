@@ -7,7 +7,6 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptions;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -40,11 +39,7 @@ class MessengerOptionsType extends AbstractType
                 ],
 
             ])
-            ->add('title', TextType::class)
-            ->add('subtext', TextType::class)
-            ->add('tickets', MessengerOptionsTicketsType::class)
             ->add('proactive', MessengerOptionsProactiveType::class)
-            ->add('chat', MessengerChatOptionsType::class)
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);

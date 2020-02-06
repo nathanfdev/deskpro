@@ -2,13 +2,13 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Form\Type\Settings;
 
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsTickets;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTicketsOptions;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MessengerOptionsTicketsType extends AbstractType
+class MessengerTicketsOptionsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -28,7 +28,7 @@ class MessengerOptionsTicketsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => MessengerOptionsTickets::class,
+            'data_class' => MessengerTicketsOptions::class,
         ]);
     }
 }

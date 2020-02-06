@@ -134,17 +134,16 @@ class AdminController extends AbstractBrandAwareSettingsController
     protected function persistModel(AbstractBrandAwareSettings $model)
     {
         $brand                       = $model->getBrand();
+        $messengerWidget             = $model->getWidget();
         $messengerEmbed              = $model->getEmbed();
         $messengerChat               = $model->getChat();
         $messengerChatOptions        = $model->getChat()->getOptions();
-        $messengerChatTicketDefaults = $messengerChat->getTicketDefaults();
         $messengerChatPreChatForm    = $messengerChat->getPreChatForm();
-        $messengerWidget             = $model->getWidget();
-        $messengerOptions            = $model->getMessenger();
-        $optionsTickets              = $messengerOptions->getTickets();
-        $optionsProactive            = $messengerOptions->getProactive();
-        $optionsChat                 = $messengerOptions->getChat();
+        $messengerChatTicketDefaults = $messengerChat->getTicketDefaults();
         $messengerTickets            = $model->getTickets();
+        $messengerTicketsOptions     = $messengerTickets->getOptions();
+        $messengerOptions            = $model->getMessenger();
+        $optionsProactive            = $messengerOptions->getProactive();
 
         if (
             !$messengerTickets->isEnabled() &&
@@ -200,9 +199,9 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::TICKETS_DEPARTMENT_OPTION, $messengerTickets->getDepartmentOption(), $brand)
 
             // Tickets block config
-            ->updateSetting(MSR::OPTIONS_TICKETS_TITLE, $optionsTickets->getTitle(), $brand)
-            ->updateSetting(MSR::OPTIONS_TICKETS_BUTTON_TEXT, $optionsTickets->getButtonText(), $brand)
-            ->updateSetting(MSR::OPTIONS_TICKETS_DESCRIPTION, $optionsTickets->getDescription(), $brand)
+            ->updateSetting(MSR::TICKETS_OPTIONS_TITLE, $messengerTicketsOptions->getTitle(), $brand)
+            ->updateSetting(MSR::TICKETS_OPTIONS_BUTTON_TEXT, $messengerTicketsOptions->getButtonText(), $brand)
+            ->updateSetting(MSR::TICKETS_OPTIONS_DESCRIPTION, $messengerTicketsOptions->getDescription(), $brand)
 
             // These are proactive, defenitely.
             ->updateSetting(MSR::OPTIONS_AUTOSTART, $messengerOptions->isAutoStart(), $brand)

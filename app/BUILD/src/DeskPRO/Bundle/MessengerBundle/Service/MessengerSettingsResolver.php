@@ -13,9 +13,9 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerEmbed;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsProactive;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTicketsOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use Doctrine\ORM\EntityManager;
@@ -26,15 +26,11 @@ use Orb\Util\Env;
  */
 class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
-    // just fo the bc and code reuse
-    const JWT_SECRET              = WidgetSettingsResolver::JWT_SECRET;
-    const EMBED_ENABLED_ON_PORTAL = 'messenger.embed.show_on_portal';
-    const EMBED_AUTHORIZE_DOMAINS = 'messenger.embed.authorize_domains';
-
-    const TICKETS_ENABLED           = 'messenger.tickets.enabled';
-    const TICKETS_SUBJECT           = 'messenger.tickets.subject';
-    const TICKETS_DEPARTMENT        = 'messenger.tickets.department';
-    const TICKETS_DEPARTMENT_OPTION = 'messenger.tickets.department_option';
+    const WIDGET_PRIMARY_COLOR = 'messenger.widget.primary_color';
+    const WIDGET_BG_COLOR      = 'messenger.widget.bg_color';
+    const WIDGET_TEXT_COLOR    = 'messenger.widget.text_color';
+    const WIDGET_POSITION      = 'messenger.widget.position';
+    const WIDGET_GREETING      = 'messenger.widget.greeting';
 
     const CHAT_ENABLED              = 'messenger.chat.enabled';
     const CHAT_DEFAULT_DEPARTMENT   = 'messenger.chat.department';
@@ -63,17 +59,9 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const PRE_CHAT_FORM_FORM_MESSAGE_ENABLED = 'messenger.chat.pre_chat_form.form_message_enabled';
     const PRE_CHAT_FORM_FORM_MESSAGE         = 'messenger.chat.pre_chat_form.form_message';
 
-    const WIDGET_PRIMARY_COLOR = 'messenger.widget.primary_color';
-    const WIDGET_BG_COLOR      = 'messenger.widget.bg_color';
-    const WIDGET_TEXT_COLOR    = 'messenger.widget.text_color';
-    const WIDGET_POSITION      = 'messenger.widget.position';
-    const WIDGET_GREETING      = 'messenger.widget.greeting';
-
     const OPTIONS_AUTOSTART         = 'messenger.options.autostart';
     const OPTIONS_AUTOSTART_TIMEOUT = 'messenger.options.autostart_timeout';
     const OPTIONS_AUTOSTART_STYLE   = 'messenger.options.autostart_style';
-    const OPTIONS_SUBTEXT           = 'messenger.options.subtext';
-    const OPTIONS_TITLE             = 'messenger.options.title';
 
     const OPTIONS_PROACTIVE_GREETING_TITLE    = 'messenger.options.proactive.greeting_title';
     const OPTIONS_PROACTIVE_TITLE             = 'messenger.options.proactive.title';
@@ -81,9 +69,19 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const OPTIONS_PROACTIVE_INPUT_PLACEHOLDER = 'messenger.options.proactive.input_placeholder';
     const OPTIONS_PROACTIVE_DESCRIPTION       = 'messenger.options.proactive.description';
 
-    const OPTIONS_TICKETS_TITLE       = 'messenger.options.tickets.title';
-    const OPTIONS_TICKETS_BUTTON_TEXT = 'messenger.options.tickets.button_text';
-    const OPTIONS_TICKETS_DESCRIPTION = 'messenger.options.tickets.description';
+    const TICKETS_ENABLED           = 'messenger.tickets.enabled';
+    const TICKETS_SUBJECT           = 'messenger.tickets.subject';
+    const TICKETS_DEPARTMENT        = 'messenger.tickets.department';
+    const TICKETS_DEPARTMENT_OPTION = 'messenger.tickets.department_option';
+
+    const TICKETS_OPTIONS_TITLE       = 'messenger.tickets.options.title';
+    const TICKETS_OPTIONS_BUTTON_TEXT = 'messenger.tickets.options.button_text';
+    const TICKETS_OPTIONS_DESCRIPTION = 'messenger.tickets.options.description';
+
+    // just fo the bc and code reuse
+    const JWT_SECRET              = WidgetSettingsResolver::JWT_SECRET;
+    const EMBED_ENABLED_ON_PORTAL = 'messenger.embed.show_on_portal';
+    const EMBED_AUTHORIZE_DOMAINS = 'messenger.embed.authorize_domains';
 
     /**
      * @var EntityManager
@@ -154,7 +152,8 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setSubject($this->getSettings(self::TICKETS_SUBJECT, $brand, $mTickets->getSubject()))
             ->setDepartment($this->getSettings(self::TICKETS_DEPARTMENT, $brand, $this->getDefaultDepartment('ticket')))
             ->setDepartmentOption($this->getSettings(self::TICKETS_DEPARTMENT_OPTION, $brand, $mTickets->getDepartmentOption()))
-            ;
+            ->setOptions($this->getMessengerTicketsOptions($brand))
+        ;
     }
 
     /**
@@ -251,7 +250,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setAutoStartTimeout($this->getSettings(self::OPTIONS_AUTOSTART_TIMEOUT, $brand, $mOptions->getAutoStartTimeout()))
             ->setAutoStartStyle($this->getSettings(self::OPTIONS_AUTOSTART_STYLE, $brand, $mOptions->getAutoStartStyle()))
             ->setProactive($this->getMessengerOptionsProactive($brand))
-            ->setTickets($this->getMessengerOptionsTickets($brand))
         ;
     }
 
@@ -293,17 +291,17 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * @param Brand $brand
      *
-     * @return MessengerOptionsTickets
+     * @return MessengerTicketsOptions
      */
-    protected function getMessengerOptionsTickets(Brand $brand)
+    protected function getMessengerTicketsOptions(Brand $brand)
     {
-        $mOptionsTickets = new MessengerOptionsTickets();
+        $messengerTicketsOptions = new MessengerTicketsOptions();
 
-        return $mOptionsTickets
-            ->setTitle($this->getSettings(self::OPTIONS_TICKETS_TITLE, $brand, $mOptionsTickets->getTitle()))
-            ->setButtonText($this->getSettings(self::OPTIONS_TICKETS_BUTTON_TEXT, $brand, $mOptionsTickets->getButtonText()))
-            ->setDescription($this->getSettings(self::OPTIONS_TICKETS_DESCRIPTION, $brand, $mOptionsTickets->getDescription()))
-            ;
+        return $messengerTicketsOptions
+            ->setTitle($this->getSettings(self::TICKETS_OPTIONS_TITLE, $brand, $messengerTicketsOptions->getTitle()))
+            ->setButtonText($this->getSettings(self::TICKETS_OPTIONS_BUTTON_TEXT, $brand, $messengerTicketsOptions->getButtonText()))
+            ->setDescription($this->getSettings(self::TICKETS_OPTIONS_DESCRIPTION, $brand, $messengerTicketsOptions->getDescription()))
+        ;
     }
 
     /**

@@ -68,16 +68,6 @@ class MessengerOptions
     private $proactive;
 
     /**
-     * Advanced chat options.
-     *
-     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsTickets")
-     * @Assert\Valid()
-     *
-     * @var MessengerOptionsTickets
-     */
-    private $tickets;
-
-    /**
      * @return bool
      */
     public function isAutoStart()
@@ -158,18 +148,6 @@ class MessengerOptions
     }
 
     /**
-     * @param string $subtext
-     *
-     * @return $this
-     */
-    public function setSubtext($subtext)
-    {
-        $this->subtext = $subtext;
-
-        return $this;
-    }
-
-    /**
      * @return MessengerOptionsProactive
      */
     public function getProactive()
@@ -185,26 +163,6 @@ class MessengerOptions
     public function setProactive(MessengerOptionsProactive $proactive)
     {
         $this->proactive = $proactive;
-
-        return $this;
-    }
-
-    /**
-     * @return MessengerOptionsTickets
-     */
-    public function getTickets()
-    {
-        return $this->tickets;
-    }
-
-    /**
-     * @param MessengerOptionsTickets $tickets
-     *
-     * @return $this
-     */
-    public function setTickets(MessengerOptionsTickets $tickets)
-    {
-        $this->tickets = $tickets;
 
         return $this;
     }
