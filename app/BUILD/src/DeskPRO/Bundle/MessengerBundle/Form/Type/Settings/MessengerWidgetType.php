@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Form\Type\Settings;
 
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerStyles;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class MessengerStylesType extends AbstractType
+class MessengerWidgetType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -21,11 +21,12 @@ class MessengerStylesType extends AbstractType
             ->add('primaryColor', TextType::class)
             ->add('backgroundColor', TextType::class)
             ->add('textColor', TextType::class)
+            ->add('greetingTitle', TextType::class)
             ->add('position', ChoiceType::class, [
                 'required' => true,
                 'choices'  => [
-                    MessengerStyles::POSITION_LEFT,
-                    MessengerStyles::POSITION_RIGHT,
+                    MessengerWidget::POSITION_LEFT,
+                    MessengerWidget::POSITION_RIGHT,
                 ],
                 'choices_as_values' => true,
                 'constraints'       => [
@@ -42,7 +43,7 @@ class MessengerStylesType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => MessengerStyles::class,
+            'data_class' => MessengerWidget::class,
         ]);
     }
 }

@@ -54,12 +54,12 @@ class MessengerSettings extends AbstractBrandAwareSettings
     /**
      * Few style options.
      *
-     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerStyles")
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget")
      * @Assert\Valid()
      *
-     * @var MessengerStyles
+     * @var MessengerWidget
      */
-    private $styles;
+    private $widget;
 
     /**
      * @return MessengerEmbed
@@ -142,21 +142,21 @@ class MessengerSettings extends AbstractBrandAwareSettings
     }
 
     /**
-     * @return MessengerStyles
+     * @return MessengerWidget
      */
-    public function getStyles()
+    public function getWidget()
     {
-        return $this->styles;
+        return $this->widget;
     }
 
     /**
-     * @param MessengerStyles $styles
+     * @param MessengerWidget $widget
      *
      * @return $this
      */
-    public function setStyles(MessengerStyles $styles)
+    public function setWidget(MessengerWidget $widget)
     {
-        $this->styles = $styles;
+        $this->widget = $widget;
 
         return $this;
     }

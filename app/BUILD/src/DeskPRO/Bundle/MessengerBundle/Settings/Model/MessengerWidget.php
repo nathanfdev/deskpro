@@ -5,9 +5,9 @@ namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class MessengerStyles.
+ * Class MessengerSettingsWidget.
  */
-class MessengerStyles
+class MessengerWidget
 {
     const POSITION_RIGHT = 'right';
     const POSITION_LEFT  = 'left';
@@ -42,6 +42,23 @@ class MessengerStyles
      */
     private $textColor = '#ffffff';
 
+    /**
+     * Greeting text.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("greetingTitle")
+     *
+     * @var string
+     */
+    private $greetingTitle = 'Get in Touch';
+
+    /**
+     * Widget position
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
     private $position = self::POSITION_RIGHT;
 
     /**
@@ -120,6 +137,26 @@ class MessengerStyles
     public function setPosition($position)
     {
         $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGreetingTitle()
+    {
+        return $this->greetingTitle;
+    }
+
+    /**
+     * @param string $greetingTitle
+     *
+     * @return $this
+     */
+    public function setGreetingTitle($greetingTitle)
+    {
+        $this->greetingTitle = $greetingTitle;
 
         return $this;
     }

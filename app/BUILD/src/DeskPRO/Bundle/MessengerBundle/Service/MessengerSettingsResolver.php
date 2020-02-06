@@ -15,8 +15,8 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsChat;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsProactive;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerStyles;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Env;
@@ -59,10 +59,11 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const PRE_CHAT_FORM_FORM_MESSAGE_ENABLED = 'messenger.chat.pre_chat_form.form_message_enabled';
     const PRE_CHAT_FORM_FORM_MESSAGE         = 'messenger.chat.pre_chat_form.form_message';
 
-    const STYLE_PRIMARY_COLOR = 'messenger.styles.primary_color';
-    const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
-    const STYLE_TEXT_COLOR    = 'messenger.styles.text_color';
-    const STYLE_POSITION      = 'messenger.styles.position';
+    const WIDGET_PRIMARY_COLOR = 'messenger.widget.primary_color';
+    const WIDGET_BG_COLOR      = 'messenger.widget.bg_color';
+    const WIDGET_TEXT_COLOR    = 'messenger.widget.text_color';
+    const WIDGET_POSITION      = 'messenger.widget.position';
+    const WIDGET_GREETING      = 'messenger.widget.greeting';
 
     const OPTIONS_AUTOSTART         = 'messenger.options.autostart';
     const OPTIONS_AUTOSTART_TIMEOUT = 'messenger.options.autostart_timeout';
@@ -118,7 +119,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         return $model
             ->setBrand($brand)
             ->setEmbed($this->getMessengerEmbedSettings($brand))
-            ->setStyles($this->getMessengerStyles($brand))
+            ->setWidget($this->getMessengerWidget($brand))
             ->setTickets($this->getMessengerTickets($brand))
             ->setChat($this->getMessengerChat($brand))
             ->setMessenger($this->getMessengerOptions($brand))
@@ -222,18 +223,19 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * @param Brand $brand
      *
-     * @return MessengerStyles
+     * @return MessengerWidget
      */
-    protected function getMessengerStyles(Brand $brand)
+    protected function getMessengerWidget(Brand $brand)
     {
-        $mStyles = new MessengerStyles();
+        $messengerWidget = new MessengerWidget();
 
-        return $mStyles
-            ->setPrimaryColor($this->getSettings(self::STYLE_PRIMARY_COLOR, $brand, $mStyles->getPrimaryColor()))
-            ->setBackgroundColor($this->getSettings(self::STYLE_BG_COLOR, $brand, $mStyles->getBackgroundColor()))
-            ->setTextColor($this->getSettings(self::STYLE_TEXT_COLOR, $brand, $mStyles->getTextColor()))
-            ->setPosition($this->getSettings(self::STYLE_POSITION, $brand, $mStyles->getPosition()))
-            ;
+        return $messengerWidget
+            ->setPrimaryColor($this->getSettings(self::WIDGET_PRIMARY_COLOR, $brand, $messengerWidget->getPrimaryColor()))
+            ->setBackgroundColor($this->getSettings(self::WIDGET_BG_COLOR, $brand, $messengerWidget->getBackgroundColor()))
+            ->setTextColor($this->getSettings(self::WIDGET_TEXT_COLOR, $brand, $messengerWidget->getTextColor()))
+            ->setPosition($this->getSettings(self::WIDGET_POSITION, $brand, $messengerWidget->getPosition()))
+            ->setGreetingTitle($this->getSettings(self::WIDGET_GREETING, $brand, $messengerWidget->getGreetingTitle()))
+        ;
     }
 
     /**

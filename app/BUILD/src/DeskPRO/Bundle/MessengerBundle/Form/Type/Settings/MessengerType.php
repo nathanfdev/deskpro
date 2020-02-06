@@ -20,7 +20,7 @@ class MessengerType extends AbstractType
             ->add('chat', MessengerChatType::class, ['brand' => $options['brand']])
             ->add('tickets', MessengerTicketsType::class, ['brand' => $options['brand']])
             ->add('messenger', MessengerOptionsType::class)
-            ->add('styles', MessengerStylesType::class)
+            ->add('widget', MessengerWidgetType::class)
         ;
     }
 

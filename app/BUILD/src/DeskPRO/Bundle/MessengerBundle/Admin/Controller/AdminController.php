@@ -138,7 +138,7 @@ class AdminController extends AbstractBrandAwareSettingsController
         $messengerChat               = $model->getChat();
         $messengerChatTicketDefaults = $messengerChat->getTicketDefaults();
         $messengerChatPreChatForm    = $messengerChat->getPreChatForm();
-        $messengerStyles             = $model->getStyles();
+        $messengerWidget             = $model->getWidget();
         $messengerOptions            = $model->getMessenger();
         $optionsTickets              = $messengerOptions->getTickets();
         $optionsProactive            = $messengerOptions->getProactive();
@@ -185,10 +185,11 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::TICKETS_SUBJECT, $messengerTickets->getSubject(), $brand)
             ->updateSetting(MSR::TICKETS_DEPARTMENT_OPTION, $messengerTickets->getDepartmentOption(), $brand)
 
-            ->updateSetting(MSR::STYLE_PRIMARY_COLOR, $messengerStyles->getPrimaryColor(), $brand)
-            ->updateSetting(MSR::STYLE_BG_COLOR, $messengerStyles->getBackgroundColor(), $brand)
-            ->updateSetting(MSR::STYLE_TEXT_COLOR, $messengerStyles->getTextColor(), $brand)
-            ->updateSetting(MSR::STYLE_POSITION, $messengerStyles->getPosition(), $brand)
+            ->updateSetting(MSR::WIDGET_PRIMARY_COLOR, $messengerWidget->getPrimaryColor(), $brand)
+            ->updateSetting(MSR::WIDGET_BG_COLOR, $messengerWidget->getBackgroundColor(), $brand)
+            ->updateSetting(MSR::WIDGET_TEXT_COLOR, $messengerWidget->getTextColor(), $brand)
+            ->updateSetting(MSR::WIDGET_POSITION, $messengerWidget->getPosition(), $brand)
+            ->updateSetting(MSR::WIDGET_GREETING, $messengerWidget->getGreetingTitle(), $brand)
 
             ->updateSetting(MSR::OPTIONS_TITLE, $messengerOptions->getTitle(), $brand)
             ->updateSetting(MSR::OPTIONS_AUTOSTART, $messengerOptions->isAutoStart(), $brand)
