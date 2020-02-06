@@ -44,12 +44,12 @@ class MessengerSettings extends AbstractBrandAwareSettings
     /**
      * Advanced messenger options.
      *
-     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptions")
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactive")
      * @Assert\Valid()
      *
-     * @var MessengerOptions
+     * @var MessengerProactive
      */
-    private $messenger;
+    private $proactive;
 
     /**
      * Few style options.
@@ -60,6 +60,16 @@ class MessengerSettings extends AbstractBrandAwareSettings
      * @var MessengerWidget
      */
     private $widget;
+
+    /**
+     * This is Deskpro global setting need to be serialized with all other settings.
+     *
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("maxFileSize")
+     *
+     * @var
+     */
+    private $maxFileSize;
 
     /**
      * @return MessengerEmbed
@@ -122,21 +132,21 @@ class MessengerSettings extends AbstractBrandAwareSettings
     }
 
     /**
-     * @return MessengerOptions
+     * @return MessengerProactive
      */
-    public function getMessenger()
+    public function getProactive()
     {
-        return $this->messenger;
+        return $this->proactive;
     }
 
     /**
-     * @param MessengerOptions $messenger
+     * @param MessengerProactive $proactive
      *
      * @return $this
      */
-    public function setMessenger(MessengerOptions $messenger)
+    public function setProactive(MessengerProactive $proactive)
     {
-        $this->messenger = $messenger;
+        $this->proactive = $proactive;
 
         return $this;
     }
@@ -157,6 +167,26 @@ class MessengerSettings extends AbstractBrandAwareSettings
     public function setWidget(MessengerWidget $widget)
     {
         $this->widget = $widget;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaxFileSize()
+    {
+        return $this->maxFileSize;
+    }
+
+    /**
+     * @param mixed $maxFileSize
+     *
+     * @return $this
+     */
+    public function setMaxFileSize($maxFileSize)
+    {
+        $this->maxFileSize = $maxFileSize;
 
         return $this;
     }

@@ -11,8 +11,8 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChat;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerEmbed;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptions;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsProactive;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactive;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactiveOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTicketsOptions;
@@ -59,15 +59,15 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const PRE_CHAT_FORM_FORM_MESSAGE_ENABLED = 'messenger.chat.pre_chat_form.form_message_enabled';
     const PRE_CHAT_FORM_FORM_MESSAGE         = 'messenger.chat.pre_chat_form.form_message';
 
-    const OPTIONS_AUTOSTART         = 'messenger.options.autostart';
-    const OPTIONS_AUTOSTART_TIMEOUT = 'messenger.options.autostart_timeout';
-    const OPTIONS_AUTOSTART_STYLE   = 'messenger.options.autostart_style';
+    const PROACTIVE_AUTOSTART = 'messenger.proactive.autostart';
+    const PROACTIVE_TIMEOUT   = 'messenger.proactive.autostart_timeout';
+    const PROACTIVE_STYLE     = 'messenger.proactive.autostart_style';
 
-    const OPTIONS_PROACTIVE_GREETING_TITLE    = 'messenger.options.proactive.greeting_title';
-    const OPTIONS_PROACTIVE_TITLE             = 'messenger.options.proactive.title';
-    const OPTIONS_PROACTIVE_BUTTON_TEXT       = 'messenger.options.proactive.button_text';
-    const OPTIONS_PROACTIVE_INPUT_PLACEHOLDER = 'messenger.options.proactive.input_placeholder';
-    const OPTIONS_PROACTIVE_DESCRIPTION       = 'messenger.options.proactive.description';
+    const PROACTIVE_OPTIONS_GREETING_TITLE    = 'messenger.proactive.options.greeting_title';
+    const PROACTIVE_OPTIONS_TITLE             = 'messenger.proactive.options.title';
+    const PROACTIVE_OPTIONS_BUTTON_TEXT       = 'messenger.proactive.options.button_text';
+    const PROACTIVE_OPTIONS_INPUT_PLACEHOLDER = 'messenger.proactive.options.input_placeholder';
+    const PROACTIVE_OPTIONS_DESCRIPTION       = 'messenger.proactive.options.description';
 
     const TICKETS_ENABLED           = 'messenger.tickets.enabled';
     const TICKETS_SUBJECT           = 'messenger.tickets.subject';
@@ -113,11 +113,12 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         return $model
             ->setBrand($brand)
+            ->setMaxFileSize(min(Env::getEffectiveMaxUploadSize(), $this->getSettings('core.attach_user_maxsize', null, 1024 * 1024 * 10)))
             ->setWidget($this->getMessengerWidget($brand))
             ->setChat($this->getMessengerChat($brand))
             ->setEmbed($this->getMessengerEmbedSettings($brand))
             ->setTickets($this->getMessengerTickets($brand))
-            ->setMessenger($this->getMessengerOptions($brand))
+            ->setProactive($this->getMessengerProactive($brand))
         ;
     }
 
@@ -238,18 +239,17 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * @param Brand $brand
      *
-     * @return MessengerOptions
+     * @return MessengerProactive
      */
-    protected function getMessengerOptions(Brand $brand)
+    protected function getMessengerProactive(Brand $brand)
     {
-        $mOptions = new MessengerOptions();
+        $messengerProactive = new MessengerProactive();
 
-        return $mOptions
-            ->setMaxFileSize(min(Env::getEffectiveMaxUploadSize(), $this->getSettings('core.attach_user_maxsize', null, 1024 * 1024 * 10)))
-            ->setAutoStart($this->getSettings(self::OPTIONS_AUTOSTART, $brand, $mOptions->isAutoStart()))
-            ->setAutoStartTimeout($this->getSettings(self::OPTIONS_AUTOSTART_TIMEOUT, $brand, $mOptions->getAutoStartTimeout()))
-            ->setAutoStartStyle($this->getSettings(self::OPTIONS_AUTOSTART_STYLE, $brand, $mOptions->getAutoStartStyle()))
-            ->setProactive($this->getMessengerOptionsProactive($brand))
+        return $messengerProactive
+            ->setAutoStart($this->getSettings(self::PROACTIVE_AUTOSTART, $brand, $messengerProactive->isAutoStart()))
+            ->setAutoStartTimeout($this->getSettings(self::PROACTIVE_TIMEOUT, $brand, $messengerProactive->getAutoStartTimeout()))
+            ->setAutoStartStyle($this->getSettings(self::PROACTIVE_STYLE, $brand, $messengerProactive->getAutoStartStyle()))
+            ->setOptions($this->getMessengerProactiveOptions($brand))
         ;
     }
 
@@ -273,18 +273,18 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * @param Brand $brand
      *
-     * @return MessengerOptionsProactive
+     * @return MessengerProactiveOptions
      */
-    protected function getMessengerOptionsProactive(Brand $brand)
+    protected function getMessengerProactiveOptions(Brand $brand)
     {
-        $mOptionsProactive = new MessengerOptionsProactive();
+        $mOptionsProactive = new MessengerProactiveOptions();
 
         return $mOptionsProactive
-            ->setGreetingTitle($this->getSettings(self::OPTIONS_PROACTIVE_GREETING_TITLE, $brand, $mOptionsProactive->getGreetingTitle()))
-            ->setTitle($this->getSettings(self::OPTIONS_PROACTIVE_TITLE, $brand, $mOptionsProactive->getTitle()))
-            ->setButtonText($this->getSettings(self::OPTIONS_PROACTIVE_BUTTON_TEXT, $brand, $mOptionsProactive->getButtonText()))
-            ->setInputPlaceholder($this->getSettings(self::OPTIONS_PROACTIVE_INPUT_PLACEHOLDER, $brand, $mOptionsProactive->getInputPlaceholder()))
-            ->setDescription($this->getSettings(self::OPTIONS_PROACTIVE_DESCRIPTION, $brand, $mOptionsProactive->getDescription()))
+            ->setGreetingTitle($this->getSettings(self::PROACTIVE_OPTIONS_GREETING_TITLE, $brand, $mOptionsProactive->getGreetingTitle()))
+            ->setTitle($this->getSettings(self::PROACTIVE_OPTIONS_TITLE, $brand, $mOptionsProactive->getTitle()))
+            ->setButtonText($this->getSettings(self::PROACTIVE_OPTIONS_BUTTON_TEXT, $brand, $mOptionsProactive->getButtonText()))
+            ->setInputPlaceholder($this->getSettings(self::PROACTIVE_OPTIONS_INPUT_PLACEHOLDER, $brand, $mOptionsProactive->getInputPlaceholder()))
+            ->setDescription($this->getSettings(self::PROACTIVE_OPTIONS_DESCRIPTION, $brand, $mOptionsProactive->getDescription()))
             ;
     }
 

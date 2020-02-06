@@ -5,9 +5,9 @@ namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class MessengerOptionsProactive.
+ * Class MessengerProactiveOptions.
  */
-class MessengerOptionsProactive
+class MessengerProactiveOptions
 {
     /**
      * A title.

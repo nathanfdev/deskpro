@@ -2,13 +2,13 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Form\Type\Settings;
 
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsProactive;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactiveOptions;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MessengerOptionsProactiveType extends AbstractType
+class MessengerProactiveOptionsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -30,7 +30,7 @@ class MessengerOptionsProactiveType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => MessengerOptionsProactive::class,
+            'data_class' => MessengerProactiveOptions::class,
         ]);
     }
 }

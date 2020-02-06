@@ -6,9 +6,9 @@ use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class MessengerOptions.
+ * Class MessengerProactive.
  */
-class MessengerOptions
+class MessengerProactive
 {
     const STYLE_AVATAR_TEXT_BUTTON = 'avatar-text-button';
     const STYLE_AVATAR_TEXT_INPUT  = 'avatar-text-input';
@@ -48,24 +48,14 @@ class MessengerOptions
     private $autoStartStyle = self::STYLE_AVATAR_TEXT_BUTTON;
 
     /**
-     * This is Deskpro global setting need to be serialized with all other settings.
-     *
-     * @JMS\Type("integer")
-     * @JMS\SerializedName("maxFileSize")
-     *
-     * @var
-     */
-    private $maxFileSize;
-
-    /**
      * Advanced proactive options.
      *
-     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsProactive")
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactiveOptions")
      * @Assert\Valid()
      *
-     * @var MessengerOptionsProactive
+     * @var MessengerProactiveOptions
      */
-    private $proactive;
+    private $options;
 
     /**
      * @return bool
@@ -128,41 +118,21 @@ class MessengerOptions
     }
 
     /**
-     * @param int $fileSize
-     *
-     * @return $this;
+     * @return MessengerProactiveOptions
      */
-    public function setMaxFileSize($fileSize)
+    public function getOptions()
     {
-        $this->maxFileSize = (int) $fileSize;
-
-        return $this;
+        return $this->options;
     }
 
     /**
-     * @return int
-     */
-    public function getMaxFileSize()
-    {
-        return $this->maxFileSize;
-    }
-
-    /**
-     * @return MessengerOptionsProactive
-     */
-    public function getProactive()
-    {
-        return $this->proactive;
-    }
-
-    /**
-     * @param MessengerOptionsProactive $proactive
+     * @param MessengerProactiveOptions $options
      *
      * @return $this
      */
-    public function setProactive(MessengerOptionsProactive $proactive)
+    public function setOptions(MessengerProactiveOptions $options)
     {
-        $this->proactive = $proactive;
+        $this->options = $options;
 
         return $this;
     }

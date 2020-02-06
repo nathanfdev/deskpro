@@ -114,8 +114,8 @@ class AdminController extends AbstractBrandAwareSettingsController
     {
         $form        = $this->createForm($this->getType(), $model, ['brand' => $model->getBrand()]);
         $requestData = $request->request->all();
-        if (isset($requestData['messenger']['maxFileSize'])) {
-            unset($requestData['messenger']['maxFileSize']);
+        if (isset($requestData['maxFileSize'])) {
+            unset($requestData['maxFileSize']);
         }
         $form->submit($requestData);
         if (!$form->isValid()) {
@@ -142,8 +142,8 @@ class AdminController extends AbstractBrandAwareSettingsController
         $messengerChatTicketDefaults = $messengerChat->getTicketDefaults();
         $messengerTickets            = $model->getTickets();
         $messengerTicketsOptions     = $messengerTickets->getOptions();
-        $messengerOptions            = $model->getMessenger();
-        $optionsProactive            = $messengerOptions->getProactive();
+        $messengerProactive          = $model->getProactive();
+        $messengerProactiveOptions   = $messengerProactive->getOptions();
 
         if (
             !$messengerTickets->isEnabled() &&
@@ -204,15 +204,15 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::TICKETS_OPTIONS_DESCRIPTION, $messengerTicketsOptions->getDescription(), $brand)
 
             // These are proactive, defenitely.
-            ->updateSetting(MSR::OPTIONS_AUTOSTART, $messengerOptions->isAutoStart(), $brand)
-            ->updateSetting(MSR::OPTIONS_AUTOSTART_TIMEOUT, $messengerOptions->getAutoStartTimeout(), $brand)
-            ->updateSetting(MSR::OPTIONS_AUTOSTART_STYLE, $messengerOptions->getAutoStartStyle(), $brand)
+            ->updateSetting(MSR::PROACTIVE_AUTOSTART, $messengerProactive->isAutoStart(), $brand)
+            ->updateSetting(MSR::PROACTIVE_TIMEOUT, $messengerProactive->getAutoStartTimeout(), $brand)
+            ->updateSetting(MSR::PROACTIVE_STYLE, $messengerProactive->getAutoStartStyle(), $brand)
             // These are proactive block config
-            ->updateSetting(MSR::OPTIONS_PROACTIVE_GREETING_TITLE, $optionsProactive->getGreetingTitle(), $brand)
-            ->updateSetting(MSR::OPTIONS_PROACTIVE_TITLE, $optionsProactive->getTitle(), $brand)
-            ->updateSetting(MSR::OPTIONS_PROACTIVE_DESCRIPTION, $optionsProactive->getDescription(), $brand)
-            ->updateSetting(MSR::OPTIONS_PROACTIVE_BUTTON_TEXT, $optionsProactive->getButtonText(), $brand)
-            ->updateSetting(MSR::OPTIONS_PROACTIVE_INPUT_PLACEHOLDER, $optionsProactive->getInputPlaceholder(), $brand)
+            ->updateSetting(MSR::PROACTIVE_OPTIONS_GREETING_TITLE, $messengerProactiveOptions->getGreetingTitle(), $brand)
+            ->updateSetting(MSR::PROACTIVE_OPTIONS_TITLE, $messengerProactiveOptions->getTitle(), $brand)
+            ->updateSetting(MSR::PROACTIVE_OPTIONS_DESCRIPTION, $messengerProactiveOptions->getDescription(), $brand)
+            ->updateSetting(MSR::PROACTIVE_OPTIONS_BUTTON_TEXT, $messengerProactiveOptions->getButtonText(), $brand)
+            ->updateSetting(MSR::PROACTIVE_OPTIONS_INPUT_PLACEHOLDER, $messengerProactiveOptions->getInputPlaceholder(), $brand)
 
             // Add Widget & Chat section
             ->updateSetting(MSR::EMBED_AUTHORIZE_DOMAINS, $messengerEmbed->getAuthorizeDomains(), $brand)
