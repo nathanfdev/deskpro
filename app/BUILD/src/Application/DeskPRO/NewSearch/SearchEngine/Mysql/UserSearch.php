@@ -108,8 +108,9 @@ class UserSearch implements UserSearchInterface
 
         $queryWords = array_unique($queryWords);
 
-        $params = [];
-        $likes  = [];
+        $params     = [];
+        $likes      = [];
+        $labelLikes = [];
 
         // push numeric query
         if ($context->getOption(SearchContextInterface::SEARCH_BY_ID)) {
@@ -139,20 +140,28 @@ class UserSearch implements UserSearchInterface
             foreach ($existLabels as $l) {
                 $l = MysqlAdapter::encodeLabel($l);
                 if ($l) {
-                    $likes[]  = 'content_search.content LIKE ?';
-                    $params[] = '%'.$l.'%';
+                    $labelLikes[] = 'content_search.content LIKE ?';
+                    $params[]     = '%'.$l.'%';
                 }
 
-                if (count($likes) >= self::MAX_WORDS) {
+                if ((count($likes) + count($labelLikes)) >= self::MAX_WORDS) {
                     break;
                 }
             }
         }
 
-        if ($likes) {
+        if ($likes || $labelLikes) {
+            $likesWhere = [];
+            if ($likes) {
+                $likesWhere[] = '('.implode(' AND ', $likes).')';
+            }
+            if ($labelLikes) {
+                $likesWhere[] = '('.implode(' AND ', $labelLikes).')';
+            }
+
             $where = "
                 content_search.object_type IN ($limitTypes)
-                AND (".implode(' OR ', $likes).')
+                AND (".implode(' OR ', $likesWhere).')
             ';
 
             if (!$ignorePerms) {
