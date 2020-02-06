@@ -44,7 +44,7 @@ class MessengerOptionsType extends AbstractType
             ->add('subtext', TextType::class)
             ->add('tickets', MessengerOptionsTicketsType::class)
             ->add('proactive', MessengerOptionsProactiveType::class)
-            ->add('chat', MessengerOptionsChatType::class)
+            ->add('chat', MessengerChatOptionsType::class)
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);

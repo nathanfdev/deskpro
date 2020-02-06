@@ -58,34 +58,6 @@ class MessengerOptions
     private $maxFileSize;
 
     /**
-     * A title.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $title = 'Get In Touch';
-
-    /**
-     * A short hint.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $subtext = '';
-
-    /**
-     * Advanced chat options.
-     *
-     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsChat")
-     * @Assert\Valid()
-     *
-     * @var MessengerOptionsChat
-     */
-    private $chat;
-
-    /**
      * Advanced proactive options.
      *
      * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsProactive")
@@ -186,34 +158,6 @@ class MessengerOptions
     }
 
     /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string $title
-     *
-     * @return $this
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSubtext()
-    {
-        return $this->subtext;
-    }
-
-    /**
      * @param string $subtext
      *
      * @return $this
@@ -221,26 +165,6 @@ class MessengerOptions
     public function setSubtext($subtext)
     {
         $this->subtext = $subtext;
-
-        return $this;
-    }
-
-    /**
-     * @return MessengerOptionsChat
-     */
-    public function getChat()
-    {
-        return $this->chat;
-    }
-
-    /**
-     * @param MessengerOptionsChat $chat
-     *
-     * @return $this
-     */
-    public function setChat(MessengerOptionsChat $chat)
-    {
-        $this->chat = $chat;
 
         return $this;
     }

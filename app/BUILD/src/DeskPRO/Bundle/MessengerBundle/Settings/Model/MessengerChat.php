@@ -97,6 +97,13 @@ class MessengerChat
     private $usergroups = [];
 
     /**
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatOptions")
+     *
+     * @var MessengerChatOptions
+     */
+    private $options;
+
+    /**
      * @return bool
      */
     public function isEnabled()
@@ -272,6 +279,26 @@ class MessengerChat
     public function setUsergroups(array $usergroups)
     {
         $this->usergroups = $usergroups;
+
+        return $this;
+    }
+
+    /**
+     * @return MessengerChatOptions
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param MessengerChatOptions $options
+     *
+     * @return $this
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
 
         return $this;
     }

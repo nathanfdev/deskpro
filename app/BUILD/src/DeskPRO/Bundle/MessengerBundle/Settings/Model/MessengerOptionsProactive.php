@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class MessengerOptionsChat.
+ * Class MessengerOptionsProactive.
  */
 class MessengerOptionsProactive
 {
