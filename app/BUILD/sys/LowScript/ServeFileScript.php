@@ -708,6 +708,14 @@ class ServeFileScript extends LowScriptAbstract
             $contentDisposition = 'inline';
         }
 
+        $metaFilepath = $filepath.'.meta.json';
+        if (file_exists($metaFilepath)) {
+            $metadata = @json_decode(file_get_contents($metaFilepath), true);
+            if (isset($metadata['filename'])) {
+                $filename = $metadata['filename'];
+            }
+        }
+
         header('Content-Type: '.$mimetype.'; filename="'.addslashes($filename).'"');
         header('X-Content-Type-Options: nosniff');
         header('Content-Length: '.filesize($filepath));

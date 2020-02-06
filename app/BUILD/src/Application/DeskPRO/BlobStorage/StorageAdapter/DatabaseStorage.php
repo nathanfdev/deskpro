@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
@@ -82,6 +78,7 @@ class DatabaseStorage extends AbstractStorageAdapter
             ]);
         } catch (\Exception $e) {
             $this->logger->logError("[DatabaseStorage] (deleteBlob) Failed: {$e->getCode()} {$e->getMessage()}");
+
             throw new BlobStorageException('Failed to delete blob', BlobStorageException::FAILED_RESOURCE_DELETE, $e);
         }
 
@@ -164,6 +161,7 @@ class DatabaseStorage extends AbstractStorageAdapter
     /**
      * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param resource                              $data
+     * @param mixed $fp_source
      *
      * @return int
      */
@@ -174,13 +172,13 @@ class DatabaseStorage extends AbstractStorageAdapter
 
     /**
      * @param \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param string                                $source_path
+     * @param string                                $sourcePath
      *
      * @return int
      */
-    public function writeBlobFromFile(Blob $blob, $source_path)
+    public function writeBlobFromFile(Blob $blob, $sourcePath)
     {
-        return $this->writeBlobString($blob, file_get_contents($source_path));
+        return $this->writeBlobString($blob, file_get_contents($sourcePath));
     }
 
     /**
@@ -218,18 +216,19 @@ class DatabaseStorage extends AbstractStorageAdapter
 
     /**
      * @param \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param $target_path
+     * @param $targetPath
      *
      * @return int
      */
-    public function readBlobToFile(Blob $blob, $target_path)
+    public function readBlobToFile(Blob $blob, $targetPath)
     {
-        return file_put_contents($target_path, $this->readBlobString($blob));
+        return file_put_contents($targetPath, $this->readBlobString($blob));
     }
 
     /**
      * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param resource                              $data
+     * @param mixed $fp_target
      *
      * @return int
      */
