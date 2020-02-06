@@ -316,8 +316,13 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	setContent: function(content, is_html) {
 		if (!is_html) {
 			content = Orb.escapeHtml(content);
-		}
-		this.getEl('content').html(content);
+    }
+    if (window.DP_HAS_NEW_CONTENT_EDITOR && this.rte) {
+      this.rte.current.editor.current.reactEditor.current.editor.setContent(content, 'html');
+    } else if (this.rte) {
+      this.getEl('content').html(content);
+      this.rte.val(content);
+    }
 	},
 
 	setPendingArticle: function(data) {
