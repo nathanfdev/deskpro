@@ -109,4 +109,12 @@ abstract class TicketEmailType extends EmailBaseType
 
         return $this;
     }
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
 }

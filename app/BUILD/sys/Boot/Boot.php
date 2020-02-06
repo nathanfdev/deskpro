@@ -101,8 +101,8 @@ class Boot
                     if (!$current || $current !== DESKPRO_WWW_PATH) {
                         $env->getDatManager()->writeTxtFile('www_dir', DESKPRO_WWW_PATH);
                     }
-                // If it IS the default path, then we just
-                // make sure to remove the cache file.
+                    // If it IS the default path, then we just
+                    // make sure to remove the cache file.
                 } else {
                     $env->getDatManager()->removeTxtFile('www_dir');
                 }
@@ -159,7 +159,7 @@ class Boot
         $lowClass = null;
         if (substr($path, 0, 7) === '/dp.php' && (!isset($path[7]) || $path[7] === '/')) {
             $lowClass = 'DpSys\\LowScript\\DpScript';
-        } elseif (substr($path, 0, 9) === '/file.php' && (!isset($path[9]) || $path[9] === '/')) {
+        } elseif (preg_match('#(/b/[\w-]+/\w*)?/file\.php/#', $path)) {
             $lowClass = 'DpSys\\LowScript\\ServeFileScript';
         } elseif (substr($path, 0, 23) === '/app/run/test_ping.html' && (!isset($path[23]) || $path[23] === '/')) {
             $lowClass = 'DpSys\\LowScript\\TestPing';

@@ -77,6 +77,11 @@ class SideloadSerializationContext extends SerializationContext
     protected $request;
 
     /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
      * Constructor.
      *
      * @param array                 $includes
@@ -360,5 +365,25 @@ class SideloadSerializationContext extends SerializationContext
         $this->disabledSideloads = $disabledSideloads;
 
         return $this;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     *
+     * @return $this
+     */
+    public function setContainer(ContainerInterface $container)
+    {
+        $this->container = $container;
+
+        return $this;
+    }
+
+    /**
+     * @return ContainerInterface|null
+     */
+    public function getContainer()
+    {
+        return $this->container;
     }
 }

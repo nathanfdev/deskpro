@@ -14,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor\EmailPreProcessor;
 use DeskPRO\Bundle\SendmailBundle\Twig\TwigEngine;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketEmailType;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Symfony\Component\DependencyInjection\Container;
@@ -111,18 +112,23 @@ class EmailRenderer
      * @param string        $templateName
      * @param EmailBaseType $model
      *
+     * @throws \Throwable
+     *
      * @return EmailTemplateCode
      */
     public function render($templateName, EmailBaseType $model)
     {
-        $context = new SideloadSerializationContext();
-        $context->setIncludesStrategy(SideloadSerializationContext::INCLUDE_STRATEGY_DATA);
-        $context->setInlineSideloads(true);
+        $context = (new SideloadSerializationContext())
+            ->setIncludesStrategy(SideloadSerializationContext::INCLUDE_STRATEGY_DATA)
+            ->setInlineSideloads(true)
+            ->setContainer($this->serviceContainer);
 
-        // wrap to make side loading works
-        $model = new ApiWrapper($model);
-
-        $vars = $this->getSerializer()->toArray($model, $context)['data'];
+        $vars = $this->serviceContainer->getBrandStack()->pushTemporary(
+            $model instanceof TicketEmailType ? $model->getTicket()->getBrand() : null,
+            function () use ($model, $context) {
+                return $this->getSerializer()->toArray(new ApiWrapper($model), $context)['data'];
+            }
+        );
         $code = $this->getTemplateEngine()->render($templateName, $vars);
 
         $blobAuthIds = [];
