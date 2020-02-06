@@ -5,6 +5,9 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType as BaseDateTimeType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -36,6 +39,44 @@ class DateTimeType extends AbstractType
     public function getParent()
     {
         return BaseDateTimeType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        if ($options['widget'] === 'single_text') {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onParseDateTime']);
+        }
+    }
+
+    /**
+     * Transform datetime string to date string.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onParseDateTime(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!$data) {
+            return;
+        }
+
+        try {
+            $data = new \DateTime($data);
+            $data = $data->format('Y-m-d H:i:s');
+
+            $event->setData($data);
+        } catch (\Exception $e) {
+            if ($data = \DateTime::createFromFormat('d/m/Y H:i', $data)) {
+                $data = $data->format('Y-m-Y-m-d H:i:s');
+                $event->setData($data);
+            }
+            // unable to parse, leave as is
+        }
     }
 
     /**
