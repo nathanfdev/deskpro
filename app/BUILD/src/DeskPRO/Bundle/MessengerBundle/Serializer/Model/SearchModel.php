@@ -39,7 +39,7 @@ class SearchModel implements MessengerModelInterface
     {
         return [
             'title'   => $this->entity->getTitle(),
-            'excerpt' => $this->entity->getExcerptHtml(10),
+            'excerpt' => $this->entity->getExcerptHtml(18),
             'type'    => $this->getTypeKey($this->entity),
             'link'    => $this->objectRouter->getPortalUrl($this->entity),
         ];
