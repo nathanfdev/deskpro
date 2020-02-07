@@ -332,13 +332,6 @@ class UserSearch implements UserSearchInterface
             $term = str_replace('\\"', '"', $term);
         }
 
-        // ES does not skip short words and returns empty results if they are in the query string
-        // just remove them
-        $term = preg_replace('/\b(?<!\')[^\s\']{1,2}\b(?!\')/u', ' ', $term);
-        if (!is_string($term)) {
-            $term = '';
-        }
-
         $queryString = new Query\QueryString();
         $queryString->setQuery($term);
 
