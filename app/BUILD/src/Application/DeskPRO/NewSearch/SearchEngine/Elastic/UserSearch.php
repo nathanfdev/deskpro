@@ -49,21 +49,8 @@ class UserSearch implements UserSearchInterface
         $search = $this->index->createSearch();
         $filter = new Query\BoolQuery();
 
-        $customBool  = new Query\BoolQuery();
-        $customMatch = new Query\Match();
-        $customMatch
-            ->setFieldQuery('custom_data2.value', $query)
-            ->setFieldBoost('custom_data2.value', 10);
-
-        $customNested = new Query\Nested();
-        $customNested
-            ->setPath('custom_data2')
-            ->setQuery(
-                $customBool
-                    ->addMust($customMatch)
-            );
-
         $customTerms = new Query\Terms();
+        $customBool  = new Query\BoolQuery();
 
         $limitTypes = isset($options['limit_types']) ? $options['limit_types'] : null;
         if ($limitTypes && !is_array($limitTypes)) {
@@ -186,6 +173,14 @@ class UserSearch implements UserSearchInterface
         $stickyMatch->setFieldOperator('sticky_words', 'AND');
         $stickyMatch->setFieldBoost('sticky_words', 2);
         $boolQuery->addShould($stickyMatch);
+
+        $customQs = $this->getQueryString($query);
+        $customQs->setFields(['custom_data2.value']);
+        $customQs->setDefaultOperator('AND');
+
+        $customNested = new Query\Nested();
+        $customNested->setPath('custom_data2');
+        $customNested->setQuery($customBool->addMust($customQs));
 
         $filteredQuery = new Query\BoolQuery();
 
