@@ -8,9 +8,7 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('agent.emails.email_change_merge', {old_email: old_email, new_email: new_email}) }}
-    </container>
+    {{ phrase('agent.emails.email_change_merge', {old_email: old_email, new_email: new_email}) }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

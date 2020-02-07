@@ -36,51 +36,49 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{%- set phrase_part -%}
-			{% if action_performer and action_performer.id %}
-				{{ action_performer.display_contact }}
-			{% elseif sla %}
-				{{ phrase('agent.general.sla') }} {{ sla.title }}{% if sla_status == 'warning' %} ({{ phrase('agent.general.warning') }}){% elseif sla_status == 'fail' %} ({{ phrase('agent.general.failed') }}){% endif %}
-			{% else %}
-				{{ phrase('agent.general.system_user') }}
-			{% endif %}
-		{%- endset -%}
-		{{ phrase('agent.emails.user_updated_ticket', {name: phrase_part, subject: ticket.subject|e}, true) }}
-		{% if type_flag == 'assigned' %}
-			{{ phrase('agent.emails.updated_ticket_assigned') }}
-		{% elseif type_flag == 'assigned_team' %}
-			{{ phrase('agent.emails.updated_ticket_assigned_team', {team: ticket.agent_team.name}) }}
-		{% elseif type_flag == 'added_part' %}
-			{{ phrase('agent.emails.updated_ticket_followed') }}
-		{% endif %}
-
-		<br /><br />
-
-		<h1>{{ phrase('agent.general.ticket') }}</h1>
-		{%  include 'SendmailBundle:emails_common:ticket_props_table.html.twig' %}
-
-		<br /><br />
-
-		<h1>{{ phrase('agent.tickets.ticket_changes') }}</h1>
-		{% for log in context.ticket_logs %}
-			{% include 'SendmailBundle:emails_common:ticket_log_actiontext.html.twig' %}
-		{% endfor %}
-
-		<br /><br />
-
-		<h1>{{ phrase('agent.general.message_history') }}</h1>
-		{% if context.is_new_user_reply or context.is_new_agent_reply %}
-			{% set messages = ticket_messages|slice(1) %}
+	{%- set phrase_part -%}
+		{% if action_performer and action_performer.id %}
+			{{ action_performer.display_contact }}
+		{% elseif sla %}
+			{{ phrase('agent.general.sla') }} {{ sla.title }}{% if sla_status == 'warning' %} ({{ phrase('agent.general.warning') }}){% elseif sla_status == 'fail' %} ({{ phrase('agent.general.failed') }}){% endif %}
 		{% else %}
-			{% set messages = ticket_messages %}
+			{{ phrase('agent.general.system_user') }}
 		{% endif %}
-		{% for message in messages %}
-			{% if not context.message_limit or loop.index0 < context.message_limit %}
-				{% include 'SendmailBundle:emails_common:ticket_message_row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay, show_author_email: true, is_to_agent: true } %}
-			{% endif %}
-		{% endfor %}
-	</container>
+	{%- endset -%}
+	{{ phrase('agent.emails.user_updated_ticket', {name: phrase_part, subject: ticket.subject|e}, true) }}
+	{% if type_flag == 'assigned' %}
+		{{ phrase('agent.emails.updated_ticket_assigned') }}
+	{% elseif type_flag == 'assigned_team' %}
+		{{ phrase('agent.emails.updated_ticket_assigned_team', {team: ticket.agent_team.name}) }}
+	{% elseif type_flag == 'added_part' %}
+		{{ phrase('agent.emails.updated_ticket_followed') }}
+	{% endif %}
+
+	<br /><br />
+
+	<h1>{{ phrase('agent.general.ticket') }}</h1>
+	{%  include 'SendmailBundle:emails_common:ticket_props_table.html.twig' %}
+
+	<br /><br />
+
+	<h1>{{ phrase('agent.tickets.ticket_changes') }}</h1>
+	{% for log in context.ticket_logs %}
+		{% include 'SendmailBundle:emails_common:ticket_log_actiontext.html.twig' %}
+	{% endfor %}
+
+	<br /><br />
+
+	<h1>{{ phrase('agent.general.message_history') }}</h1>
+	{% if context.is_new_user_reply or context.is_new_agent_reply %}
+		{% set messages = ticket_messages|slice(1) %}
+	{% else %}
+		{% set messages = ticket_messages %}
+	{% endif %}
+	{% for message in messages %}
+		{% if not context.message_limit or loop.index0 < context.message_limit %}
+			{% include 'SendmailBundle:emails_common:ticket_message_row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay, show_author_email: true, is_to_agent: true } %}
+		{% endif %}
+	{% endfor %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

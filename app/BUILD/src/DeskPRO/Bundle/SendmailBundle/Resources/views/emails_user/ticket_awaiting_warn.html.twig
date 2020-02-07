@@ -9,13 +9,11 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
-        <br /><br />
+    <br /><br />
 
-        {{ phrase('user.emails.remind_unresolved', {helpdesk_name: brand_setting('core.deskpro_name'), resolve_url: ticket_resolve_link}) }}
-    </container>
+    {{ phrase('user.emails.remind_unresolved', {helpdesk_name: brand_setting('core.deskpro_name'), resolve_url: ticket_resolve_link}) }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

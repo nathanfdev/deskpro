@@ -9,15 +9,13 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('portal.emails.ticket-reminder', {expire_date: expire_date }) }}
+    {{ phrase('portal.emails.ticket-reminder', {expire_date: expire_date }) }}
 
-        <br /><br />
+    <br /><br />
 
-        <a href="{{ verify_url }}">
-            {{ verify_url }}
-        </a>
-    </container>
+    <a href="{{ verify_url }}">
+        {{ verify_url }}
+    </a>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

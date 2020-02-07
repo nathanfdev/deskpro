@@ -16,20 +16,18 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{% if success %}
-			{{ phrase('agent.emails.notice_account_login') }}<br />
-		{% else %}
-			{{ phrase('agent.emails.notice_login_attempt') }}<br />
-		{% endif %}
-		<ul>
-			<li>{{ phrase('agent.emails.user_ip') }}: {{ client_ip }}</li>
-			<li>{{ phrase('agent.emails.user_agent') }}: {{ client_user_agent }}</li>
-			<li>{{ phrase('agent.emails.landing_page') }}: {{ client_landing_page }}</li>
-			<li>{{ phrase('agent.emails.referring_page') }}: {{ client_referring_page }}</li>
-			<li>{{ phrase('agent.emails.first_seen') }}: {{ first_seen }}</li>
-		</ul>
-	</container>
+	{% if success %}
+		{{ phrase('agent.emails.notice_account_login') }}<br />
+	{% else %}
+		{{ phrase('agent.emails.notice_login_attempt') }}<br />
+	{% endif %}
+	<ul>
+		<li>{{ phrase('agent.emails.user_ip') }}: {{ client_ip }}</li>
+		<li>{{ phrase('agent.emails.user_agent') }}: {{ client_user_agent }}</li>
+		<li>{{ phrase('agent.emails.landing_page') }}: {{ client_landing_page }}</li>
+		<li>{{ phrase('agent.emails.referring_page') }}: {{ client_referring_page }}</li>
+		<li>{{ phrase('agent.emails.first_seen') }}: {{ first_seen }}</li>
+	</ul>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

@@ -9,19 +9,17 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{{ phrase('user.emails.community-topic_thank-you', {'title':topic.title}) }}
+	{{ phrase('user.emails.community-topic_thank-you', {'title':topic.title}) }}
 
+	<br /><br />
+
+	{% if reason %}
+		{{ phrase('user.emails.community-topic_disapproved-reason', {name: agent.display_name_user}) }}
 		<br /><br />
-
-		{% if reason %}
-			{{ phrase('user.emails.community-topic_disapproved-reason', {name: agent.display_name_user}) }}
-			<br /><br />
-			{{ reason }}
-		{% else %}
-			{{ phrase('user.emails.community-topic_disapproved') }}
-		{% endif %}
-	</container>
+		{{ reason }}
+	{% else %}
+		{{ phrase('user.emails.community-topic_disapproved') }}
+	{% endif %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

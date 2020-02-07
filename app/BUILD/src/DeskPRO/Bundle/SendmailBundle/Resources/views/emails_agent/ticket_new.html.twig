@@ -19,50 +19,48 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{% set message = ticket_messages|first %}
-		{% if message.person.is_agent %}
-			{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
-		{% else %}
-			{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+	{% set message = ticket_messages|first %}
+	{% if message.person.is_agent %}
+		{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+	{% else %}
+		{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+	{% endif %}
+
+	<br /><br />
+
+	<h1>{{ phrase('agent.general.ticket') }}</h1>
+
+	{{ phrase('agent.emails.ticket_was_created', {name: action_performer ? action_performer.display_contact : ticket_person.display_contact}) }}
+
+	{% set lastReply = ticket.getLastReply(true) %}
+	{% if lastReply and lastReply.isVoiceMessage() %}
+		{% set phoneCall = lastReply.getPhoneCallAttribute().getPhoneCall() %}
+		{% if app.getSetting('voice.email_attach_recording') %}
+			{% if phoneCall.getFullRecording() %}
+				<br /><br />Click here to listen to the call recording:<br />
+				{% set recordingUrl = url('go_to_voice_recording', { id: phoneCall.getFullRecording().getId(), authCode: ticket.getAuth() }) %}
+				<a href="{{ recordingUrl }}">{{ recordingUrl  }}</a><br />
+			{% endif %}
+			{% if phoneCall.getAgentVoicemailRecord() %}
+				Click here to listen to the voicemail message:<br />
+				{% set recordingUrl = url('go_to_agent_voicemail_recording', { id: phoneCall.getAgentVoicemailRecord().getId(), authCode: ticket.getAuth() }) %}
+				<a href="{{ recordingUrl }}">{{ recordingUrl }}</a>
+			{% endif %}
 		{% endif %}
-
-		<br /><br />
-
-		<h1>{{ phrase('agent.general.ticket') }}</h1>
-
-		{{ phrase('agent.emails.ticket_was_created', {name: action_performer ? action_performer.display_contact : ticket_person.display_contact}) }}
-
-		{% set lastReply = ticket.getLastReply(true) %}
-		{% if lastReply and lastReply.isVoiceMessage() %}
-			{% set phoneCall = lastReply.getPhoneCallAttribute().getPhoneCall() %}
-            {% if app.getSetting('voice.email_attach_recording') %}
-                {% if phoneCall.getFullRecording() %}
-                    <br /><br />Click here to listen to the call recording:<br />
-                    {% set recordingUrl = url('go_to_voice_recording', { id: phoneCall.getFullRecording().getId(), authCode: ticket.getAuth() }) %}
-                    <a href="{{ recordingUrl }}">{{ recordingUrl  }}</a><br />
-                {% endif %}
-                {% if phoneCall.getAgentVoicemailRecord() %}
-                    Click here to listen to the voicemail message:<br />
-                    {% set recordingUrl = url('go_to_agent_voicemail_recording', { id: phoneCall.getAgentVoicemailRecord().getId(), authCode: ticket.getAuth() }) %}
-                    <a href="{{ recordingUrl }}">{{ recordingUrl }}</a>
-                {% endif %}
-            {% endif %}
-            {% if app.getSetting('voice.transcribe_voicemail') and app.getSetting('voice.email_attach_transcription') and (phoneCall.getRecordings().count() > 0 or phoneCall.getAgentVoicemailRecord()) %}
-                <br /><br />
-                {% if phoneCall.getFullRecording() %}
-                    {{ phoneCall.getFullRecording.getTranscription() }}
-                {% endif %}
-                {% if phoneCall.getAgentVoicemailRecord() %}
-                    {{ phoneCall.getAgentVoicemailRecord().getTranscription() }}
-                {% endif %}
-            {% endif %}
+		{% if app.getSetting('voice.transcribe_voicemail') and app.getSetting('voice.email_attach_transcription') and (phoneCall.getRecordings().count() > 0 or phoneCall.getAgentVoicemailRecord()) %}
+			<br /><br />
+			{% if phoneCall.getFullRecording() %}
+				{{ phoneCall.getFullRecording.getTranscription() }}
+			{% endif %}
+			{% if phoneCall.getAgentVoicemailRecord() %}
+				{{ phoneCall.getAgentVoicemailRecord().getTranscription() }}
+			{% endif %}
 		{% endif %}
+	{% endif %}
 
-		<br /><br />
+	<br /><br />
 
-		{%  include 'SendmailBundle:emails_common:ticket_props_table.html.twig' %}
-	</container>
+	{%  include 'SendmailBundle:emails_common:ticket_props_table.html.twig' %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

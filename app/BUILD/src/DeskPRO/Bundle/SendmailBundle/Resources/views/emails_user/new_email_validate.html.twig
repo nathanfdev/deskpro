@@ -9,21 +9,19 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
-        <br /><br />
+    <br /><br />
 
-        {{ phrase('portal.emails.profile_email-new-confirm') }}
+    {{ phrase('portal.emails.profile_email-new-confirm') }}
 
-        <br/><br/>
+    <br/><br/>
 
-        <a href="{{ verify_url }}">{{ verify_url }}</a>
+    <a href="{{ verify_url }}">{{ verify_url }}</a>
 
-        <br/><br/>
+    <br/><br/>
 
-        {{  phrase('portal.emails.end_greeting') }}
-    </container>
+    {{  phrase('portal.emails.end_greeting') }}
 
   {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

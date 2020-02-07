@@ -9,15 +9,13 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('portal.emails.community-topic_thank-you', {'title':topic.title}) }}
+    {{ phrase('portal.emails.community-topic_thank-you', {'title':topic.title}) }}
 
-        <br /><br />
+    <br /><br />
 
-        {% if topic.status == 'hidden' and not topic.is_reviewed %}
-        {{ phrase('user.emails.community-topic_agent-validation') }}
-        {% endif %}
-    </container>
+    {% if topic.status == 'hidden' and not topic.is_reviewed %}
+    {{ phrase('user.emails.community-topic_agent-validation') }}
+    {% endif %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

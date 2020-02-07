@@ -12,9 +12,7 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{{ phrase('agent.people.new_registration_name', {name: person.display_contact}) }}
-	</container>
+	{{ phrase('agent.people.new_registration_name', {name: person.display_contact}) }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 
