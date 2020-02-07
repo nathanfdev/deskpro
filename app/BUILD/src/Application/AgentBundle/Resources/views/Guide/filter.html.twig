@@ -89,6 +89,41 @@
     {##################################}
 
     {% if guide %}
+        <style>
+            .picker {
+                display: table-row;
+                height: 25px;
+                list-style: none;
+            }
+            .picker-modal {
+                z-index: 1;
+            }
+            .picker li {
+                display: table-cell;
+                width: 25px;
+            }
+            .picker-color {
+                display: block;
+                width: 25px;
+                height: 25px;
+                text-align: center;
+                cursor: pointer;
+            }
+            label[for="picker-input"] {
+                position: absolute;
+                display: block;
+                top: 8px;
+                left: 13px;
+                height: 19px;
+                width: 19px;
+                border-radius: 2px;
+                cursor: pointer;
+                z-index: 1;
+            }
+            #picker-input {
+                padding-left: 30px;
+            }
+        </style>
         <div class="list-listing {% if not perms.can_delete %}perm-no-delete{% endif %} {% if not perms.can_edit %}perm-no-edit{% endif %}">
             <div id="{{ tplvars.baseId }}_tab_cat" style="display: none;">
 
@@ -142,6 +177,56 @@
                                                 </li>
                                             {% endfor %}
                                         </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>{{ phrase('agent.general.icon') }}</th>
+                                    <td>
+                                        <div id="{{ tplvars.baseId }}_pick_cat_icon" class="category-icon">
+                                            <input type="hidden" name="icon_urn" value={{ guide.icon.urn }} />
+                                            <input type="hidden" name="icon_style" value={{ guide.icon.options.style }} />
+                                            <input type="hidden" name="icon_color" value={{ guide.icon.options.color }} />
+                                            <input type="hidden" name="icon_url" value={{ guide.icon.blob.download_url }} />
+                                            <button class="dp-btn btn-default" type="button">
+                                                {{ phrase('agent.publish.pick_icon') }}
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="100">{{ phrase('agent.general.color') }}</th>
+                                    <td style="position: relative" id="{{ tplvars.baseId }}_color_picker">
+                                        <label for="picker-input" style="background-color: {{ guide.color }}"></label>
+                                        <input
+                                                id="picker-input"
+                                                type="text"
+                                                name="category[color]"
+                                                autocomplete="{{ "now" | date("U") }}"
+                                                value="{{ guide.color }}" {% if not perms.can_edit %} disabled {% endif %} />
+                                        <div style="position: absolute; display:none" class="picker-modal">
+                                            <ul class="picker">
+                                                {% for color in colors|slice(0, colors|length / 2) %}
+                                                    <li>
+											<span data-color="{{ color }}" class="picker-color" style="background-color: {{ color }}">
+											</span>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                            <ul class="picker">
+                                                {% for color in colors|slice(colors|length / 2, colors|length / 2) %}
+                                                    <li>
+											<span data-color="{{ color }}" class="picker-color" style="background-color: {{ color }}">
+											</span>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="100">{{ phrase('agent.general.splash_image') }}</th>
+                                    <td class="splash-image" id="{{ tplvars.baseId }}_splash_image_td">
+                                        {% include 'AgentBundle:Guide:splash-image-td.html.twig' %}
                                     </td>
                                 </tr>
                             {% if (brands|length) > 1 %}

@@ -694,6 +694,19 @@ JS;
 
                     break;
 
+                case 'guide';
+                    $guide       = $this->em->find(Entity\Guide::class, $this->in->getUInt('object_id'));
+                    $splashImage = new SplashImageProperty();
+                    $splashImage->setBlob($blob);
+                    $splashImage->setUrn(SplashImageProperty::$blobNs.':'.$blob->getAuthId());
+                    $guide->setSplashImage($splashImage);
+
+                    $this->em->persist($splashImage);
+                    $this->em->persist($guide);
+                    $this->em->flush();
+
+                    break;
+
                 case 'community_topic':
                     $communityTopic = $this->em->find(Entity\CommunityTopic::class, $this->in->getUint('object_id'));
 

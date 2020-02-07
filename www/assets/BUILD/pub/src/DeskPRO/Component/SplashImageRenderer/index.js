@@ -1,0 +1,1 @@
+export { SplashImageRenderer } from './SplashImageRenderer';

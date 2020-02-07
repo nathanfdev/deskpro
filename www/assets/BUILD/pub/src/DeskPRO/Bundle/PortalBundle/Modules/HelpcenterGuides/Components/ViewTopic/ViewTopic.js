@@ -29,6 +29,14 @@ class ViewTopic extends React.Component {
       guideSlug: this.getGuideSlug(this.props.params.splat),
       topicList,
     };
+    let guides = [];
+    if (window.guides) {
+      guides = JSON.parse(window.guides);
+    }
+    if (!Array.isArray(guides)) {
+      guides = Object.values(guides);
+    }
+    this.withSplash = guides.filter(guide => typeof guide.splash_image_property !== 'undefined').length > 0;
     this.contentChanged = false;
     this.ticking = false;
     this.targetSlug = props.params.slug;
@@ -136,7 +144,7 @@ class ViewTopic extends React.Component {
           <Link
             to={`topic_${topicSlug}`}
             href={target}
-            offset={-129}
+            offset={this.withSplash ? -255 : -129}
             isDynamic
           >
             {internalLink.text}
@@ -317,9 +325,10 @@ class ViewTopic extends React.Component {
         this.setState({
           loaded: true,
         });
+        const offset = this.withSplash ? -255 : -129;
         scroller.scrollTo(`topic_${this.targetSlug}`, {
           isDynamic: true,
-          offset:    -129,
+          offset,
         });
       }, 500);
     });
@@ -399,7 +408,7 @@ class ViewTopic extends React.Component {
           selectGuide={this.selectGuide}
           fixed={fixed}
         />
-        <div className="dp-po-guides-section">
+        <div className={classNames('dp-po-guides-section', { 'with-splash': this.withSplash })}>
           <div className="dp-po-guides-wrap">
             <div className="container-fluid">
               <div className="row">
@@ -410,6 +419,7 @@ class ViewTopic extends React.Component {
                     topicSlug={topicSlug}
                     grabTopicFromApi={this.grabTopicFromApi}
                     sizes={this.sizes}
+                    withSplash={this.withSplash}
                   />
                 </div>
                 <div className="col-sm-9">

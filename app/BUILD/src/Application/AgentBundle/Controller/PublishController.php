@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\AgentBundle\Controller;
 
@@ -37,8 +35,10 @@ use Application\DeskPRO\Searcher\CommunitySearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
+use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
+use GuzzleHttp\Client;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -419,18 +419,23 @@ class PublishController extends AbstractController
         switch ($typename) {
             case 'articles':
                 $objectUrl = $this->get('router')->generate('agent_kb_article', ['article_id' => $comment->getObject()->getId()]);
+
                 break;
             case 'downloads':
                 $objectUrl = $this->get('router')->generate('agent_downloads_view', ['download_id' => $comment->getObject()->getId()]);
+
                 break;
             case 'news':
                 $objectUrl = $this->get('router')->generate('agent_news_view', ['news_id' => $comment->getObject()->getId()]);
+
                 break;
             case 'community':
                 $objectUrl = $this->get('router')->generate('agent_community_topic_view', ['communityTopicId' => $comment->getObject()->getId()]);
+
                 break;
             case 'topics':
                 $objectUrl = $this->get('router')->generate('agent_topic_view', ['topic_id' => $comment->getObject()->getId()]);
+
                 break;
             default:
                 $objectUrl = null;
@@ -785,24 +790,31 @@ class PublishController extends AbstractController
         switch ($type) {
             case 'articles':
                 $entity_name = 'DeskPRO:Article';
+
                 break;
             case 'article':
                 $entity_name = 'DeskPRO:Article';
+
                 break;
             case 'downloads':
                 $entity_name = 'DeskPRO:Download';
+
                 break;
             case 'download':
                 $entity_name = 'DeskPRO:Download';
+
                 break;
             case 'news':
                 $entity_name = 'DeskPRO:News';
+
                 break;
             case 'community':
                 $entity_name = CommunityTopic::class;
+
                 break;
             case 'topics':
                 $entity_name = 'DeskPRO:Topic';
+
                 break;
         }
 
@@ -871,15 +883,19 @@ class PublishController extends AbstractController
         switch ($type) {
             case 'article':
                 $entityName = ArticleCategory::class;
+
                 break;
             case 'download':
                 $entityName = DownloadCategory::class;
+
                 break;
             case 'news':
                 $entityName = NewsCategory::class;
+
                 break;
             case 'topics':
                 $entityName = Guide::class;
+
                 break;
         }
 
@@ -967,6 +983,7 @@ class PublishController extends AbstractController
                 if ($brandId && $cat->getBrand()->getId() !== $brandId) {
                     $changes['brand_id'] = $brandId;
                 }
+                $cat->setColor($this->in->getString('category.color'));
                 $this->db->update($table, $changes, ['id' => $cat->getId()]);
             }
 
@@ -1108,15 +1125,19 @@ class PublishController extends AbstractController
         switch ($type) {
             case 'article':
                 $entityName = ArticleCategory::class;
+
                 break;
             case 'download':
                 $entityName = DownloadCategory::class;
+
                 break;
             case 'news':
                 $entityName = NewsCategory::class;
+
                 break;
             case 'guide':
                 $entityName = Guide::class;
+
                 break;
         }
 
@@ -1148,15 +1169,19 @@ class PublishController extends AbstractController
         switch ($type) {
             case 'article':
                 $class = ArticleCategory::class;
+
                 break;
             case 'download':
                 $class = DownloadCategory::class;
+
                 break;
             case 'news':
                 $class = NewsCategory::class;
+
                 break;
             case 'guide':
                 $class = Guide::class;
+
                 break;
         }
 
@@ -1244,18 +1269,23 @@ class PublishController extends AbstractController
         switch ($type) {
             case 'articles':
                 $url = $this->generateUrl('agent_kb_list', ['category_id' => $cat->getId()]);
+
                 break;
             case 'downloads':
                 $url = $this->generateUrl('agent_downloads_list', ['category_id' => $cat->getId()]);
+
                 break;
             case 'manuals':
                 $url = $this->generateUrl('agent_guides_list', ['guide_id' => $cat->getId()]);
+
                 break;
             case 'news':
                 $url = $this->generateUrl('agent_news_list', ['category_id' => $cat->getId()]);
+
                 break;
             case 'community':
                 $url = $this->generateUrl('agent_community_forums', ['forumId' => $cat->getId()]);
+
                 break;
         }
 
@@ -1307,6 +1337,7 @@ class PublishController extends AbstractController
                 $searcher->addTerm('deleted', 'not', 1);
                 $helper = 'ArticleResults';
                 $cats   = $this->in->getCleanValueArray('article_categories', 'uint', 'discard');
+
                 break;
 
             case 'news':
@@ -1314,6 +1345,7 @@ class PublishController extends AbstractController
                 $searcher->addTerm('deleted', 'not', 1);
                 $helper = 'NewsResults';
                 $cats   = $this->in->getCleanValueArray('news_categories', 'uint', 'discard');
+
                 break;
 
             case 'downloads':
@@ -1321,6 +1353,7 @@ class PublishController extends AbstractController
                 $searcher->addTerm('deleted', 'not', 1);
                 $helper = 'DownloadResults';
                 $cats   = $this->in->getCleanValueArray('downloads_categories', 'uint', 'discard');
+
                 break;
 
             case 'community':
@@ -1328,6 +1361,7 @@ class PublishController extends AbstractController
                 $searcher->addTerm('deleted', 'not', 1);
                 $helper = 'CommunityTopicResults';
                 $cats   = $this->in->getCleanValueArray('community_forums', 'uint', 'discard');
+
                 break;
 
             default:
@@ -1447,6 +1481,83 @@ class PublishController extends AbstractController
             'show_meta'    => $showMeta,
             'meta_columns' => $metaColumns,
         ]);
+    }
+
+    public function setSplashImageAction($type)
+    {
+        if ($type != 'topics') {
+            return $this->createJsonResponse(['Invalid type']);
+        }
+
+        $category = [
+            'id' => $this->in->getUInt('guide_id'),
+        ];
+
+        if ($category['id'] && $guide = $this->em->getRepository(Guide::class)->find($category['id'])) {
+            $splashImage = new SplashImageProperty();
+            $image       = json_decode($this->in->getString('image'));
+            $splashImage->setUrn($splashImage::$unsplashNs.':'.$image->id);
+            $splashImage->setOptions(['url' => $image->urls->raw]);
+            $this->em->persist($splashImage);
+            $guide->setSplashImage($splashImage);
+            // Trigger Download on unsplash api to register photo usage
+            $accessKey = $this->get('settings_resolver')->getGlobalSettings()->get('services.unsplash_access_key', null);
+            $client    = new Client();
+            $client->requestAsync('GET', $image->links->download_location, [
+                'headers' => [
+                    'Authorization' => 'Client-ID '.$accessKey,
+                ],
+            ]);
+            $data['content_html'] = $this->renderView('AgentBundle:Guide:splash-image-td.html.twig', [
+                'guide'   => $guide,
+                'tplvars' => [
+                    'baseId' => $this->in->getString('baseId'),
+                ],
+                'perms'  => [
+                    'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($guide),
+                ],
+            ]);
+
+            $this->em->persist($guide);
+            $this->em->flush();
+
+            return $this->createJsonResponse($data);
+        }
+
+        throw $this->createNotFoundException();
+    }
+
+    public function removeSplashImageAction($type)
+    {
+        if ($type != 'topics') {
+            return $this->createJsonResponse(['Invalid type']);
+        }
+
+        $category = [
+            'id'         => $this->in->getUInt('guide_id'),
+        ];
+
+        if ($category['id'] && $guide = $this->em->getRepository(Guide::class)->find($category['id'])) {
+            $splashImage = $guide->getSplashImage();
+            $this->em->remove($splashImage);
+            $guide->setSplashImage(null);
+            $data['content_html'] = $this->renderView('AgentBundle:Guide:splash-image-td.html.twig', [
+                'guide'   => $guide,
+                'tplvars' => [
+                    'baseId' => $this->in->getString('baseId'),
+                ],
+                'perms'  => [
+                    'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($guide),
+                ],
+            ]);
+
+            $this->em->persist($guide);
+            $this->em->flush();
+
+            return $this->createJsonResponse($data);
+        }
+
+        throw $this->createNotFoundException();
     }
 
     /**

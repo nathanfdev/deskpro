@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Templating
- */
+
 
 namespace Application\DeskPRO\Twig\Extension;
 
@@ -13,7 +9,6 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommunityTopic;
-use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
@@ -24,6 +19,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\Entity\Currency;
+use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
@@ -583,6 +579,7 @@ class TemplatingExtension extends \Twig_Extension
                     } else {
                         $html[] = '<script type="text/javascript" src="'.$url.'"></script>';
                     }
+
                     break;
                 case 'css':
                     if (isset($options['prefetch'])) {
@@ -593,6 +590,7 @@ class TemplatingExtension extends \Twig_Extension
                         }
                         $html[] = '<link rel="stylesheet" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
                     }
+
                     break;
                 case 'less':
                     if (!isset($options['media'])) {
@@ -612,6 +610,7 @@ class TemplatingExtension extends \Twig_Extension
                             $html[] = '<link rel="stylesheet/less" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
                         }
                     }
+
                     break;
             }
         }
@@ -624,12 +623,15 @@ class TemplatingExtension extends \Twig_Extension
         switch ($id) {
             case 'country_names':
                 return \Orb\Data\Countries::getCountryNames();
+
                 break;
             case 'countries':
                 return \Orb\Data\Countries::getCountryArray();
+
                 break;
             case 'us_states':
                 return \Orb\Data\Countries::getUsStates();
+
                 break;
             case 'timezones':
                 $tzs = \DateTimeZone::listIdentifiers();
@@ -641,6 +643,7 @@ class TemplatingExtension extends \Twig_Extension
                 }
 
                 return $tzs;
+
                 break;
             default:
                 return;
@@ -798,26 +801,31 @@ class TemplatingExtension extends \Twig_Extension
             case 'full':
                 //D, jS M Y
                 $format = $this->container->getSetting('core.date_full');
+
                 break;
 
             case 'fulltime':
                 //D, jS M Y g:ia
                 $format = $this->container->getSetting('core.date_fulltime');
+
                 break;
 
             case 'day':
                 //M j Y
                 $format = $this->container->getSetting('core.date_day');
+
                 break;
 
             case 'day_short':
                 //M j
                 $format = $this->container->getSetting('core.date_day_short');
+
                 break;
 
             case 'time':
                 //g:i a
                 $format = $this->container->getSetting('core.date_time');
+
                 break;
         }
 
@@ -878,7 +886,7 @@ class TemplatingExtension extends \Twig_Extension
         // Primitive types
         if (!is_object($var)) {
             $var_type = gettype($var);
-            // Classes
+        // Classes
         } else {
             $var_type = get_class($var);
 
@@ -916,7 +924,7 @@ class TemplatingExtension extends \Twig_Extension
 
             return strpos($var_type, $type) !== false;
 
-            // Classes
+        // Classes
         } else {
             $var_type = get_class($var);
 
@@ -1159,10 +1167,12 @@ class TemplatingExtension extends \Twig_Extension
                 case 'right':
                     $ltr = '&rarr;';
                     $rtl = '&larr;';
+
                     break;
                 case 'left':
                     $ltr = '&larr;';
                     $rtl = '&rarr;';
+
                     break;
                 default:
                     return 'unknown';
@@ -1938,19 +1948,24 @@ class TemplatingExtension extends \Twig_Extension
             case 'knowledgebase':
             case 'knowledgebase_article':
                 $object = $em->getRepository(Article::class)->find($id);
+
                 break;
             case 'news':
                 $object = $em->getRepository(News::class)->find($id);
+
                 break;
             case 'community':
                 $object = $em->getRepository(CommunityTopic::class)->find($id);
+
                 break;
             case 'download':
                 $object = $em->getRepository(Download::class)->find($id);
+
                 break;
             case 'guide':
             case 'topic':
                 $object = $em->getRepository(Topic::class)->find($id);
+
                 break;
             default:
                 $object = null;
@@ -2020,17 +2035,17 @@ class TemplatingExtension extends \Twig_Extension
     }
 
     /**
-     * @param ContentAbstract $object
+     * @param HasSplashImageProperty $object
      *
      * @return bool
      */
-    public function hasSplashImage(ContentAbstract $object)
+    public function hasSplashImage(HasSplashImageProperty $object)
     {
         return (bool) $object->getSplashImage() && $object->getSplashImage();
     }
 
     /**
-     * @param ContentAbstract $object
+     * @param HasSplashImageProperty $object
      * @param int             $width
      * @param string          $orientation
      *
@@ -2038,7 +2053,7 @@ class TemplatingExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function getSplashUrl(ContentAbstract $object, $width = 200, $orientation = 'landscape')
+    public function getSplashUrl(HasSplashImageProperty $object, $width = 200, $orientation = 'landscape')
     {
         $splashImage = $object->getSplashImage();
         if ($splashImage) {
@@ -2049,7 +2064,7 @@ class TemplatingExtension extends \Twig_Extension
     }
 
     /**
-     * @param ContentAbstract $object
+     * @param HasSplashImageProperty $object
      * @param int             $width
      * @param string          $orientation
      *
@@ -2057,7 +2072,7 @@ class TemplatingExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function getSplashBgcss(ContentAbstract $object, $width = 200, $orientation = 'landscape')
+    public function getSplashBgcss(HasSplashImageProperty $object, $width = 200, $orientation = 'landscape')
     {
         $splashImage = $object->getSplashImage();
         if ($splashImage) {

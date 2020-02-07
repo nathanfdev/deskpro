@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Blob;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -14,6 +15,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="splash_image_property")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
+ *
+ * @JMS\ExclusionPolicy("ALL")
  *
  * @category Entities
  */
@@ -34,6 +37,8 @@ class SplashImageProperty implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var string
+     * @JMS\Expose()
+     * @JMS\Type("string")
      * @ORM\Column(name="urn", type="string")
      * @Assert\NotNull()
      */
@@ -41,11 +46,15 @@ class SplashImageProperty implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var array
+     * @JMS\Expose()
+     * @JMS\Type("array")
      * @ORM\Column(name="options", type="json_array", nullable=true)
      */
     protected $options;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Blob>")
      * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob", fetch="EAGER")
      * @ORM\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="CASCADE")
      *

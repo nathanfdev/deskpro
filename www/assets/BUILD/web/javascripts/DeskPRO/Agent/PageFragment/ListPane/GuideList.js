@@ -35,6 +35,7 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
 		);
 
 		this._initGuideEditor();
+		this._initSplashTd();
 	},
 
 	_initGuideEditor: function() {
@@ -103,6 +104,31 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
 			});
 		});
 
+    var iconPicker = this.getEl('pick_cat_icon');
+    var icon = {
+      urn: iconPicker.find('input[name=icon_urn]').val(),
+      color: iconPicker.find('input[name=icon_color]').val(),
+      style: iconPicker.find('input[name=icon_style]').val(),
+      imageUrl: iconPicker.find('input[name=icon_url]').val()
+    };
+    window.AgentLegacyBundle.renderIconPicker(iconPicker, icon);
+
+    var colorPicker = this.getEl('color_picker');
+    var pickerModal = colorPicker.find('.picker-modal');
+    var pickerLabel = colorPicker.find('label');
+    var pickerInput = colorPicker.find('input');
+    pickerInput.on('focus', function() {
+      pickerModal.show();
+    }).on('blur', function () {
+      pickerLabel.css('background-color', pickerInput.val());
+      pickerModal.hide();
+    });
+    colorPicker.find('.picker-color').on('mouseenter', function(ev) {
+      var newColor = $(ev.target).data('color');
+      pickerLabel.css('background-color', newColor);
+      pickerInput.val(newColor);
+    });
+
 		allUg = guideEl.find('.ug-check');
 		ugEveryone = allUg.filter('.ug-1');
 		ugOther    = allUg.not('.ug-1');
@@ -121,6 +147,69 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
 		});
 		updateChecks(ugEveryone.prop('checked'));
 	},
+
+  _initSplashTd: function() {
+    var self = this;
+    var splashImageTd = this.getEl('splash_image_td');
+
+    var splashUpload = this.getEl('splash_upload');
+    DeskPRO_Window.util.fileupload(splashUpload, {
+      url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=guide&splash_image=true&object_id=' + this.meta.guideId,
+      uploadTemplate: $('.template-upload', this.el),
+      downloadTemplate: $('.template-download', this.el),
+      page: this
+    });
+    splashUpload.bind('fileuploaddone', function(e, data) {
+      splashImageTd.find('.upload').hide();
+      splashImageTd.find('.view_image img').attr('src', data.result[0]['download_url']);
+      splashImageTd.find('.view_image').show();
+    });
+
+    this.getEl('remove_splash_image_btn').on('click', function () {
+      $.ajax({
+        url: BASE_URL + 'agent/publish/remove-splash-image/topics',
+        type: 'POST',
+        context: this,
+        data: {
+          guide_id: self.meta.guideId,
+          baseId: self.meta.baseId
+        },
+        dataType: 'json',
+        success: function(data) {
+          splashImageTd.html(data.content_html).ready(self._initSplashTd.bind(self));
+        }
+      });
+    });
+    this.getEl('browse_unsplash').on('click', function(e) {
+      var event = new CustomEvent('dpLeftDrawer', {detail: {
+          module: 'SplashImage',
+          width: 0,
+          selectImage: self.selectSplashImage.bind(self),
+          style: {
+            zIndex: 22000
+          }
+        }});
+      window.document.dispatchEvent(event);
+    });
+  },
+
+  selectSplashImage: function(image) {
+    var splashImageTd = this.getEl('splash_image_td');
+    $.ajax({
+      url: BASE_URL + 'agent/publish/set-splash-image/topics',
+      type: 'POST',
+      context: this,
+      data: {
+        guide_id: this.meta.guideId,
+        baseId: this.meta.baseId,
+        image: JSON.stringify(image)
+      },
+      dataType: 'json',
+      success: function(data) {
+        splashImageTd.html(data.content_html).ready(this._initSplashTd.bind(this));
+      }
+    });
+  },
 
 	openTopic: function(topicId) {
     window.DeskPRO_Window.runPageRoute("guides:/agent/guides/topic/" + topicId);
