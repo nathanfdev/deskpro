@@ -1,14 +1,16 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block page_body %}
-   <header class="section-header">
-        <h1>{{ phrase('helpcenter.account.section-title-usersource-email') }}</h1>
-    </header>
+    <div class="dp-po-title">
+        <h2>{{ phrase('helpcenter.account.section-title-usersource-email') }}</h2>
+    </div>
 
-   {{ phrase('helpcenter.account.usersource-set-email-desc') }}
+    <div class="dp-po-block">
+       <p>{{ phrase('helpcenter.account.usersource-set-email-desc') }}</p>
 
-    {{ form_start(form) }}
-    {{ form_rest(form) }}
-    <button type="submit">{{ phrase('helpcenter.account.email-btn-usersource-set') }}</button>
-    {{ form_end(form) }}
+        {{ form_start(form) }}
+        {{ form_rest(form) }}
+        <button type="submit">{{ phrase('helpcenter.account.email-btn-usersource-set') }}</button>
+        {{ form_end(form) }}
+    </div>
 {% endblock page_body %}
