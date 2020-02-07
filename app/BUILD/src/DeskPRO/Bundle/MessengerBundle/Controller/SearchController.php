@@ -42,9 +42,35 @@ class SearchController extends AbstractMessengerController
 
         $person  = $this->getUser() ?: new PersonGuest();
         $curPage = $request->get('page', 1);
-        $perPage = 10;
+        $perPage = 4;
 
         $searchResults = new SearchResults($this->fetchSearchResults($person, $q, $curPage, $perPage));
+
+        return View::create($this->wrap($searchResults), Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Get("/full", name="messenger_search")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function searchAction(Request $request)
+    {
+        $q = $request->get('q');
+
+        $person  = $this->getUser() ?: new PersonGuest();
+        $curPage = $request->get('page', 1);
+        $perPage = 20;
+
+        $allResults = [];
+        while (($results = $this->fetchSearchResults($person, $q, $curPage, $perPage)) && $curPage < 6) {
+            $allResults = array_merge($allResults, $results);
+            $curPage++;
+        }
+
+        $searchResults = new SearchResults($allResults);
 
         return View::create($this->wrap($searchResults), Response::HTTP_OK);
     }

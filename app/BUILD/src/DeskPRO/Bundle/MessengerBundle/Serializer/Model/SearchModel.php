@@ -38,8 +38,9 @@ class SearchModel implements MessengerModelInterface
     public function toArray()
     {
         return [
+            'id'      => $this->entity->getId(),
             'title'   => $this->entity->getTitle(),
-            'excerpt' => $this->entity->getExcerptHtml(18),
+            'excerpt' => $this->entity->getExcerptHtml(25),
             'type'    => $this->getTypeKey($this->entity),
             'link'    => $this->objectRouter->getPortalUrl($this->entity),
         ];

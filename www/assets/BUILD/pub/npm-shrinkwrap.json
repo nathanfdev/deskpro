@@ -358,9 +358,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.85",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.85.tgz",
-      "integrity": "sha512-7IwIwvZitfE1BibnDkbNItdU/AAFaoCG2PRgnYGoDRTG1vQSZ7er5QxLwF6nfWbIJs8zjyjQq4HlE1u6ryIYWA==",
+      "version": "0.1.88",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.88.tgz",
+      "integrity": "sha512-flXPqc9DbwrKYWY7Ud1/kjYE3keKhP2k3cyHt1bo7x3KG0RjEpdZ4sn8R/7TcvTdNzUjSGf8lPm4pGYc1P25Rg==",
       "requires": {
         "@deskpro/portal-components": "0.3.57",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
