@@ -2,11 +2,15 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use Application\DeskPRO\Entity\Ticket as TicketEntity;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketFeedback;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketMessage;
 use JMS\Serializer\Annotation as JMS;
+use Orb\Util\Arrays;
 
 abstract class TicketEmailType extends EmailBaseType
 {
@@ -74,6 +78,13 @@ abstract class TicketEmailType extends EmailBaseType
     protected $actionPerformer;
 
     /**
+     * @JMS\Type("array")
+     *
+     * @var []
+     */
+    protected $context;
+
+    /**
      * TicketEmailType constructor.
      *
      * @param Ticket           $ticket
@@ -111,10 +122,101 @@ abstract class TicketEmailType extends EmailBaseType
     }
 
     /**
+     * @param TicketEntity $ticket
+     * @param ExecutorContextInterface $context
+     * @param $mode
+     */
+    public function setContextVars(TicketEntity $ticket, $context, $mode)
+    {
+        $this->context = $this->getStandardEmailVars($ticket, $context, $mode);
+    }
+
+    /**
      * @return Ticket
      */
     public function getTicket()
     {
         return $this->ticket;
+    }
+
+    /**
+     * @param TicketEntity $ticket
+     * @param ExecutorContextInterface $context
+     * @param string                   $mode    'user' or 'agent'
+     *
+     * @return array
+     */
+    protected function getStandardEmailVars(TicketEntity $ticket, ExecutorContextInterface $context, $mode)
+    {
+        //------------------------------
+        // Build up some type flags
+        //------------------------------
+
+        $state = $ticket->getStateChangeRecorder();
+        if ($state->isNewTicket()) {
+            $type = 'newticket';
+        } elseif ($state->hasChangedField('message')) {
+            $type = 'newreply';
+        } else {
+            $type = 'updated';
+        }
+
+        $context->getLogger()->info("[AbstractEmailAction] Type: $type");
+        $context->getLogger()->info(sprintf('[AbstractEmailAction] Performer: %s', $context->getEventPerformer()));
+
+        //------------------------------
+        // Set reply flags
+        //------------------------------
+
+        $newReplies      = $state->getNewReplies();
+        $isNewTicket     = $state->isNewTicket();
+        $isNewAgentReply = false;
+        $isNewAgentNote  = false;
+        $isNewUserReply  = false;
+
+        foreach ($newReplies as $message) {
+            if ($message->is_agent_note) {
+                $isNewAgentNote = true;
+            } elseif ($message->person->is_agent) {
+                $isNewAgentReply = true;
+            } else {
+                $isNewUserReply = true;
+            }
+        }
+
+        // In user mode, never show notes
+        if ($mode == 'user') {
+            $newReplies = array_filter($newReplies, function ($r) {
+                return !$r->is_agent_note;
+            });
+            $ticketLogs = null;
+
+        // Agent mode - include ticket logs
+        } else {
+            $ticketLogGenerator = new TicketLogGenerator($ticket, $context);
+            $ticketLogs         = $ticketLogGenerator->getLogEntries();
+        }
+
+        //------------------------------
+        // Build map of mentions
+        //------------------------------
+
+        $vars = [
+            'type'               => $type,
+            'user_mode'          => $mode,
+            'performer_type'     => $context->getEventPerformer(),
+            'is_new_ticket'      => $isNewTicket,
+            'is_new_agent_reply' => $isNewAgentReply,
+            'is_new_agent_note'  => $isNewAgentNote,
+            'is_new_user_reply'  => $isNewUserReply,
+            'is_status_change'   => $state->hasChangedField('status'),
+            'action_performer'   => $context->getPersonContext(),
+            'new_message'        => Arrays::getFirstItem($newReplies),
+            'new_messages'       => $newReplies,
+            'ticket_logs'        => $ticketLogs,
+            'user_vars'          => $context->getUserVars(),
+        ];
+
+        return $vars;
     }
 }
