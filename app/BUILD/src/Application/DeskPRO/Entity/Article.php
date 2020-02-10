@@ -40,6 +40,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     const END_ACTION_DELETE  = 'delete';
     const END_ACTION_ARCHIVE = 'archive';
 
+    const REVIEW_DATE_UNIT_DAYS   = 'days';
+    const REVIEW_DATE_UNIT_MONTHS = 'months';
+    const REVIEW_DATE_UNIT_YEARS  = 'years';
+
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection|ArticleToCategory[]
      */

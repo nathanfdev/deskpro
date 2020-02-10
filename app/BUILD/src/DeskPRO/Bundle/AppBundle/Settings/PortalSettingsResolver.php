@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\AbstractRateLimitGroup;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings;
@@ -52,7 +53,20 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
 
     const ATTACHMENT_REQUIRE_AUTH_DOWNLOADS = 'user.attachment_require_auth_downloads';
 
-    const KB_WITH_TREE = 'user.kb_categories_with_tree';
+    const KB_WITH_TREE                           = 'user.kb_categories_with_tree';
+    const KB_REQUIRE_REVIEW_DATE                 = 'user.kb_require_review_date';
+    const KB_MIN_REVIEW_DATE                     = 'user.kb_min_review_date';
+    const KB_MIN_REVIEW_DATE_INTERVAL            = 'user.kb_min_review_date_interval';
+    const KB_MIN_REVIEW_DATE_UNIT                = 'user.kb_min_review_date_unit';
+    const KB_MAX_REVIEW_DATE                     = 'user.kb_max_review_date';
+    const KB_MAX_REVIEW_DATE_INTERVAL            = 'user.kb_max_review_date_interval';
+    const KB_MAX_REVIEW_DATE_UNIT                = 'user.kb_max_review_date_unit';
+    const KB_DEFAULT_REVIEW_DATE                 = 'user.kb_default_review_date';
+    const KB_DEFAULT_REVIEW_DATE_INTERVAL        = 'user.kb_default_review_date_interval';
+    const KB_DEFAULT_REVIEW_DATE_UNIT            = 'user.kb_default_review_date_unit';
+    const KB_AUTO_UNPUBLISH_REVIEW_DATE          = 'user.kb_auto_unpublish_review';
+    const KB_AUTO_UNPUBLISH_REVIEW_DATE_INTERVAL = 'user.kb_auto_unpublish_review_interval';
+    const KB_AUTO_UNPUBLISH_REVIEW_DATE_UNIT     = 'user.kb_auto_unpublish_review_unit';
 
     /**
      * {@inheritdoc}
@@ -173,8 +187,24 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setEnabled($this->getSetting(self::APPS_KB, $brand))
             ->setTabEnabled($this->getSetting(self::TAB_KB, $brand))
             ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_KB, $brand))
-            ->setKnowledgebaseDeepTree($this->getSetting(self::KB_WITH_TREE, $brand))
             ->setBrand($brand)
+        ;
+
+        $model
+            ->setRequireReviewDate($this->getSetting(self::KB_REQUIRE_REVIEW_DATE, $brand))
+            ->setMinReviewDate($this->getSetting(self::KB_MIN_REVIEW_DATE, $brand))
+            ->setMinReviewDateInterval($this->getSetting(self::KB_MIN_REVIEW_DATE_INTERVAL, $brand))
+            ->setMinReviewDateUnit($this->getSetting(self::KB_MIN_REVIEW_DATE_UNIT, $brand) ?: Article::REVIEW_DATE_UNIT_DAYS)
+            ->setMaxReviewDate($this->getSetting(self::KB_MAX_REVIEW_DATE, $brand))
+            ->setMaxReviewDateInterval($this->getSetting(self::KB_MAX_REVIEW_DATE_INTERVAL, $brand))
+            ->setMaxReviewDateUnit($this->getSetting(self::KB_MAX_REVIEW_DATE_UNIT, $brand) ?: Article::REVIEW_DATE_UNIT_DAYS)
+            ->setDefaultReviewDate($this->getSetting(self::KB_DEFAULT_REVIEW_DATE, $brand))
+            ->setDefaultReviewDateInterval($this->getSetting(self::KB_DEFAULT_REVIEW_DATE_INTERVAL, $brand))
+            ->setDefaultReviewDateUnit($this->getSetting(self::KB_DEFAULT_REVIEW_DATE_UNIT, $brand) ?: Article::REVIEW_DATE_UNIT_DAYS)
+            ->setAutoUnpublishReview($this->getSetting(self::KB_AUTO_UNPUBLISH_REVIEW_DATE, $brand))
+            ->setAutoUnpublishReviewInterval($this->getSetting(self::KB_AUTO_UNPUBLISH_REVIEW_DATE_INTERVAL, $brand))
+            ->setAutoUnpublishReviewUnit($this->getSetting(self::KB_AUTO_UNPUBLISH_REVIEW_DATE_UNIT, $brand) ?: Article::REVIEW_DATE_UNIT_DAYS)
+            ->setKnowledgebaseDeepTree($this->getSetting(self::KB_WITH_TREE, $brand))
         ;
 
         return $model;
