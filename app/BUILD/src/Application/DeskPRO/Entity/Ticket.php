@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -2182,18 +2178,25 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * Render a custom field.
      *
      * !depreciated
+     *
+     * @param mixed $field_id
+     * @param mixed $context
      */
     public function renderCustomField($field_id, $context = 'html')
     {
-        $f_def = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($field_id);
-        if (!$f_def) {
+        $def = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($field_id);
+        if (!$def) {
             return '';
         }
 
-        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, [$f_def]);
+        $dataStructured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, [$def]);
 
-        $value    = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
-        $rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
+        $value    = !empty($dataStructured[$def['id']]) ? $dataStructured[$def['id']] : null;
+        $rendered = $value ? $def->getHandler()->renderContext($context, $value) : null;
+
+        if ($rendered) {
+            $rendered = trim($rendered, "\n\t");
+        }
 
         return $rendered;
     }
@@ -3694,6 +3697,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Find an access code.
      *
+     * @param mixed $auth
+     *
      * @return TicketAccessCode
      */
     public function findAccessCode($auth)
@@ -4000,6 +4005,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 } else {
                     return 300;
                 }
+
                 break;
             case TicketStatus::STATUS_TYPE_PENDING:
                 return 400;
@@ -4559,6 +4565,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                             $event_type,
                             'web'
                         );
+
                         break;
                     case 'user':
                         if (!$person && $this->person) {
@@ -4569,6 +4576,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                             $event_type,
                             'portal'
                         );
+
                         break;
                     case 'api':
                         $context = $tm->createAgentExecutorContext(
@@ -4576,9 +4584,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                             $event_type,
                             'api'
                         );
+
                         break;
                     default:
                         $context = $tm->createSystemExecutorContext();
+
                         break;
                 }
             }
@@ -4590,6 +4600,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 $this->__dp_is_processing_ticket = false;
             } catch (\Exception $e) {
                 $this->__dp_is_processing_ticket = false;
+
                 throw $e;
             }
         }
@@ -5052,6 +5063,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @param int|null $templateId NULL for any template
      * @param string $status
      * @param int|null $includesApproverId NULL for all approvals
+     *
      * @return bool
      */
     public function isApprovalsMatchingTicketFilter(Person $personContext, $templateId, $status, $includesApproverId)
