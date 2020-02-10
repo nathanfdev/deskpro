@@ -40,3 +40,13 @@ services:
     class: DeskPRO\Bundle\MessengerBundle\Security\EventListener\VisitorIdListener
     tags:
       - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 300}
+
+  tickets.new_ticket:
+    class: DeskPRO\Bundle\MessengerBundle\Service\NewTicketService
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"
+      - "@language_manager"
+      - "@person_factory"
+      - "@brand_stack"
+      - "@tickets.statuses"
