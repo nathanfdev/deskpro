@@ -114,8 +114,8 @@ class AdminController extends AbstractBrandAwareSettingsController
     {
         $form        = $this->createForm($this->getType(), $model, ['brand' => $model->getBrand()]);
         $requestData = $request->request->all();
-        if (isset($requestData['messenger']['maxFileSize'])) {
-            unset($requestData['messenger']['maxFileSize']);
+        if (isset($requestData['maxFileSize'])) {
+            unset($requestData['maxFileSize']);
         }
         $form->submit($requestData);
         if (!$form->isValid()) {
@@ -134,16 +134,16 @@ class AdminController extends AbstractBrandAwareSettingsController
     protected function persistModel(AbstractBrandAwareSettings $model)
     {
         $brand                       = $model->getBrand();
+        $messengerWidget             = $model->getWidget();
         $messengerEmbed              = $model->getEmbed();
         $messengerChat               = $model->getChat();
-        $messengerChatTicketDefaults = $messengerChat->getTicketDefaults();
+        $messengerChatOptions        = $model->getChat()->getOptions();
         $messengerChatPreChatForm    = $messengerChat->getPreChatForm();
-        $messengerStyles             = $model->getStyles();
-        $messengerOptions            = $model->getMessenger();
-        $optionsTickets              = $messengerOptions->getTickets();
-        $optionsProactive            = $messengerOptions->getProactive();
-        $optionsChat                 = $messengerOptions->getChat();
+        $messengerChatTicketDefaults = $messengerChat->getTicketDefaults();
         $messengerTickets            = $model->getTickets();
+        $messengerTicketsOptions     = $messengerTickets->getOptions();
+        $messengerProactive          = $model->getProactive();
+        $messengerProactiveOptions   = $messengerProactive->getOptions();
 
         if (
             !$messengerTickets->isEnabled() &&
@@ -154,18 +154,29 @@ class AdminController extends AbstractBrandAwareSettingsController
         $this
             ->getSettingRepository()
 
-            ->updateSetting(MSR::EMBED_AUTHORIZE_DOMAINS, $messengerEmbed->getAuthorizeDomains(), $brand)
-            ->updateSetting(MSR::EMBED_ENABLED_ON_PORTAL, $messengerEmbed->isShowOnPortal(), $brand)
-            ->updateSetting(MSR::JWT_SECRET, $messengerEmbed->getJwtSecret(), $brand)
+            // Widget Settings
+            ->updateSetting(MSR::WIDGET_PRIMARY_COLOR, $messengerWidget->getPrimaryColor(), $brand)
+            ->updateSetting(MSR::WIDGET_BG_COLOR, $messengerWidget->getBackgroundColor(), $brand)
+            ->updateSetting(MSR::WIDGET_TEXT_COLOR, $messengerWidget->getTextColor(), $brand)
+            ->updateSetting(MSR::WIDGET_POSITION, $messengerWidget->getPosition(), $brand)
+            ->updateSetting(MSR::WIDGET_GREETING, $messengerWidget->getGreetingTitle(), $brand)
 
-            ->updateSetting(MSR::CHAT_TIMEOUT, $messengerChat->getTimeout(), $brand)
-            ->updateSetting(MSR::CHAT_PROMPT, $messengerChat->getPrompt(), $brand)
-            ->updateSetting(MSR::CHAT_NO_ANSWER_BEHAVIOR, $messengerChat->getNoAnswerBehavior(), $brand)
-            ->updateSetting(MSR::CHAT_DEFAULT_DEPARTMENT, $messengerChat->getDepartment(), $brand)
-            ->updateSetting(MSR::CHAT_BUSY_MESSAGE, $messengerChat->getBusyMessage(), $brand)
+            // Chat settings
             ->updateSetting(MSR::CHAT_ENABLED, $messengerChat->isEnabled(), $brand)
+            ->updateSetting(MSR::CHAT_DEFAULT_DEPARTMENT, $messengerChat->getDepartment(), $brand)
             ->updateSetting(MSR::CHAT_USERGROUPS, serialize($messengerChat->getUsergroups()), $brand)
+            ->updateSetting(MSR::CHAT_PROMPT, $messengerChat->getPrompt(), $brand)
+            ->updateSetting(MSR::CHAT_TIMEOUT, $messengerChat->getTimeout(), $brand)
+            ->updateSetting(MSR::CHAT_NO_ANSWER_BEHAVIOR, $messengerChat->getNoAnswerBehavior(), $brand)
+            ->updateSetting(MSR::CHAT_BUSY_MESSAGE, $messengerChat->getBusyMessage(), $brand)
 
+            // Chat options (a.k.a. block config - title, description etc)
+            ->updateSetting(MSR::CHAT_OPTIONS_TITLE, $messengerChatOptions->getTitle(), $brand)
+            ->updateSetting(MSR::CHAT_OPTIONS_SHOW_PHOTOS, $messengerChatOptions->isShowAgentPhotos(), $brand)
+            ->updateSetting(MSR::CHAT_OPTIONS_DESCRIPTION, $messengerChatOptions->getDescription(), $brand)
+            ->updateSetting(MSR::CHAT_OPTIONS_BUTTON_TEXT, $messengerChatOptions->getButtonText(), $brand)
+
+            // Pre-chat form
             ->updateSetting(MSR::PRE_CHAT_FORM_ENABLED, $messengerChatPreChatForm->isEnabled(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_NAME_ENABLED, $messengerChatPreChatForm->isNameEnabled(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_EMAIL_ENABLED, $messengerChatPreChatForm->isEmailEnabled(), $brand)
@@ -176,42 +187,38 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::PRE_CHAT_FORM_FORM_MESSAGE_ENABLED, $messengerChatPreChatForm->isFormMessageEnabled(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_FORM_MESSAGE, $messengerChatPreChatForm->getFormMessage(), $brand)
 
+            // Chat settings. No answer behaviour === save as a ticket
             ->updateSetting(MSR::CHAT_TICKET_DEFAULTS_SUBJECT, $messengerChatTicketDefaults->getSubject(), $brand)
             ->updateSetting(MSR::CHAT_TICKET_DEFAULTS_SUBJECT_TYPE, $messengerChatTicketDefaults->getSubjectType(), $brand)
             ->updateSetting(MSR::CHAT_TICKET_DEFAULTS_DEP, $messengerChatTicketDefaults->getDepartment(), $brand)
 
+            // Tickets settings
             ->updateSetting(MSR::TICKETS_ENABLED, $messengerTickets->isEnabled(), $brand)
             ->updateSetting(MSR::TICKETS_DEPARTMENT, $messengerTickets->getDepartment(), $brand)
             ->updateSetting(MSR::TICKETS_SUBJECT, $messengerTickets->getSubject(), $brand)
             ->updateSetting(MSR::TICKETS_DEPARTMENT_OPTION, $messengerTickets->getDepartmentOption(), $brand)
 
-            ->updateSetting(MSR::STYLE_PRIMARY_COLOR, $messengerStyles->getPrimaryColor(), $brand)
-            ->updateSetting(MSR::STYLE_BG_COLOR, $messengerStyles->getBackgroundColor(), $brand)
-            ->updateSetting(MSR::STYLE_TEXT_COLOR, $messengerStyles->getTextColor(), $brand)
-            ->updateSetting(MSR::STYLE_POSITION, $messengerStyles->getPosition(), $brand)
+            // Tickets block config
+            ->updateSetting(MSR::TICKETS_OPTIONS_TITLE, $messengerTicketsOptions->getTitle(), $brand)
+            ->updateSetting(MSR::TICKETS_OPTIONS_BUTTON_TEXT, $messengerTicketsOptions->getButtonText(), $brand)
+            ->updateSetting(MSR::TICKETS_OPTIONS_DESCRIPTION, $messengerTicketsOptions->getDescription(), $brand)
 
-            ->updateSetting(MSR::OPTIONS_TITLE, $messengerOptions->getTitle(), $brand)
-            ->updateSetting(MSR::OPTIONS_AUTOSTART, $messengerOptions->isAutoStart(), $brand)
-            ->updateSetting(MSR::OPTIONS_AUTOSTART_TIMEOUT, $messengerOptions->getAutoStartTimeout(), $brand)
-            ->updateSetting(MSR::OPTIONS_AUTOSTART_STYLE, $messengerOptions->getAutoStartStyle(), $brand)
-            ->updateSetting(MSR::OPTIONS_SUBTEXT, $messengerOptions->getSubtext(), $brand)
+            // These are proactive, defenitely.
+            ->updateSetting(MSR::PROACTIVE_AUTOSTART, $messengerProactive->isAutoStart(), $brand)
+            ->updateSetting(MSR::PROACTIVE_TIMEOUT, $messengerProactive->getAutoStartTimeout(), $brand)
+            ->updateSetting(MSR::PROACTIVE_STYLE, $messengerProactive->getAutoStartStyle(), $brand)
+            // These are proactive block config
+            ->updateSetting(MSR::PROACTIVE_OPTIONS_GREETING_TITLE, $messengerProactiveOptions->getGreetingTitle(), $brand)
+            ->updateSetting(MSR::PROACTIVE_OPTIONS_TITLE, $messengerProactiveOptions->getTitle(), $brand)
+            ->updateSetting(MSR::PROACTIVE_OPTIONS_DESCRIPTION, $messengerProactiveOptions->getDescription(), $brand)
+            ->updateSetting(MSR::PROACTIVE_OPTIONS_BUTTON_TEXT, $messengerProactiveOptions->getButtonText(), $brand)
+            ->updateSetting(MSR::PROACTIVE_OPTIONS_INPUT_PLACEHOLDER, $messengerProactiveOptions->getInputPlaceholder(), $brand)
 
-            ->updateSetting(MSR::OPTIONS_TICKETS_TITLE, $optionsTickets->getTitle(), $brand)
-            ->updateSetting(MSR::OPTIONS_TICKETS_BUTTON_TEXT, $optionsTickets->getButtonText(), $brand)
-            ->updateSetting(MSR::OPTIONS_TICKETS_DESCRIPTION, $optionsTickets->getDescription(), $brand)
+            // Add Widget & Chat section
+            ->updateSetting(MSR::EMBED_AUTHORIZE_DOMAINS, $messengerEmbed->getAuthorizeDomains(), $brand)
+            ->updateSetting(MSR::EMBED_ENABLED_ON_PORTAL, $messengerEmbed->isShowOnPortal(), $brand)
+            ->updateSetting(MSR::JWT_SECRET, $messengerEmbed->getJwtSecret(), $brand)
 
-            ->updateSetting(MSR::OPTIONS_PROACTIVE_GREETING_TITLE, $optionsProactive->getGreetingTitle(), $brand)
-            ->updateSetting(MSR::OPTIONS_PROACTIVE_TITLE, $optionsProactive->getTitle(), $brand)
-            ->updateSetting(MSR::OPTIONS_PROACTIVE_DESCRIPTION, $optionsProactive->getDescription(), $brand)
-            ->updateSetting(MSR::OPTIONS_PROACTIVE_BUTTON_TEXT, $optionsProactive->getButtonText(), $brand)
-            ->updateSetting(MSR::OPTIONS_PROACTIVE_INPUT_PLACEHOLDER, $optionsProactive->getInputPlaceholder(), $brand)
-
-            ->updateSetting(MSR::OPTIONS_CHAT_SHOW_PHOTOS, $optionsChat->isShowAgentPhotos(), $brand)
-            ->updateSetting(MSR::OPTIONS_CHAT_START_WITH_INPUT, $optionsChat->isStartWithInputField(), $brand)
-            ->updateSetting(MSR::OPTIONS_CHAT_TITLE, $optionsChat->getTitle(), $brand)
-            ->updateSetting(MSR::OPTIONS_CHAT_DESCRIPTION, $optionsChat->getDescription(), $brand)
-            ->updateSetting(MSR::OPTIONS_CHAT_BUTTON_TEXT, $optionsChat->getButtonText(), $brand)
-            ->updateSetting(MSR::OPTIONS_CHAT_INPUT_PLACEHOLDER, $optionsChat->getInputPlaceholder(), $brand)
         ;
     }
 }

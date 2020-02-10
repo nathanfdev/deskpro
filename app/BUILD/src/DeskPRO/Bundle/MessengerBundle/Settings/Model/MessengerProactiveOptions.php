@@ -5,10 +5,20 @@ namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class MessengerOptionsChat.
+ * Class MessengerProactiveOptions.
  */
-class MessengerOptionsChat
+class MessengerProactiveOptions
 {
+    /**
+     * A title.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("greetingTitle")
+     *
+     * @var string
+     */
+    private $greetingTitle = 'Get in Touch';
+
     /**
      * A title.
      *
@@ -48,24 +58,24 @@ class MessengerOptionsChat
     private $inputPlaceholder = 'Type your message here';
 
     /**
-     * Indicates whenever agent avatar should be shown or not.
-     *
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("showAgentPhotos")
-     *
-     * @var bool
+     * @return string
      */
-    private $showAgentPhotos = false;
+    public function getGreetingTitle()
+    {
+        return $this->greetingTitle;
+    }
 
     /**
-     * Indicates whenever start conversation module should show a button or an input field.
+     * @param string $greetingTitle
      *
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("startWithInputField")
-     *
-     * @var bool
+     * @return $this
      */
-    private $startWithInputField = false;
+    public function setGreetingTitle($greetingTitle)
+    {
+        $this->greetingTitle = $greetingTitle;
+
+        return $this;
+    }
 
     /**
      * @return string
@@ -143,46 +153,6 @@ class MessengerOptionsChat
     public function setInputPlaceholder($inputPlaceholder)
     {
         $this->inputPlaceholder = $inputPlaceholder;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isShowAgentPhotos()
-    {
-        return $this->showAgentPhotos;
-    }
-
-    /**
-     * @param bool $showAgentPhotos
-     *
-     * @return $this
-     */
-    public function setShowAgentPhotos($showAgentPhotos)
-    {
-        $this->showAgentPhotos = $showAgentPhotos;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isStartWithInputField()
-    {
-        return $this->startWithInputField;
-    }
-
-    /**
-     * @param bool $startWithInputField
-     *
-     * @return $this
-     */
-    public function setStartWithInputField($startWithInputField)
-    {
-        $this->startWithInputField = $startWithInputField;
 
         return $this;
     }

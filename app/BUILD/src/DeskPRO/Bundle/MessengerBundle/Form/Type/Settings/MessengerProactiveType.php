@@ -3,18 +3,17 @@
 namespace DeskPRO\Bundle\MessengerBundle\Form\Type\Settings;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptions;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactive;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class MessengerOptionsType extends AbstractType
+class MessengerProactiveType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -27,12 +26,12 @@ class MessengerOptionsType extends AbstractType
             ->add('autoStartStyle', ChoiceType::class, [
                 'required' => true,
                 'choices'  => [
-                    MessengerOptions::STYLE_AVATAR_TEXT_BUTTON,
-                    MessengerOptions::STYLE_AVATAR_TEXT_INPUT,
-                    MessengerOptions::STYLE_AVATAR_BUTTON,
-                    MessengerOptions::STYLE_TEXT_BUTTON,
-                    MessengerOptions::STYLE_TEXT_INPUT,
-                    MessengerOptions::STYLE_AVATAR_WIDGET,
+                    MessengerProactive::STYLE_AVATAR_TEXT_BUTTON,
+                    MessengerProactive::STYLE_AVATAR_TEXT_INPUT,
+                    MessengerProactive::STYLE_AVATAR_BUTTON,
+                    MessengerProactive::STYLE_TEXT_BUTTON,
+                    MessengerProactive::STYLE_TEXT_INPUT,
+                    MessengerProactive::STYLE_AVATAR_WIDGET,
                 ],
                 'choices_as_values' => true,
                 'constraints'       => [
@@ -40,11 +39,7 @@ class MessengerOptionsType extends AbstractType
                 ],
 
             ])
-            ->add('title', TextType::class)
-            ->add('subtext', TextType::class)
-            ->add('tickets', MessengerOptionsTicketsType::class)
-            ->add('proactive', MessengerOptionsProactiveType::class)
-            ->add('chat', MessengerOptionsChatType::class)
+            ->add('options', MessengerProactiveOptionsType::class)
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);
@@ -56,7 +51,7 @@ class MessengerOptionsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => MessengerOptions::class,
+            'data_class' => MessengerProactive::class,
         ]);
     }
 

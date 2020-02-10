@@ -5,20 +5,10 @@ namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class MessengerOptionsChat.
+ * Class MessengerChatOptions.
  */
-class MessengerOptionsProactive
+class MessengerChatOptions
 {
-    /**
-     * A title.
-     *
-     * @JMS\Type("string")
-     * @JMS\SerializedName("greetingTitle")
-     *
-     * @var string
-     */
-    private $greetingTitle = 'Get in Touch';
-
     /**
      * A title.
      *
@@ -48,34 +38,14 @@ class MessengerOptionsProactive
     private $buttonText = 'Start a new conversation';
 
     /**
-     * A placeholder which will be shown on an input inside chat block.
+     * Indicates whenever agent avatar should be shown or not.
      *
-     * @JMS\Type("string")
-     * @JMS\SerializedName("inputPlaceholder")
+     * @JMS\Type("boolean")
+     * @JMS\SerializedName("showAgentPhotos")
      *
-     * @var string
+     * @var bool
      */
-    private $inputPlaceholder = 'Type your message here';
-
-    /**
-     * @return string
-     */
-    public function getGreetingTitle()
-    {
-        return $this->greetingTitle;
-    }
-
-    /**
-     * @param string $greetingTitle
-     *
-     * @return $this
-     */
-    public function setGreetingTitle($greetingTitle)
-    {
-        $this->greetingTitle = $greetingTitle;
-
-        return $this;
-    }
+    private $showAgentPhotos = false;
 
     /**
      * @return string
@@ -138,21 +108,21 @@ class MessengerOptionsProactive
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getInputPlaceholder()
+    public function isShowAgentPhotos()
     {
-        return $this->inputPlaceholder;
+        return $this->showAgentPhotos;
     }
 
     /**
-     * @param string $inputPlaceholder
+     * @param bool $showAgentPhotos
      *
      * @return $this
      */
-    public function setInputPlaceholder($inputPlaceholder)
+    public function setShowAgentPhotos($showAgentPhotos)
     {
-        $this->inputPlaceholder = $inputPlaceholder;
+        $this->showAgentPhotos = $showAgentPhotos;
 
         return $this;
     }

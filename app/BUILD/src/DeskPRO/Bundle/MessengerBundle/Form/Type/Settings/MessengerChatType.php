@@ -47,9 +47,6 @@ class MessengerChatType extends AbstractType
 
         $builder
             ->add('enabled', ApiBooleanType::class)
-            ->add('prompt', TextType::class)
-            ->add('busyMessage', TextType::class)
-            ->add('timeout', NumberType::class)
             ->add('department', EntityType::class, [
                 'class'         => Department::class,
                 'choice_label'  => 'id',
@@ -68,6 +65,16 @@ class MessengerChatType extends AbstractType
                 },
                 'required' => true,
             ])
+            ->add('usergroups', CollectionType::class, [
+                'property_path' => 'usergroups',
+                'type'          => NumberType::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+            ])
+            ->add('prompt', TextType::class)
+            ->add('options', MessengerChatOptionsType::class)
+            ->add('preChatForm', MessengerPreChatFormType::class)
+            ->add('timeout', NumberType::class)
             ->add('noAnswerBehavior', ChoiceType::class, [
                 'required' => true,
                 'choices'  => [
@@ -81,14 +88,9 @@ class MessengerChatType extends AbstractType
                 ],
 
             ])
+            ->add('busyMessage', TextType::class)
             ->add('ticketDefaults', MessengerChatTicketDefaultsType::class, ['brand' => $brand])
-            ->add('preChatForm', MessengerPreChatFormType::class)
-            ->add('usergroups', CollectionType::class, [
-                'property_path' => 'usergroups',
-                'type'          => NumberType::class,
-                'allow_add'     => true,
-                'allow_delete'  => true,
-            ])
+
         ;
     }
 

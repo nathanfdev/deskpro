@@ -36,7 +36,7 @@ class BlobController extends AbstractMessengerController
         $set      = new RestrictionSet();
         $brand    = $this->get('brand_stack')->getActive()->getBrand();
         $settings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
-        $set->setAllowedExts($exts)->setMaxSize($settings->getMessenger()->getMaxFileSize());
+        $set->setAllowedExts($exts)->setMaxSize($settings->getMaxFileSize());
 
         return new View($this->wrap($this->upload($request->files->get('file'), $set, 'only_images')));
     }
@@ -59,7 +59,7 @@ class BlobController extends AbstractMessengerController
         $set      = new RestrictionSet();
         $brand    = $this->get('brand_stack')->getActive()->getBrand();
         $settings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
-        $set->setAllowedExts($exts)->setMaxSize($settings->getMessenger()->getMaxFileSize());
+        $set->setAllowedExts($exts)->setMaxSize($settings->getMaxFileSize());
 
         return new View($this->wrap($this->upload($request->files->get('file'), $set, 'only_files')));
     }
@@ -83,6 +83,7 @@ class BlobController extends AbstractMessengerController
             return new Blob($blob);
         } else {
             $errorMessage = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
+
             throw new MessengerApiException(['file' => $errorMessage]);
         }
     }

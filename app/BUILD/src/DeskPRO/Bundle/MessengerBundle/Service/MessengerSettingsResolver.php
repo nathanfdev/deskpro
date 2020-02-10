@@ -8,15 +8,15 @@ use DeskPRO\Bundle\AppBundle\Settings\AbstractBrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChat;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerEmbed;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptions;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsChat;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsProactive;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsTickets;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactive;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactiveOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerStyles;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTicketsOptions;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Env;
@@ -26,24 +26,24 @@ use Orb\Util\Env;
  */
 class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
-    // just fo the bc and code reuse
-    const JWT_SECRET              = WidgetSettingsResolver::JWT_SECRET;
-
-    const EMBED_ENABLED_ON_PORTAL = 'messenger.embed.show_on_portal';
-    const EMBED_AUTHORIZE_DOMAINS = 'messenger.embed.authorize_domains';
-
-    const TICKETS_ENABLED           = 'messenger.tickets.enabled';
-    const TICKETS_SUBJECT           = 'messenger.tickets.subject';
-    const TICKETS_DEPARTMENT        = 'messenger.tickets.department';
-    const TICKETS_DEPARTMENT_OPTION = 'messenger.tickets.department_option';
+    const WIDGET_PRIMARY_COLOR = 'messenger.widget.primary_color';
+    const WIDGET_BG_COLOR      = 'messenger.widget.bg_color';
+    const WIDGET_TEXT_COLOR    = 'messenger.widget.text_color';
+    const WIDGET_POSITION      = 'messenger.widget.position';
+    const WIDGET_GREETING      = 'messenger.widget.greeting';
 
     const CHAT_ENABLED              = 'messenger.chat.enabled';
+    const CHAT_DEFAULT_DEPARTMENT   = 'messenger.chat.department';
     const CHAT_USERGROUPS           = 'messenger.chat.usergroups';
     const CHAT_PROMPT               = 'messenger.chat.prompt';
     const CHAT_TIMEOUT              = 'messenger.chat.timeout';
     const CHAT_NO_ANSWER_BEHAVIOR   = 'messenger.chat.no_answer';
     const CHAT_BUSY_MESSAGE         = 'messenger.chat.busy';
-    const CHAT_DEFAULT_DEPARTMENT   = 'messenger.chat.department';
+
+    const CHAT_OPTIONS_TITLE       = 'messenger.chat.options.title';
+    const CHAT_OPTIONS_BUTTON_TEXT = 'messenger.chat.options.button_text';
+    const CHAT_OPTIONS_DESCRIPTION = 'messenger.chat.options.description';
+    const CHAT_OPTIONS_SHOW_PHOTOS = 'messenger.chat.options.show_photos';
 
     const CHAT_TICKET_DEFAULTS_SUBJECT      = 'messenger.chat.ticket_defaults.subject';
     const CHAT_TICKET_DEFAULTS_SUBJECT_TYPE = 'messenger.chat.ticket_defaults.subject_type';
@@ -59,33 +59,29 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const PRE_CHAT_FORM_FORM_MESSAGE_ENABLED = 'messenger.chat.pre_chat_form.form_message_enabled';
     const PRE_CHAT_FORM_FORM_MESSAGE         = 'messenger.chat.pre_chat_form.form_message';
 
-    const STYLE_PRIMARY_COLOR = 'messenger.styles.primary_color';
-    const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
-    const STYLE_TEXT_COLOR    = 'messenger.styles.text_color';
-    const STYLE_POSITION      = 'messenger.styles.position';
+    const PROACTIVE_AUTOSTART = 'messenger.proactive.autostart';
+    const PROACTIVE_TIMEOUT   = 'messenger.proactive.autostart_timeout';
+    const PROACTIVE_STYLE     = 'messenger.proactive.autostart_style';
 
-    const OPTIONS_AUTOSTART         = 'messenger.options.autostart';
-    const OPTIONS_AUTOSTART_TIMEOUT = 'messenger.options.autostart_timeout';
-    const OPTIONS_AUTOSTART_STYLE   = 'messenger.options.autostart_style';
-    const OPTIONS_SUBTEXT           = 'messenger.options.subtext';
-    const OPTIONS_TITLE             = 'messenger.options.title';
+    const PROACTIVE_OPTIONS_GREETING_TITLE    = 'messenger.proactive.options.greeting_title';
+    const PROACTIVE_OPTIONS_TITLE             = 'messenger.proactive.options.title';
+    const PROACTIVE_OPTIONS_BUTTON_TEXT       = 'messenger.proactive.options.button_text';
+    const PROACTIVE_OPTIONS_INPUT_PLACEHOLDER = 'messenger.proactive.options.input_placeholder';
+    const PROACTIVE_OPTIONS_DESCRIPTION       = 'messenger.proactive.options.description';
 
-    const OPTIONS_CHAT_TITLE             = 'messenger.options.chat.title';
-    const OPTIONS_CHAT_BUTTON_TEXT       = 'messenger.options.chat.button_text';
-    const OPTIONS_CHAT_INPUT_PLACEHOLDER = 'messenger.options.chat.input_placeholder';
-    const OPTIONS_CHAT_DESCRIPTION       = 'messenger.options.chat.description';
-    const OPTIONS_CHAT_SHOW_PHOTOS       = 'messenger.options.chat.show_photos';
-    const OPTIONS_CHAT_START_WITH_INPUT  = 'messenger.options.chat.start_with_input';
+    const TICKETS_ENABLED           = 'messenger.tickets.enabled';
+    const TICKETS_SUBJECT           = 'messenger.tickets.subject';
+    const TICKETS_DEPARTMENT        = 'messenger.tickets.department';
+    const TICKETS_DEPARTMENT_OPTION = 'messenger.tickets.department_option';
 
-    const OPTIONS_PROACTIVE_GREETING_TITLE    = 'messenger.options.proactive.greeting_title';
-    const OPTIONS_PROACTIVE_TITLE             = 'messenger.options.proactive.title';
-    const OPTIONS_PROACTIVE_BUTTON_TEXT       = 'messenger.options.proactive.button_text';
-    const OPTIONS_PROACTIVE_INPUT_PLACEHOLDER = 'messenger.options.proactive.input_placeholder';
-    const OPTIONS_PROACTIVE_DESCRIPTION       = 'messenger.options.proactive.description';
+    const TICKETS_OPTIONS_TITLE       = 'messenger.tickets.options.title';
+    const TICKETS_OPTIONS_BUTTON_TEXT = 'messenger.tickets.options.button_text';
+    const TICKETS_OPTIONS_DESCRIPTION = 'messenger.tickets.options.description';
 
-    const OPTIONS_TICKETS_TITLE       = 'messenger.options.tickets.title';
-    const OPTIONS_TICKETS_BUTTON_TEXT = 'messenger.options.tickets.button_text';
-    const OPTIONS_TICKETS_DESCRIPTION = 'messenger.options.tickets.description';
+    // just fo the bc and code reuse
+    const JWT_SECRET              = WidgetSettingsResolver::JWT_SECRET;
+    const EMBED_ENABLED_ON_PORTAL = 'messenger.embed.show_on_portal';
+    const EMBED_AUTHORIZE_DOMAINS = 'messenger.embed.authorize_domains';
 
     /**
      * @var EntityManager
@@ -117,11 +113,12 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         return $model
             ->setBrand($brand)
-            ->setEmbed($this->getMessengerEmbedSettings($brand))
-            ->setStyles($this->getMessengerStyles($brand))
-            ->setTickets($this->getMessengerTickets($brand))
+            ->setMaxFileSize(min(Env::getEffectiveMaxUploadSize(), $this->getSettings('core.attach_user_maxsize', null, 1024 * 1024 * 10)))
+            ->setWidget($this->getMessengerWidget($brand))
             ->setChat($this->getMessengerChat($brand))
-            ->setMessenger($this->getMessengerOptions($brand))
+            ->setEmbed($this->getMessengerEmbedSettings($brand))
+            ->setTickets($this->getMessengerTickets($brand))
+            ->setProactive($this->getMessengerProactive($brand))
         ;
     }
 
@@ -156,7 +153,8 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setSubject($this->getSettings(self::TICKETS_SUBJECT, $brand, $mTickets->getSubject()))
             ->setDepartment($this->getSettings(self::TICKETS_DEPARTMENT, $brand, $this->getDefaultDepartment('ticket')))
             ->setDepartmentOption($this->getSettings(self::TICKETS_DEPARTMENT_OPTION, $brand, $mTickets->getDepartmentOption()))
-            ;
+            ->setOptions($this->getMessengerTicketsOptions($brand))
+        ;
     }
 
     /**
@@ -170,15 +168,16 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         return $mChat
             ->setEnabled($this->getSettings(self::CHAT_ENABLED, $brand, $mChat->isEnabled()))
-            ->setBusyMessage($this->getSettings(self::CHAT_BUSY_MESSAGE, $brand, $mChat->getBusyMessage()))
             ->setDepartment($this->getSettings(self::CHAT_DEFAULT_DEPARTMENT, $brand, $this->getDefaultDepartment('chat')))
-            ->setNoAnswerBehavior($this->getSettings(self::CHAT_NO_ANSWER_BEHAVIOR, $brand, $mChat->getNoAnswerBehavior()))
-            ->setPrompt($this->getSettings(self::CHAT_PROMPT, $brand, $mChat->getPrompt()))
-            ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
-            ->setTicketDefaults($this->getMessengerChatTicketDefaults($brand))
-            ->setPreChatForm($this->getPreChatForm($brand))
             ->setUsergroups(unserialize($this->getSettings(self::CHAT_USERGROUPS, $brand, serialize($mChat->getUsergroups()))))
-            ;
+            ->setPrompt($this->getSettings(self::CHAT_PROMPT, $brand, $mChat->getPrompt()))
+            ->setOptions($this->getMessengerChatOptions($brand))
+            ->setPreChatForm($this->getPreChatForm($brand))
+            ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
+            ->setNoAnswerBehavior($this->getSettings(self::CHAT_NO_ANSWER_BEHAVIOR, $brand, $mChat->getNoAnswerBehavior()))
+            ->setBusyMessage($this->getSettings(self::CHAT_BUSY_MESSAGE, $brand, $mChat->getBusyMessage()))
+            ->setTicketDefaults($this->getMessengerChatTicketDefaults($brand))
+        ;
     }
 
     /**
@@ -222,93 +221,87 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * @param Brand $brand
      *
-     * @return MessengerStyles
+     * @return MessengerWidget
      */
-    protected function getMessengerStyles(Brand $brand)
+    protected function getMessengerWidget(Brand $brand)
     {
-        $mStyles = new MessengerStyles();
+        $messengerWidget = new MessengerWidget();
 
-        return $mStyles
-            ->setPrimaryColor($this->getSettings(self::STYLE_PRIMARY_COLOR, $brand, $mStyles->getPrimaryColor()))
-            ->setBackgroundColor($this->getSettings(self::STYLE_BG_COLOR, $brand, $mStyles->getBackgroundColor()))
-            ->setTextColor($this->getSettings(self::STYLE_TEXT_COLOR, $brand, $mStyles->getTextColor()))
-            ->setPosition($this->getSettings(self::STYLE_POSITION, $brand, $mStyles->getPosition()))
-            ;
+        return $messengerWidget
+            ->setPrimaryColor($this->getSettings(self::WIDGET_PRIMARY_COLOR, $brand, $messengerWidget->getPrimaryColor()))
+            ->setBackgroundColor($this->getSettings(self::WIDGET_BG_COLOR, $brand, $messengerWidget->getBackgroundColor()))
+            ->setTextColor($this->getSettings(self::WIDGET_TEXT_COLOR, $brand, $messengerWidget->getTextColor()))
+            ->setPosition($this->getSettings(self::WIDGET_POSITION, $brand, $messengerWidget->getPosition()))
+            ->setGreetingTitle($this->getSettings(self::WIDGET_GREETING, $brand, $messengerWidget->getGreetingTitle()))
+        ;
     }
 
     /**
      * @param Brand $brand
      *
-     * @return MessengerOptions
+     * @return MessengerProactive
      */
-    protected function getMessengerOptions(Brand $brand)
+    protected function getMessengerProactive(Brand $brand)
     {
-        $mOptions = new MessengerOptions();
+        $messengerProactive = new MessengerProactive();
 
-        return $mOptions
-            ->setMaxFileSize(min(Env::getEffectiveMaxUploadSize(), $this->getSettings('core.attach_user_maxsize', null, 1024 * 1024 * 10)))
-            ->setAutoStart($this->getSettings(self::OPTIONS_AUTOSTART, $brand, $mOptions->isAutoStart()))
-            ->setAutoStartTimeout($this->getSettings(self::OPTIONS_AUTOSTART_TIMEOUT, $brand, $mOptions->getAutoStartTimeout()))
-            ->setAutoStartStyle($this->getSettings(self::OPTIONS_AUTOSTART_STYLE, $brand, $mOptions->getAutoStartStyle()))
-            ->setSubtext($this->getSettings(self::OPTIONS_SUBTEXT, $brand, $mOptions->getSubtext()))
-            ->setTitle($this->getSettings(self::OPTIONS_TITLE, $brand, $mOptions->getTitle()))
-            ->setChat($this->getMessengerOptionsChat($brand))
-            ->setProactive($this->getMessengerOptionsProactive($brand))
-            ->setTickets($this->getMessengerOptionsTickets($brand))
-            ;
+        return $messengerProactive
+            ->setAutoStart($this->getSettings(self::PROACTIVE_AUTOSTART, $brand, $messengerProactive->isAutoStart()))
+            ->setAutoStartTimeout($this->getSettings(self::PROACTIVE_TIMEOUT, $brand, $messengerProactive->getAutoStartTimeout()))
+            ->setAutoStartStyle($this->getSettings(self::PROACTIVE_STYLE, $brand, $messengerProactive->getAutoStartStyle()))
+            ->setOptions($this->getMessengerProactiveOptions($brand))
+        ;
     }
 
     /**
      * @param Brand $brand
      *
-     * @return MessengerOptionsChat
+     * @return MessengerChatOptions
      */
-    protected function getMessengerOptionsChat(Brand $brand)
+    protected function getMessengerChatOptions(Brand $brand)
     {
-        $mOptionsChat = new MessengerOptionsChat();
+        $mChatOptions = new MessengerChatOptions();
 
-        return $mOptionsChat
-            ->setTitle($this->getSettings(self::OPTIONS_CHAT_TITLE, $brand, $mOptionsChat->getTitle()))
-            ->setButtonText($this->getSettings(self::OPTIONS_CHAT_BUTTON_TEXT, $brand, $mOptionsChat->getButtonText()))
-            ->setInputPlaceholder($this->getSettings(self::OPTIONS_CHAT_INPUT_PLACEHOLDER, $brand, $mOptionsChat->getInputPlaceholder()))
-            ->setDescription($this->getSettings(self::OPTIONS_CHAT_DESCRIPTION, $brand, $mOptionsChat->getDescription()))
-            ->setShowAgentPhotos($this->getSettings(self::OPTIONS_CHAT_SHOW_PHOTOS, $brand, $mOptionsChat->isShowAgentPhotos()))
-            ->setStartWithInputField($this->getSettings(self::OPTIONS_CHAT_START_WITH_INPUT, $brand, $mOptionsChat->isStartWithInputField()))
-            ;
+        return $mChatOptions
+            ->setTitle($this->getSettings(self::CHAT_OPTIONS_TITLE, $brand, $mChatOptions->getTitle()))
+            ->setButtonText($this->getSettings(self::CHAT_OPTIONS_BUTTON_TEXT, $brand, $mChatOptions->getButtonText()))
+            ->setDescription($this->getSettings(self::CHAT_OPTIONS_DESCRIPTION, $brand, $mChatOptions->getDescription()))
+            ->setShowAgentPhotos($this->getSettings(self::CHAT_OPTIONS_SHOW_PHOTOS, $brand, $mChatOptions->isShowAgentPhotos()))
+        ;
     }
 
     /**
      * @param Brand $brand
      *
-     * @return MessengerOptionsProactive
+     * @return MessengerProactiveOptions
      */
-    protected function getMessengerOptionsProactive(Brand $brand)
+    protected function getMessengerProactiveOptions(Brand $brand)
     {
-        $mOptionsProactive = new MessengerOptionsProactive();
+        $mOptionsProactive = new MessengerProactiveOptions();
 
         return $mOptionsProactive
-            ->setGreetingTitle($this->getSettings(self::OPTIONS_PROACTIVE_GREETING_TITLE, $brand, $mOptionsProactive->getGreetingTitle()))
-            ->setTitle($this->getSettings(self::OPTIONS_PROACTIVE_TITLE, $brand, $mOptionsProactive->getTitle()))
-            ->setButtonText($this->getSettings(self::OPTIONS_PROACTIVE_BUTTON_TEXT, $brand, $mOptionsProactive->getButtonText()))
-            ->setInputPlaceholder($this->getSettings(self::OPTIONS_PROACTIVE_INPUT_PLACEHOLDER, $brand, $mOptionsProactive->getInputPlaceholder()))
-            ->setDescription($this->getSettings(self::OPTIONS_PROACTIVE_DESCRIPTION, $brand, $mOptionsProactive->getDescription()))
+            ->setGreetingTitle($this->getSettings(self::PROACTIVE_OPTIONS_GREETING_TITLE, $brand, $mOptionsProactive->getGreetingTitle()))
+            ->setTitle($this->getSettings(self::PROACTIVE_OPTIONS_TITLE, $brand, $mOptionsProactive->getTitle()))
+            ->setButtonText($this->getSettings(self::PROACTIVE_OPTIONS_BUTTON_TEXT, $brand, $mOptionsProactive->getButtonText()))
+            ->setInputPlaceholder($this->getSettings(self::PROACTIVE_OPTIONS_INPUT_PLACEHOLDER, $brand, $mOptionsProactive->getInputPlaceholder()))
+            ->setDescription($this->getSettings(self::PROACTIVE_OPTIONS_DESCRIPTION, $brand, $mOptionsProactive->getDescription()))
             ;
     }
 
     /**
      * @param Brand $brand
      *
-     * @return MessengerOptionsTickets
+     * @return MessengerTicketsOptions
      */
-    protected function getMessengerOptionsTickets(Brand $brand)
+    protected function getMessengerTicketsOptions(Brand $brand)
     {
-        $mOptionsTickets = new MessengerOptionsTickets();
+        $messengerTicketsOptions = new MessengerTicketsOptions();
 
-        return $mOptionsTickets
-            ->setTitle($this->getSettings(self::OPTIONS_TICKETS_TITLE, $brand, $mOptionsTickets->getTitle()))
-            ->setButtonText($this->getSettings(self::OPTIONS_TICKETS_BUTTON_TEXT, $brand, $mOptionsTickets->getButtonText()))
-            ->setDescription($this->getSettings(self::OPTIONS_TICKETS_DESCRIPTION, $brand, $mOptionsTickets->getDescription()))
-            ;
+        return $messengerTicketsOptions
+            ->setTitle($this->getSettings(self::TICKETS_OPTIONS_TITLE, $brand, $messengerTicketsOptions->getTitle()))
+            ->setButtonText($this->getSettings(self::TICKETS_OPTIONS_BUTTON_TEXT, $brand, $messengerTicketsOptions->getButtonText()))
+            ->setDescription($this->getSettings(self::TICKETS_OPTIONS_DESCRIPTION, $brand, $messengerTicketsOptions->getDescription()))
+        ;
     }
 
     /**
