@@ -13,6 +13,7 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Component\Util\RegexUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormError;
@@ -53,15 +54,26 @@ class TicketController extends AbstractMessengerController
     public function createTicketAction(Request $request)
     {
         $newTicketService = $this->get('tickets.new_ticket');
-        $ticket           = $newTicketService->createNewTicket(
+
+        $settingsResolver = $this->get('messenger.service.settings_resolver');
+        $brand            = $this->get('brand_stack')->getActive()->getBrand();
+        $requestData      = $request->request->all();
+
+        $subjectPattern = $settingsResolver->getMessengerSettings($brand)->getTickets()->getSubject();
+        if ($subjectPattern !== '') {
+            $subject                = RegexUtils::safePregReplace('#\{\s+[a-zA-Z0-9]+\s+\}#', $this->getVisitorId($request), $subjectPattern);
+            $requestData['subject'] = $subject;
+        }
+
+        $ticket = $newTicketService->createNewTicket(
             $request,
             $this->getVisitorId($request),
             $this->getUser(),
-            $this->get('brand_stack')->getActive()->getBrand(),
+            $brand,
             Ticket::CREATED_WEB_PERSON_WIDGET
         );
-        $person           = $ticket->getPerson();
-        $formOptions      = [
+        $person      = $ticket->getPerson();
+        $formOptions = [
             'person'              => $person,
             'csrf_protection'     => false,
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
@@ -74,7 +86,7 @@ class TicketController extends AbstractMessengerController
             $formOptions
         );
 
-        $form->handleRequest($request);
+        $form->submit($requestData, false);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
@@ -86,8 +98,8 @@ class TicketController extends AbstractMessengerController
 
         if ($person) {
             $ticket->setPerson($person);
-            $guestForm->handleRequest($request);
-
+            $this->updateSubject($subjectPattern, $ticket, $person);
+            $guestForm->submit($requestData, false);
             if (!$this->getUser() || $this->getUser() instanceof PersonGuest) {
                 // if the user is not authorized then don't allow to change person entity
                 $this->getManager()->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($ticket->getPerson()));
@@ -97,9 +109,9 @@ class TicketController extends AbstractMessengerController
                     $this->getManager()->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($person->getPrimaryEmail()));
                 }
             }
-
             $newTicketService->acceptNewTicket($ticket, $request, 'widget');
         } else {
+            $this->updateSubject($subjectPattern, $ticket, $ticket->getPerson());
             $newTicketService->acceptNewTicketForGuest($ticket, $request, $guestForm, 'widget');
         }
 
@@ -110,6 +122,14 @@ class TicketController extends AbstractMessengerController
             $form->addError(new FormError('Unable to save ticket.'));
 
             throw new InvalidFormException($form);
+        }
+    }
+
+    private function updateSubject($subjectPattern, Ticket $ticket, Person $person)
+    {
+        if ($subjectPattern !== '') {
+            $subject = RegexUtils::safePregReplace('#\{\s+[a-zA-Z0-9]+\s+\}#', $person->getDisplayName(), $subjectPattern);
+            $ticket->setSubject($subject);
         }
     }
 }

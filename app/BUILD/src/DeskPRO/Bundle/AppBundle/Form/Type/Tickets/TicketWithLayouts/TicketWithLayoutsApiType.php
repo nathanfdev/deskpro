@@ -111,9 +111,4 @@ class TicketWithLayoutsApiType extends AbstractType
             $event->setData($data);
         }
     }
-
-    public function getName()
-    {
-        return '';
-    }
 }
