@@ -41,8 +41,8 @@ class TicketWithLayoutsApiType extends AbstractType
      * @param TicketLayoutFactory $layoutFactory
      */
     public function __construct(
-        ApiFieldResolver    $fieldResolver,
-        ApiFieldRenderer    $fieldRenderer,
+        ApiFieldResolver $fieldResolver,
+        ApiFieldRenderer $fieldRenderer,
         TicketLayoutFactory $layoutFactory
     ) {
         $this->fieldResolver = $fieldResolver;
@@ -110,5 +110,10 @@ class TicketWithLayoutsApiType extends AbstractType
 
             $event->setData($data);
         }
+    }
+
+    public function getName()
+    {
+        return '';
     }
 }
