@@ -83,6 +83,7 @@ class BlobTest extends \PHPUnit_Framework_TestCase
      *
      * @param string $authcode
      * @param bool   $shouldHaveAccessToken
+     * @param mixed $isAttachmentAuthEnabled
      */
     public function testGetDownloadUrl($authcode, $isAttachmentAuthEnabled, $shouldHaveAccessToken)
     {
@@ -136,6 +137,9 @@ class BlobTest extends \PHPUnit_Framework_TestCase
      *
      * @param string $authcode
      * @param bool   $shouldHaveAccessToken
+     * @param mixed $isAttachmentAuthEnabled
+     * @param mixed $routerGeneratedUrl
+     * @param mixed $expectedUrl
      */
     public function testGetThumbnailUrl($isAttachmentAuthEnabled, $authcode, $routerGeneratedUrl, $expectedUrl)
     {
@@ -165,5 +169,22 @@ class BlobTest extends \PHPUnit_Framework_TestCase
         // THEN
         $this->assertEquals($expectedUrl, $url);
         $this->assertEquals($expectedUrl, $urlAbsolute);
+    }
+
+    /**
+     * @testWith ["myfile_平仮名.txt", "myfile_平仮名.txt"]
+     *           ["𐐜 𐐔𐐇𐐝𐐀𐐡𐐇𐐓 𐐙𐐊𐐡𐐝𐐓/𐐝𐐇𐐗𐐊𐐤𐐔 𐐒𐐋𐐗 𐐒𐐌 𐐜 𐐡𐐀𐐖𐐇𐐤𐐓𐐝 𐐱𐑂 𐑄 𐐔𐐇𐐝𐐀𐐡𐐇𐐓 𐐏𐐆𐐅𐐤𐐆𐐚𐐊𐐡𐐝𐐆𐐓𐐆", "file.bin"]
+     *           ["𐐜 𐐔𐐇𐐝𐐀𐐡𐐇𐐓 𐐙𐐊𐐡𐐝𐐓/𐐝𐐇𐐗𐐊𐐤𐐔 𐐒𐐋𐐗 𐐒𐐌 𐐜 𐐡𐐀𐐖𐐇𐐤𐐓𐐝 𐐱𐑂 𐑄 𐐔𐐇𐐝𐐀𐐡𐐇𐐓 𐐏𐐆𐐅𐐤𐐆𐐚𐐊𐐡𐐝𐐆𐐓𐐆.png", "file.png"]
+     *           ["和製漢語.doc", "和製漢語.doc"]
+     *           ["foo.PNG", "foo.PNG"]
+     *           ["FOOBAR.DOC", "FOOBAR.DOC"]
+     *
+     * @param string $originalFilename
+     * @param string $convertedFilename
+     */
+    public function testFilename($originalFilename, $convertedFilename)
+    {
+        $blob = new Blob();
+        $this->assertEquals($convertedFilename, $blob->setFilename($originalFilename)->getFilename());
     }
 }
