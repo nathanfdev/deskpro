@@ -905,7 +905,10 @@ class Emogrifier
         /** @var \DOMNode $node */
         foreach ($nodesWithStyleDisplayNone as $node) {
             if ($node->parentNode && is_callable([$node->parentNode, 'removeChild'])) {
-                $node->parentNode->removeChild($node);
+                // CH8652 allow to keep hidden elements with class -emogrifier-keep
+                if (!$node->hasAttribute('class') || !strstr($node->getAttribute('class'), '-emogrifier-keep')) {
+                    $node->parentNode->removeChild($node);
+                }
             }
         }
     }

@@ -32,10 +32,6 @@
 	{% include 'SendmailBundle:blocks:resources.html.twig' %}
 </head>
 <body>
-{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
-
-{% include 'SendmailBundle:blocks:header.html.twig' %}
-
 	{%- set phrase_part -%}
 		{% if action_performer and action_performer.id %}
 			{{ action_performer.display_contact }}
@@ -45,14 +41,23 @@
 			{{ phrase('agent.general.system_user') }}
 		{% endif %}
 	{%- endset -%}
-	{{ phrase('agent.emails.user_updated_ticket', {name: phrase_part, subject: ticket.subject|e}, true) }}
-	{% if type_flag == 'assigned' %}
-		{{ phrase('agent.emails.updated_ticket_assigned') }}
-	{% elseif type_flag == 'assigned_team' %}
-		{{ phrase('agent.emails.updated_ticket_assigned_team', {team: ticket.agent_team.name}) }}
-	{% elseif type_flag == 'added_part' %}
-		{{ phrase('agent.emails.updated_ticket_followed') }}
-	{% endif %}
+	{%- set message_intro -%}
+		{{ phrase('agent.emails.user_updated_ticket', {name: phrase_part, subject: ticket.subject|e}, true) }}
+		{% if type_flag == 'assigned' %}
+			{{ phrase('agent.emails.updated_ticket_assigned') }}
+		{% elseif type_flag == 'assigned_team' %}
+			{{ phrase('agent.emails.updated_ticket_assigned_team', {team: ticket.agent_team.name}) }}
+		{% elseif type_flag == 'added_part' %}
+			{{ phrase('agent.emails.updated_ticket_followed') }}
+		{% endif %}
+	{%- endset -%}
+	<span class="preheader -emogrifier-keep">{{ message_intro }}</span>
+
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	{{ message_intro }}
 
 	<br /><br />
 
