@@ -61,7 +61,7 @@ class TicketController extends AbstractMessengerController
 
         $subjectPattern = $settingsResolver->getMessengerSettings($brand)->getTickets()->getSubject();
         if ($subjectPattern !== '') {
-            $subject                = RegexUtils::safePregReplace('#\{\s+[a-zA-Z0-9]+\s+\}#', $this->getVisitorId($request), $subjectPattern);
+            $subject                = RegexUtils::safePregReplace('#\{\s*[a-zA-Z0-9]+\s*\}#', $this->getVisitorId($request), $subjectPattern);
             $requestData['subject'] = $subject;
         }
 
@@ -98,7 +98,7 @@ class TicketController extends AbstractMessengerController
 
         if ($person) {
             $ticket->setPerson($person);
-            $this->updateSubject($subjectPattern, $ticket, $person);
+            $requestData['subject'] = $this->updateSubject($subjectPattern, $ticket, $ticket->getPerson());
             $guestForm->submit($requestData, false);
             if (!$this->getUser() || $this->getUser() instanceof PersonGuest) {
                 // if the user is not authorized then don't allow to change person entity
@@ -109,10 +109,10 @@ class TicketController extends AbstractMessengerController
                     $this->getManager()->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($person->getPrimaryEmail()));
                 }
             }
-            $newTicketService->acceptNewTicket($ticket, $request, 'widget');
+            $newTicketService->acceptNewTicket($ticket, 'widget');
         } else {
-            $this->updateSubject($subjectPattern, $ticket, $ticket->getPerson());
-            $newTicketService->acceptNewTicketForGuest($ticket, $request, $guestForm, 'widget');
+            $requestData['subject'] = $this->updateSubject($subjectPattern, $ticket, $ticket->getPerson());
+            $newTicketService->acceptNewTicketForGuest($ticket, $requestData, $guestForm, 'widget');
         }
 
         // check if ticket was created and then return success response
@@ -125,11 +125,21 @@ class TicketController extends AbstractMessengerController
         }
     }
 
+    /**
+     * @param string $subjectPattern
+     * @param Ticket $ticket
+     * @param Person $person
+     *
+     * @return mixed
+     */
     private function updateSubject($subjectPattern, Ticket $ticket, Person $person)
     {
+        $subject = $ticket->getSubject();
         if ($subjectPattern !== '') {
-            $subject = RegexUtils::safePregReplace('#\{\s+[a-zA-Z0-9]+\s+\}#', $person->getDisplayName(), $subjectPattern);
+            $subject = RegexUtils::safePregReplace('#\{\s*[a-zA-Z0-9]+\s*\}#', $person->getDisplayName(), $subjectPattern);
             $ticket->setSubject($subject);
         }
+
+        return $subject;
     }
 }

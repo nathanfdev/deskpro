@@ -119,13 +119,13 @@ class NewTicketService
 
     /**
      * @param Ticket  $ticket
-     * @param Request $request
+     * @param array   $requestData
      * @param Form    $guestForm
      * @param string  $eventMethod
      *
      * @return Ticket
      */
-    public function acceptNewTicketForGuest(Ticket $ticket, Request $request, Form $guestForm, $eventMethod)
+    public function acceptNewTicketForGuest(Ticket $ticket, $requestData, Form $guestForm, $eventMethod)
     {
         $person = $ticket->getPerson();
 
@@ -140,9 +140,9 @@ class NewTicketService
         }
 
         $ticket->setPerson($person);
-        $guestForm->handleRequest($request);
+        $guestForm->submit($requestData);
 
-        return $this->acceptNewTicket($ticket, $request, $eventMethod);
+        return $this->acceptNewTicket($ticket, $eventMethod);
     }
 
     /**
@@ -152,7 +152,7 @@ class NewTicketService
      *
      * @return Ticket
      */
-    public function acceptNewTicket(Ticket $ticket, Request $request, $eventMethod)
+    public function acceptNewTicket(Ticket $ticket, $eventMethod)
     {
         $person = $ticket->getPerson();
 
