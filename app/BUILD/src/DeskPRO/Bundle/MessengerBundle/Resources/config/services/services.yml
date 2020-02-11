@@ -41,7 +41,7 @@ services:
     tags:
       - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 200}
 
-  tickets.new_ticket:
+  tickets.messenger_new_ticket:
     class: DeskPRO\Bundle\MessengerBundle\Service\NewTicketService
     arguments:
       - "@doctrine.orm.default_entity_manager"

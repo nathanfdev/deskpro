@@ -53,7 +53,7 @@ class TicketController extends AbstractMessengerController
      */
     public function createTicketAction(Request $request)
     {
-        $newTicketService = $this->get('tickets.new_ticket');
+        $newTicketService = $this->get('tickets.messenger_new_ticket');
 
         $settingsResolver = $this->get('messenger.service.settings_resolver');
         $brand            = $this->get('brand_stack')->getActive()->getBrand();
