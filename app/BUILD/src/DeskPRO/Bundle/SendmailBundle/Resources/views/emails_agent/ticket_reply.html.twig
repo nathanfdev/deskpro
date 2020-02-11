@@ -1,7 +1,7 @@
 {{ set_tplvar('agent_notification_footer', 'ticket-notify') }}
 {{ set_tplvar('agent_reply_above_line', true) }}
 <dp:subject>
-	{% if performer_type == 'agent' %}
+	{% if context.performer_type == 'agent' %}
 		{% if is_my_mention %}
 			{{ phrase('agent.emails.new_mention_ticket_subject') }}
 		{% elseif new_message.is_agent_note %}

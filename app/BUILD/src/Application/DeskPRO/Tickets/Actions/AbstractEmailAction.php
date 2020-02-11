@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
-
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -37,10 +31,12 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         if ($fromAccount) {
             if (Numbers::isInteger($fromAccount)) {
                 $fromAccountId = $fromAccount;
+
                 try {
                     $fromAccount = $this->getContainer()->getEmailAccountManager()->getAccount($fromAccountId);
                 } catch (\OutOfBoundsException $e) {
                     $context->getLogger()->debug("[AbstractEmailAction] Invalid account: $fromAccountId");
+
                     throw new \InvalidArgumentException('invalid_account');
                 }
             }
@@ -49,11 +45,13 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
             if (!$fromAccount->is_enabled) {
                 $context->getLogger()->warn('[AbstractEmailAction] Email account is not enabled');
+
                 throw new \InvalidArgumentException('account_disabled');
             }
 
             if (!$fromAccount->outgoing_account) {
                 $context->getLogger()->warn('[AbstractEmailAction] Email account is not an outgoing account');
+
                 throw new \InvalidArgumentException('account_not_outgoing');
             }
         }
@@ -79,12 +77,14 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             }
 
             $context->getLogger()->warn('[AbstractEmailAction] No template specified');
+
             throw new \InvalidArgumentException('no_template_specified');
         }
 
         $context->getLogger()->debug("[AbstractEmailAction] Using template: $template");
         if (!$this->getContainer()->get('templating.email')->exists($template)) {
             $context->getLogger()->warn('[AbstractEmailAction] Template does not exist');
+
             throw new \InvalidArgumentException('invalid_template');
         }
 
@@ -143,7 +143,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             });
             $ticketLogs = null;
 
-            // Agent mode - include ticket logs
+        // Agent mode - include ticket logs
         } else {
             $ticketLogGenerator = new TicketLogGenerator($ticket, $context);
             $ticketLogs         = $ticketLogGenerator->getLogEntries();
@@ -296,10 +296,19 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
      */
     protected function createViewModelFromTemplate($template, $arguments, ExecutorContextInterface $context)
     {
+        $mode = 'user';
+        if ($this instanceof SendAgentNewEmail) {
+            $mode = 'agent';
+        }
         if (strpos($template, 'SendmailBundle:emails_custom:') === 0) {
             $factory   = $this->getContainer()->get('email.custom_viewmodel_factory');
             $viewModel = call_user_func_array([$factory, 'createCustomTemplateModel'], $arguments);
             $viewModel->setTemplateFile($template);
+
+            if ($context->getPersonContext()) {
+                $viewModel->setActionPerformer($factory->convertParameter($context->getPersonContext()));
+            }
+            $viewModel->setContextVars($arguments[0], $context, $mode);
 
             return $viewModel;
         }
@@ -311,6 +320,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
                 if ($t['viewModel']) {
                     $viewModel = $t['viewModel'];
                 }
+
                 break;
             }
         }
@@ -333,6 +343,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         $model = call_user_func_array([$factory, $action], $arguments);
         if ($model instanceof TicketEmailType && $context->getPersonContext()) {
             $model->setActionPerformer($factory->convertParameter($context->getPersonContext()));
+            $model->setContextVars($arguments[0], $context, $mode);
         }
 
         return $model;

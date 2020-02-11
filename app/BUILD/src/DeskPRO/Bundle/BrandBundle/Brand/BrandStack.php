@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\BrandBundle\Brand;
 
@@ -185,6 +183,7 @@ class BrandStack
 
         $e   = null;
         $res = null;
+
         try {
             $res = $func($this, $brand);
         } catch (\Exception $e) {
