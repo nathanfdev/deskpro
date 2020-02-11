@@ -605,9 +605,9 @@
       }
     },
     "@deskpro/messenger-loader": {
-      "version": "0.1.89",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.89.tgz",
-      "integrity": "sha512-ZNtsTN+T8GXTYs7xVxhbqX545H6kHiFlQ+vz5bgDoIYROrFITEcdHRTyaTHct6dVP+AJ1i2WmaJ3qxzuXzO53A==",
+      "version": "0.1.91",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.91.tgz",
+      "integrity": "sha512-dMGnW+UgOVuNZqgiYqb3svfLy5gXVJf/QcsZlIl+hnm8vZ5Vlps+z1uPJdwu7kl5BTRTglzVCIvbAbRBgdR23Q==",
       "requires": {
         "whatwg-fetch": "^3.0.0"
       }
