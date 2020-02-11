@@ -146,7 +146,7 @@ class PersonAssignType extends AbstractType
         if ($data instanceof Person
             // should be at least phone number or email
             && !$data->getEmailAddress()
-            && !$data->getPhoneNumbers()->count() > 0
+            && !($data->getPhoneNumbers() && $data->getPhoneNumbers()->count() > 0)
         ) {
             $event->setData(null);
         }
