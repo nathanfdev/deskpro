@@ -34,7 +34,7 @@ class UserController extends AbstractMessengerController
      *
      * @ApiDoc(
      *     section="Messenger",
-     *     resourceDescription="Testing new Bundle and Kernel",
+     *     resourceDescription="Current user details",
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },

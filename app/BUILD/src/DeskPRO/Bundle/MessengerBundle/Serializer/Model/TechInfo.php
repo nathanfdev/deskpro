@@ -67,11 +67,11 @@ class TechInfo implements MessengerModelInterface
     {
         $chatDepartments = [];
         foreach ($this->chatDepartments as $department) {
-            $this->departmentToArray($department, $chatDepartments);
+            $chatDepartments[] = $this->departmentToArray($department);
         }
         $ticketDepartments = [];
         foreach ($this->ticketDepartments as $department) {
-            $this->departmentToArray($department, $ticketDepartments);
+            $ticketDepartments[] = $this->departmentToArray($department);
         }
 
         $self         = $this;
@@ -88,14 +88,14 @@ class TechInfo implements MessengerModelInterface
 
         return [
             'canUseChat'         => $this->canUseChat,
-            'chat_departments'   => array_values(array_filter($chatDepartments, $filter)),
-            'ticket_departments' => array_values(array_filter($ticketDepartments, $filter)),
+            'chat_departments'   => array_values($chatDepartments),
+            'ticket_departments' => array_values($ticketDepartments),
             'agents_online'      => $agentsOnline,
             'client'             => $this->clientsSetup->getClients()[0],
         ];
     }
 
-    private function departmentToArray(Department $department, &$departments)
+    private function departmentToArray(Department $department)
     {
         $return = [
             'id'     => $department->getId(),
@@ -110,7 +110,8 @@ class TechInfo implements MessengerModelInterface
         $self = $this;
 
         if ($department->getChildren()->count()) {
-            $children = $department->getChildren()
+            $return['children'] = [];
+            $children           = $department->getChildren()
                 ->filter(
                     function ($department) use ($self) {
                         /* @var Department $department */
@@ -118,17 +119,12 @@ class TechInfo implements MessengerModelInterface
                     }
                 )
                 ->toArray();
-            $ids = [];
             foreach ($children as $child) {
-                $this->departmentToArray($child, $departments);
-                $ids[] = $child->getId();
-            }
-            if ($ids) {
-                $return['children'] = $ids;
+                $return['children'][] = $this->departmentToArray($child);
             }
         }
 
-        $departments[] = $return;
+        return $return;
     }
 
     /**
