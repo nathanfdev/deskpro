@@ -358,11 +358,11 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.94",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.94.tgz",
-      "integrity": "sha512-xPDeIl/+cSl+cCkq/BqiwvEm/piYrEDRuccYvngkc8Lht53aZhzYmQMRcam7Zsn+O5oRqy7d407UUEtQu0JktQ==",
+      "version": "0.1.95",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.95.tgz",
+      "integrity": "sha512-4aZQJbk3Taem5x24b7ASeJz8DuRTyt3rMDQC0b/lr+0YmkxnADlZgw1UOr7UxgVlToTrJgs6vRLp1YTWvh3ASw==",
       "requires": {
-        "@deskpro/portal-components": "0.3.62",
+        "@deskpro/portal-components": "0.3.63",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
         "axios": "^0.19.0-beta.1",
         "body-scroll-lock": "^2.6.4",
@@ -398,9 +398,9 @@
           "integrity": "sha512-XqPLn1hXCUCCFZbNRpxp8CqGBKrT3obMHvtTWAITDUfSurJKisF9HxtzJ23Lzc/Mq9PqTOfpHaCqAjWKJuHtUA=="
         },
         "@deskpro/portal-components": {
-          "version": "0.3.62",
-          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.62.tgz",
-          "integrity": "sha512-R2mzkSgmcwwGhI7SjUw59F5d/PCChQJSN5d8fMmhX7rnYper2onCmPP/TzEJD9j+KWEGuz3UEBLRm+4qejlrTA==",
+          "version": "0.3.63",
+          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.63.tgz",
+          "integrity": "sha512-SMtGpt7Cg29pK3sVgC2mxR/6PopJTUMPMJjcR8gbUk0pEyR5fYXamwdSkAZ9uIBxZ+mt0QFiJ8cJePjIjowSGw==",
           "requires": {
             "@deskpro/js-utils": "1.0.7",
             "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -605,9 +605,9 @@
       }
     },
     "@deskpro/messenger-loader": {
-      "version": "0.1.92",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.92.tgz",
-      "integrity": "sha512-f98BgwVoqgDJMym2+slCqvX4EkJqnBpSsg+1YL9u29jfIM6ZhxAVDd164ksmHUUx1vfPMPL5MQRtwlMuVtS7Lg==",
+      "version": "0.1.95",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.95.tgz",
+      "integrity": "sha512-yHfo4RTtMf+YpweImXToxBYNyot0/k4f2fPqbuqaXTCg1Z8VSOhx1EOCqznLKtqo/7Z/QFJP9YfWIrkACqSbag==",
       "requires": {
         "whatwg-fetch": "^3.0.0"
       }
