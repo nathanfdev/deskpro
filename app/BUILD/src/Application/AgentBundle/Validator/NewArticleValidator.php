@@ -88,6 +88,10 @@ class NewArticleValidator extends AbstractValidator
      */
     public function isMinReviewDateValid($interval, $unit)
     {
+        if ($interval < 1) {
+            return false;
+        }
+
         $articleReviewDate = $this->getDateTimeFromInterval($interval, $unit ?: Article::REVIEW_DATE_UNIT_DAYS);
         if ($this->kbSettings->isMinReviewDate() && $this->kbSettings->getMinReviewDateInterval()) {
             $minReviewDate = $this->getDateTimeFromInterval($this->kbSettings->getMinReviewDateInterval(), $this->kbSettings->getMinReviewDateUnit() ?: Article::REVIEW_DATE_UNIT_DAYS);
