@@ -526,6 +526,7 @@ portal.forms.error_person_not_agent: 'Person with identifier {{value}} is not an
 portal.forms.error_person_not_found: 'Person with identifier "{{value}}" not found.'
 portal.forms.error_dm_message_to_self: 'Please choose another person'
 portal.forms.error_person_not_user: 'Person with identifier {{value}} is not a user.'
+portal.forms.error_bad_email_domain: 'Unable to use this email domain.'
 portal.forms.error_regex: 'This value does not match the expected format'
 portal.forms.error_required: 'This value is required'
 portal.forms.error_server_rejected_size: 'There was a problem uploading files due to the maximum size limit. Please try uploading smaller files.'

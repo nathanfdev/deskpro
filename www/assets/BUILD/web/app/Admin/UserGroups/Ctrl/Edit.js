@@ -30,7 +30,12 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     initialLoad() {
       const groupPromise = this.ugData.loadEditUserGroupData(this.$stateParams.id || null);
-      const promises = [groupPromise, this.service.ticketDeps.all(true), this.service.chatDeps.all(true)];
+      const regPromise = this.Api.sendGet('/registration_settings', { rate_limit_context: 'user' }).then((res) => {
+        this.$scope.settings = res.data.registration_settings;
+        this.settings = angular.copy(this.$scope.settings);
+      });
+
+      const promises = [groupPromise, this.service.ticketDeps.all(true), this.service.chatDeps.all(true), regPromise];
 
       return this.$q.all(promises).then((res) => {
         let subdep;
@@ -259,7 +264,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     /**
      * If reopen timelimit set and not 'Forever'
-     * 
+     *
      * @returns bool
      */
     isReopenTimelimitSet() {

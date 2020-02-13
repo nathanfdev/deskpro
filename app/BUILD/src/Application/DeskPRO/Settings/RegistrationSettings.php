@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\Settings;
 
@@ -59,6 +57,7 @@ class RegistrationSettings
     {
         $export_settings = [
             'everyone_group_enabled' => $this->everyone_group_enabled,
+            'limit_email_domains'    => true,
         ];
 
         return $export_settings;
