@@ -59,6 +59,7 @@ helpcenter.account.set-password-invalid-input: 'Please enter a valid email addre
 helpcenter.account.set-password-request-desc: 'Complete this form and we will email you a link to set your password.'
 helpcenter.account.set-password-request-title: 'Set Your Password'
 helpcenter.account.set-password-sent-desc: 'We have sent you an email with instruction on how to set your password.'
+helpcenter.account.set-password-expired: 'Your password has expired.'
 helpcenter.account.set-password-sent-title: 'Set Your Password'
 helpcenter.account.set-password-sent-to: 'We sent an email to'
 helpcenter.account.set-password-success: 'Your password has been updated.'

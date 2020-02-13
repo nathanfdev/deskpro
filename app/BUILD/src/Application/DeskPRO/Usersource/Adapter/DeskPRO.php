@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
@@ -15,7 +13,7 @@ use Orb\Auth\Identity;
 /**
  * The local DeskPRO login usersource.
  */
-class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, EntityManagerAwareInterface
+class DeskPRO extends AbstractAdapter implements EntityManagerAwareInterface
 {
     /**
      * @var EntityManager

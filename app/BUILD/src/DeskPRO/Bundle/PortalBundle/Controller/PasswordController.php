@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
@@ -13,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use Orb\Util\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,10 +28,26 @@ class PasswordController extends AbstractController
      * @Route("/login/reset-password", name="portal_reset_password")
      * @Route("/login/reset-password", name="user_login_resetpass")
      * @Route("/login/set-password", name="portal_set_password")
+     * @Route("/login/set-password-sent", name="portal_set_password_sent")
      * @PageHttpCache()
+     *
+     * @param mixed $_route
      */
     public function passwordResetRequestAction(Request $request, $_route)
     {
+        // Redirect to this only when reset password email sends by PasswordResetExceptionListener
+        // and all what we need is show message about it.
+        if ($_route === 'portal_set_password_sent') {
+            return $this->renderThemeView(
+                'Theme:Password:reset-password-required.html.twig',
+                [
+                    'email'       => $request->get('email', ''),
+                    'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(false),
+                    'page_title'  => $this->createPageTitle()->passwordReset(false),
+                ]
+            );
+        }
+
         // resetting or setting? we use diff templates/routes.
         $isResetting = $_route === 'portal_reset_password';
 
@@ -125,6 +140,9 @@ class PasswordController extends AbstractController
     /**
      * @Route("/login/reset-password/{code}", name="portal_reset_password_process")
      * @Route("/login/set-password/{code}", name="portal_set_password_process")
+     *
+     * @param mixed $code
+     * @param mixed $_route
      */
     public function passwordResetAction(Request $request, $code, $_route)
     {
@@ -188,13 +206,14 @@ class PasswordController extends AbstractController
                 $this->getEm()->persist($history);
             }
 
+            $person->secret_string = Strings::random(40);
             $this->persistAndFlushEntity($person);
 
             $this->getPersonDataService()->clearPasswordReset($reset);
 
             $primary_email = $person->getPrimaryEmail();
             if ($primary_email) {
-                $request->getSession()->set('last_username',  $primary_email->email);
+                $request->getSession()->set('last_username', $primary_email->email);
             }
 
             // log the user in

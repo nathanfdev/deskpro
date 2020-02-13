@@ -17,6 +17,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use Orb\Auth\DPOAuth2Proxy;
+use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,9 +44,9 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         if ($this->loginViaToken()) {
             if ($return) {
                 return $this->redirect($return);
-            } else {
-                return $this->redirectRoute('agent');
             }
+
+            return $this->redirectRoute('agent');
         }
 
         $hasLoggedOut = $request->cookies->has('dp-recent-logout');
@@ -144,10 +145,12 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                         SET
                             is_user = 1,
                             password_scheme = 'bcrypt',
-                            `password` = ?
+                            `password` = ?,
+                            secret_string = ?,
+                            date_password_set = ?
                         WHERE id = ?
                     ",
-                        [$person->getPassword(), $person->getId()]
+                        [$person->getPassword(), $person->getId(), Strings::random(40), new \DateTime()]
                     );
 
                     /** @var ApiTokenRepository $apiTokenRepository */
@@ -225,6 +228,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                 'url_corrections'   => $urlCorrections,
                 'is_to_admin'       => $isToAdmin,
                 'didReset'          => $this->in->getBool('did_reset'),
+                'reset_send_to'     => $this->in->getString('reset_send_to') ?: false,
             ]
         );
     }

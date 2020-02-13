@@ -38,13 +38,16 @@ class PersonDataService extends AbstractDataService
 
     /**
      * @param Person $person
+     * @param string $namePrefix
+     *
+     * @throws \Exception
      *
      * @return bool
      */
-    public function isPasswordResetReSendExpired(Person $person = null)
+    public function isPasswordResetReSendExpired(Person $person, $namePrefix = 'reset-password-')
     {
         $tmpData = $this->em->getRepository(TmpData::class)->findOneBy([
-            'name' => 'reset-password-'.$person->getId(),
+            'name' => $namePrefix.$person->getId(),
         ]);
 
         return !$tmpData || new \DateTime('-1 hour') > $tmpData->getDateCreated();
@@ -53,12 +56,15 @@ class PersonDataService extends AbstractDataService
     /**
      * @param Person     $person
      * @param string|int $expire
+     * @param string     $namePrefix
+     *
+     * @throws \Exception
      *
      * @return array
      */
-    public function createPasswordReset(Person $person, $expire = null)
+    public function createPasswordReset(Person $person, $expire = null, $namePrefix = 'reset-password-')
     {
-        $name = 'reset-password-'.$person->getId();
+        $name = $namePrefix.$person->getId();
 
         // only 1 valid at a time
         $this->em->getConnection()->delete('tmp_data', ['name' => $name]);
@@ -207,6 +213,8 @@ class PersonDataService extends AbstractDataService
     /**
      * @param type $page
      * @param type $maxPerPage
+     * @param null|mixed $orderBy
+     * @param mixed $search
      *
      * @return Pagerfanta
      */
@@ -254,9 +262,11 @@ class PersonDataService extends AbstractDataService
         switch ($orderBy) {
             case 'last_name':
                 $orderBy = 'last_name';
+
                 break;
             case 'first_name':
                 $orderBy = 'first_name';
+
                 break;
             default:
                 $orderBy = 'id';

@@ -211,7 +211,7 @@
   {# LOGIN FORM #}
   {##############################################################################################################}
 
-  <div id="normal_view"{% if render_forgot_pw %} style="display: none;"{% endif %}>
+  <div id="normal_view"{% if render_forgot_pw or reset_send_to %} style="display: none;"{% endif %}>
     <div class="title">
       {{ phrase('agent.general.log_in') }}
     </div>
@@ -457,6 +457,19 @@
       </div>
     </div>
 
+
+  <div id="lost_fields_sent_1" {% if not reset_send_to %} style="display: none" {% endif %}>
+    <div class="title">
+      {{ phrase('agent.general.reset_password') }}
+    </div>
+    <div class="content">
+      <form>
+        <fieldset>
+          <p>{{ phrase('agent.login.password_reset_required', { email: reset_send_to }) }}</p>
+        </fieldset>
+      </form>
+    </div>
+  </div>
 
     <script type="text/javascript">
       $(function() {

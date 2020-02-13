@@ -295,7 +295,7 @@ class LoginController extends AbstractController
             return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
         }
 
-        // Form wasnt inputted (eg direct url)
+        // Form wasn't inputted (eg direct url)
         $inputEmail = $this->in->getString('email');
         if (!$inputEmail || !$this->in->getString('password')) {
             if ($request->getMethod() == 'POST') {
@@ -1235,7 +1235,6 @@ class LoginController extends AbstractController
      */
     public function authAgentLoginAction(Request $request, $code)
     {
-
         /** @var TmpDataRepository $tmpDataRepository */
         $tmpDataRepository = $this->em()->getRepository(TmpData::class);
         if (!$tmp = $tmpDataRepository->getByCode($code)) {

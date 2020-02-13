@@ -119,6 +119,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             if (isset($abuseCheck)) {
                 $this->container->get('anti_abuse')->saveRateLimit($abuseCheck);
             }
+
             throw $e;
         }
     }
@@ -154,8 +155,6 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         }
         $abuseCheck->markAsCheckOnly(false);
         $antiAbuse->check($abuseCheck);
-
-        return;
     }
 
     /**
@@ -232,7 +231,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             if ($result->isValid()) {
                 return $this->createTokenFromUsersourceResult($usersource, $result);
 
-                // We expect a redirect to be required
+            // We expect a redirect to be required
             } elseif ($result->isRedirectRequired()) {
                 $r = $this->redirect($result->getRedirectUrl());
                 $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
@@ -399,6 +398,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     /**
      * @param Usersource $usersource
      * @param Result     $result
+     * @param mixed $usersourceTest
      *
      * @return DpFormLoginToken
      */
