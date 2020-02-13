@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
@@ -384,7 +382,9 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         }
 
         foreach ($ticket->getParticipants() as $participant) {
-            $ticketAddresses[] = $participant->getEmailAddress();
+            if ($participant->getEmailAddress()) {
+                $ticketAddresses[] = $participant->getEmailAddress();
+            }
         }
 
         return empty(array_diff($readerAddresses, $ticketAddresses));

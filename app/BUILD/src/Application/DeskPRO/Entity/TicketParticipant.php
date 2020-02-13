@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -156,7 +152,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getEmailAddress()
     {
-        return $this->person_email['email'];
+        return $this->person_email ? $this->person_email->getEmail() : null;
     }
 
     public function _setAccessCode()
