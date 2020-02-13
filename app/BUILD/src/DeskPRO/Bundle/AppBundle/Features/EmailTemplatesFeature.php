@@ -349,11 +349,7 @@ CODE;
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-
 $code
-
-</container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 
@@ -385,6 +381,15 @@ CODE;
         {% include 'SendmailBundle:emails_common:ticket_message_row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay } %}
     {% endif %}
 {% endfor %}
+CODE
+            ,
+          '<dp:agent-reply />' => <<<'CODE'
+{% set message = ticket_messages|first %}
+	{% if message.person.is_agent %}
+		{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+	{% else %}
+		{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+	{% endif %}
 CODE
             ,
           '{{ ticket.person.primary_email.email }}'                             => '{{ ticket.person.primary_email }}',
