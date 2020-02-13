@@ -64,7 +64,7 @@ class UserController extends AbstractMessengerController
         $chatConversationRepo = $em->getRepository(ChatConversation::class);
         $chats                = $chatConversationRepo->findBy(['visitor_id' => $visitorId], ['date_created' => 'DESC'], 25);
 
-        $userInfo = new UserInfo($visitorId, $this->getJwtUser($request));
+        $userInfo = new UserInfo($visitorId, $this->getUser());
 
         return View::create($this->wrap($userInfo->addChats($chats)), Response::HTTP_OK);
     }
