@@ -29,6 +29,8 @@ class EmailTemplatesFeature extends AbstractBetaFeature
 
     protected $migratedCustomTemplates = [];
 
+    protected $restoredCustomTemplates = [];
+
     /**
      * {@inheritdoc}
      */
@@ -575,11 +577,18 @@ CODE
                                 array_column($manifest, 'newTemplate'),
                                 true
                             );
-                            $info = $manifest[$manifestKey];
+                            $legacyTemplate = '';
+                            if ($manifestKey) {
+                                $legacyTemplate = $manifest[$manifestKey]['name'];
+                            } elseif (isset($this->restoredCustomTemplates[$action['options']['template']])) {
+                                $legacyTemplate = $this->restoredCustomTemplates[$action['options']['template']];
+                            }
 
-                            $actions['@DATA']['actions'][$actionId]['type']                = $emailActions[$action['type']];
-                            $actions['@DATA']['actions'][$actionId]['options']['template'] = $info['name'];
-                            $changed                                                       = true;
+                            if ($legacyTemplate) {
+                                $actions['@DATA']['actions'][$actionId]['type']                = $emailActions[$action['type']];
+                                $actions['@DATA']['actions'][$actionId]['options']['template'] = $legacyTemplate;
+                                $changed                                                       = true;
+                            }
                         }
                     }
                 }
@@ -601,6 +610,17 @@ CODE
 
         $set = $this->getTemplateSet($em, $container);
 
+        // Delete new templates
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('t')
+            ->from(Template::class, 't')
+            ->where('t.name LIKE :name')
+            ->setParameter('name', 'SendmailBundle:%')
+        ;
+
+        $newTemplates = $qb->getQuery()->getResult();
+
         /** @var DataStore $legacyTemplate */
         foreach ($legacyTemplates as $legacyTemplate) {
             /** @var Template $template */
@@ -616,22 +636,22 @@ CODE
             $code = $legacyTemplate->getData('code');
             $templateCode->setCode($code);
 
+            $templateName = $template->getName();
+            $templateName = array_pop(explode(':', $templateName));
+
+            /** @var Template $newTemplate */
+            foreach ($newTemplates as $newTemplate) {
+                if ($templateName && strpos($newTemplate->getName(), ':'.$templateName) !== false) {
+                    $this->restoredCustomTemplates[$newTemplate->getName()] = $template->getName();
+                }
+            }
+
             $set->saveTemplate($template);
             $em->remove($legacyTemplate);
         }
 
-        // Delete new templates
-        $qb = $em->createQueryBuilder();
-        $qb
-            ->select('t')
-            ->from(Template::class, 't')
-            ->where('t.name LIKE :name')
-            ->setParameter('name', 'SendmailBundle:%')
-        ;
-
-        $templates = $qb->getQuery()->getResult();
         /** @var Template $template */
-        foreach ($templates as $template) {
+        foreach ($newTemplates as $template) {
             $em->remove($template);
         }
     }
