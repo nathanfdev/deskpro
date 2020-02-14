@@ -888,7 +888,7 @@ class TicketController extends AbstractController
             SELECT log, person
             FROM DeskPRO:TicketLog log
             LEFT JOIN log.person person
-            WHERE log.ticket = ?0 AND (log.action_type = 'message_forwarded' OR log.action_type = 'message_forwarded_as_new') 
+            WHERE log.ticket = ?0 AND (log.action_type = 'message_forwarded' OR log.action_type = 'message_forwarded_as_new')
         "
         )->execute([$ticket]);
 
@@ -1058,11 +1058,13 @@ class TicketController extends AbstractController
         }
 
         $this->db->beginTransaction();
+
         try {
             $this->em->persist($ticket);
             $this->em->flush();
         } catch (\Exception $e) {
             $this->db->rollback();
+
             throw $e;
         }
 
@@ -1164,6 +1166,7 @@ class TicketController extends AbstractController
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+
             throw $e;
         }
 
@@ -1266,6 +1269,7 @@ class TicketController extends AbstractController
                 $this->db->commit();
             } catch (\Exception $e) {
                 $this->db->rollback();
+
                 throw $e;
             }
         }
@@ -1304,6 +1308,7 @@ class TicketController extends AbstractController
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+
             throw $e;
         }
 
@@ -1771,16 +1776,19 @@ class TicketController extends AbstractController
                     if (!$tcheck->canModify($ticket, 'set_resolved')) {
                         $setStatus = $ticket->getTicketStatus();
                     }
+
                     break;
                 case 'awaiting_agent':
                     if (!$tcheck->canModify($ticket, 'set_awaiting_agent')) {
                         $setStatus = $ticket->getTicketStatus();
                     }
+
                     break;
                 case 'awaiting_user':
                     if (!$tcheck->canModify($ticket, 'set_awaiting_user')) {
                         $setStatus = $ticket->getTicketStatus();
                     }
+
                     break;
             }
         }
@@ -2019,6 +2027,7 @@ class TicketController extends AbstractController
         $changedTeam  = false;
         // TicketParticipant[]
         $addedTicketParticipants = [];
+
         try {
             if (!$isOptimisticUIUpdate) {
                 if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
@@ -2078,6 +2087,7 @@ class TicketController extends AbstractController
             if (!$isOptimisticUIUpdate) {
                 $this->db->rollback();
             }
+
             throw $e;
         }
 
@@ -2284,6 +2294,7 @@ class TicketController extends AbstractController
             ->setDetails($details);
 
         $this->db->beginTransaction();
+
         try {
             $this->em->persist($message);
             $this->em->persist($ticketLog);
@@ -2291,6 +2302,7 @@ class TicketController extends AbstractController
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+
             throw $e;
         }
 
@@ -2515,6 +2527,7 @@ class TicketController extends AbstractController
         foreach ($message->attachments as $test_attachment) {
             if ($test_attachment->getId() == $attachment_id) {
                 $attachment = $test_attachment;
+
                 break;
             }
         }
@@ -2645,17 +2658,20 @@ class TicketController extends AbstractController
             $macro = $this->em->getRepository(TicketMacro::class)->find($macro_id);
             if ($macro) {
                 $this->db->beginTransaction();
+
                 try {
                     $macro->performOnTicket($ticket, $this->person);
                     $tm->saveTicket($ticket, $context);
                     $this->db->commit();
                 } catch (\Exception $e) {
                     $this->db->rollback();
+
                     throw $e;
                 }
             }
         } else {
             $this->db->beginTransaction();
+
             try {
                 $ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
                 $ticket_edit->setPersonContext($this->person);
@@ -2812,10 +2828,12 @@ class TicketController extends AbstractController
                                 case $id > 0 && $checker->canAssociateProblem($ticket):
                                     $problem = $this->em->find(Problem::class, $actions['problem_id']);
                                     $ticket->associateProblem($problem);
+
                                     break;
 
                                 case 0 === $id && $checker->canDisassociateProblem($ticket):
                                     $ticket->disassociateProblem();
+
                                     break;
 
                                 case -1 === $id && $this->person->hasPerm('agent_problems.create') && $title:
@@ -2824,6 +2842,7 @@ class TicketController extends AbstractController
                                     $this->em->persist($problem);
                                     $this->em->flush();
                                     $ticket->associateProblem($problem);
+
                                     break;
                             }
                         }
@@ -2834,6 +2853,7 @@ class TicketController extends AbstractController
                 $this->db->commit();
             } catch (\Exception $e) {
                 $this->db->rollback();
+
                 throw $e;
             }
         }
@@ -2903,18 +2923,22 @@ class TicketController extends AbstractController
                 switch ($x->getFieldType()) {
                     case 'product':
                         return App::getSetting('core_tickets.field_validation_ticket_prod_agent_required');
+
                         break;
 
                     case 'category':
                         return App::getSetting('core_tickets.field_validation_ticket_cat_agent_required');
+
                         break;
 
                     case 'priority':
                         return App::getSetting('core_tickets.field_validation_ticket_pri_agent_required');
+
                         break;
 
                     case 'workflow':
                         return App::getSetting('core_tickets.field_validation_ticket_work_agent_required');
+
                         break;
 
                     case 'ticket_field':
@@ -2924,6 +2948,7 @@ class TicketController extends AbstractController
                         }
 
                         return $field->getOption('agent_required');
+
                         break;
 
                     case 'user_field':
@@ -2933,6 +2958,7 @@ class TicketController extends AbstractController
                         }
 
                         return $field->getOption('agent_required');
+
                         break;
 
                     case 'org_field':
@@ -2942,6 +2968,7 @@ class TicketController extends AbstractController
                         }
 
                         return $field->getOption('agent_required');
+
                         break;
                 }
 
@@ -3062,12 +3089,14 @@ class TicketController extends AbstractController
         $ticket->subject = $subject;
 
         $this->db->beginTransaction();
+
         try {
             $this->em->persist($ticket);
             $this->em->flush();
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+
             throw $e;
         }
 
@@ -3156,6 +3185,7 @@ class TicketController extends AbstractController
 
         $permission_errors = false;
         $this->db->beginTransaction();
+
         try {
             if (!$actions_collection->applyCheckPermission($ticket, $this->person)) {
                 $permission_errors = true;
@@ -3191,6 +3221,7 @@ class TicketController extends AbstractController
                     foreach ($validator->getErrorsInfo() as $info) {
                         $free[] = htmlspecialchars($info['message']);
                     }
+
                     throw new ValidatorException(implode('|', $free));
                 }
 
@@ -3237,6 +3268,7 @@ class TicketController extends AbstractController
                         foreach ($validator->getErrorsInfo() as $info) {
                             $free[] = htmlspecialchars($info['message']);
                         }
+
                         throw new ValidatorException(implode('|', $free));
                     }
 
@@ -3263,6 +3295,7 @@ class TicketController extends AbstractController
                 $this->em->flush();
             } else {
                 $this->db->beginTransaction();
+
                 try {
                     $this->db->insert('ticket_object_use_logs',
                         [
@@ -3436,14 +3469,17 @@ class TicketController extends AbstractController
                     case 'min_length':
                         $code = 'text_min';
                         $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
                         break;
                     case 'max_length':
                         $code = 'text_max';
                         $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
                         break;
                     case 'regex_fail':
                         $code = 'text_regex';
                         $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
                         break;
                     default:
                         $msg = $trans->getPhraseText('user.error.form_'.$code);
@@ -3816,6 +3852,7 @@ class TicketController extends AbstractController
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
+
             throw $e;
         }
 
@@ -3878,6 +3915,7 @@ class TicketController extends AbstractController
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
+
             throw $e;
         }
 
@@ -4048,6 +4086,7 @@ class TicketController extends AbstractController
         $ticket->organization = $new_person->organization;
 
         $this->db->beginTransaction();
+
         try {
             if ($this->in->getBool('keep')) {
                 $ticket->addParticipantPerson($old_person);
@@ -4062,6 +4101,7 @@ class TicketController extends AbstractController
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+
             throw $e;
         }
 
@@ -4163,6 +4203,7 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException('You cannot merge a ticket with itself');
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -4241,6 +4282,7 @@ class TicketController extends AbstractController
         $split->setPersonContext($this->person);
 
         $this->em->beginTransaction();
+
         try {
             $new_ticket = $split->split($subject, $message_ids);
             $this->em->commit();
@@ -4260,6 +4302,7 @@ class TicketController extends AbstractController
             );
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -4340,6 +4383,7 @@ class TicketController extends AbstractController
                     ->setMaxResults(60)
                     ->getQuery()
                     ->execute();
+
                 break;
             case 'single':
                 $messages = $this->em->getRepository(TicketMessage::class)
@@ -4349,6 +4393,7 @@ class TicketController extends AbstractController
                     ->setMaxResults(1)
                     ->getQuery()
                     ->execute();
+
                 break;
             case 'from':
                 $messages = $this->em->getRepository(TicketMessage::class)
@@ -4360,6 +4405,7 @@ class TicketController extends AbstractController
                     ->setMaxResults(60)
                     ->getQuery()
                     ->execute();
+
                 break;
             default:
                 throw $this->createNotFoundException();
@@ -4391,15 +4437,19 @@ class TicketController extends AbstractController
             switch ($type) {
                 case 'to':
                     $var = &$tos;
+
                     break;
                 case 'cc':
                     $var = &$ccs;
+
                     break;
                 case 'bcc':
                     $var = &$bccs;
+
                     break;
                 default:
                     $var = &$tos;
+
                     break;
             }
 
@@ -4495,6 +4545,7 @@ class TicketController extends AbstractController
             $message->setFrom($fromEmail, $fromName);
         } catch (\Swift_RfcComplianceException $e) {
             SystemErrorHandler::logException($e, false);
+
             throw $this->createNotFoundException();
         }
 
@@ -4661,6 +4712,7 @@ class TicketController extends AbstractController
             $ticket->copyTo($newTicket);
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -4903,6 +4955,11 @@ class TicketController extends AbstractController
     public function viewRawMessageAction($ticket_id, $message_id)
     {
         $message = $this->em->find(TicketMessage::class, $message_id);
+        if (!$message) {
+            throw $this->createNotFoundException();
+        }
+
+        $this->getTicketOr404($message->ticket->getId());
 
         $messageRaw = $message->message_raw ?: '';
         if (!$messageRaw) {
@@ -4959,12 +5016,11 @@ class TicketController extends AbstractController
     public function viewMessageWindowAction($message_id, $type = 'normal')
     {
         $message = $this->em->getRepository(TicketMessage::class)->find($message_id);
-
         if (!$message) {
             throw $this->createNotFoundException();
         }
 
-        $ticket = $message->ticket;
+        $ticket = $this->getTicketOr404($message->ticket->getId());
 
         $vars = [
             'message' => $message,
@@ -4995,6 +5051,7 @@ class TicketController extends AbstractController
                 );
                 $config->set('URI.DisableExternalResources', true);
                 $messageRaw = $purifier->purify($messageRaw, $config);
+
                 break;
 
             case 'email_source':
@@ -5607,10 +5664,12 @@ class TicketController extends AbstractController
                     switch ($comment_action) {
                         case 'delete':
                             $this->em->remove($comment);
+
                             break;
                         case 'approve':
                             $comment->setStatus('visible');
                             $this->em->persist($comment);
+
                             break;
                     }
 
@@ -5696,6 +5755,7 @@ class TicketController extends AbstractController
                 if ($dupe_ticket = $this->em->getRepository(Ticket::class)->checkDupeTicket($ticket)) {
                     $e            = new DuplicateTicketException();
                     $e->ticket_id = $dupe_ticket->id;
+
                     throw $e;
                 }
 
@@ -6458,11 +6518,13 @@ CSS;
         switch ($this->in->getString('link_type')) {
             case 'parent':
                 $linked_ticket = $ticket;
+
                 break;
 
             case 'child':
             case 'sibling':
                 $linked_ticket = $this->em->find(Ticket::class, $this->in->getUInt('link_ticket_id'));
+
                 break;
         }
 
@@ -6571,6 +6633,7 @@ CSS;
             foreach ($departments as $department) {
                 if ($department->hasBrand($brand)) {
                     $department_found = true;
+
                     break;
                 }
             }
@@ -6638,12 +6701,15 @@ CSS;
                         switch ($layoutField->getFieldType()) {
                             case 'ticket_field':
                                 $customField = $em->getRepository(Entity\CustomDefTicket::class)->find($fieldId);
+
                                 break;
                             case 'user_field':
                                 $customField = $em->getRepository(Entity\CustomDefPerson::class)->find($fieldId);
+
                                 break;
                             case 'org_field':
                                 $customField = $em->getRepository(Entity\CustomDefOrganization::class)->find($fieldId);
+
                                 break;
                         }
 

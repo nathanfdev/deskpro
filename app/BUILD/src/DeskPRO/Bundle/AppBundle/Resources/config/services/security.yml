@@ -260,6 +260,11 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.ticket_charges:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketChargesVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.ticket_messages:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketMessagesVoter
     tags:

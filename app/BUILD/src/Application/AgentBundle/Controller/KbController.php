@@ -230,6 +230,7 @@ class KbController extends AbstractController
                 if ($from_category && $from_category == $to_category) {
                     $error = $tr->phrase('agent.publish.error_kb_cats_same');
                     $skip  = true;
+
                     break;
                 }
 
@@ -244,6 +245,7 @@ class KbController extends AbstractController
                 if (($from_category && !$from) || !$to) {
                     $error = $tr->phrase('agent.publish.error_kb_not_in_db');
                     $skip  = true;
+
                     break;
                 }
 
@@ -261,6 +263,7 @@ class KbController extends AbstractController
 
                 if (!$article) {
                     ++$missing;
+
                     continue;
                 }
 
@@ -268,24 +271,29 @@ class KbController extends AbstractController
                     case 'draft':
                         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
                             ++$perm_failures;
+
                             continue 2;
                         }
 
                         $article->status_code = 'hidden.draft';
                         ++$affected;
+
                         break;
                     case 'delete':
                         if (!$this->person->PermissionsManager->PublishChecker->canDelete($article)) {
                             ++$perm_failures;
+
                             continue 2;
                         }
 
                         $article->status_code = 'hidden.deleted';
                         ++$affected;
+
                         break;
                     case 'move':
                         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
                             ++$perm_failures;
+
                             continue 2;
                         }
 
@@ -306,6 +314,7 @@ class KbController extends AbstractController
                         }
 
                         ++$affected;
+
                         break;
                 }
 
@@ -372,26 +381,31 @@ class KbController extends AbstractController
                 if ($article['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
                     $article['status_code'] = 'hidden.unpublished';
                 }
+
                 break;
 
             case 'title':
                 $article['title'] = $this->in->getString('title');
                 $rev              = ContentRevisionUtil::findOrCreate($article, 'title', $this->person);
                 $rev['title']     = $article['title'];
+
                 break;
 
             case 'slug':
                 $article->setSlug(Strings::slugifyTitle($this->in->getString('slug')) ?: 'view');
                 $data['slug'] = $article['slug'];
+
                 break;
 
             case 'delete':
                 $article->status_code = 'hidden.deleted';
+
                 break;
 
             case 'undelete':
                 $article->status_code = 'published';
                 $article->setSlug(null);
+
                 break;
 
             case 'categories':
@@ -401,6 +415,7 @@ class KbController extends AbstractController
                 $article->setCategories($cats);
 
                 $data['category_ids'] = $catIds;
+
                 break;
 
             case 'products':
@@ -410,11 +425,13 @@ class KbController extends AbstractController
                 $article->setProducts($prods);
 
                 $data['product_ids'] = $prodIds;
+
                 break;
 
             case 'remove-auto-unpub':
                 $article->date_end   = null;
                 $article->end_action = null;
+
                 break;
 
             case 'auto-unpub':
@@ -423,16 +440,19 @@ class KbController extends AbstractController
 
                 $article->date_end   = $date;
                 $article->end_action = $action;
+
                 break;
 
             case 'auto-pub':
                 $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
 
                 $article->date_published = $date;
+
                 break;
 
             case 'remove-auto-pub':
                 $article->date_published = null;
+
                 break;
 
             case 'add-related':
@@ -441,6 +461,7 @@ class KbController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'remove-related':
@@ -449,6 +470,7 @@ class KbController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'remove-blob':
@@ -457,6 +479,7 @@ class KbController extends AbstractController
                     if ($attach->blob['id'] == $this->in->getUInt('blob_id')) {
                         $article->attachments->remove($k);
                         $this->em->remove($attach);
+
                         break;
                     }
                 }
@@ -543,6 +566,7 @@ class KbController extends AbstractController
                         'article' => $article,
                     ]);
                 }
+
                 break;
 
             case 'set-review-date':
@@ -664,6 +688,7 @@ class KbController extends AbstractController
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -769,6 +794,10 @@ class KbController extends AbstractController
      */
     public function newPendingArticleAction()
     {
+        if (!$this->person->hasPerm('agent_publish.create')) {
+            throw $this->createNotFoundException();
+        }
+
         $pending_article         = new ArticlePendingCreate();
         $pending_article->person = $this->person;
 
@@ -794,6 +823,8 @@ class KbController extends AbstractController
 
     /**
      * [AJAX] remove a pending article.
+     *
+     * @param mixed $pending_article_id
      */
     public function removePendingArticleAction($pending_article_id)
     {
@@ -866,6 +897,7 @@ class KbController extends AbstractController
                         continue 2;
                     }
                     $this->em->remove($p_article);
+
                     break;
             }
         }
@@ -891,6 +923,7 @@ class KbController extends AbstractController
                         continue 2;
                     }
                     $article->restartReviewDate();
+
                     break;
             }
         }
@@ -1063,6 +1096,10 @@ class KbController extends AbstractController
 
     public function newArticleAction()
     {
+        if (!$this->person->hasPerm('agent_publish.create')) {
+            throw $this->createNotFoundException();
+        }
+
         $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
 
         $articleCategories = $this->getFilteredCategory($brandId);
@@ -1095,6 +1132,10 @@ class KbController extends AbstractController
 
     public function newArticleSaveAction(Request $request)
     {
+        if (!$this->person->hasPerm('agent_publish.create')) {
+            throw $this->createNotFoundException();
+        }
+
         $newArticle = new \Application\AgentBundle\Form\Model\NewArticle($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewArticle();
