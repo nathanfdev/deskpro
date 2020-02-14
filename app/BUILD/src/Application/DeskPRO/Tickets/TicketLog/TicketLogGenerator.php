@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Tickets\TicketLog;
 
@@ -109,7 +105,7 @@ class TicketLogGenerator
             $options = $this->context->getVars()->get('reply_options');
             $log     = $this->getLogFromData([
                 'action_type' => 'free',
-                'message'     => 'Reply box action: '.$replyAction.($options ? ' (options: '.implode($options, ', ').')' : ''),
+                'message'     => 'Reply box action: '.$replyAction.($options ? ' (options: '.implode(', ', $options).')' : ''),
             ]);
             $log->parent = $group;
             $logs[]      = $log;
@@ -119,6 +115,7 @@ class TicketLogGenerator
             $log_data = $this->getLogDataForChange($change);
             if (!$log_data) {
                 $this->context->getLogger()->info(sprintf('[TicketLogGenerator] %s -> no data', $change->getField()));
+
                 continue;
             }
 
@@ -230,6 +227,7 @@ class TicketLogGenerator
                     'new_agent_name'  => $new ? $new->display_name : null,
                     'new_agent_email' => $new ? $new->primary_email_address : null,
                 ];
+
                 break;
 
             case 'agent_team':
@@ -243,6 +241,7 @@ class TicketLogGenerator
                     'new_agent_team_id'   => $new ? $new->id : null,
                     'new_agent_team_name' => $new ? $new->name : null,
                 ];
+
                 break;
 
             case 'category':
@@ -256,6 +255,7 @@ class TicketLogGenerator
                     'new_category_id'    => $new ? $new->id : null,
                     'new_category_title' => $new ? $new->title : null,
                 ];
+
                 break;
 
             case 'created':
@@ -265,6 +265,7 @@ class TicketLogGenerator
 
                     'ticket_id' => $this->ticket->id,
                 ];
+
                 break;
 
             case 'custom_field':
@@ -281,6 +282,7 @@ class TicketLogGenerator
                     'field_id'   => !empty($old['field_def']) ? $old['field_def']->id : null,
                     'field_name' => !empty($old['field_def']) ? $old['field_def']->title : null,
                 ];
+
                 break;
 
             case 'brand':
@@ -294,6 +296,7 @@ class TicketLogGenerator
                     'new_brand_id'   => $new ? $new->id : null,
                     'new_brand_name' => $new ? $new->getName() : null,
                 ];
+
                 break;
 
             case 'department':
@@ -307,6 +310,7 @@ class TicketLogGenerator
                     'new_department_id'    => $new ? $new->id : null,
                     'new_department_title' => $new ? $new->getFullTitle() : null,
                 ];
+
                 break;
 
             case 'free':
@@ -320,6 +324,7 @@ class TicketLogGenerator
                 }
 
                 return $data;
+
                 break;
 
             case 'labels':
@@ -332,6 +337,7 @@ class TicketLogGenerator
                         return $l->label;
                     }, $removed),
                 ];
+
                 break;
 
             case 'charges':
@@ -384,6 +390,7 @@ class TicketLogGenerator
                 }
 
                 return $logSet;
+
                 break;
 
             case 'charge_changed':
@@ -425,6 +432,7 @@ class TicketLogGenerator
                     'new_language_id'    => $new ? $new->id : null,
                     'new_language_title' => $new ? $new->title : null,
                 ];
+
                 break;
 
             case 'merge':
@@ -463,6 +471,7 @@ class TicketLogGenerator
                 }
 
                 return $logSet;
+
                 break;
 
             case 'topic_link':
@@ -487,6 +496,7 @@ class TicketLogGenerator
                 }
 
                 return $logSet;
+
                 break;
 
             case 'followUp':
@@ -509,6 +519,7 @@ class TicketLogGenerator
                 }
 
                 return $logSet;
+
                 break;
 
             case 'organization':
@@ -522,6 +533,7 @@ class TicketLogGenerator
                     'new_organization_id'   => $new ? $new->id : null,
                     'new_organization_name' => $new ? $new->name : null,
                 ];
+
                 break;
 
             case 'participants':
@@ -569,6 +581,7 @@ class TicketLogGenerator
                         }, $removedAgents),
                     ];
                 }
+
                 break;
 
             case 'person':
@@ -584,6 +597,7 @@ class TicketLogGenerator
                     'new_person_name'  => $new ? $new->display_name : null,
                     'new_person_email' => $new ? $new->primary_email_address : null,
                 ];
+
                 break;
 
             case 'priority':
@@ -599,6 +613,7 @@ class TicketLogGenerator
                     'new_priority_title' => $new ? $new->title : null,
                     'new_priority_pri'   => $new ? $new->priority : null,
                 ];
+
                 break;
 
             case 'product':
@@ -612,6 +627,7 @@ class TicketLogGenerator
                     'new_product_id'    => $new ? $new->id : null,
                     'new_product_title' => $new ? $new->title : null,
                 ];
+
                 break;
 
             case 'split':
@@ -635,6 +651,7 @@ class TicketLogGenerator
                     'new_ticket_status_id'   => $new['ticket_status'] ? $new['ticket_status']->getId() : null,
                     'new_ticket_status_code' => $new['ticket_status'] ? $new['ticket_status']->getStatusCode() : null,
                 ];
+
                 break;
 
             case 'subject':
@@ -643,6 +660,7 @@ class TicketLogGenerator
                     'old_subject' => $old,
                     'new_subject' => $new,
                 ];
+
                 break;
 
             case 'ticket_slas':
@@ -655,6 +673,7 @@ class TicketLogGenerator
                         return ['id' => $ts->sla->id, 'title' => $ts->sla->title];
                     }, $removed),
                 ];
+
                 break;
 
             case 'ticket_slas_status':
@@ -679,6 +698,7 @@ class TicketLogGenerator
                     'old_urgency' => $old ?: 0,
                     'new_urgency' => $new ?: 0,
                 ];
+
                 break;
 
             case 'workflow':
@@ -692,6 +712,7 @@ class TicketLogGenerator
                     'new_workflow_id'    => $new ? $new->id : null,
                     'new_workflow_title' => $new ? $new->title : null,
                 ];
+
                 break;
 
             case 'trigger':
@@ -702,6 +723,7 @@ class TicketLogGenerator
                     'trigger_id'    => $new['trigger_id'],
                     'trigger_title' => $new['trigger_title'],
                 ];
+
                 break;
 
             case 'ticket_email':
@@ -793,12 +815,15 @@ class TicketLogGenerator
                 switch ($new) {
                     case -1:
                         $logData['rating'] = 'negative';
+
                         break;
                     case 0:
                         $logData['rating'] = 'neutral';
+
                         break;
                     case 1:
                         $logData['rating'] = 'positive';
+
                         break;
                 }
 
@@ -860,6 +885,7 @@ class TicketLogGenerator
                         return $p->getTitle();
                     }, $removed),
                 ];
+
                 break;
 
             // Custom fields changed
@@ -918,6 +944,7 @@ class TicketLogGenerator
                     'old'         => $old ? $old->address : null,
                     'new'         => $new ? $new->address : null,
                 ];
+
                 break;
             case 'parent_ticket':
                 return [
@@ -935,6 +962,7 @@ class TicketLogGenerator
                 }
 
                 return [];
+
                 break;
             case 'ticket_approval':
                 return array_merge($new, [

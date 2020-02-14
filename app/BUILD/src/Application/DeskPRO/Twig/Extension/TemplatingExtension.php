@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
@@ -512,7 +510,7 @@ class TemplatingExtension extends \Twig_Extension
             return '';
         }
 
-        return implode($array, $sep);
+        return implode($sep, $array);
     }
 
     public function explodeString($string, $del = ',')
