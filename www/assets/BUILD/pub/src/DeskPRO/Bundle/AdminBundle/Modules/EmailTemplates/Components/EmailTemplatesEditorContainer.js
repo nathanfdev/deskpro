@@ -393,13 +393,17 @@ class EmailTemplatesEditorContainer extends React.Component {
     });
     return Promise.all(promises).then(
       () => {
-        this.setState({
-          saveSubmit: false
-        });
-        this.props.dispatch(actions.cleanExtraTemplates());
-        if (this.props.route.onSave) {
-          this.props.route.onSave(name);
-        }
+        this.props.dispatch(actions.loadTemplate(this.props.emailTemplates.getIn(['currentTemplate', 'newTemplate']))).then(
+          (data) => {
+            this.props.dispatch(actions.setTemplate(data));
+            this.setState({
+              saveSubmit: false
+            });
+            this.props.dispatch(actions.cleanExtraTemplates());
+            if (this.props.route.onSave) {
+              this.props.route.onSave(name);
+            }
+          });
       }
     );
   };
@@ -731,7 +735,6 @@ class EmailTemplatesEditor extends React.Component {
     const subject = this.props.emailTemplates.getIn(['template', 'original_code', 'subject'], '');
     const extraTemplates = this.props.emailTemplates.getIn(['template', 'extra_templates'], fromJS({}));
 
-
     if (subject !== this.state.templateSubject || body !== this.state.templateBody || extraTemplates.size) {
       this.setState({
         contentChanged: true
@@ -751,7 +754,6 @@ class EmailTemplatesEditor extends React.Component {
 
   markAsConverted = () => {
     this.props.saveTemplate().then(() => {
-      console.log(this);
       this.props.markAsConverted().then(() => {
         window.location.href = 'admin-interface#/emails/email_templates_legacy';
       });
