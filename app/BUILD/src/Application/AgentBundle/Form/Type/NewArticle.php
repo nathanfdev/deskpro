@@ -1,12 +1,11 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Article;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class NewArticle extends AbstractType
@@ -53,6 +52,21 @@ class NewArticle extends AbstractType
             'required'     => false,
             'allow_add'    => true,
             'allow_delete' => true,
+        ]);
+
+        $builder->add('review_interval_count', IntegerType::class, [
+            'required' => false,
+        ]);
+
+        $builder->add('review_interval_unit', ChoiceType::class, [
+            'required'          => false,
+            'multiple'          => false,
+            'choices_as_values' => true,
+            'choices'           => [
+                Article::REVIEW_DATE_UNIT_DAYS,
+                Article::REVIEW_DATE_UNIT_MONTHS,
+                Article::REVIEW_DATE_UNIT_YEARS,
+            ],
         ]);
     }
 

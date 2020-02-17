@@ -3,6 +3,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\ArticleResults;
+use Application\AgentBundle\Validator\NewArticleValidator;
 use Application\DeskPRO\App;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
@@ -23,6 +24,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Publish\GlossaryHandler;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
 use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
@@ -230,6 +232,7 @@ class KbController extends AbstractController
                 if ($from_category && $from_category == $to_category) {
                     $error = $tr->phrase('agent.publish.error_kb_cats_same');
                     $skip  = true;
+
                     break;
                 }
 
@@ -244,6 +247,7 @@ class KbController extends AbstractController
                 if (($from_category && !$from) || !$to) {
                     $error = $tr->phrase('agent.publish.error_kb_not_in_db');
                     $skip  = true;
+
                     break;
                 }
 
@@ -261,6 +265,7 @@ class KbController extends AbstractController
 
                 if (!$article) {
                     ++$missing;
+
                     continue;
                 }
 
@@ -268,24 +273,29 @@ class KbController extends AbstractController
                     case 'draft':
                         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
                             ++$perm_failures;
+
                             continue 2;
                         }
 
                         $article->status_code = 'hidden.draft';
                         ++$affected;
+
                         break;
                     case 'delete':
                         if (!$this->person->PermissionsManager->PublishChecker->canDelete($article)) {
                             ++$perm_failures;
+
                             continue 2;
                         }
 
                         $article->status_code = 'hidden.deleted';
                         ++$affected;
+
                         break;
                     case 'move':
                         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
                             ++$perm_failures;
+
                             continue 2;
                         }
 
@@ -306,6 +316,7 @@ class KbController extends AbstractController
                         }
 
                         ++$affected;
+
                         break;
                 }
 
@@ -372,26 +383,31 @@ class KbController extends AbstractController
                 if ($article['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
                     $article['status_code'] = 'hidden.unpublished';
                 }
+
                 break;
 
             case 'title':
                 $article['title'] = $this->in->getString('title');
                 $rev              = ContentRevisionUtil::findOrCreate($article, 'title', $this->person);
                 $rev['title']     = $article['title'];
+
                 break;
 
             case 'slug':
                 $article->setSlug(Strings::slugifyTitle($this->in->getString('slug')) ?: 'view');
                 $data['slug'] = $article['slug'];
+
                 break;
 
             case 'delete':
                 $article->status_code = 'hidden.deleted';
+
                 break;
 
             case 'undelete':
                 $article->status_code = 'published';
                 $article->setSlug(null);
+
                 break;
 
             case 'categories':
@@ -401,6 +417,7 @@ class KbController extends AbstractController
                 $article->setCategories($cats);
 
                 $data['category_ids'] = $catIds;
+
                 break;
 
             case 'products':
@@ -410,11 +427,13 @@ class KbController extends AbstractController
                 $article->setProducts($prods);
 
                 $data['product_ids'] = $prodIds;
+
                 break;
 
             case 'remove-auto-unpub':
                 $article->date_end   = null;
                 $article->end_action = null;
+
                 break;
 
             case 'auto-unpub':
@@ -423,16 +442,19 @@ class KbController extends AbstractController
 
                 $article->date_end   = $date;
                 $article->end_action = $action;
+
                 break;
 
             case 'auto-pub':
                 $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
 
                 $article->date_published = $date;
+
                 break;
 
             case 'remove-auto-pub':
                 $article->date_published = null;
+
                 break;
 
             case 'add-related':
@@ -441,6 +463,7 @@ class KbController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'remove-related':
@@ -449,6 +472,7 @@ class KbController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'remove-blob':
@@ -457,6 +481,7 @@ class KbController extends AbstractController
                     if ($attach->blob['id'] == $this->in->getUInt('blob_id')) {
                         $article->attachments->remove($k);
                         $this->em->remove($attach);
+
                         break;
                     }
                 }
@@ -543,14 +568,20 @@ class KbController extends AbstractController
                         'article' => $article,
                     ]);
                 }
+
                 break;
 
             case 'set-review-date':
+                $validator = new NewArticleValidator();
 
                 $count = $this->in->getInt('interval_count');
                 $unit  = $this->in->getString('interval_unit');
 
-                if (!$count || !in_array($unit, ['days', 'months', 'years'])) {
+                if (!$count
+                    || !in_array($unit, ['days', 'months', 'years'])
+                    || !$validator->isMinReviewDateValid($count, $unit)
+                    || !$validator->isMaxReviewDateValid($count, $unit)
+                ) {
                     return $this->createJsonResponse([
                         'success' => false,
                     ]);
@@ -664,6 +695,7 @@ class KbController extends AbstractController
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -794,6 +826,8 @@ class KbController extends AbstractController
 
     /**
      * [AJAX] remove a pending article.
+     *
+     * @param mixed $pending_article_id
      */
     public function removePendingArticleAction($pending_article_id)
     {
@@ -866,6 +900,7 @@ class KbController extends AbstractController
                         continue 2;
                     }
                     $this->em->remove($p_article);
+
                     break;
             }
         }
@@ -891,6 +926,7 @@ class KbController extends AbstractController
                         continue 2;
                     }
                     $article->restartReviewDate();
+
                     break;
             }
         }
@@ -1084,12 +1120,29 @@ class KbController extends AbstractController
         $fieldManager = $this->container->getSystemService('article_fields_manager');
         $customfields = $fieldManager->getDisplayArrayForObject(new Article());
 
+        /** @var KbSettings $kbSettings */
+        $kbSettings = $this->container->get('portal_settings_resolver')->getKbSettings();
+
+        $defaultRequireDate     = null;
+        $defaultRequireDateUnit = null;
+
+        if ($kbSettings->isDefaultReviewDate() && $kbSettings->getDefaultReviewDateInterval()) {
+            $defaultRequireDate     = $kbSettings->getDefaultReviewDateInterval();
+            $defaultRequireDateUnit = $kbSettings->getDefaultReviewDateUnit();
+        } elseif ($kbSettings->isMinReviewDate() && $kbSettings->getMinReviewDateInterval()) {
+            $defaultRequireDate     = $kbSettings->getMinReviewDateInterval();
+            $defaultRequireDateUnit = $kbSettings->getMinReviewDateUnit();
+        }
+
         return $this->render('AgentBundle:Kb:newarticle.html.twig', [
-            'article_categories' => $articleCategories,
-            'state'              => $state,
-            'brands'             => $brands,
-            'selected_brand_id'  => $brandId,
-            'custom_fields'      => $customfields,
+            'article_categories'        => $articleCategories,
+            'state'                     => $state,
+            'brands'                    => $brands,
+            'selected_brand_id'         => $brandId,
+            'custom_fields'             => $customfields,
+            'require_review_date'       => $kbSettings->isRequireReviewDate(),
+            'default_require_date'      => $defaultRequireDate,
+            'default_require_date_unit' => $defaultRequireDateUnit,
         ]);
     }
 
@@ -1110,7 +1163,7 @@ class KbController extends AbstractController
             if (!$validator->isValid($newArticle)) {
                 return $this->createJsonResponse([
                     'error'       => true,
-                    'error_codes' => $validator->getErrorGroups(),
+                    'error_codes' => $validator->getPlainErrors(),
                 ]);
             }
 

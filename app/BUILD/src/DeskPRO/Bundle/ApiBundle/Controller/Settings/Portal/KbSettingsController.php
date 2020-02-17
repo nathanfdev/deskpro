@@ -109,6 +109,19 @@ class KbSettingsController extends AbstractBrandAwareSettingsController
             ->updateSetting(PortalSettingsResolver::TAB_KB, $model->isTabEnabled(), $brand)
             ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_KB, $model->isSubscriptions(), $brand)
             ->updateSetting(PortalSettingsResolver::KB_WITH_TREE, $model->isKnowledgebaseDeepTree(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_REQUIRE_REVIEW_DATE, $model->isRequireReviewDate(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_MIN_REVIEW_DATE, $model->isMinReviewDate(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_MIN_REVIEW_DATE_INTERVAL, $model->getMinReviewDateInterval(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_MIN_REVIEW_DATE_UNIT, $model->getMinReviewDateUnit(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_MAX_REVIEW_DATE, $model->isMaxReviewDate(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_MAX_REVIEW_DATE_INTERVAL, $model->getMaxReviewDateInterval(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_MAX_REVIEW_DATE_UNIT, $model->getMaxReviewDateUnit(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_DEFAULT_REVIEW_DATE, $model->isDefaultReviewDate(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_DEFAULT_REVIEW_DATE_INTERVAL, $model->getDefaultReviewDateInterval(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_DEFAULT_REVIEW_DATE_UNIT, $model->getDefaultReviewDateUnit(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_AUTO_UNPUBLISH_REVIEW_DATE, $model->isAutoUnpublishReview(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_AUTO_UNPUBLISH_REVIEW_DATE_INTERVAL, $model->getAutoUnpublishReviewInterval(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_AUTO_UNPUBLISH_REVIEW_DATE_UNIT, $model->getAutoUnpublishReviewUnit(), $brand)
         ;
     }
 }

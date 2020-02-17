@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Install
- */
+
 
 namespace Application\InstallBundle\Data\DefaultData;
 
@@ -96,6 +92,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Goes through articles with a publish date that was set in the future (publish now), or an end date set (deleting or archivng now).',
             'job_class'    => Job\ArticlePublishState::class,
             'run_interval' => Job\ArticlePublishState::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'article_auto_unpublish',
+            'worker_group' => 'article_auto_unpublish',
+            'title'        => 'Article Auto Unpublish',
+            'description'  => 'Auto unpublishes articles based on review date.',
+            'job_class'    => Job\ArticleAutoUnpublish::class,
+            'run_interval' => Job\ArticleAutoUnpublish::DEFAULT_INTERVAL,
         ];
 
         $jobs[] = [
