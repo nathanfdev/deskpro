@@ -29,6 +29,8 @@ class EmailTemplatesFeature extends AbstractBetaFeature
 
     protected $migratedCustomTemplates = [];
 
+    protected $restoredCustomTemplates = [];
+
     /**
      * {@inheritdoc}
      */
@@ -349,11 +351,7 @@ CODE;
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-<container>
-
 $code
-
-</container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 
@@ -385,6 +383,15 @@ CODE;
         {% include 'SendmailBundle:emails_common:ticket_message_row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay } %}
     {% endif %}
 {% endfor %}
+CODE
+            ,
+          '<dp:agent-reply />' => <<<'CODE'
+{% set message = ticket_messages|first %}
+	{% if message.person.is_agent %}
+		{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+	{% else %}
+		{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+	{% endif %}
 CODE
             ,
           '{{ ticket.person.primary_email.email }}'                             => '{{ ticket.person.primary_email }}',
@@ -570,11 +577,18 @@ CODE
                                 array_column($manifest, 'newTemplate'),
                                 true
                             );
-                            $info = $manifest[$manifestKey];
+                            $legacyTemplate = '';
+                            if ($manifestKey) {
+                                $legacyTemplate = $manifest[$manifestKey]['name'];
+                            } elseif (isset($this->restoredCustomTemplates[$action['options']['template']])) {
+                                $legacyTemplate = $this->restoredCustomTemplates[$action['options']['template']];
+                            }
 
-                            $actions['@DATA']['actions'][$actionId]['type']                = $emailActions[$action['type']];
-                            $actions['@DATA']['actions'][$actionId]['options']['template'] = $info['name'];
-                            $changed                                                       = true;
+                            if ($legacyTemplate) {
+                                $actions['@DATA']['actions'][$actionId]['type']                = $emailActions[$action['type']];
+                                $actions['@DATA']['actions'][$actionId]['options']['template'] = $legacyTemplate;
+                                $changed                                                       = true;
+                            }
                         }
                     }
                 }
@@ -596,6 +610,17 @@ CODE
 
         $set = $this->getTemplateSet($em, $container);
 
+        // Delete new templates
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('t')
+            ->from(Template::class, 't')
+            ->where('t.name LIKE :name')
+            ->setParameter('name', 'SendmailBundle:%')
+        ;
+
+        $newTemplates = $qb->getQuery()->getResult();
+
         /** @var DataStore $legacyTemplate */
         foreach ($legacyTemplates as $legacyTemplate) {
             /** @var Template $template */
@@ -611,22 +636,22 @@ CODE
             $code = $legacyTemplate->getData('code');
             $templateCode->setCode($code);
 
+            $templateName = $template->getName();
+            $templateName = array_pop(explode(':', $templateName));
+
+            /** @var Template $newTemplate */
+            foreach ($newTemplates as $newTemplate) {
+                if ($templateName && strpos($newTemplate->getName(), ':'.$templateName) !== false) {
+                    $this->restoredCustomTemplates[$newTemplate->getName()] = $template->getName();
+                }
+            }
+
             $set->saveTemplate($template);
             $em->remove($legacyTemplate);
         }
 
-        // Delete new templates
-        $qb = $em->createQueryBuilder();
-        $qb
-            ->select('t')
-            ->from(Template::class, 't')
-            ->where('t.name LIKE :name')
-            ->setParameter('name', 'SendmailBundle:%')
-        ;
-
-        $templates = $qb->getQuery()->getResult();
         /** @var Template $template */
-        foreach ($templates as $template) {
+        foreach ($newTemplates as $template) {
             $em->remove($template);
         }
     }
