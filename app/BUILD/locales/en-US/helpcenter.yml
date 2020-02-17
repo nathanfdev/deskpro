@@ -213,6 +213,7 @@ helpcenter.forms.label_news_post: 'News Post'
 helpcenter.forms.label_download: 'Download'
 helpcenter.forms.label_password: Password
 helpcenter.forms.label_save: Save
+helpcenter.forms.message_description: ''
 helpcenter.general.add-comment: 'Add a comment'
 helpcenter.general.admin: 'Admin'
 helpcenter.general.admin_home: 'Admin Home'
