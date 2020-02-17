@@ -121,6 +121,7 @@ export class EmailsAndBlockMenu extends React.Component {
           className="template"
           onClick={() => this.props.selectTemplate(template)}
           desc={template.get('desc')}
+          modified={template.get('modified')}
         />
     );
   };
@@ -146,6 +147,7 @@ export class EmailsAndBlockMenu extends React.Component {
         className="template"
         onClick={() => this.props.selectTemplate(template)}
         desc={template.get('desc')}
+        modified={template.get('modified')}
       />);
     });
     return (
@@ -179,6 +181,7 @@ export class EmailsAndBlockMenu extends React.Component {
           className="template"
           onClick={() => this.props.selectTemplate(template)}
           desc={template.get('desc')}
+          modified={template.get('modified')}
         />);
       });
       content = <Menu>{content}</Menu>;

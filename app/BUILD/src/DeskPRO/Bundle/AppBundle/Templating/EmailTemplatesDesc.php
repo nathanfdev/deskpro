@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Templating
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\Templating;
 
@@ -80,10 +76,11 @@ class EmailTemplatesDesc
      * Gets a list of templates grouped by type and group, with translated titles and descriptions.
      *
      * @param Translate $tr
+     * @param array $modifiedTemplates
      *
      * @return array
      */
-    public function getProcessedList(Translate $tr)
+    public function getProcessedList(Translate $tr, $modifiedTemplates = [])
     {
         $manifest = $this->getManifestWithDescriptions($tr);
 
@@ -114,6 +111,11 @@ class EmailTemplatesDesc
                     'title'      => $tr->phrase("adm.email_templates.{$type}_{$subGroup}"),
                     'templates'  => [],
                 ];
+            }
+
+            $tpl['modified'] = false;
+            if (isset($tpl['newTemplate']) && in_array($tpl['newTemplate'], $modifiedTemplates)) {
+                $tpl['modified'] = true;
             }
 
             $ret[$type]['groups'][$group]['subGroups'][$subGroup]['templates'][] = $tpl;

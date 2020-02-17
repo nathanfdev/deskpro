@@ -42,8 +42,11 @@ class EmailsBlocksController extends BaseController
      */
     public function getEmailTemplateInfoAction()
     {
+        $modifiedTemplates = $this->get('database_connection')
+            ->fetchAllCol("SELECT name FROM templates WHERE name LIKE 'SendmailBundle:%'");
+
         $tplDesc = new EmailTemplatesDesc();
-        $list    = $tplDesc->getProcessedList($this->getContainer()->getTranslator());
+        $list    = $tplDesc->getProcessedList($this->getContainer()->getTranslator(), $modifiedTemplates);
 
         $list['custom']                     = [];
         $list['custom']['title']            = 'Custom Emails';
