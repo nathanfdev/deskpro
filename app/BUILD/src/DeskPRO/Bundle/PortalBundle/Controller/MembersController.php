@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
@@ -41,15 +39,19 @@ class MembersController extends AbstractController
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildMembersList();
 
+        $fieldManager      = $this->container->getPersonFieldManager();
+        $customFields      = $fieldManager->getDisplayArrayForObject(new Person());
+
         return $this->renderThemeView(
             'Theme:Members:index.html.twig',
             [
-                'breadcrumbs' => $breadcrumbs,
-                'page_title'  => $this->createPageTitle()->members(),
-                'pager'       => $pager,
-                'count'       => $count,
-                'page'        => $page,
-                'q'           => $search,
+                'breadcrumbs'   => $breadcrumbs,
+                'page_title'    => $this->createPageTitle()->members(),
+                'custom_fields' => $customFields,
+                'pager'         => $pager,
+                'count'         => $count,
+                'page'          => $page,
+                'q'             => $search,
             ]
         );
     }

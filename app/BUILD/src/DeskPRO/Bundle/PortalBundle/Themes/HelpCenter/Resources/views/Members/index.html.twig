@@ -58,29 +58,66 @@
               </div>#}
             </div>
           </div>
-
-          <div class="dp-po-table dp-po-table-col5 dp-po-table-member">
+          {% set fields = brand_setting('portal.profile_directory_fields')|split(',') %}
+          <div class="dp-po-table dp-po-table-col{{ brand_setting('portal.profile_directory_fields') ? fields | length + 1 : 5 }} dp-po-table-member">
             <div class="dp-po-table-row dp-po-table-row-head">
-              <span class="dp-po-table-cell dp-po-table-cell-large">{{ phrase('helpcenter.members.name') }}
-                {#<div class="dropdown">
-                  <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-                     aria-expanded="false">
-                    <i class="dp-po-icon far fa-arrows-v"></i>
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="#">First Name</a>
-                    <a class="dropdown-item" href="#">Last Name</a>
-                  </div>
-                </div>#}
-              </span>
-              <span class="dp-po-table-cell dp-po-table-cell-large">{{ phrase('helpcenter.members.email') }}</span>
-              <span class="dp-po-table-cell">{{ phrase('helpcenter.members.phone') }}</span>
-              <span class="dp-po-table-cell dp-po-table-cell-large">{{ phrase('helpcenter.members.company') }}</span>
-              {#<span class="dp-po-table-cell dp-po-table-cell-small"></span>#}
+              {% if brand_setting('portal.profile_directory_fields') %}
+                {% for field in fields %}
+                  {% if field == 'name' %}
+                    <span class="dp-po-table-cell">{{ phrase('helpcenter.members.name') }}</span>
+                  {% elseif field == 'email' %}
+                    <span class="dp-po-table-cell">{{ phrase('helpcenter.members.email') }}</span>
+                  {% elseif field == 'job_title' %}
+                    <span class="dp-po-table-cell">{{ phrase('helpcenter.members.company') }}</span>
+                  {% elseif field == 'phone_number' %}
+                    <span class="dp-po-table-cell">{{ phrase('helpcenter.members.phone') }}</span>
+                  {% else %}
+                    <span class="dp-po-table-cell">{{ custom_fields[field].field_def.title }}</span>
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+                <span class="dp-po-table-cell dp-po-table-cell-large">{{ phrase('helpcenter.members.name') }}
+                  {#<div class="dropdown">
+                    <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">
+                      <i class="dp-po-icon far fa-arrows-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" href="#">First Name</a>
+                      <a class="dropdown-item" href="#">Last Name</a>
+                    </div>
+                  </div>#}
+                </span>
+                <span class="dp-po-table-cell dp-po-table-cell-large">{{ phrase('helpcenter.members.email') }}</span>
+                <span class="dp-po-table-cell">{{ phrase('helpcenter.members.phone') }}</span>
+                <span class="dp-po-table-cell dp-po-table-cell-large">{{ phrase('helpcenter.members.company') }}</span>
+                {#<span class="dp-po-table-cell dp-po-table-cell-small"></span>#}
+              {% endif %}
             </div>
 
             {% for person in pager %}
               <div class="dp-po-table-row">
+                {% if brand_setting('portal.profile_directory_fields') %}
+                  {% for field in fields %}
+                    {% if field == 'name' %}
+                      <span class="dp-po-table-cell">
+                        <div class="dp-po-avatar dp-po-avatar-round">
+                          <a href="{{ path('portal_members_view', { id: person.id }) }}" class="d-flex align-items-center">
+                            {{ hc_avatar(person, '', 60) }}{% if person.community_name %}{{ person.community_name }}{% else %}#{{ person.id }}{% endif %}
+                          </a>
+                        </div>
+                      </span>
+                    {% elseif field == 'email' %}
+                      <span class="dp-po-table-cell">{{person.primary_email}}</span>
+                    {% elseif field == 'job_title' %}
+                      <span class="dp-po-table-cell">{% if person.organization %}{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
+                    {% elseif field == 'phone_number' %}
+                      <span class="dp-po-table-cell">{% if person.phone_numbers | length > 0 %}{{ person.phone_numbers[0].getFullFormatted() }}{%  else %}{{ phrase('helpcenter.members.phone-number-none') }}{% endif %}</span>
+                    {% else %}
+                      <span class="dp-po-table-cell">{{ person.renderCustomField(field)|raw }}</span>
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
                   <span class="dp-po-table-cell dp-po-table-cell-large">
                     <div class="dp-po-avatar dp-po-avatar-round">
                       <a href="{{ path('portal_members_view', { id: person.id }) }}" class="d-flex align-items-center">
@@ -88,9 +125,10 @@
                       </a>
                     </div>
                   </span>
-                <span class="dp-po-table-cell dp-po-table-cell-large">{{person.primary_email}}</span>
-                <span class="dp-po-table-cell">{% if person.phone_numbers | length > 0 %}{{ person.phone_numbers[0].getFullFormatted() }}{%  else %}{{ phrase('helpcenter.members.phone-number-none') }}{% endif %}</span>
-                <span class="dp-po-table-cell dp-po-table-cell-large">{% if person.organization %}{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
+                  <span class="dp-po-table-cell dp-po-table-cell-large">{{person.primary_email}}</span>
+                  <span class="dp-po-table-cell">{% if person.phone_numbers | length > 0 %}{{ person.phone_numbers[0].getFullFormatted() }}{%  else %}{{ phrase('helpcenter.members.phone-number-none') }}{% endif %}</span>
+                  <span class="dp-po-table-cell dp-po-table-cell-large">{% if person.organization %}{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
+                {% endif %}
                 {% if app.getSetting('portal.members_community') %}
                   <span class="dp-po-table-cell dp-po-table-cell-small dp-po-table-message text-right">
                     <a href="{{ path('portal_dm_send_to', {to:  person.id } ) }}"><i
