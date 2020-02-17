@@ -435,9 +435,11 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 			this.el.detach();
 			this.shim.detach();
 
-			this.widgets.forEach(function(w) {
-				w.destroy();
-			});
+			if (this.widgets) {
+				this.widgets.forEach(function(w) {
+					w.destroy();
+				});
+			}
 		}
 	}
 });
