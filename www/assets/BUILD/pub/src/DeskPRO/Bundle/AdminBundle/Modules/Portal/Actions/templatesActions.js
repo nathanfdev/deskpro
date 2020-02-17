@@ -10,8 +10,6 @@ export const deleteAsset = createAction(
   themeSetAssetId => repository('PortalTemplates').deleteAsset(themeSetAssetId)
 );
 
-export const deletePreview = createAction('PORTAL_TEMPLATES_DELETE_PREVIEW');
-
 export const loadExampleTicket = createAction(
   'PORTAL_TEMPLATES_EXAMPLE_TICKET',
   ticketId => new Promise((resolve) => {
@@ -213,11 +211,7 @@ export const setExtraTemplate = createAction('PORTAL_TEMPLATES_SET_EXTRA_TEMPLAT
 
 export const setTag = createAction('PORTAL_TEMPLATES_SET_TAG');
 
-export const setPreview = createAction('PORTAL_TEMPLATES_SET_PREVIEW');
-
 export const setTemplate = createAction('PORTAL_TEMPLATES_SET_TEMPLATE');
-
-export const unselectTemplate = createAction('PORTAL_TEMPLATES_UNSELECT_TEMPLATE');
 
 export const updateTemplateCode = createAction(
   'PORTAL_TEMPLATES_UPDATE_TEMPLATE_CODE',
