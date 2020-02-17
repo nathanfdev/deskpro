@@ -197,26 +197,31 @@ class DownloadsController extends AbstractController
                 if ($download['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
                     $download['status_code'] = 'hidden.unpublished';
                 }
+
                 break;
 
             case 'delete':
                 $download['status_code'] = 'hidden.deleted';
+
                 break;
 
             case 'undelete':
                 $download['status_code'] = 'published';
                 $download->setSlug(null);
+
                 break;
 
             case 'title':
                 $download['title'] = $this->in->getString('title');
                 $rev               = ContentRevisionUtil::findOrCreate($download, 'title', $this->person);
                 $rev['title']      = $download['title'];
+
                 break;
 
             case 'slug':
                 $download['slug'] = Strings::slugifyTitle($this->in->getString('slug')) ?: 'view';
                 $data['slug']     = $download['slug'];
+
                 break;
 
             case 'add-related':
@@ -225,6 +230,7 @@ class DownloadsController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'remove-related':
@@ -233,6 +239,7 @@ class DownloadsController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'file':
@@ -310,6 +317,7 @@ class DownloadsController extends AbstractController
                 $cat                  = $this->em->find(DownloadCategory::class, $this->in->getUInt('category_id'));
                 $download['category'] = $cat;
                 $data['category_id']  = $cat['id'];
+
                 break;
         }
 
@@ -360,6 +368,7 @@ class DownloadsController extends AbstractController
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -410,6 +419,8 @@ class DownloadsController extends AbstractController
 
     /**
      * View a list of downloads.
+     *
+     * @param mixed $category_id
      */
     public function listAction($category_id = 0)
     {
@@ -511,6 +522,10 @@ class DownloadsController extends AbstractController
 
     public function newDownloadAction()
     {
+        if (!$this->person->hasPerm('agent_publish.create')) {
+            throw $this->createNotFoundException();
+        }
+
         $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
 
         $rootCategories = $this->getFilteredCategory($brandId);
@@ -548,6 +563,10 @@ class DownloadsController extends AbstractController
      */
     public function newDownloadSaveAction(Request $request)
     {
+        if (!$this->person->hasPerm('agent_publish.create')) {
+            throw $this->createNotFoundException();
+        }
+
         $newdownload = new \Application\AgentBundle\Form\Model\NewDownload($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewDownload();

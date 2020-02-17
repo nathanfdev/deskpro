@@ -290,6 +290,10 @@ class PeopleSearchController extends AbstractController
 
     public function searchAction($letter, $use_terms = null, $set_view_name = null)
     {
+        if (!$this->person->hasPerm('agent_people.use')) {
+            throw $this->createNotFoundException();
+        }
+
         $result_cache = false;
         if ($this->in->getUint('cache_id')) {
             $result_cache = $this->em->getRepository(ResultCache::class)->find($this->in->getUint('cache_id'));
@@ -567,6 +571,7 @@ class PeopleSearchController extends AbstractController
             default:
                 $selected_letter = $letter;
                 $searcher->addTerm('alphabetical', 'contains', [$letter, strtolower($letter)]);
+
                 break;
         }
 
