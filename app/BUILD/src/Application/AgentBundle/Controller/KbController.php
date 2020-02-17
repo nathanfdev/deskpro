@@ -801,6 +801,10 @@ class KbController extends AbstractController
      */
     public function newPendingArticleAction()
     {
+        if (!$this->person->hasPerm('agent_publish.create')) {
+            throw $this->createNotFoundException();
+        }
+
         $pending_article         = new ArticlePendingCreate();
         $pending_article->person = $this->person;
 
@@ -1099,6 +1103,10 @@ class KbController extends AbstractController
 
     public function newArticleAction()
     {
+        if (!$this->person->hasPerm('agent_publish.create')) {
+            throw $this->createNotFoundException();
+        }
+
         $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
 
         $articleCategories = $this->getFilteredCategory($brandId);
@@ -1148,6 +1156,10 @@ class KbController extends AbstractController
 
     public function newArticleSaveAction(Request $request)
     {
+        if (!$this->person->hasPerm('agent_publish.create')) {
+            throw $this->createNotFoundException();
+        }
+
         $newArticle = new \Application\AgentBundle\Form\Model\NewArticle($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewArticle();

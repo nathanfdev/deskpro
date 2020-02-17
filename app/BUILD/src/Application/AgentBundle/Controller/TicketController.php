@@ -4955,6 +4955,11 @@ class TicketController extends AbstractController
     public function viewRawMessageAction($ticket_id, $message_id)
     {
         $message = $this->em->find(TicketMessage::class, $message_id);
+        if (!$message) {
+            throw $this->createNotFoundException();
+        }
+
+        $this->getTicketOr404($message->ticket->getId());
 
         $messageRaw = $message->message_raw ?: '';
         if (!$messageRaw) {
@@ -5011,12 +5016,11 @@ class TicketController extends AbstractController
     public function viewMessageWindowAction($message_id, $type = 'normal')
     {
         $message = $this->em->getRepository(TicketMessage::class)->find($message_id);
-
         if (!$message) {
             throw $this->createNotFoundException();
         }
 
-        $ticket = $message->ticket;
+        $ticket = $this->getTicketOr404($message->ticket->getId());
 
         $vars = [
             'message' => $message,

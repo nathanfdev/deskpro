@@ -130,12 +130,12 @@ WHERE tickets.status = \'resolved\'
             'description'   => 'Agents with the number of replies by date',
             'display_types' => 'table',
             'display_order' => 40,
-            'query'         => 'SELECT tickets_messages.person AS \'Agent\', DPQL_COUNT() AS \'Replies\'
+            'query'         => 'SELECT DPQL_COUNT() AS \'Replies\'
 FROM tickets_messages
 WHERE tickets_messages.date_created = ${date}
   AND tickets_messages.is_agent_note = 0
   AND tickets_messages.person.is_agent = 1
-GROUP BY tickets_messages.person
+GROUP BY tickets_messages.person AS \'Agent\'
 ORDER BY @\'Replies\' DESC
 ',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',

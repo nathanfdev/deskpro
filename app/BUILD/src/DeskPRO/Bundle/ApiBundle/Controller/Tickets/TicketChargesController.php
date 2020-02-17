@@ -8,6 +8,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketChargeType;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -96,10 +97,14 @@ class TicketChargesController extends CrudSubController
      *
      * @Rest\Get("/total")
      *
+     * @param Request $request
+     *
      * @return array
      */
-    public function getTotalAction()
+    public function getTotalAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, $this->getPermissionGroupContext($request));
+
         $ticket      = $this->findParentOr404();
         $charges     = $ticket->getCharges();
         $timeAmount  = 0;

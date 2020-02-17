@@ -49,7 +49,7 @@ class ResultTab extends React.PureComponent {
     }
     return (
       <li className="dp-po-search-tabs-item">
-        <a className={classNames('dp-po-search-tabs-link', { active: activeTab === tab, 'no-results': data[tab].results.length === 0 })} onClick={this.onClick} href="#">
+        <a className={classNames('dp-po-search-tabs-link', { active: activeTab === tab, 'no-results': data[tab].results.length === 0 })} onClick={this.onClick}>
           <Isvg src={icon} className="dp-po-search-tabs-image" wrapper={React.createFactory('div')} />
           <FormattedMessage id={title} tagName="div" />
           <span>{data[tab].pageinfo.total_results}</span>
@@ -171,7 +171,7 @@ export class HcOmniSearch extends React.Component {
 
   doSearch(newQuery, lastSearchLogId) {
     const isNumericQuery = !isNaN(parseInt(newQuery, 10)) && !isNaN(newQuery - 0);
-    if (!newQuery || (newQuery.length < 3 && !isNumericQuery)) {
+    if (!newQuery || (new Blob([newQuery]).size < 3 && !isNumericQuery)) {
       // we need a query with a length of at least 2 for the server to do any real searching
       // so don't do a HTTP request if we don't at least have that
       return;
@@ -350,7 +350,7 @@ export class HcOmniSearch extends React.Component {
 
     $input.removeClass('opened');
 
-    if (this.state.isClosed || (searchQuery.length < 3 && !isNumericQuery)) {
+    if (this.state.isClosed || (new Blob([searchQuery]).size < 3 && !isNumericQuery)) {
       return null;
     }
 

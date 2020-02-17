@@ -2182,15 +2182,19 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function renderCustomField($field_id, $context = 'html')
     {
-        $f_def = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($field_id);
-        if (!$f_def) {
+        $def = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($field_id);
+        if (!$def) {
             return '';
         }
 
-        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, [$f_def]);
+        $dataStructured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, [$def]);
 
-        $value    = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
-        $rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
+        $value    = !empty($dataStructured[$def['id']]) ? $dataStructured[$def['id']] : null;
+        $rendered = $value ? $def->getHandler()->renderContext($context, $value) : null;
+
+        if ($rendered) {
+            $rendered = trim($rendered, "\n\t");
+        }
 
         return $rendered;
     }

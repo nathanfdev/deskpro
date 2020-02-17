@@ -4,21 +4,21 @@ namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
+use Application\DeskPRO\Entity\TicketCharge;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 
 /**
- * Class TicketsVoter.
+ * Class TicketChargesVoter.
  */
-class TicketFollowUpVoter extends AbstractTicketsVoter
+class TicketChargesVoter extends AbstractTicketsVoter
 {
     /**
      * {@inheritdoc}
      */
     public static function getEntityClass()
     {
-        return TicketFollowUp::class;
+        return TicketCharge::class;
     }
 
     /**
