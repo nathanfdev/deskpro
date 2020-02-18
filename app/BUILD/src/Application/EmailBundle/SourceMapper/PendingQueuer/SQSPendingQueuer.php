@@ -69,6 +69,7 @@ class SQSPendingQueuer implements PendingQueuerInterface
         // According to API doc
         // > sendMessageBatch Delivers up to ten messages to the specified queue
         $chunks = array_chunk($this->data_items, 10);
+        $this->data_items = [];
 
         foreach ($chunks as $chunk) {
             $this->client->sendMessageBatch([
@@ -95,5 +96,9 @@ class SQSPendingQueuer implements PendingQueuerInterface
             'Id'          => $source['uuid'],
             'MessageBody' => json_encode($data),
         ];
+
+        // in prod, seems the shutdown function is unreliable,
+        // so quickfix we're sending as soon as we get it
+        $this->pushAll();
     }
 }
