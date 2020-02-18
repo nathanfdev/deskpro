@@ -14,6 +14,13 @@ services:
     tags:
       - { name: validator.constraint_validator }
 
+  validator.limit_email_domains:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\LimitEmailDomainsValidator
+    arguments:
+      - "@dp_limit_email_domains_checker"
+    tags:
+      - { name: validator.constraint_validator }
+
   validator.exist_email:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\ExistEmailValidator
     arguments:

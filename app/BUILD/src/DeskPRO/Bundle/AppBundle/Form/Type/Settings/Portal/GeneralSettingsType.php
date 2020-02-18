@@ -42,6 +42,8 @@ class GeneralSettingsType extends AbstractType
             ->add('show_ratings', ApiBooleanType::class)
             ->add('show_ratings_min_votes', IntegerType::class)
             ->add('publish_comments', ApiBooleanType::class)
+            ->add('limit_email_domains', ApiBooleanType::class)
+            ->add('limit_email_domains_patterns', TextType::class)
         ;
     }
 

@@ -35,6 +35,9 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     const IFACE_PORTAL = 'core.iface_portal';
     const IFACE_WIDGET = 'core.iface_widget';
 
+    const LIMIT_EMAIL_DOMAINS          = 'core.limit_email_domains';
+    const LIMIT_EMAIL_DOMAINS_PATTERNS = 'core.limit_email_domains_patterns';
+
     const SHOW_RATINGS           = 'user.show_ratings';
     const SHOW_RATINGS_MIN_VOTES = 'user.show_ratings_min_votes';
     const PUBLISH_COMMENTS       = 'user.publish_comments';
@@ -168,6 +171,8 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setShowRatings($this->getSetting(self::SHOW_RATINGS, $brand))
             ->setShowRatingsMinVotes($this->getSetting(self::SHOW_RATINGS_MIN_VOTES, $brand))
             ->setPublishComments($this->getSetting(self::PUBLISH_COMMENTS, $brand))
+            ->setLimitEmailDomains($this->getSetting(self::LIMIT_EMAIL_DOMAINS, $brand))
+            ->setLimitEmailDomainsPatterns($this->getSetting(self::LIMIT_EMAIL_DOMAINS_PATTERNS, $brand))
             ->setBrand($brand)
         ;
 

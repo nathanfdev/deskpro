@@ -167,6 +167,24 @@
                     {{ phrase('admin.setup.portal_disabled') }}
                 </div>
 
+                <div ng-show="Ctrl.settings.iface_portal" style="margin-top: 10px;">
+                    <input type="checkbox" ng-model="Ctrl.settings.limit_email_domains" style="margin:0;" />
+                    <span ng-click="Ctrl.settings.limit_email_domains = !Ctrl.settings.limit_email_domains" style="cursor: pointer">
+                        {{ phrase('admin.setup.limit_email_domains') }}
+                    </span>
+                    <div>
+                        <p>
+                            <input type="text" ng-model="Ctrl.settings.limit_email_domains_patterns" />
+                        </p>
+                        <p>
+                            Example: "example.com" matches "user@example.com" but not "user@sub.example.com"
+                        </p>
+                        <p>
+                            Example: "*.example.com,example.com" matches "user@example.com" and "user@sub.example.com" and "user@deep.sub.example.com"
+                        </p>
+                    </div>
+                </div>
+
                 <div class="select-portal-mode" ng-show="Ctrl.settings.iface_portal">
                     <span class="or"><span class="text">{{ phrase('admin.setup.portal_mode_separator') }}</span></span>
 

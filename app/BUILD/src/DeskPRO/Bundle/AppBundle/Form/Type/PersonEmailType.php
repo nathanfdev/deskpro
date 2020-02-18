@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\PersonEmail;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\FreeEmail as FreeEmailConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -45,6 +46,7 @@ class PersonEmailType extends AbstractType
             'email_constraints' => [
                 new Assert\NotBlank(),
                 new Assert\Email(['strict' => true]),
+                new AppAssert\Person\LimitEmailDomains(),
             ],
         ]);
     }

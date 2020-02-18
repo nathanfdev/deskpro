@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -48,6 +49,7 @@ class PasswordResetRequestType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Email(['strict' => true]),
+                    new AppAssert\Person\LimitEmailDomains(),
                 ],
             ])
             ->add('captcha', DpCaptchaType::class)

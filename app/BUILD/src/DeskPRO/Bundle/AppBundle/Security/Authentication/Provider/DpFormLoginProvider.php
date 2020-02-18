@@ -90,6 +90,9 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             if ($this->dpPersonProvider->personHasBannedEmail($person)) {
                 throw new DisabledException('portal.account.login-disabled');
             }
+            if (!$this->container->get('dp_limit_email_domains_checker')->checkPerson($person)) {
+                throw new BadCredentialsException('portal.account.login-invalid');
+            }
 
             // check if user has this brand
             $brand = $this->container->get('brand_stack')->getActive()->getBrand();
@@ -160,6 +163,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                     SystemErrorHandler::logException($e, false);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
                     $GLOBALS['DP_AUTH_EXCEPTION']         = $e;
+
                     continue;
                 }
 

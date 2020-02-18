@@ -17,6 +17,8 @@ use Orb\Auth\Result;
 use Orb\Log\Loggable;
 use Orb\Log\LogItem;
 use Orb\Log\Writer\ArrayWriter;
+use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -119,6 +121,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             if (isset($abuseCheck)) {
                 $this->container->get('anti_abuse')->saveRateLimit($abuseCheck);
             }
+
             throw $e;
         }
     }
@@ -232,7 +235,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             if ($result->isValid()) {
                 return $this->createTokenFromUsersourceResult($usersource, $result);
 
-                // We expect a redirect to be required
+            // We expect a redirect to be required
             } elseif ($result->isRedirectRequired()) {
                 $r = $this->redirect($result->getRedirectUrl());
                 $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
@@ -399,11 +402,22 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     /**
      * @param Usersource $usersource
      * @param Result     $result
+     * @param mixed $usersourceTest
      *
      * @return DpFormLoginToken
      */
     protected function createTokenFromUsersourceResult(Usersource $usersource, Result $result, $usersourceTest = false)
     {
+        // check email domain limits
+        $mappedFields = $usersource->getAdapter()->getFieldsFromIdentity($result->getIdentity());
+        $mappedFields = Arrays::removeEmptyString($mappedFields);
+        $mappedFields = new OptionsArray($mappedFields);
+
+        $email = $mappedFields->get('email');
+        if ($email && !$this->container->get('dp_limit_email_domains_checker')->checkEmail($email)) {
+            throw new BadCredentialsException('portal.account.login-invalid');
+        }
+
         try {
             $em              = $this->container->get('doctrine.orm.default_entity_manager');
             $login_processor = new LoginProcessor($usersource, $result->getIdentity(), $usersourceTest);

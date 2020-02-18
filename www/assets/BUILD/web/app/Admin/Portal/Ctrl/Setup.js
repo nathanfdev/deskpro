@@ -192,7 +192,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         this.settings = s;
         this.originalUrl === this.settings.deskpro_url;
         this.stopSpinner();
-        return this.$scope.$emit('dp-update-brands');
+        this.$scope.$emit('dp-update-brands');
       }
         , () => this.stopSpinner())
       , () => this.stopSpinner());
