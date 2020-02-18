@@ -14,6 +14,8 @@ use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketPriorityType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketProductType;
@@ -25,6 +27,7 @@ use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -79,12 +82,12 @@ abstract class AbstractFieldResolver
      * @param BrandAwareSettingsResolver $settingsResolver
      */
     public function __construct(
-        EntityManager              $em,
-        BrandStack                 $brandStack,
-        HierarchyGenerator         $hierarchyGenerator,
-        LanguageManager            $languageManager,
-        CustomFieldManager         $fieldManager,
-        TicketFieldSettings        $fieldSettings,
+        EntityManager $em,
+        BrandStack $brandStack,
+        HierarchyGenerator $hierarchyGenerator,
+        LanguageManager $languageManager,
+        CustomFieldManager $fieldManager,
+        TicketFieldSettings $fieldSettings,
         BrandAwareSettingsResolver $settingsResolver
     ) {
         $this->em                 = $em;
@@ -540,5 +543,97 @@ abstract class AbstractFieldResolver
         }
 
         return $personOrganization;
+    }
+
+    /**
+     * @param TicketWithLayoutsContext $context
+     *
+     * @return array
+     */
+    protected function createUserNameOptions(TicketWithLayoutsContext $context)
+    {
+        $person  = $context->getPerson();
+        $options = [
+            'property_path' => 'person.name',
+            'label'         => $context->isWidgetType()
+                ? $this->phrase('portal.widget.label_name')
+                : $this->phrase('portal.forms.label_name'),
+            'empty_data'  => $context->getPerson()->getDisplayName(false),
+            'constraints' => [
+                new Assert\NotBlank(),
+            ],
+        ];
+
+        if ($person->getOrganization()) {
+            $options['attr']['data-organization-id'] = $person->getOrganization()->getId();
+        }
+
+        if ($context->isFullLayout()) {
+            $options['disabled'] = true;
+        }
+        if ($context->ignoreUserFields()) {
+            $options['mapped'] = false;
+        }
+
+        return [
+            'name'    => $context->isMessengerType() ? FormFields::NAME : FormFields::USER_NAME,
+            'type'    => TextType::class,
+            'options' => $options,
+        ];
+    }
+
+    /**
+     * @param TicketWithLayoutsContext $context
+     *
+     * @return array
+     */
+    protected function createUserEmailOptions(TicketWithLayoutsContext $context)
+    {
+        $person = $context->getPerson();
+        if ($person->isUser()) {
+            $options = [
+                'person'        => $person,
+                'property_path' => 'ticket_person_email',
+                'label'         => $context->isWidgetType()
+                    ? $this->phrase('portal.widget.label_email')
+                    : $this->phrase('portal.forms.label_email'),
+            ];
+
+            if ($context->isFullLayout()) {
+                $options['disabled'] = true;
+            }
+
+            return [
+                'name'    => $context->isMessengerType() ? FormFields::EMAIL : FormFields::USER_EMAIL,
+                'type'    => PersonEmailChoiceType::class,
+                'options' => $options,
+            ];
+        } else {
+            $options = [
+                'property_path' => 'person.primary_email',
+                'label'         => $context->isWidgetType()
+                    ? $this->phrase('portal.widget.label_email')
+                    : $this->phrase('portal.forms.label_email'),
+
+                // ignore the "unique entity" constraint here
+                'constraints' => [
+                    new AppAssert\Person\Email\NotSystemEmail(),
+                ],
+            ];
+
+            if ($context->isFullLayout()) {
+                $options['disabled'] = true;
+            }
+
+            if ($context->getTicket()->getPersonEmailAddress() !== $person->getPrimaryEmailAddress()) {
+                $options['property_path'] = 'ticket_person_email';
+            }
+
+            return [
+                'name'    => $context->isMessengerType() ? FormFields::EMAIL : FormFields::USER_EMAIL,
+                'type'    => PersonEmailType::class,
+                'options' => $options,
+            ];
+        }
     }
 }

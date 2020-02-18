@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\Form;
 
@@ -17,6 +15,8 @@ class FormFields
     const PERSON        = 'person';
     const USER_EMAIL    = 'user_email';
     const USER_NAME     = 'user_name';
+    const NAME          = 'name';
+    const EMAIL         = 'email';
     const USER_TIMEZONE = 'user_timezone';
     const USER_LANGUAGE = 'user_language';
     const USER_FIELD    = 'user_field';

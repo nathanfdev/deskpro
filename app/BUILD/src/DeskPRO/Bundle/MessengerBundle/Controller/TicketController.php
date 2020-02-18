@@ -78,6 +78,7 @@ class TicketController extends AbstractMessengerController
             'csrf_protection'     => false,
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
+            'form_type'           => TicketWithLayoutsContext::FORM_TYPE_MESSENGER,
         ];
 
         $form = $this->container->get('form.factory')->create(
@@ -86,7 +87,7 @@ class TicketController extends AbstractMessengerController
             $formOptions
         );
 
-        $form->submit($requestData, false);
+        $form->submit($requestData, true);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
@@ -99,7 +100,7 @@ class TicketController extends AbstractMessengerController
         if ($person) {
             $ticket->setPerson($person);
             $requestData['subject'] = $this->updateSubject($subjectPattern, $ticket, $ticket->getPerson());
-            $guestForm->submit($requestData, false);
+            $guestForm->submit($requestData, true);
             if (!$this->getUser() || $this->getUser() instanceof PersonGuest) {
                 // if the user is not authorized then don't allow to change person entity
                 $this->getManager()->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($ticket->getPerson()));
