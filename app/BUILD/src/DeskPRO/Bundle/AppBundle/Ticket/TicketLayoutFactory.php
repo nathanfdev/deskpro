@@ -115,9 +115,19 @@ class TicketLayoutFactory extends AbstractDataService
         foreach ($all_layouts as $l) {
             foreach ($l->getUserLayout()->all() as $f) {
                 $layout->getUserLayout()->add($f);
+                // Check that all fields from conditions/criteria are present in the layout
+                // we need their values
+                foreach ($this->getReliantFieldsFromCritera($f) as $reliantField) {
+                    $layout->getUserLayout()->add($reliantField);
+                }
             }
             foreach ($l->getAgentLayout()->all() as $f) {
                 $layout->getAgentLayout()->add($f);
+                // Check that all fields from conditions/criteria are present in the layout
+                // we need their values
+                foreach ($this->getReliantFieldsFromCritera($f) as $reliantField) {
+                    $layout->getAgentLayout()->add($reliantField);
+                }
             }
         }
 
@@ -132,6 +142,32 @@ class TicketLayoutFactory extends AbstractDataService
         $this->sortTicketLayoutFormFields($layout);
 
         return $layout;
+    }
+
+    /**
+     * LayoutField might depends from other fields in criteria
+     * Currently  returns only layout fields for User custom fields from criteria
+     *
+     * @param LayoutField $field
+     * @return LayoutField[]
+     */
+    private function getReliantFieldsFromCritera(LayoutField $field) {
+        if (!$field->hasCriteria()) {
+            return [];
+        }
+
+        $reliantFields = [];
+        foreach ($field->getCriteria()->getTerms() as $term) {
+            if (
+                strpos($term->getTermType(), "CheckUserField") === 0
+                && $term->getTermOptions()
+                && $term->getTermOptions()->has("field_id")
+            ) {
+                $reliantFields[] = new LayoutField(FormFields::USER_FIELD, $term->getTermOptions()->get("field_id"));
+            }
+        }
+
+        return $reliantFields;
     }
 
     /**
