@@ -118,7 +118,9 @@ class TicketLayoutFactory extends AbstractDataService
                 // Check that all fields from conditions/criteria are present in the layout
                 // we need their values
                 foreach ($this->getReliantFieldsFromCritera($f) as $reliantField) {
-                    $layout->getUserLayout()->add($reliantField);
+                    if (!$layout->getUserLayout()->has($reliantField)) {
+                        $layout->getUserLayout()->add($reliantField);
+                    }
                 }
             }
             foreach ($l->getAgentLayout()->all() as $f) {
@@ -126,7 +128,9 @@ class TicketLayoutFactory extends AbstractDataService
                 // Check that all fields from conditions/criteria are present in the layout
                 // we need their values
                 foreach ($this->getReliantFieldsFromCritera($f) as $reliantField) {
-                    $layout->getAgentLayout()->add($reliantField);
+                    if (!$layout->getAgentLayout()->has($reliantField)) {
+                        $layout->getAgentLayout()->add($reliantField);
+                    }
                 }
             }
         }
