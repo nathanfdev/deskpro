@@ -123,6 +123,6 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
 	},
 
 	openTopic: function(topicId) {
-    window.DeskPRO_Window.runPageRoute("guides:/agent/guides/topic/" + topicId);
+    window.DeskPRO_Window.runPageRoute("guides:" + BASE_URL + "agent/guides/topic/" + topicId);
 	}
 });
