@@ -41,7 +41,7 @@ class PortalEditorContainer extends React.Component {
   componentWillMount() {
     const { dispatch } = this.props;
 
-    dispatch(actions.unselectTemplate());
+    dispatch(actions.cleanState());
 
     dispatch(actions.loadAssets());
     dispatch(actions.loadTemplates());
