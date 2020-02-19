@@ -7,6 +7,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\CustomFields\FieldManager;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
@@ -27,6 +28,7 @@ use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -230,6 +232,7 @@ class KbController extends AbstractController
                 if ($from_category && $from_category == $to_category) {
                     $error = $tr->phrase('agent.publish.error_kb_cats_same');
                     $skip  = true;
+
                     break;
                 }
 
@@ -244,6 +247,7 @@ class KbController extends AbstractController
                 if (($from_category && !$from) || !$to) {
                     $error = $tr->phrase('agent.publish.error_kb_not_in_db');
                     $skip  = true;
+
                     break;
                 }
 
@@ -261,6 +265,7 @@ class KbController extends AbstractController
 
                 if (!$article) {
                     ++$missing;
+
                     continue;
                 }
 
@@ -268,24 +273,29 @@ class KbController extends AbstractController
                     case 'draft':
                         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
                             ++$perm_failures;
+
                             continue 2;
                         }
 
                         $article->status_code = 'hidden.draft';
                         ++$affected;
+
                         break;
                     case 'delete':
                         if (!$this->person->PermissionsManager->PublishChecker->canDelete($article)) {
                             ++$perm_failures;
+
                             continue 2;
                         }
 
                         $article->status_code = 'hidden.deleted';
                         ++$affected;
+
                         break;
                     case 'move':
                         if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
                             ++$perm_failures;
+
                             continue 2;
                         }
 
@@ -306,6 +316,7 @@ class KbController extends AbstractController
                         }
 
                         ++$affected;
+
                         break;
                 }
 
@@ -372,26 +383,31 @@ class KbController extends AbstractController
                 if ($article['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
                     $article['status_code'] = 'hidden.unpublished';
                 }
+
                 break;
 
             case 'title':
                 $article['title'] = $this->in->getString('title');
                 $rev              = ContentRevisionUtil::findOrCreate($article, 'title', $this->person);
                 $rev['title']     = $article['title'];
+
                 break;
 
             case 'slug':
                 $article->setSlug(Strings::slugifyTitle($this->in->getString('slug')) ?: 'view');
                 $data['slug'] = $article['slug'];
+
                 break;
 
             case 'delete':
                 $article->status_code = 'hidden.deleted';
+
                 break;
 
             case 'undelete':
                 $article->status_code = 'published';
                 $article->setSlug(null);
+
                 break;
 
             case 'categories':
@@ -401,6 +417,7 @@ class KbController extends AbstractController
                 $article->setCategories($cats);
 
                 $data['category_ids'] = $catIds;
+
                 break;
 
             case 'products':
@@ -410,11 +427,13 @@ class KbController extends AbstractController
                 $article->setProducts($prods);
 
                 $data['product_ids'] = $prodIds;
+
                 break;
 
             case 'remove-auto-unpub':
                 $article->date_end   = null;
                 $article->end_action = null;
+
                 break;
 
             case 'auto-unpub':
@@ -423,16 +442,19 @@ class KbController extends AbstractController
 
                 $article->date_end   = $date;
                 $article->end_action = $action;
+
                 break;
 
             case 'auto-pub':
                 $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
 
                 $article->date_published = $date;
+
                 break;
 
             case 'remove-auto-pub':
                 $article->date_published = null;
+
                 break;
 
             case 'add-related':
@@ -441,6 +463,7 @@ class KbController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'remove-related':
@@ -449,6 +472,7 @@ class KbController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'remove-blob':
@@ -457,6 +481,7 @@ class KbController extends AbstractController
                     if ($attach->blob['id'] == $this->in->getUInt('blob_id')) {
                         $article->attachments->remove($k);
                         $this->em->remove($attach);
+
                         break;
                     }
                 }
@@ -543,6 +568,7 @@ class KbController extends AbstractController
                         'article' => $article,
                     ]);
                 }
+
                 break;
 
             case 'set-review-date':
@@ -639,6 +665,13 @@ class KbController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
+    /**
+     * @param $article_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
     public function ajaxSaveCustomFieldsAction($article_id)
     {
         $article = $this->em->find(Article::class, $article_id);
@@ -651,29 +684,88 @@ class KbController extends AbstractController
             throw $this->createNotFoundException();
         }
 
+        $trans = $this->container->getTranslator();
+
         $this->em->beginTransaction();
+        $fieldErrors = [];
 
         try {
-            $field_manager      = $this->container->getSystemService('article_fields_manager');
-            $post_custom_fields = $this->request->request->get('custom_fields', []);
-            if (!empty($post_custom_fields)) {
-                $field_manager->saveFormToObject($post_custom_fields, $article);
+            /** @var FieldManager $fieldManager */
+            $fieldManager     = $this->container->getSystemService('article_fields_manager');
+            $postCustomFields = $this->request->request->get('custom_fields', []);
+
+            if (!empty($postCustomFields)) {
+                $customFields = $fieldManager->getDefinedFields();
+
+                foreach ($customFields as $field) {
+                    $errors = $field->getHandler()->validateFormData(
+                        $postCustomFields ?: [],
+                        HandlerAbstract::CONTEXT_AGENT
+                    );
+
+                    foreach ($errors as $code) {
+                        $code = preg_replace('#^(.*?)\.#', '', $code);
+                        switch ($code) {
+                            case 'min_length':
+                                $code  = 'text_min';
+                                $count = $field->getOption('agent_min_length');
+                                $msg   = $trans->transChoice('user.error.form_'.$code, $count, ['count' => $count]);
+
+                                break;
+                            case 'max_length':
+                                $code  = 'text_max';
+                                $count = $field->getOption('agent_max_length');
+                                $msg   = $trans->transChoice('user.error.form_'.$code, $count, ['count' => $count]);
+
+                                break;
+                            case 'regex_fail':
+                                $code = 'text_regex';
+                                $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
+                                break;
+                            default:
+                                $msg = $trans->getPhraseText('user.error.form_'.$code);
+                        }
+
+                        $fieldErrors['field_'.$field->getId()][] = $msg;
+                    }
+                }
+
+                if (empty($fieldErrors)) {
+                    $fieldManager->saveFormToObject($postCustomFields, $article);
+                }
             }
 
-            $this->em->flush();
-            $this->em->commit();
+            if (empty($fieldErrors)) {
+                $this->em->flush();
+                $this->em->commit();
+            } else {
+                $this->em->rollback();
+            }
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
-        $field_manager = $this->container->getSystemService('article_fields_manager');
-        $custom_fields = $field_manager->getDisplayArrayForObject($article);
+        $customFields = $fieldManager->getDisplayArrayForObject($article);
 
-        return $this->render('AgentBundle:Kb:view-customfields-rendered-rows.html.twig', [
-            'article'       => $article,
-            'custom_fields' => $custom_fields,
-        ]);
+        $template = empty($fieldErrors)
+            ? 'AgentBundle:Kb:view-customfields-rendered-rows.html.twig'
+            : 'AgentBundle:Kb:view-customfields-edit-rows.html.twig';
+
+        $rendered = $this->container->get('twig')
+            ->render($template,
+                [
+                    'article'       => $article,
+                    'custom_fields' => $customFields,
+                    'errors'        => !empty($fieldErrors) ? $fieldErrors : [],
+                ]
+            );
+
+        return new JsonResponse(
+            ['rendered' => $rendered],
+            !empty($fieldErrors) ? Response::HTTP_UNPROCESSABLE_ENTITY : Response::HTTP_OK);
     }
 
     public function ajaxSaveCommentAction($article_id)
@@ -794,6 +886,8 @@ class KbController extends AbstractController
 
     /**
      * [AJAX] remove a pending article.
+     *
+     * @param mixed $pending_article_id
      */
     public function removePendingArticleAction($pending_article_id)
     {
@@ -866,6 +960,7 @@ class KbController extends AbstractController
                         continue 2;
                     }
                     $this->em->remove($p_article);
+
                     break;
             }
         }
@@ -891,6 +986,7 @@ class KbController extends AbstractController
                         continue 2;
                     }
                     $article->restartReviewDate();
+
                     break;
             }
         }

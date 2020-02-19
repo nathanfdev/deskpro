@@ -7,7 +7,14 @@
 				<th width="120">{{ f.title }}:</th>
 				<td>
 					<div class="custom-field field-input kb_field_{{f.id}}" data-item-id="{{f.id}}" ng-non-bindable>
-						{{ render_custom_field_form(f) }}
+						1{{ render_custom_field_form(f) }}
+						{% if errors["field_#{f.id}"]|length %}
+							<ul class="form-errors">
+								{% for error in errors["field_#{f.id}"] %}
+									<li>{{ error }}</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
 					</div>
 				</td>
 			{% else %}
@@ -19,11 +26,19 @@
 						{% if not article.hasCustomField(f.id) %}
 							{{ phrase('agent.general.none') }}
 						{% else %}
-							{{ render_custom_field(f) }}
+							2{{ render_custom_field(f) }}
+						{% endif %}
+						{% if errors["field_#{f.id}"]|length %}
+							<ul class="form-errors">
+								{% for error in errors["field_#{f.id}"] %}
+									<li>{{ error }}</li>
+								{% endfor %}
+							</ul>
 						{% endif %}
 					</div>
 				</td>
 			{% endif %}
+
 		</tr>
 	{% endfor %}
 		</tbody>
