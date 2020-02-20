@@ -213,7 +213,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 		this.ticketPage.wrapper.addClass(classname);
 
 		Orb.fnDelay(function() {
-			this.ticketPage.wrapper.removeClass(classname);
+		  if (this.ticketPage) {
+        this.ticketPage.wrapper.removeClass(classname);
+      }
 		}, 650, this);
 
 		var self = this;

@@ -1358,25 +1358,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       }
 
       if (result.error_messages) {
+        DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved. ' + result.error_messages.join('. '));
+        DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
 
-        var prop = self.changeManager.getPropertyManager('status');
-        self.changeManager.setInstantChange(prop, 'awaiting_agent');
+        return;
+      }
 
-        var list = self.getEl('field_errors').find('ul').empty();
-        result.error_messages.forEach(function(msg) {
-          var li = $('<li/>');
-          li.text(msg);
-          li.appendTo(list);
-        });
+      if (result.dupe_message) {
+        DeskPRO_Window.showAlert("You have already sent that message.");
+        DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
 
-        self.getEl('field_errors').show().addClass('on');
+        return;
+      }
 
-        self.getEl('field_edit_start').click();
-        self.getEl('field_edit_cancel').show();
-        self.getEl('field_edit_save').show();
-        self.getEl('field_edit_controls').removeClass('loading');
+      if (result.error) {
+        if (result.error == 'no_message') {
+          DeskPRO_Window.showAlert("Please enter a message");
+        } else {
+          DeskPRO_Window.showAlert(result.error);
+        }
 
-        DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
+        DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+
+        return;
       }
 
       if (!result.error_messages && DeskPRO_Window.$scope) {
@@ -1409,14 +1413,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         self.changeManager.updateDataholders();
       }
 
-      // hitDone
-      if (result.dupe_message) {
-        DeskPRO_Window.showAlert("You have already sent that message.");
-        self.loadMessagePage(0, true);
-        self.getEl('replybox_wrap').find('.ticket-sending-overlay').hide();
-        return;
-      }
-
       if (result.close_tab) {
         self.closeSelf();
         if (self.getMetaData('goNextOnReply') && nextTicketId) {
@@ -1439,11 +1435,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       }
 
       loadingEl.hide();
-
-      if (result.error && result.error == 'no_message') {
-        DeskPRO_Window.showAlert("Please enter a message");
-        return;
-      }
 
       // Reload the message row in results
       //addTicket
@@ -1494,12 +1485,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           return;
         }
 
-        loadingEl.hide();
+        if (result.error) {
+          if (result.error == 'no_message') {
+            DeskPRO_Window.showAlert("Please enter a message");
+          } else {
+            DeskPRO_Window.showAlert(result.error);
+          }
 
-        if (result.error && result.error == 'no_message') {
-          DeskPRO_Window.showAlert("Please enter a message");
           return;
         }
+
+        loadingEl.hide();
 
         self.doHandleTicketUpdate(result, true);
         if (!result.match_filter && DeskPRO_Window.sections.tickets_section && DeskPRO_Window.sections.tickets_section.listPage) {
