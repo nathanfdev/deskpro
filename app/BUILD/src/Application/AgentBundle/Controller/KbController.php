@@ -23,6 +23,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Publish\GlossaryHandler;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
 use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
@@ -684,8 +685,6 @@ class KbController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $trans = $this->container->getTranslator();
-
         $this->em->beginTransaction();
         $fieldErrors = [];
 
@@ -695,41 +694,7 @@ class KbController extends AbstractController
             $postCustomFields = $this->request->request->get('custom_fields', []);
 
             if (!empty($postCustomFields)) {
-                $customFields = $fieldManager->getDefinedFields();
-
-                foreach ($customFields as $field) {
-                    $errors = $field->getHandler()->validateFormData(
-                        $postCustomFields ?: [],
-                        HandlerAbstract::CONTEXT_AGENT
-                    );
-
-                    foreach ($errors as $code) {
-                        $code = preg_replace('#^(.*?)\.#', '', $code);
-                        switch ($code) {
-                            case 'min_length':
-                                $code  = 'text_min';
-                                $count = $field->getOption('agent_min_length');
-                                $msg   = $trans->transChoice('user.error.form_'.$code, $count, ['count' => $count]);
-
-                                break;
-                            case 'max_length':
-                                $code  = 'text_max';
-                                $count = $field->getOption('agent_max_length');
-                                $msg   = $trans->transChoice('user.error.form_'.$code, $count, ['count' => $count]);
-
-                                break;
-                            case 'regex_fail':
-                                $code = 'text_regex';
-                                $msg  = $trans->getPhraseText('user.error.form_'.$code);
-
-                                break;
-                            default:
-                                $msg = $trans->getPhraseText('user.error.form_'.$code);
-                        }
-
-                        $fieldErrors['field_'.$field->getId()][] = $msg;
-                    }
-                }
+                $this->validateCustomFields($fieldErrors, $postCustomFields);
 
                 if (empty($fieldErrors)) {
                     $fieldManager->saveFormToObject($postCustomFields, $article);
@@ -1180,15 +1145,23 @@ class KbController extends AbstractController
         $fieldManager = $this->container->getSystemService('article_fields_manager');
         $customfields = $fieldManager->getDisplayArrayForObject(new Article());
 
-        return $this->render('AgentBundle:Kb:newarticle.html.twig', [
-            'article_categories' => $articleCategories,
-            'state'              => $state,
-            'brands'             => $brands,
-            'selected_brand_id'  => $brandId,
-            'custom_fields'      => $customfields,
-        ]);
+        return $this->render('AgentBundle:Kb:newarticle.html.twig',
+            [
+                'article_categories' => $articleCategories,
+                'state'              => $state,
+                'brands'             => $brands,
+                'selected_brand_id'  => $brandId,
+                'custom_fields'      => $customfields,
+            ]);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
     public function newArticleSaveAction(Request $request)
     {
         $newArticle = new \Application\AgentBundle\Form\Model\NewArticle($this->person);
@@ -1196,17 +1169,26 @@ class KbController extends AbstractController
         $formType = new \Application\AgentBundle\Form\Type\NewArticle();
         $form     = $this->get('form.factory')->create($formType, $newArticle);
 
-        $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newarticle' AND person_id = ?", [$this->person->id]);
+        $this->db->executeUpdate(
+            "DELETE FROM people_prefs WHERE name = 'agent.ui.state.newarticle' AND person_id = ?",
+            [$this->person->id]
+        );
 
         if ($request->getMethod() == 'POST') {
             $form->handleRequest($request);
             $form->isValid();
 
-            $validator = new \Application\AgentBundle\Validator\NewArticleValidator();
-            if (!$validator->isValid($newArticle)) {
+            $validator        = new \Application\AgentBundle\Validator\NewArticleValidator();
+            $fieldErrors      = [];
+            $postCustomFields = $this->request->request->get('custom_fields', []);
+
+            $this->validateCustomFields($fieldErrors, $postCustomFields);
+
+            if (!$validator->isValid($newArticle) || !empty($fieldErrors)) {
                 return $this->createJsonResponse([
-                    'error'       => true,
-                    'error_codes' => $validator->getErrorGroups(),
+                    'error'                => true,
+                    'error_codes'          => $validator->getErrorGroups(),
+                    'custom_fields_errors' => $fieldErrors,
                 ]);
             }
 
@@ -1302,5 +1284,52 @@ class KbController extends AbstractController
         }
 
         return $articleCategories;
+    }
+
+    /**
+     * @param array $fieldErrors
+     * @param array $postCustomFields
+     */
+    private function validateCustomFields(&$fieldErrors, $postCustomFields)
+    {
+        /** @var FieldManager $fieldManager */
+        $fieldManager = $this->container->getSystemService('article_fields_manager');
+        /** @var Translate $trans */
+        $trans        = $this->container->getTranslator();
+        $customFields = $fieldManager->getDefinedFields();
+
+        foreach ($customFields as $field) {
+            $errors = $field->getHandler()->validateFormData(
+                $postCustomFields ?: [],
+                HandlerAbstract::CONTEXT_AGENT
+            );
+
+            foreach ($errors as $code) {
+                $code = preg_replace('#^(.*?)\.#', '', $code);
+                switch ($code) {
+                    case 'min_length':
+                        $code  = 'text_min';
+                        $count = $field->getOption('agent_min_length');
+                        $msg   = $trans->transChoice('user.error.form_'.$code, $count, ['count' => $count]);
+
+                        break;
+                    case 'max_length':
+                        $code  = 'text_max';
+                        $count = $field->getOption('agent_max_length');
+                        $msg   = $trans->transChoice('user.error.form_'.$code, $count, ['count' => $count]);
+
+                        break;
+                    case 'regex_fail':
+                        $code = 'text_regex';
+                        $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
+                        break;
+                    default:
+                        $msg = $trans->getPhraseText('user.error.form_'.$code);
+                }
+
+                $fieldErrors['field_'.$field->getId()][] = $msg;
+            }
+        }
     }
 }

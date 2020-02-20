@@ -172,7 +172,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
           propToggle('display');
         },
         error: function(error) {
-          console.log(error);
           fieldsForm.empty().html(error.responseJSON.rendered);
         }
       });
