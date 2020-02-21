@@ -36,9 +36,9 @@ class DynamicSearchResults {
 
     $.ajax(url, {
       success: (data) => {
-        this.is_next = $(data).find('.dpx-search-result-section').data('next') === '1';
+        this.is_next = parseInt($(data).find('.dpx-search-result-section').data('next'), 10) === 1;
         this.appendResults(data);
-        this.next_page++;
+        this.next_page = this.next_page + 1;
         this.toggleNextBtn();
       }
     });

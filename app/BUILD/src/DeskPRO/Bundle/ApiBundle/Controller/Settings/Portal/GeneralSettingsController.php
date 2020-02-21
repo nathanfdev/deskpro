@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Portal;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -139,6 +140,9 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
             \Cloud\LegacyApiBundle\Helper\CloudBrandHelper::flushBrandDomains();
         }
 
+        // force reload settings
+        $this->get('settings_resolver')->getBrandSettings($brand, true);
+
         return new View($this->wrap($this->getModel($brand)));
     }
 
@@ -184,6 +188,18 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
             ->updateSetting(PortalSettingsResolver::SHOW_RATINGS, $model->isShowRatings(), $brand)
             ->updateSetting(PortalSettingsResolver::SHOW_RATINGS_MIN_VOTES, $model->getShowRatingsMinVotes(), $brand)
             ->updateSetting(PortalSettingsResolver::PUBLISH_COMMENTS, $model->isPublishComments(), $brand)
+            ->updateSetting(PortalSettingsResolver::LIMIT_EMAIL_DOMAINS, $model->isLimitEmailDomains(), $brand)
+            ->updateSetting(PortalSettingsResolver::LIMIT_EMAIL_DOMAINS_PATTERNS, $model->getLimitEmailDomainsPatterns(), $brand)
         ;
+
+        $em = $this->getManager();
+
+        $hasDomainsLimit = $model->isLimitEmailDomains() && $model->getLimitEmailDomainsPatterns();
+
+        /** @var Usergroup $everyoneGroup */
+        $everyoneGroup = $em->getRepository(Usergroup::class)->findOneBy(['sys_name' => 'everyone']);
+        $everyoneGroup->setIsEnabled(!$hasDomainsLimit);
+
+        $em->flush();
     }
 }

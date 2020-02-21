@@ -65,7 +65,7 @@
                 <div class="form-group">
                     <div class="inner-group">
                         <label>
-                            <input type="checkbox" ng-model="settings.everyone_group_enabled" />
+                            <input type="checkbox" ng-model="settings.everyone_group_enabled" ng-disabled="settings.limit_email_domains" />
                             <h4>Enable the "Everyone" Group</h4>
                         </label>
 						<span class="help-block">

@@ -41,7 +41,7 @@ class PortalEditorContainer extends React.Component {
   componentWillMount() {
     const { dispatch } = this.props;
 
-    dispatch(actions.unselectTemplate());
+    dispatch(actions.cleanState());
 
     dispatch(actions.loadAssets());
     dispatch(actions.loadTemplates());
@@ -120,6 +120,9 @@ class PortalEditorContainer extends React.Component {
     );
   };
 
+  savePhraseTranslations = (phraseName, translations) =>
+    this.props.dispatch(actions.saveTranslations(phraseName, translations));
+
   changeTemplateCode = (value) => {
     this.props.dispatch(actions.updateTemplateCode(value));
   };
@@ -179,6 +182,7 @@ class PortalEditorContainer extends React.Component {
         setTemplateValue={this.setTemplateValue}
         setCurrentWidget={this.setCurrentWidget}
         getPhraseTranslations={this.getPhraseTranslations}
+        savePhraseTranslations={this.savePhraseTranslations}
         insertAsset={this.insertInlineImage}
         insertAssetAsLink={this.insertAssetAsLink}
         insertPhrase={this.insertPhrase}
@@ -197,26 +201,27 @@ class PortalEditorContainer extends React.Component {
 
 class PortalEditor extends React.Component {
   static propTypes = {
-    name:                  PropTypes.string,
-    brandId:               PropTypes.string,
-    portalEditor:          PropTypes.object,
-    loadTagInfo:           PropTypes.func,
-    loadTemplate:          PropTypes.func,
-    setTemplateValue:      PropTypes.func,
-    changeTemplateCode:    PropTypes.func,
-    setCurrentWidget:      PropTypes.func,
-    getPhraseTranslations: PropTypes.func,
-    deleteTemplate:        PropTypes.func,
-    saveTemplate:          PropTypes.func,
-    resetTemplate:         PropTypes.func,
-    insertAsset:           PropTypes.func,
-    insertAssetAsLink:     PropTypes.func,
-    insertPhrase:          PropTypes.func,
-    close:                 PropTypes.func,
-    setEditor:             PropTypes.func,
-    saveSubmit:            PropTypes.bool,
-    undoSubmit:            PropTypes.bool,
-    resetSubmit:           PropTypes.bool,
+    name:                   PropTypes.string,
+    brandId:                PropTypes.string,
+    portalEditor:           PropTypes.object,
+    loadTagInfo:            PropTypes.func,
+    loadTemplate:           PropTypes.func,
+    setTemplateValue:       PropTypes.func,
+    changeTemplateCode:     PropTypes.func,
+    setCurrentWidget:       PropTypes.func,
+    getPhraseTranslations:  PropTypes.func,
+    savePhraseTranslations: PropTypes.func,
+    deleteTemplate:         PropTypes.func,
+    saveTemplate:           PropTypes.func,
+    resetTemplate:          PropTypes.func,
+    insertAsset:            PropTypes.func,
+    insertAssetAsLink:      PropTypes.func,
+    insertPhrase:           PropTypes.func,
+    close:                  PropTypes.func,
+    setEditor:              PropTypes.func,
+    saveSubmit:             PropTypes.bool,
+    undoSubmit:             PropTypes.bool,
+    resetSubmit:            PropTypes.bool,
   };
 
   constructor(props) {
@@ -366,6 +371,7 @@ class PortalEditor extends React.Component {
             ref={(c) => { this.editor = c; }}
             phrases={this.props.portalEditor.get('phrases')}
             getPhraseTranslations={this.props.getPhraseTranslations}
+            savePhraseTranslations={this.props.savePhraseTranslations}
             loadTagInfo={this.props.loadTagInfo}
             loadTemplate={this.props.loadTemplate}
             setCurrentWidget={this.props.setCurrentWidget}

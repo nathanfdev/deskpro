@@ -3,6 +3,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\ArticleResults;
+use Application\AgentBundle\Validator\NewArticleValidator;
 use Application\DeskPRO\App;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
@@ -25,6 +26,7 @@ use Application\DeskPRO\Publish\GlossaryHandler;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
 use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
@@ -573,11 +575,16 @@ class KbController extends AbstractController
                 break;
 
             case 'set-review-date':
+                $validator = new NewArticleValidator();
 
                 $count = $this->in->getInt('interval_count');
                 $unit  = $this->in->getString('interval_unit');
 
-                if (!$count || !in_array($unit, ['days', 'months', 'years'])) {
+                if (!$count
+                    || !in_array($unit, ['days', 'months', 'years'])
+                    || !$validator->isMinReviewDateValid($count, $unit)
+                    || !$validator->isMaxReviewDateValid($count, $unit)
+                ) {
                     return $this->createJsonResponse([
                         'success' => false,
                     ]);
@@ -826,6 +833,10 @@ class KbController extends AbstractController
      */
     public function newPendingArticleAction()
     {
+        if (!$this->person->hasPerm('agent_publish.create')) {
+            throw $this->createNotFoundException();
+        }
+
         $pending_article         = new ArticlePendingCreate();
         $pending_article->person = $this->person;
 
@@ -1124,6 +1135,10 @@ class KbController extends AbstractController
 
     public function newArticleAction()
     {
+        if (!$this->person->hasPerm('agent_publish.create')) {
+            throw $this->createNotFoundException();
+        }
+
         $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
 
         $articleCategories = $this->getFilteredCategory($brandId);
@@ -1145,14 +1160,30 @@ class KbController extends AbstractController
         $fieldManager = $this->container->getSystemService('article_fields_manager');
         $customfields = $fieldManager->getDisplayArrayForObject(new Article());
 
-        return $this->render('AgentBundle:Kb:newarticle.html.twig',
-            [
-                'article_categories' => $articleCategories,
-                'state'              => $state,
-                'brands'             => $brands,
-                'selected_brand_id'  => $brandId,
-                'custom_fields'      => $customfields,
-            ]);
+        /** @var KbSettings $kbSettings */
+        $kbSettings = $this->container->get('portal_settings_resolver')->getKbSettings();
+
+        $defaultRequireDate     = null;
+        $defaultRequireDateUnit = null;
+
+        if ($kbSettings->isDefaultReviewDate() && $kbSettings->getDefaultReviewDateInterval()) {
+            $defaultRequireDate     = $kbSettings->getDefaultReviewDateInterval();
+            $defaultRequireDateUnit = $kbSettings->getDefaultReviewDateUnit();
+        } elseif ($kbSettings->isMinReviewDate() && $kbSettings->getMinReviewDateInterval()) {
+            $defaultRequireDate     = $kbSettings->getMinReviewDateInterval();
+            $defaultRequireDateUnit = $kbSettings->getMinReviewDateUnit();
+        }
+
+        return $this->render('AgentBundle:Kb:newarticle.html.twig', [
+            'article_categories'        => $articleCategories,
+            'state'                     => $state,
+            'brands'                    => $brands,
+            'selected_brand_id'         => $brandId,
+            'custom_fields'             => $customfields,
+            'require_review_date'       => $kbSettings->isRequireReviewDate(),
+            'default_require_date'      => $defaultRequireDate,
+            'default_require_date_unit' => $defaultRequireDateUnit,
+        ]);
     }
 
     /**
@@ -1164,6 +1195,10 @@ class KbController extends AbstractController
      */
     public function newArticleSaveAction(Request $request)
     {
+        if (!$this->person->hasPerm('agent_publish.create')) {
+            throw $this->createNotFoundException();
+        }
+
         $newArticle = new \Application\AgentBundle\Form\Model\NewArticle($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewArticle();
@@ -1187,7 +1222,7 @@ class KbController extends AbstractController
             if (!$validator->isValid($newArticle) || !empty($fieldErrors)) {
                 return $this->createJsonResponse([
                     'error'                => true,
-                    'error_codes'          => $validator->getErrorGroups(),
+                    'error_codes'          => $validator->getPlainErrors(),
                     'custom_fields_errors' => $fieldErrors,
                 ]);
             }

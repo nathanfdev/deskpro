@@ -203,6 +203,12 @@ class CustomDataHelper
             // remember current choice to delete
             $newChoiceIds[] = $choiceDef->getId();
         }
+
+        foreach ($allCustomData as $customData) {
+            if ($customData->root_field === $customDef && !in_array($customData->getFieldId(), $newChoiceIds)) {
+                $allCustomData->removeElement($customData);
+            }
+        }
     }
 
     /**

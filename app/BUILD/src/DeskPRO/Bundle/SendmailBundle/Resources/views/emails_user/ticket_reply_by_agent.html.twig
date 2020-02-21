@@ -8,8 +8,7 @@
 {% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
-
-	{% if message.person.is_agent %}
+	{% if reply.person.is_agent %}
 		{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: reply, ticketdisplay: context.ticketdisplay } %}
 	{% else %}
 		{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: reply, ticketdisplay: context.ticketdisplay } %}

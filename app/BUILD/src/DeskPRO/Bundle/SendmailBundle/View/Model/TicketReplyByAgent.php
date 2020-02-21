@@ -2,9 +2,9 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\TicketFeedback;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketFeedback;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketMessage;
 use JMS\Serializer\Annotation as JMS;
 

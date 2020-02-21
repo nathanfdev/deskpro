@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category HttpFoundation
- */
+
 
 namespace Application\DeskPRO\HttpFoundation;
 
@@ -149,27 +145,29 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                             $sid,
                         ]
                     );
-                    $agentSessData = unserialize(str_replace('_sf2_attributes|', '', base64_decode($agent_session['sess_data'])));
-                    $personId      = array_key_exists('auth_person_id', $agentSessData)
-                        ? $agentSessData['auth_person_id']
-                        : null;
-                    $this->set(
-                        'auth_usersource_id',
-                        array_key_exists('auth_usersource_id', $agentSessData)
-                            ? $agentSessData['auth_usersource_id']
-                            : null
-                    );
-                    $this->set(
-                        'auth_usersource_type',
-                        array_key_exists('auth_usersource_type', $agentSessData)
-                            ? $agentSessData['auth_usersource_type']
-                            : null
-                    );
+                    if ($agent_session) {
+                        $agentSessData = @unserialize(str_replace('_sf2_attributes|', '', base64_decode($agent_session['sess_data']))) ?: [];
+                        $personId      = array_key_exists('auth_person_id', $agentSessData)
+                            ? $agentSessData['auth_person_id']
+                            : null;
+                        $this->set(
+                            'auth_usersource_id',
+                            array_key_exists('auth_usersource_id', $agentSessData)
+                                ? $agentSessData['auth_usersource_id']
+                                : null
+                        );
+                        $this->set(
+                            'auth_usersource_type',
+                            array_key_exists('auth_usersource_type', $agentSessData)
+                                ? $agentSessData['auth_usersource_type']
+                                : null
+                        );
 
-                    if ($personId) {
-                        $person = App::getEntityRepository('DeskPRO:Person')->find($personId);
-                        if ($person && $person->is_agent) {
-                            $this->_setCurrentPerson($person);
+                        if ($personId) {
+                            $person = App::getEntityRepository('DeskPRO:Person')->find($personId);
+                            if ($person && $person->is_agent) {
+                                $this->_setCurrentPerson($person);
+                            }
                         }
                     }
                 }
@@ -195,6 +193,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                     $person          = $login_processor->getPerson();
 
                     $this->_setCurrentPerson($person);
+
                     break;
                 }
             }
@@ -379,6 +378,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 foreach ($languages as $language) {
                     if ($language->locale === $locale) {
                         $this->language = $language;
+
                         break;
                     }
                 }
@@ -389,6 +389,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                     foreach ($languages as $language) {
                         if (substr($language->locale, 0, 2) == $accept_language) {
                             $this->language = $language;
+
                             break 2;
                         }
                     }

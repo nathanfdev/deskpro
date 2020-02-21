@@ -32,7 +32,7 @@
 				<input
 					dp-slider-switch
 					ng-model="EditCtrl.form.is_enabled"
-					is-locked="'registered' === EditCtrl.group.sys_name"
+					is-locked="'registered' === EditCtrl.group.sys_name || settings.limit_email_domains"
 					locked-tip="You cannot disable the Registered group."
 				/>
 			</div>

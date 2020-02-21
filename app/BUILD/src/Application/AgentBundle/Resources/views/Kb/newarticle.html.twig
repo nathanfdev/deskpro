@@ -57,7 +57,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'allow_parent_sel': true,
 				'selected': state.newarticle.category_id|default(0)
 			} %}
-			<div class="error-message category_id">{{ phrase('agent.publish.please_select_category') }}</div>
+			<div class="error-message category_id-invalid">{{ phrase('agent.publish.please_select_category') }}</div>
 		</div>
 		<div class="col">
 			<h4>{{ phrase('agent.general.status') }}</h4>
@@ -80,7 +80,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<input type="text" name="newarticle[title]" id="{{ baseId }}_title" value="{{ state.newarticle.title }}"
 			   autocomplete="{{ "now" | date("U") }}"
 			   style="width: 80%;" />
-		<div class="error-message title">{{ phrase('agent.publish.please_enter_title') }}</div>
+		<div class="error-message title-missing">{{ phrase('agent.publish.please_enter_title') }}</div>
 	</div>
 </div>
 
@@ -98,7 +98,7 @@ pageMeta.baseId = '{{ baseId }}';
                     {{ state.newarticle.content }}
                 </textarea>
 			{% endif %}
-			<div class="error-message content">{{ phrase('agent.publish.please_enter_content') }}</div>
+			<div class="error-message content-missing">{{ phrase('agent.publish.please_enter_content') }}</div>
 		</div>
 		{% if app.languages.isMultiLang() %}
 			<div style="float: right; padding-right: 18px; padding-top: 4px;">
@@ -114,6 +114,31 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
+{% if require_review_date %}
+<div class="section article-section" id="{{baseId}}_review_date_section">
+    <div class="content">
+        <h4>{{ phrase('agent.publish.review_date') }}</h4>
+        <div class="review_date_controls">
+            {{ phrase('agent.publish.review_in') }}
+            <input
+                    type="number"
+                    name="newarticle[review_interval_count]"
+                    class="review-date-control-input"
+                    {% if default_require_date %}value="{{ default_require_date }}"{% endif %}
+                    style="width: 50px"
+            />
+            <select class="review-date-control-select" name="newarticle[review_interval_unit]">
+                <option value="days" {% if default_require_date_unit == 'days' %}selected{% endif %}>{{ phrase('agent.general.days')|capitalize }}</option>
+                <option value="months" {% if default_require_date_unit == 'months' %}selected{% endif %}>{{ phrase('agent.general.months')|capitalize }}</option>
+                <option value="years" {% if default_require_date_unit == 'years' %}selected{% endif %}>{{ phrase('agent.general.years')|capitalize }}</option>
+            </select>
+        </div>
+        <div class="error-message review_date-required">{{ phrase('agent.publish.please_enter_review_date') }}</div>
+        <div class="error-message review_date-min">{{ phrase('agent.publish.review_date_interval_too_small') }}</div>
+        <div class="error-message review_date-max">{{ phrase('agent.publish.review_date_interval_too_big') }}</div>
+    </div>
+</div>
+{% endif %}
 
 <div class="section other-section" id="{{baseId}}_other_section">
 	<div class="content">

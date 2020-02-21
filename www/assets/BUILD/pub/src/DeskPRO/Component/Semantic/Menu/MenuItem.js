@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 class MenuItem extends React.PureComponent {
   static propTypes = {
-    label:       PropTypes.string,
+    label:       PropTypes.node,
     icon:        PropTypes.string,
     subContent:  PropTypes.object,
     onClick:     PropTypes.func,

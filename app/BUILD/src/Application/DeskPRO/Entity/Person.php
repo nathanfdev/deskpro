@@ -2234,7 +2234,7 @@ class Person extends DomainObject implements
      */
     public function renderCustomField($field_id, $context = 'html')
     {
-        $f_def = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($field_id);
+        $f_def = App::getEntityRepository(CustomDefPerson::class)->find($field_id);
 
         $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, [$f_def]);
 

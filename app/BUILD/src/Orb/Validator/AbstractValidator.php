@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Orb.
- */
+
 
 namespace Orb\Validator;
 
@@ -47,6 +45,8 @@ abstract class AbstractValidator implements ValidatorInterface
     /**
      * Check to see if a value is valid or not.
      *
+     * @param mixed $value
+     *
      * @return bool
      */
     public function isValid($value)
@@ -73,12 +73,16 @@ abstract class AbstractValidator implements ValidatorInterface
     /**
      * Check $value to see if its valid.
      *
+     * @param mixed $value
+     *
      * @return bool
      */
     abstract protected function checkIsValid($value);
 
     /**
      * Get an array of error codes.
+     *
+     * @param mixed $keyed
      *
      * @return array
      */
@@ -93,6 +97,16 @@ abstract class AbstractValidator implements ValidatorInterface
         }
 
         return $this->errors;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getPlainErrors()
+    {
+        return array_map(function ($error) {
+            return str_replace('.', '-', $error);
+        }, $this->errors);
     }
 
     /**
@@ -121,6 +135,8 @@ abstract class AbstractValidator implements ValidatorInterface
      * For example:
      * - Error code: profile.name.short
      * - Returns classes: profile, profile.name
+     *
+     * @param mixed $keyed
      *
      * @return
      */

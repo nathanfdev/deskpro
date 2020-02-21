@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity;
 
-use Application\DeskPRO\Entity\ReportDashboardWidget;
+use Application\DeskPRO\Entity\ReportDashboardWidget as ReportDashboardWidgetEntity;
 use Application\DeskPRO\Entity\ReportWidget as ReportWidgetEntity;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
@@ -96,6 +96,7 @@ class ReportWidgetHandler extends AbstractEntityHandler
         }
 
         $extendedQuery = false;
+
         try {
             $statement  = $this->compiler->compile($entity->getQuery());
             $queryParts = $statement->getDpqlPartsForInput();
@@ -194,7 +195,7 @@ class ReportWidgetHandler extends AbstractEntityHandler
     public function getReports(ReportWidgetEntity $entity)
     {
         $reports = [];
-        $widgets = $this->em->getRepository(ReportDashboardWidget::class)->findBy(['widget' => $entity]);
+        $widgets = $this->em->getRepository(ReportDashboardWidgetEntity::class)->findBy(['widget' => $entity]);
         foreach ($widgets as $widget) {
             $reports[$widget->getId()] = $widget->getReport();
         }

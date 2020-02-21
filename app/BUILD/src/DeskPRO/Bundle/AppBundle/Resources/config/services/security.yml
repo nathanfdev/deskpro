@@ -82,6 +82,10 @@ services:
     factory: [Application\DeskPRO\DependencyInjection\SystemServices\AuthSettingsService, create]
     arguments: ["@service_container"]
 
+  dp_limit_email_domains_checker:
+    class: DeskPRO\Bundle\AppBundle\Security\LimitEmailDomainsChecker
+    arguments: ["@portal_settings_resolver"]
+
   ###
   ### API security
   ###
@@ -257,6 +261,11 @@ services:
 
   security.voter.permission_groups.ticket_follow_up:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketFollowUpVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.ticket_charges:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketChargesVoter
     tags:
       - { name: security.voter.permission_groups }
 
