@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutCollection;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use Application\DeskPRO\TicketLayout\LayoutUtil;
 use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
@@ -115,24 +116,19 @@ class TicketLayoutFactory extends AbstractDataService
         foreach ($all_layouts as $l) {
             foreach ($l->getUserLayout()->all() as $f) {
                 $layout->getUserLayout()->add($f);
-                // Check that all fields from conditions/criteria are present in the layout
-                // we need their values
-                foreach ($this->getReliantFieldsFromCritera($f) as $reliantField) {
-                    if (!$layout->getUserLayout()->has($reliantField)) {
-                        $layout->getUserLayout()->add($reliantField);
-                    }
-                }
             }
             foreach ($l->getAgentLayout()->all() as $f) {
                 $layout->getAgentLayout()->add($f);
-                // Check that all fields from conditions/criteria are present in the layout
-                // we need their values
-                foreach ($this->getReliantFieldsFromCritera($f) as $reliantField) {
-                    if (!$layout->getAgentLayout()->has($reliantField)) {
-                        $layout->getAgentLayout()->add($reliantField);
-                    }
-                }
             }
+        }
+
+        // Check that all fields from conditions/criteria are present in the layout
+        // we need their values in the full form
+        foreach (LayoutUtil::getFieldsFromCriteriaNotInLayout($layout->getUserLayout()) as $criteriaField) {
+            $layout->getUserLayout()->add($criteriaField);
+        }
+        foreach (LayoutUtil::getFieldsFromCriteriaNotInLayout($layout->getAgentLayout()) as $criteriaField) {
+            $layout->getAgentLayout()->add($criteriaField);
         }
 
         $this->verifyRequiredFields($layout->getUserLayout(), $forApi);
@@ -146,32 +142,6 @@ class TicketLayoutFactory extends AbstractDataService
         $this->sortTicketLayoutFormFields($layout);
 
         return $layout;
-    }
-
-    /**
-     * LayoutField might depends from other fields in criteria
-     * Currently  returns only layout fields for User custom fields from criteria
-     *
-     * @param LayoutField $field
-     * @return LayoutField[]
-     */
-    private function getReliantFieldsFromCritera(LayoutField $field) {
-        if (!$field->hasCriteria()) {
-            return [];
-        }
-
-        $reliantFields = [];
-        foreach ($field->getCriteria()->getTerms() as $term) {
-            if (
-                strpos($term->getTermType(), "CheckUserField") === 0
-                && $term->getTermOptions()
-                && $term->getTermOptions()->has("field_id")
-            ) {
-                $reliantFields[] = new LayoutField(FormFields::USER_FIELD, $term->getTermOptions()->get("field_id"));
-            }
-        }
-
-        return $reliantFields;
     }
 
     /**

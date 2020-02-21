@@ -30,47 +30,83 @@ class TicketValueReader {
   }
 
   getDepartmentId() {
-    return TicketValueReader.parseIntSelect($('#ticket_department', this.$formEl));
+    const $field = $('#ticket_department', this.$formEl);
+
+    if ($field.length) {
+      return TicketValueReader.parseIntSelect($field);
+    }
+
+    return TicketValueReader.parseIntSelect($('#ticket_department', this.$fullFormEl));
   }
 
   getCategoryId() {
-    if (this.isFieldHidden('category')) {
-      return null;
+    const $field = $('#ticket_category', this.$formEl);
+
+    if ($field.length) {
+      if (this.isFieldHidden('category')) {
+        return null;
+      }
+
+      return TicketValueReader.parseIntSelect($field);
     }
 
-    return TicketValueReader.parseIntSelect($('#ticket_category', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_category', this.$fullFormEl));
   }
 
   getPriorityId() {
-    if (this.isFieldHidden('priority')) {
-      return null;
+    const $field = $('#ticket_priority', this.$formEl);
+
+    if ($field.length) {
+      if (this.isFieldHidden('priority')) {
+        return null;
+      }
+
+      return TicketValueReader.parseIntSelect($field);
     }
 
-    return TicketValueReader.parseIntSelect($('#ticket_priority', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_priority', this.$fullFormEl));
   }
 
   getProductId() {
-    if (this.isFieldHidden('product')) {
-      return null;
+    const $field = $('#ticket_product', this.$formEl);
+
+    if ($field.length) {
+      if (this.isFieldHidden('product')) {
+        return null;
+      }
+
+      return TicketValueReader.parseIntSelect($field);
     }
 
-    return TicketValueReader.parseIntSelect($('#ticket_product', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_product', this.$fullFormEl));
   }
 
   getOrganizationId() {
-    if (this.isFieldHidden('user_organization')) {
-      return null;
+    const $field = $('#ticket_user_organization', this.$formEl);
+
+    if ($field.length) {
+      if (this.isFieldHidden('user_organization')) {
+        return null;
+      }
+
+      return TicketValueReader.parseIntSelect($field);
     }
 
-    return TicketValueReader.parseIntSelect($('#ticket_user_organization', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_user_organization', this.$fullFormEl));
   }
 
   getWorkflowId() {
-    if (this.isFieldHidden('workflow')) {
-      return null;
+    const $field = $('#ticket_workflow', this.$formEl);
+
+    if ($field.length) {
+      if (this.isFieldHidden('workflow')) {
+        return null;
+      }
+
+      return TicketValueReader.parseIntSelect($field);
     }
 
-    return TicketValueReader.parseIntSelect($('#ticket_workflow', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_workflow', this.$fullFormEl));
   }
 
   getFieldValue(prefix, fieldId, useFullForm = false) {
@@ -126,7 +162,11 @@ class TicketValueReader {
   }
 
   getTicketFieldValue(fieldId) {
-    return this.getFieldValue('ticket', fieldId);
+    let res = this.getFieldValue('ticket', fieldId, false);
+    if (res === null) {
+      res = this.getFieldValue('ticket', fieldId, true);
+    }
+    return res;
   }
 
   getUserFieldValue(fieldId) {
@@ -138,7 +178,11 @@ class TicketValueReader {
   }
 
   getOrgFieldValue(fieldId) {
-    return this.getFieldValue('org', fieldId);
+    let res = this.getFieldValue('org', fieldId, false);
+    if (res === null) {
+      res = this.getFieldValue('org', fieldId, true);
+    }
+    return res;
   }
 }
 
