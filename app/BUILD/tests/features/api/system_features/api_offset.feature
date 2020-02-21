@@ -1,4 +1,3 @@
-@new
 Feature: CRUD offset
 
   Background:

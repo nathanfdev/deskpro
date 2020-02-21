@@ -24,16 +24,13 @@ class TopicsVoter extends AbstractUserPublishVoter
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        if (!$user->hasPerm('guides.use')) {
+        if (!$user->hasPerm('agent_publish.use')) {
             return false;
         }
 
         /** @var Topic $topic */
         $topic = $context->getParent();
         if ($topic) {
-            if (!$this->getUserPublishChecker($user)->canViewTopic($topic)) {
-                return false;
-            }
             if (!$this->checkModify($attribute, $user, $topic)) {
                 return false;
             }

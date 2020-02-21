@@ -24,16 +24,13 @@ class DownloadsVoter extends AbstractUserPublishVoter
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        if (!$user->hasPerm('downloads.use')) {
+        if (!$user->hasPerm('agent_publish.use')) {
             return false;
         }
 
         /** @var Download $download */
         $download = $context->getParent();
         if ($download) {
-            if (!$this->getUserPublishChecker($user)->canViewDownload($download)) {
-                return false;
-            }
             if (!$this->checkModify($attribute, $user, $download)) {
                 return false;
             }

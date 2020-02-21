@@ -24,16 +24,13 @@ class ArticlesVoter extends AbstractUserPublishVoter
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        if (!$user->hasPerm('articles.use')) {
+        if (!$user->hasPerm('agent_publish.use')) {
             return false;
         }
 
         /** @var Article $article */
         $article = $context->getParent();
         if ($article) {
-            if (!$this->getUserPublishChecker($user)->canViewArticle($article)) {
-                return false;
-            }
             if (!$this->checkModify($attribute, $user, $article)) {
                 return false;
             }
