@@ -109,7 +109,11 @@ class ServiceController extends AbstractMessengerController
             foreach ($layout->all() as $f) {
                 $ar              = $f->exportToArray();
                 $ar['field_id']  = $f->getId();
-                $ar['is_hidden'] = $ticketsSettings->getDepartmentOption() === MessengerTickets::TICKET_DEPARTMENT_OPTION_HIDDEN;
+                if ($f->getFieldType() === 'department') {
+                    $ar['is_hidden'] = $ticketsSettings->getDepartmentOption() === MessengerTickets::TICKET_DEPARTMENT_OPTION_HIDDEN;
+                } elseif ($f->getId() === 'subject') {
+                    $ar['is_hidden'] = $ticketsSettings->getSubject() !== '';
+                }
                 if ($f->getFieldType() === 'ticket_field') {
                     $ar['data'] = $this->get('serializer')->toArray($customTicketFields[$f->getFieldId()], new SideloadSerializationContext());
                 }

@@ -358,11 +358,11 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.88",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.88.tgz",
-      "integrity": "sha512-flXPqc9DbwrKYWY7Ud1/kjYE3keKhP2k3cyHt1bo7x3KG0RjEpdZ4sn8R/7TcvTdNzUjSGf8lPm4pGYc1P25Rg==",
+      "version": "0.1.96",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.96.tgz",
+      "integrity": "sha512-3sTurtnKK8xA66/KE8HluCqolEY3wDQxmCUAN3osASC6pOaWyEILV1tKP25xgX7og495STHr88Kpp7PRfmBo5Q==",
       "requires": {
-        "@deskpro/portal-components": "0.3.57",
+        "@deskpro/portal-components": "0.3.66",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
         "axios": "^0.19.0-beta.1",
         "body-scroll-lock": "^2.6.4",
@@ -398,9 +398,9 @@
           "integrity": "sha512-XqPLn1hXCUCCFZbNRpxp8CqGBKrT3obMHvtTWAITDUfSurJKisF9HxtzJ23Lzc/Mq9PqTOfpHaCqAjWKJuHtUA=="
         },
         "@deskpro/portal-components": {
-          "version": "0.3.57",
-          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.57.tgz",
-          "integrity": "sha512-HkG6HFeJKENky5vAbMGf2Jl88QCwO1fA2eM952fDOwRSoCoLL6wroZoPgWUynZ9NDE43C96StyNAby6rxIYoyA==",
+          "version": "0.3.66",
+          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.66.tgz",
+          "integrity": "sha512-aG8EMFuNfrVqR8MTZcockV4um8yM41G6m+qoumy2yFef7mNNCqVEITfjlivBCiKgDuMaHWAsDF7hPowVEyxm6Q==",
           "requires": {
             "@deskpro/js-utils": "1.0.7",
             "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -598,16 +598,16 @@
           "integrity": "sha1-x9KYTz1IwhcxXMMtdwiIt3lJHoE="
         },
         "tweetnacl": {
-          "version": "1.0.2",
-          "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-1.0.2.tgz",
-          "integrity": "sha512-+8aPRjmXgf1VqvyxSlBUzKzeYqVS9Ai8vZ28g+mL7dNQl1jlUTCMDZnvNQdAS1xTywMkIXwJsfipsR/6s2+syw=="
+          "version": "1.0.3",
+          "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-1.0.3.tgz",
+          "integrity": "sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw=="
         }
       }
     },
     "@deskpro/messenger-loader": {
-      "version": "0.1.89",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.89.tgz",
-      "integrity": "sha512-ZNtsTN+T8GXTYs7xVxhbqX545H6kHiFlQ+vz5bgDoIYROrFITEcdHRTyaTHct6dVP+AJ1i2WmaJ3qxzuXzO53A==",
+      "version": "0.1.95",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.95.tgz",
+      "integrity": "sha512-yHfo4RTtMf+YpweImXToxBYNyot0/k4f2fPqbuqaXTCg1Z8VSOhx1EOCqznLKtqo/7Z/QFJP9YfWIrkACqSbag==",
       "requires": {
         "whatwg-fetch": "^3.0.0"
       }

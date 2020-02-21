@@ -64,7 +64,6 @@ class TicketWithLayoutsType extends AbstractType
                     'messages[0].attachments' => FormFields::ATTACHMENTS,
                     'messages[0].message'     => FormFields::MESSAGE.'.message',
                 ],
-                'attachAuth'    => false,
             ])
             ->setRequired([
                 'person',
@@ -87,7 +86,6 @@ class TicketWithLayoutsType extends AbstractType
                 TicketWithLayoutsContext::VIEW_USER,
                 TicketWithLayoutsContext::VIEW_AGENT,
             ])
-            ->setAllowedTypes('attachAuth', 'boolean')
             ->setAllowedTypes('person', Person::class)
             ->setAllowedTypes('department_id', ['null', 'integer'])
             ->setAllowedTypes('field_resolver', AbstractFieldResolver::class)
