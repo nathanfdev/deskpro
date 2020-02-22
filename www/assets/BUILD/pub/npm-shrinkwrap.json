@@ -358,11 +358,11 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.96",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.96.tgz",
-      "integrity": "sha512-3sTurtnKK8xA66/KE8HluCqolEY3wDQxmCUAN3osASC6pOaWyEILV1tKP25xgX7og495STHr88Kpp7PRfmBo5Q==",
+      "version": "0.1.98",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.98.tgz",
+      "integrity": "sha512-3eBBca3nm4y429+gnhlCkSB7W9PRlgoJI4BTmSND8o/8g+daA0ThGNlCKbP3iV/Ir/4/4NcFu6m1yk0Xhe8d+g==",
       "requires": {
-        "@deskpro/portal-components": "0.3.66",
+        "@deskpro/portal-components": "0.3.67",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
         "axios": "^0.19.0-beta.1",
         "body-scroll-lock": "^2.6.4",
@@ -380,7 +380,7 @@
         "react-inlinesvg": "^1.2.0",
         "react-intl": "^2.7.2",
         "react-redux": "^5.0.7",
-        "react-resize-detector": "^3.2.1",
+        "react-resize-detector": "3.2.1",
         "react-router-dom": "^4.3.1",
         "react-scrollbar": "0.5.6",
         "redux": "^4.0.0",
@@ -398,9 +398,9 @@
           "integrity": "sha512-XqPLn1hXCUCCFZbNRpxp8CqGBKrT3obMHvtTWAITDUfSurJKisF9HxtzJ23Lzc/Mq9PqTOfpHaCqAjWKJuHtUA=="
         },
         "@deskpro/portal-components": {
-          "version": "0.3.66",
-          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.66.tgz",
-          "integrity": "sha512-aG8EMFuNfrVqR8MTZcockV4um8yM41G6m+qoumy2yFef7mNNCqVEITfjlivBCiKgDuMaHWAsDF7hPowVEyxm6Q==",
+          "version": "0.3.67",
+          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.67.tgz",
+          "integrity": "sha512-sNbPpWdT3Ixsaky2+tbNh6HVLRgU6pqrAbQlh+N4KeDZaVY5Vn4GOrdafXSHjDMpFgMZ2WghL41qgwqNDnnyEA==",
           "requires": {
             "@deskpro/js-utils": "1.0.7",
             "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -35878,14 +35878,14 @@
       }
     },
     "react-resize-detector": {
-      "version": "3.4.0",
-      "resolved": "https://registry.npmjs.org/react-resize-detector/-/react-resize-detector-3.4.0.tgz",
-      "integrity": "sha512-T96I8Iqa1hGWyooeFA2Sl6FdPoMhXWINfEKg2/EJLxhP37+/94VNuyuyz9CRqpmApD83IWRR+lbB3r0ADMoKJg==",
+      "version": "3.2.1",
+      "resolved": "https://registry.npmjs.org/react-resize-detector/-/react-resize-detector-3.2.1.tgz",
+      "integrity": "sha512-w3DSXcsv73ZxGoLb2tD8VZNcZXoyCOVKDt137Em7xuGo+UQzCzKdWYOqNBI3I6RV0wB5g8FnwUyOoa0M6B7dqQ==",
       "requires": {
         "lodash": "^4.17.11",
         "lodash-es": "^4.17.11",
         "prop-types": "^15.6.2",
-        "resize-observer-polyfill": "^1.5.1"
+        "resize-observer-polyfill": "^1.5.0"
       },
       "dependencies": {
         "lodash": {
