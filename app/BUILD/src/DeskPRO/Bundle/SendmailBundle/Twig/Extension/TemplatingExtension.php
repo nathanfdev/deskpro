@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\SendmailBundle\Twig\Extension;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Assetic\AsseticManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
@@ -281,6 +282,16 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     public function getUrl($name, $parameters = [])
     {
         try {
+            if (array_key_exists('brand_id', $parameters)) {
+                $brand = $this->container->getEm()->getRepository(Brand::class)->find($parameters['brand_id']);
+
+                if ($brand) {
+                    $parameters['brand'] = $brand;
+                }
+
+                unset($parameters['brand_id']);
+            }
+
             return $this->container->getRouter()->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
         } catch (\Exception $e) {
             if ($this->container->isDebug()) {
