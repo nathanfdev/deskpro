@@ -76,7 +76,8 @@ class PersonEditProfileType extends AbstractType
                 'label' => $this->phrase('portal.forms.label_name'),
             ])
             ->add('timezone', TimezoneType::class, [
-                'label' => $this->phrase('portal.forms.label_timezone'),
+                'required' => false,
+                'label'    => $this->phrase('portal.forms.label_timezone'),
             ])
         ;
 

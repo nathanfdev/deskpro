@@ -469,6 +469,7 @@ portal.flashes.user_registered_verified_authenticated: 'Thank you. Your email ad
 portal.flashes.user_removed_an_email: 'Your email address {{email}} was removed.'
 portal.flashes.user_resend_email_verify: 'The validation email has been sent to your email address again.'
 portal.flashes.user_updated_profile: 'Your profile has been updated.'
+portal.flashes.update_user_profile: 'Please correct required fields.'
 portal.flashes.usersource_new_add_email_verified: 'Thank you for verifying your email address. Your account is now active.'
 portal.flashes.usersource_new_add_email_verify: 'We need to verify your email before we create your account. Please check your inbox for a verification link.'
 portal.forms.confirm_reset: 'Are you sure you want to reset this form?'
