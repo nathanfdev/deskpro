@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\LimitEmailDomains;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonRegistrationType;
@@ -79,8 +80,17 @@ class ProfileController extends AbstractController
 
         if ($request->isMethod('post')) {
             if ($form->isSubmitted()) {
+                $errors        = $form->getErrors();
+                $hasValidEmail = true;
+                foreach ($errors as $error) {
+                    $cause = $error->getCause();
+                    if ($cause && $cause->getCode() === LimitEmailDomains::BAD_EMAIL_DOMAIN) {
+                        $hasValidEmail = false;
+                    }
+                }
+
                 // check if the person already has an account (or is a contact)
-                if ($email = $person->getEmailAddress()) {
+                if ($hasValidEmail && ($email = $person->getEmailAddress())) {
                     /** @var Person $personCheck */
                     if ($personCheck = $this->get('data.person')->getPersonForEmail($email)) {
                         $this->runAntiAbuseCheck($request);
@@ -93,8 +103,8 @@ class ProfileController extends AbstractController
                         // uncomment this conditional if the "set password" email should only be sent to accounts
                         // that cannot login. accounts that get here that can login are given a form error instead.
                         //if (!$personCheck->isUser()) {
-                            // contact, they should now get a "set password" email and a redirection
-                            // set the reset code
+                        // contact, they should now get a "set password" email and a redirection
+                        // set the reset code
 
                         $validSeconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
                         $reset        = $this->getPersonDataService()->createPasswordReset($personCheck, $validSeconds);

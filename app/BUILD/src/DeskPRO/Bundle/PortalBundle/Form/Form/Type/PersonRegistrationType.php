@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\LimitEmailDomains;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -71,8 +72,11 @@ class PersonRegistrationType extends AbstractType
                 ],
             ])
             ->add('primary_email', PersonEmailType::class, [
-                'label'    => $this->languageManager->phrase('portal.forms.label_email'),
-                'required' => true,
+                'label'       => $this->languageManager->phrase('portal.forms.label_email'),
+                'required'    => true,
+                'constraints' => [
+                    new LimitEmailDomains(),
+                ],
             ])
             ->add('password', RepeatedType::class, [
                 'first_name'    => 'password',
