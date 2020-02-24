@@ -8,6 +8,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\CustomFields\FieldManager;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
@@ -23,12 +24,14 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Publish\GlossaryHandler;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
 use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -670,6 +673,13 @@ class KbController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
+    /**
+     * @param $article_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
     public function ajaxSaveCustomFieldsAction($article_id)
     {
         $article = $this->em->find(Article::class, $article_id);
@@ -683,29 +693,51 @@ class KbController extends AbstractController
         }
 
         $this->em->beginTransaction();
+        $fieldErrors = [];
 
         try {
-            $field_manager      = $this->container->getSystemService('article_fields_manager');
-            $post_custom_fields = $this->request->request->get('custom_fields', []);
-            if (!empty($post_custom_fields)) {
-                $field_manager->saveFormToObject($post_custom_fields, $article);
+            /** @var FieldManager $fieldManager */
+            $fieldManager     = $this->container->getSystemService('article_fields_manager');
+            $postCustomFields = $this->request->request->get('custom_fields', []);
+
+            if (!empty($postCustomFields)) {
+                $this->validateCustomFields($fieldErrors, $postCustomFields);
+
+                if (empty($fieldErrors)) {
+                    $fieldManager->saveFormToObject($postCustomFields, $article);
+                }
             }
 
-            $this->em->flush();
-            $this->em->commit();
+            if (empty($fieldErrors)) {
+                $this->em->flush();
+                $this->em->commit();
+            } else {
+                $this->em->rollback();
+            }
         } catch (\Exception $e) {
             $this->em->rollback();
 
             throw $e;
         }
 
-        $field_manager = $this->container->getSystemService('article_fields_manager');
-        $custom_fields = $field_manager->getDisplayArrayForObject($article);
+        $customFields = $fieldManager->getDisplayArrayForObject($article);
 
-        return $this->render('AgentBundle:Kb:view-customfields-rendered-rows.html.twig', [
-            'article'       => $article,
-            'custom_fields' => $custom_fields,
-        ]);
+        $template = empty($fieldErrors)
+            ? 'AgentBundle:Kb:view-customfields-rendered-rows.html.twig'
+            : 'AgentBundle:Kb:view-customfields-edit-rows.html.twig';
+
+        $rendered = $this->container->get('twig')
+            ->render($template,
+                [
+                    'article'       => $article,
+                    'custom_fields' => $customFields,
+                    'errors'        => !empty($fieldErrors) ? $fieldErrors : [],
+                ]
+            );
+
+        return new JsonResponse(
+            ['rendered' => $rendered],
+            !empty($fieldErrors) ? Response::HTTP_UNPROCESSABLE_ENTITY : Response::HTTP_OK);
     }
 
     public function ajaxSaveCommentAction($article_id)
@@ -1154,6 +1186,13 @@ class KbController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
     public function newArticleSaveAction(Request $request)
     {
         if (!$this->person->hasPerm('agent_publish.create')) {
@@ -1165,17 +1204,26 @@ class KbController extends AbstractController
         $formType = new \Application\AgentBundle\Form\Type\NewArticle();
         $form     = $this->get('form.factory')->create($formType, $newArticle);
 
-        $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newarticle' AND person_id = ?", [$this->person->id]);
+        $this->db->executeUpdate(
+            "DELETE FROM people_prefs WHERE name = 'agent.ui.state.newarticle' AND person_id = ?",
+            [$this->person->id]
+        );
 
         if ($request->getMethod() == 'POST') {
             $form->handleRequest($request);
             $form->isValid();
 
-            $validator = new \Application\AgentBundle\Validator\NewArticleValidator();
-            if (!$validator->isValid($newArticle)) {
+            $validator        = new \Application\AgentBundle\Validator\NewArticleValidator();
+            $fieldErrors      = [];
+            $postCustomFields = $this->request->request->get('custom_fields', []);
+
+            $this->validateCustomFields($fieldErrors, $postCustomFields);
+
+            if (!$validator->isValid($newArticle) || !empty($fieldErrors)) {
                 return $this->createJsonResponse([
-                    'error'       => true,
-                    'error_codes' => $validator->getPlainErrors(),
+                    'error'                => true,
+                    'error_codes'          => $validator->getPlainErrors(),
+                    'custom_fields_errors' => $fieldErrors,
                 ]);
             }
 
@@ -1271,5 +1319,52 @@ class KbController extends AbstractController
         }
 
         return $articleCategories;
+    }
+
+    /**
+     * @param array $fieldErrors
+     * @param array $postCustomFields
+     */
+    private function validateCustomFields(&$fieldErrors, $postCustomFields)
+    {
+        /** @var FieldManager $fieldManager */
+        $fieldManager = $this->container->getSystemService('article_fields_manager');
+        /** @var Translate $trans */
+        $trans        = $this->container->getTranslator();
+        $customFields = $fieldManager->getDefinedFields();
+
+        foreach ($customFields as $field) {
+            $errors = $field->getHandler()->validateFormData(
+                $postCustomFields ?: [],
+                HandlerAbstract::CONTEXT_AGENT
+            );
+
+            foreach ($errors as $code) {
+                $code = preg_replace('#^(.*?)\.#', '', $code);
+                switch ($code) {
+                    case 'min_length':
+                        $code  = 'text_min';
+                        $count = $field->getOption('agent_min_length');
+                        $msg   = $trans->transChoice('user.error.form_'.$code, $count, ['count' => $count]);
+
+                        break;
+                    case 'max_length':
+                        $code  = 'text_max';
+                        $count = $field->getOption('agent_max_length');
+                        $msg   = $trans->transChoice('user.error.form_'.$code, $count, ['count' => $count]);
+
+                        break;
+                    case 'regex_fail':
+                        $code = 'text_regex';
+                        $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
+                        break;
+                    default:
+                        $msg = $trans->getPhraseText('user.error.form_'.$code);
+                }
+
+                $fieldErrors['field_'.$field->getId()][] = $msg;
+            }
+        }
     }
 }

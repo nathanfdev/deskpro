@@ -1835,7 +1835,7 @@ define(function() {
   routes.push({
     id:           'portal.kb_custom_fields.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'Edit.js',
+    templateName: 'CustomFields/Common/edit.html',
     controller:   'Admin_CustomFields_Kb_Ctrl_Edit',
   });
 
