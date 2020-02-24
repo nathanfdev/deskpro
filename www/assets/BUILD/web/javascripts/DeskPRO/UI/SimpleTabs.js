@@ -128,7 +128,10 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 		tabEl = $(tabEl);
 
-		if (this.lastActiveTab && this.lastActiveTab.get(0) == tabEl.get(0)) {
+		if (this.lastActiveTab &&
+      this.lastActiveTab.get(0) == tabEl.get(0) &&
+      this.getContentElFromTab(tabEl).isVisible()
+    ) {
 			return;
 		}
 
