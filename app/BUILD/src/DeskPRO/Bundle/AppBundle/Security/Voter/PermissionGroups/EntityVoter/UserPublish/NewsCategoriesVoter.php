@@ -21,7 +21,7 @@ class NewsCategoriesVoter extends AbstractUserPublishVoter
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        return $user->hasPerm('news.use');
+        return $user->hasPerm('agent_publish.use');
     }
 
     /**
