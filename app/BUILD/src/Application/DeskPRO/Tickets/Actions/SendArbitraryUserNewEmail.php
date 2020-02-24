@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
+
 
 namespace Application\DeskPRO\Tickets\Actions;
 
@@ -14,7 +10,9 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
@@ -85,7 +83,15 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
         }
 
         $regClosed = !$this->getContainer()->get('dp_authentication_manager.user')->isRegistrationFormVisible();
-        foreach ($this->getActionOption('emails') as $email) {
+        $emails    = $this->getActionOption('emails');
+        if (in_array('{{new_cc_emails}}', $emails)) {
+            $newCCs = $this->getNewCcs($ticket);
+            $emails = array_filter($emails, function ($v) {
+                return $v !== '{{new_cc_emails}}';
+            });
+            $emails = array_merge($emails, $newCCs);
+        }
+        foreach ($emails as $email) {
             $person = $this->getContainer()->getEm()->getRepository(Person::class)->findOneByEmail($email);
             if ($person) {
                 $sendPeople[$email] = $person;
@@ -120,6 +126,7 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
             case TicketTrigger::EVENT_TYPE_UPDATE:
             case 'system':
                 $arguments = [$ticket];
+
                 break;
             case TicketTrigger::EVENT_TYPE_NEWREPLY:
                 /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
@@ -141,6 +148,7 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
 
                     return;
                 }
+
                 break;
             default:
                 $context->getLogger()->info('Unknown event type: '.$context->getEventType());
@@ -225,5 +233,29 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
         }
 
         return false;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return array
+     */
+    private function getNewCcs(Ticket $ticket)
+    {
+        $changes   = $ticket->getStateChangeRecorder();
+        $ccChanges = $changes->getChangesForField('participants');
+        $emails    = [];
+
+        /** @var ChangeCollection $ccChange */
+        foreach ($ccChanges as $ccChange) {
+            /** @var TicketParticipant $participant */
+            foreach ($ccChange->getAddedElements() as $participant) {
+                if ($participant->getPerson() && !$participant->getPerson()->isAgent()) {
+                    $emails[] = $participant->getPerson()->getPrimaryEmailAddress();
+                }
+            }
+        }
+
+        return $emails;
     }
 }
