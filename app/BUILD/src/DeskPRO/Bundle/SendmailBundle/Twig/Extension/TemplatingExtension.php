@@ -683,7 +683,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             return '';
         }
 
-        return implode($array, $sep);
+        return implode($sep, $array);
     }
 
     /**
