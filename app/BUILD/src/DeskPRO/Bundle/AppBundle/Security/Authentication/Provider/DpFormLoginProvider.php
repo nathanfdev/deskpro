@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\DeskPRO;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
+use DeskPRO\Bundle\PortalBundle\Routing\PasswordResetException;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Result;
@@ -158,6 +159,8 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 try {
                     $authResult = $adapter->authenticate();
                 } catch (AuthenticationException $e) {
+                    throw $e;
+                } catch (PasswordResetException $e) {
                     throw $e;
                 } catch (\Exception $e) {
                     SystemErrorHandler::logException($e, false);

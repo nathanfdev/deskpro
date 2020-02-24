@@ -157,8 +157,6 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         }
         $abuseCheck->markAsCheckOnly(false);
         $antiAbuse->check($abuseCheck);
-
-        return;
     }
 
     /**

@@ -74,6 +74,7 @@ portal.account.set-password-invalid-desc: 'Your password code is invalid or has 
 portal.account.set-password-invalid-input: 'Please enter a valid email address or username'
 portal.account.set-password-request-desc: 'Complete this form and we will email you a link to set your password.'
 portal.account.set-password-request-title: 'Set Your Password'
+portal.account.set-password-expired: 'Your password has expired.'
 portal.account.set-password-sent-desc: 'We have sent you an email with instruction on how to set your password.'
 portal.account.set-password-sent-title: 'Set Your Password'
 portal.account.set-password-sent-to: 'We sent an email to'
@@ -507,6 +508,7 @@ portal.forms.error_not_unique_collection: 'One or more of the given values is no
 portal.forms.error_numeric: 'Please enter a number, with no other characters.'
 portal.forms.error_password_current: 'This must be your current password'
 portal.forms.error_password_forbid_reuse: 'You cannot use a password you have used before'
+portal.forms.error_password_reset_required: 'You have to reset password'
 portal.forms.error_password_min_length:
   one: 'Minimum of {{count}} character'
   other: 'Minimum of {{count}} characters'
