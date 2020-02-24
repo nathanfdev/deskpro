@@ -22,7 +22,7 @@ class EmailTemplateItem extends React.Component {
 
   getMenuLabel = () => {
     if (this.props.modified) {
-      return <span>${this.props.label} <span title="modified">(*)</span></span>;
+      return <span>{this.props.label} <span title="modified">(*)</span></span>;
     }
     return this.props.label;
   };
