@@ -153,7 +153,7 @@ class TicketController extends AbstractApiController
         // Need to pass Ticket and Person to properly show/get person custom fields and values
         // Might use them in case of dependend fields in criteria
         $formFull = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
-            'person'              => $person,
+            'person'              => $person instanceof PersonGuest ? null : $person,
             'action'              => $this->generateUrl('portal_api_ticket_new'),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,

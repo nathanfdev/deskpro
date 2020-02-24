@@ -247,7 +247,7 @@ class NewTicketController extends AbstractController
             'action'              => $this->generateUrl('portal_new_ticket'),
             // Need to pass person to properly show/get person custom fields and values
             // Might use them in case of dependend fields in criteria
-            'person'              => $person,
+            'person'              => $person instanceof PersonGuest ? null : $person,
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
         ]);

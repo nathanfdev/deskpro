@@ -289,7 +289,7 @@ class TicketsController extends AbstractController
         // Need to pass Ticket and Person to properly show/get person custom fields and values
         // Might use them in case of dependend fields in criteria
         $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
-            'person'              => $person,
+            'person'              => $person instanceof PersonGuest ? null : $person,
             'action'              => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_EDIT,
