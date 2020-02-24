@@ -117,8 +117,8 @@ class ManageContentTemplatesModal extends React.Component {
     this.state = {
       confirmDeletion: null,
       editTemplate:    null,
-      filter: '',
-      showMode: 'all'
+      filter:          '',
+      showMode:        'all'
     };
   }
 
@@ -325,7 +325,7 @@ class ManageContentTemplatesModal extends React.Component {
         </div>
         <div className="body">
           <Loader loaded={contentTemplatesLoaded}>
-            {templateList.size > 0 &&
+            {contentTemplates.size > 0 &&
               <ContentTemplatesFilter
                 templates={contentTemplates}
                 filteredTemplates={filteredTemplates}
@@ -408,15 +408,18 @@ class ContentTemplateItem extends React.Component {
             </div>
           </div>
           <div className="manage-content-template-actions">
+            {window.DESKPRO_PERSON_PERMS['agent_publish.edit'] &&
             <span className="manage-content-template-action">
               <a onClick={this.editTemplate}>Edit</a>
-            </span>
+            </span>}
+            {window.DESKPRO_PERSON_PERMS['agent_publish.edit'] &&
             <span className="manage-content-template-action">
               <a onClick={this.renameTemplate}>Rename</a>
-            </span>
+            </span>}
+            {window.DESKPRO_PERSON_PERMS['agent_publish.delete'] &&
             <span className="manage-content-template-action">
               <a onClick={this.deleteTemplate}>Delete</a>
-            </span>
+            </span>}
           </div>
         </div>
       </div>

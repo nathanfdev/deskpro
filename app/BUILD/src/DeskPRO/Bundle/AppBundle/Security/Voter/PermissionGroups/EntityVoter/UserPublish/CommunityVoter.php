@@ -24,16 +24,13 @@ class CommunityVoter extends AbstractUserPublishVoter
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        if (!$user->hasPerm('community.use')) {
+        if (!$user->hasPerm('agent_publish.use')) {
             return false;
         }
 
         /** @var CommunityTopic $communityTopic */
         $communityTopic = $context->getParent();
         if ($communityTopic) {
-            if (!$this->getUserPublishChecker($user)->canViewCommunityTopic($communityTopic)) {
-                return false;
-            }
             if (!$this->checkModify($attribute, $user, $communityTopic)) {
                 return false;
             }

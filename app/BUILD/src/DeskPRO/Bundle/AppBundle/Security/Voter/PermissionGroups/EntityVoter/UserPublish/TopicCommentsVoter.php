@@ -25,7 +25,7 @@ class TopicCommentsVoter implements PermissionGroupEntityVoterInterface
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        return $user->hasPerm('guides.use');
+        return $user->hasPerm('agent_publish.use');
     }
 
     /**
