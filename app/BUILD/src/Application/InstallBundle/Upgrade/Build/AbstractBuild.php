@@ -317,7 +317,8 @@ abstract class AbstractBuild
             return;
         } catch (\Exception $e) {
             $this->logger->info('SQL['.$connName.']: '.$sql);
-            $this->logger->info('Ignored Error: '.$e->getMessage());
+            $this->logger->info('Ignored: '.$e->getMessage());
+            $this->logger->info('(This is not an error.)');
 
             return $e;
         }
