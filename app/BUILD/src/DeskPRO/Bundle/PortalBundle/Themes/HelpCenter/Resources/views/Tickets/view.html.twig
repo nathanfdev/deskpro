@@ -4,6 +4,8 @@
 {% endblock sidebar %}
 
 {% block page_specific_content %}
-    {% include "Theme:Tickets:timeline/timeline.html.twig" %}
-    {% include "Theme:Tickets:ticket_reply.html.twig" %}
+    {% include 'Theme:Tickets:timeline/timeline.html.twig' %}
+    {% if can_reply %}
+        {% include 'Theme:Tickets:ticket_reply.html.twig' %}
+    {% endif %}
 {% endblock page_specific_content %}

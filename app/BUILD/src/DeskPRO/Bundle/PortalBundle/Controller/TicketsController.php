@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
@@ -84,7 +82,7 @@ class TicketsController extends AbstractController
                 ];
         }
         /* @var TicketListTable[] $tables */
-        $tables = $this->makeTicketListTables($type,  $ticketCategories, $person, $request);
+        $tables = $this->makeTicketListTables($type, $ticketCategories, $person, $request);
 
         $ticketListJs = 'window.DESKPRO_TICKET_LIST_TABLES = '.$tables->compileJsObj().';';
 
@@ -226,12 +224,17 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
+        $canReply = $ticket->isOwner($this->getUser())
+            || (!$this->getUser()->isAgent() && $ticket->isParticipant($this->getUser()))
+            || $ticket->isOrganizationManager($this->getUser());
+
         return $this->renderThemeView('Theme:Tickets:view.html.twig', [
             'ticket'                     => $ticket,
             'ticket_view'                => $ticket_view,
             'timeline_pager'             => $pager,
             'timeline'                   => $timeline,
             'can_edit'                   => $this->isGranted(TicketsVoter::TICKET_EDIT, $ticket),
+            'can_reply'                  => $canReply,
             'form'                       => $form->createView(),
             'breadcrumbs'                => $breadcrumbs,
             'page_title'                 => $this->createPageTitle()->tickets($ticket),
@@ -450,6 +453,9 @@ class TicketsController extends AbstractController
      * @Route("/tickets/{ticket_ref}/remove-cc/{cc_id}", name="portal_tickets_cc_remove")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      * @AutoPostOnGetRequest()
+     *
+     * @param mixed $ticket_ref
+     * @param mixed $cc_id
      */
     public function removeCcAction(Request $request, $ticket_ref, $cc_id)
     {
@@ -568,12 +574,15 @@ class TicketsController extends AbstractController
                         switch ($use->getRating()) {
                             case 1:
                                 $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() - 1);
+
                                 break;
                             case 0:
                                 $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() - 1);
+
                                 break;
                             case -1:
                                 $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() - 1);
+
                                 break;
                             default:
                                 break;
@@ -583,12 +592,15 @@ class TicketsController extends AbstractController
                     switch ($rating) {
                         case 1:
                             $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() + 1);
+
                             break;
                         case 0:
                             $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() + 1);
+
                             break;
                         case -1:
                             $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() + 1);
+
                             break;
                         default:
                             break;
@@ -637,6 +649,8 @@ class TicketsController extends AbstractController
      * @Route("/tickets/{ticket_ref}/unresolve", name="portal_tickets_unresolve")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      * @AutoPostOnGetRequest()
+     *
+     * @param mixed $ticket_ref
      */
     public function unresolveTicketAction(Request $request, $ticket_ref)
     {
@@ -771,6 +785,7 @@ class TicketsController extends AbstractController
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
+
             throw $e;
         }
 
@@ -824,6 +839,7 @@ class TicketsController extends AbstractController
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
+
             throw $e;
         }
 
