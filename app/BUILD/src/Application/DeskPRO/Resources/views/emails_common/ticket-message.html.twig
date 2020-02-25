@@ -6,16 +6,23 @@
 <!-- DP_MESSAGE_END -->
 <a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end dp_marker_link"></a>
 {% if app.isPortalEnabled() and message.attachments.count and not app.getSetting('core_tickets.disable_attachments_list') %}
+	{%- set attachmentsList -%}
+		{% for attach in message.attachments %}
+			{% if not attach.is_inline  %}
+				<br/>
+				&bull;
+				<a href="{{ attach.blob.getDownloadUrl(true) }}" style="{{ _self.link_style() }}">
+					{{ attach.blob.filename }}
+				</a>
+				({{ attach.blob.getReadableFilesize() }})
+			{% endif %}
+		{% endfor %}
+	{%- endset -%}
+	{% if attachmentsList %}
 	<div style="font-size:11px">
 		<br/>
-		<strong>Attachments</strong>
-		{% for attach in message.attachments %}
-			<br/>
-			&bull;
-			<a href="{{ attach.blob.getDownloadUrl(true) }}" style="{{ _self.link_style() }}">
-				{{ attach.blob.filename }}
-			</a>
-			({{ attach.blob.getReadableFilesize() }})
-		{% endfor %}
+		<strong>{{ phrase('user.emails.attachments') }}</strong>
+		{{ attachmentsList }}
 	</div>
+	{% endif %}
 {% endif %}
