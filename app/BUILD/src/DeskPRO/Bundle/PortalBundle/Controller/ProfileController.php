@@ -80,7 +80,7 @@ class ProfileController extends AbstractController
 
         if ($request->isMethod('post')) {
             if ($form->isSubmitted()) {
-                $errors        = $form->getErrors();
+                $errors        = $form->getErrors(true);
                 $hasValidEmail = true;
                 foreach ($errors as $error) {
                     $cause = $error->getCause();
