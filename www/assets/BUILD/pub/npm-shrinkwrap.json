@@ -358,9 +358,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.99",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.99.tgz",
-      "integrity": "sha512-xarJfoQJDV/GRDyn1yd6Tc01jpTfe00Iej/sO3cPf3ad1pF2EVxGBiOhjLQDj++D0tDc3iZ8UHtXSq+rvExPRg==",
+      "version": "0.1.100",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.100.tgz",
+      "integrity": "sha512-wbQ8aqOJsKKLPIclQh1/lL0HvJG598qDQSedcBfCZBucVtTB1Z8rQBxA85IYwJiRcK76Dv6vb6bKqzhDesnCMA==",
       "requires": {
         "@deskpro/portal-components": "0.3.67",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -374,6 +374,7 @@
         "postcss-color-mod-function": "^3.0.3",
         "prop-types": "^15.6.2",
         "pusher-js": "^4.3.1",
+        "react-animate-height": "^2.0.20",
         "react-app-polyfill": "^0.1.3",
         "react-frame-component": "^4.0.0",
         "react-froala-wysiwyg": "^2.9.0",
@@ -35323,6 +35324,15 @@
             "ua-parser-js": "^0.7.18"
           }
         }
+      }
+    },
+    "react-animate-height": {
+      "version": "2.0.20",
+      "resolved": "https://registry.npmjs.org/react-animate-height/-/react-animate-height-2.0.20.tgz",
+      "integrity": "sha512-gs6j9oSiWNAnquEVpPMdTe/kwsdVORkRYsgPju4VfM1wKwai7pdmwob//1ECmCQTD8S0NfRDDBk0l7MJGFNmbw==",
+      "requires": {
+        "classnames": "^2.2.5",
+        "prop-types": "^15.6.1"
       }
     },
     "react-app-polyfill": {
