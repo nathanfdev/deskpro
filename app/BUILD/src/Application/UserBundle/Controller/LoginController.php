@@ -53,6 +53,7 @@ use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
 use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 use Orb\Util\Util;
 use Orb\Util\Web;
 use Orb\Validator\StringEmail;
@@ -334,6 +335,13 @@ class LoginController extends AbstractController
 
                 return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
             }
+        }
+
+        if ($inputEmail && !$this->container->get('dp_limit_email_domains_checker')->checkEmail($inputEmail)) {
+            $this->session->set('failed_login_name', $inputEmail);
+            $this->session->save();
+
+            return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
         }
 
         $result = $this->authLocalInput();
@@ -716,12 +724,18 @@ class LoginController extends AbstractController
             if ($result->isValid()) {
                 $login_processor = new LoginProcessor($usersource, $result->getIdentity());
                 $person          = $login_processor->getPerson();
+
+                if ($this->checkEmailDomainLimitsFailed($usersource, $result)) {
+                    $this->session->setFlash('login_failed', true);
+
+                    return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
+                }
+
+                $this->_setupUsersourceSession($usersource, $person, $result);
                 $person->setLastLoginAt();
 
                 $this->em()->persist($person);
                 $this->em()->flush();
-
-                $this->_setupUsersourceSession($usersource, $person, $result);
 
                 if ($this->in->getString('js_tell')) {
                     $return = $this->generateUrl($route_type.'_jstell_login', [
@@ -743,7 +757,7 @@ class LoginController extends AbstractController
                     return $this->redirectRoute($this->routePrefix);
                 }
 
-                // We expect a redirect to be rquired
+                // We expect a redirect to be required
             } elseif ($result->isRedirectRequired()) {
                 if (!$return = LegacyRequestUtils::readReturnParam($this->request)) {
                     if ($return = $this->request->server->get('HTTP_REFERER')) {
@@ -804,6 +818,12 @@ class LoginController extends AbstractController
             if ($result->isValid()) {
                 $login_processor = new LoginProcessor($usersource, $result->getIdentity());
                 $person          = $login_processor->getPerson();
+
+                if ($this->checkEmailDomainLimitsFailed($usersource, $result)) {
+                    $this->session->setFlash('login_failed', true);
+
+                    return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
+                }
 
                 $this->_setupUsersourceSession($usersource, $person, $result);
 
@@ -928,6 +948,12 @@ class LoginController extends AbstractController
                         'log'    => $log,
                     ]
                 );
+            }
+
+            if ($this->checkEmailDomainLimitsFailed($usersource, $result)) {
+                $this->session->setFlash('login_failed', true);
+
+                return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
             }
 
             $this->_setupUsersourceSession($usersource, $person, $result);
@@ -1394,6 +1420,12 @@ class LoginController extends AbstractController
                 );
             }
 
+            if ($this->checkEmailDomainLimitsFailed($source, $result)) {
+                $this->session->setFlash('login_failed', true);
+
+                return $this->redirectRoute($this->routePrefix.'_login');
+            }
+
             //-----------------------------------
             // log the user in. if background sso, refresh the page.
             //-----------------------------------
@@ -1444,6 +1476,24 @@ class LoginController extends AbstractController
         App::setCurrentPerson($person);
 
         $this->deleteCookies();
+    }
+
+    /**
+     * @param Usersource $usersource
+     * @param Result     $result
+     *
+     * @return bool
+     */
+    protected function checkEmailDomainLimitsFailed(Usersource $usersource, Result $result)
+    {
+        // check email domain limits
+        $mappedFields = $usersource->getAdapter()->getFieldsFromIdentity($result->getIdentity());
+        $mappedFields = Arrays::removeEmptyString($mappedFields);
+        $mappedFields = new OptionsArray($mappedFields);
+
+        $email = $mappedFields->get('email');
+
+        return $email && !$this->container->get('dp_limit_email_domains_checker')->checkEmail($email);
     }
 
     /**
