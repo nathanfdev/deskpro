@@ -12,8 +12,12 @@ use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorUnknownFrom;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcome;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcomeUsersource;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -131,6 +135,50 @@ class EmailSender
         } elseif (!$message->getTo()) {
             throw new \Exception('Missing required "to" argument');
         }
+        if (!empty($recipient) && is_a($recipient, Person::class)) {
+            $skipCheck = [
+                // Agent email sent to an unknown email address for agent ticket replies
+                // ("your reply was not accepted because it was sent from an unknown address")
+                AgentErrorUnknownFrom::class => 1,
+                // If you created a new agent after calling the AgentDataServer,
+                // then the repository wont contain the new agent when sending this welcome.
+                AgentWelcome::class => 1,
+                // When an agent is created via a usersource, they are not yet in the agent repository
+                AgentWelcomeUsersource::class => 1,
+            ];
+            $class = get_class($model);
+            if (strpos($class, '\Agent') !== false && !isset($skipCheck[$class])) {
+                if (!$recipient->isAgent()) {
+                    // Not an agent
+                    // - Generate error log warning
+                    // - Send in error report to us
+                    // - Blank out email. We need to send a blank email because
+                    // there is no way to "stop" at this late stage (it's too "late" by the time this code gets run)
+                    // and if we were to throw an exception, it would cause rollbacks to happen.
+                    // - TO DO: Can implement custom swiftmailer classes to allow cancelling of messages so the blank
+                    // email isn't sent.
+
+                    $e = new \InvalidArgumentException(
+                        "Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}"
+                    );
+                    SystemErrorHandler::logException($e, true);
+
+                    $message->setTemplate(null);
+                    $message->setTemplateEngine(null);
+                    $message->setToPerson(null);
+                    $message->setBody('');
+                    $message->setSubject('');
+                    $message->getHeaders()->addTextHeader(
+                        'X-DeskPRO-Error',
+                        "Agent email being sent to a non-agent. Template: {$this->template}, Person: {$this->template_vars['to_contact']}"
+                    )
+                    ;
+
+                    return null;
+                }
+            }
+        }
+
         $serializationContext = new SideloadSerializationContext();
         $serializationContext->setInlineSideloads(true);
         if (!empty($recipient)) {
@@ -169,8 +217,6 @@ class EmailSender
             $emailCode = $this->getRenderer()->render($template, $model);
         }
         $message->setEncoder(\Swift_Encoding::getQpEncoding());
-        $message->setBody($emailCode->getBody(), 'text/html');
-        $message->setSubject(html_entity_decode($emailCode->getSubject(), ENT_QUOTES, 'UTF-8'));
         foreach ($emailCode->getAttachments() as $blob) {
             $message->attachBlob($blob);
         }
@@ -179,6 +225,19 @@ class EmailSender
                 $message->attach($attach);
             }
         }
+        $body = $emailCode->getBody();
+        $body = $message->replaceEmbeds($body);
+        $body = $message->applyBodyFilter($body);
+        $message->setBody($body, 'text/html');
+
+        $subject = $emailCode->getSubject();
+
+        // Try to clean up subject from whitespace
+        $subject = \Orb\Util\Strings::removeEmptyLines($subject);
+        $subject = \Orb\Util\Strings::trimLines($subject);
+        $subject = str_replace(["\r\n", "\n"], ' ', $subject);
+        $subject = trim($subject);
+        $message->setSubject(html_entity_decode($subject, ENT_QUOTES, 'UTF-8'));
 
         if (isset($options['headers'])) {
             foreach ($options['headers'] as $header) {

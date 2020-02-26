@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Tickets;
 
@@ -97,15 +93,15 @@ class TicketEmailBuilder
      * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
      */
     private function __construct(
-        EntityManager       $em,
-        Settings            $settings,
-        Swift_Mailer        $mailer,
-        Translate           $translate,
+        EntityManager $em,
+        Settings $settings,
+        Swift_Mailer $mailer,
+        Translate $translate,
         EmailAccountManager $emailAccountManager,
-        TicketFieldManager  $ticketFieldManager,
-        PersonFieldManager  $personFieldManager,
+        TicketFieldManager $ticketFieldManager,
+        PersonFieldManager $personFieldManager,
         TicketLayoutManager $ticketLayoutManager,
-        BrandStack          $brandStack
+        BrandStack $brandStack
     ) {
         $this->em                  = $em;
         $this->settings            = $settings;
@@ -394,6 +390,7 @@ class TicketEmailBuilder
                 $newArr[] = $m;
                 if ($vars['new_message'] === $m) {
                     $got = true;
+
                     break;
                 }
             }
@@ -455,6 +452,7 @@ class TicketEmailBuilder
                         if ($blob->getFilesize() <= $maxAttachSize) {
                             $logger->info(sprintf('[TicketEmail] Adding attachment %s', $blob->getFilename()));
                             $lastMessageAttachments[$attachment->getId()] = $attachment;
+                            $maxAttachSize -= $blob->getFilesize();
                         } else {
                             $logger->info(sprintf('[TicketEmail] Skipping attachment %s', $blob->getFilename()));
                         }

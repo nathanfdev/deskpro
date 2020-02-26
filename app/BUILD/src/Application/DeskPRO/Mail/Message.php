@@ -61,6 +61,8 @@ class Message extends \Orb\Mail\Message
 
     /**
      * Set a context about this message. The mailer might treat it differently.
+     *
+     * @param mixed $context_id
      */
     public function setContextId($context_id)
     {
@@ -196,41 +198,41 @@ class Message extends \Orb\Mail\Message
                     $plaintext   = Strings::cut($plaintext, $start_pos, $end_pos + $end_pos_len);
                 }
 
-            // This is a slow process and can crash on complex documents so
-            // prevent running on really long messages
-            if (strlen($body) < 512000) {
-                try {
+                // This is a slow process and can crash on complex documents so
+                // prevent running on really long messages
+                if (strlen($body) < 512000) {
                     try {
-                        $plaintext = preg_replace(
+                        try {
+                            $plaintext = preg_replace(
                                 '#<a[^>]+dp-reply-help-link[^>]+>[^<]+</a>#',
                                 'https://deskpro.com/go/reply',
                                 $plaintext
                             );
-                        $converter = new \Html2Text\Html2Text($plaintext, ['width' => 0]);
-                        $plaintext = $converter->getText();
+                            $converter = new \Html2Text\Html2Text($plaintext, ['width' => 0]);
+                            $plaintext = $converter->getText();
+                        } catch (\Exception $e) {
+                            $plaintext = null;
+                        }
+                        if ($plaintext) {
+                            $this->addPart($plaintext, 'text/plain');
+                        }
                     } catch (\Exception $e) {
-                        $plaintext = null;
                     }
-                    if ($plaintext) {
-                        $this->addPart($plaintext, 'text/plain');
-                    }
-                } catch (\Exception $e) {
-                }
 
-            // fallback on just simple strip tags
-            } else {
-                $plaintext = str_replace("\n", '', $plaintext);
-                $plaintext = str_replace(['<br/>', '<br />', '<p>', '</p>', '<div>'], "\n", $plaintext);
-                $plaintext = preg_replace(
+                    // fallback on just simple strip tags
+                } else {
+                    $plaintext = str_replace("\n", '', $plaintext);
+                    $plaintext = str_replace(['<br/>', '<br />', '<p>', '</p>', '<div>'], "\n", $plaintext);
+                    $plaintext = preg_replace(
                         '#<a[^>]+dp-reply-help-link[^>]+>[^<]+</a>#',
                         'deskpro.com/go/reply',
                         $plaintext
                     );
-                $plaintext = Strings::stripTags($plaintext);
-                if ($plaintext) {
-                    $this->addPart($plaintext, 'text/plain');
+                    $plaintext = Strings::stripTags($plaintext);
+                    if ($plaintext) {
+                        $this->addPart($plaintext, 'text/plain');
+                    }
                 }
-            }
             } else {
                 if ($this->getContentType() == 'text/html') {
                     $body = $this->getBody();
@@ -285,31 +287,31 @@ class Message extends \Orb\Mail\Message
     {
         $self = $this;
 
-        $embed_map = [];
+        $embedMap = [];
         foreach ($this->attach_blobs as $src => $blob) {
             if (is_int($src)) {
                 continue;
             }
 
-            $regex = '#(<img[^>]+src=")'.preg_quote($src, '#').'(\?s=\d+)?("[^>]*>)#i';
-            $body  = preg_replace_callback($regex, function ($match) use ($self, &$embed_map, $src, $blob) {
-                if (!isset($embed_map[$src])) {
+            $regex = '#(<img[^>]+src=")'.preg_quote($src, '#').'(?:\?(?:sc=[^&]+&)?s=\d+)?("[^>]*>)#i';
+            $body  = preg_replace_callback($regex, function ($match) use ($self, &$embedMap, $src, $blob) {
+                if (!isset($embedMap[$src])) {
                     // in case the src is referenced twice
-                    $embed_map[$src] = $self->embed(\Swift_Image::newInstance(
+                    $embedMap[$src] = $self->embed(\Swift_Image::newInstance(
                         App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob),
                         $blob->getFilename(),
                         $blob->getContentType()
                     ));
                 }
 
-                return $match[1].$embed_map[$src].$match[3];
+                return $match[1].$embedMap[$src].$match[2];
             }, $body);
 
             // Remove links to inline attachments as well
             $body = preg_replace('#<a[^>]+dp-embed-blob-a-'.preg_quote($blob->getAuthId(), '#').'[^>]*>(<img[^>]+>)</a>#', '$1', $body);
         }
 
-        foreach ($embed_map as $src => $null) {
+        foreach ($embedMap as $src => $null) {
             // already embedded, don't need to attach again
             unset($self->attach_blobs[$src]);
         }
@@ -415,6 +417,15 @@ class Message extends \Orb\Mail\Message
     public function setBodyFilter($fn)
     {
         $this->body_filter = $fn;
+    }
+
+    public function applyBodyFilter($body)
+    {
+        if ($this->body_filter) {
+            $body = call_user_func($this->body_filter, $body, $this, $this->template_vars, 'text/html');
+        }
+
+        return $body;
     }
 
     /**
