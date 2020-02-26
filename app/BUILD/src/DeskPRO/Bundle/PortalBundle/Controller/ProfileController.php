@@ -93,8 +93,8 @@ class ProfileController extends AbstractController
                         // uncomment this conditional if the "set password" email should only be sent to accounts
                         // that cannot login. accounts that get here that can login are given a form error instead.
                         //if (!$personCheck->isUser()) {
-                            // contact, they should now get a "set password" email and a redirection
-                            // set the reset code
+                        // contact, they should now get a "set password" email and a redirection
+                        // set the reset code
 
                         $validSeconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
                         $reset        = $this->getPersonDataService()->createPasswordReset($personCheck, $validSeconds);
@@ -232,6 +232,11 @@ class ProfileController extends AbstractController
             $this->addFlash('success', $this->phrase('portal.flashes.user_updated_profile'));
 
             return $this->redirectToRoute('portal_user_profile');
+        } else {
+            FormValidatorChecker::submitForm($profileForm);
+            if (!$profileForm->isValid()) {
+                $this->addFlash('error', $this->phrase('portal.flashes.update_user_profile'));
+            }
         }
 
         // PASSWORD
