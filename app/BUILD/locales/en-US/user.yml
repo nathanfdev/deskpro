@@ -1026,6 +1026,7 @@ user.email_subjects.remind_unresolved_final_subject: 'REMINDER: {{ticket.subject
 user.email_subjects.remind_unresolved_subject: 'REMINDER: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Rate your support experience on your ticket "{{ticket.subject}}"'
 user.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
+user.emails.attachments: 'Attachments'
 user.emails.auto-close: 'Your ticket "{{ticket.subject}}" will be closed shortly as we haven''t heard from you lately. If you need further assistance simply reply and one of our agents will help you.'
 user.emails.chat_transcript: 'Thank you for chatting with us. Here is your chat transcript.'
 user.emails.chat_validate_email: 'Please validate your email address by entering this code "{{validation_code}}" in the widget form or clicking this link:'
