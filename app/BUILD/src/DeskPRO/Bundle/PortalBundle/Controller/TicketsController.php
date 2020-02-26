@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
@@ -22,12 +20,14 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayou
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimelinePagerfantaAdapter;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketAddCcType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketFeedbackType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketReplyType;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
-use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -35,6 +35,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -228,6 +229,9 @@ class TicketsController extends AbstractController
             || (!$this->getUser()->isAgent() && $ticket->isParticipant($this->getUser()))
             || $ticket->isOrganizationManager($this->getUser());
 
+        $csrfForm  = $this->createForm(CsrfType::class);
+        $addCcForm = $this->createForm(TicketAddCcType::class);
+
         return $this->renderThemeView('Theme:Tickets:view.html.twig', [
             'ticket'                     => $ticket,
             'ticket_view'                => $ticket_view,
@@ -242,6 +246,8 @@ class TicketsController extends AbstractController
             'created_in_seconds'         => $created_in_seconds,
             'edit_page'                  => false,
             'form_errors'                => $form->isSubmitted() ? $form->getErrors() : [],
+            'csrf_form'                  => $csrfForm->createView(),
+            'add_cc_form'                => $addCcForm->createView(),
         ]);
     }
 
@@ -341,7 +347,10 @@ class TicketsController extends AbstractController
 
         $person = $this->getUser();
 
-        if ('POST' === $request->getMethod()) {
+        $csrfForm = $this->createForm(CsrfType::class);
+        $csrfForm->handleRequest($request);
+
+        if ($csrfForm->isValid() || ($request->getMethod() === 'POST' && !count($csrfForm->all()))) {
             $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_RESOLVED));
             $this->saveEditedTicket($ticket, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.ticket_resolved'));
@@ -365,10 +374,15 @@ class TicketsController extends AbstractController
             ]);
         }
 
+        if ($csrfForm->isSubmitted() && $request->isXmlHttpRequest()) {
+            throw new BadRequestHttpException();
+        }
+
         return $this->renderThemeView('Theme:Tickets:resolve.html.twig', [
             'ticket'      => $ticket,
             'breadcrumbs' => $this->getBreadcrumbGenerator()->buildTicketEdit($ticket),
             'page_title'  => $this->createPageTitle()->tickets($ticket),
+            'form'        => $csrfForm->createView(),
         ]);
     }
 
@@ -391,62 +405,64 @@ class TicketsController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        $redirect_response = $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
+        $redirectResponse = $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
 
-        $name  = $request->request->get('name');
-        $email = $request->request->get('email');
+        $form = $this->createForm(TicketAddCcType::class);
+        $form->handleRequest($request);
 
-        if (!RegexUtils::safePregMatch('/.+\@.+\..+/', $email)) {
+        if ($form->isValid()) {
+            $name  = $form->get('name')->getData();
+            $email = $form->get('email')->getData();
+            $maxCc = (int) $this->getBrandSetting('core_tickets.email_cc_max_count');
+            if ($maxCc && $ticket->getCcs()->count() >= $maxCc) {
+                $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_cc_limit_reached', ['max' => $maxCc]));
+
+                return $redirectResponse;
+            }
+
+            $person_factory = $this->get('person_factory');
+            $context        = new CreatePersonContext('gateway.person');
+            $person         = $person_factory->getOrCreatePersonByEmail($email, $context);
+
+            if ($person) {
+                // only set the name if this email doesn't have a name (a new person)
+                // otherwise anyone can CC a person and change their name in the system...
+                if ($name && !$person->getFirstName()) {
+                    $person->name = $name;
+                }
+
+                if ($ticket->hasParticipantPerson($person)) {
+                    $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_already_error'));
+
+                    return $redirectResponse;
+                }
+
+                $participant = new TicketParticipant();
+                $participant->setPerson($person);
+                $ticket->addParticipant($participant);
+
+                $this->getEm()->persist($participant);
+                $this->getEm()->flush();
+
+                // return success
+                $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_add', [
+                    'name'  => $person->getDisplayNameUser(),
+                    'email' => $person->getPrimaryEmailAddress(),
+                ]));
+
+                return $redirectResponse;
+            }
+        }
+
+        if (count($form->get('email')->getErrors()) > 0) {
             // return error with email
             $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_email_error'));
-
-            return $redirect_response;
+        } else {
+            // return general error
+            $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_add_unknown_error'));
         }
 
-        $maxCc = (int) $this->getBrandSetting('core_tickets.email_cc_max_count');
-        if ($maxCc && $ticket->getCcs()->count() >= $maxCc) {
-            $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_cc_limit_reached', ['max' => $maxCc]));
-
-            return $redirect_response;
-        }
-
-        $person_factory = $this->get('person_factory');
-        $context        = new CreatePersonContext('gateway.person');
-        $person         = $person_factory->getOrCreatePersonByEmail($email, $context);
-
-        if ($person) {
-            // only set the name if this email doesn't have a name (a new person)
-            // otherwise anyone can CC a person and change their name in the system...
-            if ($name && !$person->getFirstName()) {
-                $person->name = $name;
-            }
-
-            if ($ticket->hasParticipantPerson($person)) {
-                $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_already_error'));
-
-                return $redirect_response;
-            }
-
-            $participant = new TicketParticipant();
-            $participant->setPerson($person);
-            $ticket->addParticipant($participant);
-
-            $this->getEm()->persist($participant);
-            $this->getEm()->flush();
-
-            // return success
-            $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_add', [
-                'name'  => $person->getDisplayNameUser(),
-                'email' => $person->getPrimaryEmailAddress(),
-            ]));
-
-            return $redirect_response;
-        }
-
-        // return general error
-        $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_add_unknown_error'));
-
-        return $redirect_response;
+        return $redirectResponse;
     }
 
     /**
@@ -544,82 +560,74 @@ class TicketsController extends AbstractController
         $ticketFeedbackRepo = $this->getRepo(TicketFeedback::class);
         $feedback           = $ticketFeedbackRepo->getFeedback($message, $person, true);
 
-        /** @var SnippetUseLogRepository $snippetUseLogRepo */
-        $snippetUseLogRepo = $this->getRepo(SnippetUseLog::class);
-        $uses              = $snippetUseLogRepo->getLogsByTicketMessage($message);
-
-        $rating          = null;
-        $setRatingViaGet = false;
-        if (null !== $request->get('rating', null)) {
-            $rating = $request->get('rating'); // from the form
-        }
-        if (null !== $request->get('setrating', null)) {
-            // email links use "setrating" to signify we should record the feedback on the GET request, and ask for a comment
-            $rating = $request->get('setrating');
+        if ($request->get('setrating') !== null) {
+            $feedback->setRating($request->get('setrating'));
         }
 
-        if ($rating !== null) {
-            $isPostRequest = 'POST' === $request->getMethod();
-            $feedback->setRating($rating);
-            if ($isPostRequest) {
-                $feedback->setMessage($request->get('message', ''));
-            }
-            if ($isPostRequest || $setRatingViaGet) {
-                $this->updateTicketFeedbackRating($ticket, $message, $feedback);
-                /** @var SnippetUseLog $use */
-                foreach ($uses as $use) {
-                    $snippet = $use->getSnippet();
-                    // Compensate previous answered feedback
-                    if ($use->getRating() !== null) {
-                        switch ($use->getRating()) {
-                            case 1:
-                                $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() - 1);
+        $form = $this->createForm(TicketFeedbackType::class, $feedback);
+        $form->handleRequest($request);
 
-                                break;
-                            case 0:
-                                $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() - 1);
+        if ($form->isValid()) {
+            $this->updateTicketFeedbackRating($ticket, $message, $feedback);
 
-                                break;
-                            case -1:
-                                $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() - 1);
+            /** @var SnippetUseLogRepository $snippetUseLogRepo */
+            $snippetUseLogRepo = $this->getRepo(SnippetUseLog::class);
+            $uses              = $snippetUseLogRepo->getLogsByTicketMessage($message);
 
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    $use->setRating($rating);
-                    switch ($rating) {
-                        case 1:
-                            $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() + 1);
+            /** @var SnippetUseLog $use */
+            foreach ($uses as $use) {
+                $snippet = $use->getSnippet();
+                // Compensate previous answered feedback
+                if ($use->getRating() !== null) {
+                    switch ($use->getRating()) {
+                        case TicketFeedback::RATE_POSITIVE:
+                            $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() - 1);
 
                             break;
-                        case 0:
-                            $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() + 1);
+                        case TicketFeedback::RATE_NEUTRAL:
+                            $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() - 1);
 
                             break;
-                        case -1:
-                            $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() + 1);
+                        case TicketFeedback::RATE_NEGATIVE:
+                            $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() - 1);
 
                             break;
                         default:
                             break;
                     }
-                    $this->getEm()->persist($snippet);
-                    $this->getEm()->persist($use);
                 }
+                $use->setRating($feedback->getRating());
+                switch ($feedback) {
+                    case TicketFeedback::RATE_POSITIVE:
+                        $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() + 1);
 
-                $this->getEm()->persist($feedback);
-                $this->getEm()->flush();
+                        break;
+                    case TicketFeedback::RATE_NEUTRAL:
+                        $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() + 1);
 
-                if ($isPostRequest) {
-                    $this->addFlash('success', $this->phrase('portal.flashes.ticket_feedback_thank_you'));
+                        break;
+                    case TicketFeedback::RATE_NEGATIVE:
+                        $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() + 1);
 
-                    if ($this->getBrandSetting('core.iface_portal')) {
-                        return $this->redirectToRoute('portal_home');
-                    }
+                        break;
+                    default:
+                        break;
                 }
+                $this->getEm()->persist($snippet);
+                $this->getEm()->persist($use);
             }
+
+            $this->getEm()->persist($feedback);
+            $this->getEm()->flush();
+
+            $this->addFlash('success', $this->phrase('portal.flashes.ticket_feedback_thank_you'));
+
+            if ($this->getBrandSetting('core.iface_portal')) {
+                return $this->redirectToRoute('portal_home');
+            }
+        } elseif ($form->isSubmitted()) {
+            // return general error
+            $this->addFlash('error', $this->phrase('portal.flashes.ticket_feedback_unknown_error'));
         }
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
@@ -640,8 +648,8 @@ class TicketsController extends AbstractController
             'ticket'      => $ticket,
             'message'     => $message,
             'feedback'    => $feedback,
-            'setrating'   => $setRatingViaGet,
-            'rating'      => $rating,
+            'setrating'   => $request->get('setrating') !== null,
+            'form'        => $form->createView(),
         ]);
     }
 

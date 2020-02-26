@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Form\EventListener;
 
@@ -49,7 +47,7 @@ class DoubleSubmitJavascriptListener implements EventSubscriberInterface
         if (false !== $pos) {
             $script = <<< END
 <script>
-!function(t){function n(t){for(var n=t+"=",e=document.cookie.split(";"),r=0;r<e.length;r++){for(var o=e[r];" "==o.charAt(0);)o=o.substring(1,o.length);if(0==o.indexOf(n))return o.substring(n.length,o.length)}return null}var e="_dp_csrf_token",r=n(e),o=/.*\[_dp_csrf_token\]*./;r||(r=(Math.random()+1).toString(36).substring(2,17)+(Math.random()+1).toString(36).substring(2,17),document.cookie=e+"="+r+"; path=/{$securedCookie}");for(var i=document.getElementsByTagName("input"),u=1;u<i.length;u++)"hidden"==i[u].getAttribute("type")&&i[u].getAttribute("name").match(o)&&(i[u].value=r);t.dp_get_csrf_token=function(){return r}}(window);
+!function(i){i.dp_refresh_csrf_token=function(){var t="_dp_csrf_token",n=function(t){for(var n=t+"=",e=document.cookie.split(";"),r=0;r<e.length;r++){for(var o=e[r];" "==o.charAt(0);)o=o.substring(1,o.length);if(0==o.indexOf(n))return o.substring(n.length,o.length)}return null}(t),e=/.*\[_dp_csrf_token\]*./;n||(n=(Math.random()+1).toString(36).substring(2,17)+(Math.random()+1).toString(36).substring(2,17),document.cookie=t+"="+n+"; path=/");for(var r=document.getElementsByTagName("input"),o=1;o<r.length;o++)"hidden"==r[o].getAttribute("type")&&r[o].getAttribute("name").match(e)&&(r[o].value=n);i.dp_get_csrf_token=function(){return n}},i.dp_refresh_csrf_token()}(window);
 </script>
 END;
             $content = substr($content, 0, $pos).$script.substr($content, $pos);
@@ -67,7 +65,7 @@ END;
 
 // I just minified this script online and copy+pasted above
 /*
-(function(win){
+(function(win) {
 function readCookie(name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
@@ -79,29 +77,34 @@ function readCookie(name) {
     return null;
 }
 
-var cookieName = '_dp_csrf_token';
-var token = readCookie(cookieName);
-var fieldNamePattern = /.*\[_dp_csrf_token\]*./;
+win.dp_refresh_csrf_token = function() {
+    var cookieName = '_dp_csrf_token';
+    var token = readCookie(cookieName);
+    var fieldNamePattern = /.*\[_dp_csrf_token\]*./;
 
-// Set the token if it hasn't been created yet
-// This is a session cookie, so it'll be re-created every time
-// the user comes back.
-if (!token) {
-    token = (Math.random()+1).toString(36).substring(2, 17)+(Math.random()+1).toString(36).substring(2, 17);
-    document.cookie = cookieName+"="+token+"; path=/";
-}
+    // Set the token if it hasn't been created yet
+    // This is a session cookie, so it'll be re-created every time
+    // the user comes back.
+    if (!token) {
+        token = (Math.random()+1).toString(36).substring(2, 17)+(Math.random()+1).toString(36).substring(2, 17);
+        document.cookie = cookieName+"="+token+"; path=/";
+    }
 
-var inputs = document.getElementsByTagName('input');
-for (var i = 1; i < inputs.length; i++) {
-    if (inputs[i].getAttribute('type') == 'hidden') {
-        if (inputs[i].getAttribute('name').match(fieldNamePattern)) {
-            inputs[i].value=token;
+    var inputs = document.getElementsByTagName('input');
+    for (var i = 1; i < inputs.length; i++) {
+        if (inputs[i].getAttribute('type') == 'hidden') {
+            if (inputs[i].getAttribute('name').match(fieldNamePattern)) {
+                inputs[i].value=token;
+            }
         }
     }
+
+    win.dp_get_csrf_token = function() {
+        return token;
+    };
 }
 
-win.dp_get_csrf_token = function() {
-    return token;
-};
+win.dp_refresh_csrf_token();
+
 })(window);
 */

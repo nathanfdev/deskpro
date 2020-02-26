@@ -25,7 +25,7 @@
                                     <div>
                                         <div class="radios">
                                             <label class="title">
-                                                <input type="radio" id="feedback_rating_p" name="rating" value="-1" {% if feedback.rating == -1 %}checked="checked"{% elseif setrating %}disabled="disabled"{% endif %} />
+                                                <input type="radio" id="feedback_rating_p" name="ticket_feedback[rating]" value="-1" {% if feedback.rating == -1 %}checked="checked"{% elseif setrating %}disabled="disabled"{% endif %} />
                                                 <i></i>
                                                 <span class="label">
                                                     <div class="dp-po-ticket-modal-rating dp-po-ticket-modal-rating-one">
@@ -37,7 +37,7 @@
                                                 </span>
                                             </label>
                                             <label class="title">
-                                                <input id="feedback_rating_0" type="radio" name="rating" value="0" {% if feedback.rating == 0 and rating is not null %}checked="checked"{% elseif setrating %}disabled="disabled"{% endif %} />
+                                                <input id="feedback_rating_0" type="radio" name="ticket_feedback[rating]" value="0" {% if feedback.rating == 0 %}checked="checked"{% elseif setrating %}disabled="disabled"{% endif %} />
                                                 <i></i>
                                                 <span class="label">
                                                     <div class="dp-po-ticket-modal-rating dp-po-ticket-modal-rating-two">
@@ -49,7 +49,7 @@
                                                 </span>
                                             </label>
                                             <label class=" title">
-                                                <input type="radio" id="feedback_rating_n" name="rating" value="1" {% if feedback.rating == 1 %}checked="checked"{% elseif setrating %}disabled="disabled"{% endif %} />
+                                                <input type="radio" id="feedback_rating_n" name="ticket_feedback[rating]" value="1" {% if feedback.rating == 1 %}checked="checked"{% elseif setrating %}disabled="disabled"{% endif %} />
                                                 <i></i>
                                                 <span class="label">
                                                     <div class="dp-po-ticket-modal-rating dp-po-ticket-modal-rating-three">
@@ -66,9 +66,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="feedback_comment">{{ phrase('helpcenter.tickets.feedback_message_leave_comment') }}</label>
-                                <textarea class="form-control" id="feedback_comment" name="message"
+                                <textarea class="form-control" id="feedback_comment" name="ticket_feedback[message]"
                                           placeholder="{{ phrase('helpcenter.tickets.feedback_message_your_comment') }}">{{ feedback.message }}</textarea>
                             </div>
+
+                            {% for widget in form.children if widget.vars.name in ['_token', '_dp_csrf_token'] %}
+                                {{ form_row(widget) }}
+                            {% endfor %}
+
                             <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.tickets.submit_feedback') }}</button>
                         </form>
                     </div>
