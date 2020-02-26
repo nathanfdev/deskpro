@@ -46,8 +46,8 @@ class AddToOrg extends AbstractAction
             }
         }
 
-        if ($org) {
-            $person->organization = $org;
+        if ($org && $person->getOrganization() !== $org) {
+            $person->setOrganization($org);
         }
     }
 }

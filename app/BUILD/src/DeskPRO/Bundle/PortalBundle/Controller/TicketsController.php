@@ -224,12 +224,17 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
+        $canReply = $ticket->isOwner($this->getUser())
+            || (!$this->getUser()->isAgent() && $ticket->isParticipant($this->getUser()))
+            || $ticket->isOrganizationManager($this->getUser());
+
         return $this->renderThemeView('Theme:Tickets:view.html.twig', [
             'ticket'                     => $ticket,
             'ticket_view'                => $ticket_view,
             'timeline_pager'             => $pager,
             'timeline'                   => $timeline,
             'can_edit'                   => $this->isGranted(TicketsVoter::TICKET_EDIT, $ticket),
+            'can_reply'                  => $canReply,
             'form'                       => $form->createView(),
             'breadcrumbs'                => $breadcrumbs,
             'page_title'                 => $this->createPageTitle()->tickets($ticket),

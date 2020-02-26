@@ -3203,7 +3203,7 @@ class Person extends DomainObject implements
             $this->setModelField('organization', $org);
             $this->setModelField('organization_position', '');
             $this->setModelField('organization_manager', false);
-        } else {
+        } elseif ($org !== $this->organization) {
             $this->setModelField('organization', $org);
             $this->setModelField('organization_position', $position);
             $this->setModelField('organization_manager', (bool) $manager);
