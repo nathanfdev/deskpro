@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
@@ -10,7 +8,6 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use Doctrine\ORM\EntityManager;
-use Imagine\Gd\Image;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
@@ -179,6 +176,8 @@ class AssetsManager
             ->select('tsa')
             ->from(ThemeSetAsset::class, 'tsa')
             ->where('tsa.theme_set = ?0 AND tsa.tags = ?1')
+            ->orderBy('tsa.id', 'DESC')
+            ->setMaxResults(1)
             ->setParameters([$this->theme_set, $blobType]);
 
         $asset = $qb->getQuery()->getOneOrNullResult();
