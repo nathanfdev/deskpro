@@ -8,7 +8,6 @@ use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomPhraseType;
 use DeskPRO\Bundle\AppBundle\Form\Type\TranslationType;
@@ -483,6 +482,7 @@ class LanguagesController extends CrudController
      * @Rest\Get("/email_phrases/{group}/{languageId}")
      *
      * @param $languageId
+     * @param mixed $group
      *
      * @return View
      */
@@ -532,6 +532,7 @@ class LanguagesController extends CrudController
                     'user.time.*',
                     'custom.emails.*',
                 ];
+
                 break;
             case 'agent':
                 $phrases = [
@@ -551,6 +552,7 @@ class LanguagesController extends CrudController
                     'agent.news.*',
                     'agent.sidebar.*',
                 ];
+
                 break;
         }
 
@@ -603,7 +605,6 @@ class LanguagesController extends CrudController
      *     output="array"
      * )
      * @Rest\Post("/translations/{phraseName}")
-     * @Feature("email_templates")
      * @ApiUserContext("admin")
      *
      * @param Request $request
@@ -744,6 +745,7 @@ class LanguagesController extends CrudController
 
         if ($this->getManager()->getRepository(Phrase::class)->findOneBy(['name' => $phraseName])) {
             $form->get('name')->addError(new FormError('Duplicate entry.'));
+
             throw new InvalidFormException($form);
         }
 

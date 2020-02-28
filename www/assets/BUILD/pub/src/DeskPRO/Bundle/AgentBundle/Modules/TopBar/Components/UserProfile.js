@@ -31,7 +31,7 @@ class UserProfile extends React.Component {
               <FormattedMessage id="agent.chrome.link_help" />
             </div>
             <div className="voice-profile-menu-item logout" onClick={onClickLogout}>
-              <i className="fas fa-reply" />
+              <i className="fas fa-sign-out-alt" />
               <FormattedMessage id="agent.chrome.link_logout" />
             </div>
           </div>
