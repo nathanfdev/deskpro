@@ -4,8 +4,9 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -39,9 +40,25 @@ class PersonListener implements EventSubscriber
     public function getSubscribedEvents()
     {
         return [
+            'postLoad',
             'postFlush',
             'onClear',
         ];
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     */
+    public function postLoad(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+        if (!$entity instanceof Person) {
+            return;
+        }
+
+        $entity->setIsEmailDomainsLimited(function () use ($entity) {
+            return !$this->container->get('dp_limit_email_domains_checker')->checkPerson($entity);
+        });
     }
 
     /**
@@ -56,7 +73,6 @@ class PersonListener implements EventSubscriber
      * @param Person             $entity
      * @param PreUpdateEventArgs $eventArgs
      *
-     * @return void
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function preUpdate(Person $entity, PreUpdateEventArgs $eventArgs)
