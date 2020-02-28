@@ -358,9 +358,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.100",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.100.tgz",
-      "integrity": "sha512-wbQ8aqOJsKKLPIclQh1/lL0HvJG598qDQSedcBfCZBucVtTB1Z8rQBxA85IYwJiRcK76Dv6vb6bKqzhDesnCMA==",
+      "version": "0.1.101",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.101.tgz",
+      "integrity": "sha512-zAQToxxAue877cTpow7wTHlT3LFDjp5zUh886fHBo/vY3SaDfGiMwfhjZ0i6hRaHQvlV9mho+QsysoJhGbdfeg==",
       "requires": {
         "@deskpro/portal-components": "0.3.67",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -370,6 +370,8 @@
         "contrast": "^1.0.1",
         "formik": "^1.1.1",
         "immer": "^1.7.3",
+        "install": "^0.13.0",
+        "is-mobile": "^2.2.1",
         "moment": "^2.24.0",
         "postcss-color-mod-function": "^3.0.3",
         "prop-types": "^15.6.2",
@@ -531,9 +533,9 @@
           }
         },
         "react-is": {
-          "version": "16.12.0",
-          "resolved": "https://registry.npmjs.org/react-is/-/react-is-16.12.0.tgz",
-          "integrity": "sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q=="
+          "version": "16.13.0",
+          "resolved": "https://registry.npmjs.org/react-is/-/react-is-16.13.0.tgz",
+          "integrity": "sha512-GFMtL0vHkiBv9HluwNZTggSn/sCyEt9n02aM0dSAjGGyqyNlAyftYm4phPxdvCigG15JreC5biwxCgTAJZ7yAA=="
         },
         "react-scrollbar": {
           "version": "0.5.6",
@@ -27328,6 +27330,11 @@
       "integrity": "sha1-610Ql7dUL0x56jBg067gfQU4gPQ=",
       "dev": true
     },
+    "install": {
+      "version": "0.13.0",
+      "resolved": "https://registry.npmjs.org/install/-/install-0.13.0.tgz",
+      "integrity": "sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA=="
+    },
     "interpret": {
       "version": "1.1.0",
       "resolved": "https://registry.npmjs.org/interpret/-/interpret-1.1.0.tgz",
@@ -27569,6 +27576,11 @@
       "requires": {
         "is-extglob": "^2.1.1"
       }
+    },
+    "is-mobile": {
+      "version": "2.2.1",
+      "resolved": "https://registry.npmjs.org/is-mobile/-/is-mobile-2.2.1.tgz",
+      "integrity": "sha512-6zELsfVFr326eq2CI53yvqq6YBanOxKBybwDT+MbMS2laBnK6Ez8m5XHSuTQQbnKRfpDzCod1CMWW5q3wZYMvA=="
     },
     "is-my-ip-valid": {
       "version": "1.0.0",
