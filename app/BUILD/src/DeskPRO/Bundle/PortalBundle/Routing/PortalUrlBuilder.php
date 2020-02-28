@@ -64,7 +64,7 @@ class PortalUrlBuilder
                 $path = substr($path, strlen(ltrim($baseUrl, '/')));
             }
 
-            if ($originalPath !== $path || preg_match('#/b/[\w\d-_]+#', $baseUrl)) {
+            if ($originalPath !== $path || preg_match('#/b/[\w\d\-_]+#', $baseUrl)) {
                 $parts[] = trim($baseUrl, '/');
             }
         }
