@@ -316,7 +316,7 @@ class PortalEditor extends React.Component {
             <div>
               <div className="top-menu">
                 <DropDownMenu
-                  icon="mail"
+                  icon="fa-file-code"
                   label={this.props.portalEditor.getIn(['currentTemplate', 'name'], currentTemplate)}
                   className="emails-block-button"
                   ref={(c) => { this.templateMenu = c; }}

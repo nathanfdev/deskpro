@@ -47,6 +47,13 @@ class TemplatesMenu extends React.Component {
     selectTemplate: PropTypes.func
   };
 
+  static getMenuLabel = (template) => {
+    if (template.get('custom', false)) {
+      return <span>{template.get('name')} <span title="modified">(*)</span></span>;
+    }
+    return template.get('name');
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -91,7 +98,7 @@ class TemplatesMenu extends React.Component {
                   className="template"
                   onClick={() => this.props.selectTemplate(template)}
                 >
-                  {template.get('name')}
+                  {TemplatesMenu.getMenuLabel(template)}
                 </MenuItem>
             ).toArray()
           }
