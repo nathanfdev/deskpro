@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AgentLoginAlert extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * User IP.
      *
@@ -83,5 +85,13 @@ class AgentLoginAlert extends EmailBaseType
         $this->clientReferringPage = $clientReferringPage;
         $this->firstSeen           = $firstSeen;
         $this->success             = (string) $success;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventCodeType()
+    {
+        return 'login';
     }
 }

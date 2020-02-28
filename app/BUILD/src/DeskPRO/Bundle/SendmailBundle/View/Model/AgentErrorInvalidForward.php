@@ -6,6 +6,8 @@ use JMS\Serializer\Annotation as JMS;
 
 class AgentErrorInvalidForward extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * Error code.
      *
@@ -20,5 +22,10 @@ class AgentErrorInvalidForward extends EmailBaseType
     public function __construct($error)
     {
         $this->error = $error;
+    }
+
+    public function getEventCodeType()
+    {
+        return 'error';
     }
 }

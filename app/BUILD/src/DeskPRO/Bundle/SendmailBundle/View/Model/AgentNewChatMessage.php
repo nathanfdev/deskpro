@@ -8,6 +8,8 @@ use JMS\Serializer\Annotation as JMS;
 
 class AgentNewChatMessage extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * The chat message.
      *
@@ -32,5 +34,13 @@ class AgentNewChatMessage extends EmailBaseType
     {
         $this->chatMessage = $chatMessage;
         $this->author      = $author;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventCodeType()
+    {
+        return 'im';
     }
 }

@@ -101,4 +101,12 @@ abstract class EmailBaseType
     {
         $this->deskproUrl = $deskproUrl;
     }
+
+    /**
+     * @return string
+     */
+    public function getEventCodeType()
+    {
+        return '';
+    }
 }

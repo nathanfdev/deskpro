@@ -16,6 +16,10 @@
         <!--{{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}-->
 {% endif %}
 
+{% if event_code %}
+   <br /><span style="font-family: monospace; font-size: 8px; color: #CCC">{{ event_code }}</span>
+{% endif %}
+
 {% if not tplvars.agent_reply_above_line %}
     <!--DP_TOP_MARK--><a
         class="DP_TOP_MARK dp_marker_link {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}"

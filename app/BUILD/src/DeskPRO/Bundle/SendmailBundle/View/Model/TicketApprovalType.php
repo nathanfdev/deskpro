@@ -10,8 +10,6 @@ use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class TicketApprovalType
- *
- * @package DeskPRO\Bundle\SendmailBundle\View\Model
  */
 abstract class TicketApprovalType extends EmailBaseType
 {
@@ -130,18 +128,17 @@ abstract class TicketApprovalType extends EmailBaseType
         $rejectUrl,
         ApprovalResponse $approvalResponse = null,
         array $allResponses = []
-    )
-    {
-        $this->recipientType = $recipientType;
-        $this->ticket = $ticket;
-        $this->approval = $approval;
-        $this->approvalResponse = $approvalResponse;
-        $this->recipient = $recipient;
-        $this->isOwner = $isOwner;
-        $this->approveUrl = $approveUrl;
-        $this->rejectUrl = $rejectUrl;
+    ) {
+        $this->recipientType         = $recipientType;
+        $this->ticket                = $ticket;
+        $this->approval              = $approval;
+        $this->approvalResponse      = $approvalResponse;
+        $this->recipient             = $recipient;
+        $this->isOwner               = $isOwner;
+        $this->approveUrl            = $approveUrl;
+        $this->rejectUrl             = $rejectUrl;
         $this->hasRecipientResponded = $hasRecipientResponded;
-        $this->allResponses = $allResponses;
+        $this->allResponses          = $allResponses;
     }
 
     /**
@@ -238,5 +235,10 @@ abstract class TicketApprovalType extends EmailBaseType
     public function setAllResponses(array $allResponses)
     {
         $this->allResponses = $allResponses;
+    }
+
+    public function getEventCodeType()
+    {
+        return 'ticket_approval';
     }
 }
