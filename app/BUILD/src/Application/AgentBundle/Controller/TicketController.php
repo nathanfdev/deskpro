@@ -4599,7 +4599,8 @@ class TicketController extends AbstractController
                 $fromName,
                 $customMessage,
                 $messages,
-                $options
+                $options,
+                $attachments
             );
         }
 
@@ -4683,6 +4684,7 @@ class TicketController extends AbstractController
      * @param string $customMessage
      * @param array  $messages
      * @param array  $options
+     * @param array  $attachments
      *
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
@@ -4698,7 +4700,8 @@ class TicketController extends AbstractController
         $fromName,
         $customMessage,
         $messages,
-        $options
+        $options,
+        $attachments
     ) {
         $this->em->beginTransaction();
         $doAssignAgent = array_key_exists('do_assign_agent', $options) && $options['do_assign_agent'] === 'true';
@@ -4812,6 +4815,12 @@ class TicketController extends AbstractController
         $ticketMessage->setIpAddress($this->getRequest()->getClientIp());
         $ticketMessage->setCreationSystem(Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL);
         $ticketMessage->setMessageHtml($customMessage);
+        foreach ($attachments as $blob) {
+            $attachment = new TicketAttachment();
+            $attachment->setBlob($blob);
+            $attachment->setPerson($this->person);
+            $ticketMessage->addAttachment($attachment);
+        }
 
         $ticket->addMessage($ticketMessage);
 
@@ -4853,7 +4862,8 @@ class TicketController extends AbstractController
                 ->createAgentTicketForwardModel(
                     $ticket,
                     $customMessage,
-                    $this->in->getString('subject')
+                    $this->in->getString('subject'),
+                    $attachments
                 );
 
             $message = $ticketEmail->prepareMailerMessage([], false);

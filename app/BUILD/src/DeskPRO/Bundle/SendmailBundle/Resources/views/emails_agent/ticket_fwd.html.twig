@@ -14,6 +14,20 @@
 
     <br><br/>
 
+    {% if app.isPortalEnabled() and attachments | filter(a => not a.is_inline)  | length > 0 and not app.getSetting('core_tickets.disable_attachments_list') %}
+        <div style="font-size:11px">
+            <br />
+            <strong>{{ phrase('user.emails.attachments') }}</strong>
+            {% for attach in attachments %}
+                {% if not attach.is_inline  %}
+                    <br />
+                    &bull; <a href="{{ attach.blob.download_url }}" style="{{ _self.link_style() }}">{{attach.blob.filename}}</a> ({{ attach.blob.filesize_readable }})
+                    <attachment id="{{ attach.blob.blob_auth }}" filename="{{attach.blob.filename}}" />
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
     ---------- {{ phrase('agent.tickets.forwarded_message') }} ----------<br/>
     {% for message in ticket_messages %}
     <strong>{{ phrase('agent.general.from') }}:</strong> {{ message.person.display_name }} &lt;{{ message.person.primary_email }}&gt;<br/>
