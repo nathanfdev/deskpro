@@ -120,13 +120,17 @@
                                                                     <div>
                                                                         <div class="bucket">
                                                                             <label class="title">{{ phrase('portal.forms.label_name') }}: *</label>
-                                                                            <input placeholder="{{ phrase('portal.tickets.view_label_your_name_placeholder') }}" name="name" type="text" required>
+                                                                            <input placeholder="{{ phrase('portal.tickets.view_label_your_name_placeholder') }}" name="ticket_add_cc[name]" type="text" required>
                                                                         </div>
 
                                                                         <div class="bucket">
                                                                             <label class="title">{{ phrase('portal.forms.label_email') }}: *</label>
-                                                                            <input name="email" placeholder="{{ phrase('portal.tickets.view_label_your_email_placeholder') }}" type="text" required>
+                                                                            <input name="ticket_add_cc[email]" placeholder="{{ phrase('portal.tickets.view_label_your_email_placeholder') }}" type="text" required>
                                                                         </div>
+
+                                                                        {% for widget in add_cc_form.children if widget.vars.name in ['_token', '_dp_csrf_token'] %}
+                                                                            {{ form_row(widget) }}
+                                                                        {% endfor %}
 
                                                                         <div class="bucket">
                                                                             <input type="submit" value="{{ phrase('portal.tickets.view_btn_add_to_ticket') }}">

@@ -49,20 +49,25 @@
                             <form class="form-ticket" action="{{ path('portal_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
                                 <div class="dp-choice-widget-group with-dpx">
                                     <div class="radio-button dpx-radio-button" tabindex="0">
-                                        <input type="radio" id="feedback_rating_p" name="rating" value="1" {% if feedback.rating == 1 %}checked="checked"{% endif %} />
+                                        <input type="radio" id="feedback_rating_p" name="ticket_feedback[rating]" value="1" {% if feedback.rating == 1 %}checked="checked"{% endif %} />
                                         <label style="text-align: left" class="title" for="feedback_rating_p">{{ phrase('portal.tickets.rate-positive') }}</label>
                                     </div>
                                     <div class="radio-button dpx-radio-button" tabindex="0">
-                                        <input id="feedback_rating_0" type="radio" name="rating" value="0" {% if feedback.rating == 0 %}checked="checked"{% endif %} />
+                                        <input id="feedback_rating_0" type="radio" name="ticket_feedback[rating]" value="0" {% if feedback.rating == 0 %}checked="checked"{% endif %} />
                                         <label class="title" style="text-align: left" for="feedback_rating_0">{{ phrase('portal.tickets.rate-neutral') }}</label>
                                     </div>
                                     <div class="radio-button dpx-radio-button" tabindex="0">
-                                        <input type="radio" id="feedback_rating_n" name="rating" value="-1" {% if feedback.rating == -1 %}checked="checked"{% endif %} />
+                                        <input type="radio" id="feedback_rating_n" name="ticket_feedback[rating]" value="-1" {% if feedback.rating == -1 %}checked="checked"{% endif %} />
                                         <label class="title" style="text-align: left" for="feedback_rating_n">{{ phrase('portal.tickets.rate-negative') }}</label>
                                     </div>
                                 </div>
-                                <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
+                                <textarea name="ticket_feedback[message]" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
                                 <br />
+
+                                {% for widget in form.children if widget.vars.name in ['_token', '_dp_csrf_token'] %}
+                                    {{ form_row(widget) }}
+                                {% endfor %}
+
                                 <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">
                                     {% if feedback.id %}
                                         {{ phrase('portal.tickets.view_btn_edit') }}
@@ -76,10 +81,15 @@
                             <p>{{ phrase('user.tickets.rate-thanks-vialink') }}</p>
 
                             <form action="{{ path('portal_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
-                                <input type="hidden" name="rating" value="{{ feedback.rating }}" />
-                                <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
+                                <input type="hidden" name="ticket_feedback[rating]" value="{{ feedback.rating }}" />
+                                <textarea name="ticket_feedback[message]" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
 
                                 <br />
+
+                                {% for widget in form.children if widget.vars.name in ['_token', '_dp_csrf_token'] %}
+                                    {{ form_row(widget) }}
+                                {% endfor %}
+
                                 <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">
                                     {% if feedback.id %}
                                         {{ phrase('portal.tickets.view_btn_edit') }}

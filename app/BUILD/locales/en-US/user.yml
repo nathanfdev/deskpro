@@ -446,6 +446,7 @@ portal.flashes.news_unsubscribe_everything: 'You have unsubscribed from all news
 portal.flashes.rating_thanks: 'Thank you for your feedback!'
 portal.flashes.ticket_created: 'Your ticket has been submitted. Thanks!'
 portal.flashes.ticket_feedback_thank_you: 'Thank you for your feedback!'
+portal.flashes.ticket_feedback_unknown_error: 'There was a problem when trying to send feedback. Please try again.'
 portal.flashes.ticket_participant_add: 'We have added {{name}} ({{email}}) as a participant to this ticket.'
 portal.flashes.ticket_participant_add_unknown_error: 'There was a problem when trying to add your participant. Please try again.'
 portal.flashes.ticket_participant_already_error: 'The person you tried to add as a participant is already a participant on this ticket.'
