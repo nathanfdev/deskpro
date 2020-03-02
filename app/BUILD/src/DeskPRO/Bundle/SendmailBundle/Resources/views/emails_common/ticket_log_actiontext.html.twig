@@ -479,7 +479,7 @@
 		{% endif %}
 		<ul>
 			{% for part in log.details.added %}
-				<li>{{ phrase('agent.general.added') }}: {{ part.name }} &lt;{ part.email }}&gt;</li>
+				<li>{{ phrase('agent.general.added') }}: {{ part.name }} &lt;{{ part.email }}&gt;</li>
 			{% endfor %}
 			{% for part in log.details.removed %}
 				<li>{{ phrase('agent.general.removed') }}: {{ part.name }} &lt;{{ part.email }}&gt;</li>
