@@ -186,6 +186,13 @@
 
 				<footer>
 					<div class="dp-content">
+                        <div class="text-danger ng-hide" ng-show="form_errors.errors[0].message">
+                            <p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+                            <ul>
+                                <li ng-show="form_errors.errors[0].message">{{ ng_var('form_errors.errors[0].message') }}</li>
+                            </ul>
+                        </div>
+
 						<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 							<div dp-hide-spinning="saving">
 								<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>

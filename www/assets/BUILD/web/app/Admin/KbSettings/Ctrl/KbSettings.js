@@ -7,7 +7,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     init() {
-      return this.$scope.brand_id = this.$stateParams.brandId;
+      this.$scope.form_errors = {};
+      this.$scope.brand_id = this.$stateParams.brandId;
     }
 
     initialLoad() {
@@ -15,11 +16,23 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     save() {
+      this.$scope.form_errors = {};
       this.startSpinner('saving');
-      return this.Api2.sendPostJson(`/settings/brands/${this.$scope.brand_id}/portal/kb`, this.$scope.settings).then(() => {
-        this.Growl.success('Settings saved');
-        return this.stopSpinner('saving');
-      });
+
+      return this.Api2.sendPostJson(`/settings/brands/${this.$scope.brand_id}/portal/kb`, this.$scope.settings).then(
+        () => {
+          this.Growl.success('Settings saved');
+          this.stopSpinner('saving');
+        },
+        (response) => {
+          this.stopSpinner('saving');
+
+          if (response.status === 400) {
+            const { errors } = response.data;
+            this.$scope.form_errors = errors;
+          }
+        }
+      );
     }
   }
   Admin_KbSettings_Ctrl_KbSettings.initClass();

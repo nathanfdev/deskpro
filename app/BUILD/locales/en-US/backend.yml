@@ -4583,8 +4583,8 @@ agent.publish.please_choose_file: 'Please choose a file'
 agent.publish.please_enter_title: 'Please enter a title'
 agent.publish.please_enter_content: 'Please enter a content'
 agent.publish.please_enter_review_date: 'Please enter a correct review date'
-agent.publish.review_date_interval_too_small: 'Review date interval is too small'
-agent.publish.review_date_interval_too_big: 'Review date interval is too big'
+agent.publish.review_date_interval_too_small: 'Review date interval must be at least {{ interval }} {{ unit }}'
+agent.publish.review_date_interval_too_big: 'Review date interval must be no more than {{ interval }} {{ unit }}'
 agent.publish.please_select_category: 'Please select a category'
 agent.publish.please_select_guide: 'Please select a guide'
 agent.publish.post: Post
@@ -5897,6 +5897,9 @@ api.error_codes.user_has_no_org: 'Cannot submit request as this user does not be
 api.error_codes.org_has_no_managers: "Cannot submit request as this user's organization has no defined manager."
 api.error_codes.not_enough_approvers: "There aren't enough approvers defined to meet required approvals/rejections"
 api.error_codes.min_number_of_approvers_greater_than_to_approve_or_reject: "Minimum number of approvers value must not be greater than To approve or To Reject values"
+api.error_codes.default_review_date_less_than_min_review_date: "Default review date interval should be greater than or equal to the min review date interval."
+api.error_codes.default_review_date_greater_than_max_review_date: "Default review date interval should be less than or equal to the max review date interval."
+api.error_codes.min_review_date_greater_than_max_review_date: "Max review date interval should greater than or equal to min review date interval."
 api.oauth.authorize_accept: Access
 api.oauth.authorize_reject: Deny
 api.oauth.authorize_title: 'Grant access to {{name}}'

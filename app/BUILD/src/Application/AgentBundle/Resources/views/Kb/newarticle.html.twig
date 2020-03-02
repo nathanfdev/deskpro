@@ -134,8 +134,8 @@ pageMeta.baseId = '{{ baseId }}';
             </select>
         </div>
         <div class="error-message review_date-required">{{ phrase('agent.publish.please_enter_review_date') }}</div>
-        <div class="error-message review_date-min">{{ phrase('agent.publish.review_date_interval_too_small') }}</div>
-        <div class="error-message review_date-max">{{ phrase('agent.publish.review_date_interval_too_big') }}</div>
+        <div class="error-message review_date-min">{{ phrase('agent.publish.review_date_interval_too_small', {'interval': min_review_date_interval, 'unit': min_review_date_unit}) }}</div>
+        <div class="error-message review_date-max">{{ phrase('agent.publish.review_date_interval_too_big', {'interval': max_review_date_interval, 'unit': max_review_date_unit}) }}</div>
     </div>
 </div>
 {% endif %}

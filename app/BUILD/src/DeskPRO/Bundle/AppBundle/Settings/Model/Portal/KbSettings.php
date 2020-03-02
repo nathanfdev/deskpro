@@ -2,12 +2,19 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Portal;
 
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * Class KbSettings.
+ *
+ * @Assert\GroupSequenceProvider
+ *
+ * @AppAssert\Settings\KbReviewDate
  */
-class KbSettings extends AbstractAppSettings
+class KbSettings extends AbstractAppSettings implements GroupSequenceProviderInterface
 {
     /**
      * @var bool
@@ -34,6 +41,8 @@ class KbSettings extends AbstractAppSettings
      * @var int
      *
      * @JMS\Type("integer")
+     *
+     * @Assert\GreaterThanOrEqual(value="1", groups={"MinReviewDate"})
      */
     protected $minReviewDateInterval;
 
@@ -55,6 +64,8 @@ class KbSettings extends AbstractAppSettings
      * @var int
      *
      * @JMS\Type("integer")
+     *
+     * @Assert\GreaterThanOrEqual(value="1", groups={"MaxReviewDate"})
      */
     protected $maxReviewDateInterval;
 
@@ -76,6 +87,8 @@ class KbSettings extends AbstractAppSettings
      * @var int
      *
      * @JMS\Type("integer")
+     *
+     * @Assert\GreaterThanOrEqual(value="1", groups={"DefaultReviewDate"})
      */
     protected $defaultReviewDateInterval;
 
@@ -97,6 +110,8 @@ class KbSettings extends AbstractAppSettings
      * @var int
      *
      * @JMS\Type("integer")
+     *
+     * @Assert\GreaterThanOrEqual(value="1", groups={"AutoUnpublishReviewDate"})
      */
     protected $autoUnpublishReviewInterval;
 
@@ -385,5 +400,28 @@ class KbSettings extends AbstractAppSettings
         $this->autoUnpublishReviewUnit = $autoUnpublishReviewUnit;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['KbSettings'];
+
+        if ($this->isMinReviewDate()) {
+            $groups[] = 'MinReviewDate';
+        }
+        if ($this->isMaxReviewDate()) {
+            $groups[] = 'MaxReviewDate';
+        }
+        if ($this->isDefaultReviewDate()) {
+            $groups[] = 'DefaultReviewDate';
+        }
+        if ($this->isAutoUnpublishReview()) {
+            $groups[] = 'AutoUnpublishReviewDate';
+        }
+
+        return $groups;
     }
 }
