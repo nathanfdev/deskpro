@@ -103,7 +103,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
 
         // Never redirect back to login controller, can cause loops
         if (strpos($redirectUrl, 'login') !== false) {
-            $redirectUrl = $this->options['default_target_path'];
+            $redirectUrl = $this->container->get('router')->generate('portal_home');
         }
 
         if ($request->isXmlHttpRequest()) {
@@ -186,7 +186,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
             }
         }
 
-        return $this->container->get('portal_url_builder')->buildUrl($this->options['default_target_path']);
+        return $this->container->get('router')->generate('portal_home');
     }
 
     /**
