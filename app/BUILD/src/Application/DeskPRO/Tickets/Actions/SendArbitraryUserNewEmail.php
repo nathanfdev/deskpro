@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
@@ -188,7 +186,13 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
             /** @var TicketEmail $ticketEmail */
             $ticketEmail = $builder->setToPerson($person)->buildTicketEmail();
 
-            $message = $ticketEmail->prepareMailerMessage([], false);
+            $vars = [];
+
+            if (isset($lastMessage)) {
+                $vars['attached_blobs'] = $this->getLastMessageAttachments($ticket, $lastMessage, $context, $isAuto);
+            }
+
+            $message = $ticketEmail->prepareMailerMessage($vars, false);
 
             $message = $this->getContainer()->get('email.email_sender')
                 ->prepareMessage($viewModel, $messagesArgs, $message);

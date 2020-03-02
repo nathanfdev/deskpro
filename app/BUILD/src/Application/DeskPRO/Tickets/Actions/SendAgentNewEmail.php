@@ -218,25 +218,28 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
         $changedParticipants = $state->hasChangedField('participants');
         $changedStatus       = $state->hasChangedField('status');
 
+        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
+        $messageRepo = $this->getContainer()->getEm()->getRepository(TicketMessage::class);
+        $messages    = $messageRepo->getTicketMessages(
+            $ticket,
+            [
+                'with_notes'       => false,
+                'with_attachments' => true,
+                'limit'            => 15,
+                'order'            => 'DESC',
+            ]
+        );
         switch ($context->getEventType()) {
             case TicketTrigger::EVENT_TYPE_NEWTICKET:
+                if ($messages) {
+                    $lastMessage = array_shift($messages);
+                }
             case TicketTrigger::EVENT_TYPE_UPDATE:
             case 'system':
                 $arguments = [$ticket];
 
                 break;
             case TicketTrigger::EVENT_TYPE_NEWREPLY:
-                /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
-                $messageRepo = $this->getContainer()->getEm()->getRepository(TicketMessage::class);
-                $messages    = $messageRepo->getTicketMessages(
-                    $ticket,
-                    [
-                        'with_notes'       => false,
-                        'with_attachments' => true,
-                        'limit'            => 15,
-                        'order'            => 'DESC',
-                    ]
-                );
                 if ($messages) {
                     $lastMessage = array_shift($messages);
                     $arguments   = [$ticket, $lastMessage];
@@ -308,7 +311,13 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
             /** @var TicketEmail $ticketEmail */
             $ticketEmail = $emailBuilder->setToPerson($agent)->buildTicketEmail();
 
-            $message = $ticketEmail->prepareMailerMessage([], false);
+            $vars = [];
+
+            if (isset($lastMessage)) {
+                $vars['attached_blobs'] = $this->getLastMessageAttachments($ticket, $lastMessage, $context);
+            }
+
+            $message = $ticketEmail->prepareMailerMessage($vars, false);
             $message = $this->getContainer()->get('email.email_sender')
                 ->prepareMessage($viewModel, $messagesArgs, $message);
 

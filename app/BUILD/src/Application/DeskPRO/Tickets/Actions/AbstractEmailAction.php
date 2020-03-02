@@ -3,6 +3,8 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\ORM\StateChange\ChangeEmailLog;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmail;
@@ -347,5 +349,47 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         }
 
         return $model;
+    }
+
+    protected function getLastMessageAttachments(Ticket $ticket, $lastMessage, $context, $isAuto = false)
+    {
+        $state = $ticket->getStateChangeRecorder();
+
+        /** @var TicketAttachment[] $lastMessageAttachments */
+        $lastMessageAttachments = [];
+        if ($state->hasNewReply() && !$isAuto) {
+            /** @var TicketMessage $lastMessage */
+
+            // This check is because theoretically, the entire thread
+            // could be agent notes (e.g., first message was turned into a note).
+            // So if this is an email to a user, messages array will be empty
+            // and this check will prevent warnings about trying to use a null $last_message.
+
+            if ($lastMessage) {
+                $maxSize = $this->getContainer()->getSetting('core.sendemail_attach_maxsize');
+
+                $context->getLogger()->info(sprintf('[TicketEmail] New reply on #%d checking for attachments <= %d', $lastMessage->getId(), $maxSize));
+
+                $attachments = $lastMessage->getAttachments();
+                if (count($attachments)) {
+                    $context->getLogger()->info(sprintf('[TicketEmail] Message has %d attachments', count($attachments)));
+                    foreach ($attachments as $attachment) {
+                        $blob = $attachment->getBlob();
+
+                        if ($blob->getFilesize() <= $maxSize) {
+                            $context->getLogger()->info(sprintf('[TicketEmail] Adding attachment %s', $blob->getFilename()));
+                            $lastMessageAttachments[$attachment->getId()] = $attachment;
+                            $maxSize -= $blob->getFilesize();
+                        } else {
+                            $context->getLogger()->info(sprintf('[TicketEmail] Skipping attachment %s', $blob->getFilename()));
+                        }
+                    }
+                } else {
+                    $context->getLogger()->info(sprintf('[TicketEmail] Message has no attachments'));
+                }
+            }
+        }
+
+        return $lastMessageAttachments;
     }
 }

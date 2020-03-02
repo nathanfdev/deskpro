@@ -283,6 +283,7 @@ class TicketEmail
                 $this->logger->info(sprintf('[TicketEmail] to_email(3): %s', $toEmail));
             } else {
                 $this->logger->info(sprintf('[TicketEmail] to_email(4): no email'));
+
                 throw new \RuntimeException('no email address');
             }
 
@@ -314,7 +315,7 @@ class TicketEmail
         if (isset($vars['attached_blobs'])) {
             /** @var TicketAttachment $attachment */
             foreach ($vars['attached_blobs'] as $attachment) {
-                $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), false);
+                $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());
             }
         }
 
@@ -333,6 +334,7 @@ class TicketEmail
 
                     if ($this->isAuto && $p->disable_autoresponses) {
                         $this->logger->info(sprintf('[TicketEmail] CC skipped because autoresponder: %s -- Name: %s', $ccEmail, $ccName));
+
                         continue;
                     }
 
@@ -350,6 +352,7 @@ class TicketEmail
 
         if (!$this->fromEmailAccount) {
             $this->logger->warning(sprintf('[TicketEmail] No from email to send mail from!'));
+
             throw new \RuntimeException('No from email to send mail from');
         }
 
