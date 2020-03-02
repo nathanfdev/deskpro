@@ -6,6 +6,8 @@ use JMS\Serializer\Annotation as JMS;
 
 class AgentTicketForward extends AgentTicketEmailType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * The agent message.
      *

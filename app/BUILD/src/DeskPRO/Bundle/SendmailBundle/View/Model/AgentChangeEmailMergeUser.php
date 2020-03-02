@@ -4,6 +4,8 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 class AgentChangeEmailMergeUser extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * The previous email address.
      *

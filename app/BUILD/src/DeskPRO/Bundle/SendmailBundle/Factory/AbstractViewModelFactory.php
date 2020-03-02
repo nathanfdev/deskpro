@@ -30,6 +30,8 @@ use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EventCodeEmailBaseType;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalType;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -184,13 +186,22 @@ abstract class AbstractViewModelFactory
      */
     protected function convertParameters($class, $arguments = [])
     {
-        foreach ($arguments as &$argument) {
-            $argument = $this->convertParameter($argument);
+        $convertedArguments = [];
+        foreach ($arguments as $argument) {
+            $convertedArguments[] = $this->convertParameter($argument);
         }
 
         $reflection = new ReflectionClass($class);
 
-        return $reflection->newInstanceArgs($arguments);
+        /** @var EmailBaseType $viewModel */
+        $viewModel =  $reflection->newInstanceArgs($convertedArguments);
+
+        if (in_array(EventCodeEmailBaseType::class, class_uses($viewModel)) || $viewModel instanceof TicketApprovalType) {
+            $viewModel->setEmailSourceId(substr(sha1($this->container->getSetting('core.deskpro_uuid')), 0, 6));
+            $viewModel->setEventCode();
+        }
+
+        return $viewModel;
     }
 
     /**

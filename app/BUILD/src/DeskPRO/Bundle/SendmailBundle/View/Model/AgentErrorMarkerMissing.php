@@ -7,14 +7,16 @@ use JMS\Serializer\Annotation as JMS;
 
 class AgentErrorMarkerMissing extends AgentTicketEmailType
 {
+    use EventCodeEmailBaseType;
+
     /**
-    * Subject of the email received.
-    *
-    * @JMS\Type("string")
-    *
-    * @var string
-    */
-   protected $subject;
+     * Subject of the email received.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $subject;
 
     protected $templateFile = 'emails_agent:error_marker_missing.html.twig';
 
@@ -34,5 +36,10 @@ class AgentErrorMarkerMissing extends AgentTicketEmailType
         parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $ticketSatisfaction, $participants, $ticketLayout, $customFields, $customUserFields);
 
         $this->subject = $subject;
+    }
+
+    public function getEventCodeType()
+    {
+        return 'error';
     }
 }

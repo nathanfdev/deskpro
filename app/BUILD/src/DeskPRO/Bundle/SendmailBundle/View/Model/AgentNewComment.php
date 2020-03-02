@@ -8,6 +8,8 @@ use JMS\Serializer\Annotation as JMS;
 
 class AgentNewComment extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * The new comment.
      *
@@ -60,5 +62,13 @@ class AgentNewComment extends EmailBaseType
         $this->object     = $object;
         $this->objectType = $objectType;
         $this->loginLink  = $loginLink;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventCodeType()
+    {
+        return 'publish';
     }
 }

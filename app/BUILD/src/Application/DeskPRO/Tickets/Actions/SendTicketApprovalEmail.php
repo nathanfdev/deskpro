@@ -50,7 +50,9 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
 
     /**
      * {@inheritDoc}
+     *
      * @param ExecutorContext $context
+     *
      * @throws \Exception
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
@@ -71,7 +73,7 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
             return;
         }
 
-        $approval = $context->getApproval();
+        $approval         = $context->getApproval();
         $approvalResponse = $context->getApprovalResponse();
 
         $recipients = $this->buildRecipientsList(
@@ -88,10 +90,10 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
         }
 
         $vars = [
-            'ticket' => $ticket,
-            'approval' => $approval,
+            'ticket'            => $ticket,
+            'approval'          => $approval,
             'approval_response' => $approvalResponse,
-            'approve_url' => $this->getContainer()->get('router')->generate(
+            'approve_url'       => $this->getContainer()->get('router')->generate(
                 'ticket_approvals_approve',
                 ['id' => $approval->getId()],
                 UrlGeneratorInterface::ABSOLUTE_URL
@@ -142,6 +144,9 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
                             $vars['reject_url'],
                             $vars['approval_response']
                         );
+
+                        $viewModel->setEventCode();
+
                         $this->getEmailSender()->send($viewModel, ['to' => $recipient]);
                     } else {
                         $agentTicketEmail = $agentEmailBuilder->setToPerson($recipient)->buildTicketEmail();
@@ -184,14 +189,16 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
      * @param Ticket                   $ticket
      * @param ExecutorContextInterface $context
      * @param bool                     $isOwner
-     * @return TicketEmailBuilder|bool
+     *
      * @throws \Exception
+     *
+     * @return TicketEmailBuilder|bool
      */
     private function getTicketEmailBuilder($recipientType, Ticket $ticket, ExecutorContextInterface $context, $isOwner)
     {
         try {
             $templateName = $this->buildEmailTemplateName($recipientType, $context, $isOwner);
-            $fromAccount = $this->getFromEmailAccountOption($ticket, $context);
+            $fromAccount  = $this->getFromEmailAccountOption($ticket, $context);
         } catch (\InvalidArgumentException $e) {
             $context->getLogger()->warn("[SendTicketApprovalEmail] Error {$e->getMessage()}");
 
@@ -233,8 +240,10 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
      * @param string                   $recipientType user|agent
      * @param ExecutorContextInterface $context
      * @param bool                     $isOwner
-     * @return string
+     *
      * @throws \Exception
+     *
+     * @return string
      */
     private function buildEmailTemplateName($recipientType, ExecutorContextInterface $context, $isOwner)
     {
@@ -249,6 +258,7 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
             $context->getLogger()->warn(
                 sprintf('[SendTicketApprovalEmail] Template [%s] does not exist', $templateName)
             );
+
             throw new \InvalidArgumentException('invalid_template');
         }
 
@@ -260,8 +270,10 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
      * @param AbstractBaseApproval $approval
      * @param bool                 $sendToApprovers
      * @param bool                 $sendToOwner
-     * @return Person[]
+     *
      * @throws \Exception
+     *
+     * @return Person[]
      */
     private function buildRecipientsList(
         Ticket $ticket,
@@ -297,8 +309,9 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     }
 
     /**
-     * @return bool
      * @throws \Exception
+     *
+     * @return bool
      */
     private function hasEmailTemplatesFeature()
     {
@@ -312,8 +325,9 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     }
 
     /**
-     * @return AgentViewModelFactory
      * @throws \Exception
+     *
+     * @return AgentViewModelFactory
      */
     private function getAgentViewModelFactory()
     {
@@ -321,8 +335,9 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     }
 
     /**
-     * @return UserViewModelFactory
      * @throws \Exception
+     *
+     * @return UserViewModelFactory
      */
     private function getUserViewModelFactory()
     {
@@ -330,8 +345,9 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     }
 
     /**
-     * @return EmailSender
      * @throws \Exception
+     *
+     * @return EmailSender
      */
     private function getEmailSender()
     {
@@ -340,6 +356,7 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
 
     /**
      * @param mixed $value
+     *
      * @return boolean
      */
     private function duckTypeBoolean($value)

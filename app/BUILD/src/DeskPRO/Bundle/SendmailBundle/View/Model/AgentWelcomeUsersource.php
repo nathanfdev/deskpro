@@ -8,6 +8,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 class AgentWelcomeUsersource extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * Link to agent interface.
      *
@@ -38,5 +40,13 @@ class AgentWelcomeUsersource extends EmailBaseType
     {
         $this->loginLink     = $router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $this->agentPassword = $agentPassword;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventCodeType()
+    {
+        return 'login';
     }
 }

@@ -6,6 +6,8 @@ use JMS\Serializer\Annotation as JMS;
 
 class AgentWelcome extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * Link to agent interface.
      *
@@ -36,5 +38,13 @@ class AgentWelcome extends EmailBaseType
     {
         $this->loginLink     = $loginLink;
         $this->agentPassword = $agentPassword;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventCodeType()
+    {
+        return 'login';
     }
 }

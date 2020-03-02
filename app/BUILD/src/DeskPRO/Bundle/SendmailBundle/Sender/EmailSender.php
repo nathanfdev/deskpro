@@ -13,6 +13,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EventCodeEmailBaseType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -183,6 +184,16 @@ class EmailSender
         if (isset($options['headers'])) {
             foreach ($options['headers'] as $header) {
                 $message->getHeaders()->addTextHeader($header['name'], $header['value']);
+            }
+        }
+
+        if (in_array(EventCodeEmailBaseType::class, class_uses($model))) {
+            /** @var EventCodeEmailBaseType $model */
+            if ($model->getEmailSourceId()) {
+                $message->getHeaders()->addTextHeader('X-Deskpro-EmailSourceId', $model->getEmailSourceId());
+            }
+            if ($model->getEventCodeType()) {
+                $message->getHeaders()->addTextHeader('X-Deskpro-EmailEvent', $model->getEventCodeType());
             }
         }
 
