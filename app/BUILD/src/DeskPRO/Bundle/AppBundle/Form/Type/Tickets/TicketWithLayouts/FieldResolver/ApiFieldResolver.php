@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
@@ -91,6 +92,15 @@ class ApiFieldResolver extends AbstractFieldResolver
      */
     protected function createPerson(TicketWithLayoutsContext $context)
     {
+        if ($context->isMessengerType()) {
+            return new FormField(CombinedType::class, [
+                'forms' => [
+                    $this->createUserNameOptions($context),
+                    $this->createUserEmailOptions($context),
+                ],
+            ]);
+        }
+
         $options = [
             'property_path' => 'person',
             'person'        => $context->getPerson(),

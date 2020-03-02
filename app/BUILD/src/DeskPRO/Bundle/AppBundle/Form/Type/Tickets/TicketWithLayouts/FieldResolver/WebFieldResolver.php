@@ -8,14 +8,11 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
-use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HiddenEntityType;
-use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType;
-use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
@@ -213,98 +210,6 @@ class WebFieldResolver extends AbstractFieldResolver
             'custom_def'      => $def,
             'inline'          => false,
         ]);
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return array
-     */
-    private function createUserNameOptions(TicketWithLayoutsContext $context)
-    {
-        $person  = $context->getPerson();
-        $options = [
-            'property_path' => 'person.name',
-            'label'         => $context->isWidgetType()
-                ? $this->phrase('portal.widget.label_name')
-                : $this->phrase('portal.forms.label_name'),
-            'empty_data'  => $context->getPerson()->getDisplayName(false),
-            'constraints' => [
-                new Assert\NotBlank(),
-            ],
-        ];
-
-        if ($person->getOrganization()) {
-            $options['attr']['data-organization-id'] = $person->getOrganization()->getId();
-        }
-
-        if ($context->isFullLayout()) {
-            $options['disabled'] = true;
-        }
-        if ($context->ignoreUserFields()) {
-            $options['mapped'] = false;
-        }
-
-        return [
-            'name'    => FormFields::USER_NAME,
-            'type'    => TextType::class,
-            'options' => $options,
-        ];
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return array
-     */
-    private function createUserEmailOptions(TicketWithLayoutsContext $context)
-    {
-        $person = $context->getPerson();
-        if ($person->isUser()) {
-            $options = [
-                'person'        => $person,
-                'property_path' => 'ticket_person_email',
-                'label'         => $context->isWidgetType()
-                    ? $this->phrase('portal.widget.label_email')
-                    : $this->phrase('portal.forms.label_email'),
-            ];
-
-            if ($context->isFullLayout()) {
-                $options['disabled'] = true;
-            }
-
-            return [
-                'name'    => FormFields::USER_EMAIL,
-                'type'    => PersonEmailChoiceType::class,
-                'options' => $options,
-            ];
-        } else {
-            $options = [
-                'property_path' => 'person.primary_email',
-                'label'         => $context->isWidgetType()
-                    ? $this->phrase('portal.widget.label_email')
-                    : $this->phrase('portal.forms.label_email'),
-
-                // ignore the "unique entity" constraint here
-                'constraints' => [
-                    new AppAssert\Person\Email\NotSystemEmail(),
-                ],
-            ];
-
-            if ($context->isFullLayout()) {
-                $options['disabled'] = true;
-            }
-
-            if ($context->getTicket()->getPersonEmailAddress() !== $person->getPrimaryEmailAddress()) {
-                $options['property_path'] = 'ticket_person_email';
-            }
-
-            return [
-                'name'    => FormFields::USER_EMAIL,
-                'type'    => PersonEmailType::class,
-                'options' => $options,
-            ];
-        }
     }
 
     /**

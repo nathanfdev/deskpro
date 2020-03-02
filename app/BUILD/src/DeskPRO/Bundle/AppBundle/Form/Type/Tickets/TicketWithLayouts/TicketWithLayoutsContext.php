@@ -32,7 +32,8 @@ class TicketWithLayoutsContext
     const VIEW_USER  = 'user';
     const VIEW_AGENT = 'agent';
 
-    const FORM_TYPE_WIDGET = 'widget';
+    const FORM_TYPE_WIDGET    = 'widget';
+    const FORM_TYPE_MESSENGER = 'messenger';
 
     /**
      * @var \Application\DeskPRO\Entity\Ticket
@@ -341,11 +342,19 @@ class TicketWithLayoutsContext
     }
 
     /**
-     * @return null|string
+     * @return bool
      */
     public function isWidgetType()
     {
         return $this->formType === self::FORM_TYPE_WIDGET;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function isMessengerType()
+    {
+        return $this->formType === self::FORM_TYPE_MESSENGER;
     }
 
     /**
