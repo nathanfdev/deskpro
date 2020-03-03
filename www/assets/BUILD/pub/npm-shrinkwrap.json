@@ -358,11 +358,11 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.102",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.102.tgz",
-      "integrity": "sha512-kyI0w1HKggJXM4+CQrYyjlHN+W0UlW+NP0u/RhatX64PVJQfHpS/yPMECSRLWARq8OhXmKMy5KRdjvA+NE+g6g==",
+      "version": "0.1.103",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.103.tgz",
+      "integrity": "sha512-XCh0bBX5CKQmh41I+ux0ERGehw9FQqR1nr/H9mJFltH9f8yVR0LHHqdoOFP5ag6cXltOcIXeK7fqw0IDxf9Lrw==",
       "requires": {
-        "@deskpro/portal-components": "0.3.67",
+        "@deskpro/portal-components": "0.3.68",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
         "axios": "^0.19.0-beta.1",
         "body-scroll-lock": "^2.6.4",
@@ -401,9 +401,9 @@
           "integrity": "sha512-XqPLn1hXCUCCFZbNRpxp8CqGBKrT3obMHvtTWAITDUfSurJKisF9HxtzJ23Lzc/Mq9PqTOfpHaCqAjWKJuHtUA=="
         },
         "@deskpro/portal-components": {
-          "version": "0.3.67",
-          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.67.tgz",
-          "integrity": "sha512-sNbPpWdT3Ixsaky2+tbNh6HVLRgU6pqrAbQlh+N4KeDZaVY5Vn4GOrdafXSHjDMpFgMZ2WghL41qgwqNDnnyEA==",
+          "version": "0.3.68",
+          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.68.tgz",
+          "integrity": "sha512-1WoWz7vk8F/CZIp1+komWaTTDFAYuch4UrNAjpVMFQtn/qdYS9/3ABzY/jzrzBHYm8YJAF9Xxf319FRG4K6zqA==",
           "requires": {
             "@deskpro/js-utils": "1.0.7",
             "@deskpro/react-datepicker-hijri": "^1.5.0",
