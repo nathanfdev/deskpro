@@ -4609,7 +4609,8 @@ class TicketController extends AbstractController
                 ->createAgentTicketForwardModel(
                     $ticket,
                     $customMessage,
-                    $this->in->getString('subject')
+                    $this->in->getString('subject'),
+                    $attachments
                 );
 
             $message = $this->getContainer()->get('email.email_sender')

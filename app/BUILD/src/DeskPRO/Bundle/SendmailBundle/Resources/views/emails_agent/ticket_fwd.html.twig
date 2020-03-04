@@ -19,11 +19,9 @@
             <br />
             <strong>{{ phrase('user.emails.attachments') }}</strong>
             {% for attach in attachments %}
-                {% if not attach.is_inline  %}
-                    <br />
-                    &bull; <a href="{{ attach.blob.download_url }}" style="{{ _self.link_style() }}">{{attach.blob.filename}}</a> ({{ attach.blob.filesize_readable }})
-                    <attachment id="{{ attach.blob.blob_auth }}" filename="{{attach.blob.filename}}" />
-                {% endif %}
+                <br />
+                &bull; <a href="{{ attach.download_url }}" style="{{ _self.link_style() }}">{{attach.filename}}</a> ({{ attach.filesize_readable }})
+                <attachment id="{{ attach.blob_auth }}" filename="{{attach.filename}}" />
             {% endfor %}
         </div>
     {% endif %}
