@@ -79,13 +79,21 @@ class ServiceController extends AbstractMessengerController
             'messenger_blob_upload', [], UrlGeneratorInterface::ABSOLUTE_URL
         );
 
+        $manifestPath = $this->container->get('templating.helper.assets')->getUrl('asset-manifest.json', 'messenger_assets');
+
         $data['bundleUrl'] = [
-            'manifest' => $this->container->get('templating.helper.assets')->getUrl('asset-manifest.json', 'messenger_assets'),
-            'path'     => $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets'),
-            'isDev'    => $this->get('settings_resolver')->getGlobalSettings()->get('messenger.is_dev', false),
+            'manifest'   => $manifestPath,
+            'path'       => $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets'),
+            'isDev'      => $this->get('settings_resolver')->getGlobalSettings()->get('messenger.is_dev', false),
+            'isAbsolute' => $this->isAbsoluteUrl($manifestPath),
         ];
 
         return View::create($data, Response::HTTP_OK);
+    }
+
+    protected function isAbsoluteUrl($url)
+    {
+        return false !== strpos($url, '://') || '//' === substr($url, 0, 2);
     }
 
     /**
