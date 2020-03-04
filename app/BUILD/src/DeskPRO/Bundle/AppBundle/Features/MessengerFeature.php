@@ -26,7 +26,12 @@ class MessengerFeature extends AbstractBetaFeature
      */
     public function getTitle()
     {
-        return 'Messenger (Experimental)';
+        return 'Messenger';
+    }
+
+    public function getDateReleased()
+    {
+        return new \DateTime('2020-03-03');
     }
 
     /**
