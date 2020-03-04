@@ -859,10 +859,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
           $('.review-date-control-input', optWrap).prop('disabled', false);
           $('.review-date-control-select', optWrap).prop('disabled', false);
           $('.review-date-control-set', optWrap).prop('disabled', false);
-          if (data && data.responseJSON && data.responseJSON.success == 1) {
-            self.getEl('review_date').html(data.responseJSON.prop_html);
-            updateEditorCheckbox();
-            self._initReviewDateOptions();
+          if (data && data.responseJSON) {
+            if (data.responseJSON.success == 1) {
+              self.getEl('review_date').html(data.responseJSON.prop_html);
+              updateEditorCheckbox();
+              self._initReviewDateOptions();
+            } else if (data.responseJSON.error_message) {
+              $('.review_date_controls .error-message', optWrap).html(data.responseJSON.error_message);
+            }
           }
         }
       });

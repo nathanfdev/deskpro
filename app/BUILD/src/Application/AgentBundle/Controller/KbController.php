@@ -580,13 +580,32 @@ class KbController extends AbstractController
                 $count = $this->in->getInt('interval_count');
                 $unit  = $this->in->getString('interval_unit');
 
-                if (!$count
-                    || !in_array($unit, ['days', 'months', 'years'])
-                    || !$validator->isMinReviewDateValid($count, $unit)
-                    || !$validator->isMaxReviewDateValid($count, $unit)
-                ) {
+                /** @var KbSettings $kbSettings */
+                $kbSettings = $this->container->get('portal_settings_resolver')->getKbSettings();
+
+                if (!in_array($unit, ['days', 'months', 'years'])) {
                     return $this->createJsonResponse([
                         'success' => false,
+                    ]);
+                }
+
+                if (!$validator->isMinReviewDateValid($count, $unit)) {
+                    return $this->createJsonResponse([
+                        'success'       => false,
+                        'error_message' => $this->container->getTranslator()->trans('agent.publish.review_date_interval_too_small', [
+                            'interval' => $kbSettings->getMinReviewDateInterval(),
+                            'unit'     => $kbSettings->getMinReviewDateUnit(),
+                        ]),
+                    ]);
+                }
+
+                if (!$validator->isMaxReviewDateValid($count, $unit)) {
+                    return $this->createJsonResponse([
+                        'success'       => false,
+                        'error_message' => $this->container->getTranslator()->trans('agent.publish.review_date_interval_too_big', [
+                            'interval' => $kbSettings->getMaxReviewDateInterval(),
+                            'unit'     => $kbSettings->getMaxReviewDateUnit(),
+                        ]),
                     ]);
                 }
 
@@ -1183,6 +1202,10 @@ class KbController extends AbstractController
             'require_review_date'       => $kbSettings->isRequireReviewDate(),
             'default_require_date'      => $defaultRequireDate,
             'default_require_date_unit' => $defaultRequireDateUnit,
+            'min_review_date_interval'  => $kbSettings->getMinReviewDateInterval(),
+            'min_review_date_unit'      => $kbSettings->getMinReviewDateUnit(),
+            'max_review_date_interval'  => $kbSettings->getMaxReviewDateInterval(),
+            'max_review_date_unit'      => $kbSettings->getMaxReviewDateUnit(),
         ]);
     }
 

@@ -328,18 +328,18 @@ pageMeta.baseId = '{{ baseId }}';
 							</span>
 						</dd>
 
-            <dt>{{ phrase('agent.publish.review_date') }}:</dt>
+                    <dt>{{ phrase('agent.publish.review_date') }}:</dt>
 						<dd id="{{baseId}}_review_date_readonly" {% if perms.can_edit %}style="display: none"{% endif %}>
-              <div class="review_date_not_set" {% if article.date_next_review %}style="display: none"{% endif %}>
-                {{ phrase('agent.publish.review_date_no') }}&nbsp;
-              </div>
-              <div class="review_date_already_set" {% if not article.date_next_review %}style="display: none"{% endif %}>
-                <span class="review-date-display">{{ article.date_next_review|date('j M, Y') }}</span>&nbsp;
-              </div>
+                          <div class="review_date_not_set" {% if article.date_next_review %}style="display: none"{% endif %}>
+                            {{ phrase('agent.publish.review_date_no') }}&nbsp;
+                          </div>
+                          <div class="review_date_already_set" {% if not article.date_next_review %}style="display: none"{% endif %}>
+                            <span class="review-date-display">{{ article.date_next_review|date('j M, Y') }}</span>&nbsp;
+                          </div>
 						</dd>
 
 						<dd id="{{baseId}}_review_date" {% if not perms.can_edit %}style="display: none"{% endif %}>
-              {% include 'AgentBundle:Kb:view-prop-review-date.html.twig' with {'article': article} %}
+                            {% include 'AgentBundle:Kb:view-prop-review-date.html.twig' with {'article': article} %}
 						</dd>
 					</dl>
 
