@@ -49,7 +49,7 @@ abstract class AbstractMassActionsController extends BaseController
         }
 
         // modify entities
-        $entities = $form->get('ids')->getData();
+        $entities = $form->getData()['entities'];
         if (!$entities) {
             $entities = [];
         }

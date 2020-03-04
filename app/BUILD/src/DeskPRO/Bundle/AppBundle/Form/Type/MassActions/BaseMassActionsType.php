@@ -57,13 +57,12 @@ class BaseMassActionsType extends AbstractType
             ->add('ids', EntityType::class, [
                 'class'       => $subType->getConfig()->getOption('data_class'),
                 'multiple'    => true,
-                'required'    => true,
-                'constraints' => [
-                    new Assert\Count(['min' => 1]),
-                    new AppAssert\Permission([
-                        'action' => PermissionGroupVoter::MODIFY,
-                    ]),
-                ],
+                'required'    => false,
+            ])
+            ->add('date_created', DateRangeType::class, [
+                'class'         => $subType->getConfig()->getOption('data_class'),
+                'date_property' => 'date_created',
+                'required'      => false,
             ])
             ->add('params', $options['params_class'], [
                 'required' => true,
@@ -71,7 +70,7 @@ class BaseMassActionsType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], -1);
     }
 
@@ -92,18 +91,26 @@ class BaseMassActionsType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onPreSubmit(FormEvent $event)
+    public function onSubmit(FormEvent $event)
     {
+        $form = $event->getForm();
         $data = $event->getData();
-        if (!is_array($data)) {
-            return;
+
+        $entities = [];
+
+        if ($data['ids']) {
+            foreach ($data['ids'] as $entity) {
+                $entities[$entity->getId()] = $entity;
+            }
         }
 
-        // force required fields
-        if (!isset($data['ids'])) {
-            $data['ids'] = [];
+        if ($form->get('date_created')->getData()) {
+            foreach ($form->get('date_created')->getData() as $entity) {
+                $entities[$entity->getId()] = $entity;
+            }
         }
 
+        $data['entities'] = array_values($entities);
         $event->setData($data);
     }
 
@@ -123,24 +130,69 @@ class BaseMassActionsType extends AbstractType
         // clear unmapped errors
         FormValidatorChecker::clearFormErrors($form, false);
 
-        // check delete permissions
+        $hasModifyActions = false;
+        $hasDeleteActions = false;
+
         if ($form->get('params')->has('set_of_actions')) {
             $actions = $form->get('params')->get('set_of_actions')->getData();
-            if (is_array($actions) && in_array('delete', $actions)) {
-                $violations = $this->validator->validate($form->get('ids')->getData(), new AppAssert\Permission([
-                    'action' => PermissionGroupVoter::DELETE,
-                ]));
 
-                foreach ($violations as $violation) {
-                    $form->get('ids')->addError(new FormError(
-                        $violation->getMessage(),
-                        $violation->getMessageTemplate(),
-                        $violation->getParameters(),
-                        $violation->getPlural(),
-                        $violation
-                    ));
+            if (is_array($actions)) {
+                $hasDeleteActions = in_array('delete', $actions);
+                if (array_diff($actions, ['delete'])) {
+                    $hasModifyActions = true;
                 }
             }
+        }
+
+        foreach ($form->get('params')->all() as $name => $paramsForm) {
+            if ($name === 'set_of_actions') {
+                continue;
+            }
+
+            if ($paramsForm->isSubmitted()) {
+                $hasModifyActions = true;
+            }
+        }
+
+        $validateObjects = function ($groupName, $permissionName) use ($form) {
+            $violations = $this->validator->validate($form->get($groupName)->getData(), new AppAssert\Permission([
+                'action' => $permissionName,
+            ]));
+
+            foreach ($violations as $violation) {
+                $form->get($groupName)->addError(new FormError(
+                    $violation->getMessage(),
+                    $violation->getMessageTemplate(),
+                    $violation->getParameters(),
+                    $violation->getPlural(),
+                    $violation
+                ));
+            }
+        };
+
+        // check if we have fetched objects
+        $violations = $this->validator->validate(array_keys($data['entities']), new Assert\Count(['min' => 1]));
+
+        foreach ($violations as $violation) {
+            $form->get('ids')->addError(new FormError(
+                $violation->getMessage(),
+                $violation->getMessageTemplate(),
+                $violation->getParameters(),
+                $violation->getPlural(),
+                $violation
+            ));
+        }
+
+        // check modify permissions
+        if ($hasModifyActions) {
+            $validateObjects('ids', PermissionGroupVoter::MODIFY);
+            $validateObjects('date_created', PermissionGroupVoter::MODIFY);
+        }
+
+        // check delete permissions
+        if ($hasDeleteActions) {
+            $validateObjects('ids', PermissionGroupVoter::DELETE);
+            $validateObjects('date_created', PermissionGroupVoter::DELETE);
         }
     }
 }
