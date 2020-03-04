@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -139,6 +140,13 @@ class CloudEmailTestController extends BaseController
         $deletedTicketStatusId = $this->getContainer()->getTicketStatuses()->getDeletedStatus()->getId();
         $purgerAgentId = $this->getAgentIdForPurge();
 
+        if (!$purgerAgentId) {
+            return View::create(
+                ['message' => 'Failed to find an agent to associate this purge with'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
         foreach ($this->getEmailSourcesBefore($before) as $source) {
             $db->executeQuery(
                 'UPDATE tickets SET status = :hidden, ticket_status_id = :deletedStatusId WHERE id = :id',
@@ -238,7 +246,7 @@ class CloudEmailTestController extends BaseController
     }
 
     /**
-     * @return integer
+     * @return int|null
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -246,16 +254,20 @@ class CloudEmailTestController extends BaseController
     {
         $builder = $this->getManager()->createQueryBuilder();
 
-        $query = $builder
-            ->select('p.id')
-            ->from(Person::class, 'p')
-            ->andWhere('p.is_agent = TRUE')
-            ->andWhere('p.is_deleted = FALSE')
-            ->setMaxResults(1)
-            ->orderBy('p.id', 'ASC')
-            ->getQuery()
-        ;
+        try {
+            $query = $builder
+                ->select('p.id')
+                ->from(Person::class, 'p')
+                ->andWhere('p.is_agent = TRUE')
+                ->andWhere('p.is_deleted = FALSE')
+                ->setMaxResults(1)
+                ->orderBy('p.id', 'ASC')
+                ->getQuery()
+            ;
 
-        return $query->getSingleScalarResult();
+            return $query->getSingleScalarResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
     }
 }
