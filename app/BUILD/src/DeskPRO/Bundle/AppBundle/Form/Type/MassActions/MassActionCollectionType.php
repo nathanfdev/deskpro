@@ -3,9 +3,12 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -26,6 +29,8 @@ class MassActionCollectionType extends AbstractType
                 'error_bubbling' => false,
             ],
         ]);
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], -1);
     }
 
     /**
@@ -38,5 +43,19 @@ class MassActionCollectionType extends AbstractType
             ->setAllowedTypes('params_class', 'string')
             ->setAllowedTypes('person', Person::class)
         ;
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
+    {
+        $form = $event->getForm();
+        foreach ($form->get('ids')->all() as $childForm) {
+            // clear unmapped errors
+            FormValidatorChecker::clearFormErrors($childForm, false);
+        }
     }
 }
