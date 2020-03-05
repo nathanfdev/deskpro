@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\EmailGateway;
 
@@ -246,6 +244,7 @@ class Runner
 
                 if ($timeLimit && $timeSoFar >= $timeLimit) {
                     $this->logger->logDebug('Breaking, out of time');
+
                     break;
                 }
             }
@@ -292,6 +291,7 @@ class Runner
                     $this->logger->logWarn("--> Ticket {$id} DOES NOT exist");
                     $checkResult = false;
                 }
+
                 break;
 
             case 'ticket_message':
@@ -304,6 +304,7 @@ class Runner
                     $this->logger->logWarn("--> Ticket message {$id} DOES NOT exist");
                     $checkResult = false;
                 }
+
                 break;
 
             default:
@@ -452,6 +453,7 @@ class Runner
 
             if ($remain < $min) {
                 $sourceLogger->log(sprintf('Detected that we are at the memory limit, quitting run'), 'debug');
+
                 throw new ProcessingException('Detected that we are at the memory limit', ProcessingException::MEMORY_LIMIT);
             }
         }
@@ -473,6 +475,7 @@ class Runner
 
         $didRollback = false;
         $doRetry     = false;
+
         try {
             if (!$source->getEmailAccount()) {
                 throw new ProcessingException(
@@ -577,6 +580,7 @@ class Runner
                 $source->object_id   = $result->created_object_id;
                 $source->object_info = $result->created_object_info;
                 $sourceLogger->logInfo("Status: COMPLETE {$source->error_code}");
+
                 break;
 
             case 'rejected':
@@ -585,6 +589,7 @@ class Runner
                 $source->error_code  = $result->error_code ?: 'server_error';
                 $source->source_info = $result->source_info ?: [];
                 $sourceLogger->logError("Status: REJECTED {$source->error_code}");
+
                 break;
 
             case 'rejected_soft':
@@ -593,6 +598,7 @@ class Runner
                 $source->error_code  = $result->error_code ?: 'server_error';
                 $source->source_info = $result->source_info ?: [];
                 $sourceLogger->logError("Status: REJECTED SOFT {$source->error_code}");
+
                 break;
 
             case 'error':
@@ -601,6 +607,7 @@ class Runner
                 $source->error_code  = $result->error_code ?: 'server_error';
                 $source->source_info = $result->source_info ?: [];
                 $sourceLogger->logError("Status: ERROR {$source->error_code}");
+
                 break;
 
             default:
@@ -609,6 +616,7 @@ class Runner
                 $source->error_code  = $result->error_code ?: 'server_error';
                 $source->source_info = $result->source_info ?: [];
                 $sourceLogger->logWarn("Unknown status type: {$result->status}");
+
                 break;
         }
 
@@ -669,6 +677,7 @@ BODY;
             if (!$didRollback) {
                 $blob               = App::$container->getEm()->find('DeskPRO:Blob', $logBlobRow['id']);
                 $source['log_blob'] = $blob;
+
                 try {
                     App::$container->getEm()->persist($blob);
                     App::$container->getEm()->flush();
@@ -905,6 +914,7 @@ BODY;
                     $this->logger->logWarn(
                         sprintf('Hit message limit, breaking :: Processed %d messages', $this->messageCount)
                     );
+
                     break;
                 }
             }
@@ -1071,6 +1081,7 @@ BODY;
             if ($onlyCollect && $source->getStatus() !== 'error' && $DP_ENV->getConfig('async_email_processing.process')) {
                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
                 $proc = App::getContainer()->get('in_email.proc_queue');
+
                 try {
                     $this->logger->logDebug('Queueing message for processing');
                     $proc->enqueueNewEmail($source);
@@ -1090,6 +1101,7 @@ BODY;
             if (!$onlyCollect) {
                 $this->logger->logDebug('START: executeSource('.$source->getId().')');
                 $t = microtime(true);
+
                 try {
                     $this->executeSource($source);
                 } catch (ProcessingException $e) {
@@ -1098,6 +1110,26 @@ BODY;
                     } else {
                         $this->logger->logError('Exception: '.$e->getMessage());
                     }
+                } catch (\Exception $e) {
+                    // make sure we handle all exceptions
+                    SystemErrorHandler::logException($e);
+                    $this->logger->logError('Exception: '.$e->getMessage());
+
+                    $source->setStatus('error');
+                    $source->setErrorCode('server_error');
+
+                    App::getOrm()->persist($source);
+                    App::getOrm()->flush();
+                } catch (\Throwable $t) {
+                    // make sure we handle all errors
+                    SystemErrorHandler::logException($t);
+                    $this->logger->logError('Exception: '.$t->getMessage());
+
+                    $source->setStatus('error');
+                    $source->setErrorCode('server_error');
+
+                    App::getOrm()->persist($source);
+                    App::getOrm()->flush();
                 }
 
                 $this->logger->logDebug(sprintf('FINISH: executeSource('.$source->getId().') - %.4fs', microtime(true) - $t));
@@ -1111,11 +1143,13 @@ BODY;
             $timeSoFar = time() - $execStart;
             if ($timeLimit && $timeSoFar >= $timeLimit) {
                 $this->logger->logInfo('Hit time limit, breaking');
+
                 break;
             }
 
             if ($isMemLimit) {
                 $this->logger->logInfo('Hit memory limit, breaking');
+
                 break;
             }
 
@@ -1125,6 +1159,7 @@ BODY;
                 $t = microtime(true) - DP_START_TIME;
                 if ($t > $this->softTimeLimit) {
                     $this->logger->logWarn(sprintf('Hit soft time limit, breaking :: Running for %.3fs', $t));
+
                     break;
                 }
             }
@@ -1202,6 +1237,7 @@ BODY;
             case 'pop3':
             case 'office365':
                 $fetcher = new Fetcher\Pop3($account, 20971520);
+
                 break;
             case 'gmail':
                 {
@@ -1214,22 +1250,28 @@ BODY;
                     } else {
                         $fetcher = new Fetcher\Pop3($account, 20971520);
                     }
-                } break;
+                }
+
+break;
             case 'imap':
                 $fetcher = new Fetcher\Imap($account, 20971520);
+
                 break;
             case 'exchange':
             case 'office365_exchange':
                 $fetcher = new Fetcher\Exchange($account, 20971520);
+
                 break;
             case 'noop':
             case 'null':
                 $fetcher = new Fetcher\Noop($account);
+
                 break;
             default:
                 throw new \InvalidArgumentException(
                     "Unknown incoming email account: {$account->incoming_account->getType()}"
                 );
+
                 break;
         }
 
