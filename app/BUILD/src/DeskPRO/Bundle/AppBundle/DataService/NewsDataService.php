@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
@@ -251,43 +249,45 @@ class NewsDataService extends AbstractDataService
                     ORDER BY year DESC, month ASC
                 ', [$using_ids, News::STATUS_PUBLISHED], [Connection::PARAM_INT_ARRAY, \PDO::PARAM_STR]);
 
-                $minYear = 999999;
-                $maxYear = 0;
-
                 $table = [];
-                foreach ($res as $r) {
-                    $r['year'] = (int) $r['year'];
-                    $r['month'] = (int) $r['month'];
-                    $r['count'] = (int) $r['count'];
+                if ($res) {
+                    $minYear = 999999;
+                    $maxYear = 0;
 
-                    if (!isset($table[$r['year']])) {
-                        $table[$r['year']] = ['year' => $r['year'], 'count' => 0, 'months' => []];
+                    foreach ($res as $r) {
+                        $r['year'] = (int) $r['year'];
+                        $r['month'] = (int) $r['month'];
+                        $r['count'] = (int) $r['count'];
+
+                        if (!isset($table[$r['year']])) {
+                            $table[$r['year']] = ['year' => $r['year'], 'count' => 0, 'months' => []];
+                        }
+
+                        $table[$r['year']]['count'] += $r['count'];
+                        $table[$r['year']]['months'][$r['month']] = $r;
+
+                        $minYear = min($minYear, $r['year']);
+                        $maxYear = max($maxYear, $r['year']);
                     }
 
-                    $table[$r['year']]['count'] += $r['count'];
-                    $table[$r['year']]['months'][$r['month']] = $r;
-
-                    $minYear = min($minYear, $r['year']);
-                    $maxYear = max($maxYear, $r['year']);
-                }
-
-                // fill in missing years
-                foreach (range($minYear, $maxYear) as $y) {
-                    if (!isset($table[$y])) {
-                        $table[$y] = ['year' => (int) $y, 'count' => 0, 'months' => []];
-                    }
-                }
-
-                // fill in missing months for each year
-                foreach ($table as $y => &$dat) {
-                    for ($i = 1; $i <= 12; ++$i) {
-                        if (!isset($dat['months'][$i])) {
-                            $dat['months'][$i] = ['year' => $y, 'count' => 0, 'month' => $i];
+                    // fill in missing years
+                    foreach (range($minYear, $maxYear) as $y) {
+                        if (!isset($table[$y])) {
+                            $table[$y] = ['year' => (int) $y, 'count' => 0, 'months' => []];
                         }
                     }
-                    ksort($dat['months'], SORT_NUMERIC);
+
+                    // fill in missing months for each year
+                    foreach ($table as $y => &$dat) {
+                        for ($i = 1; $i <= 12; ++$i) {
+                            if (!isset($dat['months'][$i])) {
+                                $dat['months'][$i] = ['year' => $y, 'count' => 0, 'month' => $i];
+                            }
+                        }
+                        ksort($dat['months'], SORT_NUMERIC);
+                    }
+                    unset($dat);
                 }
-                unset($dat);
 
                 return $table;
             }
