@@ -47,7 +47,12 @@ class DateRangeType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['class', 'date_property']);
+        $resolver
+            ->setRequired(['class', 'date_property'])
+            ->setDefaults([
+                'error_bubbling' => false,
+            ])
+        ;
     }
 
     /**

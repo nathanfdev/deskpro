@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -93,19 +94,17 @@ class BaseMassActionsType extends AbstractType
      */
     public function onSubmit(FormEvent $event)
     {
-        $form = $event->getForm();
-        $data = $event->getData();
-
+        $data     = $event->getData();
         $entities = [];
 
-        if ($data['ids']) {
+        if (isset($data['ids']) && count($data['ids'])) {
             foreach ($data['ids'] as $entity) {
                 $entities[$entity->getId()] = $entity;
             }
         }
 
-        if ($form->get('date_created')->getData()) {
-            foreach ($form->get('date_created')->getData() as $entity) {
+        if (isset($data['date_created']) && count($data['date_created'])) {
+            foreach ($data['date_created'] as $entity) {
                 $entities[$entity->getId()] = $entity;
             }
         }
@@ -170,18 +169,36 @@ class BaseMassActionsType extends AbstractType
             }
         };
 
-        // check if we have fetched objects
-        $violations = $this->validator->validate(array_keys($data['entities']), new Assert\Count(['min' => 1]));
+        $validateCount = function ($groupName, $force = false) use ($form, $data) {
+            if (!$force && (!isset($data[$groupName]) || !$form->get($groupName)->isSubmitted())) {
+                return;
+            }
 
-        foreach ($violations as $violation) {
-            $form->get('ids')->addError(new FormError(
-                $violation->getMessage(),
-                $violation->getMessageTemplate(),
-                $violation->getParameters(),
-                $violation->getPlural(),
-                $violation
-            ));
-        }
+            $keys = [];
+            if (isset($data[$groupName])) {
+                if ($data[$groupName] instanceof ArrayCollection) {
+                    $keys = $data[$groupName]->getKeys();
+                } elseif (is_array($data[$groupName])) {
+                    $keys = array_keys($data[$groupName]);
+                }
+            }
+
+            $violations = $this->validator->validate($keys, new Assert\Count(['min' => 1]));
+
+            foreach ($violations as $violation) {
+                $form->get($groupName)->addError(new FormError(
+                    $violation->getMessage(),
+                    $violation->getMessageTemplate(),
+                    $violation->getParameters(),
+                    $violation->getPlural(),
+                    $violation
+                ));
+            }
+        };
+
+        // check if we have fetched objects
+        $validateCount('ids', !isset($data['date_created']));
+        $validateCount('date_created');
 
         // check modify permissions
         if ($hasModifyActions) {
