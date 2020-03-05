@@ -17,9 +17,9 @@ Feature: Mass action validation
       | product      |
       | category     |
     And only the following Ticket records exist:
-      | #  | Subject  | Department |
-      | t1 | Ticket 1 | {d1}       |
-      | t2 | Ticket 2 | {d1}       |
+      | #  | Subject  | Department | Date Created        |
+      | t1 | Ticket 1 | {d1}       | 2020-03-05 00:00:00 |
+      | t2 | Ticket 2 | {d1}       | 2020-03-06 00:00:00 |
     And only the following Product records exist:
       | #  | Title     |
       | p1 | Product 1 |
@@ -69,3 +69,41 @@ Feature: Mass action validation
     Then the response status code should be 400
     And the JSON node "errors.fields.ids" should not exist
     And the JSON node "errors.fields.params.fields.set_category.errors[0].code" should be equal to "required"
+
+  Scenario: I post mass actions request with empty ids
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "ids": [],
+  "params":{"set_status":"awaiting_agent"}
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.ids.errors[0].code" should be equal to "too_few_elements"
+
+  Scenario: I post mass actions request without ids
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "params":{"set_status":"awaiting_agent"}
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.ids.errors[0].code" should be equal to "too_few_elements"
+
+
+  Scenario: I post mass actions with empty date_created and no ids
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "ids": [],
+  "date_created": {
+    "min": "2020-03-01",
+    "max": "2020-03-04"
+  },
+  "params":{"set_status":"awaiting_agent"}
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.ids.errors[0].code" should be equal to "too_few_elements"
+    And the JSON node "errors.fields.date_created.errors[0].code" should be equal to "too_few_elements"

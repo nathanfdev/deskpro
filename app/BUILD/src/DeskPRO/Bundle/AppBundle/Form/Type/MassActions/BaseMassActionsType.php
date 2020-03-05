@@ -16,6 +16,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -128,6 +129,8 @@ class BaseMassActionsType extends AbstractType
 
         // clear unmapped errors
         FormValidatorChecker::clearFormErrors($form, false);
+        FormValidatorChecker::clearFormErrors($form->get('ids'), true);
+        FormValidatorChecker::clearFormErrors($form->get('date_created'), true);
 
         $hasModifyActions = false;
         $hasDeleteActions = false;
@@ -158,14 +161,19 @@ class BaseMassActionsType extends AbstractType
                 'action' => $permissionName,
             ]));
 
+            /** @var ConstraintViolation $violation */
             foreach ($violations as $violation) {
-                $form->get($groupName)->addError(new FormError(
-                    $violation->getMessage(),
-                    $violation->getMessageTemplate(),
-                    $violation->getParameters(),
-                    $violation->getPlural(),
-                    $violation
-                ));
+                if (in_array($violation->getCode(), [AppAssert\Permission::NO_PERMISSION, AppAssert\Permission::NO_DELETE_PERMISSION])
+                    && $violation->getPropertyPath() === ''
+                ) {
+                    $form->get($groupName)->addError(new FormError(
+                        $violation->getMessage(),
+                        $violation->getMessageTemplate(),
+                        $violation->getParameters(),
+                        $violation->getPlural(),
+                        $violation
+                    ));
+                }
             }
         };
 
