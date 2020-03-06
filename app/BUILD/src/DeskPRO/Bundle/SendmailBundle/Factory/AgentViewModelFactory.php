@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\CommunityTopic;
@@ -52,7 +53,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AgentViewModelFactory extends AbstractViewModelFactory
 {
-    /**
+    /*
      * Use generic ticket approval event to view model map
      */
     use TicketApprovalViewModelMapTrait;
@@ -308,17 +309,21 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param string $agentMessage
      * @param string $subject
+     * @param Blob[] $attachments
+     *
+     * @throws \Exception
      *
      * @return AgentTicketForward
      */
     public function createAgentTicketForwardModel(
         Ticket $ticket,
         $agentMessage,
-        $subject
+        $subject,
+        $attachments = []
     ) {
         $arguments = $this->getTicketArguments($ticket);
 
-        array_push($arguments, $agentMessage, $subject);
+        array_push($arguments, $agentMessage, $subject, $attachments);
 
         return $this->convertParameters(AgentTicketForward::class, $arguments);
     }
@@ -351,8 +356,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      * @param $approveUrl
      * @param $rejectUrl
      * @param ApprovalResponse|null $approvalResponse
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalModelByApprovalEvent(
         $event,
@@ -385,8 +392,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalApproverApprovedModel(Ticket $ticket, Person $recipient)
     {
@@ -399,8 +408,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalApproverCancelModel(Ticket $ticket, Person $recipient)
     {
@@ -413,8 +424,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalApproverCreateModel(Ticket $ticket, Person $recipient)
     {
@@ -427,8 +440,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalApproverPartialApprovalResponseModel(Ticket $ticket, Person $recipient)
     {
@@ -441,8 +456,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalApproverPartialRejectionResponseModel(Ticket $ticket, Person $recipient)
     {
@@ -455,8 +472,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalApproverRejectedModel(Ticket $ticket, Person $recipient)
     {
@@ -469,8 +488,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalOwnerApprovedModel(Ticket $ticket, Person $recipient)
     {
@@ -483,8 +504,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalOwnerCancelModel(Ticket $ticket, Person $recipient)
     {
@@ -497,8 +520,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalOwnerCreateModel(Ticket $ticket, Person $recipient)
     {
@@ -511,8 +536,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalOwnerPartialApprovalResponseModel(Ticket $ticket, Person $recipient)
     {
@@ -525,8 +552,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalOwnerPartialRejectionResponseModel(Ticket $ticket, Person $recipient)
     {
@@ -539,8 +568,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      * @param Person $recipient
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     *
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
     public function createTicketApprovalOwnerRejectedModel(Ticket $ticket, Person $recipient)
     {

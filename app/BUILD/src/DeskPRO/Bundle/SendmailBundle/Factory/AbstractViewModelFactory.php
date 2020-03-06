@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\SendmailBundle\Factory;
 use Application\DeskPRO\CustomFields\FieldDisplayArray;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommunityTopic;
@@ -88,6 +89,10 @@ abstract class AbstractViewModelFactory
                 break;
             case ArticleComment::class:
                 $handler = $this->container->get('api_serializer.handler.article_comment');
+
+                break;
+            case Blob::class:
+                $handler = $this->container->get('api_serializer.handler.blob');
 
                 break;
             case ChatConversation::class:
