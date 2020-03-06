@@ -2,11 +2,15 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Email;
 
+use Application\DeskPRO\Entity\EmailSource;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -111,6 +115,159 @@ class CloudEmailTestController extends BaseController
                 ['message' => 'Failed to run checking queries'],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
+        }
+    }
+
+    /**
+     * @Rest\Delete("/incoming")
+     *
+     * @param  Request $request
+     * @return View
+     * @throws \Exception
+     */
+    public function purgeIncomingAction(Request $request)
+    {
+        $before = $this->getBeforeThresholdFromRequest($request);
+
+        if (!$before) {
+            return View::create(
+                ['message' => 'before date parameter must be added to query string, e.g. ?before=2020-03-03'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $db = $this->get('database_connection');
+        $deletedTicketStatusId = $this->getContainer()->getTicketStatuses()->getDeletedStatus()->getId();
+        $purgerAgentId = $this->getAgentIdForPurge();
+
+        if (!$purgerAgentId) {
+            return View::create(
+                ['message' => 'Failed to find an agent to associate this purge with'],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        foreach ($this->getEmailSourcesBefore($before) as $source) {
+            $db->executeQuery(
+                'UPDATE tickets SET status = :hidden, ticket_status_id = :deletedStatusId WHERE id = :id',
+                [
+                    'hidden'          => 'hidden',
+                    'deletedStatusId' => $deletedTicketStatusId,
+                    'id'              => $source['ticket_id'],
+                ]
+            );
+
+            $db->executeQuery(
+                'UPDATE tickets_search_active SET status = :hidden, ticket_status_id = :deletedStatusId WHERE id = :id',
+                [
+                    'hidden'          => 'hidden',
+                    'deletedStatusId' => $deletedTicketStatusId,
+                    'id'              => $source['ticket_id'],
+                ]
+            );
+
+            $db->replace(
+                'tickets_deleted',
+                [
+                    'ticket_id'     => $source['ticket_id'],
+                    'by_person_id'  => $purgerAgentId,
+                    'new_ticket_id' => 0,
+                    'reason'        => 'Mass Purge Operation (Email Test Process)',
+                    'date_created'  => date('Y-m-d H:i:s'),
+                ]
+            );
+
+            $db->delete('email_sources', ['id' => $source['source_id']]);
+        }
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Rest\Delete("/outgoing")
+     *
+     * @param  Request $request
+     * @return View
+     * @throws \Exception
+     */
+    public function purgeOutgoingAction(Request $request)
+    {
+        $before = $this->getBeforeThresholdFromRequest($request);
+
+        if (!$before) {
+            return View::create(
+                ['message' => 'before date parameter must be added to query string, e.g. ?before=2020-03-03'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $db = $this->get('database_connection');
+
+        $db->executeQuery('DELETE FROM sendmail_sources WHERE date_created < :before', [
+            'before' => $before->format('Y-m-d'),
+        ]);
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @param  Request $request
+     * @return \DateTime|null
+     * @throws \Exception
+     */
+    private function getBeforeThresholdFromRequest(Request $request)
+    {
+        if (!$request->query->has('before')) {
+            return null;
+        }
+
+        return new \DateTime($request->query->get('before'));
+    }
+
+    /**
+     * @param \DateTime $before
+     * @return array
+     */
+    private function getEmailSourcesBefore(\DateTime $before)
+    {
+        $builder = $this->getManager()->createQueryBuilder();
+
+        $query = $builder
+            ->select('s.id AS source_id, s.object_id AS ticket_id')
+            ->from(EmailSource::class, 's')
+            ->andWhere('s.date_created < :before')
+            ->andWhere('s.object_type = :objectType')
+            ->setParameter('before', $before)
+            ->setParameter('objectType', EmailSource::OBJ_TYPE_TICKET)
+            ->getQuery()
+        ;
+
+        return $query->getResult(Query::HYDRATE_ARRAY);
+    }
+
+    /**
+     * @return int|null
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    private function getAgentIdForPurge()
+    {
+        $builder = $this->getManager()->createQueryBuilder();
+
+        try {
+            $query = $builder
+                ->select('p.id')
+                ->from(Person::class, 'p')
+                ->andWhere('p.is_agent = TRUE')
+                ->andWhere('p.is_deleted = FALSE')
+                ->setMaxResults(1)
+                ->orderBy('p.id', 'ASC')
+                ->getQuery()
+            ;
+
+            return $query->getSingleScalarResult();
+        } catch (NoResultException $e) {
+            return null;
         }
     }
 }

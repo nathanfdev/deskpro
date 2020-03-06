@@ -866,7 +866,7 @@ class EmailStatusController extends AbstractController
                     $this->db->replace(
                         'tickets_deleted',
                         [
-                            'ticket_id'     => $deletedTicketStatusId,
+                            'ticket_id'     => $source['ticket_id'],
                             'by_person_id'  => $this->person->getId(),
                             'new_ticket_id' => 0,
                             'reason'        => 'Mass Purge Operation',
