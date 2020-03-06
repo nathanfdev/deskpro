@@ -31,7 +31,7 @@ class MessengerFeature extends AbstractBetaFeature
 
     public function getDateReleased()
     {
-        return new \DateTime('2020-03-03');
+        return false;
     }
 
     /**
@@ -76,7 +76,7 @@ HTML;
      */
     public function isEnabledOnInstall()
     {
-        return true;
+        return false;
     }
 
     public function beforeEnable(ContainerInterface $container, $newInstall = false)

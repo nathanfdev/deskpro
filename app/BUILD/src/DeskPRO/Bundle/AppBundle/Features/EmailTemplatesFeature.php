@@ -100,7 +100,7 @@ HTML;
      */
     public function isEnabledOnInstall()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -108,7 +108,7 @@ HTML;
      */
     public function getDateReleased()
     {
-        return new \DateTime('2020-01-01');
+        return false;
     }
 
     /**
