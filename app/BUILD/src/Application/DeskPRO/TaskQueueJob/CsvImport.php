@@ -294,9 +294,7 @@ class CsvImport extends AbstractJob
         }
 
         if (!$result) {
-            // TODO separate error log from this Job, reduce verbosity
-            $this->log(['Skipped row due to validation error']);
-//            $this->log($handler->getMessages());
+            $this->log($handler->getMessages());
         }
         $handler->reset();
 
