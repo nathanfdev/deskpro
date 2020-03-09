@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -38,8 +39,20 @@ class CsvUploadController extends AbstractController
          */
         $csv_upload = $this->container->getSystemService('csv_upload');
         $options    = $this->in->getArrayValue('options');
+        $iterator   = function ($value) use (&$iterator) {
+            if (is_array($value) || $value instanceof \Traversable) {
+                foreach ($value as $key => $item) {
+                    $value[$key] = $iterator($item);
+                }
+            } elseif (is_string($value)) {
+                $value = Strings::utf8_bad_strip(utf8_encode($value));
+            }
 
-        $result = $csv_upload->upload($file, $options);
+            return $value;
+        };
+
+        $result = $iterator($csv_upload->upload($file, $options));
+
         if (isset($result['custom_fields'])) {
             $result['custom_fields'] = $this->getApiData($result['custom_fields']);
         }
