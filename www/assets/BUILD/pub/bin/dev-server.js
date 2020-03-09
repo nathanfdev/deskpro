@@ -1,4 +1,6 @@
 const express               = require('express');
+const https                 = require('https');
+const fs                    = require('fs');
 const webpack               = require('webpack');
 const cors                  = require('cors');
 const webpackDevMiddleware  = require('webpack-dev-middleware');
@@ -10,6 +12,8 @@ const compiler = webpack(config);
 
 const assetServerHostname = process.env.ASSET_SERVER_HOSTNAME || 'localhost';
 const assetServerPort = process.env.ASSET_SERVER_PORT || 9666;
+
+const httpsEnabled = process.env.HTTPS || false;
 
 app.use(webpackDevMiddleware(compiler, {
   publicPath:         config.output.publicPath,
@@ -31,21 +35,30 @@ app.use(webpackDevMiddleware(compiler, {
 
 app.use(webpackHotMiddleware(compiler));
 app.use(cors());
-app.listen(assetServerPort, '0.0.0.0', (err) => {
+let server;
+if (httpsEnabled) {
+  const privateKey  = fs.readFileSync('server.key', 'utf8');
+  const certificate = fs.readFileSync('server.cert', 'utf8');
+  const credentials = {key: privateKey, cert: certificate};
+  server = https.createServer(credentials, app);
+} else {
+  server = app;
+}
+server.listen(assetServerPort, '0.0.0.0', (err) => {
   if (err) {
     throw new gutil.PluginError('webpack-dev-server', err);
   }
 
-  console.log('[webpack-dev-server]', `http://${assetServerHostname}:${assetServerPort}/`);
+  console.log('[webpack-dev-server]', `http${httpsEnabled ? 's' : ''}://${assetServerHostname}:${assetServerPort}/`);
   console.log('[webpack-dev-server]', 'In your config.paths.php, ensure these lines exist: ');
   console.log('[webpack-dev-server]', '$PATHS_CONFIG[\'asset_paths\'] = [\r\n' +
       '  \'assets_root\' => [\r\n' +
       '      \'type\'    => \'url\',\r\n' +
-      '      \'value\'   => \'http://' + assetServerHostname + ':' + assetServerPort + '/\',\r\n' +
+      '      \'value\'   => \'http' + (httpsEnabled ? 's' : '')  + '://' + assetServerHostname + ':' + assetServerPort + '/\',\r\n' +
       '  ],\r\n' +
       '  \'app_assets\' => [\r\n' +
       '      \'type\'    => \'url\',\r\n' +
-      '      \'value\'   => \'http://' + assetServerHostname + ':' + assetServerPort + '/pub/build/\'\r\n' +
+      '      \'value\'   => \'http' + (httpsEnabled ? 's' : '')  + '://' + assetServerHostname + ':' + assetServerPort + '/pub/build/\'\r\n' +
       '  ],\r\n' +
       '];');
 });

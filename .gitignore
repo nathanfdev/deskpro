@@ -57,6 +57,8 @@ bin/deskpro-importer-tools
 /www/assets/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
 /www/assets/BUILD/pub/src/DeskPRO/Bundle/WidgetBundle/WidgetApp_Reducers.js
 /www/assets/BUILD/pub/static/Guides/pdf
+/www/assets/BUILD/pub/server.cert
+/www/assets/BUILD/pub/server.key
 
 /app/BUILD/tests/tools/node_modules
 

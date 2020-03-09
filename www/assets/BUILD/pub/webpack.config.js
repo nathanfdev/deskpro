@@ -8,6 +8,8 @@ const webpack = require('webpack');
 const assetServerHostname = process.env.ASSET_SERVER_HOSTNAME || 'localhost';
 const assetServerPort = process.env.ASSET_SERVER_PORT || 9666;
 
+const https = process.env.HTTPS || false;
+
 const config = {
   cache: true,
   devtool: 'eval',
@@ -46,7 +48,7 @@ const config = {
 
     // Widget
     DeskPRO_WidgetBundle: [
-      `webpack-hot-middleware/client?path=http://${assetServerHostname}:${assetServerPort}/__webpack_hmr`,
+      `webpack-hot-middleware/client?path=http${https ? 's' : ''}://${assetServerHostname}:${assetServerPort}/__webpack_hmr`,
       './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle',
     ],
     DeskPRO_WidgetBundle_style:  './src/DeskPRO/Bundle/WidgetBundle/Resources/style/widget-style.scss',
@@ -59,28 +61,28 @@ const config = {
     // // DeskPRO_AgentBundle: './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle',
     // // DeskPRO_AgentBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss',
     DeskPRO_AgentLegacyBundle: [
-      `webpack-hot-middleware/client?path=http://${assetServerHostname}:${assetServerPort}/__webpack_hmr`,
+      `webpack-hot-middleware/client?path=http${https ? 's' : ''}://${assetServerHostname}:${assetServerPort}/__webpack_hmr`,
       './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentLegacyBundle'
     ],
     DeskPRO_AgentLegacyBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/legacy-agent.scss',
     //
     // Admin
     DeskPRO_AdminBundle:       [
-      `webpack-hot-middleware/client?path=http://${assetServerHostname}:${assetServerPort}/__webpack_hmr`,
+      `webpack-hot-middleware/client?path=http${https ? 's' : ''}://${assetServerHostname}:${assetServerPort}/__webpack_hmr`,
       './src/DeskPRO/Bundle/AdminBundle/DeskPRO_AdminBundle'
     ],
     DeskPRO_AdminBundle_style: './src/DeskPRO/Bundle/AdminBundle/Resources/style/admin-style.scss',
     //
     // Report
     DeskPRO_ReportBundle:       [
-      `webpack-hot-middleware/client?path=http://${assetServerHostname}:${assetServerPort}/__webpack_hmr`,
+      `webpack-hot-middleware/client?path=http${https ? 's' : ''}://${assetServerHostname}:${assetServerPort}/__webpack_hmr`,
       './src/DeskPRO/Bundle/ReportBundle/DeskPRO_ReportBundle',
     ],
     DeskPRO_ReportBundle_style: './src/DeskPRO/Bundle/ReportBundle/Resources/style/report-style.scss',
     //
     // Demo
     DeskPRO_DemoBundle:       [
-      `webpack-hot-middleware/client?path=http://${assetServerHostname}:${assetServerPort}/__webpack_hmr`,
+      `webpack-hot-middleware/client?path=http${https ? 's' : ''}://${assetServerHostname}:${assetServerPort}/__webpack_hmr`,
       './src/DeskPRO/Bundle/DemoBundle/DeskPRO_DemoBundle',
     ],
     DeskPRO_DemoBundle_style: './src/DeskPRO/Bundle/DemoBundle/Resources/style/demo-style.scss'
@@ -89,9 +91,13 @@ const config = {
   output: {
     path:              path.resolve(__dirname, 'build/'),
     pathinfo:          true,
-    publicPath:        `http://${assetServerHostname}:${assetServerPort}/pub/build/`,
+    publicPath:        `http${https ? 's' : ''}://${assetServerHostname}:${assetServerPort}/pub/build/`,
     filename:          '[name].js',
     sourceMapFilename: '[name].map'
+  },
+
+  devServer: {
+    https: https
   },
 
   resolve: {
