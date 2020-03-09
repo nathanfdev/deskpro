@@ -244,6 +244,11 @@ class ReplySnippetAction extends AbstractReplyAction
                             $snippetText = implode("\n<br/><br/>\n", $snippetText);
                             $formatter   = new SnippetFormatter(App::getContainer()->get('twig'));
                             $formatter->addVar('agent_signature', '');
+
+                            if ($this->person_context) {
+                                $formatter->setPersonContext($this->person_context);
+                            }
+
                             $html = $formatter->formatText($snippetText, $ticket);
                         }
                     } else {
@@ -274,6 +279,11 @@ class ReplySnippetAction extends AbstractReplyAction
                             $snippetText = implode("\n<br/><br/>\n", $snippetText);
                             $formatter   = new SnippetFormatter(App::getContainer()->get('twig'));
                             $formatter->addVar('agent_signature', '');
+
+                            if ($this->person_context) {
+                                $formatter->setPersonContext($this->person_context);
+                            }
+
                             $html = $formatter->formatText($snippetText, $ticket);
                         }
                     }
@@ -393,6 +403,10 @@ class ReplySnippetAction extends AbstractReplyAction
 
         $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
         $formatter->addVar('agent_signature', $person->getSignatureHtml());
+
+        if ($this->person_context) {
+            $formatter->setPersonContext($this->person_context);
+        }
 
         $snippetText = implode("\n<br/><br/>\n", $snippetText);
         $snippetText = $formatter->formatText($snippetText, $ticket);
