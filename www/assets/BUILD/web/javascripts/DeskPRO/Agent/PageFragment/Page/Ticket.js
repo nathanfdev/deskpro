@@ -1800,6 +1800,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       // Only refresh the box if we've not begun writing a message
       if (!this.getEl('replybox_wrap').find('textarea.touched')[0] && !data.active_drafts.length) {
         var chargeCheckboxState = $('input[name="charge_time"]', this.wrapper).prop('checked');
+        var agentSelChecked = $('input[name="options[do_assign_agent]"]', this.wrapper).data('keep-checked-on-refresh');
+        var teamSelChecked  = $('input[name="options[do_assign_team]"]', this.wrapper).data('keep-checked-on-refresh');
+
         var textarea = this.getReplyTextArea();
         if (textarea.data('redactor')) {
           textarea.destroyEditor();
@@ -1808,6 +1811,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
         $('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
         $('input[name="charge_time"]', this.wrapper).prop('checked', chargeCheckboxState);
+
+        if (agentSelChecked) {
+          $('input[name="options[do_assign_agent]"]', this.wrapper).prop('checked', true);
+        }
+        if (teamSelChecked) {
+          $('input[name="options[do_assign_team]"]', this.wrapper).prop('checked', true);
+        }
       }
     }
 
