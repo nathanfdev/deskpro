@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use JMS\Serializer\Annotation as JMS;
+
 class AgentWhitelistIp extends EmailBaseType
 {
     use EventCodeEmailBaseType;
