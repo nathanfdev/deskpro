@@ -12,7 +12,8 @@ import {
   helpPopupSelector,
   liveDemoSelector,
   ticketDefaultDepartmentSelector,
-  ticketSelectDepartmentTypeSelector
+  ticketSelectDepartmentTypeSelector,
+  widgetOpenedSelector
 } from '../Selectors/dpWindow';
 import { chatIdSelector } from '../../Chat/Selectors/chat';
 import { loadNewTicketForm } from '../../Ticket/Actions/ticketActions';
@@ -45,7 +46,7 @@ const openChatBeginStage = createAction(
 
 export const widgetResize = createAction(
   'WIDGET_RESIZE',
-  () => {
+  () => (dispatch, getState) => {
     const widgetFrameWindow = parent.window.widget_iframe;
     const $window = $(widgetFrameWindow);
 
@@ -54,6 +55,18 @@ export const widgetResize = createAction(
     let height = widgetFrameWindow.innerHeight || $window.height();
     if (parent.window.innerHeight < widgetFrameWindow.innerHeight) {
       height = parent.window.innerHeight;
+    }
+
+    // if unable to get widget size then re-fetch window dimensions
+    if (height <= 0) {
+      setTimeout(() => {
+        const state = getState();
+        const widgetOpened = widgetOpenedSelector(state);
+
+        if (widgetOpened) {
+          dispatch(widgetResize());
+        }
+      }, 100);
     }
 
     return {
@@ -70,10 +83,11 @@ export const windowResize = createAction(
 
     const parentWindow = parent.window;
     const $window = $(parentWindow);
+    const height = parentWindow.innerHeight || $window.height();
 
     return {
-      width:  $window.width(),
-      height: parentWindow.innerHeight || $window.height()
+      width: $window.width(),
+      height
     };
   }
 );
