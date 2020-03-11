@@ -152,9 +152,9 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                     ",
                         [
                             $person->getPassword(),
-                            $person->getId(),
                             Strings::random(40),
-                            (new \DateTime())->format('Y-m-d H:i:s'),
+                            $person->date_password_set->format('Y-m-d H:i:s'),
+                            $person->getId(),
                         ]
                     );
 
