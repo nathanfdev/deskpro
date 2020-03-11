@@ -150,7 +150,12 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                             date_password_set = ?
                         WHERE id = ?
                     ",
-                        [$person->getPassword(), $person->getId(), Strings::random(40), new \DateTime()]
+                        [
+                            $person->getPassword(),
+                            $person->getId(),
+                            Strings::random(40),
+                            (new \DateTime())->format('Y-m-d H:i:s'),
+                        ]
                     );
 
                     /** @var ApiTokenRepository $apiTokenRepository */
