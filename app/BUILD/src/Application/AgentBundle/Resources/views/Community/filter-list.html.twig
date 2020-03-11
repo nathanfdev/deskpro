@@ -39,11 +39,11 @@
 		{% if cache_id %}
 			pageMeta.cache_id = {{cache_id}};
 		{% endif %}
-		{% if not community_topics %}
+		{% if not community_topics|length %}
 			pageMeta.noResults = true;
 		{% endif %}
 		pageMeta.baseId = '{{ tplvars.baseId }}';
-		pageMeta.perPage = 50;
+		pageMeta.perPage = {{ per_page }};
 		pageMeta.currentPage = {{ cur_page }};
 		pageMeta.resultIds = {{ result_ids|json_encode|raw }};
 	</script>
