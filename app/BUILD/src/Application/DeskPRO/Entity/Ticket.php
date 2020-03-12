@@ -3965,6 +3965,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'ticket_status',
             'subject',
             'urgency',
+            'email_account',
         ];
 
         foreach ($load as $k) {
