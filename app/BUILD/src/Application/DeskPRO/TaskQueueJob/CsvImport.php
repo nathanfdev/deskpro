@@ -285,7 +285,11 @@ class CsvImport extends AbstractJob
         $result = false;
         try {
             $row = MapUtils::mapValues($row, function ($k, $v) {
-                return Strings::utf8_bad_strip(utf8_encode($v));
+                if (is_string($v) && !@json_encode($v) && json_last_error() === JSON_ERROR_UTF8) {
+                    $v = utf8_encode($v);
+                }
+
+                return Strings::utf8_bad_strip($v);
             });
             $result = $importer->importPerson($this->data['field_maps'], $row, $this->data['ref'], $this->data['welcome_email']);
         } catch (\Exception $e) {

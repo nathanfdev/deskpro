@@ -45,7 +45,11 @@ class CsvUploadController extends AbstractController
                     $value[$key] = $iterator($item);
                 }
             } elseif (is_string($value)) {
-                $value = Strings::utf8_bad_strip(utf8_encode($value));
+                if (!@json_encode($value) && json_last_error() === JSON_ERROR_UTF8) {
+                    $value = utf8_encode($value);
+                }
+
+                $value = Strings::utf8_bad_strip($value);
             }
 
             return $value;
