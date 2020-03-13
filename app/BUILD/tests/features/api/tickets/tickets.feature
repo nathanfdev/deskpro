@@ -581,3 +581,15 @@ Feature: /tickets endpoint
 }
     """
     Then the response status code should be 201
+
+  Scenario: I unset ticket agent
+    When I send a PUT request to "/api/v2/tickets/{ticket1}" with body:
+    """
+{
+  "agent": 0
+}
+    """
+    And the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/{ticket1}"
+    Then the JSON node "data.agent" should be equal to 0
