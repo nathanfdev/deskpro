@@ -300,11 +300,17 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
-        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, null, [
+        // Need to pass Ticket and Person to properly show/get person custom fields and values
+        // Might use them in case of dependend fields in criteria
+        $fullFormOptions = [
             'action'              => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_EDIT,
-        ]);
+        ];
+        if ($person && !$person instanceof PersonGuest) {
+            $fullFormOptions['person'] = $person;
+        }
+        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, $fullFormOptions);
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 

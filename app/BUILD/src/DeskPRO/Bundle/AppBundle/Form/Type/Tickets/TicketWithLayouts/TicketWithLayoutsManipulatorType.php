@@ -5,8 +5,12 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutUtil;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDisableAutoProcessListener;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\FieldRendererInterface;
@@ -113,16 +117,16 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $context = TicketWithLayoutsContext::createOnPreSubmit($event);
 
         // fake person/org to process the full form
-        $person = new Person();
-        $person->setOrganization(new Organization());
+        $stubPerson = new Person();
+        $stubPerson->setOrganization(new Organization());
 
         // fake ticket to process the full form
-        $ticket = new Ticket();
-        $ticket->disableAutoTicketProcess();
-        $ticket->setPerson($person);
+        $stubTicket = new Ticket();
+        $stubTicket->disableAutoTicketProcess();
+        $stubTicket->setPerson($stubPerson);
         if ($data) {
-            $ticket->setBrand($data->getBrand());
-            $ticket->setDepartment($data->getDepartment());
+            $stubTicket->setBrand($data->getBrand());
+            $stubTicket->setDepartment($data->getDepartment());
         }
 
         $options         = $form->getConfig()->getOptions();
@@ -132,12 +136,98 @@ class TicketWithLayoutsManipulatorType extends AbstractType
             'ticket_visibility'   => $options['ticket_visibility'],
         ];
 
-        $fullForm = $this->formFactory->create($options['full_type_class'], $ticket, $fullFormOptions);
+        $fullForm = $this->formFactory->create($options['full_type_class'], $stubTicket, $fullFormOptions);
         $fullForm->submit($event->getData());
 
-        TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($ticket) {
-            return $field->getCriteria()->isTicketMatch($ticket);
+        // Pre set missed data for stub ticket
+        $this->fillFullFormStubTicket($stubTicket, $event, $context->getActiveLayout());
+
+        TicketLayoutHelper::renderFormFields($context, function (LayoutField $field) use ($stubTicket) {
+            return $field->getCriteria()->isTicketMatch($stubTicket);
         });
+    }
+
+    /**
+     * Layout fieldA might depend from other fieldB through criteria.
+     * But fieldB might not be presented in layout directly.
+     * So, Ticket form submitted data will not contain ticket/person/org data for fieldB, but we need those data
+     * to properly process fieldA because it depends from fieldB through criteria.
+     * We have to copy missed data manually to stub ticket
+     *
+     * @param FormEvent $mainFormEvent
+     * @param Layout $mainFormLayout
+     */
+    private function fillFullFormStubTicket(Ticket $stubTicket, FormEvent $mainFormEvent, Layout $mainFormLayout)
+    {
+        $mainForm = $mainFormEvent->getForm();
+        $options  = $mainForm->getConfig()->getOptions();
+        $ticket   = $mainForm->getData();
+        $person   = $options['person'];
+        $org      = $person->getOrganization();
+
+        $copyUserCustomFieldIds = [];
+        $copyOrgCustomFieldIds = [];
+        $copyTicketCustomFieldIds = [];
+
+        $notInLayoutFields = LayoutUtil::getFieldsFromCriteriaNotInLayout($mainFormLayout);
+        foreach ($notInLayoutFields as $f) {
+            switch ($f->getFieldType()) {
+                case FormFields::CATEGORY:
+                    $stubTicket->setCategory($ticket->getCategory());
+                    break;
+                case FormFields::PRIORITY:
+                    $stubTicket->setPriority($ticket->getPriority());
+                    break;
+                case FormFields::PRODUCT:
+                    $stubTicket->setProduct($ticket->getProduct());
+                    break;
+                case FormFields::WORKFLOW:
+                    $stubTicket->setWorkflow($ticket->getWorkflow());
+                    break;
+                case FormFields::USER_FIELD:
+                    $copyUserCustomFieldIds[] = $f->getFieldId();
+                    break;
+                case FormFields::TICKET_FIELD:
+                    $copyTicketCustomFieldIds[] = $f->getFieldId();
+                    break;
+                case FormFields::ORG_FIELD:
+                    $copyOrgCustomFieldIds[] = $f->getFieldId();
+                    break;
+            }
+        }
+
+        if ($copyUserCustomFieldIds) {
+            foreach ($person->getCustomData() as $customData) {
+                if (in_array($customData->getField()->getId(), $copyUserCustomFieldIds)
+                    || in_array($customData->getRootField()->getId(), $copyUserCustomFieldIds)
+                ) {
+                    $stubTicket->getPerson()->removeCustomDataForField($customData->getField());
+                    $stubTicket->getPerson()->addCustomData(clone $customData);
+                }
+            }
+        }
+
+        if ($copyTicketCustomFieldIds) {
+            foreach ($ticket->getCustomData() as $customData) {
+                if (in_array($customData->getField()->getId(), $copyTicketCustomFieldIds)
+                    || in_array($customData->getRootField()->getId(), $copyTicketCustomFieldIds)
+                ) {
+                    $stubTicket->removeCustomDataForField($customData->getField());
+                    $stubTicket->addCustomData(clone $customData);
+                }
+            }
+        }
+
+        if ($copyOrgCustomFieldIds) {
+            foreach ($org->getCustomData() as $customData) {
+                if (in_array($customData->getField()->getId(), $copyOrgCustomFieldIds)
+                    || in_array($customData->getRootField()->getId(), $copyOrgCustomFieldIds)
+                ) {
+                    $stubTicket->getPerson()->getOrganization()->removeCustomDataForField($customData->getField());
+                    $stubTicket->getPerson()->getOrganization()->addCustomData(clone $customData);
+                }
+            }
+        }
     }
 
     /**

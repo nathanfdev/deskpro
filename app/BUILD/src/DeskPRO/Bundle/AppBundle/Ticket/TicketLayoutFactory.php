@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutCollection;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use Application\DeskPRO\TicketLayout\LayoutUtil;
 use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
@@ -119,6 +120,15 @@ class TicketLayoutFactory extends AbstractDataService
             foreach ($l->getAgentLayout()->all() as $f) {
                 $layout->getAgentLayout()->add($f);
             }
+        }
+
+        // Check that all fields from conditions/criteria are present in the layout
+        // we need their values in the full form
+        foreach (LayoutUtil::getFieldsFromCriteriaNotInLayout($layout->getUserLayout()) as $criteriaField) {
+            $layout->getUserLayout()->add($criteriaField);
+        }
+        foreach (LayoutUtil::getFieldsFromCriteriaNotInLayout($layout->getAgentLayout()) as $criteriaField) {
+            $layout->getAgentLayout()->add($criteriaField);
         }
 
         $this->verifyRequiredFields($layout->getUserLayout(), $forApi);
