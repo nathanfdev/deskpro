@@ -77,7 +77,11 @@ abstract class AbstractMassActionsController extends BaseController
      */
     protected function saveObject($entity)
     {
-        $this->getManager()->persist($entity);
+        $em = $this->getManager();
+        if (!$em->getUnitOfWork()->isScheduledForDelete($entity)) {
+            $this->getManager()->persist($entity);
+        }
+
         $this->getManager()->flush();
     }
 }
