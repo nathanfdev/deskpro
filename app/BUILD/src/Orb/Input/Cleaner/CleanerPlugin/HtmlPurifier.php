@@ -105,6 +105,12 @@ class HtmlPurifier implements CleanerPlugin
             $value = preg_replace('#<(head|body|style|script)[^>]*/>#i', '', $value);
             $value = preg_replace('#<(head|body|style|script)[^>]*>\s*</\\1>#i', '', $value);
 
+            // Malformed email might contain </html> not at the end. Move it to the end
+            if (stripos($value, '</html>') !== false) {
+                $value = str_ireplace('</html>', '', $value);
+                $value = $value . "</html>";
+            }
+
             $value = preg_replace('#<!DOCTYPE.*?>#is', '', $value);
             if (strpos($value, '<html') !== false) {
                 $value = preg_replace('#<html[^>]*>#i', '', $value);
@@ -180,7 +186,7 @@ class HtmlPurifier implements CleanerPlugin
             // decoded, or the DOMDocument->substituteEntities not being honoured etc.
             // Easiest solution is to hack around entiites altogether so DOMDocument doesnt mess them up
             $value = Strings::preDomDocument($value);
-
+          
             return $value;
         }
 
