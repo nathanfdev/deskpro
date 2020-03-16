@@ -34,31 +34,25 @@
 
 	{{ phrase('agent.emails.ticket_was_created', {name: action_performer ? action_performer.display_contact : ticket_person.display_contact}) }}
 
-	{% set lastReply = ticket.getLastReply(true) %}
-	{% if lastReply and lastReply.isVoiceMessage() %}
-		{% set phoneCall = lastReply.getPhoneCallAttribute().getPhoneCall() %}
-		{% if app.getSetting('voice.email_attach_recording') %}
-			{% if phoneCall.getFullRecording() %}
-				<br /><br />Click here to listen to the call recording:<br />
-				{% set recordingUrl = url('go_to_voice_recording', { id: phoneCall.getFullRecording().getId(), authCode: ticket.getAuth() }) %}
-				<a href="{{ recordingUrl }}">{{ recordingUrl  }}</a><br />
-			{% endif %}
-			{% if phoneCall.getAgentVoicemailRecord() %}
-				Click here to listen to the voicemail message:<br />
-				{% set recordingUrl = url('go_to_agent_voicemail_recording', { id: phoneCall.getAgentVoicemailRecord().getId(), authCode: ticket.getAuth() }) %}
-				<a href="{{ recordingUrl }}">{{ recordingUrl }}</a>
-			{% endif %}
-		{% endif %}
-		{% if app.getSetting('voice.transcribe_voicemail') and app.getSetting('voice.email_attach_transcription') and (phoneCall.getRecordings().count() > 0 or phoneCall.getAgentVoicemailRecord()) %}
-			<br /><br />
-			{% if phoneCall.getFullRecording() %}
-				{{ phoneCall.getFullRecording.getTranscription() }}
-			{% endif %}
-			{% if phoneCall.getAgentVoicemailRecord() %}
-				{{ phoneCall.getAgentVoicemailRecord().getTranscription() }}
-			{% endif %}
-		{% endif %}
-	{% endif %}
+    {% if app.getSetting('voice.email_attach_recording') %}
+        {% set recordingUrl = get_full_recording_url(ticket) %}
+        {% if recordingUrl %}
+            <br /><br />Click here to listen to the call recording:<br />
+            <a href="{{ recordingUrl }}">{{ recordingUrl  }}</a><br />
+        {% endif %}
+        {% set recordingUrl = get_voicemail_recording_url(ticket) %}
+        {% if recordingUrl %}
+            Click here to listen to the voicemail message:<br />
+            <a href="{{ recordingUrl }}">{{ recordingUrl }}</a>
+        {% endif %}
+    {% endif %}
+    {% set fullTranscripion = get_full_recording_transcription(ticket) %}
+    {% set voicemailTranscription = get_voicemail_recording_transcription(ticket) %}
+    {% if app.getSetting('voice.transcribe_voicemail') and app.getSetting('voice.email_attach_transcription') and (fullTranscripion or voicemailTranscription) %}
+        <br /><br />
+        {{ fullTranscripion }}
+        {{ voicemailTranscription }}
+    {% endif %}
 
 	<br /><br />
 

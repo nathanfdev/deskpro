@@ -117,6 +117,11 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             new \Twig_SimpleFunction('render_custom_field', [$this, 'renderCustomField'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('render_custom_field_text', [$this, 'renderCustomFieldText']),
             new \Twig_SimpleFunction('render_custom_field_form', [$this, 'renderCustomFieldForm'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('render_ticket_custom_field', [$this, 'renderTicketCustomField'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('get_full_recording_url', [$this, 'getFullRecordingUrl']),
+            new \Twig_SimpleFunction('get_full_recording_transcription', [$this, 'getFullRecordingTranscription']),
+            new \Twig_SimpleFunction('get_voicemail_recording_url', [$this, 'getVoicemailRecordingUrl']),
+            new \Twig_SimpleFunction('get_voicemail_recording_transcription', [$this, 'getVoicemailRecordingTranscription']),
             new \Twig_SimpleFunction('el_uid', [$this, 'elUid'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('rand', [$this, 'rand'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('str_repeat', [$this, 'strRepeat']),
@@ -1573,6 +1578,130 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         $vars = array_merge($displayArray, $vars);
 
         return $handler->renderText($displayArray['value'], $vars);
+    }
+
+    /**
+     * @param int|array $ticket
+     *
+     * @return Ticket|null
+     */
+    private function getTicket($ticket)
+    {
+        if (is_numeric($ticket)) {
+            $ticketId = $ticket;
+        } elseif (is_array($ticket)) {
+            $ticketId = $ticket['id'];
+        } else {
+            return;
+        }
+
+        return $this->container->getEm()->getRepository(Ticket::class)->find($ticketId);
+    }
+
+    /**
+     * @param int|array $ticket
+     * @param int       $fieldId
+     *
+     * @return string
+     */
+    public function renderTicketCustomField($ticket, $fieldId)
+    {
+        $ticket = $this->getTicket($ticket);
+        if (!$ticket) {
+            return '';
+        }
+
+        return $ticket->renderCustomField($fieldId);
+    }
+
+    /**
+     * @param int|array $ticket
+     *
+     * @return \DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall|null
+     */
+    private function getPhoneCall($ticket)
+    {
+        $ticket = $this->getTicket($ticket);
+        if (!$ticket) {
+            return;
+        }
+
+        $lastReply = $ticket->getLastReply(true);
+        if (!$lastReply || !$lastReply->isVoiceMessage()) {
+            return;
+        }
+
+        return $lastReply->getPhoneCallAttribute()->getPhoneCall();
+    }
+
+    /**
+     * @param int|array $ticket
+     *
+     * @throws \Exception
+     *
+     * @return string|void
+     */
+    public function getFullRecordingUrl($ticket)
+    {
+        $phoneCall     = $this->getPhoneCall($ticket);
+        $fullRecording = $phoneCall ? $phoneCall->getFullRecording() : null;
+        if (!$fullRecording) {
+            return;
+        }
+
+        return $this->getUrl('go_to_voice_recording', [
+            'id'       => $fullRecording->getId(),
+            'authCode' => $phoneCall->getTicket()->getAuth(),
+        ]);
+    }
+
+    /**
+     * @param int|array $ticket
+     *
+     * @throws \Exception
+     *
+     * @return string|void
+     */
+    public function getFullRecordingTranscription($ticket)
+    {
+        $phoneCall     = $this->getPhoneCall($ticket);
+        $fullRecording = $phoneCall ? $phoneCall->getFullRecording() : null;
+
+        return $fullRecording ? $fullRecording->getTranscription() : null;
+    }
+
+    /**
+     * @param int|array $ticket
+     *
+     * @throws \Exception
+     *
+     * @return string|void
+     */
+    public function getVoicemailRecordingUrl($ticket)
+    {
+        $phoneCall = $this->getPhoneCall($ticket);
+        $voicemail = $phoneCall ? $phoneCall->getAgentVoicemailRecord() : null;
+        if (!$voicemail) {
+            return;
+        }
+
+        return $this->getUrl('go_to_agent_voicemail_recording', [
+            'id'       => $voicemail->getId(),
+            'authCode' => $phoneCall->getTicket()->getAuth(),
+        ]);
+    }
+
+    /**
+     * @param int|array $ticket
+     *
+     * @return string|null
+     */
+    public function getVoicemailRecordingTranscription($ticket)
+    {
+        $phoneCall = $this->getPhoneCall($ticket);
+        $voicemail = $phoneCall ? $phoneCall->getAgentVoicemailRecord() : null;
+
+        return $voicemail ? $voicemail->getTranscription() : null;
     }
 
     /**
