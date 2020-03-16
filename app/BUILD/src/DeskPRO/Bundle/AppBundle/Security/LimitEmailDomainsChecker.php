@@ -4,12 +4,18 @@ namespace DeskPRO\Bundle\AppBundle\Security;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class LimitEmailDomainsChecker.
  */
 class LimitEmailDomainsChecker
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
     /**
      * @var PortalSettingsResolver
      */
@@ -18,10 +24,12 @@ class LimitEmailDomainsChecker
     /**
      * Constructor.
      *
+     * @param EntityManager          $em
      * @param PortalSettingsResolver $settingsResolver
      */
-    public function __construct(PortalSettingsResolver $settingsResolver)
+    public function __construct(EntityManager $em, PortalSettingsResolver $settingsResolver)
     {
+        $this->em               = $em;
         $this->settingsResolver = $settingsResolver;
     }
 
@@ -32,6 +40,11 @@ class LimitEmailDomainsChecker
      */
     public function checkPerson(Person $person)
     {
+        // ignore agents
+        if ($person->isActiveAgent()) {
+            return true;
+        }
+
         foreach ($person->getEmails() as $email) {
             if ($this->checkEmail($email->getEmail())) {
                 return true;
@@ -48,6 +61,12 @@ class LimitEmailDomainsChecker
      */
     public function checkEmail($email)
     {
+        // ignore agents
+        $person = $this->em->getRepository(Person::class)->findOneByEmail($email);
+        if ($person && $person->isActiveAgent()) {
+            return true;
+        }
+
         $settings = $this->settingsResolver->getGeneralSettings();
         if (!$settings->isLimitEmailDomains()) {
             return true;
