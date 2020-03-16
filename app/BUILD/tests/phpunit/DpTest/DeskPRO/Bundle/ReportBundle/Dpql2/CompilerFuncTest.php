@@ -16,8 +16,8 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`urgency`, MONTH(`tickets`.`date_created`), 'urgency', `tickets`.`subject` 
-FROM `tickets` 
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`urgency`, MONTH(`tickets`.`date_created`), 'urgency', `tickets`.`subject`
+FROM `tickets`
 LIMIT 2500
 SQL
         );
@@ -112,7 +112,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT /*+ MAX_EXECUTION_TIME(30000) */ DATE('2017-12-22 12:56:00')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ (DATE('2017-12-22 12:56:00'))
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -128,7 +128,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT /*+ MAX_EXECUTION_TIME(30000) */ 
+SELECT /*+ MAX_EXECUTION_TIME(30000) */
     IF(UNIX_TIMESTAMP(`tickets`.`date_created`) - UNIX_TIMESTAMP(`tickets`.`date_created`) IS NULL, 0,
     IF(UNIX_TIMESTAMP(`tickets`.`date_created`) - UNIX_TIMESTAMP(`tickets`.`date_created`) < 900, 900,
     IF(UNIX_TIMESTAMP(`tickets`.`date_created`) - UNIX_TIMESTAMP(`tickets`.`date_created`) < 1800, 1800,
