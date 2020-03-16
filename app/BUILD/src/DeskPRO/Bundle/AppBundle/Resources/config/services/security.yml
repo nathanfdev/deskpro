@@ -84,7 +84,9 @@ services:
 
   dp_limit_email_domains_checker:
     class: DeskPRO\Bundle\AppBundle\Security\LimitEmailDomainsChecker
-    arguments: ["@portal_settings_resolver"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@portal_settings_resolver"
 
   ###
   ### API security
