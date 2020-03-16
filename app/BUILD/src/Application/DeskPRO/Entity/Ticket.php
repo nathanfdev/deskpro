@@ -1759,7 +1759,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $message->ticket = $this;
 
         $now = new \DateTime();
-        if ($message->person['is_agent'] && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
+        if ($message->person && $message->person->isAgent() && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
             if (!$message->isAgentNote() && !$this->_is_new) {
                 if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
                     $this['date_last_agent_reply'] = $now;
