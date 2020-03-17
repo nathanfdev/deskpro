@@ -135,6 +135,7 @@ Feature: /dashboards endpoint
     Then the response status code should be 403
 
   Scenario: I update dashboard
+    Given I'm authenticated as admin
     When I send a PUT request to "/api/v2/dashboards/{d2}" with body:
     """
 {
@@ -163,6 +164,7 @@ Feature: /dashboards endpoint
     And the JSON node "data.permissions[1].name" should be equal to "view"
 
   Scenario: I update permissions of default report
+    Given I'm authenticated as admin
     When I send a PUT request to "/api/v2/dashboards/{d4}" with body:
     """
 {

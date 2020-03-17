@@ -42,7 +42,11 @@ class TicketMessagesVoter extends AbstractTicketsVoter
             case PermissionGroupVoter::VIEW:
                 return $this->getTicketChecker($user)->canView($ticket);
             case PermissionGroupVoter::CREATE:
-                return $this->getTicketChecker($user)->canReply($ticket);
+                if ($message->isAgentNote()) {
+                    return $this->getTicketChecker($user)->canModify($ticket, 'notes');
+                } else {
+                    return $this->getTicketChecker($user)->canReply($ticket);
+                }
             case PermissionGroupVoter::MODIFY:
                 if (!$message) {
                     return false;

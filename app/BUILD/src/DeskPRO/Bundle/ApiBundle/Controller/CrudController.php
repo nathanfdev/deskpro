@@ -256,7 +256,6 @@ abstract class CrudController extends BaseController
     public function postAction(Request $request)
     {
         $this->checkExposed(__METHOD__);
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 
         return $this->handleForm($this->instantiateEntity($request), $request);
     }
@@ -289,7 +288,6 @@ abstract class CrudController extends BaseController
     public function putAction($id, Request $request)
     {
         $this->checkExposed(__METHOD__);
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupEntityContext($id, $request));
 
         return $this->handleForm($this->findEntity($id, $request), $request);
     }
@@ -497,12 +495,14 @@ abstract class CrudController extends BaseController
 
         $form = $this->createForm(static::$type, $model, $options);
         $form->submit($request->request->all(), !$partialUpdate);
-        if (!$form->isValid()) {
-            throw new InvalidFormException($form);
-        }
 
         // in some cases entity will be created in form
         $model = $form->getData();
+        $this->denyAccessUnlessGranted($isModify ? PermissionGroupVoter::MODIFY : PermissionGroupVoter::CREATE, $this->getPermissionGroupEntityContext($model, $request));
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
 
         $this->additionalValidation($model, $request);
 
@@ -554,14 +554,20 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * @param int     $id
+     * @param int     $idOrModel
      * @param Request $request
      *
      * @return object
      */
-    protected function getPermissionGroupEntityContext($id, Request $request)
+    protected function getPermissionGroupEntityContext($idOrModel, Request $request)
     {
-        return new PermissionGroupContext($this->findEntity($id, $request));
+        if (is_object($idOrModel)) {
+            $model = $idOrModel;
+        } else {
+            $model = $this->findEntity($idOrModel, $request);
+        }
+
+        return new PermissionGroupContext($model);
     }
 
     /**

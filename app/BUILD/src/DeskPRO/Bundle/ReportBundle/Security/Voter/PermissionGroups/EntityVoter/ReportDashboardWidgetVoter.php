@@ -30,7 +30,7 @@ class ReportDashboardWidgetVoter extends AbstractReportDashboardVoter
 
         if ($widget) {
             $report    = $widget->getReport();
-            $dashboard = $report->getDashboard();
+            $dashboard = $report ? $report->getDashboard() : null;
         } else {
             $dashboard = null;
         }
