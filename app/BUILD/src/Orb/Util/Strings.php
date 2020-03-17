@@ -1294,7 +1294,7 @@ break;
      *
      * @param string $string
      * @param mixed $html
-     * @param callable $shouldTrimCallback -
+     * @param callable $confirmTrimCallback -
      *
      * @return string
      */
