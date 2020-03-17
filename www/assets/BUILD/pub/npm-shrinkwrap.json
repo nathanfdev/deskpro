@@ -358,11 +358,11 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.110",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.110.tgz",
-      "integrity": "sha512-G6JE81ItNXPIW2wPTiIc30uURU348fujUdLplUY7/K25NeLwT146XrhnvzqoMaiP7WJMLYY9pybGf3oU+y/wgQ==",
+      "version": "0.1.111",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.111.tgz",
+      "integrity": "sha512-/GaCMSOcOFW6IEz85Khw+t3QsPXNo7fSJRkKUehRhe+uwK77yyugImSCA50D9YpgAlPjQgWzRvLWYtJIx25zVw==",
       "requires": {
-        "@deskpro/portal-components": "0.3.69",
+        "@deskpro/portal-components": "0.3.72",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
         "axios": "^0.19.0-beta.1",
         "body-scroll-lock": "^2.6.4",
@@ -378,6 +378,7 @@
         "pusher-js": "^4.3.1",
         "react-animate-height": "^2.0.20",
         "react-app-polyfill": "^0.1.3",
+        "react-dropzone": "^10.2.1",
         "react-frame-component": "^4.0.0",
         "react-froala-wysiwyg": "^2.9.0",
         "react-inlinesvg": "^1.2.0",
@@ -409,9 +410,9 @@
           "integrity": "sha512-XqPLn1hXCUCCFZbNRpxp8CqGBKrT3obMHvtTWAITDUfSurJKisF9HxtzJ23Lzc/Mq9PqTOfpHaCqAjWKJuHtUA=="
         },
         "@deskpro/portal-components": {
-          "version": "0.3.69",
-          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.69.tgz",
-          "integrity": "sha512-+tOcCStloGOHBgRVVWtZTbXi6kEqtS5mMPR1b/RKOIwOVeeuMwygZXYnGQPLsD+PD1O5QVqx+XG/78DvZp2PXQ==",
+          "version": "0.3.72",
+          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.72.tgz",
+          "integrity": "sha512-lwKoJPZbh3QVVO+K/rLuG3mKGflW94Qbkg7Nz8nqPV+7r1VuHSmnJ8iOu3zsZ+0sYeX9keLJDdX9s8eKF6U9lw==",
           "requires": {
             "@deskpro/js-utils": "1.0.7",
             "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -435,6 +436,26 @@
             "yup": "0.24.1"
           },
           "dependencies": {
+            "prop-types": {
+              "version": "15.7.2",
+              "resolved": "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz",
+              "integrity": "sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==",
+              "requires": {
+                "loose-envify": "^1.4.0",
+                "object-assign": "^4.1.1",
+                "react-is": "^16.8.1"
+              }
+            },
+            "react-dropzone": {
+              "version": "10.1.10",
+              "resolved": "https://registry.npmjs.org/react-dropzone/-/react-dropzone-10.1.10.tgz",
+              "integrity": "sha512-vcLBdkYo7wgZpw1o4cz7uk8/Mmm+sYHeiTfFSshA/EGthz/TjjrTOrKwvFHm3o1p1LPk+x+KbDDlw5OeIo6eYA==",
+              "requires": {
+                "attr-accept": "^1.1.3",
+                "file-selector": "^0.1.11",
+                "prop-types": "^15.7.2"
+              }
+            },
             "yup": {
               "version": "0.24.1",
               "resolved": "https://registry.npmjs.org/yup/-/yup-0.24.1.tgz",
@@ -610,6 +631,33 @@
             "xmlhttprequest": "^1.8.0"
           }
         },
+        "react-dropzone": {
+          "version": "10.2.1",
+          "resolved": "https://registry.npmjs.org/react-dropzone/-/react-dropzone-10.2.1.tgz",
+          "integrity": "sha512-Me5nOu8hK9/Xyg5easpdfJ6SajwUquqYR/2YTdMotsCUgJ1pHIIwNsv0n+qcIno0tWR2V2rVQtj2r/hXYs2TnQ==",
+          "requires": {
+            "attr-accept": "^2.0.0",
+            "file-selector": "^0.1.12",
+            "prop-types": "^15.7.2"
+          },
+          "dependencies": {
+            "attr-accept": {
+              "version": "2.1.0",
+              "resolved": "https://registry.npmjs.org/attr-accept/-/attr-accept-2.1.0.tgz",
+              "integrity": "sha512-sLzVM3zCCmmDtDNhI0i96k6PUztkotSOXqE4kDGQt/6iDi5M+H0srjeF+QC6jN581l4X/Zq3Zu/tgcErEssavg=="
+            },
+            "prop-types": {
+              "version": "15.7.2",
+              "resolved": "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz",
+              "integrity": "sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==",
+              "requires": {
+                "loose-envify": "^1.4.0",
+                "object-assign": "^4.1.1",
+                "react-is": "^16.8.1"
+              }
+            }
+          }
+        },
         "react-froala-wysiwyg": {
           "version": "2.9.6",
           "resolved": "https://registry.npmjs.org/react-froala-wysiwyg/-/react-froala-wysiwyg-2.9.6.tgz",
@@ -708,9 +756,9 @@
           }
         },
         "regenerator-runtime": {
-          "version": "0.13.4",
-          "resolved": "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.4.tgz",
-          "integrity": "sha512-plpwicqEzfEyTQohIKktWigcLzmNStMGwbOUbykx51/29Z3JOGYldaaNGK7ngNXV+UcoqvIMmloZ48Sr74sd+g=="
+          "version": "0.13.5",
+          "resolved": "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.5.tgz",
+          "integrity": "sha512-ZS5w8CpKFinUzOwW3c83oPeVXoNsrLsaCoLtJvAClH135j/R77RuymhiSErhm2lKcwSCIpmvIWSbDkIfAqKQlA=="
         },
         "reselect": {
           "version": "3.0.1",
@@ -20828,9 +20876,9 @@
       }
     },
     "body-scroll-lock": {
-      "version": "2.6.4",
-      "resolved": "https://registry.npmjs.org/body-scroll-lock/-/body-scroll-lock-2.6.4.tgz",
-      "integrity": "sha512-NP08WsovlmxEoZP9pdlqrE+AhNaivlTrz9a0FF37BQsnOrpN48eNqivKkE7SYpM9N+YIPjsdVzfLAUQDBm6OQw=="
+      "version": "2.7.0",
+      "resolved": "https://registry.npmjs.org/body-scroll-lock/-/body-scroll-lock-2.7.0.tgz",
+      "integrity": "sha512-k7Ld9YTMzuK6BGuJZQiG7pyE+BKDkZhJ2GkzVhpiCu1V6y/CKyyBdI2MOCvyvtNjhiavdHLcTlykWf/gcyaeEg=="
     },
     "boolbase": {
       "version": "1.0.0",
