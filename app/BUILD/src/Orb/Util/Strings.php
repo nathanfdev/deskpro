@@ -1290,12 +1290,15 @@ break;
      * More advanced version of trimHtml is able to better detect empty elements to trim them out,
      * and replaces empty divs or ps with simple newlines.
      *
+     * $confirmTrimCallback - optional callback which accept \QueryPath\DOMQuery. If return false - element will not be trimmed out
+     *
      * @param string $string
      * @param mixed $html
+     * @param callable $shouldTrimCallback -
      *
      * @return string
      */
-    public static function trimHtmlAdvanced($html)
+    public static function trimHtmlAdvanced($html, $confirmTrimCallback = null)
     {
         $html = self::extractBodyTag($html);
         $html = str_replace('<span></span>', '', $html);
@@ -1330,7 +1333,11 @@ break;
 
             /** @var $div \QueryPath\DOMQuery */
             $div = $qp->top()->find('body > *');
-            if ($div->length == 1 && ($div->first() && ($div->tag() == 'div' || $div->tag() == 'p' || $div->tag() == 'span')) && !trim($div->textBefore().$div->textAfter())) {
+            if ($div->length == 1 
+                && ($div->first() && ($div->tag() == 'div' || $div->tag() == 'p' || $div->tag() == 'span'))
+                && !trim($div->textBefore().$div->textAfter())
+                && ($confirmTrimCallback === null || $confirmTrimCallback($div)))
+            {
                 $changed = true;
                 $html    = $div->html();
                 $html    = trim($html);
