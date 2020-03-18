@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilterSubscription;
@@ -15,6 +16,7 @@ use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketUpdate;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\EmailWithTranscriptionProcessor;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -154,6 +156,32 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
         if (!$agents) {
             $context->getLogger()->debug('[SendAgentNewEmail] No agents to send to');
+
+            return;
+        }
+
+        // don't send email until transcription is downloaded
+        $voiceSettings = $this->getContainer()->get('voice_settings_resolver');
+        $lastMessage   = $ticket->getLastReply(true);
+
+        if ($lastMessage
+            && $lastMessage->getAttribute('voice_phone_call')
+            && preg_match('/^Voicemail from/', $lastMessage->getMessage())
+            && $voiceSettings->isTranscribeVoicemail()
+            && $voiceSettings->isEmailAttachTranscription()
+            && $context->getEventType() === 'newticket'
+            && !$context->getVars()->get('run_transcription_processor')
+        ) {
+            $this->getContainer()->getJobQueue()->addJob(new Job(EmailWithTranscriptionProcessor::JOB_TYPE, [
+                'message_id' => $lastMessage->getId(),
+                'agent_ids'  => array_map(function (Person $agent) {
+                    return $agent->getId();
+                }, $agents),
+                'template'     => $this->getActionOption('template'),
+                'from_name'    => $this->getActionOption('from_name'),
+                'from_account' => $this->getActionOption('from_account'),
+                'headers'      => $this->getActionOption('headers'),
+            ]));
 
             return;
         }
