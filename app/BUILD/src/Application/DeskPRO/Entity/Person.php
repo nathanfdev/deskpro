@@ -1752,7 +1752,11 @@ class Person extends DomainObject implements
      */
     public function setPreference($pref_name, $value)
     {
-        $pref = App::getEntityRepository('DeskPRO:PersonPref')->getForPerson($pref_name, $this);
+        $pref = null;
+        if ($this->id) {
+            $pref = App::getEntityRepository('DeskPRO:PersonPref')->getForPerson($pref_name, $this);
+        }
+
         if (!$pref) {
             $pref         = new PersonPref();
             $pref['name'] = $pref_name;
