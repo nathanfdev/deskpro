@@ -68,6 +68,20 @@ class WidgetJwtDecoder
         }
     }
 
+    public function encodePerson(Person $person)
+    {
+        $brand     = $this->brandStack->getActive()->getBrand();
+        $jwtSecret = $this->settingsResolver->getJwtSecret($brand);
+
+        $payload = [
+            'name'      => $person->getDisplayName(),
+            'email'     => $person->getEmailAddress(),
+            'person_id' => $person->getId(),
+        ];
+
+        return JWT::encode($payload, $jwtSecret);
+    }
+
     /**
      * @param string $payload
      *

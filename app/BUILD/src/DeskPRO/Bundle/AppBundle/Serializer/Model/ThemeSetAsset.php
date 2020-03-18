@@ -88,6 +88,6 @@ class ThemeSetAsset
         $this->mimeType = $asset->getBlob()->getContentType();
         $this->tags     = $asset->getTags();
         $this->url      = $url;
-        $this->blobId   = $blobAuthId;
+        $this->blobId   = $asset->getBlob()->getAuthId();
     }
 }

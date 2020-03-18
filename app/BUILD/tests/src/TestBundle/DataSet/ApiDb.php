@@ -79,16 +79,28 @@ class ApiDb extends AbstractDbSet
         $brand = new Brand();
         $brand->setName('default');
 
-        $themeSet = new ThemeSet();
-        $themeSet->setThemeId('standard');
-        $this->getEm()->persist($themeSet);
+        $standardThemeSet = new ThemeSet();
+        $standardThemeSet->setThemeId('standard');
+        $standardThemeSet->setBrand($brand);
+        $this->getEm()->persist($standardThemeSet);
 
-        $editThemeSet = new ThemeSet();
-        $editThemeSet->setThemeId('standard');
-        $this->getEm()->persist($editThemeSet);
+        $standardEditThemeSet = new ThemeSet();
+        $standardEditThemeSet->setThemeId('standard');
+        $standardEditThemeSet->setBrand($brand);
+        $this->getEm()->persist($standardEditThemeSet);
 
-        $brand->setThemeSet($themeSet);
-        $brand->setEditThemeSet($editThemeSet);
+        $helpcenterThemeSet = new ThemeSet();
+        $helpcenterThemeSet->setThemeId('helpcenter');
+        $helpcenterThemeSet->setBrand($brand);
+        $this->getEm()->persist($helpcenterThemeSet);
+
+        $helpcenterEditThemeSet = new ThemeSet();
+        $helpcenterEditThemeSet->setThemeId('helpcenter');
+        $helpcenterEditThemeSet->setBrand($brand);
+        $this->getEm()->persist($helpcenterEditThemeSet);
+
+        $brand->setThemeSet($standardThemeSet);
+        $brand->setEditThemeSet($standardEditThemeSet);
 
         $this->getEm()->persist($brand);
         $this->getEm()->flush();

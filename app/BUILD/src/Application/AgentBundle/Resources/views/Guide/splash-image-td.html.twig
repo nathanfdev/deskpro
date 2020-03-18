@@ -1,0 +1,28 @@
+<div class="upload" style="display: {% if has_splash(guide) %}none{% else %}block{% endif %}">
+    <input id="{{ tplvars.baseId }}_splash_upload" type="file" name="file-upload" style="display: none" />
+    <a href="#" class="clean-white"><label for="{{ tplvars.baseId }}_splash_upload">{{ phrase('agent.general.upload_image') }}</label></a>
+    <button class="clean-white" id="{{ tplvars.baseId }}_browse_unsplash">{{ phrase('agent.publish.browse_free_image') }}</button>
+    <script class="template-upload" type="text/x-tmpl">
+                                                {{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
+                                                <p>{{ '{%=file.name%}' }} ({{ phrase('agent.general.saving') }})</p>
+                                                {{ '{% } %}' }}
+                                            </script>
+    <script class="template-download" type="text/x-tmpl">
+                                                <div>
+                                                    {{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
+                                                    {{ '{% if (file.error) { %}'}}
+                                                        {{ '{%=file.error%}' }}
+                                                    {{ '{% } else { %}'}}
+                                                        <input type="hidden" class="new_blob_id" value="{{ '{%=file.blob_auth_id%}' }}" />
+                                                        <img src="{{ '{%=file.download_url%}' }}?s=60" class="pic-new" data-setted-size="{{ '{%=file.download_url%}' }}?s=60" />
+                                                    {{ '{% } %}' }}
+                                                    {{ '{% } %}' }}
+                                                </div>
+                                            </script>
+</div>
+<div class="view_image" style="display: {% if not has_splash(guide) %}none{% else %}block{% endif %}">
+    <button id="{{ tplvars.baseId }}_remove_splash_image_btn" class="clean-white">{{ phrase('agent.publish.remove_splash_image') }}</button>
+    <div class="splash-image-image">
+        <img src="{{ get_splash_url(guide, 300) }}" style="max-width: 350px" />
+    </div>
+</div>

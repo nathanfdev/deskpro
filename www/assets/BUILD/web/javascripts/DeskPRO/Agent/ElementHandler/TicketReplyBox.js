@@ -936,6 +936,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			agentSelText.text(option.data('name-short'));
 			agentSelText.css('background-image', 'url(' + option.data('icon')+ ')');
 			agentSelCheck.prop('checked', true);
+			agentSelCheck.data('keep-checked-on-refresh', true);
 
 			if (agentSel.data('auto-switch-status')) {
 				if (agentSelCheck.get(0).checked) {
@@ -945,14 +946,17 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				}
 			}
 		});
+
 		teamSel.on('change', function() {
 			teamSelText.text($(this).find(':selected').text());
 			teamSelCheck.prop('checked', true);
+      teamSelCheck.data('keep-checked-on-refresh', true);
 		});
-        jiraActionSel.on('change', function() {
-          jiraActionText.text($(this).find(':selected').text());
-          jiraActionCheck.prop('checked', true);
-        });
+
+    jiraActionSel.on('change', function() {
+      jiraActionText.text($(this).find(':selected').text());
+      jiraActionCheck.prop('checked', true);
+    });
 
 		var option = agentSel.find(':selected');
 		agentSelText.text(option.data('name-short'));
@@ -1053,7 +1057,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       loadingEl.fadeIn();
 
       $.ajax({
-        url: '/agent/tickets/' + self.page.meta.ticket_id + '/forward/send',
+        url: BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/forward/send',
         data: formData,
         type: 'POST',
         dataType: 'json',

@@ -8,6 +8,13 @@
 				<td>
 					<div class="custom-field field-input kb_field_{{f.id}}" data-item-id="{{f.id}}" ng-non-bindable>
 						{{ render_custom_field_form(f) }}
+						{% if errors["field_#{f.id}"]|length %}
+							<ul class="form-errors">
+								{% for error in errors["field_#{f.id}"] %}
+									<li>{{ error }}</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
 					</div>
 				</td>
 			{% else %}
@@ -20,6 +27,13 @@
 							{{ phrase('agent.general.none') }}
 						{% else %}
 							{{ render_custom_field(f) }}
+						{% endif %}
+						{% if errors["field_#{f.id}"]|length %}
+							<ul class="form-errors">
+								{% for error in errors["field_#{f.id}"] %}
+									<li>{{ error }}</li>
+								{% endfor %}
+							</ul>
 						{% endif %}
 					</div>
 				</td>

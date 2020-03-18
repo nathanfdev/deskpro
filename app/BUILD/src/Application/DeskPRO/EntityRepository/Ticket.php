@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -348,6 +342,7 @@ class Ticket extends AbstractEntityRepository
      * @param null         $limit
      * @param null         $sort_by
      * @param string       $sort_order
+     * @param array        $departmentIds
      *
      * @return array
      */
@@ -527,6 +522,7 @@ class Ticket extends AbstractEntityRepository
      * @param Entity\Person $person
      * @param Entity\Person $agent
      * @param mixed         $status
+     * @param array         $departmentIds
      *
      * @return int
      */
@@ -592,7 +588,7 @@ class Ticket extends AbstractEntityRepository
                 .'
                     UNION
                     SELECT tp.ticket_id as id FROM tickets_participants AS tp
-                    '.$join.' 
+                    '.$join.'
                     WHERE tp.person_id = ? '
                 .$where2
                 .') AS a',
@@ -808,7 +804,7 @@ class Ticket extends AbstractEntityRepository
         App::getDb()->exec("
             INSERT IGNORE INTO tickets_search_active ($field_ids) SELECT $field_ids
             FROM tickets
-            WHERE status IN ('awaiting_agent', 'awaiting_user', 'resolved')
+            WHERE status IN ('awaiting_agent', 'awaiting_user', 'resolved', 'pending')
             ORDER BY id ASC
         ");
         $this->_em->getConnection()->executeQuery("REPLACE INTO settings SET name = 'core.last_searchtables_refill', value = '".time()."'");
@@ -944,7 +940,7 @@ class Ticket extends AbstractEntityRepository
 
             $countsPeople = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
                 SELECT person_id, COUNT(DISTINCT(id)) FROM (
-                    SELECT t1.id, t1.person_id FROM tickets as t1 
+                    SELECT t1.id, t1.person_id FROM tickets as t1
                     WHERE t1.person_id IN (?)
                     '.$where.'
                     UNION ALL
@@ -1001,6 +997,7 @@ class Ticket extends AbstractEntityRepository
                             return $ticket;
                         }
                     }
+
                     break;
 
                 case 'ref':
@@ -1010,6 +1007,7 @@ class Ticket extends AbstractEntityRepository
 
                         return $ticket;
                     }
+
                     break;
 
                 case 'ptac':
@@ -1021,6 +1019,7 @@ class Ticket extends AbstractEntityRepository
 
                         return $ticket;
                     }
+
                     break;
             }
         }
@@ -1342,10 +1341,12 @@ class Ticket extends AbstractEntityRepository
                 $qb->leftJoin('t.department', 'd');
                 $qb->leftJoin('d.parent', 'd_parent');
                 $qb->addOrderBy('d_parent.display_order, d.display_order, t.id', 'DESC');
+
                 break;
 
             case 'last_reply':
                 $qb->addOrderBy('t.date_last_user_reply', 'DESC');
+
                 break;
 
             case 'date_created':

@@ -64,6 +64,9 @@
     {% if root_and_not_hidden %}<div class="form-group">{% endif %}
 
     {{- form_label(form, null) -}}
+    {% if id == 'ticket_message_message' %}
+        <small class="form-text">{{ phrase('helpcenter.forms.message_description') }}</small>
+    {% endif %}
     {{- form_widget(form, applyClass ? {'attr': {'class': widgetClass}} : {}) -}}
     {{- form_errors(form) -}}
 
@@ -81,8 +84,11 @@
     {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
     {% if root_and_not_hidden %}<div class="form-group">{% endif %}
     {{- form_label(form, null) -}}
+    {% if root_and_not_hidden and name != 'captcha_captcha_auto_added' %}
+        <small class="form-text">{{ help }}</small>
+    {% endif %}
     {{- form_widget(form, applyClass ? {'attr': {'class': widgetClass}} : {}) -}}
-    {% if root_and_not_hidden %}
+    {% if root_and_not_hidden and name == 'captcha_captcha_auto_added' %}
         <small class="form-text">{{ help }}</small>
     {% endif %}
     {{- form_errors(form) -}}
@@ -126,11 +132,11 @@
             {% set label = name|humanize %}
         {% endif %}
         {% if type == 'submit' %}
-            {% set attr = attr|merge({class: 'btn btn-primary'}) %}
+            {% set attr = attr|merge({class: (attr.class is defined ? attr.class~' ' : '')~'btn btn-primary'}) %}
         {% elseif type == 'reset' %}
-            {% set attr = attr|merge({class: 'btn btn-outline-secondary btn-reset'}) %}
+            {% set attr = attr|merge({class: (attr.class is defined ? attr.class~' ' : '')~'btn btn-outline-secondary btn-reset'}) %}
         {% else %}
-            {% set attr = attr|merge({class: 'btn btn-secondary'}) %}
+            {% set attr = attr|merge({class: (attr.class is defined ? attr.class~' ' : '')~'btn btn-secondary'}) %}
         {% endif %}
         <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
     {% endspaceless %}
@@ -308,7 +314,7 @@
             </select>
             <i class="far fa-angle-down fa-lg"></i>
         {% else %}
-            <input class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
+            <input id="{{ id }}" class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
         {% endif %}
 {% endblock deskpro_person_email_choice_widget %}
 
@@ -516,7 +522,7 @@
                 <div class="col-sm-5">
                     <label>CAPTCHA</label>
                     <div class="dp-po-form-captcha-text">
-                        <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" height="36" />
+                        <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" height="70" />
                     </div>
                 </div>
                 <div class="col-sm-2 text-center">

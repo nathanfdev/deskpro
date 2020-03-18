@@ -1,0 +1,163 @@
+<?php
+
+namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
+
+use JMS\Serializer\Annotation as JMS;
+
+/**
+ * Class MessengerSettingsWidget.
+ */
+class MessengerWidget
+{
+    const POSITION_RIGHT = 'right';
+    const POSITION_LEFT  = 'left';
+
+    /**
+     * Primary colour of messenger.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("primaryColor")
+     *
+     * @var string
+     */
+    private $primaryColor = '#3d88f3';
+
+    /**
+     * Background colour for messenger.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("backgroundColor")
+     *
+     * @var string
+     */
+    private $backgroundColor = '#f7f7f7';
+
+    /**
+     * Icon and text colour for messenger.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("textColor")
+     *
+     * @var string
+     */
+    private $textColor = '#ffffff';
+
+    /**
+     * Greeting text.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("greetingTitle")
+     *
+     * @var string
+     */
+    private $greetingTitle = 'Get in Touch';
+
+    /**
+     * Widget position
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $position = self::POSITION_RIGHT;
+
+    /**
+     * @return string
+     */
+    public function getPrimaryColor()
+    {
+        return $this->primaryColor;
+    }
+
+    /**
+     * @param string $primaryColor
+     *
+     * @return $this
+     */
+    public function setPrimaryColor($primaryColor)
+    {
+        $this->primaryColor = $primaryColor;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBackgroundColor()
+    {
+        return $this->backgroundColor;
+    }
+
+    /**
+     * @param string $backgroundColor
+     *
+     * @return $this
+     */
+    public function setBackgroundColor($backgroundColor)
+    {
+        $this->backgroundColor = $backgroundColor;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTextColor()
+    {
+        return $this->textColor;
+    }
+
+    /**
+     * @param string $textColor
+     *
+     * @return $this
+     */
+    public function setTextColor($textColor)
+    {
+        $this->textColor = $textColor;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param string $position
+     *
+     * @return $this
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGreetingTitle()
+    {
+        return $this->greetingTitle;
+    }
+
+    /**
+     * @param string $greetingTitle
+     *
+     * @return $this
+     */
+    public function setGreetingTitle($greetingTitle)
+    {
+        $this->greetingTitle = $greetingTitle;
+
+        return $this;
+    }
+}

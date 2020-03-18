@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
-import { Accordion, AccordionPanel } from 'DeskPRO/Component/Semantic/Accordion';
+import { Accordion } from 'DeskPRO/Component/Semantic/Accordion';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import EmailTemplateItem from './EmailTemplateItem';
 import * as actions from '../../Actions/templatesActions';
@@ -121,6 +121,7 @@ export class EmailsAndBlockMenu extends React.Component {
           className="template"
           onClick={() => this.props.selectTemplate(template)}
           desc={template.get('desc')}
+          modified={template.get('modified')}
         />
     );
   };
@@ -146,6 +147,7 @@ export class EmailsAndBlockMenu extends React.Component {
         className="template"
         onClick={() => this.props.selectTemplate(template)}
         desc={template.get('desc')}
+        modified={template.get('modified')}
       />);
     });
     return (
@@ -160,7 +162,8 @@ export class EmailsAndBlockMenu extends React.Component {
 
   getAdditionalTemplates = () => {
     const subGroups = this.state.selectedLeft.get('subGroups');
-    const additionalTemplates = subGroups.valueSeq().map((subGroup) => {
+    const panels = [];
+    subGroups.valueSeq().forEach((subGroup) => {
       if (subGroup.get('subGroupId') === 'primary') {
         return null;
       }
@@ -179,26 +182,24 @@ export class EmailsAndBlockMenu extends React.Component {
           className="template"
           onClick={() => this.props.selectTemplate(template)}
           desc={template.get('desc')}
+          modified={template.get('modified')}
         />);
       });
       content = <Menu>{content}</Menu>;
-      return (<AccordionPanel
-        key={`addEl${subGroup.get('subGroupId')}`}
-        panel={{
-          title: subGroup.get('title'),
-          count: subGroup.get('templates').toArray(),
-          icon:  'icon folder open',
-          content
-        }}
-      />);
+      panels.push({
+        title: subGroup.get('title'),
+        icon:  'icon folder open',
+        content,
+      });
+      return true;
     });
-    if (additionalTemplates.size <= 1) {
+    if (panels.length <= 1) {
       return null;
     }
     return (
       <div>
         <h4>Additional templates</h4>
-        <Accordion>{additionalTemplates}</Accordion>
+        <Accordion panels={panels} />
       </div>
     );
   };

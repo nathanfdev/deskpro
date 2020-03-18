@@ -1,0 +1,41 @@
+<div class="select-theme-modal">
+    <div class="select-theme-modal-header">
+        Theme picker
+
+        <a class="close-panel" ng-click="cancel()">
+            <i class="fas fa-times"></i>
+        </a>
+    </div>
+    <div class="themes">
+        <div ng-repeat="theme in available_themes" ng-click="selectTheme(theme);" class="theme">
+            <div class="theme-header">
+                <div class="theme-title">
+                    {{ ng_var('theme.title') }}
+                </div>
+                <div class="theme-header-line">
+                    <hr />
+                </div>
+                <div class="theme-header-checkbox" ng-class="{'active': theme.id == selected_theme}">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="11" cy="11" r="10.5" stroke="#A9B0B0"/>
+                        <path d="M4.21763 12.1756C3.92746 11.8273 3.92746 11.2351 4.21763 10.8868L4.37723 10.6952C4.66741 10.3469 5.16071 10.3469 5.45089 10.6952L8.23661 14.0392L15.5491 5.26125C15.8393 4.91292 16.3326 4.91292 16.6228 5.26125L16.7824 5.45283C17.0725 5.80116 17.0725 6.39332 16.7824 6.74165L8.23661 17L4.21763 12.1756Z" fill="#A9B0B0"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="theme-preview">
+                <img ng-if="theme.theme_id == 'standard' || theme.id == 'standard'" src="{{ asset('app/Admin/Resources/img/portal-editor-standard-theme-preview.png') }}">
+                <img ng-if="theme.theme_id == 'sidebar' || theme.id == 'sidebar'" src="{{ asset('app/Admin/Resources/img/portal-editor-sidebar-theme-preview.png') }}">
+                <img ng-if="theme.theme_id == 'helpcenter' || theme.id == 'helpcenter'" src="{{ asset('app/Admin/Resources/img/portal-editor-helpcenter-theme-preview.png') }}">
+            </div>
+            <div ng-if="theme.theme_id == 'standard' || theme.id == 'standard'" class="theme-description">
+                Legacy Deskpro portal style.
+            </div>
+            <div ng-if="theme.theme_id == 'sidebar' || theme.id == 'sidebar'" class="theme-description">
+                Legacy Deskpro portal style with a sidebar on every page.
+            </div>
+            <div ng-if="theme.theme_id == 'helpcenter' || theme.id == 'helpcenter'" class="theme-description">
+                The standard Deskpro theme.
+            </div>
+        </div>
+    </div>
+</div>

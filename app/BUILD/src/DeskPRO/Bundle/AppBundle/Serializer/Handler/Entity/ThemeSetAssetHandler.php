@@ -51,9 +51,7 @@ class ThemeSetAssetHandler extends AbstractEntityHandler
             || in_array(AssetsManager::CUSTOM_LOGO_TAG, $entity->getTags())
             || in_array(AssetsManager::CUSTOM_FAVICON_TAG, $entity->getTags())
             || in_array(AssetsManager::CUSTOM_SPLASH_IMAGE_TAG, $entity->getTags())
-        ) {
-            $url = $entity->getBlob()->getDownloadUrl(true, true);
-        } elseif (in_array('inline-image', $entity->getTags())
+            || in_array('inline-image', $entity->getTags())
             || in_array('attachment', $entity->getTags())
             || in_array('custom_icon', $entity->getTags())
         ) {

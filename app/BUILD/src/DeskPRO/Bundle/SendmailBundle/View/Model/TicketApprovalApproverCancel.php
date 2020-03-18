@@ -4,10 +4,10 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 /**
  * Class TicketApprovalCancel
- *
- * @package DeskPRO\Bundle\SendmailBundle\View\Model
  */
 class TicketApprovalApproverCancel extends TicketApprovalType
 {
+    use EventCodeEmailBaseType;
+
     protected $templateFile = 'emails_%s:ticket_approval_approver_cancel.html.twig';
 }

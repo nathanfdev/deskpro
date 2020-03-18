@@ -185,7 +185,7 @@ class UserSearch implements UserSearchInterface
 
             $start       = ($page - 1) * $perPage;
             $selectQuery = "
-                SELECT content_search.object_type, content_search.object_id
+                SELECT DISTINCT(content_search.object_id), content_search.object_type
                 FROM content_search
                 $permJoin
                 WHERE $permWhere AND $where

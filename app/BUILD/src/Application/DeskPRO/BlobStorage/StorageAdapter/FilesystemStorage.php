@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
@@ -80,6 +76,17 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
             $this->logger->logInfo("[FilesystemStorage] (deleteBlob) Failed to delete path: $path");
         }
 
+        $metaPath = $path.'.meta.json';
+        if (file_exists($metaPath)) {
+            $res = @unlink($metaPath);
+
+            if ($res) {
+                $this->logger->logInfo("[FilesystemStorage] (deleteBlob) Deleted path: $metaPath");
+            } else {
+                $this->logger->logInfo("[FilesystemStorage] (deleteBlob) Failed to delete path: $metaPath");
+            }
+        }
+
         return $res;
     }
 
@@ -97,6 +104,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
             $ret = $this->_writeChunkToStream($fp, $data);
         } catch (\Exception $e) {
             @fclose($fp);
+
             throw $e;
         }
 
@@ -112,32 +120,34 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
     /**
      * @param Blob   $blob
-     * @param string $source_path
+     * @param string $sourcePath
      *
-     * @throws BlobStorageException
+     *@throws BlobStorageException
      *
      * @return int
      */
-    public function writeBlobFromFile(Blob $blob, $source_path)
+    public function writeBlobFromFile(Blob $blob, $sourcePath)
     {
-        $fp_source = @fopen($source_path, 'r');
+        $fp_source = @fopen($sourcePath, 'r');
 
         if (!$fp_source) {
             @fclose($fp_source);
-            $this->logger->logError("[FilesystemStorage] (writeBlobFromFile) Could not open $source_path for reading");
-            throw new BlobStorageException("Could not open source_path for reading: $source_path", BlobStorageException::FAILED_RESOURCE_READ);
+            $this->logger->logError("[FilesystemStorage] (writeBlobFromFile) Could not open $sourcePath for reading");
+
+            throw new BlobStorageException("Could not open source_path for reading: $sourcePath", BlobStorageException::FAILED_RESOURCE_READ);
         }
 
         try {
             $ret = $this->writeBlobFromStream($blob, $fp_source);
         } catch (\Exception $e) {
             @fclose($fp_source);
+
             throw $e;
         }
 
         @fclose($fp_source);
 
-        $this->logger->logInfo('[FilesystemStorage] (writeBlobFromFile) Wrote '.Numbers::filesizeDisplay($ret)." from $source_path to ".$this->resolvePath($blob->getPath()));
+        $this->logger->logInfo('[FilesystemStorage] (writeBlobFromFile) Wrote '.Numbers::filesizeDisplay($ret)." from $sourcePath to ".$this->resolvePath($blob->getPath()));
 
         return $ret;
     }
@@ -165,6 +175,15 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         }
 
         $this->_verifyWrite($this->resolvePath($blob->getPath()));
+
+        $metaPath = $path.'.meta.json';
+        $metadata = [
+            'filename' => $blob->getFilename(),
+        ];
+
+        if (!@file_put_contents($metaPath, json_encode($metadata))) {
+            $this->logger->logError("[FilesystemStorage] (writeBlobFromStream) Could not write $metaPath for writing");
+        }
 
         return $ret;
     }
@@ -194,31 +213,33 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
     /**
      * @param Blob   $blob
-     * @param string $target_path
+     * @param string $targetPath
      *
-     * @throws BlobStorageException
      * @throws \Exception
+     * @throws BlobStorageException
      *
      * @return int
      */
-    public function readBlobToFile(Blob $blob, $target_path)
+    public function readBlobToFile(Blob $blob, $targetPath)
     {
-        $fp_target = @fopen($target_path, 'w');
+        $fpTarget = @fopen($targetPath, 'w');
 
-        if (!$fp_target) {
-            @fclose($fp_target);
-            $this->logger->logError("[FilesystemStorage] (readBlobToFile) Could not open $target_path for writing");
-            throw new BlobStorageException("Could not open target_path for writing: $target_path", BlobStorageException::FAILED_RESOURCE_WRITE);
+        if (!$fpTarget) {
+            @fclose($fpTarget);
+            $this->logger->logError("[FilesystemStorage] (readBlobToFile) Could not open $targetPath for writing");
+
+            throw new BlobStorageException("Could not open target_path for writing: $targetPath", BlobStorageException::FAILED_RESOURCE_WRITE);
         }
 
         try {
-            $ret = $this->readBlobToStream($blob, $fp_target);
+            $ret = $this->readBlobToStream($blob, $fpTarget);
         } catch (\Exception $e) {
-            @fclose($fp_target);
+            @fclose($fpTarget);
+
             throw $e;
         }
 
-        $this->logger->logInfo('[FilesystemStorage] (readBlobToFile) Read '.Numbers::filesizeDisplay($ret)." to $target_path from ".$this->resolvePath($blob->getPath()));
+        $this->logger->logInfo('[FilesystemStorage] (readBlobToFile) Read '.Numbers::filesizeDisplay($ret)." to $targetPath from ".$this->resolvePath($blob->getPath()));
 
         return $ret;
     }
@@ -257,6 +278,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
         if (!$fp) {
             $this->logger->logError("[FilesystemStorage] (getBlobWriteStream) Failed to open path for writing: $path");
+
             throw new BlobStorageException("Could not open blob for writing: $path", BlobStorageException::FAILED_RESOURCE_WRITE);
         }
 
@@ -274,6 +296,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
         if (!$fp) {
             $this->logger->logError("[FilesystemStorage] (getBlobReadStream) Failed to open path for reading: $path");
+
             throw new BlobStorageException("Could not open blob for reading: $path", BlobStorageException::FAILED_RESOURCE_READ);
         }
 
@@ -337,6 +360,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
         if ($wroteSize !== $expectSize) {
             $this->logger->logInfo(sprintf('[FilesystemStorage] (_writeChunkToStream) Attempted fwrite of %d bytes but only wrote %d bytes', $expectSize, $wroteSize));
+
             throw new BlobStorageException('Failed to write total bytes to file', BlobStorageException::FAILED_RESOURCE_WRITE);
         }
 
@@ -347,6 +371,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     {
         if (!$this->_fileSeemsOkay($path)) {
             $this->logger->logInfo(sprintf('[FilesystemStorage] (_verifyWrite) File %d is not written', $path));
+
             throw new BlobStorageException('Written file could not be verified', BlobStorageException::FAILED_RESOURCE_WRITE);
         }
     }

@@ -9,22 +9,20 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{% if show == 'validated' %}
-			{{ phrase('user.emails.community-topic_published', {'title':topic.title}) }}
-		{% elseif show == 'closed' %}
-			{{ phrase('user.emails.community-topic_closed', {'title':topic.title, 'status':topic.status_category.title}) }}
-		{% elseif show == 'closed' %}
-			{{ phrase('user.emails.community-topic_updated', {'title': topic.title, 'status':topic.statuscategory.title}) }}
-		{% endif %}
+	{% if show == 'validated' %}
+		{{ phrase('user.emails.community-topic_published', {'title':topic.title}) }}
+	{% elseif show == 'closed' %}
+		{{ phrase('user.emails.community-topic_closed', {'title':topic.title, 'status':topic.status_category.title}) }}
+	{% elseif show == 'closed' %}
+		{{ phrase('user.emails.community-topic_updated', {'title': topic.title, 'status':topic.statuscategory.title}) }}
+	{% endif %}
 
-		<br /><br />
+	<br /><br />
 
-		{{ phrase('user.emails.community-topic_votes', {'count': topic.votes}) }}
-		<a href="{{ community_topic_link }}">
-			{{ community_topic_link }}
-		</a>
-	</container>
+	{{ phrase('user.emails.community-topic_votes', {'count': topic.votes}) }}
+	<a href="{{ community_topic_link }}">
+		{{ community_topic_link }}
+	</a>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

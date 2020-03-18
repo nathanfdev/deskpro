@@ -973,7 +973,7 @@ abstract class BaseFacebook
 
     curl_setopt_array($ch, $opts);
     $result = curl_exec($ch);
-    
+
     $errno = curl_errno($ch);
     // CURLE_SSL_CACERT || CURLE_SSL_CACERT_BADFILE
     if ($errno == 60 || $errno == 77) {
@@ -1245,7 +1245,7 @@ abstract class BaseFacebook
       }
 
       if (!empty($retained_params)) {
-        $query = '?'.implode($retained_params, '&');
+        $query = '?'.implode('&', $retained_params);
       }
     }
 

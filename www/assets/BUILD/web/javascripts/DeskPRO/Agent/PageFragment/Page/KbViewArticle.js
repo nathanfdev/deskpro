@@ -159,20 +159,23 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			e.stopPropagation();
 		});
 
-		$('.save-fields-trigger', fieldsForm).live('click', function() {
-			var formData = fieldsForm.serializeArray();
+    $('.save-fields-trigger', fieldsForm).live('click', function() {
+      var formData = fieldsForm.serializeArray();
 
-			$.ajax({
-				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save-custom-fields',
-				type: 'POST',
-				data: formData,
-				dataType: 'html',
-				success: function(rendered) {
-					fieldsRendered.empty().html(rendered);
-					propToggle('display');
-				}
-			});
-		});
+      $.ajax({
+        url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save-custom-fields',
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        success: function(response) {
+          fieldsRendered.empty().html(response.rendered);
+          propToggle('display');
+        },
+        error: function(error) {
+          fieldsForm.empty().html(error.responseJSON.rendered);
+        }
+      });
+    });
 
 		this.scanGlossaryWords();
 		this._initTrans();
@@ -856,10 +859,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
           $('.review-date-control-input', optWrap).prop('disabled', false);
           $('.review-date-control-select', optWrap).prop('disabled', false);
           $('.review-date-control-set', optWrap).prop('disabled', false);
-          if (data && data.responseJSON && data.responseJSON.success == 1) {
-            self.getEl('review_date').html(data.responseJSON.prop_html);
-            updateEditorCheckbox();
-            self._initReviewDateOptions();
+          if (data && data.responseJSON) {
+            if (data.responseJSON.success == 1) {
+              self.getEl('review_date').html(data.responseJSON.prop_html);
+              updateEditorCheckbox();
+              self._initReviewDateOptions();
+            } else if (data.responseJSON.error_message) {
+              $('.review_date_controls .error-message', optWrap).html(data.responseJSON.error_message);
+            }
           }
         }
       });

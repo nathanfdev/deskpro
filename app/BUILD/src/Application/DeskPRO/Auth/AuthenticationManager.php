@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\Auth;
 
@@ -12,6 +10,7 @@ use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Routing\PasswordResetException;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Identity;
@@ -89,11 +88,11 @@ class AuthenticationManager
      * @param string                       $interface            this MUST be "user" or "agent"
      */
     public function __construct(
-        AuthSettings                 $authSettings,
-        UsersourceManager            $usersourceManager,
+        AuthSettings $authSettings,
+        UsersourceManager $usersourceManager,
         UsersourceAuthAdapterFactory $auth_adapter_factory,
-        SettingsBag                  $appSettings,
-        BrandStack                   $brandStack,
+        SettingsBag $appSettings,
+        BrandStack $brandStack,
         $interface
     ) {
         $this->usersourceManager  = $usersourceManager;
@@ -200,10 +199,13 @@ class AuthenticationManager
 
                 try {
                     $result = $adapter->authenticate();
+                } catch (PasswordResetException $e) {
+                    throw $e;
                 } catch (\Exception $e) {
                     SystemErrorHandler::logException($e, false);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
                     $GLOBALS['DP_AUTH_EXCEPTION']         = $e;
+
                     continue;
                 }
 

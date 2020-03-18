@@ -14,7 +14,7 @@
                         </div>
 
                         <div class="dp-po-avatar dp-po-avatar-round">
-                            {{ hc_avatar(file.person, '', 30) }}
+                            {{ hc_avatar(file.person, '', 60) }}
                             {{ file.person }}
                         </div>
 
@@ -53,9 +53,11 @@
 
                 <div class="row">
                     <div class="col-sm-9">
-                        <div class="dp-po-section dp-po-post-content dp-po-block">
-                            {{ file.content|raw }}
-                        </div>
+                        {% if file.content %}
+                            <div class="dp-po-section dp-po-post-content dp-po-block">
+                                {{ file.content|raw }}
+                            </div>
+                        {% endif %}
 
                         {% if can_rate_download(file) %}
                             {% include 'Theme:PublishCommon:rating.html.twig' with {
@@ -68,7 +70,9 @@
                                 {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: downloadData.comments } %}
                             {% endif %}
 
-                            {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+                            {% if new_comment_form %}
+                              {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+                            {% endif %}
                         {% endif %}
                     </div>
                     <div class="col-sm-3 dp-po-sticky">

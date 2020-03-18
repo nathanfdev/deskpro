@@ -22,6 +22,7 @@ class MessengerEmbedType extends AbstractType
         $builder
             ->add('showOnPortal', ApiBooleanType::class)
             ->add('authorizeDomains', TextType::class)
+            ->add('jwtSecret', TextType::class)
         ;
     }
 

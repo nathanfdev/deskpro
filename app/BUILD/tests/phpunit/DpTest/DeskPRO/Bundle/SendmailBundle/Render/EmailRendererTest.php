@@ -607,6 +607,11 @@ we detect that the user has replied to a message inline rather than above the cu
                 'attribute'   => 'action_performer',
                 'properties'  => $personProperties,
             ],
+            'context' => [
+                'description' => '',
+                'type'        => 'array',
+                'attribute'   => 'context',
+            ],
         ];
     }
 }

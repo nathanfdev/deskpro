@@ -10,6 +10,7 @@ import CodeMirror from '../CodeMirror';
 export class TemplatePopup extends React.Component {
   static propTypes = {
     text:             PropTypes.string,
+    mode:             PropTypes.string,
     loadTemplate:     PropTypes.func,
     resetTemplate:    PropTypes.func,
     setCurrentWidget: PropTypes.func,
@@ -150,21 +151,23 @@ export class TemplatePopup extends React.Component {
           onClick={this.openPopup}
           ref={(c) => { this.span = c; }}
         >
-          {this.props.text.replace(/^SendmailBundle:/, '')}
+          {this.props.mode === 'extends' && 'Extends: '}{this.props.text.replace(/^SendmailBundle:/, '')}
         </span>
       </PopUp>
     );
   }
 }
 class TemplateWidget extends Widget {
-  constructor(cm, pos, code, text, setCurrentWidget, loadTemplate, resetTemplate, setValue, addMarks) {
+  constructor(cm, pos, code, text, mode, setCurrentWidget, loadTemplate, resetTemplate, setValue, addMarks) {
     super(cm, pos);
     try {
       const element = document.createElement('span');
       element.className = 'twig-include';
+
       this.setMark(element, code);
 
       this.text = text;
+      this.mode = mode;
       this.addMarks = addMarks;
       this.loadTemplate = loadTemplate;
       this.resetTemplate = resetTemplate;
@@ -181,6 +184,7 @@ class TemplateWidget extends Widget {
     render(
       <TemplatePopup
         text={this.text}
+        mode={this.mode}
         addMarks={this.addMarks}
         loadTemplate={this.loadTemplate}
         resetTemplate={this.resetTemplate}

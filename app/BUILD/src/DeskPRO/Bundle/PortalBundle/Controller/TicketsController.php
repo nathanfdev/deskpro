@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\People\PersonGuest;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\SnippetUseLogRepository;
@@ -28,6 +29,8 @@ use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
+use DeskPRO\Component\Pdf\PdfRendererInterface;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -297,11 +300,17 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
-        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, null, [
+        // Need to pass Ticket and Person to properly show/get person custom fields and values
+        // Might use them in case of dependend fields in criteria
+        $fullFormOptions = [
             'action'              => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_EDIT,
-        ]);
+        ];
+        if ($person && !$person instanceof PersonGuest) {
+            $fullFormOptions['person'] = $person;
+        }
+        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, $fullFormOptions);
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
@@ -685,6 +694,65 @@ class TicketsController extends AbstractController
         $this->addFlash('success', $this->phrase('portal.flashes.ticket_re_opened'));
 
         return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+    }
+
+    /**
+     * @Route("/tickets/pdf/{ticketRef}", name="portal_tickets_pdf")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     *
+     * @param Request $request
+     * @param string  $ticketRef
+     */
+    public function pdfAction(Request $request, $ticketRef = null)
+    {
+        if (!$ticket = $this->getTicketByRefOrId($ticketRef)) {
+            throw $this->createNotFoundException(sprintf('no ticket with ref or id "%s" found', $ticketRef));
+        }
+
+        $this->denyAccessUnlessGranted(TicketsVoter::TICKET_VIEW, $ticket);
+
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
+
+        $ticketView = $this->getTicketsViewService()->getUserTicketView($ticket);
+
+        $ticketMessagesBlock = $this->renderView(
+            'DeskPRO:pdf_agent:ticket-messages-batch.html.twig',
+            [
+                'ticket'                     => $ticket,
+                'ticket_messages'            => $ticket->getDisplayableMessages(),
+            ]
+        );
+
+        $layout = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout(
+            $ticket->getDepartmentId()
+        );
+
+        $viewLayout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
+
+        $fieldManager = $this->container->getTicketFieldManager();
+        $customFields = $fieldManager->getDisplayArrayForObject($ticket);
+
+        $contentHtml = $this->renderThemeView('Theme:Tickets:pdf.html.twig', [
+            'ticket'                => $ticket,
+            'ticket_view'           => $ticketView,
+            'breadcrumbs'           => $breadcrumbs,
+            'ticket_messages_block' => $ticketMessagesBlock,
+            'layout'                => $viewLayout,
+            'custom_fields'         => $customFields,
+        ]);
+
+        /** @var PdfRendererInterface $pdfRenderer */
+        $pdfRenderer = $this->get('pdf_renderer');
+
+        $pdf = $pdfRenderer->render($contentHtml);
+
+        $response = new Response();
+
+        $response->setContent($pdf);
+        $response->headers->set('Content-Disposition', 'attachment; filename=Ticket_'.$ticket->id.'.pdf');
+        $response->headers->set('Content-Type', 'application/pdf');
+
+        return $response;
     }
 
     /**

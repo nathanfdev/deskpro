@@ -9,19 +9,17 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('portal.emails.greeting', {to_name: recipient.name}) }}
+    {{ phrase('portal.emails.greeting', {to_name: recipient.name}) }}
 
-        <br /><br />
+    <br /><br />
 
-        {{ message }}<br />
+    {{ message }}<br />
 
-        <a href="{{ article_link }}">{{ article.title }}</a>
+    <a href="{{ article_link }}">{{ article.title }}</a>
 
-        <br /><br />
+    <br /><br />
 
-        {{ phrase('portal.emails.end_greeting') }}
-    </container>
+    {{ phrase('portal.emails.end_greeting') }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

@@ -2,6 +2,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Features;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
 use DeskPRO\Bundle\AppBundle\Features\FeatureInterface;
 use DeskPRO\Bundle\AppBundle\Features\FeaturesAccessChecker;
@@ -36,9 +37,10 @@ class FeaturesCollectionSpec extends ObjectBehavior
 
     public function it_adds_features_and_skip_dupes(
         FeaturesAccessChecker $accessChecker,
+        SettingsResolver $settingsResolver,
         BetaFeatureInterface $feature
     ) {
-        $this->beConstructedWith($accessChecker);
+        $this->beConstructedWith($accessChecker, $settingsResolver);
         $this->addFeature($feature);
         $this->addFeature($feature);
         $this->count()->shouldBeEqualTo(1);
@@ -46,31 +48,34 @@ class FeaturesCollectionSpec extends ObjectBehavior
 
     public function it_returns_feature_by_id(
         FeaturesAccessChecker $accessChecker,
+        SettingsResolver $settingsResolver,
         BetaFeatureInterface $feature
     ) {
-        $this->beConstructedWith($accessChecker);
+        $this->beConstructedWith($accessChecker, $settingsResolver);
         $this->addFeature($feature);
         $gotFeature = $this->getFeature('test.feature');
         $gotFeature->getId()->shouldBeEqualTo('test.feature');
     }
 
     public function it_returns_null_if_feature_is_not_found(
-        FeaturesAccessChecker $accessChecker
+        FeaturesAccessChecker $accessChecker,
+        SettingsResolver $settingsResolver
     ) {
-        $this->beConstructedWith($accessChecker);
+        $this->beConstructedWith($accessChecker, $settingsResolver);
         $gotFeature = $this->getFeature('unknown.feature');
         $gotFeature->shouldBeEqualTo(null);
     }
 
     public function it_filters_features_availability(
         FeaturesAccessChecker $accessChecker,
+        SettingsResolver $settingsResolver,
         BetaFeatureInterface $qaFeature,
         BetaFeatureInterface $cloudFeature
     ) {
         $accessChecker->isAvailable([FeatureInterface::AVAILABLE_AT_QA])->willReturn(true);
         $accessChecker->isAvailable([FeatureInterface::AVAILABLE_AT_CLOUD])->willReturn(false);
 
-        $this->beConstructedWith($accessChecker);
+        $this->beConstructedWith($accessChecker, $settingsResolver);
         $this->addFeature($qaFeature);
         $this->addFeature($cloudFeature);
         $this->getAvailableFeatures()->shouldContain($qaFeature);

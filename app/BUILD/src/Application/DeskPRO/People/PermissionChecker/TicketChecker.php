@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
-
 namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\App;
@@ -89,14 +83,24 @@ class TicketChecker extends AbstractChecker
         }
 
         foreach ($ticket->getApprovals() as $approval) {
-            // If the current user is the ticket owner AND the approval contains the ticket owner as an approver
-            // then view access is always allowed irrespective of canApproversViewSubject
-            if ($this->person->isEqualTo($ticket->getPerson()) && $approval->hasApprover($this->person)) {
-                return true;
-            }
+            if ($approval->hasApprover($this->person)) {
+                // approvers can view ticket
+                // if 'allow approvers to view ticket' is checked
+                if ($approval->canApproversViewSubject()) {
+                    return true;
+                }
 
-            if ($approval->canApproversViewSubject()) {
-                if ($approval->hasApprover($this->person)) {
+                // if the current user is the ticket owner AND the approval contains the ticket owner as an approver
+                // then view access is always allowed irrespective of canApproversViewSubject
+                if ($this->person->isEqualTo($ticket->getPerson())) {
+                    return true;
+                }
+
+                // if approver is an org manager and the ticket person belongs to the same organisation
+                if ($this->person->isOrganizationManager()
+                    && $ticket->getPerson()->getOrganization()
+                    && $this->person->getOrganization() === $ticket->getPerson()->getOrganization()
+                ) {
                     return true;
                 }
             }
@@ -293,6 +297,7 @@ class TicketChecker extends AbstractChecker
 
     /**
      * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * @param mixed $op
      *
      * @return bool
      */

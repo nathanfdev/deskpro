@@ -9,18 +9,16 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('agent.emails.whitelist_ip_login_attempt') }}<br />
-        {{ ip }}
+    {{ phrase('agent.emails.whitelist_ip_login_attempt') }}<br />
+    {{ ip }}
 
-        <br/><br/>
+    <br/><br/>
 
-        {{ phrase('agent.emails.whitelist_ip_validation_link') }}<br />
-        <a href="{{ url }}"/>{{ url }}</a>
+    {{ phrase('agent.emails.whitelist_ip_validation_link') }}<br />
+    <a href="{{ url }}"/>{{ url }}</a>
 
-        <br /><br />
-        {{ phrase('agent.emails.whitelist_ip_note') }}
-    </container>
+    <br /><br />
+    {{ phrase('agent.emails.whitelist_ip_note') }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

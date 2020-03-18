@@ -1,4 +1,10 @@
 <!-- Please avoid to edit this template as it may break some functionalities -->
+<div class="dp-hr">&nbsp;</div>
+{% if site_url %}<a href="{{ site_url }}">{{ site_name|default(site_url) }}</a> &middot; {% endif %}
+{% if app.isPortalEnabled() %}<a href="{{ deskpro_url }}">{{ deskpro_url }}</a>{% endif %}
+{% if tplvars.agent_notification_footer %}
+    &middot; <a href="{{ url_full('user') }}agent/#settings.{{ tplvars.agent_notification_footer }}">Manage Your Notification Settings</a>
+{% endif %}
 
 {% if tac %}
     {{ layout.replycode(tac.access_code) }}
@@ -8,6 +14,10 @@
 
 {% if tplvars.agent_reply_above_line %}
         <!--{{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}-->
+{% endif %}
+
+{% if event_code %}
+   <br /><span style="font-family: monospace; font-size: 8px; color: #CCC">{{ event_code }}</span>
 {% endif %}
 
 {% if not tplvars.agent_reply_above_line %}

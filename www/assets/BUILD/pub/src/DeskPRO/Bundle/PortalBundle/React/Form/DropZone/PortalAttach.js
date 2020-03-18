@@ -189,7 +189,7 @@ export default class PortalAttach extends React.Component {
             onSend={this.onUploadStarted}
             onSuccess={this.onUploadSuccess}
             onFail={this.onUploadFail}
-            getDropZoneNode={widgetOptions.getDropZoneNode}
+            getDropZoneNode={() => this.refDropZone}
           >
             {widgetOptions.isWidget ? this.renderLink() : this.renderButton()}
           </DropZone>

@@ -5,7 +5,7 @@
 <div class="dp-po-section dp-po-block dp-po-ticket-modal-body">
     <div class="dp-po-ticket-modal-agent">
         <div class="dp-po-avatar dp-po-avatar-round">
-            {{ hc_avatar(message.person, '', 30) }}
+            {{ hc_avatar(message.person, '', 60) }}
             {{ phrase('helpcenter.tickets.rate-intro', {name: '<strong>' ~ message.person.display_name_user ~ '</strong>&nbsp;', subject: ticket.subject}, true) }}
         </div>
     </div>

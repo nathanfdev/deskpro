@@ -4,19 +4,19 @@ namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\EntityRepository\Person as PersonRepository;
-use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiFullType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
-use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
+use DeskPRO\Component\Util\RegexUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -53,79 +53,94 @@ class TicketController extends AbstractMessengerController
      */
     public function createTicketAction(Request $request)
     {
-        $ticket = new Ticket();
+        $newTicketService = $this->get('tickets.messenger_new_ticket');
 
-        $requestData = $request->request->all();
+        $settingsResolver = $this->get('messenger.service.settings_resolver');
+        $brand            = $this->get('brand_stack')->getActive()->getBrand();
+        $requestData      = $request->request->all();
+
+        $subjectPattern = $settingsResolver->getMessengerSettings($brand)->getTickets()->getSubject();
+        if ($subjectPattern !== '') {
+            $subject                = RegexUtils::safePregReplace('#\{\s*[a-zA-Z0-9]+\s*\}#', $this->getVisitorId($request), $subjectPattern);
+            $requestData['subject'] = $subject;
+        }
+
+        $ticket = $newTicketService->createNewTicket(
+            $request,
+            $this->getVisitorId($request),
+            $this->getUser(),
+            $brand,
+            Ticket::CREATED_WEB_PERSON_WIDGET
+        );
+        $person      = $ticket->getPerson();
         $formOptions = [
+            'person'              => $person,
+            'csrf_protection'     => false,
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
+            'form_type'           => TicketWithLayoutsContext::FORM_TYPE_MESSENGER,
         ];
 
-        // try to find person
-        /** @var PersonRepository $personRepository */
-        $personRepository = $this
-            ->get('doctrine.orm.default_entity_manager')
-            ->getRepository(Person::class);
-        $person = null;
-
-        if (isset($requestData['person_id'])) {
-            $person = $this->get('doctrine.orm.default_entity_manager')->find(Person::class, $requestData['person_id']);
-            unset($requestData['person_id']);
-        }
-
-        if (!$person && isset($requestData['email'])) {
-            $person = $personRepository->findOneByEmail($requestData['email']);
-        }
-
-        // determine username for person
-        if (isset($requestData['name'])) {
-            $username = $requestData['name'];
-            unset($requestData['name']);
-        } else {
-            $username = 'anonymous user';
-        }
-
-        // if email was sent but person wasn't found - create person
-        if (!$person) {
-            $person = new Person();
-            $person->setEmail($requestData['email']);
-            $person->setName($username);
-        }
-
-        if (isset($requestData['email'])) {
-            unset($requestData['email']);
-        }
-
-        $errors = [];
-        if (!$person && !isset($requestData['email'])) {
-            $errors['email']     = 'Either email or person_id parameter is required';
-            $errors['person_id'] = 'Either email or person_id parameter is required';
-        }
-
-        if ($errors) {
-            throw new MessengerApiException($errors);
-        }
-
-        $formOptions['person'] = $person;
-
-        $requestData['message'] = ['message' => $requestData['message'], 'format' => 'html'];
-
         $form = $this->container->get('form.factory')->create(
-            TicketWithLayoutsApiFullType::class,
+            TicketWithLayoutsApiType::class,
             $ticket,
             $formOptions
         );
 
-        $form->submit($requestData, false);
+        $form->submit($requestData, true);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
+        $person = $ticket->getPerson();
 
-        $manager = $this->getContainer()->getTicketManager();
-        $context = $manager->createUserExecutorContext($person, ExecutorContext::EVENT_NEW, ExecutorContext::METHOD_API, ['api_v2' => true]);
+        $email     = $person->getPrimaryEmail();
+        $person    = $this->get('data.person')->getPersonForEmail($email->getEmail());
+        $guestForm = $this->createForm(TicketWithLayoutsApiType::class, $ticket, $formOptions);
 
-        $manager->saveTicket($ticket, $context);
+        if ($person) {
+            $ticket->setPerson($person);
+            $requestData['subject'] = $this->updateSubject($subjectPattern, $ticket, $ticket->getPerson());
+            $guestForm->submit($requestData, true);
+            if (!$this->getUser() || $this->getUser() instanceof PersonGuest) {
+                // if the user is not authorized then don't allow to change person entity
+                $this->getManager()->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($ticket->getPerson()));
+                // if the user is not authorized then don't allow to change person entity email
+                // form configured to set email to `primary_email` field
+                if ($person->getPrimaryEmail()) {
+                    $this->getManager()->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($person->getPrimaryEmail()));
+                }
+            }
+            $newTicketService->acceptNewTicket($ticket, 'widget');
+        } else {
+            $requestData['subject'] = $this->updateSubject($subjectPattern, $ticket, $ticket->getPerson());
+            $newTicketService->acceptNewTicketForGuest($ticket, $requestData, $guestForm, 'widget');
+        }
 
-        return View::create(new ApiWrapper($ticket));
+        // check if ticket was created and then return success response
+        if ($ticket->getId()) {
+            return View::create(new ApiWrapper($ticket));
+        } else {
+            $form->addError(new FormError('Unable to save ticket.'));
+
+            throw new InvalidFormException($form);
+        }
+    }
+
+    /**
+     * @param string $subjectPattern
+     * @param Ticket $ticket
+     * @param Person $person
+     *
+     * @return mixed
+     */
+    private function updateSubject($subjectPattern, Ticket $ticket, Person $person)
+    {
+        $subject = $ticket->getSubject();
+        if ($subjectPattern !== '') {
+            $subject = RegexUtils::safePregReplace('#\{\s*[a-zA-Z0-9]+\s*\}#', $person->getDisplayName(), $subjectPattern);
+            $ticket->setSubject($subject);
+        }
+
+        return $subject;
     }
 }

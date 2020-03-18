@@ -343,6 +343,16 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.icon_property:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\IconPropertyHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.splash_image_property:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\SplashImagePropertyHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.field_display_array:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Other\FieldDisplayArrayHandler
     tags:

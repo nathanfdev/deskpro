@@ -9,14 +9,12 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+	{{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
-		<br/><br/>
+	<br/><br/>
 
-		{{ phrase('user.emails.register-welcome') }}<br/>
-		<a href="{{ portal_home }}">{{ portal_home }}</a>
-	</container>
+	{{ phrase('user.emails.register-welcome') }}<br/>
+	<a href="{{ portal_home }}">{{ portal_home }}</a>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

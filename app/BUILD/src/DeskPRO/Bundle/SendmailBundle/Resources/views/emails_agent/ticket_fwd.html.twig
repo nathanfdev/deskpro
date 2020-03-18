@@ -10,27 +10,39 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-        <div>{{ agent_message | raw }}</div>
+    <div>{{ agent_message | raw }}</div>
 
-        <br><br/>
+    <br><br/>
 
-        ---------- {{ phrase('agent.tickets.forwarded_message') }} ----------<br/>
-        {% for message in ticket_messages %}
-        <strong>{{ phrase('agent.general.from') }}:</strong> {{ message.person.display_name }} &lt;{{ message.person.primary_email }}&gt;<br/>
-        <strong>{{ phrase('agent.general.date') }}:</strong> {{ message.date_created|date('full') }}<br/>
-        <strong>{{ phrase('agent.general.subject') }}:</strong> {{ ticket.subject }}<br/>
+    {% if app.isPortalEnabled() and attachments | filter(a => not a.is_inline)  | length > 0 and not app.getSetting('core_tickets.disable_attachments_list') %}
+        <div style="font-size:11px">
+            <br />
+            <strong>{{ phrase('user.emails.attachments') }}</strong>
+            {% for attach in attachments %}
+                {% if not attach.is_inline %}
+                    <br />
+                    &bull; <a href="{{ attach.download_url }}" style="{{ _self.link_style() }}">{{attach.filename}}</a> ({{ attach.filesize_readable }})
+                    <attachment id="{{ attach.blob_auth }}" filename="{{attach.filename}}" />
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 
-        <table border="0" cellspacing="0" cellpadding="3">
-            <tr><td>
-                <table border="0" cellspacing="0" cellpadding="0" width="100%"><tr><td>
-                    <div data-dp-type="blockquote" class="dp-quoted-message">{{ message.message|raw }}</div>
-                </td></tr></table>
-            </td></tr>
-        </table>
-        <div class="dp-spacer">&nbsp;</div>
-        {% endfor %}
-    </container>
+    ---------- {{ phrase('agent.tickets.forwarded_message') }} ----------<br/>
+    {% for message in ticket_messages %}
+    <strong>{{ phrase('agent.general.from') }}:</strong> {{ message.person.display_name }} &lt;{{ message.person.primary_email }}&gt;<br/>
+    <strong>{{ phrase('agent.general.date') }}:</strong> {{ message.date_created|date('full') }}<br/>
+    <strong>{{ phrase('agent.general.subject') }}:</strong> {{ ticket.subject }}<br/>
+
+    <table border="0" cellspacing="0" cellpadding="3">
+        <tr><td>
+            <table border="0" cellspacing="0" cellpadding="0" width="100%"><tr><td>
+                <div data-dp-type="blockquote" class="dp-quoted-message">{{ message.message|raw }}</div>
+            </td></tr></table>
+        </td></tr>
+    </table>
+    <div class="dp-spacer">&nbsp;</div>
+    {% endfor %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

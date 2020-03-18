@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -45,6 +39,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
     const END_ACTION_DELETE  = 'delete';
     const END_ACTION_ARCHIVE = 'archive';
+
+    const REVIEW_DATE_UNIT_DAYS   = 'days';
+    const REVIEW_DATE_UNIT_MONTHS = 'months';
+    const REVIEW_DATE_UNIT_YEARS  = 'years';
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection|ArticleToCategory[]
@@ -383,8 +381,8 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
     /**
      * @param ArticleCategory $cat
-     *
      * @param int $displayOrder
+     *
      * @return $this
      */
     public function addToCategory(ArticleCategory $cat, $displayOrder = 0)
@@ -676,6 +674,8 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     }
 
     /**
+     * @param mixed $split
+     *
      * @return string|[]
      */
     public function getReviewInterval($split = false)
@@ -708,6 +708,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
     /**
      * @param string $interval
+     * @param mixed $restartReviewDate
      *
      * @return $this
      */
@@ -976,11 +977,11 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapOneToMany(
             [
-                'fieldName'    => 'categories',
-                'targetEntity' => ArticleToCategory::class,
-                'mappedBy'     => 'article',
-                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'orderBy'      => ['display_order' => Criteria::ASC],
+                'fieldName'     => 'categories',
+                'targetEntity'  => ArticleToCategory::class,
+                'mappedBy'      => 'article',
+                'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'orderBy'       => ['display_order' => Criteria::ASC],
                 'orphanRemoval' => true,
             ]
         );

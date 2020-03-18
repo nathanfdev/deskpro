@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Mapper;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Person;
@@ -47,29 +48,23 @@ class ChatMapper
     }
 
     /**
-     * @param mixed $data
+     * @param array $data
+     * @param ChatConversation $chat
      *
-     * @throws MessengerApiException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return ChatMessage
      */
-    public function createChatMessage($data)
+    public function createChatMessage($data, ChatConversation $chat)
     {
-        $message = new ChatMessage();
-
-        $errors = [];
-
-        if (isset($data['uuid']) && trim($data['uuid'])) {
-            $uuid = $data['uuid'];
-        } else {
-            $uuid = RandUtils::uuidV4();
-        }
+        $message = $this->getBasicMessage($chat);
+        $errors  = [];
 
         if (isset($data['blobs']) && !is_array($data['blobs'])) {
-            $errors['blobs'] = 'Blobs should be array';
+            $errors['blobs'] = 'Blobs should be an array';
         }
-
-        $message->setMetadata(['uuid' => $uuid]);
 
         if (isset($data['message']) && trim($data['message'])) {
             $message->setContent($this->cleanText($data['message']))->setIsHtml(true);
@@ -85,9 +80,9 @@ class ChatMapper
             }
         }
         if (isset($data['origin']) && $data['origin'] === ChatMessage::ORIGIN_AGENT) {
-            $message->setIsUser(false);
+            $message->setIsUser(false)->setOrigin(ChatMessage::ORIGIN_AGENT);
         } elseif (isset($data['origin']) && $data['origin'] === ChatMessage::ORIGIN_USER) {
-            $message->setIsUser(true);
+            $message->setIsUser(true)->setOrigin(ChatMessage::ORIGIN_USER);
         } else {
             $errors['origin'] = sprintf(
                 'Unexpected value. Only %s and %s are allowed.',
@@ -96,15 +91,61 @@ class ChatMapper
             );
         }
 
-        if ($message->getAuthor()) {
-            $message->setOrigin($message->getAuthor()->isAgent() ? ChatMessage::ORIGIN_AGENT : ChatMessage::ORIGIN_USER);
-        } else {
-            $message->setOrigin($message->getIsUser() ? ChatMessage::ORIGIN_USER : ChatMessage::ORIGIN_AGENT);
-        }
+        $message->setMetadata(['uuid' => $this->getUuid($data), 'is_user_message' => $message->getIsUser()]);
 
         if ($errors) {
             throw new MessengerApiException($errors);
         }
+
+        return $message;
+    }
+
+    /**
+     * @param array            $data
+     * @param ChatConversation $chat
+     */
+    public function createChatAttachment($data, ChatConversation $chat)
+    {
+        $message = $this->getBasicMessage($chat);
+        $errors  = [];
+        if (!$blob = $this->em->find(Blob::class, $data['blob']['id'])) {
+            throw new MessengerApiException('Wrong blob id!');
+        }
+        $blob->setIsTemp(false);
+
+        if (isset($data['blob']) && !is_array($data['blob'])) {
+            $errors['blob'] = 'Blob should be an array';
+        }
+
+        $content = sprintf('File: <a href="%s" target="_blank">%s</a> (%s)',
+            $data['blob']['download_url'],
+            $data['blob']['filename'],
+            $data['blob']['filesize_readable']
+        );
+
+        if ($data['blob']['is_image']) {
+            $content = sprintf('%s<div class="file-thumb"><img src="%s?s=50" /></div>', $content, $data['blob']['download_url']);
+        }
+
+        $message
+            ->setMetadata([
+                'uuid'    => $this->getUuid($data),
+                'type'    => 'file',
+                'blob_id' => $data['blob']['id'],
+                'blob'    => [
+                    'blob_id'           => $data['blob']['id'],
+                    'blob_auth'         => $data['blob']['auth'],
+                    'blob_auth_id'      => $data['blob']['auth_id'],
+                    'filesize_readable' => $data['blob']['filesize_readable'],
+                    'filename'          => $data['blob']['filename'],
+                    'download_url'      => $data['blob']['download_url'],
+                    'is_image'          => $data['blob']['is_image'],
+                ],
+            ])
+            ->setContent($content)
+            ->setIsHtml(true)
+            ->setIsUser(true)
+            ->setOrigin(ChatMessage::ORIGIN_USER);
 
         return $message;
     }
@@ -135,7 +176,63 @@ class ChatMapper
             'is_sys'       => $message->getIsSys(),
             'is_html'      => $message->isHtml(),
             'uuid'         => $uuid,
+            'meta'         => $this->transformMeta($metadata),
         ];
+    }
+
+    private function getUuid($data)
+    {
+        return isset($data['uuid']) && trim($data['uuid']) ? $data['uuid'] : RandUtils::uuidV4();
+    }
+
+    private function getBasicMessage(ChatConversation $chat)
+    {
+        $message = new ChatMessage();
+        // we need to handle this staff with jwt and other things probably
+        if ($chat->getPerson()) {
+            $message->setAuthor($chat->getPerson());
+        }
+
+        return $message;
+    }
+
+    /**
+     * @param $metadata
+     *
+     * @return array
+     */
+    private function transformMeta($metadata)
+    {
+        if (isset($metadata['type']) && $metadata['type'] === 'file') {
+            $res = [
+                'type'        => $metadata['type'],
+                'downloadUrl' => $metadata['blob']['download_url'],
+                'isImage'     => $metadata['blob']['is_image'],
+                'filesize'    => $metadata['blob']['filesize_readable'],
+            ];
+        } elseif (isset($metadata['chat_assigned'])) {
+            $res = [
+                'type' => 'chat.agentAssigned',
+            ];
+        } elseif (isset($metadata['chat_unassigned'])) {
+            $res = [
+                'type' => 'chat.agentUnassigned',
+            ];
+        } elseif (isset($metadata['user_joined'])) {
+            $res = [
+                'type' => 'chat.userJoined',
+            ];
+        } elseif (isset($metadata['user_left'])) {
+            $res = [
+                'type' => 'chat.userLeft',
+            ];
+        } else {
+            $res = [
+                'type' => 'message',
+            ];
+        }
+
+        return $res;
     }
 
     /**

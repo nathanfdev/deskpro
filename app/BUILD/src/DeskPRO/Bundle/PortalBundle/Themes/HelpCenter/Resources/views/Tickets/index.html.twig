@@ -183,6 +183,9 @@
                     <div class="col-sm-9">
                         <div class="dp-po-section dp-po-block">
                             {% set search_displayed = false %}
+
+                            {% set displayed_at_least_one_table = false %}
+
                             {% for table in ticket_list_tables %}
                                 {% if table.pager|length > 0 %}
                                     {% set displayed_at_least_one_table = true %}
@@ -197,6 +200,31 @@
                                     {% set search_displayed = true %}
                                 {% endif %}
                             {% endfor %}
+                            {% if not displayed_at_least_one_table %}
+                                {% if search_query %}
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <form class="dp-po-ticket-search" method="get">
+                                                <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-tickets') }}" value="{{ search_query }}" />
+                                                <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+                                            </form>
+                                        </div>
+                                        <div class="col-sm-1 text-right">
+                                        </div>
+                                    </div>
+                                    <div class="dp-po-table">
+                                        <div class="col-sm-12">
+                                            {{ phrase('helpcenter.tickets.list_no_tickets_filter', { open_ticket_url: path('portal_new_ticket') }) }}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="row">
+                                        {{ phrase('helpcenter.tickets.list_no_tickets', { open_ticket_url: path('portal_new_ticket') }) }}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -272,7 +300,7 @@
     {% endif %}
 {%- endmacro -%}
 
-{%- macro col_data(ticket, ticket_view, ticket_exceprpt, ticket_table, col) -%}
+{%- macro col_data(ticket, ticket_view, ticket_excerpt, ticket_table, col) -%}
     {% if col.id == 'department_subject' %}
         <span class="focus">[{{ ticket.department_or_default.user_title }}]</span>
         {{ ticket.subject }}
@@ -391,7 +419,7 @@
             </div>
             {% for ticket in ticket_table.pager %}
                 {% set ticket_view = ticket_view(ticket) %}
-                {% set ticket_exceprpt = ticket_exceprpts[ticket.id] is defined ? ticket_exceprpts[ticket.id] : null %}
+                {% set ticket_excerpt = ticket_excerpts[ticket.id] is defined ? ticket_excerpts[ticket.id] : null %}
                 <div class="dp-po-table-row">
                     <span class="dp-po-table-cell dp-po-table-cell-indicator"><i class="dp-po-icon fas fa-circle"></i></span>
                     <span class="dp-po-table-cell">
@@ -399,7 +427,7 @@
                     </span>
                     {% for col in ticket_table.columns %}
                         <span class="dp-po-table-cell" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
-                            <a href="{{ portal_path(ticket) }}" class="dp-po-table-cell-link">{{ _self.col_data(ticket, ticket_view, ticket_exceprpt, ticket_table, col) }}</a>
+                            <a href="{{ portal_path(ticket) }}" class="dp-po-table-cell-link">{{ _self.col_data(ticket, ticket_view, ticket_excerpt, ticket_table, col) }}</a>
                         </span>
                     {% endfor %}
 {#                                <span class="dp-po-table-cell dp-po-table-cell-ratingwrap">#}

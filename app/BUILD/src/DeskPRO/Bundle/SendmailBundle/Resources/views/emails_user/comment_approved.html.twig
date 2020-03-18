@@ -9,11 +9,9 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {% set phrase_link %}<a href="{{ content_link }}">{{ content.title }}</a>{% endset %}
-        {{ phrase('user.emails.comment_thank-you', {'link': phrase_link}, true) }}
-        {{ phrase('user.emails.comment_approved') }}
-    </container>
+    {% set phrase_link %}<a href="{{ content_link }}">{{ content.title }}</a>{% endset %}
+    {{ phrase('user.emails.comment_thank-you', {'link': phrase_link}, true) }}
+    {{ phrase('user.emails.comment_approved') }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

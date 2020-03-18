@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -240,9 +234,15 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $filename = '_.'.substr($filename, 1);
         }
 
+        $special_chars = ['?', '[', ']', '/', '\\', '=', '<', '>', ':', ';', ',', "'", '"', '&', '$', '#', '*', '(', ')', '|', '~', '`', '!', '{', '}', '%', '+', chr(0)];
+
         $filename = Strings::utf8_bad_strip($filename);
-        $filename = Strings::utf8_accents_to_ascii($filename);
-        $filename = trim(preg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '_', $filename));
+        $filename = preg_replace("#\x{00a0}#siu", ' ', $filename);
+        $filename = preg_replace('/[\x{10000}-\x{10FFFF}]/u', '-', $filename);
+        $filename = str_replace($special_chars, '', $filename);
+        $filename = str_replace([ '%20', '+' ], '-', $filename);
+        $filename = preg_replace('/[\r\n\t -]+/', '-', $filename);
+        $filename = trim($filename, '.-');
 
         // trim filename down to max length of 255 chars
         $pos = strrpos($filename, '.');
@@ -253,9 +253,13 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $name = substr($name, 0, 255 - strlen($extension) - 1);
 
             $filename = $name.'.'.$extension;
+        } elseif ($origExt !== $filename) {
+            $name = $filename;
+        } else {
+            $name = '';
         }
 
-        if (empty($filename)) {
+        if (empty($name)) {
             if ($origExt && strlen($origExt) < 50) {
                 $filename = "file.$origExt";
             } elseif ($this->content_type) {
@@ -406,6 +410,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      * Get the standard download URL for this blob.
      *
      * @param bool $absolute
+     * @param mixed $use_file_url
      *
      * @return string
      */

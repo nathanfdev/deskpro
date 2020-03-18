@@ -9,9 +9,7 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('user.emails.registration_closed', {name: recipient.name}) }}
-    </container>
+    {{ phrase('user.emails.registration_closed', {name: recipient.name}) }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

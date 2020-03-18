@@ -1,16 +1,11 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Person;
 
@@ -48,6 +43,16 @@ class NewArticle
 
     /** @var array */
     public $blob_inline_ids = [];
+
+    /**
+     * @var int
+     */
+    public $review_interval_count;
+
+    /**
+     * @var string
+     */
+    public $review_interval_unit;
 
     /** @var Article */
     protected $_article;
@@ -97,6 +102,10 @@ class NewArticle
         $article->addToCategory($cat);
 
         $article->setContentInputType($contentInputType);
+
+        if ($this->review_interval_count && $this->review_interval_unit) {
+            $article->setReviewInterval($this->review_interval_count.' '.$this->review_interval_unit);
+        }
 
         $this->_em->persist($article);
         $this->_em->flush();

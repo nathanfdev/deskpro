@@ -4916,7 +4916,7 @@ $collection->create(
     [
         'path'         => '/email_status/sources/mass-actions/{action}',
         'controller'   => 'LegacyApiBundle:EmailStatus:emailSourceMassActions',
-        'requirements' => ['action' => '[a-z]+'],
+        'requirements' => ['action' => '[a-z_]+'],
         'methods'      => ['POST'],
     ]
 );

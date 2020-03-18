@@ -1,13 +1,10 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\HelpCenter;
 
 use DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme;
-use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
 
 class HelpCenterTheme extends AbstractTheme
 {
@@ -26,7 +23,7 @@ class HelpCenterTheme extends AbstractTheme
      */
     public function getParentId()
     {
-        return BaseTheme::THEME_ID;
+        return;
     }
 
     /**

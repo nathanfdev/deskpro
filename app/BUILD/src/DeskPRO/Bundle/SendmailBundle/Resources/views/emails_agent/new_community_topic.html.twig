@@ -12,18 +12,16 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{{ phrase('agent.community.user_submitted_new_community_topic', {name: person.display_contact }) }}
-		{% if topic.status == 'hidden' and not topic.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
+	{{ phrase('agent.community.user_submitted_new_community_topic', {name: person.display_contact }) }}
+	{% if topic.status == 'hidden' and not topic.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 
-		<br /><br />
+	<br /><br />
 
-		{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#app.community,i:{{ topic.id }}">{{ login_link }}#app.community,ct_content,i:{{ topic.id }}</a>
+	{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#app.community,i:{{ topic.id }}">{{ login_link }}#app.community,ct_content,i:{{ topic.id }}</a>
 
-		<br /><br />
+	<br /><br />
 
-		{{ topic.content|raw }}
-	</container>
+	{{ topic.content|raw }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

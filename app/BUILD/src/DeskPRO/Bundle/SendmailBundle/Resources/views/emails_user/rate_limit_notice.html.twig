@@ -9,16 +9,14 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-        <container>
-            {{ phrase('portal.emails.ratelimit_explain') }}
+    {{ phrase('portal.emails.ratelimit_explain') }}
 
-            {% if app.isPortalEnabled() %}
-                <br /><br />
+    {% if app.isPortalEnabled() %}
+        <br /><br />
 
-                {{ phrase('portal.emails.ratelimit_submit-online') }}
-                <a href="{{ deskpro_url }}new-ticket">{{ deskpro_url }}new-ticket</a>
-            {% endif %}
-        </container>
+        {{ phrase('portal.emails.ratelimit_submit-online') }}
+        <a href="{{ deskpro_url }}new-ticket">{{ deskpro_url }}new-ticket</a>
+    {% endif %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

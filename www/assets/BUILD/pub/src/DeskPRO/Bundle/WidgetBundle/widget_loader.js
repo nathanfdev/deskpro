@@ -102,7 +102,7 @@
   });
 
   // Widget app loader
-  getInstInfo(options.helpdeskUrl, options.instId || 'default').then((instInfo) => {     // eslint-disable-line no-undef
+  getInstInfo(options.baseUrl, options.instId || 'default').then((instInfo) => {     // eslint-disable-line no-undef
     const helpdeskUrl = instInfo.helpdeskUrl;
     const appSrc = `${instInfo.assetUrl}/pub/build/DeskPRO_WidgetBundle.js`;
 

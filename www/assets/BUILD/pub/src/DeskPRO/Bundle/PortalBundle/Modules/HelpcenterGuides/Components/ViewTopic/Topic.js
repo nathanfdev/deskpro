@@ -93,16 +93,16 @@ class Topic extends React.PureComponent {
                 </div>
                 <div className="dp-po-guides-block-extra">
                   <ul className="dp-po-guides-block-extra-list">
-                    <li className="dp-po-guides-block-extra-item">
-                      <a href="" className="dp-po-guides-block-extra-link"><i
-                        className="dp-po-icon fal fa-print"
-                      /></a>
-                    </li>
-                    <li className="dp-po-guides-block-extra-item">
-                      <a href="" className="dp-po-guides-block-extra-link">
-                        <i className="dp-po-icon fal fa-file-pdf" />
-                      </a>
-                    </li>
+                    {/* <li className="dp-po-guides-block-extra-item">*/}
+                    {/*  <a href="" className="dp-po-guides-block-extra-link"><i*/}
+                    {/*    className="dp-po-icon fal fa-print"*/}
+                    {/*  /></a>*/}
+                    {/* </li>*/}
+                    {/* <li className="dp-po-guides-block-extra-item">*/}
+                    {/*  <a href="" className="dp-po-guides-block-extra-link">*/}
+                    {/*    <i className="dp-po-icon fal fa-file-pdf" />*/}
+                    {/*  </a>*/}
+                    {/* </li>*/}
                   </ul>
                 </div>
               </div>

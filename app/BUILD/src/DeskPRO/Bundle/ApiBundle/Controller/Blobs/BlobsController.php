@@ -13,11 +13,9 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AcceptAttachmentType;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Component\Filesystem\SafeFile;
-use DeskPRO\Component\Pagerfanta\LimitedPager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Data\ContentTypes;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,6 +91,7 @@ class BlobsController extends CrudController
 
             return View::create($this->wrap($blob), Response::HTTP_CREATED);
         }
+
         throw $this->createBadRequestException();
     }
 
@@ -250,33 +249,9 @@ class BlobsController extends CrudController
         // return QueryBuilder result or Pagerfanta depending on if pagination is enabled for the controller
         if (static::$listPaginate) {
             $page  = (int) $request->query->getInt('page', 1);
-            $count = (int) $request->query->getInt('count', static::$listPerPage);
+            $count = $this->getCountParam($request);
 
-            if ($count > static::$listMaxResults) {
-                throw $this->createBadRequestException(
-                    'You can select maximum '.static::$listMaxResults.' entities'
-                );
-            } elseif ($count <= 0) {
-                throw $this->createBadRequestException('You must select at least 1 entity');
-            }
-
-            if ($limit) {
-                // adding limit to the initial qb will
-                // make the initial COUNT have a limit, which
-                // might speed it up a bit
-                $qb->setMaxResults($limit);
-
-                $pagerAdapter = new DoctrineORMAdapter($qb);
-                $pager        = new LimitedPager($pagerAdapter, $limit);
-            } else {
-                $pagerAdapter = new DoctrineORMAdapter($qb);
-                $pager        = new Pagerfanta($pagerAdapter);
-            }
-
-            $pager->setMaxPerPage($count);
-            $pager->setCurrentPage($page);
-
-            $result = $pager;
+            $result = $this->getPaginatedResult($qb, 0, $count, $limit, $page);
         } else {
             if ($limit) {
                 $qb->setMaxResults($limit);
@@ -340,6 +315,7 @@ class BlobsController extends CrudController
     {
         if (!$entity = $this->getManager()->getRepository(Blob::class)->getByAuthId($authId)) {
             $message or $message = "#{$authId} Not Found";
+
             throw $this->createNotFoundException($message);
         }
 
@@ -461,6 +437,7 @@ class BlobsController extends CrudController
         $archive = $this->getArchive($blob);
 
         $found = false;
+
         try {
             $zip = $this->get('archive_factory')->createZipArchive();
             $zip->open($archive);
@@ -474,6 +451,7 @@ class BlobsController extends CrudController
                     } else {
                         throw new \Exception('Compressed file is too big');
                     }
+
                     break;
                 }
             }

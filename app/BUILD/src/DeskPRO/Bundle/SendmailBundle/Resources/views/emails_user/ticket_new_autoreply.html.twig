@@ -9,28 +9,18 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
+    <br/><br/>
+
+    {{ phrase('user.emails.ticket_received') }}
+
+    {% if app.isPortalEnabled() %}
         <br/><br/>
 
-        {{ phrase('user.emails.ticket_received') }}
-
-        <br/><br/>
-
-        {% for message in ticket_messages %}
-            {% if not context.message_limit or loop.index0 < context.message_limit %}
-                {% include 'SendmailBundle:emails_common:ticket_message_row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay } %}
-            {% endif %}
-        {% endfor %}
-
-        {% if app.isPortalEnabled() %}
-            <br/><br/>
-
-            {{ phrase('user.emails.ticket_access_ticket_online') }}
-            <a href="{{ ticket_link }}">{{ ticket_link }}</a>
-        {% endif %}
-    </container>
+        {{ phrase('user.emails.ticket_access_ticket_online') }}
+        <a href="{{ ticket_link }}">{{ ticket_link }}</a>
+    {% endif %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

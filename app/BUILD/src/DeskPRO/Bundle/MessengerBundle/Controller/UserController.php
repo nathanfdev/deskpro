@@ -8,9 +8,10 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
-use DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator;
+use DeskPRO\Bundle\MessengerBundle\Security\EventListener\VisitorIdListener;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\TechInfo;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\UserInfo;
+use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver as MSR;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -33,7 +34,7 @@ class UserController extends AbstractMessengerController
      *
      * @ApiDoc(
      *     section="Messenger",
-     *     resourceDescription="Testing new Bundle and Kernel",
+     *     resourceDescription="Current user details",
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
@@ -63,7 +64,7 @@ class UserController extends AbstractMessengerController
         $chatConversationRepo = $em->getRepository(ChatConversation::class);
         $chats                = $chatConversationRepo->findBy(['visitor_id' => $visitorId], ['date_created' => 'DESC'], 25);
 
-        $userInfo = new UserInfo($visitorId);
+        $userInfo = new UserInfo($visitorId, $this->getUser());
 
         return View::create($this->wrap($userInfo->addChats($chats)), Response::HTTP_OK);
     }
@@ -97,7 +98,7 @@ class UserController extends AbstractMessengerController
      */
     public function getLastActionAlertsAction($lastActionAlert, Request $request)
     {
-        $visitorId = $request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME);
+        $visitorId = $request->headers->get(VisitorIdListener::VISITOR_HEADER_NAME);
 
         if ($chat = $this->get('messenger.service.tech')->getLastChatByVisitorId($visitorId)) {
             $this->get('event_dispatcher')->dispatch(UserChatEvent::POLLING, new UserChatEvent($chat));
@@ -124,11 +125,15 @@ class UserController extends AbstractMessengerController
      */
     public function getInfoAction(Request $request)
     {
-        $techInfo            = new TechInfo($this->get('avatar_resolver'), $this->get('brand_stack'));
-        $techService         = $this->get('messenger.service.tech');
-        $notificationService = $this->get('deskpro.notification.service');
+        $techInfo                  = new TechInfo($this->get('avatar_resolver'), $this->get('brand_stack'));
+        $techService               = $this->get('messenger.service.tech');
+        $notificationService       = $this->get('deskpro.notification.service');
+        $msr                       = $this->get('messenger.service.settings_resolver');
+        $brand                     = $this->get('brand_stack')->getActive()->getBrand();
+        $groups                    = unserialize($msr->getSettings(MSR::CHAT_USERGROUPS, $brand, 'a:0:{}'));
 
         $techInfo
+            ->setCanUseChat(count(array_intersect($groups, $techService->getUsergroups())) > 0)
             ->setChatDepartments($techService->getChatDepartments())
             ->setTicketDepartments($techService->getTicketDepartments())
             ->setAgentsOnline($techService->getAgentsOnline())

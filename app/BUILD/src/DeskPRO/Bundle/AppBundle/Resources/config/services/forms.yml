@@ -411,6 +411,20 @@ services:
     tags:
       - { name: form.type }
 
+  form.mass_actions.organization_params:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\MassActions\Organizations\OrganizationMassActionParamsType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
+  form.mass_actions.date_range:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\MassActions\DateRangeType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
   form.oauth_login:
     class: DeskPRO\Bundle\AppBundle\Form\Type\OAuth\OAuthLoginType
     arguments:

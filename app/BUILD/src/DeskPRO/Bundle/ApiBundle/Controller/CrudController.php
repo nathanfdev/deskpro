@@ -212,35 +212,9 @@ abstract class CrudController extends BaseController
         if (static::$listPaginate) {
             $page   = (int) $request->query->getInt('page', 1);
             $offset = (int) $request->query->getInt('offset');
-            $count  = (int) $request->query->getInt('count', static::$listPerPage);
+            $count  = $this->getCountParam($request);
 
-            if ($count > static::$listMaxResults) {
-                throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
-            } elseif ($count <= 0) {
-                throw $this->createBadRequestException('You must select at least 1 entity');
-            }
-
-            if ($offset) {
-                $result = new OffsetList($qb, $count, $offset);
-            } else {
-                if ($limit) {
-                    // adding limit to the initial qb will
-                    // make the initial COUNT have a limit, which
-                    // might speed it up a bit
-                    $qb->setMaxResults($limit);
-
-                    $pagerAdapter = new DoctrineORMAdapter($qb);
-                    $pager        = new LimitedPager($pagerAdapter, $limit);
-                } else {
-                    $pagerAdapter = new DoctrineORMAdapter($qb);
-                    $pager        = new Pagerfanta($pagerAdapter);
-                }
-
-                $pager->setMaxPerPage($count);
-                $pager->setCurrentPage($page);
-
-                $result = $pager;
-            }
+            $result = $this->getPaginatedResult($qb, $offset, $count, $limit, $page);
         } else {
             if ($limit) {
                 $qb->setMaxResults($limit);
@@ -626,5 +600,61 @@ abstract class CrudController extends BaseController
         if (!$this->isExposed($actionMethodName)) {
             throw new MethodNotAllowedHttpException(static::$exposeOnly);
         }
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return int
+     */
+    protected function getCountParam(Request $request)
+    {
+        $count = (int) $request->query->getInt('count', static::$listPerPage);
+
+        if ($count > static::$listMaxResults) {
+            throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
+        }
+
+        if ($count <= 0) {
+            throw $this->createBadRequestException('You must select at least 1 entity');
+        }
+
+        return $count;
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param int $offset
+     * @param int $count
+     * @param int $limit
+     * @param int $page
+     *
+     * @return OffsetList|LimitedPager|Pagerfanta
+     */
+    protected function getPaginatedResult(QueryBuilder $qb, $offset, $count, $limit, $page)
+    {
+        if ($offset) {
+            $result = new OffsetList($qb, $count, $offset);
+        } else {
+            if ($limit) {
+                // adding limit to the initial qb will
+                // make the initial COUNT have a limit, which
+                // might speed it up a bit
+                $qb->setMaxResults($limit);
+
+                $pagerAdapter = new DoctrineORMAdapter($qb);
+                $pager        = new LimitedPager($pagerAdapter, $limit);
+            } else {
+                $pagerAdapter = new DoctrineORMAdapter($qb);
+                $pager        = new Pagerfanta($pagerAdapter);
+            }
+
+            $pager->setMaxPerPage($count);
+            $pager->setCurrentPage($page);
+
+            $result = $pager;
+        }
+
+        return $result;
     }
 }

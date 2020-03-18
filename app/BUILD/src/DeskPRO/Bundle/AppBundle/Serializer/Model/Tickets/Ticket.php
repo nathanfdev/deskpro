@@ -850,4 +850,12 @@ class Ticket
 
         return $this;
     }
+
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
 }

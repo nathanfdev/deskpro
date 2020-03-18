@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -34,6 +32,7 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -107,7 +106,8 @@ class Person extends DomainObject implements
     \Serializable,
     EquatableInterface,
     LabelsOwner,
-    GroupSequenceProviderInterface
+    GroupSequenceProviderInterface,
+    AdvancedUserInterface
 {
     const CREATED_WEB_PERSON      = 'web.person';
     const CREATED_WEB_AGENT       = 'web.agent';
@@ -603,6 +603,11 @@ class Person extends DomainObject implements
     protected $onboarding;
 
     /**
+     * @var bool
+     */
+    protected $isEmailDomainsLimited;
+
+    /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
      * a full user.
      *
@@ -711,6 +716,14 @@ class Person extends DomainObject implements
     public function getCommunityName()
     {
         return $this->override_display_name ?: $this->getName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getInitials()
+    {
+        return strtoupper(substr($this->first_name, 0, 1).substr($this->last_name, 0, 1));
     }
 
     /**
@@ -2228,7 +2241,7 @@ class Person extends DomainObject implements
      */
     public function renderCustomField($field_id, $context = 'html')
     {
-        $f_def = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($field_id);
+        $f_def = App::getEntityRepository(CustomDefPerson::class)->find($field_id);
 
         $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, [$f_def]);
 
@@ -4097,6 +4110,26 @@ class Person extends DomainObject implements
         return $this->voiceQueues;
     }
 
+    /**
+     * @return bool
+     */
+    public function isEmailDomainsLimited()
+    {
+        if (is_callable($this->isEmailDomainsLimited)) {
+            $this->isEmailDomainsLimited = call_user_func($this->isEmailDomainsLimited);
+        }
+
+        return $this->isEmailDomainsLimited;
+    }
+
+    /**
+     * @param bool|callable $isEmailDomainsLimited
+     */
+    public function setIsEmailDomainsLimited($isEmailDomainsLimited)
+    {
+        $this->isEmailDomainsLimited = $isEmailDomainsLimited;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -5013,5 +5046,37 @@ class Person extends DomainObject implements
         }
 
         return $groups;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isAccountNonLocked()
+    {
+        return !$this->isEmailDomainsLimited();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isEnabled()
+    {
+        return !$this->is_disabled && !$this->is_deleted;
     }
 }

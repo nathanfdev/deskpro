@@ -48,7 +48,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
             var brandIdFromUrl = Array.isArray(match) ? match[1] : undefined;
             var brandIndex = this.$scope.brands.findIndex(brand => brand.id === parseInt(brandIdFromUrl));
 
-            this.$scope.brandId = brandIndex > -1 ? brandIdFromUrl : 1;
+            this.$scope.brandId = brandIndex > -1 ? brandIdFromUrl : this.$scope.default_brand.id;
           }
 
           this.$scope.selectBrandId = this.$scope.brandId;

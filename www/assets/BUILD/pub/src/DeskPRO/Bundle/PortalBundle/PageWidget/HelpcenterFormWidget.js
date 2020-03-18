@@ -1,6 +1,6 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { HcDateWidget } from './Common/Form/Helpcenter/HcDateWidget';
-import DpxCustomFieldAttach from './Common/Form/DpxCustomFieldAttach';
+import HcCustomFieldAttach from './Common/Form/Helpcenter/HcCustomFieldAttach';
 import { DpxDoubleSubmitPrevention } from './Common/Form/DpxDoubleSubmitPrevention';
 import DpxFormDraft from './Common/Form/Draft/DpxFormDraft';
 import DpxJavascript from './Common/Form/DpxJavascript';
@@ -20,7 +20,7 @@ export default class HelpcenterFormWidget extends PageWidget {
     this.addWidgetDef(HcFileUpload, '.helpcenter-file-upload');
     this.addWidgetDef(DpxRte, '[data-rte]');
     this.addWidgetDef(DpxFormDraft, 'form[data-save-draft]');
-    this.addWidgetDef(DpxCustomFieldAttach, '.dpx-custom-field-attach');
+    this.addWidgetDef(HcCustomFieldAttach, '.dpx-custom-field-attach');
     this.addWidgetDef(DpxDoubleSubmitPrevention, '[type="submit"]');
     this.addWidgetDef(DpxJavascript, '.dpx-javascript');
     this.addWidgetDef(HcProfilePicture, '.helpcenter-profile_picture');

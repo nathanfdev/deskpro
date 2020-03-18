@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\DeskPRO;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
+use DeskPRO\Bundle\PortalBundle\Routing\PasswordResetException;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Result;
@@ -90,6 +91,9 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             if ($this->dpPersonProvider->personHasBannedEmail($person)) {
                 throw new DisabledException('portal.account.login-disabled');
             }
+            if (!$this->container->get('dp_limit_email_domains_checker')->checkPerson($person)) {
+                throw new BadCredentialsException('portal.account.login-invalid');
+            }
 
             // check if user has this brand
             $brand = $this->container->get('brand_stack')->getActive()->getBrand();
@@ -156,10 +160,13 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                     $authResult = $adapter->authenticate();
                 } catch (AuthenticationException $e) {
                     throw $e;
+                } catch (PasswordResetException $e) {
+                    throw $e;
                 } catch (\Exception $e) {
                     SystemErrorHandler::logException($e, false);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
                     $GLOBALS['DP_AUTH_EXCEPTION']         = $e;
+
                     continue;
                 }
 

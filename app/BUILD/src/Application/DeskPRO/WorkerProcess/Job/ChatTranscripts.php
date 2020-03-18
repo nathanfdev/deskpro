@@ -70,6 +70,7 @@ class ChatTranscripts extends AbstractJob
                 foreach ($chatMessages as $chatMessage) {
                     if (!$chatMessage->getIsSys() || ($chatMessage->getAuthor() && $chatMessage->getAuthor()->isAgent())) {
                         $noAgentAnswer = false;
+
                         break;
                     }
                 }
@@ -79,7 +80,7 @@ class ChatTranscripts extends AbstractJob
                 if (!$brand) {
                     $brand = $brandStack->getActive()->getBrand();
                 }
-                $account = App::$container->getEmailAccountManager()->getDefaultOutAccountWithFallback($brand)->getUseEmailAddress();
+                $account = App::$container->getEmailAccountManager()->getDefaultOutAccountWithFallback($brand);
 
                 $brandStack->push($brand);
 
@@ -89,7 +90,7 @@ class ChatTranscripts extends AbstractJob
                         $viewModel = $container->get('email.user_viewmodel_factory')
                             ->createChatTranscriptModel($chat, $chatMessages);
                         $container->get('email.email_sender')
-                            ->send($viewModel, ['to' => $person, 'from' => $account]);
+                            ->send($viewModel, ['to' => $person, 'from_account' => $account]);
                     } else {
                         $vars = [
                             'convo'          => $chat,
@@ -98,7 +99,7 @@ class ChatTranscripts extends AbstractJob
 
                         $message = App::getMailer()->createMessage();
                         $message->setTo($email, $name);
-                        $message->setFrom($account);
+                        $message->setFrom($account->getUseEmailAddress());
                         $message->setTemplate('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
                         $message->setSuppressAutoreplies(true);
                         App::getMailer()->send($message);

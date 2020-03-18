@@ -11,11 +11,13 @@ use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilte
 use Application\DeskPRO\Email\SendmailSource\Finder as SendmailSourceFinder;
 use Application\DeskPRO\Email\SendmailSource\FinderFilter as SendmailSourceFinderFilter;
 use Application\DeskPRO\EmailGateway\Runner;
+use Application\DeskPRO\Entity\EmailSource;
 use Application\EmailBundle\Entity\SendmailSource;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog;
 use Doctrine\DBAL\Connection;
+use Doctrine\ORM\Query;
 use Orb\Util\Strings;
 
 /**
@@ -109,6 +111,20 @@ class EmailStatusController extends AbstractController
                              'required' => false,
                          ]
                      )
+                    ->add(
+                        'client_ip',
+                        'text',
+                        [
+                            'required' => false,
+                        ]
+                    )
+                    ->add(
+                        'client_host',
+                        'text',
+                        [
+                            'required' => false,
+                        ]
+                    )
                      ->getForm();
 
         $form->submit($filter_input);
@@ -761,12 +777,15 @@ class EmailStatusController extends AbstractController
     public function emailSourceMassActionsAction($action)
     {
         $ids = $this->in->getArrayOfUInts('ids');
-        if (!$ids) {
-            return $this->createApiSuccessResponse();
-        }
+        $filter = $this->in->getArrayValue('filter');
+        $applyToAll = $this->in->getBool('apply_to_all');
 
         switch ($action) {
             case 'reprocess':
+                if (!$ids) {
+                    return $this->createApiSuccessResponse();
+                }
+
                 $this->db->updateIn(
                     'email_sources',
                     [
@@ -779,6 +798,10 @@ class EmailStatusController extends AbstractController
                 break;
 
             case 'delete':
+                if (!$ids) {
+                    return $this->createApiSuccessResponse();
+                }
+
                 $bs   = $this->container->getBlobStorage();
                 $recs = $this->db->fetchAll(
                     '
@@ -808,10 +831,144 @@ class EmailStatusController extends AbstractController
                 }
                 break;
 
+            case 'purge_all':
+                if (!$applyToAll && !$ids) {
+                    return $this->createApiSuccessResponse();
+                }
+
+                $sources               = $this->getSourcesFromMassAction($applyToAll, $filter, $ids);
+                $bs                    = $this->container->getBlobStorage();
+                $deletedTicketStatusId = $this->getContainer()->getTicketStatuses()->getDeletedStatus()->getId();
+
+                foreach ($sources as $source) {
+                    if ($source['log_blob']) {
+                        $bs->deleteBlobRow($source['log_blob']);
+                    }
+
+                    $this->db->executeQuery(
+                        'UPDATE tickets SET status = :hidden, ticket_status_id = :deletedStatusId WHERE id = :id',
+                        [
+                            'hidden'          => 'hidden',
+                            'deletedStatusId' => $deletedTicketStatusId,
+                            'id'              => $source['ticket_id'],
+                        ]
+                    );
+
+                    $this->db->executeQuery(
+                        'UPDATE tickets_search_active SET status = :hidden, ticket_status_id = :deletedStatusId WHERE id = :id',
+                        [
+                            'hidden'          => 'hidden',
+                            'deletedStatusId' => $deletedTicketStatusId,
+                            'id'              => $source['ticket_id'],
+                        ]
+                    );
+
+                    $this->db->replace(
+                        'tickets_deleted',
+                        [
+                            'ticket_id'     => $source['ticket_id'],
+                            'by_person_id'  => $this->person->getId(),
+                            'new_ticket_id' => 0,
+                            'reason'        => 'Mass Purge Operation',
+                            'date_created'  => date('Y-m-d H:i:s'),
+                        ]
+                    );
+
+                    $this->db->delete('email_sources', ['id' => $source['email_sources_id']]);
+                }
+                break;
+
+            case 'abort_all':
+                if (!$applyToAll && !$ids) {
+                    return $this->createApiSuccessResponse();
+                }
+
+                $sources               = $this->getSourcesFromMassAction($applyToAll, $filter, $ids);
+                $deletedTicketStatusId = $this->getContainer()->getTicketStatuses()->getDeletedStatus()->getId();
+
+                foreach ($sources as $source) {
+                    $this->db->executeQuery(
+                        'UPDATE tickets SET status = :hidden, ticket_status_id = :deletedStatusId WHERE id = :id',
+                        [
+                            'hidden'          => 'hidden',
+                            'deletedStatusId' => $deletedTicketStatusId,
+                            'id'              => $source['ticket_id'],
+                        ]
+                    );
+
+                    $this->db->executeQuery(
+                        'UPDATE tickets_search_active SET status = :hidden, ticket_status_id = :deletedStatusId WHERE id = :id',
+                        [
+                            'hidden'          => 'hidden',
+                            'deletedStatusId' => $deletedTicketStatusId,
+                            'id'              => $source['ticket_id'],
+                        ]
+                    );
+
+                    $this->db->replace(
+                        'tickets_deleted',
+                        [
+                            'ticket_id'     => $deletedTicketStatusId,
+                            'by_person_id'  => $this->person->getId(),
+                            'new_ticket_id' => 0,
+                            'reason'        => 'Mass Abort Operation',
+                            'date_created'  => date('Y-m-d H:i:s'),
+                        ]
+                    );
+
+                    $this->db->executeQuery(
+                        'UPDATE email_sources SET status = :rejected WHERE id = :id',
+                        [
+                            'rejected' => 'rejected',
+                            'id'       => $source['email_sources_id'],
+                        ]
+                    );
+                }
+                break;
+
             default:
                 throw $this->createNotFoundException();
         }
 
         return $this->createApiSuccessResponse();
+    }
+
+    /**
+     * @param bool  $applyToAll
+     * @param array $filter
+     * @param array $ids
+     * @return array[]
+     */
+    private function getSourcesFromMassAction($applyToAll, $filter, array $ids)
+    {
+        if ($applyToAll) {
+            $filter  = EmailSourceFinderFilter::fromArray($filter);
+            $finder  = new EmailSourceFinder($this->em, $filter);
+            $sources = $finder->getResults(false, Query::HYDRATE_ARRAY);
+        } else {
+            $sources = $this->em
+                ->createQueryBuilder()
+                ->select('s, lb')
+                ->from(EmailSource::class, 's')
+                ->leftJoin('s.log_blob', 'lb')
+                ->andWhere('s.id IN (:ids)')
+                ->setParameter('ids', $ids)
+                ->getQuery()
+                ->getResult(Query::HYDRATE_ARRAY)
+            ;
+        }
+
+        $sources = array_map(function ($source) {
+            return [
+                'email_sources_id'          => $source['id'],
+                'ticket_id'                 => $source['object_type'] === 'ticket' ? $source['object_id'] : null,
+                'email_sources_log_blob_id' => isset($source['log_blob']['id']) ? $source['log_blob']['id'] : null,
+                'log_blob'                  => $source['log_blob'],
+            ];
+        }, $sources);
+
+        return array_filter($sources, function ($source) {
+            return (bool) $source['ticket_id'];
+        });
     }
 }

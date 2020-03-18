@@ -57,6 +57,11 @@ class DataContext extends BaseContext
     /**
      * @var bool
      */
+    private static $ignoreEnsureDb = false;
+
+    /**
+     * @var bool
+     */
     private static $needCleanup = false;
 
     /**
@@ -72,9 +77,11 @@ class DataContext extends BaseContext
         switch ($scope->getSuite()->getName()) {
             case 'api':
                 self::$setName = 'api';
+
                 break;
             default:
                 self::$setName = 'fresh';
+
                 break;
         }
     }
@@ -86,9 +93,8 @@ class DataContext extends BaseContext
      */
     public static function checkNew(BeforeFeatureScope $scope)
     {
-        if ($scope->getFeature()->hasTag('new')) {
-            self::$isNew = true;
-        }
+        self::$isNew          = $scope->getFeature()->hasTag('new');
+        self::$ignoreEnsureDb = $scope->getFeature()->hasTag('ignore-ensure-db');
     }
 
     /**
@@ -118,7 +124,7 @@ class DataContext extends BaseContext
      */
     public function ensureDb()
     {
-        if (self::$isTheFirstSuiteScenario) {
+        if (self::$isTheFirstSuiteScenario && !self::$ignoreEnsureDb) {
             if (self::$isNew) {
                 $statement = $this->em()->getConnection()->executeQuery('SHOW TABLES LIKE "people"');
                 $statement->execute();
@@ -376,8 +382,8 @@ class DataContext extends BaseContext
         if ($table instanceof TableNode) {
             $recordsData = $table->getHash();
         } elseif (is_array($table)) {
-            $rows = $table;
-            $keys = array_shift($rows);
+            $rows        = $table;
+            $keys        = array_shift($rows);
             $recordsData = [];
             foreach ($rows as $row) {
                 $recordsData[] = array_combine($keys, $row);
@@ -468,6 +474,7 @@ class DataContext extends BaseContext
      * @Given the following :type objects exist:
      *
      * @param string $type
+     *
      * @throws \Exception
      */
     public function theFollowingTypeObjectsExist($type, TableNode $table)

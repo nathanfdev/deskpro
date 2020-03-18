@@ -1,14 +1,10 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
-
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\ORM\StateChange\ChangeEmailLog;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmail;
@@ -37,10 +33,12 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         if ($fromAccount) {
             if (Numbers::isInteger($fromAccount)) {
                 $fromAccountId = $fromAccount;
+
                 try {
                     $fromAccount = $this->getContainer()->getEmailAccountManager()->getAccount($fromAccountId);
                 } catch (\OutOfBoundsException $e) {
                     $context->getLogger()->debug("[AbstractEmailAction] Invalid account: $fromAccountId");
+
                     throw new \InvalidArgumentException('invalid_account');
                 }
             }
@@ -49,11 +47,13 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
             if (!$fromAccount->is_enabled) {
                 $context->getLogger()->warn('[AbstractEmailAction] Email account is not enabled');
+
                 throw new \InvalidArgumentException('account_disabled');
             }
 
             if (!$fromAccount->outgoing_account) {
                 $context->getLogger()->warn('[AbstractEmailAction] Email account is not an outgoing account');
+
                 throw new \InvalidArgumentException('account_not_outgoing');
             }
         }
@@ -79,12 +79,14 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             }
 
             $context->getLogger()->warn('[AbstractEmailAction] No template specified');
+
             throw new \InvalidArgumentException('no_template_specified');
         }
 
         $context->getLogger()->debug("[AbstractEmailAction] Using template: $template");
         if (!$this->getContainer()->get('templating.email')->exists($template)) {
             $context->getLogger()->warn('[AbstractEmailAction] Template does not exist');
+
             throw new \InvalidArgumentException('invalid_template');
         }
 
@@ -143,7 +145,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             });
             $ticketLogs = null;
 
-            // Agent mode - include ticket logs
+        // Agent mode - include ticket logs
         } else {
             $ticketLogGenerator = new TicketLogGenerator($ticket, $context);
             $ticketLogs         = $ticketLogGenerator->getLogEntries();
@@ -296,10 +298,19 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
      */
     protected function createViewModelFromTemplate($template, $arguments, ExecutorContextInterface $context)
     {
+        $mode = 'user';
+        if ($this instanceof SendAgentNewEmail) {
+            $mode = 'agent';
+        }
         if (strpos($template, 'SendmailBundle:emails_custom:') === 0) {
             $factory   = $this->getContainer()->get('email.custom_viewmodel_factory');
             $viewModel = call_user_func_array([$factory, 'createCustomTemplateModel'], $arguments);
             $viewModel->setTemplateFile($template);
+
+            if ($context->getPersonContext()) {
+                $viewModel->setActionPerformer($factory->convertParameter($context->getPersonContext()));
+            }
+            $viewModel->setContextVars($arguments[0], $context, $mode);
 
             return $viewModel;
         }
@@ -311,6 +322,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
                 if ($t['viewModel']) {
                     $viewModel = $t['viewModel'];
                 }
+
                 break;
             }
         }
@@ -331,10 +343,53 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         }
 
         $model = call_user_func_array([$factory, $action], $arguments);
-        if ($model instanceof TicketEmailType) {
+        if ($model instanceof TicketEmailType && $context->getPersonContext()) {
             $model->setActionPerformer($factory->convertParameter($context->getPersonContext()));
+            $model->setContextVars($arguments[0], $context, $mode);
         }
 
         return $model;
+    }
+
+    protected function getLastMessageAttachments(Ticket $ticket, $lastMessage, $context, $isAuto = false)
+    {
+        $state = $ticket->getStateChangeRecorder();
+
+        /** @var TicketAttachment[] $lastMessageAttachments */
+        $lastMessageAttachments = [];
+        if ($state->hasNewReply() && !$isAuto) {
+            /** @var TicketMessage $lastMessage */
+
+            // This check is because theoretically, the entire thread
+            // could be agent notes (e.g., first message was turned into a note).
+            // So if this is an email to a user, messages array will be empty
+            // and this check will prevent warnings about trying to use a null $last_message.
+
+            if ($lastMessage) {
+                $maxSize = $this->getContainer()->getSetting('core.sendemail_attach_maxsize');
+
+                $context->getLogger()->info(sprintf('[TicketEmail] New reply on #%d checking for attachments <= %d', $lastMessage->getId(), $maxSize));
+
+                $attachments = $lastMessage->getAttachments();
+                if (count($attachments)) {
+                    $context->getLogger()->info(sprintf('[TicketEmail] Message has %d attachments', count($attachments)));
+                    foreach ($attachments as $attachment) {
+                        $blob = $attachment->getBlob();
+
+                        if ($blob->getFilesize() <= $maxSize) {
+                            $context->getLogger()->info(sprintf('[TicketEmail] Adding attachment %s', $blob->getFilename()));
+                            $lastMessageAttachments[$attachment->getId()] = $attachment;
+                            $maxSize -= $blob->getFilesize();
+                        } else {
+                            $context->getLogger()->info(sprintf('[TicketEmail] Skipping attachment %s', $blob->getFilename()));
+                        }
+                    }
+                } else {
+                    $context->getLogger()->info(sprintf('[TicketEmail] Message has no attachments'));
+                }
+            }
+        }
+
+        return $lastMessageAttachments;
     }
 }

@@ -49,7 +49,7 @@ abstract class AbstractMassActionsController extends BaseController
         }
 
         // modify entities
-        $entities = $form->get('ids')->getData();
+        $entities = $form->getData()['entities'];
         if (!$entities) {
             $entities = [];
         }
@@ -77,7 +77,11 @@ abstract class AbstractMassActionsController extends BaseController
      */
     protected function saveObject($entity)
     {
-        $this->getManager()->persist($entity);
+        $em = $this->getManager();
+        if (!$em->getUnitOfWork()->isScheduledForDelete($entity)) {
+            $this->getManager()->persist($entity);
+        }
+
         $this->getManager()->flush();
     }
 }

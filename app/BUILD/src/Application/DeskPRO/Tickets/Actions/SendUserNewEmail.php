@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
+
 
 namespace Application\DeskPRO\Tickets\Actions;
 
@@ -77,6 +73,7 @@ class SendUserNewEmail extends AbstractEmailAction
             case TicketTrigger::EVENT_TYPE_UPDATE:
             case 'system':
                 $arguments = [$ticket];
+
                 break;
             case TicketTrigger::EVENT_TYPE_NEWREPLY:
                 /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
@@ -98,6 +95,7 @@ class SendUserNewEmail extends AbstractEmailAction
 
                     return;
                 }
+
                 break;
             default:
                 $context->getLogger()->info('Unknown event type: '.$context->getEventType());
@@ -134,10 +132,13 @@ class SendUserNewEmail extends AbstractEmailAction
             $emailBuilder->enableUserCc();
         }
 
+        $isAuto = false;
+
         // If this is from a user reply, then mark the email as auto and handle disable auto setting
         if ($context->getEventPerformer() == 'user' && $ticket->getStateChangeRecorder()->hasNewReply()) {
             $context->getLogger()->info('[SendUserNewEmail] Identified as an automatic email');
             $emailBuilder->setIsAuto();
+            $isAuto = true;
 
             if ($context->getVars()->has('ticket_email')) {
                 /** @var \Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail $ticketEmail */
@@ -175,7 +176,13 @@ class SendUserNewEmail extends AbstractEmailAction
         /** @var TicketEmail $ticketEmail */
         $ticketEmail = $emailBuilder->buildTicketEmail();
 
-        $message = $ticketEmail->prepareMailerMessage([], false);
+        $vars = [];
+
+        if (isset($lastMessage)) {
+            $vars['attached_blobs'] = $this->getLastMessageAttachments($ticket, $lastMessage, $context, $isAuto);
+        }
+
+        $message = $ticketEmail->prepareMailerMessage($vars, false);
 
         $message = $this->getContainer()->get('email.email_sender')
             ->prepareMessage($viewModel, $messagesArgs, $message);

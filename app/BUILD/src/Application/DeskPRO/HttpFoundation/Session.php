@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category HttpFoundation
- */
+
 
 namespace Application\DeskPRO\HttpFoundation;
 
@@ -197,6 +193,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                     $person          = $login_processor->getPerson();
 
                     $this->_setCurrentPerson($person);
+
                     break;
                 }
             }
@@ -381,6 +378,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 foreach ($languages as $language) {
                     if ($language->locale === $locale) {
                         $this->language = $language;
+
                         break;
                     }
                 }
@@ -391,6 +389,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                     foreach ($languages as $language) {
                         if (substr($language->locale, 0, 2) == $accept_language) {
                             $this->language = $language;
+
                             break 2;
                         }
                     }

@@ -8,6 +8,8 @@ use JMS\Serializer\Annotation as JMS;
 
 class AgentNewCommunityTopic extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * The community topic.
      *
@@ -42,5 +44,13 @@ class AgentNewCommunityTopic extends EmailBaseType
         $this->topic     = $topic;
         $this->person    = $person;
         $this->loginLink = $loginLink;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventCodeType()
+    {
+        return 'community';
     }
 }

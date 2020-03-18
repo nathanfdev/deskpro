@@ -10,9 +10,11 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class MessengerTicketsType.
@@ -61,7 +63,18 @@ class MessengerTicketsType extends AbstractType
                 'required' => true,
             ])
             ->add('subject', TextType::class)
-
+            ->add('departmentOption', ChoiceType::class, [
+                'required' => true,
+                'choices'  => [
+                    MessengerTickets::TICKET_DEPARTMENT_OPTION_CHOOSE,
+                    MessengerTickets::TICKET_DEPARTMENT_OPTION_HIDDEN,
+                ],
+                'choices_as_values' => true,
+                'constraints'       => [
+                    new Assert\NotNull(),
+                ],
+            ])
+            ->add('options', MessengerTicketsOptionsType::class)
         ;
     }
 

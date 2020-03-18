@@ -12,21 +12,19 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{% if task.person %}
+	{% if task.person %}
 
-		{{ phrase('agent.emails.task_assigned_to_you_by', {title: task.title, agent: performer.display_name }) }}
-		<br /><br />
-		<a href="{{ login_link }}#app.tasks,tasks:own:total">{{ phrase('agent.emails.view_your_tasks') }}</a>
+	{{ phrase('agent.emails.task_assigned_to_you_by', {title: task.title, agent: performer.display_name }) }}
+	<br /><br />
+	<a href="{{ login_link }}#app.tasks,tasks:own:total">{{ phrase('agent.emails.view_your_tasks') }}</a>
 
-		{% elseif task.assigned_agent_team %}
+	{% elseif task.assigned_agent_team %}
 
-		{{ phrase('agent.emails.task_assigned_to_your_team_by', {title: task.title, agent: performer.display_name }) }}
-		<br /><br />
-		<a href="{{ login_link }}#app.tasks,tasks:team:total">{{ phrase('agent.emails.view_your_teams_tasks') }}</a>
+	{{ phrase('agent.emails.task_assigned_to_your_team_by', {title: task.title, agent: performer.display_name }) }}
+	<br /><br />
+	<a href="{{ login_link }}#app.tasks,tasks:team:total">{{ phrase('agent.emails.view_your_teams_tasks') }}</a>
 
-		{% endif %}
-	</container>
+	{% endif %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

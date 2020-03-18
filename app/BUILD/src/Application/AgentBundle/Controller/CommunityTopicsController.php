@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\CommunityTopicResults;
@@ -364,6 +360,7 @@ class CommunityTopicsController extends AbstractController
                 $value                   = $this->in->getString('title');
                 $communityTopic['title'] = $value;
                 $ret                     = ['html' => htmlspecialchars($communityTopic['title'])];
+
                 break;
         }
 
@@ -478,6 +475,7 @@ class CommunityTopicsController extends AbstractController
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -545,12 +543,14 @@ class CommunityTopicsController extends AbstractController
         }
 
         $this->em->getConnection()->beginTransaction();
+
         try {
             $this->em->persist($comment);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
+
             throw $e;
         }
 
@@ -599,22 +599,26 @@ class CommunityTopicsController extends AbstractController
                 } else {
                     $communityTopic['status_code'] = $this->in->getString('status');
                 }
+
                 break;
 
             case 'undelete':
                 $communityTopic['status_code'] = 'new';
                 $communityTopic->setSlug(null);
+
                 break;
 
             case 'title':
                 $communityTopic['title'] = $this->in->getString('title');
                 $rev                     = ContentRevisionUtil::findOrCreate($communityTopic, 'title', $this->person);
                 $rev['title']            = $communityTopic['title'];
+
                 break;
 
             case 'slug':
                 $communityTopic['slug'] = Strings::slugifyTitle($this->in->getString('slug')) ?: 'view';
                 $data['slug']           = $communityTopic['slug'];
+
                 break;
 
             case 'add-related':
@@ -623,6 +627,7 @@ class CommunityTopicsController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'remove-related':
@@ -631,6 +636,7 @@ class CommunityTopicsController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'remove-blob':
@@ -638,6 +644,7 @@ class CommunityTopicsController extends AbstractController
                     if ($attach->blob['id'] == $this->in->getUInt('blob_id')) {
                         $communityTopic->getAttachments()->remove($k);
                         $this->em->remove($attach);
+
                         break;
                     }
                 }
@@ -674,6 +681,7 @@ class CommunityTopicsController extends AbstractController
                     $communityTopic['forum'] = $forum;
                     $data['forum_id']        = $forum['id'];
                 }
+
                 break;
         }
 
@@ -1049,9 +1057,9 @@ class CommunityTopicsController extends AbstractController
             $template = 'AgentBundle:Community:filter-list.html.twig';
         }
 
-        $result_cache   = $resultsHelper->getResultCache();
-        $page           = $this->in->getUInt('p') ?: ($page = $this->in->getUInt('page') ?: 1);
-        $communityTopic = $resultsHelper->getTopicsForPage($page);
+        $result_cache    = $resultsHelper->getResultCache();
+        $page            = $this->in->getUInt('p') ?: ($page = $this->in->getUInt('page') ?: 1);
+        $communityTopics = $resultsHelper->getTopicsForPage($page);
 
         if ($this->in->getBool('is_partial')) {
             $template = str_replace('.html.twig', '-part.html.twig', $template);
@@ -1079,7 +1087,7 @@ class CommunityTopicsController extends AbstractController
         $userCatField = $this->container->getSystemService('CommunityFieldsManager')->getUserCategoryField();
 
         $communityTopicCollection = new CommunityTopicsCollection(
-            $communityTopic,
+            $communityTopics,
             $this->container->getEm(),
             $this->container->getSystemService('CommunityFieldsManager')
         );
@@ -1094,7 +1102,7 @@ class CommunityTopicsController extends AbstractController
                     'cache'              => $result_cache,
                     'cache_id'           => $result_cache['id'],
                     'result_ids'         => $result_cache['results'],
-                    'community_topic'    => $communityTopic,
+                    'community_topics'   => $communityTopics,
                     'num_results'        => $result_cache['num_results'],
                     'per_page'           => 50,
                     'criteria'           => $result_cache['criteria'],
@@ -1113,6 +1121,7 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $action
      * @param $communityTopicId
+     * @param mixed $topicId
      *
      * @throws \Exception
      *
@@ -1232,6 +1241,7 @@ class CommunityTopicsController extends AbstractController
             switch ($action) {
                 case 'set-status':
                     $communityTopic->setStatusCode($this->in->getString('status'));
+
                     break;
 
                 case 'set-forum':
@@ -1239,6 +1249,7 @@ class CommunityTopicsController extends AbstractController
                     if ($forum) {
                         $communityTopic->setForum($forum);
                     }
+
                     break;
             }
         }

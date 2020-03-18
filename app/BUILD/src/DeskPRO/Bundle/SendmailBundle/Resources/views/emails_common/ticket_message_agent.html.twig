@@ -1,12 +1,15 @@
 <!-- DP_MESSAGE_BEGIN --><div {{ language_html_attr(ticket ? ticket.language : false) }} name="dp_message_{{ message.id }}_begin" class="dp_message_{{ message.id }}_begin">{% if message.primary_translation %}{{ message.primary_translation.message|raw }}{% else %}{{ message.message|raw }}{% endif %}</div><!-- DP_MESSAGE_END -->
 <a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end dp_marker_link"></a>
-{% if app.isPortalEnabled() and message.attachments.count and not app.getSetting('core_tickets.disable_attachments_list') %}
+{% if app.isPortalEnabled() and message.attachments | filter(a => not a.is_inline)  | length > 0 and not app.getSetting('core_tickets.disable_attachments_list') %}
 	<div style="font-size:11px">
 		<br />
-		<strong>Attachments</strong>
+		<strong>{{ phrase('user.emails.attachments') }}</strong>
 		{% for attach in message.attachments %}
-			<br />
-			&bull; <a href="{{ attach.blob.download_url }}" style="{{ _self.link_style() }}">{{attach.blob.filename}}</a> ({{ attach.blob.filesize_readable }})
+			{% if not attach.is_inline  %}
+				<br />
+				&bull; <a href="{{ attach.blob.download_url }}" style="{{ _self.link_style() }}">{{attach.blob.filename}}</a> ({{ attach.blob.filesize_readable }})
+				<attachment id="{{ attach.blob.blob_auth }}" filename="{{attach.blob.filename}}" />
+			{% endif %}
 		{% endfor %}
 	</div>
 {% endif %}

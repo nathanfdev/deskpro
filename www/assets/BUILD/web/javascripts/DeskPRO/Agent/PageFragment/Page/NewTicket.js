@@ -2016,36 +2016,42 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 	},
 
-	_initPropertiesSection: function() {
-		var self = this;
-		var selectBrand = this.getEl('brand');
-		selectBrand.on('change', function () {
-			var value = this.value;
-			$.get('/agent/tickets/new/get-departments/' + value, function(res) {
-				var selectDepartment = self.getEl('dep');
-				var previousValue = selectDepartment.val();
-				selectDepartment.children().remove();
-				$(res).children().appendTo(selectDepartment);
-				var val = '';
-				var options = $(res).find('option');
-				// An empty option is always offered
-				if (options.length === 2) {
-					val = options[1].value;
-				}
-				if (!val && previousValue) {
+  _initPropertiesSection: function() {
+    var self = this;
+    var selectBrand = this.getEl('brand');
+    selectBrand.on('change', function () {
+      var value = this.value;
+      $.get('/agent/tickets/new/get-departments/' + value, function(res) {
+        var selectDepartment = self.getEl('dep');
+        var previousValue = selectDepartment.val();
+
+        selectDepartment.children().remove();
+        selectDepartment.select2('destroy');
+        selectDepartment.data('select2', null);
+
+        $(res).children().appendTo(selectDepartment);
+        DP.select(selectDepartment);
+        var val = '';
+        var options = $(res).find('option');
+        // An empty option is always offered
+        if (options.length === 2) {
+          val = options[1].value;
+        }
+        if (!val && previousValue) {
           if (options.filter('option[value='+previousValue+']').length > 0) {
-          	val = previousValue;
-					}
-				}
-				if (!val && self.meta.defaultDepartments[value]) {
+            val = previousValue;
+          }
+        }
+        if (!val && self.meta.defaultDepartments[value]) {
           val = self.meta.defaultDepartments[value];
-				}
-				selectDepartment.select2('val', val).change();
-			});
-		});
+        }
+
+        selectDepartment.select2('val', val).change();
+      });
+    });
 
     selectBrand.trigger('change');
-	},
+  },
 
 	focusOnReply: function() {
 		var txt = this.textarea;

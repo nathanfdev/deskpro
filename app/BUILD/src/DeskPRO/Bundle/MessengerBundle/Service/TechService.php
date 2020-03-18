@@ -7,15 +7,25 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalUsergroupDecider;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\MessengerBundle\Common\TraitUserGet;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class TechService
 {
+    use TraitUserGet;
+
     /**
      * @var PermissionsManager
      */
     private $permissionsManager;
+
+    /**
+     * @var PortalUsergroupDecider
+     */
+    private $usergroupDecider;
 
     /**
      * @var EntityManager
@@ -23,25 +33,31 @@ class TechService
     private $em;
 
     /**
-     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
+     * @var BrandStack
      */
     private $brandStack;
 
     /**
      * TechService constructor.
      *
-     * @param EntityManager                                $em
-     * @param PermissionsManager                           $permissionsManager
-     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
+     * @param EntityManager          $em
+     * @param PermissionsManager     $permissionsManager
+     * @param PortalUsergroupDecider $usergroupDecider
+     * @param BrandStack             $brandStack
+     * @param ContainerInterface     $container
      */
     public function __construct(
         EntityManager $em,
         PermissionsManager $permissionsManager,
-        BrandStack $brandStack
+        PortalUsergroupDecider $usergroupDecider,
+        BrandStack $brandStack,
+        ContainerInterface $container
     ) {
         $this->permissionsManager = $permissionsManager;
+        $this->usergroupDecider   = $usergroupDecider;
         $this->em                 = $em;
         $this->brandStack         = $brandStack;
+        $this->container          = $container;
     }
 
     /**
@@ -49,7 +65,7 @@ class TechService
      */
     public function getChatDepartments()
     {
-        $permissionBag        = $this->permissionsManager->getPortalPermissionsBag();
+        $permissionBag        = $this->permissionsManager->getPortalPermissionsBag($this->getUserOrGuest());
         $allowedDepartmentIds = $permissionBag->getAllowedChatDepartmentIds();
 
         return $this->getDepartments('chat', $allowedDepartmentIds);
@@ -60,10 +76,20 @@ class TechService
      */
     public function getTicketDepartments()
     {
-        $permissionBag        = $this->permissionsManager->getPortalPermissionsBag();
+        $permissionBag        = $this->permissionsManager->getPortalPermissionsBag($this->getUserOrGuest());
         $allowedDepartmentIds = $permissionBag->getAllowedTicketDepartmentIds();
 
         return $this->getDepartments('tickets', $allowedDepartmentIds);
+    }
+
+    public function getUsergroups()
+    {
+        $user = $this->getUser();
+
+        return $user
+            ? $this->usergroupDecider->getUsergroupIdsForPerson($user)
+            : $this->usergroupDecider->getUsergroupIdsForGuest()
+        ;
     }
 
     /**

@@ -243,11 +243,17 @@ class NewTicketController extends AbstractController
             }
         }
 
-        $formFull = $this->createForm(TicketWithLayoutsWebFullType::class, null, [
+        // Need to pass person to properly show/get person custom fields and values
+        // Might use them in case of dependend fields in criteria
+        $fullFormOptions = [
             'action'              => $this->generateUrl('portal_new_ticket'),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
-            'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
-        ]);
+            'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW
+        ];
+        if ($person && !$person instanceof PersonGuest) {
+            $fullFormOptions['person'] = $person;
+        }
+        $formFull = $this->createForm(TicketWithLayoutsWebFullType::class, null, $fullFormOptions);
 
         // set default values on the full form
         if ($request->isMethod('get') && $request->query->get('ticket')) {

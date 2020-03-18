@@ -5,6 +5,10 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\EntityRepository\Guide as ManualRepository;
+use DeskPRO\Bundle\AppBundle\Entity\HasIconProperty;
+use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
+use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -16,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @PortalLinkRoute("user_guides", route_param_map={"slug":"slug"})
  */
-class Guide extends DomainObject
+class Guide extends DomainObject implements HasIconProperty, HasSplashImageProperty
 {
     /**
      * The unique id of the guide.
@@ -29,7 +33,7 @@ class Guide extends DomainObject
     protected $id = null;
 
     /**
-     * Category`s title.
+     * Category's title.
      *
      * @JMS\Expose()
      * @JMS\Type("string")
@@ -42,7 +46,7 @@ class Guide extends DomainObject
     protected $title;
 
     /**
-     * Category`s description.
+     * Category's description.
      *
      * @JMS\Expose()
      * @JMS\Type("string")
@@ -104,6 +108,33 @@ class Guide extends DomainObject
      * @var Brand
      */
     protected $brand;
+
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
+     *
+     * @var string
+     */
+    protected $color;
+
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\IconProperty>")
+     * @JMS\Groups({"list", "details"})
+     *
+     * @var IconProperty
+     */
+    protected $icon_property;
+
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty>")
+     * @JMS\Groups({"list", "details"})
+     *
+     * @var SplashImageProperty
+     */
+    protected $splash_image_property;
 
     /**
      * @return int
@@ -292,6 +323,65 @@ class Guide extends DomainObject
     }
 
     /**
+     * @param bool $withHash
+     *
+     * @return string
+     */
+    public function getColor($withHash = true)
+    {
+        if ($withHash && $this->color) {
+            return '#'.$this->color;
+        }
+
+        return $this->color;
+    }
+
+    /**
+     * @param string $color
+     *
+     * @return $this
+     */
+    public function setColor($color)
+    {
+        $color = str_replace('#', '', $color);
+        $this->setModelField('color', $color);
+
+        return $this;
+    }
+
+    public function getIcon()
+    {
+        return $this->icon_property;
+    }
+
+    public function setIcon($iconProperty)
+    {
+        $this->setModelField('icon_property', $iconProperty);
+
+        return $this;
+    }
+
+    /**
+     * @return SplashImageProperty
+     */
+    public function getSplashImage()
+    {
+        return $this->splash_image_property;
+    }
+
+    /**
+     * @param SplashImageProperty $splash_image_property
+     *
+     * @return $this
+     */
+    public function setSplashImage($splash_image_property)
+    {
+        $this->setModelField('splash_image_property', $splash_image_property);
+
+        return $this;
+    }
+
+    /**
      * @JMS\VirtualProperty()
      */
     public function getGuidePdf()
@@ -379,6 +469,17 @@ class Guide extends DomainObject
                 'columnName' => 'display_order',
             ]
         );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'color',
+                'type'       => 'string',
+                'length'     => 6,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'color',
+            ]
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapOneToMany(
             [
@@ -429,6 +530,42 @@ class Guide extends DomainObject
                         'name'                 => 'brand_id',
                         'referencedColumnName' => 'id',
                         'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'icon_property',
+                'targetEntity' => IconProperty::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'icon_property_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'splash_image_property',
+                'targetEntity' => SplashImageProperty::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'splash_image_property_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
                     ],
                 ],
                 'dpApi' => true,

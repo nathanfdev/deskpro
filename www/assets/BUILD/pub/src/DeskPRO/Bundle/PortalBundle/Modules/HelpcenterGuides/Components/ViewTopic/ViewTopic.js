@@ -19,7 +19,7 @@ class ViewTopic extends React.Component {
     if (window.topic) {
       topic = JSON.parse(window.topic);
     }
-    topic.content = this.addIdToh1(topic.content);
+    topic.content = this.addIdToh1(topic.content, topic.slug);
     const topicList = JSON.parse(window.topicList);
     this.state = {
       fixed:     false,
@@ -29,6 +29,14 @@ class ViewTopic extends React.Component {
       guideSlug: this.getGuideSlug(this.props.params.splat),
       topicList,
     };
+    let guides = [];
+    if (window.guides) {
+      guides = JSON.parse(window.guides);
+    }
+    if (!Array.isArray(guides)) {
+      guides = Object.values(guides);
+    }
+    this.withSplash = guides.filter(guide => typeof guide.splash_image_property !== 'undefined').length > 0;
     this.contentChanged = false;
     this.ticking = false;
     this.targetSlug = props.params.slug;
@@ -39,6 +47,7 @@ class ViewTopic extends React.Component {
   componentDidMount() {
     this.changeInternalLinks();
     this.addCodeBlocksCopy();
+    this.addGuideBlocks();
     window.addEventListener('scroll', () => {
       if (!this.ticking) {
         window.requestAnimationFrame(() => {
@@ -135,7 +144,7 @@ class ViewTopic extends React.Component {
           <Link
             to={`topic_${topicSlug}`}
             href={target}
-            offset={-129}
+            offset={this.withSplash ? -255 : -129}
             isDynamic
           >
             {internalLink.text}
@@ -148,11 +157,41 @@ class ViewTopic extends React.Component {
     });
   };
 
+  addGuideBlocks = () => {
+    const blocks = document.querySelectorAll('.block.info,.block.warning');
+    Array.prototype.forEach.call(blocks, this.addGuideBlock);
+  };
+
+  addGuideBlock = (block) => {
+    if (block.querySelector('h4')) {
+      return;
+    }
+    let mode;
+    let title;
+    let icon;
+    if (block.classList.contains('info')) {
+      mode = 'note';
+      title = 'Note';
+      icon = 'fa-info-circle';
+    } else {
+      mode = 'warning';
+      title = 'Warning';
+      icon = 'fa-exclamation-circle';
+    }
+    const codeBlock = (
+      <div className={`dp-po-post-content-${mode}`} >
+        <h4 className={`dp-po-post-content-${mode}-title`}>
+          <i className={classNames('dp-po-icon', 'fal', icon)} /> {title}
+        </h4>
+        <p dangerouslySetInnerHTML={{ __html: block.innerHTML }} />
+      </div>
+    );
+    ReactDOM.render(codeBlock, block);
+  };
+
   addCodeBlocksCopy = () => {
     const blocks = document.querySelectorAll('pre code');
-    Array.prototype.forEach.call(blocks, (block) => {
-      this.addCodeBlockCopy(block);
-    });
+    Array.prototype.forEach.call(blocks, this.addCodeBlockCopy);
   };
 
   addCodeBlockCopy = (block) => {
@@ -195,14 +234,14 @@ class ViewTopic extends React.Component {
     }
   };
 
-  addIdToh1 = (html) => {
+  addIdToh1 = (html, slug) => {
     const container = document.createElement('div');
     container.innerHTML = html;
 
     Array.from(container.querySelectorAll('h1')).forEach((h1) => {
       const newH1 = document.createElement('h1');
       newH1.innerText = `${h1.innerText} `;
-      newH1.id = h1.innerText.toLowerCase().replace(/[():]/g, '').replace(/ /g, '-');
+      newH1.id = `${slug}_${h1.innerText.toLowerCase().replace(/[():]/g, '').replace(/ /g, '-')}`;
       newH1.className = 'anchor';
       container.replaceChild(newH1, h1);
     });
@@ -249,7 +288,7 @@ class ViewTopic extends React.Component {
       }
 
       const topic = response.data.data;
-      topic.content = this.addIdToh1(topic.content);
+      topic.content = this.addIdToh1(topic.content, topic.slug);
       topics[topic.id] = topic;
       this.setState({
         topics,
@@ -257,6 +296,7 @@ class ViewTopic extends React.Component {
       });
       this.changeInternalLinks();
       this.addCodeBlocksCopy();
+      this.addGuideBlocks();
       this.addReactImageLazyload();
     });
   };
@@ -270,7 +310,7 @@ class ViewTopic extends React.Component {
       const topics = {};
       const res = response.data.data;
       res.forEach((topic) => {
-        topic.content = this.addIdToh1(topic.content);
+        topic.content = this.addIdToh1(topic.content, topic.slug);
         topics[topic.id] = topic;
       });
       this.setState({
@@ -279,14 +319,16 @@ class ViewTopic extends React.Component {
       });
       this.changeInternalLinks();
       this.addCodeBlocksCopy();
+      this.addGuideBlocks();
       this.addReactImageLazyload();
       setTimeout(() => {
         this.setState({
           loaded: true,
         });
+        const offset = this.withSplash ? -255 : -129;
         scroller.scrollTo(`topic_${this.targetSlug}`, {
           isDynamic: true,
-          offset:    -129,
+          offset,
         });
       }, 500);
     });
@@ -366,7 +408,7 @@ class ViewTopic extends React.Component {
           selectGuide={this.selectGuide}
           fixed={fixed}
         />
-        <div className="dp-po-guides-section">
+        <div className={classNames('dp-po-guides-section', { 'with-splash': this.withSplash })}>
           <div className="dp-po-guides-wrap">
             <div className="container-fluid">
               <div className="row">
@@ -377,6 +419,7 @@ class ViewTopic extends React.Component {
                     topicSlug={topicSlug}
                     grabTopicFromApi={this.grabTopicFromApi}
                     sizes={this.sizes}
+                    withSplash={this.withSplash}
                   />
                 </div>
                 <div className="col-sm-9">

@@ -288,7 +288,9 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         $data['version'] = 1;
         $data['fields']  = [];
         foreach ($this->fields as $f) {
-            $data['fields'][] = $f->exportToArray();
+            if ($ar = $f->exportToArray()) {
+                $data['fields'][] = $ar;
+            }
         }
 
         return $data;

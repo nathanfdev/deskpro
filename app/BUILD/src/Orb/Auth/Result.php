@@ -1,10 +1,6 @@
 <?php
 
-/**
- * Orb.
- *
- * @category Auth
- */
+
 
 namespace Orb\Auth;
 
@@ -66,7 +62,7 @@ class Result
     protected $_identity = null;
 
     /**
-     * Result code from the ogin attempt.
+     * Result code from the login attempt.
      *
      * @var int
      */
@@ -140,6 +136,8 @@ class Result
      * Returns an array, or if a key is supplied, that one key or null if it doesn't exist.
      *
      * @array string $key A specific key to get, or null to get the whole array
+     *
+     * @param null|mixed $key
      *
      * @return mixed
      */

@@ -2,8 +2,12 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use JMS\Serializer\Annotation as JMS;
+
 class AgentWhitelistIp extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * Link to whitelist ip page.
      *
@@ -18,5 +22,13 @@ class AgentWhitelistIp extends EmailBaseType
     public function __construct($url)
     {
         $this->url = $url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventCodeType()
+    {
+        return 'login';
     }
 }

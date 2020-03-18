@@ -77,25 +77,27 @@ export class HcFilterControls extends React.Component {
     const { available, filterModel } = this.props;
 
     return (
-      <div className="dp-po-community-header">
-        <HcTabRow
-          available={available}
-          filter={filterModel}
-          setView={this.onSetView}
-        />
-        <HcSearch
-          filter={filterModel}
-          setSearch={this.onSearch}
-        />
-        <HcFilters
-          filter={filterModel}
-          onSetStatus={this.onSetStatus}
-          onSetStatusCategory={this.onSetStatusCategory}
-          onSetActivity={this.onSetActivity}
-          onResetActivities={this.onResetActivities}
-          onSetViewMode={this.onSetViewMode}
-          setSort={this.onSetSort}
-        />
+      <div className="d-none d-sm-block">
+        <div className="dp-po-community-header">
+          <HcTabRow
+            available={available}
+            filter={filterModel}
+            setView={this.onSetView}
+          />
+          <HcSearch
+            filter={filterModel}
+            setSearch={this.onSearch}
+          />
+          <HcFilters
+            filter={filterModel}
+            onSetStatus={this.onSetStatus}
+            onSetStatusCategory={this.onSetStatusCategory}
+            onSetActivity={this.onSetActivity}
+            onResetActivities={this.onResetActivities}
+            onSetViewMode={this.onSetViewMode}
+            setSort={this.onSetSort}
+          />
+        </div>
       </div>
     );
   }

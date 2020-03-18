@@ -14,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor\EmailPreProcessor;
 use DeskPRO\Bundle\SendmailBundle\Twig\TwigEngine;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketEmailType;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Symfony\Component\DependencyInjection\Container;
@@ -111,23 +112,28 @@ class EmailRenderer
      * @param string        $templateName
      * @param EmailBaseType $model
      *
+     * @throws \Throwable
+     *
      * @return EmailTemplateCode
      */
     public function render($templateName, EmailBaseType $model)
     {
-        $context = new SideloadSerializationContext();
-        $context->setIncludesStrategy(SideloadSerializationContext::INCLUDE_STRATEGY_DATA);
-        $context->setInlineSideloads(true);
+        $context = (new SideloadSerializationContext())
+            ->setIncludesStrategy(SideloadSerializationContext::INCLUDE_STRATEGY_DATA)
+            ->setInlineSideloads(true)
+            ->setContainer($this->serviceContainer);
 
-        // wrap to make sideloading works
-        $model = new ApiWrapper($model);
-
-        $vars = $this->getSerializer()->toArray($model, $context)['data'];
+        $vars = $this->serviceContainer->getBrandStack()->pushTemporary(
+            $model instanceof TicketEmailType ? $model->getTicket()->getBrand() : null,
+            function () use ($model, $context) {
+                return $this->getSerializer()->toArray(new ApiWrapper($model), $context)['data'];
+            }
+        );
         $code = $this->getTemplateEngine()->render($templateName, $vars);
 
         $blobAuthIds = [];
 
-        // We look for <attachement id='{id}'> and remove it from the template
+        // We look for <attachment id='{id}'> and remove it from the template
         $code = preg_replace_callback('#<attachment[^>]*id=("([^"]+)"|\'([^\']+)\')[^>]*>#',
             function ($matches) use (&$blobAuthIds) {
                 $blobAuthIds[] = $matches[2] ? $matches[2] : $matches[3];
@@ -139,7 +145,7 @@ class EmailRenderer
 
         $blobSysNames = [];
 
-        // We look for <attachement sys='{id}'> and remove it from the template
+        // We look for <attachment sys='{id}'> and remove it from the template
         $code = preg_replace_callback('#<attachment[^>]*sys=("([^"]+)"|\'([^\']+)\')[^>]*>#',
             function ($matches) use (&$blobSysNames) {
                 $blobSysNames[] = $matches[2] ? $matches[2] : $matches[3];
@@ -176,6 +182,7 @@ class EmailRenderer
      * @param EmailBaseType $model
      * @param Language      $language
      * @param array         $templates
+     * @param mixed $string_only
      *
      * @throws \Exception
      */

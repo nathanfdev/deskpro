@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -2371,14 +2369,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Gets the email address that should be used for this ticket.
      *
-     * @return PersonEmail
+     * @return PersonEmail|null
      */
     public function getTicketPersonEmail()
     {
         if ($this->person_email) {
             return $this->person_email;
+        } elseif ($this->getPerson() && $this->getPerson()->getPrimaryEmail()) {
+            return $this->getPerson()->getPrimaryEmail();
         } else {
-            return $this->person['primary_email'];
+            return null;
         }
     }
 
@@ -2399,7 +2399,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     {
         $email = $this->getTicketPersonEmail();
 
-        return $email['email'];
+        return $email ? $email['email'] : null;
     }
 
     /**
@@ -3965,6 +3965,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'ticket_status',
             'subject',
             'urgency',
+            'email_account',
         ];
 
         foreach ($load as $k) {
@@ -4470,13 +4471,33 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         if ($context === 'user') {
             return $this->isOwner($person)
             || (!$person->isAgent() && $this->isParticipant($person))
-            || $this->isOrganizationManager($person);
+            || $this->isOrganizationManager($person)
+            || $this->hasApprovalWithViewSubject($person);
         } else {
             return $this->isOwner($person)
             || $this->isParticipant($person)
             || $this->getAgent() === $person
-            || $this->isOrganizationManager($person);
+            || $this->isOrganizationManager($person)
+            || $this->hasApprovalWithViewSubject($person);
         }
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return bool
+     */
+    public function hasApprovalWithViewSubject(Person $person)
+    {
+        foreach ($this->getApprovals() as $approval) {
+            if ($approval->hasApprover($person)) {
+                if ($approval->canApproversViewSubject()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public function hasVisibleStatus()

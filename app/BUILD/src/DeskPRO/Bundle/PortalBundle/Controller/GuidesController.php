@@ -9,6 +9,7 @@ use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Filesystem\SafeFile;
@@ -215,6 +216,11 @@ class GuidesController extends AbstractPublishController
             },
         ]);
 
+        $context = new SideloadSerializationContext(['icon_property', 'splash_image_property', 'blob'], $this->getContainer()->get('security.token_storage'));
+        $context->setIdsOnly(false);
+        $context->setInlineSideloads(true);
+        $context->setRequest($request);
+
         $viewVars = [
             'topic'            => $topic,
             'content'          => $topic,
@@ -223,9 +229,10 @@ class GuidesController extends AbstractPublishController
             'breadcrumbs'      => $breadcrumbs,
             'captcha'          => $captcha,
             'guide'            => $topic->getGuide(),
-            'guides_json'      => Strings::escapeForJson($serializer->serialize($guides, 'json', new SideloadSerializationContext())),
+            'guides_json'      => Strings::escapeForJson(json_encode($serializer->toArray(new ApiWrapper($guides), $context)['data'])),
             'guides'           => $guides,
             'helpcenter'       => $this->get('helpcenter_data_helper'),
+            'body_class'       => 'guides-body',
             'new_comment_form' => $newCommentForm ? $newCommentForm->createView() : null,
         ];
 

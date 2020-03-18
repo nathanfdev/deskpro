@@ -39,10 +39,10 @@
                 <div class="dp-po-post-extra">
                   <ul class="dp-po-post-extra-list">
                     <li class="dp-po-post-extra-item">
-                      <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+                      <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print" title="{{ phrase('helpcenter.general.print') }}"></i></a>
                     </li>
                     <li class="dp-po-post-extra-item">
-                      <a href="{{ path('portal_news_pdf', {slug: post.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                      <a href="{{ path('portal_news_pdf', {slug: post.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i></a>
                     </li>
                   </ul>
                 </div>
@@ -56,13 +56,27 @@
 
     </div>
     <div class="col-sm-3">
+      <div class="d-none d-sm-block">
+        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+          subscriptionInfo: [
+            { toggleUrl: portal_path(post, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_news_post'), active: is_subscribed },
+            { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.forms.label_category'), active: is_subscribed_category },
+            { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section-title'), active: is_subscribed_root },
+          ]
+        } %}
+      </div>
+    </div>
+  </div>
+
+  <div class="d-block d-sm-none">
+    <div class="dp-po-post-mobile-area">
       {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-        subscriptionInfo: [
-          { toggleUrl: portal_path(post, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_news_post'), active: is_subscribed },
-          { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.forms.label_category'), active: is_subscribed_category },
-          { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section-title'), active: is_subscribed_root },
-        ]
-      } %}
+          subscriptionInfo: [
+            { toggleUrl: portal_path(post, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_news_post'), active: is_subscribed },
+            { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.forms.label_category'), active: is_subscribed_category },
+            { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section-title'), active: is_subscribed_root },
+          ]
+        } %}
     </div>
   </div>
 {% endblock page_top %}
@@ -102,7 +116,9 @@
       {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: postData.comments } %}
     {% endif %}
 
-    {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+    {% if new_comment_form %}
+      {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+    {% endif %}
   {% endif %}
 {% endblock page_body %}
 

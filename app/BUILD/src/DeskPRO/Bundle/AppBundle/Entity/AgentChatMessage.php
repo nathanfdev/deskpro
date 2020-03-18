@@ -13,6 +13,7 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Class AgentChatMessage.
@@ -24,6 +25,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\InheritanceType("NONE")
  *
  * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\AgentChatMessageListener"})
+ *
+ * @UniqueEntity("uuid")
  */
 class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
 {

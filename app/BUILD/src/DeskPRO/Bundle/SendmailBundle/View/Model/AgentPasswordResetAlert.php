@@ -7,6 +7,8 @@ use JMS\Serializer\Annotation as JMS;
 
 class AgentPasswordResetAlert extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * Person that perform the password reset.
      *
@@ -41,5 +43,13 @@ class AgentPasswordResetAlert extends EmailBaseType
         $this->performer   = $performer;
         $this->newPassword = $newPassword;
         $this->loginLink   = $loginLink;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventCodeType()
+    {
+        return 'login';
     }
 }

@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Community;
 
@@ -179,12 +177,15 @@ class CommunityDataService extends AbstractDataService
                 switch ($filter->getStatus()) {
                     case CommunityFilter::STATUS_ALL:
                         $valid_status = [CommunityTopic::STATUS_ACTIVE, CommunityTopic::STATUS_CLOSED];
+
                         break;
                     case CommunityFilter::STATUS_ACTIVE:
                         $valid_status = [CommunityTopic::STATUS_ACTIVE];
+
                         break;
                     case CommunityFilter::STATUS_CLOSED:
                         $valid_status = [CommunityTopic::STATUS_CLOSED];
+
                         break;
                     default:
                         $valid_status = [];
@@ -228,13 +229,16 @@ class CommunityDataService extends AbstractDataService
                                     'r.object_type = \'community\' AND r.object_id = ct.id'
                                 );
                                 $activitiesClauses[] = 'r.person = :person';
+
                                 break;
                             case CommunityFilter::ACTIVITY_CREATED:
                                 $activitiesClauses[] = 'ct.person = :person';
+
                                 break;
                             case CommunityFilter::ACTIVITY_COMMENTED:
                                 $qb->leftJoin('ct.comments', 'c');
                                 $activitiesClauses[] = 'c.person = :person';
+
                                 break;
                         }
                     }
@@ -255,24 +259,33 @@ class CommunityDataService extends AbstractDataService
                             $filter->getSortDirection());
                         $qb->addOrderBy('ct.date_created',
                             $filter->getSortDirection());
+
                         break;
                     case CommunityFilter::SORT_RATING:
                         $qb->orderBy('ct.total_rating', $filter->getSortDirection());
+
                         break;
                     case CommunityFilter::SORT_COMMENTS:
                         $qb->orderBy('ct.num_comments', $filter->getSortDirection());
+
                         break;
                     case CommunityFilter::SORT_VIEWS:
                         $qb->orderBy('ct.view_count', $filter->getSortDirection());
+
                         break;
                     case CommunityFilter::SORT_STATUS_CHANGE:
                         $qb->andWhere('stn.id IS NOT NULL');
                         $qb->andWhere('ct.status_category > 1');
                         $qb->groupBy('ct.id');
                         $qb->orderBy('ct.date_updated', $filter->getSortDirection());
+
                         break;
                     default:
                         $qb->orderBy('ct.date_created', $filter->getSortDirection());
+                }
+
+                if ($filter->getView() === CommunityFilter::VIEW_STATUS_CHANGE) {
+                    $qb->andWhere('stn.id IS NOT NULL');
                 }
 
                 // sort direction

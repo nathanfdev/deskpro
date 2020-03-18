@@ -81,6 +81,29 @@ class MessengerChat
     private $ticketDefaults;
 
     /**
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm")
+     * @JMS\SerializedName("preChatForm")
+     *
+     * @var PreChatForm
+     */
+    private $preChatForm;
+
+    /**
+     * @JMS\Type("array<integer>")
+     * @JMS\SerializedName("usergroups")
+     *
+     * @var array
+     */
+    private $usergroups = [];
+
+    /**
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatOptions")
+     *
+     * @var MessengerChatOptions
+     */
+    private $options;
+
+    /**
      * @return bool
      */
     public function isEnabled()
@@ -216,6 +239,66 @@ class MessengerChat
     public function setTicketDefaults(MessengerChatTicketDefaults $ticketDefaults)
     {
         $this->ticketDefaults = $ticketDefaults;
+
+        return $this;
+    }
+
+    /**
+     * @return PreChatForm
+     */
+    public function getPreChatForm()
+    {
+        return $this->preChatForm;
+    }
+
+    /**
+     * @param PreChatForm $preChatForm
+     *
+     * @return $this
+     */
+    public function setPreChatForm(PreChatForm $preChatForm)
+    {
+        $this->preChatForm = $preChatForm;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUsergroups()
+    {
+        return $this->usergroups;
+    }
+
+    /**
+     * @param array $usergroups
+     *
+     * @return $this
+     */
+    public function setUsergroups(array $usergroups)
+    {
+        $this->usergroups = $usergroups;
+
+        return $this;
+    }
+
+    /**
+     * @return MessengerChatOptions
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param MessengerChatOptions $options
+     *
+     * @return $this
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
 
         return $this;
     }

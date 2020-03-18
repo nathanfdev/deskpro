@@ -368,9 +368,19 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
           return Growl.success('Shared link is saved');
         },
         (response) => {
-          if (__guard__(__guard__(response.errors != null ? response.errors.fields : undefined, x1 => x1.title), x => x.errors[0])) {
-            $scope.error = 'Title could not be blank';
+          const errorFields = __guard__(response.errors, errors => errors.fields);
+
+          if (errorFields) {
+            if (__guard__(__guard__(errorFields, et => et.title), x => x.errors[0])) {
+              $scope.error_title = 'Title could not be blank';
+            }
+
+            const ipFields = __guard__(__guard__(errorFields, eip => eip.ip_whitelist), x => x.fields);
+            if (Util.values(ipFields).some(x => x.errors && x.errors[0])) {
+              $scope.error_ip_whitelist = 'Some IP has incorrect format';
+            }
           }
+
           return $scope.saving = false;
         });
     };

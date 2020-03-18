@@ -2192,6 +2192,7 @@ admin.setup.custom_header: 'Add a custom header'
 admin.setup.delete_brand: 'Delete Brand'
 admin.setup.enable_portal: 'Enable Portal'
 admin.setup.enable_portal_help: 'The portal is the public facing website that your users can use from their browser or mobile phone.'
+admin.setup.limit_email_domains: 'Limit registration and login to users with emails at the following domains. Multiple domains can be entered, separated by a comma. You may use an asterisk in place of a subdomain.'
 admin.setup.helpdesk_name: 'Helpdesk name'
 admin.setup.helpdesk_slug: 'Helpdesk slug'
 admin.setup.helpdesk_name_help: 'This is the name of your brands helpdesk.'
@@ -4088,6 +4089,7 @@ agent.login.password_was_reset: 'Your password has been reset successfully.'
 agent.login.remember_me: 'Remember Me'
 agent.login.reset-password-info: 'Enter your email address to receive instructions on how to reset your password:'
 agent.login.reset-password-sent: 'We have sent a message to your email address with instructions on how to reset your password.'
+agent.login.password_reset_required: 'Your password has expired. A link has been sent to {{ email }} with instructions on how to set a new password.'
 agent.login.sent_pw_reset_instructions: 'We sent instructions on how to reset your password to the email address you provided.'
 agent.login.session_timeout: 'Your session has timed out, you must log in again.'
 agent.login.supported_browsers: 'The following browsers are supported'
@@ -4580,6 +4582,9 @@ agent.publish.pick_icon: 'Pick Icon'
 agent.publish.please_choose_file: 'Please choose a file'
 agent.publish.please_enter_title: 'Please enter a title'
 agent.publish.please_enter_content: 'Please enter a content'
+agent.publish.please_enter_review_date: 'Please enter a correct review date'
+agent.publish.review_date_interval_too_small: 'Review date interval must be at least {{ interval }} {{ unit }}'
+agent.publish.review_date_interval_too_big: 'Review date interval must be no more than {{ interval }} {{ unit }}'
 agent.publish.please_select_category: 'Please select a category'
 agent.publish.please_select_guide: 'Please select a guide'
 agent.publish.post: Post
@@ -5869,6 +5874,7 @@ api.error_codes.option_depends_from_setting: 'Setting "{{setting}}" must be enab
 api.error_codes.person_not_agent: 'Person with identifier "{{value}}" is not an agent.'
 api.error_codes.person_not_found: 'Person with identifier "{{value}}" not found.'
 api.error_codes.person_not_user: 'Person with identifier "{{value}}" is not a user.'
+api.error_codes.bad_email_domain: 'Unable to use this email domain.'
 api.error_codes.rate_limits: 'Your limit for api calls is exhausted.'
 api.error_codes.required: 'This value should not be blank.'
 api.error_codes.resource_not_found: 'The value was not found.'
@@ -5891,6 +5897,9 @@ api.error_codes.user_has_no_org: 'Cannot submit request as this user does not be
 api.error_codes.org_has_no_managers: "Cannot submit request as this user's organization has no defined manager."
 api.error_codes.not_enough_approvers: "There aren't enough approvers defined to meet required approvals/rejections"
 api.error_codes.min_number_of_approvers_greater_than_to_approve_or_reject: "Minimum number of approvers value must not be greater than To approve or To Reject values"
+api.error_codes.default_review_date_less_than_min_review_date: "Default review date interval should be greater than or equal to the min review date interval."
+api.error_codes.default_review_date_greater_than_max_review_date: "Default review date interval should be less than or equal to the max review date interval."
+api.error_codes.min_review_date_greater_than_max_review_date: "Max review date interval should greater than or equal to min review date interval."
 api.oauth.authorize_accept: Access
 api.oauth.authorize_reject: Deny
 api.oauth.authorize_title: 'Grant access to {{name}}'

@@ -7,6 +7,8 @@ use JMS\Serializer\Annotation as JMS;
 
 class AgentNewRegistration extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * Person that registered.
      *
@@ -21,5 +23,13 @@ class AgentNewRegistration extends EmailBaseType
     public function __construct(Person $person)
     {
         $this->person = $person;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventCodeType()
+    {
+        return 'crm';
     }
 }

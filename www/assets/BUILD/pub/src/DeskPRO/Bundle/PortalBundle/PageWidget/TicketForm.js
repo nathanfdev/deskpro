@@ -11,8 +11,10 @@ import { DynamicForm } from '../../AppBundle/Form/DynamicForm';
 
 class TicketValueReader {
 
-  constructor($formEl) {
+  constructor($formEl, $fullFormEl) {
     this.$formEl = $formEl;
+    // $fullFormEl used to get field value not presented in main $formEl but used in field criteria(condition)
+    this.$fullFormEl = $fullFormEl;
   }
 
   static parseIntSelect(f) {
@@ -28,58 +30,95 @@ class TicketValueReader {
   }
 
   getDepartmentId() {
-    return TicketValueReader.parseIntSelect($('#ticket_department', this.$formEl));
+    const $field = $('#ticket_department', this.$formEl);
+
+    if ($field.length) {
+      return TicketValueReader.parseIntSelect($field);
+    }
+
+    return TicketValueReader.parseIntSelect($('#ticket_department', this.$fullFormEl));
   }
 
   getCategoryId() {
-    if (this.isFieldHidden('category')) {
-      return null;
+    const $field = $('#ticket_category', this.$formEl);
+
+    if ($field.length) {
+      if (this.isFieldHidden('category')) {
+        return null;
+      }
+
+      return TicketValueReader.parseIntSelect($field);
     }
 
-    return TicketValueReader.parseIntSelect($('#ticket_category', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_category', this.$fullFormEl));
   }
 
   getPriorityId() {
-    if (this.isFieldHidden('priority')) {
-      return null;
+    const $field = $('#ticket_priority', this.$formEl);
+
+    if ($field.length) {
+      if (this.isFieldHidden('priority')) {
+        return null;
+      }
+
+      return TicketValueReader.parseIntSelect($field);
     }
 
-    return TicketValueReader.parseIntSelect($('#ticket_priority', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_priority', this.$fullFormEl));
   }
 
   getProductId() {
-    if (this.isFieldHidden('product')) {
-      return null;
+    const $field = $('#ticket_product', this.$formEl);
+
+    if ($field.length) {
+      if (this.isFieldHidden('product')) {
+        return null;
+      }
+
+      return TicketValueReader.parseIntSelect($field);
     }
 
-    return TicketValueReader.parseIntSelect($('#ticket_product', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_product', this.$fullFormEl));
   }
 
   getOrganizationId() {
-    if (this.isFieldHidden('user_organization')) {
-      return null;
+    const $field = $('#ticket_user_organization', this.$formEl);
+
+    if ($field.length) {
+      if (this.isFieldHidden('user_organization')) {
+        return null;
+      }
+
+      return TicketValueReader.parseIntSelect($field);
     }
 
-    return TicketValueReader.parseIntSelect($('#ticket_user_organization', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_user_organization', this.$fullFormEl));
   }
 
   getWorkflowId() {
-    if (this.isFieldHidden('workflow')) {
-      return null;
+    const $field = $('#ticket_workflow', this.$formEl);
+
+    if ($field.length) {
+      if (this.isFieldHidden('workflow')) {
+        return null;
+      }
+
+      return TicketValueReader.parseIntSelect($field);
     }
 
-    return TicketValueReader.parseIntSelect($('#ticket_workflow', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_workflow', this.$fullFormEl));
   }
 
-  getFieldValue(prefix, fieldId) {
+  getFieldValue(prefix, fieldId, useFullForm = false) {
+    const $formEl = useFullForm ? this.$fullFormEl : this.$formEl;
     const fieldName = `${prefix}_field_${fieldId}`;
 
-    if (this.isFieldHidden(fieldName)) {
+    if (!useFullForm && this.isFieldHidden(fieldName)) {
       return null;
     }
 
     const id = `#ticket_${fieldName}_data`;
-    let $field = $(id, this.$formEl);
+    let $field = $(id, $formEl);
 
     // toggle
     if ($field.is(':checkbox')) {
@@ -98,15 +137,23 @@ class TicketValueReader {
       return `${year}-${month}-${day}`;
     }
 
+    // date and datetime widgets (`dpx-date-time` version)
+    if ($field.find(`${id}_date`).length) {
+      const year = $(`${id}_date_year`, $field).val();
+      const month = $(`${id}_date_month`, $field).val();
+      const day = $(`${id}_date_day`, $field).val();
+      return `${year}-${month}-${day}`;
+    }
+
     // choice of checkboxes, radio
     const name = `ticket[${prefix}_field_${fieldId}]`;
-    $field = $(`[name="${name}[data]"], [name="${name}[data][]"]`, this.$formEl);
+    $field = $(`[name="${name}[data]"], [name="${name}[data][]"]`, $formEl);
     if ($field.length) {
       return $field.filter(':checked').map((i, el) => el.value).get();
     }
 
     // display field
-    $field = $(`#ticket_${prefix}_field_${fieldId}`, this.$formEl);
+    $field = $(`#ticket_${prefix}_field_${fieldId}`, $formEl);
     if ($field.length) {
       return $.trim($field.text());
     }
@@ -115,15 +162,27 @@ class TicketValueReader {
   }
 
   getTicketFieldValue(fieldId) {
-    return this.getFieldValue('ticket', fieldId);
+    let res = this.getFieldValue('ticket', fieldId, false);
+    if (res === null) {
+      res = this.getFieldValue('ticket', fieldId, true);
+    }
+    return res;
   }
 
   getUserFieldValue(fieldId) {
-    return this.getFieldValue('user', fieldId);
+    let res = this.getFieldValue('user', fieldId, false);
+    if (res === null) {
+      res = this.getFieldValue('user', fieldId, true);
+    }
+    return res;
   }
 
   getOrgFieldValue(fieldId) {
-    return this.getFieldValue('org', fieldId);
+    let res = this.getFieldValue('org', fieldId, false);
+    if (res === null) {
+      res = this.getFieldValue('org', fieldId, true);
+    }
+    return res;
   }
 }
 
@@ -132,7 +191,7 @@ export default class TicketForm extends PageWidget {
   renderWidget() {
     const $formEl = this.$element.find('.dp_ticket_form');
     const $tplEl = this.$element.find('.js_form_tpl');
-    const ticketReader = new TicketValueReader($formEl);
+    const ticketReader = new TicketValueReader($formEl, $tplEl);
     const allFormFields = $([])
       .add($formEl.find('select, input, textarea'))
       .add($tplEl.find('select, input, textarea'));

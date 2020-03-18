@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\People;
 
@@ -30,6 +26,7 @@ class PersonGuest extends Person
         $this->chats          = new ArrayCollection();
         $this->timezone       = App::getSetting('core.default_timezone');
         $this->custom_data    = new ArrayCollection();
+        $this->emails         = new ArrayCollection();
     }
 
     /**

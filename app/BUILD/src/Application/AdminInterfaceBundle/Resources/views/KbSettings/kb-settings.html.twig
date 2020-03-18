@@ -113,10 +113,86 @@
 							</label>
 						</div>
 					</div>
+                    <div class="panel panel-innertable">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.require_review_date">
+                                <h4>Require Review Date</h4>
+                                <span class="help-block">
+									<p>
+										Force the entry of a review date for an article.
+									</p>
+								</span>
+                            </label>
+
+                            <div ng-if="settings.require_review_date">
+                                <div>
+                                    <label>
+                                        <input type="checkbox" ng-model="settings.min_review_date">
+                                        <h4>Minimum review date of
+                                            <input type="number" ng-model="settings.min_review_date_interval" style="width: 50px">
+                                            <select class="review-date-control-select" ng-model="settings.min_review_date_unit">
+                                                <option value="days">{{ phrase('agent.general.days')|capitalize }}</option>
+                                                <option value="months">{{ phrase('agent.general.months')|capitalize }}</option>
+                                                <option value="years">{{ phrase('agent.general.years')|capitalize }}</option>
+                                            </select>
+                                        </h4>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="checkbox" ng-model="settings.max_review_date">
+                                        <h4>Maximum review date of
+                                            <input type="number" ng-model="settings.max_review_date_interval" style="width: 50px">
+                                            <select class="review-date-control-select" ng-model="settings.max_review_date_unit">
+                                                <option value="days">{{ phrase('agent.general.days')|capitalize }}</option>
+                                                <option value="months">{{ phrase('agent.general.months')|capitalize }}</option>
+                                                <option value="years">{{ phrase('agent.general.years')|capitalize }}</option>
+                                            </select>
+                                        </h4>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="checkbox" ng-model="settings.default_review_date">
+                                        <h4>Default review date of
+                                            <input type="number" ng-model="settings.default_review_date_interval" style="width: 50px">
+                                            <select class="review-date-control-select" ng-model="settings.default_review_date_unit">
+                                                <option value="days">{{ phrase('agent.general.days')|capitalize }}</option>
+                                                <option value="months">{{ phrase('agent.general.months')|capitalize }}</option>
+                                                <option value="years">{{ phrase('agent.general.years')|capitalize }}</option>
+                                            </select>
+                                        </h4>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="checkbox" ng-model="settings.auto_unpublish_review">
+                                        <h4>Auto-unpublish
+                                            <input type="number" ng-model="settings.auto_unpublish_review_interval" style="width: 50px">
+                                            <select class="review-date-control-select" ng-model="settings.auto_unpublish_review_unit">
+                                                <option value="days">{{ phrase('agent.general.days')|capitalize }}</option>
+                                                <option value="months">{{ phrase('agent.general.months')|capitalize }}</option>
+                                                <option value="years">{{ phrase('agent.general.years')|capitalize }}</option>
+                                            </select>
+                                            after review date
+                                        </h4>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 				</article>
 
 				<footer>
 					<div class="dp-content">
+                        <div class="text-danger ng-hide" ng-show="form_errors.errors[0].message">
+                            <p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+                            <ul>
+                                <li ng-show="form_errors.errors[0].message">{{ ng_var('form_errors.errors[0].message') }}</li>
+                            </ul>
+                        </div>
+
 						<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 							<div dp-hide-spinning="saving">
 								<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>

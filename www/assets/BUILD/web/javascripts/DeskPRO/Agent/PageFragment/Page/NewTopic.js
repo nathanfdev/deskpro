@@ -238,7 +238,9 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 				categories_select.children().remove();
 				categories_select.append($(result).find('option'));
 				categories_select.select2("val", value);
-			}
+
+        this.updateTopics();
+      }
 		});
 	},
 

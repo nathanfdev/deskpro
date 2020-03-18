@@ -9,15 +9,13 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
-        <br/><br/>
+    <br/><br/>
 
-        {{ phrase('user.emails.new-ticket-guest-link') }}
+    {{ phrase('user.emails.new-ticket-guest-link') }}
 
-        <a href="{{ ticket_link }}">{{ ticket_link }}</a>
-    </container>
+    <a href="{{ ticket_link }}">{{ ticket_link }}</a>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

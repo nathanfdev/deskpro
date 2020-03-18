@@ -24,27 +24,20 @@ class BrandFixture extends AbstractDpFixture implements OrderedFixtureInterface
      */
     public function load(ObjectManager $manager)
     {
+        // Insert brand
+        $brand = new Brand();
+
         // Insert themes
-        $stdTheme = new ThemeSet();
-        $stdTheme->setThemeId('standard');
-        $manager->persist($stdTheme);
-        $this->setReference('standard_theme', $stdTheme);
-
-        $sidebarTheme = new ThemeSet();
-        $sidebarTheme->setThemeId('sidebar');
-        $manager->persist($sidebarTheme);
-        $this->setReference('sidebar_theme', $sidebarTheme);
-
         $helpCenterTheme = new ThemeSet();
         $helpCenterTheme->setThemeId('helpcenter');
+        $helpCenterTheme->setBrand($brand);
+
         $manager->persist($helpCenterTheme);
         $this->setReference('helpcenter_theme', $helpCenterTheme);
 
         /** @var ThemeSet $defaultTheme */
         $defaultTheme = $this->getReference(sprintf('%s_theme', $this->getDefaultThemeId()));
 
-        // Insert brand
-        $brand = new Brand();
         $brand->setName('Default');
         $brand->setThemeSet($defaultTheme);
         $manager->persist($brand);
@@ -63,7 +56,7 @@ class BrandFixture extends AbstractDpFixture implements OrderedFixtureInterface
 
     public function getDefaultThemeId()
     {
-        $defaultTheme = 'standard';
+        $defaultTheme = 'helpcenter';
 
         return $this->container->get('settings_resolver')->getGlobalSettings(true)->get('install.with_theme', $defaultTheme);
     }

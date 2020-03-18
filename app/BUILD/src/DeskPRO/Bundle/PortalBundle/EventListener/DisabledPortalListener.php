@@ -66,11 +66,11 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
      * @param TokenStorageInterface                        $tokenStorage
      */
     public function __construct(
-        BrandStack            $brandStack,
-        SettingsResolver      $resolver,
-        LoggerInterface       $logger,
-        EngineInterface       $portalTpl,
-        PortalModeStorage     $modeStorage,
+        BrandStack $brandStack,
+        SettingsResolver $resolver,
+        LoggerInterface $logger,
+        EngineInterface $portalTpl,
+        PortalModeStorage $modeStorage,
         TokenStorageInterface $tokenStorage
     ) {
         $this->resolver     = $resolver;
@@ -126,6 +126,7 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
 
     /**
      * @param Request $request
+     * @param null|mixed $routes
      *
      * @return mixed
      */

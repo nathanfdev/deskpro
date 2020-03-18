@@ -1,13 +1,12 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\Auth\Adapter;
 
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PasswordPolicyValidator;
 use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
+use DeskPRO\Bundle\PortalBundle\Routing\PasswordResetException;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Adapter\PluginAdapter;
@@ -116,6 +115,10 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
             return new Result(Result::FAILURE_INVALID_CREDS);
         }
 
+        if ($person->date_password_set->format('Y-m-d H:i:s') === PasswordPolicyValidator::MAGIC_PASSWORD_RESET_REQUIRED) {
+            throw new PasswordResetException($person);
+        }
+
         $identity = new Identity(
             $person['id'],
             [
@@ -124,9 +127,8 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
             ]
         );
         $identity->setFriendlyIdentity($person->primary_email->email);
-        $result = new Result(Result::SUCCESS, $identity);
 
-        return $result;
+        return new Result(Result::SUCCESS, $identity);
     }
 
     /**

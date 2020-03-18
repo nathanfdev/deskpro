@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -271,6 +267,18 @@ class Usergroup extends DomainObject
     public function isEnabled()
     {
         return $this->is_enabled;
+    }
+
+    /**
+     * @param bool $is_enabled
+     *
+     * @return $this
+     */
+    public function setIsEnabled($is_enabled)
+    {
+        $this->setModelField('is_enabled', $is_enabled);
+
+        return $this;
     }
 
     public function getPeople()

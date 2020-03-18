@@ -19,7 +19,13 @@ class FormValidatorChecker
     {
         // "submit" all form fields to proper validation mapping
         $submitIterator = function (FormInterface $form) use (&$submitIterator) {
-            $form->submit(null);
+            $reflection = new \ReflectionClass($form);
+
+            $property = $reflection->getProperty('submitted');
+            $property->setAccessible(true);
+            $property->setValue($form, true);
+            $property->setAccessible(false);
+
             foreach ($form->all() as $child) {
                 $submitIterator($child);
             }
@@ -30,7 +36,7 @@ class FormValidatorChecker
         // trigger form validation
         $validationIterator = function (FormInterface $form) use (&$validationIterator) {
             $dispatcher = $form->getConfig()->getEventDispatcher();
-            $dispatcher->dispatch(FormEvents::POST_SUBMIT, new FormEvent($form, null));
+            $dispatcher->dispatch(FormEvents::POST_SUBMIT, new FormEvent($form, $form->getData()));
 
             foreach ($form->all() as $child) {
                 $validationIterator($child);

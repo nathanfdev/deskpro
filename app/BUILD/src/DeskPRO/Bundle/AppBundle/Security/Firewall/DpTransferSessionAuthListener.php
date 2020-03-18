@@ -1,13 +1,8 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
 use Psr\Log\LoggerInterface;
@@ -141,11 +136,6 @@ class DpTransferSessionAuthListener implements ListenerInterface
     {
         if ($request->attributes->get('_route') == 'portal_agent_login') {
             // impossible to run if user is trying to impersonate
-            return false;
-        }
-
-        // if there is no session, we can't be impersonating
-        if (!$request->hasPreviousSession()) {
             return false;
         }
 

@@ -6,6 +6,8 @@ use JMS\Serializer\Annotation as JMS;
 
 class AgentTicketReply extends AgentTicketEmailType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * The ticket access code.
      *

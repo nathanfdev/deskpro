@@ -59,6 +59,7 @@ helpcenter.account.set-password-invalid-input: 'Please enter a valid email addre
 helpcenter.account.set-password-request-desc: 'Complete this form and we will email you a link to set your password.'
 helpcenter.account.set-password-request-title: 'Set Your Password'
 helpcenter.account.set-password-sent-desc: 'We have sent you an email with instruction on how to set your password.'
+helpcenter.account.set-password-expired: 'Your password has expired.'
 helpcenter.account.set-password-sent-title: 'Set Your Password'
 helpcenter.account.set-password-sent-to: 'We sent an email to'
 helpcenter.account.set-password-success: 'Your password has been updated.'
@@ -156,6 +157,12 @@ helpcenter.community.view-topics:
   one: "View 1 Topic"
   other: "View {{count}} Topics"
 helpcenter.community.votes: 'Votes'
+helpcenter.duration_short.years: Y
+helpcenter.duration_short.months: M
+helpcenter.duration_short.days: D
+helpcenter.duration_short.hours: h
+helpcenter.duration_short.minutes: m
+helpcenter.duration_short.seconds: s
 helpcenter.direct_messages.back_to_messages: 'Back to my messages'
 helpcenter.direct_messages.block_user: 'block user'
 helpcenter.direct_messages.create_thread: Create
@@ -198,6 +205,7 @@ helpcenter.forms.date-picker-next-month: 'Next Month'
 helpcenter.forms.date-picker-previous-month: 'Previous Month'
 helpcenter.forms.date-picker-time: Time
 helpcenter.forms.label-choose-a-file: 'Choose a file'
+helpcenter.forms.label-choose-files: 'Choose files'
 helpcenter.forms.label-drag-and-drop: 'Drag and drop'
 helpcenter.forms.label_category: Category
 helpcenter.forms.label_full_name: 'Your Name'
@@ -206,6 +214,7 @@ helpcenter.forms.label_news_post: 'News Post'
 helpcenter.forms.label_download: 'Download'
 helpcenter.forms.label_password: Password
 helpcenter.forms.label_save: Save
+helpcenter.forms.message_description: ''
 helpcenter.general.add-comment: 'Add a comment'
 helpcenter.general.admin: 'Admin'
 helpcenter.general.admin_home: 'Admin Home'
@@ -226,6 +235,7 @@ helpcenter.general.agent_bar_agent_news: 'Manage News'
 helpcenter.general.agent-interface: 'Agent interface'
 helpcenter.general.agree: 'Agree'
 helpcenter.general.attachments: 'Attachments'
+helpcenter.general.back: Back
 helpcenter.general.btn-cancel: Cancel
 helpcenter.general.btn-go: Go
 helpcenter.general.btn-manage_subscriptions: Manage your subscriptions
@@ -251,6 +261,8 @@ helpcenter.general.edit-this-page: 'Edit this page'
 helpcenter.general.enter_comment_placeholder: 'Enter your comment here...'
 helpcenter.general.eula: EULA
 helpcenter.general.everything: Everything
+helpcenter.general.expand: Expand
+helpcenter.general.filter: Filter
 helpcenter.general.first-published: 'First published'
 helpcenter.general.go-to-page: 'Go to page'
 helpcenter.general.go: 'Go'
@@ -271,7 +283,7 @@ helpcenter.general.nav-chats: 'Chats'
 helpcenter.general.nav-community-desc: 'View all the articles'
 helpcenter.general.nav-community: 'Community'
 helpcenter.general.nav-contact-desc: 'Get in touch for help'
-helpcenter.general.nav-contact: 'Contact'
+helpcenter.general.nav-contact: 'Contact Us'
 helpcenter.general.nav-downloads-desc: 'Browse our downloads'
 helpcenter.general.nav-downloads: Downloads
 helpcenter.general.nav-guides-desc: 'View all the guides'
@@ -286,11 +298,14 @@ helpcenter.general.nav-newticket: 'Contact Us'
 helpcenter.general.nav-support-center: 'Help Center'
 helpcenter.general.nav-tickets-desc: 'View all the tickets'
 helpcenter.general.nav-tickets: 'Tickets'
+helpcenter.general.next: Next
 helpcenter.general.no-search-query: 'Please type a search query into the search box.'
 helpcenter.general.no-search-results: 'We couldn''t find any results for "{{query}}"'
 helpcenter.general.no-search-results-explain: 'Try a different search or have a look at our <a href="{{kb_url}}">Knowledgebase</a>'
 helpcenter.general.on: 'on'
 helpcenter.general.or: 'or'
+helpcenter.general.previous: Previous
+helpcenter.general.print: Print
 helpcenter.general.prop_comments_asc: 'Least comments first'
 helpcenter.general.prop_comments_desc: 'Most comments first'
 helpcenter.general.prop_date_asc: 'Oldest first'
@@ -319,6 +334,7 @@ helpcenter.general.share: Share
 helpcenter.general.show: Show
 helpcenter.general.show_more: 'Show more'
 helpcenter.general.software_power_by: 'Powered by'
+helpcenter.general.sort: Sort
 helpcenter.general.ics_subscribe: 'iCalendar'
 helpcenter.general.submit: 'Submit'
 helpcenter.general.tagged_with: 'tagged with'
@@ -329,12 +345,23 @@ helpcenter.general.unpublished: 'Unpublished date'
 helpcenter.general.updated: 'Updated'
 helpcenter.general.user-profile: 'User Profile'
 helpcenter.general.view_all: 'View All'
+helpcenter.general.view_all_topics: 'View all topics'
+helpcenter.general.view_all_status_changes: 'View all status changes'
 helpcenter.general.view_profile: 'View profile'
 helpcenter.general.viewed_by_agents_only: 'Viewed by agents only'
 helpcenter.general.x-search-results-no-query: '{{num}} search results'
 helpcenter.general.x-search-results: '{{num}} search results for "{{query}}"'
 helpcenter.general.you: You
 helpcenter.general.your_comment_label: 'Your comment'
+helpcenter.general.your_comment_optional_label: 'Your comment (optional)'
+helpcenter.general.status: 'Status'
+helpcenter.general.time_of_completion: 'Time of completion'
+helpcenter.general.last_24_hours: 'Last 24 hours'
+helpcenter.general.last_week: 'Last week'
+helpcenter.general.last_month: 'Last month'
+helpcenter.general.last_6_month: 'Last 6 month'
+helpcenter.general.last_year: 'Last year'
+helpcenter.general.more_than_1_year: 'More than 1 year'
 helpcenter.guides.download-pdf: 'Download PDF'
 helpcenter.guides.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
 helpcenter.knowledgebase.featured-articles: 'Featured articles'
@@ -380,6 +407,8 @@ helpcenter.tickets.close-ticket: 'Close ticket'
 helpcenter.tickets.filter-by: 'Filter by'
 helpcenter.tickets.last-activity: 'Last Activity'
 helpcenter.tickets.list_status_agent: 'Our agent will respond'
+helpcenter.tickets.list_no_tickets: 'There are no tickets to display. <a href="{{open_ticket_url}}">Click here to open a new ticket</a>.'
+helpcenter.tickets.list_no_tickets_filter: 'There are no tickets to display. Please update your filter or <a href="{{open_ticket_url}}">click here to open a new ticket</a>.'
 helpcenter.tickets.list_status_resolved: 'Resolved'
 helpcenter.tickets.list_status_user: 'You need to respond'
 helpcenter.tickets.my-tickets: 'My tickets'
@@ -391,6 +420,7 @@ helpcenter.tickets.resolve_ticket_explain: 'Once your ticket is resolved, our ag
 helpcenter.tickets.resolve_ticket_title: 'Are you sure you want to close that ticket?'
 helpcenter.tickets.resolved: 'Resolved'
 helpcenter.tickets.search-tickets: 'Search Tickets'
+helpcenter.tickets.search-approvals: 'Search Approvals'
 helpcenter.tickets.submit-a-ticket: 'Submit a ticket'
 helpcenter.tickets.thank_you: 'Congratulations, your request is on its way'
 helpcenter.tickets.thank_you_check_email: 'Please verify your email address'
@@ -482,3 +512,21 @@ helpcenter.tickets.view_unassigned: Unassigned
 helpcenter.tickets.view_unassigned_more: 'An agent will be assigned'
 helpcenter.topics.none: 'No topics yet'
 helpcenter.topics.search-title: Guides
+helpcenter.approvals.my-approvals: 'My Approvals'
+helpcenter.approvals.pending-status: Pending
+helpcenter.approvals.approved-status: Approved
+helpcenter.approvals.rejected-status: Rejected
+helpcenter.approvals.cancelled-status: Cancelled
+helpcenter.approvals.view_criteria: 'Approval criteria'
+helpcenter.approvals.view_to_approve: 'To approve'
+helpcenter.approvals.view_to_reject: 'To reject'
+helpcenter.approvals.view_awaiting_response: 'Awaiting response'
+helpcenter.approvals.view_no_response: 'No response'
+helpcenter.approvals.view_approved: 'Approved'
+helpcenter.approvals.view_rejected: 'Rejected'
+helpcenter.approvals.view_requesting_agent: 'Requesting agent'
+helpcenter.approvals.view_user: 'User'
+helpcenter.approvals.view_ticket: 'Ticket'
+helpcenter.approvals.approved_by: 'Approved by'
+helpcenter.approvals.rejected_by: 'Rejected by'
+helpcenter.approvals.no_ticket_approvals_found: 'No ticket approvals found'

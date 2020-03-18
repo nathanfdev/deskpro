@@ -89,7 +89,7 @@
 			{% endif %}
 		{% endif %}
 	{% endif %}
-	{% if log.details.via_api_key %}
+	{% if log.details.via_api_key is defined %}
 		{{ phrase('agent.tickets.log_update_api_key') }} #{{ log.details.via_api_key }}
 	{% endif %}
 {% elseif log.action_type == 'changed_agent' %}
@@ -137,7 +137,7 @@
 		{{ phrase('agent.tickets.lc_created') }}
 	{% endif %}
 	&mdash; {{ phrase('agent.general.ticket') }} <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.ticket_id}}</span>
-	{% if log.details.via_comment %}
+	{% if log.details.via_comment is defined %}
 		<div stye="font-size:11px;">
 			&bull;
 			{% if log.details.via_comment.comment_type %}
@@ -711,7 +711,7 @@
 	{{ phrase('agent.tickets.log_user_set_feedback_rating_to') }} {{ log.details.rating }}
 {% elseif log.action_type == 'person_email_changed' %}
 	{{ phrase('agent.tickets.log_user_changed_email_pref') }}:
-	{% if log.details.new %}
+	{% if log.details.new is defined %}
 		{{ phrase('agent.tickets.log_default_email') }}
 	{% else %}
 		{{ log.details.new_email }}

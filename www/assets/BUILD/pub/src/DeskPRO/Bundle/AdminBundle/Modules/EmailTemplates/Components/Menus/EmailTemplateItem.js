@@ -9,7 +9,8 @@ class EmailTemplateItem extends React.Component {
     label:     PropTypes.string,
     icon:      PropTypes.string,
     onClick:   PropTypes.func,
-    className: PropTypes.string
+    className: PropTypes.string,
+    modified:  PropTypes.bool,
   };
   static defaultProps = {
     onClick() {},
@@ -19,8 +20,15 @@ class EmailTemplateItem extends React.Component {
     this.cancelToolTip();
   }
 
+  getMenuLabel = () => {
+    if (this.props.modified) {
+      return <span>{this.props.label} <span title="modified">(*)</span></span>;
+    }
+    return this.props.label;
+  };
+
   getMenuItem = () => (<MenuItem
-    label={this.props.label}
+    label={this.getMenuLabel()}
     icon={this.props.icon}
     className={this.props.className}
     onClick={this.props.onClick}

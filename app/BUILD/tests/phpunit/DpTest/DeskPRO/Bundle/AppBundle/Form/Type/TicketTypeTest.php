@@ -232,104 +232,6 @@ class TicketTypeTest extends PortalTestCase
         $this->teardownEnvForTicketForm();
     }
 
-    public function testSuccessfulNewTicketWithoutNeedingRerender()
-    {
-        $sales_dep = $this->getSalesDep();
-        $this->makeCustomLayoutForDep($sales_dep);
-
-        // setup
-        $client = $this->getClient();
-
-        $crawler = $client->request('GET', '/new-ticket');
-        $res     = $client->getResponse();
-
-        $button_node = $crawler->selectButton('ticket_submit');
-        $form        = $button_node->form([
-            'ticket' => [
-                FormFields::DEPARTMENT => 1, // this dep has the default layout, so submitting this
-                FormFields::SUBJECT    => 'Test Subject',
-                FormFields::MESSAGE    => [
-                    'message' => 'This is my message, a test message!',
-                    'format'  => 'text',
-                ],
-                FormFields::PERSON => [
-                    FormFields::USER_NAME  => 'Chris Name',
-                    FormFields::USER_EMAIL => [
-                        'email' => 'some@test.email',
-                    ],
-                ],
-            ],
-        ]);
-        $client->submit($form);
-        $this->assertTrue($client->getResponse()->isRedirection());
-        $this->assertRegExp('#/thank-you#', $client->getResponse()->headers->get('Location'));
-    }
-
-    public function testEndToEndSubmitAndReRender()
-    {
-        $sales_dep = $this->getSalesDep();
-        $this->makeCustomLayoutForDep($sales_dep);
-
-        // setup
-        $sales_dep_id = $this->getSalesDep()->getId();
-        $client       = $this->getClient();
-
-        // the initial page load is with the default layout,
-        // this form will submit with ticket[department]=2 which changes the department, and changes the layout
-        // we would expect a re-render here
-        $crawler = $client->request('GET', '/new-ticket');
-        $res     = $client->getResponse();
-
-        $button_node = $crawler->selectButton('ticket_submit');
-        $form        = $button_node->form([
-            'ticket' => [
-                FormFields::DEPARTMENT => $sales_dep_id, // a dep with this default form
-                FormFields::SUBJECT    => 'Test Subject',
-                FormFields::MESSAGE    => [
-                    'message' => 'This is my message, a test message!',
-                    'format'  => 'text',
-                ],
-                FormFields::PERSON => [
-                    FormFields::USER_NAME  => 'Chris Name',
-                    FormFields::USER_EMAIL => [
-                        'email' => 'some@test.email',
-                    ],
-                ],
-            ],
-        ]);
-
-        $crawler = $client->submit($form);
-        $this->assertRegExp(
-            '#/new-ticket#',
-            $client->getHistory()->current()->getUri(),
-            'the ticket form properly re-renders after a department change with a layout that has additional fields'
-        ); // we are still on /new-ticket because we changed dep
-        $button_node = $crawler->selectButton('ticket_submit');
-        $form        = $button_node->form([
-            'ticket' => [
-                FormFields::DEPARTMENT => $sales_dep_id,
-                FormFields::SUBJECT    => 'Test Subject',
-                FormFields::MESSAGE    => [
-                    'message' => 'This is my message, a test message!',
-                    'format'  => 'text',
-                ],
-                FormFields::PERSON => [
-                    FormFields::USER_NAME  => 'Chris Name',
-                    FormFields::USER_EMAIL => [
-                        'email' => 'some@test.email',
-                    ],
-                ],
-                'ticket_field_1' => ['data' => 7], // <---- this is the new field, and we couldn't have submitted this field last time
-            ],
-        ]);
-
-        // now we should get a thank you, because the form is now valid with the new dep:
-        // we submitted the new custom field and the displayed_fields now match the expected layout
-        $client->submit($form);
-        $this->assertTrue($client->getResponse()->isRedirection());
-        $this->assertRegExp('#/thank-you#', $client->getResponse()->headers->get('Location'));
-    }
-
     public function testApiCustomFieldLayoutChanges()
     {
         /** @var CustomDefTicket[] $f */
@@ -478,32 +380,40 @@ class TicketTypeTest extends PortalTestCase
         switch ($type) {
             case 'text':
                 $handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+
                 break;
             case 'textarea':
                 $handler_class = 'Application\DeskPRO\CustomFields\Handler\Textarea';
+
                 break;
             case 'date':
                 $handler_class = 'Application\DeskPRO\CustomFields\Handler\Date';
+
                 break;
             case 'datetime':
                 $handler_class = 'Application\DeskPRO\CustomFields\Handler\DateTime';
+
                 break;
             case 'select':
                 $handler_class = 'Application\DeskPRO\CustomFields\Handler\Choice';
+
                 break;
             case 'multiselect':
                 $handler_class       = 'Application\DeskPRO\CustomFields\Handler\Choice';
                 $options['multiple'] = true;
+
                 break;
             case 'checkbox':
                 $handler_class       = 'Application\DeskPRO\CustomFields\Handler\Choice';
                 $options['multiple'] = true;
                 $options['expanded'] = true;
+
                 break;
             case 'radio':
                 $handler_class       = 'Application\DeskPRO\CustomFields\Handler\Choice';
                 $options['multiple'] = false;
                 $options['expanded'] = true;
+
                 break;
             default:
                 throw new \InvalidArgumentException();

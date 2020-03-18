@@ -2,7 +2,9 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
+use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
@@ -10,13 +12,15 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatCreateType;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Handler\ChatHandler;
-use DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator;
+use DeskPRO\Bundle\MessengerBundle\Security\EventListener\VisitorIdListener;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Class ChatController.
@@ -47,21 +51,45 @@ class ChatController extends AbstractMessengerController
      */
     public function createChatAction(Request $request)
     {
-        $chat = new ChatConversation();
+        // create legacy session
+        $session = new Session();
+        $session->setIpAddress($request->getClientIp());
+        $visitorId = $request->headers->get(VisitorIdListener::VISITOR_HEADER_NAME);
+        $session->setVisitorId($visitorId);
+        $person = $this->getUser();
+        if ($person && $person->getId()) {
+            $session->setPerson($person);
+        }
+
+        /** @var \Application\DeskPRO\EntityRepository\ChatBlock $repo */
+        $repo  = $this->getDoctrine()->getRepository(ChatBlock::class);
+        $block = $repo->getBlockForVisitor($session->getVisitorId(), $request->getClientIp());
+
+        if ($block) {
+            throw new AccessDeniedHttpException('banned');
+        }
+
+        $this->em()->persist($session);
+        $this->em()->flush();
+
+        // create a new chat conversation
+        $chat = ChatConversation::newForUserSession($session);
 
         $form = $this->container->get('form.factory')->create(
             ChatCreateType::class,
             $chat,
             [
                 'visitor_id' => $this->getVisitorId($request),
-                'person'     => null,
+                'person'     => $person && $person->getId() ? $person : null,
             ]
         );
+
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
-        $chat->setVisitorId($request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME));
+
+        $chat->setVisitorId($visitorId);
 
         $this->em()->persist($chat);
         $this->em()->flush();
@@ -70,6 +98,17 @@ class ChatController extends AbstractMessengerController
             ClientMessageEvent::SEND,
             new ClientMessageEvent('chat.new', $chat)
         );
+
+        // If an email validation code was generated then user needs to validate the entered email first,
+        // so skip agent notify until the user validates it
+        if ($chat->getEmailValidationCode()) {
+            $this->get('event_dispatcher')->dispatch(UserChatEvent::VALIDATE_EMAIL, new UserChatEvent($chat));
+        } else {
+            // create a task to find an agent
+            $task = $this->get('dp.voice.task_builder')->createChatTaskForQueue($chat);
+            $chat->setTaskId($task->getId());
+        }
+        $this->em()->flush();
 
         return View::create($this->wrap($chat), Response::HTTP_CREATED);
     }

@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\People;
 
@@ -23,6 +21,11 @@ class PasswordPolicyValidator
      * doesnt have a password expiry.
      */
     const MAGIC_PASSWORD_EXPIRED_TRIGGER_DATE = '1995-01-23 12:34:55';
+
+    /**
+     * Magic value to mark the password as required to reset.
+     */
+    const MAGIC_PASSWORD_RESET_REQUIRED = '1995-01-23 12:34:56';
 
     /**
      * @var \Application\DeskPRO\Settings\PasswordPolicy
@@ -102,14 +105,14 @@ class PasswordPolicyValidator
         }
 
         $m = null;
-        if ($policy->require_num_number && preg_match_all('#[0-9]#', $password, $m) < $policy->require_num_number) {
+        if ($policy->require_num_number && preg_match_all('#\d#', $password, $m) < $policy->require_num_number) {
             $error = 'require_num_number';
 
             return false;
         }
 
         $m = null;
-        if ($policy->require_num_symbol && preg_match_all('#[\-@£€!$%^&*()_+|~=`{}\[\]:";\'<>?,./\#]#', $password, $m) < $policy->require_num_symbol) {
+        if ($policy->require_num_symbol && preg_match_all('#[\-@£€!$%^&*()_+|~=`{}\[\]:";\'<>?,./\#]#u', $password, $m) < $policy->require_num_symbol) {
             $error = 'require_num_symbol';
 
             return false;
@@ -117,6 +120,12 @@ class PasswordPolicyValidator
 
         if ($policy->forbid_reuse && $person && $person->id && $this->history_repos->isUsedPassword($person, $password)) {
             $error = 'forbid_reuse';
+
+            return false;
+        }
+
+        if ($person->date_password_set === self::MAGIC_PASSWORD_RESET_REQUIRED) {
+            $error = 'reset_required';
 
             return false;
         }

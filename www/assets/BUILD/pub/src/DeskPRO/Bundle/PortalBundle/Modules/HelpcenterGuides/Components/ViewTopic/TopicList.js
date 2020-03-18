@@ -11,6 +11,11 @@ class TopicList extends React.Component {
     topicSlug:        PropTypes.string,
     grabTopicFromApi: PropTypes.func,
     sizes:            PropTypes.object,
+    withSplash:       PropTypes.bool,
+  };
+
+  static defaultProps = {
+    withSplash: false
   };
 
   static contextTypes = {
@@ -59,7 +64,7 @@ class TopicList extends React.Component {
   };
 
   renderTopics(topics, depth = 0, collapse = false) {
-    const { guideSlug, topicSlug, grabTopicFromApi } = this.props;
+    const { guideSlug, topicSlug, grabTopicFromApi, withSplash } = this.props;
     const { filter } = this.state;
     return (
       <ul className={classNames('dp-po-guides-search-content-list', { collapse })}>
@@ -79,7 +84,8 @@ class TopicList extends React.Component {
               grabTopicFromApi={grabTopicFromApi}
               filter={filter}
               filterTopic={this.filterTopic}
-              expanded={(filter !== '' || this.isExpandedTopic(topic))}
+              withSplash={withSplash}
+              expanded={!!(filter !== '' || this.isExpandedTopic(topic))}
             />
             )
           )}
@@ -88,7 +94,7 @@ class TopicList extends React.Component {
   }
 
   renderList() {
-    const { guideSlug, topics } = this.props;
+    const { guideSlug, topics, withSplash } = this.props;
     if (window.twoLevelSection) {
       let baseUrl = window.DESKPRO_BASE_URL;
       if (baseUrl) {
@@ -110,7 +116,7 @@ class TopicList extends React.Component {
                     activeClass="active"
                     href={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
                     to={`topic_${topic.slug}`}
-                    offset={-129}
+                    offset={withSplash ? -255 : -129}
                     spy
                     isDynamic
                     onClick={this.handleClick}

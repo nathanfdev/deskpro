@@ -68,7 +68,7 @@
                     {# TODO margin #}
                     <div class="dp-po-homepage-community">
                         <div class="row align-items-center">
-                            <div class="col-sm-3">
+                            <div class="col-lg-3 col-sm-4">
                                 <div class="dp-po-title">
                                     <a href="{{ path('portal_community') }}" class="dp-po-title-link">
                                         <img class="dp-po-title-svg"
@@ -77,10 +77,10 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="col-sm-9">
+                            <div class="col-lg-9 col-sm-8">
                                 <div class="dp-po-community-channel-tags">
                                     <ul class="dp-po-community-channel-tags-list">
-                                        {% for info in helpcenter.getCommunityForumsWithCounts() %}
+                                        {% for info in helpcenter.getCommunityForumsWithCounts()[:5] %}
                                             <li class="dp-po-community-channel-tags-item">
                                                 <a href="{{ portal_path(info.forum) }}" class="dp-po-community-channel-tags-link">
                                                     {{info.forum.title}}
@@ -102,7 +102,7 @@
                                         } %}
                                         <div class="dp-po-viewall">
                                             <a class="dp-po-viewall-link" href="{{ path('portal_community') }}">
-                                                {{ phrase('helpcenter.general.view_all') }}
+                                                {{ phrase('helpcenter.general.view_all_topics') }}
                                                 <i class="dp-po-icon far fa-angle-right"></i>
                                             </a>
                                         </div>
@@ -120,7 +120,7 @@
                                         } %}
                                         <div class="dp-po-viewall">
                                             <a class="dp-po-viewall-link" href="{{ path('portal_community') }}">
-                                                {{ phrase('helpcenter.general.view_all') }}
+                                                {{ phrase('helpcenter.general.view_all_status_changes') }}
                                                 <i class="dp-po-icon far fa-angle-right"></i>
                                             </a>
                                         </div>

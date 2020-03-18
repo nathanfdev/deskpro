@@ -23,10 +23,28 @@
                 </div>
 
                 <div class="site-text" ng-show="Portal.isOpen('theme')">
-                    <select ng-model="Portal.selected_theme"
-                            ng-change="Portal.editTheme()"
-                            ng-options="item.id as item.title for item in Portal.available_themes {% if not app.getSetting('beta_features.helpcenter') %} | filter:{id: '!helpcenter'} {% endif %}">
+                    <select class="select-theme"
+                            ng-model="Portal.selected_theme"
+                            ng-options="item.id as item.title for item in Portal.available_themes">
                     </select>
+
+                    <div class="import-theme-button">
+                        <div class="btn btn-default upload-file-button" ng-click="Portal.cloneTheme()">
+                            Clone to new theme
+                        </div>
+                    </div>
+                    <div class="import-theme-button">
+                        <div class="btn btn-default upload-file-button">
+                            Import Theme
+                            <input type="file" ng-file-select="Portal.importTheme($files)">
+                        </div>
+                    </div>
+                    <div class="import-theme-button">
+                        <div class="btn btn-default upload-file-button">
+                            Import Theme & Replace Current
+                            <input type="file" ng-file-select="Portal.importAndReplaceTheme($files)">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Welcome -->
@@ -219,33 +237,29 @@
                             These templates let you put HTML code at the very top or very bottom of the page.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            {% if app.hasBeta('template_editor') %}
-                                <div>
-                                    <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-header.html.twig'}") }}">
-                                        Edit Header
-                                    </a>
+                            <div ng-show="Portal.selected_theme == 'helpcenter'">
+                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-header.html.twig'}") }}">
+                                    Edit Header
+                                </a>
 
-                                    <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-footer.html.twig'}") }}">
-                                        Edit Footer
-                                    </a>
-                                </div>
-                                <br />
-                                <div style="margin-top: 4px;">
-                                    <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-head-include.html.twig'}") }}">
-                                        Edit Head Include
-                                    </a>
-                                </div>
-                            {% else %}
-                                <div>
-                                    <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header</button>
+                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-footer.html.twig'}") }}">
+                                    Edit Footer
+                                </a>
+                            </div>
+                            <div ng-hide="Portal.selected_theme == 'helpcenter'">
+                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header</button>
 
-                                    <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer</button>
-                                </div>
-                                <br />
-                                <div style="margin-top: 4px;">
-                                    <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-head-include.html.twig')">Edit Head Include</button>
-                                </div>
-                            {% endif %}
+                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer</button>
+                            </div>
+                            <br />
+                            <div style="margin-top: 4px;" ng-show="Portal.selected_theme == 'helpcenter'">
+                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-head-include.html.twig'}") }}">
+                                    Edit Head Include
+                                </a>
+                            </div>
+                            <div style="margin-top: 4px;" ng-hide="Portal.selected_theme == 'helpcenter'">
+                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-head-include.html.twig')">Edit Head Include</button>
+                            </div>
                         </div>
                     </div>
 
@@ -255,13 +269,14 @@
                             Edit the homepage template to add or remove elements from the main portal homepage.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            {% if app.hasBeta('template_editor') %}
+                            <div ng-show="Portal.selected_theme == 'helpcenter'">
                                 <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:home.html.twig'}") }}">
                                     Edit Homepage Template
                                 </a>
-                            {% else %}
-                                <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:home.html.twig')">Edit Homepage Template</button></div>
-                            {% endif %}
+                            </div>
+                            <div ng-hide="Portal.selected_theme == 'helpcenter'">
+                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:home.html.twig')">Edit Homepage Template</button>
+                            </div>
                         </div>
                     </div>
 
@@ -271,13 +286,9 @@
                             Edit the sidebar template to add or remove elements from the site-wide sidebar.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            {% if app.hasBeta('template_editor') %}
-                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:sidebar.html.twig'}") }}">
-                                    Edit Sidebar Template
-                                </a>
-                            {% else %}
-                                <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:sidebar.html.twig')">Edit Sidebar Template</button></div>
-                            {% endif %}
+                            <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:sidebar.html.twig'}") }}">
+                                Edit Sidebar Template
+                            </a>
                         </div>
                     </div>
 
@@ -338,19 +349,21 @@
                 </div>
 
                 <div class="template-picker" ng-show="Portal.isOpen('expert') && !(Portal.selected_template && Portal.selected_template_info_loaded) && !(Portal.css_template_selected && Portal.css_template_info.loaded)">
-                    <select ui-select2='{ containerCssClass : "select2-container-template-picker", dropdownCssClass : "select2-dropdown-template-picker" }'
-                            class="template-picker"
-                            style="width: 300px;"
-                            data-placeholder="Choose a template"
-                            ng-model="Portal.selected_template"
-                            ng-change="Portal.editTemplate()"
-                            ng-options="t.value as t.name group by t.group for t in Portal.template_options">
-                    </select>
-                    {% if app.hasBeta('template_editor') %}
+                    <div ng-show="Portal.selected_theme == 'helpcenter'">
                         <a class="btn btn-default" href="{{ ng_href('portal.templates_editor') }}">
                             Open template editor
                         </a>
-                    {% endif %}
+                    </div>
+                    <div ng-hide="Portal.selected_theme == 'helpcenter'">
+                        <select ui-select2='{ containerCssClass : "select2-container-template-picker", dropdownCssClass : "select2-dropdown-template-picker" }'
+                                class="template-picker"
+                                style="width: 300px;"
+                                data-placeholder="Choose a template"
+                                ng-model="Portal.selected_template"
+                                ng-change="Portal.editTemplate()"
+                                ng-options="t.value as t.name group by t.group for t in Portal.template_options">
+                        </select>
+                    </div>
                 </div>
 
                 <div ng-show="Portal.selected_template">Loading template...</div>
@@ -366,6 +379,10 @@
                 </dp-code-editor>
 
                 <br/><br/>
+
+                <div>
+                    <a class="btn btn-default" href="{{ baseUrl }}/portal/api/style/edit-theme-set/export" target="_blank">Export theme</a>
+                </div>
             </div><!-- End panel wrapper -->
 
         </div><!-- End editor panel -->

@@ -126,11 +126,11 @@ class BrandsController extends CrudController
 
         $themeSet = new ThemeSet();
         $themeSet->setThemeId('standard');
-        $this->persistModel($themeSet);
+        $themeSet->setBrand($brand);
 
         $editThemeSet = new ThemeSet();
         $editThemeSet->setThemeId('standard');
-        $this->persistModel($editThemeSet);
+        $editThemeSet->setBrand($brand);
 
         $brand->setThemeSet($themeSet);
         $brand->setEditThemeSet($editThemeSet);

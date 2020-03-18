@@ -154,6 +154,20 @@ class GeneralSettings extends AbstractBrandAwareSettings
     private $publishComments;
 
     /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $limitEmailDomains;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $limitEmailDomainsPatterns;
+
+    /**
      * @return string
      */
     public function getSiteName()
@@ -487,6 +501,46 @@ class GeneralSettings extends AbstractBrandAwareSettings
     public function setPublishComments($publishComments)
     {
         $this->publishComments = $publishComments;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLimitEmailDomains()
+    {
+        return $this->limitEmailDomains;
+    }
+
+    /**
+     * @param bool $limitEmailDomains
+     *
+     * @return $this
+     */
+    public function setLimitEmailDomains($limitEmailDomains)
+    {
+        $this->limitEmailDomains = $limitEmailDomains;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLimitEmailDomainsPatterns()
+    {
+        return $this->limitEmailDomainsPatterns;
+    }
+
+    /**
+     * @param string $limitEmailDomainsPatterns
+     *
+     * @return $this
+     */
+    public function setLimitEmailDomainsPatterns($limitEmailDomainsPatterns)
+    {
+        $this->limitEmailDomainsPatterns = $limitEmailDomainsPatterns;
 
         return $this;
     }

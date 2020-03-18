@@ -146,6 +146,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
 		$('div.error.section', this.wrapper).removeClass('error');
 		$('.error-message-on', this.wrapper).removeClass('error-message-on');
+    $('div.custom-field').find('ul.form-errors').remove();
 
 		this.stateSaver.stop();
 		this.stateSaver.resetState();
@@ -164,31 +165,51 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			},
 			success: function(data) {
 
-				if (data.error) {
-					data.error_codes.forEach(function(code) {
-						this.showErrorCode(code);
-					}, this);
-					this.updateUi();
-					return;
-				}
+        if (data.error) {
+          data.error_codes.forEach(function (code) {
+            this.showErrorCode(code);
+          }, this);
 
-				var pending_article_id = this.getEl('pending_article_id').val();
-				if (pending_article_id) {
-					DeskPRO_Window.getMessageBroker().sendMessage('kb.pending_article_removed', {
-						pending_article_id: pending_article_id
-					});
-				}
+          if (data.custom_fields_errors) {
+            $('li.tab-fields').trigger('click');
 
-				if (data.success) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/kb/article/' + data.article_id);
-					this.markForReload();
-					this.closeSelf();
-				} else {
-					alert('There was an error with the form');
-				}
-			}
-		});
-	},
+            for (var field in data.custom_fields_errors) {
+              var ul = document.createElement('ul');
+              ul.classList.add('form-errors');
+
+              data.custom_fields_errors[field].forEach(function (errorText) {
+                var li = document.createElement('li');
+                li.textContent = errorText;
+                ul.append(li);
+              });
+
+              var fieldWrapper = $('div.custom-field.' + 'kb_' + field);
+
+              fieldWrapper.append(ul);
+            }
+          }
+
+          this.updateUi();
+          return;
+        }
+
+        var pending_article_id = this.getEl('pending_article_id').val();
+        if (pending_article_id) {
+          DeskPRO_Window.getMessageBroker().sendMessage('kb.pending_article_removed', {
+            pending_article_id: pending_article_id,
+          });
+        }
+
+        if (data.success) {
+          DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/kb/article/' + data.article_id);
+          this.markForReload();
+          this.closeSelf();
+        } else {
+          alert('There was an error with the form');
+        }
+      }
+    });
+  },
 
   submitTemplate: function() {
     var overlayEl = $('.newcontent-template-overlay', this.wrapper);
@@ -316,8 +337,13 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	setContent: function(content, is_html) {
 		if (!is_html) {
 			content = Orb.escapeHtml(content);
-		}
-		this.getEl('content').html(content);
+    }
+    if (window.DP_HAS_NEW_CONTENT_EDITOR && this.rte) {
+      this.rte.current.editor.current.reactEditor.current.editor.setContent(content, 'html');
+    } else if (this.rte) {
+      this.getEl('content').html(content);
+      this.rte.val(content);
+    }
 	},
 
 	setPendingArticle: function(data) {
@@ -421,7 +447,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
   },
 
   onBlur: function() {
-	  this.stateSaver.setOptions({alwaysChanged: false});
+    this.stateSaver.setOptions({alwaysChanged: false});
     this.stateSaver.saveState();
   },
 

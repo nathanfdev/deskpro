@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
@@ -46,6 +42,7 @@ abstract class AbstractStorageAdapter implements Loggable
 
     /**
      * @param string $optionName
+     *
      * @return mixed
      */
     public function getOption($optionName)
@@ -118,6 +115,7 @@ abstract class AbstractStorageAdapter implements Loggable
     /**
      * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param resource                              $data
+     * @param mixed $fp_source
      *
      * @return int
      */
@@ -126,10 +124,11 @@ abstract class AbstractStorageAdapter implements Loggable
     /**
      * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $data
+     * @param mixed $sourcePath
      *
      * @return mixed
      */
-    abstract public function writeBlobFromFile(Blob $blob, $source_path);
+    abstract public function writeBlobFromFile(Blob $blob, $sourcePath);
 
     /**
      * Loads the entire blob into a string.
@@ -142,15 +141,16 @@ abstract class AbstractStorageAdapter implements Loggable
 
     /**
      * @param \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param $target_path
+     * @param $targetPath
      *
      * @return int
      */
-    abstract public function readBlobToFile(Blob $blob, $target_path);
+    abstract public function readBlobToFile(Blob $blob, $targetPath);
 
     /**
      * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param resource                              $data
+     * @param mixed $fp_target
      *
      * @return int
      */

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\CsvUpload\CsvUpload;

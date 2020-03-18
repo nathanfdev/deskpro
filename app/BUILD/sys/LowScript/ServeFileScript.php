@@ -76,6 +76,9 @@ class ServeFileScript extends LowScriptAbstract
      */
     protected $localMode = false;
 
+    /**
+     * @return mixed|void
+     */
     public function runAction()
     {
         if (isset($_GET['debug'])) {
@@ -84,6 +87,9 @@ class ServeFileScript extends LowScriptAbstract
 
         try {
             $pathInfo = $this->getPathInfo();
+            if (preg_match('#^/b/([\w-]+)/\S*(?<=file\.php)(/.*|$)$#', $pathInfo, $matches)) {
+                $pathInfo = $matches[2];
+            }
 
             $this->addLogMessage('pathinfo: %s', $pathInfo);
 
@@ -469,6 +475,7 @@ class ServeFileScript extends LowScriptAbstract
                 $path     = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf';
                 $filename = 'Getting Started with Deskpro.pdf';
                 $mimetype = 'application/pdf';
+
                 break;
 
             case 'Admin-Getting-Started-with-DeskPRO.pdf':
@@ -476,6 +483,7 @@ class ServeFileScript extends LowScriptAbstract
                 $path     = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/admin-quickstart/en_US.pdf';
                 $filename = 'Getting Started with Deskpro - Admin.pdf';
                 $mimetype = 'application/pdf';
+
                 break;
 
             case 'Cloud-Admin-Getting-Started-with-DeskPRO.pdf':
@@ -483,12 +491,14 @@ class ServeFileScript extends LowScriptAbstract
                 $path     = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/admin-quickstart-cloud/en_US.pdf';
                 $filename = 'Getting Started with Deskpro - Cloud Admin.pdf';
                 $mimetype = 'application/pdf';
+
                 break;
 
             case 'Admin-Bulk-Add-Agents-Spreadsheet.zip':
                 $path     = DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip';
                 $filename = 'Bulk-Add-Agents-Spreadsheet-Template.zip';
                 $mimetype = 'application/zip';
+
                 break;
 
             default:
@@ -565,6 +575,7 @@ class ServeFileScript extends LowScriptAbstract
      * @param int $blob_id
      * @param $namehash
      * @param $filename
+     * @param mixed $attachmentTagSuffix
      *
      * @throws \Exception
      */
@@ -695,6 +706,14 @@ class ServeFileScript extends LowScriptAbstract
         $contentDisposition = 'attachment';
         if (!isset($_GET['dl']) && ContentTypes::isInlineContentType($mimetype, true, $filename)) {
             $contentDisposition = 'inline';
+        }
+
+        $metaFilepath = $filepath.'.meta.json';
+        if (file_exists($metaFilepath)) {
+            $metadata = @json_decode(file_get_contents($metaFilepath), true);
+            if (isset($metadata['filename'])) {
+                $filename = $metadata['filename'];
+            }
         }
 
         header('Content-Type: '.$mimetype.'; filename="'.addslashes($filename).'"');
@@ -841,6 +860,7 @@ class ServeFileScript extends LowScriptAbstract
             case 'image/gif':
             case 'image/png':
                 $isImage = true;
+
                 break;
         }
 
@@ -854,6 +874,7 @@ class ServeFileScript extends LowScriptAbstract
                 case 'application/xml':
                 case 'application/xhtml+xml':
                     $isText = true;
+
                     break;
             }
         }
@@ -942,6 +963,7 @@ class ServeFileScript extends LowScriptAbstract
                     $buf .= @fread($fp, 1024);
                     if ((time() - $timeStart) > $maxTime) {
                         $fail = true;
+
                         break;
                     }
                 }
@@ -1359,6 +1381,10 @@ class ServeFileScript extends LowScriptAbstract
 
     /**
      * Serve static content from native 'apps'.
+     *
+     * @param string $app_name
+     * @param string $type
+     * @param string $filename
      *
      * @throws \Exception
      */

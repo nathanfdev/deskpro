@@ -44,22 +44,32 @@ class MessengerSettings extends AbstractBrandAwareSettings
     /**
      * Advanced messenger options.
      *
-     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptions")
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactive")
      * @Assert\Valid()
      *
-     * @var MessengerOptions
+     * @var MessengerProactive
      */
-    private $messenger;
+    private $proactive;
 
     /**
      * Few style options.
      *
-     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerStyles")
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget")
      * @Assert\Valid()
      *
-     * @var MessengerStyles
+     * @var MessengerWidget
      */
-    private $styles;
+    private $widget;
+
+    /**
+     * This is Deskpro global setting need to be serialized with all other settings.
+     *
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("maxFileSize")
+     *
+     * @var
+     */
+    private $maxFileSize;
 
     /**
      * @return MessengerEmbed
@@ -122,41 +132,61 @@ class MessengerSettings extends AbstractBrandAwareSettings
     }
 
     /**
-     * @return MessengerOptions
+     * @return MessengerProactive
      */
-    public function getMessenger()
+    public function getProactive()
     {
-        return $this->messenger;
+        return $this->proactive;
     }
 
     /**
-     * @param MessengerOptions $messenger
+     * @param MessengerProactive $proactive
      *
      * @return $this
      */
-    public function setMessenger(MessengerOptions $messenger)
+    public function setProactive(MessengerProactive $proactive)
     {
-        $this->messenger = $messenger;
+        $this->proactive = $proactive;
 
         return $this;
     }
 
     /**
-     * @return MessengerStyles
+     * @return MessengerWidget
      */
-    public function getStyles()
+    public function getWidget()
     {
-        return $this->styles;
+        return $this->widget;
     }
 
     /**
-     * @param MessengerStyles $styles
+     * @param MessengerWidget $widget
      *
      * @return $this
      */
-    public function setStyles(MessengerStyles $styles)
+    public function setWidget(MessengerWidget $widget)
     {
-        $this->styles = $styles;
+        $this->widget = $widget;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaxFileSize()
+    {
+        return $this->maxFileSize;
+    }
+
+    /**
+     * @param mixed $maxFileSize
+     *
+     * @return $this
+     */
+    public function setMaxFileSize($maxFileSize)
+    {
+        $this->maxFileSize = $maxFileSize;
 
         return $this;
     }

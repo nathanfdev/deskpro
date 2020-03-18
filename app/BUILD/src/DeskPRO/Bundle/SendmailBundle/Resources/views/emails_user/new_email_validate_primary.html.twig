@@ -9,10 +9,8 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    <container>
-        {{ phrase('portal.emails.profile_email-primary-confirm') }}:<br/>
-        <a href="{{ verify_url }}">{{ verify_url }}</a>
-    </container>
+    {{ phrase('portal.emails.profile_email-primary-confirm') }}:<br/>
+    <a href="{{ verify_url }}">{{ verify_url }}</a>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

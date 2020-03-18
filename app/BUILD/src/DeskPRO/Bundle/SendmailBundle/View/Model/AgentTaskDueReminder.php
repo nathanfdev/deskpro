@@ -7,6 +7,8 @@ use JMS\Serializer\Annotation as JMS;
 
 class AgentTaskDueReminder extends EmailBaseType
 {
+    use EventCodeEmailBaseType;
+
     /**
      * Email recipient.
      *
@@ -37,5 +39,13 @@ class AgentTaskDueReminder extends EmailBaseType
     {
         $this->task      = $task;
         $this->loginLink = $loginLink;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventCodeType()
+    {
+        return 'task';
     }
 }

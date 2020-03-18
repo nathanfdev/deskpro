@@ -40,12 +40,30 @@ FROM tickets WHERE tickets.date_created = ${date}',
         ],
         'chats-created-x-date' => [
             'title'         => 'Count of chats created ${date}',
-            'labels'        => 'tickets',
+            'labels'        => 'chat',
             'description'   => 'Count of chats created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
             'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', IF(DPQL_COUNT() = 1, \'chat created\', \'chats created\') as \'stat_description\'
 FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+        ],
+        'chats-feedback-grouped-by-agent-x-date' => [
+            'title'         => 'Chat feedback grouped by agent created ${date}',
+            'labels'        => 'chat',
+            'description'   => 'Chat feedback grouped by agent created ${date}',
+            'display_types' => 'table',
+            'display_order' => 40,
+            'query'         => '
+            SELECT
+                SUM(IF(chat_conversations.rating_overall > 0,1,0)) AS Postive,
+                SUM(IF(chat_conversations.rating_overall <= 0,1,0)) AS Negative
+            FROM chat_conversations
+            WHERE chat_conversations.rating_overall <> NULL
+              AND chat_conversations.agent <> NULL
+              AND chat_conversations.date_created = ${date}
+            GROUP BY chat_conversations.agent
+            ',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'avg-response-time-x-date' => [

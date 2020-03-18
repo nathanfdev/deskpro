@@ -27,5 +27,12 @@
                 <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/chats-light.svg', 'help_center') }}" /> {{ phrase('helpcenter.chats.my-chats') }}
             </a>
         </li>
+        {% if app.getSetting('core_tickets.ticket_approvals') %}
+        <li class="dp-po-ticket-pages-item">
+            <a href="{{ path('ticket_approvals') }}" class="dp-po-ticket-pages-link">
+                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my-approvals') }}
+            </a>
+        </li>
+        {% endif %}
     </ul>
 </div>

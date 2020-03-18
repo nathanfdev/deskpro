@@ -1,0 +1,14 @@
+<div class="dp-po-ticket-approval-form dpx-form" id="approval-response-form">
+    {{ form_errors(form) }}
+    {{ form_start(form) }}
+    <div class="bucket dp-po-ticket-approval-form-message">
+        <label>{{ phrase('helpcenter.general.your_comment_optional_label') }}</label>
+        {{ form_errors(form.message) }}
+        {{ form_widget(form.message, {attr: {class: 'dp-po-ticket-approval-form-message-field form-control', placeholder: phrase('portal.general.your_comment_label')}}) }}
+    </div>
+    <div class="bucket dp-po-ticket-approval-form-actions">
+        {{ form_widget(form.approve, {label: phrase('portal.tickets.approvals.view_approve'), attr: {class: 'dp-po-ticket-approval-form-success'}}) }}
+        {{ form_widget(form.reject, {label: phrase('portal.tickets.approvals.view_reject'), attr: {class: 'dp-po-ticket-approval-form-danger'}}) }}
+    </div>
+    {{ form_end(form) }}
+</div>

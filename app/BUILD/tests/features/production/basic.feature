@@ -1,7 +1,12 @@
+@ignore-ensure-db
 Feature: Production mode
 
   Background:
     Given I install the api data set
+    And I have only default brand
+    And the following languages are enabled:
+      | default |
+    And the default brand is using the helpcenter theme
     And I have no logged system alert events
 
   Scenario: I print PHP version

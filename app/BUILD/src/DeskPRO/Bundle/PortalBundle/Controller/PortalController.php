@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Class PortalController.
@@ -212,7 +212,7 @@ class PortalController extends AbstractController
             }
         }
 
-        if ($error = $request->getSession()->get(SecurityContextInterface::AUTHENTICATION_ERROR)) {
+        if ($error = $request->getSession()->get(Security::AUTHENTICATION_ERROR)) {
             $error = $error instanceof AuthenticationException
                 ? $error->getMessage()
                 : 'portal.account.login-invalid';
@@ -628,6 +628,7 @@ class PortalController extends AbstractController
 
         // rate limit first
         $check = new UploadAbuseCheck($this->getUser(), $request->getClientIp());
+
         try {
             $this->getAntiAbuseService()->check($check);
         } finally {

@@ -43,10 +43,11 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class AgentTeamsController extends CrudController
 {
-    public static $entity    = AgentTeam::class;
-    public static $type      = AgentTeamType::class;
-    public static $listOrder = 'asc';
-    public static $listSort  = 'id';
+    public static $entity       = AgentTeam::class;
+    public static $type         = AgentTeamType::class;
+    public static $listOrder    = 'asc';
+    public static $listSort     = 'id';
+    public static $listPaginate = false;
 
     /**
      * Touching this endpoint will return a list of agents belongs to specified team.

@@ -69,18 +69,21 @@ class BrandThemeManager
      */
     public function getCurrentEditThemeSet()
     {
-        if (!$edit_theme_set = $this->getCurrentBrand()->getEditThemeSet()) {
-            $theme_set      = $this->getCurrentThemeSet();
-            $edit_theme_set = new ThemeSet();
-            $this->themeSetCopyingService->copy($theme_set, $edit_theme_set);
-            $brand = $this->getCurrentBrand();
-            $brand->setEditThemeSet($edit_theme_set);
-            $this->em->persist($edit_theme_set);
+        $brand = $this->getCurrentBrand();
+
+        if (!$editThemeSet = $brand->getEditThemeSet()) {
+            $editThemeSet = new ThemeSet();
+            $editThemeSet->setBrand($brand);
+
+            $this->themeSetCopyingService->copy($this->getCurrentThemeSet(), $editThemeSet);
+
+            $brand->setEditThemeSet($editThemeSet);
+            $this->em->persist($editThemeSet);
             $this->em->persist($brand);
             $this->em->flush();
         }
 
-        return $edit_theme_set;
+        return $editThemeSet;
     }
 
     /**

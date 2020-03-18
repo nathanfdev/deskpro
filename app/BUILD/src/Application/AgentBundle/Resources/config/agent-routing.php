@@ -1789,6 +1789,16 @@ $collection->create('agent_publish_search', [
     'controller' => 'AgentBundle:Publish:search',
 ]);
 
+$collection->create('agent_publish_set_splash_image', [
+    'path'       => '/publish/set-splash-image/{type}',
+    'controller' => 'AgentBundle:Publish:setSplashImage',
+]);
+
+$collection->create('agent_publish_remove_splash_image', [
+    'path'       => '/publish/remove-splash-image/{type}',
+    'controller' => 'AgentBundle:Publish:removeSplashImage',
+]);
+
 $collection->create('agent_kb_newarticle_save', [
     'path'       => '/kb/article/new/save',
     'controller' => 'AgentBundle:Kb:newArticleSave',
