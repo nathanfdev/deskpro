@@ -1601,17 +1601,18 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     /**
      * @param int|array $ticket
      * @param int       $fieldId
+     * @param string    $context
      *
      * @return string
      */
-    public function renderTicketCustomField($ticket, $fieldId)
+    public function renderTicketCustomField($ticket, $fieldId, $context)
     {
         $ticket = $this->getTicket($ticket);
         if (!$ticket) {
             return '';
         }
 
-        return $ticket->renderCustomField($fieldId);
+        return $ticket->renderCustomField($fieldId, $context);
     }
 
     /**
