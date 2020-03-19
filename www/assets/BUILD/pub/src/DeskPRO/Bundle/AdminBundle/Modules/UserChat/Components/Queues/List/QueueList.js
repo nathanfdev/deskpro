@@ -142,9 +142,10 @@ class QueueRow extends React.Component {
     const displayTargets = targets.slice(0, 5);
     const popupTargets = targets.slice(5);
     const routingModels = {
-      simulring:      'Simulring',
-      least_utilized: 'Least Utilized',
-      round_robin:    'Round Robin'
+      simulring:            'Simulring',
+      least_utilized:       'Least Utilized',
+      round_robin:          'Round Robin Forced Assignment',
+      round_robin_optional: 'Round Robin Optional Assignment'
     };
 
     return (

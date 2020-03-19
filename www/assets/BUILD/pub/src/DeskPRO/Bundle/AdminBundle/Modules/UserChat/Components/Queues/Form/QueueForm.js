@@ -91,7 +91,7 @@ class QueueForm extends BaseForm {
               <Field select="max_queue_size" className="queue-size">
                 <MaxQueueSize />
               </Field>}
-              {formData.value.routing_model !== 'simulring' &&
+              {['least_utilized', 'round_robin_optional'].indexOf(formData.value.routing_model) !== -1 &&
               <Field select="answer_timeout" label="Answer Timeout">
                 <AnswerTimeout />
               </Field>}
@@ -139,7 +139,8 @@ class RoutingModel extends React.Component {
     const choices = [
       { value: 'simulring', label: 'Simulring', help: '' },
       { value: 'least_utilized', label: 'Least Utilized', help: '' },
-      { value: 'round_robin', label: 'Round Robin', help: '' }
+      { value: 'round_robin', label: 'Round Robin Forced Assignment', help: '' },
+      { value: 'round_robin_optional', label: 'Round Robin Optional Assignment', help: '' }
     ];
 
     const help = {};

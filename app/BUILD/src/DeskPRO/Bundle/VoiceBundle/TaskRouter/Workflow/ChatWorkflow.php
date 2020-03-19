@@ -118,8 +118,8 @@ class ChatWorkflow implements WorkflowInterface
                 // ignore if agent has already rejected task
                 if (!$ignoreRejected && $task->getRejectedBy() && in_array($worker->getId(), $task->getRejectedBy())) {
                     $this->logger->info(sprintf(
-                        '[ChatWorkflow] Worker rejected the task, worker_id = %s, task_id = %s',
-                        $worker->getTypeId(), $task->getId()
+                        '[ChatWorkflow] Worker rejected the task, worker_id = %s, worker_type_id = %s, task_id = %s',
+                        $worker->getId(), $worker->getTypeId(), $task->getId()
                     ));
 
                     return false;
@@ -127,8 +127,8 @@ class ChatWorkflow implements WorkflowInterface
 
                 if ($worker->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())) {
                     $this->logger->info(sprintf(
-                        '[ChatWorkflow] Worker is busy, reason = has_pending_phone_call, worker_id = %s, task_id = %s',
-                        $worker->getTypeId(), $task->getId()
+                        '[ChatWorkflow] Worker is busy, reason = has_pending_phone_call, worker_id = %s, worker_type_id = %s, task_id = %s',
+                        $worker->getId(), $worker->getTypeId(), $task->getId()
                     ));
 
                     return false;
@@ -136,8 +136,8 @@ class ChatWorkflow implements WorkflowInterface
 
                 if ($worker->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())) {
                     $this->logger->info(sprintf(
-                        '[ChatWorkflow] Worker is busy, reason = has_active_phone_call, worker_id = %s, task_id = %s',
-                        $worker->getTypeId(), $task->getId()
+                        '[ChatWorkflow] Worker is busy, reason = has_active_phone_call, worker_id = %s, worker_type_id = %s, task_id = %s',
+                        $worker->getId(), $worker->getTypeId(), $task->getId()
                     ));
 
                     return false;
@@ -148,8 +148,8 @@ class ChatWorkflow implements WorkflowInterface
 
                 if (count($activeChatTaskIds) >= $maxChatsCount) {
                     $this->logger->info(sprintf(
-                        '[ChatWorkflow] Worker is busy, reason = max_chats_counts, pending_chat_ids = [%s], active_chat_ids = [%s], worker_id = %s, task_id = %s',
-                        implode(', ', $pendingChatTaskIds), implode(', ', $activeChatTaskIds), $worker->getTypeId(), $task->getId()
+                        '[ChatWorkflow] Worker is busy, reason = max_chats_counts, pending_chat_ids = [%s], active_chat_ids = [%s], worker_id = %s, worker_type_id = %s, task_id = %s',
+                        implode(', ', $pendingChatTaskIds), implode(', ', $activeChatTaskIds), $worker->getId(), $worker->getTypeId(), $task->getId()
                     ));
 
                     return false;
@@ -157,16 +157,16 @@ class ChatWorkflow implements WorkflowInterface
 
                 if (!in_array($worker->getTypeId(), $activeAgentIds)) {
                     $this->logger->info(sprintf(
-                        '[ChatWorkflow] Worker is not available for chat, worker_id = %s, task_id = %s',
-                        $worker->getTypeId(), $task->getId()
+                        '[ChatWorkflow] Worker is not available for chat, worker_id = %s, worker_type_id = %s, task_id = %s',
+                        $worker->getId(), $worker->getTypeId(), $task->getId()
                     ));
 
                     return false;
                 }
 
                 $this->logger->info(sprintf(
-                    '[ChatWorkflow] Available worker is found, worker_id = %s, task_id = %s',
-                    $worker->getTypeId(), $task->getId()
+                    '[ChatWorkflow] Available worker is found, worker_id = %s, worker_type_id = %s, task_id = %s',
+                    $worker->getId(), $worker->getTypeId(), $task->getId()
                 ));
 
                 return true;
@@ -233,13 +233,14 @@ class ChatWorkflow implements WorkflowInterface
             array_map(function (AbstractUserChatQueueTarget $target) {
                 $targetInfo = $target->toArray();
 
-                return 'type = '.$targetInfo['type'].', id = '.$targetInfo['id'];
+                return '[type = '.$targetInfo['type'].', id = '.$targetInfo['id'].']';
             }, $targets)),
             $task->getId()
         ));
 
         switch ($chatQueue->getRoutingModel()) {
             case UserChatQueue::ROUTING_MODEL_ROUND_ROBIN:
+            case UserChatQueue::ROUTING_MODEL_ROUND_ROBIN_OPTIONAL:
                 // set round robin order
                 if (!is_array($taskQueue->getAttribute('round_robin_order'))) {
                     $order = [];
@@ -294,7 +295,10 @@ class ChatWorkflow implements WorkflowInterface
 
                         if ($workersIds) {
                             $task->setWorkersIds($workersIds);
-                            $task->setDateExpireAssignedOffset($chatQueue->getAnswerTimeout());
+
+                            if ($chatQueue->getRoutingModel() === UserChatQueue::ROUTING_MODEL_ROUND_ROBIN_OPTIONAL) {
+                                $task->setDateExpireAssignedOffset($chatQueue->getAnswerTimeout());
+                            }
 
                             // worker was fetched push to the end of the list
                             unset($order[$num]);

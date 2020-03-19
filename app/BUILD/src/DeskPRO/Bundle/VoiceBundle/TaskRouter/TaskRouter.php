@@ -256,7 +256,10 @@ class TaskRouter
                             $this->storage->saveWorker($worker);
 
                             $task->removeWorker($worker);
-                            $this->logger->info(sprintf('[TaskRouter] Remove pending worker by assign timeout, task_id = %s', $task->getId()));
+                            $this->logger->info(sprintf(
+                                '[TaskRouter] Remove pending worker by assign timeout, worker_id = %s, worker_type_id = %s, task_id = %s',
+                                $worker->getId(), $worker->getTypeId(), $task->getId()
+                            ));
                         }
 
                         $this->storage->saveTask($task);
