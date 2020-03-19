@@ -148,6 +148,39 @@ class ChatController extends AbstractMessengerController
 
     /**
      * @param string  $idToken
+     *
+     * @ApiDoc(
+     *     section="Messenger",
+     *     resourceDescription="ping chat",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     },
+     *     requirements={
+     *          {
+     *              "name"="idToken",
+     *              "requirement"="[a-zA-Z0-9\\-]+",
+     *              "description"="id-accessToken to find a chat",
+     *              "dataType"="string"
+     *          }
+     *      }
+     * )
+     *
+     * @Rest\Post("/{idToken}/ping", requirements={"idToken"="(\d+)\-([a-zA-Z0-9]{30})"})
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function pingChatAction($idToken)
+    {
+        $chat = $this->findChatByIdToken($idToken);
+        $this->get('event_dispatcher')->dispatch(UserChatEvent::POLLING, new UserChatEvent($chat));
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @param string  $idToken
      * @param Request $request
      *
      * @ApiDoc(
