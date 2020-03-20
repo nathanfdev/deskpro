@@ -293,6 +293,7 @@ class TicketType extends AbstractType
                 'person'                => $form->getConfig()->getOption('person'),
                 'ticket_message'        => $message,
                 'admin_api_key_request' => $form->getConfig()->getOption('admin_api_key_request'),
+                'allow_set_person'      => true,
             ]);
         }
 
