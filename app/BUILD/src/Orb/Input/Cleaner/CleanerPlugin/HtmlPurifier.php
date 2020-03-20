@@ -47,7 +47,7 @@ class HtmlPurifier implements CleanerPlugin
         // which means html purifier will strip them out.
         // So lets just replace pre tags
         if ($type == 'html_email') {
-            $value = str_replace('<pre', '<div', $value);
+            $value = str_replace('<pre', '<div class="dp_div_from_pre" ', $value);
             $value = str_replace('</pre>', '</div>', $value);
         }
 
@@ -218,7 +218,20 @@ class HtmlPurifier implements CleanerPlugin
         if ($type == 'html_email') {
             $value = $this->cleanValue($value, 'html_email_basicclean', $options, $cleaner);
             $value = Strings::decodeWhitespaceHtmlEntities($value);
-            $value = Strings::trimHtmlAdvanced($value);
+            $value = Strings::trimHtmlAdvanced($value, function(\QueryPath\DOMQuery $elem) {
+                return !$elem->hasClass("dp_div_from_pre");
+            });
+
+            // <pre> tag's were substituted by <div> above
+            // To restore <pre> tags we try to emulate them with <div>
+            //
+            // @TODO: can we just restore <pre> tags here? Maybe not because HtmlPurifier called without allowed <pre> tag
+            // and purification logic didn't count on any <pre> tags
+            $value = str_replace(
+                '<div class="dp_div_from_pre"',
+                '<div style="white-space:pre-wrap;font-family: monospace, monospace;"',
+                $value
+            );
         }
 
         $value = Strings::convert4ByteCharsToHtmlEntities($value);
@@ -322,7 +335,7 @@ class HtmlPurifier implements CleanerPlugin
                     q[cite],small,
                     tt,var,big
                 ');
-                $config->set('Attr.AllowedClasses', 'MsoNormal');
+                $config->set('Attr.AllowedClasses', 'MsoNormal,dp_div_from_pre');
                 $config->set('URI.DisableExternalResources', true);
                 $config->set('AutoFormat.RemoveEmpty', false);
                 $config->set('CSS.AllowTricky', true);
