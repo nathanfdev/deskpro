@@ -276,29 +276,34 @@ class TicketMacro extends DomainObject
     }
 
     /**
-     * @param bool $as_html
+     * @param bool        $asHtml
+     * @param Person|null $personContext
      *
      * @return array
      */
-    public function getActionDescriptions($as_html = true)
+    public function getActionDescriptions($asHtml = true, Entity\Person $personContext = null)
     {
-        return $this->getActionsCollection()->getDescriptions($as_html);
+        if (!$personContext) {
+            $personContext = App::getCurrentPerson();
+        }
+
+        return $this->getActionsCollection()->getDescriptions($asHtml, $personContext);
     }
 
     /**
      * @param Ticket      $ticket
-     * @param Person|null $person_context
+     * @param Person|null $personContext
      *
      * @throws \Exception
      */
-    public function performOnTicket(Ticket $ticket, Entity\Person $person_context = null)
+    public function performOnTicket(Ticket $ticket, Entity\Person $personContext = null)
     {
         $collection = $this->getActionsCollection();
-        if (!$person_context) {
-            $person_context = App::getCurrentPerson();
+        if (!$personContext) {
+            $personContext = App::getCurrentPerson();
         }
 
-        $collection->apply($ticket->getTicketLogger(), $ticket, $person_context);
+        $collection->apply($ticket->getTicketLogger(), $ticket, $personContext);
     }
 
     /**

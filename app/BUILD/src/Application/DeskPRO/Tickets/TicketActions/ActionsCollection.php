@@ -415,24 +415,29 @@ class ActionsCollection
     }
 
     /**
-     * @param bool $as_html
+     * @param bool   $asHtml
+     * @param Person $personContext
      *
      * @return array
      */
-    public function getDescriptions($as_html)
+    public function getDescriptions($asHtml, Person $personContext = null)
     {
         $desc = [];
         foreach ($this->actions as $action) {
-            $desc[] = $action->getDescription($as_html);
+            if ($personContext && $action instanceof PersonContextInterface) {
+                $action->setPersonContext($personContext);
+            }
+
+            $desc[] = $action->getDescription($asHtml);
         }
 
         foreach ($this->applied_modifiers as $mod) {
-            $desc[] = $mod->getDescription($as_html);
+            $desc[] = $mod->getDescription($asHtml);
         }
 
         $desc = Arrays::removeFalsey($desc);
 
-        if ($as_html) {
+        if ($asHtml) {
             foreach ($desc as &$d) {
                 $d = str_replace(
                     ['<error>', '</error>'],
