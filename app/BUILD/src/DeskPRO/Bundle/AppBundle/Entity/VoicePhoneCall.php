@@ -1205,4 +1205,18 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
 
         return $this;
     }
+
+    /**
+     * @return \Application\DeskPRO\Entity\Ticket|null
+     */
+    public function getTicket()
+    {
+        foreach ($this->ticketMessageAttributes as $attr) {
+            if ($attr->getName() === TicketMessageVoicePhoneCall::ATTR_NAME) {
+                return $attr->getMessage()->getTicket();
+            }
+        }
+
+        return;
+    }
 }

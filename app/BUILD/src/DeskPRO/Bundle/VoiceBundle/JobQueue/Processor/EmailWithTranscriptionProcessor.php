@@ -7,9 +7,11 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\JobQueue\JobQueue;
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
 use Application\DeskPRO\Tickets\Actions\SendAgentEmail;
+use Application\DeskPRO\Tickets\Actions\SendAgentNewEmail;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Features\FeaturesCollection;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -38,6 +40,11 @@ class EmailWithTranscriptionProcessor extends AbstractJobProcessor
     private $jobQueue;
 
     /**
+     * @var FeaturesCollection
+     */
+    private $features;
+
+    /**
      * @var ContainerInterface|DeskproContainer
      */
     private $container;
@@ -49,6 +56,7 @@ class EmailWithTranscriptionProcessor extends AbstractJobProcessor
      * @param EntityManager      $em
      * @param TicketManager      $ticketManager
      * @param JobQueue           $jobQueue
+     * @param FeaturesCollection $features
      * @param ContainerInterface $container
      */
     public function __construct(
@@ -56,6 +64,7 @@ class EmailWithTranscriptionProcessor extends AbstractJobProcessor
         EntityManager      $em,
         TicketManager      $ticketManager,
         JobQueue           $jobQueue,
+        FeaturesCollection $features,
         ContainerInterface $container
     ) {
         parent::__construct($connection);
@@ -63,6 +72,7 @@ class EmailWithTranscriptionProcessor extends AbstractJobProcessor
         $this->em            = $em;
         $this->ticketManager = $ticketManager;
         $this->jobQueue      = $jobQueue;
+        $this->features      = $features;
         $this->container     = $container;
     }
 
@@ -109,13 +119,24 @@ class EmailWithTranscriptionProcessor extends AbstractJobProcessor
 
             $context->getVars()->set('run_transcription_processor', true);
 
-            $action = new SendAgentEmail([
-                'agent_ids'    => $data['agent_ids'],
-                'template'     => $data['template'],
-                'from_name'    => $data['from_name'],
-                'from_account' => $data['from_account'],
-                'headers'      => $data['headers'],
-            ]);
+            if ($this->features->hasFeature('email_templates')) {
+                $action = new SendAgentNewEmail([
+                    'agent_ids'    => $data['agent_ids'],
+                    'template'     => $data['template'],
+                    'from_name'    => $data['from_name'],
+                    'from_account' => $data['from_account'],
+                    'headers'      => $data['headers'],
+                ]);
+            } else {
+                $action = new SendAgentEmail([
+                    'agent_ids'    => $data['agent_ids'],
+                    'template'     => $data['template'],
+                    'from_name'    => $data['from_name'],
+                    'from_account' => $data['from_account'],
+                    'headers'      => $data['headers'],
+                ]);
+            }
+
             $action->setContainer($this->container);
             $action->applyAction($ticket, $context);
 

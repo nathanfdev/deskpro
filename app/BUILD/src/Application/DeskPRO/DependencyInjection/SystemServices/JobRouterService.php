@@ -128,6 +128,7 @@ class JobRouterService
                 $container->getEm(),
                 $container->getTicketManager(),
                 $container->getJobQueue(),
+                $container->get('deskpro.features_collection'),
                 $container
             )
         );
