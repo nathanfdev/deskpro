@@ -25,7 +25,10 @@ class DpqlDate extends AbstractDpqlFunc
         $expression = reset($arguments);
         $prepped    = $expression->prepare($statement, $section, $stack, $select, $metadata);
 
-        $sql = 'DATE('.$prepped->sql().')';
+        $tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
+        $interval        = ($tzOffsetSeconds ? " - INTERVAL $tzOffsetSeconds SECOND" : '');
+
+        $sql = '(DATE('.$prepped->sql().')'.$interval.')';
         $res = new Prepared($sql, 'DPQL_DATE('.$prepped->name().')', false, 'date');
 
         $res->setGroupFill(function ($min, $max) {
