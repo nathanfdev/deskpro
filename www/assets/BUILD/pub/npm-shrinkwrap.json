@@ -358,9 +358,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.115",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.115.tgz",
-      "integrity": "sha512-ViODIpb59t4l0nOBz5cAlMj1xgQ4UlzNNiTMQUzOjzMKRchMhbyhk/e3WAgbb98TVTRHx8xOmwzSk1HBYj2c/A==",
+      "version": "0.1.116",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.116.tgz",
+      "integrity": "sha512-NtDs174FlKB6RLkon6jLXZEXG1v8O23yauCMu5gJmf3DzirDtr9fDpjPK7hm0edLrskko5B43m8e2OtnaaQ95w==",
       "requires": {
         "@deskpro/js-utils": "^1.0.7",
         "@deskpro/portal-components": "0.3.74",
