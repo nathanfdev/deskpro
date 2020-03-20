@@ -90,7 +90,7 @@ class ReportDashboardType extends AbstractType
                 if (!$permission->getPerson()) {
                     continue;
                 }
-                if ($permission->getPerson()->isAdmin() || $permission->getPerson()->can_reports) {
+                if ($permission->getPerson()->isAdmin() || $permission->getPerson()->canReports()) {
                     $permissions->removeElement($permission);
                 }
             }

@@ -99,13 +99,19 @@ abstract class CrudSubController extends CrudController
     }
 
     /**
-     * @param int     $id
-     * @param Request $request
+     * @param int|object $idOrModel
+     * @param Request    $request
      *
      * @return object
      */
-    protected function getPermissionGroupEntityContext($id, Request $request)
+    protected function getPermissionGroupEntityContext($idOrModel, Request $request)
     {
-        return new PermissionGroupContext($this->findParentOr404(), $this->findEntity($id, $request));
+        if (is_object($idOrModel)) {
+            $model = $idOrModel;
+        } else {
+            $model = $this->findEntity($idOrModel, $request);
+        }
+
+        return new PermissionGroupContext($this->findParentOr404(), $model);
     }
 }
