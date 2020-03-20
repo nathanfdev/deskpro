@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\AgentBundle\Controller;
 
@@ -108,8 +106,8 @@ class PersonController extends AbstractController
         $manager = $this->container->getCustomFieldManager();
 
         // todo replace with:
-//		 $form = $manager->createFormForOwner($person, $this->person);
-//		 $custom_fields = $form->createView();
+        //		 $form = $manager->createFormForOwner($person, $this->person);
+        //		 $custom_fields = $form->createView();
         $field_manager = $this->container->getPersonFieldManager();
         $custom_fields = $field_manager->getDisplayArrayForObject($person);
 
@@ -279,8 +277,10 @@ class PersonController extends AbstractController
                 $vcard->setTitle($person['organization_position']);
             }
 
-            foreach ($person->emails as $email) {
-                $vcard->addEmail($email->email);
+            if ($this->person->canViewEmails()) {
+                foreach ($person->emails as $email) {
+                    $vcard->addEmail($email->email);
+                }
             }
 
             foreach ($contact_data as $c_data) {
@@ -291,6 +291,7 @@ class PersonController extends AbstractController
                     switch ($data['contact_type']) {
                         case 'website':
                             $vcard->setURL($data['url']);
+
                             break;
                         case 'address':
                             $vcard->addAddress(
@@ -302,6 +303,7 @@ class PersonController extends AbstractController
                                 $data['zip'],
                                 $data['country']
                             );
+
                             break;
                     }
                 }
@@ -320,6 +322,7 @@ class PersonController extends AbstractController
         foreach ($person->emails as $e) {
             if (!$e->is_validated) {
                 $has_email_validating = true;
+
                 break;
             }
         }
@@ -447,6 +450,7 @@ class PersonController extends AbstractController
                     $person->name = $this->in->getString('name');
                     $this->em->persist($person);
                 }
+
                 break;
 
             case 'quick-edit-name':
@@ -456,6 +460,7 @@ class PersonController extends AbstractController
                     $person->organization_position = $this->in->getString('organization_position');
                 }
                 $this->em->persist($person);
+
                 break;
 
             case 'timezone':
@@ -474,6 +479,7 @@ class PersonController extends AbstractController
                 }
                 $person->is_disabled = $this->in->getBool('is_disabled');
                 $this->em->persist($person);
+
                 break;
 
             case 'disable_autoresponses':
@@ -491,11 +497,13 @@ class PersonController extends AbstractController
                 $data['disable_autoresponses_log'] = $person->disable_autoresponses_log;
 
                 $this->em->persist($person);
+
                 break;
 
             case 'toggle_confirmed':
                 $person->is_confirmed = !$person->is_confirmed;
                 $this->em->persist($person);
+
                 break;
 
             case 'set-primary-email':
@@ -511,6 +519,7 @@ class PersonController extends AbstractController
                 }
 
                 $data['primary_email_address'] = $person->primary_email->email;
+
                 break;
 
             case 'delete-picture':
@@ -525,6 +534,7 @@ class PersonController extends AbstractController
                 }
 
                 $this->em->persist($person);
+
                 break;
 
             case 'set-picture':
@@ -538,11 +548,13 @@ class PersonController extends AbstractController
                     $person->setPictureBlob($blob);
                     $this->em->persist($person);
                 }
+
                 break;
 
             case 'set-summary':
                 $person->summary = $this->in->getString('summary');
                 $this->em->persist($person);
+
                 break;
 
             case 'set-organization':
@@ -647,6 +659,7 @@ class PersonController extends AbstractController
                 }
 
                 $this->em->flush();
+
                 break;
 
             case 'set-brands':
@@ -668,6 +681,7 @@ class PersonController extends AbstractController
                 }
 
                 $this->em->flush();
+
                 break;
 
             case 'remove-usersource':
@@ -681,6 +695,7 @@ class PersonController extends AbstractController
                 }
 
                 $this->em->flush();
+
                 break;
 
             case 'remove-file':
@@ -689,6 +704,7 @@ class PersonController extends AbstractController
                     $this->em->remove($file);
                     $data['removed_file_id'] = $file['id'];
                 }
+
                 break;
 
             case 'password':
@@ -728,6 +744,7 @@ class PersonController extends AbstractController
                         }
                     }
                 }
+
                 break;
                         case 'upload-vcard':
                                 $blobId = $this->in->getUint('blob_id');
@@ -744,6 +761,7 @@ class PersonController extends AbstractController
 
             default:
                 return $this->createJsonResponse(['error' => true, 'message' => 'Unknown action']);
+
                 break;
         }
 
@@ -946,12 +964,14 @@ class PersonController extends AbstractController
                 foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
                     if (!\Orb\Validator\StringEmail::isValueValid($email)) {
                         $errors[] = "\"$email\" was not saved because it is an invalid email address";
+
                         continue;
                     }
 
                     $account_manager = App::$container->getEmailAccountManager();
                     if ($account_manager->findAccountForEmailAddress($email)) {
                         $errors[] = "\"$email\" was not saved because it belongs to a ticket account";
+
                         continue;
                     }
 
@@ -962,6 +982,7 @@ class PersonController extends AbstractController
                         } else {
                             $errors[] = "\"$email\" was not saved because it is already added to another user";
                         }
+
                         continue;
                     }
 
@@ -976,6 +997,7 @@ class PersonController extends AbstractController
                     if ($email_rec) {
                         if (count($person->emails) == 1) {
                             $errors[] = "You cannot remove the users only email address ({$email_rec->email})";
+
                             continue;
                         }
 
@@ -992,6 +1014,7 @@ class PersonController extends AbstractController
                 if ($changed_primary_email && count($person->emails)) {
                     foreach ($person->emails as $e) {
                         $person->primary_email = $e;
+
                         break;
                     }
                 }
@@ -1035,6 +1058,7 @@ class PersonController extends AbstractController
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -1412,6 +1436,7 @@ class PersonController extends AbstractController
         }
 
         $this->em->beginTransaction();
+
         try {
             $this->em->getConnection()->executeQuery(
                     'REPLACE INTO persons_deleted (person_id, by_person_id, reason, date_created)
@@ -1442,6 +1467,7 @@ class PersonController extends AbstractController
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
+
             throw $e;
         }
 
@@ -1725,15 +1751,19 @@ class PersonController extends AbstractController
                     switch ($code) {
                         case 'required':
                             $str = "$title is required";
+
                             break;
                         case 'min_length':
                             $str = "$title is too short";
+
                             break;
                         case 'max_length':
                             $str = "$title is too long";
+
                             break;
                         case 'regex':
                             $str = "$title is invalid";
+
                             break;
                     }
 

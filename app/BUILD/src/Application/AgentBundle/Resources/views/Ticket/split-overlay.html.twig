@@ -8,8 +8,8 @@
 					<input type="checkbox" class="message-id-checkbox" name="message_ids[]" value="{{ message.id }}" style="float: left; position: relative; top: 5px; margin-left: 5px" />
 					<span class="message-counter message-counter-{{ message.id }}" data-message-id="{{ message.id }}">#{{ message_num }}</span>
 				{% endif %}
-				{% if message.person.is_agent %}<h4	class="agent-link" data-agent-id="{{ message.person.id }}">{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
-				{% else %}<h4>{{message.person.getNameWithTitle()}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
+				{% if message.person.is_agent %}<h4	class="agent-link" data-agent-id="{{ message.person.id }}">{{message.person.display_name}} {% if can_view_email_addresses() %}<span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span>{% endif %}</h4>
+				{% else %}<h4>{{message.person.getNameWithTitle()}} {% if can_view_email_addresses() %}<span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span>{% endif %}</h4>
 				{% endif %}
 				<time class="full-time">{{message.date_created|date('fulltime')}}</time>
 				<time

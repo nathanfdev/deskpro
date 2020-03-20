@@ -15,7 +15,9 @@
               <li>
               <a>
               <span class="user-name"></span>
+              {% if can_view_email_addresses() %}
               <address>&lt;<span class="user-email"></span>&gt;</address>
+              {% endif %}
               <div class="bound-fade"></div>
               </a></li>
             </script>
@@ -42,7 +44,9 @@
         <a class="as-popover dp-btn dp-btn-small" id="{{ baseId }}_subscribe_person_route" data-route="" style="margin-right: 5px">
           <span class="text">
             <span class="user-name" id="{{ baseId }}_subscribe_person_name"></span>
+            {% if can_view_email_addresses() %}
             (<span class="user-email" id="{{ baseId }}_subscribe_person_email"></span>)
+            {% endif %}
           </span>
         </a>
         <input type="hidden" id="{{ baseId }}_subscribe_person_id" value="" />

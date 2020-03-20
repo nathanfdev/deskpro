@@ -1202,7 +1202,7 @@ agent.chat.new_agent_note_by: '{{name}}さんの新しいエージェントメ�
 agent.chat.new_agent_reply_by: '{{name}}さんの新しい返信'
 agent.chat.new_chat: 新しいチャット
 agent.chat.new_ticket_by: '{{name}} ({{email}})の新しいチケット'
-agent.chat.new_user_reply_by: '新しいユーザからの返信　{{name}} ({{email}})'
+agent.chat.new_user_reply_by: '新しいユーザからの返信　{{name}} {{email}}'
 agent.chat.no_department: 部門なし
 agent.chat.no_email: メールなし
 agent.chat.no_online_agents: 他のエージェントはオンラインではありません

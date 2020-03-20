@@ -802,6 +802,14 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @return bool
+     */
+    public function canViewEmails()
+    {
+        return $this->hasPerm('agent_people.view_email_addresses');
+    }
+
+    /**
      * @return PersonUsersourceAssoc[]|ArrayCollection
      */
     public function getUsersourceAssoc()

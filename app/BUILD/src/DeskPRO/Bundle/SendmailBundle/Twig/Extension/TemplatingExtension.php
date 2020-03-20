@@ -172,6 +172,9 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
             // override so we can suppress errors where templates are out of date
             new \Twig_SimpleFunction('url', [$this, 'getUrl']),
+
+            new \Twig_SimpleFunction('can_view_email_addresses', [$this, 'canViewEmailAddresses'], []),
+            new \Twig_SimpleFunction('show_email_address', [$this, 'showEmailAddress'], []),
         ];
     }
 
@@ -2501,5 +2504,29 @@ HTML;
     public function dummy($ret)
     {
         return $ret;
+    }
+
+    /**
+     * @param int $agentId
+     *
+     * @return bool
+     */
+    public function canViewEmailAddresses($agentId)
+    {
+        $user = $agentId ? $this->container->get('doctrine.orm.default_entity_manager')->getRepository(Person::class)->find($agentId) : null;
+
+        return $user instanceof Person ? $user->hasPerm('agent_people.view_email_addresses') : false;
+    }
+
+    /**
+     * @param int    $agentId
+     * @param string $email
+     * @param string $pattern
+     *
+     * @return string
+     */
+    public function showEmailAddress($agentId, $email, $pattern = '%s')
+    {
+        return $this->canViewEmailAddresses($agentId) ? sprintf($pattern, $email) : '';
     }
 }

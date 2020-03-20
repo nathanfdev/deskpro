@@ -97,7 +97,9 @@
 										<li>
 											<a>
 											<span class="user-name"></span>
+											{% if can_view_email_addresses() %}
 											<address>&lt;<span class="user-email"></span>&gt;</address>
+											{% endif %}
 											<div class="bound-fade"></div>
 										</a></li>
 

@@ -286,7 +286,7 @@
         </div>
 
         {# Page Containers #}
-        {% if with_warn_for_email %}
+        {% if with_warn_for_email and can_view_email_addresses() %}
             <div class="full-tab-warn">
                 <div class="message">
                     {{ phrase('agent.people.warn_email_address', {'email': with_warn_for_email}) }}

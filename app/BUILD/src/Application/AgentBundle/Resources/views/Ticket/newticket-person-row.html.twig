@@ -7,20 +7,24 @@
 				{% if person.id and person.primary_email and person.primary_email.email %}
 					<input type="hidden" class="set_person_id" value="{{ person.id }}" />
 					<input type="hidden" class="set_person_email" value="{{ person.primary_email.email }}" />
-					{% if person.emails|length > 1 %}
-						<select name="newticket[person][email_address]">
-							<optgroup label="Primary Email Address">
-								<option value="{{ person.primary_email.email }}" selected="selected">{{ person.primary_email.email }}</option>
-							</optgroup>
-							<optgroup label="Secondary Email Addresses">
-								{% for email in person.emails if email.id != person.primary_email.id %}
-									<option value="{{ email.email }}">{{ email.email }}</option>
-								{% endfor %}
-							</optgroup>
-						</select>
-					{% else %}
-						{{ person.primary_email.email }} &middot; <a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ phrase('agent.people.view_profile') }}</a>
-					{% endif %}
+                    {% if can_view_email_addresses() %}
+                        {% if person.emails|length > 1 %}
+                            <select name="newticket[person][email_address]">
+                                <optgroup label="Primary Email Address">
+                                    <option value="{{ person.primary_email.email }}" selected="selected">{{ person.primary_email.email }}</option>
+                                </optgroup>
+                                <optgroup label="Secondary Email Addresses">
+                                    {% for email in person.emails if email.id != person.primary_email.id %}
+                                        <option value="{{ email.email }}">{{ email.email }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                            </select>
+                        {% else %}
+                            {{ person.primary_email.email }} &middot; <a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ phrase('agent.people.view_profile') }}</a>
+                        {% endif %}
+                    {% else %}
+                        <a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ phrase('agent.people.view_profile') }}</a>
+                    {% endif %}
 				{% else %}
 					<input type="text" name="newticket[person][email_address]" class="email" value="" style="margin:0;" />
 				{% endif %}

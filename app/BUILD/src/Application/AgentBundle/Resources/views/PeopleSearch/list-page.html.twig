@@ -14,7 +14,9 @@
                         {{ ng_var('person.name_with_title') }}
                     </span>
                 </a>
+                {% if can_view_email_addresses() %}
                 <span ng-if="person.email" class="person-email">&lt;{{ ng_var('person.email') }}&gt;</span>
+                {% endif %}
                 <span ng-if="person.organization" class="person-org"
                         data-route="org:{{ path('agent_org_view', {organization_id: '0000'})|replace({'0000': '{{ person.organization.id }}'})|raw }}">
                     <span ng-if="person.organization_position">{{ ng_var('person.organization_position') }}, </span>

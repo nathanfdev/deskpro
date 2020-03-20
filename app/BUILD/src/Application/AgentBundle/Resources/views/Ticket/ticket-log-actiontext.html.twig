@@ -100,7 +100,7 @@
 	<span class="type">{{ phrase('agent.general.assigned_team') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_agent_team_name|default(phrase('agent.general.none'))}}</span>
     {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_agent_team_name|default(phrase('agent.general.none'))}}</span>
-{% elseif log.action_type == 'participant_added' %}
+{% elseif log.action_type == 'participant_added' and can_view_email_addresses() %}
 	<span class="type">{{ phrase('agent.tickets.participant_added') }}</span>: <span class="new-val">{{log.details.email}}</span>
 {% elseif log.action_type == 'participant_removed' %}
 	<span class="type">{{ phrase('agent.tickets.participant_removed') }}</span>: <span class="old-val">{{log.details.email}}</span>
@@ -436,18 +436,22 @@
 	{% endif %}
 
 	{% if log.details.from_name or log.details.from_email %}
-		({{ phrase('agent.tickets.log_sent_from', {email: log.details.from_name ~ ' ' ~ log.details.from_email }) }})
+		({{ phrase('agent.tickets.log_sent_from', {email: log.details.from_name ~ ' ' ~ show_email_address(log.details.from_email) }) }})
 	{% endif %}
 
 	<div class="expand-set" style="display: none">
 		<ul>
 			{% for info in log.details.who_emailed %}
 				<li>
-					{% if not info.person_name or info.person_name == info.person_email %}
-						{{ info.person_email }}
-					{% else %}
-						{{ info.person_name }} &lt;{{ info.person_email }}&gt;
-					{% endif %}
+                    {% if can_view_email_addresses() %}
+                        {% if not info.person_name or info.person_name == info.person_email %}
+                            {{ info.person_email }}
+                        {% else %}
+                            {{ info.person_name }} &lt;{{ info.person_email }}&gt;
+                        {% endif %}
+                    {% else %}
+                        {{ info.person_name }}
+                    {% endif %}
 
 					{% if info.info %}
 						{% if info.info.filters %}({{ phrase('agent.tickets.log_sub_on_filter') }}: {{ info.info.filters|join(', ') }})
@@ -483,11 +487,15 @@
 		<ul>
 			{% for info in log.details.who_emailed %}
 				<li>
-					{% if not info.person_name or info.person_name == info.person_email %}
-						{{ info.person_email }}
-					{% else %}
-						{{ info.person_name }} &lt;{{ info.person_email }}&gt;
-					{% endif %}
+                    {% if can_view_email_addresses() %}
+                        {% if not info.person_name or info.person_name == info.person_email %}
+                            {{ info.person_email }}
+                        {% else %}
+                            {{ info.person_name }} &lt;{{ info.person_email }}&gt;
+                        {% endif %}
+                    {% else %}
+                        {{ info.person_name }}
+                    {% endif %}
 				</li>
 			{% endfor %}
 		</ul>
@@ -496,11 +504,15 @@
 		<ul>
 			{% for info in log.details.who_cced %}
 				<li>
-					{% if not info.person_name or info.person_name == info.person_email %}
-						{{ info.person_email }}
-					{% else %}
-						{{ info.person_name }} &lt;{{ info.person_email }}&gt;
-					{% endif %}
+                    {% if can_view_email_addresses() %}
+                        {% if not info.person_name or info.person_name == info.person_email %}
+                            {{ info.person_email }}
+                        {% else %}
+                            {{ info.person_name }} &lt;{{ info.person_email }}&gt;
+                        {% endif %}
+                    {% else %}
+                        {{ info.person_name }}
+                    {% endif %}
 				</li>
 			{% endfor %}
 		</ul>
@@ -578,10 +590,10 @@
 	<span class="new-val">#{{ log.details.escalation_id }}</span> {{ log.details.escalation_title }}
 {% elseif log.action_type == 'ticket_email' %}
 	{% if log.details.user_mode == 'user' %}
-		<span class="new-val expand" data-set=".set-detail">{{ phrase('agent.tickets.log_x_emailed', {'name': phrase('agent.general.user')}) }}</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
+		<span class="new-val expand" data-set=".set-detail">{{ phrase('agent.tickets.log_x_emailed', {'name': phrase('agent.general.user')}) }}</span> {{ log.details.to_name }} {% if can_view_email_addresses() %}&lt;{{ log.details.to_email }}&gt;{% endif %}
 		{% if log.details.cc_emails %}(+{{ log.details.cc_emails|length }} {{ phrase('agent.tickets.log_mail_cc_ed') }}){% endif %}
 	{% else %}
-		<span class="new-val expand" data-set=".set-detail">{{ phrase('agent.tickets.log_x_emailed', {'name': phrase('agent.general.agent')}) }}</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
+		<span class="new-val expand" data-set=".set-detail">{{ phrase('agent.tickets.log_x_emailed', {'name': phrase('agent.general.agent')}) }}</span> {{ log.details.to_name }} {% if can_view_email_addresses() %}&lt;{{ log.details.to_email }}&gt;{% endif %}
 	{% endif %}
 
     {% set status = false %}
@@ -619,16 +631,18 @@
             {% endif %}
             <br/>
         {% endif %}
-		{{ phrase('agent.general.from') }}: {{ log.details.from_name }} &lt;{{ log.details.from_email }}&gt;<br/>
+		{{ phrase('agent.general.from') }}: {{ log.details.from_name }} {% if can_view_email_addresses() %}&lt;{{ log.details.from_email }}&gt;{% endif %}<br/>
 		{{ phrase('agent.general.template') }}: {{ log.details.template }}<br/>
-		{% if log.details.cc_emails %}
-			{{ phrase('agent.tickets.log_mail_cc_d') }}:
-			<ul>
-				{% for eml in log.details.cc_emails %}
-					<li>{{ eml }}</li>
-				{% endfor %}
-			</ul>
-		{% endif %}
+        {% if can_view_email_addresses() %}
+            {% if log.details.cc_emails %}
+                {{ phrase('agent.tickets.log_mail_cc_d') }}:
+                <ul>
+                    {% for eml in log.details.cc_emails %}
+                        <li>{{ eml }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
 	</div>
 {% elseif log.action_type == 'new_billing' %}
     {{ phrase('agent.tickets.log_billing_row_added') }} #{{ log.id_object }}:<br/>
@@ -700,10 +714,10 @@
 	<div class="expand-set set-detail" style="display: none">
 		<ul>
 			{% for part in log.details.added %}
-				<li>{{ phrase('agent.general.added') }}: {{ part.name }} &lt;{{ part.email }}&gt;</li>
+				<li>{{ phrase('agent.general.added') }}: {{ part.name }} {% if can_view_email_addresses() %}&lt;{{ part.email }}&gt;{% endif %}</li>
 			{% endfor %}
 			{% for part in log.details.removed %}
-				<li>{{ phrase('agent.general.removed') }}: {{ part.name }} &lt;{{ part.email }}&gt;</li>
+				<li>{{ phrase('agent.general.removed') }}: {{ part.name }} {% if can_view_email_addresses() %}&lt;{{ part.email }}&gt;{% endif %}</li>
 			{% endfor %}
 		</ul>
 	</div>

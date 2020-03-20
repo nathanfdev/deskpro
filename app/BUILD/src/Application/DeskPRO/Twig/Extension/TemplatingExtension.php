@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\Usersource;
@@ -167,6 +168,8 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFunction('url', [$this, 'getUrl']),
             new \Twig_SimpleFunction('has_login_form', [$this, 'hasLoginForm'], []),
             new \Twig_SimpleFunction('get_currency', [$this, 'getCurrency'], []),
+            new \Twig_SimpleFunction('can_view_email_addresses', [$this, 'canViewEmailAddresses'], []),
+            new \Twig_SimpleFunction('show_email_address', [$this, 'showEmailAddress'], []),
         ];
     }
 
@@ -2092,5 +2095,26 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         return;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canViewEmailAddresses()
+    {
+        $user = $this->container->get('templating.globals')->getUser();
+
+        return $user instanceof Person ? $user->hasPerm('agent_people.view_email_addresses') : false;
+    }
+
+    /**
+     * @param string $email
+     * @param string $pattern
+     *
+     * @return string
+     */
+    public function showEmailAddress($email, $pattern = '%s')
+    {
+        return $this->canViewEmailAddresses() ? sprintf($pattern, $email) : '';
     }
 }

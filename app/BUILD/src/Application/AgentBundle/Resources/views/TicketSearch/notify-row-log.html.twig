@@ -7,9 +7,17 @@
 	{{ phrase('agent.tickets.changed_to') }}
 	{{log.details.new_agent_team_name|default(phrase('agent.general.none'))}}
 {% elseif log.action_type == 'participant_added' %}
-	{{ phrase('agent.tickets.participant_added') }}: {{log.details.email}}
+    {% if can_view_email_addresses() %}
+        {{ phrase('agent.tickets.participant_added') }}: {{log.details.email}}
+    {% else %}
+        {{ phrase('agent.tickets.participant_added') }}
+    {% endif %}
 {% elseif log.action_type == 'participant_removed' %}
-	{{ phrase('agent.tickets.participant_removed') }}: {{log.details.email}}
+    {% if can_view_email_addresses() %}
+	    {{ phrase('agent.tickets.participant_removed') }}: {{log.details.email}}
+    {% else %}
+        {{ phrase('agent.tickets.participant_removed') }}
+    {% endif %}
 {% elseif log.action_type == 'ticket_created' %}
 	{{ phrase('agent.general.ticket') }} {{ phrase('agent.tickets.lc_created') }}
 {% elseif log.action_type == 'subject' %}
