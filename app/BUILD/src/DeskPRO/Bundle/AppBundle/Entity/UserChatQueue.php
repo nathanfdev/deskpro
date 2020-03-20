@@ -22,9 +22,10 @@ class UserChatQueue implements EntityInterface, NotifyPropertyChanged, GroupSequ
 {
     use NotifyPropertyChangedTrait;
 
-    const ROUTING_MODEL_ROUND_ROBIN    = 'round_robin';
-    const ROUTING_MODEL_LEAST_UTILIZED = 'least_utilized';
-    const ROUTING_MODEL_SIMULRING      = 'simulring';
+    const ROUTING_MODEL_ROUND_ROBIN          = 'round_robin';
+    const ROUTING_MODEL_ROUND_ROBIN_OPTIONAL = 'round_robin_optional';
+    const ROUTING_MODEL_LEAST_UTILIZED       = 'least_utilized';
+    const ROUTING_MODEL_SIMULRING            = 'simulring';
 
     /**
      * The unique ID.

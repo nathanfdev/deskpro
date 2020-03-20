@@ -105,16 +105,16 @@ class VoiceWorkflow implements WorkflowInterface
     {
         if ($withLog) {
             $this->logger->info(sprintf(
-                '[VoiceWorkflow] Check if worker is busy, worker_id = %s',
-                $worker->getTypeId()
+                '[VoiceWorkflow] Check if worker is busy, worker_id = %s, worker_type_id = %s',
+                $worker->getId(), $worker->getTypeId()
             ));
         }
 
         if ($worker->hasPendingTasksForChannel(self::getChannelName())) {
             if ($withLog) {
                 $this->logger->info(sprintf(
-                    '[VoiceWorkflow] Worker is busy, reason = has_pending_phone_call, worker_id = %s',
-                    $worker->getTypeId()
+                    '[VoiceWorkflow] Worker is busy, reason = has_pending_phone_call, worker_id = %s, worker_type_id = %s',
+                    $worker->getId(), $worker->getTypeId()
                 ));
             }
 
@@ -124,8 +124,8 @@ class VoiceWorkflow implements WorkflowInterface
         if ($worker->hasActiveTasksForChannel(self::getChannelName())) {
             if ($withLog) {
                 $this->logger->info(sprintf(
-                    '[VoiceWorkflow] Worker is busy, reason = has_active_phone_call, worker_id = %s',
-                    $worker->getTypeId()
+                    '[VoiceWorkflow] Worker is busy, reason = has_active_phone_call, worker_id = %s, worker_type_id = %s',
+                    $worker->getId(), $worker->getTypeId()
                 ));
             }
 
@@ -136,8 +136,8 @@ class VoiceWorkflow implements WorkflowInterface
         if (!in_array($worker->getTypeId(), $voiceAgentIds)) {
             if ($withLog) {
                 $this->logger->info(sprintf(
-                    '[VoiceWorkflow] Worker is not available for chat, worker_id = %s',
-                    $worker->getTypeId()
+                    '[VoiceWorkflow] Worker is not available for voice, worker_id = %s, worker_type_id = %s',
+                    $worker->getId(), $worker->getTypeId()
                 ));
             }
 
@@ -146,8 +146,8 @@ class VoiceWorkflow implements WorkflowInterface
 
         if ($withLog) {
             $this->logger->info(sprintf(
-                '[VoiceWorkflow] Worker is not busy, worker_id = %s',
-                $worker->getTypeId()
+                '[VoiceWorkflow] Worker is not busy, worker_id = %s, worker_type_id = %s',
+                $worker->getId(), $worker->getTypeId()
             ));
         }
 
@@ -174,8 +174,8 @@ class VoiceWorkflow implements WorkflowInterface
                 // ignore if agent has already rejected task
                 if (!$ignoreRejected && $task->getRejectedBy() && in_array($worker->getId(), $task->getRejectedBy())) {
                     $this->logger->info(sprintf(
-                        '[VoiceWorkflow] Worker rejected the task, worker_id = %s, task_id = %s',
-                        $worker->getTypeId(), $task->getId()
+                        '[VoiceWorkflow] Worker rejected the task, worker_id = %s, worker_type_id = %s, task_id = %s',
+                        $worker->getId(), $worker->getTypeId(), $task->getId()
                     ));
 
                     return false;
@@ -185,8 +185,8 @@ class VoiceWorkflow implements WorkflowInterface
                 // or has active chats
                 if ($this->workerIsBusy($worker, true)) {
                     $this->logger->info(sprintf(
-                        '[VoiceWorkflow] Worker is busy, worker_id = %s, task_id = %s',
-                        $worker->getTypeId(), $task->getId()
+                        '[VoiceWorkflow] Worker is busy, worker_id = %s, worker_type_id = %s, task_id = %s',
+                        $worker->getId(), $worker->getTypeId(), $task->getId()
                     ));
 
                     return false;

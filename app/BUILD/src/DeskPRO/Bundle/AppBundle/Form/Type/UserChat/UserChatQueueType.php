@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -32,6 +34,7 @@ class UserChatQueueType extends AbstractType
                 'choices_as_values' => true,
                 'choices'           => [
                     UserChatQueue::ROUTING_MODEL_ROUND_ROBIN,
+                    UserChatQueue::ROUTING_MODEL_ROUND_ROBIN_OPTIONAL,
                     UserChatQueue::ROUTING_MODEL_LEAST_UTILIZED,
                     UserChatQueue::ROUTING_MODEL_SIMULRING,
                 ],

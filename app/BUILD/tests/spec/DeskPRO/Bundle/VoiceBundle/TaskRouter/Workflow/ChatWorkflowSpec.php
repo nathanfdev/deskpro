@@ -263,7 +263,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target2->getSort()->willReturn(20);
 
         $queue->getId()->willReturn(1);
-        $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_ROUND_ROBIN);
+        $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_ROUND_ROBIN_OPTIONAL);
         $queue->isAllAgents()->willReturn(true);
 
         $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2]);
@@ -351,7 +351,6 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10])->shouldBeCalled();
-        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
     }
@@ -414,7 +413,6 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10])->shouldBeCalled();
-        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
     }

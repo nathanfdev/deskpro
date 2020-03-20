@@ -16,7 +16,6 @@ class UserChatQueue
     /**
      * The unique ID.
      *
-     * @JMS\Expose()
      * @JMS\Type("integer")
      *
      * @var int
@@ -24,7 +23,6 @@ class UserChatQueue
     private $id;
 
     /**
-     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
@@ -32,7 +30,6 @@ class UserChatQueue
     private $name;
 
     /**
-     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
@@ -40,7 +37,6 @@ class UserChatQueue
     private $routingModel;
 
     /**
-     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var int
@@ -48,7 +44,6 @@ class UserChatQueue
     private $answerTimeout;
 
     /**
-     * @JMS\Expose()
      * @JMS\Type("boolean")
      *
      * @var bool
@@ -56,7 +51,6 @@ class UserChatQueue
     private $isAllAgents;
 
     /**
-     * @JMS\Expose()
      * @JMS\Type("collection<DeskPRO\Bundle\AppBundle\Entity\AbstractUserChatQueueTarget>")
      *
      * @var AbstractUserChatQueueTarget[]|ArrayCollection
@@ -64,7 +58,6 @@ class UserChatQueue
     private $targets;
 
     /**
-     * @JMS\Expose()
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Department>>")
      *
      * @var ArrayCollection|Department[]
@@ -72,7 +65,6 @@ class UserChatQueue
     private $departments;
 
     /**
-     * @JMS\Expose()
      * @JMS\Type("integer")
      *
      * @var int
