@@ -115,7 +115,7 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
             return new Result(Result::FAILURE_INVALID_CREDS);
         }
 
-        if ($person->date_password_set->format('Y-m-d H:i:s') === PasswordPolicyValidator::MAGIC_PASSWORD_RESET_REQUIRED) {
+        if (!$person->date_password_set || $person->date_password_set->format('Y-m-d H:i:s') === PasswordPolicyValidator::MAGIC_PASSWORD_RESET_REQUIRED) {
             throw new PasswordResetException($person);
         }
 
