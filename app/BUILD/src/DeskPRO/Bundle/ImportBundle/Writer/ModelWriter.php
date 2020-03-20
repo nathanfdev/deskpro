@@ -103,7 +103,7 @@ class ModelWriter
         } catch (\Exception $e) {
             $this->logger->error(sprintf(
                 'Unable to create `%s` with oid `%s`. Reason %s',
-                get_class($model), $model->getOid(), $e->__toString()
+                get_class($model), $model->getOid(), $e->getMessage()
             ));
             $this->logger->error($this->serializer->serialize($model, 'json'));
 
