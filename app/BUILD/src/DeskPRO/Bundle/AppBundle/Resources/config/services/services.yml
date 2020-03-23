@@ -35,7 +35,7 @@ services:
 
   portal_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver
-    arguments: ["@brand_aware_settings_resolver"]
+    arguments: ["@brand_aware_settings_resolver", "@doctrine.orm.default_entity_manager"]
 
   discover_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\DiscoverSettingsResolver

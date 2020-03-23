@@ -194,7 +194,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
 
         $em = $this->getManager();
 
-        $hasDomainsLimit = $model->isLimitEmailDomains() && $model->getLimitEmailDomainsPatterns();
+        $hasDomainsLimit = $this->get('portal_settings_resolver')->hasEmailLimits(true);
 
         /** @var Usergroup $everyoneGroup */
         $everyoneGroup = $em->getRepository(Usergroup::class)->findOneBy(['sys_name' => 'everyone']);

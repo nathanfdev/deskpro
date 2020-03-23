@@ -27,11 +27,12 @@ abstract class AbstractBrandAwareSettingsResolver
     /**
      * @param string $name
      * @param Brand  $brand
+     * @param bool   $force
      *
      * @return mixed
      */
-    protected function getSetting($name, Brand $brand = null)
+    protected function getSetting($name, Brand $brand = null, $force = false)
     {
-        return $this->settingsResolver->getSetting($name, $brand);
+        return $this->settingsResolver->getSetting($name, $brand, null, $force);
     }
 }
