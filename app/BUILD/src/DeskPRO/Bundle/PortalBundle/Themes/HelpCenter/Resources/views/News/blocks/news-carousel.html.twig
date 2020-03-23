@@ -14,7 +14,7 @@
                     <div class="dp-po-news-carousel-cover {% if has_splash(item) %}with-splash{% endif %}">
                         {% if has_splash(item) %}
                                     <img src="{{ get_splash_url(item, 300) }}"
-                                         class="dp-po-news-carousel-photo img-fluid" role="presentation" alt="" />
+                                         class="dp-po-news-carousel-photo img-fluid" role="presentation" alt="{{ get_splash_alt(item) }}" aria-label="{{ get_splash_alt(item) }}" />
                         {% endif %}
                         <span class="badge badge-info" style="{{ category_color_css(item.category) }}">{{ object_phrase(item.category) }}</span>
                     </div>

@@ -162,6 +162,7 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFunction('display_ticket_status', [$this, 'displayTicketStatus'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('has_splash', [$this, 'hasSplashImage']),
             new \Twig_SimpleFunction('get_splash_url', [$this, 'getSplashUrl']),
+            new \Twig_SimpleFunction('get_splash_alt', [$this, 'getSplashAlt']),
             new \Twig_SimpleFunction('get_splash_bgcss', [$this, 'getSplashBgcss'], ['is_safe' => ['html']]),
 
             // override so we can suppress errors where templates are out of date
@@ -2059,6 +2060,19 @@ class TemplatingExtension extends \Twig_Extension
         $splashImage = $object->getSplashImage();
         if ($splashImage) {
             return $this->container->get('splash_image.renderer')->getSplashUrl($splashImage, $width, $orientation);
+        }
+
+        return '';
+    }
+
+    public function getSplashAlt(HasSplashImageProperty $object)
+    {
+        $splashImage = $object->getSplashImage();
+        if ($splashImage) {
+            $options = $splashImage->getOptions();
+            if (isset($options['alt'])) {
+                return $options['alt'];
+            }
         }
 
         return '';

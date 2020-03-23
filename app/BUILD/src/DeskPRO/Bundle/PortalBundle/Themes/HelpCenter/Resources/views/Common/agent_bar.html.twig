@@ -16,13 +16,13 @@ if impersonation is OFF "impersonator" is the agent
     <div class="dp-po-admin-menu">
         <a class="dp-po-admin-menu-link" href="{{ path('agent') }}" data-toggle="dropdown" aria-haspopup="true"
            aria-expanded="false">
-            <i class="dp-po-icon dp-po-icon-round fal fa-user-headset"></i>
+            <span class="dp-po-icon dp-po-icon-round"><i class="fal fa-user-headset" alt="agent icon" aria-label="agent icon"></i></span>
             {{ phrase('helpcenter.general.agent') }}
-            <i class="dp-po-icon far fa-angle-down"></i>
+            <i class="dp-po-icon far fa-angle-down" aria-hidden="true"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-left">
             <a class="dropdown-item" href="{{ path('agent') }}">
-                <i class="dp-po-icon dp-po-icon-round fal fa-user-headset"></i>
+                <span class="dp-po-icon dp-po-icon-round"><i class="fal fa-user-headset"></i></span>
                 {{ phrase('helpcenter.general.agent_bar_agent_home') }}
             </a>
             {% if content is defined and agent_can_edit(content) %}
@@ -58,12 +58,12 @@ if impersonation is OFF "impersonator" is the agent
     <div class="dp-po-admin-menu">
         <a class="dp-po-admin-menu-link" href="{{ path('agent') }}#admin:/" data-toggle="dropdown" aria-haspopup="true"
            aria-expanded="false">
-            <i class="dp-po-icon dp-po-icon-round fal fa-user-crown"></i>
-            Admin
-            <i class="dp-po-icon far fa-angle-down"></i>
+            <span class="dp-po-icon dp-po-icon-round"><i class="fal fa-user-crown" alt="admin icon" aria-label="admin icon"></i></span>
+            {{ phrase('helpcenter.general.admin') }}
+            <i class="dp-po-icon far fa-angle-down" aria-hidden="true"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-left">
-            <a class="dropdown-item" href="{{ path('agent') }}#admin:/"><i class="dp-po-icon-round dp-po-icon fal fa-user-crown"></i>
+            <a class="dropdown-item" href="{{ path('agent') }}#admin:/"><span class="dp-po-icon dp-po-icon-round"><i class="fal fa-user-crown"></i></span>
                 {{ phrase('helpcenter.general.admin_home') }}
             </a>
             <hr />
