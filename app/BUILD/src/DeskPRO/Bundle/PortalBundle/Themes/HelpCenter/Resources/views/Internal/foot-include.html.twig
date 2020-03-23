@@ -20,7 +20,7 @@
           replaceSvgTag(img, byteString);
         }
       } else {
-        fetch(imgURL).then(function(response) {
+        fetch(imgURL, {mode: 'cors'}).then(function(response) {
           response.text().then(function (text) {
             replaceSvgTag(img, text);
           });
