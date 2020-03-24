@@ -158,8 +158,6 @@ class VoiceCloudProxy
         $response = $client->send();
         $data     = json_decode($response->getBody(), true);
 
-        $data['twilioProxyServiceUrl'] = rtrim($data['twilioProxyServiceUrl'], '/');
-
         if (!$data || !empty($data['error'])) {
             SystemErrorHandler::logException(new \Exception(json_encode($data)));
 
@@ -171,6 +169,8 @@ class VoiceCloudProxy
 
             throw new AccessDeniedException('dpms');
         }
+
+        $data['twilioProxyServiceUrl'] = rtrim($data['twilioProxyServiceUrl'], '/');
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
         $settingsRepo = $this->em->getRepository(Setting::class);
