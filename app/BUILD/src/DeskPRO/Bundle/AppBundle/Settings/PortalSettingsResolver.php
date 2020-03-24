@@ -15,6 +15,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GuidesSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\NewsSettings;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class PortalSettingsResolver.
@@ -70,6 +71,24 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     const KB_AUTO_UNPUBLISH_REVIEW_DATE          = 'user.kb_auto_unpublish_review';
     const KB_AUTO_UNPUBLISH_REVIEW_DATE_INTERVAL = 'user.kb_auto_unpublish_review_interval';
     const KB_AUTO_UNPUBLISH_REVIEW_DATE_UNIT     = 'user.kb_auto_unpublish_review_unit';
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param BrandAwareSettingsResolver $settingsResolver
+     * @param EntityManager              $em
+     */
+    public function __construct(BrandAwareSettingsResolver $settingsResolver, EntityManager $em)
+    {
+        parent::__construct($settingsResolver);
+
+        $this->em = $em;
+    }
 
     /**
      * {@inheritdoc}
@@ -291,5 +310,23 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
         ;
 
         return $model;
+    }
+
+    /**
+     * @param bool $force
+     *
+     * @return bool
+     */
+    public function hasEmailLimits($force = false)
+    {
+        foreach ($this->em->getRepository(Brand::class)->findAll() as $brand) {
+            if ($this->getSetting(self::LIMIT_EMAIL_DOMAINS, $brand, $force)
+                && $this->getSetting(self::LIMIT_EMAIL_DOMAINS_PATTERNS, $brand, $force)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
