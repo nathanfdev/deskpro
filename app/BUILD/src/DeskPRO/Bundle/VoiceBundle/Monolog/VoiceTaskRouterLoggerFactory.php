@@ -2,8 +2,9 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Monolog;
 
+use DeskPRO\Component\Monolog\Processor\ExtraFieldsProcessor;
 use DpSys\LowError\SystemErrorHandler;
-use Monolog\Formatter\LineFormatter;
+use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
 use Monolog\Logger;
@@ -34,7 +35,8 @@ class VoiceTaskRouterLoggerFactory
                 $handler = new StreamHandler($env->getUserLogsDir().'/task_router.log');
             }
 
-            $handler->setFormatter(new LineFormatter(null, 'Y-m-d H:i:s.u'));
+            $handler->setFormatter(new JsonFormatter(JsonFormatter::BATCH_MODE_NEWLINES));
+            $handler->pushProcessor(new ExtraFieldsProcessor($container->get('deskpro.app_env')));
 
             $logger->pushHandler($handler);
         }
