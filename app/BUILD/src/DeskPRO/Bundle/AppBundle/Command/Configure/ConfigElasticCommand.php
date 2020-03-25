@@ -79,7 +79,7 @@ class ConfigElasticCommand extends ContainerAwareCommand
                 $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand(['dp:elastica:populate', '--reset']),
                 $DP_ENV->getDpRoot()
             );
-            $proc->setTimeout(3600);
+            $proc->setTimeout(null);
             $proc->run(function ($type, $data) use ($output) {
                 if ($type === 'out') {
                     $output->write($data);
