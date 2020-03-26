@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="world with-searchbox">
-    {% show flashes %}
+    {% include 'Theme:Common:flashes.html.twig' with { flashes: pageData.flashes } %}
     <div class="column-full">
         {{ phrase('helpcenter.profile.account_disabled_message') }}
     </div>
