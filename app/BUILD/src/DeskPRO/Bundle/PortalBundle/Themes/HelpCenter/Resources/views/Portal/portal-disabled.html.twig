@@ -7,6 +7,9 @@
         <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
         <link href="{{ asset('DeskPRO_PortalBundle_vendors_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="{{ asset('DeskPRO_HelpcenterDisabledBundle.js', 'app_assets') }}" async="async"></script>
+        <script type="text/javascript">
+            window.DESKPRO_ROOT_URL = '{{ root_url() }}';
+        </script>
     </head>
 <body>
     <div class="world with-searchbox">
