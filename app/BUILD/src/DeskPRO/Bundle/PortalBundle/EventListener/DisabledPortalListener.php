@@ -7,6 +7,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
+use DeskPRO\Component\Util\LazyPropObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -119,9 +120,33 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
         $brand              = $this->brandStack->getActive();
         $brandPortalEnabled = (bool) $brand->getSetting('core.iface_portal', true);
 
+        $pageData = new LazyPropObject([
+            'flashes' => function () use ($event) {
+                return $this->loadFlashes($event);
+            },
+        ]);
+
+        $pageVars['pageData']   = $pageData;
+
         if (!$brandPortalEnabled) {
-            $event->setResponse($this->portalTpl->renderResponse('Theme:Portal:portal-disabled.html.twig'));
+            $event->setResponse($this->portalTpl->renderResponse('Theme:Portal:portal-disabled.html.twig', $pageVars));
         }
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     * @return array
+     */
+    public function loadFlashes(GetResponseEvent $event)
+    {
+        $request = $event->getRequest();
+        $flashes = [];
+        $session = $request->getSession();
+        if (null !== $session && $session->isStarted()) {
+            $flashes = $session->getFlashBag()->all();
+        }
+
+        return $flashes;
     }
 
     /**
