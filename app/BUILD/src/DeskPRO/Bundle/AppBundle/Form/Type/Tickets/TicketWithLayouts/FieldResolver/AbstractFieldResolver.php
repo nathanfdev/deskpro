@@ -8,6 +8,8 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketPriority;
+use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
@@ -303,7 +305,7 @@ abstract class AbstractFieldResolver
             'placeholder' => '',
             'required'    => $isRequired,
             'constraints' => $constraints,
-            'empty_data'  => $default > 0 ? $default : '',
+            'data'        => $default > 0 ? $default : '',
         ]);
     }
 
@@ -319,6 +321,11 @@ abstract class AbstractFieldResolver
         }
 
         $default     = $this->settingsResolver->getSetting('core.default_ticket_pri');
+        $defaultData = null;
+        if ($default > 0) {
+            $defaultData = $this->em->getRepository(TicketPriority::class)->find($default);
+        }
+
         $isRequired  = $this->fieldSettings->isPriorityRequired($context->isAgentView());
         $constraints = [];
         if ($isRequired) {
@@ -330,7 +337,7 @@ abstract class AbstractFieldResolver
             'placeholder' => '',
             'required'    => $isRequired,
             'constraints' => $constraints,
-            'empty_data'  => $default > 0 ? $default : '',
+            'data'        => $defaultData,
         ]);
     }
 
@@ -350,6 +357,11 @@ abstract class AbstractFieldResolver
         }
 
         $default     = $this->settingsResolver->getSetting('core.default_ticket_work');
+        $defaultData = null;
+        if ($default > 0) {
+            $defaultData = $this->em->getRepository(TicketWorkflow::class)->find($default);
+        }
+
         $isRequired  = $this->fieldSettings->isWorkflowRequired($context->isAgentView());
         $constraints = [];
         if ($isRequired) {
@@ -360,7 +372,7 @@ abstract class AbstractFieldResolver
             'label'       => $this->phrase('portal.forms.label_workflow'),
             'required'    => $isRequired,
             'constraints' => $constraints,
-            'empty_data'  => $default > 0 ? $default : '',
+            'data'        => $defaultData,
         ]);
     }
 
@@ -392,7 +404,7 @@ abstract class AbstractFieldResolver
             'placeholder' => '',
             'required'    => $isRequired,
             'constraints' => $constraints,
-            'empty_data'  => $default > 0 ? $default : '',
+            'data'        => $default > 0 ? $default : '',
         ]);
     }
 
