@@ -1,5 +1,5 @@
 {% if alerts.display_alerts %}
-    <div class="dp-po">
+    <div class="dp-po" role="complementary">
         {% if alerts.lang_diff %}
             <div class="dp-po-message-bar dp-po-message-bar-error">
                 <div class="container">
@@ -28,12 +28,12 @@
         {% if alerts.tickets_awaiting_reply | length > 0 %}
             <div class="dp-po-notification">
                 <figure class="dp-po-notification-figure">
-                    <img class="dp-po-notification-image" src="{{ asset('img/docs/notification.png', 'help_center') }}">
+                    <img class="dp-po-notification-image" src="{{ asset('img/docs/notification.png', 'help_center') }}" role="presentation" alt="envelope icon">
                     <span class="dp-po-notification-count">{{ alerts.tickets_awaiting_reply | length }}</span>
                 </figure>
-                <h3 class="dp-po-notification-title">{{ phrase('helpcenter.alerts.tickets-to-respond', { count: alerts.tickets_awaiting_reply | length })}}
+                <span class="dp-po-notification-title">{{ phrase('helpcenter.alerts.tickets-to-respond', { count: alerts.tickets_awaiting_reply | length })}}
                     <a href="{{ path('portal_tickets') }}" class="dp-po-notification-link">{{ phrase('helpcenter.general.click-here-to-view') }}</a>
-                </h3>
+                </span>
             </div>
         {% endif %}
     </div>

@@ -171,17 +171,20 @@ class NewsController extends AbstractController
                 if ($news['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
                     $news['status_code'] = 'hidden.unpublished';
                 }
+
                 break;
 
             case 'title':
                 $news['title'] = $this->in->getString('title');
                 $rev           = ContentRevisionUtil::findOrCreate($news, 'title', $this->person);
                 $rev['title']  = $news['title'];
+
                 break;
 
             case 'slug':
                 $news['slug'] = Strings::slugifyTitle($this->in->getString('slug')) ?: 'view';
                 $data['slug'] = $news['slug'];
+
                 break;
 
             case 'add-related':
@@ -190,6 +193,7 @@ class NewsController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'remove-related':
@@ -198,6 +202,7 @@ class NewsController extends AbstractController
                     $this->in->getString('content_type'),
                     $this->in->getString('content_id')
                 );
+
                 break;
 
             case 'content':
@@ -226,6 +231,7 @@ class NewsController extends AbstractController
                     if ($attach->blob['id'] == $this->in->getUInt('blob_id')) {
                         $news->attachments->remove($k);
                         $this->em->remove($attach);
+
                         break;
                     }
                 }
@@ -236,15 +242,18 @@ class NewsController extends AbstractController
                 $cat                 = $this->em->find(NewsCategory::class, $this->in->getUInt('category_id'));
                 $news['category']    = $cat;
                 $data['category_id'] = $cat['id'];
+
                 break;
 
             case 'delete':
                 $news->status_code = 'hidden.deleted';
+
                 break;
 
             case 'undelete':
                 $news->status_code = 'published';
                 $news->setSlug(null);
+
                 break;
 
             case 'auto-unpub':
@@ -253,17 +262,20 @@ class NewsController extends AbstractController
 
                 $news->date_end   = $date;
                 $news->end_action = $action;
+
                 break;
 
             case 'remove-auto-unpub':
                 $news->date_end   = null;
                 $news->end_action = null;
+
                 break;
 
             case 'auto-pub':
                 $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
 
                 $news->date_published = $date;
+
                 break;
 
             // set publish date in the past
@@ -278,17 +290,19 @@ class NewsController extends AbstractController
                 $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
 
                 $news->date_published = $date;
+
                 break;
 
             case 'remove-auto-pub':
                 $news->date_published = null;
+
                 break;
 
             case 'select-unsplash-image':
                 $splashImage = new SplashImageProperty();
                 $image       = json_decode($this->in->getString('image'));
                 $splashImage->setUrn($splashImage::$unsplashNs.':'.$image->id);
-                $splashImage->setOptions(['url' => $image->urls->raw]);
+                $splashImage->setOptions(['url' => $image->urls->raw, 'alt' => $image->alt_description]);
                 $this->em->persist($splashImage);
                 $news->setSplashImage($splashImage);
                 // Trigger Download on unsplash api to register photo usage
@@ -306,6 +320,7 @@ class NewsController extends AbstractController
                         'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($news),
                     ],
                 ]);
+
                 break;
 
             case 'remove-splash-image':
@@ -385,6 +400,8 @@ class NewsController extends AbstractController
 
     /**
      * View a list of news.
+     *
+     * @param mixed $category_id
      */
     public function listAction($category_id = 0)
     {
