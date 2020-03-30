@@ -60,6 +60,10 @@ trait TicketSaveTrait
             $context->getVars()->set('mute_user_emails', true);
         }
 
+        if (!$ticket->getId()) {
+            $ticket->setCreationSystem(Ticket::CREATED_WEB_API);
+        }
+
         $manager->saveTicket($ticket, $context);
     }
 
