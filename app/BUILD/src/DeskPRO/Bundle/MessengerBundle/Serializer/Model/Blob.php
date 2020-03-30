@@ -38,7 +38,7 @@ class Blob implements MessengerModelInterface
                 'auth_id'           => $this->blob->getAuthId(),
                 'auth'              => $this->blob->getAuthcode(),
                 'filename'          => $this->blob->getFilename(),
-                'filesize_readable' => $this->blob->getFilesize(),
+                'filesize_readable' => $this->blob->getReadableFilesize(),
                 'download_url'      => $downloadUrl,
                 'is_image'          => $this->blob->isImage(),
             ],
