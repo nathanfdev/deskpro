@@ -137,3 +137,9 @@ services:
         arguments: ["@service_container"]
         tags:
             - { name: security.voter }
+
+    portal_designer.voter:
+      class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\PortalDesignerVoter
+      arguments: ["@service_container"]
+      tags:
+        - { name: security.voter }
