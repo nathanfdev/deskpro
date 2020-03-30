@@ -48,7 +48,10 @@ import('./hc-lazy-inc').then(function() {
   });
 });
 
-const possibleLocale = window.DESKPRO_LOCALE.replace(/-/, '_').split(/_/)[0] || 'en';
+let possibleLocale = 'en';
+if (window.DESKPRO_LOCALE) {
+  possibleLocale = window.DESKPRO_LOCALE.replace(/-/, '_').split(/_/)[0] || 'en';
+}
 
 import(
   /* webpackPreload: true */

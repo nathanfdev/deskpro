@@ -23,7 +23,8 @@ const config = {
 
     DeskPRO_PortalBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle',
 
-    DeskPRO_HelpcenterBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_HelpcenterBundle',
+    DeskPRO_HelpcenterBundle:         './src/DeskPRO/Bundle/PortalBundle/DeskPRO_HelpcenterBundle',
+    DeskPRO_HelpcenterDisabledBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_HelpcenterDisabledBundle',
 
     DeskPRO_PortalBundle_style:     './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss',
     DeskPRO_PortalBundle_rtl_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss',

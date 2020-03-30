@@ -6,10 +6,15 @@
         <title>{{ brand_setting('core.deskpro_name')|e }}</title>
         <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
         <link href="{{ asset('DeskPRO_PortalBundle_vendors_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
+        <script type="text/javascript">
+            window.DESKPRO_ROOT_URL = '{{ root_url() }}';
+            window.DESKPRO_APP_ASSETS_URL = '{{ asset('', 'app_assets') }}';
+        </script>
+        <script type="text/javascript" src="{{ asset('DeskPRO_HelpcenterDisabledBundle.js', 'app_assets') }}" async="async"></script>
     </head>
 <body>
     <div class="world with-searchbox">
-        {% show flashes %}
+        {% include 'Theme:Common:flashes.html.twig' with { flashes: pageData.flashes } %}
         <div class="column-full">
             {% if app.user and app.user.can_admin %}
                 {{ phrase('helpcenter.general.helpcenter-disabled-re-enable-from-setup', {setup_link: path('agent')~'#admin:/portal/setup'}) }}
