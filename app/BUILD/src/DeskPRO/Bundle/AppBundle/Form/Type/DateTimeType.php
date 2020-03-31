@@ -72,7 +72,7 @@ class DateTimeType extends AbstractType
             $event->setData($data);
         } catch (\Exception $e) {
             if ($data = \DateTime::createFromFormat('d/m/Y H:i', $data)) {
-                $data = $data->format('Y-m-Y-m-d H:i:s');
+                $data = $data->format('Y-m-d H:i:s');
                 $event->setData($data);
             }
             // unable to parse, leave as is
