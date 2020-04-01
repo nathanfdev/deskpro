@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
-import { debounce } from 'lodash'
+import { debounce } from 'lodash';
 import {
   clipboardHasImages,
   clipboardIEHasImages,
@@ -84,6 +84,7 @@ export default class RteEditor extends React.Component {
     };
 
     this.medium = new MediumEditor(node, { ...options, ...overrideOptions });
+    this.medium.elements[0].setAttribute('aria-label', 'Message');
     this.medium.setContent(value);
     this.medium.subscribe('editableInput', onChangeContent);
     this.medium.subscribe('onChange', onChangeContent);
@@ -176,7 +177,7 @@ export default class RteEditor extends React.Component {
     // Move selection state to the next position after paste
     this.medium.selectionState = {
       start: this.medium.selectionState.start + 1,
-      end: this.medium.selectionState.end + 1,
+      end:   this.medium.selectionState.end + 1,
     };
   };
 

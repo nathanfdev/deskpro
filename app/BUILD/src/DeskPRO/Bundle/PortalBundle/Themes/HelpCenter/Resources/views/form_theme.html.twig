@@ -179,7 +179,7 @@
         {% if widget == 'single_text' %}
             {{- block('form_widget_simple') -}}
         {%- else -%}
-            <div class="fallback-input">
+            <div class="fallback-input" aria-hidden="true">
                 <div {{ block('widget_container_attributes') }}>
                     {{- form_errors(form.date) -}}
                     {{- form_errors(form.time) -}}
@@ -251,6 +251,8 @@
         {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' title')|trim}) %}
         {% if not compound -%}
             {% set label_attr = label_attr|merge({'for': id}) %}
+        {% else %}
+            {% set label_attr = label_attr|merge({'for': id ~ '_data'}) %}
         {%- endif %}
         {% if required -%}
             {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}

@@ -172,7 +172,7 @@ export default class PortalRte extends React.Component {
             },
             targetBlank:  true,
             buttonLabels: 'fontawesome',
-            placeholder:  false
+            placeholder:  false,
           }}
         />
 

@@ -22,6 +22,7 @@
         {% block page_content %}
         <div class="dp-po">
             <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+                <h1 class="aria-hide">{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</h1>
                 <div class="container">
                     {% if block("page_top") is defined %}
                         {{ block("page_top") }}

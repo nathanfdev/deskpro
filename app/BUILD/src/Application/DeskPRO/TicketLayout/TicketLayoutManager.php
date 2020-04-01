@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category TicketLayout
- */
+
 
 namespace Application\DeskPRO\TicketLayout;
 
@@ -58,24 +54,24 @@ class TicketLayoutManager
      */
     public static function createWithLayoutArrays(array $ticket_layouts)
     {
-        $user_layouts  = new LayoutCollection();
-        $agent_layouts = new LayoutCollection();
+        $userLayouts  = new LayoutCollection();
+        $agentLayouts = new LayoutCollection();
 
         foreach ($ticket_layouts as $l) {
             $key = $l['department_id'] ? $l['department_id'] : null;
             if (!empty($l['user_layout'])) {
-                $user_layout = $l['user_layout'];
-                LayoutUtil::ensureMinimumUserLayout($user_layout);
-                $user_layouts->addLayout($user_layout, $key);
+                $userLayout = $l['user_layout'];
+                LayoutUtil::ensureMinimumUserLayout($userLayout);
+                $userLayouts->addLayout($userLayout, $key);
             }
             if (!empty($l['agent_layout'])) {
-                $agent_layout = $l['agent_layout'];
-                LayoutUtil::ensureMinimumAgentLayout($agent_layout);
-                $agent_layouts->addLayout($agent_layout, $key);
+                $agentLayout = $l['agent_layout'];
+                LayoutUtil::ensureMinimumAgentLayout($agentLayout);
+                $agentLayouts->addLayout($agentLayout, $key);
             }
         }
 
-        return new self($user_layouts, $agent_layouts);
+        return new self($userLayouts, $agentLayouts);
     }
 
     /**

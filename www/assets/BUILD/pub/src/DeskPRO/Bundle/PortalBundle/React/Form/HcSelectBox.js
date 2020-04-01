@@ -134,7 +134,11 @@ export class HcSelectBox extends React.Component {
           dataSource={{ getOptions: group }}
           value={this.state.value}
           onChange={this.onClickOption}
-          i18n={{ back: portalPhrases.get('helpcenter.general.back') }}
+          i18n={{
+            back:   portalPhrases.get('helpcenter.general.back'),
+            select: portalPhrases.get('helpcenter.general.select'),
+          }}
+          aria-label="Pick a value"
         />
       </div>
     );

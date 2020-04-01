@@ -2,7 +2,7 @@
     <div class="col-sm">
         <div class="dp-po-title">
             <img class="dp-po-title-svg icon-svg" src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
-            <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
+            <h1 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h1>
         </div>
     </div>
     {% if is_community_enabled %}
@@ -38,6 +38,7 @@
 <div class="d-block d-sm-none">
     <div class="dp-po-post-mobile-area">
         {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+            buttonId: 'subscribeDropdownMenuMobile',
             subscriptionInfo: [
                 {
                     toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
