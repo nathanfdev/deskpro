@@ -73,7 +73,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      */
     public function getWidgetCodeAction(Brand $brand, Request $request)
     {
-        $code = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, $request, false, true);
+        $code = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, $request, false);
 
         return new View($this->wrap($code));
     }

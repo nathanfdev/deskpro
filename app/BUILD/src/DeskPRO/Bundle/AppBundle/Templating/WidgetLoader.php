@@ -69,13 +69,12 @@ class WidgetLoader
      * @param Brand   $brand
      * @param Request $request
      * @param bool    $withOptions
-     * @param bool    $useDynAssets
      *
      * @return string
      */
-    public function getWidgetCode(Brand $brand, Request $request, $withOptions = false, $useDynAssets = false)
+    public function getWidgetCode(Brand $brand, Request $request, $withOptions = false)
     {
-        $urlSettings = $this->settingsResolver->getWidgetUrlSettings($brand, $request, $useDynAssets);
+        $urlSettings = $this->settingsResolver->getWidgetUrlSettings($brand, $request);
 
         $loaderSrc = $urlSettings->getWidgetLoader();
 
