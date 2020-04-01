@@ -8,12 +8,13 @@ import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { connectionsSelector, incomingCallSelector, outgoingCallSelector } from '../Selectors/client';
+import { connectionsSelector, incomingCallSelector, outgoingCallSelector, hasSocketConnectionSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 import { allVoiceAccountsSelector } from '../Selectors/accounts';
 import { allNumbersSelector } from '../Selectors/numbers';
 import { closeIframes } from '../../Application/Actions/bootstrapActions';
 
+export const changeSocketStatus = createAction('VOICE_AGENT_SET_SOCKET_STATUS');
 export const setMicEnabled = createAction('VOICE_AGENT_SET_MIC_ENABLED');
 export const setVoiceSettings = createAction('VOICE_AGENT_SET_SETTINGS');
 export const addIncomingCall = createAction('VOICE_AGENT_ADD_RESERVATION');
@@ -312,7 +313,7 @@ export const voiceBootstrap = createAction(
             clients[id] = new Device(credentials.get('phone_token'), options);
             clients[id]._enabledSounds.outgoing = false; // eslint-disable-line
             clients[id].ready(() => {
-              console.log('phone ready');
+              dispatch(changeSocketStatus(true));
             });
             clients[id].error((error) => {
               api.sendPost('DP_API/client_error', {
@@ -335,6 +336,18 @@ export const voiceBootstrap = createAction(
                 dispatch(resetOutgoingCall());
               });
             });
+
+            setInterval(() => {
+              const isDisconnected = ['closed', 'offline'].indexOf(clients[id].status()) !== -1;
+
+              if (hasSocketConnectionSelector(getState())) {
+                if (isDisconnected) {
+                  dispatch(changeSocketStatus(false));
+                }
+              } else if (!isDisconnected) {
+                dispatch(changeSocketStatus(true));
+              }
+            }, 1000);
           } catch (e) {
             console.error(e.message);
           }
