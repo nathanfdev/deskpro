@@ -315,8 +315,12 @@ export const voiceBootstrap = createAction(
               console.log('phone ready');
             });
             clients[id].error((error) => {
-              console.log('device error');
-              console.log(error);
+              api.sendPost('DP_API/client_error', {
+                code:             error.code,
+                message:          error.message,
+                original_code:    error.twilioError ? error.twilioError.code : null,
+                original_message: error.twilioError ? error.twilioError.message : null,
+              });
             });
             clients[id].connect((connection) => {
               connection.ticketId = parseInt(connection.message.TicketId, 10);

@@ -104,6 +104,27 @@ class VoiceClientController extends BaseController
     }
 
     /**
+     * @Rest\Post("/client_error")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function clientErrorAction(Request $request)
+    {
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf(
+            '[VoiceClient] Got client error, code = %s, message = %s, original_code = %s, original_message = %s',
+            $request->get('message'),
+            $request->get('code'),
+            $request->get('original_code'),
+            $request->get('original_message')
+        ));
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * @Rest\Get("/performance_logs")
      *
      * @return Response
