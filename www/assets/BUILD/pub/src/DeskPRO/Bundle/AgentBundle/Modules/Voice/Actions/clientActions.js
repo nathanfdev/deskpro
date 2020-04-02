@@ -310,42 +310,58 @@ export const voiceBootstrap = createAction(
               debug: true
             };
 
-            clients[id] = new Device(credentials.get('phone_token'), options);
-            clients[id]._enabledSounds.outgoing = false; // eslint-disable-line
-            clients[id].ready(() => {
-              dispatch(changeSocketStatus(true));
-            });
-            clients[id].error((error) => {
-              api.sendPost('DP_API/voice_client/client_error', {
-                code:             error.code,
-                message:          error.message,
-                original_code:    error.twilioError ? error.twilioError.code : null,
-                original_message: error.twilioError ? error.twilioError.message : null,
+            const bootstrapTwilioAccount = (token) => {
+              clients[id] = new Device(token, options);
+              clients[id]._enabledSounds.outgoing = false; // eslint-disable-line
+              clients[id].ready(() => {
+                dispatch(changeSocketStatus(true));
               });
-            });
-            clients[id].connect((connection) => {
-              connection.ticketId = parseInt(connection.message.TicketId, 10);
-              connection.callId   = parseInt(connection.message.CallId, 10);
-              connection.outbound = connection.message.Outbound;
-
-              dispatch(addConnection(connection));
-              connection.disconnect(() => {
-                // call has ended
-                // unset incoming and outgoing calls
-                dispatch(removeConnection(connection));
-                dispatch(resetOutgoingCall());
+              clients[id].error((error) => {
+                api.sendPost('DP_API/voice_client/client_error', {
+                  code:             error.code,
+                  message:          error.message,
+                  original_code:    error.twilioError ? error.twilioError.code : null,
+                  original_message: error.twilioError ? error.twilioError.message : null,
+                });
               });
-            });
+              clients[id].connect((connection) => {
+                connection.ticketId = parseInt(connection.message.TicketId, 10);
+                connection.callId   = parseInt(connection.message.CallId, 10);
+                connection.outbound = connection.message.Outbound;
 
+                dispatch(addConnection(connection));
+                connection.disconnect(() => {
+                  // call has ended
+                  // unset incoming and outgoing calls
+                  dispatch(removeConnection(connection));
+                  dispatch(resetOutgoingCall());
+                });
+              });
+            };
+
+            bootstrapTwilioAccount(credentials.get('phone_token'));
+
+            let retryAttempts = 0;
             setInterval(() => {
               const isDisconnected = ['closed', 'offline'].indexOf(clients[id].status()) !== -1;
+              const hasConnection = hasSocketConnectionSelector(getState());
 
-              if (hasSocketConnectionSelector(getState())) {
+              if (hasConnection) {
                 if (isDisconnected) {
                   dispatch(changeSocketStatus(false));
                 }
               } else if (!isDisconnected) {
                 dispatch(changeSocketStatus(true));
+              } else {
+                // force try to reconnect if socket was closed
+                retryAttempts += 1;
+                if (retryAttempts > 30) {
+                  retryAttempts = 0;
+
+                  api.sendGet(`DP_API/voice_accounts/twilio/${account.get('id')}/refresh_token`).success(({ data }) => {
+                    bootstrapTwilioAccount(data.phone_token);
+                  });
+                }
               }
             }, 1000);
           } catch (e) {

@@ -14,7 +14,9 @@ use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\TwilioAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceBuyNumberType;
+use DeskPRO\Bundle\VoiceBundle\Serializer\Model\TwilioClientCredentials;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
+use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioExistingNumber;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -226,6 +228,29 @@ class TwilioAccountsController extends AbstractVoiceCrudController
         } catch (TwilioException $e) {
             return $this->getFormErrorResponseFromException('twilio_exception', $e);
         }
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Returns client voice auth tokens",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens"
+     * )
+     *
+     * @Rest\Get("/{account}/refresh_token")
+     *
+     * @param TwilioVoiceAccount $account
+     *
+     * @return View
+     */
+    public function createTwilioClientTokensAction(TwilioVoiceAccount $account)
+    {
+        $credentials = new TwilioClientCredentials();
+        $credentials->setPhoneToken($this->get('twilio_adapter')->createPhoneToken($account, $this->getUser()));
+
+        return new View($this->wrap($credentials));
     }
 
     /**

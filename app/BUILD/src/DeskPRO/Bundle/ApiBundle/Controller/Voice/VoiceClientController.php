@@ -28,33 +28,6 @@ class VoiceClientController extends BaseController
 {
     /**
      * @ApiDoc(
-     *     description="Returns client voice auth tokens",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens"
-     * )
-     *
-     * @Rest\Get("/twilio_tokens")
-     *
-     * @param TwilioVoiceAccount $account
-     *
-     * @return View
-     */
-    public function createTwilioClientTokensAction(TwilioVoiceAccount $account)
-    {
-        $adapter = $this->get('twilio_adapter');
-        $person  = $this->getUser();
-
-        $clientTokens = new TwilioClientTokens(
-            $adapter->createPhoneToken($account, $person)
-        );
-
-        return new View($this->wrap($clientTokens));
-    }
-
-    /**
-     * @ApiDoc(
      *     description="Prepares outbound phone call",
      *     statusCodes={
      *         200="Returned if everything is ok"
