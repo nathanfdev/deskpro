@@ -3,7 +3,9 @@ import React from 'react';
 import debounce from 'lodash/debounce';
 import map from 'lodash/map';
 import slice from 'lodash/slice';
+import Isvg from 'react-inlinesvg';
 import $ from 'jquery';
+import SuggestionsSvg from '@deskpro/portal-style/dist/img/page-icons/ticket-suggestions.svg';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
@@ -17,15 +19,15 @@ class SuggestionRow extends React.Component {
     const icon = this.props.result.object.icon_html;
 
     return (
-      <li className="dp-po-kb-category-item">
+      <li className="dp-po-ticket-create-suggestions-item">
         <a
-          className="dp-po-kb-category-link"
+          className="dp-po-ticket-create-suggestions-link"
           href={this.props.result.object.url}
           target="_blank"
           rel="noopener noreferrer"
         >
           <span dangerouslySetInnerHTML={{ __html: icon }} />&nbsp;
-          <span className="dp-po-kb-category-text">{this.props.result.object.name}</span>
+          <span className="dp-po-ticket-create-suggestions-text">{this.props.result.object.name}</span>
         </a>
       </li>
     );
@@ -43,7 +45,7 @@ class SuggestionMore extends React.Component {
     const { showAll, count } = this.props;
 
     return (
-      <span className="manage-emails-link">
+      <span className="dp-po-ticket-create-suggestions-more">
         <a
           onClick={showAll}
           style={{ textDecoration: 'underline', cursor: 'pointer', fontWeight: 700 }}
@@ -63,7 +65,7 @@ class SuggestionLess extends React.Component {
 
   render() {
     return (
-      <span className="manage-emails-link">
+      <span className="dp-po-ticket-create-suggestions-more">
         <a
           onClick={this.props.showLess}
           style={{ textDecoration: 'underline', cursor: 'pointer', fontWeight: 700 }}
@@ -107,7 +109,7 @@ class Suggestions extends React.Component {
     this.setState({
       show_all: false
     });
-  }
+  };
 
   render() {
     const { results } = this.props;
@@ -124,7 +126,7 @@ class Suggestions extends React.Component {
 
     return (
       <div>
-        <ul className="dp-po-kb-category-list"  style={{ marginBottom: 0 }}>
+        <ul className="dp-po-ticket-create-suggestions-list"  style={{ marginBottom: 0 }}>
           { map(visibleResults, (result, idx) =>
             <SuggestionRow key={result.type + result.object.id} alt={idx % 2 === 0} result={result} />)}
         </ul>
@@ -206,10 +208,12 @@ export class HelpcenterNewTicketSuggestions extends React.Component {
 
     return (
       <p>
-        <div className="dp-po-block" style={{ marginTop: '10px' }}>
+        <div className="dp-po-block dp-po-ticket-create-suggestions" style={{ marginTop: '10px' }}>
           <header>
-            <h2>{portalPhrases.get('portal.tickets.related_articles_title')}</h2>
-            <h3>{portalPhrases.get('portal.tickets.related_articles_desc')}</h3>
+            <div className="dp-po-ticket-create-suggestions-title">
+              <Isvg src={SuggestionsSvg} className="dp-po-ticket-create-suggestions-image" />
+              {portalPhrases.get('portal.tickets.related_articles_desc')}
+            </div>
           </header>
           <Suggestions results={results} />
         </div>
