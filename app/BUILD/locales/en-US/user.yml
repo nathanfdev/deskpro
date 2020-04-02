@@ -1327,6 +1327,7 @@ user.messenger.chat.rating_block.question_header: 'Rate your conversation with {
 user.messenger.chat.rating_block.buttons.helpful: 'Helpful'
 user.messenger.chat.rating_block.buttons.unhelpful: 'Unhelpful'
 user.messenger.chat.rating_block.thank_you_header: 'Thank you for your feedback'
+user.messenger.tickets.form.header: 'New ticket'
 user.messenger.tickets.form.name: 'Name'
 user.messenger.tickets.form.email: 'Email'
 user.messenger.tickets.form.department: 'Department'

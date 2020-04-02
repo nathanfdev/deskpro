@@ -1324,6 +1324,7 @@ user.messenger.chat.rating_block.question_header: 'Оцените Вашу бе�
 user.messenger.chat.rating_block.buttons.helpful: 'Полезно'
 user.messenger.chat.rating_block.buttons.unhelpful: 'Бесползено'
 user.messenger.chat.rating_block.thank_you_header: 'Спасибо за Ваш отзыв'
+user.messenger.tickets.form.header: 'Новый запрос'
 user.messenger.tickets.form.name: 'Имя'
 user.messenger.tickets.form.email: 'Email'
 user.messenger.tickets.form.department: 'Отдел'
