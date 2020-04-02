@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutCollection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -76,8 +77,13 @@ class ServiceController extends AbstractMessengerController
         $data['tickets']['formConfig']      = $this->getTicketFormConfig($ticketsSettings);
         $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();
         $data['chat']['formMessage']        = $preChatForm->getFormMessage();
-        $language                           = $this->container->get('language_stack')->getActiveOrDefault();
-        $data['language']                   = [
+
+        $person   = $this->getUser();
+        $language = $person && $person->getId()
+            ? $person->getLanguage()->getId()
+            : $this->container->get('language_stack')->getActiveOrDefault();
+
+        $data['language'] = [
             'id'      => $language->getId(),
             'locale'  => $language->getLocale(),
             'version' => 1,
@@ -159,14 +165,19 @@ class ServiceController extends AbstractMessengerController
         $translate = $this->container->get('deskpro.core.translate');
         $language  = null;
 
-        if ($request->get('language')) {
+        /** @var Person $person */
+        $person = $this->getUser();
+
+        $language = $person && $person->getId()
+            ? $person->getLanguage()
+            : $this->container->get('language_stack')->getActiveOrDefault();
+
+        //look for requested language only when user has no preferred one
+        if ((!$person || !$person->getId()) && $request->get('language')) {
             $entityRepository = $this->getManager()->getRepository(Language::class);
             if (!$language = $entityRepository->find($request->get('language'))) {
                 $language = $entityRepository->getForLangCode($request->get('language'));
             }
-        }
-        if (!$language) {
-            $language = $this->container->get('language_stack')->getActiveOrDefault();
         }
 
         $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
