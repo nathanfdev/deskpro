@@ -1308,6 +1308,7 @@ user.time.x_week:
 user.time.x_year:
   one: '1 year'
   other: '{{count}} years'
+user.messenger.chat.header.title: '{department} conversation'
 user.messenger.chat.save_ticket.question: 'Would you like an agent to contact you?'
 user.messenger.chat.save_ticket.intro: 'Enter your name and your email address and one of our agents will get back to you as soon as possible.'
 user.messenger.chat.save_ticket.thanks: 'An agent will get back to you as soon as possible'
@@ -1346,3 +1347,14 @@ user.messenger.chat.transcript_block.answer_header: 'Your transcript is on it’
 user.messenger.chat.transcript_block.yes_button: 'Yes'
 user.messenger.chat.transcript_block.no_button: 'No'
 user.messenger.chat.transcript_block.send_button: 'Send Message'
+user.messenger.blocks.continue_chat.link: 'Continue'
+user.messenger.tickets.form.saving: "We're saving your ticket. Please wait"
+user.messenger.tickets.form.thanks_header: "Your request on its way"
+user.messenger.tickets.form.thanks: "Thank you for contacting us. One of our team will be in touch with you via email."
+user.messenger.blocks.start_chat.title: 'Chat with us'
+user.messenger.blocks.start_chat.description: 'Need help? Just reply to start a live conversation with one of our team'
+user.messenger.blocks.start_chat.link: 'Start Chat'
+user.messenger.blocks.continue_chat.title: 'Continue existing chat'
+user.messenger.blocks.tickets.title: 'Your Tickets'
+user.messenger.blocks.tickets.view_all_link: 'view all'
+user.messenger.chat.enter_form.button: 'Start Conversation'

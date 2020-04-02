@@ -1305,6 +1305,7 @@ user.time.x_year:
   few: ' {{count}} лет'
   many: ' {{count}} лет'
   other: ' {{count}} лет'
+user.messenger.chat.header.title: 'Беседа с {department}'
 user.messenger.chat.save_ticket.question: 'Хотите чтобы агент связался с Вами?'
 user.messenger.chat.save_ticket.intro: 'Введите свое имя и email, и один из наших агентов свяжется с Вами так скоро, как это возможно.'
 user.messenger.chat.save_ticket.thanks: 'Агент свяжется с Вами так скоро, как это возможно'
@@ -1343,3 +1344,14 @@ user.messenger.chat.transcript_block.answer_header: 'Расшифровка уж
 user.messenger.chat.transcript_block.yes_button: 'Да'
 user.messenger.chat.transcript_block.no_button: 'Нет'
 user.messenger.chat.transcript_block.send_button: 'Отправить сообщение'
+user.messenger.blocks.continue_chat.link: 'Продолжить'
+user.messenger.tickets.form.saving: "Мы отправляем Ваш запрос. Пожалуйста, подождите"
+user.messenger.tickets.form.thanks_header: "Ваш запрос отправлен"
+user.messenger.tickets.form.thanks: "Спасибо что связались с нами! Один из членов нашей команды свяжется с Вами по почте."
+user.messenger.blocks.start_chat.title: 'Начать чат'
+user.messenger.blocks.start_chat.description: 'Нужна помощь? Просто отправтье сообщение, чтобы начать чат с одним и наших агентов'
+user.messenger.blocks.start_chat.link: 'Начать чат'
+user.messenger.blocks.continue_chat.title: 'Продолжить чат'
+user.messenger.blocks.tickets.title: 'Ваши запросы'
+user.messenger.blocks.tickets.view_all_link: 'смотреть всё'
+user.messenger.chat.enter_form.button: 'Начать беседу'

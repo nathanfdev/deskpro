@@ -160,6 +160,18 @@ class ServiceController extends AbstractMessengerController
             'chat.transcript_block.yes_button',
             'chat.transcript_block.no_button',
             'chat.transcript_block.send_button',
+            'blocks.continue_chat.link',
+            'tickets.form.saving',
+            'tickets.form.thanks_header',
+            'tickets.form.thanks',
+            'blocks.start_chat.title',
+            'blocks.start_chat.description',
+            'blocks.start_chat.link',
+            'blocks.continue_chat.title',
+            'blocks.tickets.title',
+            'blocks.tickets.view_all_link',
+            'chat.header.title',
+            'chat.enter_form.button',
         ];
 
         $translate = $this->container->get('deskpro.core.translate');
