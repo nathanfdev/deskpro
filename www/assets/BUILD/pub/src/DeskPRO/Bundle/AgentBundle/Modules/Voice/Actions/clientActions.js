@@ -316,7 +316,7 @@ export const voiceBootstrap = createAction(
               dispatch(changeSocketStatus(true));
             });
             clients[id].error((error) => {
-              api.sendPost('DP_API/client_error', {
+              api.sendPost('DP_API/voice_client/client_error', {
                 code:             error.code,
                 message:          error.message,
                 original_code:    error.twilioError ? error.twilioError.code : null,
