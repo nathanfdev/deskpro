@@ -107,21 +107,13 @@ class ServiceController extends AbstractMessengerController
      *     resourceDescription="Service actions",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     },
-     *     requirements={
-     *          {
-     *              "name"="language",
-     *              "requirement"="[0-9]+",
-     *              "description"="id of the language to look for",
-     *              "dataType"="string"
-     *          }
-     *      }
+     *     }
      * )
-     * @Rest\Get("/translation/{language}")
+     * @Rest\Get("/translation")
      *
      * @return View
      */
-    public function getTranslationAction(Language $language, Request $request)
+    public function getTranslationAction(Request $request)
     {
         $phrases = [
             'chat.save_ticket.question',
@@ -165,6 +157,17 @@ class ServiceController extends AbstractMessengerController
         ];
 
         $translate = $this->container->get('deskpro.core.translate');
+        $language  = null;
+
+        if ($request->get('language')) {
+            $entityRepository = $this->getManager()->getRepository(Language::class);
+            if (!$language = $entityRepository->find($request->get('language'))) {
+                $language = $entityRepository->getForLangCode($request->get('language'));
+            }
+        }
+        if (!$language) {
+            $language = $this->container->get('language_stack')->getActiveOrDefault();
+        }
 
         $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
             return [$id, $translate->phrase(sprintf('user.messenger.%s', $id), [], $language) ?: "!$id!"];
