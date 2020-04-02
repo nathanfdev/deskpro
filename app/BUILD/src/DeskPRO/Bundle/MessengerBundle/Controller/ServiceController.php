@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\MessengerBundle\Controller;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutCollection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -15,6 +16,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatFormCustomField;
+use DeskPRO\Component\Util\MapUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as Router;
@@ -74,6 +76,12 @@ class ServiceController extends AbstractMessengerController
         $data['tickets']['formConfig']      = $this->getTicketFormConfig($ticketsSettings);
         $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();
         $data['chat']['formMessage']        = $preChatForm->getFormMessage();
+        $language                           = $this->container->get('language_stack')->getActiveOrDefault();
+        $data['language']                   = [
+            'id'      => $language->getId(),
+            'locale'  => $language->getLocale(),
+            'version' => 1,
+        ];
 
         $data['tickets']['uploadTo'] = $data['chat']['uploadTo'] = $this->generateUrl(
             'messenger_blob_upload', [], UrlGeneratorInterface::ABSOLUTE_URL
@@ -89,6 +97,80 @@ class ServiceController extends AbstractMessengerController
         ];
 
         return View::create($data, Response::HTTP_OK);
+    }
+
+    /**
+     * You can use this endpoint to gather information about clients you need to obtain notifications and alerts.
+     *
+     * @ApiDoc(
+     *     section="Messenger",
+     *     resourceDescription="Service actions",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     requirements={
+     *          {
+     *              "name"="language",
+     *              "requirement"="[0-9]+",
+     *              "description"="id of the language to look for",
+     *              "dataType"="string"
+     *          }
+     *      }
+     * )
+     * @Rest\Get("/translation/{language}")
+     *
+     * @return View
+     */
+    public function getTranslationAction(Language $language, Request $request)
+    {
+        $phrases = [
+            'chat.save_ticket.question',
+            'chat.save_ticket.intro',
+            'chat.save_ticket.thanks',
+            'chat.save_ticket.button_yes',
+            'chat.save_ticket.button_no',
+            'chat.agent_assigned.message',
+            'message_user-left',
+            'chat.no_agent_online',
+            'chat.ended',
+            'chat.end_block.question_header',
+            'chat.end_block.buttons.yes',
+            'chat.end_block.buttons.no',
+            'chat.create_ticket.header',
+            'chat.create_ticket.intro',
+            'chat.create_ticket.button',
+            'chat.rating_block.question_header',
+            'chat.rating_block.buttons.helpful',
+            'chat.rating_block.buttons.unhelpful',
+            'chat.rating_block.thank_you_header',
+            'tickets.form.name',
+            'tickets.form.email',
+            'tickets.form.department',
+            'tickets.form.message',
+            'tickets.form.product',
+            'tickets.form.priority',
+            'tickets.form.category',
+            'tickets.form.submit',
+            'tickets.form.dragNDrop',
+            'tickets.form.or',
+            'tickets.form.chooseAFile',
+            'tickets.form.chooseFiles',
+            'tickets.form.select',
+            'tickets.form.back',
+            'chat.transcript_block.question_header',
+            'chat.transcript_block.answer_header',
+            'chat.transcript_block.yes_button',
+            'chat.transcript_block.no_button',
+            'chat.transcript_block.send_button',
+        ];
+
+        $translate = $this->container->get('deskpro.core.translate');
+
+        $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
+            return [$id, $translate->phrase(sprintf('user.messenger.%s', $id), [], $language) ?: "!$id!"];
+        });
+
+        return View::create($output, Response::HTTP_OK);
     }
 
     protected function isAbsoluteUrl($url)
