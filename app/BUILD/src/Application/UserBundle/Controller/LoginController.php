@@ -1035,6 +1035,13 @@ class LoginController extends AbstractController
         }
 
         $email = $this->in->getString('email');
+        if (!$this->get('dp_limit_email_domains_checker')->checkEmail($email)) {
+            if ($_format == 'json') {
+                return $this->createJsonResponse(['success' => 0, 'error' => 'bad_email_domain']);
+            } else {
+                return $this->redirectRoute($this->routePrefix.'_login_resetpass', ['return' => LegacyRequestUtils::readReturnParam($request)]);
+            }
+        }
 
         try {
             $check = new PasswordResetAbuseCheck($email, $request->getClientIp());
