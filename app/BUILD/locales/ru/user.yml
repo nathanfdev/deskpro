@@ -1312,7 +1312,6 @@ user.messenger.chat.save_ticket.thanks: 'Агент свяжется с Вами
 user.messenger.chat.save_ticket.button_yes: 'Да'
 user.messenger.chat.save_ticket.button_no: 'Нет'
 user.messenger.chat.agent_assigned.message: '{name} происоединяется к беседе.'
-user.messenger.message_user-left: '{name} покидает беседу.'
 user.messenger.chat.no_agent_online: 'Мы сожалеем, но нет в данный момент никто не может ответить вам.'
 user.messenger.chat.ended: 'Чат окончен'
 user.messenger.chat.end_block.question_header: 'Закончить чат?'
@@ -1355,3 +1354,9 @@ user.messenger.blocks.continue_chat.title: 'Продолжить чат'
 user.messenger.blocks.tickets.title: 'Ваши запросы'
 user.messenger.blocks.tickets.view_all_link: 'смотреть всё'
 user.messenger.chat.enter_form.button: 'Начать беседу'
+user.messenger.message_user-joined: "{name} присоединяется к беседе."
+user.messenger.message_user-left: '{name} покидает беседу.'
+user.messenger.message_ended: "Вы завершили эту беседу."
+user.messenger.message_ended-by: "{name} заканчивает беседу."
+user.messenger.message_assigned: "{name} назнчается отвественным за чат."
+user.messenger.message_unassigned: "{name} больше не отвечает за чат."
