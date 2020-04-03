@@ -12,6 +12,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Task;
 use DateTime;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityNotFoundException;
 use Orb\Util\Numbers;
 use ReflectionClass;
 use ReflectionParameter;
@@ -76,7 +77,12 @@ class PreviewFakeDataFactory
                 if (!empty($request->request->get('variables')[$parameter->getName()])) {
                     return $this->manager->getRepository($className)->find($request->request->get('variables')[$parameter->getName()]['id']);
                 } else {
-                    return $this->manager->getRepository($className)->findOneBy([]);
+                    $argument = $this->manager->getRepository($className)->findOneBy([]);
+                    if (!$argument) {
+                        $entityName = preg_replace('|^.*\\\\|', '', $className);
+
+                        throw new EntityNotFoundException('No '.$entityName.' found, preview is disabled');
+                    }
                 }
             } else {
                 switch ($parameter->getName()) {
