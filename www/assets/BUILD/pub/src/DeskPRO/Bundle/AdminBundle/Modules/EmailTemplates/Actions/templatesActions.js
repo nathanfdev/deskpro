@@ -147,15 +147,20 @@ export const loadVariables = createAction(
 
 export const previewTemplate = createAction(
   'EMAIL_TEMPLATES_PREVIEW_TEMPLATE',
-  (template, group, code, variables, lang, extraTemplates) => new Promise((resolve) => {
+  (template, group, code, variables, lang, extraTemplates) => new Promise((resolve, reject) => {
     if (code === '') {
       return resolve('');
     }
-    return repository('EmailTemplates').previewTemplate(template, group, code, variables, lang, extraTemplates).then((promise) => {
-      const res = promise.getData();
-
-      resolve(res);
-    });
+    return repository('EmailTemplates')
+      .previewTemplate(template, group, code, variables, lang, extraTemplates)
+      .then((promise) => {
+        const res = promise.getData();
+        resolve(res);
+      },
+      (reason) => {
+        reject(reason.getData().message);
+      }
+    );
   })
 );
 

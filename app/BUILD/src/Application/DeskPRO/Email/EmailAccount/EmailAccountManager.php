@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Email\EmailAccount;
 
@@ -208,6 +204,7 @@ class EmailAccountManager
 
     /**
      * @param \Swift_Mime_Message $message
+     * @param null|mixed $brand
      *
      * @return \Application\DeskPRO\Entity\EmailAccount
      */
@@ -311,12 +308,14 @@ class EmailAccountManager
 
             $map[$addr][] = $acc;
 
-            foreach ($acc->other_addresses as $address) {
-                $addr = strtolower($address);
-                if (!isset($map[$addr])) {
-                    $map[$addr] = [];
+            if (is_array($acc->other_addresses)) {
+                foreach ($acc->other_addresses as $address) {
+                    $addr = strtolower($address);
+                    if (!isset($map[$addr])) {
+                        $map[$addr] = [];
+                    }
+                    $map[$addr][] = $acc;
                 }
-                $map[$addr][] = $acc;
             }
         }
 
@@ -325,6 +324,8 @@ class EmailAccountManager
 
     /**
      * "primary" just means the first account that has an outgoing.
+     *
+     * @param null|mixed $brand
      *
      * @return EmailAccount
      */

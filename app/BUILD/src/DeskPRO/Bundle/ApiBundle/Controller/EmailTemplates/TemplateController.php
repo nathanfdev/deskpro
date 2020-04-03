@@ -26,6 +26,7 @@ use DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
+use Doctrine\ORM\EntityNotFoundException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -510,7 +511,7 @@ class TemplateController extends BaseController
      *
      * @throws \Exception
      *
-     * @return EmailTemplateCode
+     * @return EmailTemplateCode|View
      */
     private function renderPreview($request, $code, $tplName, $viewModel, $group, $lang, $templates)
     {
@@ -526,7 +527,11 @@ class TemplateController extends BaseController
             throw $this->createNotFoundException('Missing method '.$action.' in factory');
         }
 
-        $arguments = $dataFactory->getArguments($factory, $action, $request);
+        try {
+            $arguments = $dataFactory->getArguments($factory, $action, $request);
+        } catch (EntityNotFoundException $e) {
+            throw $this->createNotFoundException($e->getMessage());
+        }
 
         /** @var EmailBaseType $model */
         $model = call_user_func_array([$factory, $action], $arguments);

@@ -326,7 +326,8 @@ class EmailTemplatesEditorContainer extends React.Component {
         } else {
           this.props.dispatch(actions.setPreview(payload));
         }
-      }
+      },
+      reason => this.props.dispatch(actions.setPreview(fromJS({ body: reason })))
     );
     return true;
   }, 400);
