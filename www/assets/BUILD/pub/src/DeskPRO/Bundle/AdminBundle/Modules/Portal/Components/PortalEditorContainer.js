@@ -48,6 +48,7 @@ class PortalEditorContainer extends React.Component {
 
     if (this.props.params.name) {
       dispatch(actions.loadTemplate(this.props.params.name.replace('|', '/'))).then((template) => {
+        dispatch(actions.setCurrentTemplate(fromJS(template)));
         dispatch(actions.setTemplate(template));
       });
     }
@@ -86,16 +87,14 @@ class PortalEditorContainer extends React.Component {
     this.props.dispatch(actions.setExtraTemplate({ name, code }));
   };
 
-  saveTemplate = () => {
+  saveTemplate = () => new Promise((resolve) => {
     this.setState({
       saveSubmit: true
     });
 
-    let name;
-    if (this.props.params.name) {
+    let name = this.props.portalEditor.getIn(['currentTemplate', 'value']);
+    if (!name && this.props.params.name) {
       name = this.props.params.name.replace('|', '/');
-    } else {
-      name = this.props.portalEditor.getIn(['currentTemplate', 'value']);
     }
 
     const template = {
@@ -112,13 +111,69 @@ class PortalEditorContainer extends React.Component {
     });
     Promise.all(promises).then(
       () => {
+        const currTemplate = this.props.portalEditor.getIn(['currentTemplate'], fromJS({})).toObject();
+        currTemplate.custom = true;
+        this.props.dispatch(actions.setCurrentTemplate(fromJS(currTemplate)));
+        this.props.dispatch(actions.loadTemplates());
+
         this.setState({
           saveSubmit: false
         });
         this.props.dispatch(actions.cleanExtraTemplates());
+
+        resolve(template);
+      }
+    );
+  });
+
+  resetTemplate = () => {
+    this.setState({
+      resetSubmit: true
+    });
+    let name = this.props.portalEditor.getIn(['currentTemplate', 'value']);
+    if (!name && this.props.params.name) {
+      name = this.props.params.name.replace('|', '/');
+    }
+
+    this.props.dispatch(actions.resetTemplate(name)).then(
+      () => {
+        this.props.dispatch(actions.loadTemplate(name)).then(
+          (data) => {
+            this.props.dispatch(actions.loadTemplates());
+            this.props.dispatch(actions.setCurrentTemplate(fromJS(data)));
+            this.props.dispatch(actions.setTemplate(data));
+            this.setState({
+              resetSubmit: false
+            });
+            this.props.dispatch(actions.cleanExtraTemplates());
+          }
+        );
       }
     );
   };
+
+  undoChanges = () => new Promise((resolve) => {
+    this.setState({
+      undoSubmit: true
+    });
+    let name = this.props.portalEditor.getIn(['currentTemplate', 'value']);
+    if (!name && this.props.params.name) {
+      name = this.props.params.name.replace('|', '/');
+    }
+
+    this.props.dispatch(actions.loadTemplate(name)).then(
+      (data) => {
+        this.props.dispatch(actions.setCurrentTemplate(fromJS(data)));
+        this.props.dispatch(actions.setTemplate(data));
+        this.setState({
+          undoSubmit: false
+        });
+        this.props.dispatch(actions.cleanExtraTemplates());
+
+        resolve();
+      }
+    );
+  });
 
   savePhraseTranslations = (phraseName, translations) =>
     this.props.dispatch(actions.saveTranslations(phraseName, translations));
@@ -193,6 +248,8 @@ class PortalEditorContainer extends React.Component {
         saveSubmit={this.state.saveSubmit}
         undoSubmit={this.state.undoSubmit}
         resetSubmit={this.state.resetSubmit}
+        undoChanges={this.undoChanges}
+        resetTemplate={this.resetTemplate}
         ref={(c) => { this.editor = c; }}
       />
     );
@@ -217,6 +274,7 @@ class PortalEditor extends React.Component {
     insertAsset:            PropTypes.func,
     insertAssetAsLink:      PropTypes.func,
     insertPhrase:           PropTypes.func,
+    undoChanges:            PropTypes.func,
     close:                  PropTypes.func,
     setEditor:              PropTypes.func,
     saveSubmit:             PropTypes.bool,
@@ -283,6 +341,18 @@ class PortalEditor extends React.Component {
       this.props.changeTemplateCode(value);
       this.checkChanges(value);
     }
+  };
+
+  undoChanges = () => {
+    this.props.undoChanges().then(() => {
+      this.checkChanges();
+    });
+  };
+
+  saveTemplate = () => {
+    this.props.saveTemplate().then((newTemplate) => {
+      this.checkChanges(newTemplate);
+    });
   };
 
   checkChanges = (value = null) => {
@@ -383,7 +453,7 @@ class PortalEditor extends React.Component {
               size="medium"
               disabled={textareaDisabled || !contentChanged}
               loading={this.props.saveSubmit}
-              onClick={this.props.saveTemplate}
+              onClick={this.saveTemplate}
             >
               Save changes
             </Button>
@@ -396,19 +466,7 @@ class PortalEditor extends React.Component {
             >
               Undo changes
             </ConfirmButton>
-            { this.props.portalEditor.getIn(['currentTemplate', 'is_custom'], false) ?
-              <ConfirmButton
-                type="secondary"
-                size="medium"
-                className={classNames('right floated negative')}
-                loading={this.props.resetSubmit}
-                disabled={textareaDisabled}
-                onClick={this.props.deleteTemplate}
-              >
-                <Icon name={faExclamationTriangle} />
-                Delete
-              </ConfirmButton>
-              :
+            { this.props.portalEditor.getIn(['currentTemplate', 'custom'], false) &&
               <ConfirmButton
                 type="secondary"
                 size="medium"

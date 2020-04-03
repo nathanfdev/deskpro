@@ -62,6 +62,12 @@ export const loadPhrases = createAction(
   })
 );
 
+const templateName = name => name.split(':')[2].replace(/\.twig/, '');
+const templateGroup = (name) => {
+  const parts = name.split(':');
+  if (parts[1]) { return parts[1]; }  return parts[0];
+};
+
 export const loadTemplate = createAction(
   'PORTAL_TEMPLATES_LOAD_TEMPLATE',
   name => new Promise((resolve) => {
@@ -74,7 +80,12 @@ export const loadTemplate = createAction(
         },
         template_code: {
           code: res.source,
-        }
+        },
+        // Need below fields to be consistent with templates list items produced by loadTeamplates
+        value:  name,
+        custom: res.is_custom,
+        name:   templateName(name),
+        group:  templateGroup(name)
       };
       resolve(template);
     });
@@ -92,12 +103,6 @@ export const loadTagInfo = createAction(
   })
 );
 
-const templateName = template => template.name.split(':')[2].replace(/\.twig/, '');
-const templateGroup = (template) => {
-  const parts = template.name.split(':');
-  if (parts[1]) { return parts[1]; }  return parts[0];
-};
-
 export const loadTemplates = createAction(
   'PORTAL_TEMPLATES_LOAD_TEMPLATES',
   () => new Promise((resolve) => {
@@ -106,17 +111,17 @@ export const loadTemplates = createAction(
       const res = {};
 
       for (const template of Array.from(templates)) {
-        if (!res[templateGroup(template)]) {
-          res[templateGroup(template)] = {
-            title:     templateGroup(template),
+        if (!res[templateGroup(template.name)]) {
+          res[templateGroup(template.name)] = {
+            title:     templateGroup(template.name),
             templates: []
           };
         }
-        res[templateGroup(template)].templates.push({
+        res[templateGroup(template.name)].templates.push({
           value:  template.name,
           custom: template.is_custom,
-          name:   templateName(template),
-          group:  templateGroup(template)
+          name:   templateName(template.name),
+          group:  templateGroup(template.name)
         });
       }
 
@@ -152,10 +157,6 @@ export const resetTemplate = createAction(
   name => new Promise((resolve) => {
     repository('PortalTemplates').resetTemplate(name).then((promise) => {
       const res = promise.getData();
-
-      res.original_code = {
-        code: res.template_code.code,
-      };
 
       resolve(res);
     });
