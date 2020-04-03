@@ -10,6 +10,16 @@ export const deleteAsset = createAction(
   themeSetAssetId => repository('PortalTemplates').deleteAsset(themeSetAssetId)
 );
 
+export const loadBrand = createAction(
+  'PORTAL_TEMPLATES_LOAD_BRAND',
+  brandId => new Promise((resolve) => {
+    repository('Brand').load(brandId).then((promise) => {
+      const res = promise.getData();
+      resolve(res.data);
+    });
+  })
+);
+
 export const loadExampleTicket = createAction(
   'PORTAL_TEMPLATES_EXAMPLE_TICKET',
   ticketId => new Promise((resolve) => {
@@ -23,8 +33,8 @@ export const loadExampleTicket = createAction(
 
 export const loadAssets = createAction(
   'PORTAL_TEMPLATES_LOAD_ASSETS',
-  () => new Promise((resolve) => {
-    repository('PortalTemplates').loadAssets().then((promise) => {
+  brandSlug => new Promise((resolve) => {
+    repository('PortalTemplates').loadAssets(brandSlug).then((promise) => {
       const res = promise.getData();
 
       resolve(res.data);
@@ -64,8 +74,8 @@ export const loadPhrases = createAction(
 
 export const loadTemplate = createAction(
   'PORTAL_TEMPLATES_LOAD_TEMPLATE',
-  name => new Promise((resolve) => {
-    repository('PortalTemplates').loadTemplate(name).then((promise) => {
+  (name, brandSlug) => new Promise((resolve) => {
+    repository('PortalTemplates').loadTemplate(name, brandSlug).then((promise) => {
       const res = promise.getData();
 
       const template = {
@@ -83,8 +93,8 @@ export const loadTemplate = createAction(
 
 export const loadTagInfo = createAction(
   'PORTAL_TEMPLATES_LOAD_TAG_INFO',
-  name => new Promise((resolve) => {
-    repository('PortalTemplates').loadTagInfo(name).then((promise) => {
+  (name, brandSlug) => new Promise((resolve) => {
+    repository('PortalTemplates').loadTagInfo(name, brandSlug).then((promise) => {
       const res = promise.getData();
 
       resolve(res);
@@ -100,8 +110,8 @@ const templateGroup = (template) => {
 
 export const loadTemplates = createAction(
   'PORTAL_TEMPLATES_LOAD_TEMPLATES',
-  () => new Promise((resolve) => {
-    repository('PortalTemplates').loadInfo().then((promise) => {
+  brandSlug => new Promise((resolve) => {
+    repository('PortalTemplates').loadInfo(brandSlug).then((promise) => {
       const templates = promise.getData();
       const res = {};
 
@@ -174,8 +184,8 @@ export const saveCustomPhrase = createAction(
 
 export const saveTemplate = createAction(
   'PORTAL_TEMPLATES_SAVE_TEMPLATE',
-  (name, template) => new Promise((resolve, reject) => {
-    repository('PortalTemplates').saveTemplate(name, template).then(() => {
+  (name, template, brandSlug) => new Promise((resolve, reject) => {
+    repository('PortalTemplates').saveTemplate(name, template, brandSlug).then(() => {
       resolve(template);
     }, (err) => {
       reject(err.data);

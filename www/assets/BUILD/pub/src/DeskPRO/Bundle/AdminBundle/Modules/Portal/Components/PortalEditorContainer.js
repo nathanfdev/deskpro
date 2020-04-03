@@ -28,12 +28,14 @@ class PortalEditorContainer extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       saveSubmit:    false,
       undoSubmit:    false,
       resetSubmit:   false,
       currentWidget: null,
       editor:        null,
+      brandSlug:     'default',
     };
   }
 
@@ -43,14 +45,22 @@ class PortalEditorContainer extends React.Component {
 
     dispatch(actions.cleanState());
 
-    dispatch(actions.loadAssets());
-    dispatch(actions.loadTemplates());
-
-    if (this.props.params.name) {
-      dispatch(actions.loadTemplate(this.props.params.name.replace('|', '/'))).then((template) => {
-        dispatch(actions.setTemplate(template));
+    dispatch(actions.loadBrand(this.props.params.brandId)).then((brand) => {
+      const brandSlug = brand.slug;
+      this.setState({
+        brandSlug
       });
-    }
+      dispatch(actions.loadAssets(brandSlug));
+      dispatch(actions.loadTemplates(brandSlug));
+
+      if (this.props.params.name) {
+        dispatch(actions.loadTemplate(this.props.params.name.replace('|', '/'), brandSlug)).then((template) => {
+          dispatch(actions.setTemplate(template));
+        });
+      }
+    });
+
+
     dispatch(actions.loadPhrases(
       'user',
       this.props.portalEditor.get('currentLanguage')
@@ -103,12 +113,12 @@ class PortalEditorContainer extends React.Component {
     };
 
     const promises = [];
-    promises.push(this.props.dispatch(actions.saveTemplate(name, template)));
+    promises.push(this.props.dispatch(actions.saveTemplate(name, template, this.state.brandSlug)));
 
     const extraTemplates = this.props.portalEditor.getIn(['template', 'extra_templates'], fromJS({})).toObject();
 
     Object.keys(extraTemplates).forEach((key) => {
-      promises.push(this.props.dispatch(actions.saveTemplate(key, { code: extraTemplates[key] })));
+      promises.push(this.props.dispatch(actions.saveTemplate(key, { code: extraTemplates[key] }, this.state.brandSlug)));
     });
     Promise.all(promises).then(
       () => {
@@ -147,7 +157,7 @@ class PortalEditorContainer extends React.Component {
     if (template !== null) {
       resolve(template);
     } else {
-      this.props.dispatch(actions.loadTemplate(name)).then((t) => {
+      this.props.dispatch(actions.loadTemplate(name, this.state.brandSlug)).then((t) => {
         this.props.dispatch(actions.setExtraTemplate({ name, code: t.original_code.code }));
         resolve(t.original_code.code);
       });
@@ -159,7 +169,7 @@ class PortalEditorContainer extends React.Component {
     if (template !== null) {
       resolve(template);
     } else {
-      this.props.dispatch(actions.loadTagInfo(name)).then((info) => {
+      this.props.dispatch(actions.loadTagInfo(name, this.state.brandSlug)).then((info) => {
         this.props.dispatch(actions.setTag({ name, info }));
         resolve(info);
       });
@@ -177,6 +187,7 @@ class PortalEditorContainer extends React.Component {
         portalEditor={this.props.portalEditor}
         name={name}
         brandId={this.props.params.brandId}
+        brandSlug={this.state.brandSlug}
         loadTagInfo={this.loadTagInfo}
         loadTemplate={this.loadTemplate}
         setTemplateValue={this.setTemplateValue}
@@ -203,6 +214,7 @@ class PortalEditor extends React.Component {
   static propTypes = {
     name:                   PropTypes.string,
     brandId:                PropTypes.string,
+    brandSlug:              PropTypes.string,
     portalEditor:           PropTypes.object,
     loadTagInfo:            PropTypes.func,
     loadTemplate:           PropTypes.func,
@@ -323,6 +335,7 @@ class PortalEditor extends React.Component {
                 >
                   <TemplatesMenuContainer
                     brandId={this.props.brandId}
+                    brandSlug={this.props.brandSlug}
                     closeMenu={this.closeTemplateMenu}
                   />
                 </DropDownMenu>
