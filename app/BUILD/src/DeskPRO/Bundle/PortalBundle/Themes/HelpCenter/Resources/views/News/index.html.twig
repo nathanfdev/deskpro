@@ -11,9 +11,9 @@
                      src="{{ asset('img/page-icons/news.svg', 'help_center') }}">
 
                 {% if viewCategory %}
-                    <h2 class="dp-po-title-text">{{ object_phrase(viewCategory) }}</h2>
+                    <h1 class="dp-po-title-text">{{ object_phrase(viewCategory) }}</h1>
                 {% else %}
-                    <h2 class="dp-po-title-text">{{ phrase('helpcenter.news.section-title') }}</h2>
+                    <h1 class="dp-po-title-text">{{ phrase('helpcenter.news.section-title') }}</h1>
                 {% endif %}
             </div>
         </div>
@@ -34,6 +34,7 @@
     <div class="d-block d-sm-none">
         <div class="dp-po-post-mobile-area">
         {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+            buttonId: 'subscribeDropdownMenuMobile',
             subscriptionInfo: [
                 { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section-title'), active: is_subscribed },
             ]
@@ -59,7 +60,7 @@
                                 </figure>
                             {% endif %}
                             <div class="dp-po-news-listing-content">
-                                <h3 class="dp-po-news-listing-title">{{ item.title }}</h3>
+                                <h2 class="dp-po-news-listing-title">{{ item.title }}</h2>
                                 <div class="dp-po-avatar dp-po-avatar-round">
                                     {{ hc_avatar(item.person, '', 60) }}
                                     <strong>{{ item.person.display_name }}</strong>
@@ -98,10 +99,10 @@
             <div class="modal-body">
                 <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
                     <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-cat') }}</h3>
-                    <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#news_categories" role="button" aria-expanded="true" aria-controls="news_categories">
+                    <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#news_categories_mobile" role="button" aria-expanded="true" aria-controls="news_categories_mobile">
                         <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
                     </a>
-                    <div class="collapse show" id="news_categories">
+                    <div class="collapse show" id="news_categories_mobile">
                         <ul class="dp-po-news-filter-type-list">
                             <li class="dp-po-news-filter-type-item">
                                 {% if not viewCategory %}<i class="dp-po-icon fa fa-long-arrow-right"></i>{% endif %}
@@ -127,11 +128,11 @@
 
                 <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-date">
                     <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-date') }}</h3>
-                    <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#date_filter" role="button"
-                    aria-expanded="false" aria-controls="date_filter">
+                    <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#date_filter_mobile" role="button"
+                    aria-expanded="false" aria-controls="date_filter_mobile">
                         <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
                     </a>
-                    <div class="collapse {{ filter_date ? 'show' }}" id="date_filter">
+                    <div class="collapse {{ filter_date ? 'show' }}" id="date_filter_mobile">
                         <div class="dp-po-news-filter-date-option">
                             <ul class="dp-po-news-filter-date-year-list">
                                 <li class="dp-po-news-filter-date-year-item">

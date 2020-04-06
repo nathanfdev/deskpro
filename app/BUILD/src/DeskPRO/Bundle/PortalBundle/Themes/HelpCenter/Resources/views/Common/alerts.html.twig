@@ -10,7 +10,7 @@
                             <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.active_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang-change-to-current', { lang: alerts.lang_diff.active_lang.title }) }}</a>
                             <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.person_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang-switch', { lang: alerts.lang_diff.person_lang.title }) }}</a>
                         </p>
-                        <a href="{{ path('portal_dismiss_lang_alert') }}" class="dp-po-message-bar-close"><i class="dp-po-icon fal fa-times"></i></a>
+                        <a href="{{ path('portal_dismiss_lang_alert') }}" class="dp-po-message-bar-close" aria-label="{{ phrase('helpcenter.general.close') }}"><i class="dp-po-icon fal fa-times"></i></a>
                     </div>
                 </div>
             </div>

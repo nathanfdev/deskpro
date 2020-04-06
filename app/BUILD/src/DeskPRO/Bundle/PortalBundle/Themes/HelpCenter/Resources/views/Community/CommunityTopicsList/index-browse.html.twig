@@ -39,6 +39,7 @@
         <div class="dp-po-post-mobile-area">
         {% if brand_setting('user.community_subscriptions') %}
             {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                buttonId: 'subscribeDropdownMenuMobile',
                 subscriptionInfo: [
                     {
                         toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),

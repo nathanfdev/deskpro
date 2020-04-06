@@ -54,7 +54,7 @@
           <div class="col-sm-9">
             <div class="dp-po-title">
               <img class="dp-po-title-svg" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}">
-              <h2 class="dp-po-title-text">{{ phrase('helpcenter.chat.log_title', { person: chat.agent.display_name_user }) }}</h2>
+              <h1 class="dp-po-title-text">{{ phrase('helpcenter.chat.log_title', { person: chat.agent.display_name_user }) }}</h1>
             </div>
             <div class="row align-items-center">
               <div class="col-sm-10">
@@ -77,10 +77,10 @@
                 <div class="dp-po-post-extra">
                   <ul class="dp-po-post-extra-list">
                     <li class="dp-po-post-extra-item">
-                      <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+                      <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}"><i class="dp-po-icon fal fa-print"></i></a>
                     </li>
                     <li class="dp-po-post-extra-item">
-                      <a href="" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                      <a href="" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.guides.download-pdf') }}"><i class="dp-po-icon fal fa-file-pdf"></i></a>
                     </li>
                   </ul>
                 </div>

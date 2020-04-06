@@ -40,7 +40,7 @@ export default class DpxRte extends PageWidget {
     const component = React.createElement(PortalRte, {
       $textarea,
 
-      className:          `dp-medium-rte medium-editor-placeholder${widget ? ' widget' : null}`,
+      className:          `dp-medium-rte medium-editor-placeholder${widget ? ' widget' : ''}`,
       $inlineAttachProto: $inlineAttachProto[0] ? $inlineAttachProto : null,
       widgetOptions:      this.options,
       $toolbarContainer:  $rElement,

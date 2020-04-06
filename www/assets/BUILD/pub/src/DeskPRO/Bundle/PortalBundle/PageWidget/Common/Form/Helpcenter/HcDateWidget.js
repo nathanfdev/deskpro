@@ -75,6 +75,7 @@ export class HcDateWidget extends PageWidget {
 
     const idDiv = $el.find('.fallback-input').find('div:first');
     const id = idDiv.attr('id');
+    idDiv.first().attr('id', `${id}_fallback_input`);
 
     if ($el.hasClass('dpx-date-time')) {
       $sYear = $(`#${id}_date_year`);
@@ -158,6 +159,7 @@ export class HcDateWidget extends PageWidget {
         filterDate,
         showTimeSelect,
         startDate,
+        id,
         dateFormat:               format,
         timeFormat:               'HH:mm',
         nextMonthButtonLabel:     portalPhrases.get('helpcenter.forms.date-picker-next-month'),

@@ -1,9 +1,10 @@
-<div class="dp-po">
+<aside class="dp-po">
     <section class="dp-po-search" style="{{ helpcenter_splash() }}">
         <form class="dp-po-search-form" method="GET" action="{{ path('portal_search') }}" id="helpcenter-omnisearch" autocomplete="off">
             <input type="search" id="omnisearch_input" class="omnisearch"  name="q" autocomplete="off" placeholder="{{ phrase('helpcenter.general.search') }}" />
             {% if search_log_id is defined %}<input type="hidden" name="search_log_id"  value="{{search_log_id}}"/>{% endif %}
-            <label for="omnisearch_input" role="button"> <i class="dp-po-icon far fa-search"></i><span aria-hidden>{{ phrase('helpcenter.label.search') }}</span></label>
+            <label for="omnisearch_input" aria-label="{{ phrase('helpcenter.label.search') }}"> <i class="dp-po-icon far fa-search"></i><span aria-hidden>{{ phrase('helpcenter.label.search') }}</span></label>
+            <input type="submit" value="{{ phrase('helpcenter.label.search') }}" class="aria-hide">
         </form>
     </section>
-</div>
+</aside>

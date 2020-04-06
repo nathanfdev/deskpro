@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category DependencyInjection
- */
+
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
@@ -18,7 +14,7 @@ class TicketLayoutManagerService
     {
         $filter = $container->get('ticket_layout_fields_filter');
 
-        $ticket_layouts = array_map(function ($row) use ($filter) {
+        $ticketLayouts = array_map(function ($row) use ($filter) {
             $row['user_layout'] = JsonObjectSerializer::unserialize($row['user_layout']);
             $row['agent_layout'] = JsonObjectSerializer::unserialize($row['agent_layout']);
 
@@ -31,7 +27,7 @@ class TicketLayoutManagerService
             FROM ticket_layouts
         '));
 
-        $x = TicketLayoutManager::createWithLayoutArrays($ticket_layouts);
+        $x = TicketLayoutManager::createWithLayoutArrays($ticketLayouts);
 
         return $x;
     }

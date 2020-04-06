@@ -1,10 +1,10 @@
 <div class="dp-po-subscribe dp-po-subscribe-large">
     <div class="dropdown">
-        <button class="dp-po-subscribe-btn" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
+        <button class="dp-po-subscribe-btn" type="button" id="{{ buttonId is defined ? buttonId : 'subscribeDropdownMenu' }}" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false" data-offset="0,10">
             <i class="dp-po-icon fad fa-envelope"></i> {{ phrase('helpcenter.general.btn-subscribe') }} <i class="dp-po-icon far fa-check"></i>
         </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        <div class="dropdown-menu" aria-labelledby="{{ buttonId is defined ? buttonId : 'subscribeDropdownMenu' }}">
             {% for sub in subscriptionInfo %}
                 <a class="dropdown-item post-link {{ sub.active ? 'active' : '' }}" href="{{ sub.toggleUrl }}" rel="noindex, nofollow">
                     <i class="dp-po-icon {{ sub.icon }}"></i> {{ sub.title }} <i class="dp-po-icon far fa-check"></i>
