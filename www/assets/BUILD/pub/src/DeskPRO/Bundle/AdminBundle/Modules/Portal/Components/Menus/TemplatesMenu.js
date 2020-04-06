@@ -16,6 +16,7 @@ import { fromJS } from 'immutable';
 export class TemplatesMenuContainer extends React.Component {
   static propTypes = {
     brandId:      PropTypes.string,
+    brandSlug:    PropTypes.string,
     dispatch:     PropTypes.func,
     closeMenu:    PropTypes.func,
     portalEditor: PropTypes.object
@@ -23,7 +24,7 @@ export class TemplatesMenuContainer extends React.Component {
 
   onChangeTemplate = (template) => {
     this.props.dispatch(actions.setCurrentTemplate(template));
-    this.props.dispatch(actions.loadTemplate(template.get('value'))).then(
+    this.props.dispatch(actions.loadTemplate(template.get('value'), this.props.brandSlug)).then(
       (data) => {
         this.props.dispatch(actions.setCurrentTemplate(fromJS(data)));
         replaceRoute(`/portal/${this.props.brandId}/templates_editor/${template.get('value').replace('/', '|')}`);
