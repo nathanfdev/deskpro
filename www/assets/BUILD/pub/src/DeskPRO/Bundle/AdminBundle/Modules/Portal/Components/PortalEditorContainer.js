@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { fromJS } from 'immutable';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { Button, ConfirmButton, Icon } from '@deskpro/react-components';
+import { Button, ConfirmButton } from '@deskpro/react-components';
 import Editor from 'DeskPRO/Component/CMEditor/Editor';
 import DropDownMenu from 'DeskPRO/Component/CMEditor/Menus/DropDownMenu';
 import { TemplatesMenuContainer } from './Menus/TemplatesMenu';
@@ -55,7 +54,7 @@ class PortalEditorContainer extends React.Component {
 
       if (this.props.params.name) {
         dispatch(actions.loadTemplate(this.props.params.name.replace('|', '/'), brandSlug)).then((template) => {
-        dispatch(actions.setCurrentTemplate(fromJS(template)));
+          dispatch(actions.setCurrentTemplate(fromJS(template)));
           dispatch(actions.setTemplate(template));
         });
       }
@@ -124,7 +123,7 @@ class PortalEditorContainer extends React.Component {
         const currTemplate = this.props.portalEditor.getIn(['currentTemplate'], fromJS({})).toObject();
         currTemplate.custom = true;
         this.props.dispatch(actions.setCurrentTemplate(fromJS(currTemplate)));
-        this.props.dispatch(actions.loadTemplates());
+        this.props.dispatch(actions.loadTemplates(this.state.brandSlug));
 
         this.setState({
           saveSubmit: false
@@ -147,9 +146,9 @@ class PortalEditorContainer extends React.Component {
 
     this.props.dispatch(actions.resetTemplate(name)).then(
       () => {
-        this.props.dispatch(actions.loadTemplate(name)).then(
+        this.props.dispatch(actions.loadTemplate(name, this.state.brandSlug)).then(
           (data) => {
-            this.props.dispatch(actions.loadTemplates());
+            this.props.dispatch(actions.loadTemplates(this.state.brandSlug));
             this.props.dispatch(actions.setCurrentTemplate(fromJS(data)));
             this.props.dispatch(actions.setTemplate(data));
             this.setState({
@@ -171,7 +170,7 @@ class PortalEditorContainer extends React.Component {
       name = this.props.params.name.replace('|', '/');
     }
 
-    this.props.dispatch(actions.loadTemplate(name)).then(
+    this.props.dispatch(actions.loadTemplate(name, this.state.brandSlug)).then(
       (data) => {
         this.props.dispatch(actions.setCurrentTemplate(fromJS(data)));
         this.props.dispatch(actions.setTemplate(data));
@@ -280,7 +279,6 @@ class PortalEditor extends React.Component {
     setCurrentWidget:       PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
     savePhraseTranslations: PropTypes.func,
-    deleteTemplate:         PropTypes.func,
     saveTemplate:           PropTypes.func,
     resetTemplate:          PropTypes.func,
     insertAsset:            PropTypes.func,
