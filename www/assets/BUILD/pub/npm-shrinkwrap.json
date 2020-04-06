@@ -1289,9 +1289,9 @@
       }
     },
     "@deskpro/portal-components": {
-      "version": "0.4.3",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.4.3.tgz",
-      "integrity": "sha512-cdovTtjoLbwbsQZuxieP6KCIWWWczatFsLso4K+UwEvKrcpl/sTJ73IxjP1x2r5L6gFgAs1ETMBVBWtxrCZZNA==",
+      "version": "0.4.7",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.4.7.tgz",
+      "integrity": "sha512-wPDQLNUJ2+60TYDqWUl8MEIdRJqUT49EjkyBnc7GEVN7BrogyeiMqznqTtzrAf5ajB2uN5HuwzZZXMzb0Yuf/A==",
       "requires": {
         "@deskpro/js-utils": "1.0.11",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -1437,9 +1437,9 @@
       }
     },
     "@deskpro/portal-style": {
-      "version": "0.3.75",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.3.75.tgz",
-      "integrity": "sha512-hNKFoQNgC2uLSCdJGRmJxAEi9H374A8r9c0ApDokM8F4y6G1Af9G347+9ADR7HUto3LkfpWdgwe29btXnmDd4g==",
+      "version": "0.4.7",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.4.7.tgz",
+      "integrity": "sha512-OJJDCCRGiruARCNgHHJl2tn8Q+isOy62vggDxnX+RpTVLT7FtqVLEz72fkPDCTYRXhGprdfxaFMxyXQ6ZDop6A==",
       "requires": {
         "bootstrap": "^4.3.1"
       }
