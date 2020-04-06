@@ -144,7 +144,7 @@ class PortalEditorContainer extends React.Component {
       name = this.props.params.name.replace('|', '/');
     }
 
-    this.props.dispatch(actions.resetTemplate(name)).then(
+    this.props.dispatch(actions.resetTemplate(name, this.props.params.brandId)).then(
       () => {
         this.props.dispatch(actions.loadTemplate(name, this.state.brandSlug)).then(
           (data) => {

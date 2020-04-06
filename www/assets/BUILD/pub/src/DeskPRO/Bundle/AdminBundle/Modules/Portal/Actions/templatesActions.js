@@ -164,8 +164,8 @@ export const removeVariables = createAction('PORTAL_TEMPLATES_REMOVE_VARIABLES')
 
 export const resetTemplate = createAction(
   'PORTAL_TEMPLATES_RESET_TEMPLATE',
-  name => new Promise((resolve) => {
-    repository('PortalTemplates').resetTemplate(name).then((promise) => {
+  (name, brandId) => new Promise((resolve) => {
+    repository('PortalTemplates').resetTemplate(name, brandId).then((promise) => {
       const res = promise.getData();
 
       resolve(res);
@@ -175,7 +175,7 @@ export const resetTemplate = createAction(
 
 export const deleteTemplate = createAction(
   'PORTAL_TEMPLATES_DELETE_TEMPLATE',
-  name => repository('PortalTemplates').deleteTemplate(name)
+  (name, brandId) => repository('PortalTemplates').deleteTemplate(name, brandId)
 );
 
 export const saveCustomPhrase = createAction(

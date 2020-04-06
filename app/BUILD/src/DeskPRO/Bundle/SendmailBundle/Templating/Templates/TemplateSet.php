@@ -1,11 +1,8 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\SendmailBundle\Templating\Templates;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Template as TemplateEntity;
 use Application\DeskPRO\Templating\EmailTemplatesDesc;
 use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
@@ -42,12 +39,13 @@ class TemplateSet
 
     /**
      * @param string $name
+     * @param null|Brand $brand
      *
      * @return TemplateCustom|TemplateFile
      */
-    public function getTemplate($name)
+    public function getTemplate($name, $brand = null)
     {
-        $custom = $this->em->getRepository(TemplateEntity::class)->getTemplateByName($name);
+        $custom = $this->em->getRepository(TemplateEntity::class)->getTemplateByName($name, $brand);
         if ($custom) {
             $template = TemplateCustom::createFromEntity($custom);
         } else {

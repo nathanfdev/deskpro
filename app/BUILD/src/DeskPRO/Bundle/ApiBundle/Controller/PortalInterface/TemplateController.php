@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\PortalInterface;
 
 use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\PortalPageDisplay;
@@ -27,6 +28,7 @@ use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
@@ -174,13 +176,16 @@ class TemplateController extends BaseController
      *     },
      * )
      * @ApiUnstable()
+     * @Rest\Delete("/template/{brandId}/{name}", requirements={"brandId"="\d+"})
      * @Rest\Delete("/template/{name}")
+     * @ParamConverter("brand", class="DeskPRO:Brand", options={"id" = "brandId"})
      *
      * @param $name
+     * @param null|Brand $brand
      *
      * @return View
      */
-    public function resetTemplateAction($name)
+    public function resetTemplateAction($name, $brand = null)
     {
         if (strpos($name, 'EDIT_SIDEBAR_BLOCK:') === 0) {
             $blockId = substr($name, strlen('EDIT_SIDEBAR_BLOCK:'));
@@ -195,7 +200,7 @@ class TemplateController extends BaseController
         $set = $this->getTemplateSet();
 
         try {
-            $template = $set->getTemplate($name);
+            $template = $set->getTemplate($name, $brand);
         } catch (\InvalidArgumentException $e) {
             throw $this->createNotFoundException();
         }
