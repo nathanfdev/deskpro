@@ -112,7 +112,21 @@ class AppOptionsMapper
             $options[$f] = $settings->get($f, '');
         }
 
-        $options['password_php']    = $settings->get('php_code');
+        if (defined('DPC_IS_CLOUD')) {
+            $options['password_php'] = $settings->get('php_code');
+        } else {
+            /* @var $DP_ENV \DpRun\DpEnv */
+            global $DP_ENV;
+
+            $phpCode = $DP_ENV->getConfig('settings.database_authentication_php', '');
+            if ($phpCode) {
+                $options['password_php'] = $phpCode;
+            } else {
+                // use the settings as fallback
+                $options['password_php'] = $settings->get('php_code');
+            }
+        }
+
         $options['raw_info_filter'] = $settings->get('raw_info_filter');
 
         return $options;

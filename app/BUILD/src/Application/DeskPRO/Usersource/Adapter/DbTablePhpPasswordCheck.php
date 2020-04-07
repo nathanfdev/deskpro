@@ -115,7 +115,18 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
      */
     protected function _createAuthAdapterObject()
     {
-        return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck($this->getDbAsCallback(), $this->usersource->options);
+        $options = $this->usersource->options;
+        if (!defined('DPC_IS_CLOUD')) {
+            /* @var $DP_ENV \DpRun\DpEnv */
+            global $DP_ENV;
+
+            $phpCode = $DP_ENV->getConfig('settings.database_authentication_php', '');
+            if ($phpCode) {
+                $options['password_php'] = $phpCode;
+            }
+        }
+
+        return new \Orb\Auth\Adapter\DbTablePhpPasswordCheck($this->getDbAsCallback(), $options);
     }
 
     /**
