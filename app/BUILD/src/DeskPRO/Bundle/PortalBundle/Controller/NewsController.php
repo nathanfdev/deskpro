@@ -27,7 +27,7 @@ class NewsController extends AbstractPublishController
 {
     /**
      * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"},
-     *     requirements={"_format":"html|rss|ics"})
+     *     requirements={"_format":"html|rss"})
      * @Route("/news", name="user_news_home")
      * @Security("is_granted('USE_NEWS')")
      * @PageHttpCache()
@@ -68,8 +68,8 @@ class NewsController extends AbstractPublishController
             ], new Response(null, Response::HTTP_OK, ['Content-Type' => 'text/calendar']));
         }
         $icsLink = preg_replace('/https?/', 'webcal', $this->generateUrl(
-            'portal_news',
-            ['_format' => 'ics'],
+            'portal_news_ics',
+            [],
             UrlGeneratorInterface::ABSOLUTE_URL
         ));
 
@@ -113,6 +113,28 @@ class NewsController extends AbstractPublishController
                 'filter_year'   => $filterYear,
             ]
         );
+    }
+
+    /**
+     * @Route("/news.ics", name="portal_news_ics")
+     * @PageHttpCache()
+     *
+     * @param Request      $request
+     * @param NewsCategory $category
+     *
+     * @return Response
+     */
+    public function icsAction(Request $request, NewsCategory $category = null)
+    {
+        $page   = $request->query->getInt('page', 1);
+        $person = $this->getCurrentPerson();
+        $pager  = $this->getNewsPager($request, $page, $person, $category);
+
+        return $this->render('PortalBundle:News:feed.ics.twig', [
+            'page_title' => $this->createPageTitle()->news(),
+            'pager'      => $pager,
+            'category'   => null,
+        ], new Response(null, Response::HTTP_OK, ['Content-Type' => 'text/calendar']));
     }
 
     /**
