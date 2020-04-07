@@ -207,6 +207,16 @@ class AppInstance extends DomainObject
             $data['package'] = $this->package->toApiData(false, $deep, $visited);
         }
 
+        if ($this->package->native_name === 'deskpro_us_db' && !defined('DPC_IS_CLOUD')) {
+            /* @var $DP_ENV \DpRun\DpEnv */
+            global $DP_ENV;
+
+            $phpCode = $DP_ENV->getConfig('settings.database_authentication_php', '');
+            if ($phpCode) {
+                $data['settings']['php_code'] = $phpCode;
+            }
+        }
+
         return $data;
     }
 
