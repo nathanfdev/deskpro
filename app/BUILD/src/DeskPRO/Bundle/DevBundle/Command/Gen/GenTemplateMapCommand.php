@@ -47,7 +47,6 @@ class GenTemplateMapCommand extends ContainerAwareCommand
 
         $themes['standard']->setParent($themes['base']);
         $themes['sidebar']->setParent($themes['standard']);
-        $themes['helpcenter']->setParent($themes['base']);
 
         foreach ($themes as $t) {
             $cacheFile = $t->getTemplateMapCachePath();
