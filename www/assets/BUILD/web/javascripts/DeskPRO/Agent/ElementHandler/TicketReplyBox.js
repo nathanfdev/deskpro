@@ -935,8 +935,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			var option = agentSel.find(':selected');
 			agentSelText.text(option.data('name-short'));
 			agentSelText.css('background-image', 'url(' + option.data('icon')+ ')');
-			agentSelCheck.prop('checked', true);
-			agentSelCheck.data('keep-checked-on-refresh', true);
+
+			if (!agentSel.data('keep-assign')) {
+        agentSelCheck.prop('checked', true);
+        agentSelCheck.data('keep-checked-on-refresh', true);
+      }
 
 			if (agentSel.data('auto-switch-status')) {
 				if (agentSelCheck.get(0).checked) {
