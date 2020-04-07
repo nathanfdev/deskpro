@@ -28,6 +28,7 @@ services:
       - "@portal_permissions_manager"
       - "@url_corrector_factory"
       - "@language_manager"
+      - "@deskpro.app_env"
 
   captcha_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\CaptchaSettingsResolver
