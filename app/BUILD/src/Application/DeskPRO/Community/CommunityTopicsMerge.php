@@ -169,7 +169,7 @@ class CommunityTopicsMerge implements PersonContextInterface
         $comment = new CommunityTopicComment();
 
         $comment->setPerson($this->otherCommunityTopic->getPerson());
-        $comment->setContent($this->otherCommunityTopic->getRealContent());
+        $comment->setContent($this->otherCommunityTopic->getContentPlain());
         $comment->setDateCreated($this->otherCommunityTopic->getDateCreated());
 
         $this->communityTopic->addComment($comment);
