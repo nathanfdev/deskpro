@@ -10,6 +10,16 @@ export const deleteAsset = createAction(
   themeSetAssetId => repository('PortalTemplates').deleteAsset(themeSetAssetId)
 );
 
+export const loadBrand = createAction(
+  'PORTAL_TEMPLATES_LOAD_BRAND',
+  brandId => new Promise((resolve) => {
+    repository('Brand').load(brandId).then((promise) => {
+      const res = promise.getData();
+      resolve(res.data);
+    });
+  })
+);
+
 export const loadExampleTicket = createAction(
   'PORTAL_TEMPLATES_EXAMPLE_TICKET',
   ticketId => new Promise((resolve) => {
@@ -23,8 +33,8 @@ export const loadExampleTicket = createAction(
 
 export const loadAssets = createAction(
   'PORTAL_TEMPLATES_LOAD_ASSETS',
-  () => new Promise((resolve) => {
-    repository('PortalTemplates').loadAssets().then((promise) => {
+  brandSlug => new Promise((resolve) => {
+    repository('PortalTemplates').loadAssets(brandSlug).then((promise) => {
       const res = promise.getData();
 
       resolve(res.data);
@@ -62,10 +72,16 @@ export const loadPhrases = createAction(
   })
 );
 
+const templateName = name => name.split(':')[2].replace(/\.twig/, '');
+const templateGroup = (name) => {
+  const parts = name.split(':');
+  if (parts[1]) { return parts[1]; }  return parts[0];
+};
+
 export const loadTemplate = createAction(
   'PORTAL_TEMPLATES_LOAD_TEMPLATE',
-  name => new Promise((resolve) => {
-    repository('PortalTemplates').loadTemplate(name).then((promise) => {
+  (name, brandSlug) => new Promise((resolve) => {
+    repository('PortalTemplates').loadTemplate(name, brandSlug).then((promise) => {
       const res = promise.getData();
 
       const template = {
@@ -74,7 +90,12 @@ export const loadTemplate = createAction(
         },
         template_code: {
           code: res.source,
-        }
+        },
+        // Need below fields to be consistent with templates list items produced by loadTeamplates
+        value:  name,
+        custom: res.is_custom,
+        name:   templateName(name),
+        group:  templateGroup(name)
       };
       resolve(template);
     });
@@ -83,8 +104,8 @@ export const loadTemplate = createAction(
 
 export const loadTagInfo = createAction(
   'PORTAL_TEMPLATES_LOAD_TAG_INFO',
-  name => new Promise((resolve) => {
-    repository('PortalTemplates').loadTagInfo(name).then((promise) => {
+  (name, brandSlug) => new Promise((resolve) => {
+    repository('PortalTemplates').loadTagInfo(name, brandSlug).then((promise) => {
       const res = promise.getData();
 
       resolve(res);
@@ -92,31 +113,25 @@ export const loadTagInfo = createAction(
   })
 );
 
-const templateName = template => template.name.split(':')[2].replace(/\.twig/, '');
-const templateGroup = (template) => {
-  const parts = template.name.split(':');
-  if (parts[1]) { return parts[1]; }  return parts[0];
-};
-
 export const loadTemplates = createAction(
   'PORTAL_TEMPLATES_LOAD_TEMPLATES',
-  () => new Promise((resolve) => {
-    repository('PortalTemplates').loadInfo().then((promise) => {
+  brandSlug => new Promise((resolve) => {
+    repository('PortalTemplates').loadInfo(brandSlug).then((promise) => {
       const templates = promise.getData();
       const res = {};
 
       for (const template of Array.from(templates)) {
-        if (!res[templateGroup(template)]) {
-          res[templateGroup(template)] = {
-            title:     templateGroup(template),
+        if (!res[templateGroup(template.name)]) {
+          res[templateGroup(template.name)] = {
+            title:     templateGroup(template.name),
             templates: []
           };
         }
-        res[templateGroup(template)].templates.push({
+        res[templateGroup(template.name)].templates.push({
           value:  template.name,
           custom: template.is_custom,
-          name:   templateName(template),
-          group:  templateGroup(template)
+          name:   templateName(template.name),
+          group:  templateGroup(template.name)
         });
       }
 
@@ -149,13 +164,9 @@ export const removeVariables = createAction('PORTAL_TEMPLATES_REMOVE_VARIABLES')
 
 export const resetTemplate = createAction(
   'PORTAL_TEMPLATES_RESET_TEMPLATE',
-  name => new Promise((resolve) => {
-    repository('PortalTemplates').resetTemplate(name).then((promise) => {
+  (name, brandId) => new Promise((resolve) => {
+    repository('PortalTemplates').resetTemplate(name, brandId).then((promise) => {
       const res = promise.getData();
-
-      res.original_code = {
-        code: res.template_code.code,
-      };
 
       resolve(res);
     });
@@ -164,7 +175,7 @@ export const resetTemplate = createAction(
 
 export const deleteTemplate = createAction(
   'PORTAL_TEMPLATES_DELETE_TEMPLATE',
-  name => repository('PortalTemplates').deleteTemplate(name)
+  (name, brandId) => repository('PortalTemplates').deleteTemplate(name, brandId)
 );
 
 export const saveCustomPhrase = createAction(
@@ -174,8 +185,8 @@ export const saveCustomPhrase = createAction(
 
 export const saveTemplate = createAction(
   'PORTAL_TEMPLATES_SAVE_TEMPLATE',
-  (name, template) => new Promise((resolve, reject) => {
-    repository('PortalTemplates').saveTemplate(name, template).then(() => {
+  (name, template, brandSlug) => new Promise((resolve, reject) => {
+    repository('PortalTemplates').saveTemplate(name, template, brandSlug).then(() => {
       resolve(template);
     }, (err) => {
       reject(err.data);

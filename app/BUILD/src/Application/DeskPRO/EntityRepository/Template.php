@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\EntityRepository;
 
@@ -22,11 +18,29 @@ class Template extends AbstractEntityRepository
 
     /**
      * @param $name
+     * @param null|\Application\DeskPRO\Entity\Brand $brand
      *
-     * @return null|\Application\DeskPRO\Entity\Template
+     * @return null|TemplateEntity
      */
-    public function getTemplateByName($name)
+    public function getTemplateByName($name, $brand = null)
     {
+        if ($brand) {
+            $result = $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('t')
+                ->from(TemplateEntity::class, 't')
+                ->innerJoin(ThemeSet::class, 'ts')
+                ->andWhere('t.name = :name')
+                ->andWhere('ts.brand = :brand')
+                ->setParameter('name', $name)
+                ->setParameter('brand', $brand)
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getResult();
+
+            return $result[0];
+        }
+
         return $this->findOneBy(['name' => $name]);
     }
 
@@ -125,7 +139,7 @@ class Template extends AbstractEntityRepository
         $saved                = [];
         $saved[$theme_set_id] = [];
 
-        /** @var \Application\DeskPRO\Entity\Template $template */
+        /** @var TemplateEntity $template */
         foreach ($found_brand_templates as $template) {
             $saved[$theme_set_id][$template->getName()] = $template;
         }

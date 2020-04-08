@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { fromJS } from 'immutable';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { Button, ConfirmButton, Icon } from '@deskpro/react-components';
+import { Button, ConfirmButton } from '@deskpro/react-components';
 import Editor from 'DeskPRO/Component/CMEditor/Editor';
 import DropDownMenu from 'DeskPRO/Component/CMEditor/Menus/DropDownMenu';
 import { TemplatesMenuContainer } from './Menus/TemplatesMenu';
@@ -28,12 +27,14 @@ class PortalEditorContainer extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       saveSubmit:    false,
       undoSubmit:    false,
       resetSubmit:   false,
       currentWidget: null,
       editor:        null,
+      brandSlug:     'default',
     };
   }
 
@@ -43,14 +44,23 @@ class PortalEditorContainer extends React.Component {
 
     dispatch(actions.cleanState());
 
-    dispatch(actions.loadAssets());
-    dispatch(actions.loadTemplates());
-
-    if (this.props.params.name) {
-      dispatch(actions.loadTemplate(this.props.params.name.replace('|', '/'))).then((template) => {
-        dispatch(actions.setTemplate(template));
+    dispatch(actions.loadBrand(this.props.params.brandId)).then((brand) => {
+      const brandSlug = brand.slug;
+      this.setState({
+        brandSlug
       });
-    }
+      dispatch(actions.loadAssets(brandSlug));
+      dispatch(actions.loadTemplates(brandSlug));
+
+      if (this.props.params.name) {
+        dispatch(actions.loadTemplate(this.props.params.name.replace('|', '/'), brandSlug)).then((template) => {
+          dispatch(actions.setCurrentTemplate(fromJS(template)));
+          dispatch(actions.setTemplate(template));
+        });
+      }
+    });
+
+
     dispatch(actions.loadPhrases(
       'user',
       this.props.portalEditor.get('currentLanguage')
@@ -86,16 +96,14 @@ class PortalEditorContainer extends React.Component {
     this.props.dispatch(actions.setExtraTemplate({ name, code }));
   };
 
-  saveTemplate = () => {
+  saveTemplate = () => new Promise((resolve) => {
     this.setState({
       saveSubmit: true
     });
 
-    let name;
-    if (this.props.params.name) {
+    let name = this.props.portalEditor.getIn(['currentTemplate', 'value']);
+    if (!name && this.props.params.name) {
       name = this.props.params.name.replace('|', '/');
-    } else {
-      name = this.props.portalEditor.getIn(['currentTemplate', 'value']);
     }
 
     const template = {
@@ -103,22 +111,78 @@ class PortalEditorContainer extends React.Component {
     };
 
     const promises = [];
-    promises.push(this.props.dispatch(actions.saveTemplate(name, template)));
+    promises.push(this.props.dispatch(actions.saveTemplate(name, template, this.state.brandSlug)));
 
     const extraTemplates = this.props.portalEditor.getIn(['template', 'extra_templates'], fromJS({})).toObject();
 
     Object.keys(extraTemplates).forEach((key) => {
-      promises.push(this.props.dispatch(actions.saveTemplate(key, { code: extraTemplates[key] })));
+      promises.push(this.props.dispatch(actions.saveTemplate(key, { code: extraTemplates[key] }, this.state.brandSlug)));
     });
     Promise.all(promises).then(
       () => {
+        const currTemplate = this.props.portalEditor.getIn(['currentTemplate'], fromJS({})).toObject();
+        currTemplate.custom = true;
+        this.props.dispatch(actions.setCurrentTemplate(fromJS(currTemplate)));
+        this.props.dispatch(actions.loadTemplates(this.state.brandSlug));
+
         this.setState({
           saveSubmit: false
         });
         this.props.dispatch(actions.cleanExtraTemplates());
+
+        resolve(template);
+      }
+    );
+  });
+
+  resetTemplate = () => {
+    this.setState({
+      resetSubmit: true
+    });
+    let name = this.props.portalEditor.getIn(['currentTemplate', 'value']);
+    if (!name && this.props.params.name) {
+      name = this.props.params.name.replace('|', '/');
+    }
+
+    this.props.dispatch(actions.resetTemplate(name, this.props.params.brandId)).then(
+      () => {
+        this.props.dispatch(actions.loadTemplate(name, this.state.brandSlug)).then(
+          (data) => {
+            this.props.dispatch(actions.loadTemplates(this.state.brandSlug));
+            this.props.dispatch(actions.setCurrentTemplate(fromJS(data)));
+            this.props.dispatch(actions.setTemplate(data));
+            this.setState({
+              resetSubmit: false
+            });
+            this.props.dispatch(actions.cleanExtraTemplates());
+          }
+        );
       }
     );
   };
+
+  undoChanges = () => new Promise((resolve) => {
+    this.setState({
+      undoSubmit: true
+    });
+    let name = this.props.portalEditor.getIn(['currentTemplate', 'value']);
+    if (!name && this.props.params.name) {
+      name = this.props.params.name.replace('|', '/');
+    }
+
+    this.props.dispatch(actions.loadTemplate(name, this.state.brandSlug)).then(
+      (data) => {
+        this.props.dispatch(actions.setCurrentTemplate(fromJS(data)));
+        this.props.dispatch(actions.setTemplate(data));
+        this.setState({
+          undoSubmit: false
+        });
+        this.props.dispatch(actions.cleanExtraTemplates());
+
+        resolve();
+      }
+    );
+  });
 
   savePhraseTranslations = (phraseName, translations) =>
     this.props.dispatch(actions.saveTranslations(phraseName, translations));
@@ -147,7 +211,7 @@ class PortalEditorContainer extends React.Component {
     if (template !== null) {
       resolve(template);
     } else {
-      this.props.dispatch(actions.loadTemplate(name)).then((t) => {
+      this.props.dispatch(actions.loadTemplate(name, this.state.brandSlug)).then((t) => {
         this.props.dispatch(actions.setExtraTemplate({ name, code: t.original_code.code }));
         resolve(t.original_code.code);
       });
@@ -159,7 +223,7 @@ class PortalEditorContainer extends React.Component {
     if (template !== null) {
       resolve(template);
     } else {
-      this.props.dispatch(actions.loadTagInfo(name)).then((info) => {
+      this.props.dispatch(actions.loadTagInfo(name, this.state.brandSlug)).then((info) => {
         this.props.dispatch(actions.setTag({ name, info }));
         resolve(info);
       });
@@ -177,6 +241,7 @@ class PortalEditorContainer extends React.Component {
         portalEditor={this.props.portalEditor}
         name={name}
         brandId={this.props.params.brandId}
+        brandSlug={this.state.brandSlug}
         loadTagInfo={this.loadTagInfo}
         loadTemplate={this.loadTemplate}
         setTemplateValue={this.setTemplateValue}
@@ -193,6 +258,8 @@ class PortalEditorContainer extends React.Component {
         saveSubmit={this.state.saveSubmit}
         undoSubmit={this.state.undoSubmit}
         resetSubmit={this.state.resetSubmit}
+        undoChanges={this.undoChanges}
+        resetTemplate={this.resetTemplate}
         ref={(c) => { this.editor = c; }}
       />
     );
@@ -203,6 +270,7 @@ class PortalEditor extends React.Component {
   static propTypes = {
     name:                   PropTypes.string,
     brandId:                PropTypes.string,
+    brandSlug:              PropTypes.string,
     portalEditor:           PropTypes.object,
     loadTagInfo:            PropTypes.func,
     loadTemplate:           PropTypes.func,
@@ -211,12 +279,12 @@ class PortalEditor extends React.Component {
     setCurrentWidget:       PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
     savePhraseTranslations: PropTypes.func,
-    deleteTemplate:         PropTypes.func,
     saveTemplate:           PropTypes.func,
     resetTemplate:          PropTypes.func,
     insertAsset:            PropTypes.func,
     insertAssetAsLink:      PropTypes.func,
     insertPhrase:           PropTypes.func,
+    undoChanges:            PropTypes.func,
     close:                  PropTypes.func,
     setEditor:              PropTypes.func,
     saveSubmit:             PropTypes.bool,
@@ -285,6 +353,18 @@ class PortalEditor extends React.Component {
     }
   };
 
+  undoChanges = () => {
+    this.props.undoChanges().then(() => {
+      this.checkChanges();
+    });
+  };
+
+  saveTemplate = () => {
+    this.props.saveTemplate().then((newTemplate) => {
+      this.checkChanges(newTemplate);
+    });
+  };
+
   checkChanges = (value = null) => {
     const code = this.props.portalEditor.getIn(['template', 'original_code', 'code'], '');
     const extraTemplates = this.props.portalEditor.getIn(['template', 'extra_templates'], fromJS({}));
@@ -323,6 +403,7 @@ class PortalEditor extends React.Component {
                 >
                   <TemplatesMenuContainer
                     brandId={this.props.brandId}
+                    brandSlug={this.props.brandSlug}
                     closeMenu={this.closeTemplateMenu}
                   />
                 </DropDownMenu>
@@ -383,7 +464,7 @@ class PortalEditor extends React.Component {
               size="medium"
               disabled={textareaDisabled || !contentChanged}
               loading={this.props.saveSubmit}
-              onClick={this.props.saveTemplate}
+              onClick={this.saveTemplate}
             >
               Save changes
             </Button>
@@ -396,19 +477,7 @@ class PortalEditor extends React.Component {
             >
               Undo changes
             </ConfirmButton>
-            { this.props.portalEditor.getIn(['currentTemplate', 'is_custom'], false) ?
-              <ConfirmButton
-                type="secondary"
-                size="medium"
-                className={classNames('right floated negative')}
-                loading={this.props.resetSubmit}
-                disabled={textareaDisabled}
-                onClick={this.props.deleteTemplate}
-              >
-                <Icon name={faExclamationTriangle} />
-                Delete
-              </ConfirmButton>
-              :
+            { this.props.portalEditor.getIn(['currentTemplate', 'custom'], false) &&
               <ConfirmButton
                 type="secondary"
                 size="medium"

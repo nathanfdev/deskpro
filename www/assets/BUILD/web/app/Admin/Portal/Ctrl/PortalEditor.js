@@ -340,7 +340,6 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
     loadGroups() {
-      console.log('loadGroups');
       return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/variable-groups`).success(
         data => this.groups = data
       )

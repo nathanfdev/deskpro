@@ -7,6 +7,7 @@ import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import MenuItem from 'DeskPRO/Component/Semantic/Menu/MenuItem';
 import * as actions from '../../Actions/templatesActions';
 import { replaceRoute } from '../../../../Services/history';
+import { fromJS } from 'immutable';
 
 
 @connect(state => ({
@@ -15,6 +16,7 @@ import { replaceRoute } from '../../../../Services/history';
 export class TemplatesMenuContainer extends React.Component {
   static propTypes = {
     brandId:      PropTypes.string,
+    brandSlug:    PropTypes.string,
     dispatch:     PropTypes.func,
     closeMenu:    PropTypes.func,
     portalEditor: PropTypes.object
@@ -22,8 +24,9 @@ export class TemplatesMenuContainer extends React.Component {
 
   onChangeTemplate = (template) => {
     this.props.dispatch(actions.setCurrentTemplate(template));
-    this.props.dispatch(actions.loadTemplate(template.get('value'))).then(
+    this.props.dispatch(actions.loadTemplate(template.get('value'), this.props.brandSlug)).then(
       (data) => {
+        this.props.dispatch(actions.setCurrentTemplate(fromJS(data)));
         replaceRoute(`/portal/${this.props.brandId}/templates_editor/${template.get('value').replace('/', '|')}`);
         this.props.dispatch(actions.setTemplate(data));
       }
