@@ -66,4 +66,16 @@ class RequestUtils
     {
         return stripos($request->getRequestUri(), '/_proxy/') === 0;
     }
+
+    /**
+     * @param Request $request
+     *
+     * @return bool
+     */
+    public static function isPortalApi(Request $request)
+    {
+        $routeName = $request->attributes->get('_route');
+
+        return $routeName && (strpos($routeName, 'portal_api_') === 0 || strpos($routeName, 'deskpro_portal_api_') === 0);
+    }
 }

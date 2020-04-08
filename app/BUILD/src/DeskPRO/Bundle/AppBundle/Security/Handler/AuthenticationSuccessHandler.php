@@ -84,19 +84,6 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
 
             $this->container->get('language_stack')->push($userLanguage);
             $redirectUrl = $this->determineTargetUrl($request);
-
-            // check that all user fields are set correctly
-            // otherwise we should redirect user to the profile page
-            $profileForm = $this->container->get('form.factory')->create(PersonEditProfileType::class, $token->getUser(), [
-                'settings'                      => $this->container->get('brand_stack')->getActive()->getSettings(),
-                'csrf_protection'               => false,
-                'csrf_double_submit_protection' => false,
-            ]);
-
-            FormValidatorChecker::submitForm($profileForm);
-            if (!$profileForm->isValid()) {
-                $redirectUrl = $this->container->get('router')->generate('portal_user_profile');
-            }
         } finally {
             $this->container->get('language_stack')->pop();
         }

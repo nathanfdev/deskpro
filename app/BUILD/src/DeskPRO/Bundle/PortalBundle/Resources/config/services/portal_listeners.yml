@@ -24,6 +24,16 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  profile_validation.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\ProfileValidationListener
+    arguments:
+      - "@form.factory"
+      - "@brand_stack"
+      - "@security.token_storage"
+      - "@security.http_utils"
+    tags:
+      - { name: kernel.event_subscriber }
+
   cookie_settings.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\CookieSettingsListener
     tags:
