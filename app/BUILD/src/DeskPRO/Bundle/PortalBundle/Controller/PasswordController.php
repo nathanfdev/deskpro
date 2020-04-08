@@ -182,6 +182,10 @@ class PasswordController extends AbstractController
 
         $person = $reset['person'];
 
+        if (!$this->get('dp_limit_email_domains_checker')->checkPerson($person)) {
+            return $this->redirectToRoute('portal_login');
+        }
+
         $form = $this->createForm(PersonChangePasswordType::class, $person, [
             'settings'                 => $this->getBrandContainer()->getSettings(),
             'require_current_password' => false,
@@ -217,14 +221,14 @@ class PasswordController extends AbstractController
             }
 
             // log the user in
-            $this->get('person_manipulator')->authenticatePerson($person);
+            if ($this->get('person_manipulator')->authenticatePerson($person)) {
+                $this->addFlash('success', $this->phrase(
+                    $isResetting ? 'portal.account.reset-password-success' : 'portal.account.set-password-success'
+                ));
 
-            $this->addFlash('success', $this->phrase(
-                $isResetting ? 'portal.account.reset-password-success' : 'portal.account.set-password-success'
-            ));
-
-            if ($redirect = $request->getSession()->get(self::SET_PASSWORD_REDIRECT)) {
-                return new RedirectResponse($redirect);
+                if ($redirect = $request->getSession()->get(self::SET_PASSWORD_REDIRECT)) {
+                    return new RedirectResponse($redirect);
+                }
             }
 
             return $person->isAgent()

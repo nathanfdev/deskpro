@@ -147,7 +147,7 @@
                     <li data-action="set-password"
                         class="set-password">{{ phrase('agent.general.set_password') }}</li>{% endif %}
 
-                {% if perms.edit and app.authenticationManager.isDeskPROEnabled('user') %}
+                {% if perms.edit and app.authenticationManager.isDeskPROEnabled('user') and allow_reset_password %}
                     <li data-action="reset-password"
                         class="reset-password">{{ phrase('agent.general.reset_password') }}</li>
                 {% endif %}
