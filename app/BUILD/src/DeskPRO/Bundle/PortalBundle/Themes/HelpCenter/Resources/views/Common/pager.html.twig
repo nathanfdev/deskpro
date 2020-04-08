@@ -9,10 +9,15 @@
             css_active_class: 'active'
         }|merge(pager_options|default({}))) }}
     </nav>
-    {% if pager.nbPages > 10  %}
+    {% if pager.nbPages > 10 and pager_options and pager_options.routeName is defined %}
     <div class="dp-po-pagination-goto">
-        <form action="">
+        <form action="{{ path(pager_options.routeName, pager_options.routeParams|default({})) }}">
             <span>{{ phrase('helpcenter.general.go-to-page') }}</span>
+            {% if pager_options and pager_options.routeParams is defined %}
+                {% for param, value in pager_options.routeParams %}
+                    <input type="hidden" name="{{ param }}" value="{{ value }}" />
+                {% endfor %}
+            {% endif %}
             <input type="text" name="page" class="dp-po-pagination-goto-text">
             <input type="submit" class="dp-po-pagination-goto-button" value="{{ phrase('helpcenter.general.go') }}">
         </form>
