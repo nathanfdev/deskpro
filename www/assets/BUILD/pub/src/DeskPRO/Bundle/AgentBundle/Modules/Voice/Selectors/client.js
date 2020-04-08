@@ -5,6 +5,11 @@ const stateSelector = state => state.Voice.client;
 
 export const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
 
+export const hasSocketConnectionSelector = createSelector(
+  stateSelector,
+  state => state.get('hasSocketConnection')
+);
+
 export const isVoiceMicEnabled = createSelector(
   stateSelector,
   state => state.get('micEnabled')
@@ -56,9 +61,15 @@ export const isVoiceAvailableSelector = createSelector(
   me => me.getIn(['agent_data', 'is_voice_enabled'])
 );
 
-export const isVoiceEnabledSelector = createSelector(
+export const canInitVoiceSelector = createSelector(
   isVoiceAvailableSelector,
   isVoiceAvailable => isVoiceAvailable && isSecure
+);
+
+export const isVoiceEnabledSelector = createSelector(
+  isVoiceAvailableSelector,
+  hasSocketConnectionSelector,
+  (isVoiceAvailable, hasSocketConnection) => isVoiceAvailable && isSecure && hasSocketConnection
 );
 
 // settings

@@ -9,16 +9,17 @@ import VoiceMenu from './VoiceMenu';
 class VoiceMenuDropdown extends React.Component {
 
   static propTypes = {
-    me:           PropTypes.object,
-    isSecure:     PropTypes.bool,
-    micEnabled:   PropTypes.bool,
-    incomingCall: PropTypes.object,
-    outgoingCall: PropTypes.object,
-    onlineAgents: PropTypes.object,
-    voiceEnabled: PropTypes.bool,
-    callsEnabled: PropTypes.bool,
-    openUserMenu: PropTypes.func,
-    recordsCount: PropTypes.number
+    me:                  PropTypes.object,
+    isSecure:            PropTypes.bool,
+    hasSocketConnection: PropTypes.bool,
+    micEnabled:          PropTypes.bool,
+    incomingCall:        PropTypes.object,
+    outgoingCall:        PropTypes.object,
+    onlineAgents:        PropTypes.object,
+    voiceEnabled:        PropTypes.bool,
+    callsEnabled:        PropTypes.bool,
+    openUserMenu:        PropTypes.func,
+    recordsCount:        PropTypes.number
   };
 
   constructor(props) {
@@ -46,13 +47,21 @@ class VoiceMenuDropdown extends React.Component {
   }
 
   getStatus() {
-    const { onlineAgents, callsEnabled, isSecure, micEnabled } = this.props;
+    const { onlineAgents, callsEnabled, isSecure, micEnabled, hasSocketConnection } = this.props;
     const status = callsEnabled ? 'agent.general.on' : 'agent.general.off';
 
     if (!isSecure) {
       return (
         <div className="status">
           Insecure
+        </div>
+      );
+    }
+
+    if (!hasSocketConnection) {
+      return (
+        <div className="status">
+          Connecting
         </div>
       );
     }

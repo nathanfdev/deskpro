@@ -122,6 +122,9 @@ class CallLogsList extends React.Component {
               const recordings = call.get('recordings');
               const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
               const agentVoicemail = call.getIn(['agent_voicemail', 'blob']);
+              const callFrom = isInbound ? externalNumber : number.get('number');
+              const callTo = isInbound ? number.get('number') : externalNumber;
+              const canOpenDialpad = numbers.size > 0 && !call.get('strange_number');
 
               return (
                 <tr key={`call_log_${index}`}>
@@ -146,19 +149,19 @@ class CallLogsList extends React.Component {
                     )}
                   </td>
                   <td>
-                    {isInbound && numbers.size > 0
-                      ? <button onClick={() => openDialpad(externalNumber)}>
-                        {externalNumber}
+                    {isInbound && canOpenDialpad
+                      ? <button onClick={() => openDialpad(callFrom)}>
+                        {callFrom}
                       </button>
-                      : <span x-ms-format-detection="none">{number.get('number')}</span>
+                      : <span x-ms-format-detection="none">{callFrom}</span>
                     }
                   </td>
                   <td>
-                    {isInbound || !numbers.size
-                      ? <span x-ms-format-detection="none">{number.get('number')}</span>
-                      : <button onClick={() => openDialpad(externalNumber)}>
-                        {externalNumber}
+                    {!isInbound && canOpenDialpad
+                      ? <button onClick={() => openDialpad(callTo)}>
+                        {callTo}
                       </button>
+                      : <span x-ms-format-detection="none">{callTo}</span>
                     }
                   </td>
                   <td className="overflow-ellipsis">

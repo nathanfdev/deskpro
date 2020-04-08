@@ -227,6 +227,10 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 			}
 		}
 
+		if (window.AgentLegacyBundle.hasVoiceConnection()) {
+		  send_data.push({ name: 'ping_task_router_worker', value: 1 });
+    }
+
 		if (!this.options.alwaysRequest && !sent_info.length) {
 			this._handleAjaxSuccess({}, sent_info);
 			return;
