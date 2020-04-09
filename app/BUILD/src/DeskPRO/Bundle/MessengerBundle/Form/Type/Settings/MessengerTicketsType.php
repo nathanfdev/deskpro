@@ -63,6 +63,17 @@ class MessengerTicketsType extends AbstractType
                 'required' => true,
             ])
             ->add('subject', TextType::class)
+            ->add('subjectOption', ChoiceType::class, [
+                'required' => true,
+                'choices'  => [
+                    MessengerTickets::TICKET_SUBJECT_OPTION_PRESET,
+                    MessengerTickets::TICKET_SUBJECT_OPTION_USER,
+                ],
+                'choices_as_values' => true,
+                'constraints'       => [
+                    new Assert\NotNull(),
+                ],
+            ])
             ->add('departmentOption', ChoiceType::class, [
                 'required' => true,
                 'choices'  => [

@@ -73,6 +73,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const TICKETS_SUBJECT           = 'messenger.tickets.subject';
     const TICKETS_DEPARTMENT        = 'messenger.tickets.department';
     const TICKETS_DEPARTMENT_OPTION = 'messenger.tickets.department_option';
+    const TICKETS_SUBJECT_OPTION    = 'messenger.tickets.subject_option';
 
     const TICKETS_OPTIONS_TITLE       = 'messenger.tickets.options.title';
     const TICKETS_OPTIONS_BUTTON_TEXT = 'messenger.tickets.options.button_text';
@@ -153,6 +154,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setSubject($this->getSettings(self::TICKETS_SUBJECT, $brand, $mTickets->getSubject()))
             ->setDepartment($this->getSettings(self::TICKETS_DEPARTMENT, $brand, $this->getDefaultDepartment('ticket')))
             ->setDepartmentOption($this->getSettings(self::TICKETS_DEPARTMENT_OPTION, $brand, $mTickets->getDepartmentOption()))
+            ->setSubjectOption($this->getSettings(self::TICKETS_SUBJECT_OPTION, $brand, $mTickets->getSubjectOption()))
             ->setOptions($this->getMessengerTicketsOptions($brand))
         ;
     }
