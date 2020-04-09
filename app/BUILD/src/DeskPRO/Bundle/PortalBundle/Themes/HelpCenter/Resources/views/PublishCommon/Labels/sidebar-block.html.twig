@@ -1,5 +1,5 @@
 <div class="dp-po-sidebar dp-po-post-labels">
-    <h3 class="dp-po-sidebar-title">{{ title }}</h3>
+    <h2 class="dp-po-sidebar-title">{{ title }}</h2>
     {% for l in  labels %}
         <a href="{{ path('portal_search_labels', { label: l }) }}" class="badge badge-primary">{{ l }}</a>
     {% endfor %}
