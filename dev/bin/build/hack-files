@@ -168,7 +168,7 @@ $to = <<<'EOF'
 function twig_array_filter($array, $arrow)
 {
     if (is_string($arrow)) {
-        throw new \RuntimeException("Arrow function cannot be a string");
+        exit("Arrow function cannot be a string");
     }
 
     if (\is_array($array)) {
@@ -186,7 +186,7 @@ function twig_array_filter($array, $arrow)
 function twig_array_map($array, $arrow)
 {
     if (is_string($arrow)) {
-        throw new \RuntimeException("Arrow function cannot be a string");
+        exit("Arrow function cannot be a string");
     }
 
     $r = [];
@@ -200,7 +200,7 @@ function twig_array_map($array, $arrow)
 function twig_array_reduce($array, $arrow, $initial = null)
 {
     if (is_string($arrow)) {
-        throw new \RuntimeException("Arrow function cannot be a string");
+        exit("Arrow function cannot be a string");
     }
 
     if (!\is_array($array)) {
@@ -275,7 +275,7 @@ $to = <<<'EOF'
         static $filters = null;
 
         if (isset($options['options']) && is_string($options['options'])) {
-            throw new \RuntimeException('Options must not be a string');
+            exit("Options cannot be a string");
         }
 
         if (null === $filters) {
