@@ -125,8 +125,9 @@ unset($f, $content, $newContent);
 // This hack is to resolve a vulnerability whereby "string" referenced callbacks may be passed to twig filters and functions
 // or to any proxied method that accepts a native closure
 
-$f          = $DP_DIR.'/app/BUILD/vendor/twig/twig/src/Extension/CoreExtension.php';
-$content    = file_get_contents($f);
+$f                 = $DP_DIR.'/app/BUILD/vendor/twig/twig/src/Extension/CoreExtension.php';
+$content           = file_get_contents($f);
+$twigPatchesFailed = 0;
 
 echo "Patching {$f}\n";
 
@@ -168,7 +169,7 @@ $to = <<<'EOF'
 function twig_array_filter($array, $arrow)
 {
     if (is_string($arrow)) {
-        exit("Arrow function cannot be a string");
+        throw new \RuntimeException("Arrow function cannot be a string");
     }
 
     if (\is_array($array)) {
@@ -186,7 +187,7 @@ function twig_array_filter($array, $arrow)
 function twig_array_map($array, $arrow)
 {
     if (is_string($arrow)) {
-        exit("Arrow function cannot be a string");
+        throw new \RuntimeException("Arrow function cannot be a string");
     }
 
     $r = [];
@@ -200,7 +201,7 @@ function twig_array_map($array, $arrow)
 function twig_array_reduce($array, $arrow, $initial = null)
 {
     if (is_string($arrow)) {
-        exit("Arrow function cannot be a string");
+        throw new \RuntimeException("Arrow function cannot be a string");
     }
 
     if (!\is_array($array)) {
@@ -219,15 +220,11 @@ $newContent = str_replace(
 );
 
 if (1 !== $replacements) {
-    echo "\n\n";
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-    echo "Failed to patch {$f}, must be one and only one replacement\n";
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-    echo "\n\n";
-    exit(1);
+    file_put_contents($f, '<?php exit("Failed to patch");');
+    $twigPatchesFailed ++;
+} else {
+    file_put_contents($f, $newContent);
 }
-
-file_put_contents($f, $newContent);
 
 // -------------
 
@@ -275,7 +272,7 @@ $to = <<<'EOF'
         static $filters = null;
 
         if (isset($options['options']) && is_string($options['options'])) {
-            exit("Options cannot be a string");
+            throw new \RuntimeException('Options must not be a string');
         }
 
         if (null === $filters) {
@@ -315,9 +312,16 @@ $newContent = str_replace(
 );
 
 if (1 !== $replacements) {
+    file_put_contents($f, '<?php exit("Failed to patch");');
+    $twigPatchesFailed ++;
+} else {
+    file_put_contents($f, $newContent);
+}
+
+if ($twigPatchesFailed) {
     echo "\n\n";
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-    echo "Failed to patch {$f}, must be one and only one replacement\n";
+    echo "Failed to patch Twig for RCE exploit\n";
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
     echo "\n\n";
     exit(1);
