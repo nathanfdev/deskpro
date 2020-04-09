@@ -44,6 +44,10 @@ class CallLogView extends React.Component {
     const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
     const agentVoicemail = call.getIn(['agent_voicemail', 'blob']);
 
+    const callFrom = isInbound ? externalNumber : number.get('number');
+    const callTo = isInbound ? number.get('number') : externalNumber;
+    const canOpenDialpad = numbers.size > 0 && !call.get('strange_number');
+
     return (
       <div className="page">
         <BackButton onClick={onReturnBack} />
@@ -84,21 +88,22 @@ class CallLogView extends React.Component {
             <tr>
               <th>From Number</th>
               <td>
-                {isInbound && numbers.size > 0
-                  ? <button onClick={event => this.openDialpad(event, externalNumber)}>
-                    {externalNumber}
+                {isInbound && canOpenDialpad
+                  ? <button onClick={event => this.openDialpad(event, callFrom)}>
+                    {callFrom}
                   </button>
-                  : <span x-ms-format-detection="none">{number.get('number')}</span>}
+                  : <span x-ms-format-detection="none">{callFrom}</span>
+                }
               </td>
             </tr>
             <tr>
               <th>To Number</th>
               <td>
-                {isInbound || !numbers.size
-                  ? <span x-ms-format-detection="none">{number.get('number')}</span>
-                  : <button onClick={event => this.openDialpad(event, externalNumber)}>
-                    {externalNumber}
+                {!isInbound && canOpenDialpad
+                  ? <button onClick={event => this.openDialpad(event, callTo)}>
+                    {callTo}
                   </button>
+                  : <span x-ms-format-detection="none">{callTo}</span>
                 }
               </td>
             </tr>

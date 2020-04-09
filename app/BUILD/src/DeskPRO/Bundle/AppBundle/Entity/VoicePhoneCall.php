@@ -50,11 +50,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     const ENQUEUED_AS_USER  = 'user';
     const ENQUEUED_AS_AGENT = 'agent';
 
-    const RESTRICTED_NUMBER = '737 874-2833';
-    const BLOCKED_NUMBER    = '256-2533';
-    const UNKNOWN_NUMBER    = '865-6696';
-    const ANONYMOUS_NUMBER  = '266696687';
-    const EMPTY_NUMBER      = '';
+    const RESTRICTED_NUMBER   = '7378742833';
+    const BLOCKED_NUMBER      = '2562533';
+    const UNKNOWN_NUMBER      = '8656696';
+    const ANONYMOUS_NUMBER    = '266696687';
+    const UNAVAILABLE_NUMBER  = '86282452253';
+    const NO_CALLER_ID_NUMBER = '464';
+    const EMPTY_NUMBER        = '464';
+    const EMPTY_NUMBER2       = '';
 
     /**
      * The unique ID.
@@ -464,8 +467,15 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
             self::BLOCKED_NUMBER,
             self::UNKNOWN_NUMBER,
             self::ANONYMOUS_NUMBER,
+            self::UNAVAILABLE_NUMBER,
+            self::NO_CALLER_ID_NUMBER,
             self::EMPTY_NUMBER,
+            self::EMPTY_NUMBER2,
         ];
+
+        if (strpos($this->externalNumber, 'sip:') === 0) {
+            return false;
+        }
 
         $formattedExternalNumber = preg_replace('/[^0-9]/', '', $this->externalNumber);
         foreach ($strangeNumbers as &$strangeNumber) {

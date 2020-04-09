@@ -7,6 +7,7 @@ import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import { NewTicketSuggestions } from '../React/NewTicketSuggestions';
+import { HelpcenterNewTicketSuggestions } from '../React/HelpcenterNewTicketSuggestions';
 import { DynamicForm } from '../../AppBundle/Form/DynamicForm';
 
 class TicketValueReader {
@@ -208,7 +209,11 @@ export default class TicketForm extends PageWidget {
           const $subject = $('#ticket_subject', $formEl);
           const $rElement = $('<div class="dp-react-widget"></div>').insertAfter($subject);
 
-          ReactDOM.render(React.createElement(NewTicketSuggestions, { input: $subject }), $rElement.get(0));
+          if ($formEl.hasClass('helpcenter-form')) {
+            ReactDOM.render(React.createElement(HelpcenterNewTicketSuggestions, { input: $subject }), $rElement.get(0));
+          } else {
+            ReactDOM.render(React.createElement(NewTicketSuggestions, { input: $subject }), $rElement.get(0));
+          }
 
           $formEl.find('input:visible, textarea:visible').first().focus();
         }
@@ -247,10 +252,9 @@ export default class TicketForm extends PageWidget {
           newFields = newFields.filter(field => !/^org_field_/.test(field.id));
         }
 
-        newFields = map(layout.getMatchingFields(ticketReader), (v) => {
+        newFields = map(newFields, (v) => {
           const id = v.id;
           switch (id) {
-            case 'subject': return 'subject';
             case 'attachments': return ['attachments', 'more_attachments'];
             default: return id;
           }

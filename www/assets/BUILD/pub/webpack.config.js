@@ -19,6 +19,7 @@ const config = {
     'embed_loader.min':          path.join(__dirname, 'build/embed_loader.min.js'),
     hit_recorder:                path.join(__dirname, 'build/hit_recorder.js'),
     'hit_recorder.min':          path.join(__dirname, 'build/hit_recorder.min.js'),
+    'polyfill.min':              './vendor/polyfill.min.js',
     iframeResizer_contentWindow: './node_modules/iframe-resizer/js/iframeResizer.contentWindow.js',
 
     DeskPRO_PortalBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle',

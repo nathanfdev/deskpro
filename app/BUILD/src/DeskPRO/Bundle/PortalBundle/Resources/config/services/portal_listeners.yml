@@ -24,6 +24,15 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  limit_email_domains.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\LimitEmailDomainsListener
+    arguments:
+      - "@dp_limit_email_domains_checker"
+      - "@security.token_storage"
+      - "@security.http_utils"
+    tags:
+      - { name: kernel.event_subscriber }
+
   profile_validation.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\ProfileValidationListener
     arguments:

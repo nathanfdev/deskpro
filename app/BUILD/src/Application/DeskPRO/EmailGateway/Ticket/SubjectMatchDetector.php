@@ -27,6 +27,11 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
     /**
      * @var int
      */
+    protected $offset = 5000;
+
+    /**
+     * @var int
+     */
     protected $_time_cutoff = 0;
 
     /**
@@ -84,10 +89,12 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
     /**
      * @param int $time_cutoff Max age of a ticket before the subject match wont work
+     * @param int $offset      If offset
      */
-    public function __construct($time_cutoff = 7776000 /* 90 days */)
+    public function __construct($time_cutoff = 7776000 /* 90 days */, $offset = 5000)
     {
         $this->_time_cutoff = date('Y-m-d H:i:s', time() - $time_cutoff);
+        $this->offset       = $offset;
     }
 
     /**
@@ -156,17 +163,22 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
         $ticket_ids = [];
 
+        $minTicketId = App::getDb()->fetchColumn('SELECT MAX(id) FROM tickets') - $this->offset;
+        if ($minTicketId < 0) {
+            $minTicketId = 0;
+        }
+
         if ($this->enable_exact_subject) {
             $this->getLogger()->logDebug('[SubjectMatchDetector] (Standard) Trying to find exact subject: '.$subject);
             $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
                 SELECT tickets.id
                 FROM tickets
                 $extra_join
-                WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'hidden'))
+                WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.id > ? AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'hidden'))
                 $extra_where
                 ORDER BY tickets.id DESC
                 LIMIT 20
-            ", [$subject, $subject, $this->_time_cutoff]));
+            ", [$subject, $subject, $minTicketId, $this->_time_cutoff]));
         }
 
         // handle prefixes
@@ -192,11 +204,11 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
                     SELECT tickets.id
                     FROM tickets
                     $extra_join
-                    WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'hidden'))
+                    WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.id > ? AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'hidden'))
                     $extra_where
                     ORDER BY tickets.id DESC
                     LIMIT 20
-                ", [$subject_re, $subject_re, $this->_time_cutoff]));
+                ", [$subject_re, $subject_re, $minTicketId, $this->_time_cutoff]));
             }
         }
 
@@ -259,6 +271,11 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
             $extra_where = "AND email_sources.email_account_id = {$this->enable_same_account->id}";
         }
 
+        $minTicketId = App::getDb()->fetchColumn('SELECT MAX(id) FROM tickets') - $this->offset;
+        if ($minTicketId < 0) {
+            $minTicketId = 0;
+        }
+
         // Strip off Re: prefix (and alternatives in some other langs)
         // The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
         $last_subject = $subject_orig;
@@ -280,11 +297,11 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
                 SELECT tickets.id
                 FROM tickets
                 $extra_join
-                WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'hidden'))
+                WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.id > ? AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'hidden'))
                 $extra_where
                 ORDER BY tickets.id DESC
                 LIMIT 20
-            ", [$subject_re, $subject_re, $this->_time_cutoff]));
+            ", [$subject_re, $subject_re, $minTicketId, $this->_time_cutoff]));
         }
 
         $ticket_ids = Arrays::removeFalsey($ticket_ids);

@@ -41,7 +41,7 @@ class MergeVoiceRecordings extends AbstractJob
             ->groupBy('p.id')
             ->having('COUNT(r.id) > 0')
             ->setParameter('ended_statuses', [VoicePhoneCall::STATUS_ENDED, VoicePhoneCall::STATUS_VOICEMAIL])
-            ->setParameter('date_offset', new \DateTime('-1 min'))
+            ->setParameter('date_offset', new \DateTime('-5 min'))
             ->setMaxResults(50)
         ;
 
@@ -54,7 +54,14 @@ class MergeVoiceRecordings extends AbstractJob
             }
 
             if ($loaded) {
-                $this->mergeRecordings($phoneCall);
+                if (!count($phoneCall->getTempRecordings())) {
+                    $phoneCall->setFullRecording(null);
+
+                    $em->persist($phoneCall);
+                    $em->flush();
+                } else {
+                    $this->mergeRecordings($phoneCall);
+                }
 
                 $context = new SideloadSerializationContext();
                 $context->setIncludes(['recording_enabled']);
@@ -106,7 +113,7 @@ class MergeVoiceRecordings extends AbstractJob
             $em->remove($recording);
         }
 
-        $newBlobString = IO::saveAudioToMemory($newAudioFile);
+        $newBlobString = $newAudioFile ? IO::saveAudioToMemory($newAudioFile) : '';
         $newBlob       = $blobStorage->createBlobRecordFromString(
             $newBlobString,
             'call_record_'.$phoneCall->getId().'_merged.wav',

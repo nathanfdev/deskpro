@@ -1,5 +1,5 @@
 <div class="dp-po-ticket-create" id="new_ticket_page">
-    <div class="dp-po-ticket-create-form helpcenter-form dp_ticket_form">
+    <div class="dp-po-ticket-create-form helpcenter-form dp_ticket_form{% if show_ticket_suggestions %} dpx-with-ticket-deflection{% endif %}">
         <p>{{ phrase('helpcenter.tickets.new-intro') }}</p>
         <form method="POST" class="dp-po-form" novalidate data-save-draft="new_ticket{{ app.user ? '-' ~ app.user.id : '' }}" name="ticket" enctype="multipart/form-data" data-visibility="{{ form.vars.visibility }}">
             {% if form_errors|length > 0 %}

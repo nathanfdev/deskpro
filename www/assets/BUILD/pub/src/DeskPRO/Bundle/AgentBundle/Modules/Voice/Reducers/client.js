@@ -10,20 +10,22 @@ if (storageAvailable('localStorage') && localStorage.getItem('dpAgent.voice.ring
 }
 
 const initialState = {
-  waitingConnection: false,
-  micEnabled:        false,
-  incomingCalls:     [],
-  outgoingCall:      null,
-  connections:       [],
-  onlineAgents:      [],
+  hasSocketConnection: false,
+  waitingConnection:   false,
+  micEnabled:          false,
+  incomingCalls:       [],
+  outgoingCall:        null,
+  connections:         [],
+  onlineAgents:        [],
   ringingVolume,
 };
 
 export default createReducer(initialState, {
-  [actions.setMicEnabled]:     setFullPayload('micEnabled'),
-  [actions.setVoiceSettings]:  setFullPayload('settings'),
-  [actions.addIncomingCall]:   pushPayloadToCollection('incomingCalls'),
-  [actions.updateIncomigCall]: (state, payload) => {
+  [actions.changeSocketStatus]: setFullPayload('hasSocketConnection'),
+  [actions.setMicEnabled]:      setFullPayload('micEnabled'),
+  [actions.setVoiceSettings]:   setFullPayload('settings'),
+  [actions.addIncomingCall]:    pushPayloadToCollection('incomingCalls'),
+  [actions.updateIncomigCall]:  (state, payload) => {
     let incomingCalls = state.get('incomingCalls');
     if (payload && payload.get('call_id')) {
       const existingCall = incomingCalls.filter(incomingCall => incomingCall.get('call_id') === payload.get('call_id')).first();

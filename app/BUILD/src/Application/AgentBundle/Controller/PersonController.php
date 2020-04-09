@@ -379,6 +379,7 @@ class PersonController extends AbstractController
             'changelog'                 => $changelog,
             'brands'                    => $brands,
             'default_brand_id'          => $defaultBrandId,
+            'allow_reset_password'      => $this->get('dp_limit_email_domains_checker')->checkEmail($person->getEmail()),
 
             'custom_fields_definitions' => $custom_fields_definitions,
         ];

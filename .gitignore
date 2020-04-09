@@ -129,6 +129,7 @@ bin/deskpro-importer-tools
 /app/BUILD/deskpro-product
 /www/assets/BUILD/admin-frontend
 www/assets/BUILD/agent-ui
+www/assets/BUILD/admin-ui
 
 ###################### Legacy
 

@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Usergroup;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Request\OriginalUrlGenerator;
 use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
@@ -84,6 +85,11 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $languageManager;
 
     /**
+     * @var AppEnvInterface
+     */
+    private $appEnv;
+
+    /**
      * Constructor.
      *
      * @param BrandAwareSettingsResolver $settingsResolver
@@ -95,6 +101,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @param PortalPermissionsManager   $permissionsManager
      * @param UrlCorrectorFactory        $urlCorrectorFactory
      * @param LanguageManager            $languageManager
+     * @param AppEnvInterface            $appEnv
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
@@ -105,7 +112,8 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         TokenStorageInterface $tokenStorage,
         PortalPermissionsManager $permissionsManager,
         UrlCorrectorFactory $urlCorrectorFactory,
-        LanguageManager $languageManager
+        LanguageManager $languageManager,
+        AppEnvInterface $appEnv
     ) {
         parent::__construct($settingsResolver);
 
@@ -115,6 +123,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $this->permissionsManager  = $permissionsManager;
         $this->urlCorrectorFactory = $urlCorrectorFactory;
         $this->languageManager     = $languageManager;
+        $this->appEnv              = $appEnv;
 
         if ($router instanceof PortalRouter) {
             $this->router = $router->getBaseRouter();
@@ -203,11 +212,10 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * @param Brand   $brand
      * @param Request $request
-     * @param bool    $useDynAssets
      *
      * @return WidgetUrlSettings
      */
-    public function getWidgetUrlSettings(Brand $brand, Request $request = null, $useDynAssets = false)
+    public function getWidgetUrlSettings(Brand $brand, Request $request = null)
     {
         if ($request && $request->attributes->has('_dp_brand_slug')) {
             if ($request && $request->attributes->has('original_request')) {
@@ -260,7 +268,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
             return $assetUrl;
         };
 
-        if ($useDynAssets) {
+        if (!$this->appEnv->isDebug()) {
             $loaderUrl = rtrim($baseUrl, '/').'/dyn-assets/pub/build/widget_loader.min.js';
         } else {
             $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');

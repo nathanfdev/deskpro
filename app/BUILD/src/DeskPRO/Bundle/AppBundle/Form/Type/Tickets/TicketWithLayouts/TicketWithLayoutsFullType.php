@@ -44,17 +44,23 @@ class TicketWithLayoutsFullType extends AbstractType
             ->setAllowedTypes('full_layout', TicketLayout::class)
             ->setDefaults([
                 'person' => function (Options $options) {
-                    // fake person/org to process the full form
-                    $person = new Person();
-                    $person->setOrganization(new Organization());
-
-                    return $person;
+                    return new Person();
                 },
                 'data' => function (Options $options) {
                     // fake ticket to process the full form
+                    $person = $options['person'];
+                    if ($person instanceof Person) {
+                        $person = clone $person;
+                    } else {
+                        $person = new Person();
+                    }
+                    if (!$person->getOrganization()) {
+                        $person->setOrganization(new Organization());
+                    }
+
                     $ticket = new Ticket();
                     $ticket->disableAutoTicketProcess();
-                    $ticket->setPerson($options['person']);
+                    $ticket->setPerson($person);
 
                     return $ticket;
                 },

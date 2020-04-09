@@ -14,6 +14,9 @@ import 'kbw-calendars-iframe/dist/js/jquery.calendars.picker-ar';
 import 'kbw-calendars-iframe/dist/js/jquery.calendars.islamic';
 import 'kbw-calendars-iframe/dist/js/jquery.calendars.islamic-ar';
 
+// revert back default locale after importing hijri calendar
+moment.locale('en');
+
 export class DpxDateWidget extends PageWidget {
 
   renderWidget() {

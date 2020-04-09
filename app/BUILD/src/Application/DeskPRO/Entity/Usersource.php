@@ -193,6 +193,16 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         $data           = parent::toApiData($primary, $deep, $visited);
         $data['is_sso'] = $this->is_sso_background || $this->is_sso_auto;
 
+        if ($this->source_type === UsersourceAdapter\DbTablePhpPasswordCheck::class && !defined('DPC_IS_CLOUD')) {
+            /* @var $DP_ENV \DpRun\DpEnv */
+            global $DP_ENV;
+
+            $phpCode = $DP_ENV->getConfig('settings.database_authentication_php', '');
+            if ($phpCode) {
+                $data['options']['password_php'] = $phpCode;
+            }
+        }
+
         return $data;
     }
 

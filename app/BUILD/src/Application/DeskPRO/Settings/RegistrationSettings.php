@@ -4,6 +4,7 @@
 
 namespace Application\DeskPRO\Settings;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\EntityManager;
 
 class RegistrationSettings
@@ -55,12 +56,10 @@ class RegistrationSettings
      */
     public function toArray()
     {
-        $export_settings = [
+        return [
             'everyone_group_enabled' => $this->everyone_group_enabled,
-            'limit_email_domains'    => true,
+            'limit_email_domains'    => App::$container->get('portal_settings_resolver')->hasEmailLimits(),
         ];
-
-        return $export_settings;
     }
 
     /**

@@ -60,20 +60,21 @@ class BrandAwareSettingsResolver
      * @param string $name
      * @param Brand  $brand
      * @param mixed  $default
+     * @param bool   $force
      *
      * @return mixed
      */
-    public function getSetting($name, Brand $brand = null, $default = null)
+    public function getSetting($name, Brand $brand = null, $default = null, $force = false)
     {
         if ($this->brand_stack && $this->brand_stack->getActive()) {
             if ($default === null) {
                 $default = $this->getGlobalSetting($name);
             }
 
-            return $this->getBrandSetting($name, $brand, $default);
+            return $this->getBrandSetting($name, $brand, $default, $force);
         }
 
-        return $this->getGlobalSetting($name, $default);
+        return $this->getGlobalSetting($name, $default, $force);
     }
 
     /**
@@ -153,13 +154,14 @@ class BrandAwareSettingsResolver
      * @param string $name
      * @param Brand  $brand
      * @param mixed  $default
+     * @param bool  $force
      *
      * @return mixed
      */
-    protected function getBrandSetting($name, Brand $brand = null, $default = null)
+    protected function getBrandSetting($name, Brand $brand = null, $default = null, $force = false)
     {
-        if ($brand) {
-            $brandContainer = new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand));
+        if ($brand || $force) {
+            $brandContainer = new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand, $force));
         } else {
             $brandContainer = $this->brand_stack->getActive();
         }
@@ -176,12 +178,13 @@ class BrandAwareSettingsResolver
     /**
      * @param string $name
      * @param mixed  $default
+     * @param bool   $force
      *
      * @return mixed
      */
-    protected function getGlobalSetting($name, $default = null)
+    protected function getGlobalSetting($name, $default = null, $force = false)
     {
-        return $this->settings_resolver->getGlobalSettings()->get($name, $default);
+        return $this->settings_resolver->getGlobalSettings($force)->get($name, $default);
     }
 
     /**

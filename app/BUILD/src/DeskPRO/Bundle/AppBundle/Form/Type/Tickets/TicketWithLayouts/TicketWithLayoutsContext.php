@@ -182,6 +182,12 @@ class TicketWithLayoutsContext
      */
     public function hasValidVisibility(LayoutField $field)
     {
+        if ($this->isFullLayout()) {
+            // ignore visibility on the full form
+            // because we can have different visibility criteria for different layouts for a single field
+            return true;
+        }
+
         switch ($this->getVisibility()) {
             case self::VISIBILITY_NEW:
                 return $field->isVisibleOnNew();

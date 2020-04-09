@@ -15,7 +15,7 @@ class CookieSettingsListener implements EventSubscriberInterface
 {
     public function onRequest(GetResponseEvent $event)
     {
-        if ($event->isMasterRequest()) {
+        if (!$event->isMasterRequest()) {
             return;
         }
 
@@ -55,7 +55,7 @@ class CookieSettingsListener implements EventSubscriberInterface
     {
         return [
             KernelEvents::RESPONSE => 'onResponse',
-            KernelEvents::REQUEST  => 'onRequest',
+            KernelEvents::REQUEST  => ['onRequest', 10000],
         ];
     }
 }

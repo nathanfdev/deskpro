@@ -78,6 +78,13 @@ class VoicePhoneCall
     private $externalNumberType;
 
     /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $strangeNumber;
+
+    /**
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      *
      * @var Person
@@ -230,6 +237,7 @@ class VoicePhoneCall
         $this->numberPlain        = $phoneCall->getNumberPlain();
         $this->externalNumber     = $phoneCall->getExternalNumber();
         $this->externalNumberType = $phoneCall->getExternalNumberType();
+        $this->strangeNumber      = $phoneCall->isStrangeNumber();
         $this->person             = $phoneCall->getPerson();
         $this->type               = $phoneCall->getType();
         $this->status             = $phoneCall->getStatus();
@@ -255,6 +263,32 @@ class VoicePhoneCall
 
         if (is_array($this->data) && array_key_exists('RecordingUrl', $this->data)) {
             unset($this->data['RecordingUrl']);
+        }
+
+        // handle special numbers
+        if ($phoneCall->isStrangeNumber()) {
+            switch (preg_replace('/[^0-9]/', '', $this->externalNumber)) {
+                case VoicePhoneCallEntity::UNAVAILABLE_NUMBER:
+                    $this->externalNumber = 'unavailable';
+                    break;
+                case VoicePhoneCallEntity::NO_CALLER_ID_NUMBER:
+                case VoicePhoneCallEntity::EMPTY_NUMBER:
+                case VoicePhoneCallEntity::EMPTY_NUMBER2:
+                    $this->externalNumber = 'empty';
+                    break;
+                case VoicePhoneCallEntity::ANONYMOUS_NUMBER:
+                    $this->externalNumber = 'anonymous';
+                    break;
+                case VoicePhoneCallEntity::UNKNOWN_NUMBER:
+                    $this->externalNumber = 'unknown';
+                    break;
+                case VoicePhoneCallEntity::RESTRICTED_NUMBER:
+                    $this->externalNumber = 'restricted';
+                    break;
+                case VoicePhoneCallEntity::BLOCKED_NUMBER:
+                    $this->externalNumber = 'blocked';
+                    break;
+            }
         }
     }
 

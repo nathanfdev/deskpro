@@ -34,7 +34,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         } else {
             /* @var $DP_ENV \DpRun\DpEnv */
             global $DP_ENV;
-            $options['password_php'] = $DP_ENV->getConfig('settings.database_authentication_php', '');
+            $settings['php_code'] = $DP_ENV->getConfig('settings.database_authentication_php', '');
         }
 
         return $settings;

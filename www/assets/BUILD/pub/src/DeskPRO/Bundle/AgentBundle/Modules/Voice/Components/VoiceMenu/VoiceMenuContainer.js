@@ -6,7 +6,7 @@ import { allPeopleSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore
 import { voiceAgentsSelector, voiceOnlineAgentsSelector, outboundCallsEnabledSelector, callsEnabledSelector } from '../../Selectors/agents';
 import VoiceMenuDropdown from './VoiceMenuDropdown';
 import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
-import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector, ringingVolumeSelector, agentVoicemailTimeoutSelector, isVoiceMicEnabled, isVoiceEnabledSelector, isSecure } from '../../Selectors/client';
+import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector, ringingVolumeSelector, agentVoicemailTimeoutSelector, isVoiceMicEnabled, isVoiceEnabledSelector, isSecure, hasSocketConnectionSelector } from '../../Selectors/client';
 import { allQueuesSelector } from '../../Selectors/queue';
 import { loadVoiceMissedAgentCalls } from '../../Actions/voiceMissedAgentCallActions';
 import { allVoiceMissedAgentCallsSelector } from '../../Selectors/voicemailRecords';
@@ -29,6 +29,7 @@ import '../../../../Resources/sounds/incoming-call.wav';
   ringingVolume:         ringingVolumeSelector(state),
   agentVoicemailTimeout: agentVoicemailTimeoutSelector(state),
   micEnabled:            isVoiceMicEnabled(state),
+  hasSocketConnection:   hasSocketConnectionSelector(state),
   records:               allVoiceMissedAgentCallsSelector(state)
 }))
 class VoiceMenuContainer extends React.Component {

@@ -28,33 +28,6 @@ class VoiceClientController extends BaseController
 {
     /**
      * @ApiDoc(
-     *     description="Returns client voice auth tokens",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens"
-     * )
-     *
-     * @Rest\Get("/twilio_tokens")
-     *
-     * @param TwilioVoiceAccount $account
-     *
-     * @return View
-     */
-    public function createTwilioClientTokensAction(TwilioVoiceAccount $account)
-    {
-        $adapter = $this->get('twilio_adapter');
-        $person  = $this->getUser();
-
-        $clientTokens = new TwilioClientTokens(
-            $adapter->createPhoneToken($account, $person)
-        );
-
-        return new View($this->wrap($clientTokens));
-    }
-
-    /**
-     * @ApiDoc(
      *     description="Prepares outbound phone call",
      *     statusCodes={
      *         200="Returned if everything is ok"
@@ -101,6 +74,27 @@ class VoiceClientController extends BaseController
     public function getOnlineAgentsAction()
     {
         return new View($this->wrap($this->get('dp.voice.worker_activity')->getActiveWorkers()));
+    }
+
+    /**
+     * @Rest\Post("/client_error")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function clientErrorAction(Request $request)
+    {
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf(
+            '[VoiceClient] Got client error, code = %s, message = %s, original_code = %s, original_message = %s',
+            $request->get('message'),
+            $request->get('code'),
+            $request->get('original_code'),
+            $request->get('original_message')
+        ));
+
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

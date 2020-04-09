@@ -26,7 +26,7 @@ import { setOnlineAgents, setOnlineUserChatAgents } from 'DeskPRO/Bundle/AgentBu
 import { NotificationServiceContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notifications/NotificationServiceContainer';
 import { ExternalEventsContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/ExternalEvents/Components/ExternalEventsContainer';
 import { CollabManager } from 'DeskPRO/Bundle/AgentBundle/Services/Collab';
-import { isVoiceEnabledSelector, connectionsSelector, incomingCallSelector, outgoingCallSelector, waitingConnectionSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
+import { canInitVoiceSelector, connectionsSelector, incomingCallSelector, outgoingCallSelector, waitingConnectionSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
 import { canOpenDialpadSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/numbers';
 import { voiceBootstrap, openDialpad } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Actions/clientActions';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
@@ -43,6 +43,7 @@ import { setVoiceOnlineAgents } from './Modules/Voice/Actions/clientActions';
 import ContentEditor from './Modules/Publish/Components/Content/ContentEditor';
 import IconPicker from './Modules/Publish/Components/Content/IconPicker';
 import { ApprovalContainer } from './Modules/Tickets/Components/Approval/ApprovalContainer';
+import { hasSocketConnectionSelector } from './Modules/Voice/Selectors/client';
 
 class AgentLegacyApp {
 
@@ -109,13 +110,9 @@ class AgentLegacyApp {
       this.store.dispatch(setOnlineUserChatAgents(event.online_agents));
     });
 
-    const state = this.store.getState();
-    if (window.DP_HAS_VOICE) {
-      const voiceEnabled = isVoiceEnabledSelector(state);
-
-      if (voiceEnabled) {
-        this.store.dispatch(voiceBootstrap());
-      }
+    let state = this.store.getState();
+    if (window.DP_HAS_VOICE && canInitVoiceSelector(state)) {
+      this.store.dispatch(voiceBootstrap());
     }
 
     if (
@@ -132,6 +129,14 @@ class AgentLegacyApp {
 
       if (hasPusher) {
         setInterval(() => {
+          state = this.store.getState();
+
+          // don't update last worker activity if socket is disconnected
+          // to prevent getting incoming calls
+          if (!hasSocketConnectionSelector(state)) {
+            return;
+          }
+
           api.sendGet(`${window.DP_BASE_URL}agent/ping-task-router-worker`).success((data) => {
             if (data.task_router_workers) {
               this.store.dispatch(setVoiceOnlineAgents(Immutable.fromJS(data.task_router_workers)));
@@ -220,6 +225,10 @@ class AgentLegacyApp {
 
   canOpenDialpad() {
     return canOpenDialpadSelector(this.store.getState());
+  }
+
+  hasVoiceConnection() {
+    return hasSocketConnectionSelector(this.store.getState());
   }
 
   openVoiceDialpad(number, ticketId = null, ticketTitle = null, personId = null) {

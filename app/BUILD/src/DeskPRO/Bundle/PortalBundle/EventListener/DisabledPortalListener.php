@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\PortalBundle\EventListener;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
+use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Component\Util\LazyPropObject;
@@ -105,7 +106,7 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
             || $this->isAdminPreview()
             || $this->isAdminPreviewApiCall($event)
             || $this->isFavicon($event)
-            || $this->isPortalApi($event)
+            || RequestUtils::isPortalApi($event->getRequest())
             || $this->isFocusWindow($event)
             || $this->isProxy($event)
         ) {
@@ -201,19 +202,6 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
     private function isFavicon(GetResponseEvent $event)
     {
         return $event->getRequest()->getPathInfo() === '/favicon.ico';
-    }
-
-    /**
-     * @param GetResponseEvent $event
-     *
-     * @return bool
-     */
-    private function isPortalApi(GetResponseEvent $event)
-    {
-        $request   = $event->getRequest();
-        $routeName = $request->attributes->get('_route');
-
-        return $routeName && (strpos($routeName, 'portal_api_') === 0 || strpos($routeName, 'deskpro_portal_api_') === 0);
     }
 
     /**

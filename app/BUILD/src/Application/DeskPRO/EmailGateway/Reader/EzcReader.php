@@ -222,15 +222,19 @@ class EzcReader extends AbstractReader
         $authenticationResults = [];
         if ($headers) {
             foreach ($headers as $header) {
-                $authenticationResult                                          = AuthenticationResults::parseHeader($header);
-                $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
+                $authenticationResult = AuthenticationResults::parseHeader($header);
+                if ($authenticationResult) {
+                    $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
+                }
             }
         } else {
             $receivedSpf = $this->mail->getHeader('Received-SPF', true);
             if ($receivedSpf) {
                 foreach ($receivedSpf as $value) {
-                    $authenticationResult                                          = AuthenticationResults::parseReceivedSpf($value);
-                    $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
+                    $authenticationResult = AuthenticationResults::parseReceivedSpf($value);
+                    if ($authenticationResult) {
+                        $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
+                    }
                 }
             }
         }

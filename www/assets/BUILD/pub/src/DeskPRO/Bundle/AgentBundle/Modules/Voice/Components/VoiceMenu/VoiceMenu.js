@@ -36,11 +36,11 @@ class VoiceMenu extends React.Component {
 
   constructor(props) {
     super(props);
-    const { incomingCall, outgoingCall, outboundCallsEnabled, defaultTab } = this.props;
+    const { voiceEnabled, incomingCall, outgoingCall, outboundCallsEnabled, defaultTab } = this.props;
     let tabName;
     if (defaultTab) {
       tabName = defaultTab;
-    } else if (incomingCall || outgoingCall || outboundCallsEnabled) {
+    } else if (voiceEnabled && (incomingCall || outgoingCall || outboundCallsEnabled)) {
       tabName = 'phone';
     } else {
       tabName = 'settings';
@@ -123,7 +123,7 @@ class VoiceMenu extends React.Component {
     const { me, outboundCallsEnabled, incomingCall, outgoingCall, openUserMenu, recordsCount } = this.props;
     const { voiceEnabled, micEnabled, callsEnabled } = this.props;
     const { tabName } = this.state;
-    const hasPhoneTab = incomingCall || outboundCallsEnabled;
+    const hasPhoneTab = voiceEnabled && (incomingCall || outboundCallsEnabled);
     const pendingCall = incomingCall || outgoingCall;
 
     return (

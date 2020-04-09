@@ -5,7 +5,7 @@ services:
 
   person_manipulator:
     class: DeskPRO\Bundle\PortalBundle\Person\PersonManipulator
-    arguments: ["@router", "@security.token_storage"]
+    arguments: ["@router", "@security.token_storage", "@dp_limit_email_domains_checker"]
 
   pagerfanta.view.deskpro:
     class: DeskPRO\Bundle\PortalBundle\View\Pagerfanta\DeskproView
