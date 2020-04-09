@@ -288,7 +288,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     $scope.showHidden = function () {
       $scope.show_hidden = 1;
       for (var i = 0; i < self.no_value_fields.length; i++) {
-        $scope.editField(self.no_value_fields[i]);
+        $scope.editField(new Event('click'), self.no_value_fields[i]);
       }
       self.updateDisplay();
     };
@@ -532,6 +532,12 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
           }));
       }
     });
+
+    var bkp = {
+      edit_fields: self.$scope.edit_fields,
+      edit_fields_map: self.edit_fields_map
+    };
+
     Promise.all(customPromises)
       .then(function () {
         changeManager.saveChanges(
@@ -558,10 +564,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
           }).bind(this),
           function (data) {
             self.$scope.is_saving = false;
+            self.$scope.edit_fields = bkp.edit_fields;
+            self.edit_fields_map = bkp.edit_fields_map;
+            self.updateDisplay();
             if (!data.fields) return;
             self.$scope.$apply(function () {
               for (var i = 0; i < data.fields.length; i++) {
-                self.$scope.editField(data.fields[i]);
+                self.$scope.editField(new Event('click'), data.fields[i]);
               }
             });
           }
