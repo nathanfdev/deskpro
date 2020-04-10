@@ -220,7 +220,7 @@ $newContent = str_replace(
 );
 
 if (1 !== $replacements) {
-    file_put_contents($f, '<?php exit("Failed to patch");');
+    //file_put_contents($f, '<?php exit("Failed to patch");');
     $twigPatchesFailed ++;
 } else {
     file_put_contents($f, $newContent);
@@ -312,7 +312,7 @@ $newContent = str_replace(
 );
 
 if (1 !== $replacements) {
-    file_put_contents($f, '<?php exit("Failed to patch");');
+    //file_put_contents($f, '<?php exit("Failed to patch");');
     $twigPatchesFailed ++;
 } else {
     file_put_contents($f, $newContent);
