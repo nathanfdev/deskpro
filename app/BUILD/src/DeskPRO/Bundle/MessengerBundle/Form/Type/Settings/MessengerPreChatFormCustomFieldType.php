@@ -62,7 +62,8 @@ class MessengerPreChatFormCustomFieldType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => PreChatFormCustomField::class,
+                'data_class'         => PreChatFormCustomField::class,
+                'allow_extra_fields' => true,
             ])
         ;
     }
