@@ -404,7 +404,7 @@ END)
                     if ($statement->isSubQuery() && $childRepository === $statement->getFromEntityRepository()) {
                         $childRepository = $repository;
                     }
-                    
+
                     if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
                         || !($childRepository instanceof AbstractEntityRepository)
                         || $association['type'] == ClassMetadataInfo::MANY_TO_MANY

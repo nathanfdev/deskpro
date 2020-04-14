@@ -248,6 +248,8 @@ class Organization extends AbstractEntityRepository
     public function getReportAssociations()
     {
         return [
+            // To be able to reach ManyToMany associated table `usergroups`
+            // add virtual association `organization_usergroup` to intermediate table `organization2usergroups`
             'organization_usergroup' => [
                 'conditions'   => '%1$s.organization_id = %2$s.id',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationUsergroup', // non existing Entity
