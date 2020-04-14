@@ -1,5 +1,5 @@
 <div class="dp-po-pagination">
-    <nav aria-label="...">
+    <nav aria-label="{% if title is defined %}{{ title }} {% endif %}Pagination">
         {{ pagerfanta(pager, null, {
             routeParams: {tag_options: null},
             prev_message: '<i class="dp-po-icon far fa-angle-left"></i>',

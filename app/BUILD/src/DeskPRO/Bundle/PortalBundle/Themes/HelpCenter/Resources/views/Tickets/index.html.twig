@@ -207,8 +207,8 @@
                                         </div>
                                         <div class="col-sm-7">
                                             <form class="dp-po-ticket-search" method="get">
-                                                <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-tickets') }}" value="{{ search_query }}" />
-                                                <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+                                                <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-tickets') }}" value="{{ search_query }}" aria-label="{{ phrase('helpcenter.gerenal.search')}}" />
+                                                <button type="submit" aria-label="{{ phrase('helpcenter.gerenal.search')}}"> <i class="dp-po-icon far fa-search"></i></button>
                                             </form>
                                         </div>
                                         <div class="col-sm-1 text-right">
@@ -249,7 +249,7 @@
     {% set sort_icon = sort_dir == 'desc' ? '<i
         class="dp-po-icon far fa-long-arrow-down"></i>' : '<i
         class="dp-po-icon far fa-long-arrow-up"></i>' %}
-    {{ label }}<a href="{{ url }}" {% if isActive %}class="active" {% endif %}>{% if isActive %}{{ sort_icon|raw }}{% else %}<i
+    {{ label }}<a href="{{ url }}" {% if isActive %}class="active" {% endif %} aria-label="Sort by {{ label }}">{% if isActive %}{{ sort_icon|raw }}{% else %}<i
         class="dp-po-icon far fa-arrows-v"></i>{% endif %}</a>
 {%- endmacro -%}
 
@@ -393,7 +393,7 @@
                 </div>
                 <div class="col-sm-1 text-right">
                     <div class="dp-po-columnfilter">
-                        <a href="javascript:void(0)" class="dp-po-columnfilter-link">
+                        <a href="javascript:void(0)" class="dp-po-columnfilter-link" aria-label="Choose columns">
                             <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/column-filter.svg', 'help_center') }}" />
                         </a>
                         <div class="dropdown-menu dropdown-menu-right dp-po-columnfilter-dropdown">
@@ -443,6 +443,7 @@
             {% endfor %}
         </div>
         {% include 'Theme:Common:pager.html.twig' with {
+            title: ticket_table.title,
             pager: ticket_table.pager,
             pager_options: { pageParameter: '['~ticket_table.pageName~']', routeParams: {'_fragment': id} }
         } %}
