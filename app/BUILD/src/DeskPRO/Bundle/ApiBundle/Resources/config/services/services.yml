@@ -41,6 +41,8 @@ services:
 
   follow_redirect_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\FollowLocationListener
+    arguments:
+      - "@security.http_utils"
     tags:
     - { name: 'kernel.event_subscriber' }
 
