@@ -443,6 +443,17 @@ class SearchController extends AbstractController
                 ['page' => $curPage, 'per_page' => $perPage, 'limit_types' => [$type]]
             );
 
+            $pageInfo = Numbers::getPaginationPages($resultSet->getTotal(), $curPage, $perPage);
+            if ($pageInfo['last'] < $curPage) {
+                $curPage = $pageInfo['last'];
+
+                $resultSet = $userSearch->search(
+                    $context,
+                    $q,
+                    ['page' => $curPage, 'per_page' => $perPage, 'limit_types' => [$type]]
+                );
+            }
+
             $total   = $resultSet->getTotal();
             $results = $resultSet->getTypedResults();
 
