@@ -16,7 +16,7 @@ class MessengerTicketsOptions
      *
      * @var string
      */
-    private $title = 'Email us';
+    private $title = 'Submit a ticket';
 
     /**
      * A short description summoned to help a user.
@@ -25,7 +25,7 @@ class MessengerTicketsOptions
      *
      * @var string
      */
-    private $description = 'Fill up the form and create a ticket';
+    private $description = 'Submit an enquiry via our contact form';
 
     /**
      * A text which will be shown on a button inside tickets block.
@@ -35,7 +35,7 @@ class MessengerTicketsOptions
      *
      * @var string
      */
-    private $buttonText = 'Send a message';
+    private $buttonText = 'Submit a new ticket';
 
     /**
      * @return string

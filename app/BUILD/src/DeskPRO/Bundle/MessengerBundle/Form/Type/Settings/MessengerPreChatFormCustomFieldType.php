@@ -44,7 +44,6 @@ class MessengerPreChatFormCustomFieldType extends AbstractType
                 'class' => CustomDefChat::class,
             ])
             ->add('enabled', ApiBooleanType::class)
-            ->add('required', ApiBooleanType::class)
             ->add('displayOrder', NumberType::class)
         ;
 
@@ -63,7 +62,8 @@ class MessengerPreChatFormCustomFieldType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => PreChatFormCustomField::class,
+                'data_class'         => PreChatFormCustomField::class,
+                'allow_extra_fields' => true,
             ])
         ;
     }

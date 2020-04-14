@@ -53,9 +53,9 @@ class PackagesFactory
      * @param array            $asset_path_vars
      */
     public function __construct(
-        AppEnv           $appEnv,
+        AppEnv $appEnv,
         SettingsResolver $settings,
-        RequestStack     $request_stack,
+        RequestStack $request_stack,
         $asset_paths = [],
         $asset_path_vars = []
     ) {
@@ -127,7 +127,7 @@ class PackagesFactory
 
         if (empty($this->asset_paths['messenger_loader_assets'])) {
             $this->asset_paths['messenger_loader_assets'] = PathMapInfo::create()
-                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build/messenger')
+                ->setDeskproPath('/dyn-assets/pub/build/messenger')
                 ->setVersion(PathMapInfo::BUILD_VERSION)
             ;
         }
@@ -201,10 +201,12 @@ class PackagesFactory
                 } else {
                     $version = new DpStaticVersionStrategy(time());
                 }
+
                 break;
 
             case PathMapInfo::NO_VERSION:
                 $version = new EmptyVersionStrategy();
+
                 break;
 
             default:
@@ -248,7 +250,7 @@ class PackagesFactory
                 return $pack;
             }
 
-        //------------------------------
+            //------------------------------
         // Create URL pack(s)
         //------------------------------
         } else {

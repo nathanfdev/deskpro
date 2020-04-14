@@ -13,6 +13,9 @@ class MessengerTickets
     const TICKET_DEPARTMENT_OPTION_CHOOSE = 'choose';
     const TICKET_DEPARTMENT_OPTION_HIDDEN = 'hidden';
 
+    const TICKET_SUBJECT_OPTION_PRESET = 'preset';
+    const TICKET_SUBJECT_OPTION_USER   = 'user';
+
     /**
      * Are tickets enabled.
      *
@@ -21,6 +24,14 @@ class MessengerTickets
      * @var bool
      */
     private $enabled = true;
+
+    /**
+     * @JMS\Type("string")
+     * @JMS\SerializedName("subjectOption")
+     *
+     * @var string
+     */
+    private $subjectOption = self::TICKET_SUBJECT_OPTION_USER;
 
     /**
      * @JMS\Type("string")
@@ -65,6 +76,26 @@ class MessengerTickets
     public function setSubject($subject)
     {
         $this->subject = $subject;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubjectOption()
+    {
+        return $this->subjectOption;
+    }
+
+    /**
+     * @param string $subjectOption
+     *
+     * @return $this
+     */
+    public function setSubjectOption($subjectOption)
+    {
+        $this->subjectOption = $subjectOption;
 
         return $this;
     }

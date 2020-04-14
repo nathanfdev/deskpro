@@ -84,7 +84,7 @@ class ChatController extends AbstractMessengerController
             ]
         );
 
-        $form->submit($request->request->all());
+        $form->submit($request->request->all(), false);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }

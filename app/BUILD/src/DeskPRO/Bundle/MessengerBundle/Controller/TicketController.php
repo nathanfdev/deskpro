@@ -13,6 +13,7 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Component\Util\RegexUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -58,9 +59,11 @@ class TicketController extends AbstractMessengerController
         $settingsResolver = $this->get('messenger.service.settings_resolver');
         $brand            = $this->get('brand_stack')->getActive()->getBrand();
         $requestData      = $request->request->all();
+        $messengerTickets = $settingsResolver->getMessengerSettings($brand)->getTickets();
 
-        $subjectPattern = $settingsResolver->getMessengerSettings($brand)->getTickets()->getSubject();
-        if ($subjectPattern !== '') {
+        if ($messengerTickets->getSubjectOption() === MessengerTickets::TICKET_SUBJECT_OPTION_PRESET) {
+            // just a fallback if subject is not set somehow
+            $subjectPattern         = $messengerTickets->getSubject() ?: 'Ticket from {name}';
             $subject                = RegexUtils::safePregReplace('#\{\s*[a-zA-Z0-9]+\s*\}#', $this->getVisitorId($request), $subjectPattern);
             $requestData['subject'] = $subject;
         }

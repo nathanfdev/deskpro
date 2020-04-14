@@ -5,6 +5,8 @@ namespace DeskPRO\Bundle\MessengerBundle\Controller;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutCollection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -15,6 +17,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatFormCustomField;
+use DeskPRO\Component\Util\MapUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as Router;
@@ -75,6 +78,17 @@ class ServiceController extends AbstractMessengerController
         $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();
         $data['chat']['formMessage']        = $preChatForm->getFormMessage();
 
+        $person   = $this->getUser();
+        $language = $person && $person->getId()
+            ? $person->getLanguage()->getId()
+            : $this->container->get('language_stack')->getActiveOrDefault();
+
+        $data['language'] = [
+            'id'      => $language->getId(),
+            'locale'  => $language->getLocale(),
+            'version' => 1,
+        ];
+
         $data['tickets']['uploadTo'] = $data['chat']['uploadTo'] = $this->generateUrl(
             'messenger_blob_upload', [], UrlGeneratorInterface::ABSOLUTE_URL
         );
@@ -89,6 +103,106 @@ class ServiceController extends AbstractMessengerController
         ];
 
         return View::create($data, Response::HTTP_OK);
+    }
+
+    /**
+     * You can use this endpoint to gather information about clients you need to obtain notifications and alerts.
+     *
+     * @ApiDoc(
+     *     section="Messenger",
+     *     resourceDescription="Service actions",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     * @Rest\Get("/translation")
+     *
+     * @return View
+     */
+    public function getTranslationAction(Request $request)
+    {
+        $phrases = [
+            'chat.save_ticket.question',
+            'chat.save_ticket.intro',
+            'chat.save_ticket.thanks',
+            'chat.save_ticket.button_yes',
+            'chat.save_ticket.button_no',
+            'chat.agent_assigned.message',
+            'message_user-joined',
+            'message_user-left',
+            'message_ended',
+            'message_ended-by',
+            'message_assigned',
+            'message_unassigned',
+            'chat.no_agent_online',
+            'chat.ended',
+            'chat.end_block.question_header',
+            'chat.end_block.buttons.yes',
+            'chat.end_block.buttons.no',
+            'chat.create_ticket.header',
+            'chat.create_ticket.intro',
+            'chat.create_ticket.button',
+            'chat.rating_block.question_header',
+            'chat.rating_block.buttons.helpful',
+            'chat.rating_block.buttons.unhelpful',
+            'chat.rating_block.thank_you_header',
+            'tickets.form.name',
+            'tickets.form.email',
+            'tickets.form.department',
+            'tickets.form.message',
+            'tickets.form.product',
+            'tickets.form.priority',
+            'tickets.form.category',
+            'tickets.form.submit',
+            'tickets.form.dragNDrop',
+            'tickets.form.or',
+            'tickets.form.chooseAFile',
+            'tickets.form.chooseFiles',
+            'tickets.form.select',
+            'tickets.form.back',
+            'tickets.form.header',
+            'chat.transcript_block.question_header',
+            'chat.transcript_block.answer_header',
+            'chat.transcript_block.yes_button',
+            'chat.transcript_block.no_button',
+            'chat.transcript_block.send_button',
+            'blocks.continue_chat.link',
+            'tickets.form.saving',
+            'tickets.form.thanks_header',
+            'tickets.form.thanks',
+            'blocks.start_chat.title',
+            'blocks.start_chat.description',
+            'blocks.start_chat.link',
+            'blocks.continue_chat.title',
+            'blocks.tickets.title',
+            'blocks.tickets.view_all_link',
+            'chat.header.title',
+            'chat.enter_form.button',
+        ];
+
+        $translate = $this->container->get('deskpro.core.translate');
+        $language  = null;
+
+        /** @var Person $person */
+        $person = $this->getUser();
+
+        $language = $person && $person->getId()
+            ? $person->getLanguage()
+            : $this->container->get('language_stack')->getActiveOrDefault();
+
+        //look for requested language only when user has no preferred one
+        if ((!$person || !$person->getId()) && $request->get('language')) {
+            $entityRepository = $this->getManager()->getRepository(Language::class);
+            if (!$language = $entityRepository->find($request->get('language'))) {
+                $language = $entityRepository->getForLangCode($request->get('language'));
+            }
+        }
+
+        $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
+            return [$id, $translate->phrase(sprintf('user.messenger.%s', $id), [], $language) ?: "!$id!"];
+        });
+
+        return View::create($output, Response::HTTP_OK);
     }
 
     protected function isAbsoluteUrl($url)
@@ -120,7 +234,7 @@ class ServiceController extends AbstractMessengerController
                 if ($f->getFieldType() === 'department') {
                     $ar['is_hidden'] = $ticketsSettings->getDepartmentOption() === MessengerTickets::TICKET_DEPARTMENT_OPTION_HIDDEN;
                 } elseif ($f->getId() === 'subject') {
-                    $ar['is_hidden'] = $ticketsSettings->getSubject() !== '';
+                    $ar['is_hidden'] = $ticketsSettings->getSubjectOption() === MessengerTickets::TICKET_SUBJECT_OPTION_PRESET;
                 }
                 if ($f->getFieldType() === 'ticket_field') {
                     $ar['data'] = $this->get('serializer')->toArray($customTicketFields[$f->getFieldId()], new SideloadSerializationContext());

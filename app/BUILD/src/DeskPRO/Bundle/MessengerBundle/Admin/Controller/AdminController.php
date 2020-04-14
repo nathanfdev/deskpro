@@ -197,6 +197,7 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::TICKETS_DEPARTMENT, $messengerTickets->getDepartment(), $brand)
             ->updateSetting(MSR::TICKETS_SUBJECT, $messengerTickets->getSubject(), $brand)
             ->updateSetting(MSR::TICKETS_DEPARTMENT_OPTION, $messengerTickets->getDepartmentOption(), $brand)
+            ->updateSetting(MSR::TICKETS_SUBJECT_OPTION, $messengerTickets->getSubjectOption(), $brand)
 
             // Tickets block config
             ->updateSetting(MSR::TICKETS_OPTIONS_TITLE, $messengerTicketsOptions->getTitle(), $brand)

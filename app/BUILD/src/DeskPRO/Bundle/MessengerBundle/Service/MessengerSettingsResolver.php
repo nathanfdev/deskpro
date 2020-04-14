@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\MessengerBundle\Service;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Settings\AbstractBrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
@@ -73,6 +74,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const TICKETS_SUBJECT           = 'messenger.tickets.subject';
     const TICKETS_DEPARTMENT        = 'messenger.tickets.department';
     const TICKETS_DEPARTMENT_OPTION = 'messenger.tickets.department_option';
+    const TICKETS_SUBJECT_OPTION    = 'messenger.tickets.subject_option';
 
     const TICKETS_OPTIONS_TITLE       = 'messenger.tickets.options.title';
     const TICKETS_OPTIONS_BUTTON_TEXT = 'messenger.tickets.options.button_text';
@@ -153,6 +155,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setSubject($this->getSettings(self::TICKETS_SUBJECT, $brand, $mTickets->getSubject()))
             ->setDepartment($this->getSettings(self::TICKETS_DEPARTMENT, $brand, $this->getDefaultDepartment('ticket')))
             ->setDepartmentOption($this->getSettings(self::TICKETS_DEPARTMENT_OPTION, $brand, $mTickets->getDepartmentOption()))
+            ->setSubjectOption($this->getSettings(self::TICKETS_SUBJECT_OPTION, $brand, $mTickets->getSubjectOption()))
             ->setOptions($this->getMessengerTicketsOptions($brand))
         ;
     }
@@ -205,6 +208,13 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     {
         $mPreChatForm = new PreChatForm();
 
+        $fields     = unserialize($this->getSettings(self::PRE_CHAT_FORM_FIELDS, $brand, serialize($mPreChatForm->getFields())));
+        $customDefs = $this->em->getRepository(CustomDefChat::class)->getFields();
+        foreach ($fields as $field) {
+            $options = $customDefs[$field->getId()]->getOptions();
+            $field->setRequired(isset($options['required']) ? $options['required'] : false);
+        }
+
         return $mPreChatForm
             ->setEnabled($this->getSettings(self::PRE_CHAT_FORM_ENABLED, $brand, $mPreChatForm->isEnabled()))
             ->setIsNameEnabled($this->getSettings(self::PRE_CHAT_FORM_NAME_ENABLED, $brand, $mPreChatForm->isNameEnabled()))
@@ -214,7 +224,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setIsDepartmentSelectable($this->getSettings(self::PRE_CHAT_FORM_DEPARTMENT, $brand, $mPreChatForm->isDepartmentSelectable()))
             ->setFormMessageEnabled($this->getSettings(self::PRE_CHAT_FORM_FORM_MESSAGE_ENABLED, $brand, $mPreChatForm->isFormMessageEnabled()))
             ->setFormMessage($this->getSettings(self::PRE_CHAT_FORM_FORM_MESSAGE, $brand, $mPreChatForm->getFormMessage()))
-            ->setFields(unserialize($this->getSettings(self::PRE_CHAT_FORM_FIELDS, $brand, serialize($mPreChatForm->getFields()))))
+            ->setFields($fields)
         ;
     }
 

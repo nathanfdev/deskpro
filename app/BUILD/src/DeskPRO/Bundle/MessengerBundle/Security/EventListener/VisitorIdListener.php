@@ -1,9 +1,5 @@
 <?php
 
-/**
- *   audit_log.decide_listener:.
- */
-
 namespace DeskPRO\Bundle\MessengerBundle\Security\EventListener;
 
 use DeskPRO\Component\Util\RegexUtils;
@@ -22,7 +18,7 @@ class VisitorIdListener
         if (
             $event->isMasterRequest()
             && !RegexUtils::safePregMatch('#^/api/messenger/?$#', $pathInfo)
-            && !RegexUtils::safePregMatch('#^/api/messenger/service/setup/?$#', $pathInfo)
+            && !RegexUtils::safePregMatch('#^/api/messenger/service/(setup|translation)/?$#', $pathInfo)
             && !RegexUtils::safePregMatch('#^/api/messenger/service/blob/?$#', $pathInfo)
             && RegexUtils::safePregMatch('#^/api/messenger#', $pathInfo)
         ) {
