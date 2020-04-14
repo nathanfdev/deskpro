@@ -28,8 +28,10 @@ export default class PusherClient extends AbstractClient {
   }
 
   getDefaultOptions() { // eslint-disable-line class-methods-use-this
+    const baseUrl = window.DP_BASE_URL ? window.DP_BASE_URL.replace(/\/$/, '') : '';
+
     return {
-      authEndpoint:  '/api/v2/pusher/auth',
+      authEndpoint:  `${baseUrl}/api/v2/pusher/auth`,
       authTransport: 'rest',
       appKey:        '',
       channelPrefix: '',
