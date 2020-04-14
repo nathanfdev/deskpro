@@ -14,7 +14,6 @@ class Chat extends AbstractChat
     /**
      * BC property.
      *
-     * @JMS\Expose()
      * @JMS\Type("integer")
      *
      * @var int
@@ -33,7 +32,6 @@ class Chat extends AbstractChat
     /**
      * BC property.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
@@ -53,7 +51,6 @@ class Chat extends AbstractChat
      * BC property.
      *
      * @JMS\Type("integer")
-     * @JMS\Expose()
      *
      * @var string
      */
@@ -63,7 +60,6 @@ class Chat extends AbstractChat
      * BC property.
      *
      * @JMS\Type("string")
-     * @JMS\Expose()
      *
      * @var string
      */

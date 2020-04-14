@@ -156,6 +156,20 @@ abstract class AbstractChat
     protected $accessToken = null;
 
     /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $ratingOverall;
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $ratingComment;
+
+    /**
      * Constructor.
      *
      * @param ChatConversation $chat
@@ -178,5 +192,7 @@ abstract class AbstractChat
         $this->shouldSendTranscript = $chat->getShouldSendTranscript();
         $this->dateTranscriptSent   = $chat->getDateTranscriptSent();
         $this->needValidateEmail    = $chat->getEmailValidationCode() && !$chat->getEmailValidated();
+        $this->ratingOverall        = $chat->getRatingOverall();
+        $this->ratingComment        = $chat->getRatingComment();
     }
 }
