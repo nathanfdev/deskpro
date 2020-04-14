@@ -146,14 +146,19 @@ class SqlCondition
     /**
      * Set the WHERE string. If an array is supplied, then the where string will be combined with ANDs.
      *
-     * @param string $where
+     * @param string|string[] $where
+     * @param bool            $orX
      *
      * @return $this
      */
-    public function setWhere($where)
+    public function setWhere($where, $orX = false)
     {
         if (is_array($where)) {
-            $where = implode(' AND ', $where);
+            if ($orX) {
+                $where = implode(' OR ', $where);
+            } else {
+                $where = implode(' AND ', $where);
+            }
         }
 
         $this->where = trim($where);

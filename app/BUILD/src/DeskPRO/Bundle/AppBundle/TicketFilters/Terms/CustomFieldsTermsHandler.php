@@ -330,7 +330,22 @@ class CustomFieldsTermsHandler implements ValueTermHandlerInterface, SqlTermHand
                 return SqlQueryUtils::buildQueryCondition('{dat}.value', $operator, $options, $cond);
 
             default:
-                return SqlQueryUtils::buildQueryCondition('{dat}.input', $operator, $options, $cond);
+                $inputConditions = [SqlQueryUtils::buildQueryCondition('{dat}.input', $operator, $options)];
+                if (is_numeric($options->getValue())) {
+                    $inputConditions[] = SqlQueryUtils::buildQueryCondition('{dat}.value', $operator, $options);
+                }
+
+                $cond->setWhere(array_map(function (SqlCondition $inputConditions) {
+                    return $inputConditions->getWhere();
+                }, $inputConditions), true);
+
+                foreach ($inputConditions as $inputCondition) {
+                    foreach ($inputCondition->getParams() as $name => list($value, $type)) {
+                        $cond->setParam($name, $value, $type);
+                    }
+                }
+
+                return $cond;
         }
     }
 
