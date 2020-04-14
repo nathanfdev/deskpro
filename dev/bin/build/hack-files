@@ -125,12 +125,31 @@ unset($f, $content, $newContent);
 // This hack is to resolve a vulnerability whereby "string" referenced callbacks may be passed to twig filters and functions
 // or to any proxied method that accepts a native closure
 
-$f                 = $DP_DIR.'/app/BUILD/vendor/twig/twig/src/Extension/CoreExtension.php';
-$content           = file_get_contents($f);
-$twigPatchesFailed = 0;
-
 echo "Patching {$f}\n";
+$failedCount = 0;
+$patchCode   = function($f, $from, $to) use (&$failedCount) {
+    $content = file_get_contents($f);
+    if (strpos($content, $to) === false) {
+        $newContent = str_replace(
+            $from,
+            $to,
+            $content,
+            $replacements
+        );
 
+        if (1 !== $replacements) {
+            $failedCount++;
+            echo "$f is not patched, replacements count = $replacements\n";
+        } else {
+            echo "$f is patched\n";
+            file_put_contents($f, $newContent);
+        }
+    } else {
+        echo "$f is already patched\n";
+    }
+};
+
+$f    = $DP_DIR.'/app/BUILD/vendor/twig/twig/src/Extension/CoreExtension.php';
 $from = <<<'EOF'
 function twig_array_filter($array, $arrow)
 {
@@ -211,28 +230,12 @@ function twig_array_reduce($array, $arrow, $initial = null)
     return array_reduce($array, $arrow, $initial);
 }
 EOF;
-$content    = file_get_contents($f);
-$newContent = str_replace(
-    $from,
-    $to,
-    $content,
-    $replacements
-);
 
-if (1 !== $replacements) {
-    //file_put_contents($f, '<?php exit("Failed to patch");');
-    $twigPatchesFailed ++;
-} else {
-    file_put_contents($f, $newContent);
-}
+$patchCode($f, $from, $to);
 
 // -------------
 
-$f          = $DP_DIR.'/app/BUILD/vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/ParameterBag.php';
-$content    = file_get_contents($f);
-
-echo "Patching {$f}\n";
-
+$f    = $DP_DIR.'/app/BUILD/vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/ParameterBag.php';
 $from = <<<'EOF'
     public function filter($key, $default = null, $filter = FILTER_DEFAULT, $options = array(), $deep = false)
     {
@@ -303,30 +306,16 @@ $to = <<<'EOF'
         return filter_var($value, $filter, $options);
     }
 EOF;
-$content    = file_get_contents($f);
-$newContent = str_replace(
-    $from,
-    $to,
-    $content,
-    $replacements
-);
 
-if (1 !== $replacements) {
-    //file_put_contents($f, '<?php exit("Failed to patch");');
-    $twigPatchesFailed ++;
-} else {
+$patchCode($f, $from, $to);
+
+if ($failedCount) {
+    $f  = $DP_DIR.'/app/BUILD/src/Application/AgentBundle/Controller/MainController.php';
+
+    $content    = file_get_contents($f);
+    $newContent = str_replace('public function indexAction()', "public function indexAction() { exit('failed to patch'); }\n    public function indexActionXXX()", $content);
+
     file_put_contents($f, $newContent);
 }
-
-if ($twigPatchesFailed) {
-    echo "\n\n";
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-    echo "Failed to patch Twig for RCE exploit\n";
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-    echo "\n\n";
-    exit(1);
-}
-
-file_put_contents($f, $newContent);
 
 echo ".. Done\n";
