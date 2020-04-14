@@ -111,6 +111,18 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
         return $this->getClassMetadata()->getAssociationMappings();
     }
 
+    /**
+     * [
+     *     'conditions' => ...
+     *     'targetEntity' => ...
+     *     'repository' => ...
+     * ]
+     *
+     * 'targetEntity'   - entity name to get repository (if 'repository' is not set)
+     * 'repository'     - AbstractEntityRepository instance. If set - will be used in reports to get metadata
+     *
+     * @return []
+     */
     public function getReportAssociations()
     {
         return [];

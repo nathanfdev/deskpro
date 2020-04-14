@@ -47,6 +47,7 @@ class Column extends AbstractPart
         'labels_tickets'                    => ['label', 'label'],
         'languages'                         => ['id', 'title'],
         'organizations'                     => ['id', 'name', 'organization'],
+        'usergroups'                        => ['id', 'title'],
         'people'                            => ['id', '
 (CASE
     WHEN (LENGTH(%1$s.first_name) > 0 AND LENGTH(%1$s.last_name) > 0) THEN CONCAT(%1$s.first_name, \' \', %1$s.last_name)
@@ -269,7 +270,9 @@ END)
             foreach ($repository->getReportAssociations() as $name => $association) {
                 if (strtolower($name) == $part) {
                     $target          = $association['targetEntity'];
-                    $childRepository = App::getEntityRepository($target);
+                    $childRepository = isset($association['repository'])
+                                       ? $association['repository']
+                                       : App::getEntityRepository($target);
 
                     if (!($childRepository instanceof AbstractEntityRepository)) {
                         throw new Exception("$partsString cannot be accessed via DPQL.");

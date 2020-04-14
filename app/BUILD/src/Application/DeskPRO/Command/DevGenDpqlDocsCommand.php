@@ -135,7 +135,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
             foreach ($repository->getAssociationMappings() as $association) {
                 $target          = $association['targetEntity'];
-                $childRepository = $target::getRepository();
+                $childRepository = App::getEntityRepository($target);
 
                 if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
                     || !($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)
@@ -166,7 +166,9 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
             foreach ($repository->getReportAssociations() as $name => $association) {
                 $target          = $association['targetEntity'];
-                $childRepository = $target::getRepository();
+                $childRepository = isset($association['repository'])
+                   ? $association['repository']
+                   : App::getEntityRepository($target);
 
                 if (!($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)) {
                     continue;
