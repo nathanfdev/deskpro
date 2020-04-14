@@ -4,7 +4,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
+use DeskPRO\Bundle\ApiBundle\Form\Type\Batch\GetBatchRequestType;
+use DeskPRO\Bundle\ApiBundle\Form\Type\Batch\PostBatchRequestType;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,9 +30,14 @@ class BatchController extends BaseController
      */
     public function executeBatchPostAction(Request $request)
     {
-        $requests  = $request->request->get('requests', []);
+        $form = $this->createForm(PostBatchRequestType::class);
+        $form->submit($request->request->all(), true);
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
         $responses = [];
-        foreach ($requests as $identifier => $subRequestInfo) {
+        foreach ($form->get('requests')->getData() as $identifier => $subRequestInfo) {
             $responses[$identifier] = $this->performSubRequest($subRequestInfo, $request);
         }
 
@@ -47,13 +55,14 @@ class BatchController extends BaseController
      */
     public function executeBatchGetAction(Request $request)
     {
-        $requests = $request->get('get', []);
-        if (!is_array($requests)) {
-            $requests = explode(',', $requests);
+        $form = $this->createForm(GetBatchRequestType::class);
+        $form->submit($request->query->all(), true);
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
         }
 
         $responses = [];
-        foreach ($requests as $identifier => $subRequestInfo) {
+        foreach ($form->get('get')->getData() as $identifier => $subRequestInfo) {
             $responses[$identifier] = $this->performSubRequest($subRequestInfo, $request);
         }
 
@@ -63,34 +72,15 @@ class BatchController extends BaseController
     }
 
     /**
-     * @param array   $subRequestInfo
+     * @param array   $info
      * @param Request $request
      *
      * @throws \Exception
      *
      * @return string
      */
-    protected function performSubRequest($subRequestInfo, Request $request)
+    protected function performSubRequest($info, Request $request)
     {
-        $info = [
-            'method'  => 'GET',
-            'url'     => null,
-            'data'    => null,
-            'headers' => null,
-            'params'  => [],
-        ];
-
-        if (is_array($subRequestInfo)) {
-            $info = array_merge($info, $subRequestInfo);
-        } else {
-            $info = array_merge($info, ['url' => $subRequestInfo]);
-        }
-
-        // verify sub request url
-        if (strpos($info['url'], '/api/v2') !== 0) {
-            $info['url'] = '/api/v2/'.ltrim($info['url'], '/');
-        }
-
         $json_serialized = null;
         if ($info['data']) {
             $json            = $info['data'];
