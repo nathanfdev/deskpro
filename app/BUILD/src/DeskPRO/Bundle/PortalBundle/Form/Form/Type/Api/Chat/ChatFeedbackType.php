@@ -36,7 +36,7 @@ class ChatFeedbackType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onCheckEnded']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -53,7 +53,7 @@ class ChatFeedbackType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onCheckEnded(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         /** @var ChatConversation $conversation */
         $conversation = $event->getData();

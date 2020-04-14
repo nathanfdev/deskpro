@@ -97,7 +97,7 @@ class LowUtil
         ];
 
         if (!empty($conn_info['pdo_options'])) {
-            $options = array_merge($options, $conn_info['pdo_options']);
+            $options += $conn_info['pdo_options'];
         }
 
         $pdo = new \PDO(
