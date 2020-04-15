@@ -15,7 +15,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 trait VoiceTaskRouterTrait
 {
-    protected function pingTaskRouterWorker($personId)
+    /**
+     * @param int  $personId
+     * @param bool $hasVoice
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    protected function pingTaskRouterWorker($personId, $hasVoice = false)
     {
         // todo support other storages
         $q = $this->getPdoRead()->prepare('
@@ -29,12 +35,21 @@ trait VoiceTaskRouterTrait
 
         $status = $q->fetchColumn();
         if ($status === AgentData::AVAILABLE_STATUS_IDLE) {
+            $setFields = ['date_last_active = :now'];
+            if ($hasVoice) {
+                $setFields[] = 'voice_date_last_active = :now';
+            }
+
             $q = $this->getVoicePdo()->prepare('
             UPDATE voice_workers
-            SET date_last_active = ?
-            WHERE type = ? AND type_id = ?
+            SET '.implode(', ', $setFields).'
+            WHERE type = :type AND type_id = :type_id
         ');
-            $q->execute([date('Y-m-d H:i:s', time()), 'agent', $personId]);
+            $q->execute([
+                'now'     => date('Y-m-d H:i:s', time()),
+                'type'    => 'agent',
+                'type_id' => $personId,
+            ]);
         }
     }
 

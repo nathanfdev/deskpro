@@ -66,8 +66,7 @@ class WorkerActivity
         $workers       = [];
         $onlineWorkers = [];
         foreach ($this->voiceStorage->getOnlineWorkersByType('agent') as $worker) {
-            $workers[$worker->getTypeId()]       = $worker;
-            $onlineWorkers[$worker->getTypeId()] = true;
+            $workers[$worker->getTypeId()] = $worker;
         }
         foreach ($this->workerHelper->getForwardingCallWorkers() as $worker) {
             $workers[$worker->getTypeId()] = $worker;
@@ -93,8 +92,7 @@ class WorkerActivity
             }
 
             foreach ($workers as $worker) {
-                $agentId  = $worker->getTypeId();
-                $isOnline = isset($onlineWorkers[$agentId]);
+                $agentId = $worker->getTypeId();
 
                 if (!isset($agentDataMap[$agentId])) {
                     continue;
@@ -106,12 +104,13 @@ class WorkerActivity
                 $activityStatus = new WorkerActivityStatus();
                 $activityStatus
                     ->setAgentId($worker->getTypeId())
-                    ->setOnline($isOnline)
+                    ->setOnline($worker->isOnline())
                     ->setVoiceEnabled($agentData->isVoiceEnabled() && $agentData->isAgentCallsEnabled())
+                    ->setVoiceActive($worker->isVoiceActive())
                     ->setBusyForVoice($this->voiceWorkflow->workerIsBusy($worker))
                     ->setForwardingEnabled($agentData->canUseForwarding()
                         && $agentData->agentCanUseForwarding()
-                        && ($isOnline && !$agentData->isForwardingLoggedOut()) || !$isOnline
+                        && ($worker->isOnline() && !$agentData->isForwardingLoggedOut()) || !$worker->isOnline()
                     )
                 ;
 

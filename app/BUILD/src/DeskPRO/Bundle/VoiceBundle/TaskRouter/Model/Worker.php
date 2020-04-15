@@ -7,6 +7,8 @@ namespace DeskPRO\Bundle\VoiceBundle\TaskRouter\Model;
  */
 class Worker extends AbstractModel
 {
+    const ONLINE_LAST_ACTIVE_OFFSET = '-15 seconds';
+
     const ACTIVITY_IDLE    = 'idle';
     const ACTIVITY_OFFLINE = 'offline';
 
@@ -29,6 +31,11 @@ class Worker extends AbstractModel
      * @var \DateTime
      */
     protected $dateLastActive;
+
+    /**
+     * @var \DateTime
+     */
+    protected $voiceDateLastActive;
 
     /**
      * @var \DateTime
@@ -139,6 +146,42 @@ class Worker extends AbstractModel
         $this->dateLastActive = $dateLastActive;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOnline()
+    {
+        return $this->dateLastActive > new \DateTime(self::ONLINE_LAST_ACTIVE_OFFSET);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getVoiceDateLastActive()
+    {
+        return $this->voiceDateLastActive;
+    }
+
+    /**
+     * @param \DateTime $voiceDateLastActive
+     *
+     * @return $this
+     */
+    public function setVoiceDateLastActive(\DateTime $voiceDateLastActive = null)
+    {
+        $this->voiceDateLastActive = $voiceDateLastActive;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVoiceActive()
+    {
+        return $this->voiceDateLastActive > new \DateTime(self::ONLINE_LAST_ACTIVE_OFFSET);
     }
 
     /**

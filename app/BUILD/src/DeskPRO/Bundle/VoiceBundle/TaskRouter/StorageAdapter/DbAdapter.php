@@ -134,7 +134,7 @@ class DbAdapter implements StorageAdapterInterface
             )
             ->setParameter('activity', Worker::ACTIVITY_IDLE)
             ->setParameter('type', $type)
-            ->setParameter('date_last_active', new \DateTime('-15 seconds'))
+            ->setParameter('date_last_active', new \DateTime(Worker::ONLINE_LAST_ACTIVE_OFFSET))
         ;
 
         $entities = $qb->getQuery()->getResult();
@@ -240,6 +240,7 @@ class DbAdapter implements StorageAdapterInterface
             ->setTypeId($worker->getTypeId())
             ->setActivity($worker->getActivity())
             ->setDateLastActive($worker->getDateLastActive())
+            ->setVoiceDateLastActive($worker->getVoiceDateLastActive())
             ->setLastCallAt($worker->getLastCallAt())
             ->setAttributes($worker->getAttributes())
             ->setPendingTasks($worker->getPendingTaskIds())
@@ -365,6 +366,7 @@ class DbAdapter implements StorageAdapterInterface
             ->setTypeId($entity->getTypeId())
             ->setActivity($entity->getActivity())
             ->setDateLastActive($entity->getDateLastActive())
+            ->setVoiceDateLastActive($entity->getVoiceDateLastActive())
             ->setLastCallAt($entity->getLastCallAt())
             ->setAttributes($entity->getAttributes())
             ->setPendingTaskIds($entity->getPendingTasks())
