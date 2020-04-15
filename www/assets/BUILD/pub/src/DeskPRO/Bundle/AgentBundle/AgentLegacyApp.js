@@ -9,6 +9,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import Twig from 'twig';
 import Immutable from 'immutable';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { AgentTopBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AgentTopBar';
 import { SideBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/SideBar/Components/SideBar';
@@ -131,13 +132,8 @@ class AgentLegacyApp {
         setInterval(() => {
           state = this.store.getState();
 
-          // don't update last worker activity if socket is disconnected
-          // to prevent getting incoming calls
-          if (!hasSocketConnectionSelector(state)) {
-            return;
-          }
-
-          api.sendGet(`${window.DP_BASE_URL}agent/ping-task-router-worker`).success((data) => {
+          const params = { has_voice: hasSocketConnectionSelector(state) ? 1 : 0 };
+          api.sendGet(`${window.DP_BASE_URL}agent/ping-task-router-worker?${compileParams(params)}`).success((data) => {
             if (data.task_router_workers) {
               this.store.dispatch(setVoiceOnlineAgents(Immutable.fromJS(data.task_router_workers)));
             }

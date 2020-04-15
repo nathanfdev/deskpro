@@ -17,7 +17,7 @@ class PingTaskRouterWorker extends LowScriptAbstract
         $agentSession = $this->getAgentSession();
         $agentId      = $agentSession['person_id'];
 
-        $this->pingTaskRouterWorker($agentId);
+        $this->pingTaskRouterWorker($agentId, isset($_REQUEST['has_voice']) && $_REQUEST['has_voice']);
 
         $data = [];
         if ($this->getSetting('beta_features.voice')) {

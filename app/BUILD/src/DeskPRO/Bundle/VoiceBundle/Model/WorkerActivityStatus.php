@@ -28,6 +28,13 @@ class WorkerActivityStatus
      *
      * @var bool
      */
+    private $voiceActive;
+
+    /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
     private $voiceEnabled;
 
     /**
@@ -80,6 +87,26 @@ class WorkerActivityStatus
     public function setOnline($online)
     {
         $this->online = $online;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVoiceActive()
+    {
+        return $this->voiceActive;
+    }
+
+    /**
+     * @param bool $voiceActive
+     *
+     * @return $this
+     */
+    public function setVoiceActive($voiceActive)
+    {
+        $this->voiceActive = $voiceActive;
 
         return $this;
     }

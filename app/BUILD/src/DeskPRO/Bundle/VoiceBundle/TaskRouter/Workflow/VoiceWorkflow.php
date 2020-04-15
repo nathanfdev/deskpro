@@ -162,6 +162,15 @@ class VoiceWorkflow implements WorkflowInterface
         /** @var Worker[] $availableAgentWorkers */
         $availableAgentWorkers = [];
         foreach ($this->storage->getOnlineWorkersByType('agent') as $worker) {
+            if (!$worker->isVoiceActive()) {
+                $this->logger->info(sprintf(
+                    '[VoiceWorkflow] Worker does not have an active web socket connection, worker_id = %s, task_id = %s',
+                    $worker->getTypeId(), $task->getId()
+                ));
+
+                continue;
+            }
+
             $availableAgentWorkers[$worker->getId()] = $worker;
         }
         foreach ($this->workerHelper->getForwardingCallWorkers() as $worker) {
