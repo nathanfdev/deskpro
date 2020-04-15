@@ -60,6 +60,7 @@ class TicketController extends AbstractMessengerController
         $brand            = $this->get('brand_stack')->getActive()->getBrand();
         $requestData      = $request->request->all();
         $messengerTickets = $settingsResolver->getMessengerSettings($brand)->getTickets();
+        $subjectPattern   = '';
 
         if ($messengerTickets->getSubjectOption() === MessengerTickets::TICKET_SUBJECT_OPTION_PRESET) {
             // just a fallback if subject is not set somehow

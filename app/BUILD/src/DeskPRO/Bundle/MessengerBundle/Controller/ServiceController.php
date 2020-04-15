@@ -160,6 +160,7 @@ class ServiceController extends AbstractMessengerController
             'tickets.form.chooseFiles',
             'tickets.form.select',
             'tickets.form.back',
+            'tickets.form.required',
             'tickets.form.header',
             'chat.transcript_block.question_header',
             'chat.transcript_block.answer_header',
