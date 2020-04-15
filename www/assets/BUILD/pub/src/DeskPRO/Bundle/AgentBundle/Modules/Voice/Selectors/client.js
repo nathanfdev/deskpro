@@ -88,7 +88,11 @@ export const busyAgentsSelector = createSelector(
 export const onlineAgentsSelector = createSelector(
   stateSelector,
   state => state.get('onlineAgents')
-    .filter(onlineStatus => onlineStatus.get('online') && onlineStatus.get('voice_enabled'))
+    .filter(onlineStatus =>
+      onlineStatus.get('online')
+      && onlineStatus.get('voice_enabled')
+      && onlineStatus.get('voice_active')
+    )
     .map(onlineStatus => onlineStatus.get('agent_id'))
 );
 

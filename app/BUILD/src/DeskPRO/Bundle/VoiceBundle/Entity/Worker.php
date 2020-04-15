@@ -41,6 +41,13 @@ class Worker extends AbstractEntity
     protected $dateLastActive;
 
     /**
+     * @ORM\Column(name="voice_date_last_active", type="datetime", nullable=true)
+     *
+     * @var \DateTime
+     */
+    protected $voiceDateLastActive;
+
+    /**
      * @ORM\Column(name="last_call_at", type="datetime", nullable=true)
      *
      * @var \DateTime
@@ -137,6 +144,24 @@ class Worker extends AbstractEntity
     public function setDateLastActive(\DateTime $dateLastActive = null)
     {
         $this->setModelField('lastActiveDate', $dateLastActive);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getVoiceDateLastActive()
+    {
+        return $this->voiceDateLastActive;
+    }
+
+    /**
+     * @param \DateTime $voiceDateLastActive
+     */
+    public function setVoiceDateLastActive(\DateTime $voiceDateLastActive = null)
+    {
+        $this->setModelField('voiceDateLastActive', $voiceDateLastActive);
 
         return $this;
     }

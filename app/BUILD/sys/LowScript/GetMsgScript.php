@@ -156,9 +156,7 @@ class GetMsgScript extends LowScriptAbstract
                 $updateSessDate = true;
             }
 
-            if (isset($_REQUEST['ping_task_router_worker'])) {
-                $this->pingTaskRouterWorker($this->_person_id);
-            }
+            $this->pingTaskRouterWorker($this->_person_id, isset($_REQUEST['has_voice']) && $_REQUEST['has_voice']);
 
             if ($updateSessDate) {
                 $q = $this->getPdo()->prepare('
