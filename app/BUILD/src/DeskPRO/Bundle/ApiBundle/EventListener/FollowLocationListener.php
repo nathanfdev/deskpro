@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
+use DeskPRO\Bundle\AppBundle\Security\Http\HttpUtils;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,6 +15,21 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class FollowLocationListener implements EventSubscriberInterface
 {
+    /**
+     * @var HttpUtils
+     */
+    private $httpUtils;
+
+    /**
+     * Constructor.
+     *
+     * @param HttpUtils $httpUtils
+     */
+    public function __construct(HttpUtils $httpUtils)
+    {
+        $this->httpUtils = $httpUtils;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -34,8 +50,16 @@ class FollowLocationListener implements EventSubscriberInterface
 
         if ($this->needToFollowLocation($request, $response)) {
             $location      = $response->headers->get('Location');
-            $followRequest = Request::create($location, 'GET', $request->query->all());
-            $response      = $event->getKernel()->handle($followRequest, HttpKernelInterface::SUB_REQUEST);
+            $followRequest = Request::create(
+                $this->httpUtils->generateUri($request, $location),
+                'GET',
+                $request->query->all(),
+                [],
+                [],
+                $request->server->all()
+            );
+
+            $response = $event->getKernel()->handle($followRequest, HttpKernelInterface::SUB_REQUEST);
             $event->setResponse($response);
         }
     }
