@@ -243,6 +243,7 @@ class TicketMessageType extends AbstractType
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'ensureAttachments'], 99);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetTicketFormField'], 98);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureMessageTextExists'], 100);
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetMessageFromOptions']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat'], 100);
@@ -310,6 +311,23 @@ class TicketMessageType extends AbstractType
             ->setAllowedTypes('allow_reply_on_archived', 'bool')
             ->setAllowedTypes('admin_api_key_request', 'bool')
         ;
+    }
+
+    public function onSetTicketFormField(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
+
+        if (isset($data['ticket'])) {
+            $form->add('ticket', TicketType::class, [
+                'mapped'                => false,
+                'agent_interface'       => true,
+                'data'                  => $data['ticket'],
+                'message_ticket'        => $form->getConfig()->getOption('ticket'),
+                'person'                => $form->getConfig()->getOption('person'),
+                'admin_api_key_request' => $form->getConfig()->getOption('admin_api_key_request'),
+            ]);
+        }
     }
 
     /**

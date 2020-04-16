@@ -92,6 +92,10 @@ class TicketType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if (array_key_exists('message_ticket', $options)) {
+            $builder->setData($options['message_ticket']);
+        }
+
         $builder
             ->add('subject', TextType::class, [
                 'empty_data' => '(No Subject)',
@@ -258,7 +262,9 @@ class TicketType extends AbstractType
                 'data_class'            => Ticket::class,
                 'agent_interface'       => false,
                 'admin_api_key_request' => false,
+                'message_ticket'        => null
             ])
+            ->setAllowedTypes('message_ticket', ['null', Ticket::class])
             ->setAllowedTypes('admin_api_key_request', 'bool')
             ->setAllowedTypes('person', Person::class)
         ;
