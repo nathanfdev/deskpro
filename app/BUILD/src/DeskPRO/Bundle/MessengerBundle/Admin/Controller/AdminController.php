@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\MessengerBundle\Form\Type\Settings\MessengerType;
 use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver as MSR;
@@ -18,6 +19,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class AdminController.
@@ -84,6 +86,55 @@ class AdminController extends AbstractBrandAwareSettingsController
         $this->handleForm($request, $this->getModel($brand));
 
         return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * You can use this endpoint to gather information about clients you need to obtain notifications and alerts.
+     *
+     * @ApiDoc(
+     *     section="Messenger Setup",
+     *     resourceDescription="Code action",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="string"
+     * )
+     * @Rest\Get("/code")
+     *
+     * @param Brand $brand
+     *
+     * @return View
+     */
+    public function getCodeAction(Brand $brand)
+    {
+        $assetUrl = $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets');
+        $loaderJs = $this->container->get('templating.helper.assets')->getUrl('loader.js', 'messenger_loader_assets');
+        $language = $this->container->get('language_stack')->getActiveOrDefault();
+        $rootUrl  = $portalRouter  = $this->container->get('router');
+
+        $baseSymfonyRouter = RouterUtils::unwrapDecoratedRouter($portalRouter);
+
+        // $root_url is the url that the root index.php lives on
+        $rootUrl = $baseSymfonyRouter->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $rootUrl = rtrim($rootUrl, '/');
+
+        $code = <<<CODE
+<script type="text/javascript">
+    window.parent.DESKPRO_MESSENGER_ASSET_URL = "{$assetUrl}";
+    window.parent.DESKPRO_MESSENGER_OPTIONS = {
+      language: {
+        id: "{$language->getId()}",
+        locale: "{$language->getLocale()}"
+      },
+      helpdeskURL: "{$rootUrl}",
+      baseUrl: "{$assetUrl}",
+    }
+</script>
+<script id="dp-messenger-loader" src="{$loaderJs}" data-helpdesk-url="{$rootUrl}"></script>
+CODE;
+
+        return View::create($code, Response::HTTP_OK);
     }
 
     /**

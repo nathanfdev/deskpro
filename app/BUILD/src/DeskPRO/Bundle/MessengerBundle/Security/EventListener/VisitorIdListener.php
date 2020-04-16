@@ -18,7 +18,7 @@ class VisitorIdListener
         if (
             $event->isMasterRequest()
             && !RegexUtils::safePregMatch('#^/api/messenger/?$#', $pathInfo)
-            && !RegexUtils::safePregMatch('#^/api/messenger/service/(setup|translation)/?$#', $pathInfo)
+            && !RegexUtils::safePregMatch('#^/api/messenger/service/(setup|translation|code)/?$#', $pathInfo)
             && !RegexUtils::safePregMatch('#^/api/messenger/service/blob/?$#', $pathInfo)
             && RegexUtils::safePregMatch('#^/api/messenger#', $pathInfo)
         ) {

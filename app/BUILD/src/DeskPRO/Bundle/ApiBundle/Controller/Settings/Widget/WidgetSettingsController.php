@@ -201,8 +201,12 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
             'DeskPRO:emails_common:chat-instructions.html.twig'
         );
         $message->setTo($email);
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('messenger')) {
+        } else {
+            $code = $this->get('widget_loader_code_renderer')->getWidgetCode($brand, $request, false);
+        }
         $attach = \Swift_Attachment::newInstance(
-            $this->get('widget_loader_code_renderer')->getWidgetCode($brand, $request, false),
+            $code,
             'deskpro-widget.txt',
             'text/plain'
         );
