@@ -593,3 +593,13 @@ Feature: /tickets endpoint
 
     When I send a GET request to "/api/v2/tickets/{ticket1}"
     Then the JSON node "data.agent" should be equal to 0
+
+  Scenario: I check person name wasn't touched if person was implicitly set
+    When I send a POST request to "/api/v2/tickets?include=person&inline_sideloads=1" with body:
+    """
+{
+  "subject": "Test Ticket"
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.person.name" should be equal to "Admin Admin"

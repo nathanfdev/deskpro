@@ -120,7 +120,7 @@ class PersonAssignType extends AbstractType
 
         /** @var Person $person */
         $person = $form->getData();
-        if ((isset($data['id']) || isset($data['email'])) && !isset($data['name']) && $person) {
+        if (!isset($data['name']) && $person) {
             // If we sent just ID or email and person doesn't have a name
             // then force set name from its display name to prevent validation error because name is a required field
             if (!$person->getName()) {
