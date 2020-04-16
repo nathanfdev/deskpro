@@ -188,10 +188,6 @@ class ServiceController extends AbstractMessengerController
         $translate = $this->container->get('deskpro.core.translate');
         $language  = null;
 
-        $defaultLanguageId = $this->container->get('language_stack')->getDefaultLanguage()->getId();
-        $brand             = $this->get('brand_stack')->getActive()->getBrand();
-        $messengerSettings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
-
         /** @var Person $person */
         $person = $this->getUser();
 

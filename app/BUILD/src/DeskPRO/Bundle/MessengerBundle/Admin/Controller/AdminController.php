@@ -168,6 +168,9 @@ CODE;
         if (isset($requestData['maxFileSize'])) {
             unset($requestData['maxFileSize']);
         }
+        if (isset($requestData['translations'])) {
+            unset($requestData['translations']);
+        }
         $form->submit($requestData);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
