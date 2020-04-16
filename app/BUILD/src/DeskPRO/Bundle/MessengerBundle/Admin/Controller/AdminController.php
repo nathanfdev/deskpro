@@ -3,6 +3,8 @@
 namespace DeskPRO\Bundle\MessengerBundle\Admin\Controller;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Phrase;
+use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -169,6 +171,7 @@ CODE;
             unset($requestData['maxFileSize']);
         }
         if (isset($requestData['translations'])) {
+            $this->updateTranslations($requestData['translations']);
             unset($requestData['translations']);
         }
         $form->submit($requestData);
@@ -177,6 +180,44 @@ CODE;
         }
 
         $this->persistModel($model);
+    }
+
+    private function updateTranslations($translations)
+    {
+        /** @var Translate $translate */
+        $translate = $this->container->get('deskpro.core.translate');
+
+        foreach ($translations as $phraseName => $translationStack) {
+            $phraseName = sprintf('user.messenger.%s', str_replace('_', '.', $phraseName));
+            foreach ($translationStack as $translation) {
+                $language = $this->get('language_manager')->getLanguageById($translation['language']['id']);
+                $text     = trim($translation['text']);
+                if ($text != $translate->getPhraseText($phraseName, $language, true)) {
+                    $phrase = $this->getManager()->getRepository(Phrase::class)->getPhraseForLanguage($phraseName, $language);
+                    if (!$text) {
+                        if ($phrase) {
+                            $this->getManager()->remove($phrase);
+                        }
+                    } else {
+                        if (!$phrase) {
+                            $phrase = new Phrase();
+                            $phrase->setLanguage($language);
+                            $phrase->setName($phraseName);
+                            $phrase->setOriginalPhrase('');
+                            $phrase->setOriginalHash(md5(null));
+                        }
+
+                        if (!$phrase->getOriginalPhrase()) {
+                            $phrase->setOriginalPhrase('');
+                            $phrase->setOriginalHash(md5(null));
+                        }
+                        $phrase->setPhrase($text);
+                        $this->getManager()->persist($phrase);
+                    }
+                }
+            }
+        }
+        $this->getManager()->flush();
     }
 
     /**

@@ -98,6 +98,16 @@ class LanguageManager
     }
 
     /**
+     * @param string $id the id for a language (1, 2, etc)
+     *
+     * @return Language
+     */
+    public function getLanguageById($id)
+    {
+        return $this->em->getRepository(Language::class)->find((int) $id);
+    }
+
+    /**
      * Turns an arbitrary lang string into a more normalized lang string that we use internally for URLs.
      *
      * @param string $lang_code
