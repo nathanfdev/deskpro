@@ -192,7 +192,6 @@ CODE;
         $messengerChatPreChatForm    = $messengerChat->getPreChatForm();
         $messengerChatTicketDefaults = $messengerChat->getTicketDefaults();
         $messengerTickets            = $model->getTickets();
-        $messengerTicketsOptions     = $messengerTickets->getOptions();
         $messengerProactive          = $model->getProactive();
         $messengerProactiveOptions   = $messengerProactive->getOptions();
 
@@ -221,11 +220,8 @@ CODE;
             ->updateSetting(MSR::CHAT_NO_ANSWER_BEHAVIOR, $messengerChat->getNoAnswerBehavior(), $brand)
             ->updateSetting(MSR::CHAT_BUSY_MESSAGE, $messengerChat->getBusyMessage(), $brand)
 
-            // Chat options (a.k.a. block config - title, description etc)
-            ->updateSetting(MSR::CHAT_OPTIONS_TITLE, $messengerChatOptions->getTitle(), $brand)
+            // Chat options
             ->updateSetting(MSR::CHAT_OPTIONS_SHOW_PHOTOS, $messengerChatOptions->isShowAgentPhotos(), $brand)
-            ->updateSetting(MSR::CHAT_OPTIONS_DESCRIPTION, $messengerChatOptions->getDescription(), $brand)
-            ->updateSetting(MSR::CHAT_OPTIONS_BUTTON_TEXT, $messengerChatOptions->getButtonText(), $brand)
 
             // Pre-chat form
             ->updateSetting(MSR::PRE_CHAT_FORM_ENABLED, $messengerChatPreChatForm->isEnabled(), $brand)
@@ -249,11 +245,6 @@ CODE;
             ->updateSetting(MSR::TICKETS_SUBJECT, $messengerTickets->getSubject(), $brand)
             ->updateSetting(MSR::TICKETS_DEPARTMENT_OPTION, $messengerTickets->getDepartmentOption(), $brand)
             ->updateSetting(MSR::TICKETS_SUBJECT_OPTION, $messengerTickets->getSubjectOption(), $brand)
-
-            // Tickets block config
-            ->updateSetting(MSR::TICKETS_OPTIONS_TITLE, $messengerTicketsOptions->getTitle(), $brand)
-            ->updateSetting(MSR::TICKETS_OPTIONS_BUTTON_TEXT, $messengerTicketsOptions->getButtonText(), $brand)
-            ->updateSetting(MSR::TICKETS_OPTIONS_DESCRIPTION, $messengerTicketsOptions->getDescription(), $brand)
 
             // These are proactive, defenitely.
             ->updateSetting(MSR::PROACTIVE_AUTOSTART, $messengerProactive->isAutoStart(), $brand)

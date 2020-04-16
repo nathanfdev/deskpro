@@ -16,7 +16,6 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactive;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactiveOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTicketsOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use Doctrine\ORM\EntityManager;
@@ -41,9 +40,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_NO_ANSWER_BEHAVIOR   = 'messenger.chat.no_answer';
     const CHAT_BUSY_MESSAGE         = 'messenger.chat.busy';
 
-    const CHAT_OPTIONS_TITLE       = 'messenger.chat.options.title';
-    const CHAT_OPTIONS_BUTTON_TEXT = 'messenger.chat.options.button_text';
-    const CHAT_OPTIONS_DESCRIPTION = 'messenger.chat.options.description';
     const CHAT_OPTIONS_SHOW_PHOTOS = 'messenger.chat.options.show_photos';
 
     const CHAT_TICKET_DEFAULTS_SUBJECT      = 'messenger.chat.ticket_defaults.subject';
@@ -75,10 +71,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const TICKETS_DEPARTMENT        = 'messenger.tickets.department';
     const TICKETS_DEPARTMENT_OPTION = 'messenger.tickets.department_option';
     const TICKETS_SUBJECT_OPTION    = 'messenger.tickets.subject_option';
-
-    const TICKETS_OPTIONS_TITLE       = 'messenger.tickets.options.title';
-    const TICKETS_OPTIONS_BUTTON_TEXT = 'messenger.tickets.options.button_text';
-    const TICKETS_OPTIONS_DESCRIPTION = 'messenger.tickets.options.description';
 
     // just fo the bc and code reuse
     const JWT_SECRET              = WidgetSettingsResolver::JWT_SECRET;
@@ -156,7 +148,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setDepartment($this->getSettings(self::TICKETS_DEPARTMENT, $brand, $this->getDefaultDepartment('ticket')))
             ->setDepartmentOption($this->getSettings(self::TICKETS_DEPARTMENT_OPTION, $brand, $mTickets->getDepartmentOption()))
             ->setSubjectOption($this->getSettings(self::TICKETS_SUBJECT_OPTION, $brand, $mTickets->getSubjectOption()))
-            ->setOptions($this->getMessengerTicketsOptions($brand))
         ;
     }
 
@@ -273,9 +264,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         $mChatOptions = new MessengerChatOptions();
 
         return $mChatOptions
-            ->setTitle($this->getSettings(self::CHAT_OPTIONS_TITLE, $brand, $mChatOptions->getTitle()))
-            ->setButtonText($this->getSettings(self::CHAT_OPTIONS_BUTTON_TEXT, $brand, $mChatOptions->getButtonText()))
-            ->setDescription($this->getSettings(self::CHAT_OPTIONS_DESCRIPTION, $brand, $mChatOptions->getDescription()))
             ->setShowAgentPhotos($this->getSettings(self::CHAT_OPTIONS_SHOW_PHOTOS, $brand, $mChatOptions->isShowAgentPhotos()))
         ;
     }
@@ -296,22 +284,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setInputPlaceholder($this->getSettings(self::PROACTIVE_OPTIONS_INPUT_PLACEHOLDER, $brand, $mOptionsProactive->getInputPlaceholder()))
             ->setDescription($this->getSettings(self::PROACTIVE_OPTIONS_DESCRIPTION, $brand, $mOptionsProactive->getDescription()))
             ;
-    }
-
-    /**
-     * @param Brand $brand
-     *
-     * @return MessengerTicketsOptions
-     */
-    protected function getMessengerTicketsOptions(Brand $brand)
-    {
-        $messengerTicketsOptions = new MessengerTicketsOptions();
-
-        return $messengerTicketsOptions
-            ->setTitle($this->getSettings(self::TICKETS_OPTIONS_TITLE, $brand, $messengerTicketsOptions->getTitle()))
-            ->setButtonText($this->getSettings(self::TICKETS_OPTIONS_BUTTON_TEXT, $brand, $messengerTicketsOptions->getButtonText()))
-            ->setDescription($this->getSettings(self::TICKETS_OPTIONS_DESCRIPTION, $brand, $messengerTicketsOptions->getDescription()))
-        ;
     }
 
     /**
