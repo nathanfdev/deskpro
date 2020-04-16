@@ -171,7 +171,7 @@ CODE;
             unset($requestData['maxFileSize']);
         }
         if (isset($requestData['translations'])) {
-            $this->updateTranslations($requestData['translations']);
+            $this->updateTranslations($requestData['translations'], $model);
             unset($requestData['translations']);
         }
         $form->submit($requestData);
@@ -182,7 +182,7 @@ CODE;
         $this->persistModel($model);
     }
 
-    private function updateTranslations($translations)
+    private function updateTranslations($translations, AbstractBrandAwareSettings $model)
     {
         /** @var Translate $translate */
         $translate = $this->container->get('deskpro.core.translate');
@@ -193,7 +193,8 @@ CODE;
                 $language = $this->get('language_manager')->getLanguageById($translation['language']['id']);
                 $text     = trim($translation['text']);
                 if ($text != $translate->getPhraseText($phraseName, $language, true)) {
-                    $phrase = $this->getManager()->getRepository(Phrase::class)->getPhraseForLanguage($phraseName, $language);
+                    $updateVersion = true;
+                    $phrase        = $this->getManager()->getRepository(Phrase::class)->getPhraseForLanguage($phraseName, $language);
                     if (!$text) {
                         if ($phrase) {
                             $this->getManager()->remove($phrase);
@@ -218,6 +219,11 @@ CODE;
             }
         }
         $this->getManager()->flush();
+        if ($updateVersion) {
+            $this
+                ->getSettingRepository()
+                ->updateSetting(MSR::WIDGET_LANG_VERSION, time(), $model->getBrand());
+        }
     }
 
     /**

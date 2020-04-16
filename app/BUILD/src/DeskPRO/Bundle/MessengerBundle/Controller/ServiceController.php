@@ -14,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatFormCustomField;
@@ -86,7 +87,7 @@ class ServiceController extends AbstractMessengerController
         $data['language'] = [
             'id'      => $language->getId(),
             'locale'  => $language->getLocale(),
-            'version' => 1,
+            'version' => $messengerSettingsResolver->getSettings(MessengerSettingsResolver::WIDGET_LANG_VERSION),
         ];
 
         $data['tickets']['uploadTo'] = $data['chat']['uploadTo'] = $this->generateUrl(

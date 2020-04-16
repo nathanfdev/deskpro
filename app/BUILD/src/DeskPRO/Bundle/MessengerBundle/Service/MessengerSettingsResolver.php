@@ -28,6 +28,8 @@ use Orb\Util\Env;
  */
 class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
+    const WIDGET_LANG_VERSION = 'messenger.widget.lang_version';
+
     const WIDGET_PRIMARY_COLOR = 'messenger.widget.primary_color';
     const WIDGET_BG_COLOR      = 'messenger.widget.bg_color';
     const WIDGET_TEXT_COLOR    = 'messenger.widget.text_color';
