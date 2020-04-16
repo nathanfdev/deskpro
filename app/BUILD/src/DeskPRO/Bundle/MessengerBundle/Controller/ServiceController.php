@@ -171,18 +171,26 @@ class ServiceController extends AbstractMessengerController
             'tickets.form.saving',
             'tickets.form.thanks_header',
             'tickets.form.thanks',
-            'blocks.start_chat.title',
-            'blocks.start_chat.description',
-            'blocks.start_chat.link',
             'blocks.continue_chat.title',
             'blocks.tickets.title',
             'blocks.tickets.view_all_link',
             'chat.header.title',
             'chat.enter_form.button',
+
+            'blocks.ticket.title',
+            'blocks.ticket.description',
+            'blocks.ticket.button',
+            'blocks.start_chat.title',
+            'blocks.start_chat.description',
+            'blocks.start_chat.button',
         ];
 
         $translate = $this->container->get('deskpro.core.translate');
         $language  = null;
+
+        $defaultLanguageId = $this->container->get('language_stack')->getDefaultLanguage()->getId();
+        $brand             = $this->get('brand_stack')->getActive()->getBrand();
+        $messengerSettings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
 
         /** @var Person $person */
         $person = $this->getUser();

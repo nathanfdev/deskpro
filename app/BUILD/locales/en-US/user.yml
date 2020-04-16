@@ -1352,9 +1352,9 @@ user.messenger.blocks.continue_chat.link: 'Continue'
 user.messenger.tickets.form.saving: "We're saving your ticket. Please wait"
 user.messenger.tickets.form.thanks_header: "Your request on its way"
 user.messenger.tickets.form.thanks: "Thank you for contacting us. One of our team will be in touch with you via email."
-user.messenger.blocks.start_chat.title: 'Chat with us'
-user.messenger.blocks.start_chat.description: 'Need help? Just reply to start a live conversation with one of our team'
-user.messenger.blocks.start_chat.link: 'Start Chat'
+user.messenger.blocks.start_chat.title: 'Start a conversation'
+user.messenger.blocks.start_chat.description: 'Start a chat with one of our agents'
+user.messenger.blocks.start_chat.button: 'Start a new conversation'
 user.messenger.blocks.continue_chat.title: 'Continue existing chat'
 user.messenger.blocks.tickets.title: 'Your Tickets'
 user.messenger.blocks.tickets.view_all_link: 'view all'
@@ -1365,3 +1365,6 @@ user.messenger.message_ended: "You have ended the conversation."
 user.messenger.message_ended-by: "{name} has ended the conversation."
 user.messenger.message_assigned: "{name} assigned to the chat."
 user.messenger.message_unassigned: "{name} unassigned from the chat."
+user.messenger.blocks.ticket.title: 'Submit a ticket'
+user.messenger.blocks.ticket.description: 'Submit an enquiry via our contact form'
+user.messenger.blocks.ticket.button: 'Submit a new ticket'
