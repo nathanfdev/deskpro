@@ -292,7 +292,6 @@ CODE;
         $messengerChatTicketDefaults = $messengerChat->getTicketDefaults();
         $messengerTickets            = $model->getTickets();
         $messengerProactive          = $model->getProactive();
-        $messengerProactiveOptions   = $messengerProactive->getOptions();
 
         if (
             !$messengerTickets->isEnabled() &&
@@ -349,12 +348,6 @@ CODE;
             ->updateSetting(MSR::PROACTIVE_AUTOSTART, $messengerProactive->isAutoStart(), $brand)
             ->updateSetting(MSR::PROACTIVE_TIMEOUT, $messengerProactive->getAutoStartTimeout(), $brand)
             ->updateSetting(MSR::PROACTIVE_STYLE, $messengerProactive->getAutoStartStyle(), $brand)
-            // These are proactive block config
-            ->updateSetting(MSR::PROACTIVE_OPTIONS_GREETING_TITLE, $messengerProactiveOptions->getGreetingTitle(), $brand)
-            ->updateSetting(MSR::PROACTIVE_OPTIONS_TITLE, $messengerProactiveOptions->getTitle(), $brand)
-            ->updateSetting(MSR::PROACTIVE_OPTIONS_DESCRIPTION, $messengerProactiveOptions->getDescription(), $brand)
-            ->updateSetting(MSR::PROACTIVE_OPTIONS_BUTTON_TEXT, $messengerProactiveOptions->getButtonText(), $brand)
-            ->updateSetting(MSR::PROACTIVE_OPTIONS_INPUT_PLACEHOLDER, $messengerProactiveOptions->getInputPlaceholder(), $brand)
 
             // Add Widget & Chat section
             ->updateSetting(MSR::EMBED_AUTHORIZE_DOMAINS, $messengerEmbed->getAuthorizeDomains(), $brand)

@@ -39,7 +39,6 @@ class MessengerProactiveType extends AbstractType
                 ],
 
             ])
-            ->add('options', MessengerProactiveOptionsType::class)
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);

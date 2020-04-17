@@ -78,6 +78,13 @@ class ServiceController extends AbstractMessengerController
         $data['tickets']['formConfig']      = $this->getTicketFormConfig($ticketsSettings);
         $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();
         $data['chat']['formMessage']        = $preChatForm->getFormMessage();
+        $data['proactive']['options']       = [
+            'greetingTitle'    => 'proactive.greeting',
+            'title'            => 'proactive.title',
+            'description'      => 'proactive.description',
+            'buttonText'       => 'proactive.button',
+            'inputPlaceholder' => 'proactive.placeholder',
+        ];
 
         $person   = $this->getUser();
         $language = $person && $person->getId()
@@ -122,7 +129,8 @@ class ServiceController extends AbstractMessengerController
      */
     public function getTranslationAction(Request $request)
     {
-        $phrases = [
+        $messengerSettingsResolver = $this->get('messenger.service.settings_resolver');
+        $phrases                   = array_merge($messengerSettingsResolver->getEditablePhrases(), [
             'chat.save_ticket.question',
             'chat.save_ticket.intro',
             'chat.save_ticket.thanks',
@@ -177,14 +185,7 @@ class ServiceController extends AbstractMessengerController
             'blocks.tickets.view_all_link',
             'chat.header.title',
             'chat.enter_form.button',
-
-            'blocks.ticket.title',
-            'blocks.ticket.description',
-            'blocks.ticket.button',
-            'blocks.start_chat.title',
-            'blocks.start_chat.description',
-            'blocks.start_chat.button',
-        ];
+        ]);
 
         $translate = $this->container->get('deskpro.core.translate');
         $language  = null;

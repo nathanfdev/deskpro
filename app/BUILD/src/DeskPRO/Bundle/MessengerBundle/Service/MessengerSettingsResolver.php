@@ -15,7 +15,6 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerEmbed;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactive;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactiveOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTranslation;
@@ -64,12 +63,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const PROACTIVE_AUTOSTART = 'messenger.proactive.autostart';
     const PROACTIVE_TIMEOUT   = 'messenger.proactive.autostart_timeout';
     const PROACTIVE_STYLE     = 'messenger.proactive.autostart_style';
-
-    const PROACTIVE_OPTIONS_GREETING_TITLE    = 'messenger.proactive.options.greeting_title';
-    const PROACTIVE_OPTIONS_TITLE             = 'messenger.proactive.options.title';
-    const PROACTIVE_OPTIONS_BUTTON_TEXT       = 'messenger.proactive.options.button_text';
-    const PROACTIVE_OPTIONS_INPUT_PLACEHOLDER = 'messenger.proactive.options.input_placeholder';
-    const PROACTIVE_OPTIONS_DESCRIPTION       = 'messenger.proactive.options.description';
 
     const TICKETS_ENABLED           = 'messenger.tickets.enabled';
     const TICKETS_SUBJECT           = 'messenger.tickets.subject';
@@ -135,9 +128,14 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             'blocks.ticket.title',
             'blocks.ticket.description',
             'blocks.ticket.button',
-            'blocks.start_chat.title',
-            'blocks.start_chat.description',
-            'blocks.start_chat.button',
+            'blocks.start-chat.title',
+            'blocks.start-chat.description',
+            'blocks.start-chat.button',
+            'proactive.greeting',
+            'proactive.title',
+            'proactive.description',
+            'proactive.button',
+            'proactive.placeholder',
         ];
     }
 
@@ -319,7 +317,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setAutoStart($this->getSettings(self::PROACTIVE_AUTOSTART, $brand, $messengerProactive->isAutoStart()))
             ->setAutoStartTimeout($this->getSettings(self::PROACTIVE_TIMEOUT, $brand, $messengerProactive->getAutoStartTimeout()))
             ->setAutoStartStyle($this->getSettings(self::PROACTIVE_STYLE, $brand, $messengerProactive->getAutoStartStyle()))
-            ->setOptions($this->getMessengerProactiveOptions($brand));
+        ;
     }
 
     /**
@@ -333,23 +331,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         return $mChatOptions
             ->setShowAgentPhotos($this->getSettings(self::CHAT_OPTIONS_SHOW_PHOTOS, $brand, $mChatOptions->isShowAgentPhotos()));
-    }
-
-    /**
-     * @param Brand $brand
-     *
-     * @return MessengerProactiveOptions
-     */
-    protected function getMessengerProactiveOptions(Brand $brand)
-    {
-        $mOptionsProactive = new MessengerProactiveOptions();
-
-        return $mOptionsProactive
-            ->setGreetingTitle($this->getSettings(self::PROACTIVE_OPTIONS_GREETING_TITLE, $brand, $mOptionsProactive->getGreetingTitle()))
-            ->setTitle($this->getSettings(self::PROACTIVE_OPTIONS_TITLE, $brand, $mOptionsProactive->getTitle()))
-            ->setButtonText($this->getSettings(self::PROACTIVE_OPTIONS_BUTTON_TEXT, $brand, $mOptionsProactive->getButtonText()))
-            ->setInputPlaceholder($this->getSettings(self::PROACTIVE_OPTIONS_INPUT_PLACEHOLDER, $brand, $mOptionsProactive->getInputPlaceholder()))
-            ->setDescription($this->getSettings(self::PROACTIVE_OPTIONS_DESCRIPTION, $brand, $mOptionsProactive->getDescription()));
     }
 
     /**

@@ -49,9 +49,9 @@ helpcenter.messenger.message_ended-by: "{name} заканчивает бесед
 helpcenter.messenger.message_assigned: "{name} назнчается отвественным за чат."
 helpcenter.messenger.message_unassigned: "{name} больше не отвечает за чат."
 helpcenter.messenger.blocks.continue_chat.link: 'Продолжить'
-helpcenter.messenger.blocks.start_chat.title: 'Начать чат'
-helpcenter.messenger.blocks.start_chat.description: 'Нужна помощь? Просто отправтье сообщение, чтобы начать чат с одним и наших агентов'
-helpcenter.messenger.blocks.start_chat.link: 'Начать чат'
+helpcenter.messenger.blocks.start-chat.title: 'Начать чат'
+helpcenter.messenger.blocks.start-chat.description: 'Нужна помощь? Просто отправтье сообщение, чтобы начать чат с одним и наших агентов'
+helpcenter.messenger.blocks.start-chat.link: 'Начать чат'
 helpcenter.messenger.blocks.continue_chat.title: 'Продолжить чат'
 helpcenter.messenger.blocks.tickets.title: 'Ваши запросы'
 helpcenter.messenger.blocks.tickets.view_all_link: 'смотреть всё'

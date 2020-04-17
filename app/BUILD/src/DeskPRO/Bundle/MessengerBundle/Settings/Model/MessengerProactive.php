@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class MessengerProactive.
@@ -46,16 +45,6 @@ class MessengerProactive
      * @var string
      */
     private $autoStartStyle = self::STYLE_AVATAR_TEXT_BUTTON;
-
-    /**
-     * Advanced proactive options.
-     *
-     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactiveOptions")
-     * @Assert\Valid()
-     *
-     * @var MessengerProactiveOptions
-     */
-    private $options;
 
     /**
      * @return bool
@@ -113,26 +102,6 @@ class MessengerProactive
     public function setAutoStartStyle($style)
     {
         $this->autoStartStyle = $style;
-
-        return $this;
-    }
-
-    /**
-     * @return MessengerProactiveOptions
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
-     * @param MessengerProactiveOptions $options
-     *
-     * @return $this
-     */
-    public function setOptions(MessengerProactiveOptions $options)
-    {
-        $this->options = $options;
 
         return $this;
     }
