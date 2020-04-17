@@ -26,7 +26,6 @@
 {% if portal_mode() != 'focus-window' and portal_mode() != 'fame-embed' and is_portal_widget_enabled() %}{{ portal_widget_loader() }}{% endif %}
 {% if portal_mode() != 'focus-window' and portal_mode() != 'fame-embed' and is_portal_messenger_enabled() %}
 	<script type="text/javascript">
-    window.parent.DESKPRO_MESSENGER_ASSET_URL = "{{ asset('', 'messenger_assets') }}";
     window.parent.DESKPRO_MESSENGER_OPTIONS = {
 			{% if app.user %}
 			{% if is_widget_jwt_enabled() %}
@@ -52,5 +51,5 @@
       baseUrl: "{{ asset('', 'messenger_assets') }}",
     }
 	</script>
-	<script id="dp-messenger-loader" src="{{ asset('loader.js', 'messenger_loader_assets') }}" data-helpdesk-url="{{ root_url(false) }}"></script>
+	<script id="dp-messenger-loader" src="{{ asset('loader.js', 'messenger_loader_assets') }}"></script>
 {% endif %}

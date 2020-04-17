@@ -11,7 +11,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\MessengerBundle\Form\Type\Settings\MessengerType;
 use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver as MSR;
@@ -107,21 +106,70 @@ class AdminController extends AbstractBrandAwareSettingsController
      *
      * @return View
      */
-    public function getCodeAction(Brand $brand)
+    public function getCodeAction(Brand $brand, Request $request = null)
     {
+        if ($request && $request->attributes->has('_dp_brand_slug')) {
+            if ($request && $request->attributes->has('original_request')) {
+                $baseUrl = $this->originalUrlGenerator->generate(
+                    $request->attributes->get('original_request'),
+                    'portal_home',
+                    [],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } else {
+                $baseUrl = $this->container->get('router')->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+            }
+
+            if (empty($this->getSetting('core.deskpro_url', $brand))) {
+                $helpdeskUrl = $this->container->get('router')->generate(
+                    'portal_home',
+                    ['brand' => $brand],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } else {
+                $helpdeskUrl = rtrim($baseUrl, '/').$request->attributes->get('_dp_brand_slug_path');
+            }
+        } else {
+            $helpdeskUrl = $this->container->get('router')->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            if ($brand->getUrl()) {
+                $baseUrl = $helpdeskUrl;
+            } else {
+                // brand has just a slug, use default brand
+                $baseUrl = $this->container->get('router')->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+            }
+        }
+
+        if ($request) {
+            $urlCorrector = $this->container->get('url_corrector_factory')->createUrlCorrector($brand);
+            $helpdeskUrl  = $urlCorrector->forceCorrectUrlScheme($helpdeskUrl, $request);
+        }
+
+        $correctAssetUrl = function ($assetUrl) use ($baseUrl, $request, $brand) {
+            $basePath = $request ? $request->getBasePath() : '';
+
+            if (!preg_match('#^https?://#i', $assetUrl)) {
+                $assetUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$assetUrl;
+            }
+            if ($request) {
+                $urlCorrector = $this->container->get('url_corrector_factory')->createUrlCorrector($brand);
+                $assetUrl     = $urlCorrector->forceCorrectUrlScheme($assetUrl, $request);
+            }
+
+            return $assetUrl;
+        };
+
         $assetUrl = $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets');
-        $loaderJs = $this->container->get('templating.helper.assets')->getUrl('loader.js', 'messenger_loader_assets');
+        $loaderJS = $this->container->get('templating.helper.assets')->getUrl('loader.js', 'messenger_loader_assets');
+        $loaderJS = $correctAssetUrl($loaderJS);
+        $assetUrl = $correctAssetUrl($assetUrl);
+
         $language = $this->container->get('language_stack')->getActiveOrDefault();
-        $rootUrl  = $portalRouter  = $this->container->get('router');
 
-        $baseSymfonyRouter = RouterUtils::unwrapDecoratedRouter($portalRouter);
-
-        // $root_url is the url that the root index.php lives on
-        $rootUrl = $baseSymfonyRouter->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $rootUrl = rtrim($rootUrl, '/');
+        $baseUrl = rtrim($baseUrl, '/');
 
         $code = <<<CODE
+<!--DESKPRO_WIDGET_LOADER::BEGIN-->
 <script type="text/javascript">
     window.parent.DESKPRO_MESSENGER_ASSET_URL = "{$assetUrl}";
     window.parent.DESKPRO_MESSENGER_OPTIONS = {
@@ -129,11 +177,12 @@ class AdminController extends AbstractBrandAwareSettingsController
         id: "{$language->getId()}",
         locale: "{$language->getLocale()}"
       },
-      helpdeskURL: "{$rootUrl}",
+      helpdeskURL: "{$baseUrl}",
       baseUrl: "{$assetUrl}",
     }
 </script>
-<script id="dp-messenger-loader" src="{$loaderJs}" data-helpdesk-url="{$rootUrl}"></script>
+<script id="dp-messenger-loader" src="{$loaderJS}"></script>
+<!--DESKPRO_WIDGET_LOADER::END-->
 CODE;
 
         return View::create($code, Response::HTTP_OK);
