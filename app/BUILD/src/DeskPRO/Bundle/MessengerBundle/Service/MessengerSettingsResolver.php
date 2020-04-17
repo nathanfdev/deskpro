@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\MessengerBundle\Service;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Phrase;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Settings\AbstractBrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
@@ -146,6 +147,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         $defaultLanguageId = $this->languageManager->getLanguageStack()->getDefaultLanguage()->getId();
         $translator        = $this->languageManager->getTranslator();
         $languages         = $this->languageManager->getEnabledLanguages();
+        $phraseRepository  = $this->em->getRepository(Phrase::class);
         usort($languages, function ($a, $b) use ($defaultLanguageId) {
             if ($a->getId() === $defaultLanguageId) {
                 return -1;
@@ -162,11 +164,26 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             if (!isset($translations[$snakeCasePhrase])) {
                 $translations[$snakeCasePhrase] = [];
             }
+
+            $phraseName        = sprintf('helpcenter.messenger.%s', $phrase);
+            $defaultPhraseText = $translator->phrase($phraseName, [], $defaultLanguageId);
+
             foreach ($languages as $language) {
-                $translation = new MessengerTranslation();
+                $translation  = new MessengerTranslation();
+                $phraseEntity = $phraseRepository->getPhraseForLanguage($phrase, $language);
+                $fallbackText = '';
+                if ($language->getId() === $defaultLanguageId) {
+                    $fallbackText = $defaultPhraseText;
+                } else {
+                    $translatorPhrase = $translator->phrase($phraseName, [], $language);
+                    if ($translatorPhrase !== $defaultPhraseText) {
+                        $fallbackText = $translatorPhrase;
+                    }
+                }
+
                 $translation
                     ->setLanguage($language)
-                    ->setText($translator->phrase(sprintf('user.messenger.%s', $phrase), [], $language) ?: '');
+                    ->setText($phraseEntity ? $phraseEntity->getPhrase() : $fallbackText);
                 $translations[$snakeCasePhrase][$language->getId()] = $translation;
             }
         }

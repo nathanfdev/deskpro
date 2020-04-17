@@ -188,7 +188,7 @@ CODE;
         $translate = $this->container->get('deskpro.core.translate');
 
         foreach ($translations as $phraseName => $translationStack) {
-            $phraseName = sprintf('user.messenger.%s', str_replace('_', '.', $phraseName));
+            $phraseName = sprintf('helpcenter.messenger.%s', str_replace('_', '.', $phraseName));
             foreach ($translationStack as $translation) {
                 $language = $this->get('language_manager')->getLanguageById($translation['language']['id']);
                 $text     = trim($translation['text']);
