@@ -8,6 +8,9 @@
 
 namespace Application\DeskPRO\Translate\Loader;
 
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Component\Util\MapUtils;
 use DpSys\CodePlugin\DpPlugins;
 use Orb\Util\Arrays;
@@ -36,6 +39,35 @@ class SystemLoader implements LoaderInterface
      * @var array
      */
     private $loadedResources = [];
+
+    /**
+     * @var AppEnvInterface
+     */
+    private $appEnv;
+
+    /**
+     * @var PortalBrandThemeLoader
+     */
+    private $brandThemeLoader;
+
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
+     * Constructor.
+     *
+     * @param AppEnvInterface        $appEnv
+     * @param PortalBrandThemeLoader $brandThemeLoader
+     * @param BrandStack             $brandStack
+     */
+    public function __construct(AppEnvInterface $appEnv, PortalBrandThemeLoader $brandThemeLoader = null, BrandStack $brandStack = null)
+    {
+        $this->appEnv           = $appEnv;
+        $this->brandThemeLoader = $brandThemeLoader;
+        $this->brandStack       = $brandStack;
+    }
 
     /**
      * {@inheritdoc}
@@ -87,6 +119,17 @@ class SystemLoader implements LoaderInterface
         $base = $localeDir.DIRECTORY_SEPARATOR.$name;
         if (isset($this->loadedResources[$base])) {
             return $this->loadedResources[$base];
+        }
+
+        if ($this->appEnv->isQa() && $name === 'user' && $this->brandThemeLoader) {
+            $theme = $this->brandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand());
+            if ($theme && $theme->getActiveThemeSet()->getThemeId() === 'helpcenter') {
+                if (!isset($this->loadedResources[$base])) {
+                    $this->loadedResources[$base] = [];
+                }
+
+                return $this->loadedResources[$base];
+            }
         }
 
         $relFile = basename($localeDir)."/$name.php";
