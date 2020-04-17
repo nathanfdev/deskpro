@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('user.email_subjects.chat_transcript') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.chat_transcript_subject') }}</dp:subject>
 
 <html>
 <head>
@@ -9,7 +9,7 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	{{ phrase('user.emails.chat_transcript') }}
+	{{ phrase('helpcenter.emails.chat_transcript') }}
 
 	<br /><br />
 
@@ -19,9 +19,9 @@
 				[{{ message.date_created|date('time') }}] *
 				{% if message.metadata.phrase_id %}
 					{% if message.is_html %}
-						{{ phrase('user.chat.'~ message.metadata.phrase_id, message.metadata) }}
+						{{ phrase('helpcenter.chat.'~ message.metadata.phrase_id, message.metadata) }}
 					{% else %}
-						{{ phrase('user.chat.'~ message.metadata.phrase_id, message.metadata)|e }}
+						{{ phrase('helpcenter.chat.'~ message.metadata.phrase_id, message.metadata)|e }}
 					{% endif %}
 				{% elseif message.is_html %}
 					{{message.content|raw}}

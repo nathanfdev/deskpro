@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('portal.email_subjects.email_ticket-reminder') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.email_ticket-reminder') }}</dp:subject>
 
 <html>
 <head>
@@ -9,7 +9,7 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    {{ phrase('portal.emails.ticket-reminder', {expire_date: expire_date }) }}
+    {{ phrase('helpcenter.emails.ticket-reminder', {expire_date: expire_date }) }}
 
     <br /><br />
 

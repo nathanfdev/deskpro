@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('user.email_subjects.tickets_re') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.tickets_re') }}</dp:subject>
 
 <html>
 <head>
@@ -30,7 +30,7 @@
 	{% if app.isPortalEnabled() %}
 		<br /><br />
 
-		{{ phrase('user.emails.ticket_access_ticket_online') }}
+		{{ phrase('helpcenter.emails.ticket_access_ticket_online') }}
 		<a href="{{ ticket_link }}">{{ ticket_link }}</a>
 	{% endif %}
 

@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('user.email_subjects.community_topic_updated') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.community_topic_updated_subject') }}</dp:subject>
 
 <html>
 <head>
@@ -10,16 +10,16 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	{% if show == 'validated' %}
-		{{ phrase('user.emails.community-topic_published', {'title':topic.title}) }}
+		{{ phrase('helpcenter.emails.community-topic_published', {'title':topic.title}) }}
 	{% elseif show == 'closed' %}
-		{{ phrase('user.emails.community-topic_closed', {'title':topic.title, 'status':topic.status_category.title}) }}
+		{{ phrase('helpcenter.emails.community-topic_closed', {'title':topic.title, 'status':topic.status_category.title}) }}
 	{% elseif show == 'closed' %}
-		{{ phrase('user.emails.community-topic_updated', {'title': topic.title, 'status':topic.statuscategory.title}) }}
+		{{ phrase('helpcenter.emails.community-topic_updated', {'title': topic.title, 'status':topic.statuscategory.title}) }}
 	{% endif %}
 
 	<br /><br />
 
-	{{ phrase('user.emails.community-topic_votes', {'count': topic.votes}) }}
+	{{ phrase('helpcenter.emails.community-topic_votes', {'count': topic.votes}) }}
 	<a href="{{ community_topic_link }}">
 		{{ community_topic_link }}
 	</a>

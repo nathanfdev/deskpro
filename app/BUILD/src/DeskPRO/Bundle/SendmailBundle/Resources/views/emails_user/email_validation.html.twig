@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('portal.email_subjects.validate-email' ) }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.validate-email_subject' ) }}</dp:subject>
 
 <html>
 <head>
@@ -9,11 +9,11 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    {{ phrase('helpcenter.emails.greeting', {to_name: recipient.name}) }}
 
     <br /><br />
 
-    {{ phrase('portal.emails.validate-email') }}
+    {{ phrase('helpcenter.emails.validate-email') }}
 
     <br/><br/>
 
@@ -21,7 +21,7 @@
 
     <br/><br/>
 
-    {{  phrase('portal.emails.end_greeting') }}
+    {{  phrase('helpcenter.emails.end_greeting') }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

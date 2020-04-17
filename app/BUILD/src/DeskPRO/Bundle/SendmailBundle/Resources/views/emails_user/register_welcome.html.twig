@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('user.email_subjects.register-welcome') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.register-welcome_subject') }}</dp:subject>
 
 <html>
 <head>
@@ -9,11 +9,11 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	{{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+	{{ phrase('helpcenter.emails.greeting', {to_name: recipient.name}) }}
 
 	<br/><br/>
 
-	{{ phrase('user.emails.register-welcome') }}<br/>
+	{{ phrase('helpcenter.emails.register-welcome') }}<br/>
 	<a href="{{ portal_home }}">{{ portal_home }}</a>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
