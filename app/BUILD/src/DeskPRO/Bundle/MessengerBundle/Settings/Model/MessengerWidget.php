@@ -43,16 +43,6 @@ class MessengerWidget
     private $textColor = '#ffffff';
 
     /**
-     * Greeting text.
-     *
-     * @JMS\Type("string")
-     * @JMS\SerializedName("greetingTitle")
-     *
-     * @var string
-     */
-    private $greetingTitle = 'Get in Touch';
-
-    /**
      * Widget position
      *
      * @JMS\Type("string")
@@ -137,26 +127,6 @@ class MessengerWidget
     public function setPosition($position)
     {
         $this->position = $position;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getGreetingTitle()
-    {
-        return $this->greetingTitle;
-    }
-
-    /**
-     * @param string $greetingTitle
-     *
-     * @return $this
-     */
-    public function setGreetingTitle($greetingTitle)
-    {
-        $this->greetingTitle = $greetingTitle;
 
         return $this;
     }

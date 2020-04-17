@@ -34,7 +34,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const WIDGET_BG_COLOR      = 'messenger.widget.bg_color';
     const WIDGET_TEXT_COLOR    = 'messenger.widget.text_color';
     const WIDGET_POSITION      = 'messenger.widget.position';
-    const WIDGET_GREETING      = 'messenger.widget.greeting';
 
     const CHAT_ENABLED              = 'messenger.chat.enabled';
     const CHAT_DEFAULT_DEPARTMENT   = 'messenger.chat.department';
@@ -136,6 +135,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             'proactive.description',
             'proactive.button',
             'proactive.placeholder',
+            'greeting',
         ];
     }
 
@@ -301,7 +301,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setBackgroundColor($this->getSettings(self::WIDGET_BG_COLOR, $brand, $messengerWidget->getBackgroundColor()))
             ->setTextColor($this->getSettings(self::WIDGET_TEXT_COLOR, $brand, $messengerWidget->getTextColor()))
             ->setPosition($this->getSettings(self::WIDGET_POSITION, $brand, $messengerWidget->getPosition()))
-            ->setGreetingTitle($this->getSettings(self::WIDGET_GREETING, $brand, $messengerWidget->getGreetingTitle()));
+        ;
     }
 
     /**
