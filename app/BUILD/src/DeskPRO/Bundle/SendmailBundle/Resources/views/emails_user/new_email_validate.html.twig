@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('portal.email_subjects.email_new-confirm' ) }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.email_new-confirm' ) }}</dp:subject>
 
 <html>
 <head>
@@ -9,11 +9,11 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    {{ phrase('helpcenter.emails.greeting', {to_name: recipient.name}) }}
 
     <br /><br />
 
-    {{ phrase('portal.emails.profile_email-new-confirm') }}
+    {{ phrase('helpcenter.emails.profile_email-new-confirm') }}
 
     <br/><br/>
 
@@ -21,7 +21,7 @@
 
     <br/><br/>
 
-    {{  phrase('portal.emails.end_greeting') }}
+    {{  phrase('helpcenter.emails.end_greeting') }}
 
   {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

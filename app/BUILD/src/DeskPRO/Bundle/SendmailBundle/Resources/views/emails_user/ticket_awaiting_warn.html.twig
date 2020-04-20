@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('user.email_subjects.remind_unresolved_subject', {subject: ticket.subject}) }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.remind_unresolved_subject', {subject: ticket.subject}) }}</dp:subject>
 
 <html>
 <head>
@@ -9,11 +9,11 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    {{ phrase('helpcenter.emails.greeting', {to_name: recipient.name}) }}
 
     <br /><br />
 
-    {{ phrase('user.emails.remind_unresolved', {helpdesk_name: brand_setting('core.deskpro_name'), resolve_url: ticket_resolve_link}) }}
+    {{ phrase('helpcenter.emails.remind_unresolved', {helpdesk_name: brand_setting('core.deskpro_name'), resolve_url: ticket_resolve_link}) }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

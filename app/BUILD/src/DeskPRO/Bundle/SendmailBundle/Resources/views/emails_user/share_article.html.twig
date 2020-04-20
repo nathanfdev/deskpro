@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('portal.email_subjects.share-article', { author_name: author.name }) }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.share-article', { author_name: author.name }) }}</dp:subject>
 
 <html>
 <head>
@@ -9,7 +9,7 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    {{ phrase('portal.emails.greeting', {to_name: recipient.name}) }}
+    {{ phrase('helpcenter.emails.greeting', {to_name: recipient.name}) }}
 
     <br /><br />
 
@@ -19,7 +19,7 @@
 
     <br /><br />
 
-    {{ phrase('portal.emails.end_greeting') }}
+    {{ phrase('helpcenter.emails.end_greeting') }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 
