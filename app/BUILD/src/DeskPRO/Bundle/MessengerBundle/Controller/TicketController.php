@@ -60,10 +60,9 @@ class TicketController extends AbstractMessengerController
         $brand            = $this->get('brand_stack')->getActive()->getBrand();
         $requestData      = $request->request->all();
         $messengerTickets = $settingsResolver->getMessengerSettings($brand)->getTickets();
-        $subjectPattern   = '';
 
         if ($messengerTickets->getSubjectOption() === MessengerTickets::TICKET_SUBJECT_OPTION_PRESET) {
-            // just a fallback if subject is not set somehow
+            // preset subject, so it won't be empty or wrong anyway
             $subjectPattern         = $messengerTickets->getSubject() ?: 'Ticket from {name}';
             $subject                = RegexUtils::safePregReplace('#\{\s*[a-zA-Z0-9]+\s*\}#', $this->getVisitorId($request), $subjectPattern);
             $requestData['subject'] = $subject;
@@ -103,7 +102,7 @@ class TicketController extends AbstractMessengerController
 
         if ($person) {
             $ticket->setPerson($person);
-            $requestData['subject'] = $this->updateSubject($subjectPattern, $ticket, $ticket->getPerson());
+            $requestData['subject'] = $this->updateSubject($messengerTickets, $ticket, $ticket->getPerson());
             $guestForm->submit($requestData, true);
             if (!$this->getUser() || $this->getUser() instanceof PersonGuest) {
                 // if the user is not authorized then don't allow to change person entity
@@ -116,7 +115,7 @@ class TicketController extends AbstractMessengerController
             }
             $newTicketService->acceptNewTicket($ticket, 'widget');
         } else {
-            $requestData['subject'] = $this->updateSubject($subjectPattern, $ticket, $ticket->getPerson());
+            $requestData['subject'] = $this->updateSubject($messengerTickets, $ticket, $ticket->getPerson());
             $newTicketService->acceptNewTicketForGuest($ticket, $requestData, $guestForm, 'widget');
         }
 
@@ -131,17 +130,18 @@ class TicketController extends AbstractMessengerController
     }
 
     /**
-     * @param string $subjectPattern
+     * @param MessengerTickets $messengerTickets
      * @param Ticket $ticket
      * @param Person $person
      *
      * @return mixed
      */
-    private function updateSubject($subjectPattern, Ticket $ticket, Person $person)
+    private function updateSubject($messengerTickets, Ticket $ticket, Person $person)
     {
         $subject = $ticket->getSubject();
-        if ($subjectPattern !== '') {
-            $subject = RegexUtils::safePregReplace('#\{\s*[a-zA-Z0-9]+\s*\}#', $person->getDisplayName(), $subjectPattern);
+        if ($messengerTickets->getSubjectOption() === MessengerTickets::TICKET_SUBJECT_OPTION_PRESET) {
+            $subjectPattern = $messengerTickets->getSubject() ?: 'Ticket from {name}';
+            $subject        = RegexUtils::safePregReplace('#\{\s*[a-zA-Z0-9]+\s*\}#', $person->getDisplayName(), $subjectPattern);
             $ticket->setSubject($subject);
         }
 
