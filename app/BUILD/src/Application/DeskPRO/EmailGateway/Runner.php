@@ -731,22 +731,30 @@ BODY;
      */
     public function executeAccount(EmailAccount $account, $timeLimit = 0, $onlyCollect = false)
     {
-        $lockStore   = new RetryTillSaveStore(new PdoStore(App::$container->get('doctrine.dbal.default_connection')));
-        $lockFactory = new LockFactory($lockStore);
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        if ($DP_ENV->getConfig('async_email_processing')) {
+            $lockStore   = new PdoStore(App::$container->get('doctrine.dbal.default_connection'));
+            $lockFactory = new LockFactory($lockStore);
 
-        // there could be only one instance of email gateway runner
-        // make sure there is no race conditions
-        $lock = $lockFactory->createLock(
-            'email-gateway-runner.'.$account->getId(),
-            IncomingEmailSupervisor::TIMEOUT_INTERVAL
-        );
+            // there could be only one instance of email gateway runner
+            // make sure there is no race conditions
+            $lock = $lockFactory->createLock(
+                'email-gateway-runner.'.$account->getId(),
+                IncomingEmailSupervisor::TIMEOUT_INTERVAL
+            );
 
-        $lock->acquire(true);
-
-        try {
+            if ($lock->acquire(false)) {
+                try {
+                    $this->doExecuteAccount($account, $timeLimit, $onlyCollect);
+                } finally {
+                    $lock->release();
+                }
+            } else {
+                $this->logger->logError('Unable to acquire a lock');
+            }
+        } else {
             $this->doExecuteAccount($account, $timeLimit, $onlyCollect);
-        } finally {
-            $lock->release();
         }
     }
 
