@@ -394,9 +394,6 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         if ($ticket->getTicketPersonEmail()) {
             $ticketAddresses[] = $ticket->getTicketPersonEmail()->getEmail();
         }
-        if ($ticket->getEmailAccount()) {
-            $ticketAddresses[] = $ticket->getEmailAccount()->getAddress();
-        }
 
         foreach ($ticket->getParticipants() as $participant) {
             if ($participant->getEmailAddress()) {
@@ -404,6 +401,16 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
             }
         }
 
-        return empty(array_diff($readerAddresses, $ticketAddresses));
+        if ($readerAddresses) {
+            foreach ($ticketAddresses as $email) {
+                if (!in_array($email, $readerAddresses)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
