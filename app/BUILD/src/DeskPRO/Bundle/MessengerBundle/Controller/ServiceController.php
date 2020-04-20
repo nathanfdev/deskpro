@@ -319,13 +319,18 @@ class ServiceController extends AbstractMessengerController
                     continue;
                 }
                 $customField = $fields[$field->getId()];
+                $ar          = [
+                    'field_type' => 'chat_field',
+                    'field_id'   => 'chat_field_'.$customField->getId(),
+                    'data'       => $this->get('serializer')->toArray($customField, new SideloadSerializationContext()),
+                ];
+                if (isset($ar['data']['required'])) {
+                    $ar['required'] = $ar['data']['required'];
+                }
+
                 array_push(
                     $config['fields'],
-                    [
-                        'field_type' => 'chat_field',
-                        'field_id'   => 'chat_field_'.$customField->getId(),
-                        'data'       => $this->get('serializer')->toArray($customField, new SideloadSerializationContext()),
-                    ]
+                    $ar
                 );
             }
 
