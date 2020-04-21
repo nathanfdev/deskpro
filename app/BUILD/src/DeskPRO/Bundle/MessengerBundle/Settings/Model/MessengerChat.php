@@ -145,26 +145,6 @@ class MessengerChat
     }
 
     /**
-     * @return string
-     */
-    public function getBusyMessage()
-    {
-        return $this->busyMessage;
-    }
-
-    /**
-     * @param string $busyMessage
-     *
-     * @return $this
-     */
-    public function setBusyMessage($busyMessage)
-    {
-        $this->busyMessage = $busyMessage;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getDepartment()
