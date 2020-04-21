@@ -1,0 +1,130 @@
+helpcenter.community.form_full_name: Adı
+helpcenter.chat.name: Adınız
+helpcenter.tickets.rate-question: 'Almış olduğunuz destek hizmetini değerlendirebilir misiniz ?'
+helpcenter.tickets.view_unassigned: Atanmamış
+helpcenter.tickets.list_agent: 'Atanmış Personel'
+helpcenter.emails.profile_email_link-validate: 'Bağlantıya tıklayara eposta adresinizi doğrulayabilirsiniz'
+helpcenter.community.form_topic_title: Başlık
+helpcenter.articles.section-title: 'Bilgi Bankası'
+helpcenter.articles.view-as-agent: 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.'
+helpcenter.news.view-as-agent: 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.'
+helpcenter.emails.ticket_rate-neutral: Bitmiştir
+helpcenter.chat.submit-ticket-button: 'Bize Eposta'
+helpcenter.emails.ticket_validate: 'Bizimle iletişime geçtiğiniz için teşekkür ederi.<br /><br />Personelimiz mesajınızı okuyarak , mailinizi doğruladıktan sonra sizlere cevap verecektir.'
+helpcenter.emails.ticket_rate-question: 'Bu mesaj yardımcı oldu mu?'
+helpcenter.chat.window_open-new: 'Bu sohbeti yeni bir pencerede aç'
+helpcenter.chat.form_feedback_transcript-email: 'Bu sohbetin dökümünü gönder'
+helpcenter.chat.form_feedback_rate-satisfaction: 'Bu sohbetten memnun kaldınız mı?'
+helpcenter.emails.ticket_access_ticket_online: 'Bu çağrı kaydını çevrim içi olarak gör ve yönet:'
+helpcenter.error.404-title: Bulunamadı
+helpcenter.error.permission-denied-title: 'Bunu yapmaya izniniz yok'
+helpcenter.chat.window_start-button: 'Buraya tıklayarak bizimle konuşun'
+helpcenter.chat.form_create_department: 'Bölüm Seç'
+helpcenter.emails.ticket_reply-confirm: 'Cevabınız için teşekkürler. Personelimiz kısa sürede cevap verecektir.'
+helpcenter.chat.form_feedback_rate-time: 'Cevaplarımız yeterince hızlı mıydı?'
+helpcenter.messenger.tickets.form.department: Departman
+helpcenter.chat.log_no_department: 'Departman Yok'
+helpcenter.tickets.rate_support: 'Destek ekibimizi puanlayınız'
+helpcenter.members.language: Dil
+helpcenter.chat.form_chat_send-file: 'Dosya Gönder'
+helpcenter.chat.window_upload-drag: 'Dosyanızı buraya sürükleyip bırakarak yükleyebilirsiniz'
+helpcenter.account.email-btn-resend-validation: 'Doğrulama Epostasını Tekrar Gönder'
+helpcenter.tickets.view_btn_edit: Düzenle
+helpcenter.community.attachments: Ekler
+helpcenter.chat.email: 'Eposta Adresiniz'
+helpcenter.emails.email_new-confirm: 'Eposta adresinizi doğrulayın'
+helpcenter.messenger.chat.transcript_block.yes_button: Evet
+helpcenter.community.section-title: 'Geri Bildirim'
+helpcenter.chat.form_feedback_button-submit: 'Geri bildirim Gönder ve Pencereyi Kapat'
+helpcenter.emails.community_new: 'Geri bildirimde bulunduğunuz için teşekkürler'
+helpcenter.chat.form_feedback_title: 'Geri bildirimde bulunun'
+helpcenter.emails.community_topic_new-approved: 'Geri bildiriminiz onaylandı'
+helpcenter.emails.community_topic_new-disapproved: 'Geri bildiriminiz rededildi'
+helpcenter.emails.community-topic_approved: 'Geri bildiriminizin onaylandığını ve sitemizde yayınlandığını dikkatlerinize sunarız.'
+helpcenter.emails.community-topic_disapproved: 'Geri bildiriminizin rededildiğini ve sitemizde yayınlanmayacağını dikkatlerinize sunarız.'
+helpcenter.general.go: Git
+helpcenter.messenger.tickets.form.submit: Gönder
+helpcenter.chat.form_chat_button-submit: Gönder
+helpcenter.general.show: Gösteri
+helpcenter.sidebar.news_title: Haberler
+helpcenter.chat.message_long-wait: 'Hala uygun bir personel bulmaya çalışıyoruz. Normalde bu işlem bir dakikadan az sürer. <br /><br />Aceleniz mi var? <a class="cancel-and-newticket-trigger">Beklemek yerine bize mesaj bırakın!</a>'
+helpcenter.tickets.rate-positive: Harika
+helpcenter.chat.error: 'Hatalı Sohbet'
+helpcenter.messenger.chat.save_ticket.button_no: Hayır
+helpcenter.chat.window_close: 'Hayır teşekkürler. Sadece pencereyi kapat.'
+helpcenter.general.everything: 'Her şey'
+helpcenter.profile.account_disabled_message: 'Hesabınız şu anda devre dışı. Giriş yapmadan kayıtları göremez ve destek alamazsınız.'
+helpcenter.messenger.tickets.form.category: Kategori
+helpcenter.community.btn-vote: Katılıyorum
+helpcenter.forms.label_save: Kaydet
+helpcenter.account.login-register-btn: 'Kayı ol'
+helpcenter.emails.register-welcome_subject: 'Kayıt olduğunuz için teşekkürler'
+helpcenter.tickets.list_subject: Konu
+helpcenter.chat.message_user-returned: 'Kullanıcı geri döndü'
+helpcenter.chat.message_user-timeout: 'Kullanıcı zaman aşımı'
+helpcenter.tickets.rate-negative: Kötü
+helpcenter.tickets.new-intro: 'Lütfen bu formu doldurun. Personelimiz mümkün olan en kısa sürede size eposta ile geri dönüş yapacaktır.'
+helpcenter.emails.kb_sub_updated: 'Makaleleri Güncelle'
+helpcenter.direct_messages.reply.message: Mesaj
+helpcenter.tickets.list_date_created: 'Oluşturma tarihi'
+helpcenter.guides.download-pdf: 'PDF İndir'
+helpcenter.forms.label_password: Parola
+helpcenter.emails.password_reset_subject: 'Parola Sıfırla'
+helpcenter.emails.password_reset: 'Parola sıfırlama talebinde bulundunuz. Parolanızı sıfırlamak için aşağıdaki bağlantıya tıklayın:'
+helpcenter.chat.window_close_only: 'Pencereyi Kapat'
+helpcenter.chat.agent: Personel
+helpcenter.chat.log_unassigned: 'Personel atanamadı'
+helpcenter.chat.message_wait-timeout: 'Personel bulunamadı'
+helpcenter.chat.form_create_title: 'Personel ile Sohbet Başlat'
+helpcenter.emails.password_agent-reset: 'Personelimiz hesabınızın parolasını sıfırladı. Bu bilgiler ile oturum açabilirsiniz'
+helpcenter.emails.password_agent-reset_subject: 'Personelimiz parolanızı sıfırladı'
+helpcenter.general.you: Siz
+helpcenter.chat.message_wait: 'Sizin için uygun bir personel arıyoruz'
+helpcenter.chat.form_create_button-submit: 'Sohbet Başlat'
+helpcenter.emails.chat_transcript_subject: 'Sohbet Dökümü'
+helpcenter.chat.submit-ticket-title: 'Sohbet Yerine Eposta'
+helpcenter.chat.message_unassigned: 'Sohbet ataması kaldırıldı'
+helpcenter.chat.message_started: 'Sohbet başlatıldı'
+helpcenter.messenger.chat.ended: 'Sohbet bitti'
+helpcenter.chat.message_chatting-with: 'Sohbet ediyorsunuz'
+helpcenter.emails.chat_transcript: 'Sohbet için teşekkürler. Sohbet dökümünü burada.'
+helpcenter.chat.message_ended-by-user: 'Sohbet kullanıcı tarafından bitirildi'
+helpcenter.chat.log_chat-id: 'Sohbet İsminiz'
+helpcenter.chat.window_resume-button: 'Sohbeti Aç'
+helpcenter.chat.window_end-chat: 'Sohbeti Bitir'
+helpcenter.chat.log-title: Sohbetiniz
+helpcenter.chat.window_cancel-confirm: 'Sohbetinizi bitirmek istediğinize emin misiniz?'
+helpcenter.tickets.guest_thank_you_title: 'Teşekkür ederiz.'
+helpcenter.emails.ticket_no-autoresponse: 'Uyarı: Onaylama epostası kapatıldı'
+helpcenter.chat.message_finding-agent: 'Uygun personel bulunuyor'
+helpcenter.general.btn-cancel: Vazgeç
+helpcenter.general.rate-page-positive: Yararlı
+helpcenter.emails.ticket_flood: 'Yardım masamıza eposta gönderdiniz.<br /><br />Otomatik sistemimiz sizden çok fazla otomatik mesaj geldiğini tespit etti.'
+helpcenter.emails.kb_sub_new: 'Yeni Makaleler'
+helpcenter.emails.kb_sub_new_and_updated: 'Yeni veya Güncel Makaleler'
+helpcenter.general.add-comment: 'Yorum ekle'
+helpcenter.chat.form_feedback_comments: 'Yorumlar?'
+helpcenter.emails.comment-confirmation: 'Yorumunuz için teşekkürler'
+helpcenter.emails.comment-approved_subject: 'Yorumunuz onaylandı'
+helpcenter.emails.comment-deleted_subject: 'Yorumunuz personelimiz tarafından okundu'
+helpcenter.emails.community-topic_agent-validation: 'Yorumunuz personelimiz tarafından okunup, onaylanıncaya kadar web sitemizde yayınlanmayacaktır.'
+helpcenter.emails.comment_deleted: 'Yorumunuz sayfanın düzenlenmesinde kullanıldı.'
+helpcenter.emails.comment_approved: 'Yorumunuz yayınlandı.'
+helpcenter.chat.message_uploading: Yükleniyor
+helpcenter.members.timezone: 'Zaman dilimi'
+helpcenter.messenger.blocks.tickets.title: 'Çağrı Kayıtlarınız'
+helpcenter.tickets.resolve_my_ticket_btn: 'Çağrı kaydımı çözüldü olarak işaretle.'
+helpcenter.emails.ticket_received: 'Çağrı kaydınız alındı. Personelimiz kısa sürede cevap verecektir.'
+helpcenter.emails.ticket_new-participant: 'Çağrı kaydınıza yeni bir kişi katıldı'
+helpcenter.emails.label_view-online: 'Çevrim içi Gör'
+helpcenter.tickets.list_status_resolved: Çözüldü
+helpcenter.messenger.tickets.form.priority: Öncelik
+helpcenter.chat.ended-no-agent: 'Üzgünüz ama şu anda uygun çağrınızı alacak uygun personelimiz bulunmamakta. Lütfen eposta gönderin ya da daha sonra yeniden deneyin.'
+helpcenter.tickets.new-section-title: İletişim
+helpcenter.chat.window_offline-button: 'İletişim için tıklayınız'
+helpcenter.general.related-community: 'İlgili Geri Bildirimler'
+helpcenter.general.related-downloads: 'İlişkili Dosyalar'
+helpcenter.general.related-news: 'İlişkili Haberler'
+helpcenter.forms.label_download: İndir
+helpcenter.general.nav-downloads: İndirmeler
+helpcenter.general.nav-downloads-desc: 'İndirmelere gözat'

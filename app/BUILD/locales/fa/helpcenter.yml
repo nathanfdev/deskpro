@@ -1,0 +1,289 @@
+helpcenter.emails.community_sub_updated: ' بازخورد به روز شده'
+helpcenter.account.section-desc-register: ' یک حساب کاربری ثبت کنید، بنابراین شما به راحتی می توانید ارتباطات خود را مدیریت کنید.'
+helpcenter.account.submit-saved-form: '{{type}} شما هنوز ارسال نشده است، اما ما آن را برای شما ذخیره کرده ایم.'
+helpcenter.flashes.user_changed_primary_email: 'آدرس ایمیل اصلی شما تغییر کرده است'
+helpcenter.chat.email: 'آدرس ایمیل شما'
+helpcenter.flashes.user_add_email_verified: "آدرس ایمیل شما به حساب کاربری شما افزوده شده است.\n"
+helpcenter.account.your-pending-email-addresses: 'آدرس های ایمیل در حال انتظارشما'
+helpcenter.chat.form_chat_send-file: 'آپلود فایل'
+helpcenter.chat.message_uploading: آپلود...
+helpcenter.emails.ticket_rate-question: 'آیا این پیام مفید بود؟'
+helpcenter.chat.window_cancel-confirm: 'آیا شما مایل هستید که می خواهید چت خود را به اتمام برسانید؟'
+helpcenter.account.email-btn-make-primary: ابتدا
+helpcenter.sidebar.news_title: اخبار
+helpcenter.news.recent-title: 'اخبار اخیر'
+helpcenter.emails.news_sub_new: 'اخبار جدید'
+helpcenter.emails.news_sub_new_and_updated: 'اخبار جدید و به روز شده'
+helpcenter.general.related-news: 'اخبار مرتبط'
+helpcenter.chat.log_linked_ticket: 'اختصاص دادن به پیام'
+helpcenter.tickets.last-activity: 'اخرین فعالیت'
+helpcenter.tickets.list_last_action: 'اخرین فعالیت'
+helpcenter.tickets.list_date_last_user: 'اخرین پاسخ کاربر'
+helpcenter.tickets.new-intro: 'اخرین پاسخ کارشناس'
+helpcenter.tickets.list_date_last_agent: 'اخرین پیام کارشناس'
+helpcenter.tickets.view_label_your_email_placeholder: 'ادرس ایمیل شما'
+helpcenter.account.login-email: 'ادرس ایمیل شما'
+helpcenter.chat.form_chat_button-submit: ارسال
+helpcenter.account.email-btn-resend-validation: 'ارسال ایمیل تایید'
+helpcenter.chat.form_feedback_title: 'ارسال نظرات به ما'
+helpcenter.chat.form_feedback_button-submit: 'ارسال نظرات و بستن پنجره'
+helpcenter.chat.form_feedback_transcript-email: 'ارسال یک رونوشت از این گفتگو به'
+helpcenter.emails.new-ticket-guest: 'از اینکه با ما تماس گرفتید، متشکریم'
+helpcenter.flashes.new_community_topic_posted: 'از نظرات شما متشکریم'
+helpcenter.flashes.ticket_feedback_thank_you: 'از نظرات شما متشکریم'
+helpcenter.flashes.new_community_topic_awaiting_review: "از نظرات شما متشکریم پس از بررسی عامل، در پورتال پشتیبانی ما قابل مشاهده خواهد بود.\n"
+helpcenter.emails.ticket_reply-confirm: "از پاسخ شما متشکرم یکی از عوامل ما به زودی به شما پاسخ خواهد داد.\n"
+helpcenter.flashes.article_unsubscribe_everything: 'اشتراک شما از تمام اعلانهای پایگاه دانش  لغو شد'
+helpcenter.general.btn-subscribe: 'اشتراک گذاری'
+helpcenter.general.share: 'اشتراک گذاری'
+helpcenter.account.email-btn-usersource-set: 'اضافه کردن ادرس ایمیل'
+helpcenter.general.add-comment: 'اضافه کردن نظر'
+helpcenter.tickets.view_reply: 'اضافه کردن پاسخ'
+helpcenter.emails.email_new-confirm: 'اعتبار سنجی آدرس ایمیل شما'
+helpcenter.chat.log_agents: 'افراد سازمان'
+helpcenter.emails.email_ticket-reminder: 'اقدام لازم: بلیط شما هنوز ارسال نشده است'
+helpcenter.chat.form_create_department: 'انتخاب دپارتمان'
+helpcenter.messenger.tickets.form.chooseAFile: 'انتخاب فایل'
+helpcenter.community.section-title: 'انتقادات و پیشنهادات'
+helpcenter.general.related-community: 'انتقادات و پیشنهادات مرتبط'
+helpcenter.error.permission-denied-title: 'انجام این کار برای شما امکان پذیر نیست'
+helpcenter.general.btn-cancel: انصراف
+helpcenter.messenger.tickets.form.priority: اولویت
+helpcenter.downloads.uploaded-on: 'اپلود ها'
+helpcenter.account.section-desc-login-external: 'اگر یک حساب کاربری با یک ارائه دهنده دیگر دارید، از لینک های زیر استفاده کنید.'
+helpcenter.account.section-title-set-password: 'ایجاد رمز عبور'
+helpcenter.chat.log_chat-id: 'ایدی شما'
+helpcenter.chat.submit-ticket-button: 'ایمیل برای ما'
+helpcenter.chat.submit-ticket-title: 'ایمیل برای ما در عوض'
+helpcenter.account.reset-password-request-title: 'ایمیل خود را فراموش کرده اید؟'
+helpcenter.account.section-title-usersource-email: 'ایمیل خود را وارد کنید'
+helpcenter.flashes.email_sent: 'ایمیل شما فرستاده شده است'
+helpcenter.account.set-password-request-desc: 'این فرم را تکمیل کنید و به شما یک پیوند برای تنظیم گذرواژه شما ارسال میکنیم.'
+helpcenter.account.reset-password-request-desc: 'این فرم را پر کنید تا یک پیوند بازنشانی رمز عبور به شما ارسال شود.'
+helpcenter.community.error_hidden: 'این مورد بازخورد پنهان است'
+helpcenter.general.comments-pending-validation: "این نظر در حال بررسی است آن را به زودی نمایش داده خواهد شد\n"
+helpcenter.tickets.timeline_re_opened: 'این پیام مجدد باز شده است'
+helpcenter.chat.window_open-new: 'این گفتگو را باز کنید در پنجره جدید'
+helpcenter.chat.window_start-button: 'اینجا کلیک کنید تا با ما چت کنید'
+helpcenter.account.submit-saved-form-go: 'اینجا کلیک کنید تا فرم را دوباره ارسال کنید'
+helpcenter.tickets.guest_thank_you_title: 'با تشکر از شما'
+helpcenter.emails.community_new: 'با تشکر از شما برای ارسال نظرات خود'
+helpcenter.flashes.usersource_new_add_email_verified: "با تشکر از شما برای تأیید آدرس ایمیل خود. حساب شما اکنون فعال است\n"
+helpcenter.emails.chat_transcript: 'با تشکر از شما برای چت کردن با ما . در اینجا متن چت شما قرار دارد .'
+helpcenter.emails.comment-confirmation: 'با تشکر ازنظر شما'
+helpcenter.error.403-desc: "با عرض پوزش، اما شما برای مشاهده این صفحه دسترسی ندارید\n"
+helpcenter.error.400-desc: 'با عرض پوزش، درخواست شما ناقص بود'
+helpcenter.account.login-external: 'با یک سرویس خارجی وارد شوید'
+helpcenter.tickets.mark-unresolved: 'باز کردن مجدد پیام'
+helpcenter.chat.window_resume-button: 'باز کردن چت شما'
+helpcenter.chat.log_no_department: 'بدون دپارتمان'
+helpcenter.account.set-password-click-here: 'برای ایجاد رمز عبور اینجا را کلیک کنید'
+helpcenter.chat.window_offline-button: 'برای تماس با ما اینجا کلیک کنید'
+helpcenter.account.reset-password-click-here: 'برای درخواست کد بازنشانی رمز عبور اینجا را کلیک کنید'
+helpcenter.tickets.please_login_to_reply: 'برای پاسخ دادن وارد شوید'
+helpcenter.tickets.view_reply_errors: 'برخی از خطاها با ارسال شما وجود دارد.'
+helpcenter.general.go: برو
+helpcenter.general.updated: 'بروز شده'
+helpcenter.tickets.list_status_resolved: 'بسته شده'
+helpcenter.messenger.chat.transcript_block.yes_button: بله
+helpcenter.emails.news_sub_updated: 'به روز رسانی اخبار'
+helpcenter.emails.kb_sub_updated: 'به روز رسانی مقالات'
+helpcenter.account.change-password-btn: 'به روزرسانی رمز عبور'
+helpcenter.tickets.rate_support: 'به پشتیبانی امتیاز دهید '
+helpcenter.general.rate-page: 'به کیفیت این صفحه امتیاز بده'
+helpcenter.general.prop_rating_desc: 'بیشترین امتیاز'
+helpcenter.general.prop_views_desc: 'بیشترین بازدید'
+helpcenter.general.prop_popularity_desc: 'بیشترین محبوبیت'
+helpcenter.general.prop_comments_desc: 'بیشترین نظرات'
+helpcenter.chat.list_date: تاریخ
+helpcenter.messenger.tickets.form.submit: تایید
+helpcenter.account.profile-delete-picture: 'تغییر یا حذف عکس پروفایل'
+helpcenter.tickets.new-section-title: 'تماس با ما'
+helpcenter.emails.password_reset_subject: 'تنظیم مجدد رمز عبور'
+helpcenter.general.agent_bar_admin_news: 'تنظیمات اخبار'
+helpcenter.general.agent_bar_admin_community: 'تنظیمات بازخورد'
+helpcenter.general.agent_bar_admin_dl: 'تنظیمات دانلود'
+helpcenter.general.agent_bar_admin_lang: 'تنظیمات زبان'
+helpcenter.general.agent_bar_admin_kb: 'تنظیمات مرکز آموزش'
+helpcenter.account.login-register-btn: 'ثبت نام'
+helpcenter.emails.download_sub_new_and_updated: 'جدید و به هنگام شده'
+helpcenter.general.prop_date_desc: جدیدترین
+helpcenter.tickets.view_scroll_reply: 'جهت رفتن به قسمت پایین به فرم، اینجا را کلیک کنید.'
+helpcenter.general.impersonation_mode: 'حالت منفجر شدن'
+helpcenter.account.email-btn-remove: 'حذف کردن ایمیل'
+helpcenter.account.section-title-your-account: 'حساب شما'
+helpcenter.emails.register-welcome-byagent_subject: 'حساب کاربری جدید شما'
+helpcenter.account.set-password-for-user: 'حساب کاربری شما هنوز رمز عبور ندارد لطفا یک بار تنظیم کنید تا بتوانید برای ارسال محتوا در آینده وارد شوید.'
+helpcenter.account.logout-btn: خروج
+helpcenter.chat.error: 'خطا در گفتگو'
+helpcenter.emails.ticket_rate-neutral: 'خوب بود'
+helpcenter.tickets.rate-negative: 'خوب نبود'
+helpcenter.messenger.chat.save_ticket.button_no: خیر
+helpcenter.general.nav-downloads: دانلود
+helpcenter.forms.label_download: دانلود
+helpcenter.guides.download-pdf: 'دانلود PDF'
+helpcenter.emails.download_sub_updated: 'دانلود های به روز شده'
+helpcenter.emails.download_sub_new: 'دانلود های جدید'
+helpcenter.downloads.none: 'دانلود وجود ندارد'
+helpcenter.general.in: در
+helpcenter.account.section-desc-login: 'در حال حاضر یک حساب کاربری دارید؟ ورود به سیستم زیر'
+helpcenter.chat.message_wait: 'در حال پیدا کردن یک نماینده برای شما'
+helpcenter.account.login-remember: 'در حساب باقی میمانید؟'
+helpcenter.account.reset-password-sent-title: 'درخواست رمز عبور دریافت شده'
+helpcenter.messenger.tickets.form.category: 'دسته بندی'
+helpcenter.messenger.tickets.form.department: دپارتمان
+helpcenter.general.comment_btn_save: 'ذخیره نظر'
+helpcenter.forms.label_save: 'ذخیره کردن'
+helpcenter.account.profile-btn-save: 'ذخیره کردن پروفایل'
+helpcenter.forms.label_password: 'رمز عبور'
+helpcenter.account.set-password-sent-title: 'رمز عبور خود را ایجاد کنید'
+helpcenter.profile.your-password: 'رمز عبور شما'
+helpcenter.account.set-password-success: 'رمز عبور شما به روز رسانی شد.'
+helpcenter.emails.chat_transcript_subject: 'رونوشت چت'
+helpcenter.members.language: زبان
+helpcenter.chat.form_feedback_rate-time: 'زمان پاسخ ما به اندازه کافی سریع است؟'
+helpcenter.chat.log_chat_time: 'زمان کامل چت'
+helpcenter.tickets.switched-department-rerender: 'ساختار این فرم ممکن است تغییر کند. لطفا فرم را بررسی کنید و دوباره ارسال کنید'
+helpcenter.messenger.proactive.title: 'شروع مکالمه'
+helpcenter.chat.form_create_button-submit: 'شروع چت'
+helpcenter.chat.form_create_title: 'شروع چت با نماینده'
+helpcenter.general.you: شما
+helpcenter.flashes.news_unsubscribe_everything: 'شما  همه اطلاعیه های مقاله خبری را لغو کرده اید'
+helpcenter.flashes.download_unsubscribe_everything: 'شما از همه اعلانهای دریافتی لغو شده اید'
+helpcenter.flashes.ticket_re_opened: 'شما این پیام را دوباره باز کردید'
+helpcenter.chat.form_feedback_rate-satisfaction: 'شما با این گفتگو راضی هستید؟'
+helpcenter.flashes.article_unsubscribe: 'شما با موفقیت از این مقاله لغو شده است.'
+helpcenter.flashes.article_cat_unsubscribe: 'شما با موفقیت اشتراک خود را لغو نمودید.'
+helpcenter.flashes.download_unsubscribe: 'شما با موفقیت این اشتراک را لغو کردید.'
+helpcenter.flashes.news_unsubscribe: 'شما با موفقیت این مقاله خبری را لغو کرده اید.'
+helpcenter.flashes.community_unsubscribe: 'شما با موفقیت این مورد بازخورد لغو شده اید.'
+helpcenter.flashes.download_subscribe: "شما با موفقیت به این دانلود مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
+helpcenter.flashes.article_cat_subscribe: 'شما با موفقیت به این دسته اضافه شده اید. هنگامی که مقالات جدید ارسال می شود، شما مطلع خواهید شد.'
+helpcenter.flashes.news_cat_subscribe: "شما با موفقیت به این دسته متصل شده اید. شما از پست های جدید مطلع خواهید شد.\n"
+helpcenter.flashes.download_cat_subscribe: "شما با موفقیت به این دسته وصل شده اید. هنگامی که فایل های جدید برای دانلود در دسترس هستند، شما مطلع خواهید شد.\n"
+helpcenter.flashes.news_subscribe: "شما با موفقیت به این مقاله خبری مشترکید. وقتی نظرات جدیدی به شما اطلاع داده می شود، مطلع خواهید شد\n"
+helpcenter.flashes.article_subscribe: "شما با موفقیت به این مقاله مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
+helpcenter.flashes.community_subscribe: "شما با موفقیت به این مورد بازخورد مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
+helpcenter.forms.error_email_required: 'شما باید آدرس ایمیل خود را ارائه دهید'
+helpcenter.flashes.community_login: 'شما باید برای رای دادن وارد شوید'
+helpcenter.chat.you_have_been_invited: 'شما برای پیوستن به یک چت دعوت شده اید'
+helpcenter.account.login-lockout: 'شما بیش از حد وارد حساب کاربری شده اید، بنابراین شما قفل شده اید. لطفا بعدا دوباره امتحان کنید'
+helpcenter.account.tickets-lockout: 'شما بیش از حد پیام را ارسال کرده اید، بنابراین شما قفل شده اید. لطفا بعدا دوباره امتحان کنید'
+helpcenter.chat.message_chatting-with: 'شما در حال چت با'
+helpcenter.account.reset-password-lockout: 'شما سعی کرده اید چندین بار رمز عبور خود را بازنشانی کنید. شما برای مدت کوتاهی قفل می شوید. لطفا بعدا دوباره امتحان کنید'
+helpcenter.articles.view-as-agent: 'شما می توانید این صفحه را ببینید زیرا شما یک عامل هستید. کاربران نمی توانند این صفحه را مشاهده کنند.'
+helpcenter.account.comment-lockout: 'شما نظرات بسیاری را ارسال کرده اید. لطفا منتظر بمانید'
+helpcenter.flashes.community_unsubscribe_everything: 'شما همه اعلانهای بازخورد لغو شده اید'
+helpcenter.account.login-captcha-failed: 'شما کد امنیتی نامعتبر وارد کرده اید. لطفا دوباره تلاش کنید'
+helpcenter.general.admin_home: 'صفحه اصلی'
+helpcenter.general.agent_bar_agent_home: 'صفحه اصلی'
+helpcenter.tickets.rate-positive: 'عالی بود'
+helpcenter.error.403-title: 'عدم دسترسی'
+helpcenter.community.form_topic_title: عنوان
+helpcenter.chat.window_upload-drag: 'فایل خود را در اینجا بکشید که در چت آپلود شود'
+helpcenter.general.related-downloads: 'فایل های مرتبط'
+helpcenter.community.attachments: 'فایل پیوست'
+helpcenter.chat.agent: فرد
+helpcenter.flashes.ticket_participant_already_error: "فردی که سعی کردید به عنوان یک شرکت کننده اضافه کنید، در حال حاضر یک شرکت کننده در این پیام است.\n"
+helpcenter.flashes.usersource_new_add_email_verify: "قبل از ایجاد حساب کاربری ما باید ایمیل شما را تأیید کنیم. لطفا صندوق پستی خود را برای پیوند تأیید بررسی کنید.\n"
+helpcenter.account.usersource-set-email-desc: 'قبل از اینکه بتوانید وارد شوید ما نیاز به آدرس ایمیل شما داریم. لطفا آدرس ایمیل خود را در زیر وارد کنید تا بتوانیم یک ایمیل تأیید به شما ارسال کنیم.'
+helpcenter.flashes.guest_new_ticket_must_verify: "قبل از اینکه بتوانیم پیام خود را بپذیریم، باید آدرس ایمیل شما را تأیید کنیم. لطفا صندوق پستی خود را بررسی کنید ما یک پیوند تأیید را برای شما ارسال کرده ایم.\n"
+helpcenter.flashes.guest_content_must_verify: "قبل از اینکه محتوای خود را ارسال کنید لازم است آدرس ایمیل  را تایید بفرمایید.\nلطفا صندوق ورودی ایمیل خود را چک کنید و ما لینک تایید  حساب رو برای شما ارسال می کنیم."
+helpcenter.general.prop_date_asc: 'قدیمی ترین '
+helpcenter.emails.validate-email: 'لطفا آدرس ایمیل خود را از طریق لینک زیر تایید کنید.'
+helpcenter.tickets.thank_you_check_email: 'لطفا آدرس ایمیل خود را تایید کنید'
+helpcenter.general.label-search-enter-label: 'لطفا برچسب را برای جستجو انتخاب کنید'
+helpcenter.community.error_login: 'لطفا وارد شوید'
+helpcenter.account.reset-password-invalid-input: 'لطفا یک آدرس ایمیل یا نام کاربری معتبر وارد کنید'
+helpcenter.flashes.ticket_participant_email_error: 'لطفا یک ایمیل معتبر برای شرکت کننده خود وارد کنید و دوباره امتحان کنید.'
+helpcenter.general.no-search-query: 'لطفا یک کلمه را در کادر جستجو تایپ کنید.'
+helpcenter.general.btn-unsubscribe: 'لغو اشتراک'
+helpcenter.tickets.cancel-ticket-edit: 'لغو ویرایش و دوباره پیام من را نشان دهید'
+helpcenter.account.reset-password-sent-to: 'ما ایمیل را ارسال کردیم به'
+helpcenter.flashes.user_add_email_verify: 'ما باید قبل از اضافه کردن آن به حساب کاربری خود، ایمیل خود را تأیید کنیم. لطفا صندوق ورودی ایمیل خود را برای پیوند تأیید بررسی کنید'
+helpcenter.chat.ended-no-agent: 'ما بسیار متاسفیم چون کسی در حال حاضر در دسترسنیست که با شما چت کند. لطفا به ما ایمیل بزنید یا بعدا دوباره سعی کنید.'
+helpcenter.account.reset-password-sent-desc: 'ما درخواست بازنشانی رمز عبور خود را برای ایمیل زیر نشان داده ایم. اگر این آدرس ایمیل متعلق به یک حساب کاربری ثبت شده باشد، ما یک ایمیل با پیوند بازنشانی رمز عبور را به آدرس ایمیل اصلی آن حساب فرستاده ایم. برای دریافت دستورالعمل های بیشتر لطفا صندوق پستی ایمیل خود را بررسی کنید'
+helpcenter.emails.password_agent-reset_subject: 'ما رمز عبور شما را بازیابی کردیم'
+helpcenter.emails.community-topic_disapproved: 'ما می خواستیم به شما اطلاع دهیم که متاسفانه بازخورد شما کاهش یافته است و به طور عمومی در سایت ما ظاهر نخواهد شد.'
+helpcenter.chat.message_long-wait: 'ما هنوز در حال تلاش کردن برای پیدا کردن یک نماینده موجود برای چت کردن با شما هستیم; این به طور معمول کمتر از یک دقیقه طول می کشد. <br /><br />با عجله از سر راه بردارد؟ <a class="cancel-and-newticket-trigger">ترک ما پیغام به جای?</a>'
+helpcenter.account.set-password-sent-desc: 'ما یک ایمیل با دستورالعمل در مورد نحوه تنظیم رمز عبور خود به شما ارسال کردیم.'
+helpcenter.error.404-desc: 'متاسفانه صفحه مورد نظر یافت نشد.'
+helpcenter.chat.message_wait-timeout: 'متاسفم؛ هیچ نماینده ای در دسترس نیست'
+helpcenter.flashes.user_registered_verified: "متشکرم. آدرس ایمیل شما تأیید شده است\n"
+helpcenter.flashes.user_registered_verified_authenticated: "متشکرم. آدرس ایمیل شما تأیید شده است و شما وارد سیستم شده اید\n"
+helpcenter.messenger.tickets.form.product: محصول
+helpcenter.general.admin: مدیر
+helpcenter.general.agent_bar_agent_news: 'مدیریت اخبار'
+helpcenter.general.agent_bar_agent_community: 'مدیریت بازخورد'
+helpcenter.general.agent_bar_agent_kb: 'مدیریت دانش پایگاه'
+helpcenter.general.agent_bar_agent_dl: 'مدیریت دانلودها'
+helpcenter.tickets.list_ticket_ref: مرجع
+helpcenter.articles.section-title: 'مرکز آموزش'
+helpcenter.emails.label_view-online: 'مشاهده آنلاین'
+helpcenter.chat.log_view_linked_ticket: 'مشاهده پیام'
+helpcenter.sidebar.satisfied_customers: 'مشتریان راضی'
+helpcenter.flashes.user_updated_profile: 'مشخصات شما به روز شده است.'
+helpcenter.general.rate-page-positive: مفید
+helpcenter.emails.kb_sub_new_and_updated: 'مقالات جدید و به روز شده'
+helpcenter.emails.kb_sub_new: 'مقاله جدید'
+helpcenter.sidebar.top_articles_title: 'مقاله های برتر'
+helpcenter.emails.register-welcome_subject: 'ممنون بابت ثبت نام شما'
+helpcenter.community.btn-vote: 'من موافقت می کنم'
+helpcenter.members.timezone: 'منطقه زمانی'
+helpcenter.tickets.list_subject: موضوع
+helpcenter.community.form_full_name: نام
+helpcenter.tickets.view_label_your_name_placeholder: نام
+helpcenter.chat.name: 'نام شما'
+helpcenter.emails.comment_deleted: 'نظر شما برای بهبود به صفحه مورد استفاده قرار گرفت .'
+helpcenter.emails.comment-deleted_subject: 'نظر شما توسط ماموران ما خوانده شده'
+helpcenter.emails.comment_approved: 'نظر شما منتشر شده است.'
+helpcenter.emails.comment-approved_subject: 'نظر شما مورد تایید قرار گرفت'
+helpcenter.community.comments: نظرات
+helpcenter.chat.form_feedback_comments: نظرات
+helpcenter.emails.community_topic_new-disapproved: 'نظرات شما رد شده است'
+helpcenter.emails.community_topic_new-approved: 'نظرات شما مورد تایید قرار گرفته است'
+helpcenter.chat.window_close: 'نه ممنون، فقط پنجره را ببندید'
+helpcenter.account.login-password-reminder: 'نیاز به یادآور رمز عبوردارید؟'
+helpcenter.emails.ticket_no-autoresponse: 'هشدار: ایمیل تأیید خاموش است'
+helpcenter.general.everything: 'همه چیز'
+helpcenter.flashes.ticket_participant_add_unknown_error: "هنگام تلاش برای افزودن مشارکت کننده شما مشکلی پیش آمد. لطفا دوباره تلاش کنید.\n"
+helpcenter.account.section-title-login: ورود
+helpcenter.tickets.view_btn_edit: ویرایش
+helpcenter.tickets.view_btn_edit_full: 'ویرایش پیام'
+helpcenter.flashes.ticket_replied: "پاسخ شما ارسال شده است. با تشکر!\n"
+helpcenter.emails.reject_resolved: "پاسخ شما قبول نشد زیرا پیام  شما قبلا به عنوان حل شده مشخص شده است. کارشناسان ما به این پیام  پاسخ نخواهند داد.\n"
+helpcenter.chat.window_end-chat: 'پایان دادن به چت'
+helpcenter.chat.window_close_only: 'پنجره را ببند'
+helpcenter.chat.list_chat: پیام
+helpcenter.chat.log-title: 'پیام شما'
+helpcenter.messenger.blocks.tickets.title: 'پیام شما'
+helpcenter.flashes.ticket_created: "پیام شما ارسال شده است. با تشکر!\n"
+helpcenter.flashes.ticket_updated: "پیام شما به روز شده است با تشکر!\n"
+helpcenter.flashes.ticket_resolved: 'پیام شما به عنوان پیام حل شده شناخته شد '
+helpcenter.emails.ticket_received: "پیام شما دریافت شده است یکی از عوامل ما به زودی به شما پاسخ خواهد داد.\n"
+helpcenter.tickets.resolve_my_ticket_btn: 'پیام من را ببند'
+helpcenter.chat.message_finding-agent: 'پیدا کردن یک نماینده'
+helpcenter.direct_messages.reply.message: پیغام
+helpcenter.general.print: چاپ
+helpcenter.messenger.chat.ended: 'چت به پایان رسید'
+helpcenter.chat.message_ended-by-user: 'چت توسط کاربر به پایان رسید'
+helpcenter.tickets.list_user: کاربر
+helpcenter.chat.message_user-returned: 'کاربر بازگشته است'
+helpcenter.chat.message_user-timeout: 'کاربر به پایان رسیده است'
+helpcenter.sidebar.agents_available: 'کارشناس انلاین'
+helpcenter.tickets.list_status_agent: 'کارشناس ما پاسخ خواهد داد'
+helpcenter.account.reset-password-invalid-desc: 'کد بازنشانی گذرواژه شما نامعتبر است یا منقضی شده است برای بازنشانی رمز عبور خود، لطفا یک کد جدید درخواست کنید.'
+helpcenter.account.set-password-invalid-desc: 'کد رمز شما نامعتبر است یا منقضی شده است برای تنظیم رمز عبور خود، لطفا یک کد جدید را درخواست کنید'
+helpcenter.general.prop_rating_asc: 'کمترین امتیاز'
+helpcenter.general.prop_views_asc: 'کمترین بازدیدها'
+helpcenter.general.prop_popularity_asc: 'کمترین محبوبیت'
+helpcenter.general.prop_comments_asc: 'کمترین نظرات'
+helpcenter.chat.message_started: 'گفتگو آغاز شده'
+helpcenter.chat.message_unassigned: 'گپ اختصاص داده نشده است'
+helpcenter.messenger.tickets.form.or: یا
+helpcenter.error.404-title: 'یافت نشد'
+helpcenter.account.registration-set-password: 'یک حساب کاربری با این ایمیل قبلا وجود دارد ما به شما یک ایمیل ارسال کرده ایم که به شما امکان می دهد گذرواژه خود را وارد کنید و وارد شوید'
+helpcenter.error.general-title: 'یک خطا رخ داد'
+helpcenter.emails.ticket_new-participant: 'یک شخص جدید است اضافه شده به تیک خود'
+helpcenter.emails.password_agent-reset: 'یک نماینده رمز عبور حساب شما را بازنشانی کرده است. شما می توانید با این جزئیات وارد شوید'
+helpcenter.tickets.new_ticket_button: 'یک پیام جدید بسازید'
