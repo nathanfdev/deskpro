@@ -43,16 +43,6 @@ class MessengerChat
     private $noAnswerBehavior = 'save_ticket';
 
     /**
-     * A message to show when there is no answer.
-     *
-     * @JMS\Type("string")
-     * @JMS\SerializedName("busyMessage")
-     *
-     * @var string
-     */
-    private $busyMessage = 'It looks like all of our agents are busy at the moment. You can still send us a ticket below and we will get back to you as soon as possible';
-
-    /**
      * A default department ID.
      *
      * @JMS\Type("integer")

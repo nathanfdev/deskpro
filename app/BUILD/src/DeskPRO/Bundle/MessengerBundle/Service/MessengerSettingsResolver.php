@@ -40,7 +40,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_USERGROUPS           = 'messenger.chat.usergroups';
     const CHAT_TIMEOUT              = 'messenger.chat.timeout';
     const CHAT_NO_ANSWER_BEHAVIOR   = 'messenger.chat.no_answer';
-    const CHAT_BUSY_MESSAGE         = 'messenger.chat.busy';
 
     const CHAT_OPTIONS_SHOW_PHOTOS = 'messenger.chat.options.show_photos';
 
@@ -239,7 +238,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setPreChatForm($this->getPreChatForm($brand))
             ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
             ->setNoAnswerBehavior($this->getSettings(self::CHAT_NO_ANSWER_BEHAVIOR, $brand, $mChat->getNoAnswerBehavior()))
-            ->setBusyMessage($this->getSettings(self::CHAT_BUSY_MESSAGE, $brand, $mChat->getBusyMessage()))
             ->setTicketDefaults($this->getMessengerChatTicketDefaults($brand));
     }
 
