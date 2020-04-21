@@ -55,6 +55,7 @@ class SyncTmsCommand extends ContainerAwareCommand
         $this->setName('dpdev:lang:tms:sync')
             ->setDescription('Uploads and downloads phrase data from the translation management system')
             ->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Used with download or upload-lang to limit to a specific language')
+            ->addOption('single-file', 'f', InputOption::VALUE_REQUIRED, 'Optionally limit to a specific file. E.g. helpcenter.yml.')
             ->addOption('wait', 'w', InputOption::VALUE_NONE, 'When uploading or syncing, wait for import job to finish before exiting')
             ->addArgument('action', InputArgument::REQUIRED, 'The action to perform: sync, upload, download, or upload-lang');
     }
@@ -85,7 +86,7 @@ class SyncTmsCommand extends ContainerAwareCommand
             }
         );
 
-        foreach (['backend.yml', 'user.yml'] as $f) {
+        foreach (['backend.yml', 'user.yml', 'helpcenter.yml'] as $f) {
             $data                     = Yaml::parse(file_get_contents($this->localeDir.DIRECTORY_SEPARATOR.'en-US'.DIRECTORY_SEPARATOR.$f));
             $this->defaultEnglishData = array_merge($this->defaultEnglishData, $data);
         }
@@ -131,7 +132,12 @@ class SyncTmsCommand extends ContainerAwareCommand
         $files = [
             'backend.yml',
             'user.yml',
+            'helpcenter.yml',
         ];
+
+        if ($this->input->hasOption('single-file')) {
+            $files = array_filter($files, function ($f) { return $f === $this->input->getOption('single-file'); });
+        }
 
         if (in_array('all', $locales)) {
             // when upload-lang is specified, we dont want en-US
@@ -154,16 +160,21 @@ class SyncTmsCommand extends ContainerAwareCommand
             foreach ($files as $f) {
                 $timer = Timer::start();
 
+                if (!is_file("{$this->localeDir}/{$locale['locale']}/$f")) {
+                    $output->writeln("[{$locale['locale']}] Skipping $f - does not exist");
+                    continue;
+                }
+
                 $output->writeln("[{$locale['locale']}] Uploading $f");
                 $transformedPath = $t->deskproLangFileToOneSky($f);
 
-                $r = Retry::create()->maxTries(3)->throwLast()->returnValue()->run(function ($tryInfo) use ($onesky, $transformedPath, $locale, $output) {
+                $r = Retry::create()->maxTries(3)->throwLast()->returnValue()->run(function ($tryInfo) use ($f, $onesky, $transformedPath, $locale, $output) {
                     if (!$tryInfo['isFirst']) {
                         $output->writeln(sprintf("\tretry (last error: {$tryInfo['lastErrorMessage']})"));
                     }
 
                     return $onesky->files('upload', [
-                        'project_id'             => $onesky->getProjectId('deskpro'),
+                        'project_id'             => $onesky->getProjectId($this->getProjectNameForFile($f)),
                         'file'                   => $transformedPath,
                         'file_format'            => 'RUBY_YML',
                         'locale'                 => $locale['locale'],
@@ -182,7 +193,7 @@ class SyncTmsCommand extends ContainerAwareCommand
                 }
 
                 if (!empty($r['data']['import']['id'])) {
-                    $importJobs[] = $r['data']['import']['id'];
+                    $importJobs[] = ['jobId' => $r['data']['import']['id'], 'projectId' => $onesky->getProjectId($this->getProjectNameForFile($f))];
                     $output->writeln("[{$locale['locale']}] Import job: {$r['data']['import']['id']}");
                 }
 
@@ -196,9 +207,12 @@ class SyncTmsCommand extends ContainerAwareCommand
 
             while ($importJobs) {
                 $stillWaiting = [];
-                foreach ($importJobs as $id) {
+                foreach ($importJobs as $job) {
+                    $id = $job['jobId'];
+                    $projectId = $job['projectId'];
+
                     $v = $onesky->import_tasks('show', [
-                        'project_id' => $onesky->getProjectId('deskpro'),
+                        'project_id' => $projectId,
                         'import_id'  => $id,
                     ]);
 
@@ -207,9 +221,9 @@ class SyncTmsCommand extends ContainerAwareCommand
                     if (!$info || empty($info['data']['status'])) {
                         $output->writeln("\n<error>Status check on job $id failed!</error>");
                         print_r($v);
-                        $stillWaiting[] = $id;
+                        $stillWaiting[] = $job;
                     } elseif ($info['data']['status'] === 'in-progress') {
-                        $stillWaiting[] = $id;
+                        $stillWaiting[] = $job;
                         echo '.';
                     } elseif ($info['data']['status'] === 'failed') {
                         $output->writeln("\n<error>Job $id failed!</error>");
@@ -240,7 +254,12 @@ class SyncTmsCommand extends ContainerAwareCommand
         $files = [
             'backend.yml',
             'user.yml',
+            'helpcenter.yml'
         ];
+
+        if ($this->input->hasOption('single-file')) {
+            $files = array_filter($files, function ($f) { return $f === $this->input->getOption('single-file'); });
+        }
 
         $processLocales = ListUtils::filter($this->localeInfo, function (array $l) use ($locales) {
             return $l['locale'] !== 'en-US' && (in_array('all', $locales) || in_array($l['locale'], $locales));
@@ -262,7 +281,7 @@ class SyncTmsCommand extends ContainerAwareCommand
                     }
 
                     $data = $onesky->translations('export', [
-                        'project_id'       => $onesky->getProjectId('deskpro'),
+                        'project_id'       => $onesky->getProjectId($this->getProjectNameForFile($f)),
                         'locale'           => $locale['locale'],
                         'source_file_name' => $f,
                         'export_file_name' => 'out.yml',
@@ -299,6 +318,11 @@ class SyncTmsCommand extends ContainerAwareCommand
                 $output->writeln("[{$locale['locale']}] Done download in {$timer->formatTotalTime()}");
             }
         }
+    }
+
+    private function getProjectNameForFile($filename)
+    {
+        return $filename === 'helpcenter.yml' ? 'helpcenter' : 'deskpro';
     }
 
     /**
