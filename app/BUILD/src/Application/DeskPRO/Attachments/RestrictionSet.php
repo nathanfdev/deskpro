@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category DependencyInjection
- */
+
 
 namespace Application\DeskPRO\Attachments;
 
@@ -100,7 +96,7 @@ class RestrictionSet
                 if (!in_array($extension, $allowedExtensions)) {
                     return [
                         'error_code'   => self::ERR_FAIL_MUST_EXT,
-                        'error_detail' => implode(',', $allowedExtensions),
+                        'error_detail' => implode(', ', $allowedExtensions),
                     ];
                 }
             }
@@ -111,7 +107,7 @@ class RestrictionSet
                 if (in_array($extension, $disallowedExtensions)) {
                     return [
                         'error_code'   => self::ERR_FAIL_NOT_EXT,
-                        'error_detail' => implode(',', $disallowedExtensions),
+                        'error_detail' => implode(', ', $disallowedExtensions),
                     ];
                 }
             }
