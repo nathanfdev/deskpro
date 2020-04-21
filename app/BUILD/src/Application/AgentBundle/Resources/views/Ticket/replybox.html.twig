@@ -355,7 +355,7 @@
 							<i class="icon-share-alt"></i>&nbsp;
 
                             {% set defaultStatus = app.getSetting('core_tickets.reply_status') %}
-                            {% set statuses = ['awaiting_user', 'awaiting_agent', 'resolved'] %}
+                            {% set statuses = ['awaiting_user', 'awaiting_agent', 'pending', 'resolved'] %}
                             {% set found = false %}
 
                             {# check for allowed default first #}
