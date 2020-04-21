@@ -57,7 +57,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const PRE_CHAT_FORM_DEPARTMENT           = 'messenger.chat.pre_chat_form.department';
     const PRE_CHAT_FORM_FIELDS               = 'messenger.chat.pre_chat_form.fields';
     const PRE_CHAT_FORM_FORM_MESSAGE_ENABLED = 'messenger.chat.pre_chat_form.form_message_enabled';
-    const PRE_CHAT_FORM_FORM_MESSAGE         = 'messenger.chat.pre_chat_form.form_message';
 
     const PROACTIVE_AUTOSTART = 'messenger.proactive.autostart';
     const PROACTIVE_TIMEOUT   = 'messenger.proactive.autostart_timeout';
@@ -124,6 +123,9 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getEditablePhrases()
     {
         return [
+            'helpcenter.messenger.chat_no_agent_online',
+            'helpcenter.messenger.chat_pre_chat_form_form_message',
+            'helpcenter.messenger.chat_prompt',
             'helpcenter.messenger.blocks_ticket_title',
             'helpcenter.messenger.blocks_ticket_description',
             'helpcenter.messenger.blocks_ticket_button',
@@ -282,7 +284,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setIsEmailRequired($this->getSettings(self::PRE_CHAT_FORM_EMAIL_REQUIRED, $brand, $mPreChatForm->isEmailRequired()))
             ->setIsDepartmentSelectable($this->getSettings(self::PRE_CHAT_FORM_DEPARTMENT, $brand, $mPreChatForm->isDepartmentSelectable()))
             ->setFormMessageEnabled($this->getSettings(self::PRE_CHAT_FORM_FORM_MESSAGE_ENABLED, $brand, $mPreChatForm->isFormMessageEnabled()))
-            ->setFormMessage($this->getSettings(self::PRE_CHAT_FORM_FORM_MESSAGE, $brand, $mPreChatForm->getFormMessage()))
             ->setFields($fields);
     }
 
