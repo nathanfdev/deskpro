@@ -38,7 +38,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_ENABLED              = 'messenger.chat.enabled';
     const CHAT_DEFAULT_DEPARTMENT   = 'messenger.chat.department';
     const CHAT_USERGROUPS           = 'messenger.chat.usergroups';
-    const CHAT_PROMPT               = 'messenger.chat.prompt';
     const CHAT_TIMEOUT              = 'messenger.chat.timeout';
     const CHAT_NO_ANSWER_BEHAVIOR   = 'messenger.chat.no_answer';
     const CHAT_BUSY_MESSAGE         = 'messenger.chat.busy';
@@ -236,7 +235,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setEnabled($this->getSettings(self::CHAT_ENABLED, $brand, $mChat->isEnabled()))
             ->setDepartment($this->getSettings(self::CHAT_DEFAULT_DEPARTMENT, $brand, $this->getDefaultDepartment('chat')))
             ->setUsergroups(unserialize($this->getSettings(self::CHAT_USERGROUPS, $brand, serialize($mChat->getUsergroups()))))
-            ->setPrompt($this->getSettings(self::CHAT_PROMPT, $brand, $mChat->getPrompt()))
             ->setOptions($this->getMessengerChatOptions($brand))
             ->setPreChatForm($this->getPreChatForm($brand))
             ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))

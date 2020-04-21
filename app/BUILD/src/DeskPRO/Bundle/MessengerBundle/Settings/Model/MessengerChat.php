@@ -24,15 +24,6 @@ class MessengerChat
     private $enabled = true;
 
     /**
-     * A short prompt to chat.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $prompt = 'What can we help you with today?';
-
-    /**
      * How long to wait before consider chat is timed out.
      *
      * @JMS\Type("integer")
@@ -119,26 +110,6 @@ class MessengerChat
     public function setEnabled($enabled)
     {
         $this->enabled = (bool) $enabled;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPrompt()
-    {
-        return $this->prompt;
-    }
-
-    /**
-     * @param string $prompt
-     *
-     * @return $this
-     */
-    public function setPrompt($prompt)
-    {
-        $this->prompt = $prompt;
 
         return $this;
     }

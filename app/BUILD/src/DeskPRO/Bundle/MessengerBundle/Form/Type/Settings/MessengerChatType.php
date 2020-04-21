@@ -71,7 +71,6 @@ class MessengerChatType extends AbstractType
                 'allow_add'     => true,
                 'allow_delete'  => true,
             ])
-            ->add('prompt', TextType::class)
             ->add('options', MessengerChatOptionsType::class)
             ->add('preChatForm', MessengerPreChatFormType::class)
             ->add('timeout', NumberType::class)
