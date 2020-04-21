@@ -25,6 +25,7 @@ import { CustomPerFieldEdit } from './Common/Form/CustomPerFieldEdit';
 import { Attachment } from './Common/Attachment';
 import { TouchFocusWidget } from './TouchFocusWidget';
 import { WidgetButton } from './WidgetButton';
+import { DpxFormClearDraft} from './Common/Form/Draft/DpxFormClearDraft';
 
 class PortalPage extends PageWidget {
 
@@ -55,6 +56,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(AlertsWidget, '#dpx-alerts');
     this.addWidgetDef(SearchResultsPage, '#search-results-page');
     this.addWidgetDef(Attachment, '.dpx-attachment');
+    this.addWidgetDef(DpxFormClearDraft, '.dpx-clear-draft');
     this.addWidgetDef(TouchFocusWidget, '.as-touch-focus');
     this.addWidgetDef(WidgetButton, '.widget-button');
 

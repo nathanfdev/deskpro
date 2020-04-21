@@ -1,7 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-<div class="ticket-success-blurb">
+<div class="ticket-success-blurb dpx-clear-draft" data-save-draft="new_ticket{{ app.user ? '-' ~ app.user.id : '' }}">
     <div class="icon-mark"></div>
     {% if verify_email %}
         <h1>{{ phrase('portal.tickets.thank_you_check_email') }}</h1>
