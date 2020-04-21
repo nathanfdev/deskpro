@@ -367,7 +367,7 @@ class NewsController extends AbstractPublishController
             $this->getRatingsHelper()->rateContentUp($post, $visitor_id, $person);
         }
 
-        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.rating_thanks']));
 
         return $this->redirectToRoute('portal_news_view', ['slug' => $post->getSlug()]);
     }
@@ -389,10 +389,10 @@ class NewsController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedContent($post, $person)) {
             $subscriptionsHelper->unsubscribeFromContent($post, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.news_unsubscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.news_unsubscribe', 'helpcenter.flashes.news_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToContent($post, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.news_subscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.news_subscribe', 'helpcenter.flashes.news_subscribe']));
         }
 
         return $this->redirectToRoute('portal_news_view', ['slug' => $post->getSlug()]);
@@ -415,10 +415,10 @@ class NewsController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedCategory($category, $person)) {
             $subscriptionsHelper->unsubscribeFromCategory($category, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.news_cat_unsubscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.news_cat_unsubscribe', 'helpcenter.flashes.news_cat_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToCategory($category, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.news_cat_subscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.news_cat_subscribe', 'helpcenter.flashes.news_cat_subscribe']));
         }
 
         return $this->redirectToRoute('portal_news_browse', ['slug' => $category->getSlug()]);
@@ -436,10 +436,10 @@ class NewsController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedRootCategory('news', $person)) {
             $subscriptionsHelper->unsubscribeFromRootCategory('news', $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.news_cat_unsubscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.news_cat_unsubscribe', 'helpcenter.flashes.news_cat_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToRootCategory('news', $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.news_cat_subscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.news_cat_subscribe', 'helpcenter.flashes.news_cat_subscribe']));
         }
 
         return $this->redirectToRoute('portal_news');
@@ -457,7 +457,7 @@ class NewsController extends AbstractPublishController
     {
         $this->getSubscriptionsHelper()->unsubscribeFromAll('news', $this->getUser());
 
-        $this->addFlash('success', $this->phrase('portal.flashes.news_unsubscribe_everything'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.news_unsubscribe_everything', 'helpcenter.flashes.news_unsubscribe_everything']));
 
         return $this->redirectToRoute('portal_home');
     }

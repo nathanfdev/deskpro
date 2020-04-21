@@ -130,7 +130,7 @@ class NewTicketController extends AbstractController
 
                             return $this->onSavedTicket($newTicket, $request);
                         } catch (\InvalidArgumentException $e) {
-                            $this->addFlash('error', $this->phrase('portal.forms.error_email_required'));
+                            $this->addFlash('error', $this->phrase(['portal.forms.error_email_required', 'helpcenter.forms.error_email_required']));
 
                             return $this->redirectToRoute('portal_new_ticket');
                         } catch (LoginRequiredException $e) {
@@ -144,7 +144,7 @@ class NewTicketController extends AbstractController
                                     $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_TICKET, $form, $request, $person->getEmail(), $person->getDisplayName(), $person);
                                 }
 
-                                $this->addFlash('success', $this->phrase('portal.flashes.guest_new_ticket_must_verify'));
+                                $this->addFlash('success', $this->phrase(['portal.flashes.guest_new_ticket_must_verify', 'helpcenter.flashes.guest_new_ticket_must_verify']));
                                 $this->get('portal_validation')->sendTicketVerificationEmail($ticket, $savedForm);
 
                                 return $this->redirectToRoute('portal_thanks_verify');
@@ -186,7 +186,7 @@ class NewTicketController extends AbstractController
                                 );
 
                                 $this->get('portal_validation')->sendTicketVerificationEmail($ticket, $saved_form);
-                                $this->addFlash('success', $this->phrase('portal.flashes.guest_new_ticket_must_verify'));
+                                $this->addFlash('success', $this->phrase(['portal.flashes.guest_new_ticket_must_verify', 'helpcenter.flashes.guest_new_ticket_must_verify']));
 
                                 return $this->redirectToRoute('portal_thanks_verify');
                             }
@@ -331,7 +331,7 @@ class NewTicketController extends AbstractController
     protected function onSavedTicket(Ticket $ticket, Request $request)
     {
         $person = $ticket->getPerson();
-        $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.ticket_created', 'helpcenter.flashes.ticket_created']));
 
         // IF this person can't login but they are confirmed. show the thank you screen, but on that screen give
         // them a link to setup an account straight away if they want to

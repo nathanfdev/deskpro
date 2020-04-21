@@ -133,7 +133,7 @@ class ProfileController extends AbstractController
                     $this->getPersonFactory()->saveNewPerson($person, $context);
                     $this->getEmailSender()->sendWelcomeEmail($person);
                     $this->get('person_manipulator')->authenticatePerson($person);
-                    $this->addFlash('success', $this->phrase('portal.flashes.user_registered_verified_authenticated'));
+                    $this->addFlash('success', $this->phrase(['portal.flashes.user_registered_verified_authenticated', 'helpcenter.flashes.user_registered_verified_authenticated']));
 
                     $notify = new NewRegistrationNotification($person);
                     $notify->send();
@@ -150,7 +150,7 @@ class ProfileController extends AbstractController
                                 'saved_form_id' => $savedForm->getId(),
                             ]);
                     } else {
-                        $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
+                        $this->addFlash('success', $this->phrase(['portal.flashes.user_registered_must_verify', 'helpcenter.flashes.user_registered_must_verify']));
                     }
                 }
 
@@ -239,13 +239,13 @@ class ProfileController extends AbstractController
         $profileForm->handleRequest($request);
         if ($profileForm->isValid()) {
             $this->getEm()->flush();
-            $this->addFlash('success', $this->phrase('portal.flashes.user_updated_profile'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.user_updated_profile', 'helpcenter.flashes.user_updated_profile']));
 
             return $this->redirectToRoute('portal_user_profile');
         } else {
             FormValidatorChecker::submitForm($profileForm);
             if (!$profileForm->isValid()) {
-                $this->addFlash('error', $this->phrase('portal.flashes.update_user_profile'));
+                $this->addFlash('error', $this->phrase(['portal.flashes.update_user_profile', 'helpcenter.flashes.update_user_profile']));
             }
         }
 
@@ -270,7 +270,7 @@ class ProfileController extends AbstractController
                     $this->getEm()->persist($history);
                 }
                 $this->getEm()->flush();
-                $this->addFlash('success', $this->phrase('portal.flashes.user_changed_password'));
+                $this->addFlash('success', $this->phrase(['portal.flashes.user_changed_password', 'helpcenter.flashes.user_changed_password']));
 
                 return $this->redirectToRoute('portal_user_profile');
             }
@@ -324,7 +324,7 @@ class ProfileController extends AbstractController
                     $this->getEm()->persist($history);
                 }
                 $this->getEm()->flush();
-                $this->addFlash('success', $this->phrase('portal.flashes.user_changed_password'));
+                $this->addFlash('success', $this->phrase(['portal.flashes.user_changed_password', 'helpcenter.flashes.user_changed_password']));
 
                 return $this->redirectToRoute('portal_user_profile_password');
             }
@@ -370,7 +370,7 @@ class ProfileController extends AbstractController
                 if ($proposedNewPrimaryEmail->getPerson()->getId() == $person->getId()) {
                     $person->setPrimaryEmail($proposedNewPrimaryEmail);
                     $this->getEm()->flush();
-                    $this->addFlash('success', $this->phrase('portal.flashes.user_changed_primary_email'));
+                    $this->addFlash('success', $this->phrase(['portal.flashes.user_changed_primary_email', 'helpcenter.flashes.user_changed_primary_email']));
 
                     return $this->redirectToRoute('portal_user_profile_emails');
                 }
@@ -419,7 +419,7 @@ class ProfileController extends AbstractController
                     $newEmail->setIsValidated(true);
                     $this->getCurrentPerson()->addEmail($newEmail);
                     $this->getEm()->flush();
-                    $this->addFlash('success', $this->phrase('portal.flashes.user_add_email_verified'));
+                    $this->addFlash('success', $this->phrase(['portal.flashes.user_add_email_verified', 'helpcenter.flashes.user_add_email_verified']));
 
                     return $this->redirectToRoute('portal_user_profile_emails');
                 } else {
@@ -427,7 +427,7 @@ class ProfileController extends AbstractController
                     // valid email, but we need email validation before adding it
                     $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $addEmailForm, $request, $newEmail->getEmail(), $person->getDisplayName(), $person);
                     $this->get('portal_validation')->sendVerificationEmail(PortalValidation::ADD_EMAIL, $savedForm, false);
-                    $this->addFlash('success', $this->phrase('portal.flashes.user_add_email_verify'));
+                    $this->addFlash('success', $this->phrase(['portal.flashes.user_add_email_verify', 'helpcenter.flashes.user_add_email_verify']));
 
                     return $this->redirectToRoute('portal_user_profile_emails');
                 }
@@ -479,7 +479,7 @@ class ProfileController extends AbstractController
             throw $this->createAccessDeniedException('You are not allowed to access this email address');
         }
 
-        $this->addFlash('success', $this->phrase('portal.flashes.user_resend_email_verify'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.user_resend_email_verify', 'helpcenter.flashes.user_resend_email_verify']));
 
         $this->get('portal_validation')->sendVerificationEmail(PortalValidation::ADD_EMAIL, $savedForm, false);
 
@@ -507,7 +507,7 @@ class ProfileController extends AbstractController
             $emailAddress = $formData['person_email']['email'];
         }
 
-        $this->addFlash('success', $this->phrase('portal.flashes.user_add_email_verify', ['email' => $emailAddress]));
+        $this->addFlash('success', $this->phrase(['portal.flashes.user_add_email_verify', 'helpcenter.flashes.user_add_email_verify'], ['email' => $emailAddress]));
 
         $this->getEm()->remove($savedForm);
         $this->getEm()->flush();

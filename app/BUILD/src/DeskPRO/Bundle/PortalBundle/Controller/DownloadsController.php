@@ -446,7 +446,7 @@ class DownloadsController extends AbstractController
             $this->getRatingsHelper()->rateContentUp($file, $visitor_id, $person);
         }
 
-        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.rating_thanks']));
 
         return $this->redirectToRoute('portal_downloads_view', ['slug' => $file->getSlug()]);
     }
@@ -468,10 +468,10 @@ class DownloadsController extends AbstractController
 
         if ($subscriptionsHelper->isSubscribedContent($file, $person)) {
             $subscriptionsHelper->unsubscribeFromContent($file, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.download_unsubscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.download_unsubscribe', 'helpcenter.flashes.download_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToContent($file, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.download_subscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.download_subscribe', 'helpcenter.flashes.download_subscribe']));
         }
 
         return $this->redirectToRoute('portal_downloads_view', ['slug' => $file->getSlug()]);
@@ -494,10 +494,10 @@ class DownloadsController extends AbstractController
 
         if ($subscriptionsHelper->isSubscribedCategory($category, $person)) {
             $subscriptionsHelper->unsubscribeFromCategory($category, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.download_cat_unsubscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_unsubscribe', 'helpcenter.flashes.download_cat_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToCategory($category, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.download_cat_subscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_subscribe', 'helpcenter.flashes.download_cat_subscribe']));
         }
 
         return $this->redirectToRoute('portal_downloads_browse', ['slug' => $category->getSlug()]);
@@ -517,10 +517,10 @@ class DownloadsController extends AbstractController
 
         if ($subscriptionsHelper->isSubscribedRootCategory('downloads', $person)) {
             $subscriptionsHelper->unsubscribeFromRootCategory('downloads', $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.download_cat_unsubscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_unsubscribe', 'helpcenter.flashes.download_cat_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToRootCategory('downloads', $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.download_cat_subscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_subscribe', 'helpcenter.flashes.download_cat_subscribe']));
         }
 
         return $this->redirectToRoute('portal_downloads');
@@ -538,7 +538,7 @@ class DownloadsController extends AbstractController
     {
         $this->getSubscriptionsHelper()->unsubscribeFromAll('downloads', $this->getUser());
 
-        $this->addFlash('success', $this->phrase('portal.flashes.download_unsubscribe_everything'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.download_unsubscribe_everything', 'helpcenter.flashes.download_unsubscribe_everything']));
 
         return $this->redirectToRoute('portal_home');
     }

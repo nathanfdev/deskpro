@@ -211,10 +211,10 @@ class CommunityTopicsController extends AbstractPublishController
         $this->getEm()->flush();
 
         if ($newCommunityTopic->isVisibleOnPortal()) {
-            $this->addFlash('success', $this->phrase('portal.flashes.new_community_topic_posted'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.new_community_topic_posted', 'helpcenter.flashes.new_community_topic_posted']));
             $destination = $this->getObjectRouter()->getPortalPath($newCommunityTopic);
         } else {
-            $this->addFlash('success', $this->phrase('portal.flashes.new_community_topic_awaiting_review'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.new_community_topic_awaiting_review', 'helpcenter.flashes.new_community_topic_awaiting_review']));
             $destination = $this->generateUrl('portal_community');
         }
 
@@ -641,29 +641,29 @@ class CommunityTopicsController extends AbstractPublishController
     public function communityRateAction(Request $request, CommunityTopic $topic, $visitor_id, $up_or_down)
     {
         if (!$this->isGranted('USE_COMMUNITY')) {
-            throw $this->createAccessDeniedException($this->phrase('portal.community.module_forbidden'));
+            throw $this->createAccessDeniedException($this->phrase(['portal.community.module_forbidden', 'helpcenter.community.module_forbidden']));
         }
         if (!$this->isGranted('RATE_COMMUNITY', $topic)) {
             if ($this->getUser()) {
-                throw $this->createAccessDeniedException($this->phrase('portal.community.rate_forbidden'));
+                throw $this->createAccessDeniedException($this->phrase(['portal.community.rate_forbidden', 'helpcenter.community.rate_forbidden']));
             }
             if ($request->getContentType() == 'json') {
                 return new JsonResponse(
                     [
-                        'error'    => $this->phrase('portal.community.error_login'),
+                        'error'    => $this->phrase(['portal.community.error_login', 'helpcenter.community.error_login']),
                         'redirect' => $this->generateUrl('portal_login', [
                             '_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $topic->getSlug()]),
                         ]),
                     ]
                 );
             } else {
-                $this->addFlash('notice', $this->phrase('portal.flashes.community_login'));
+                $this->addFlash('notice', $this->phrase(['portal.flashes.community_login', 'helpcenter.flashes.community_login']));
 
                 return $this->redirectToRoute('portal_login', ['_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $topic->getSlug()])]);
             }
         }
         if (!$topic->isVisibleOnPortal()) {
-            throw $this->createNotFoundException($this->phrase('portal.community.error_hidden'));
+            throw $this->createNotFoundException($this->phrase(['portal.community.error_hidden', 'helpcenter.community.error_hidden']));
         }
 
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
@@ -679,7 +679,7 @@ class CommunityTopicsController extends AbstractPublishController
                 'success' => true,
             ]);
         } else {
-            $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.rating_thanks']));
 
             return $this->redirectToRoute('portal_community_topic_view', ['slug' => $topic->getSlug()]);
         }
@@ -708,10 +708,10 @@ class CommunityTopicsController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedContent($topic, $person)) {
             $subscriptionsHelper->unsubscribeFromContent($topic, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.community_unsubscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.community_unsubscribe', 'helpcenter.flashes.community_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToContent($topic, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.community_subscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.community_subscribe', 'helpcenter.flashes.community_subscribe']));
         }
 
         return $this->redirectToRoute('portal_community_topic_view', ['slug' => $topic->getSlug()]);
@@ -733,10 +733,10 @@ class CommunityTopicsController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedRootCategory('community', $person)) {
             $subscriptionsHelper->unsubscribeFromRootCategory('community', $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_unsubscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.article_cat_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToRootCategory('community', $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.article_cat_subscribe']));
         }
 
         if ($request->query->get('target')) {
@@ -758,7 +758,7 @@ class CommunityTopicsController extends AbstractPublishController
     {
         $this->getSubscriptionsHelper()->unsubscribeFromAll('community', $this->getUser());
 
-        $this->addFlash('success', $this->phrase('portal.flashes.community_unsubscribe_everything'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.community_unsubscribe_everything', 'helpcenter.flashes.community_unsubscribe_everything']));
 
         return $this->redirectToRoute('portal_home');
     }
@@ -928,7 +928,7 @@ class CommunityTopicsController extends AbstractPublishController
 
                     $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
                     $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_COMMUNITY_TOPIC, $savedForm);
-                    $this->addFlash('success', $this->phrase('portal.flashes.guest_content_must_verify'));
+                    $this->addFlash('success', $this->phrase(['portal.flashes.guest_content_must_verify', 'helpcenter.flashes.guest_content_must_verify']));
 
                     return $this->redirectToRoute('portal_community');
                 }

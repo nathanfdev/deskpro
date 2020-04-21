@@ -330,7 +330,7 @@ class ArticlesController extends AbstractPublishController
             $this->getRatingsHelper()->rateContentUp($article, $visitor_id, $person);
         }
 
-        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.rating_thanks']));
 
         return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
     }
@@ -352,10 +352,10 @@ class ArticlesController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedContent($article, $person)) {
             $subscriptionsHelper->unsubscribeFromContent($article, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.article_unsubscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_unsubscribe', 'helpcenter.flashes.article_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToContent($article, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.article_subscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_subscribe', 'helpcenter.flashes.article_subscribe']));
         }
 
         return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
@@ -378,10 +378,10 @@ class ArticlesController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedCategory($category, $person)) {
             $subscriptionsHelper->unsubscribeFromCategory($category, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_unsubscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.article_cat_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToCategory($category, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.article_cat_subscribe']));
         }
 
         return $this->redirectToRoute('portal_kb_browse', ['slug' => $category->getSlug()]);
@@ -399,10 +399,10 @@ class ArticlesController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedRootCategory('kb', $person)) {
             $subscriptionsHelper->unsubscribeFromRootCategory('kb', $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_unsubscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.article_cat_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToRootCategory('kb', $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.article_cat_subscribe']));
         }
 
         return $this->redirectToRoute('portal_kb');
@@ -420,7 +420,7 @@ class ArticlesController extends AbstractPublishController
     {
         $this->getSubscriptionsHelper()->unsubscribeFromAll('kb', $this->getUser());
 
-        $this->addFlash('success', $this->phrase('portal.flashes.article_unsubscribe_everything'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.article_unsubscribe_everything', 'helpcenter.flashes.article_unsubscribe_everything']));
 
         return $this->redirectToRoute('portal_home');
     }
@@ -515,7 +515,7 @@ class ArticlesController extends AbstractPublishController
 
             $this->getEmailSender()->sendShareArticle($article, $this->getUser(), $emails, $form->getViewData());
 
-            $this->addFlash('success', $this->phrase('portal.flashes.email_sent'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.email_sent', 'helpcenter.flashes.email_sent']));
 
             return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
         }
