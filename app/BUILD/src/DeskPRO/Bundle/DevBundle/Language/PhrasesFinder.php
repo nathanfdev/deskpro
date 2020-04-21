@@ -70,6 +70,7 @@ class PhrasesFinder
                 ->in($this->app_root.'/src/Application/AgentBundle/Resources/views')
                 ->in($this->app_root.'/src/Application/DeskPRO/Resources/views')
                 ->in($this->app_root.'/src/Application/EmailBundle/Resources/views')
+                ->in($this->app_root.'/src/DeskPRO/Bundle/SendmailBundle/Resources/views')
                 ->in($this->app_root.'/src/Application/ReportsInterfaceBundle/Resources/views')
                 ->in($this->app_root.'/src/DeskPRO/Bundle/AppBundle/Resources/views')
                 ->in($this->app_root.'/src/DeskPRO/Bundle/PortalBundle/Resources/views')
