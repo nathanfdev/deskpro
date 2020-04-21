@@ -85,7 +85,6 @@ class MessengerTicketsType extends AbstractType
                     new Assert\NotNull(),
                 ],
             ])
-            ->add('options', MessengerTicketsOptionsType::class)
         ;
     }
 

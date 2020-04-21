@@ -12,6 +12,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class MessengerSettings extends AbstractBrandAwareSettings
 {
     /**
+     * @JMS\Type("map<map<DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTranslation>>")
+     */
+    private $translations;
+
+    /**
      * Embed messenger settings.
      *
      * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerEmbed")
@@ -70,6 +75,26 @@ class MessengerSettings extends AbstractBrandAwareSettings
      * @var
      */
     private $maxFileSize;
+
+    /**
+     * @return mixed
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * @param mixed $translations
+     *
+     * @return $this
+     */
+    public function setTranslations($translations)
+    {
+        $this->translations = $translations;
+
+        return $this;
+    }
 
     /**
      * @return MessengerEmbed

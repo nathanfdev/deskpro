@@ -5,7 +5,7 @@ import MessengerSetup from '@deskpro/messenger-setup';
 import Immutable from 'immutable';
 import { connect } from 'react-redux';
 import { Button } from '@deskpro/react-components';
-import { getSettings, saveSettings } from '../Actions/messengerActions';
+import { getSettings, saveSettings, getCode } from '../Actions/messengerActions';
 import { allChatDepartmentsSelector, allTicketDepartmentsSelector } from '../../Application/Selectors/departments';
 import { allChatCustomFields } from '../../Application/Selectors/chats';
 import { allUserGroupsSelector } from '../../Application/Selectors/people';
@@ -46,6 +46,9 @@ class MessengerSetupContainer extends React.Component {
     dispatch(loadChatCustomFieldsAction());
     dispatch(loadUserGroups());
 
+    this.props.dispatch(getCode(this.props.params.brandId)).then((response) => {
+      this.setState({ code: response.data });
+    });
     this.props.dispatch(getSettings(this.props.params.brandId)).then((response) => {
       const newSettings = this.state.settings.merge(response.data.data);
       this.setState({ settings: newSettings });
@@ -109,7 +112,7 @@ class MessengerSetupContainer extends React.Component {
   };
 
   render() {
-    const { settings, saving } = this.state;
+    const { settings, saving, code } = this.state;
     const {
       chatDepartments,
       chatCustomFields,
@@ -125,6 +128,8 @@ class MessengerSetupContainer extends React.Component {
           chatCustomFields={chatCustomFields}
           ticketDepartments={ticketDepartments}
           usergroups={usergroups}
+          handleSubmit={this.handleSubmit}
+          code={code}
         >
           <Button loading={saving} onClick={this.handleSubmit} type="cta" size="large">Save</Button>
         </MessengerSetup>

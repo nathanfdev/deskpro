@@ -14,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatFormCustomField;
@@ -77,6 +78,14 @@ class ServiceController extends AbstractMessengerController
         $data['tickets']['formConfig']      = $this->getTicketFormConfig($ticketsSettings);
         $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();
         $data['chat']['formMessage']        = $preChatForm->getFormMessage();
+        $data['widget']['greetingTitle']    = 'greeting';
+        $data['proactive']['options']       = [
+            'greetingTitle'    => 'proactive.greeting',
+            'title'            => 'proactive.title',
+            'description'      => 'proactive.description',
+            'buttonText'       => 'proactive.button',
+            'inputPlaceholder' => 'proactive.placeholder',
+        ];
 
         $person   = $this->getUser();
         $language = $person && $person->getId()
@@ -86,7 +95,7 @@ class ServiceController extends AbstractMessengerController
         $data['language'] = [
             'id'      => $language->getId(),
             'locale'  => $language->getLocale(),
-            'version' => 1,
+            'version' => $messengerSettingsResolver->getSettings(MessengerSettingsResolver::WIDGET_LANG_VERSION),
         ];
 
         $data['tickets']['uploadTo'] = $data['chat']['uploadTo'] = $this->generateUrl(
@@ -121,64 +130,81 @@ class ServiceController extends AbstractMessengerController
      */
     public function getTranslationAction(Request $request)
     {
-        $phrases = [
-            'chat.save_ticket.question',
-            'chat.save_ticket.intro',
-            'chat.save_ticket.thanks',
-            'chat.save_ticket.button_yes',
-            'chat.save_ticket.button_no',
-            'chat.agent_assigned.message',
-            'message_user-joined',
-            'message_user-left',
-            'message_ended',
-            'message_ended-by',
-            'message_assigned',
-            'message_unassigned',
-            'chat.no_agent_online',
-            'chat.ended',
-            'chat.end_block.question_header',
-            'chat.end_block.buttons.yes',
-            'chat.end_block.buttons.no',
-            'chat.create_ticket.header',
-            'chat.create_ticket.intro',
-            'chat.create_ticket.button',
-            'chat.rating_block.question_header',
-            'chat.rating_block.buttons.helpful',
-            'chat.rating_block.buttons.unhelpful',
-            'chat.rating_block.thank_you_header',
-            'tickets.form.name',
-            'tickets.form.email',
-            'tickets.form.department',
-            'tickets.form.message',
-            'tickets.form.product',
-            'tickets.form.priority',
-            'tickets.form.category',
-            'tickets.form.submit',
-            'tickets.form.dragNDrop',
-            'tickets.form.or',
-            'tickets.form.chooseAFile',
-            'tickets.form.chooseFiles',
-            'tickets.form.select',
-            'tickets.form.back',
-            'tickets.form.header',
-            'chat.transcript_block.question_header',
-            'chat.transcript_block.answer_header',
-            'chat.transcript_block.yes_button',
-            'chat.transcript_block.no_button',
-            'chat.transcript_block.send_button',
+        $messengerSettingsResolver = $this->get('messenger.service.settings_resolver');
+        $phrases                   = array_merge($messengerSettingsResolver->getEditablePhrases(), [
             'blocks.continue_chat.link',
-            'tickets.form.saving',
-            'tickets.form.thanks_header',
-            'tickets.form.thanks',
-            'blocks.start_chat.title',
-            'blocks.start_chat.description',
-            'blocks.start_chat.link',
             'blocks.continue_chat.title',
+            'blocks.knowledgebase.title',
+            'blocks.search_block.no_results',
+            'blocks.search_block.search_label',
+            'blocks.search_block.see_more_results',
+            'blocks.start_chat.description',
+            'blocks.start_chat.title',
+            'blocks.start_chat.link',
             'blocks.tickets.title',
             'blocks.tickets.view_all_link',
-            'chat.header.title',
+            'chat.agent_assigned.message',
+            'chat.attach_file',
+            'chat.busy',
+            'chat.create_ticket.button',
+            'chat.create_ticket.header',
+            'chat.create_ticket.intro',
+            'chat.dragdrop.drag_and_drop',
+            'chat.dragdrop.uploading',
+            'chat.end_block.buttons.no',
+            'chat.end_block.buttons.yes',
+            'chat.end_block.question_header',
+            'chat.end_chat',
+            'chat.ended',
             'chat.enter_form.button',
-        ];
+            'chat.header.title',
+            'chat.no_agent_online',
+            'chat.pre_chat_form.form_message',
+            'chat.prompt',
+            'chat.rating_block.buttons.helpful',
+            'chat.rating_block.buttons.unhelpful',
+            'chat.rating_block.question_header',
+            'chat.rating_block.thank_you_header',
+            'chat.save_ticket.button_no',
+            'chat.save_ticket.button_yes',
+            'chat.save_ticket.intro',
+            'chat.save_ticket.question',
+            'chat.save_ticket.thanks',
+            'chat.send_message',
+            'chat.transcript_block.answer_header',
+            'chat.transcript_block.no_button',
+            'chat.transcript_block.question_header',
+            'chat.transcript_block.send_button',
+            'chat.transcript_block.yes_button',
+            'loading',
+            'message_assigned',
+            'message_ended',
+            'message_ended-by',
+            'message_unassigned',
+            'message_user-joined',
+            'message_user-left',
+            'powered_by',
+            'tickets.form.addAttachment',
+            'tickets.form.back',
+            'tickets.form.category',
+            'tickets.form.chooseAFile',
+            'tickets.form.chooseFiles',
+            'tickets.form.department',
+            'tickets.form.dragNDrop',
+            'tickets.form.email',
+            'tickets.form.header',
+            'tickets.form.message',
+            'tickets.form.name',
+            'tickets.form.or',
+            'tickets.form.priority',
+            'tickets.form.product',
+            'tickets.form.required',
+            'tickets.form.saving',
+            'tickets.form.select',
+            'tickets.form.submit',
+            'tickets.form.thanks',
+            'tickets.form.thanks_header',
+        ]);
 
         $translate = $this->container->get('deskpro.core.translate');
         $language  = null;
@@ -199,7 +225,7 @@ class ServiceController extends AbstractMessengerController
         }
 
         $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
-            return [$id, $translate->phrase(sprintf('user.messenger.%s', $id), [], $language) ?: "!$id!"];
+            return [$id, $translate->phrase(sprintf('helpcenter.messenger.%s', $id), [], $language) ?: "!$id!"];
         });
 
         return View::create($output, Response::HTTP_OK);
@@ -231,13 +257,18 @@ class ServiceController extends AbstractMessengerController
             foreach ($layout->all() as $f) {
                 $ar              = $f->exportToArray();
                 $ar['field_id']  = $f->getId();
+
+                $ar['required'] = in_array($f->getFieldType(), ['department', 'person', 'subject', 'message'], true);
+
                 if ($f->getFieldType() === 'department') {
                     $ar['is_hidden'] = $ticketsSettings->getDepartmentOption() === MessengerTickets::TICKET_DEPARTMENT_OPTION_HIDDEN;
                 } elseif ($f->getId() === 'subject') {
                     $ar['is_hidden'] = $ticketsSettings->getSubjectOption() === MessengerTickets::TICKET_SUBJECT_OPTION_PRESET;
-                }
-                if ($f->getFieldType() === 'ticket_field') {
+                } elseif ($f->getFieldType() === 'ticket_field') {
                     $ar['data'] = $this->get('serializer')->toArray($customTicketFields[$f->getFieldId()], new SideloadSerializationContext());
+                    if (isset($ar['data']['required'])) {
+                        $ar['required'] = $ar['data']['required'];
+                    }
                 }
                 $layoutData['fields'][] = $ar;
             }
@@ -306,13 +337,18 @@ class ServiceController extends AbstractMessengerController
                     continue;
                 }
                 $customField = $fields[$field->getId()];
+                $ar          = [
+                    'field_type' => 'chat_field',
+                    'field_id'   => 'chat_field_'.$customField->getId(),
+                    'data'       => $this->get('serializer')->toArray($customField, new SideloadSerializationContext()),
+                ];
+                if (isset($ar['data']['required'])) {
+                    $ar['required'] = $ar['data']['required'];
+                }
+
                 array_push(
                     $config['fields'],
-                    [
-                        'field_type' => 'chat_field',
-                        'field_id'   => 'chat_field_'.$customField->getId(),
-                        'data'       => $this->get('serializer')->toArray($customField, new SideloadSerializationContext()),
-                    ]
+                    $ar
                 );
             }
 

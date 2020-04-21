@@ -56,11 +56,6 @@ class MessengerTickets
     private $departmentOption = self::TICKET_DEPARTMENT_OPTION_CHOOSE;
 
     /**
-     * @var MessengerTicketsOptions
-     */
-    private $options;
-
-    /**
      * @return string
      */
     public function getSubject()
@@ -156,26 +151,6 @@ class MessengerTickets
     public function setDepartmentOption($departmentOption)
     {
         $this->departmentOption = $departmentOption;
-
-        return $this;
-    }
-
-    /**
-     * @return MessengerTicketsOptions
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
-     * @param MessengerTicketsOptions $options
-     *
-     * @return $this
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
 
         return $this;
     }

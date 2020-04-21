@@ -1,6 +1,11 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
+export const getCode = createAction(
+  'MESSENGER_GET_CODE_ACTION',
+  brandId => api.sendGet(`DP_API/messenger/settings/${brandId}/code`)
+);
+
 export const getSettings = createAction(
   'MESSENGER_GET_SETTINGS_ACTION',
   brandId => api.sendGet(`DP_API/messenger/settings/${brandId}/setup`)

@@ -5,6 +5,8 @@ namespace DeskPRO\Bundle\MessengerBundle\Service;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Phrase;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Settings\AbstractBrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
@@ -13,10 +15,9 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerEmbed;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactive;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerProactiveOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTicketsOptions;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTranslation;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use Doctrine\ORM\EntityManager;
@@ -27,11 +28,12 @@ use Orb\Util\Env;
  */
 class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
+    const WIDGET_LANG_VERSION = 'messenger.widget.lang_version';
+
     const WIDGET_PRIMARY_COLOR = 'messenger.widget.primary_color';
     const WIDGET_BG_COLOR      = 'messenger.widget.bg_color';
     const WIDGET_TEXT_COLOR    = 'messenger.widget.text_color';
     const WIDGET_POSITION      = 'messenger.widget.position';
-    const WIDGET_GREETING      = 'messenger.widget.greeting';
 
     const CHAT_ENABLED              = 'messenger.chat.enabled';
     const CHAT_DEFAULT_DEPARTMENT   = 'messenger.chat.department';
@@ -41,9 +43,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_NO_ANSWER_BEHAVIOR   = 'messenger.chat.no_answer';
     const CHAT_BUSY_MESSAGE         = 'messenger.chat.busy';
 
-    const CHAT_OPTIONS_TITLE       = 'messenger.chat.options.title';
-    const CHAT_OPTIONS_BUTTON_TEXT = 'messenger.chat.options.button_text';
-    const CHAT_OPTIONS_DESCRIPTION = 'messenger.chat.options.description';
     const CHAT_OPTIONS_SHOW_PHOTOS = 'messenger.chat.options.show_photos';
 
     const CHAT_TICKET_DEFAULTS_SUBJECT      = 'messenger.chat.ticket_defaults.subject';
@@ -64,21 +63,11 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const PROACTIVE_TIMEOUT   = 'messenger.proactive.autostart_timeout';
     const PROACTIVE_STYLE     = 'messenger.proactive.autostart_style';
 
-    const PROACTIVE_OPTIONS_GREETING_TITLE    = 'messenger.proactive.options.greeting_title';
-    const PROACTIVE_OPTIONS_TITLE             = 'messenger.proactive.options.title';
-    const PROACTIVE_OPTIONS_BUTTON_TEXT       = 'messenger.proactive.options.button_text';
-    const PROACTIVE_OPTIONS_INPUT_PLACEHOLDER = 'messenger.proactive.options.input_placeholder';
-    const PROACTIVE_OPTIONS_DESCRIPTION       = 'messenger.proactive.options.description';
-
     const TICKETS_ENABLED           = 'messenger.tickets.enabled';
     const TICKETS_SUBJECT           = 'messenger.tickets.subject';
     const TICKETS_DEPARTMENT        = 'messenger.tickets.department';
     const TICKETS_DEPARTMENT_OPTION = 'messenger.tickets.department_option';
     const TICKETS_SUBJECT_OPTION    = 'messenger.tickets.subject_option';
-
-    const TICKETS_OPTIONS_TITLE       = 'messenger.tickets.options.title';
-    const TICKETS_OPTIONS_BUTTON_TEXT = 'messenger.tickets.options.button_text';
-    const TICKETS_OPTIONS_DESCRIPTION = 'messenger.tickets.options.description';
 
     // just fo the bc and code reuse
     const JWT_SECRET              = WidgetSettingsResolver::JWT_SECRET;
@@ -91,17 +80,25 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $em;
 
     /**
+     * @var LanguageManager
+     */
+    private $languageManager;
+
+    /**
      * Constructor.
      *
      * @param BrandAwareSettingsResolver $settingsResolver
      * @param EntityManager              $em
+     * @param LanguageManager            $languageManager
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
-        EntityManager $em
+        EntityManager $em,
+        LanguageManager $languageManager
     ) {
         parent::__construct($settingsResolver);
-        $this->em = $em;
+        $this->em              = $em;
+        $this->languageManager = $languageManager;
     }
 
     /**
@@ -115,13 +112,81 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         return $model
             ->setBrand($brand)
+            ->setTranslations($this->getTranslations())
             ->setMaxFileSize(min(Env::getEffectiveMaxUploadSize(), $this->getSettings('core.attach_user_maxsize', null, 1024 * 1024 * 10)))
             ->setWidget($this->getMessengerWidget($brand))
             ->setChat($this->getMessengerChat($brand))
             ->setEmbed($this->getMessengerEmbedSettings($brand))
             ->setTickets($this->getMessengerTickets($brand))
-            ->setProactive($this->getMessengerProactive($brand))
-        ;
+            ->setProactive($this->getMessengerProactive($brand));
+    }
+
+    public function getEditablePhrases()
+    {
+        return [
+            'blocks.ticket.title',
+            'blocks.ticket.description',
+            'blocks.ticket.button',
+            'blocks.start-chat.title',
+            'blocks.start-chat.description',
+            'blocks.start-chat.button',
+            'proactive.greeting',
+            'proactive.title',
+            'proactive.description',
+            'proactive.button',
+            'proactive.placeholder',
+            'greeting',
+        ];
+    }
+
+    protected function getTranslations()
+    {
+        $translations      = [];
+        $defaultLanguageId = $this->languageManager->getLanguageStack()->getDefaultLanguage()->getId();
+        $translator        = $this->languageManager->getTranslator();
+        $languages         = $this->languageManager->getEnabledLanguages();
+        $phraseRepository  = $this->em->getRepository(Phrase::class);
+        usort($languages, function ($a, $b) use ($defaultLanguageId) {
+            if ($a->getId() === $defaultLanguageId) {
+                return -1;
+            }
+            if ($b->getId() === $defaultLanguageId) {
+                return 1;
+            }
+
+            return 0;
+        });
+        foreach ($this->getEditablePhrases() as $phrase) {
+            $snakeCasePhrase = str_replace('.', '_', $phrase);
+
+            if (!isset($translations[$snakeCasePhrase])) {
+                $translations[$snakeCasePhrase] = [];
+            }
+
+            $phraseName        = sprintf('helpcenter.messenger.%s', $phrase);
+            $defaultPhraseText = $translator->phrase($phraseName, [], $defaultLanguageId);
+
+            foreach ($languages as $language) {
+                $translation  = new MessengerTranslation();
+                $phraseEntity = $phraseRepository->getPhraseForLanguage($phrase, $language);
+                $fallbackText = '';
+                if ($language->getId() === $defaultLanguageId) {
+                    $fallbackText = $defaultPhraseText;
+                } else {
+                    $translatorPhrase = $translator->phrase($phraseName, [], $language);
+                    if ($translatorPhrase !== $defaultPhraseText) {
+                        $fallbackText = $translatorPhrase;
+                    }
+                }
+
+                $translation
+                    ->setLanguage($language)
+                    ->setText($phraseEntity ? $phraseEntity->getPhrase() : $fallbackText);
+                $translations[$snakeCasePhrase][$language->getId()] = $translation;
+            }
+        }
+
+        return $translations;
     }
 
     /**
@@ -135,8 +200,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         $embed
             ->setAuthorizeDomains($this->getSettings(self::EMBED_AUTHORIZE_DOMAINS, $brand, $embed->getAuthorizeDomains()))
             ->setShowOnPortal($this->getSettings(self::EMBED_ENABLED_ON_PORTAL, $brand, $embed->isShowOnPortal()))
-            ->setJwtSecret($this->getSettings(self::JWT_SECRET, $brand, $embed->getJwtSecret()))
-        ;
+            ->setJwtSecret($this->getSettings(self::JWT_SECRET, $brand, $embed->getJwtSecret()));
 
         return $embed;
     }
@@ -155,9 +219,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setSubject($this->getSettings(self::TICKETS_SUBJECT, $brand, $mTickets->getSubject()))
             ->setDepartment($this->getSettings(self::TICKETS_DEPARTMENT, $brand, $this->getDefaultDepartment('ticket')))
             ->setDepartmentOption($this->getSettings(self::TICKETS_DEPARTMENT_OPTION, $brand, $mTickets->getDepartmentOption()))
-            ->setSubjectOption($this->getSettings(self::TICKETS_SUBJECT_OPTION, $brand, $mTickets->getSubjectOption()))
-            ->setOptions($this->getMessengerTicketsOptions($brand))
-        ;
+            ->setSubjectOption($this->getSettings(self::TICKETS_SUBJECT_OPTION, $brand, $mTickets->getSubjectOption()));
     }
 
     /**
@@ -179,8 +241,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
             ->setNoAnswerBehavior($this->getSettings(self::CHAT_NO_ANSWER_BEHAVIOR, $brand, $mChat->getNoAnswerBehavior()))
             ->setBusyMessage($this->getSettings(self::CHAT_BUSY_MESSAGE, $brand, $mChat->getBusyMessage()))
-            ->setTicketDefaults($this->getMessengerChatTicketDefaults($brand))
-        ;
+            ->setTicketDefaults($this->getMessengerChatTicketDefaults($brand));
     }
 
     /**
@@ -195,8 +256,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         return $mChatTicketDefaults
             ->setSubject($this->getSettings(self::CHAT_TICKET_DEFAULTS_SUBJECT, $brand, $mChatTicketDefaults->getSubject()))
             ->setSubjectType($this->getSettings(self::CHAT_TICKET_DEFAULTS_SUBJECT_TYPE, $brand, $mChatTicketDefaults->getSubjectType()))
-            ->setDepartment($this->getSettings(self::CHAT_TICKET_DEFAULTS_DEP, $brand, $this->getDefaultDepartment('ticket')))
-            ;
+            ->setDepartment($this->getSettings(self::CHAT_TICKET_DEFAULTS_DEP, $brand, $this->getDefaultDepartment('ticket')));
     }
 
     /**
@@ -224,8 +284,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setIsDepartmentSelectable($this->getSettings(self::PRE_CHAT_FORM_DEPARTMENT, $brand, $mPreChatForm->isDepartmentSelectable()))
             ->setFormMessageEnabled($this->getSettings(self::PRE_CHAT_FORM_FORM_MESSAGE_ENABLED, $brand, $mPreChatForm->isFormMessageEnabled()))
             ->setFormMessage($this->getSettings(self::PRE_CHAT_FORM_FORM_MESSAGE, $brand, $mPreChatForm->getFormMessage()))
-            ->setFields($fields)
-        ;
+            ->setFields($fields);
     }
 
     /**
@@ -242,7 +301,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setBackgroundColor($this->getSettings(self::WIDGET_BG_COLOR, $brand, $messengerWidget->getBackgroundColor()))
             ->setTextColor($this->getSettings(self::WIDGET_TEXT_COLOR, $brand, $messengerWidget->getTextColor()))
             ->setPosition($this->getSettings(self::WIDGET_POSITION, $brand, $messengerWidget->getPosition()))
-            ->setGreetingTitle($this->getSettings(self::WIDGET_GREETING, $brand, $messengerWidget->getGreetingTitle()))
         ;
     }
 
@@ -259,7 +317,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setAutoStart($this->getSettings(self::PROACTIVE_AUTOSTART, $brand, $messengerProactive->isAutoStart()))
             ->setAutoStartTimeout($this->getSettings(self::PROACTIVE_TIMEOUT, $brand, $messengerProactive->getAutoStartTimeout()))
             ->setAutoStartStyle($this->getSettings(self::PROACTIVE_STYLE, $brand, $messengerProactive->getAutoStartStyle()))
-            ->setOptions($this->getMessengerProactiveOptions($brand))
         ;
     }
 
@@ -273,45 +330,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         $mChatOptions = new MessengerChatOptions();
 
         return $mChatOptions
-            ->setTitle($this->getSettings(self::CHAT_OPTIONS_TITLE, $brand, $mChatOptions->getTitle()))
-            ->setButtonText($this->getSettings(self::CHAT_OPTIONS_BUTTON_TEXT, $brand, $mChatOptions->getButtonText()))
-            ->setDescription($this->getSettings(self::CHAT_OPTIONS_DESCRIPTION, $brand, $mChatOptions->getDescription()))
-            ->setShowAgentPhotos($this->getSettings(self::CHAT_OPTIONS_SHOW_PHOTOS, $brand, $mChatOptions->isShowAgentPhotos()))
-        ;
-    }
-
-    /**
-     * @param Brand $brand
-     *
-     * @return MessengerProactiveOptions
-     */
-    protected function getMessengerProactiveOptions(Brand $brand)
-    {
-        $mOptionsProactive = new MessengerProactiveOptions();
-
-        return $mOptionsProactive
-            ->setGreetingTitle($this->getSettings(self::PROACTIVE_OPTIONS_GREETING_TITLE, $brand, $mOptionsProactive->getGreetingTitle()))
-            ->setTitle($this->getSettings(self::PROACTIVE_OPTIONS_TITLE, $brand, $mOptionsProactive->getTitle()))
-            ->setButtonText($this->getSettings(self::PROACTIVE_OPTIONS_BUTTON_TEXT, $brand, $mOptionsProactive->getButtonText()))
-            ->setInputPlaceholder($this->getSettings(self::PROACTIVE_OPTIONS_INPUT_PLACEHOLDER, $brand, $mOptionsProactive->getInputPlaceholder()))
-            ->setDescription($this->getSettings(self::PROACTIVE_OPTIONS_DESCRIPTION, $brand, $mOptionsProactive->getDescription()))
-            ;
-    }
-
-    /**
-     * @param Brand $brand
-     *
-     * @return MessengerTicketsOptions
-     */
-    protected function getMessengerTicketsOptions(Brand $brand)
-    {
-        $messengerTicketsOptions = new MessengerTicketsOptions();
-
-        return $messengerTicketsOptions
-            ->setTitle($this->getSettings(self::TICKETS_OPTIONS_TITLE, $brand, $messengerTicketsOptions->getTitle()))
-            ->setButtonText($this->getSettings(self::TICKETS_OPTIONS_BUTTON_TEXT, $brand, $messengerTicketsOptions->getButtonText()))
-            ->setDescription($this->getSettings(self::TICKETS_OPTIONS_DESCRIPTION, $brand, $messengerTicketsOptions->getDescription()))
-        ;
+            ->setShowAgentPhotos($this->getSettings(self::CHAT_OPTIONS_SHOW_PHOTOS, $brand, $mChatOptions->isShowAgentPhotos()));
     }
 
     /**

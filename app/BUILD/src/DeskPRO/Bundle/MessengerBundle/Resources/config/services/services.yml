@@ -35,6 +35,7 @@ services:
     arguments:
       - "@brand_aware_settings_resolver"
       - "@doctrine.orm.entity_manager"
+      - "@language_manager"
 
   messenger.visitorid_listener:
     class: DeskPRO\Bundle\MessengerBundle\Security\EventListener\VisitorIdListener

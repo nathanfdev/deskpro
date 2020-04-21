@@ -3,6 +3,8 @@
 namespace DeskPRO\Bundle\MessengerBundle\Admin\Controller;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Phrase;
+use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -18,6 +20,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class AdminController.
@@ -87,6 +90,105 @@ class AdminController extends AbstractBrandAwareSettingsController
     }
 
     /**
+     * You can use this endpoint to gather information about clients you need to obtain notifications and alerts.
+     *
+     * @ApiDoc(
+     *     section="Messenger Setup",
+     *     resourceDescription="Code action",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="string"
+     * )
+     * @Rest\Get("/code")
+     *
+     * @param Brand $brand
+     *
+     * @return View
+     */
+    public function getCodeAction(Brand $brand, Request $request = null)
+    {
+        if ($request && $request->attributes->has('_dp_brand_slug')) {
+            if ($request && $request->attributes->has('original_request')) {
+                $baseUrl = $this->originalUrlGenerator->generate(
+                    $request->attributes->get('original_request'),
+                    'portal_home',
+                    [],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } else {
+                $baseUrl = $this->container->get('router')->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+            }
+
+            if (empty($this->getSetting('core.deskpro_url', $brand))) {
+                $helpdeskUrl = $this->container->get('router')->generate(
+                    'portal_home',
+                    ['brand' => $brand],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } else {
+                $helpdeskUrl = rtrim($baseUrl, '/').$request->attributes->get('_dp_brand_slug_path');
+            }
+        } else {
+            $helpdeskUrl = $this->container->get('router')->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            if ($brand->getUrl()) {
+                $baseUrl = $helpdeskUrl;
+            } else {
+                // brand has just a slug, use default brand
+                $baseUrl = $this->container->get('router')->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+            }
+        }
+
+        if ($request) {
+            $urlCorrector = $this->container->get('url_corrector_factory')->createUrlCorrector($brand);
+            $helpdeskUrl  = $urlCorrector->forceCorrectUrlScheme($helpdeskUrl, $request);
+        }
+
+        $correctAssetUrl = function ($assetUrl) use ($baseUrl, $request, $brand) {
+            $basePath = $request ? $request->getBasePath() : '';
+
+            if (!preg_match('#^https?://#i', $assetUrl)) {
+                $assetUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$assetUrl;
+            }
+            if ($request) {
+                $urlCorrector = $this->container->get('url_corrector_factory')->createUrlCorrector($brand);
+                $assetUrl     = $urlCorrector->forceCorrectUrlScheme($assetUrl, $request);
+            }
+
+            return $assetUrl;
+        };
+
+        $assetUrl = $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets');
+        $loaderJS = $this->container->get('templating.helper.assets')->getUrl('loader.js', 'messenger_loader_assets');
+        $loaderJS = $correctAssetUrl($loaderJS);
+        $assetUrl = $correctAssetUrl($assetUrl);
+
+        $language = $this->container->get('language_stack')->getActiveOrDefault();
+
+        $baseUrl = rtrim($baseUrl, '/');
+
+        $code = <<<CODE
+<!--DESKPRO_WIDGET_LOADER::BEGIN-->
+<script type="text/javascript">
+    window.parent.DESKPRO_MESSENGER_ASSET_URL = "{$assetUrl}";
+    window.parent.DESKPRO_MESSENGER_OPTIONS = {
+      language: {
+        id: "{$language->getId()}",
+        locale: "{$language->getLocale()}"
+      },
+      helpdeskURL: "{$baseUrl}",
+      baseUrl: "{$assetUrl}",
+    }
+</script>
+<script id="dp-messenger-loader" src="{$loaderJS}"></script>
+<!--DESKPRO_WIDGET_LOADER::END-->
+CODE;
+
+        return View::create($code, Response::HTTP_OK);
+    }
+
+    /**
      * @param Brand $brand
      *
      * @return MessengerSettings
@@ -117,12 +219,60 @@ class AdminController extends AbstractBrandAwareSettingsController
         if (isset($requestData['maxFileSize'])) {
             unset($requestData['maxFileSize']);
         }
+        if (isset($requestData['translations'])) {
+            $this->updateTranslations($requestData['translations'], $model);
+            unset($requestData['translations']);
+        }
         $form->submit($requestData);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
 
         $this->persistModel($model);
+    }
+
+    private function updateTranslations($translations, AbstractBrandAwareSettings $model)
+    {
+        /** @var Translate $translate */
+        $translate = $this->container->get('deskpro.core.translate');
+
+        foreach ($translations as $phraseName => $translationStack) {
+            $phraseName = sprintf('helpcenter.messenger.%s', str_replace('_', '.', $phraseName));
+            foreach ($translationStack as $translation) {
+                $language = $this->get('language_manager')->getLanguageById($translation['language']['id']);
+                $text     = trim($translation['text']);
+                if ($text != $translate->getPhraseText($phraseName, $language, true)) {
+                    $updateVersion = true;
+                    $phrase        = $this->getManager()->getRepository(Phrase::class)->getPhraseForLanguage($phraseName, $language);
+                    if (!$text) {
+                        if ($phrase) {
+                            $this->getManager()->remove($phrase);
+                        }
+                    } else {
+                        if (!$phrase) {
+                            $phrase = new Phrase();
+                            $phrase->setLanguage($language);
+                            $phrase->setName($phraseName);
+                            $phrase->setOriginalPhrase('');
+                            $phrase->setOriginalHash(md5(null));
+                        }
+
+                        if (!$phrase->getOriginalPhrase()) {
+                            $phrase->setOriginalPhrase('');
+                            $phrase->setOriginalHash(md5(null));
+                        }
+                        $phrase->setPhrase($text);
+                        $this->getManager()->persist($phrase);
+                    }
+                }
+            }
+        }
+        $this->getManager()->flush();
+        if ($updateVersion) {
+            $this
+                ->getSettingRepository()
+                ->updateSetting(MSR::WIDGET_LANG_VERSION, time(), $model->getBrand());
+        }
     }
 
     /**
@@ -141,9 +291,7 @@ class AdminController extends AbstractBrandAwareSettingsController
         $messengerChatPreChatForm    = $messengerChat->getPreChatForm();
         $messengerChatTicketDefaults = $messengerChat->getTicketDefaults();
         $messengerTickets            = $model->getTickets();
-        $messengerTicketsOptions     = $messengerTickets->getOptions();
         $messengerProactive          = $model->getProactive();
-        $messengerProactiveOptions   = $messengerProactive->getOptions();
 
         if (
             !$messengerTickets->isEnabled() &&
@@ -159,7 +307,6 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::WIDGET_BG_COLOR, $messengerWidget->getBackgroundColor(), $brand)
             ->updateSetting(MSR::WIDGET_TEXT_COLOR, $messengerWidget->getTextColor(), $brand)
             ->updateSetting(MSR::WIDGET_POSITION, $messengerWidget->getPosition(), $brand)
-            ->updateSetting(MSR::WIDGET_GREETING, $messengerWidget->getGreetingTitle(), $brand)
 
             // Chat settings
             ->updateSetting(MSR::CHAT_ENABLED, $messengerChat->isEnabled(), $brand)
@@ -170,11 +317,8 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::CHAT_NO_ANSWER_BEHAVIOR, $messengerChat->getNoAnswerBehavior(), $brand)
             ->updateSetting(MSR::CHAT_BUSY_MESSAGE, $messengerChat->getBusyMessage(), $brand)
 
-            // Chat options (a.k.a. block config - title, description etc)
-            ->updateSetting(MSR::CHAT_OPTIONS_TITLE, $messengerChatOptions->getTitle(), $brand)
+            // Chat options
             ->updateSetting(MSR::CHAT_OPTIONS_SHOW_PHOTOS, $messengerChatOptions->isShowAgentPhotos(), $brand)
-            ->updateSetting(MSR::CHAT_OPTIONS_DESCRIPTION, $messengerChatOptions->getDescription(), $brand)
-            ->updateSetting(MSR::CHAT_OPTIONS_BUTTON_TEXT, $messengerChatOptions->getButtonText(), $brand)
 
             // Pre-chat form
             ->updateSetting(MSR::PRE_CHAT_FORM_ENABLED, $messengerChatPreChatForm->isEnabled(), $brand)
@@ -199,21 +343,10 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::TICKETS_DEPARTMENT_OPTION, $messengerTickets->getDepartmentOption(), $brand)
             ->updateSetting(MSR::TICKETS_SUBJECT_OPTION, $messengerTickets->getSubjectOption(), $brand)
 
-            // Tickets block config
-            ->updateSetting(MSR::TICKETS_OPTIONS_TITLE, $messengerTicketsOptions->getTitle(), $brand)
-            ->updateSetting(MSR::TICKETS_OPTIONS_BUTTON_TEXT, $messengerTicketsOptions->getButtonText(), $brand)
-            ->updateSetting(MSR::TICKETS_OPTIONS_DESCRIPTION, $messengerTicketsOptions->getDescription(), $brand)
-
             // These are proactive, defenitely.
             ->updateSetting(MSR::PROACTIVE_AUTOSTART, $messengerProactive->isAutoStart(), $brand)
             ->updateSetting(MSR::PROACTIVE_TIMEOUT, $messengerProactive->getAutoStartTimeout(), $brand)
             ->updateSetting(MSR::PROACTIVE_STYLE, $messengerProactive->getAutoStartStyle(), $brand)
-            // These are proactive block config
-            ->updateSetting(MSR::PROACTIVE_OPTIONS_GREETING_TITLE, $messengerProactiveOptions->getGreetingTitle(), $brand)
-            ->updateSetting(MSR::PROACTIVE_OPTIONS_TITLE, $messengerProactiveOptions->getTitle(), $brand)
-            ->updateSetting(MSR::PROACTIVE_OPTIONS_DESCRIPTION, $messengerProactiveOptions->getDescription(), $brand)
-            ->updateSetting(MSR::PROACTIVE_OPTIONS_BUTTON_TEXT, $messengerProactiveOptions->getButtonText(), $brand)
-            ->updateSetting(MSR::PROACTIVE_OPTIONS_INPUT_PLACEHOLDER, $messengerProactiveOptions->getInputPlaceholder(), $brand)
 
             // Add Widget & Chat section
             ->updateSetting(MSR::EMBED_AUTHORIZE_DOMAINS, $messengerEmbed->getAuthorizeDomains(), $brand)

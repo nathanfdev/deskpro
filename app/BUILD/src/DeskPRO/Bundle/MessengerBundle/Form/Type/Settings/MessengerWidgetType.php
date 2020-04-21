@@ -21,7 +21,6 @@ class MessengerWidgetType extends AbstractType
             ->add('primaryColor', TextType::class)
             ->add('backgroundColor', TextType::class)
             ->add('textColor', TextType::class)
-            ->add('greetingTitle', TextType::class)
             ->add('position', ChoiceType::class, [
                 'required' => true,
                 'choices'  => [
