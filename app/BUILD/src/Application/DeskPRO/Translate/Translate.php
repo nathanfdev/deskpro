@@ -39,6 +39,15 @@ class Translate implements PersonContextInterface, TranslatorInterface
 {
     const EVENT_NO_PHRASE = 'DeskPRO_onTranslateNoPhrase';
 
+    static $icuPhrasePrefixes = [
+        'helpcenter.'
+    ];
+
+    /**
+     * @var \MessageFormatter
+     */
+    private $icuCache = [];
+
     /**
      * The phrases loaded so far.
      *
@@ -805,6 +814,22 @@ class Translate implements PersonContextInterface, TranslatorInterface
     }
 
     /**
+     * @param $locale
+     * @param $phraseId
+     * @param $phraseText
+     * @return \MessageFormatter
+     */
+    private function getMessageFormatter($locale, $phraseId, $phraseText)
+    {
+        $cacheKey = $locale.$phraseId;
+        if (isset($this->icuCache[$cacheKey])) {
+            return $this->icuCache[$cacheKey];
+        }
+
+        return $this->icuCache[$cacheKey] = new \MessageFormatter($locale, $phraseText);
+    }
+
+    /**
      * Fetch a phrase from the currently set language, and insert the passed variables into the placeholders.
      *
      * If $vars contains a 'count' value, then the phrase is expected to be a pluralized and will be passed
@@ -839,50 +864,89 @@ class Translate implements PersonContextInterface, TranslatorInterface
             $debug = $lang->getSystemName();
         }
 
-        if (is_object($phrase_name) || (is_array($phrase_name) && is_object($phrase_name[0]))) {
-            if (is_array($phrase_name)) {
-                list($object, $property) = $phrase_name;
-            } else {
-                $object   = $phrase_name;
-                $property = null;
+        $isICU = false;
+        if (is_string($phrase_name)) {
+            foreach (self::$icuPhrasePrefixes as $prefix) {
+                if (strpos($phrase_name, $prefix) === 0) {
+                    $isICU = true;
+                    break;
+                }
+            }
+        }
+
+        if ($isICU) {
+            $locale = $lang ? str_replace('-', '_', $lang->getLocale()) : 'en_US';
+            $icuVars = [];
+            foreach ($vars as $k => $v) {
+                if (is_scalar($v) || (is_object($v) && get_class($v) === 'DateTime')) {
+                    if ($k === 'count') {
+                        $v = intval($v);
+                    }
+                    $icuVars[$k] = $v;
+                }
+            }
+            try {
+                $fmt        = $this->getMessageFormatter($locale, $phrase_name, $this->getPhraseText($phrase_name, $language));
+                $phraseText = $fmt->format($icuVars);
+            } catch (\Exception $e) {
+                $phraseText = false;
             }
 
-            $phraseText = $this->getPhraseObject($object, $property, $language);
-        } elseif (isset($vars['count'])) {
-            try {
-                $phraseText = $this->getPhraseTextCount($phrase_name, $vars['count'], $language);
-            } catch (\Exception $e) {
-                // Fall back on just using a normal phrase without any pluralising
-                // In case user modified phrase to remove the plural syntax
-                $phraseText = $this->getPhraseText($phrase_name, $language);
+            if ($phraseText === false) {
+                // fallback on enlgish
+                if ($locale !== 'en_US') {
+                    return $this->phrase($phrase_name, $vars, SystemLanguage::getInstance());
+                } else {
+                    // oops it was English, this is an error
+                    return "";
+                }
             }
         } else {
-            $phraseText = $this->getPhraseText($phrase_name, $language);
-        }
+            if (is_object($phrase_name) || (is_array($phrase_name) && is_object($phrase_name[0]))) {
+                if (is_array($phrase_name)) {
+                    list($object, $property) = $phrase_name;
+                } else {
+                    $object   = $phrase_name;
+                    $property = null;
+                }
 
-        if (!$phraseText) {
-            $phraseText = '';
-        }
-
-        $phraseText = $this->replaceVarsInString($phraseText, $vars);
-
-        // A second pass detects phrase. replacements that might've been put in by replacements themselves
-        $m = null;
-        if (preg_match_all('#{{phrase\.([a-zA-Z0-9\-_\.]+)}}#', $phraseText, $m)) {
-            foreach ($m[1] as $subPhraseName) {
-                if ($subPhraseName == $phrase_name) {
-                    continue;
-                } //prevent loops
-                $subPhraseText = $this->phrase($subPhraseName, $vars, $language);
-                $phraseText    = str_replace("{{phrase.$subPhraseName}}", $subPhraseText, $phraseText);
+                $phraseText = $this->getPhraseObject($object, $property, $language);
+            } elseif (isset($vars['count'])) {
+                try {
+                    $phraseText = $this->getPhraseTextCount($phrase_name, $vars['count'], $language);
+                } catch (\Exception $e) {
+                    // Fall back on just using a normal phrase without any pluralising
+                    // In case user modified phrase to remove the plural syntax
+                    $phraseText = $this->getPhraseText($phrase_name, $language);
+                }
+            } else {
+                $phraseText = $this->getPhraseText($phrase_name, $language);
             }
-        }
 
-        // Pass to detect which should be output as ng_Vars
-        $m = null;
-        if (preg_match_all('#ng_var\(([a-zA-Z0-9\-_\.]+)\)#', $phraseText, $m, \PREG_SET_ORDER)) {
-            foreach ($m as $match) {
-                $phraseText = str_replace($match[0], '{{'.$match[1].'}}', $phraseText);
+            if (!$phraseText) {
+                $phraseText = '';
+            }
+
+            $phraseText = $this->replaceVarsInString($phraseText, $vars);
+
+            // A second pass detects phrase. replacements that might've been put in by replacements themselves
+            $m = null;
+            if (preg_match_all('#{{phrase\.([a-zA-Z0-9\-_\.]+)}}#', $phraseText, $m)) {
+                foreach ($m[1] as $subPhraseName) {
+                    if ($subPhraseName == $phrase_name) {
+                        continue;
+                    } //prevent loops
+                    $subPhraseText = $this->phrase($subPhraseName, $vars, $language);
+                    $phraseText    = str_replace("{{phrase.$subPhraseName}}", $subPhraseText, $phraseText);
+                }
+            }
+
+            // Pass to detect which should be output as ng_Vars
+            $m = null;
+            if (preg_match_all('#ng_var\(([a-zA-Z0-9\-_\.]+)\)#', $phraseText, $m, \PREG_SET_ORDER)) {
+                foreach ($m as $match) {
+                    $phraseText = str_replace($match[0], '{{' . $match[1] . '}}', $phraseText);
+                }
             }
         }
 
@@ -982,11 +1046,19 @@ class Translate implements PersonContextInterface, TranslatorInterface
      *
      * @return string
      */
-    public function replaceVarsInString($phraseText, array $vars = [])
+    public function replaceVarsInString($phraseText, array $vars = [], $doubleCurly = true)
     {
+        if ($doubleCurly) {
+            $varBegin = '\{\{';
+            $varEnd   = '\}\}';
+        } else {
+            $varBegin = '\{';
+            $varEnd   = '\}';
+        }
+
         if ($vars) {
             $phraseText = preg_replace_callback(
-                '#\{\{\s*([a-zA-Z0-9_]+)\s*\}\}#',
+                '#'.$varBegin.'\s*([a-zA-Z0-9_]+)\s*'.$varEnd.'#',
                 function ($m) use ($vars) {
                     $name = $m[1];
 
@@ -1002,7 +1074,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
             );
 
             $phraseText = preg_replace_callback(
-                '#\{\{\s*([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\s*\}\}#',
+                '#'.$varBegin.'\s*([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\s*'.$varEnd.'#',
                 function ($m) use ($vars) {
                     $name = $m[1];
                     $prop = $m[2];
