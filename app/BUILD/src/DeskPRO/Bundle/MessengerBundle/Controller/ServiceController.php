@@ -78,14 +78,6 @@ class ServiceController extends AbstractMessengerController
         $data['tickets']['formConfig']      = $this->getTicketFormConfig($ticketsSettings);
         $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();
         $data['chat']['formMessage']        = $preChatForm->getFormMessage();
-        $data['widget']['greetingTitle']    = 'greeting';
-        $data['proactive']['options']       = [
-            'greetingTitle'    => 'proactive.greeting',
-            'title'            => 'proactive.title',
-            'description'      => 'proactive.description',
-            'buttonText'       => 'proactive.button',
-            'inputPlaceholder' => 'proactive.placeholder',
-        ];
 
         $person   = $this->getUser();
         $language = $person && $person->getId()
