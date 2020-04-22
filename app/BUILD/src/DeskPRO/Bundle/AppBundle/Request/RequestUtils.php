@@ -64,7 +64,7 @@ class RequestUtils
      */
     public static function isProxyRequest(Request $request)
     {
-        return stripos($request->getRequestUri(), '/_proxy/') === 0;
+        return stripos($request->getRequestUri(), '/_proxy') === 0;
     }
 
     /**
