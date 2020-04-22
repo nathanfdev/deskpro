@@ -20,7 +20,7 @@
           replaceSvgTag(img, byteString);
         }
       } else {
-        fetch(`${imgURL}?cors_fix=1`, {mode: 'cors'}).then(function(response) {
+        fetch(imgURL + '?cors_fix=1', {mode: 'cors'}).then(function(response) {
           response.text().then(function (text) {
             replaceSvgTag(img, text);
           });
@@ -59,6 +59,14 @@
     }
 
     if (window.fetch && document.querySelectorAll) {
+      if ('NodeList' in window && !NodeList.prototype.forEach) {
+        NodeList.prototype.forEach = function (callback, thisArg) {
+          thisArg = thisArg || window;
+          for (var i = 0; i < this.length; i++) {
+            callback.call(thisArg, this[i], i, this);
+          }
+        };
+      }
       document.querySelectorAll('img[class$=svg]').forEach(function(img){
         replaceSvgImages(img);
       });

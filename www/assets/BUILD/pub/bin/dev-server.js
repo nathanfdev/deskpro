@@ -37,8 +37,8 @@ app.use(webpackHotMiddleware(compiler));
 app.use(cors());
 let server;
 if (httpsEnabled) {
-  const privateKey  = fs.readFileSync('server.key', 'utf8');
-  const certificate = fs.readFileSync('server.cert', 'utf8');
+  const privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
+  const certificate = fs.readFileSync('sslcert/server.cert', 'utf8');
   const credentials = {key: privateKey, cert: certificate};
   server = https.createServer(credentials, app);
 } else {

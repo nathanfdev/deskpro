@@ -1,3 +1,4 @@
+require('babel-polyfill');
 const path    = require('path');
 const uglify  = require('uglify-js');
 const babel   = require('babel-core');
