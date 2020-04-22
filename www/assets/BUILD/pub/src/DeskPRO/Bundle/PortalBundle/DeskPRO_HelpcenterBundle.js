@@ -1,4 +1,5 @@
 import './publicPath';
+import 'babel-polyfill';
 import 'react-hot-loader/patch';
 import { helpcenterApp } from './HelpcenterApp';
 import $ from 'jquery';
