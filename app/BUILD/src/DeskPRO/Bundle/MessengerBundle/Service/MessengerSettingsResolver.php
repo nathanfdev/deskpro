@@ -124,18 +124,18 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getEditablePhrases()
     {
         return [
-            'blocks.ticket.title',
-            'blocks.ticket.description',
-            'blocks.ticket.button',
-            'blocks.start-chat.title',
-            'blocks.start-chat.description',
-            'blocks.start-chat.button',
-            'proactive.greeting',
-            'proactive.title',
-            'proactive.description',
-            'proactive.button',
-            'proactive.placeholder',
-            'greeting',
+            'helpcenter.messenger.blocks_ticket_title',
+            'helpcenter.messenger.blocks_ticket_description',
+            'helpcenter.messenger.blocks_ticket_button',
+            'helpcenter.messenger.blocks_start_chat_title',
+            'helpcenter.messenger.blocks_start_chat_description',
+            'helpcenter.messenger.blocks_start_chat_button',
+            'helpcenter.messenger.proactive_greeting',
+            'helpcenter.messenger.proactive_title',
+            'helpcenter.messenger.proactive_description',
+            'helpcenter.messenger.proactive_button',
+            'helpcenter.messenger.proactive_placeholder',
+            'helpcenter.messenger.greeting',
         ];
     }
 
@@ -163,8 +163,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
                 $translations[$snakeCasePhrase] = [];
             }
 
-            $phraseName        = sprintf('helpcenter.messenger.%s', $phrase);
-            $defaultPhraseText = $translator->phrase($phraseName, [], $defaultLanguageId);
+            $defaultPhraseText = $translator->phrase($phrase, [], $defaultLanguageId);
 
             foreach ($languages as $language) {
                 $translation  = new MessengerTranslation();
@@ -173,7 +172,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
                 if ($language->getId() === $defaultLanguageId) {
                     $fallbackText = $defaultPhraseText;
                 } else {
-                    $translatorPhrase = $translator->phrase($phraseName, [], $language);
+                    $translatorPhrase = $translator->phrase($phrase, [], $language);
                     if ($translatorPhrase !== $defaultPhraseText) {
                         $fallbackText = $translatorPhrase;
                     }

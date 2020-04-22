@@ -11,7 +11,6 @@ helpcenter.account.email-btn-usersource-set: 'Add Email Address'
 helpcenter.tickets.view_btn_add_to_ticket: 'Add To Ticket'
 helpcenter.general.add-comment: 'Add a comment'
 helpcenter.tickets.view_reply: 'Add a reply'
-helpcenter.messenger.tickets.form.addAttachment: 'Add attachment'
 helpcenter.community.form_add_attachments: 'Add attachments'
 helpcenter.account.add-email: 'Add email'
 helpcenter.general.admin: Admin
@@ -34,7 +33,6 @@ helpcenter.account.registration-set-password: 'An account with this email alread
 helpcenter.emails.password_agent-reset: 'An agent has reset your account password. You can log in with these details'
 helpcenter.emails.password_agent-reset_subject: 'An agent has reset your password'
 helpcenter.tickets.view_unassigned_more: 'An agent will be assigned'
-helpcenter.messenger.chat.save_ticket.thanks: 'An agent will get back to you as soon as possible'
 helpcenter.news.any-date: Any
 helpcenter.approvals.view_criteria: 'Approval criteria'
 helpcenter.approvals.view_approved: Approved
@@ -46,7 +44,6 @@ helpcenter.tickets.list_agent: 'Assigned Agent'
 helpcenter.chat.assigned_agent: 'Assigned agent'
 helpcenter.tickets.view_assigned_agent: 'Assigned agent'
 helpcenter.chat.log_linked_ticket: 'Assigned to ticket'
-helpcenter.messenger.chat.attach_file: 'Attach File'
 helpcenter.tickets.timeline_attached: 'Attached with this message:'
 helpcenter.general.attachments: Attachments
 helpcenter.emails.attachments: Attachments
@@ -54,7 +51,6 @@ helpcenter.community.attachments: Attachments
 helpcenter.sidebar.agents_available: 'Available Agents'
 helpcenter.approvals.view_awaiting_response: 'Awaiting response'
 helpcenter.general.back: Back
-helpcenter.messenger.tickets.form.back: Back
 helpcenter.direct_messages.back_to_messages: 'Back to my messages'
 helpcenter.error.400-title: 'Bad Request'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Before we can accept your ticket we must verify your email address. Please check your email inbox. We have sent you a verification link.'
@@ -70,7 +66,6 @@ helpcenter.tickets.cancel-ticket-edit: 'Cancel edit and show me the ticket again
 helpcenter.knowledgebase.categories: Categories
 helpcenter.community.form_custom_cat: Category
 helpcenter.forms.label_category: Category
-helpcenter.messenger.tickets.form.category: Category
 helpcenter.account.profile-delete-picture: 'Change or delete profile picture?'
 helpcenter.chat.list_chat: Chat
 helpcenter.chat.error: 'Chat Error'
@@ -78,17 +73,14 @@ helpcenter.chat.log_chat-id: 'Chat ID'
 helpcenter.emails.chat_transcript_subject: 'Chat Transcript'
 helpcenter.chat.message_assigned: 'Chat assigned to {name}'
 helpcenter.chat.message_ended: 'Chat ended'
-helpcenter.messenger.chat.ended: 'Chat ended'
 helpcenter.chat.message_ended-by-user: 'Chat ended by user'
 helpcenter.chat.message_ended-by: 'Chat ended by {name}'
 helpcenter.chat.message_started: 'Chat started'
 helpcenter.chat.message_unassigned: 'Chat unassigned'
 helpcenter.general.nav-chats: Chats
 helpcenter.forms.label-choose-a-file: 'Choose a file'
-helpcenter.messenger.tickets.form.chooseAFile: 'Choose a file'
 helpcenter.chat.form_create_department: 'Choose department'
 helpcenter.forms.label-choose-files: 'Choose files'
-helpcenter.messenger.tickets.form.chooseFiles: 'Choose files'
 helpcenter.general.clear-all: 'Clear all'
 helpcenter.account.submit-saved-form-go: 'Click here to automatically re-submit the form.'
 helpcenter.chat.window_start-button: 'Click here to chat with us'
@@ -113,12 +105,8 @@ helpcenter.general.nav-newticket: 'Contact Us'
 helpcenter.general.nav-contact: 'Contact Us'
 helpcenter.error.contact-us: 'Contact Us'
 helpcenter.tickets.new-section-title: 'Contact Us'
-helpcenter.messenger.blocks.continue_chat.link: Continue
-helpcenter.messenger.blocks.continue_chat.title: 'Continue existing chat'
-helpcenter.messenger.blocks.start_chat.title: Conversations
 helpcenter.general.copy-to-clipboard: 'Copy to Clipboard'
 helpcenter.community.create-topic: Create
-helpcenter.messenger.chat.create_ticket.button: 'Create Ticket'
 helpcenter.community.form_create_topic: 'Create Topic'
 helpcenter.error.create-new-account: 'Create a new account'
 helpcenter.tickets.new_ticket_button: 'Create a new ticket'
@@ -136,7 +124,6 @@ helpcenter.form.delete-question: 'Delete?'
 helpcenter.tickets.list_department: Department
 helpcenter.chat.log_fields_department: Department
 helpcenter.chat.log_department: Department
-helpcenter.messenger.tickets.form.department: Department
 helpcenter.members.activity.down_voted: 'Down voted'
 helpcenter.members.activity.down_voted_comment_on: 'Down voted comment on'
 helpcenter.downloads.download: Download
@@ -145,16 +132,13 @@ helpcenter.guides.download-pdf: 'Download PDF'
 helpcenter.downloads.section-title: Downloads
 helpcenter.general.nav-downloads: Downloads
 helpcenter.general.agent_bar_admin_dl: 'Downloads Settings'
-helpcenter.messenger.tickets.form.dragNDrop: 'Drag and drop'
 helpcenter.forms.label-drag-and-drop: 'Drag and drop'
-helpcenter.messenger.chat.dragdrop.drag_and_drop: 'Drag and drop file here'
 helpcenter.chat.window_upload-drag: 'Drop your file here to upload it to the chat'
 helpcenter.general.eula: EULA
 helpcenter.tickets.view_btn_edit: Edit
 helpcenter.general.edit-this-page: 'Edit this page'
 helpcenter.tickets.view_btn_edit_full: 'Edit this ticket'
 helpcenter.members.email: Email
-helpcenter.messenger.tickets.form.email: Email
 helpcenter.community.form_email_not_shown: Email
 helpcenter.account.email-address: 'Email Address'
 helpcenter.tickets.view_label_your_email_placeholder: 'Email Address (required)'
@@ -163,11 +147,8 @@ helpcenter.profile.email-address: 'Email address'
 helpcenter.chat.submit-ticket-title: 'Email us instead'
 helpcenter.chat.email-validated-sucessfully: 'Email validated successfully'
 helpcenter.chat.window_end-chat: 'End Chat'
-helpcenter.messenger.chat.end_chat: 'End chat'
-helpcenter.messenger.chat.end_block.question_header: 'End your chat?'
 helpcenter.account.section-title-usersource-email: 'Enter Your Email'
 helpcenter.general.enter_comment_placeholder: 'Enter your comment here...'
-helpcenter.messenger.chat.save_ticket.intro: 'Enter your name and your email address and one of our agents will get back to you as soon as possible.'
 helpcenter.general.everything: Everything
 helpcenter.general.expand: Expand
 helpcenter.knowledgebase.featured-articles: 'Featured articles'
@@ -183,8 +164,6 @@ helpcenter.general.first-published: 'First published'
 helpcenter.general.published: 'First published'
 helpcenter.account.reset-password-request-title: 'Forgot your password?'
 helpcenter.community.forum-name: 'Forum name'
-helpcenter.messenger.proactive.greeting: 'Get in Touch'
-helpcenter.messenger.greeting: 'Get in Touch'
 helpcenter.general.nav-contact-desc: 'Get in touch for help'
 helpcenter.general.btn-go: Go
 helpcenter.general.go: Go
@@ -195,7 +174,6 @@ helpcenter.general.nav-support-center: 'Help Center'
 helpcenter.general.agent_bar_admin_portal: 'Helpcenter Design & Templates'
 helpcenter.error.helpdesk: Helpdesk
 helpcenter.general.helpdesk-system: 'Helpdesk system'
-helpcenter.messenger.chat.rating_block.buttons.helpful: Helpful
 helpcenter.general.rate-page-positive: Helpful
 helpcenter.emails.registration_closed: 'Hi {name},<br /><br />New tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address.'
 helpcenter.general.prop_rating_desc: 'Highest rated first'
@@ -211,14 +189,12 @@ helpcenter.emails.reject_resolved-newemail: 'If you would like to create a brand
 helpcenter.emails.reject_resolved-new: 'If you would like to create a brand new ticket you can send a new email to <a href="mailto:{email_to}">{email_to}</a> or you can submit our online form at:<br /><a href="{link}">{link}</a>'
 helpcenter.general.impersonation_mode: 'Impersonation mode'
 helpcenter.chat.invalid-validation-code: 'Invalid validation code'
-helpcenter.messenger.chat.busy: 'It looks like all of our agents are busy at the moment. You can still send us a ticket below and we will get back to you as soon as possible'
 helpcenter.tickets.rate-neutral: 'It was OK'
 helpcenter.emails.ticket_rate-neutral: 'It was OK'
 helpcenter.tickets.rate-positive: 'It was great'
 helpcenter.tickets.rate-negative: 'It was not good'
 helpcenter.members.company: 'Job Title & Company'
 helpcenter.members.joined_portal: 'Joined Portal'
-helpcenter.messenger.blocks.knowledgebase.title: Knowledgebase
 helpcenter.general.nav-kb: Knowledgebase
 helpcenter.articles.section-title: Knowledgebase
 helpcenter.general.agent_bar_admin_kb: 'Knowledgebase Settings'
@@ -237,7 +213,6 @@ helpcenter.general.prop_comments_asc: 'Least comments first'
 helpcenter.general.prop_popularity_asc: 'Least popular first'
 helpcenter.general.prop_views_asc: 'Least views first'
 helpcenter.community.view-list: 'List View'
-helpcenter.messenger.loading: Loading
 helpcenter.account.login-btn: 'Log in'
 helpcenter.tickets.please_login_to_reply: 'Log in to reply.'
 helpcenter.account.section-title-login: Login
@@ -256,7 +231,6 @@ helpcenter.account.email-management-from-form: 'Manage my email addresses'
 helpcenter.general.btn-manage_subscriptions: 'Manage your subscriptions'
 helpcenter.flashes.ticket_participant_cc_limit_reached: 'Maximum CC''s limit ({max}) reached'
 helpcenter.members.title: 'Member Directory'
-helpcenter.messenger.tickets.form.message: Message
 helpcenter.community.form_message: Message
 helpcenter.direct_messages.reply.message: Message
 helpcenter.general.prop_comments_desc: 'Most comments first'
@@ -269,7 +243,6 @@ helpcenter.chats.my-chats: 'My chats'
 helpcenter.tickets.my-messages: 'My messages'
 helpcenter.tickets.my-tickets: 'My tickets'
 helpcenter.emails.too-many-emails: 'NOTICE: You have sent too many emails'
-helpcenter.messenger.tickets.form.name: Name
 helpcenter.members.name: Name
 helpcenter.community.form_full_name: Name
 helpcenter.tickets.view_label_your_name_placeholder: 'Name (required)'
@@ -282,7 +255,6 @@ helpcenter.emails.kb_sub_new_and_updated: 'New and Updated Articles'
 helpcenter.emails.download_sub_new_and_updated: 'New and Updated Downloads'
 helpcenter.emails.news_sub_new_and_updated: 'New and Updated News'
 helpcenter.tickets.form-changed-notice: 'New fields have been added to the form. Please review these fields and then re-submit the form.'
-helpcenter.messenger.tickets.form.header: 'New ticket'
 helpcenter.account.new-to-brand: 'New to {brand}?'
 helpcenter.general.prop_date_desc: 'Newest first'
 helpcenter.news.section-title: News
@@ -293,11 +265,8 @@ helpcenter.general.agent_bar_admin_news: 'News Settings'
 helpcenter.news.news-type: 'News type'
 helpcenter.general.next: Next
 helpcenter.forms.date-picker-next-month: 'Next Month'
-helpcenter.messenger.chat.end_block.buttons.no: 'No'
 helpcenter.emails.ticket_rate-negative: 'No'
-helpcenter.messenger.chat.transcript_block.no_button: 'No'
 helpcenter.chat.form_feedback_rate-unsatisfied: 'No'
-helpcenter.messenger.chat.save_ticket.button_no: 'No'
 helpcenter.error.403-title: 'No Access'
 helpcenter.members.no_activities: 'No Activities'
 helpcenter.chat.log_unassigned: 'No agent was assigned'
@@ -309,7 +278,6 @@ helpcenter.direct_messages.none: 'No messages'
 helpcenter.news.none: 'No news yet'
 helpcenter.tickets.no_participants: 'No participants'
 helpcenter.approvals.view_no_response: 'No response'
-helpcenter.messenger.blocks.search_block.no_results: 'No results for {query}'
 helpcenter.chat.window_close: 'No thanks, just close the window'
 helpcenter.approvals.no_ticket_approvals_found: 'No ticket approvals found'
 helpcenter.members.phone-number-none: None
@@ -345,21 +313,17 @@ helpcenter.general.no-search-query: 'Please type a search query into the search 
 helpcenter.tickets.thank_you_check_email: 'Please verify your email address'
 helpcenter.account.new-ticket-no-login: 'Portal CRM is disabled. Unable to submit a ticket.'
 helpcenter.sidebar.article_posted_by: 'Posted by {name}'
-helpcenter.messenger.powered_by: 'Powered by'
 helpcenter.general.software_power_by: 'Powered by'
 helpcenter.general.previous: Previous
 helpcenter.forms.date-picker-previous-month: 'Previous Month'
 helpcenter.account.email-primary-description: Primary
 helpcenter.general.print: Print
-helpcenter.messenger.tickets.form.priority: Priority
-helpcenter.messenger.tickets.form.product: Product
 helpcenter.articles.published: Published
 helpcenter.general.published_by: 'Published by <b>{person}</b>'
 helpcenter.emails.tickets_re: 'RE: {ticket.subject}'
 helpcenter.emails.remind_unresolved_subject: 'REMINDER: {ticket.subject}'
 helpcenter.emails.remind_unresolved_final_subject: 'REMINDER: {ticket.subject}'
 helpcenter.general.rate-page: 'Rate the quality of this page'
-helpcenter.messenger.chat.rating_block.question_header: 'Rate your conversation with {name}'
 helpcenter.tickets.rate_support: 'Rate your support'
 helpcenter.emails.ticket-rate: 'Rate your support experience on your ticket "{ticket.subject}"'
 helpcenter.tickets.rated-your-support: 'Rated your support from'
@@ -388,7 +352,6 @@ helpcenter.account.email-btn-remove: 'Remove email'
 helpcenter.tickets.view_reply_or_close: 'Reply or <a href="{close_url}" class="close-ticket-trigger">close the ticket</a>'
 helpcenter.tickets.view_requester: Requester
 helpcenter.approvals.view_requesting_agent: 'Requesting agent'
-helpcenter.messenger.tickets.form.required: Required
 helpcenter.account.resend-registration-email: 'Resend registration email'
 helpcenter.account.email-btn-resend-validation: 'Resend validation email'
 helpcenter.account.section-title-reset-password: 'Reset Password'
@@ -402,24 +365,19 @@ helpcenter.forms.label_save: Save
 helpcenter.general.comment_btn_save: 'Save Comment'
 helpcenter.account.profile-btn-save: 'Save Profile'
 helpcenter.label.search: Search
-helpcenter.messenger.blocks.search_block.search_label: Search
 helpcenter.tickets.search-approvals: 'Search Approvals'
 helpcenter.search.search-results: 'Search Results'
 helpcenter.tickets.search-tickets: 'Search Tickets'
 helpcenter.community.search-suggestions: 'Search suggestions'
 helpcenter.news.see-all-news: 'See all news'
-helpcenter.messenger.blocks.search_block.see_more_results: 'See more results'
 helpcenter.general.select: Select
-helpcenter.messenger.tickets.form.select: Select
 helpcenter.news.filter-cat: 'Select Category'
 helpcenter.news.filter-date: 'Select Date'
 helpcenter.chat.form_chat_button-submit: Send
-helpcenter.messenger.chat.transcript_block.send_button: 'Send Message'
 helpcenter.direct_messages.reply.send_message: 'Send Message'
 helpcenter.members.send_message: 'Send Message'
 helpcenter.chat.form_feedback_transcript-email: 'Send a transcript of this chat to'
 helpcenter.chat.form_feedback_button-submit: 'Send feedback & Close Window'
-helpcenter.messenger.chat.send_message: 'Send message'
 helpcenter.chat.form_feedback_title: 'Send us feedback'
 helpcenter.general.send-user-direct-message: 'Send user a Direct Message'
 helpcenter.account.set-password-btn: 'Set Password'
@@ -435,19 +393,11 @@ helpcenter.error.an-error-occured-desc: 'Sorry, but there was an error trying to
 helpcenter.error.404-desc: 'Sorry, but we couldn''t find this page.'
 helpcenter.error.403-desc: 'Sorry, but you do not have access to view this page.'
 helpcenter.error.400-desc: 'Sorry, but your request was malformed.'
-helpcenter.messenger.chat.no_agent_online: 'Sorry, no one is online to accept your chat.'
 helpcenter.tickets.not-allowed_desc: 'Sorry, our agents are unable to take your chat at the moment'
 helpcenter.chat.message_wait-timeout: 'Sorry; no agents are available right now.'
 helpcenter.general.sort: Sort
 helpcenter.chat.form_create_button-submit: 'Start Chat'
-helpcenter.messenger.chat.enter_form.button: 'Start Conversation'
 helpcenter.chat.form_create_title: 'Start a Chat with an Agent'
-helpcenter.messenger.proactive.description: 'Start a chat with one of our agents'
-helpcenter.messenger.blocks.start-chat.description: 'Start a chat with one of our agents'
-helpcenter.messenger.blocks.start-chat.title: 'Start a conversation'
-helpcenter.messenger.proactive.title: 'Start a conversation'
-helpcenter.messenger.proactive.button: 'Start a new conversation'
-helpcenter.messenger.blocks.start-chat.button: 'Start a new conversation'
 helpcenter.general.status: Status
 helpcenter.community.status: Status
 helpcenter.community.view-status-change: 'Status Change'
@@ -456,12 +406,7 @@ helpcenter.account.login-stay-logged-in: 'Stay Logged In?'
 helpcenter.account.login-remember: 'Stay Logged In?'
 helpcenter.tickets.list_subject: Subject
 helpcenter.community.form_submit: Submit
-helpcenter.messenger.tickets.form.submit: Submit
-helpcenter.messenger.blocks.ticket.button: 'Submit a new ticket'
-helpcenter.messenger.blocks.ticket.title: 'Submit a ticket'
-helpcenter.messenger.chat.create_ticket.header: 'Submit a ticket'
 helpcenter.tickets.submit-a-ticket: 'Submit a ticket'
-helpcenter.messenger.blocks.ticket.description: 'Submit an enquiry via our contact form'
 helpcenter.tickets.submit_feedback: 'Submit feedback'
 helpcenter.community.create-topic-in-forum: 'Submit {forum}'
 helpcenter.general.btn-subscribe: Subscribe
@@ -486,7 +431,6 @@ helpcenter.emails.comment-confirmation: 'Thank you for your comment'
 helpcenter.emails.comment_thank-you: 'Thank you for your comment on {link}.'
 helpcenter.flashes.new_community_topic_posted: 'Thank you for your community topic.'
 helpcenter.flashes.new_community_topic_awaiting_review: 'Thank you for your community topic. It will be visible on our support portal after agent review.'
-helpcenter.messenger.chat.rating_block.thank_you_header: 'Thank you for your feedback'
 helpcenter.flashes.rating_thanks: 'Thank you for your feedback!'
 helpcenter.flashes.ticket_feedback_thank_you: 'Thank you for your feedback!'
 helpcenter.emails.ticket_reply-confirm: 'Thank you for your reply. One of our agents will reply to you shortly.'
@@ -532,10 +476,8 @@ helpcenter.downloads.total-downloads: 'Total downloads'
 helpcenter.chat.transcript_sent: 'Transcript sent to {email}'
 helpcenter.general.translations: Translations
 helpcenter.general.no-search-results-explain: 'Try a different search or have a look at our <a href="{kb_url}">Knowledgebase</a>'
-helpcenter.messenger.proactive.placeholder: 'Type your message here'
 helpcenter.tickets.view_unassigned: Unassigned
 helpcenter.general.rate-page-negative: Unhelpful
-helpcenter.messenger.chat.rating_block.buttons.unhelpful: Unhelpful
 helpcenter.general.unpublished: 'Unpublished date'
 helpcenter.articles.unpublished_date: 'Unpublished date'
 helpcenter.general.btn-unsubscribe: Unsubscribe
@@ -549,7 +491,6 @@ helpcenter.emails.download_sub_updated: 'Updated Downloads'
 helpcenter.emails.news_sub_updated: 'Updated News'
 helpcenter.chat.form_chat_send-file: 'Upload a File'
 helpcenter.downloads.uploaded-on: Uploaded
-helpcenter.messenger.chat.dragdrop.uploading: Uploading
 helpcenter.chat.message_uploading: 'Uploading ...'
 helpcenter.account.section-desc-login-external: 'Use the links below if you have an account with another provider.'
 helpcenter.approvals.view_user: User
@@ -598,19 +539,11 @@ helpcenter.emails.community-topic_disapproved: 'We wanted to let you know that u
 helpcenter.emails.community-topic_disapproved-reason: 'We wanted to let you know that unfortunately your community topic has been declined and will not appear publicly on our site. {name} gave the following reason:'
 helpcenter.emails.community-topic_approved: 'We wanted to let you know that your community topic has been approved and is now publicly visible on our site.'
 helpcenter.tickets.not-allowed_title: 'We''ll be right back'
-helpcenter.messenger.tickets.form.saving: 'We''re saving your ticket. Please wait'
-helpcenter.messenger.chat.pre_chat_form.form_message: 'Welcome to Deskpro. Please fill out the details below so we can direct you to the right person as quickly as possible.'
 helpcenter.chat.form_feedback_rate-satisfaction: 'Were you satisfied with this conversation?'
 helpcenter.account.validation-email-sent: 'We’ve sent you an email to {email}<br />Please validate your email address to access your support centre.'
-helpcenter.messenger.chat.prompt: 'What can we help you with today?'
-helpcenter.messenger.chat.save_ticket.question: 'Would you like an agent to contact you?'
-helpcenter.messenger.chat.transcript_block.question_header: 'Would you like an email transcript?'
 helpcenter.duration_short.years: 'Y'
-helpcenter.messenger.chat.end_block.buttons.yes: 'Yes'
 helpcenter.emails.ticket_rate-positive: 'Yes'
-helpcenter.messenger.chat.save_ticket.button_yes: 'Yes'
 helpcenter.chat.form_feedback_rate-satisfied: 'Yes'
-helpcenter.messenger.chat.transcript_block.yes_button: 'Yes'
 helpcenter.chat.you: You
 helpcenter.chat.log_message_author-you: You
 helpcenter.general.you: You
@@ -624,13 +557,11 @@ helpcenter.emails.community-explain: 'You are receiving this email because you a
 helpcenter.emails.news-explain: 'You are receiving this email because you are subscribed to our news at <a href="{deskpro_url}">{deskpro_url}</a>.<br />Don''t want these emails anymore? <a href="{unsubscribe_url}">Click here to unsubscribe from all news notifications.</a>'
 helpcenter.news.view-as-agent: 'You can see this page because you are an agent. Normal users will not be able to view this page.'
 helpcenter.articles.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
-helpcenter.messenger.chat.create_ticket.intro: 'You can submit a ticket instead and one of our agents will reply to you via email as soon as possible.'
 helpcenter.account.lockout_time: 'You can try again in {time} minutes.'
 helpcenter.community.module_forbidden: 'You don''t have access to this module'
 helpcenter.emails.ticket_added_cc: 'You have been added to the ticket "{ticket.subject}"'
 helpcenter.emails.ticket_cc-new: 'You have been included in a ticket started by {name}.'
 helpcenter.chat.you_have_been_invited: 'You have been invited to join a chat'
-helpcenter.messenger.message_ended: 'You have ended the conversation.'
 helpcenter.account.login-captcha-failed: 'You have entered an invalid CAPTCHA code. Please try again.'
 helpcenter.account.login-lockout: 'You have failed login too many times so you have been locked out. Please try again later.'
 helpcenter.flashes.ticket_re_opened: 'You have re-opened this ticket.'
@@ -669,7 +600,6 @@ helpcenter.chat.log-title: 'Your Chats'
 helpcenter.chat.email: 'Your Email Address'
 helpcenter.chat.name: 'Your Name'
 helpcenter.account.your-pending-email-addresses: 'Your Pending Email Addresses'
-helpcenter.messenger.blocks.tickets.title: 'Your Tickets'
 helpcenter.profile.your-account: 'Your account'
 helpcenter.account.set-password-for-user: 'Your account does not have a password yet. Please set one now so that you can login to post content in the future.'
 helpcenter.emails.account_disabled_message: 'Your account is currently disabled. You may not login or interact with tickets or chat.'
@@ -705,7 +635,6 @@ helpcenter.flashes.user_changed_primary_email: 'Your primary email address has b
 helpcenter.flashes.user_updated_profile: 'Your profile has been updated.'
 helpcenter.flashes.ticket_replied: 'Your reply has been submitted. Thanks!'
 helpcenter.emails.reject_resolved: 'Your reply was not accepted because your ticket has already been marked as resolved. Our agents will not read or reply to this message.'
-helpcenter.messenger.tickets.form.thanks_header: 'Your request on its way'
 helpcenter.emails.community-topic_updated: 'Your submitted community topic "{title}" has been updated. Its status is now: new status "{status}"'
 helpcenter.emails.community-topic_published: 'Your submitted community topic "{title}" has been validated and will now appear on our site.'
 helpcenter.emails.community-topic_closed: 'Your submitted community topic "{title}" was closed: {status}'
@@ -716,7 +645,6 @@ helpcenter.flashes.ticket_updated: 'Your ticket has been updated. Thanks!'
 helpcenter.emails.ticket-reminder: 'Your ticket is awaiting email validation. Please click the link below to submit your ticket and verify your email address. Your ticket will be deleted without being seen by an agent if you do not click this link before {expire_date}.'
 helpcenter.flashes.ticket_resolved: 'Your ticket is now marked as resolved. Thank you.'
 helpcenter.search.your-tickets: 'Your tickets'
-helpcenter.messenger.chat.transcript_block.answer_header: 'Your transcript is on it’s way to:'
 helpcenter.direct_messages.block_user: 'block user'
 helpcenter.general.copied: copied
 helpcenter.account.login-email-placeholder: email@example.com
@@ -727,20 +655,11 @@ helpcenter.general.in: in
 helpcenter.duration_short.minutes: m
 helpcenter.tickets.timeline_marked: 'marked this ticket:'
 helpcenter.general.or: or
-helpcenter.messenger.tickets.form.or: or
 helpcenter.tickets.timeline_re_opened: 'reopened this ticket'
 helpcenter.duration_short.seconds: s
 helpcenter.sidebar.satisfied_customers: 'satisfied customers'
 helpcenter.general.tagged_with: 'tagged with'
 helpcenter.direct_messages.unblock_user: 'unblock user'
-helpcenter.messenger.blocks.tickets.view_all_link: 'view all'
-helpcenter.messenger.chat.header.title: '{department} conversation'
-helpcenter.messenger.message_assigned: '{name} assigned to the chat.'
-helpcenter.messenger.message_ended-by: '{name} has ended the conversation.'
-helpcenter.messenger.chat.agent_assigned.message: '{name} joined the conversation.'
-helpcenter.messenger.message_user-joined: '{name} joined the conversation.'
-helpcenter.messenger.message_user-left: '{name} left the conversation.'
-helpcenter.messenger.message_unassigned: '{name} unassigned from the chat.'
 helpcenter.emails.share-article: '{author_name} wants to share this article with you'
 helpcenter.emails.ticket_cc-added: '{author_name}, {author_email}, has added you to the ticket {ticket.subject}.'
 helpcenter.tickets.rate-intro: '{name} helped you with your ticket "{subject}"'
@@ -769,3 +688,83 @@ helpcenter.chat.log_nav-view-chats: '{count, plural, one {View your latest chat 
 helpcenter.alerts.tickets-to-respond: '{count, plural, one {You have one ticket to respond to.} other {You have # tickets to respond to.}}'
 helpcenter.emails.community-topic_votes: 'Your community topic currently has <strong>{count, plural, one {1 vote} other {# votes}}</strong>. View your community topic online at:'
 helpcenter.sidebar.agents_x_online: '{count, plural, one {1 online} other {# online}}'
+helpcenter.messenger_greeting: 'Get in Touch'
+helpcenter.messenger.loading: Loading
+helpcenter.messenger.powered_by: 'Powered by'
+helpcenter.messenger.blocks_continue_chat_link: Continue
+helpcenter.messenger.blocks_continue_chat_title: 'Continue existing chat'
+helpcenter.messenger.blocks_knowledgebase_title: Knowledgebase
+helpcenter.messenger.blocks_ticket_button: 'Submit a new ticket'
+helpcenter.messenger.blocks_ticket_title: 'Submit a ticket'
+helpcenter.messenger.blocks_tickets_title: 'Your Tickets'
+helpcenter.messenger.blocks_ticket_description: 'Submit an enquiry via our contact form'
+helpcenter.messenger.blocks_tickets_view_all_link: 'view all'
+helpcenter.messenger.blocks_search_block_no_results: 'No results for {query}'
+helpcenter.messenger.blocks_search_block_search_label: Search
+helpcenter.messenger.blocks_search_block_see_more_results: 'See more results'
+helpcenter.messenger.blocks_start_chat_button: 'Start a new conversation'
+helpcenter.messenger.blocks_start_chat_description: 'Start a chat with one of our agents'
+helpcenter.messenger.blocks_start_chat_title: 'Start a conversation'
+helpcenter.messenger.chat_send_message: 'Send message'
+helpcenter.messenger.chat_no_agent_online: 'Sorry, no one is online to accept your chat.'
+helpcenter.messenger.chat_enter_form_button: 'Start Conversation'
+helpcenter.messenger.chat_dragdrop_uploading: Uploading
+helpcenter.messenger.chat_header_title: '{department} conversation'
+helpcenter.messenger.chat_pre_chat_form_form_message: 'Welcome to Deskpro. Please fill out the details below so we can direct you to the right person as quickly as possible.'
+helpcenter.messenger.proactive_button: 'Start a new conversation'
+helpcenter.messenger.proactive_description: 'Start a chat with one of our agents'
+helpcenter.messenger.proactive_greeting: 'Get in Touch'
+helpcenter.messenger.proactive_title: 'Start a conversation'
+helpcenter.messenger.proactive_placeholder: 'Type your message here'
+helpcenter.messenger.chat_rating_block_buttons_helpful: Helpful
+helpcenter.messenger.chat_rating_block_buttons_unhelpful: Unhelpful
+helpcenter.messenger.chat_rating_block_thank_you_header: 'Thank you for your feedback'
+helpcenter.messenger.chat_rating_block_question_header: 'Rate your conversation with {name}'
+helpcenter.messenger.chat_save_ticket_button_no: 'No'
+helpcenter.messenger.chat_save_ticket_button_yes: 'Yes'
+helpcenter.messenger.chat_save_ticket_intro: 'Enter your name and your email address and one of our agents will get back to you as soon as possible.'
+helpcenter.messenger.chat_save_ticket_thanks: 'An agent will get back to you as soon as possible'
+helpcenter.messenger.chat_save_ticket_question: 'Would you like an agent to contact you?'
+helpcenter.messenger.chat_transcript_block_answer_header: 'Your transcript is on it’s way to:'
+helpcenter.messenger.chat_transcript_block_no_button: 'No'
+helpcenter.messenger.chat_transcript_block_send_button: 'Send Message'
+helpcenter.messenger.chat_transcript_block_question_header: 'Would you like an email transcript?'
+helpcenter.messenger.chat_transcript_block_yes_button: 'Yes'
+helpcenter.messenger.chat_end_block_buttons_no: 'No'
+helpcenter.messenger.chat_end_block_buttons_yes: 'Yes'
+helpcenter.messenger.chat_end_block_question_header: 'End your chat?'
+helpcenter.messenger.chat_create_ticket_button: 'Create Ticket'
+helpcenter.messenger.chat_create_ticket_intro: 'You can submit a ticket instead and one of our agents will reply to you via email as soon as possible.'
+helpcenter.messenger.chat_create_ticket_header: 'Submit a ticket'
+helpcenter.messenger.chat_attach_file: 'Attach File'
+helpcenter.messenger.chat_agent_assigned_message: '{name} joined the conversation.'
+helpcenter.messenger.chat_busy: 'It looks like all of our agents are busy at the moment. You can still send us a ticket below and we will get back to you as soon as possible'
+helpcenter.messenger.chat_dragdrop_drag_and_drop: 'Drag and drop file here'
+helpcenter.messenger.chat_end_chat: 'End chat'
+helpcenter.messenger.chat_ended: 'Chat ended'
+helpcenter.messenger.chat_prompt: 'What can we help you with today?'
+helpcenter.messenger.message_ended: 'You have ended the conversation.'
+helpcenter.messenger.message_assigned: '{name} assigned to the chat.'
+helpcenter.messenger.message_ended-by: '{name} has ended the conversation.'
+helpcenter.messenger.message_user-joined: '{name} joined the conversation.'
+helpcenter.messenger.message_user-left: '{name} left the conversation.'
+helpcenter.messenger.message_unassigned: '{name} unassigned from the chat.'
+helpcenter.messenger.tickets_form_addAttachment: 'Add attachment'
+helpcenter.messenger.tickets_form_back: Back
+helpcenter.messenger.tickets_form_category: Category
+helpcenter.messenger.tickets_form_chooseAFile: 'Choose a file'
+helpcenter.messenger.tickets_form_chooseFiles: 'Choose files'
+helpcenter.messenger.tickets_form_department: Department
+helpcenter.messenger.tickets_form_dragNDrop: 'Drag and drop'
+helpcenter.messenger.tickets_form_email: Email
+helpcenter.messenger.tickets_form_header: 'New ticket'
+helpcenter.messenger.tickets_form_message: Message
+helpcenter.messenger.tickets_form_name: Name
+helpcenter.messenger.tickets_form_or: or
+helpcenter.messenger.tickets_form_priority: Priority
+helpcenter.messenger.tickets_form_product: Product
+helpcenter.messenger.tickets_form_required: Required
+helpcenter.messenger.tickets_form_saving: 'We''re saving your ticket. Please wait'
+helpcenter.messenger.tickets_form_select: Select
+helpcenter.messenger.tickets_form_submit: Submit
+helpcenter.messenger.tickets_form_thanks_header: 'Your request on its way'

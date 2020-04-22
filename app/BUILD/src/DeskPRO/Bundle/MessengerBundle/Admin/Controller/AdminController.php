@@ -237,7 +237,7 @@ CODE;
         $translate = $this->container->get('deskpro.core.translate');
 
         foreach ($translations as $phraseName => $translationStack) {
-            $phraseName = sprintf('helpcenter.messenger.%s', str_replace('_', '.', $phraseName));
+            $phraseName = str_replace('helpcenter_messenger_', 'helpcenter.messenger.', $phraseName);
             foreach ($translationStack as $translation) {
                 $language = $this->get('language_manager')->getLanguageById($translation['language']['id']);
                 $text     = trim($translation['text']);
@@ -312,10 +312,8 @@ CODE;
             ->updateSetting(MSR::CHAT_ENABLED, $messengerChat->isEnabled(), $brand)
             ->updateSetting(MSR::CHAT_DEFAULT_DEPARTMENT, $messengerChat->getDepartment(), $brand)
             ->updateSetting(MSR::CHAT_USERGROUPS, serialize($messengerChat->getUsergroups()), $brand)
-            ->updateSetting(MSR::CHAT_PROMPT, $messengerChat->getPrompt(), $brand)
             ->updateSetting(MSR::CHAT_TIMEOUT, $messengerChat->getTimeout(), $brand)
             ->updateSetting(MSR::CHAT_NO_ANSWER_BEHAVIOR, $messengerChat->getNoAnswerBehavior(), $brand)
-            ->updateSetting(MSR::CHAT_BUSY_MESSAGE, $messengerChat->getBusyMessage(), $brand)
 
             // Chat options
             ->updateSetting(MSR::CHAT_OPTIONS_SHOW_PHOTOS, $messengerChatOptions->isShowAgentPhotos(), $brand)
@@ -329,7 +327,6 @@ CODE;
             ->updateSetting(MSR::PRE_CHAT_FORM_DEPARTMENT, $messengerChatPreChatForm->isDepartmentSelectable(), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_FIELDS, serialize($messengerChatPreChatForm->getFields()), $brand)
             ->updateSetting(MSR::PRE_CHAT_FORM_FORM_MESSAGE_ENABLED, $messengerChatPreChatForm->isFormMessageEnabled(), $brand)
-            ->updateSetting(MSR::PRE_CHAT_FORM_FORM_MESSAGE, $messengerChatPreChatForm->getFormMessage(), $brand)
 
             // Chat settings. No answer behaviour === save as a ticket
             ->updateSetting(MSR::CHAT_TICKET_DEFAULTS_SUBJECT, $messengerChatTicketDefaults->getSubject(), $brand)
