@@ -225,7 +225,7 @@ class ServiceController extends AbstractMessengerController
         }
 
         $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
-            return [$id, $translate->phrase(sprintf('helpcenter.messenger.%s', $id), [], $language) ?: "!$id!"];
+            return [$id, $translate->phrase($id, [], $language) ?: "!$id!"];
         });
 
         return View::create($output, Response::HTTP_OK);
