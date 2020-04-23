@@ -2605,21 +2605,6 @@ class TicketController extends AbstractController
         $this->em->remove($attachment);
         $attachment->getMessage()->getAttachments()->removeElement($attachment);
         $this->em->flush();
-
-        $blob           = $attachment->getBlob();
-        $originalBlob   = $blob->getOriginalBlob();
-        $blobRepository = $this->em->getRepository(Blob::class);
-        $blobs          = $blobRepository->findBy(['original_blob' => $originalBlob ?: $blob]);
-
-        if ($originalBlob) {
-            array_push($blobs, $originalBlob);
-        }
-        array_push($blobs, $blob);
-
-        foreach ($blobs as $foundBlob) {
-            $this->container->getBlobStorage()->deleteBlobRecord($foundBlob);
-        }
-
         $this->db->delete('tickets_attachments', ['id' => $attachment->getId()]);
     }
 
