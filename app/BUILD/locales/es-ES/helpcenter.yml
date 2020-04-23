@@ -10,10 +10,10 @@ helpcenter.general.admin: Administración
 helpcenter.general.admin_home: 'Administración Casa'
 helpcenter.account.email_btn_usersource_set: 'Administrar correos electrónicos'
 helpcenter.general.agent_bar_agent_dl: 'Administrar descargas'
-helpcenter.chat.agent: Agente
+helpcenter.general.agent: Agente
 helpcenter.tickets.list_agent: 'Agente asignado'
 helpcenter.general.agent_bar_agent_home: 'Agente de casa'
-helpcenter.chat.log_agents: Agentes
+helpcenter.general.agents: Agentes
 helpcenter.sidebar.agents_available: 'Agentes disponibles'
 helpcenter.general.agent_bar_admin_news: 'Ajustes de noticias'
 helpcenter.emails.ticket_no_autoresponse: 'Alerta: Correos electrónicos de confirmación desactivados'
@@ -88,7 +88,6 @@ helpcenter.chat.submit_ticket_title: 'Envíenos un correo electrónico mejor'
 helpcenter.chat.error: 'Error en chat'
 helpcenter.messenger.tickets.form.chooseAFile: 'Escoge un archivo'
 helpcenter.account.set_password_sent_title: 'Establece tu contraseña'
-helpcenter.chat.message_long_wait: 'Estamos intentando localizar un agente para comenzar su conversación; Esto normalmente tarda menos de un minuto. <br /><br />¿Tiene prisa? <a class="cancel-and-newticket-trigger">¿Déjenos un mensaje?</a>'
 helpcenter.chat.message_wait: 'Estamos localizando un agente para usted'
 helpcenter.general.comments_pending_validation: 'Este comentario está siendo revisado. Se mostrará en breve.'
 helpcenter.community.error_hidden: 'Este elemento de retroalimentación está oculto.'
@@ -301,7 +300,7 @@ helpcenter.flashes.download_cat_subscribe: 'Usted se ha suscrito con éxito a es
 helpcenter.flashes.article_cat_subscribe: 'Usted se ha suscrito con éxito a esta categoría. Se le notificará cuando se publiquen nuevos artículos.'
 helpcenter.flashes.news_cat_subscribe: 'Usted se ha suscrito con éxito a esta categoría. Serás notificado de nuevos mensajes.'
 helpcenter.flashes.news_subscribe: 'Usted se ha suscrito con éxito a este artículo de noticias. Se le notificará cuando haya nuevos comentarios.'
-helpcenter.tickets.list_user: Usuario
+helpcenter.general.user: Usuario
 helpcenter.emails.email_new_confirm: 'Validar su dirección de correo electrónico'
 helpcenter.tickets.rate_support: 'Valore el servicio de soporte'
 helpcenter.chat.log_view_linked_ticket: 'Ver Ticket'

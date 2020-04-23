@@ -172,7 +172,6 @@ helpcenter.flashes.user_add_email_verify: 'Nous devons vérifier votre courrier 
 helpcenter.chat.message_finding_agent: 'Nous recherchons un agent'
 helpcenter.chat.message_wait: 'Nous recherchons un agent pour vous répondre'
 helpcenter.tickets.not_allowed_title: 'Nous serons de retour'
-helpcenter.chat.message_long_wait: 'Nous sommes toujours à la recherche d''un agent disponible pour vous répondre; cette opération ne devrait pas prendre plus d''une minute. <br /><br /> Vous êtes pressé? <a class="cancel-and-newticket-trigger"> Laissez-nous plutôt un message.</a>'
 helpcenter.emails.chat_transcript: 'Nous vous remercions pour cet échange. Voici une transcription du Chat.'
 helpcenter.emails.community_topic_approved: 'Nous vous écrivons pour vous informer que votre remarque a été approuvée par un de nos agents et est à présent visible par tous sur notre site.'
 helpcenter.emails.community_topic_disapproved: 'Nous vous écrivons pour vous informer que votre remarque n''a malheureusement pas été approuvée. Elle n''apparaîtra donc pas sur notre site.'
@@ -241,7 +240,7 @@ helpcenter.flashes.ticket_participant_remove_unknown_error: 'Un problème est su
 helpcenter.error.general_title: 'Une erreur s''est produite'
 helpcenter.emails.ticket_new_participant: 'Une nouvelle personne a été ajoutée à votre ticket'
 helpcenter.general.rate_page_positive: Utile
-helpcenter.tickets.list_user: Utilisateur
+helpcenter.general.user: Utilisateur
 helpcenter.account.section_desc_login_external: 'Utilisez les liens ci-dessous si votre compte est lié à un autre fournisseur.'
 helpcenter.general.go: Valider
 helpcenter.emails.email_new_confirm: 'Validez votre adresse email'

@@ -6,10 +6,10 @@ helpcenter.messenger.message_assigned: '{name} назнчается отвест
 helpcenter.messenger.message_user_left: '{name} покидает беседу.'
 helpcenter.messenger.message_user_joined: '{name} присоединяется к беседе.'
 helpcenter.messenger.chat_agent_assigned_message: '{name} происоединяется к беседе.'
-helpcenter.chat.agent: Агент
+helpcenter.general.agent: Агент
 helpcenter.chat.log_unassigned: 'Агент не выбран'
 helpcenter.messenger.chat_save_ticket_thanks: 'Агент свяжется с Вами так скоро, как это возможно'
-helpcenter.chat.log_agents: Агенты
+helpcenter.general.agents: Агенты
 helpcenter.sidebar.agents_available: 'Агенты онлайн'
 helpcenter.general.admin: Админ
 helpcenter.chat.email: 'Адрес Вашей электронной почты'
@@ -155,7 +155,6 @@ helpcenter.community.comments: Комментарии
 helpcenter.chat.form_feedback_comments: 'Комментарии?'
 helpcenter.chat.submit_ticket_title: 'Лучше отправьте нам электронное письмо'
 helpcenter.sidebar.top_articles_title: 'Лучшие статьи'
-helpcenter.chat.message_long_wait: 'Мы все еще пытаемся подобрать Вам специалиста; обычно это занимает меньше минуты. <br /><br />Спешите? <a class="cancel-and-newticket-trigger">Можете оставить нам сообщение</a>'
 helpcenter.account.set_password_sent_desc: 'Мы отправили Вам письмо с инструкцией, как установить пароль.'
 helpcenter.account.reset_password_sent_to: 'Мы отправили письмо'
 helpcenter.messenger.tickets_form_saving: 'Мы отправляем Ваш запрос. Пожалуйста, подождите'
@@ -275,7 +274,7 @@ helpcenter.general.rerender_form: 'Пожалуйста, проверьте пе
 helpcenter.general.show: Показать
 helpcenter.general.rate_page_positive: Полезно
 helpcenter.messenger.chat_rating_block_buttons_helpful: Полезно
-helpcenter.tickets.list_user: Пользователь
+helpcenter.general.user: Пользователь
 helpcenter.chat.message_user_returned: 'Пользователь вернулся'
 helpcenter.chat.message_user_timeout: 'Пользователь временно вышел'
 helpcenter.messenger.tickets_form_category: 'Пользовательский канал'

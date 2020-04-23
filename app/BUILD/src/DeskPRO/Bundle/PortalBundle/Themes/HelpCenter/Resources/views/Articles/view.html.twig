@@ -18,7 +18,7 @@
                     <div class="dp-po-post-info">
                         <ul class="dp-po-post-info-list">
                             <li class="dp-po-post-info-item">
-                                {{ phrase('helpcenter.general.last_updated', {date: article.date_updated | date('day'), person: article.last_author}) | raw }}
+                                {{ phrase('helpcenter.general.last_updated', {date_updated: article.date_updated, person_name: article.last_author.name}) | raw }}
                             </li>
                         </ul>
                     </div>
@@ -189,7 +189,7 @@
 
     {% if article.end_action == 'unpublish' and app.user.is_agent %}
         <div class="alert alert-icon alert-danger" role="alert">
-            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.flashes.article_unpublish', {date: article.date_end | date('day')}) }}
+            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.flashes.article_unpublish', {unpublish_date: article.date_end}) }}
         </div>
     {% endif %}
 

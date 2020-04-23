@@ -109,7 +109,7 @@ helpcenter.chat.message_ended_by_user: 'المحادثة انتهت بواسطة
 helpcenter.chat.message_unassigned: 'المحادثة غير مسندة لاحد'
 helpcenter.tickets.list_ticket_ref: المرجع
 helpcenter.chat.message_user_returned: 'المستخدم قد عاد للمحادثة'
-helpcenter.tickets.list_user: المستخدم.
+helpcenter.general.user: المستخدم.
 helpcenter.sidebar.satisfied_customers: 'المستخدمين الراضين'
 helpcenter.general.admin_home: المشرف
 helpcenter.general.admin: المشرف
@@ -285,7 +285,6 @@ helpcenter.tickets.rate_negative: 'لم تكن مناسبة'
 helpcenter.chat.log_unassigned: 'لم يتم تعيين مقدم خدمة'
 helpcenter.emails.reject_resolved: 'لم يتم قبول ردك لان تذكرتك تم تعليمها غير محلولة. مقدمي الخدمة لن يقوموا بالرد على الرسالة'
 helpcenter.chat.message_wait: 'مازلنا نبحث لك عن مقدم خدمة'
-helpcenter.chat.message_long_wait: 'مازلنا نحاول البحث عن أي من مقدمي الخدمة المتواجدين للرد عليك ، عادة يستغرق هذا الامر اقل من دقيقة <br /><br /> <a class="cancel-and-newticket-trigger">leave us a message instead?</a>هل انت على عجلة من امرك؟ تفضل بترك رسالتك الآن.</a>'
 helpcenter.chat.log_title: محادثاتك
 helpcenter.general.updated: محدث
 helpcenter.community.attachments: مرفقات
@@ -297,10 +296,10 @@ helpcenter.general.rate_page_positive: مفيد.
 helpcenter.emails.kb_sub_new: 'مقالات جديدة'
 helpcenter.emails.kb_sub_new_and_updated: 'مقالات جديدة ومحدثة.'
 helpcenter.emails.kb_sub_updated: 'مقالات محدثة'
-helpcenter.chat.agent: 'مقدم الخدمة'
+helpcenter.general.agent: 'مقدم الخدمة'
 helpcenter.tickets.list_status_agent: 'مقدم الخدمة  سيستجيب لك'
 helpcenter.sidebar.agents_available: 'مقدمو الخدمة  المتواجدين'
-helpcenter.chat.log_agents: 'مقدمو الخدمة.'
+helpcenter.general.agents: 'مقدمو الخدمة.'
 helpcenter.general.related_community: 'ملاحظات مشابهة'
 helpcenter.emails.too_many_emails: 'ملاحظة: لقد قمت بإرسال العديد من الرسائل البريدية'
 helpcenter.general.related_downloads: 'ملفات ذات صلة'

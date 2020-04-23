@@ -1,9 +1,9 @@
 helpcenter.forms.message_description: ''
-helpcenter.tickets.view_you_created: '<h3 class="dp-po-ticket-meta-title">Created</h3><p>{ago}</p>'
-helpcenter.tickets.view_last_message: '<h3 class="dp-po-ticket-meta-title">Last message</h3><p>{ago}</p>'
+helpcenter.tickets.view_you_created: 'Created'
+helpcenter.tickets.view_last_message: 'Last message'
 helpcenter.emails.register_welcome_byagent: 'A new account has been created for you. You can now log in using your email address {to_email} on our helpdesk:'
 helpcenter.emails.ticket_new_participant: 'A new person has been added to your ticket'
-helpcenter.articles.status_archived: ARCHIVED
+helpcenter.articles.status_archived: Archived
 helpcenter.emails.email_ticket_reminder: 'Action Required: Your ticket has not yet been submitted'
 helpcenter.community.activity: Activity
 helpcenter.account.add: Add
@@ -16,13 +16,10 @@ helpcenter.account.add_email: 'Add email'
 helpcenter.general.admin: Admin
 helpcenter.general.admin_home: 'Admin Home'
 helpcenter.general.agent: Agent
-helpcenter.chat.list_agent: Agent
-helpcenter.chat.log_fields_agent: Agent
-helpcenter.chat.agent: Agent
 helpcenter.general.agent_bar_agent_home: 'Agent Home'
 helpcenter.general.agent_interface: 'Agent interface'
 helpcenter.tickets.agent_reply: 'Agent reply'
-helpcenter.chat.log_agents: Agents
+helpcenter.general.agents: Agents
 helpcenter.general.agree: Agree
 helpcenter.news.all_news: 'All News'
 helpcenter.account.section_desc_login: 'Already have an account? Login below.'
@@ -113,10 +110,9 @@ helpcenter.tickets.new_ticket_button: 'Create a new ticket'
 helpcenter.community.create_topic_full: 'Create topic'
 helpcenter.general.created_by: 'Created by'
 helpcenter.members.activity_created_topic: 'Created topic'
-helpcenter.chat.log_created_date: 'Created {date}'
 helpcenter.sidebar.customer_satisfaction: 'Customer Satisfaction'
 helpcenter.duration_short.days: D
-helpcenter.articles.status_draft: DRAFT
+helpcenter.articles.status_draft: Draft
 helpcenter.chat.list_date: Date
 helpcenter.tickets.list_date_created: 'Date Created'
 helpcenter.emails.greeting: 'Dear {to_name},'
@@ -206,8 +202,8 @@ helpcenter.tickets.last_activity: 'Last Activity'
 helpcenter.tickets.list_date_last_agent: 'Last Agent Reply'
 helpcenter.tickets.list_date_last_user: 'Last User Reply'
 helpcenter.chat.last_activity: 'Last activity'
-helpcenter.chat.last_updated_by: 'Last updated: <b>{date}</b> by <b>{person}</b>'
-helpcenter.general.last_updated: 'Last updated: <b>{date}</b> by <b>{person}</b>'
+helpcenter.chat.last_updated_by: 'Last updated: <strong>{date_updated, date, medium}</strong> by <strong>{person_name}</strong>'
+helpcenter.general.last_updated: 'Last updated: <strong>{date_updated, date, medium}</strong> by <strong>{person_name}</strong>'
 helpcenter.general.latest_status_changes: 'Latest status changes'
 helpcenter.general.prop_comments_asc: 'Least comments first'
 helpcenter.general.prop_popularity_asc: 'Least popular first'
@@ -220,7 +216,7 @@ helpcenter.account.login_external: 'Login with an external service'
 helpcenter.account.logout_btn: Logout
 helpcenter.general.prop_rating_asc: 'Lowest rated first'
 helpcenter.duration_short.months: M
-helpcenter.general.lang_change_to_current: 'Make <span class="italics">{lang}</span> my default language'
+helpcenter.general.lang_change_to_current: 'Make <em>{lang}</em> my default language'
 helpcenter.account.email_btn_make_primary: 'Make Primary'
 helpcenter.general.agent_bar_agent_community: 'Manage Community'
 helpcenter.general.agent_bar_agent_dl: 'Manage Downloads'
@@ -285,14 +281,14 @@ helpcenter.sidebar.agents_none: 'None of our agents are online right now. You ca
 helpcenter.error.404_title: 'Not Found'
 helpcenter.members.not_set: 'Not set'
 helpcenter.general.prop_date_asc: 'Oldest first'
-helpcenter.emails.ticket_message_title: 'On {date} at {time}, {author} wrote:'
+helpcenter.emails.ticket_message_title: 'On {created_date, date, medium} at {created_date, time, short}, {author} wrote:'
 helpcenter.tickets.resolve_ticket_explain: 'Once your ticket is resolved, our agents will no longer respond.'
 helpcenter.chat.window_open_new: 'Open this chat in a new window'
 helpcenter.chat.window_resume_button: 'Open your chat'
 helpcenter.tickets.feedback_message_leave_comment: 'Or leave a comment'
 helpcenter.chat.message_agent_timeout: 'Our Apologies; {name} appears to have been disconnected. Please wait while we try to find another agent.'
 helpcenter.tickets.list_status_agent: 'Our agent will respond'
-helpcenter.articles.status_published: PUBLISHED
+helpcenter.articles.status_published: Published
 helpcenter.account.password: Password
 helpcenter.forms.label_password: Password
 helpcenter.account.reset_password_sent_title: 'Password Request Received'
@@ -319,7 +315,7 @@ helpcenter.forms.date_picker_previous_month: 'Previous Month'
 helpcenter.account.email_primary_description: Primary
 helpcenter.general.print: Print
 helpcenter.articles.published: Published
-helpcenter.general.published_by: 'Published by <b>{person}</b>'
+helpcenter.general.published_by: 'Published by <strong>{person_name}</strong>'
 helpcenter.emails.tickets_re: 'RE: {subject}'
 helpcenter.emails.remind_unresolved_subject: 'REMINDER: {subject}'
 helpcenter.emails.remind_unresolved_final_subject: 'REMINDER: {subject}'
@@ -349,7 +345,7 @@ helpcenter.general.related_news: 'Related News'
 helpcenter.general.related_pages: 'Related Pages'
 helpcenter.community.related_tickets: 'Related tickets'
 helpcenter.account.email_btn_remove: 'Remove email'
-helpcenter.tickets.view_reply_or_close: 'Reply or <a href="{close_url}" class="close-ticket-trigger">close the ticket</a>'
+helpcenter.tickets.view_reply_or_close: 'Reply or <a href="{close_url}">close the ticket</a>'
 helpcenter.tickets.view_requester: Requester
 helpcenter.approvals.view_requesting_agent: 'Requesting agent'
 helpcenter.account.resend_registration_email: 'Resend registration email'
@@ -410,7 +406,7 @@ helpcenter.tickets.submit_a_ticket: 'Submit a ticket'
 helpcenter.tickets.submit_feedback: 'Submit feedback'
 helpcenter.community.create_topic_in_forum: 'Submit {forum}'
 helpcenter.general.btn_subscribe: Subscribe
-helpcenter.general.lang_switch: 'Switch to <span class="italics">{lang}</span>'
+helpcenter.general.lang_switch: 'Switch to <em>{lang}</em>'
 helpcenter.general.tags: Tags
 helpcenter.tickets.guest_thank_you_title: 'Thank You'
 helpcenter.emails.chat_transcript: 'Thank you for chatting with us. Here is your chat transcript.'
@@ -448,11 +444,11 @@ helpcenter.emails.community_topic_new_comment_subject: 'There is a new comment o
 helpcenter.flashes.ticket_participant_add_unknown_error: 'There was a problem when trying to add your participant. Please try again.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'There was a problem when trying to remove your participant. Please try again.'
 helpcenter.flashes.ticket_feedback_unknown_error: 'There was a problem when trying to send feedback. Please try again.'
-helpcenter.flashes.article_unpublish: 'This article will unpublish on {date}.'
+helpcenter.flashes.article_unpublish: 'This article will unpublish on {unpublish_date, date, medium}.'
 helpcenter.general.comments_pending_validation: 'This comment is being reviewed. It will be displayed shortly'
 helpcenter.community.error_hidden: 'This community topic is hidden'
 helpcenter.emails.remind_unresolved: 'This is a follow-up message to remind you that you still have an open ticket with {helpdesk_name}.<br />If you don''t need any further help with this issue, please click the link below to let us know:<br /><a href="{resolve_url}">{resolve_url}</a><br />If you still need help, simply reply to this email.'
-helpcenter.general.lang_diff: 'This page is in <span class="italics">{active_lang}</span> but your account is in <span class="italics">{person_lang}</span>.'
+helpcenter.general.lang_diff: 'This page is in <em>{active_lang}</em> but your account is in <em>{person_lang}</em>.'
 helpcenter.approvals.view_ticket: Ticket
 helpcenter.tickets.view_ticket_id: 'Ticket ID'
 helpcenter.tickets.ticket_properties: 'Ticket Properties'
@@ -493,9 +489,7 @@ helpcenter.chat.form_chat_send_file: 'Upload a File'
 helpcenter.downloads.uploaded_on: Uploaded
 helpcenter.chat.message_uploading: 'Uploading ...'
 helpcenter.account.section_desc_login_external: 'Use the links below if you have an account with another provider.'
-helpcenter.approvals.view_user: User
-helpcenter.chat.list_user: User
-helpcenter.tickets.list_user: User
+helpcenter.general.user: User
 helpcenter.general.user_profile: 'User Profile'
 helpcenter.chat.message_user_returned: 'User has returned'
 helpcenter.chat.message_user_timeout: 'User timed out'
@@ -522,7 +516,6 @@ helpcenter.emails.ticket_no_autoresponse: 'Warning: Confirmation emails turned o
 helpcenter.chat.form_feedback_rate_time: 'Was our response time fast enough?'
 helpcenter.emails.ticket_rate_question: 'Was this message helpful?'
 helpcenter.chat.message_wait: 'We are finding an agent for you'
-helpcenter.chat.message_long_wait: 'We are still trying to find an available agent to take your chat; this normally takes less than a minute. <br /><br />In a rush? <a class="cancel-and-newticket-trigger">leave us a message instead?</a>'
 helpcenter.chat.ended_no_agent: 'We are very sorry but we do not have anyone available to take your chat right now. Please email us or try again later.'
 helpcenter.general.no_search_results: 'We couldn''t find any results for "{query}"'
 helpcenter.flashes.ticket_participant_add: 'We have added {name} ({email}) as a participant to this ticket.'
@@ -547,7 +540,7 @@ helpcenter.chat.form_feedback_rate_satisfied: 'Yes'
 helpcenter.chat.you: You
 helpcenter.chat.log_message_author_you: You
 helpcenter.general.you: You
-helpcenter.ticket_approvals.approved_by: 'You approved the request {template} requested by {person}'
+helpcenter.ticket_approvals.approved_by: 'You approved the request {template} requested by {person_name}'
 helpcenter.chat.message_chatting_with: 'You are chatting with'
 helpcenter.error.permission_denied_title: 'You are not allowed to perform this action'
 helpcenter.community.rate_forbidden: 'You are not allowed to vote'
@@ -557,7 +550,7 @@ helpcenter.emails.community_explain: 'You are receiving this email because you a
 helpcenter.emails.news_explain: 'You are receiving this email because you are subscribed to our news at <a href="{deskpro_url}">{deskpro_url}</a>.<br />Don''t want these emails anymore? <a href="{unsubscribe_url}">Click here to unsubscribe from all news notifications.</a>'
 helpcenter.news.view_as_agent: 'You can see this page because you are an agent. Normal users will not be able to view this page.'
 helpcenter.articles.view_as_agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
-helpcenter.account.lockout_time: 'You can try again in {time} minutes.'
+helpcenter.account.lockout_time: 'You can try again in {minutes} minutes.'
 helpcenter.community.module_forbidden: 'You don''t have access to this module'
 helpcenter.emails.ticket_added_cc: 'You have been added to the ticket "{subject}"'
 helpcenter.emails.ticket_cc_new: 'You have been included in a ticket started by {name}.'
@@ -592,7 +585,7 @@ helpcenter.general.comment_login_first: 'You need to log in before you can submi
 helpcenter.tickets.need_login_title: 'You need to log in to open a ticket'
 helpcenter.tickets.list_status_user: 'You need to respond'
 helpcenter.emails.ticket_flood: 'You recently sent an email to our helpdesk. We can see that you have sent many messages in rapid succession that were most likely automated.<br /><br />To protect against an auto-responder loop our helpdesk will not send any more automatic notification emails to you.'
-helpcenter.ticket_approvals.rejected_by: 'You rejected the request {template} requested by {person}'
+helpcenter.ticket_approvals.rejected_by: 'You rejected the request {template} requested by {person_name}'
 helpcenter.emails.password_reset: 'You requested a password reset. To reset your password, click on the link below:'
 helpcenter.flashes.community_login: 'You should log in to vote'
 helpcenter.account.section_title_your_account: 'Your Account'
@@ -638,7 +631,7 @@ helpcenter.emails.reject_resolved: 'Your reply was not accepted because your tic
 helpcenter.emails.community_topic_updated: 'Your submitted community topic "{title}" has been updated. Its status is now: new status "{status}"'
 helpcenter.emails.community_topic_published: 'Your submitted community topic "{title}" has been validated and will now appear on our site.'
 helpcenter.emails.community_topic_closed: 'Your submitted community topic "{title}" was closed: {status}'
-helpcenter.emails.auto_close: 'Your ticket "{ticket.subject}" will be closed shortly as we haven''t heard from you lately. If you need further assistance simply reply and one of our agents will help you.'
+helpcenter.emails.auto_close: 'Your ticket "{subject}" will be closed shortly as we haven''t heard from you lately. If you need further assistance simply reply and one of our agents will help you.'
 helpcenter.emails.ticket_received: 'Your ticket has been received. One of our agents will reply to you shortly.'
 helpcenter.flashes.ticket_created: 'Your ticket has been submitted. Thanks!'
 helpcenter.flashes.ticket_updated: 'Your ticket has been updated. Thanks!'

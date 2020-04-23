@@ -17,9 +17,9 @@ helpcenter.account.section_desc_register: 为了能够轻松地管理您的对�
 helpcenter.tickets.rate_support: 为您的帮助评分
 helpcenter.tickets.list_subject: 主题
 helpcenter.messenger.tickets.form.product: 产品
-helpcenter.chat.agent: 代理
+helpcenter.general.agent: 代理
 helpcenter.general.agent_bar_agent_home: 代理主页
-helpcenter.chat.log_agents: 代理们
+helpcenter.general.agents: 代理们
 helpcenter.emails.password_agent_reset_subject: 代理已经从新设置了您的密码
 helpcenter.emails.password_agent_reset: '代理已重置您的帐户密码。 您可以使用这些详细信息登录'
 helpcenter.messenger.tickets.form.priority: 优先
@@ -163,7 +163,6 @@ helpcenter.flashes.new_community_topic_awaiting_review: '感谢您的反馈意�
 helpcenter.emails.register_welcome_subject: 感谢您的注册
 helpcenter.emails.comment_confirmation: 感谢您的评论
 helpcenter.flashes.usersource_new_add_email_verified: '感谢您验证电子邮件地址。 您的帐户现已启用。'
-helpcenter.chat.message_long_wait: '我们仍在试图找到一个在线的代理来进行聊天; 这通常需要不到一分钟。 <br /><br />着急？ <a class="cancel-and-newticket-trigger">是否给我们留言？</a>'
 helpcenter.tickets.not_allowed_title: 我们会马上回来
 helpcenter.account.reset_password_sent_to: 我们发送了邮件到
 helpcenter.account.set_password_sent_desc: 我们已向您发送一封电子邮件，说明如何设置密码。
@@ -250,7 +249,7 @@ helpcenter.chat.window_start_button: 点击这里和我们进行会话
 helpcenter.account.reset_password_click_here: 点击这里获取密码重设代码
 helpcenter.account.set_password_click_here: 点击这里设置密码
 helpcenter.sidebar.top_articles_title: 热门文章
-helpcenter.tickets.list_user: 用户
+helpcenter.general.user: 用户
 helpcenter.chat.message_user_returned: 用户已回来
 helpcenter.chat.message_user_timeout: 用户超时
 helpcenter.community.form_email_not_shown: 电子邮件

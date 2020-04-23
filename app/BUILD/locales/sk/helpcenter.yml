@@ -10,7 +10,6 @@ helpcenter.chat.error: 'Chyba konverzácie'
 helpcenter.articles.section_title: 'Databáza znalostí'
 helpcenter.tickets.list_date_created: 'Dátum vytvorený'
 helpcenter.chat.submit_ticket_title: 'E-mailujte nás radšej'
-helpcenter.chat.message_long_wait: 'Ešte stále hľadáme operátora pre Vašu konverzáciu; toto normálne trvá menej ako minútu. <br /><br />Máte na ponáhlo? <a class="cancel-and-newticket-trigger">necháte nam radšej správu?</a>'
 helpcenter.forms.label_password: Heslo
 helpcenter.chat.message_finding_agent: 'Hľadá sa operátor'
 helpcenter.chat.message_wait: 'Hľadáme pre Vás operátora'
@@ -46,7 +45,7 @@ helpcenter.messenger.tickets.form.department: Oddelenie
 helpcenter.emails.chat_transcript_subject: 'Odpis konverzácie'
 helpcenter.chat.form_feedback_rate_time: 'Odpovedali sme Vám dostatočne rýchlo?'
 helpcenter.tickets.rate_support: 'Ohodnoťte Vašu pomoc'
-helpcenter.chat.agent: Operátor
+helpcenter.general.agent: Operátor
 helpcenter.emails.password_agent_reset_subject: 'Operátor Vám resetol heslo'
 helpcenter.emails.password_agent_reset: 'Operátor resetol heslo Vášho účtu. Môžete sa prihlásiť s nasledovnými údajmi'
 helpcenter.emails.ticket_no_autoresponse: 'Opozornenie: E-mailové potvrdenia vypnuté'

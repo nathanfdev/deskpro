@@ -1,7 +1,7 @@
 helpcenter.general.btn_subscribe: 'Абонирай се'
-helpcenter.chat.agent: Агент
+helpcenter.general.agent: Агент
 helpcenter.emails.password_agent_reset_subject: 'Агент нулира паролата ви'
-helpcenter.chat.log_agents: Агенти
+helpcenter.general.agents: Агенти
 helpcenter.general.admin: Админ
 helpcenter.profile.account_disabled_message: 'Акаунтът ви в момента е деактивиран. Не можете да влизате, да взаимодействате с тикети или да чатите.'
 helpcenter.account.set_password_for_user: 'Акаунтът ви все още няма парола. Моля задайте такава сега за да можете да влизате и да поствате съдържание за в бъдеще.'
@@ -69,7 +69,6 @@ helpcenter.chat.message_user_timeout: 'Връзката на потребите�
 helpcenter.tickets.not_allowed_title: 'Връщаме се след малко'
 helpcenter.downloads.none: 'Все още няма изтегляния'
 helpcenter.news.none: 'Все още няма отговори'
-helpcenter.chat.message_long_wait: 'Все още се опитваме да намерим свободен агент, който да поеме вашия чат.; това обикновено отнема по-малко от минута. <br /><br />Бързате ли? <a class="cancel-and-newticket-trigger">Оставете ни съобщение?</a>'
 helpcenter.general.everything: Всичко
 helpcenter.account.section_title_usersource_email: 'Въведи твоя имейл'
 helpcenter.account.login_captcha_failed: 'Въвели сте невалиден CAPTCHA код. Моля опитайте отново.'
@@ -234,7 +233,7 @@ helpcenter.tickets.list_date_last_user: 'Последен потребителс
 helpcenter.tickets.last_activity: 'Последна активност'
 helpcenter.tickets.list_last_action: 'Последно действие'
 helpcenter.emails.email_new_confirm: 'Потвърдете имейл адреса си'
-helpcenter.tickets.list_user: Потребител
+helpcenter.general.user: Потребител
 helpcenter.chat.message_user_returned: 'Потребителят се върна'
 helpcenter.flashes.guest_content_must_verify: 'Преди да качим съдържанието ви трябва да потвърдите имейл адреса си. Моля провереде входящата си кутия. Изпратили сме ви линк за потвъждение.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Преди да можем да приемем тикета ви трябва да потвърдите имейл адреса си. Моля провереде входящата си кутия. Изпратили сме ви линк за потвъждение.'

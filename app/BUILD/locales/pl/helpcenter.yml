@@ -2,7 +2,7 @@ helpcenter.emails.profile_email_primary_confirm: 'Aby potwierdzić swój główn
 helpcenter.tickets.thank_you_check_email_desc: 'Aby zakończyć tworzenie zgłoszenia, musisz sprawdzić swoją skrzynkę email. Kliknij w link weryfikujący, który ci posłaliśmy.'
 helpcenter.emails.password_set: 'Aby zmienić hasło, kliknij link poniżej:'
 helpcenter.general.admin: Administrator
-helpcenter.chat.log_agents: Agenci
+helpcenter.general.agents: Agenci
 helpcenter.account.change_password_btn: 'Aktualizuj hasło'
 helpcenter.sidebar.news_title: Aktualności
 helpcenter.general.btn_cancel: Anuluj
@@ -178,7 +178,6 @@ helpcenter.error.404_desc: 'Przepraszamy, ale nie możemy odnaleźć tej strony.
 helpcenter.chat.ended_no_agent: 'Przepraszamy, ale niestety w tej chwili nie ma nikogo, kto by mógł z tobą poczatować. Wyślij do nas email albo spróbuj ponownie później.'
 helpcenter.chat.message_wait_timeout: 'Przepraszamy, brak dostępnych pracowników.'
 helpcenter.tickets.not_allowed_desc: 'Przepraszamy, nasi agenci chwilowo nie mogą czatować z tobą'
-helpcenter.chat.message_long_wait: 'Przepraszamy, poszukiwanie pracownika do Twojego czatu może potrwać kilka minut. <br /><br />Masz pilny problem? <a class="cancel-and-newticket-trigger">Napisz do nas.</a>'
 helpcenter.emails.community_topic_new_disapproved: 'Przepraszamy, twoja opinia została odrzucona'
 helpcenter.general.nav_guides: Przewodniki
 helpcenter.general.rate_page_positive: Przydatna
@@ -262,7 +261,7 @@ helpcenter.account.email_btn_remove: 'Usuń email'
 helpcenter.tickets.new_ticket_button: 'Utwórz nowy bilet'
 helpcenter.emails.community_topic_agent_validation: 'Uwaga! Twoja opinia nie pojawi się publicznie na naszej stronie, dopóki jeden z naszych pracowników jej nie przejrzy.'
 helpcenter.account.section_desc_login_external: 'Użyj linków poniżej, jeśli masz już konto u innego dostawcy.'
-helpcenter.tickets.list_user: Użytkownik
+helpcenter.general.user: Użytkownik
 helpcenter.chat.message_user_returned: 'Użytkownik wrócił'
 helpcenter.chat.message_user_timeout: 'Użytkownik wykorzystał limit czatu'
 helpcenter.downloads.uploaded_on: Wgrane

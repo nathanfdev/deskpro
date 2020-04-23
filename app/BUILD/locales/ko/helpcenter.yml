@@ -68,7 +68,7 @@ helpcenter.emails.ticket_no_autoresponse: '알림: 확인 이메일이 정지 �
 helpcenter.members.language: 언어
 helpcenter.emails.kb_sub_updated: '업데이트 된 글들'
 helpcenter.chat.message_uploading: '업로드중 ...'
-helpcenter.chat.agent: 에이전트
+helpcenter.general.agent: 에이전트
 helpcenter.emails.password_agent_reset_subject: '에이전트가 고객님의 비밀번호를 재설정 하였습니다'
 helpcenter.chat.log_unassigned: '에이전트가 배정되지 않았습니다'
 helpcenter.emails.password_agent_reset: '에이전트가 비밀번호를 재설정 하였습니다. 이 인증번호들로 로그인 하십시오'
@@ -127,4 +127,3 @@ helpcenter.emails.community_new: '피드백을 남겨주셔서 감사합니다'
 helpcenter.chat.form_feedback_title: '피드백을 보내주세요.'
 helpcenter.emails.community_topic_new_approved: '피드백이 승인되었습니다'
 helpcenter.tickets.list_status_resolved: 해결된
-helpcenter.chat.message_long_wait: '현재 상담 가능한 에이전트를 찾고있습니다; 일분 내의 시간이 소요됩니다. <br /><br />기다리시겠습니까? <a class="cancel-and-newticket-trigger"> 메세지를 남기시겠습니까?</a>'

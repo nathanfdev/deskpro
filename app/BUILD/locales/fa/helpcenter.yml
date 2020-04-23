@@ -40,7 +40,7 @@ helpcenter.account.email_btn_usersource_set: 'اضافه کردن ادرس ای�
 helpcenter.general.add_comment: 'اضافه کردن نظر'
 helpcenter.tickets.view_reply: 'اضافه کردن پاسخ'
 helpcenter.emails.email_new_confirm: 'اعتبار سنجی آدرس ایمیل شما'
-helpcenter.chat.log_agents: 'افراد سازمان'
+helpcenter.general.agents: 'افراد سازمان'
 helpcenter.emails.email_ticket_reminder: 'اقدام لازم: بلیط شما هنوز ارسال نشده است'
 helpcenter.chat.form_create_department: 'انتخاب دپارتمان'
 helpcenter.messenger.tickets.form.chooseAFile: 'انتخاب فایل'
@@ -183,7 +183,7 @@ helpcenter.community.form_topic_title: عنوان
 helpcenter.chat.window_upload_drag: 'فایل خود را در اینجا بکشید که در چت آپلود شود'
 helpcenter.general.related_downloads: 'فایل های مرتبط'
 helpcenter.community.attachments: 'فایل پیوست'
-helpcenter.chat.agent: فرد
+helpcenter.general.agent: فرد
 helpcenter.flashes.ticket_participant_already_error: "فردی که سعی کردید به عنوان یک شرکت کننده اضافه کنید، در حال حاضر یک شرکت کننده در این پیام است.\n"
 helpcenter.flashes.usersource_new_add_email_verify: "قبل از ایجاد حساب کاربری ما باید ایمیل شما را تأیید کنیم. لطفا صندوق پستی خود را برای پیوند تأیید بررسی کنید.\n"
 helpcenter.account.usersource_set_email_desc: 'قبل از اینکه بتوانید وارد شوید ما نیاز به آدرس ایمیل شما داریم. لطفا آدرس ایمیل خود را در زیر وارد کنید تا بتوانیم یک ایمیل تأیید به شما ارسال کنیم.'
@@ -205,7 +205,6 @@ helpcenter.chat.ended_no_agent: 'ما بسیار متاسفیم چون کسی د
 helpcenter.account.reset_password_sent_desc: 'ما درخواست بازنشانی رمز عبور خود را برای ایمیل زیر نشان داده ایم. اگر این آدرس ایمیل متعلق به یک حساب کاربری ثبت شده باشد، ما یک ایمیل با پیوند بازنشانی رمز عبور را به آدرس ایمیل اصلی آن حساب فرستاده ایم. برای دریافت دستورالعمل های بیشتر لطفا صندوق پستی ایمیل خود را بررسی کنید'
 helpcenter.emails.password_agent_reset_subject: 'ما رمز عبور شما را بازیابی کردیم'
 helpcenter.emails.community_topic_disapproved: 'ما می خواستیم به شما اطلاع دهیم که متاسفانه بازخورد شما کاهش یافته است و به طور عمومی در سایت ما ظاهر نخواهد شد.'
-helpcenter.chat.message_long_wait: 'ما هنوز در حال تلاش کردن برای پیدا کردن یک نماینده موجود برای چت کردن با شما هستیم; این به طور معمول کمتر از یک دقیقه طول می کشد. <br /><br />با عجله از سر راه بردارد؟ <a class="cancel-and-newticket-trigger">ترک ما پیغام به جای?</a>'
 helpcenter.account.set_password_sent_desc: 'ما یک ایمیل با دستورالعمل در مورد نحوه تنظیم رمز عبور خود به شما ارسال کردیم.'
 helpcenter.error.404_desc: 'متاسفانه صفحه مورد نظر یافت نشد.'
 helpcenter.chat.message_wait_timeout: 'متاسفم؛ هیچ نماینده ای در دسترس نیست'
@@ -267,7 +266,7 @@ helpcenter.direct_messages.reply_message: پیغام
 helpcenter.general.print: چاپ
 helpcenter.messenger.chat.ended: 'چت به پایان رسید'
 helpcenter.chat.message_ended_by_user: 'چت توسط کاربر به پایان رسید'
-helpcenter.tickets.list_user: کاربر
+helpcenter.general.user: کاربر
 helpcenter.chat.message_user_returned: 'کاربر بازگشته است'
 helpcenter.chat.message_user_timeout: 'کاربر به پایان رسیده است'
 helpcenter.sidebar.agents_available: 'کارشناس انلاین'

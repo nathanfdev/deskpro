@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\DevBundle\Command\Lang;
 
@@ -36,6 +34,7 @@ class HealthReportCommand extends ContainerAwareCommand
 
         if (!file_exists($langFile)) {
             $output->writeln('<error>Invalid file</error>');
+
             return 1;
         }
 
@@ -77,7 +76,7 @@ class HealthReportCommand extends ContainerAwareCommand
                 $probs[] = 'complex-html';
             }
 
-            if (preg_match('/<(b|i|u)/', $text)) {
+            if (preg_match('/<(b|i|u)[^r]/', $text)) {
                 $probs[] = 'legacy-html';
             }
 
@@ -107,7 +106,7 @@ class HealthReportCommand extends ContainerAwareCommand
         //-----------------------------------------
 
         $similarPhrases = [];
-        $foundKeys = [];
+        $foundKeys      = [];
 
         foreach ($phrases as $keyId => $text) {
             if (isset($foundKeys[$keyId])) {
@@ -129,7 +128,7 @@ class HealthReportCommand extends ContainerAwareCommand
 
             if ($similarTo) {
                 $foundKeys = $foundKeys + $similarTo + [$keyId];
-                $s = [$keyId => $text];
+                $s         = [$keyId => $text];
                 foreach ($similarTo as $k) {
                     $s[$k] = $phrases[$k];
                 }
@@ -142,7 +141,7 @@ class HealthReportCommand extends ContainerAwareCommand
         //-----------------------------------------
 
         ob_start();
-        include(__DIR__.'/HealthReport.html.tpl.php');
+        include __DIR__.'/HealthReport.html.tpl.php';
         ob_end_flush();
 
         return 0;

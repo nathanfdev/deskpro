@@ -47,7 +47,6 @@ helpcenter.messenger.tickets.form.submit: Gönder
 helpcenter.chat.form_chat_button_submit: Gönder
 helpcenter.general.show: Gösteri
 helpcenter.sidebar.news_title: Haberler
-helpcenter.chat.message_long_wait: 'Hala uygun bir personel bulmaya çalışıyoruz. Normalde bu işlem bir dakikadan az sürer. <br /><br />Aceleniz mi var? <a class="cancel-and-newticket-trigger">Beklemek yerine bize mesaj bırakın!</a>'
 helpcenter.tickets.rate_positive: Harika
 helpcenter.chat.error: 'Hatalı Sohbet'
 helpcenter.messenger.chat.save_ticket.button_no: Hayır
@@ -72,7 +71,7 @@ helpcenter.forms.label_password: Parola
 helpcenter.emails.password_reset_subject: 'Parola Sıfırla'
 helpcenter.emails.password_reset: 'Parola sıfırlama talebinde bulundunuz. Parolanızı sıfırlamak için aşağıdaki bağlantıya tıklayın:'
 helpcenter.chat.window_close_only: 'Pencereyi Kapat'
-helpcenter.chat.agent: Personel
+helpcenter.general.agent: Personel
 helpcenter.chat.log_unassigned: 'Personel atanamadı'
 helpcenter.chat.message_wait_timeout: 'Personel bulunamadı'
 helpcenter.chat.form_create_title: 'Personel ile Sohbet Başlat'

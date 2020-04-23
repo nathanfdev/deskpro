@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Translate
- */
+
 
 namespace Application\DeskPRO\Translate;
 
@@ -39,8 +35,8 @@ class Translate implements PersonContextInterface, TranslatorInterface
 {
     const EVENT_NO_PHRASE = 'DeskPRO_onTranslateNoPhrase';
 
-    static $icuPhrasePrefixes = [
-        'helpcenter.'
+    public static $icuPhrasePrefixes = [
+        'helpcenter.',
     ];
 
     /**
@@ -150,6 +146,8 @@ class Translate implements PersonContextInterface, TranslatorInterface
      * Set the current person context. This will also change the language to their preference.
      *
      * @var \Application\DeskPRO\Entity\Person
+     *
+     * @param mixed $load_previous_groups
      */
     public function setPersonContext(Person $person = null, $load_previous_groups = true)
     {
@@ -187,6 +185,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
         $this->setPersonContext($person);
 
         $e = null;
+
         try {
             $func($this, $person->getLanguage());
         } finally {
@@ -326,6 +325,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
         $this->setLanguage($language);
 
         $e = null;
+
         try {
             $func($this, $language);
         } catch (\Exception $e) {
@@ -355,6 +355,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
 
         $e   = null;
         $ret = null;
+
         try {
             $ret = $func($this, $language);
         } catch (\Exception $e) {
@@ -619,11 +620,11 @@ class Translate implements PersonContextInterface, TranslatorInterface
             if ($phraseName[0] == '/' && substr($phraseName, -1, 1) == '/') {
                 $regexPatterns[] = $phraseName;
 
-                // A simplified star pattern like admin.general.default*
+            // A simplified star pattern like admin.general.default*
             } elseif (strpos($phraseName, '*') !== false) {
                 $starPatterns[] = $phraseName;
 
-                // A fully-qualified phrase name
+            // A fully-qualified phrase name
             } else {
                 $phraseIds[] = $phraseName;
             }
@@ -770,6 +771,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
                 if ($usePhraseName && $this->hasPhrase($usePhraseName, $language)) {
                     $phraseText = $this->phrase($usePhraseName, [], $language);
                     $phraseName = $usePhraseName;
+
                     break;
                 }
             }
@@ -817,6 +819,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
      * @param $locale
      * @param $phraseId
      * @param $phraseText
+     *
      * @return \MessageFormatter
      */
     private function getMessageFormatter($locale, $phraseId, $phraseText)
@@ -869,22 +872,27 @@ class Translate implements PersonContextInterface, TranslatorInterface
             foreach (self::$icuPhrasePrefixes as $prefix) {
                 if (strpos($phrase_name, $prefix) === 0) {
                     $isICU = true;
+
                     break;
                 }
             }
         }
 
         if ($isICU) {
-            $locale = $lang ? str_replace('-', '_', $lang->getLocale()) : 'en_US';
+            $locale  = $lang ? str_replace('-', '_', $lang->getLocale()) : 'en_US';
             $icuVars = [];
             foreach ($vars as $k => $v) {
                 if (is_scalar($v) || (is_object($v) && get_class($v) === 'DateTime')) {
                     if ($k === 'count') {
                         $v = intval($v);
                     }
+                    if (is_scalar($v) && preg_match('/(^date_|_date$|date)/', $k)) {
+                        $v = new \DateTime($v);
+                    }
                     $icuVars[$k] = $v;
                 }
             }
+
             try {
                 $fmt        = $this->getMessageFormatter($locale, $phrase_name, $this->getPhraseText($phrase_name, $language));
                 $phraseText = $fmt->format($icuVars);
@@ -893,7 +901,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
             }
 
             if ($phraseText === false) {
-                // fallback on enlgish
+                // fallback on english
                 if ($locale !== 'en_US') {
                     return $this->phrase($phrase_name, $vars, SystemLanguage::getInstance());
                 } else {
@@ -945,7 +953,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
             $m = null;
             if (preg_match_all('#ng_var\(([a-zA-Z0-9\-_\.]+)\)#', $phraseText, $m, \PREG_SET_ORDER)) {
                 foreach ($m as $match) {
-                    $phraseText = str_replace($match[0], '{{' . $match[1] . '}}', $phraseText);
+                    $phraseText = str_replace($match[0], '{{'.$match[1].'}}', $phraseText);
                 }
             }
         }
@@ -1030,6 +1038,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
                 $locales[$language->getLocale()] = $language;
                 if ($language->getLocale() == $locale) {
                     $chosenLanguage = $language;
+
                     break;
                 }
             }
@@ -1043,6 +1052,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
      *
      * @param       $phraseText
      * @param array $vars
+     * @param mixed $doubleCurly
      *
      * @return string
      */
@@ -1155,15 +1165,19 @@ class Translate implements PersonContextInterface, TranslatorInterface
                 switch ($m[1]) {
                     case 'D':
                         $phraseName = $prefix.'short-day_'.strtolower(date('l', $ts));
+
                         break;
                     case 'l':
                         $phraseName = $prefix.'long-day_'.strtolower(date('l', $ts));
+
                         break;
                     case 'F':
                         $phraseName = $prefix.'long-month_'.strtolower(date('F', $ts));
+
                         break;
                     case 'M':
                         $phraseName = $prefix.'short-month_'.strtolower(date('F', $ts));
+
                         break;
                     case 'P':
                         return $tzOffset;
@@ -1209,18 +1223,23 @@ class Translate implements PersonContextInterface, TranslatorInterface
                 switch ($parts[1]) {
                     case 'years':
                         $phraseName = $prefix.'x_year';
+
                         break;
                     case 'days':
                         $phraseName = $prefix.'x_day';
+
                         break;
                     case 'hours':
                         $phraseName = $prefix.'x_hour';
+
                         break;
                     case 'minutes':
                         $phraseName = $prefix.'x_minute';
+
                         break;
                     case 'seconds':
                         $phraseName = $prefix.'x_second';
+
                         break;
                     default:
                         // never matches
@@ -1237,6 +1256,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
      * Check to see if a phrase exists.
      *
      * @param string $phrase_name
+     * @param null|mixed $language
      *
      * @return bool
      */

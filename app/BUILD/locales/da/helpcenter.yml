@@ -26,7 +26,7 @@ helpcenter.emails.validate_email: 'Bekræft venligst at e-mailadressen er din, v
 helpcenter.emails.community_topic_agent_validation: 'Bemærk, at din community topic, ikke vil blive vist offentligt, før en af vores agenter gennemgår den'
 helpcenter.direct_messages.reply_message: Besked
 helpcenter.account.section_desc_login_external: 'Brug linksene nedenfor hvis du bruger din konto med et anden log ind tjeneste.'
-helpcenter.tickets.list_user: Bruger
+helpcenter.general.user: Bruger
 helpcenter.chat.message_user_returned: 'Brugeren er vendt tilbage'
 helpcenter.chat.message_user_timeout: 'Brugeren har haft timeout'
 helpcenter.chat.message_ended_by_user: 'Chat afsluttet af brugeren'
@@ -235,8 +235,8 @@ helpcenter.account.login_register_btn: Registrer
 helpcenter.general.related_downloads: 'Relaterede filer'
 helpcenter.general.related_news: 'Relaterede nyheder'
 helpcenter.general.related_pages: 'Relaterede sider'
-helpcenter.chat.log_agents: Sagsbehandler
-helpcenter.chat.agent: Sagsbehandler
+helpcenter.general.agents: Sagsbehandler
+helpcenter.general.agent: Sagsbehandler
 helpcenter.tickets.list_status_agent: 'Sagsbehandler vil svare'
 helpcenter.emails.ticket_access_ticket_online: 'Se og rediger denne sag online:'
 helpcenter.emails.label_view_online: 'Se online'
@@ -305,7 +305,6 @@ helpcenter.account.reset_password_sent_desc: 'Vi har modtaget din anmodning om n
 helpcenter.account.set_password_sent_desc: 'Vi har sendt dig en e-mail med instruktioner om, hvordan du skifter din adgangskode.'
 helpcenter.account.reset_password_sent_to: 'Vi har sendt en e-mail til'
 helpcenter.error.404_desc: 'Vi kan desværre ikke finde den side.'
-helpcenter.chat.message_long_wait: 'Vi prøver stadig at finde en ledig medarbejder til din chat; normalt tager dette mindre end et minut.<br /><br />Har du travlt? <a class="cancel-and-newticket-trigger">Så send os en besked istedet?</a>'
 helpcenter.chat.message_wait: 'Vi søger efter en medarbejder til dig'
 helpcenter.emails.community_topic_disapproved: 'Vi ønskede at fortælle dig, at din community topic desværre er blevet afvist, og vil ikke blive vist offentligt på vores hjemmeside.'
 helpcenter.emails.community_topic_approved: 'Vi ønskede at fortælle dig, at din community topic er godkendt, og nu er offentliggjort på vores hjemmeside.'

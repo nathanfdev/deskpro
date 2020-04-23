@@ -28,7 +28,7 @@ helpcenter.tickets.view_reply_errors: 'Bei der Übertragung ist ein Fehler aufge
 helpcenter.flashes.ticket_participant_add_unknown_error: 'Beim Hinzufügen Ihres Teilnehmers ist ein Problem aufgetreten. Bitte versuche es erneut.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Beim Versuch, den Teilnehmer zu entfernen, ist ein Problem aufgetreten. Bitte versuche es erneut.'
 helpcenter.general.prop_popularity_desc: 'Beliebteste zuerst'
-helpcenter.tickets.list_user: Benutzer
+helpcenter.general.user: Benutzer
 helpcenter.account.login_password_reminder: 'Benötigen Sie eine Passwort-Erinnerung?'
 helpcenter.emails.email_new_confirm: 'Bestätigen Sie Ihre E-Mail-Adresse'
 helpcenter.tickets.list_subject: Betreff
@@ -176,8 +176,8 @@ helpcenter.general.go: Los
 helpcenter.chat.message_uploading: 'Lädt hoch…'
 helpcenter.tickets.resolve_my_ticket_btn: 'Mein Ticket schließen'
 helpcenter.general.prop_comments_desc: 'Meiste Kommentare zuerst'
-helpcenter.chat.log_agents: Mitarbeiter
-helpcenter.chat.agent: Mitarbeiter
+helpcenter.general.agents: Mitarbeiter
+helpcenter.general.agent: Mitarbeiter
 helpcenter.general.agent_bar_agent_home: Mitarbeiter-Startseite
 helpcenter.direct_messages.reply_message: Nachricht
 helpcenter.tickets.view_label_your_name_placeholder: 'Name (Pflichtangabe)'
@@ -305,7 +305,6 @@ helpcenter.emails.community_topic_disapproved: 'Wir möchten Ihnen mitteilen, da
 helpcenter.flashes.usersource_new_add_email_verify: 'Wir müssen Ihre E-Mail-Adresse verifizieren, bevor wir Ihr Konto erstellen können. Bitte prüfen Sie Ihren Posteingang auf die E-Mail mit dem Validierungs-Link.'
 helpcenter.flashes.user_add_email_verify: 'Wir müssen Ihre E-Mail-Adresse verifizieren, bevor wir sie zu Ihrem Konto hinzufügen können. Bitte prüfen Sie Ihren Posteingang auf die E-Mail mit dem Validierungs-Link.'
 helpcenter.tickets.not_allowed_title: 'Wir sind sofort zurück'
-helpcenter.chat.message_long_wait: 'Wir versuchen immer noch einen Mitarbeiter zu finden, der Ihren Chat annehmen kann. Dies dauert in der Regel weniger als eine Minute.<br /><br />Sie sind in Eile?<a class="cancel-and-newticket-trigger">Wollen Sie uns stattdessen eine Nachricht hinterlassen?</a>'
 helpcenter.tickets.view_unassigned_more: 'Wird in Kürze zugewiesen.'
 helpcenter.articles.section_title: Wissensdatenbank
 helpcenter.general.agent_bar_admin_kb: 'Wissensdatenbank Einstellungen'

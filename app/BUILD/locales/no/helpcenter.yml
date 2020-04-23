@@ -84,7 +84,6 @@ helpcenter.tickets.new_intro: 'Vennligst fyll ut skjema og en av våre medarbeid
 helpcenter.emails.profile_email_link_validate: 'Vennligst klikk følgende lenke for å bekrefte epost addressen din:'
 helpcenter.chat.ended_no_agent: 'Vi beklager, men det er ingen som kan chatte med deg akkurat nå. Vennligst send oss en epost eller prøv senere.'
 helpcenter.chat.message_wait: 'Vi finner en medarbeider til deg'
-helpcenter.chat.message_long_wait: 'Vi prøver fremdeles å finne en tilgjengelig medarbeider til å svare, dette tar normalt under ett minutt. <br /><br />Travelt? <a class="cancel-and-newticket-trigger">Skriv en beskjed til oss isteden</a>'
 helpcenter.emails.community_topic_disapproved: 'Vi sender deg denne eposten for å fortelle deg at din tilbakemelding ikke vil bli vist på våre nettsider.'
 helpcenter.emails.community_topic_approved: 'Vi sender deg en epost for å fortelle deg at din tilbakemelding har blitt godkjent og kan ses på nettsiden vår.'
 helpcenter.chat.window_resume_button: 'Åpne chat'

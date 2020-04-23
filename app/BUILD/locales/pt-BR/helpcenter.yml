@@ -3,9 +3,8 @@ helpcenter.chat.window_resume_button: 'Abrir a sua conversa'
 helpcenter.chat.window_open_new: 'Abrir esta conversa numa nova janela'
 helpcenter.general.add_comment: 'Adicionar comentário'
 helpcenter.account.email_btn_usersource_set: 'Adicionar endereço de e-mail'
-helpcenter.chat.agent: Agente
+helpcenter.general.agent: Agente
 helpcenter.tickets.list_agent: 'Agente designado'
-helpcenter.chat.message_long_wait: 'Ainda nos encontramos a procurar por um agente para atender a sua conversação, isto normalmente demore menos de um minuto.<br /><br />Está com pressa? <a class="cancel-and-newticket-trigger"> deixe-nos uma mensagem em vez disso? </a>'
 helpcenter.account.profile_delete_picture: 'Alterar ou excluir a foto do perfil?'
 helpcenter.community.attachments: Anexos
 helpcenter.account.usersource_set_email_desc: 'Antes que você possa entrar, precisamos do seu endereço de e-mail. Digite seu endereço de e-mail abaixo para que possamos enviar um e-mail de verificação.'

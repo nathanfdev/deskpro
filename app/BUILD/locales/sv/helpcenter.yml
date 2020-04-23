@@ -1,11 +1,11 @@
 helpcenter.general.admin_home: 'Admin hem'
 helpcenter.general.agent_bar_agent_home: 'Agent hem'
-helpcenter.chat.log_agents: Agenter
+helpcenter.general.agents: Agenter
 helpcenter.general.everything: Allt
 helpcenter.account.reset_password_invalid_input: 'Ange en giltig e-postadress eller användarnamn'
 helpcenter.flashes.ticket_participant_email_error: 'Ange ett giltigt e-postmeddelande till din deltagare och försök igen.'
 helpcenter.account.section_desc_login_external: 'Använd länkarna nedan om du har ett konto hos en annan leverantör.'
-helpcenter.tickets.list_user: Användare
+helpcenter.general.user: Användare
 helpcenter.chat.message_user_returned: 'Användaren har kommit tillbaka'
 helpcenter.chat.message_user_timeout: 'Användaren kopplades ifrån'
 helpcenter.general.btn_cancel: Avbryt
@@ -294,7 +294,6 @@ helpcenter.chat.form_feedback_rate_time: 'Var vår svarstid tillräckligt snabb?
 helpcenter.emails.ticket_no_autoresponse: 'Varning: Bekräftelsemail är avstängt'
 helpcenter.chat.ended_no_agent: 'Vi beklagar. Just nu finns det ingen agent tillgänglig. Skicka oss ett mail eller försök igen senare'
 helpcenter.chat.message_wait: 'Vi finner en agent åt dig'
-helpcenter.chat.message_long_wait: 'Vi försöker fortfarande att hitta en ledig agent som kan ta din chatt; detta tar normalt mindre än en minut. <br /><br />Har du bråttom? <a class="cancel-and-newticket-trigger">lämna oss ett meddelande istället?</a>'
 helpcenter.account.set_password_sent_desc: 'Vi har skickat ett e-postmeddelande med instruktioner om hur du väljer ett lösenord.'
 helpcenter.account.reset_password_sent_to: 'Vi har skickat ett mail till'
 helpcenter.account.reset_password_sent_desc: 'Vi har tagit emot din begäran om att återställa lösenordet för e-postadressen som visas nedan. Om e-postadressen tillhör ett registrerat konto så har vi skickat ett e-postmeddelande innehållandes en länk för att återställa lösenordet. Kontrollera din inkorg för vidare instruktioner.'

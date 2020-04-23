@@ -176,10 +176,12 @@
             {# only shows this if its been more than 10 minutes since the last message was posted #}
             {# to avoid "your last message was 1 second ago" after every reply #}
             {% if ticket.date_last_user_reply and ticket.messages|length > 1 and last_user_reply_in_seconds > 600 %}
-                {{ phrase('helpcenter.tickets.view_last_message', { ago: date_ago(ticket.date_last_user_reply, null, false) }) }}
+                <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_last_message') }}</h3>
+                <p>{{ date_ago(ticket.date_last_user_reply, null, false) }}</p>
                 {# similarly, only show the "created ago" message if it has been more than 10 mins #}
             {% elseif created_in_seconds > 600 %}
-                {{ phrase('helpcenter.tickets.view_you_created', { ago: date_ago(ticket.date_created, null, false) }) }}
+                <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_you_created') }}</h3>
+                <p>{{ date_ago(ticket.date_last_user_reply, null, false) }}</p>
             {% endif %}
         {% endif %}
     </div>

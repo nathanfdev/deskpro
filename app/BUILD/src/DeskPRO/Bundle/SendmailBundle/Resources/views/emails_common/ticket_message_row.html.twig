@@ -3,9 +3,9 @@
 	<tr><td>
 		<div class="dp-author-row">
 			{% if can_view_email_addresses(recipient.id) and (show_author_email or person_id == message.person.id or not message.person.is_agent) %}
-				{{ phrase('helpcenter.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: (is_to_agent ? message.person.display_name|e : message.person.display_name|e) ~ ' &lt;' ~ message.person.primary_email ~ '&gt;' }, true) }}
+				{{ phrase('helpcenter.emails.ticket_message_title', { created_date: message.date_created, author: (is_to_agent ? message.person.display_name|e : message.person.display_name|e) ~ ' &lt;' ~ message.person.primary_email ~ '&gt;' }, true) }}
 			{% else %}
-				{{ phrase('helpcenter.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: (is_to_agent ? message.person.display_name|e : message.person.display_name|e) }, true) }}
+				{{ phrase('helpcenter.emails.ticket_message_title', { created_date: message.date_created, author: (is_to_agent ? message.person.display_name|e : message.person.display_name|e) }, true) }}
 			{% endif %}
 		</div>
 	</td></tr>

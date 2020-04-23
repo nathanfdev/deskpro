@@ -4,7 +4,7 @@
   <div class="dpx-attachment">
     <a href="{{ attachment.download_url }}?dl=1"
        class="dp-po-chat-attachments-link {% if attachment.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
-       {% if not attachment.is_image %}data-content-type="{{ attachment.content_type }}"{% endif %}
+       {% if not attachment.is_image and attachment.content_type is defined %}data-content-type="{{ attachment.content_type }}"{% endif %}
     >
 
       {% if attachment.is_image %}
@@ -25,7 +25,7 @@
       {% else %}
         {{ phrase('helpcenter.chat.you') }} ({{ message.author.primary_email }})
       {% endif %}
-      {% if message.origin == 'agent'  %}<span class="badge badge-primary badge-small">{{ phrase('helpcenter.chat.agent') }}</span>{% endif %}
+      {% if message.origin == 'agent'  %}<span class="badge badge-primary badge-small">{{ phrase('helpcenter.general.agent') }}</span>{% endif %}
     </div>
     <div class="dp-po-time">
       <i class="dp-po-icon far fa-clock"></i>
@@ -64,7 +64,7 @@
                     {% set lastMessage = chat_messages|filter(m => m.author)|last %}
                     {% set lastPerson = lastMessage.author %}
                     <li class="dp-po-post-info-item">
-                      {{ phrase('helpcenter.chat.last_updated_by', { date: date(lastMessage.date_created, 'day'), person: lastPerson }) }}
+                      {{ phrase('helpcenter.chat.last_updated_by', { date_updated: lastMessage.date_created, person_name: lastPerson }) }}
                     </li>
                     <li class="dp-po-post-info-item">
                       <i class="dp-po-icon far fa-calendar-alt"></i> <b>{{ date(chat.date_created, 'day') }}</b>
@@ -136,7 +136,7 @@
               </p>
               {% set allAgentsExceptAssigned = chat.agent_participants|filter(a => a != chat.agent) %}
               {% if allAgentsExceptAssigned|length > 0 %}
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_agents') }}</h3>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.agents') }}</h3>
               <p>
                 <div class="dp-po-avatar dp-po-avatar-round">
                   {% for agent in allAgentsExceptAssigned %}

@@ -85,7 +85,7 @@ helpcenter.general.agent_bar_admin_community: Feedback-instellingen
 helpcenter.error.400_title: 'Foutief verzoek'
 helpcenter.general.go: Gaan
 helpcenter.account.section_desc_login_external: 'Gebruik de links hieronder als u een account van een andere provider heeft.'
-helpcenter.tickets.list_user: Gebruiker
+helpcenter.general.user: Gebruiker
 helpcenter.chat.message_user_returned: 'Gebruiker is teruggekeerd'
 helpcenter.chat.message_user_timeout: 'Gebruiker sessie verlopen'
 helpcenter.general.label_search_enter_label: 'Geef een label om naar te zoek op'
@@ -139,8 +139,8 @@ helpcenter.emails.community_topic_agent_validation: 'Let er op dat uw gemeenscha
 helpcenter.tickets.please_login_to_reply: 'Log in om te antwoorden.'
 helpcenter.tickets.new_ticket_button: 'Maak een nieuw ticket'
 helpcenter.tickets.resolve_my_ticket_btn: 'Markeer mijn ticket als opgelost'
-helpcenter.chat.agent: Medewerker
-helpcenter.chat.log_agents: Medewerkers
+helpcenter.general.agent: Medewerker
+helpcenter.general.agents: Medewerkers
 helpcenter.general.prop_popularity_desc: 'Meest populaire eerst'
 helpcenter.general.prop_comments_desc: 'Meeste reacties eerst'
 helpcenter.general.prop_views_desc: 'Meeste weergaven eerst'
@@ -316,7 +316,6 @@ helpcenter.chat.form_feedback_rate_time: 'Was onze reactietijd snel genoeg?'
 helpcenter.account.reset_password_sent_to: 'We hebben een e-mail verstuurd naar'
 helpcenter.account.set_password_sent_desc: 'We hebben u een e-mail gestuurd met instructies over hoe u uw wachtwoord kunt instellen.'
 helpcenter.account.reset_password_sent_desc: 'We hebben uw aanvraag voor een wachtwoordreset ontvangen voor het e-mailadres hieronder. Als dit e-mailadres toebehoort aan een geregistreerde account, hebben we een e-mail met een wachtwoordreset-link gestuurd naar het primaire e-mailadres van het account. Controleer uw inbox van uw e-mail voor verdere instructies.'
-helpcenter.chat.message_long_wait: 'We kunnen nog geen beschikbare medewerker voor u vinden. Dit duurt normaal niet langer dan een minuut. <br /><br />Heeft u haast?  <a class="cancel-and-newticket-trigger"> Laat een bericht achter? </a>'
 helpcenter.flashes.user_add_email_verify: 'We moeten uw e-mailadres verifiëren voordat we het aan uw account toevoegen. Controleer uw inbox van uw e-mail voor een verificatielink.'
 helpcenter.flashes.usersource_new_add_email_verify: 'We moeten uw e-mailadres verifiëren voordat we uw account aan kunnen maken. Controleer uw inbox voor een verificatielink.'
 helpcenter.tickets.not_allowed_title: 'We zijn zo terug'

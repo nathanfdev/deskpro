@@ -4,7 +4,7 @@ helpcenter.members.timezone: Aikavyöhyke
 helpcenter.chat.form_create_button_submit: 'Aloita keskustelu'
 helpcenter.chat.form_create_title: 'Aloita keskustelu tukihenkilön kanssa'
 helpcenter.tickets.rate_support: 'Arvioi tuki'
-helpcenter.chat.agent: Asiantuntija
+helpcenter.general.agent: Asiantuntija
 helpcenter.chat.log_unassigned: 'Asiantuntijaa ei ole vielä valittu'
 helpcenter.chat.window_start_button: 'Avaa chat keskustelu kanssamme tästä'
 helpcenter.chat.window_resume_button: 'Avaa keskustelu'
@@ -146,5 +146,4 @@ helpcenter.emails.ticket_no_autoresponse: 'Varoitus: vahvistus sähköpostit poi
 helpcenter.general.related_community: 'Vastaava palaute'
 helpcenter.direct_messages.reply_message: Viesti
 helpcenter.emails.reject_resolved: 'Viestiäsi ei voitu hyväksyä, koska tukipyyntösi on jo ratkaistu. Edustajamme ei lue tai vastaa tähän viestiin.'
-helpcenter.chat.message_long_wait: 'Yritämme edelleen löytää vapaana olevaa asiantuntijaa; normaalisti tämä kestää alle minuutin. <br /><br />Etkö ehdi odottaa? <a class="cancel-and-newticket-trigger">Jätä meille viesti?</a>'
 helpcenter.emails.kb_sub_new_and_updated: 'uudet ja päivitetyt artikkelit'

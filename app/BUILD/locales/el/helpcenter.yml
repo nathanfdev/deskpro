@@ -107,8 +107,8 @@ helpcenter.account.section_desc_register: 'Εγγραφείτε για να δι
 helpcenter.account.section_title_usersource_email: 'Εισάγετε το email σας'
 helpcenter.tickets.mark_unresolved: 'Εκ νέου άνοιγμα ticket'
 helpcenter.general.go: Εκκίνηση
-helpcenter.chat.log_agents: 'Εκπρόσωπος Support'
-helpcenter.chat.agent: 'Εκπρόσωπος Support'
+helpcenter.general.agents: 'Εκπρόσωπος Support'
+helpcenter.general.agent: 'Εκπρόσωπος Support'
 helpcenter.tickets.list_agent: 'Εκπρόσωπος Support που του έχει ανατεθεί'
 helpcenter.general.print: Εκτύπωση
 helpcenter.account.change_password_btn: 'Ενημέρωση κωδικού πρόσβασης'
@@ -243,7 +243,6 @@ helpcenter.tickets.view_btn_add_to_ticket: 'Προσθήκη σε ticket'
 helpcenter.general.add_comment: 'Προσθήκη σχολίου'
 helpcenter.account.reset_password_lockout: 'Προσπαθήσατε να επαναφέρετε τον κωδικό πρόσβασης πολλές φορές. Έχετε μπλοκαριστεί για ένα μικρό χρονικό διάστημα. Παρακαλούμε δοκιμάστε ξανά αργότερα.'
 helpcenter.chat.message_wait: 'Προσπαθούμε να εντοπίσουμε έναν εκπρόσωπο του Support μας για να σας εξυπηρετήσει'
-helpcenter.chat.message_long_wait: 'Προσπαθούμε να εντοπίσουμε κάποιον διαθέσιμο εκπρόσωπο του Support μας για να απαντήσει στο chat σας. Συνήθως χρειαζόμαστε λιγότερο από ένα λεπτό.<br /><br />Βιάζεστε;<a class="cancel-and-newticket-trigger">Μπορείτε να μας αφήσετε μήνυμα να επικοινωνήσουμε μαζί σας!</a>'
 helpcenter.messenger.tickets.form.priority: Προτεραιότητα
 helpcenter.flashes.guest_new_ticket_must_verify: 'Προτού αποδεχτούμε το αίτημά σας, πρέπει να επιβεβαιώσετε το email σας. Ελέγξτε τα εισερχόμενα email σας. Σας έχουμε στείλει ένα link επιβεβαίωσης.'
 helpcenter.flashes.guest_content_must_verify: 'Προτού μπορέσουμε να δημοσιεύσουμε το περιεχόμενό σας, πρέπει να επιβεβαιώσετε το email σας. Ελέγξτε τα εισερχόμενα email σας. Σας έχουμε στείλει ένα link επιβεβαίωσης.'
@@ -317,7 +316,7 @@ helpcenter.flashes.ticket_participant_add_unknown_error: 'Υπήρξε ένα π
 helpcenter.messenger.tickets.form.submit: Υποβολή
 helpcenter.general.prop_rating_desc: 'Υψηλότερη βαθμολογία πρώτα'
 helpcenter.general.prop_rating_asc: 'Χαμηλότερη βαθμολογία πρώτα'
-helpcenter.tickets.list_user: Χρήστης
+helpcenter.general.user: Χρήστης
 helpcenter.flashes.user_add_email_verify: 'Χρειάζεται επιβεβαίωση του email σας πριν προστεθεί στον λογαριασμό σας. Παρακαλούμε ελέγξτε τα εισερχόμενά σας για το link επιβεβαίωσης.'
 helpcenter.tickets.list_status_user: 'Χρειάζεται να απαντήσετε'
 helpcenter.tickets.need_login_title: 'Χρειάζεται να συνδεθείτε για να δημιουργήσετε ένα νέο ticket'

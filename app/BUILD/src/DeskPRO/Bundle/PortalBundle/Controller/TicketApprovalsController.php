@@ -122,13 +122,13 @@ class TicketApprovalsController extends AbstractController
 
                 if ($approvalResponse->isApproved()) {
                     $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.approved-by', 'helpcenter.ticket_approvals.approved_by'], [
-                        'person'   => $approval->getCreatedBy()->getCommunityName(),
-                        'template' => $approval->getTemplate()->getName(),
+                        'person_name'   => $approval->getCreatedBy()->getCommunityName(),
+                        'template'      => $approval->getTemplate()->getName(),
                     ]));
                 } else {
                     $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.rejected-by', 'helpcenter.ticket_approvals.rejected_by'], [
-                        'person'   => $approval->getCreatedBy()->getCommunityName(),
-                        'template' => $approval->getTemplate()->getName(),
+                        'person_name'   => $approval->getCreatedBy()->getCommunityName(),
+                        'template'      => $approval->getTemplate()->getName(),
                     ]));
                 }
             }
@@ -175,8 +175,8 @@ class TicketApprovalsController extends AbstractController
                 $this->getApprovalManager()->createContext(ExecutorContext::METHOD_WEB, $this->getUser())
             );
             $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.approved-by', 'helpcenter.ticket_approvals.approved_by'], [
-                'person'   => $approval->getCreatedBy()->getCommunityName(),
-                'template' => $approval->getTemplate()->getName(),
+                'person_name'   => $approval->getCreatedBy()->getCommunityName(),
+                'template'      => $approval->getTemplate()->getName(),
             ]));
         } catch (\DomainException $e) {
             throw new NotFoundHttpException($e->getMessage(), $e);
@@ -209,8 +209,8 @@ class TicketApprovalsController extends AbstractController
                 $this->getApprovalManager()->createContext(ExecutorContext::METHOD_WEB, $this->getUser())
             );
             $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.rejected-by', 'helpcenter.ticket_approvals.rejected_by'], [
-                'person'   => $approval->getCreatedBy()->getCommunityName(),
-                'template' => $approval->getTemplate()->getName(),
+                'person_name'   => $approval->getCreatedBy()->getCommunityName(),
+                'template'      => $approval->getTemplate()->getName(),
             ]));
         } catch (\DomainException $e) {
             throw new NotFoundHttpException($e->getMessage(), $e);

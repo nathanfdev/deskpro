@@ -84,7 +84,6 @@ helpcenter.general.rate_page_positive: 参考になった
 helpcenter.community.btn_vote: 同意
 helpcenter.community.form_full_name: 名前
 helpcenter.chat.form_feedback_rate_time: 対応するまでにかかった時間は許容範囲でしたか？
-helpcenter.chat.message_long_wait: '対応可能なエージェントを探しています。; 通常この作業には、数分程度の時間をいただきます。<br /><br />お急ぎの場合<a class="cancel-and-newticket-trigger">チャットの代わりにメッセージを残されますか？</a>'
 helpcenter.account.email_btn_resend_validation: 承認のためのEメールを再送
 helpcenter.tickets.list_agent: 担当エージェント
 helpcenter.emails.community_topic_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。

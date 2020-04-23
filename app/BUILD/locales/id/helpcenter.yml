@@ -4,7 +4,7 @@ helpcenter.sidebar.agents_available: 'Agen Tersedia'
 helpcenter.tickets.view_unassigned_more: 'Agen akan ditugaskan'
 helpcenter.tickets.list_status_agent: 'Agen kami akan menanggapi'
 helpcenter.emails.password_agent_reset: 'Agen telah melakukan set ulang kata kunci Anda. Anda bisa masuk dengan detil sebagai berikut'
-helpcenter.chat.log_agents: Agent
+helpcenter.general.agents: Agent
 helpcenter.emails.password_agent_reset_subject: 'Agent telah mengatur ulang kata sandi Anda'
 helpcenter.tickets.list_agent: 'Agent yang ditugaskan'
 helpcenter.chat.window_end_chat: 'Akhiri Obrolan'
@@ -126,7 +126,6 @@ helpcenter.general.nav_downloads_desc: 'Jelajahi koleksi unduhan kami'
 helpcenter.emails.ratelimit_submit_online: 'Jika ini adalah kesalahan dan Anda perlu menghubungi kami segera, Anda dapat melewati filter email ini dan mengirimkan tiket secara online:'
 helpcenter.community.form_topic_title: Judul
 helpcenter.tickets.not_allowed_title: 'Kami akan kembali'
-helpcenter.chat.message_long_wait: 'Kami masih berusaha mencari agent yang tersedia untuk melayani Obrolan Anda; Hal tersebut biasanya membutuhkan waktu kurang dari satu menit. <br /><br />In a rush? <a class="cancel-and-newticket-trigger">tinggalkan pesan untuk kami?</a>'
 helpcenter.chat.message_wait: 'Kami menemukan agent untuk Anda'
 helpcenter.account.reset_password_sent_to: 'Kami mengirim email/surat elektronik ke'
 helpcenter.chat.ended_no_agent: 'Kami mohon maaf karena saat ini tidak ada agent yang tersedia untuk melayani Obrolan Anda sekarang. Silahkan email kami atau coba lagi nanti.'
@@ -211,7 +210,7 @@ helpcenter.general.agent_bar_admin_lang: 'Pengaturan Bahasa'
 helpcenter.general.agent_bar_admin_community: 'Pengaturan Tanggapan'
 helpcenter.general.agent_bar_admin_dl: 'Pengaturan Unduhan'
 helpcenter.general.agent_bar_admin_kb: 'Pengaturan dasar pengetahuan'
-helpcenter.tickets.list_user: Pengguna
+helpcenter.general.user: Pengguna
 helpcenter.chat.message_user_timeout: 'Pengguna kehabisan waktu'
 helpcenter.chat.message_user_returned: 'Pengguna telah kembali'
 helpcenter.account.change_password_btn: 'Perbarui kata sandi'

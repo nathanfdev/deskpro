@@ -3,10 +3,10 @@ helpcenter.account.reset_password_sent_to: 'Abbiamo mandato una mail a'
 helpcenter.account.reset_password_sent_desc: 'Abbiamo ricevuto la tua richiesta di reimpostazione della password per l''e-mail sottostante. Se questo indirizzo email appartiene a un account registrato, abbiamo inviato una e-mail con un link di reimpostazione della password all''indirizzo email principale di tale account. Controlla la tua casella di posta per ulteriori istruzioni.'
 helpcenter.account.registration_set_password: 'Abbiamo rilevato che un account per l''email esiste già, ma non ha ancora capacità d''accesso. Abbiamo mandato una mail che ti permette di impostare una password ed effettuare l''accesso. Controlla la tua email'
 helpcenter.account.section_title_login: Accedi
-helpcenter.chat.agent: Agente
+helpcenter.general.agent: Agente
 helpcenter.tickets.list_agent: 'Agente Assegnato'
 helpcenter.general.agent_bar_agent_home: 'Agente Home'
-helpcenter.chat.log_agents: Agenti
+helpcenter.general.agents: Agenti
 helpcenter.sidebar.agents_available: 'Agenti Disponibili'
 helpcenter.account.change_password_btn: 'Aggiorna Password'
 helpcenter.general.updated: Aggiornato
@@ -56,7 +56,6 @@ helpcenter.tickets.new_intro: 'Completa questo modulo e un membro dei nostri age
 helpcenter.community.btn_vote: Concordo
 helpcenter.general.share: Condividi
 helpcenter.tickets.new_section_title: Contattaci
-helpcenter.chat.message_long_wait: 'Continuiamo a cercare un agente disponibile a prendere la chat; questo normalmente impiega meno di un minuto. <br /><br />Hai fretta? <a class="cancel-and-newticket-trigger">Vuoi lasciarci un messaggio?</a>'
 helpcenter.emails.email_new_confirm: 'Convalida il tuo indirizzo email'
 helpcenter.tickets.new_ticket_button: 'Crea un nuovo biglietto'
 helpcenter.general.rate_page: 'Dai un voto alla qualità di questa pagina'
@@ -314,7 +313,7 @@ helpcenter.tickets.view_unassigned_more: 'Un agente sarà assegnato'
 helpcenter.emails.password_agent_reset: 'Un nostro agente ha resettato la tua password. Puoi fare il login con queste credenziali'
 helpcenter.emails.ticket_new_participant: 'Una nuova persona è stata aggiunta al tuo ticket'
 helpcenter.account.section_desc_login_external: 'Usa il link sottostante se hai un account con un altro gestore.'
-helpcenter.tickets.list_user: Utente
+helpcenter.general.user: Utente
 helpcenter.general.rate_page_positive: Utile
 helpcenter.general.go: Vai
 helpcenter.tickets.rate_support: 'Valuta il tuo supporto'

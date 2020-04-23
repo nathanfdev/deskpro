@@ -80,7 +80,6 @@ helpcenter.community.attachments: Mellékletek
 helpcenter.forms.label_save: Mentés
 helpcenter.emails.ticket_validate: 'Mielőtt munkatársaink feldolgozhatnák üzenetét,<br /><br />meg kell erősítenie e-mail címét.'
 helpcenter.general.everything: Minden
-helpcenter.chat.message_long_wait: 'Munkatársaink jelenleg elfoglaltak. <br /><br />Sürgős esetben <a class="cancel-and-newticket-trigger">hagyjon üzenetet a várakozás helyett!</a>'
 helpcenter.emails.password_agent_reset: 'Munkatársunk alaphelyzetbe állította az Ön jelszavát. Ezután a következő adatokkal tud bejelentkezni weboldalunkon:'
 helpcenter.emails.comment_deleted_subject: 'Munkatársunk ellenőrizte hozzászólását'
 helpcenter.general.btn_cancel: Mégsem

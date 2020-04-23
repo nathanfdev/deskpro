@@ -134,7 +134,7 @@
                     <td>pre-rendered-datetime</td>
                     <td>
                         This rule matches if a variable {date} or {time} is detected; it's a guess that it's a pre-rendered variable
-                        that is being inserted into a phrase as a string instead instead of using the the ICU formatted value (<a href="https://formatjs.io/guides/message-syntax/">see</a>).
+                        that is being inserted into a phrase as a string instead instead of using the the ICU formatted value (<a target="_blank" href="https://formatjs.io/guides/message-syntax/">see</a>).
                         Example:
 <pre>// Example phrase
 some_example: 'Article was created on {someDate, date, medium} at {someDate, time, short}.'

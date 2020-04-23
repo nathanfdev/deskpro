@@ -91,7 +91,6 @@ helpcenter.sidebar.news_title: Stiri
 helpcenter.general.related_news: 'Stiri cu referire la'
 helpcenter.tickets.list_subject: Subiect
 helpcenter.community.btn_vote: 'Sunt de acord'
-helpcenter.chat.message_long_wait: 'Suntem in cautarea unui agent disponibil. Aceasta operatiune dureaza in mod normal mai putin de un minut. <br /><br /> Sunteti in graba?<a class="cancel-and-newticket-trigger">Doriti sa ne lasati un mesaj in schimb?</a>'
 helpcenter.chat.message_chatting_with: 'Sunteti in chat cu'
 helpcenter.chat.window_cancel_confirm: 'Sunteti sigur ca vreti sa inchideti conversatia?'
 helpcenter.messenger.blocks.tickets.title: 'Tichetele dumneavoastra'
