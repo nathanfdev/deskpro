@@ -688,7 +688,7 @@ helpcenter.chat.log_nav-view-chats: '{count, plural, one {View your latest chat 
 helpcenter.alerts.tickets-to-respond: '{count, plural, one {You have one ticket to respond to.} other {You have # tickets to respond to.}}'
 helpcenter.emails.community-topic_votes: 'Your community topic currently has <strong>{count, plural, one {1 vote} other {# votes}}</strong>. View your community topic online at:'
 helpcenter.sidebar.agents_x_online: '{count, plural, one {1 online} other {# online}}'
-helpcenter.messenger_greeting: 'Get in Touch'
+helpcenter.messenger.greeting: 'Get in Touch'
 helpcenter.messenger.loading: Loading
 helpcenter.messenger.powered_by: 'Powered by'
 helpcenter.messenger.blocks_continue_chat_link: Continue
