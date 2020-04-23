@@ -3,22 +3,22 @@ helpcenter.general.updated: Aktualizováno
 helpcenter.messenger.chat.transcript_block.yes_button: Ano
 helpcenter.general.go: Dál
 helpcenter.emails.community_new: 'Děkujeme za vaši připomínku'
-helpcenter.emails.register-welcome_subject: 'Děkujeme za vaši registraci'
-helpcenter.emails.comment-confirmation: 'Děkujeme za váš komentář'
-helpcenter.emails.new-ticket-guest: 'Děkujeme za zájem'
-helpcenter.emails.new-ticket-guest-link: 'Děkujeme za zájem. Svůj tiket si můžete prohlédnout online zde:'
-helpcenter.emails.email_ticket-reminder: 'Důležité: Váš tiket ještě nebyl odeslán'
+helpcenter.emails.register_welcome_subject: 'Děkujeme za vaši registraci'
+helpcenter.emails.comment_confirmation: 'Děkujeme za váš komentář'
+helpcenter.emails.new_ticket_guest: 'Děkujeme za zájem'
+helpcenter.emails.new_ticket_guest_link: 'Děkujeme za zájem. Svůj tiket si můžete prohlédnout online zde:'
+helpcenter.emails.email_ticket_reminder: 'Důležité: Váš tiket ještě nebyl odeslán'
 helpcenter.forms.label_password: Heslo
 helpcenter.members.language: Jazyk
 helpcenter.community.form_full_name: Jméno
 helpcenter.messenger.tickets.form.category: Kategorie
-helpcenter.account.reset-password-click-here: 'Klikněte zde pro vyžádání kódu pro reset hesla'
-helpcenter.general.comments-pending-validation: 'Komentář čeká na schválení. Za chvíli se zobrazí'
+helpcenter.account.reset_password_click_here: 'Klikněte zde pro vyžádání kódu pro reset hesla'
+helpcenter.general.comments_pending_validation: 'Komentář čeká na schválení. Za chvíli se zobrazí'
 helpcenter.community.comments: Komentáře
-helpcenter.tickets.new-section-title: 'Kontaktujte nás'
-helpcenter.general.nav-downloads-desc: 'Listujte našimi soubory'
+helpcenter.tickets.new_section_title: 'Kontaktujte nás'
+helpcenter.general.nav_downloads_desc: 'Listujte našimi soubory'
 helpcenter.forms.error_email_required: 'Musíte zadat svou e-mailovou adresu'
-helpcenter.general.no-search-query: 'Napište, co chcete vyhledat, do vyhledávacího okna.'
+helpcenter.general.no_search_query: 'Napište, co chcete vyhledat, do vyhledávacího okna.'
 helpcenter.general.agent_bar_admin_lang: 'Nastavení jazyků'
 helpcenter.general.agent_bar_admin_news: 'Nastavení novinek'
 helpcenter.general.agent_bar_admin_community: 'Nastavení připomínek'
@@ -37,99 +37,99 @@ helpcenter.general.prop_popularity_desc: 'Nejvíc populární nejdřív'
 helpcenter.general.prop_views_desc: 'Nejvíc shlédnutí nejdřív'
 helpcenter.community.module_forbidden: 'Nemáte přístup k tomuto modulu'
 helpcenter.community.rate_forbidden: 'Nemůžete hlasovat'
-helpcenter.emails.ticket_rate-neutral: 'Nijak extra'
+helpcenter.emails.ticket_rate_neutral: 'Nijak extra'
 helpcenter.sidebar.news_title: Novinky
 helpcenter.emails.download_sub_new_and_updated: 'Nová a upravená stažení'
-helpcenter.emails.ticket_new-participant: 'Nová osoba byla přidána do vašeho tiketu'
+helpcenter.emails.ticket_new_participant: 'Nová osoba byla přidána do vašeho tiketu'
 helpcenter.emails.download_sub_new: 'Nová stažení'
 helpcenter.emails.news_sub_new_and_updated: 'Nové a upravené zprávy'
 helpcenter.emails.kb_sub_new_and_updated: 'Nové a upravené články'
 helpcenter.emails.news_sub_new: 'Nové zprávy'
 helpcenter.emails.kb_sub_new: 'Nové články'
-helpcenter.general.nav-guides: Návody
+helpcenter.general.nav_guides: Návody
 helpcenter.community.form_topic_title: Název
-helpcenter.general.btn-subscribe: Odebírat
-helpcenter.account.comment-lockout: 'Odeslali jste přiliš mnoho kometářů v krátké době, prosíme o strpení.'
+helpcenter.general.btn_subscribe: Odebírat
+helpcenter.account.comment_lockout: 'Odeslali jste přiliš mnoho kometářů v krátké době, prosíme o strpení.'
 helpcenter.messenger.tickets.form.submit: Odeslat
-helpcenter.account.logout-btn: Odhlásit
-helpcenter.account.email-btn-remove: 'Odstranit e-mail'
-helpcenter.general.rate-page: 'Ohodnoťte tuto stránku'
-helpcenter.emails.community_topic_new-disapproved: 'Omlouváme se, ale vaše připomínky byly zamítnuty'
+helpcenter.account.logout_btn: Odhlásit
+helpcenter.account.email_btn_remove: 'Odstranit e-mail'
+helpcenter.general.rate_page: 'Ohodnoťte tuto stránku'
+helpcenter.emails.community_topic_new_disapproved: 'Omlouváme se, ale vaše připomínky byly zamítnuty'
 helpcenter.general.agent_bar_agent_home: 'Operátor domov. stránka'
-helpcenter.emails.password_agent-reset_subject: 'Operátor vyresetoval vaše heslo'
-helpcenter.emails.email_new-confirm: 'Ověřte svou e-mailovou adresu'
+helpcenter.emails.password_agent_reset_subject: 'Operátor vyresetoval vaše heslo'
+helpcenter.emails.email_new_confirm: 'Ověřte svou e-mailovou adresu'
 helpcenter.general.tags: Označení
-helpcenter.account.email-btn-make-primary: 'Označit jako primární'
-helpcenter.emails.ticket_rate-question: 'Pomohla vám tato odpověď?'
-helpcenter.account.login-password-reminder: 'Potřebujete připomenout heslo?'
-helpcenter.emails.too-many-emails: 'Pozor: Odeslali jste příliš mnoho e-mailů'
+helpcenter.account.email_btn_make_primary: 'Označit jako primární'
+helpcenter.emails.ticket_rate_question: 'Pomohla vám tato odpověď?'
+helpcenter.account.login_password_reminder: 'Potřebujete připomenout heslo?'
+helpcenter.emails.too_many_emails: 'Pozor: Odeslali jste příliš mnoho e-mailů'
 helpcenter.messenger.tickets.form.priority: Priorita
 helpcenter.emails.password_set: 'Pro nastavení hesla klikněte na odkaz níže:'
-helpcenter.emails.profile_email-primary-confirm: 'Pro ověrení vaší primární e-mailove adresy klikněte na následující odkaz'
+helpcenter.emails.profile_email_primary_confirm: 'Pro ověrení vaší primární e-mailove adresy klikněte na následující odkaz'
 helpcenter.messenger.tickets.form.product: Produkt
-helpcenter.emails.label_view-online: 'Prohlédnout online'
-helpcenter.emails.validate-email: 'Prosíme, ověřte, že tato e-mailova dresa je opravdu vaše, kliknutím na následující odkaz:'
-helpcenter.general.rerender-form: 'Prosíme, překontrolujte formulář před jeho odesláním.'
+helpcenter.emails.label_view_online: 'Prohlédnout online'
+helpcenter.emails.validate_email: 'Prosíme, ověřte, že tato e-mailova dresa je opravdu vaše, kliknutím na následující odkaz:'
+helpcenter.general.rerender_form: 'Prosíme, překontrolujte formulář před jeho odesláním.'
 helpcenter.community.error_login: 'Prosíme, přihlašte se'
-helpcenter.general.label-search-enter-label: 'Prosíme, uveďte štítek, který se má vyhledat'
+helpcenter.general.label_search_enter_label: 'Prosíme, uveďte štítek, který se má vyhledat'
 helpcenter.articles.published: Publikováno
 helpcenter.tickets.list_subject: Předmět
-helpcenter.account.email-btn-usersource-set: 'Přidat e-mailovou adresu'
-helpcenter.general.add-comment: 'Přidat komentář'
-helpcenter.account.section-title-login: Přihlásit
-helpcenter.account.login-external: 'Přihlásit se pomocí externí služby'
-helpcenter.community.section-title: Připomínka
-helpcenter.account.login-lockout: 'Příliš mnoho neplatných pokusů o přihlášení. Váš účet byl dočasně pozastaven.'
+helpcenter.account.email_btn_usersource_set: 'Přidat e-mailovou adresu'
+helpcenter.general.add_comment: 'Přidat komentář'
+helpcenter.account.section_title_login: Přihlásit
+helpcenter.account.login_external: 'Přihlásit se pomocí externí služby'
+helpcenter.community.section_title: Připomínka
+helpcenter.account.login_lockout: 'Příliš mnoho neplatných pokusů o přihlášení. Váš účet byl dočasně pozastaven.'
 helpcenter.community.attachments: Přílohy
-helpcenter.account.login-register-btn: Registrovat
+helpcenter.account.login_register_btn: Registrovat
 helpcenter.emails.password_reset_subject: 'Resetovat heslo'
 helpcenter.general.share: Sdílet
-helpcenter.community.btn-vote: Souhlasím
-helpcenter.general.related-news: 'Související novinky'
-helpcenter.general.related-community: 'Související připomínky'
-helpcenter.general.related-downloads: 'Související soubory'
-helpcenter.general.related-pages: 'Související stránky'
+helpcenter.community.btn_vote: Souhlasím
+helpcenter.general.related_news: 'Související novinky'
+helpcenter.general.related_community: 'Související připomínky'
+helpcenter.general.related_downloads: 'Související soubory'
+helpcenter.general.related_pages: 'Související stránky'
 helpcenter.general.agent_bar_agent_news: 'Spravovat novinky'
 helpcenter.general.agent_bar_agent_community: 'Spravovat připomínky'
 helpcenter.general.agent_bar_agent_dl: 'Spravovat stahování'
 helpcenter.general.agent_bar_agent_kb: 'Spravovat znalostní bázi'
-helpcenter.guides.download-pdf: 'Stáhnout PDF'
+helpcenter.guides.download_pdf: 'Stáhnout PDF'
 helpcenter.community.error_hidden: 'Tato připomínka je skrytá'
 helpcenter.general.print: Tisk
 helpcenter.forms.label_save: Uložit
 helpcenter.general.comment_btn_save: 'Uložit komentář'
-helpcenter.account.profile-btn-save: 'Uložit profil'
+helpcenter.account.profile_btn_save: 'Uložit profil'
 helpcenter.emails.community_sub_updated: 'Upravená připomínka'
 helpcenter.emails.download_sub_updated: 'Upravená stažení'
 helpcenter.emails.news_sub_updated: 'Upravené zprávy'
 helpcenter.emails.kb_sub_updated: 'Upravené články'
-helpcenter.account.change-password-btn: 'Upravit heslo'
-helpcenter.profile.your-password: 'Vaše heslo'
-helpcenter.emails.ticket_reply-confirm: 'Vaše odpoveď byla přijata. Jeden z našich operátorů vám co nejdříve odpoví.'
-helpcenter.emails.community-topic_approved: 'Vaše připomínka byla schválena a zveřejněna na našem portálu.'
-helpcenter.emails.community-topic_agent-validation: 'Vaše připomínka nebude zveřejněna, dokud ji jeden z našich operátorů neschválí.'
-helpcenter.emails.community-topic_disapproved: 'Vaše připomínka nebyla schválena a nebude tedy zveřejněna na našem portálu.'
-helpcenter.emails.community_topic_new-approved: 'Vaše připomínky byly schváleny'
-helpcenter.general.btn-unsubscribe: 'Vypnout odběr'
-helpcenter.account.login-email: 'Váš e-mail'
+helpcenter.account.change_password_btn: 'Upravit heslo'
+helpcenter.profile.your_password: 'Vaše heslo'
+helpcenter.emails.ticket_reply_confirm: 'Vaše odpoveď byla přijata. Jeden z našich operátorů vám co nejdříve odpoví.'
+helpcenter.emails.community_topic_approved: 'Vaše připomínka byla schválena a zveřejněna na našem portálu.'
+helpcenter.emails.community_topic_agent_validation: 'Vaše připomínka nebude zveřejněna, dokud ji jeden z našich operátorů neschválí.'
+helpcenter.emails.community_topic_disapproved: 'Vaše připomínka nebyla schválena a nebude tedy zveřejněna na našem portálu.'
+helpcenter.emails.community_topic_new_approved: 'Vaše připomínky byly schváleny'
+helpcenter.general.btn_unsubscribe: 'Vypnout odběr'
+helpcenter.account.login_email: 'Váš e-mail'
 helpcenter.emails.comment_deleted: 'Váš komentář byl použit k vylepšení stránky.'
-helpcenter.emails.comment-approved_subject: 'Váš komentář byl schválen'
+helpcenter.emails.comment_approved_subject: 'Váš komentář byl schválen'
 helpcenter.emails.comment_approved: 'Váš komentář byl zveřejněn'
-helpcenter.emails.comment-deleted_subject: 'Váš komentář jsme přečetli'
-helpcenter.account.reset-password-invalid-desc: 'Váš kód pro reset hesla je neplatný. Vyžádejte si nový.'
-helpcenter.emails.register-welcome-byagent_subject: 'Váš nový helpdesk účet'
+helpcenter.emails.comment_deleted_subject: 'Váš komentář jsme přečetli'
+helpcenter.account.reset_password_invalid_desc: 'Váš kód pro reset hesla je neplatný. Vyžádejte si nový.'
+helpcenter.emails.register_welcome_byagent_subject: 'Váš nový helpdesk účet'
 helpcenter.emails.ticket_received: 'Váš tiket byl přijat. Jeden z našich operátorů vám co nejdříve odpoví.'
 helpcenter.emails.ticket_access_ticket_online: 'Váš tiket si můžete prohlédnout a spravovat online zde:'
 helpcenter.profile.account_disabled_message: 'Váš účet je v tuto chvíli pozastaven. Nemůžete se přihlásit ani spravovat své tikety.'
 helpcenter.general.everything: Vše
-helpcenter.account.login-captcha-failed: 'Zadali jste nesprávné CAPTCHA. Zkuste to, prosím, znovu.'
-helpcenter.account.profile-delete-picture: 'Změnit nebo vymazat fotku?'
-helpcenter.account.email-btn-resend-validation: 'Znovu odeslat ověřovací e-mail'
+helpcenter.account.login_captcha_failed: 'Zadali jste nesprávné CAPTCHA. Zkuste to, prosím, znovu.'
+helpcenter.account.profile_delete_picture: 'Změnit nebo vymazat fotku?'
+helpcenter.account.email_btn_resend_validation: 'Znovu odeslat ověřovací e-mail'
 helpcenter.general.show: Zobraz
-helpcenter.direct_messages.reply.message: Zpráva
-helpcenter.general.btn-cancel: Zrušit
+helpcenter.direct_messages.reply_message: Zpráva
+helpcenter.general.btn_cancel: Zrušit
 helpcenter.messenger.tickets.form.chooseAFile: 'Zvolte soubor'
-helpcenter.account.login-remember: 'Zůstat přihlášen(a)?'
+helpcenter.account.login_remember: 'Zůstat přihlášen(a)?'
 helpcenter.messenger.tickets.form.or: nebo
 helpcenter.general.tagged_with: označen
 helpcenter.general.in: v

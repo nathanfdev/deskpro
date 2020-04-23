@@ -6,8 +6,8 @@
 		</a>
 		{% if app.getSetting('portal.members_community') %}
 			<div class="dropdown-menu dropdown-menu-left" aria-labelledby="userDropdownMenuLink-{{ user.getId() }}">
-				<a class="dropdown-item" href="{{ path('portal_members_view', { id: user.id }) }}">{{ phrase('helpcenter.general.user-profile') }}</a>
-				<a class="dropdown-item" href="{{ path('portal_dm_send_to', {to:  user.id } ) }}">{{ phrase('helpcenter.general.send-user-direct-message') }}</a>
+				<a class="dropdown-item" href="{{ path('portal_members_view', { id: user.id }) }}">{{ phrase('helpcenter.general.user_profile') }}</a>
+				<a class="dropdown-item" href="{{ path('portal_dm_send_to', {to:  user.id } ) }}">{{ phrase('helpcenter.general.send_user_direct_message') }}</a>
 			</div>
 		{% endif %}
 	</div>

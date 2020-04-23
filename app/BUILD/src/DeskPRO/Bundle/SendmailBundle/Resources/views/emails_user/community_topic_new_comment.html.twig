@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('helpcenter.emails.community_topic_new-comment_subject', {title: topic.title}) }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.community_topic_new_comment_subject', {title: topic.title}) }}</dp:subject>
 
 <html>
 <head>
@@ -9,7 +9,7 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	{{ phrase('helpcenter.emails.community-topic_new-comment', {name: comment.user_display_contact|default('Anonymous') }) }}
+	{{ phrase('helpcenter.emails.community_topic_new_comment', {name: comment.user_display_contact|default('Anonymous') }) }}
 
 	<br /><br />
 
@@ -17,7 +17,7 @@
 
 	<br /><br />
 
-	{{ phrase('helpcenter.emails.label_view-online') }}:
+	{{ phrase('helpcenter.emails.label_view_online') }}:
 	<a href="{{ community_topic_link }}">
 		{{ community_topic_link }}
 	</a>

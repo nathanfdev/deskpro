@@ -17,13 +17,13 @@
                 {{ article.date_updated | date('Y-m-d') }}
                 -
             {% if brand_setting('user.publish_comments') %}
-                <span class="comments"><i class="far fa-comments"></i> <a href="#comments">{{ phrase('helpcenter.general.comments-count', {count: article.calc_num_comments}) }}</a></span>
+                <span class="comments"><i class="far fa-comments"></i> <a href="#comments">{{ phrase('helpcenter.general.comments_count', {count: article.calc_num_comments}) }}</a></span>
                 -
             {% endif %}
                 {{ phrase('helpcenter.general.in') }} <a href="{{ portal_path(article.primary_category) }}">{{ object_phrase(article.primary_category) }}</a>
             </div>
             {% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
-              <div class="sub-note">{{ phrase('helpcenter.articles.view-as-agent') }}</div>
+              <div class="sub-note">{{ phrase('helpcenter.articles.view_as_agent') }}</div>
             {% endif %}
         </header>
 
@@ -69,7 +69,7 @@
     {% if brand_setting('user.publish_comments') and article.num_comments %}
         <div class="comment-box" id="comments">
             <div class="titled-header">
-                <h1>{{ phrase('helpcenter.general.comments-title', {count: article.calc_num_comments}) }}</h1>
+                <h1>{{ phrase('helpcenter.general.comments_title', {count: article.calc_num_comments}) }}</h1>
             </div>
             {% if articleData.comments | length %}
                 {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: articleData.comments } %}

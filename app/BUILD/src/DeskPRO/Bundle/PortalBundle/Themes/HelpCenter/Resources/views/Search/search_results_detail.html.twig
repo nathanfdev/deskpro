@@ -22,10 +22,10 @@
                 <div class="col-sm-10 col-centered">
                     <div class="dp-po-title">
                         <img class="dp-po-title-svg" src="{{ asset('img/page-icons/search.svg', 'help_center') }}" />
-                        <h1 class="dp-po-title-text">{{ phrase('helpcenter.search.search-results') }}</h1>
+                        <h1 class="dp-po-title-text">{{ phrase('helpcenter.search.search_results') }}</h1>
                     </div>
                     <div class="dp-po-title-search">
-                        <h2 class="dp-po-title-search-text">{{ phrase('helpcenter.search.for-query', {query: query}) }} <span>({{combined.total_results|default(0)}})</span></h2>
+                        <h2 class="dp-po-title-search-text">{{ phrase('helpcenter.search.for_query', {query: query}) }} <span>({{combined.total_results|default(0)}})</span></h2>
                     </div>
                     <div class="row">
                         <div class="col-sm-4">
@@ -35,7 +35,7 @@
                                         <li class="dp-po-search-sidebar-item">
                                             <a href="" class="dp-po-search-sidebar-link {% if not article_results %}disabled{% endif %} {% if active == 'article' %}active{% endif %}" data-type="article">
                                                 <img class="dp-po-search-sidebar-image icon-svg"
-                                                     src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-kb') }}
+                                                     src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_kb') }}
                                                 <span class="dp-po-search-sidebar-count">{{ article_info.total_results | default(0) }}</span>
                                             </a>
                                         </li>
@@ -44,7 +44,7 @@
                                         <li class="dp-po-search-sidebar-item">
                                             <a class="dp-po-search-sidebar-link {% if not guide_results %}no-results{% endif %} {% if active == 'guide' %}active{% endif %}" href="" data-type="guide">
                                                 <img class="dp-po-search-sidebar-image icon-svg"
-                                                     src="{{ asset('img/page-icons/guides.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-guides') }}
+                                                     src="{{ asset('img/page-icons/guides.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_guides') }}
                                                 <span class="dp-po-search-sidebar-count">{{ guide_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}
@@ -52,7 +52,7 @@
                                         <li class="dp-po-search-sidebar-item">
                                             <a class="dp-po-search-sidebar-link {% if not community_results %}no-results{% endif %} {% if active == 'community' %}active{% endif %}" href="" data-type="community">
                                                 <img class="dp-po-search-sidebar-image icon-svg"
-                                                     src="{{ asset('img/page-icons/community.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-community') }}
+                                                     src="{{ asset('img/page-icons/community.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_community') }}
                                                 <span class="dp-po-search-sidebar-count">{{ community_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}
@@ -60,7 +60,7 @@
                                         <li class="dp-po-search-sidebar-item">
                                             <a class="dp-po-search-sidebar-link {% if not news_results %}no-results{% endif %} {% if active == 'news' %}active{% endif %}" href="" data-type="news">
                                                 <img class="dp-po-search-sidebar-image icon-svg"
-                                                     src="{{ asset('img/page-icons/news.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-news') }}
+                                                     src="{{ asset('img/page-icons/news.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_news') }}
                                                 <span class="dp-po-search-sidebar-count">{{ news_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}
@@ -68,14 +68,14 @@
                                         <li class="dp-po-search-sidebar-item">
                                             <a class="dp-po-search-sidebar-link {% if not download_results %}no-results{% endif %} {% if active == 'download' %}active{% endif %}" href="" data-type="download">
                                                 <img class="dp-po-search-sidebar-image icon-svg"
-                                                     src="{{ asset('img/page-icons/download.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-downloads') }}
+                                                     src="{{ asset('img/page-icons/download.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_downloads') }}
                                                 <span class="dp-po-search-sidebar-count">{{ download_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}
                                     {% if can_use_tickets() %}
                                         <li class="dp-po-search-sidebar-item">
                                             <a class="dp-po-search-sidebar-link {% if not ticket_results %}no-results{% endif %} {% if active == 'ticket' %}active{% endif %}" href="" data-type="ticket">
-                                                <i class="dp-po-search-sidebar-image dp-po-icon fad fa-envelope"></i>{{ phrase('helpcenter.search.your-tickets') }}
+                                                <i class="dp-po-search-sidebar-image dp-po-icon fad fa-envelope"></i>{{ phrase('helpcenter.search.your_tickets') }}
                                                 <span class="dp-po-search-sidebar-count">{{ ticket_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}

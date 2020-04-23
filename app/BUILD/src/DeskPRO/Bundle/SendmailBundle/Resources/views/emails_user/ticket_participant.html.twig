@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('helpcenter.emails.ticket_new-participant') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.ticket_new_participant') }}</dp:subject>
 
 <html>
 <head>
@@ -10,7 +10,7 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	{% if is_first %}
-		{{ phrase('helpcenter.emails.ticket_cc-new', {'name':ticket.person.display_name_user}) }}
+		{{ phrase('helpcenter.emails.ticket_cc_new', {'name':ticket.person.display_name_user}) }}
 		<br /><br />
 	{% endif %}
 

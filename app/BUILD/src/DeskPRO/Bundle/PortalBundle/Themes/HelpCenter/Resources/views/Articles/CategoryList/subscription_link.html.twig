@@ -1,9 +1,9 @@
 {% if brand_setting('user.kb_subscriptions') %}
     <a href="{{ portal_path(category, 'toggle_subscription') }}" class="post-link" rel="noindex, nofollow">
       {% if is_subscribed %}
-        {{ phrase('helpcenter.general.btn-unsubscribe') }}
+        {{ phrase('helpcenter.general.btn_unsubscribe') }}
       {% else %}
-          {{ phrase('helpcenter.general.btn-subscribe') }}
+          {{ phrase('helpcenter.general.btn_subscribe') }}
       {% endif %}
     </a>
 {% endif %}

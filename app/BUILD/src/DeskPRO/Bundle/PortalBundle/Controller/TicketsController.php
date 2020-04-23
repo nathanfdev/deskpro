@@ -30,7 +30,6 @@ use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
-use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -174,7 +173,7 @@ class TicketsController extends AbstractController
             // we don't process the reply if they simply clicked the "add more attachments" button (non-JS users)
             if (!$form->getClickedButton() || $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 if ($ticket->isResolved() && !$this->isGranted(TicketsVoter::TICKET_REOPEN_RESOLVED, $ticket)) {
-                    $this->addFlash('error', $this->phrase(['user.error.permission-denied', 'helpcenter.error.permission-denied']));
+                    $this->addFlash('error', $this->phrase(['user.error.permission-denied', 'helpcenter.error.permission_denied']));
 
                     return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
                 }
@@ -310,7 +309,7 @@ class TicketsController extends AbstractController
         if ($person && !$person instanceof PersonGuest) {
             $fullFormOptions['person'] = $person;
         }
-        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, $fullFormOptions);
+        $form_full         = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, $fullFormOptions);
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 

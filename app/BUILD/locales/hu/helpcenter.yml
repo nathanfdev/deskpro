@@ -1,43 +1,43 @@
-helpcenter.chat.form_feedback_transcript-email: 'A beszélgetés másolatának elküldése ide'
-helpcenter.chat.message_ended-by-user: 'A felhasználó befejezte a beszélgetést'
-helpcenter.chat.message_user-timeout: 'A felhasználó kifutott az időből'
-helpcenter.chat.message_user-returned: 'A felhasználó visszatért'
-helpcenter.emails.comment-approved_subject: 'A hozzászólása jóváhagyásra került'
-helpcenter.emails.community_topic_new-approved: 'A visszajelzése jóváhagyásra került'
+helpcenter.chat.form_feedback_transcript_email: 'A beszélgetés másolatának elküldése ide'
+helpcenter.chat.message_ended_by_user: 'A felhasználó befejezte a beszélgetést'
+helpcenter.chat.message_user_timeout: 'A felhasználó kifutott az időből'
+helpcenter.chat.message_user_returned: 'A felhasználó visszatért'
+helpcenter.emails.comment_approved_subject: 'A hozzászólása jóváhagyásra került'
+helpcenter.emails.community_topic_new_approved: 'A visszajelzése jóváhagyásra került'
 helpcenter.chat.window_close_only: 'Ablak bezárása'
-helpcenter.chat.message_chatting-with: 'Az Ön beszélgetőtársa:'
+helpcenter.chat.message_chatting_with: 'Az Ön beszélgetőtársa:'
 helpcenter.chat.email: 'Az Ön e-mail címe'
 helpcenter.chat.name: 'Az Ön neve'
 helpcenter.messenger.blocks.tickets.title: 'Az Ön ügyei'
-helpcenter.account.section-title-login: Bejelentkezés
-helpcenter.chat.form_create_button-submit: 'Beszélgetés indítása'
-helpcenter.chat.window_start-button: 'Beszélgetés indításához kattintson ide'
+helpcenter.account.section_title_login: Bejelentkezés
+helpcenter.chat.form_create_button_submit: 'Beszélgetés indítása'
+helpcenter.chat.window_start_button: 'Beszélgetés indításához kattintson ide'
 helpcenter.chat.message_started: 'Beszélgetés kezdete'
 helpcenter.chat.message_unassigned: 'Beszélgetés kiosztatlan'
-helpcenter.chat.window_resume-button: 'Beszélgetés megnyitása'
-helpcenter.chat.window_open-new: 'Beszélgetés megnyitása egy új ablakban'
+helpcenter.chat.window_resume_button: 'Beszélgetés megnyitása'
+helpcenter.chat.window_open_new: 'Beszélgetés megnyitása egy új ablakban'
 helpcenter.messenger.chat.ended: 'Beszélgetés vége'
-helpcenter.chat.window_end-chat: 'Beszélgetés vége'
+helpcenter.chat.window_end_chat: 'Beszélgetés vége'
 helpcenter.emails.chat_transcript_subject: 'Beszélgetés összefoglaló'
-helpcenter.chat.window_cancel-confirm: 'Biztosan be szeretné fejezni ezt a beszélgetést?'
+helpcenter.chat.window_cancel_confirm: 'Biztosan be szeretné fejezni ezt a beszélgetést?'
 helpcenter.chat.form_create_title: 'Chateljen velünk!'
-helpcenter.chat.window_upload-drag: 'Dobja ide a fájlt a feltöltéshez.'
-helpcenter.emails.profile_email_link-validate: 'E-mail címének megerősítéséhez kérjük kattintson a következő linkre:'
-helpcenter.chat.submit-ticket-title: 'E-mail küldése'
-helpcenter.community.btn-vote: Egyetértek
-helpcenter.chat.ended-no-agent: 'Elnézését kérjük, de jelenleg minden munkatársunk foglalt. Kérjük próbálkozzon egy későbbi időpontban, vagy üzenetben vegye fel velünk a kapcsolatot.'
-helpcenter.chat.form_feedback_rate-satisfaction: 'Elégedett munkatársunk munkájával?'
-helpcenter.emails.email_new-confirm: 'Erősítse meg e-mail címét'
-helpcenter.articles.view-as-agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
-helpcenter.news.view-as-agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
+helpcenter.chat.window_upload_drag: 'Dobja ide a fájlt a feltöltéshez.'
+helpcenter.emails.profile_email_link_validate: 'E-mail címének megerősítéséhez kérjük kattintson a következő linkre:'
+helpcenter.chat.submit_ticket_title: 'E-mail küldése'
+helpcenter.community.btn_vote: Egyetértek
+helpcenter.chat.ended_no_agent: 'Elnézését kérjük, de jelenleg minden munkatársunk foglalt. Kérjük próbálkozzon egy későbbi időpontban, vagy üzenetben vegye fel velünk a kapcsolatot.'
+helpcenter.chat.form_feedback_rate_satisfaction: 'Elégedett munkatársunk munkájával?'
+helpcenter.emails.email_new_confirm: 'Erősítse meg e-mail címét'
+helpcenter.articles.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
+helpcenter.news.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
 helpcenter.chat.message_uploading: Feltöltés...
-helpcenter.emails.ticket_no-autoresponse: 'Figyelem: Megerősítő e-mail kikapcsolva'
-helpcenter.chat.form_chat_send-file: 'Fájl feltöltés'
+helpcenter.emails.ticket_no_autoresponse: 'Figyelem: Megerősítő e-mail kikapcsolva'
+helpcenter.chat.form_chat_send_file: 'Fájl feltöltés'
 helpcenter.tickets.view_unassigned: Gazdátlan
-helpcenter.general.rate-page-positive: Hasznos
-helpcenter.emails.ticket_rate-question: 'Hasznos volt Önnek ez az üzenet?'
+helpcenter.general.rate_page_positive: Hasznos
+helpcenter.emails.ticket_rate_question: 'Hasznos volt Önnek ez az üzenet?'
 helpcenter.chat.error: 'Hiba történt a beszélgetés közben'
-helpcenter.tickets.rate-question: 'Hogyan értékelné munkánkat?'
+helpcenter.tickets.rate_question: 'Hogyan értékelné munkánkat?'
 helpcenter.tickets.list_agent: 'Hozzárendelt munkatárs'
 helpcenter.chat.form_feedback_comments: 'Hozzászólás?'
 helpcenter.community.comments: 'Hozzászólás?'
@@ -46,33 +46,33 @@ helpcenter.emails.comment_deleted: 'Hozzászólását felhasználtuk tartalmunk 
 helpcenter.sidebar.news_title: Hírek
 helpcenter.members.timezone: Időzóna
 helpcenter.messenger.chat.transcript_block.yes_button: Igen
-helpcenter.emails.password_agent-reset_subject: 'Jelszavát alaphelyzetbe állítottuk'
+helpcenter.emails.password_agent_reset_subject: 'Jelszavát alaphelyzetbe állítottuk'
 helpcenter.forms.label_password: Jelszó
 helpcenter.emails.password_reset_subject: Jelszócsere
-helpcenter.tickets.rate-positive: Jó
-helpcenter.chat.message_finding-agent: 'Kapcsolat létrehozása...'
-helpcenter.general.related-downloads: 'Kapcsolódó fájlok'
-helpcenter.general.related-news: 'Kapcsolódó hírek'
-helpcenter.general.related-community: 'Kapcsolódó témák'
+helpcenter.tickets.rate_positive: Jó
+helpcenter.chat.message_finding_agent: 'Kapcsolat létrehozása...'
+helpcenter.general.related_downloads: 'Kapcsolódó fájlok'
+helpcenter.general.related_news: 'Kapcsolódó hírek'
+helpcenter.general.related_community: 'Kapcsolódó témák'
 helpcenter.messenger.tickets.form.category: Kategória
-helpcenter.account.logout-btn: Kijelentkezés
-helpcenter.general.add-comment: 'Kérjük ebbe a mezőbe írja hozzászólását, majd kattintson a ''Hozzászólás beküldése'' gombra...'
-helpcenter.tickets.new-intro: 'Kérjük töltse ki ezt az űrlapot. Munkatársunk hamarosan e-mailben válaszol Önnek.'
+helpcenter.account.logout_btn: Kijelentkezés
+helpcenter.general.add_comment: 'Kérjük ebbe a mezőbe írja hozzászólását, majd kattintson a ''Hozzászólás beküldése'' gombra...'
+helpcenter.tickets.new_intro: 'Kérjük töltse ki ezt az űrlapot. Munkatársunk hamarosan e-mailben válaszol Önnek.'
 helpcenter.chat.message_wait: 'Kérjük várjon munkatársunk jelentkezéséig!'
 helpcenter.tickets.list_date_created: 'Készítés dátuma'
 helpcenter.tickets.guest_thank_you_title: Köszönjük
-helpcenter.emails.comment-confirmation: 'Köszönjük hozzászólását'
+helpcenter.emails.comment_confirmation: 'Köszönjük hozzászólását'
 helpcenter.emails.community_new: 'Köszönjük visszajelzését'
-helpcenter.emails.community-topic_agent-validation: 'Köszönjük, hogy Ön is hozzájárul munkánk sikeréhez. Üzenetének tartalmát munkatársaink ellenőrizni fogják annak érdekében, hogy kiszűrjék a nem helyénvaló bejegyzéseket oldalainkról. Az ellenőrzés rövid időn belül megtörténik.'
+helpcenter.emails.community_topic_agent_validation: 'Köszönjük, hogy Ön is hozzájárul munkánk sikeréhez. Üzenetének tartalmát munkatársaink ellenőrizni fogják annak érdekében, hogy kiszűrjék a nem helyénvaló bejegyzéseket oldalainkról. Az ellenőrzés rövid időn belül megtörténik.'
 helpcenter.chat.window_close: 'Köszönöm nem, csak be szeretném zárni az ablakot'
-helpcenter.chat.submit-ticket-button: 'Küldjön nekünk e-mailt'
+helpcenter.chat.submit_ticket_button: 'Küldjön nekünk e-mailt'
 helpcenter.chat.form_feedback_title: 'Küldjön visszajelzést'
-helpcenter.chat.form_chat_button-submit: Küldés
+helpcenter.chat.form_chat_button_submit: Küldés
 helpcenter.messenger.tickets.form.submit: Küldés
-helpcenter.general.nav-downloads-desc: 'Letölthető fájlok és dokumentumok'
+helpcenter.general.nav_downloads_desc: 'Letölthető fájlok és dokumentumok'
 helpcenter.forms.label_download: Letöltés
-helpcenter.general.nav-downloads: Letöltések
-helpcenter.account.email-btn-resend-validation: 'Megerősítő e-mail újraküldése'
+helpcenter.general.nav_downloads: Letöltések
+helpcenter.account.email_btn_resend_validation: 'Megerősítő e-mail újraküldése'
 helpcenter.emails.ticket_received: 'Megkaptuk üzenetét. Munkatársunk hamarosan felveszi Önnel a kapcsolatot.'
 helpcenter.tickets.list_status_resolved: Megoldott
 helpcenter.general.go: Mehet
@@ -80,41 +80,41 @@ helpcenter.community.attachments: Mellékletek
 helpcenter.forms.label_save: Mentés
 helpcenter.emails.ticket_validate: 'Mielőtt munkatársaink feldolgozhatnák üzenetét,<br /><br />meg kell erősítenie e-mail címét.'
 helpcenter.general.everything: Minden
-helpcenter.chat.message_long-wait: 'Munkatársaink jelenleg elfoglaltak. <br /><br />Sürgős esetben <a class="cancel-and-newticket-trigger">hagyjon üzenetet a várakozás helyett!</a>'
-helpcenter.emails.password_agent-reset: 'Munkatársunk alaphelyzetbe állította az Ön jelszavát. Ezután a következő adatokkal tud bejelentkezni weboldalunkon:'
-helpcenter.emails.comment-deleted_subject: 'Munkatársunk ellenőrizte hozzászólását'
-helpcenter.general.btn-cancel: Mégsem
+helpcenter.chat.message_long_wait: 'Munkatársaink jelenleg elfoglaltak. <br /><br />Sürgős esetben <a class="cancel-and-newticket-trigger">hagyjon üzenetet a várakozás helyett!</a>'
+helpcenter.emails.password_agent_reset: 'Munkatársunk alaphelyzetbe állította az Ön jelszavát. Ezután a következő adatokkal tud bejelentkezni weboldalunkon:'
+helpcenter.emails.comment_deleted_subject: 'Munkatársunk ellenőrizte hozzászólását'
+helpcenter.general.btn_cancel: Mégsem
 helpcenter.messenger.chat.save_ticket.button_no: Nem
-helpcenter.tickets.rate-negative: 'Nem jó'
-helpcenter.error.404-title: 'Nincs találat'
+helpcenter.tickets.rate_negative: 'Nem jó'
+helpcenter.error.404_title: 'Nincs találat'
 helpcenter.members.language: Nyelv
 helpcenter.community.form_full_name: Név
-helpcenter.emails.label_view-online: 'Online megtekintés'
+helpcenter.emails.label_view_online: 'Online megtekintés'
 helpcenter.emails.ticket_access_ticket_online: 'Online megtekintés és szerkesztés:'
-helpcenter.guides.download-pdf: 'PDF letöltés'
+helpcenter.guides.download_pdf: 'PDF letöltés'
 helpcenter.messenger.tickets.form.priority: Prioritás
-helpcenter.account.login-register-btn: Regisztráljon
+helpcenter.account.login_register_btn: Regisztráljon
 helpcenter.emails.chat_transcript: 'Reméljük, hogy elégedett munkatársunk munkájával. Mellékeljük legutóbbi beszélgetésük kivonatát.'
-helpcenter.emails.ticket_rate-neutral: 'Rendben volt'
+helpcenter.emails.ticket_rate_neutral: 'Rendben volt'
 helpcenter.messenger.tickets.form.department: Részleg
-helpcenter.emails.community-topic_disapproved: 'Sajnálattal tájékoztatjuk, hogy visszajelzésének publikálása elutasításra került.'
+helpcenter.emails.community_topic_disapproved: 'Sajnálattal tájékoztatjuk, hogy visszajelzésének publikálása elutasításra került.'
 helpcenter.tickets.view_btn_edit: Szerkesztés
-helpcenter.articles.section-title: Tudásbázis
-helpcenter.emails.community-topic_approved: 'Tájékoztatjuk, hogy visszajelzése publikálásra került weboldalunkon.'
+helpcenter.articles.section_title: Tudásbázis
+helpcenter.emails.community_topic_approved: 'Tájékoztatjuk, hogy visszajelzése publikálásra került weboldalunkon.'
 helpcenter.tickets.list_subject: Tárgy
 helpcenter.emails.ticket_flood: 'Túl sok egymásután érkező üzenet érkezett Öntől rendszerünkbe, amelyeket valószínűleg egy automata küldött.<br /><br />A levélküldési hurok megállítása érdekében nem küldünk több automatikus üzenetet Önnek.'
-helpcenter.chat.form_feedback_button-submit: 'Visszajelzés küldése & Ablak bezárása'
-helpcenter.emails.community_topic_new-disapproved: 'Visszajelzése elutasításra került'
+helpcenter.chat.form_feedback_button_submit: 'Visszajelzés küldése & Ablak bezárása'
+helpcenter.emails.community_topic_new_disapproved: 'Visszajelzése elutasításra került'
 helpcenter.chat.form_create_department: 'Válassza ki a részleget'
-helpcenter.emails.ticket_reply-confirm: 'Válaszüzenetét megkaptuk. Munkatársunk hamarosan válaszol Önnek.'
+helpcenter.emails.ticket_reply_confirm: 'Válaszüzenetét megkaptuk. Munkatársunk hamarosan válaszol Önnek.'
 helpcenter.tickets.rate_support: 'Értékelje munkánkat'
-helpcenter.tickets.new-section-title: 'Írjon nekünk'
+helpcenter.tickets.new_section_title: 'Írjon nekünk'
 helpcenter.general.you: Ön
 helpcenter.emails.password_reset: 'Ön jelszócserét kért weboldalunkon. Amennyiben meg kívánja erősíteni szándékát, a jelszócseréhez kattintson a következő linkre:'
-helpcenter.chat.form_feedback_rate-time: 'Ön szerint eléggé gyors választ kapott?'
-helpcenter.error.permission-denied-title: 'Önnek nincs megfelelő engedélye'
-helpcenter.community.section-title: Ötlettár
+helpcenter.chat.form_feedback_rate_time: 'Ön szerint eléggé gyors választ kapott?'
+helpcenter.error.permission_denied_title: 'Önnek nincs megfelelő engedélye'
+helpcenter.community.section_title: Ötlettár
 helpcenter.tickets.resolve_my_ticket_btn: 'Ügy megoldva'
 helpcenter.profile.account_disabled_message: 'Ügyfélfiókja jelenleg ki van kapcsolva, ezért nem tud sem bejelentkezni, sem ügyet vagy beszélgetést indítani nálunk.'
-helpcenter.emails.ticket_new-participant: 'Ügyéhez új személy került hozzárendelésre'
-helpcenter.direct_messages.reply.message: Üzenet
+helpcenter.emails.ticket_new_participant: 'Ügyéhez új személy került hozzárendelésre'
+helpcenter.direct_messages.reply_message: Üzenet

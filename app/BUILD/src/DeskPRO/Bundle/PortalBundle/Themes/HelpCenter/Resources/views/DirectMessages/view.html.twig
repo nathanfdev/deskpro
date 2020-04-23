@@ -46,17 +46,17 @@
                   </figure>
                   <div class="dp-po-messages-wrap">
                     {{ form_start(reply_form, { attr: { class: 'form-ticket dpx-form' } }) }}
-                      {{ form_row(reply_form.message, {label: phrase('helpcenter.direct_messages.reply.message')}) }}
+                      {{ form_row(reply_form.message, {label: phrase('helpcenter.direct_messages.reply_message')}) }}
                       <div class="row align-items-center">
                         <div class="col-sm-2">
                           {{ form_widget(reply_form.submit, {
-                            label: phrase('helpcenter.direct_messages.reply.send_message'),
+                            label: phrase('helpcenter.direct_messages.reply_send_message'),
                             attr: {class: 'btn btn-block btn-primary'},
                           }) }}
                         </div>
                         <div class="col-sm-2">
                           <div class="form-group dp-po-form-check">
-                            <a href="" class="btn btn-block btn-outline-secondary">{{ phrase('helpcenter.direct_messages.reply.cancel') }}</a>
+                            <a href="" class="btn btn-block btn-outline-secondary">{{ phrase('helpcenter.direct_messages.reply_cancel') }}</a>
                           </div>
                         </div>
                       </div>

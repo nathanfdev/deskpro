@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('helpcenter.emails.community_topic_new-approved') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.community_topic_new_approved') }}</dp:subject>
 
 <html>
 <head>
@@ -9,15 +9,15 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	{{ phrase('helpcenter.emails.community-topic_thank-you', {'title':tpoic.title}) }}
+	{{ phrase('helpcenter.emails.community_topic_thank_you', {'title':tpoic.title}) }}
 
 	<br /><br />
 
-	{{ phrase('helpcenter.emails.community-topic_approved') }}
+	{{ phrase('helpcenter.emails.community_topic_approved') }}
 
 	<br /><br />
 
-	{{ phrase('helpcenter.emails.label_view-online') }}:
+	{{ phrase('helpcenter.emails.label_view_online') }}:
 	<a href="{{ community_topic_link }}">
 		{{ community_topic_link }}
 	</a>

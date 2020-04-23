@@ -21,7 +21,7 @@
                         -
 
                         <span class="comments"><i class="fas fa-comments"></i>
-                            <a href="#comments">{{ phrase('helpcenter.general.comments-count', {count: post.calc_num_comments}) }}</a>
+                            <a href="#comments">{{ phrase('helpcenter.general.comments_count', {count: post.calc_num_comments}) }}</a>
                         </span>
                     {% endif %}
 
@@ -33,7 +33,7 @@
                 </div>
             </div>
             {% if post.status != 'published' and post.status != 'archived' and app.user.is_agent %}
-                <div class="sub-note">{{ phrase('helpcenter.news.view-as-agent') }}</div>
+                <div class="sub-note">{{ phrase('helpcenter.news.view_as_agent') }}</div>
             {% endif %}
         </header>
 
@@ -64,7 +64,7 @@
     {% if brand_setting('user.publish_comments') and post.calc_num_comments %}
         <div class="comment-box" id="comments">
             <div class="titled-header">
-                <h1>{{ phrase('helpcenter.general.comments-title', {count: post.calc_num_comments}) }}</h1>
+                <h1>{{ phrase('helpcenter.general.comments_title', {count: post.calc_num_comments}) }}</h1>
             </div>
             {% if postData.comments | length %}
                 {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: postData.comments } %}

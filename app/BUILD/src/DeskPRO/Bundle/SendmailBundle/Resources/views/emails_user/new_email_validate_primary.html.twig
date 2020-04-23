@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('helpcenter.emails.email_primary-confirm') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.email_primary_confirm') }}</dp:subject>
 
 <html>
 <head>
@@ -9,7 +9,7 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    {{ phrase('helpcenter.emails.profile_email-primary-confirm') }}:<br/>
+    {{ phrase('helpcenter.emails.profile_email_primary_confirm') }}:<br/>
     <a href="{{ verify_url }}">{{ verify_url }}</a>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}

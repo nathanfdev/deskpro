@@ -487,7 +487,7 @@ class BreadcrumbBuilder
     public function addTicketApprovalList()
     {
         if ($this->getThemeId() === HelpCenterTheme::THEME_ID) {
-            $phrase = 'helpcenter.approvals.my-approvals';
+            $phrase = 'helpcenter.approvals.my_approvals';
         } else {
             $phrase = 'portal.general.nav-approvals';
         }

@@ -20,7 +20,7 @@
                                 <div class="dp-po-title">
                                     <a href="{{ path('portal_news') }}" class="dp-po-title-link">
                                         <img class="dp-po-title-svg" src="{{ asset('img/page-icons/news.svg', 'help_center') }}">
-                                        <h2 class="dp-po-title-text">{{ phrase('helpcenter.news.section-title') }}</h2>
+                                        <h2 class="dp-po-title-text">{{ phrase('helpcenter.news.section_title') }}</h2>
                                     </a>
                                 </div>
 
@@ -45,7 +45,7 @@
                             <a href="{{ path('portal_kb') }}" class="dp-po-title-link">
                                 <img class="dp-po-title-svg"
                                      src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}">
-                                <h2 class="dp-po-title-text">{{ phrase('helpcenter.articles.section-title') }}</h2>
+                                <h2 class="dp-po-title-text">{{ phrase('helpcenter.articles.section_title') }}</h2>
                             </a>
                         </div>
                         {% if helpcenter_featured_articles()|length > 0 %}
@@ -73,7 +73,7 @@
                                     <a href="{{ path('portal_community') }}" class="dp-po-title-link">
                                         <img class="dp-po-title-svg"
                                              src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
-                                        <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
+                                        <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section_title') }}</h2>
                                     </a>
                                 </div>
                             </div>
@@ -96,7 +96,7 @@
                             <div class="col-sm-6">
                                 <div class="dp-po-block">
                                     <div class="dp-po-community-status">
-                                        <h2 class="dp-po-community-status-title">{{ phrase('helpcenter.community.featured-topics') }}</h2>
+                                        <h2 class="dp-po-community-status-title">{{ phrase('helpcenter.community.featured_topics') }}</h2>
                                         {% include 'Theme:Community:blocks/simple-topics-list-voter.html.twig' with {
                                             topics: helpcenter.getCommunityTopics({ count: 5, orderBy: 'most-popular' })
                                         } %}
@@ -114,7 +114,7 @@
                             <div class="col-sm-6">
                                 <div class="dp-po-block">
                                     <div class="dp-po-community-status">
-                                        <h2 class="dp-po-community-status-title">{{ phrase('helpcenter.general.latest-status-changes') }}</h2>
+                                        <h2 class="dp-po-community-status-title">{{ phrase('helpcenter.general.latest_status_changes') }}</h2>
                                         {% include 'Theme:Community:blocks/simple-topics-list-status.html.twig' with {
                                             topics: helpcenter.getCommunityTopics({ count: 5, orderBy: 'status-change' })
                                         } %}

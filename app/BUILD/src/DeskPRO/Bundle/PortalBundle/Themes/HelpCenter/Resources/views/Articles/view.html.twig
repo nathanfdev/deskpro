@@ -18,7 +18,7 @@
                     <div class="dp-po-post-info">
                         <ul class="dp-po-post-info-list">
                             <li class="dp-po-post-info-item">
-                                {{ phrase('helpcenter.general.last-updated', {date: article.date_updated | date('day'), person: article.last_author}) | raw }}
+                                {{ phrase('helpcenter.general.last_updated', {date: article.date_updated | date('day'), person: article.last_author}) | raw }}
                             </li>
                         </ul>
                     </div>
@@ -32,7 +32,7 @@
                                     <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}"><i class="dp-po-icon fal fa-print" title="{{ phrase('helpcenter.general.print') }}"></i></a>
                                 </li>
                                 <li class="dp-po-post-extra-item">
-                                    <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.guides.download-pdf') }}"><i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i></a>
+                                    <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.guides.download_pdf') }}"><i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i></a>
                                 </li>
                             </ul>
                         </div>
@@ -46,7 +46,7 @@
                     subscriptionInfo: [
                         { toggleUrl: portal_path(article, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_kb_article'), active: is_subscribed },
                         { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.forms.label_category'), active: is_subscribed_category },
-                        { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section-title'), active: is_subscribed_root },
+                        { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section_title'), active: is_subscribed_root },
                     ]
                 } %}
             </div>
@@ -59,7 +59,7 @@
                 subscriptionInfo: [
                     { toggleUrl: portal_path(article, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_kb_article'), active: is_subscribed },
                     { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.forms.label_category'), active: is_subscribed_category },
-                    { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section-title'), active: is_subscribed_root },
+                    { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section_title'), active: is_subscribed_root },
                 ]
             } %}
             <a href="javascript:void(0)" data-toggle="modal" data-target="#postExtraMobile"><i class="far fa-ellipsis-v" title="menu"></i></a>
@@ -183,13 +183,13 @@
 {% block page_body %}
     {% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
         <div class="alert alert-icon alert-danger" role="alert">
-            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.articles.view-as-agent') }}
+            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.articles.view_as_agent') }}
         </div>
     {% endif %}
 
     {% if article.end_action == 'unpublish' and app.user.is_agent %}
         <div class="alert alert-icon alert-danger" role="alert">
-            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.flashes.article-unpublish', {date: article.date_end | date('day')}) }}
+            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.flashes.article_unpublish', {date: article.date_end | date('day')}) }}
         </div>
     {% endif %}
 

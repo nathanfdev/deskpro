@@ -6,7 +6,7 @@
             <div class="container">
                 <div class="dp-po-title">
                     <img src="{{ asset('img/page-icons/account.svg', 'help_center') }}" role="presentation" class="dp-po-title-svg">
-                    <h1 class="dp-po-title-text">{{ phrase('helpcenter.account.section-title-your-account') }}</h1>
+                    <h1 class="dp-po-title-text">{{ phrase('helpcenter.account.section_title_your_account') }}</h1>
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
@@ -17,7 +17,7 @@
                     <div class="col-sm-8">
                         <div class="dp-po-block dp-po-section">
                             <div class="dp-po-account-email">
-                                <h3 class="dp-po-account-email-title">{{ phrase('helpcenter.profile.email-address') }}</h3>
+                                <h3 class="dp-po-account-email-title">{{ phrase('helpcenter.profile.email_address') }}</h3>
                                 <ul class="dp-po-account-email-list">
                                     {% for email in person.emails %}
                                         <li class="dp-po-account-email-item">
@@ -28,7 +28,7 @@
                                             {% if person.emails|length > 1 %}
                                                 {% if email.isPrimary %}
                                                     <ul class="dp-po-account-email-action">
-                                                        <li class="dp-po-account-email-action-item">{{ phrase('helpcenter.account.email-primary-description') }}</li>
+                                                        <li class="dp-po-account-email-action-item">{{ phrase('helpcenter.account.email_primary_description') }}</li>
                                                     </ul>
                                                 {% else %}
                                                     <ul class="dp-po-account-email-action">
@@ -37,14 +37,14 @@
                                                                     id="{{ email.email }}"
                                                                     href="{{ path('portal_user_profile_emails', { new_primary: email.id }) }}"
                                                                     class="dp-po-account-email-action-link">
-                                                                {{ phrase('helpcenter.account.email-btn-make-primary') }}
+                                                                {{ phrase('helpcenter.account.email_btn_make_primary') }}
                                                             </a>
                                                         </li>
                                                         <li class="dp-po-account-email-action-item">
                                                             <a
                                                                     href="{{ path('portal_user_profile_emails', { remove_email: email.id }) }}"
                                                                     class="dp-po-account-email-action-link">
-                                                                {{ phrase('helpcenter.account.email-btn-remove') }}
+                                                                {{ phrase('helpcenter.account.email_btn_remove') }}
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -54,7 +54,7 @@
                                     {% endfor %}
                                 </ul>
                                 {% if pending_emails|length  > 0 %}
-                                    <h3 class="dp-po-account-email-title">{{ phrase('helpcenter.account.your-pending-email-addresses') }}</h3>
+                                    <h3 class="dp-po-account-email-title">{{ phrase('helpcenter.account.your_pending_email_addresses') }}</h3>
                                     <ul class="dp-po-account-email-list">
                                         {% for saved_form_id, email in pending_emails %}
                                             <li class="dp-po-account-email-item">
@@ -67,14 +67,14 @@
                                                         <a
                                                             href="{{ path('portal_user_profile_emails_resend_validation', { id: saved_form_id}) }}"
                                                             class="dp-po-account-email-action-link">
-                                                            {{ phrase('helpcenter.account.email-btn-resend-validation') }}
+                                                            {{ phrase('helpcenter.account.email_btn_resend_validation') }}
                                                         </a>
                                                     </li>
                                                     <li class="dp-po-account-email-action-item">
                                                         <a
                                                             href="{{ path('portal_user_profile_emails_remove_pending', { id: saved_form_id}) }}"
                                                             class="dp-po-account-email-action-link">
-                                                            {{ phrase('helpcenter.account.email-btn-remove') }}
+                                                            {{ phrase('helpcenter.account.email_btn_remove') }}
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -90,7 +90,7 @@
                                     <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.forms.label_save') }}</button>
                                     {{ form_end(add_email_form) }}
                                 {% else %}
-                                    <a href="javascript:void(0)" class="btn btn-primary">{{ phrase('helpcenter.account.add-email') }}</a>
+                                    <a href="javascript:void(0)" class="btn btn-primary">{{ phrase('helpcenter.account.add_email') }}</a>
                                 {% endif %}
                             </div>
                         </div>

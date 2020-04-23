@@ -2,12 +2,12 @@
     <ul class="dp-po-ticket-pages-list">
         <li class="dp-po-ticket-pages-item{% if type == 'own' %} active{% endif %}">
             <a href="{{ path('portal_tickets') }}" class="dp-po-ticket-pages-link">
-                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/tickets-light.svg', 'help_center') }}" /> {{ phrase('helpcenter.tickets.my-tickets') }}
+                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/tickets-light.svg', 'help_center') }}" /> {{ phrase('helpcenter.tickets.my_tickets') }}
             </a>
         </li>
         {#                                    <li class="dp-po-ticket-pages-item{% if type == 'cc' %} active{% endif %}">#}
         {#                                        <a href="{{ path('portal_tickets', {type: 'cc'}) }}" class="dp-po-ticket-pages-link">#}
-        {#                                            <i class="dp-po-icon fal fa-closed-captioning"></i> {{ phrase('helpcenter.tickets.tickets-i-m-cc-on') }}#}
+        {#                                            <i class="dp-po-icon fal fa-closed-captioning"></i> {{ phrase('helpcenter.tickets.tickets_i_m_cc_on') }}#}
         {#                                        </a>#}
         {#                                    </li>#}
         {% if person.organization and person.organization_manager %}
@@ -18,19 +18,19 @@
                     {% else %}
                         <span class="dp-po-icon fal fa-building"></span>
                     {% endif %}
-                    {{ phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) }}
+                    {{ phrase('helpcenter.tickets.organization_tickets', {org_name: person.organization }) }}
                 </a>
             </li>
         {% endif %}
         <li class="dp-po-ticket-pages-item">
             <a href="{{ path('portal_chats') }}" class="dp-po-ticket-pages-link">
-                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/chats-light.svg', 'help_center') }}" /> {{ phrase('helpcenter.chats.my-chats') }}
+                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/chats-light.svg', 'help_center') }}" /> {{ phrase('helpcenter.chats.my_chats') }}
             </a>
         </li>
         {% if app.getSetting('core_tickets.ticket_approvals') %}
         <li class="dp-po-ticket-pages-item">
             <a href="{{ path('ticket_approvals') }}" class="dp-po-ticket-pages-link">
-                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my-approvals') }}
+                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my_approvals') }}
             </a>
         </li>
         {% endif %}

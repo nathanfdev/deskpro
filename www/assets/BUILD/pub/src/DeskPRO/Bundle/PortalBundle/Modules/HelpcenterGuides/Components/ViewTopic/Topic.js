@@ -80,7 +80,7 @@ class Topic extends React.PureComponent {
                       href={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
                       onClick={this.copyLinkToClipBoard}
                     >
-                      <i className="dp-po-icon far fa-anchor" title={intl.formatMessage({ id: 'helpcenter.general.copy-to-clipboard' })} />
+                      <i className="dp-po-icon far fa-anchor" title={intl.formatMessage({ id: 'helpcenter.general.copy_to_clipboard' })} />
                       {this.state.copied && <FormattedMessage id="helpcenter.general.copied" />}
                     </a>
                   </h2>

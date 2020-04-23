@@ -6,11 +6,11 @@
     <div class="dp-po-ticket-modal-agent">
         <div class="dp-po-avatar dp-po-avatar-round">
             {{ hc_avatar(message.person, '', 60) }}
-            {{ phrase('helpcenter.tickets.rate-intro', {name: '<strong>' ~ message.person.display_name_user ~ '</strong>&nbsp;', subject: ticket.subject}, true) }}
+            {{ phrase('helpcenter.tickets.rate_intro', {name: '<strong>' ~ message.person.display_name_user ~ '</strong>&nbsp;', subject: ticket.subject}, true) }}
         </div>
     </div>
 
-    <p class="mt-4">{{ phrase('helpcenter.tickets.rate-question') }}</p>
+    <p class="mt-4">{{ phrase('helpcenter.tickets.rate_question') }}</p>
     <form class="dp-po-form" action="{{ path('portal_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
         <div class="form-group">
             <div>
@@ -25,7 +25,7 @@
                                                         <i class="dp-po-icon fad fa-star"></i>
                                                         <i class="dp-po-icon fad fa-star"></i>
                                                     </div>
-                                                    {{ phrase('helpcenter.tickets.rate-negative') }}
+                                                    {{ phrase('helpcenter.tickets.rate_negative') }}
                                                 </span>
                         </label>
                         <label class="title">
@@ -37,7 +37,7 @@
                                                         <i class="dp-po-icon fad fa-star"></i>
                                                         <i class="dp-po-icon fad fa-star"></i>
                                                     </div>
-                                                    {{ phrase('helpcenter.tickets.rate-neutral') }}
+                                                    {{ phrase('helpcenter.tickets.rate_neutral') }}
                                                 </span>
                         </label>
                         <label class=" title">
@@ -49,7 +49,7 @@
                                                         <i class="dp-po-icon fad fa-star"></i>
                                                         <i class="dp-po-icon fad fa-star"></i>
                                                     </div>
-                                                    {{ phrase('helpcenter.tickets.rate-positive') }}
+                                                    {{ phrase('helpcenter.tickets.rate_positive') }}
                                                 </span>
                         </label>
                     </div>

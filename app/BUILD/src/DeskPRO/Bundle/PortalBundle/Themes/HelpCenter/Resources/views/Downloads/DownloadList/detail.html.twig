@@ -53,7 +53,7 @@
                 </h1>
                 {% if not dl.fileurl %}
                 <span class="date">
-                    {{ phrase('helpcenter.downloads.uploaded-on') }}: {{ dl.date_updated | date('Y-m-d') }}
+                    {{ phrase('helpcenter.downloads.uploaded_on') }}: {{ dl.date_updated | date('Y-m-d') }}
                 </span>
                 {%  endif %}
 
@@ -66,7 +66,7 @@
     {% if show_category_link %}
         <div class="list-meta">
             <a href="{{ category ? portal_path(category) : path('portal_downloads') }}">
-                {{ phrase('helpcenter.downloads.view-x-files', {count: pager|length}) }}
+                {{ phrase('helpcenter.downloads.view_x_files', {count: pager|length}) }}
                 <i class="fas fa-caret-right"></i>
             </a>
         </div>

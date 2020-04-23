@@ -80,7 +80,7 @@ export class HcMobileFilters extends React.Component {
     const { activities } = this.props.filter.available;
 
     const phrases = {
-      myActivity: portalPhrases.get('helpcenter.community.my-activity'),
+      myActivity: portalPhrases.get('helpcenter.community.my_activity'),
     };
 
     return (
@@ -107,7 +107,7 @@ export class HcMobileFilters extends React.Component {
     const { status_categories } = this.props.filter.available;
 
     const phrases = {
-      resetAllFilters: portalPhrases.get('helpcenter.community.reset-all-filters'),
+      resetAllFilters: portalPhrases.get('helpcenter.community.reset_all_filters'),
       status:          portalPhrases.get('helpcenter.community.status'),
     };
 

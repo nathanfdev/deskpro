@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Model;
 
@@ -55,8 +53,8 @@ class CommunityFilter
     ];
 
     public static $views_translated = [
-        self::VIEW_LIST          => 'helpcenter.community.view-list',
-        self::VIEW_STATUS_CHANGE => 'helpcenter.community.view-status-change',
+        self::VIEW_LIST          => 'helpcenter.community.view_list',
+        self::VIEW_STATUS_CHANGE => 'helpcenter.community.view_status_change',
     ];
 
     public static $statuses_translated = [
@@ -66,9 +64,9 @@ class CommunityFilter
     ];
 
     public static $activities_translated = [
-        self::ACTIVITY_VOTED     => 'helpcenter.community.activity-voted',
-        self::ACTIVITY_CREATED   => 'helpcenter.community.activity-created',
-        self::ACTIVITY_COMMENTED => 'helpcenter.community.activity-commented',
+        self::ACTIVITY_VOTED     => 'helpcenter.community.activity_voted',
+        self::ACTIVITY_CREATED   => 'helpcenter.community.activity_created',
+        self::ACTIVITY_COMMENTED => 'helpcenter.community.activity_commented',
     ];
 
     public static $sorts = [

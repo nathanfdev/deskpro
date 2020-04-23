@@ -162,9 +162,9 @@ export class HcDateWidget extends PageWidget {
         id,
         dateFormat:               format,
         timeFormat:               'HH:mm',
-        nextMonthButtonLabel:     portalPhrases.get('helpcenter.forms.date-picker-next-month'),
-        previousMonthButtonLabel: portalPhrases.get('helpcenter.forms.date-picker-previous-month'),
-        timeCaption:              portalPhrases.get('helpcenter.forms.date-picker-time'),
+        nextMonthButtonLabel:     portalPhrases.get('helpcenter.forms.date_picker_next_month'),
+        previousMonthButtonLabel: portalPhrases.get('helpcenter.forms.date_picker_previous_month'),
+        timeCaption:              portalPhrases.get('helpcenter.forms.date_picker_time'),
         onChange:                 date => onUpdateValue(date),
       }
     );

@@ -3,7 +3,7 @@
 {% block page_top %}
 
 	{% include 'Theme:Pdf:breadcrumbs.html.twig' %}
-	
+
 	<div class="row mb-4">
 		<div class="col-sm-9">
 			<div class="dp-po-title">
@@ -22,7 +22,7 @@
 						<ul class="dp-po-post-user-list">
 							{% include 'Theme:PublishCommon:post-user-list.html.twig' with { users: [topic.person], pdf: true } %}
 							<li class="dp-po-post-user-item">
-								<strong>{{ phrase('helpcenter.community.forum-name') }}:</strong> #{{ topic.forum.title }}
+								<strong>{{ phrase('helpcenter.community.forum_name') }}:</strong> #{{ topic.forum.title }}
 							</li>
 						</ul>
 					</div>
@@ -32,7 +32,7 @@
 			</div>
 		</div>
 		<div class="col-sm-3">
-		
+
 		</div>
 	</div>
 {% endblock page_top %}
@@ -43,9 +43,9 @@
 			{{ topic.getContentHtml()|raw }}
 		</div>
 	</div>
-	
+
 	{% if brand_setting('user.publish_comments') and topic.comments | length%}
 		{% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: topic.comments } %}
 	{% endif %}
-	
+
 {% endblock page_body %}

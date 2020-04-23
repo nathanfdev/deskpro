@@ -2,7 +2,7 @@
     <div class="col-sm">
         <div class="dp-po-title">
             <img class="dp-po-title-svg icon-svg" src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
-            <h1 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h1>
+            <h1 class="dp-po-title-text">{{ phrase('helpcenter.community.section_title') }}</h1>
         </div>
     </div>
     {% if is_community_enabled %}
@@ -27,7 +27,7 @@
                     {
                         toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
                         icon: 'fal fa-file-spreadsheet',
-                        title: phrase('helpcenter.community.section-title'),
+                        title: phrase('helpcenter.community.section_title'),
                         active: is_subscribed
                     }
                 ]
@@ -43,7 +43,7 @@
                 {
                     toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
                     icon: 'fal fa-file-spreadsheet',
-                    title: phrase('helpcenter.community.section-title'),
+                    title: phrase('helpcenter.community.section_title'),
                     active: is_subscribed
                 }
             ]
@@ -77,12 +77,12 @@
                             <p class="dp-po-community-row-description">{{ forum.description }}</p>
                             <a href="{{ path('portal_community_browse', {filter_uri: "type-#{forum.id}"}) }}"
                                class="dp-po-community-row-btn">
-                                {{ phrase('helpcenter.community.view-topics', {count: topic_count_per_forum[forum.id]}) }}
+                                {{ phrase('helpcenter.community.view_topics', {count: topic_count_per_forum[forum.id]}) }}
                             </a>
                         </div>
                         <div class="dp-po-community-row-right">
                             <div class="dp-po-community-row-activity">
-                                <h3 class="dp-po-community-row-activity-heading">{{ phrase('helpcenter.community.recent-activity') }}</h3>
+                                <h3 class="dp-po-community-row-activity-heading">{{ phrase('helpcenter.community.recent_activity') }}</h3>
                                 <ul class="dp-po-community-row-activity-list">
                                     {% for activity in latest_activity_per_forum[forum.id] %}
                                         <li class="dp-po-community-row-activity-item">

@@ -1,9 +1,9 @@
 <div class="ticket-not-available">
     {% if can_open_ticket %}
-        <h1>{{ phrase('helpcenter.tickets.need-login_title') }}</h1>
-        <p>{{ phrase('helpcenter.tickets.need-login_desc', {login_url: url('portal_login')}) }}</p>
+        <h1>{{ phrase('helpcenter.tickets.need_login_title') }}</h1>
+        <p>{{ phrase('helpcenter.tickets.need_login_desc', {login_url: url('portal_login')}) }}</p>
     {% else  %}
-        <h1>{{ phrase('helpcenter.tickets.not-allowed_title') }}</h1>
-        <p>{{ phrase('helpcenter.tickets.not-allowed_desc') }}</p>
+        <h1>{{ phrase('helpcenter.tickets.not_allowed_title') }}</h1>
+        <p>{{ phrase('helpcenter.tickets.not_allowed_desc') }}</p>
     {% endif %}
 </div>

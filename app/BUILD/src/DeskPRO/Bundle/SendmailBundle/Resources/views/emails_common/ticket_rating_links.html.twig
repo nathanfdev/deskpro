@@ -1,6 +1,6 @@
 <div class="rate-link">
-	{{ phrase('helpcenter.emails.ticket_rate-question') }}
-	<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'brand_id': ticket.brand.id, 'auth': ticket.auth, 'message_id': message.id, setrating: 1}) }}">&nbsp;&nbsp;{{ phrase('helpcenter.emails.ticket_rate-positive') }}&nbsp;&nbsp;</a>
-	<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'brand_id': ticket.brand.id, 'auth': ticket.auth, 'message_id': message.id, setrating: 0}) }}">&nbsp;&nbsp;{{ phrase('helpcenter.emails.ticket_rate-neutral') }}&nbsp;&nbsp;</a>
-	<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'brand_id': ticket.brand.id, 'auth': ticket.auth, 'message_id': message.id, setrating: -1}) }}">&nbsp;&nbsp;{{ phrase('helpcenter.emails.ticket_rate-negative') }}&nbsp;&nbsp;</a>
+	{{ phrase('helpcenter.emails.ticket_rate_question') }}
+	<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'brand_id': ticket.brand.id, 'auth': ticket.auth, 'message_id': message.id, setrating: 1}) }}">&nbsp;&nbsp;{{ phrase('helpcenter.emails.ticket_rate_positive') }}&nbsp;&nbsp;</a>
+	<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'brand_id': ticket.brand.id, 'auth': ticket.auth, 'message_id': message.id, setrating: 0}) }}">&nbsp;&nbsp;{{ phrase('helpcenter.emails.ticket_rate_neutral') }}&nbsp;&nbsp;</a>
+	<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'brand_id': ticket.brand.id, 'auth': ticket.auth, 'message_id': message.id, setrating: -1}) }}">&nbsp;&nbsp;{{ phrase('helpcenter.emails.ticket_rate_negative') }}&nbsp;&nbsp;</a>
 </div>

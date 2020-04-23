@@ -11,7 +11,7 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<h1>{{ phrase('helpcenter.emails.community-updated-items', {count: updated_topics|length}) }}</h1>
+	<h1>{{ phrase('helpcenter.emails.community_updated_items', {count: updated_topics|length}) }}</h1>
 	<ul>
 		{% for topic in updated_topics %}
 			<li><a href="{{ url_full('portal_community_topic_view', {slug: topic.slug}) }}">{{ topic.title }}</a></li>
@@ -19,7 +19,7 @@
 	</ul>
 
 	<div class="dp-hr">&nbsp;</div>
-	{{ phrase('helpcenter.emails.community-explain', {deskpro_url: portal_home }) }}
+	{{ phrase('helpcenter.emails.community_explain', {deskpro_url: portal_home }) }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

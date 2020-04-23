@@ -12,12 +12,12 @@
     </div>
 
     <div class="dp-po-ticket-block-feedback">
-        {{ phrase('helpcenter.tickets.rated-your-support') }}
+        {{ phrase('helpcenter.tickets.rated_your_support') }}
         <div class="dp-po-avatar dp-po-avatar-round">
             {{ hc_avatar(feedback.ticket_message.person) }}
             {{ feedback.ticket_message.person }}
         </div>
-        {{ phrase('helpcenter.tickets.rate-' ~ feedback.rating_type) }}
+        {{ phrase('helpcenter.tickets.rate_' ~ feedback.rating_type) }}
         <div class="dp-po-ticket-block-rating {% if feedback.rating == -1 %}dp-po-ticket-modal-rating-one{% elseif feedback.rating == 0%}dp-po-ticket-modal-rating-two{% endif %}">
             <i class="dp-po-icon fad fa-star"></i>
             <i class="dp-po-icon fad fa-star"></i>

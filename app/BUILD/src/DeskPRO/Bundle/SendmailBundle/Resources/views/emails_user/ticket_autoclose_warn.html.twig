@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('helpcenter.emails.tickets_re') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.tickets_re', {subject: ticket.subject}) }}</dp:subject>
 
 <html>
 <head>
@@ -13,7 +13,7 @@
 
     <br/><br/>
 
-    {{ phrase('helpcenter.emails.auto-close') }}
+    {{ phrase('helpcenter.emails.auto_close') }}
 
     <br/><br/>
 

@@ -80,7 +80,7 @@
 
         {% if ticket.resolved and is_granted('TICKET_REOPEN_RESOLVED', ticket) %}
             <a href="{{ portal_path(ticket, 'unresolve') }}" class="btn btn-outline-primary post-link">
-                {{ phrase('helpcenter.tickets.mark-unresolved') }}
+                {{ phrase('helpcenter.tickets.mark_unresolved') }}
             </a>
         {% endif %}
     {% endif %}

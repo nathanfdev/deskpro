@@ -1,130 +1,130 @@
-helpcenter.guides.download-pdf: 'PDF 다운로드'
-helpcenter.account.login-register-btn: 가입
-helpcenter.emails.register-welcome_subject: '가입해주셔서 감사합니다'
+helpcenter.guides.download_pdf: 'PDF 다운로드'
+helpcenter.account.login_register_btn: 가입
+helpcenter.emails.register_welcome_subject: '가입해주셔서 감사합니다'
 helpcenter.tickets.guest_thank_you_title: 감사합니다.
 helpcenter.profile.account_disabled_message: '계정에 현재 문제가 있습니다. 로그인, 티켓 관리, 그리고 채팅을 하실 수 없습니다.'
 helpcenter.general.you: 고객님
 helpcenter.emails.comment_deleted: '고객님의 코멘트가 페이지의 개선에 도움이 되었습니다'
-helpcenter.emails.community-topic_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
-helpcenter.emails.community-topic_disapproved: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.'
-helpcenter.tickets.new-section-title: '고객센터 문의'
-helpcenter.general.related-news: '관련 뉴스'
-helpcenter.general.related-downloads: '관련 파일들'
-helpcenter.general.related-community: '관련 피드백'
-helpcenter.emails.ticket_rate-neutral: 괜찮았습니다
+helpcenter.emails.community_topic_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
+helpcenter.emails.community_topic_disapproved: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.'
+helpcenter.tickets.new_section_title: '고객센터 문의'
+helpcenter.general.related_news: '관련 뉴스'
+helpcenter.general.related_downloads: '관련 파일들'
+helpcenter.general.related_community: '관련 피드백'
+helpcenter.emails.ticket_rate_neutral: 괜찮았습니다
 helpcenter.sidebar.news_title: 뉴스
 helpcenter.forms.label_download: 다운로드
-helpcenter.general.nav-downloads-desc: '다운로드 보기'
-helpcenter.general.nav-downloads: '다운로드 파일들'
-helpcenter.emails.ticket_reply-confirm: '답변해 주셔서 감사하니다. 빠른시간 안에 답변 해 드리도록 하겠습니다.'
+helpcenter.general.nav_downloads_desc: '다운로드 보기'
+helpcenter.general.nav_downloads: '다운로드 파일들'
+helpcenter.emails.ticket_reply_confirm: '답변해 주셔서 감사하니다. 빠른시간 안에 답변 해 드리도록 하겠습니다.'
 helpcenter.messenger.blocks.tickets.title: '당신의 티켓들'
 helpcenter.emails.chat_transcript_subject: '대화 기록'
-helpcenter.chat.window_resume-button: '대화 열기'
-helpcenter.chat.form_feedback_rate-satisfaction: '대화가 만족스러우셨습니까?'
-helpcenter.chat.message_ended-by-user: '대화가 사용자에 의해 종료되었습니다'
+helpcenter.chat.window_resume_button: '대화 열기'
+helpcenter.chat.form_feedback_rate_satisfaction: '대화가 만족스러우셨습니까?'
+helpcenter.chat.message_ended_by_user: '대화가 사용자에 의해 종료되었습니다'
 helpcenter.chat.message_started: '대화가 시작되었습니다'
 helpcenter.messenger.chat.ended: '대화가 종료되었습니다'
-helpcenter.chat.window_cancel-confirm: '대화를 종료하시겠습니까?'
-helpcenter.chat.window_end-chat: '대화를 종료합니다'
-helpcenter.general.add-comment: '댓글 등록'
-helpcenter.general.rate-page-positive: '도움이 되었습니다'
-helpcenter.community.btn-vote: 동의합니다.
+helpcenter.chat.window_cancel_confirm: '대화를 종료하시겠습니까?'
+helpcenter.chat.window_end_chat: '대화를 종료합니다'
+helpcenter.general.add_comment: '댓글 등록'
+helpcenter.general.rate_page_positive: '도움이 되었습니다'
+helpcenter.community.btn_vote: 동의합니다.
 helpcenter.general.go: 등록
-helpcenter.emails.community_topic_new-disapproved: '등록요청 글이 거절되었습니다'
-helpcenter.direct_messages.reply.message: 메세지
-helpcenter.emails.ticket_rate-question: '메세지가 도움이 되셨습니까?'
+helpcenter.emails.community_topic_new_disapproved: '등록요청 글이 거절되었습니다'
+helpcenter.direct_messages.reply_message: 메세지
+helpcenter.emails.ticket_rate_question: '메세지가 도움이 되셨습니까?'
 helpcenter.tickets.view_unassigned: 미배정
 helpcenter.chat.message_unassigned: '미배정 채팅'
 helpcenter.tickets.list_agent: '배정된 에이전트'
 helpcenter.messenger.tickets.form.category: 범주
 helpcenter.general.show: 보기
 helpcenter.messenger.tickets.form.submit: 보내기
-helpcenter.chat.form_chat_button-submit: 보내기
+helpcenter.chat.form_chat_button_submit: 보내기
 helpcenter.messenger.tickets.form.department: 부서
 helpcenter.chat.log_no_department: '부서가 없습니다'
 helpcenter.chat.form_create_department: '부서를 선택하십시오'
 helpcenter.forms.label_password: 비밀번호
 helpcenter.emails.password_reset_subject: '비밀번호 재설정'
 helpcenter.emails.password_reset: '비밀번호 재설정을 요청하셨습니다. 재설정 하시려면 아래의 링크를 클릭하십시오:'
-helpcenter.chat.message_user-returned: '사용자가 돌아왔습니다.'
-helpcenter.chat.message_user-timeout: '사용자의 시간이 초과되었습니다.'
+helpcenter.chat.message_user_returned: '사용자가 돌아왔습니다.'
+helpcenter.chat.message_user_timeout: '사용자의 시간이 초과되었습니다.'
 helpcenter.emails.chat_transcript: '상담 감사합니다. 상담 기록입니다.'
-helpcenter.chat.message_finding-agent: '상담원을 찾고 있습니다'
+helpcenter.chat.message_finding_agent: '상담원을 찾고 있습니다'
 helpcenter.chat.message_wait: '상담원을 찾고 있습니다.'
-helpcenter.chat.message_wait-timeout: '상담원을 찾을 수 없습니다.'
+helpcenter.chat.message_wait_timeout: '상담원을 찾을 수 없습니다.'
 helpcenter.emails.kb_sub_new: '새 글들'
 helpcenter.emails.kb_sub_new_and_updated: '새로 업데이트 된 글들'
-helpcenter.emails.ticket_new-participant: '새로운 사용자가 고객님의 티켓에 추가되었습니다'
+helpcenter.emails.ticket_new_participant: '새로운 사용자가 고객님의 티켓에 추가되었습니다'
 helpcenter.tickets.list_date_created: '생성 날짜'
 helpcenter.tickets.rate_support: '서비스 평가하기'
-helpcenter.tickets.rate-question: '서비스에 대해서 평가해 주세요?'
+helpcenter.tickets.rate_question: '서비스에 대해서 평가해 주세요?'
 helpcenter.tickets.view_btn_edit: 수정
-helpcenter.account.email-btn-resend-validation: '승인 이메일 다시 보내기'
-helpcenter.chat.form_feedback_rate-time: '시간안에 빠른 답변을 받을수 있으셨습니까?'
+helpcenter.account.email_btn_resend_validation: '승인 이메일 다시 보내기'
+helpcenter.chat.form_feedback_rate_time: '시간안에 빠른 답변을 받을수 있으셨습니까?'
 helpcenter.messenger.chat.save_ticket.button_no: 아니오
 helpcenter.chat.window_close: '아니오, 창만 닫습니다.'
-helpcenter.tickets.rate-positive: '아주 좋았습니다'
-helpcenter.emails.ticket_no-autoresponse: '알림: 확인 이메일이 정지 되었습니다'
+helpcenter.tickets.rate_positive: '아주 좋았습니다'
+helpcenter.emails.ticket_no_autoresponse: '알림: 확인 이메일이 정지 되었습니다'
 helpcenter.members.language: 언어
 helpcenter.emails.kb_sub_updated: '업데이트 된 글들'
 helpcenter.chat.message_uploading: '업로드중 ...'
 helpcenter.chat.agent: 에이전트
-helpcenter.emails.password_agent-reset_subject: '에이전트가 고객님의 비밀번호를 재설정 하였습니다'
+helpcenter.emails.password_agent_reset_subject: '에이전트가 고객님의 비밀번호를 재설정 하였습니다'
 helpcenter.chat.log_unassigned: '에이전트가 배정되지 않았습니다'
-helpcenter.emails.password_agent-reset: '에이전트가 비밀번호를 재설정 하였습니다. 이 인증번호들로 로그인 하십시오'
-helpcenter.emails.community-topic_agent-validation: '에이전트가 확인하기 전까지는 고객님의 피드백이 웹사이트에 공개되지 않습니다.'
+helpcenter.emails.password_agent_reset: '에이전트가 비밀번호를 재설정 하였습니다. 이 인증번호들로 로그인 하십시오'
+helpcenter.emails.community_topic_agent_validation: '에이전트가 확인하기 전까지는 고객님의 피드백이 웹사이트에 공개되지 않습니다.'
 helpcenter.chat.form_create_title: '에이전트와 채팅 시작'
 helpcenter.emails.ticket_validate: '연락해 주셔서 감사합니다. <br /><br />에이전트가 메세지를 읽고 답변 해 드릴 수 있도록 이메일 주소를 확인해 주세요.'
 helpcenter.messenger.chat.transcript_block.yes_button: 예
-helpcenter.emails.label_view-online: '온라인에서 확인하세요'
-helpcenter.error.permission-denied-title: '요청하신 작업에 대한 권한이 없습니다.'
+helpcenter.emails.label_view_online: '온라인에서 확인하세요'
+helpcenter.error.permission_denied_title: '요청하신 작업에 대한 권한이 없습니다.'
 helpcenter.messenger.tickets.form.priority: 우선순위
-helpcenter.chat.form_feedback_transcript-email: '이 대화 기록 보내기'
-helpcenter.chat.window_open-new: '이 대화창을 새 창에 열기'
-helpcenter.tickets.new-intro: '이 양식을 작성해 주시면 최대한 빠르게 답변 해 드리겠습니다.'
+helpcenter.chat.form_feedback_transcript_email: '이 대화 기록 보내기'
+helpcenter.chat.window_open_new: '이 대화창을 새 창에 열기'
+helpcenter.tickets.new_intro: '이 양식을 작성해 주시면 최대한 빠르게 답변 해 드리겠습니다.'
 helpcenter.chat.name: 이름
 helpcenter.community.form_full_name: 이름
 helpcenter.chat.email: '이메일 주소'
-helpcenter.emails.profile_email_link-validate: '이메일 주소를 인증시키시려면 아래 링크를 클릭해주십시오'
-helpcenter.emails.email_new-confirm: '이메일 주소를 확인해주십시오'
-helpcenter.chat.submit-ticket-title: '이메일로 보내주십시오'
-helpcenter.chat.submit-ticket-button: '이메일을 보내주십시오.'
-helpcenter.chat.form_chat_send-file: '자료 업로드'
-helpcenter.chat.window_offline-button: '자세한사항을 위한 연락은 여기를 클릭해주세요'
+helpcenter.emails.profile_email_link_validate: '이메일 주소를 인증시키시려면 아래 링크를 클릭해주십시오'
+helpcenter.emails.email_new_confirm: '이메일 주소를 확인해주십시오'
+helpcenter.chat.submit_ticket_title: '이메일로 보내주십시오'
+helpcenter.chat.submit_ticket_button: '이메일을 보내주십시오.'
+helpcenter.chat.form_chat_send_file: '자료 업로드'
+helpcenter.chat.window_offline_button: '자세한사항을 위한 연락은 여기를 클릭해주세요'
 helpcenter.forms.label_save: 저장
-helpcenter.emails.comment-deleted_subject: '저희 상담원들이 고객님의 코멘트를 읽었습니다'
+helpcenter.emails.comment_deleted_subject: '저희 상담원들이 고객님의 코멘트를 읽었습니다'
 helpcenter.general.everything: 전체
 helpcenter.tickets.list_subject: 제목
 helpcenter.community.form_topic_title: 제목
-helpcenter.tickets.rate-negative: '좋지 않았습니다'
-helpcenter.chat.ended-no-agent: '죄송합니다. 지금은 상담 가능한 직원이 없습니다. 다시 시도해 주십시요.'
-helpcenter.articles.section-title: '지식 베이스'
-helpcenter.articles.view-as-agent: '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.'
-helpcenter.news.view-as-agent: '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.'
+helpcenter.tickets.rate_negative: '좋지 않았습니다'
+helpcenter.chat.ended_no_agent: '죄송합니다. 지금은 상담 가능한 직원이 없습니다. 다시 시도해 주십시요.'
+helpcenter.articles.section_title: '지식 베이스'
+helpcenter.articles.view_as_agent: '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.'
+helpcenter.news.view_as_agent: '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.'
 helpcenter.chat.window_close_only: '창을 닫습니다'
-helpcenter.error.404-title: '찾을 수 없습니다.'
-helpcenter.chat.message_chatting-with: '채팅 대상'
-helpcenter.chat.log-title: '채팅 목록'
-helpcenter.chat.form_create_button-submit: '채팅 시작하기'
-helpcenter.chat.log_chat-id: '채팅 아이디'
+helpcenter.error.404_title: '찾을 수 없습니다.'
+helpcenter.chat.message_chatting_with: '채팅 대상'
+helpcenter.chat.log_title: '채팅 목록'
+helpcenter.chat.form_create_button_submit: '채팅 시작하기'
+helpcenter.chat.log_chat_id: '채팅 아이디'
 helpcenter.chat.error: '채팅 오류'
-helpcenter.chat.window_upload-drag: '채팅에 파일을 올리시려면 여기에 올려놔주세요'
-helpcenter.chat.window_start-button: '채팅을 하시려면 여기를 클릭 해주세요'
+helpcenter.chat.window_upload_drag: '채팅에 파일을 올리시려면 여기에 올려놔주세요'
+helpcenter.chat.window_start_button: '채팅을 하시려면 여기를 클릭 해주세요'
 helpcenter.community.attachments: 첨부파일
-helpcenter.general.btn-cancel: 취소
+helpcenter.general.btn_cancel: 취소
 helpcenter.emails.comment_approved: '코멘트가 발행되었습니다.'
-helpcenter.emails.comment-approved_subject: '코멘트가 승인 되었습니다'
+helpcenter.emails.comment_approved_subject: '코멘트가 승인 되었습니다'
 helpcenter.chat.form_feedback_comments: '코멘트를 남기시겠습니까?'
-helpcenter.emails.comment-confirmation: '코멘트를 달아주셔서 감사합니다'
+helpcenter.emails.comment_confirmation: '코멘트를 달아주셔서 감사합니다'
 helpcenter.tickets.resolve_my_ticket_btn: '티켓 해결하기'
 helpcenter.emails.ticket_access_ticket_online: '티켓은 온라인에서 보시고 관리해주세요:'
 helpcenter.emails.reject_resolved: '티켓이 이미 해결되었기 때문에 답변이 수락 되지 않았습니다. 에이전트가 이 메세지를 읽거나 답변 하지 않을 것 입니다'
 helpcenter.emails.ticket_received: '티켓이 접수되었습니다. 빠른시간 안에 답변을 받아보실 수 있습니다.'
 helpcenter.members.timezone: '표준 시간대'
-helpcenter.community.section-title: 피드백
-helpcenter.chat.form_feedback_button-submit: '피드백 남기고 창 닫기'
+helpcenter.community.section_title: 피드백
+helpcenter.chat.form_feedback_button_submit: '피드백 남기고 창 닫기'
 helpcenter.emails.community_new: '피드백을 남겨주셔서 감사합니다'
 helpcenter.chat.form_feedback_title: '피드백을 보내주세요.'
-helpcenter.emails.community_topic_new-approved: '피드백이 승인되었습니다'
+helpcenter.emails.community_topic_new_approved: '피드백이 승인되었습니다'
 helpcenter.tickets.list_status_resolved: 해결된
-helpcenter.chat.message_long-wait: '현재 상담 가능한 에이전트를 찾고있습니다; 일분 내의 시간이 소요됩니다. <br /><br />기다리시겠습니까? <a class="cancel-and-newticket-trigger"> 메세지를 남기시겠습니까?</a>'
+helpcenter.chat.message_long_wait: '현재 상담 가능한 에이전트를 찾고있습니다; 일분 내의 시간이 소요됩니다. <br /><br />기다리시겠습니까? <a class="cancel-and-newticket-trigger"> 메세지를 남기시겠습니까?</a>'

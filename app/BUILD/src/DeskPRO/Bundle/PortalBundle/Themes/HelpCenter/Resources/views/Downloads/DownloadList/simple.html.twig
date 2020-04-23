@@ -27,7 +27,7 @@
     {% if show_category_link %}
         <div class="list-meta">
             <a href="{{ category ? portal_path(category) : path('portal_downloads') }}">
-                {{ phrase('helpcenter.downloads.view-x-files', {count: pager|length}) }}<i class="fas fa-caret-right"></i>
+                {{ phrase('helpcenter.downloads.view_x_files', {count: pager|length}) }}<i class="fas fa-caret-right"></i>
             </a>
         </div>
     {% endif %}
