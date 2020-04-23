@@ -67,7 +67,7 @@
         <div class="dpx-tabs">
             <ul class="dp-po-tab">
                 <li class="dp-po-tab-item">
-                    <a href="{{ url('portal_login') }}" data-tab-id="comment_login_form" class="dp-po-tab-link dpx-tab">{{ phrase('helpcenter.account.login_btn') }}</a>
+                    <a href="{{ url('portal_login') }}" data-tab-id="comment_login_form" class="dp-po-tab-link dpx-tab">{{ phrase('helpcenter.general.log_in') }}</a>
                 </li>
                 <li class="dp-po-tab-item" >
                     <a href="{{ url('portal_user_registration') }}" data-tab-id="comment_register_form" class="dp-po-tab-link dpx-tab">{{ phrase('helpcenter.account.register_btn') }}</a>
@@ -88,7 +88,7 @@
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" id="comments_login_form_password_input"
-                                       placeholder="{{ phrase('helpcenter.forms.label_password') }}" name="password" tabindex="2" />
+                                       placeholder="{{ phrase('helpcenter.general.password') }}" name="password" tabindex="2" />
                             </div>
                             <div class="form-group dp-po-form-check">
                                 <input type="checkbox" class="form-check-input" id="comments_login_form_rememberme">
@@ -99,7 +99,7 @@
                                 {{ form_widget(captcha_form) }}
                             {% endif %}
 
-                            <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.account.login_btn') }}</button>
+                            <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.general.log_in') }}</button>
                             {% if auth_manager.isForgotPasswordVisible %}
                                 <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5" class="dp-po-form-btntext">
                                     {{ phrase('helpcenter.account.login_password_reminder') }}

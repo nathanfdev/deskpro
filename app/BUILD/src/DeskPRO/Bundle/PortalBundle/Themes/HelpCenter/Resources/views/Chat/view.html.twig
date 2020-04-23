@@ -54,7 +54,7 @@
           <div class="col-sm-9">
             <div class="dp-po-title">
               <img class="dp-po-title-svg" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}">
-              <h1 class="dp-po-title-text">{{ phrase('helpcenter.chat.log_title', { person: chat.agent.display_name_user }) }}</h1>
+              <h1 class="dp-po-title-text">{{ phrase('helpcenter.chat.your_chat_with', { person: chat.agent.display_name_user }) }}</h1>
             </div>
             <div class="row align-items-center">
               <div class="col-sm-10">
@@ -64,7 +64,7 @@
                     {% set lastMessage = chat_messages|filter(m => m.author)|last %}
                     {% set lastPerson = lastMessage.author %}
                     <li class="dp-po-post-info-item">
-                      {{ phrase('helpcenter.chat.last_updated_by', { date_updated: lastMessage.date_created, person_name: lastPerson }) }}
+                      {{ phrase('helpcenter.general.last_update_by', { date_updated: lastMessage.date_created, person_name: lastPerson }) }}
                     </li>
                     <li class="dp-po-post-info-item">
                       <i class="dp-po-icon far fa-calendar-alt"></i> <b>{{ date(chat.date_created, 'day') }}</b>
@@ -148,11 +148,11 @@
               {% endif %}
             </div>
             <div class="dp-po-post-meta">
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_department') }}</h3>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.department') }}</h3>
               <p>{{ chat.department ? chat.department.user_title : '-' }}</p>
               <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_chat_time') }}</h3>
               <p>{{ date_diff(chat.date_created, chat.date_ended) }}</p>
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.last_activity') }}</h3>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.last_activity') }}</h3>
               <p>{{date(lastMessage.date_created, 'l')}}, {{date(lastMessage.date_created, 'time')}}</p>
               {% for custom in custom_data %}
                 {% if custom['value'] %}

@@ -6,7 +6,7 @@ helpcenter.account.email_btn_usersource_set: 'Adicionar endereço de e-mail'
 helpcenter.general.agent: Agente
 helpcenter.tickets.list_agent: 'Agente designado'
 helpcenter.account.profile_delete_picture: 'Alterar ou excluir a foto do perfil?'
-helpcenter.community.attachments: Anexos
+helpcenter.general.attachments: Anexos
 helpcenter.account.usersource_set_email_desc: 'Antes que você possa entrar, precisamos do seu endereço de e-mail. Digite seu endereço de e-mail abaixo para que possamos enviar um e-mail de verificação.'
 helpcenter.chat.submit_ticket_title: 'Ao Invés envie-nos um email'
 helpcenter.general.related_downloads: 'Arquivos relacionados'
@@ -15,7 +15,7 @@ helpcenter.tickets.list_subject: Assunto
 helpcenter.account.change_password_btn: 'Atualizar senha'
 helpcenter.tickets.rate_support: 'Avalie o seu suporte'
 helpcenter.emails.ticket_no_autoresponse: 'Aviso: Emails de confirmação estão desligados'
-helpcenter.forms.label_download: Baixar
+helpcenter.downloads.download: Baixar
 helpcenter.guides.download_pdf: 'Baixar PDF'
 helpcenter.articles.section_title: 'Base de Conhecimento'
 helpcenter.general.btn_cancel: Cancelar
@@ -30,8 +30,7 @@ helpcenter.account.reset_password_click_here: 'Clique aqui para solicitar um có
 helpcenter.account.set_password_sent_title: 'Coloque sua senha'
 helpcenter.community.section_title: Comentário
 helpcenter.general.related_community: 'Comentário relacionado'
-helpcenter.community.comments: 'Comentários?'
-helpcenter.chat.form_feedback_comments: 'Comentários?'
+helpcenter.general.comments: 'Comentários?'
 helpcenter.chat.form_create_button_submit: 'Começar conversa'
 helpcenter.tickets.rate_question: 'Como classificaria o apoio que recebeu?'
 helpcenter.community.btn_vote: Concordo
@@ -45,7 +44,7 @@ helpcenter.tickets.list_date_created: 'Criado em:'
 helpcenter.emails.chat_transcript_subject: 'Cópia do chat'
 helpcenter.messenger.tickets.form.department: Departamento
 helpcenter.tickets.view_btn_edit: Editar
-helpcenter.account.section_title_login: Entrar
+helpcenter.general.log_in: Entrar
 helpcenter.chat.form_chat_button_submit: Enviado
 helpcenter.messenger.tickets.form.submit: Enviar
 helpcenter.chat.form_feedback_button_submit: 'Enviar comentários e fechar janela'
@@ -109,7 +108,7 @@ helpcenter.emails.community_new: 'Obrigado por ter enviado os seus comentários'
 helpcenter.messenger.blocks.tickets.title: 'Os seus Bilhetes'
 helpcenter.emails.community_topic_new_approved: 'Os seus comentários foram aprovados'
 helpcenter.emails.community_topic_new_disapproved: 'Os seus comentários foram refutados'
-helpcenter.forms.label_password: Palavra-chave
+helpcenter.general.password: Palavra-chave
 helpcenter.emails.profile_email_link_validate: 'Para validar o seu endereço de email simplesmente clique no link abaixo'
 helpcenter.account.reset_password_sent_title: 'Pedido de Senha Recebido'
 helpcenter.chat.ended_no_agent: 'Pedimos imensa desculpa mas neste momento não temos ninguém disponível para o atender nesta conversa. Por favor envie-nos um email ou tente novamente mais tarde.'
@@ -149,7 +148,7 @@ helpcenter.profile.your_password: 'Sua senha'
 helpcenter.account.set_password_success: 'Sua senha foi atualizada.'
 helpcenter.chat.window_cancel_confirm: 'Tem a certeza que deseja terminar a sua conversa?'
 helpcenter.account.email_btn_make_primary: 'Torne a Primária'
-helpcenter.general.nav_downloads: Transferências
+helpcenter.general.downloads_type: Transferências
 helpcenter.general.everything: Tudo
 helpcenter.emails.password_agent_reset_subject: 'Um agente efectuou a reinicialização da sua palavra cháve'
 helpcenter.emails.password_agent_reset: 'Um agente efetuar a reinicialização da palavra chave da sua conta. Pode entrar na sua conta com os seguintes detalhes.'

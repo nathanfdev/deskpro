@@ -18,7 +18,7 @@
                     <div class="dp-po-post-info">
                         <ul class="dp-po-post-info-list">
                             <li class="dp-po-post-info-item">
-                                {{ phrase('helpcenter.general.last_updated', {date_updated: article.date_updated, person_name: article.last_author.name}) | raw }}
+                                {{ phrase('helpcenter.general.last_update_by', {date_updated: article.date_updated, person_name: article.last_author.name}) | raw }}
                             </li>
                         </ul>
                     </div>
@@ -45,7 +45,7 @@
                 {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
                     subscriptionInfo: [
                         { toggleUrl: portal_path(article, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_kb_article'), active: is_subscribed },
-                        { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.forms.label_category'), active: is_subscribed_category },
+                        { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category },
                         { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section_title'), active: is_subscribed_root },
                     ]
                 } %}
@@ -58,7 +58,7 @@
                 buttonId: 'subscribeDropdownMenuMobile',
                 subscriptionInfo: [
                     { toggleUrl: portal_path(article, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_kb_article'), active: is_subscribed },
-                    { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.forms.label_category'), active: is_subscribed_category },
+                    { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category },
                     { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section_title'), active: is_subscribed_root },
                 ]
             } %}
@@ -164,7 +164,7 @@
 {#                        </li>#}
                     </ul>
                     <div class="dp-po-post-share-mobile-url">
-                        <h3 class="dp-po-post-share-mobile-title">Copy this link</h3>
+                        <h3 class="dp-po-post-share-mobile-title">{{ phrase('helpcenter.general.copy_to_clipboard') }}</h3>
                         <input type="text" value="{{ portal_url(article) }}" readonly>
                     </div>
                 </div>

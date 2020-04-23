@@ -34,7 +34,6 @@ helpcenter.account.login_captcha_failed: 'Έχετε εισάγει λανθασ
 helpcenter.account.tickets_lockout: 'Έχετε καταχωρήσει πάρα πολλά tickets, με αποτέλεσμα να μπλοκαριστείτε. Παρακαλούμε δοκιμάστε ξανά αργότερα.'
 helpcenter.account.comment_lockout: 'Έχετε προσθέσει πολλά σχόλια. Θα χρειαστεί να περιμένετε πριν προσθέσετε περισσότερα.'
 helpcenter.chat.you_have_been_invited: 'Έχετε προσκληθεί να συμμετέχετε σε μια συνομιλία chat'
-helpcenter.chat.form_feedback_comments: 'Έχετε σχόλια;'
 helpcenter.emails.password_agent_reset: 'Έχουμε επαναφέρει τον κωδικό πρόσβασης του λογαριασμού σας. Μπορείτε να συνδεθείτε με αυτά τα στοιχεία'
 helpcenter.tickets.form_changed_notice: 'Έχουν προστεθεί νέα πεδία στη φόρμα. Παρακαλούμε ελέγξτε τα και υποβάλετε ξανά τη φόρμα.'
 helpcenter.emails.ticket_rate_neutral: 'Ήταν ΟΚ'
@@ -127,7 +126,7 @@ helpcenter.tickets.new_section_title: 'Επικοινωνήστε μαζί μα�
 helpcenter.messenger.tickets.form.chooseAFile: 'Επιλογή αρχείου'
 helpcenter.chat.form_create_department: 'Επιλογή τμήματος'
 helpcenter.tickets.list_status_resolved: Επιλυμένα
-helpcenter.community.attachments: Επισυνάψεις
+helpcenter.general.attachments: Επισυνάψεις
 helpcenter.tickets.timeline_attached: 'Επισύναψη σε αυτό το μήνυμα:'
 helpcenter.general.you: Εσείς
 helpcenter.general.tags: Ετικέτες
@@ -170,10 +169,10 @@ helpcenter.tickets.resolve_my_ticket_btn: 'Κλείσιμο του ticket μου
 helpcenter.general.share: 'Κοινή χρήση'
 helpcenter.sidebar.top_articles_title: 'Κορυφαία άρθρα'
 helpcenter.profile.your_password: 'Κωδικός πρόσβασης'
-helpcenter.forms.label_password: 'Κωδικός πρόσβασης'
+helpcenter.general.password: 'Κωδικός πρόσβασης'
 helpcenter.account.reset_password_sent_desc: 'Λάβαμε το αίτημα επαναφοράς κωδικού πρόσβασης για το παρακάτω email. Εάν αυτό το email ανήκει σε καταχωρισμένο λογαριασμό, έχουμε στείλει ένα μήνυμα με ένα link επαναφοράς κωδικού πρόσβασης στο κύριο email του λογαριασμού. Ελέγξτε τα εισερχόμενά σας για περισσότερες οδηγίες.'
-helpcenter.general.nav_downloads: Λήψεις
-helpcenter.forms.label_download: Λήψη
+helpcenter.general.downloads_type: Λήψεις
+helpcenter.downloads.download: Λήψη
 helpcenter.general.impersonation_mode: 'Λειτουργία πλαστοπροσωπίας'
 helpcenter.general.prop_comments_asc: 'Λιγότερα σχόλια πρώτα'
 helpcenter.general.prop_views_asc: 'Λιγότερες προβολές πρώτα'
@@ -275,14 +274,14 @@ helpcenter.general.related_downloads: 'Σχετικά αρχεία'
 helpcenter.general.related_news: 'Σχετικά νέα'
 helpcenter.general.related_pages: 'Σχετικές σελίδες'
 helpcenter.general.related_community: 'Σχετικό community topic'
-helpcenter.community.comments: Σχόλια
-helpcenter.account.section_title_login: Σύνδεση
+helpcenter.general.comments: Σχόλια
+helpcenter.general.log_in: Σύνδεση
 helpcenter.community.form_topic_title: Τίτλος
 helpcenter.chat.log_title: 'Τα chat σας'
 helpcenter.messenger.blocks.tickets.title: 'Τα ticket σας'
 helpcenter.tickets.list_date_last_agent: 'Τελευταία απάντηση εκπροσώπου Support'
 helpcenter.tickets.list_date_last_user: 'Τελευταία απάντηση χρήστη'
-helpcenter.tickets.last_activity: 'Τελευταία δραστηριότητα'
+helpcenter.general.last_activity: 'Τελευταία δραστηριότητα'
 helpcenter.tickets.list_last_action: 'Τελευταία ενέργεια'
 helpcenter.chat.window_end_chat: 'Τερματισμός Chat'
 helpcenter.messenger.tickets.form.department: Τμήμα

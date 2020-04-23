@@ -16,7 +16,7 @@ helpcenter.emails.news_sub_new: 'اخبار جدید'
 helpcenter.emails.news_sub_new_and_updated: 'اخبار جدید و به روز شده'
 helpcenter.general.related_news: 'اخبار مرتبط'
 helpcenter.chat.log_linked_ticket: 'اختصاص دادن به پیام'
-helpcenter.tickets.last_activity: 'اخرین فعالیت'
+helpcenter.general.last_activity: 'اخرین فعالیت'
 helpcenter.tickets.list_last_action: 'اخرین فعالیت'
 helpcenter.tickets.list_date_last_user: 'اخرین پاسخ کاربر'
 helpcenter.tickets.new_intro: 'اخرین پاسخ کارشناس'
@@ -119,8 +119,8 @@ helpcenter.chat.error: 'خطا در گفتگو'
 helpcenter.emails.ticket_rate_neutral: 'خوب بود'
 helpcenter.tickets.rate_negative: 'خوب نبود'
 helpcenter.messenger.chat.save_ticket.button_no: خیر
-helpcenter.general.nav_downloads: دانلود
-helpcenter.forms.label_download: دانلود
+helpcenter.general.downloads_type: دانلود
+helpcenter.downloads.download: دانلود
 helpcenter.guides.download_pdf: 'دانلود PDF'
 helpcenter.emails.download_sub_updated: 'دانلود های به روز شده'
 helpcenter.emails.download_sub_new: 'دانلود های جدید'
@@ -135,7 +135,7 @@ helpcenter.messenger.tickets.form.department: دپارتمان
 helpcenter.general.comment_btn_save: 'ذخیره نظر'
 helpcenter.forms.label_save: 'ذخیره کردن'
 helpcenter.account.profile_btn_save: 'ذخیره کردن پروفایل'
-helpcenter.forms.label_password: 'رمز عبور'
+helpcenter.general.password: 'رمز عبور'
 helpcenter.account.set_password_sent_title: 'رمز عبور خود را ایجاد کنید'
 helpcenter.profile.your_password: 'رمز عبور شما'
 helpcenter.account.set_password_success: 'رمز عبور شما به روز رسانی شد.'
@@ -182,7 +182,7 @@ helpcenter.error.403_title: 'عدم دسترسی'
 helpcenter.community.form_topic_title: عنوان
 helpcenter.chat.window_upload_drag: 'فایل خود را در اینجا بکشید که در چت آپلود شود'
 helpcenter.general.related_downloads: 'فایل های مرتبط'
-helpcenter.community.attachments: 'فایل پیوست'
+helpcenter.general.attachments: 'فایل پیوست'
 helpcenter.general.agent: فرد
 helpcenter.flashes.ticket_participant_already_error: "فردی که سعی کردید به عنوان یک شرکت کننده اضافه کنید، در حال حاضر یک شرکت کننده در این پیام است.\n"
 helpcenter.flashes.usersource_new_add_email_verify: "قبل از ایجاد حساب کاربری ما باید ایمیل شما را تأیید کنیم. لطفا صندوق پستی خود را برای پیوند تأیید بررسی کنید.\n"
@@ -237,8 +237,7 @@ helpcenter.emails.comment_deleted: 'نظر شما برای بهبود به صف�
 helpcenter.emails.comment_deleted_subject: 'نظر شما توسط ماموران ما خوانده شده'
 helpcenter.emails.comment_approved: 'نظر شما منتشر شده است.'
 helpcenter.emails.comment_approved_subject: 'نظر شما مورد تایید قرار گرفت'
-helpcenter.community.comments: نظرات
-helpcenter.chat.form_feedback_comments: نظرات
+helpcenter.general.comments: نظرات
 helpcenter.emails.community_topic_new_disapproved: 'نظرات شما رد شده است'
 helpcenter.emails.community_topic_new_approved: 'نظرات شما مورد تایید قرار گرفته است'
 helpcenter.chat.window_close: 'نه ممنون، فقط پنجره را ببندید'
@@ -246,14 +245,14 @@ helpcenter.account.login_password_reminder: 'نیاز به یادآور رمز �
 helpcenter.emails.ticket_no_autoresponse: 'هشدار: ایمیل تأیید خاموش است'
 helpcenter.general.everything: 'همه چیز'
 helpcenter.flashes.ticket_participant_add_unknown_error: "هنگام تلاش برای افزودن مشارکت کننده شما مشکلی پیش آمد. لطفا دوباره تلاش کنید.\n"
-helpcenter.account.section_title_login: ورود
+helpcenter.general.log_in: ورود
 helpcenter.tickets.view_btn_edit: ویرایش
 helpcenter.tickets.view_btn_edit_full: 'ویرایش پیام'
 helpcenter.flashes.ticket_replied: "پاسخ شما ارسال شده است. با تشکر!\n"
 helpcenter.emails.reject_resolved: "پاسخ شما قبول نشد زیرا پیام  شما قبلا به عنوان حل شده مشخص شده است. کارشناسان ما به این پیام  پاسخ نخواهند داد.\n"
 helpcenter.chat.window_end_chat: 'پایان دادن به چت'
 helpcenter.chat.window_close_only: 'پنجره را ببند'
-helpcenter.chat.list_chat: پیام
+helpcenter.general.chat: پیام
 helpcenter.chat.log_title: 'پیام شما'
 helpcenter.messenger.blocks.tickets.title: 'پیام شما'
 helpcenter.flashes.ticket_created: "پیام شما ارسال شده است. با تشکر!\n"

@@ -9,7 +9,7 @@ helpcenter.chat.message_chatting_with: 'Az Ön beszélgetőtársa:'
 helpcenter.chat.email: 'Az Ön e-mail címe'
 helpcenter.chat.name: 'Az Ön neve'
 helpcenter.messenger.blocks.tickets.title: 'Az Ön ügyei'
-helpcenter.account.section_title_login: Bejelentkezés
+helpcenter.general.log_in: Bejelentkezés
 helpcenter.chat.form_create_button_submit: 'Beszélgetés indítása'
 helpcenter.chat.window_start_button: 'Beszélgetés indításához kattintson ide'
 helpcenter.chat.message_started: 'Beszélgetés kezdete'
@@ -39,15 +39,14 @@ helpcenter.emails.ticket_rate_question: 'Hasznos volt Önnek ez az üzenet?'
 helpcenter.chat.error: 'Hiba történt a beszélgetés közben'
 helpcenter.tickets.rate_question: 'Hogyan értékelné munkánkat?'
 helpcenter.tickets.list_agent: 'Hozzárendelt munkatárs'
-helpcenter.chat.form_feedback_comments: 'Hozzászólás?'
-helpcenter.community.comments: 'Hozzászólás?'
+helpcenter.general.comments: 'Hozzászólás?'
 helpcenter.emails.comment_approved: 'Hozzászólása publikálásra került.'
 helpcenter.emails.comment_deleted: 'Hozzászólását felhasználtuk tartalmunk fejlesztéséhez.'
 helpcenter.sidebar.news_title: Hírek
 helpcenter.members.timezone: Időzóna
 helpcenter.messenger.chat.transcript_block.yes_button: Igen
 helpcenter.emails.password_agent_reset_subject: 'Jelszavát alaphelyzetbe állítottuk'
-helpcenter.forms.label_password: Jelszó
+helpcenter.general.password: Jelszó
 helpcenter.emails.password_reset_subject: Jelszócsere
 helpcenter.tickets.rate_positive: Jó
 helpcenter.chat.message_finding_agent: 'Kapcsolat létrehozása...'
@@ -70,13 +69,13 @@ helpcenter.chat.form_feedback_title: 'Küldjön visszajelzést'
 helpcenter.chat.form_chat_button_submit: Küldés
 helpcenter.messenger.tickets.form.submit: Küldés
 helpcenter.general.nav_downloads_desc: 'Letölthető fájlok és dokumentumok'
-helpcenter.forms.label_download: Letöltés
-helpcenter.general.nav_downloads: Letöltések
+helpcenter.downloads.download: Letöltés
+helpcenter.general.downloads_type: Letöltések
 helpcenter.account.email_btn_resend_validation: 'Megerősítő e-mail újraküldése'
 helpcenter.emails.ticket_received: 'Megkaptuk üzenetét. Munkatársunk hamarosan felveszi Önnel a kapcsolatot.'
 helpcenter.tickets.list_status_resolved: Megoldott
 helpcenter.general.go: Mehet
-helpcenter.community.attachments: Mellékletek
+helpcenter.general.attachments: Mellékletek
 helpcenter.forms.label_save: Mentés
 helpcenter.emails.ticket_validate: 'Mielőtt munkatársaink feldolgozhatnák üzenetét,<br /><br />meg kell erősítenie e-mail címét.'
 helpcenter.general.everything: Minden

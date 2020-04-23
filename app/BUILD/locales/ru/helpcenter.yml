@@ -1,4 +1,4 @@
-helpcenter.messenger.tickets_form_email: Email
+helpcenter.general.email_address: Email
 helpcenter.account.login_email_placeholder: email@example.ru
 helpcenter.messenger.message_unassigned: '{name} больше не отвечает за чат.'
 helpcenter.messenger.message_ended_by: '{name} заканчивает беседу.'
@@ -66,7 +66,7 @@ helpcenter.messenger.chat_save_ticket_intro: 'Введите свое имя и 
 helpcenter.emails.too_many_emails: 'Внимание: Вы отправили слишком много сообщений'
 helpcenter.emails.ticket_no_autoresponse: 'Внимание: подтверждения электронной почты отключены.'
 helpcenter.tickets.please_login_to_reply: 'Войдите в систему, чтобы ответить.'
-helpcenter.account.section_title_login: Войти
+helpcenter.general.log_in: Войти
 helpcenter.account.login_external: 'Войти с помощью другого сервиса'
 helpcenter.emails.password_reset_subject: 'Восстановить пароль'
 helpcenter.general.everything: Всё
@@ -104,7 +104,7 @@ helpcenter.chat.window_cancel_confirm: 'Вы уверены, что хотите
 helpcenter.flashes.article_unsubscribe: 'Вы успешно отменили подписку на эту статью.'
 helpcenter.flashes.article_cat_unsubscribe: 'Вы успешно отписались от данной темы.'
 helpcenter.messenger.tickets_form_select: Выберите
-helpcenter.messenger.tickets_form_choose_files: 'Выберите файлы'
+helpcenter.general.form_choose_files: 'Выберите файлы'
 helpcenter.chat.form_create_department: 'Выбрать раздел'
 helpcenter.account.logout_btn: 'Выйти из системы'
 helpcenter.messenger.chat_save_ticket_button_yes: Да
@@ -129,10 +129,10 @@ helpcenter.account.reset_password_request_title: 'Забыли пароль?'
 helpcenter.chat.window_end_chat: 'Завершить диалог'
 helpcenter.community.form_topic_title: Заголовок
 helpcenter.downloads.uploaded_on: Загружено
-helpcenter.forms.label_download: Загрузить
+helpcenter.downloads.download: Загрузить
 helpcenter.guides.download_pdf: 'Загрузить PDF'
 helpcenter.chat.form_chat_send_file: 'Загрузить файл'
-helpcenter.general.nav_downloads: Загрузки
+helpcenter.general.downloads_type: Загрузки
 helpcenter.messenger.chat_end_block_question_header: 'Закончить чат?'
 helpcenter.tickets.resolve_my_ticket_btn: 'Закрыть заявку'
 helpcenter.chat.window_close_only: 'Закрыть окно'
@@ -151,8 +151,7 @@ helpcenter.emails.chat_transcript_subject: 'История чата'
 helpcenter.tickets.not_allowed_desc: 'К сожалению, на данный момент нет агентов, которые могли бы ответить на Ваше обращение'
 helpcenter.tickets.rate_question: 'Как бы Вы оценили помощь, полученную от нашей службы поддержки клиентов?'
 helpcenter.account.set_password_invalid_desc: 'Код Вашего пароля истек или является недействительным. Пожалуйста, получите новый код для того, чтобы установить пароль.'
-helpcenter.community.comments: Комментарии
-helpcenter.chat.form_feedback_comments: 'Комментарии?'
+helpcenter.general.comments: Комментарии
 helpcenter.chat.submit_ticket_title: 'Лучше отправьте нам электронное письмо'
 helpcenter.sidebar.top_articles_title: 'Лучшие статьи'
 helpcenter.account.set_password_sent_desc: 'Мы отправили Вам письмо с инструкцией, как установить пароль.'
@@ -222,7 +221,7 @@ helpcenter.general.agent_bar_admin_community: 'Обратная связь'
 helpcenter.tickets.new_section_title: 'Обратная связь'
 helpcenter.articles.published: Опубликованный
 helpcenter.account.login_remember: 'Остаться в системе'
-helpcenter.messenger.tickets_form_department: Отдел
+helpcenter.general.department: Отдел
 helpcenter.community.error_hidden: 'Отзыв скрыт'
 helpcenter.chat.window_resume_button: 'Открыть Ваш диалог'
 helpcenter.chat.window_open_new: 'Открыть диалог в новом окне'
@@ -249,11 +248,11 @@ helpcenter.general.rate_page: 'Оценить качество этой стра
 helpcenter.chat.error: 'Ошибка диалога'
 helpcenter.general.agent_bar_admin_kb: 'Параметры базы знаний'
 helpcenter.general.agent_bar_admin_dl: 'Параметры загрузки'
-helpcenter.forms.label_password: Пароль
+helpcenter.general.password: Пароль
 helpcenter.account.usersource_set_email_desc: 'Перед тем как Вы войдете в систему, нам необходим Ваш email. Пожалуйста, введите Ваш электронный адрес, чтобы мы могли отправить Вам письмо с подтверждением.'
 helpcenter.emails.profile_email_link_validate: 'Перейдите по следующей ссылке, чтобы подтвердить адрес Вашей электронной почты'
 helpcenter.tickets.mark_unresolved: 'Переоткрыть обращение'
-helpcenter.messenger.tickets_form_drang_and_drop: Перетащите
+helpcenter.general.drag_and_drop: Перетащите
 helpcenter.general.print: Печатать
 helpcenter.error.400_title: 'Плохой запрос'
 helpcenter.account.email_btn_resend_validation: 'Повторно выслать письмо'
@@ -277,7 +276,7 @@ helpcenter.messenger.chat_rating_block_buttons_helpful: Полезно
 helpcenter.general.user: Пользователь
 helpcenter.chat.message_user_returned: 'Пользователь вернулся'
 helpcenter.chat.message_user_timeout: 'Пользователь временно вышел'
-helpcenter.messenger.tickets_form_category: 'Пользовательский канал'
+helpcenter.general.category: 'Пользовательский канал'
 helpcenter.account.new_ticket_no_login: 'Портал CRM отключен. Не удалось отправить билет.'
 helpcenter.tickets.list_last_action: 'Последнее действие'
 helpcenter.emails.download_sub_updated: 'Последние загрузки'
@@ -286,7 +285,7 @@ helpcenter.news.recent_title: 'Последние новости'
 helpcenter.emails.news_sub_new: 'Последние новости'
 helpcenter.tickets.list_date_last_agent: 'Последний ответ агента'
 helpcenter.tickets.list_date_last_user: 'Последний ответ пользователя'
-helpcenter.tickets.last_activity: 'Последняя активность'
+helpcenter.general.last_activity: 'Последняя активность'
 helpcenter.chat.log_view_linked_ticket: 'Посмотреть обращение'
 helpcenter.general.related_pages: 'Похожие страницы'
 helpcenter.general.related_community: 'Похожий отзыв'
@@ -294,7 +293,7 @@ helpcenter.community.section_title: Предложения
 helpcenter.flashes.ticket_participant_add_unknown_error: 'При попытке добавить вашего участника возникла проблема. Пожалуйста, попробуйте еще раз.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'При попытке удалить участника была проблема. Пожалуйста, попробуйте еще раз.'
 helpcenter.tickets.timeline_attached: 'Прикреплено к сообщению'
-helpcenter.community.attachments: Приложение
+helpcenter.general.attachments: Приложение
 helpcenter.emails.community_topic_agent_validation: 'Примите во внимание, что Ваш комментарий будет опубликован на нашем сайте только после просмотра одним из наших сотрудников.'
 helpcenter.error.404_desc: 'Приносим свои извинения, но данная страница не может быть найдена.'
 helpcenter.chat.ended_no_agent: 'Приносим свои извинения, но пока нет свободных специалистов, чтобы связаться с Вами. Пожалуйста, напишите нам электронное письмо или попытайтесь еще раз через некоторое время.'
@@ -363,7 +362,7 @@ helpcenter.general.related_downloads: 'Файлы по теме'
 helpcenter.messenger.chat_transcript_block_question_header: 'Хотите ли получить расшифрову на почту?'
 helpcenter.messenger.chat_save_ticket_question: 'Хотите чтобы агент связался с Вами?'
 helpcenter.members.timezone: 'Часовой пояс'
-helpcenter.chat.list_chat: Чат
+helpcenter.general.chat: Чат
 helpcenter.flashes.ticket_participant_already_error: 'Человек, которого вы пытались добавить в качестве участника, уже является участником этого билета.'
 helpcenter.chat.window_start_button: 'Чтобы начать с нами диалог, нажмите здесь'
 helpcenter.chat.window_upload_drag: 'Чтобы отправить в этот диалог файл, перетащите его сюда'
@@ -375,7 +374,7 @@ helpcenter.community.btn_vote: 'Я согласен/-на'
 helpcenter.members.language: Язык
 helpcenter.general.agent_bar_admin_lang: 'Языковые настройки'
 helpcenter.general.in: в
-helpcenter.messenger.tickets_form_choose_a_file: 'выбрать файл'
+helpcenter.general.form_choose_file: 'выбрать файл'
 helpcenter.sidebar.satisfied_customers: 'довольные клиенты'
 helpcenter.messenger.tickets_form_or: или
 helpcenter.messenger.tickets_form_required: обязательно

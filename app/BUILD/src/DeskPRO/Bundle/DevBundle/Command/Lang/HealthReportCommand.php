@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\DevBundle\Command\Lang;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -109,7 +107,7 @@ class HealthReportCommand extends ContainerAwareCommand
         $foundKeys      = [];
 
         foreach ($phrases as $keyId => $text) {
-            if (isset($foundKeys[$keyId])) {
+            if (in_array($keyId, $foundKeys)) {
                 continue;
             }
 
@@ -127,7 +125,7 @@ class HealthReportCommand extends ContainerAwareCommand
             }
 
             if ($similarTo) {
-                $foundKeys = $foundKeys + $similarTo + [$keyId];
+                $foundKeys = array_merge($foundKeys, $similarTo, [$keyId]);
                 $s         = [$keyId => $text];
                 foreach ($similarTo as $k) {
                     $s[$k] = $phrases[$k];

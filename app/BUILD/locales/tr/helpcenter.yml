@@ -30,7 +30,7 @@ helpcenter.chat.form_chat_send_file: 'Dosya Gönder'
 helpcenter.chat.window_upload_drag: 'Dosyanızı buraya sürükleyip bırakarak yükleyebilirsiniz'
 helpcenter.account.email_btn_resend_validation: 'Doğrulama Epostasını Tekrar Gönder'
 helpcenter.tickets.view_btn_edit: Düzenle
-helpcenter.community.attachments: Ekler
+helpcenter.general.attachments: Ekler
 helpcenter.chat.email: 'Eposta Adresiniz'
 helpcenter.emails.email_new_confirm: 'Eposta adresinizi doğrulayın'
 helpcenter.messenger.chat.transcript_block.yes_button: Evet
@@ -67,7 +67,7 @@ helpcenter.emails.kb_sub_updated: 'Makaleleri Güncelle'
 helpcenter.direct_messages.reply_message: Mesaj
 helpcenter.tickets.list_date_created: 'Oluşturma tarihi'
 helpcenter.guides.download_pdf: 'PDF İndir'
-helpcenter.forms.label_password: Parola
+helpcenter.general.password: Parola
 helpcenter.emails.password_reset_subject: 'Parola Sıfırla'
 helpcenter.emails.password_reset: 'Parola sıfırlama talebinde bulundunuz. Parolanızı sıfırlamak için aşağıdaki bağlantıya tıklayın:'
 helpcenter.chat.window_close_only: 'Pencereyi Kapat'
@@ -102,7 +102,7 @@ helpcenter.emails.ticket_flood: 'Yardım masamıza eposta gönderdiniz.<br /><br
 helpcenter.emails.kb_sub_new: 'Yeni Makaleler'
 helpcenter.emails.kb_sub_new_and_updated: 'Yeni veya Güncel Makaleler'
 helpcenter.general.add_comment: 'Yorum ekle'
-helpcenter.chat.form_feedback_comments: 'Yorumlar?'
+helpcenter.general.comments: 'Yorumlar?'
 helpcenter.emails.comment_confirmation: 'Yorumunuz için teşekkürler'
 helpcenter.emails.comment_approved_subject: 'Yorumunuz onaylandı'
 helpcenter.emails.comment_deleted_subject: 'Yorumunuz personelimiz tarafından okundu'
@@ -124,6 +124,6 @@ helpcenter.chat.window_offline_button: 'İletişim için tıklayınız'
 helpcenter.general.related_community: 'İlgili Geri Bildirimler'
 helpcenter.general.related_downloads: 'İlişkili Dosyalar'
 helpcenter.general.related_news: 'İlişkili Haberler'
-helpcenter.forms.label_download: İndir
-helpcenter.general.nav_downloads: İndirmeler
+helpcenter.downloads.download: İndir
+helpcenter.general.downloads_type: İndirmeler
 helpcenter.general.nav_downloads_desc: 'İndirmelere gözat'

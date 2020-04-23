@@ -48,10 +48,10 @@ helpcenter.emails.profile_email_link_validate: 'Cliquez simplement sur le lien s
 helpcenter.tickets.resolve_my_ticket_btn: 'Clôturer mon ticket'
 helpcenter.tickets.list_status_resolved: Clôturé
 helpcenter.tickets.rate_question: 'Comment évaluez-vous l''aide reçue ?'
-helpcenter.community.comments: Commentaires
+helpcenter.general.comments: Commentaires
 helpcenter.emails.community_sub_updated: 'Commentaires mis à jour'
 helpcenter.tickets.please_login_to_reply: 'Connectez-vous pour répondre.'
-helpcenter.account.section_title_login: Connexion
+helpcenter.general.log_in: Connexion
 helpcenter.account.login_external: 'Connexion avec un service externe'
 helpcenter.general.impersonation_mode: 'Connexion en tant que'
 helpcenter.general.nav_downloads_desc: 'Consulter nos documents à télécharger'
@@ -61,10 +61,9 @@ helpcenter.tickets.list_date_created: 'Date de création'
 helpcenter.tickets.form_changed_notice: 'De nouveaux champs ont été ajoutés au formulaire. Veuillez examiner ces champs, puis soumettre à nouveau le formulaire.'
 helpcenter.account.reset_password_sent_title: 'Demande de réinitialisation du mot de passe reçue'
 helpcenter.tickets.list_last_action: 'Dernière action'
-helpcenter.tickets.last_activity: 'Dernière activité'
+helpcenter.general.last_activity: 'Dernière activité'
 helpcenter.tickets.list_date_last_agent: 'Dernière réponse Agent'
 helpcenter.tickets.list_date_last_user: 'Dernière réponse utilisateur'
-helpcenter.chat.form_feedback_comments: 'Des commentaires?'
 helpcenter.general.nav_guides: 'Des guides'
 helpcenter.chat.log_chat_time: 'Durée totale du chat'
 helpcenter.account.logout_btn: Déconnexion
@@ -153,7 +152,7 @@ helpcenter.account.change_password_btn: 'Mise à jour du mot de passe'
 helpcenter.tickets.view_btn_edit: Modifier
 helpcenter.account.profile_delete_picture: 'Modifier ou supprimer la photo de profil ?'
 helpcenter.general.show: Montrer
-helpcenter.forms.label_password: 'Mot de passe'
+helpcenter.general.password: 'Mot de passe'
 helpcenter.account.login_password_reminder: 'Mot de passe oublié ?'
 helpcenter.account.reset_password_request_title: 'Mot de passe oublié ?'
 helpcenter.general.tags: 'Mots clés'
@@ -189,7 +188,7 @@ helpcenter.emails.ticket_rate_neutral: Partiellement
 helpcenter.error.403_title: 'Pas d''accès'
 helpcenter.news.none: 'Pas encore de nouvelles'
 helpcenter.downloads.none: 'Pas encore de téléchargements'
-helpcenter.community.attachments: 'Pièce jointes'
+helpcenter.general.attachments: 'Pièce jointes'
 helpcenter.general.prop_rating_asc: 'Plus bas en premier'
 helpcenter.general.prop_rating_desc: 'Plus haut noté en premier'
 helpcenter.emails.password_set: 'Pour définir un mot de passe, cliquez sur le lien ci-dessous :'
@@ -225,10 +224,10 @@ helpcenter.general.everything: Tout
 helpcenter.chat.message_uploading: 'Téléchargement en cours...'
 helpcenter.general.agent_bar_agent_dl: Téléchargements
 helpcenter.general.agent_bar_admin_dl: Téléchargements
-helpcenter.general.nav_downloads: Téléchargements
+helpcenter.general.downloads_type: Téléchargements
 helpcenter.emails.download_sub_updated: 'Téléchargements mis à jour'
 helpcenter.emails.download_sub_new_and_updated: 'Téléchargements nouveaux et mis à jour'
-helpcenter.forms.label_download: Télécharger
+helpcenter.downloads.download: Télécharger
 helpcenter.guides.download_pdf: 'Télécharger le PDF'
 helpcenter.chat.form_chat_send_file: 'Télécharger un fichier'
 helpcenter.downloads.uploaded_on: Téléchargé

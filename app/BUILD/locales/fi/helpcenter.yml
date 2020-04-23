@@ -41,11 +41,10 @@ helpcenter.emails.community_new: 'Kiitos lähettämästäsi palautteesta'
 helpcenter.emails.register_welcome_subject: 'Kiitos rekisteröitymisestä'
 helpcenter.emails.ticket_reply_confirm: 'Kiitos vastauksestasi. Edustajamme ottaa sinuun pian yhteyttä.'
 helpcenter.emails.ticket_validate: 'Kiitos yhteydenotosta.<br /><br />ennen kuin edustajamme lukee tai vastaa viestiisi, pitää sähköpostiosoitteesi vahvistaa.'
-helpcenter.account.section_title_login: Kirjaudu
+helpcenter.general.log_in: Kirjaudu
 helpcenter.account.logout_btn: 'Kirjaudu ulos'
 helpcenter.emails.profile_email_link_validate: 'Klikkaa linkkiä vahvistaaksesti sähköpostiosoite'
 helpcenter.account.reset_password_click_here: 'Klikkaa tästä saadaksesi salasanan vaihtokoodin'
-helpcenter.chat.form_feedback_comments: 'Kommentteja?'
 helpcenter.emails.comment_deleted: 'Kommenttiasi käytettiin sivumme parantamiseen.'
 helpcenter.emails.comment_approved_subject: 'Kommenttisi hyväksyttiin'
 helpcenter.emails.comment_approved: 'Kommenttisi on julkaistu.'
@@ -56,12 +55,12 @@ helpcenter.chat.message_ended_by_user: 'Käyttäjä on päättänyt keskustelun'
 helpcenter.chat.message_user_returned: 'Käyttäjä palasi takaisin'
 helpcenter.profile.account_disabled_message: 'Käyttäjätilisi on väliaikaisesti suljettu. '
 helpcenter.emails.password_agent_reset: 'Käyttäjätilisi salasana on vaihdettu. Kirjaudu uudella salasanalla'
-helpcenter.forms.label_download: Lataa
+helpcenter.downloads.download: Lataa
 helpcenter.chat.message_uploading: 'Lataa ...'
 helpcenter.guides.download_pdf: 'Lataa PDF'
 helpcenter.chat.form_chat_send_file: 'Lataa tiedosto'
-helpcenter.general.nav_downloads: Lataukset
-helpcenter.community.attachments: Liitetiedostot
+helpcenter.general.downloads_type: Lataukset
+helpcenter.general.attachments: Liitetiedostot
 helpcenter.tickets.list_agent: 'Liitetty tukihenkilö'
 helpcenter.general.add_comment: 'Lisää kommentti'
 helpcenter.account.email_btn_usersource_set: 'Lisää sähköpostiosoite'
@@ -108,7 +107,7 @@ helpcenter.account.change_password_btn: 'Päivitä salasana'
 helpcenter.tickets.list_status_resolved: Päätetty
 helpcenter.tickets.resolve_my_ticket_btn: 'Päätä kutsuni'
 helpcenter.account.login_register_btn: Rekisteröidy
-helpcenter.forms.label_password: Salasana
+helpcenter.general.password: Salasana
 helpcenter.account.reset_password_request_title: 'Salasana unohtunut?'
 helpcenter.account.reset_password_invalid_desc: 'Salasananvaihtokoodi on väärä tai vanhentunut. Hae uusi koodi vaihtaaksesi salasanan.'
 helpcenter.profile.your_password: Salasanasi

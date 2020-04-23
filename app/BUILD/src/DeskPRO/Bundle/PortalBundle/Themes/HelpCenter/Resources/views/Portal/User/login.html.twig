@@ -15,7 +15,7 @@
                     {% if auth_manager.isAuthVisible %}
                         <div class="dp-po-title">
                             <h1 class="dp-po-title-text">
-                                {{ phrase('helpcenter.account.section_title_login') }}
+                                {{ phrase('helpcenter.general.log_in') }}
                             </h1>
                         </div>
                         <p>{{ phrase('helpcenter.account.section_desc_login') }}</p>
@@ -76,7 +76,7 @@
                                             {{ form_widget(captcha_form) }}
                                         {% endif %}
 
-                                        <button class="btn btn-primary" id="login_button" tabindex="4">{{ phrase('helpcenter.account.login_btn') }}</button>
+                                        <button class="btn btn-primary" id="login_button" tabindex="4">{{ phrase('helpcenter.general.log_in') }}</button>
                                         {% if auth_manager.isRememberMeEnabled %}
                                             <div class="form-group">
                                                 <div class="remember-me checkboxes">

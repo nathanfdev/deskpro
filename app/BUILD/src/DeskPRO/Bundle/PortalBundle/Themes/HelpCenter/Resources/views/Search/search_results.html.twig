@@ -95,7 +95,7 @@
                                         <li class="dp-po-search-tabs-item">
                                             <a class="dp-po-search-tabs-link {% if not download_results %}no-results{% endif %} {% if active == 'download' %}active{% endif %}" href="" data-type="download">
                                                 <img class="dp-po-search-tabs-image icon-svg"
-                                                     src="{{ asset('img/page-icons/download.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_downloads') }}
+                                                     src="{{ asset('img/page-icons/download.svg', 'help_center') }}">{{ phrase('helpcenter.general.downloads_type') }}
                                                 <span>{{ download_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}

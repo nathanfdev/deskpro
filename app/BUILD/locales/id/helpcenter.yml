@@ -8,7 +8,7 @@ helpcenter.general.agents: Agent
 helpcenter.emails.password_agent_reset_subject: 'Agent telah mengatur ulang kata sandi Anda'
 helpcenter.tickets.list_agent: 'Agent yang ditugaskan'
 helpcenter.chat.window_end_chat: 'Akhiri Obrolan'
-helpcenter.tickets.last_activity: 'Aktivitas terakhir'
+helpcenter.general.last_activity: 'Aktivitas terakhir'
 helpcenter.account.section_title_your_account: 'Akun Anda'
 helpcenter.account.set_password_for_user: 'Akun Anda belum memiliki kata sandi. Harap mengatur  sekarang agar Anda bisa login untuk mengirim konten di masa mendatang'
 helpcenter.profile.account_disabled_message: 'Akun anda sedang tidak dapat diakses. Anda tidak dapat masuk atau berinteraksi dengan tiket atau obrolan.'
@@ -133,7 +133,7 @@ helpcenter.flashes.usersource_new_add_email_verify: 'Kami perlu memverifikasi em
 helpcenter.flashes.user_add_email_verify: 'Kami perlu memverifikasi email Anda sebelum kami menambahkannya ke akun Anda. Silakan periksa kotak masuk email Anda untuk tautan verifikasi.'
 helpcenter.account.reset_password_sent_desc: 'Kami telah menerima permintaan perubahan kata sandi untuk email yang ditunjukkan di bawah ini. Jika alamat email ini termasuk dalam akun yang telah terdaftar, kami telah mengirim email dengan tautan pengaturan kembali kata sandi ke alamat email utama akun tersebut. Silakan periksa kotak masuk email Anda untuk petunjuk lebih lanjut.'
 helpcenter.account.set_password_sent_desc: 'Kami telah mengirimi Anda email/surat elektronik berisi instruksi tentang cara mengatur kata sandi Anda'
-helpcenter.forms.label_password: 'Kata Sandi'
+helpcenter.general.password: 'Kata Sandi'
 helpcenter.profile.your_password: 'Kata sandi anda'
 helpcenter.account.set_password_success: 'Kata sandi anda telah diperbaharui'
 helpcenter.messenger.tickets.form.category: Kategori
@@ -153,16 +153,15 @@ helpcenter.emails.profile_email_link_validate: 'Klik pada tautan berikut untuk v
 helpcenter.account.set_password_invalid_desc: 'Kode kata sandi anda tidak valid atau telah kadaluarsa. Untuk merubah kata sandi anda, silahkan meminta kode baru'
 helpcenter.account.reset_password_invalid_desc: 'Kode perubahan kata sandi anda tidak valid atau telah kadaluarsa. Untuk merubah kata sandi anda, silahkan meminta kode baru'
 helpcenter.tickets.form_changed_notice: 'Kolom baru telah ditambahkan. Silakan lihat kembali kolom tersebut, kemudian ajukan formulir.'
-helpcenter.community.comments: Komentar
+helpcenter.general.comments: Komentar
 helpcenter.emails.comment_deleted_subject: 'Komentar Anda telah dibaca oleh agent kami'
 helpcenter.emails.comment_approved_subject: 'Komentar Anda telah disetujui'
 helpcenter.emails.comment_deleted: 'Komentar anda telah digunakan untuk memperbaiki laman ini.'
 helpcenter.emails.comment_approved: 'Komentar anda telah diterbitkan.'
 helpcenter.general.comments_pending_validation: 'Komentar ini telah ditinjau dan akan segera ditampilkan'
-helpcenter.chat.form_feedback_comments: 'Komentar?'
 helpcenter.tickets.new_section_title: 'Kontak Kami'
 helpcenter.general.related_pages: 'Laman Terkait'
-helpcenter.community.attachments: Lampiran
+helpcenter.general.attachments: Lampiran
 helpcenter.general.prop_views_asc: 'Lebih sedikit dilihat dulu'
 helpcenter.account.set_password_request_desc: 'Lengkapi formulir ini dan kami akan mengirimi Anda tautan untuk mengatur kata sandi Anda'
 helpcenter.account.reset_password_request_desc: 'Lengkapi formulir ini untuk mengatur kembali password yang dikirimkan kepada Anda'
@@ -193,7 +192,7 @@ helpcenter.messenger.proactive.title: 'Mulai percakapan'
 helpcenter.community.form_full_name: Nama
 helpcenter.tickets.view_label_your_name_placeholder: 'Nama (wajib)'
 helpcenter.chat.name: 'Nama Anda'
-helpcenter.chat.list_chat: Obrolan
+helpcenter.general.chat: Obrolan
 helpcenter.chat.log_title: 'Obrolan Anda'
 helpcenter.chat.message_unassigned: 'Obrolan belum ditugaskan'
 helpcenter.messenger.chat.ended: 'Obrolan diakhiri'
@@ -249,7 +248,7 @@ helpcenter.general.comment_btn_save: 'Simpan Komentar'
 helpcenter.tickets.switched_department_rerender: 'Struktur formulir ini mungkin telah berubah. Harap tinjau formulir dan kirim lagi.'
 helpcenter.tickets.list_subject: Subjek
 helpcenter.account.section_desc_login: 'Sudah memiliki akun? Silahkan masuk disini'
-helpcenter.community.form_email_not_shown: 'Surat Elektronik/E-Mail'
+helpcenter.general.email_address: 'Surat Elektronik/E-Mail'
 helpcenter.general.add_comment: 'Tambah Komentar'
 helpcenter.account.email_btn_usersource_set: 'Tambahkan alamat email/surat elektronik'
 helpcenter.tickets.view_reply: 'Tambahkan balasan'
@@ -310,9 +309,9 @@ helpcenter.general.show: Tunjukkan
 helpcenter.chat.window_close_only: 'Tutup jendela'
 helpcenter.tickets.view_btn_edit: Ubah
 helpcenter.tickets.view_btn_edit_full: 'Ubah tiket ini'
-helpcenter.forms.label_download: Unduh
+helpcenter.downloads.download: Unduh
 helpcenter.guides.download_pdf: 'Unduh PDF'
-helpcenter.general.nav_downloads: Unduhan
+helpcenter.general.downloads_type: Unduhan
 helpcenter.emails.download_sub_new_and_updated: 'Unduhan Baru dan Diperbarui'
 helpcenter.emails.download_sub_new: 'Unduhan baru'
 helpcenter.emails.download_sub_updated: 'Unduhan yang Diperbarui'
@@ -329,7 +328,7 @@ helpcenter.account.login_email: 'email/surat elektronik anda'
 helpcenter.account.logout_btn: keluar
 helpcenter.account.set_password_click_here: 'klik disini untuk mengatur kata sandi anda'
 helpcenter.account.reset_password_click_here: 'klik disini untuk permintaan kode perubahan kata sandi'
-helpcenter.account.section_title_login: masuk
+helpcenter.general.log_in: masuk
 helpcenter.account.login_external: 'masuk dengan layanan eksternal'
 helpcenter.account.profile_btn_save: 'simpan profil'
 helpcenter.account.profile_delete_picture: 'ubah atau hapus '

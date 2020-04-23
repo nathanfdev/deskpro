@@ -35,13 +35,13 @@ helpcenter.general.rate_page_positive: 'Hjalp meg'
 helpcenter.messenger.chat.transcript_block.yes_button: Ja
 helpcenter.messenger.tickets.form.category: Kategori
 helpcenter.chat.window_start_button: 'Klikk her for å chatte med oss'
-helpcenter.chat.form_feedback_comments: 'Kommentar?'
+helpcenter.general.comments: 'Kommentar'
 helpcenter.tickets.new_section_title: 'Kontakt oss'
 helpcenter.chat.message_user_timeout: 'Kunde har tidsavbrudd'
 helpcenter.chat.message_user_returned: 'Kunde kom tilbake'
 helpcenter.articles.section_title: Kunnskapsbase
 helpcenter.forms.label_save: Lagre
-helpcenter.forms.label_download: 'Last ned'
+helpcenter.downloads.download: 'Last ned'
 helpcenter.guides.download_pdf: 'Last ned PDF'
 helpcenter.chat.form_chat_send_file: 'Last opp fil'
 helpcenter.chat.message_uploading: 'Laster opp ...'
@@ -50,7 +50,7 @@ helpcenter.tickets.resolve_my_ticket_btn: 'Lukk saken'
 helpcenter.tickets.list_status_resolved: Lukket
 helpcenter.direct_messages.reply_message: Melding
 helpcenter.community.form_full_name: Navn
-helpcenter.general.nav_downloads: Nedlastninger
+helpcenter.general.downloads_type: Nedlastninger
 helpcenter.messenger.chat.save_ticket.button_no: Nei
 helpcenter.chat.window_close: 'Nei takk, bare lukk vinduet'
 helpcenter.emails.password_reset_subject: 'Nullstill passord'
@@ -78,7 +78,7 @@ helpcenter.emails.ticket_reply_confirm: 'Takk for ditt svar. En av våre medarbe
 helpcenter.emails.chat_transcript: 'Takk for praten. Her er et referat av vår samtale.'
 helpcenter.tickets.list_agent: 'Tildelt medarbeider'
 helpcenter.tickets.view_unassigned: Utildelt
-helpcenter.community.attachments: Vedlegg
+helpcenter.general.attachments: Vedlegg
 helpcenter.chat.form_create_department: 'Velg avdeling'
 helpcenter.tickets.new_intro: 'Vennligst fyll ut skjema og en av våre medarbeidere vil svare deg på epost så snart som mulig.'
 helpcenter.emails.profile_email_link_validate: 'Vennligst klikk følgende lenke for å bekrefte epost addressen din:'

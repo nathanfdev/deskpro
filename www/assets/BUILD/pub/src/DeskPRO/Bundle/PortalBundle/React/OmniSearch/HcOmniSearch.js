@@ -277,7 +277,7 @@ export class HcOmniSearch extends React.Component {
                 />
                 <ResultTab
                   tab="download"
-                  title="helpcenter.general.nav_downloads"
+                  title="helpcenter.general.downloads_type"
                   icon={DownloadSvg}
                   data={data}
                   activeTab={activeTab}
@@ -285,7 +285,7 @@ export class HcOmniSearch extends React.Component {
                 />
                 <ResultTab
                   tab="chat_conversation"
-                  title="helpcenter.general.nav_chats"
+                  title="helpcenter.general.chats"
                   icon={ChatsSvg}
                   data={data}
                   activeTab={activeTab}

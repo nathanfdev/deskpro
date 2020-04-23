@@ -31,6 +31,7 @@ helpcenter.emails.password_agent_reset: 'An agent has reset your account passwor
 helpcenter.emails.password_agent_reset_subject: 'An agent has reset your password'
 helpcenter.tickets.view_unassigned_more: 'An agent will be assigned'
 helpcenter.news.any_date: Any
+helpcenter.general.apply: Apply
 helpcenter.approvals.view_criteria: 'Approval criteria'
 helpcenter.approvals.view_approved: Approved
 helpcenter.approvals.approved_by: 'Approved by'
@@ -43,8 +44,6 @@ helpcenter.tickets.view_assigned_agent: 'Assigned agent'
 helpcenter.chat.log_linked_ticket: 'Assigned to ticket'
 helpcenter.tickets.timeline_attached: 'Attached with this message:'
 helpcenter.general.attachments: Attachments
-helpcenter.emails.attachments: Attachments
-helpcenter.community.attachments: Attachments
 helpcenter.sidebar.agents_available: 'Available Agents'
 helpcenter.approvals.view_awaiting_response: 'Awaiting response'
 helpcenter.general.back: Back
@@ -55,16 +54,16 @@ helpcenter.flashes.guest_content_must_verify: 'Before we can post your content y
 helpcenter.account.usersource_set_email_desc: 'Before you can login we need your email address. Please enter your email address below so we can send you a verification email.'
 helpcenter.general.nav_downloads_desc: 'Browse our downloads'
 helpcenter.tickets.view_btn_add_cc: 'CC +'
+helpcenter.general.cc: CC
 helpcenter.general.cancel: Cancel
 helpcenter.direct_messages.reply_cancel: Cancel
 helpcenter.chat.window_cancel: Cancel
 helpcenter.general.btn_cancel: Cancel
 helpcenter.tickets.cancel_ticket_edit: 'Cancel edit and show me the ticket again'
-helpcenter.knowledgebase.categories: Categories
-helpcenter.community.form_custom_cat: Category
-helpcenter.forms.label_category: Category
+helpcenter.general.categories: Categories
+helpcenter.general.category: Category
 helpcenter.account.profile_delete_picture: 'Change or delete profile picture?'
-helpcenter.chat.list_chat: Chat
+helpcenter.general.chat: Chat
 helpcenter.chat.error: 'Chat Error'
 helpcenter.chat.log_chat_id: 'Chat ID'
 helpcenter.emails.chat_transcript_subject: 'Chat Transcript'
@@ -74,10 +73,10 @@ helpcenter.chat.message_ended_by_user: 'Chat ended by user'
 helpcenter.chat.message_ended_by: 'Chat ended by {name}'
 helpcenter.chat.message_started: 'Chat started'
 helpcenter.chat.message_unassigned: 'Chat unassigned'
-helpcenter.general.nav_chats: Chats
-helpcenter.forms.label_choose_a_file: 'Choose a file'
+helpcenter.general.chats: Chats
+helpcenter.general.form_choose_file: 'Choose a file'
 helpcenter.chat.form_create_department: 'Choose department'
-helpcenter.forms.label_choose_files: 'Choose files'
+helpcenter.general.form_choose_files: 'Choose files'
 helpcenter.general.clear_all: 'Clear all'
 helpcenter.account.submit_saved_form_go: 'Click here to automatically re-submit the form.'
 helpcenter.chat.window_start_button: 'Click here to chat with us'
@@ -90,8 +89,7 @@ helpcenter.general.close: Close
 helpcenter.chat.window_close_only: 'Close the window'
 helpcenter.tickets.close_ticket: 'Close ticket'
 helpcenter.members.activity_commented_on: 'Commented on'
-helpcenter.community.comments: Comments
-helpcenter.chat.form_feedback_comments: 'Comments?'
+helpcenter.general.comments: Comments
 helpcenter.general.nav_community: Community
 helpcenter.community.section_title: Community
 helpcenter.general.agent_bar_admin_community: 'Community Settings'
@@ -117,29 +115,23 @@ helpcenter.chat.list_date: Date
 helpcenter.tickets.list_date_created: 'Date Created'
 helpcenter.emails.greeting: 'Dear {to_name},'
 helpcenter.form.delete_question: 'Delete?'
-helpcenter.tickets.list_department: Department
-helpcenter.chat.log_fields_department: Department
-helpcenter.chat.log_department: Department
+helpcenter.general.department: Department
 helpcenter.members.activity_down_voted: 'Down voted'
 helpcenter.members.activity_down_voted_comment_on: 'Down voted comment on'
 helpcenter.downloads.download: Download
-helpcenter.forms.label_download: Download
+helpcenter.general.download_type: Download
 helpcenter.guides.download_pdf: 'Download PDF'
-helpcenter.downloads.section_title: Downloads
-helpcenter.general.nav_downloads: Downloads
+helpcenter.general.downloads_type: Downloads
 helpcenter.general.agent_bar_admin_dl: 'Downloads Settings'
-helpcenter.forms.label_drag_and_drop: 'Drag and drop'
+helpcenter.general.drag_and_drop: 'Drag and drop'
 helpcenter.chat.window_upload_drag: 'Drop your file here to upload it to the chat'
 helpcenter.general.eula: EULA
 helpcenter.tickets.view_btn_edit: Edit
 helpcenter.general.edit_this_page: 'Edit this page'
 helpcenter.tickets.view_btn_edit_full: 'Edit this ticket'
-helpcenter.members.email: Email
-helpcenter.community.form_email_not_shown: Email
-helpcenter.account.email_address: 'Email Address'
+helpcenter.general.email_address: 'Email Address'
 helpcenter.tickets.view_label_your_email_placeholder: 'Email Address (required)'
 helpcenter.chat.submit_ticket_button: 'Email Us'
-helpcenter.profile.email_address: 'Email address'
 helpcenter.chat.submit_ticket_title: 'Email us instead'
 helpcenter.chat.email_validated_sucessfully: 'Email validated successfully'
 helpcenter.chat.window_end_chat: 'End Chat'
@@ -198,20 +190,17 @@ helpcenter.general.labels: Labels
 helpcenter.members.language: Language
 helpcenter.general.agent_bar_admin_lang: 'Language Settings'
 helpcenter.tickets.list_last_action: 'Last Action'
-helpcenter.tickets.last_activity: 'Last Activity'
+helpcenter.general.last_activity: 'Last Activity'
 helpcenter.tickets.list_date_last_agent: 'Last Agent Reply'
 helpcenter.tickets.list_date_last_user: 'Last User Reply'
-helpcenter.chat.last_activity: 'Last activity'
-helpcenter.chat.last_updated_by: 'Last updated: <strong>{date_updated, date, medium}</strong> by <strong>{person_name}</strong>'
-helpcenter.general.last_updated: 'Last updated: <strong>{date_updated, date, medium}</strong> by <strong>{person_name}</strong>'
+helpcenter.general.last_update_by: 'Last updated: <strong>{date_updated, date, medium}</strong> by <strong>{person_name}</strong>'
 helpcenter.general.latest_status_changes: 'Latest status changes'
 helpcenter.general.prop_comments_asc: 'Least comments first'
 helpcenter.general.prop_popularity_asc: 'Least popular first'
 helpcenter.general.prop_views_asc: 'Least views first'
 helpcenter.community.view_list: 'List View'
-helpcenter.account.login_btn: 'Log in'
+helpcenter.general.log_in: 'Log in'
 helpcenter.tickets.please_login_to_reply: 'Log in to reply.'
-helpcenter.account.section_title_login: Login
 helpcenter.account.login_external: 'Login with an external service'
 helpcenter.account.logout_btn: Logout
 helpcenter.general.prop_rating_asc: 'Lowest rated first'
@@ -280,6 +269,7 @@ helpcenter.members.phone_number_none: None
 helpcenter.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{new_ticket_url}">open a ticket</a>.'
 helpcenter.error.404_title: 'Not Found'
 helpcenter.members.not_set: 'Not set'
+helpcenter.community.official_response: 'Official response'
 helpcenter.general.prop_date_asc: 'Oldest first'
 helpcenter.emails.ticket_message_title: 'On {created_date, date, medium} at {created_date, time, short}, {author} wrote:'
 helpcenter.tickets.resolve_ticket_explain: 'Once your ticket is resolved, our agents will no longer respond.'
@@ -289,8 +279,7 @@ helpcenter.tickets.feedback_message_leave_comment: 'Or leave a comment'
 helpcenter.chat.message_agent_timeout: 'Our Apologies; {name} appears to have been disconnected. Please wait while we try to find another agent.'
 helpcenter.tickets.list_status_agent: 'Our agent will respond'
 helpcenter.articles.status_published: Published
-helpcenter.account.password: Password
-helpcenter.forms.label_password: Password
+helpcenter.general.password: Password
 helpcenter.account.reset_password_sent_title: 'Password Request Received'
 helpcenter.members.phone: 'Phone Number'
 helpcenter.community.form_complete_help_message: 'Please complete this form and one of our agents will reply to you by email as soon as possible.'
@@ -475,7 +464,6 @@ helpcenter.general.no_search_results_explain: 'Try a different search or have a 
 helpcenter.tickets.view_unassigned: Unassigned
 helpcenter.general.rate_page_negative: Unhelpful
 helpcenter.general.unpublished: 'Unpublished date'
-helpcenter.articles.unpublished_date: 'Unpublished date'
 helpcenter.general.btn_unsubscribe: Unsubscribe
 helpcenter.members.activity_up_voted: 'Up voted'
 helpcenter.members.activity_up_voted_comment_on: 'Up voted comment on'
@@ -597,7 +585,7 @@ helpcenter.profile.your_account: 'Your account'
 helpcenter.account.set_password_for_user: 'Your account does not have a password yet. Please set one now so that you can login to post content in the future.'
 helpcenter.emails.account_disabled_message: 'Your account is currently disabled. You may not login or interact with tickets or chat.'
 helpcenter.profile.account_disabled_message: 'Your account is currently disabled. You may not login or interact with tickets or chat.'
-helpcenter.chat.log_title: 'Your chat with {person}'
+helpcenter.chat.your_chat_with: 'Your chat with {person}'
 helpcenter.general.your_comment_label: 'Your comment'
 helpcenter.tickets.feedback_message_your_comment: 'Your comment'
 helpcenter.general.your_comment_optional_label: 'Your comment (optional)'
@@ -744,12 +732,6 @@ helpcenter.messenger.message_user_left: '{name} left the conversation.'
 helpcenter.messenger.message_unassigned: '{name} unassigned from the chat.'
 helpcenter.messenger.tickets_form_add_attachment: 'Add attachment'
 helpcenter.messenger.tickets_form_back: Back
-helpcenter.messenger.tickets_form_category: Category
-helpcenter.messenger.tickets_form_choose_a_file: 'Choose a file'
-helpcenter.messenger.tickets_form_choose_files: 'Choose files'
-helpcenter.messenger.tickets_form_department: Department
-helpcenter.messenger.tickets_form_drang_and_drop: 'Drag and drop'
-helpcenter.messenger.tickets_form_email: Email
 helpcenter.messenger.tickets_form_header: 'New ticket'
 helpcenter.messenger.tickets_form_message: Message
 helpcenter.messenger.tickets_form_name: Name

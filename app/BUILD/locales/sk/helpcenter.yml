@@ -10,7 +10,7 @@ helpcenter.chat.error: 'Chyba konverzácie'
 helpcenter.articles.section_title: 'Databáza znalostí'
 helpcenter.tickets.list_date_created: 'Dátum vytvorený'
 helpcenter.chat.submit_ticket_title: 'E-mailujte nás radšej'
-helpcenter.forms.label_password: Heslo
+helpcenter.general.password: Heslo
 helpcenter.chat.message_finding_agent: 'Hľadá sa operátor'
 helpcenter.chat.message_wait: 'Hľadáme pre Vás operátora'
 helpcenter.chat.log_chat_id: 'ID konverzácie'
@@ -20,7 +20,7 @@ helpcenter.emails.profile_email_link_validate: 'Jednoducho kliknite na nasledovn
 helpcenter.messenger.tickets.form.category: Kategórie
 helpcenter.chat.window_offline_button: 'Kliknite sem a kontaktujte nás'
 helpcenter.chat.window_start_button: 'Kliknite sem pre konverzáciu s nami'
-helpcenter.chat.form_feedback_comments: 'Komentáre?'
+helpcenter.general.comments: 'Komentáre?'
 helpcenter.tickets.new_section_title: 'Kontaktujte nás'
 helpcenter.chat.message_chatting_with: 'Konverzujete s'
 helpcenter.messenger.chat.ended: 'Konverzácia ukončená'
@@ -66,7 +66,7 @@ helpcenter.chat.window_upload_drag: 'Presuňte súbor sem pre nahranie do konver
 helpcenter.general.add_comment: 'Pridať komentár'
 helpcenter.tickets.list_agent: 'Pridelený agent'
 helpcenter.messenger.tickets.form.priority: Priorita
-helpcenter.community.attachments: Pripojenia
+helpcenter.general.attachments: Pripojenia
 helpcenter.tickets.new_intro: 'Prosím vyplňte tento formulár a jeden z našich opertátorov vás bude kontaktovať e-mailom akonáhle bude vedieť.'
 helpcenter.general.related_downloads: 'Príbuzné súbory'
 helpcenter.account.login_register_btn: Registrovať
@@ -74,8 +74,8 @@ helpcenter.emails.password_reset_subject: 'Reset hesla'
 helpcenter.direct_messages.reply_message: Správa
 helpcenter.community.section_title: 'Spätná väzba'
 helpcenter.chat.window_cancel_confirm: 'Ste si istý, že chcete ukončiť konverzáciu?'
-helpcenter.general.nav_downloads: Stiahnutia
-helpcenter.forms.label_download: Stiahnuť
+helpcenter.general.downloads_type: Stiahnutia
+helpcenter.downloads.download: Stiahnuť
 helpcenter.guides.download_pdf: 'Stiahnuť PDF'
 helpcenter.community.btn_vote: Súhlasím
 helpcenter.chat.window_end_chat: 'Ukončiť konverzáciu'

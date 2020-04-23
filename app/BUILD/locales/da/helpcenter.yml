@@ -1,4 +1,4 @@
-helpcenter.forms.label_password: Adgangskode
+helpcenter.general.password: Adgangskode
 helpcenter.general.admin_home: 'Admin Hjem'
 helpcenter.general.agent_bar_agent_community: 'Administrer community topic'
 helpcenter.general.agent_bar_agent_dl: 'Administrer downloads'
@@ -177,15 +177,14 @@ helpcenter.account.reset_password_click_here: 'Klik her for at modtage en kode t
 helpcenter.tickets.view_scroll_reply: 'Klik her for at scrolle ned til formularen.'
 helpcenter.account.submit_saved_form_go: 'Klik her hvis du automatisk ønsker at gensende indholdet fra formularen.'
 helpcenter.emails.profile_email_link_validate: 'Klik på følgende link for at bekræfte din email adresse'
-helpcenter.community.comments: Kommentarer
-helpcenter.chat.form_feedback_comments: 'Kommentarer?'
+helpcenter.general.comments: Kommentarer
 helpcenter.tickets.new_section_title: 'Kontakt os'
 helpcenter.tickets.thank_you_check_email: 'Kontroller din e-mailadresse'
 helpcenter.general.go: Kør
 helpcenter.general.prop_rating_asc: 'Lavest bedømte først'
 helpcenter.sidebar.agents_available: 'Ledige agenter'
 helpcenter.general.related_community: 'Lignende indlæg'
-helpcenter.account.section_title_login: 'Log ind'
+helpcenter.general.log_in: 'Log ind'
 helpcenter.tickets.please_login_to_reply: 'Log ind for at svare.'
 helpcenter.account.login_external: 'Log ind med en ekstern service'
 helpcenter.account.logout_btn: 'Log ud'
@@ -245,7 +244,7 @@ helpcenter.messenger.tickets.form.submit: Send
 helpcenter.chat.form_feedback_transcript_email: 'Send en udskrift af denne chat til'
 helpcenter.chat.form_feedback_title: 'Send os en tilbagemelding'
 helpcenter.chat.form_feedback_button_submit: 'Send tilbagemelding & luk vinduet'
-helpcenter.tickets.last_activity: 'Seneste aktivitet'
+helpcenter.general.last_activity: 'Seneste aktivitet'
 helpcenter.tickets.list_last_action: 'Seneste handling'
 helpcenter.news.recent_title: 'Seneste nyheder'
 helpcenter.tickets.list_date_last_user: 'Sidste svar fra brugeren'
@@ -294,7 +293,7 @@ helpcenter.flashes.user_resend_email_verify: 'Validerings e-mailen er blevet sen
 helpcenter.emails.ticket_rate_question: 'Var denne besked hjælpsom?'
 helpcenter.chat.form_feedback_rate_satisfaction: 'Var du tilfreds med denne samtale?'
 helpcenter.chat.form_feedback_rate_time: 'Var vores svartid hurtig nok'
-helpcenter.community.attachments: Vedhæftelser
+helpcenter.general.attachments: Vedhæftelser
 helpcenter.tickets.timeline_attached: 'Vedhæftet med denne besked:'
 helpcenter.community.error_login: 'Venligst login'
 helpcenter.chat.ended_no_agent: 'Vi beklager, men vi har ingen ledige til at besvare din chat nu. Email os eller prøv igen senere'

@@ -40,7 +40,7 @@ helpcenter.tickets.list_last_action: 'اخر اجراء'
 helpcenter.news.recent_title: 'اخر الأخبار'
 helpcenter.tickets.list_date_last_user: 'اخر رد للمستخدم'
 helpcenter.tickets.list_date_last_agent: 'اخر رد لمقدم الخدمة'
-helpcenter.tickets.last_activity: 'اخر نشاط'
+helpcenter.general.last_activity: 'اخر نشاط'
 helpcenter.general.agent_bar_agent_news: 'ادارة الاخبار'
 helpcenter.general.agent_bar_agent_community: 'ادارة التغذية الراجعة'
 helpcenter.general.agent_bar_agent_dl: 'ادارة التنزيلات'
@@ -83,7 +83,7 @@ helpcenter.general.prop_views_desc: 'الأكثر مشاهدة الاول'
 helpcenter.emails.email_ticket_reminder: 'الاجراء مطلوب: لم يتم تسليم تذكرتك الى الان.'
 helpcenter.tickets.view_label_your_name_placeholder: 'الاسم مطلوب'
 helpcenter.general.prop_date_asc: 'الاقدم اولاً'
-helpcenter.community.form_email_not_shown: البريد
+helpcenter.general.email_address: البريد
 helpcenter.tickets.view_label_your_email_placeholder: 'البريد الإلكتروني (مطلوب)'
 helpcenter.general.tags: البطاقات
 helpcenter.chat.list_date: التاريخ
@@ -103,7 +103,7 @@ helpcenter.general.btn_cancel: الغاء
 helpcenter.messenger.tickets.form.category: الفئة
 helpcenter.messenger.tickets.form.department: القسم
 helpcenter.members.language: اللغة
-helpcenter.chat.list_chat: المحادثة
+helpcenter.general.chat: المحادثة
 helpcenter.messenger.chat.ended: 'المحادثة انتهت'
 helpcenter.chat.message_ended_by_user: 'المحادثة انتهت بواسطة المستخدم'
 helpcenter.chat.message_unassigned: 'المحادثة غير مسندة لاحد'
@@ -135,11 +135,10 @@ helpcenter.chat.message_uploading: تحميل
 helpcenter.guides.download_pdf: 'تحميل ملف PDF'
 helpcenter.messenger.blocks.tickets.title: تذاكرك
 helpcenter.flashes.ticket_resolved: 'تذكرتك معلمة كمحلولة'
-helpcenter.account.section_title_login: 'تسجيل الدخول'
+helpcenter.general.log_in: 'تسجيل الدخول'
 helpcenter.account.login_register_btn: 'تسجيل عضوية'
 helpcenter.general.nav_downloads_desc: 'تصفح قائمة التحميل لدينا'
-helpcenter.community.comments: تعليقات
-helpcenter.chat.form_feedback_comments: 'تعليقات ؟'
+helpcenter.general.comments: تعليقات
 helpcenter.tickets.list_agent: 'تعيين مقدم خدمة'
 helpcenter.emails.community_sub_updated: 'تغذية راجعة محدثة.'
 helpcenter.emails.comment_deleted: 'تم إستخدام تعليقك لتحسين الصفحه'
@@ -164,8 +163,8 @@ helpcenter.emails.comment_approved_subject: 'تمت الموافقه على تع
 helpcenter.emails.community_topic_new_approved: 'تمت الموافقه على تغذيتك الراجعة'
 helpcenter.chat.you_have_been_invited: 'تمت دعوتك للاتحاق بالمحادثة'
 helpcenter.general.comments_pending_validation: 'تمت مراجعة التعليق| سيتم نشره قريباً'
-helpcenter.forms.label_download: تنزيل
-helpcenter.general.nav_downloads: تنزيلات
+helpcenter.downloads.download: تنزيل
+helpcenter.general.downloads_type: تنزيلات
 helpcenter.emails.download_sub_new_and_updated: 'تنزيلات  جديدة ومحدثة.'
 helpcenter.emails.download_sub_new: 'تنزيلات جديدة'
 helpcenter.emails.download_sub_updated: 'تنزيلات محدثة'
@@ -238,7 +237,7 @@ helpcenter.account.section_desc_register: 'قم بتسجيل حساب حتى ت�
 helpcenter.tickets.rate_support: 'قيم الدعم الخاص بك'
 helpcenter.general.rate_page: 'قيم جودة الصفحة'
 helpcenter.general.everything: 'كل شئ'
-helpcenter.forms.label_password: 'كلمة المرور'
+helpcenter.general.password: 'كلمة المرور'
 helpcenter.profile.your_password: 'كلمة مرورك'
 helpcenter.tickets.rate_question: 'كيف تقيم الدعم الذي تلقيته؟'
 helpcenter.messenger.chat.save_ticket.button_no: لا
@@ -287,7 +286,7 @@ helpcenter.emails.reject_resolved: 'لم يتم قبول ردك لان تذكر�
 helpcenter.chat.message_wait: 'مازلنا نبحث لك عن مقدم خدمة'
 helpcenter.chat.log_title: محادثاتك
 helpcenter.general.updated: محدث
-helpcenter.community.attachments: مرفقات
+helpcenter.general.attachments: مرفقات
 helpcenter.general.btn_subscribe: مشترك
 helpcenter.error.403_desc: 'معذرة  لم تقم بالدخول لاستعراض الصفحة'
 helpcenter.error.404_desc: 'معذرة لم نتمكن من العثور على الصفحة'

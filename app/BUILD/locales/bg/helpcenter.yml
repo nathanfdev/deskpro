@@ -61,7 +61,7 @@ helpcenter.chat.log_view_linked_ticket: 'Виж тикет'
 helpcenter.news.view_as_agent: 'Виждате рази страница защото сте агент. Нормалните потребители няма да могат да виждат тази страница.'
 helpcenter.articles.view_as_agent: 'Виждате тази страница защото сте агент. Потребителите няма да виждат тази страница.'
 helpcenter.emails.ticket_access_ticket_online: 'Вижте и управлявайте този тикет онлайн:'
-helpcenter.account.section_title_login: Влез
+helpcenter.general.log_in: Влез
 helpcenter.tickets.please_login_to_reply: 'Влез за да отговориш.'
 helpcenter.account.login_external: 'Влезте с външна услуга'
 helpcenter.chat.submit_ticket_title: 'Вместо това ни изпратете имейл'
@@ -113,16 +113,16 @@ helpcenter.chat.form_feedback_button_submit: 'Изпрати обратна вр
 helpcenter.account.set_password_sent_desc: 'Изпратихме ви имейл с инструкции как да си изберете парола.'
 helpcenter.account.reset_password_sent_to: 'Изпратихме имейл на'
 helpcenter.account.tickets_lockout: 'Изпратихте прекалено много тикети и поради това сте заключени. Моля опитайте отново по-късно.'
-helpcenter.forms.label_download: Изтегли
+helpcenter.downloads.download: Изтегли
 helpcenter.guides.download_pdf: 'Изтегли PDF'
-helpcenter.general.nav_downloads: Изтегляния
+helpcenter.general.downloads_type: Изтегляния
 helpcenter.tickets.list_date_created: 'Изтрий създаденото'
 helpcenter.tickets.view_reply_errors: 'Има някои грешки с вашето изпращане.'
 helpcenter.account.login_password_reminder: 'Имате ли нужда от ново подсещане за парола?'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Имаше проблем при опит за премахване на участника ви. Моля опитайте отново.'
 helpcenter.community.form_full_name: Име
 helpcenter.tickets.view_label_your_name_placeholder: 'Име (изисква се)'
-helpcenter.community.form_email_not_shown: Имейл
+helpcenter.general.email_address: Имейл
 helpcenter.tickets.view_label_your_email_placeholder: 'Имейл адрес (изисква се)'
 helpcenter.flashes.email_sent: 'Имейлът ви беше изпратен'
 helpcenter.flashes.user_resend_email_verify: 'Имейлът за потвърждение беше изпратен отново.'
@@ -142,8 +142,7 @@ helpcenter.account.submit_saved_form_go: 'Кликни тук за да изпр
 helpcenter.tickets.view_scroll_reply: 'Кликни тук за да отидеш надолу във формата,'
 helpcenter.account.set_password_invalid_desc: 'Кодът ви за парола е невалиден или изтекъл. За да зададете парола, моля изискайте нов код.'
 helpcenter.account.reset_password_invalid_desc: 'Кодът за нулиране на парола е невалиден или е изтекъл. За да нулирате паролата си моля изискайте нов код.'
-helpcenter.community.comments: Коментари
-helpcenter.chat.form_feedback_comments: 'Коментари?'
+helpcenter.general.comments: Коментари
 helpcenter.error.400_title: 'Лоша заявка'
 helpcenter.general.tags: Маркери
 helpcenter.chat.ended_no_agent: 'Много се извиняваме, но в момента няма никой свободен за чат. Моля изпратете ни имейл или опитайте отново по-късно'
@@ -219,7 +218,7 @@ helpcenter.general.btn_cancel: Откажи
 helpcenter.tickets.cancel_ticket_edit: 'Отмени редакцията и ми покажи тикета отново'
 helpcenter.tickets.rate_support: 'Оценете вашата поддръжка'
 helpcenter.general.rate_page: 'Оценете качеството на тази страница'
-helpcenter.forms.label_password: Парола
+helpcenter.general.password: Парола
 helpcenter.account.set_password_success: 'Паролата ви беше обновен'
 helpcenter.account.comment_lockout: 'Подали сте много коментари. Моля изчакайте за да можете да подадете още.'
 helpcenter.general.show: Покажи
@@ -230,7 +229,7 @@ helpcenter.account.set_password_request_desc: 'Попълнете тази фо�
 helpcenter.account.new_ticket_no_login: 'Порталната CRM е забранена. Невъзможно е подаване на тикет.'
 helpcenter.tickets.list_date_last_agent: 'Последен агентски отговор'
 helpcenter.tickets.list_date_last_user: 'Последен потребителски отговор'
-helpcenter.tickets.last_activity: 'Последна активност'
+helpcenter.general.last_activity: 'Последна активност'
 helpcenter.tickets.list_last_action: 'Последно действие'
 helpcenter.emails.email_new_confirm: 'Потвърдете имейл адреса си'
 helpcenter.general.user: Потребител
@@ -242,7 +241,7 @@ helpcenter.emails.ticket_no_autoresponse: 'Предупреждение: Име�
 helpcenter.general.btn_unsubscribe: 'Прекрати абонамент'
 helpcenter.account.email_btn_remove: 'Премахни имейл'
 helpcenter.tickets.list_ticket_ref: Препратка
-helpcenter.community.attachments: Прикачвания
+helpcenter.general.attachments: Прикачвания
 helpcenter.tickets.timeline_attached: 'Прикачено с това съобщение:'
 helpcenter.chat.window_end_chat: 'Приключи чат'
 helpcenter.general.print: Принт
@@ -324,7 +323,7 @@ helpcenter.flashes.community_subscribe: 'Успешно се абонирахт�
 helpcenter.flashes.article_subscribe: 'Успешно се абонирахте към тази статия. Ще бъдете известени когато бъде обновена или когато има нов коментар.'
 helpcenter.flashes.download_subscribe: 'Успешно се абонирахте към това изтегляне. Ще получите известия когато бъде обновено или когато има нов коментар.'
 helpcenter.members.timezone: 'Часова зона'
-helpcenter.chat.list_chat: Чат
+helpcenter.general.chat: Чат
 helpcenter.chat.log_chat_id: 'Чат ID'
 helpcenter.chat.error: 'Чат грешка'
 helpcenter.chat.message_unassigned: 'Чат освободен'

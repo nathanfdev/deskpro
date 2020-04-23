@@ -407,7 +407,7 @@ class ProfileController extends AbstractController
             $language     = $this->container->get('language_stack')->getActiveOrDefault();
             $addEmailForm = $this->createForm(PersonEmailType::class, $newEmail, [
                 'action'      => $this->generateUrl('portal_user_profile_emails'),
-                'email_label' => $this->get('deskpro.core.translate')->phrase('helpcenter.members.email', [], $language),
+                'email_label' => $this->get('deskpro.core.translate')->phrase('helpcenter.general.email_address', [], $language),
             ]);
             $addEmailForm->handleRequest($request);
             if ($addEmailForm->isValid()) {

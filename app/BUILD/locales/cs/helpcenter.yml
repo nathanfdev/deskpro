@@ -8,13 +8,13 @@ helpcenter.emails.comment_confirmation: 'Děkujeme za váš komentář'
 helpcenter.emails.new_ticket_guest: 'Děkujeme za zájem'
 helpcenter.emails.new_ticket_guest_link: 'Děkujeme za zájem. Svůj tiket si můžete prohlédnout online zde:'
 helpcenter.emails.email_ticket_reminder: 'Důležité: Váš tiket ještě nebyl odeslán'
-helpcenter.forms.label_password: Heslo
+helpcenter.general.password: Heslo
 helpcenter.members.language: Jazyk
 helpcenter.community.form_full_name: Jméno
 helpcenter.messenger.tickets.form.category: Kategorie
 helpcenter.account.reset_password_click_here: 'Klikněte zde pro vyžádání kódu pro reset hesla'
 helpcenter.general.comments_pending_validation: 'Komentář čeká na schválení. Za chvíli se zobrazí'
-helpcenter.community.comments: Komentáře
+helpcenter.general.comments: Komentáře
 helpcenter.tickets.new_section_title: 'Kontaktujte nás'
 helpcenter.general.nav_downloads_desc: 'Listujte našimi soubory'
 helpcenter.forms.error_email_required: 'Musíte zadat svou e-mailovou adresu'
@@ -76,11 +76,11 @@ helpcenter.articles.published: Publikováno
 helpcenter.tickets.list_subject: Předmět
 helpcenter.account.email_btn_usersource_set: 'Přidat e-mailovou adresu'
 helpcenter.general.add_comment: 'Přidat komentář'
-helpcenter.account.section_title_login: Přihlásit
+helpcenter.general.log_in: Přihlásit
 helpcenter.account.login_external: 'Přihlásit se pomocí externí služby'
 helpcenter.community.section_title: Připomínka
 helpcenter.account.login_lockout: 'Příliš mnoho neplatných pokusů o přihlášení. Váš účet byl dočasně pozastaven.'
-helpcenter.community.attachments: Přílohy
+helpcenter.general.attachments: Přílohy
 helpcenter.account.login_register_btn: Registrovat
 helpcenter.emails.password_reset_subject: 'Resetovat heslo'
 helpcenter.general.share: Sdílet

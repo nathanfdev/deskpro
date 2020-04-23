@@ -2,7 +2,7 @@ helpcenter.emails.too_many_emails: 'AVVISO: Hai inviato troppe email'
 helpcenter.account.reset_password_sent_to: 'Abbiamo mandato una mail a'
 helpcenter.account.reset_password_sent_desc: 'Abbiamo ricevuto la tua richiesta di reimpostazione della password per l''e-mail sottostante. Se questo indirizzo email appartiene a un account registrato, abbiamo inviato una e-mail con un link di reimpostazione della password all''indirizzo email principale di tale account. Controlla la tua casella di posta per ulteriori istruzioni.'
 helpcenter.account.registration_set_password: 'Abbiamo rilevato che un account per l''email esiste già, ma non ha ancora capacità d''accesso. Abbiamo mandato una mail che ti permette di impostare una password ed effettuare l''accesso. Controlla la tua email'
-helpcenter.account.section_title_login: Accedi
+helpcenter.general.log_in: Accedi
 helpcenter.general.agent: Agente
 helpcenter.tickets.list_agent: 'Agente Assegnato'
 helpcenter.general.agent_bar_agent_home: 'Agente Home'
@@ -14,7 +14,7 @@ helpcenter.account.email_btn_usersource_set: 'Aggiungi Indirizzo Email'
 helpcenter.tickets.view_btn_add_to_ticket: 'Aggiungi al Ticket'
 helpcenter.general.add_comment: 'Aggiungi un commento'
 helpcenter.tickets.view_reply: 'Aggiungi una risposta'
-helpcenter.community.attachments: Allegati
+helpcenter.general.attachments: Allegati
 helpcenter.chat.submit_ticket_title: 'Altrimenti Scrivici'
 helpcenter.general.btn_cancel: Annulla
 helpcenter.general.btn_unsubscribe: 'Annulla l''iscrizione'
@@ -49,8 +49,7 @@ helpcenter.account.submit_saved_form_go: 'Clicca qui per re- inviare automaticam
 helpcenter.emails.profile_email_link_validate: 'Clicca sul link seguente per convalidare il tuo indirizzo email'
 helpcenter.sidebar.satisfied_customers: 'Clienti Soddisfatti'
 helpcenter.tickets.rate_question: 'Come valuteresti il supporto che hai ricevuto?'
-helpcenter.community.comments: Commenti
-helpcenter.chat.form_feedback_comments: 'Commenti?'
+helpcenter.general.comments: Commenti
 helpcenter.account.set_password_request_desc: 'Compila questo modulo e ti sarà mandata una email con il link per impostare la tua password'
 helpcenter.tickets.new_intro: 'Completa questo modulo e un membro dei nostri agenti ti risponderà tramite email il prima possibile.'
 helpcenter.community.btn_vote: Concordo
@@ -68,7 +67,7 @@ helpcenter.tickets.list_status_user: 'Devi rispondere'
 helpcenter.messenger.tickets.form.department: Dipartimento
 helpcenter.flashes.usersource_new_add_email_verify: 'Dobbiamo verificare la tua email prima di poter creare il tuo account. Per favore, controlla la tua casella di posta per il link di convalida.'
 helpcenter.flashes.user_add_email_verify: 'Dobbiamo verificare la tua email prima di poterla aggiungere al tuo account. Per favore controlla la tua casella di posta per il link di convalida.'
-helpcenter.general.nav_downloads: Download
+helpcenter.general.downloads_type: Download
 helpcenter.emails.download_sub_updated: 'Download aggiornati'
 helpcenter.emails.download_sub_new: 'Download nuovi'
 helpcenter.emails.download_sub_new_and_updated: 'Download nuovi e aggiornati'
@@ -304,7 +303,7 @@ helpcenter.tickets.not_allowed_title: 'Torniamo subito'
 helpcenter.emails.chat_transcript_subject: 'Trascrittura della Chat'
 helpcenter.general.you: Tu
 helpcenter.general.everything: Tutto
-helpcenter.tickets.last_activity: 'Ultima Attività'
+helpcenter.general.last_activity: 'Ultima Attività'
 helpcenter.tickets.list_last_action: 'Ultima Azione'
 helpcenter.tickets.list_date_last_agent: 'Ultima risposta da parte di un Agente'
 helpcenter.tickets.list_date_last_user: 'Ultima risposta da parte di un Utente'

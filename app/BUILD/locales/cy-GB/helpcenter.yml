@@ -20,7 +20,7 @@ helpcenter.account.registration_set_password: 'Mae cyfrif ar gael gyda''r ebost 
 helpcenter.account.reset_password_invalid_desc: 'Mae côd ailosodi''ch cyfrinair yn anghywir nei ei fod wedi ei darfod. I ailosodi''ch cyfrinair, gofynnwch am gôd newydd os gwelwch yn dda.'
 helpcenter.account.reset_password_sent_title: 'Mae''ch cais ailosod eich cyfrinair wedi ei dderbyn'
 helpcenter.account.set_password_success: 'Mae''ch cyfrinair wedi'' ailosod'
-helpcenter.account.section_title_login: Mewngofnodwch
+helpcenter.general.log_in: Mewngofnodwch
 helpcenter.account.login_external: 'Mewngofnodwch â gwasanaeth allanol'
 helpcenter.account.profile_delete_picture: 'Newid neu ddileu''ch llun proffil?'
 helpcenter.account.section_desc_login: 'Oes gennych gyfrif yn barod? Mewngofnodwch isod.'

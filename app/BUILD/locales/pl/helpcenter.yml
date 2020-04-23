@@ -16,7 +16,7 @@ helpcenter.chat.error: 'Błąd czatu'
 helpcenter.chat.log_chat_time: 'Całkowity czas czatu'
 helpcenter.emails.community_topic_approved: 'Chcemy Cię powiadomić, że Twoja opinia została zatwierdzona i teraz jest widoczna na naszej stronie.'
 helpcenter.emails.community_topic_disapproved: 'Chcemy Cię powiadomić, że niestety Twoja opinia została odrzucona i nie pojawi się publicznie na naszej stronie.'
-helpcenter.chat.list_chat: Czat
+helpcenter.general.chat: Czat
 helpcenter.chat.message_unassigned: 'Czat nie został przypisany'
 helpcenter.chat.message_started: 'Czat został rozpoczęty'
 helpcenter.messenger.chat.ended: 'Czat został zakończony'
@@ -58,7 +58,7 @@ helpcenter.flashes.user_registered_verified: 'Dziękuję Ci. Twój adres e-mail 
 helpcenter.tickets.view_btn_edit: Edytuj
 helpcenter.tickets.view_btn_edit_full: 'Edytuj to zgłoszenie'
 helpcenter.chat.submit_ticket_title: 'Ewentualnie wyślij do nas email'
-helpcenter.forms.label_password: Hasło
+helpcenter.general.password: Hasło
 helpcenter.chat.log_chat_id: 'ID Rozmowy'
 helpcenter.community.form_full_name: Imię
 helpcenter.tickets.view_label_your_name_placeholder: 'Imię (wymagane)'
@@ -73,8 +73,7 @@ helpcenter.account.set_password_click_here: 'Kliknij tutaj aby ustawić swoje ha
 helpcenter.account.submit_saved_form_go: 'Kliknij tutaj, aby automatycznie wysłać formularz ponownie.'
 helpcenter.tickets.view_scroll_reply: 'Kliknij tutaj, aby przewinąć formularz.'
 helpcenter.account.reset_password_click_here: 'Kliknij tutaj, aby zażądać kod resetowania hasła.'
-helpcenter.community.comments: Komentarze
-helpcenter.chat.form_feedback_comments: 'Komentarze?'
+helpcenter.general.comments: Komentarze
 helpcenter.account.registration_set_password: 'Konto z tym adresem email już istnieje. Wysłaliśmy ci wiadomość email, która pozwoli ci zresetować hasło oraz zalogować się.'
 helpcenter.emails.chat_transcript_subject: 'Log czatu'
 helpcenter.articles.view_as_agent: 'Masz dostęp do tej strony, bo jesteś agentem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
@@ -127,7 +126,7 @@ helpcenter.community.section_title: Opinie
 helpcenter.articles.published: Opublikowane
 helpcenter.flashes.ticket_participant_already_error: 'Osoba, którą próbowałeś dodać jako uczestnik, jest już uczestnikiem tego biletu.'
 helpcenter.tickets.list_last_action: 'Ostatnia akcja'
-helpcenter.tickets.last_activity: 'Ostatnia aktywność'
+helpcenter.general.last_activity: 'Ostatnia aktywność'
 helpcenter.tickets.list_date_last_agent: 'Ostatnia odpowiedź Agenta'
 helpcenter.tickets.list_date_last_user: 'Ostatnia odpowiedź Użytkownika'
 helpcenter.news.recent_title: 'Ostatnie Aktualizacje'
@@ -138,8 +137,8 @@ helpcenter.flashes.ticket_re_opened: 'Otworzyłeś ponownie to zgłoszenie.'
 helpcenter.tickets.mark_unresolved: 'Otwórz ponownie zgłoszenie'
 helpcenter.chat.window_resume_button: 'Otwórz swój czat'
 helpcenter.chat.window_open_new: 'Otwórz ten czat w nowym oknie'
-helpcenter.general.nav_downloads: 'Pliki do pobrania'
-helpcenter.forms.label_download: Pobierz
+helpcenter.general.downloads_type: 'Pliki do pobrania'
+helpcenter.downloads.download: Pobierz
 helpcenter.guides.download_pdf: 'Pobierz PDF'
 helpcenter.general.label_search_enter_label: 'Podaj etykietę, aby ją wyszukać'
 helpcenter.account.reset_password_invalid_input: 'Podaj poprawny adres email lub nazwę użytkownika.'
@@ -296,7 +295,7 @@ helpcenter.emails.kb_sub_updated: 'Zaktualizowane artykuły'
 helpcenter.emails.download_sub_updated: 'Zaktualizowane pobrania'
 helpcenter.emails.news_sub_updated: 'Zaktualizowane wiadomości'
 helpcenter.general.updated: Zaktualizowano
-helpcenter.account.section_title_login: Zaloguj
+helpcenter.general.log_in: Zaloguj
 helpcenter.account.login_external: 'Zaloguj za pomocą usługi zewnętrznej'
 helpcenter.tickets.please_login_to_reply: 'Zaloguj, aby odpowiedzieć.'
 helpcenter.chat.window_close_only: 'Zamknij okno'
@@ -315,7 +314,7 @@ helpcenter.general.agent_bar_agent_kb: 'Zarządzaj bazą wiedzy'
 helpcenter.general.agent_bar_agent_community: 'Zarządzaj informacją zwrotną'
 helpcenter.general.agent_bar_agent_dl: 'Zarządzaj pobieranymi'
 helpcenter.chat.form_chat_send_file: 'Załaduj plik'
-helpcenter.community.attachments: Załączniki
+helpcenter.general.attachments: Załączniki
 helpcenter.community.btn_vote: 'Zgadzam się'
 helpcenter.emails.ticket_rate_neutral: 'Zgodnie z oczekiwaniami'
 helpcenter.account.profile_delete_picture: 'Zmienić lub usunąć zdjęcie profilowe?'

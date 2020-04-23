@@ -4,8 +4,8 @@ helpcenter.emails.ticket_new_participant: 一个新人已被添加到您的帮�
 helpcenter.tickets.view_unassigned_more: 一名代理将被指派
 helpcenter.chat.form_chat_send_file: 上传一个文件
 helpcenter.chat.message_uploading: 上传中·
-helpcenter.general.nav_downloads: 下载
-helpcenter.forms.label_download: 下载
+helpcenter.general.downloads_type: 下载
+helpcenter.downloads.download: 下载
 helpcenter.guides.download_pdf: 下载PDF
 helpcenter.general.agent_bar_admin_dl: 下载设置
 helpcenter.messenger.chat.save_ticket.button_no: 不
@@ -64,7 +64,7 @@ helpcenter.emails.ratelimit_submit_online: 如果这是一个错误，您需要�
 helpcenter.community.form_full_name: 姓名
 helpcenter.tickets.view_label_your_name_placeholder: 姓名（必填的）
 helpcenter.account.reset_password_request_desc: 完成此表格以便向您发送密码重置链接。
-helpcenter.forms.label_password: 密码
+helpcenter.general.password: 密码
 helpcenter.account.login_password_reminder: 密码提醒？
 helpcenter.chat.window_upload_drag: 将您的的文件放到这里上传到会话
 helpcenter.chat.form_feedback_transcript_email: 将此聊天的脚本发送到
@@ -207,7 +207,7 @@ helpcenter.general.prop_rating_asc: 最低评分的优先
 helpcenter.general.prop_popularity_desc: 最受欢迎的优先
 helpcenter.tickets.list_date_last_agent: 最后一个回复的代理
 helpcenter.tickets.list_date_last_user: 最后一个回复的用户
-helpcenter.tickets.last_activity: 最后一次活跃
+helpcenter.general.last_activity: 最后一次活跃
 helpcenter.tickets.list_last_action: 最后的操作
 helpcenter.general.prop_views_desc: 最多浏览的优先
 helpcenter.general.prop_comments_desc: 最多评论优先
@@ -252,8 +252,8 @@ helpcenter.sidebar.top_articles_title: 热门文章
 helpcenter.general.user: 用户
 helpcenter.chat.message_user_returned: 用户已回来
 helpcenter.chat.message_user_timeout: 用户超时
-helpcenter.community.form_email_not_shown: 电子邮件
-helpcenter.account.section_title_login: 登录
+helpcenter.general.email_address: 电子邮件
+helpcenter.general.log_in: 登录
 helpcenter.tickets.please_login_to_reply: 登录进行回复。
 helpcenter.general.related_community: 相关的反馈
 helpcenter.general.related_downloads: 相关的文件
@@ -271,7 +271,7 @@ helpcenter.general.agent_bar_agent_kb: 管理知识库
 helpcenter.chat.window_end_chat: 结束聊天
 helpcenter.tickets.view_btn_edit: 编辑
 helpcenter.tickets.view_btn_edit_full: 编辑这条来单
-helpcenter.chat.list_chat: 聊天
+helpcenter.general.chat: 聊天
 helpcenter.chat.log_chat_id: 聊天ID
 helpcenter.chat.message_unassigned: 聊天已取消分配
 helpcenter.chat.message_started: 聊天开始
@@ -291,8 +291,7 @@ helpcenter.account.email_btn_make_primary: 设为主要
 helpcenter.account.section_title_set_password: 设置密码
 helpcenter.account.set_password_sent_title: 设置密码
 helpcenter.general.rate_page: 评价此页面的质量
-helpcenter.community.comments: 评论
-helpcenter.chat.form_feedback_comments: 评论？
+helpcenter.general.comments: 评论
 helpcenter.members.language: 语言
 helpcenter.general.agent_bar_admin_lang: 语言设定
 helpcenter.flashes.ticket_participant_email_error: 请为您的参与者输入有效的电子邮件，然后重试。
@@ -331,7 +330,7 @@ helpcenter.tickets.mark_unresolved: 重新打开工单
 helpcenter.tickets.timeline_re_opened: 重新打开这条来单
 helpcenter.emails.password_reset_subject: 重新设置密码
 helpcenter.error.400_title: 错误的请求
-helpcenter.community.attachments: 附件
+helpcenter.general.attachments: 附件
 helpcenter.messenger.tickets.form.category: 類別
 helpcenter.emails.email_new_confirm: 验证您的邮箱
 helpcenter.flashes.user_resend_email_verify: 验证电子邮件已重新发送到您的电子邮件地址。

@@ -30,14 +30,13 @@ helpcenter.messenger.tickets.form.category: カテゴリー
 helpcenter.general.btn_cancel: キャンセル
 helpcenter.chat.window_offline_button: クリックしてリクエストを送る
 helpcenter.emails.comment_approved: コメントが公開されました。
-helpcenter.chat.form_feedback_comments: コメントはありますか？
 helpcenter.emails.comment_approved_subject: コメントは承認されました。
 helpcenter.emails.comment_confirmation: コメントをいただきありがとうございます。
 helpcenter.general.add_comment: コメントを追加
 helpcenter.chat.form_feedback_button_submit: コメントを送りウィンドウを閉じる
 helpcenter.members.timezone: タイムゾーン
-helpcenter.general.nav_downloads: ダウンロード
-helpcenter.forms.label_download: ダウンロード
+helpcenter.general.downloads_type: ダウンロード
+helpcenter.downloads.download: ダウンロード
 helpcenter.general.nav_downloads_desc: ダウンロードを検索
 helpcenter.chat.log_chat_id: チャットID
 helpcenter.chat.message_started: チャットが開始されました。
@@ -54,7 +53,7 @@ helpcenter.chat.error: チャットエラー
 helpcenter.emails.chat_transcript_subject: チャットトランスクリプト
 helpcenter.articles.section_title: ナレッジベース
 helpcenter.sidebar.news_title: ニュース
-helpcenter.forms.label_password: パスワード
+helpcenter.general.password: パスワード
 helpcenter.emails.password_reset_subject: パスワードのリセット
 helpcenter.emails.password_reset: 'パスワードをリセットする依頼がありました。リセットをするには、次のリンクをクリックしてください。:'
 helpcenter.chat.window_upload_drag: ファイルをこちらへドロップして、チャットへアップロードします。
@@ -89,7 +88,7 @@ helpcenter.tickets.list_agent: 担当エージェント
 helpcenter.emails.community_topic_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
 helpcenter.emails.community_topic_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
 helpcenter.emails.ticket_no_autoresponse: '注意: 確認メールの送信設定がオフです'
-helpcenter.community.attachments: 添付
+helpcenter.general.attachments: 添付
 helpcenter.chat.window_close: 無視して、このウィンドウを閉じます。
 helpcenter.chat.ended_no_agent: 申し訳ございませんが、現在チャットサービスはご利用いただけません。後ほど再度アクセス頂くか、電子メールにてご連絡ください。
 helpcenter.account.login_register_btn: 登録

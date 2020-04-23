@@ -5,7 +5,7 @@ helpcenter.emails.email_ticket_reminder: 'Acción requerida: Su boleto aún no h
 helpcenter.account.change_password_btn: 'Actualiza contraseña'
 helpcenter.general.updated: Actualizado
 helpcenter.tickets.timeline_attached: 'Adjunto con este mensaje:'
-helpcenter.community.attachments: Adjuntos
+helpcenter.general.attachments: Adjuntos
 helpcenter.general.admin: Administración
 helpcenter.general.admin_home: 'Administración Casa'
 helpcenter.account.email_btn_usersource_set: 'Administrar correos electrónicos'
@@ -37,7 +37,7 @@ helpcenter.chat.message_uploading: Cargando...
 helpcenter.messenger.tickets.form.category: Categoría
 helpcenter.chat.window_close_only: 'Cerrar la ventana'
 helpcenter.account.logout_btn: 'Cerrar sesión'
-helpcenter.community.comments: Comentarios
+helpcenter.general.comments: Comentarios
 helpcenter.community.section_title: Comentarios
 helpcenter.emails.community_sub_updated: 'Comentarios actualizados'
 helpcenter.general.related_community: 'Comentarios relacionados'
@@ -51,7 +51,7 @@ helpcenter.general.agent_bar_admin_lang: 'Configuraciones de idioma'
 helpcenter.general.agent_bar_admin_community: 'Configuración de comentarios'
 helpcenter.general.agent_bar_admin_kb: 'Configuración de la base de conocimientos'
 helpcenter.account.section_title_set_password: 'Configurar la clave'
-helpcenter.forms.label_password: Contraseña
+helpcenter.general.password: Contraseña
 helpcenter.tickets.new_section_title: Contáctenos
 helpcenter.messenger.chat.ended: 'Conversación finalizada'
 helpcenter.chat.message_ended_by_user: 'Conversación finalizada por usuario'
@@ -63,9 +63,9 @@ helpcenter.general.rate_page_positive: 'De ayuda'
 helpcenter.forms.error_email_required: 'Debe proporcionar su dirección de correo electrónico'
 helpcenter.flashes.community_login: 'Debes iniciar sesión para votar'
 helpcenter.messenger.tickets.form.department: Departamento
-helpcenter.forms.label_download: Descarga
+helpcenter.downloads.download: Descarga
 helpcenter.guides.download_pdf: 'Descargar PDF'
-helpcenter.general.nav_downloads: Descargas
+helpcenter.general.downloads_type: Descargas
 helpcenter.emails.download_sub_updated: 'Descargas actualizadas'
 helpcenter.emails.download_sub_new_and_updated: 'Descargas nuevas y actualizadas'
 helpcenter.tickets.view_label_your_email_placeholder: 'Dirección de correo electrónico: (obligatorio)'
@@ -156,7 +156,7 @@ helpcenter.members.language: Idioma
 helpcenter.general.print: Impresión
 helpcenter.flashes.ticket_participant_email_error: 'Ingrese un correo electrónico válido para su participante e intente nuevamente.'
 helpcenter.tickets.please_login_to_reply: 'Inicia sesión para responder.'
-helpcenter.account.section_title_login: 'Iniciar sesión'
+helpcenter.general.log_in: 'Iniciar sesión'
 helpcenter.account.login_external: 'Iniciar sesión con un servicio externo'
 helpcenter.messenger.proactive.title: 'Iniciar una conversación'
 helpcenter.account.section_title_usersource_email: 'Introduce tu correo electrónico'
@@ -322,7 +322,6 @@ helpcenter.emails.ticket_rate_question: '¿ Le ha ayudado este mensaje ?'
 helpcenter.account.profile_delete_picture: '¿Cambiar o borrar la foto de perfil?'
 helpcenter.tickets.rate_question: '¿Cómo calificaría el soporte que recibió?'
 helpcenter.chat.window_cancel_confirm: '¿Está seguro de querer finalizar la conversación?'
-helpcenter.chat.form_feedback_comments: '¿Hay comentarios?'
 helpcenter.account.login_password_reminder: '¿Necesita un recordatorio de contraseña?'
 helpcenter.chat.form_feedback_rate_time: '¿Nuestro tiempo de respuesta ha sido bueno?'
 helpcenter.account.reset_password_request_title: '¿Olvidaste tu contraseña?'
@@ -330,6 +329,6 @@ helpcenter.account.login_remember: '¿Permanecer conectado?'
 helpcenter.chat.form_feedback_rate_satisfaction: '¿Se ha quedado satisfecho con esta conversación?'
 helpcenter.account.section_desc_login: '¿Ya tienes una cuenta? Inicie sesión a continuación.'
 helpcenter.tickets.list_last_action: 'Última acción'
-helpcenter.tickets.last_activity: 'Última actividad'
+helpcenter.general.last_activity: 'Última actividad'
 helpcenter.tickets.list_date_last_agent: 'Última respuesta de agente'
 helpcenter.tickets.list_date_last_user: 'Última respuesta de usuario'

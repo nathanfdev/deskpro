@@ -13,9 +13,9 @@ helpcenter.general.related_downloads: '관련 파일들'
 helpcenter.general.related_community: '관련 피드백'
 helpcenter.emails.ticket_rate_neutral: 괜찮았습니다
 helpcenter.sidebar.news_title: 뉴스
-helpcenter.forms.label_download: 다운로드
+helpcenter.downloads.download: 다운로드
 helpcenter.general.nav_downloads_desc: '다운로드 보기'
-helpcenter.general.nav_downloads: '다운로드 파일들'
+helpcenter.general.downloads_type: '다운로드 파일들'
 helpcenter.emails.ticket_reply_confirm: '답변해 주셔서 감사하니다. 빠른시간 안에 답변 해 드리도록 하겠습니다.'
 helpcenter.messenger.blocks.tickets.title: '당신의 티켓들'
 helpcenter.emails.chat_transcript_subject: '대화 기록'
@@ -43,7 +43,7 @@ helpcenter.chat.form_chat_button_submit: 보내기
 helpcenter.messenger.tickets.form.department: 부서
 helpcenter.chat.log_no_department: '부서가 없습니다'
 helpcenter.chat.form_create_department: '부서를 선택하십시오'
-helpcenter.forms.label_password: 비밀번호
+helpcenter.general.password: 비밀번호
 helpcenter.emails.password_reset_subject: '비밀번호 재설정'
 helpcenter.emails.password_reset: '비밀번호 재설정을 요청하셨습니다. 재설정 하시려면 아래의 링크를 클릭하십시오:'
 helpcenter.chat.message_user_returned: '사용자가 돌아왔습니다.'
@@ -110,11 +110,10 @@ helpcenter.chat.log_chat_id: '채팅 아이디'
 helpcenter.chat.error: '채팅 오류'
 helpcenter.chat.window_upload_drag: '채팅에 파일을 올리시려면 여기에 올려놔주세요'
 helpcenter.chat.window_start_button: '채팅을 하시려면 여기를 클릭 해주세요'
-helpcenter.community.attachments: 첨부파일
+helpcenter.general.attachments: 첨부파일
 helpcenter.general.btn_cancel: 취소
 helpcenter.emails.comment_approved: '코멘트가 발행되었습니다.'
 helpcenter.emails.comment_approved_subject: '코멘트가 승인 되었습니다'
-helpcenter.chat.form_feedback_comments: '코멘트를 남기시겠습니까?'
 helpcenter.emails.comment_confirmation: '코멘트를 달아주셔서 감사합니다'
 helpcenter.tickets.resolve_my_ticket_btn: '티켓 해결하기'
 helpcenter.emails.ticket_access_ticket_online: '티켓은 온라인에서 보시고 관리해주세요:'

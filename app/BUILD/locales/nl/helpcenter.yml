@@ -44,7 +44,7 @@ helpcenter.emails.news_sub_updated: 'Bijgewerkt nieuws'
 helpcenter.emails.kb_sub_updated: 'Bijgewerkte artikelen'
 helpcenter.emails.download_sub_updated: 'Bijgewerkte downloads'
 helpcenter.emails.community_sub_updated: 'Bijgewerkte gemeenschapsonderwerp'
-helpcenter.community.attachments: Bijlagen
+helpcenter.general.attachments: Bijlagen
 helpcenter.messenger.chat.ended: 'Chat beëindigd'
 helpcenter.chat.message_ended_by_user: 'Chat beëindigd door gebruiker'
 helpcenter.chat.message_started: 'Chat gestart'
@@ -64,11 +64,11 @@ helpcenter.general.comments_pending_validation: 'Deze reactie wordt gecontroleer
 helpcenter.community.error_hidden: 'Dit gemeenschapsonderwerp is verborgen'
 helpcenter.error.permission_denied_title: 'Dit is niet toegestaan'
 helpcenter.tickets.view_btn_edit_full: 'Dit ticket bewerken'
-helpcenter.forms.label_download: Downloaden
+helpcenter.downloads.download: Downloaden
 helpcenter.general.agent_bar_agent_dl: 'Downloads beheren'
 helpcenter.general.agent_bar_admin_dl: Downloads-instellingen
 helpcenter.chat.submit_ticket_button: 'E-mail ons'
-helpcenter.community.form_email_not_shown: E-mailadres
+helpcenter.general.email_address: E-mailadres
 helpcenter.tickets.view_label_your_email_placeholder: 'E-mailadres (vereist)'
 helpcenter.account.email_btn_usersource_set: 'E-mailadres toevoegen'
 helpcenter.account.email_btn_remove: 'E-mailadres verwijderen'
@@ -114,7 +114,7 @@ helpcenter.general.prop_rating_desc: 'Hoogst beoordeeld eerst'
 helpcenter.community.btn_vote: 'Ik ben het eens'
 helpcenter.account.login_remember: 'Ingelogd blijven?'
 helpcenter.community.error_login: Inloggen
-helpcenter.account.section_title_login: Inloggen
+helpcenter.general.log_in: Inloggen
 helpcenter.account.login_external: 'Inloggen met een externe service'
 helpcenter.messenger.chat.transcript_block.yes_button: Ja
 helpcenter.messenger.tickets.form.category: Kategori
@@ -132,7 +132,7 @@ helpcenter.emails.profile_email_link_validate: 'Klik op de volgende link om uw e
 helpcenter.emails.chat_transcript_subject: 'Kopie van chatgeschiedenis'
 helpcenter.general.prop_rating_asc: 'Laagst beoordeeld eerst'
 helpcenter.tickets.list_last_action: 'Laatste actie'
-helpcenter.tickets.last_activity: 'Laatste activiteit'
+helpcenter.general.last_activity: 'Laatste activiteit'
 helpcenter.tickets.list_date_last_agent: 'Laatste antwoord medewerker'
 helpcenter.tickets.list_date_last_user: 'Laatste antwoord medewerker'
 helpcenter.emails.community_topic_agent_validation: 'Let er op dat uw gemeenschapsonderwerp niet publiekelijk zichtbaar is totdat een van onze medewerkers het heeft gecontroleerd'
@@ -187,8 +187,7 @@ helpcenter.account.profile_btn_save: 'Profiel opslaan'
 helpcenter.account.profile_delete_picture: 'Profielfoto wijzigen of verwijderen?'
 helpcenter.general.comment_btn_save: 'Reactie opslaan'
 helpcenter.general.add_comment: 'Reactie toevoegen'
-helpcenter.community.comments: Reacties
-helpcenter.chat.form_feedback_comments: 'Reacties?'
+helpcenter.general.comments: Reacties
 helpcenter.news.recent_title: 'Recent nieuws'
 helpcenter.tickets.list_ticket_ref: Referentie
 helpcenter.account.section_desc_register: 'Registreer een account, zodat u eenvoudig uw communicatie kunt beheren.'
@@ -306,7 +305,7 @@ helpcenter.tickets.new_intro: 'Vul dit formulier in en één van onze medewerker
 helpcenter.account.reset_password_invalid_input: 'Vul een geldig e-mailadres of gebruikersnaam in'
 helpcenter.account.section_title_usersource_email: 'Vul uw e-mailadres in'
 helpcenter.emails.ticket_no_autoresponse: 'Waarschuwing: Bevestiging e-mails zijn uitgeschakeld'
-helpcenter.forms.label_password: Wachtwoord
+helpcenter.general.password: Wachtwoord
 helpcenter.account.change_password_btn: 'Wachtwoord bijwerken'
 helpcenter.account.section_title_set_password: 'Wachtwoord instellen'
 helpcenter.account.reset_password_sent_title: 'Wachtwoordaanvraag ontvangen'

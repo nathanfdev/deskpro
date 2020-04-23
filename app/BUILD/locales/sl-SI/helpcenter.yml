@@ -7,6 +7,6 @@ helpcenter.account.login_password_reminder: 'Potrebujete opomnik za geslo?'
 helpcenter.account.login_register_btn: 'Registriraj se'
 helpcenter.account.login_email: 'Vaš elektronski naslov'
 helpcenter.account.login_captcha_failed: 'Vnesli ste napačno kodo. Prosimo poskusite ponovno.'
-helpcenter.account.section_title_login: 'Vpiši se'
+helpcenter.general.log_in: 'Vpiši se'
 helpcenter.account.login_external: 'Vpiši se z  zunanjim servisom'
 helpcenter.account.login_email_placeholder: ime@primer.si

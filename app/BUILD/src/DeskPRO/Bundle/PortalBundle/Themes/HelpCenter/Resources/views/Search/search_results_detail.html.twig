@@ -68,7 +68,7 @@
                                         <li class="dp-po-search-sidebar-item">
                                             <a class="dp-po-search-sidebar-link {% if not download_results %}no-results{% endif %} {% if active == 'download' %}active{% endif %}" href="" data-type="download">
                                                 <img class="dp-po-search-sidebar-image icon-svg"
-                                                     src="{{ asset('img/page-icons/download.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_downloads') }}
+                                                     src="{{ asset('img/page-icons/download.svg', 'help_center') }}">{{ phrase('helpcenter.general.downloads_type') }}
                                                 <span class="dp-po-search-sidebar-count">{{ download_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}

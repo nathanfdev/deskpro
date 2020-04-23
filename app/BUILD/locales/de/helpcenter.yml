@@ -15,8 +15,8 @@ helpcenter.general.everything: Alles
 helpcenter.account.email_btn_make_primary: 'Als primäre Adresse verwenden'
 helpcenter.account.login_remember: 'Angemeldet bleiben?'
 helpcenter.tickets.timeline_attached: 'Anhang zu dieser Nachricht'
-helpcenter.community.attachments: Anhänge
-helpcenter.account.section_title_login: Anmelden
+helpcenter.general.attachments: Anhänge
+helpcenter.general.log_in: Anmelden
 helpcenter.tickets.please_login_to_reply: 'Anmelden um zu antworten'
 helpcenter.account.login_external: 'Anmelden über einen externen Dienst'
 helpcenter.emails.ticket_access_ticket_online: 'Ansehen und Verwalten dieses Tickets online:'
@@ -78,7 +78,7 @@ helpcenter.general.agent_bar_admin_dl: 'Download Einstellungen'
 helpcenter.general.agent_bar_agent_dl: 'Downloads verwalten'
 helpcenter.general.print: Drucken
 helpcenter.general.nav_downloads_desc: 'Durchsuchen Sie unsere Downloads'
-helpcenter.community.form_email_not_shown: E-Mail
+helpcenter.general.email_address: E-Mail
 helpcenter.account.email_btn_remove: 'E-Mail entfernen'
 helpcenter.tickets.view_label_your_email_placeholder: 'E-Mail-Adresse (Pflichtangabe)'
 helpcenter.account.email_btn_usersource_set: 'E-Mail-Adresse hinzufügen'
@@ -114,7 +114,7 @@ helpcenter.tickets.list_status_resolved: Gelöst
 helpcenter.chat.log_chat_time: 'Gesamte Chat-Zeit'
 helpcenter.emails.too_many_emails: 'HINWEIS: Sie haben zu viele E-Mails versendet'
 helpcenter.account.section_desc_login: 'Haben Sie bereits einen Konto? Melden Sie sich unten an.'
-helpcenter.forms.label_download: Herunterladen
+helpcenter.downloads.download: Herunterladen
 helpcenter.account.reset_password_click_here: 'Hier klicken, um einen Code zum Zurücksetzen des Passworts anzufordern'
 helpcenter.general.rate_page_positive: Hilfreich
 helpcenter.tickets.view_btn_add_to_ticket: 'Hinzufügen zum Ticket'
@@ -163,11 +163,10 @@ helpcenter.chat.window_start_button: 'Klicken Sie hier um mit uns zu chatten'
 helpcenter.account.set_password_click_here: 'Klicken Sie hier, um Ihr Passwort festzulegen'
 helpcenter.account.submit_saved_form_go: 'Klicken Sie hier, um das Formular automatisch neu abzuschicken.'
 helpcenter.general.comment_btn_save: 'Kommentar speichern'
-helpcenter.community.comments: Kommentare
-helpcenter.chat.form_feedback_comments: 'Kommentare?'
+helpcenter.general.comments: Kommentare
 helpcenter.tickets.new_section_title: 'Kontaktieren Sie uns'
 helpcenter.chat.window_upload_drag: 'Legen Sie Ihre Datei hier ab, um sie in den Chat hochzuladen'
-helpcenter.tickets.last_activity: 'Letzte Aktivität'
+helpcenter.general.last_activity: 'Letzte Aktivität'
 helpcenter.tickets.list_last_action: 'Letzte Aktivität'
 helpcenter.tickets.list_date_last_user: 'Letzte Antwort Benutzer'
 helpcenter.tickets.list_date_last_agent: 'Letzte Mitarbeiter-Antwort'
@@ -199,7 +198,7 @@ helpcenter.tickets.view_unassigned: 'Nicht zugewiesen'
 helpcenter.news.none: 'Noch keine Neuigkeiten'
 helpcenter.emails.label_view_online: 'Online anzeigen'
 helpcenter.guides.download_pdf: 'PDF herunterladen'
-helpcenter.forms.label_password: Passwort
+helpcenter.general.password: Passwort
 helpcenter.account.change_password_btn: 'Passwort aktualisieren'
 helpcenter.account.set_password_sent_title: 'Passwort festlegen'
 helpcenter.account.section_title_set_password: 'Passwort festlegen'
