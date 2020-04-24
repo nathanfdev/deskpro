@@ -144,20 +144,3 @@ Feature: /tickets/{id}/messages endpoint
 
     When I send a DELETE request to "/api/v2/tickets/{ticket}/messages/{tm}"
     Then the response status code should be 200
-
-  Scenario: I grant tickets create permission
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    And I set permission "agent_tickets.create" = 1 for "registered" usergroup
-    And I grant the "{d1}" department permission of "tickets" app for "agent"
-
-    When I send a GET request to "/api/v2/tickets"
-    Then the response status code should be 200
-
-    When I send a GET request to "/api/v2/tickets/{t1}"
-    Then the response status code should be 200
-
-    When I send a POST request to "/api/v2/tickets"
-    Then the response status code should be 201
-
-    When I send a PUT request to "/api/v2/tickets/{t1}"
-    Then the response status code should be 403
