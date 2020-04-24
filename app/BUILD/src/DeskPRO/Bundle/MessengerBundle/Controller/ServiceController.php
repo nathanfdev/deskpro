@@ -168,6 +168,7 @@ class ServiceController extends AbstractMessengerController
             'helpcenter.messenger.chat_transcript_block_send_button',
             'helpcenter.messenger.chat_transcript_block_yes_button',
             'helpcenter.messenger.loading',
+            'helpcenter.messenger.message_agent_timeout',
             'helpcenter.messenger.message_assigned',
             'helpcenter.messenger.message_ended',
             'helpcenter.messenger.message_ended_by',
