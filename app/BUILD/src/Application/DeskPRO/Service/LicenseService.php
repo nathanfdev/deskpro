@@ -92,34 +92,41 @@ class LicenseService
                 RequestOptions::VERIFY => false,
             ]);
 
-            try {
-                $response = $client->get('/news/2-product.rss');
-            } catch (ClientException $e) {
-                return;
-            }
+            foreach (['/news/2-product.rss', '/news/release-announcements.rss'] as $url) {
+                try {
+                    $response = $client->get($url);
+                } catch (ClientException $e) {
+                    return;
+                }
 
-            $rss = @simplexml_load_string((string) $response->getBody());
-            unset($r);
+                $rss = @simplexml_load_string((string) $response->getBody());
 
-            if (!$rss || empty($rss) || empty($rss->channel->item)) {
-                return;
-            }
-
-            $x = 0;
-            foreach ($rss->channel->item as $item) {
-                $news[] = [
-                    'title' => (string) $item->title,
-                    'link'  => (string) $item->link,
-                ];
-                if ($x++ > 5) {
+                if (!$rss || empty($rss) || empty($rss->channel->item)) {
                     break;
+                }
+
+                $x = 0;
+                foreach ($rss->channel->item as $item) {
+                    $news[] = [
+                        'title' => (string) $item->title,
+                        'link'  => (string) $item->link,
+                        'pubDate' => @strtotime($item->pubDate),
+                        'date' => (string) $item->pubDate
+                    ];
+                    if ($x++ > 5) {
+                        break;
+                    }
                 }
             }
         } catch (\Exception $e) {
             return;
         }
 
-        return $news;
+        usort($news, function($a, $b)  {
+            return ($a['pubDate'] >= $b['pubDate']) ? -1 : 1;
+        });
+
+        return array_slice($news, 0, 7);
     }
 
     /**
