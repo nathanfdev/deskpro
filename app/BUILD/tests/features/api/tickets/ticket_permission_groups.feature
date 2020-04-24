@@ -29,6 +29,18 @@ Feature: Ticket permission groups
     When I send a PUT request to "/api/v2/tickets/{t1}"
     Then the response status code should be 403
 
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "my message",
+  "ticket": {
+    "status": "pending",
+    "subject": "New Ticket 1 Subject"
+  }
+}
+    """
+    Then the response status code should be 403
+
     When I send a DELETE request to "/api/v2/tickets/{t1}"
     Then the response status code should be 403
 
@@ -42,6 +54,18 @@ Feature: Ticket permission groups
     Then the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/{t2}"
+    Then the response status code should be 403
+
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "my message",
+  "ticket": {
+    "status": "pending",
+    "subject": "New Ticket 1 Subject"
+  }
+}
+    """
     Then the response status code should be 403
 
     When I send a POST request to "/api/v2/tickets"
@@ -70,6 +94,18 @@ Feature: Ticket permission groups
     When I send a PUT request to "/api/v2/tickets/{t1}"
     Then the response status code should be 403
 
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "my message",
+  "ticket": {
+    "status": "pending",
+    "subject": "New Ticket 1 Subject"
+  }
+}
+    """
+    Then the response status code should be 403
+
     When I send a DELETE request to "/api/v2/tickets/{t1}"
     Then the response status code should be 403
 
@@ -90,6 +126,18 @@ Feature: Ticket permission groups
 
     When I send a PUT request to "/api/v2/tickets/{t1}"
     Then the response status code should be 204
+
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "my message",
+  "ticket": {
+    "status": "pending",
+    "subject": "New Ticket 1 Subject"
+  }
+}
+    """
+    Then the response status code should be 201
 
     When I send a DELETE request to "/api/v2/tickets/{t1}"
     Then the response status code should be 403
@@ -130,6 +178,18 @@ Feature: Ticket permission groups
 
     When I send a PUT request to "/api/v2/tickets/{t1}"
     Then the response status code should be 204
+
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "my message",
+  "ticket": {
+    "status": "pending",
+    "subject": "New Ticket 1 Subject"
+  }
+}
+    """
+    Then the response status code should be 201
 
     When I send a DELETE request to "/api/v2/tickets/{t1}"
     Then the response status code should be 200
