@@ -710,7 +710,6 @@ helpcenter.messenger.chat_dragdrop_drag_and_drop: 'Drag and drop file here'
 helpcenter.messenger.chat_end_chat: 'End chat'
 helpcenter.messenger.chat_ended: 'Chat ended'
 helpcenter.messenger.chat_prompt: 'What can we help you with today?'
-helpcenter.messenger.tickets_form_addAttachment: 'Add attachment'
 helpcenter.messenger.tickets_form_add_attachment: 'Add attachment'
 helpcenter.messenger.tickets_form_back: Back
 helpcenter.messenger.tickets_form_header: 'New ticket'
