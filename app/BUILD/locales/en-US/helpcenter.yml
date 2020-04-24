@@ -67,8 +67,6 @@ helpcenter.general.chat: Chat
 helpcenter.chat.error: 'Chat Error'
 helpcenter.chat.log_chat_id: 'Chat ID'
 helpcenter.emails.chat_transcript_subject: 'Chat Transcript'
-helpcenter.general.nav-chats: Chats
-helpcenter.forms.label-choose-a-file: 'Choose a file'
 helpcenter.general.chats: Chats
 helpcenter.general.form_choose_file: 'Choose a file'
 helpcenter.chat.form_create_department: 'Choose department'
@@ -144,7 +142,6 @@ helpcenter.general.filter: Filter
 helpcenter.tickets.filter_by: 'Filter by'
 helpcenter.community.filters: Filters
 helpcenter.general.first_published: 'First published'
-helpcenter.general.first-published: 'First published'
 helpcenter.general.published: 'First published'
 helpcenter.account.reset_password_request_title: 'Forgot your password?'
 helpcenter.community.forum_name: 'Forum name'
@@ -367,13 +364,6 @@ helpcenter.account.set_password_request_title: 'Set Your Password'
 helpcenter.account.set_password_sent_title: 'Set Your Password'
 helpcenter.general.share: Share
 helpcenter.general.show: Show
-helpcenter.emails.profile_email_link-validate: 'Simply click on the following link to validate to your email address'
-helpcenter.emails.community_topic_new-disapproved: 'Sorry but your community topic has been declined'
-helpcenter.error.an-error-occured-desc: 'Sorry, but there was an error trying to load this page. Please try again later or <a href="{contact_link}">contact us</a>.'
-helpcenter.error.404-desc: 'Sorry, but we couldn''t find this page.'
-helpcenter.error.403-desc: 'Sorry, but you do not have access to view this page.'
-helpcenter.error.400-desc: 'Sorry, but your request was malformed.'
-helpcenter.tickets.not-allowed_desc: 'Sorry, our agents are unable to take your chat at the moment'
 helpcenter.emails.profile_email_link_validate: 'Simply click on the following link to validate to your email address'
 helpcenter.emails.community_topic_new_disapproved: 'Sorry but your community topic has been declined'
 helpcenter.error.an_error_occured_desc: 'Sorry, but there was an error trying to load this page. Please try again later or <a href="{contact_link}">contact us</a>.'
@@ -474,16 +464,9 @@ helpcenter.emails.kb_sub_updated: 'Updated Articles'
 helpcenter.emails.community_sub_updated: 'Updated Community Topic'
 helpcenter.emails.download_sub_updated: 'Updated Downloads'
 helpcenter.emails.news_sub_updated: 'Updated News'
-helpcenter.chat.form_chat_send-file: 'Upload a File'
-helpcenter.downloads.uploaded-on: Uploaded
-helpcenter.account.section-desc-login-external: 'Use the links below if you have an account with another provider.'
 helpcenter.approvals.view_user: User
 helpcenter.chat.list_user: User
 helpcenter.tickets.list_user: User
-helpcenter.general.user-profile: 'User Profile'
-helpcenter.emails.validate-email_subject: 'Validate your email address'
-helpcenter.emails.email_primary-confirm: 'Validate your email address'
-helpcenter.emails.email_new-confirm: 'Validate your email address'
 helpcenter.chat.form_chat_send_file: 'Upload a File'
 helpcenter.downloads.uploaded_on: Uploaded
 helpcenter.account.section_desc_login_external: 'Use the links below if you have an account with another provider.'
@@ -508,11 +491,6 @@ helpcenter.general.view_profile: 'View profile'
 helpcenter.general.viewed_by_agents_only: 'Viewed by agents only'
 helpcenter.community.votes: Votes
 helpcenter.tickets.thank_you_create_pw_link: 'Want to keep track of your ticket? You can <a href="{create_pw_link}">set a password for your account</a>.'
-helpcenter.emails.ticket_no-autoresponse: 'Warning: Confirmation emails turned off'
-helpcenter.chat.form_feedback_rate-time: 'Was our response time fast enough?'
-helpcenter.emails.ticket_rate-question: 'Was this message helpful?'
-helpcenter.chat.ended-no-agent: 'We are very sorry but we do not have anyone available to take your chat right now. Please email us or try again later.'
-helpcenter.general.no-search-results: 'We couldn''t find any results for "{query}"'
 helpcenter.emails.ticket_no_autoresponse: 'Warning: Confirmation emails turned off'
 helpcenter.chat.form_feedback_rate_time: 'Was our response time fast enough?'
 helpcenter.emails.ticket_rate_question: 'Was this message helpful?'
@@ -540,8 +518,6 @@ helpcenter.chat.form_feedback_rate_satisfied: 'Yes'
 helpcenter.chat.you: You
 helpcenter.chat.log_message_author_you: You
 helpcenter.general.you: You
-helpcenter.flashes.ticket-approvals.approved-by: 'You approved the request {template} requested by {person}'
-helpcenter.error.permission-denied-title: 'You are not allowed to perform this action'
 helpcenter.ticket_approvals.approved_by: 'You approved the request {template} requested by {person_name}'
 helpcenter.error.permission_denied_title: 'You are not allowed to perform this action'
 helpcenter.community.rate_forbidden: 'You are not allowed to vote'
@@ -654,13 +630,6 @@ helpcenter.duration_short.seconds: s
 helpcenter.sidebar.satisfied_customers: 'satisfied customers'
 helpcenter.general.tagged_with: 'tagged with'
 helpcenter.direct_messages.unblock_user: 'unblock user'
-helpcenter.emails.share-article: '{author_name} wants to share this article with you'
-helpcenter.emails.ticket_cc-added: '{author_name}, {author_email}, has added you to the ticket {ticket.subject}.'
-helpcenter.tickets.rate-intro: '{name} helped you with your ticket "{subject}"'
-helpcenter.emails.community-topic_new-comment: '{name} posted a new comment:'
-helpcenter.general.x-search-results-no-query: '{num} search results'
-helpcenter.general.x-search-results: '{num} search results for "{query}"'
-helpcenter.tickets.organization-tickets: '{org_name} tickets'
 helpcenter.emails.share_article: '{author_name} wants to share this article with you'
 helpcenter.emails.ticket_cc_added: '{author_name}, {author_email}, has added you to the ticket {subject}.'
 helpcenter.tickets.rate_intro: '{name} helped you with your ticket "{subject}"'
