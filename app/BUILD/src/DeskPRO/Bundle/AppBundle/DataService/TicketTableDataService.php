@@ -12,6 +12,8 @@ use DeskPRO\Bundle\AppBundle\Model\TicketColumn;
 use DeskPRO\Bundle\AppBundle\Model\TicketColumns;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,6 +53,16 @@ class TicketTableDataService extends AbstractDataService
      */
     private $brand_aware_settings;
 
+    /**
+     * @var PortalBrandThemeLoader
+     */
+    private $portalBrandThemeLoader;
+
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
     public function __construct(
         EntityManager $em,
         TicketsDataService $ticket_data_service,
@@ -58,7 +70,9 @@ class TicketTableDataService extends AbstractDataService
         DepartmentDataService $department_data_service,
         TicketLayoutFactory $ticket_layout_factory,
         CustomFieldManager $form_field_manager,
-        BrandAwareSettingsResolver $brand_aware_settings
+        BrandAwareSettingsResolver $brand_aware_settings,
+        PortalBrandThemeLoader $portalBrandThemeLoader,
+        BrandStack $brandStack
     ) {
         parent::__construct($em);
         $this->ticket_data_service     = $ticket_data_service;
@@ -67,6 +81,8 @@ class TicketTableDataService extends AbstractDataService
         $this->ticketLayoutFactory     = $ticket_layout_factory;
         $this->fieldManager            = $form_field_manager;
         $this->brand_aware_settings    = $brand_aware_settings;
+        $this->portalBrandThemeLoader  = $portalBrandThemeLoader;
+        $this->brandStack              = $brandStack;
     }
 
     public function makeTicketTable(Person $person, Request $request, $ticketType, $category, $categoryTitle)
@@ -89,9 +105,23 @@ class TicketTableDataService extends AbstractDataService
         return $columns;
     }
 
-    protected function phrase($phrase_name, $vars = [])
+    protected function phrase($phraseName, $vars = [])
     {
-        return $this->language_manager->phrase($phrase_name, $vars);
+        if (is_array($phraseName)) {
+            if ($this->isHelpcenter()) {
+                $phraseName = array_filter($phraseName, function ($p) {
+                    return strpos($p, 'helpcenter.') === 0;
+                });
+            } else {
+                $phraseName = array_filter($phraseName, function ($p) {
+                    return strpos($p, 'helpcenter.') !== 0;
+                });
+            }
+
+            $phraseName = array_pop($phraseName);
+        }
+
+        return $this->language_manager->phrase($phraseName, $vars);
     }
 
     /**
@@ -107,56 +137,56 @@ class TicketTableDataService extends AbstractDataService
 
         $columns->addColumn(
             TicketColumn::TYPE_SUBJECT,
-            $this->phrase('portal.tickets.list_subject'),
+            $this->phrase(['portal.tickets.list_subject', 'helpcenter.tickets.list_subject']),
             TicketColumn::TYPE_SUBJECT,
             CustomDefAbstract::TYPE_TEXT
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_DEPARTMENT,
-            $this->phrase('portal.tickets.list_department'),
+            $this->phrase(['portal.tickets.list_department', 'helpcenter.general.department']),
             TicketColumn::TYPE_DEPARTMENT,
             CustomDefAbstract::TYPE_CHOICE
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_USER,
-            $this->phrase('portal.tickets.list_user'),
+            $this->phrase(['portal.tickets.list_user', 'helpcenter.general.user']),
             TicketColumn::TYPE_USER,
             CustomDefAbstract::TYPE_DISPLAY
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_AGENT,
-            $this->phrase('portal.tickets.list_agent'),
+            $this->phrase(['portal.tickets.list_agent', 'helpcenter.general.agent']),
             TicketColumn::TYPE_AGENT,
             CustomDefAbstract::TYPE_DISPLAY
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_DATE_CREATED,
-            $this->phrase('portal.tickets.list_date_created'),
+            $this->phrase(['portal.tickets.list_date_created', 'helpcenter.tickets.list_date_created']),
             TicketColumn::TYPE_DATE_CREATED,
             CustomDefAbstract::TYPE_DATETIME
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_DATE_ACTIVITY,
-            $this->phrase('portal.tickets.list_last_action'),
+            $this->phrase(['portal.tickets.list_last_action', 'helpcenter.tickets.list_last_action']),
             TicketColumn::TYPE_DATE_ACTIVITY,
             CustomDefAbstract::TYPE_DATETIME
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_DATE_USER,
-            $this->phrase('portal.tickets.list_date_last_user'),
+            $this->phrase(['portal.tickets.list_date_last_user', 'helpcenter.tickets.list_date_last_user']),
             TicketColumn::TYPE_DATE_USER,
             CustomDefAbstract::TYPE_DATETIME
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_DATE_AGENT,
-            $this->phrase('portal.tickets.list_date_last_agent'),
+            $this->phrase(['portal.tickets.list_date_last_agent', 'helpcenter.tickets.list_date_last_agent']),
             TicketColumn::TYPE_DATE_AGENT,
             CustomDefAbstract::TYPE_DATETIME
         );
@@ -284,5 +314,10 @@ class TicketTableDataService extends AbstractDataService
         }
 
         return;
+    }
+
+    private function isHelpcenter()
+    {
+        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }
