@@ -78,7 +78,6 @@ helpcenter.direct_messages.reply_message: Mensagem
 helpcenter.chat.log_unassigned: 'Nenhum agente foi atribuído'
 helpcenter.chat.message_wait_timeout: 'Nenhum agente foi encontrado'
 helpcenter.community.form_full_name: Nome
-helpcenter.sidebar.news_title: Notícias
 helpcenter.general.related_news: 'Notícias relacionadas'
 helpcenter.messenger.chat.save_ticket.button_no: Não
 helpcenter.tickets.view_unassigned: 'Não atribuído'

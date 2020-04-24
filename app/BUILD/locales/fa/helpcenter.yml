@@ -10,7 +10,6 @@ helpcenter.chat.message_uploading: آپلود...
 helpcenter.emails.ticket_rate_question: 'آیا این پیام مفید بود؟'
 helpcenter.chat.window_cancel_confirm: 'آیا شما مایل هستید که می خواهید چت خود را به اتمام برسانید؟'
 helpcenter.account.email_btn_make_primary: ابتدا
-helpcenter.sidebar.news_title: اخبار
 helpcenter.news.recent_title: 'اخبار اخیر'
 helpcenter.emails.news_sub_new: 'اخبار جدید'
 helpcenter.emails.news_sub_new_and_updated: 'اخبار جدید و به روز شده'
@@ -220,12 +219,10 @@ helpcenter.tickets.list_ticket_ref: مرجع
 helpcenter.articles.section_title: 'مرکز آموزش'
 helpcenter.emails.label_view_online: 'مشاهده آنلاین'
 helpcenter.chat.log_view_linked_ticket: 'مشاهده پیام'
-helpcenter.sidebar.satisfied_customers: 'مشتریان راضی'
 helpcenter.flashes.user_updated_profile: 'مشخصات شما به روز شده است.'
 helpcenter.general.rate_page_positive: مفید
 helpcenter.emails.kb_sub_new_and_updated: 'مقالات جدید و به روز شده'
 helpcenter.emails.kb_sub_new: 'مقاله جدید'
-helpcenter.sidebar.top_articles_title: 'مقاله های برتر'
 helpcenter.emails.register_welcome_subject: 'ممنون بابت ثبت نام شما'
 helpcenter.community.btn_vote: 'من موافقت می کنم'
 helpcenter.members.timezone: 'منطقه زمانی'
@@ -268,7 +265,6 @@ helpcenter.chat.message_ended_by_user: 'چت توسط کاربر به پایان
 helpcenter.general.user: کاربر
 helpcenter.chat.message_user_returned: 'کاربر بازگشته است'
 helpcenter.chat.message_user_timeout: 'کاربر به پایان رسیده است'
-helpcenter.sidebar.agents_available: 'کارشناس انلاین'
 helpcenter.tickets.list_status_agent: 'کارشناس ما پاسخ خواهد داد'
 helpcenter.account.reset_password_invalid_desc: 'کد بازنشانی گذرواژه شما نامعتبر است یا منقضی شده است برای بازنشانی رمز عبور خود، لطفا یک کد جدید درخواست کنید.'
 helpcenter.account.set_password_invalid_desc: 'کد رمز شما نامعتبر است یا منقضی شده است برای تنظیم رمز عبور خود، لطفا یک کد جدید را درخواست کنید'

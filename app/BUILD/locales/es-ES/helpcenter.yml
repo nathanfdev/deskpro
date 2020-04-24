@@ -14,7 +14,6 @@ helpcenter.general.agent: Agente
 helpcenter.tickets.list_agent: 'Agente asignado'
 helpcenter.general.agent_bar_agent_home: 'Agente de casa'
 helpcenter.general.agents: Agentes
-helpcenter.sidebar.agents_available: 'Agentes disponibles'
 helpcenter.general.agent_bar_admin_news: 'Ajustes de noticias'
 helpcenter.emails.ticket_no_autoresponse: 'Alerta: Correos electrónicos de confirmación desactivados'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Antes de que podamos aceptar su boleto debemos verificar su dirección de correo electrónico. Por favor revise su bandeja de entrada de correo electrónico. Te hemos enviado un enlace de verificación.'
@@ -24,7 +23,6 @@ helpcenter.general.related_downloads: 'Archivos relacionados'
 helpcenter.emails.kb_sub_new: 'Articulos Nuevos'
 helpcenter.emails.kb_sub_updated: 'Articulos actualizados'
 helpcenter.emails.kb_sub_new_and_updated: 'Articulos nuevos y actualizados'
-helpcenter.sidebar.top_articles_title: 'Artículos principales'
 helpcenter.chat.log_linked_ticket: 'Asignado al boleto'
 helpcenter.tickets.list_subject: Asunto
 helpcenter.tickets.view_btn_add_to_ticket: 'Añadir a la entrada'
@@ -203,7 +201,6 @@ helpcenter.community.module_forbidden: 'No tienes acceso a este módulo.'
 helpcenter.community.rate_forbidden: 'No tienes permitido votar'
 helpcenter.community.form_full_name: Nombre
 helpcenter.tickets.view_label_your_name_placeholder: 'Nombre (requerido)'
-helpcenter.sidebar.news_title: Noticias
 helpcenter.emails.news_sub_updated: 'Noticias actualizadas'
 helpcenter.emails.news_sub_new_and_updated: 'Noticias nuevas y actualizadas'
 helpcenter.news.recent_title: 'Noticias recientes'
@@ -309,7 +306,6 @@ helpcenter.emails.ticket_access_ticket_online: 'Ver y gestionar este ticket:'
 helpcenter.tickets.not_allowed_title: 'Volveremos en seguida'
 helpcenter.account.registration_set_password: 'Ya existe una cuenta con este correo electrónico. Le hemos enviado un correo electrónico que le permitirá configurar su contraseña e iniciar sesión.'
 helpcenter.members.timezone: 'Zona horaria'
-helpcenter.sidebar.satisfied_customers: 'clientes satisfechos'
 helpcenter.account.login_email_placeholder: email@example.es
 helpcenter.general.in: en
 helpcenter.general.tagged_with: 'etiquetado con'

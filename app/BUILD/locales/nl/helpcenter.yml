@@ -32,7 +32,6 @@ helpcenter.chat.form_feedback_rate_satisfaction: 'Bent u tevreden geweest over d
 helpcenter.general.rate_page: 'Beoordeel de kwaliteit van deze pagina'
 helpcenter.tickets.rate_support: 'Beoordeel uw ondersteuning'
 helpcenter.direct_messages.reply_message: Bericht
-helpcenter.sidebar.agents_available: 'Beschikbare medewerkers'
 helpcenter.emails.validate_email: 'Bevestig dat dit e-mailadres van u is door op de onderstaande link te klikken.'
 helpcenter.tickets.view_btn_edit: Bewerken
 helpcenter.tickets.cancel_ticket_edit: 'Bewerking annuleren en toon het ticket nogmaals'
@@ -161,7 +160,6 @@ helpcenter.emails.download_sub_new: 'Nieuwe downloads'
 helpcenter.emails.kb_sub_new_and_updated: 'Nieuwe en bijgewerkte artikelen'
 helpcenter.emails.download_sub_new_and_updated: 'Nieuwe en bijgewerkte downloads'
 helpcenter.tickets.form_changed_notice: 'Nieuwe velden zijn aan het formulier toegevoegd. Controleer deze velden en verstuur het formulier dan nogmaals.'
-helpcenter.sidebar.news_title: Nieuws
 helpcenter.general.agent_bar_agent_news: 'Nieuws beheren'
 helpcenter.general.agent_bar_admin_news: Nieuws-instellingen
 helpcenter.general.prop_date_desc: 'Nieuwste eerst'
@@ -218,7 +216,6 @@ helpcenter.community.form_topic_title: Titel
 helpcenter.chat.log_linked_ticket: 'Toegewezen aan ticket'
 helpcenter.tickets.list_agent: 'Toegewezen medewerker'
 helpcenter.general.show: Tonen
-helpcenter.sidebar.top_articles_title: Topartikelen
 helpcenter.chat.log_chat_time: 'Totale chattijd'
 helpcenter.general.no_search_query: 'Typ een zoekterm in het zoekveld.'
 helpcenter.general.you: U
@@ -327,4 +324,3 @@ helpcenter.tickets.timeline_marked: 'heeft dit ticket gemarkeerd:'
 helpcenter.tickets.timeline_re_opened: 'heeft dit ticket heropend'
 helpcenter.messenger.tickets.form.or: of
 helpcenter.chat.submit_ticket_title: 'of e-mail ons'
-helpcenter.sidebar.satisfied_customers: 'tevreden klanten'

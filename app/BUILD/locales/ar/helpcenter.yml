@@ -69,11 +69,9 @@ helpcenter.general.agent_bar_admin_community: 'اعدادات التغذية ا�
 helpcenter.general.agent_bar_admin_dl: 'اعدادات التنزيلات'
 helpcenter.general.agent_bar_admin_lang: 'اعدادات اللغة'
 helpcenter.general.agent_bar_admin_kb: 'اعدادت قاعدة المعلوات'
-helpcenter.sidebar.top_articles_title: 'اعلى المقالات'
 helpcenter.community.section_title: اقتراحات
 helpcenter.general.no_search_query: 'اكتب  كلمة استعلام في مربع الحوار.'
 helpcenter.general.prop_date_desc: 'الأحدث اولاً'
-helpcenter.sidebar.news_title: الأخبار
 helpcenter.general.prop_rating_desc: 'الأعلى تقييما اولا'
 helpcenter.general.prop_rating_asc: 'الأقل تقييما اولا'
 helpcenter.general.prop_popularity_asc: 'الأقل شيوعا ولا'
@@ -110,7 +108,6 @@ helpcenter.chat.message_unassigned: 'المحادثة غير مسندة لاحد
 helpcenter.tickets.list_ticket_ref: المرجع
 helpcenter.chat.message_user_returned: 'المستخدم قد عاد للمحادثة'
 helpcenter.general.user: المستخدم.
-helpcenter.sidebar.satisfied_customers: 'المستخدمين الراضين'
 helpcenter.general.admin_home: المشرف
 helpcenter.general.admin: المشرف
 helpcenter.general.tagged_with: 'المعنونة بـ'
@@ -297,7 +294,6 @@ helpcenter.emails.kb_sub_new_and_updated: 'مقالات جديدة ومحدثة.
 helpcenter.emails.kb_sub_updated: 'مقالات محدثة'
 helpcenter.general.agent: 'مقدم الخدمة'
 helpcenter.tickets.list_status_agent: 'مقدم الخدمة  سيستجيب لك'
-helpcenter.sidebar.agents_available: 'مقدمو الخدمة  المتواجدين'
 helpcenter.general.agents: 'مقدمو الخدمة.'
 helpcenter.general.related_community: 'ملاحظات مشابهة'
 helpcenter.emails.too_many_emails: 'ملاحظة: لقد قمت بإرسال العديد من الرسائل البريدية'

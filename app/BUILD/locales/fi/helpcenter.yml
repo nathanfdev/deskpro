@@ -135,7 +135,6 @@ helpcenter.emails.ticket_received: 'Tukipyyntösi on vastaanotettu. Edustajamme 
 helpcenter.tickets.new_intro: 'Täytä lomake niin otamme mahdollisimman pian yhteyttä.'
 helpcenter.emails.kb_sub_new: 'Uudet artikkelit'
 helpcenter.emails.ticket_new_participant: 'Uusi henkilö lisätty tukipyyntöösi'
-helpcenter.sidebar.news_title: Uutiset
 helpcenter.emails.email_new_confirm: 'Vahvista sähköpostiosoitteesi'
 helpcenter.emails.password_reset_subject: 'Vaihda salasana'
 helpcenter.emails.password_reset: 'Vaihda salasanasi klikkamalla linkkiä:'

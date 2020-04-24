@@ -42,7 +42,6 @@ helpcenter.tickets.list_agent: 'Hozzárendelt munkatárs'
 helpcenter.general.comments: 'Hozzászólás?'
 helpcenter.emails.comment_approved: 'Hozzászólása publikálásra került.'
 helpcenter.emails.comment_deleted: 'Hozzászólását felhasználtuk tartalmunk fejlesztéséhez.'
-helpcenter.sidebar.news_title: Hírek
 helpcenter.members.timezone: Időzóna
 helpcenter.messenger.chat.transcript_block.yes_button: Igen
 helpcenter.emails.password_agent_reset_subject: 'Jelszavát alaphelyzetbe állítottuk'

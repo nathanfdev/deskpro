@@ -52,7 +52,6 @@ helpcenter.chat.form_create_button_submit: チャットを開始
 helpcenter.chat.error: チャットエラー
 helpcenter.emails.chat_transcript_subject: チャットトランスクリプト
 helpcenter.articles.section_title: ナレッジベース
-helpcenter.sidebar.news_title: ニュース
 helpcenter.general.password: パスワード
 helpcenter.emails.password_reset_subject: パスワードのリセット
 helpcenter.emails.password_reset: 'パスワードをリセットする依頼がありました。リセットをするには、次のリンクをクリックしてください。:'

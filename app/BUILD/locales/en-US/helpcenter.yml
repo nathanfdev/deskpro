@@ -44,7 +44,6 @@ helpcenter.tickets.view_assigned_agent: 'Assigned agent'
 helpcenter.chat.log_linked_ticket: 'Assigned to ticket'
 helpcenter.tickets.timeline_attached: 'Attached with this message:'
 helpcenter.general.attachments: Attachments
-helpcenter.sidebar.agents_available: 'Available Agents'
 helpcenter.approvals.view_awaiting_response: 'Awaiting response'
 helpcenter.general.back: Back
 helpcenter.direct_messages.back_to_messages: 'Back to my messages'
@@ -102,7 +101,6 @@ helpcenter.tickets.new_ticket_button: 'Create a new ticket'
 helpcenter.community.create_topic_full: 'Create topic'
 helpcenter.general.created_by: 'Created by'
 helpcenter.members.activity_created_topic: 'Created topic'
-helpcenter.sidebar.customer_satisfaction: 'Customer Satisfaction'
 helpcenter.duration_short.days: D
 helpcenter.articles.status_draft: Draft
 helpcenter.chat.list_date: Date
@@ -237,7 +235,6 @@ helpcenter.account.new_to_brand: 'New to {brand}?'
 helpcenter.general.prop_date_desc: 'Newest first'
 helpcenter.news.section_title: News
 helpcenter.general.nav_news: News
-helpcenter.sidebar.news_title: News
 helpcenter.forms.label_news_post: 'News Post'
 helpcenter.general.agent_bar_admin_news: 'News Settings'
 helpcenter.news.news_type: 'News type'
@@ -259,7 +256,6 @@ helpcenter.approvals.view_no_response: 'No response'
 helpcenter.chat.window_close: 'No thanks, just close the window'
 helpcenter.approvals.no_ticket_approvals_found: 'No ticket approvals found'
 helpcenter.members.phone_number_none: None
-helpcenter.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{new_ticket_url}">open a ticket</a>.'
 helpcenter.error.404_title: 'Not Found'
 helpcenter.members.not_set: 'Not set'
 helpcenter.community.official_response: 'Official response'
@@ -446,7 +442,6 @@ helpcenter.tickets.thank_you_check_email_desc: 'To finish submitting your ticket
 helpcenter.approvals.view_to_reject: 'To reject'
 helpcenter.emails.password_set: 'To set your password, click on the link below:'
 helpcenter.emails.profile_email_primary_confirm: 'To verify your primary email address, simply click on the following link'
-helpcenter.sidebar.top_articles_title: 'Top Articles'
 helpcenter.chat.log_chat_time: 'Total Chat Time'
 helpcenter.downloads.total_downloads: 'Total downloads'
 helpcenter.chat.transcript_sent: 'Transcript sent to {email}'
@@ -464,9 +459,6 @@ helpcenter.emails.kb_sub_updated: 'Updated Articles'
 helpcenter.emails.community_sub_updated: 'Updated Community Topic'
 helpcenter.emails.download_sub_updated: 'Updated Downloads'
 helpcenter.emails.news_sub_updated: 'Updated News'
-helpcenter.approvals.view_user: User
-helpcenter.chat.list_user: User
-helpcenter.tickets.list_user: User
 helpcenter.chat.form_chat_send_file: 'Upload a File'
 helpcenter.downloads.uploaded_on: Uploaded
 helpcenter.account.section_desc_login_external: 'Use the links below if you have an account with another provider.'
@@ -627,7 +619,6 @@ helpcenter.tickets.timeline_marked: 'marked this ticket:'
 helpcenter.general.or: or
 helpcenter.tickets.timeline_re_opened: 'reopened this ticket'
 helpcenter.duration_short.seconds: s
-helpcenter.sidebar.satisfied_customers: 'satisfied customers'
 helpcenter.general.tagged_with: 'tagged with'
 helpcenter.direct_messages.unblock_user: 'unblock user'
 helpcenter.emails.share_article: '{author_name} wants to share this article with you'
@@ -654,7 +645,6 @@ helpcenter.search.view_all_results: '{count, plural, one {View result} other {Vi
 helpcenter.chat.log_nav_view_chats: '{count, plural, one {View your latest chat log} other {View your # chat logs}}'
 helpcenter.alerts.tickets_to_respond: '{count, plural, one {You have one ticket to respond to.} other {You have # tickets to respond to.}}'
 helpcenter.emails.community_topic_votes: 'Your community topic currently has <strong>{count, plural, one {1 vote} other {# votes}}</strong>. View your community topic online at:'
-helpcenter.sidebar.agents_x_online: '{count, plural, one {1 online} other {# online}}'
 helpcenter.messenger.greeting: 'Get in Touch'
 helpcenter.messenger.loading: Loading
 helpcenter.messenger.powered_by: 'Powered by'

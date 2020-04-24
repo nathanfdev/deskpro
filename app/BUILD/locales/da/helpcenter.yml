@@ -182,7 +182,6 @@ helpcenter.tickets.new_section_title: 'Kontakt os'
 helpcenter.tickets.thank_you_check_email: 'Kontroller din e-mailadresse'
 helpcenter.general.go: Kør
 helpcenter.general.prop_rating_asc: 'Lavest bedømte først'
-helpcenter.sidebar.agents_available: 'Ledige agenter'
 helpcenter.general.related_community: 'Lignende indlæg'
 helpcenter.general.log_in: 'Log ind'
 helpcenter.tickets.please_login_to_reply: 'Log ind for at svare.'
@@ -211,7 +210,6 @@ helpcenter.emails.kb_sub_new_and_updated: 'Nye og opdaterede artikler'
 helpcenter.emails.download_sub_new_and_updated: 'Nye og opdaterede downloads'
 helpcenter.emails.news_sub_new_and_updated: 'Nye og opdaterede nyheder'
 helpcenter.general.prop_date_desc: 'Nyeste først'
-helpcenter.sidebar.news_title: Nyhed
 helpcenter.general.agent_bar_admin_news: 'Nyheds indstillinger'
 helpcenter.general.nav_guides: Omviser
 helpcenter.tickets.switched_department_rerender: 'Opbygningen af denne formular kan have ændret sig. Gennemse venligst formularen og indsend den igen.'
@@ -280,7 +278,6 @@ helpcenter.tickets.view_reply: 'Tilføj et svar'
 helpcenter.tickets.view_btn_add_to_ticket: 'Tilføj til sagen'
 helpcenter.general.btn_subscribe: Tilmeld
 helpcenter.community.form_topic_title: Titel
-helpcenter.sidebar.top_articles_title: 'Top artikler'
 helpcenter.chat.log_chat_time: 'Total chat tid'
 helpcenter.account.set_password_request_desc: 'Udfyld denne formular og vi vil sende dig et link til at skifte din adgangskode.'
 helpcenter.account.reset_password_request_desc: 'Udfyld feltet og få tilsendt et link til nulstilling af password på e-mail.'
@@ -318,7 +315,6 @@ helpcenter.tickets.timeline_re_opened: 'genåbnede denne sag'
 helpcenter.general.in: i
 helpcenter.tickets.timeline_marked: 'markeret denne sag:'
 helpcenter.general.tagged_with: 'mærket med'
-helpcenter.sidebar.satisfied_customers: 'tilfredse kunder'
 helpcenter.chat.window_open_new: 'Åbn denne chat i et nyt vindue'
 helpcenter.chat.window_resume_button: 'Åbn din chat'
 helpcenter.general.prop_date_asc: 'Ældste først'

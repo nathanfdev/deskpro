@@ -4,7 +4,6 @@ helpcenter.emails.password_set: 'Aby zmienić hasło, kliknij link poniżej:'
 helpcenter.general.admin: Administrator
 helpcenter.general.agents: Agenci
 helpcenter.account.change_password_btn: 'Aktualizuj hasło'
-helpcenter.sidebar.news_title: Aktualności
 helpcenter.general.btn_cancel: Anuluj
 helpcenter.tickets.cancel_ticket_edit: 'Anuluj edytowanie i pokaż mi zgłoszenie ponownie'
 helpcenter.articles.section_title: 'Baza Wiedzy'
@@ -34,7 +33,6 @@ helpcenter.general.add_comment: 'Dodaj komentarz'
 helpcenter.tickets.view_reply: 'Dodaj odpowiedź'
 helpcenter.general.admin_home: 'Dom Administratora'
 helpcenter.general.agent_bar_agent_home: 'Dom Agenta'
-helpcenter.sidebar.agents_available: 'Dostępni Agenci'
 helpcenter.tickets.timeline_attached: 'Dołączone z ta wiadomością:'
 helpcenter.general.print: Drukuj
 helpcenter.messenger.tickets.form.department: 'Dział zgłoszenia'
@@ -88,7 +86,6 @@ helpcenter.emails.too_many_emails: 'NOTKA: Wysłano za dużo wiadomości email'
 helpcenter.news.none: 'Na razie brak aktualizacji'
 helpcenter.downloads.none: 'Na razie brak elementów do pobrania'
 helpcenter.general.prop_popularity_desc: 'Najbardziej popularne pierwsze'
-helpcenter.sidebar.top_articles_title: 'Najlepsze artykuły'
 helpcenter.general.prop_comments_asc: 'Najmniej komentarzy pierwsze'
 helpcenter.general.prop_views_asc: 'Najmniej oględzin pierwsze'
 helpcenter.general.prop_popularity_asc: 'Najmniej popularne pierwsze'
@@ -330,5 +327,4 @@ helpcenter.general.tagged_with: 'oznaczone z'
 helpcenter.tickets.timeline_marked: 'oznaczył to zgłoszenie:'
 helpcenter.tickets.timeline_re_opened: 'ponownie otworzył to zgłoszenie'
 helpcenter.general.in: w
-helpcenter.sidebar.satisfied_customers: 'zadowolonych klientów'
 helpcenter.chat.message_uploading: Ładowanie...

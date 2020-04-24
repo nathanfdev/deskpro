@@ -2,14 +2,12 @@ helpcenter.emails.too_many_emails: 'AVERTISSEMENT : Vous avez envoyé trop d''em
 helpcenter.emails.email_ticket_reminder: 'Action requise: votre billet n''a pas encore été soumis.'
 helpcenter.general.agent_bar_agent_news: Actualités
 helpcenter.general.agent_bar_admin_news: Actualités
-helpcenter.sidebar.news_title: Actualités
 helpcenter.emails.news_sub_updated: 'Actualités mises à jour'
 helpcenter.emails.news_sub_new_and_updated: 'Actualités nouvelles et mises à jour'
 helpcenter.general.related_news: 'Actualités similaires'
 helpcenter.general.admin: Administration
 helpcenter.tickets.view_label_your_email_placeholder: 'Adresse email: (requis)'
 helpcenter.tickets.list_agent: 'Affecté à l''agent'
-helpcenter.sidebar.agents_available: 'Agents disponibles'
 helpcenter.tickets.view_btn_add_to_ticket: 'Ajouter au ticket'
 helpcenter.general.add_comment: 'Ajouter un commentaire'
 helpcenter.account.email_btn_usersource_set: 'Ajouter une adresse email'
@@ -219,7 +217,6 @@ helpcenter.messenger.tickets.form.chooseAFile: 'Sélectionner un fichier'
 helpcenter.chat.window_end_chat: 'Terminer le Chat'
 helpcenter.tickets.mark_unresolved: 'Ticket de réouverture'
 helpcenter.community.form_topic_title: Titre
-helpcenter.sidebar.top_articles_title: 'Top articles'
 helpcenter.general.everything: Tout
 helpcenter.chat.message_uploading: 'Téléchargement en cours...'
 helpcenter.general.agent_bar_agent_dl: Téléchargements
@@ -319,7 +316,6 @@ helpcenter.flashes.news_unsubscribe_everything: 'Vous vous êtes désabonné de 
 helpcenter.flashes.article_unsubscribe_everything: 'Vous vous êtes désabonné de toutes les notifications de la base de connaissances.'
 helpcenter.flashes.community_unsubscribe_everything: 'Vous vous êtes désabonné de toutes les notifications de sujets'
 helpcenter.flashes.download_unsubscribe_everything: 'Vous êtes désabonné de toutes les notifications de téléchargement'
-helpcenter.sidebar.satisfied_customers: 'clients satisfaits'
 helpcenter.general.in: dans
 helpcenter.general.tagged_with: 'marqué avec'
 helpcenter.tickets.timeline_marked: 'marqué ce billet:'

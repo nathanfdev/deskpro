@@ -191,7 +191,6 @@ helpcenter.emails.news_sub_new_and_updated: 新的和已更新的新闻
 helpcenter.emails.download_sub_new_and_updated: 新的已更新的下载
 helpcenter.emails.kb_sub_new: 新的文章
 helpcenter.emails.news_sub_new: 新的新闻
-helpcenter.sidebar.news_title: 新闻
 helpcenter.general.agent_bar_admin_news: 新闻设置
 helpcenter.error.403_title: 无访问权限
 helpcenter.chat.list_date: 日期
@@ -242,13 +241,11 @@ helpcenter.general.add_comment: 添加一条评论
 helpcenter.tickets.view_btn_add_to_ticket: 添加到工单
 helpcenter.tickets.view_reply: 添加回复
 helpcenter.account.email_btn_usersource_set: 添加电邮地址
-helpcenter.sidebar.satisfied_customers: 满意的客户
 helpcenter.chat.window_offline_button: 点击这里与我们联系
 helpcenter.tickets.view_scroll_reply: 点击这里向下滚动到表格。
 helpcenter.chat.window_start_button: 点击这里和我们进行会话
 helpcenter.account.reset_password_click_here: 点击这里获取密码重设代码
 helpcenter.account.set_password_click_here: 点击这里设置密码
-helpcenter.sidebar.top_articles_title: 热门文章
 helpcenter.general.user: 用户
 helpcenter.chat.message_user_returned: 用户已回来
 helpcenter.chat.message_user_timeout: 用户超时
@@ -261,7 +258,6 @@ helpcenter.general.related_news: 相关的消息
 helpcenter.general.related_pages: 相关的页面
 helpcenter.articles.section_title: 知识库
 helpcenter.general.agent_bar_admin_kb: 知识库设置
-helpcenter.sidebar.agents_available: 空闲的代理
 helpcenter.general.agent_bar_agent_dl: 管理下载
 helpcenter.general.agent_bar_agent_community: 管理反馈
 helpcenter.general.admin: 管理员

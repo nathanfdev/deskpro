@@ -163,7 +163,6 @@ helpcenter.general.prop_comments_asc: 'Най-малко коментари пъ
 helpcenter.general.prop_popularity_asc: 'Най-малко популярните първо'
 helpcenter.general.prop_comments_desc: 'Най-ммного коментари първо'
 helpcenter.general.prop_popularity_desc: 'Най-популярните първо'
-helpcenter.sidebar.agents_available: 'Налични агенти'
 helpcenter.account.email_btn_make_primary: 'Направи основен'
 helpcenter.emails.ticket_flood: 'Наскоро сте изпратили имейл до нашия helpdesk. Виждаме, че сте изпратили много съобщения за кратък период от време, които най-вероятно са били автоматични.<br /><br />За да се предпазим от затворени кръгове от автоматични отговори нашия helpdesk няма да ви изпраща повече имейли с автоматични известия.'
 helpcenter.general.agent_bar_admin_kb: 'Настройки на базата знания'
@@ -186,7 +185,6 @@ helpcenter.emails.kb_sub_new_and_updated: 'Нови и обновени стат
 helpcenter.general.agent_bar_admin_news: 'Нови настройки'
 helpcenter.emails.download_sub_new: 'Нови сваляния'
 helpcenter.emails.kb_sub_new: 'Нови статии'
-helpcenter.sidebar.news_title: Новини
 helpcenter.direct_messages.new_message: 'Ново съобщение'
 helpcenter.emails.password_reset_subject: 'Нулирай парола'
 helpcenter.chat.log_no_department: 'Няма отдел'
@@ -293,7 +291,6 @@ helpcenter.tickets.list_subject: Тема
 helpcenter.flashes.ticket_created: 'Тикетът ви беше изпратен. Благодарим ви!'
 helpcenter.flashes.ticket_resolved: 'Тикетът ви е маркиран като разрешен. Благодарим ви.'
 helpcenter.general.comments_pending_validation: 'Този коментар се разглежда. Ще се визуализира скоро.'
-helpcenter.sidebar.top_articles_title: 'Топ статии'
 helpcenter.flashes.community_login: 'Трябва да влезете за да гласувате'
 helpcenter.tickets.need_login_title: 'Трябва да влезете за да отворите тикет'
 helpcenter.tickets.list_status_user: 'Трябва да отговорите'
@@ -335,7 +332,6 @@ helpcenter.chat.message_chatting_with: 'Чатите с'
 helpcenter.flashes.ticket_participant_already_error: 'Човекът който се опитвате да добавите като участник вече е участник в този тикет.'
 helpcenter.tickets.view_unassigned_more: 'Ще бъде назначен агент'
 helpcenter.general.in: в
-helpcenter.sidebar.satisfied_customers: 'доволни клиенти'
 helpcenter.messenger.tickets.form.or: или
 helpcenter.general.tagged_with: 'маркиран с'
 helpcenter.tickets.timeline_marked: 'маркиран този тикет:'

@@ -38,7 +38,6 @@ helpcenter.general.prop_views_desc: 'Nejvíc shlédnutí nejdřív'
 helpcenter.community.module_forbidden: 'Nemáte přístup k tomuto modulu'
 helpcenter.community.rate_forbidden: 'Nemůžete hlasovat'
 helpcenter.emails.ticket_rate_neutral: 'Nijak extra'
-helpcenter.sidebar.news_title: Novinky
 helpcenter.emails.download_sub_new_and_updated: 'Nová a upravená stažení'
 helpcenter.emails.ticket_new_participant: 'Nová osoba byla přidána do vašeho tiketu'
 helpcenter.emails.download_sub_new: 'Nová stažení'

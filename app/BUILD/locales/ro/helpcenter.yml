@@ -87,7 +87,6 @@ helpcenter.tickets.list_status_resolved: Rezolvat
 helpcenter.forms.label_save: Salveaza
 helpcenter.chat.message_user_timeout: 'Sesiunea userului a expirat'
 helpcenter.general.go: Start
-helpcenter.sidebar.news_title: Stiri
 helpcenter.general.related_news: 'Stiri cu referire la'
 helpcenter.tickets.list_subject: Subiect
 helpcenter.community.btn_vote: 'Sunt de acord'

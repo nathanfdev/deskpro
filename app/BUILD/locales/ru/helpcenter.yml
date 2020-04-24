@@ -10,7 +10,6 @@ helpcenter.general.agent: Агент
 helpcenter.chat.log_unassigned: 'Агент не выбран'
 helpcenter.messenger.chat_save_ticket_thanks: 'Агент свяжется с Вами так скоро, как это возможно'
 helpcenter.general.agents: Агенты
-helpcenter.sidebar.agents_available: 'Агенты онлайн'
 helpcenter.general.admin: Админ
 helpcenter.chat.email: 'Адрес Вашей электронной почты'
 helpcenter.account.registration_set_password: 'Аккаунт, привязанный к такому почтовому адресу уже существует. Мы отправили Вам письмо, которое поможет Вам обновить пароль и зайти на аккаунт.'
@@ -153,7 +152,6 @@ helpcenter.tickets.rate_question: 'Как бы Вы оценили помощь,
 helpcenter.account.set_password_invalid_desc: 'Код Вашего пароля истек или является недействительным. Пожалуйста, получите новый код для того, чтобы установить пароль.'
 helpcenter.general.comments: Комментарии
 helpcenter.chat.submit_ticket_title: 'Лучше отправьте нам электронное письмо'
-helpcenter.sidebar.top_articles_title: 'Лучшие статьи'
 helpcenter.account.set_password_sent_desc: 'Мы отправили Вам письмо с инструкцией, как установить пароль.'
 helpcenter.account.reset_password_sent_to: 'Мы отправили письмо'
 helpcenter.messenger.tickets_form_saving: 'Мы отправляем Ваш запрос. Пожалуйста, подождите'
@@ -203,7 +201,6 @@ helpcenter.chat.log_no_department: 'Нет раздела'
 helpcenter.tickets.no_participants: 'Нет участников'
 helpcenter.chat.window_close: 'Нет, спасибо, просто закрыть данное окно'
 helpcenter.tickets.rate_negative: Неудовлетворительно
-helpcenter.sidebar.news_title: Новости
 helpcenter.emails.news_sub_new_and_updated: Новости
 helpcenter.general.related_news: 'Новости по теме'
 helpcenter.emails.download_sub_new: 'Новые загрузки'
@@ -375,7 +372,6 @@ helpcenter.members.language: Язык
 helpcenter.general.agent_bar_admin_lang: 'Языковые настройки'
 helpcenter.general.in: в
 helpcenter.general.form_choose_file: 'выбрать файл'
-helpcenter.sidebar.satisfied_customers: 'довольные клиенты'
 helpcenter.messenger.tickets_form_or: или
 helpcenter.messenger.tickets_form_required: обязательно
 helpcenter.general.tagged_with: 'отмечен как'

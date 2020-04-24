@@ -204,7 +204,6 @@ helpcenter.emails.kb_sub_new_and_updated: 'Nya och uppdaterade artiklar'
 helpcenter.emails.download_sub_new_and_updated: 'Nya och uppdaterade nedladdningar'
 helpcenter.emails.news_sub_new_and_updated: 'Nya och uppdaterade nyheter'
 helpcenter.general.prop_date_desc: 'Nyast först'
-helpcenter.sidebar.news_title: Nyheter
 helpcenter.general.agent_bar_admin_news: Nyhetsinställningar
 helpcenter.emails.ratelimit_submit_online: 'Om det här är ett misstag och du måste kontakta oss omedelbart så kan du kringgå e-postfiltret genom att registrera ett ärende online:'
 helpcenter.general.impersonation_mode: Personifieringsläge
@@ -270,9 +269,7 @@ helpcenter.general.tags: Taggar
 helpcenter.members.timezone: Tidszon
 helpcenter.tickets.list_agent: 'Tilldelad agent'
 helpcenter.chat.log_linked_ticket: 'Tilldelad till ärendet'
-helpcenter.sidebar.agents_available: 'Tillgängliga agenter'
 helpcenter.community.form_topic_title: Titel
-helpcenter.sidebar.top_articles_title: Toppartiklar
 helpcenter.chat.log_chat_time: 'Total chattid'
 helpcenter.emails.community_topic_new_disapproved: 'Tyvärr, din community topic har blivit nekad'
 helpcenter.error.403_desc: 'Tyvärr, du har inte behörighet att se denna sida.'
@@ -318,7 +315,6 @@ helpcenter.tickets.list_status_agent: 'Vår agent kommet att svara'
 helpcenter.messenger.tickets.form.or: eller
 helpcenter.general.in: i
 helpcenter.tickets.timeline_marked: 'markerade ärendet som:'
-helpcenter.sidebar.satisfied_customers: 'nöjda kunder'
 helpcenter.general.tagged_with: 'taggade med'
 helpcenter.general.prop_date_asc: 'Äldsta först'
 helpcenter.tickets.list_subject: Ämne

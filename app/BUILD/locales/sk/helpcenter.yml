@@ -37,7 +37,6 @@ helpcenter.tickets.view_unassigned: Nepridelené
 helpcenter.chat.log_unassigned: 'Nepridelené žiadnemu operátorovi'
 helpcenter.messenger.chat.save_ticket.button_no: Nie
 helpcenter.chat.window_close: 'Nie ďakujem, len uzavri okno'
-helpcenter.sidebar.news_title: Novinky
 helpcenter.emails.ticket_new_participant: 'Nová osoba bola pridaná do Vášho tiketu'
 helpcenter.emails.kb_sub_new_and_updated: 'Nové a aktualizované články'
 helpcenter.emails.kb_sub_new: 'Nové články'

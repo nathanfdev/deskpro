@@ -7,7 +7,6 @@ helpcenter.general.agent: Agente
 helpcenter.tickets.list_agent: 'Agente Assegnato'
 helpcenter.general.agent_bar_agent_home: 'Agente Home'
 helpcenter.general.agents: Agenti
-helpcenter.sidebar.agents_available: 'Agenti Disponibili'
 helpcenter.account.change_password_btn: 'Aggiorna Password'
 helpcenter.general.updated: Aggiornato
 helpcenter.account.email_btn_usersource_set: 'Aggiungi Indirizzo Email'
@@ -47,7 +46,6 @@ helpcenter.chat.ended_no_agent: 'Ci spiace ma non abbiamo personale disponibile 
 helpcenter.chat.window_start_button: 'Clicca qui per chattare con noi'
 helpcenter.account.submit_saved_form_go: 'Clicca qui per re- inviare automaticamente il modulo .'
 helpcenter.emails.profile_email_link_validate: 'Clicca sul link seguente per convalidare il tuo indirizzo email'
-helpcenter.sidebar.satisfied_customers: 'Clienti Soddisfatti'
 helpcenter.tickets.rate_question: 'Come valuteresti il supporto che hai ricevuto?'
 helpcenter.general.comments: Commenti
 helpcenter.account.set_password_request_desc: 'Compila questo modulo e ti sarà mandata una email con il link per impostare la tua password'
@@ -188,7 +186,6 @@ helpcenter.flashes.ticket_replied: 'La tua risposta è stata inviata. Grazie!'
 helpcenter.chat.log_title: 'Le tue chat'
 helpcenter.members.language: Lingua
 helpcenter.direct_messages.reply_message: Messaggio
-helpcenter.sidebar.top_articles_title: 'Migliori Articoli'
 helpcenter.general.impersonation_mode: 'Modalità di rappresentazione'
 helpcenter.tickets.view_btn_edit: Modifica
 helpcenter.tickets.view_btn_edit_full: 'Modifica questo Ticket'
@@ -213,7 +210,6 @@ helpcenter.news.recent_title: 'Notizie Recenti'
 helpcenter.emails.news_sub_updated: 'Notizie aggiornate'
 helpcenter.emails.news_sub_new: 'Notizie nuove'
 helpcenter.emails.news_sub_new_and_updated: 'Notizie nuove e aggiornate'
-helpcenter.sidebar.news_title: Novità
 helpcenter.general.related_news: 'Novità Correlate'
 helpcenter.tickets.form_changed_notice: 'Nuovi campi sono stati aggiunti al modulo. Per favore riguarda questi campi e poi reinvia il modulo.'
 helpcenter.tickets.list_subject: Oggetto

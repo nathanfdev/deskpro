@@ -92,7 +92,6 @@ helpcenter.downloads.none: 'Δεν υπάρχουν λήψεις ακόμη'
 helpcenter.news.none: 'Δεν υπάρχουν νέα'
 helpcenter.tickets.new_ticket_button: 'Δημιουργήστε ένα νέο ticket'
 helpcenter.articles.published: Δημοσιευμένα
-helpcenter.sidebar.agents_available: 'Διαθέσιμοι εκπρόσωποι Support'
 helpcenter.general.agent_bar_agent_community: 'Διαχείριση community topic'
 helpcenter.general.agent_bar_agent_news: 'Διαχείριση Ενημερώσεων'
 helpcenter.general.agent_bar_agent_dl: 'Διαχείριση Λήψεων'
@@ -167,7 +166,6 @@ helpcenter.messenger.tickets.form.category: Κατηγορία
 helpcenter.chat.window_close_only: 'Κλείσιμο παραθύρου'
 helpcenter.tickets.resolve_my_ticket_btn: 'Κλείσιμο του ticket μου'
 helpcenter.general.share: 'Κοινή χρήση'
-helpcenter.sidebar.top_articles_title: 'Κορυφαία άρθρα'
 helpcenter.profile.your_password: 'Κωδικός πρόσβασης'
 helpcenter.general.password: 'Κωδικός πρόσβασης'
 helpcenter.account.reset_password_sent_desc: 'Λάβαμε το αίτημα επαναφοράς κωδικού πρόσβασης για το παρακάτω email. Εάν αυτό το email ανήκει σε καταχωρισμένο λογαριασμό, έχουμε στείλει ένα μήνυμα με ένα link επαναφοράς κωδικού πρόσβασης στο κύριο email του λογαριασμού. Ελέγξτε τα εισερχόμενά σας για περισσότερες οδηγίες.'
@@ -186,7 +184,6 @@ helpcenter.tickets.not_allowed_desc: 'Μας συγχωρείτε, οι εκπρ
 helpcenter.chat.form_feedback_rate_satisfaction: 'Μείνατε ικανοποιημένος/η από αυτήν την επικοινωνία;'
 helpcenter.chat.message_chatting_with: 'Μιλάτε στο chat με τον/ την'
 helpcenter.news.view_as_agent: 'Μπορείτε να δείτε αυτήν τη σελίδα επειδή είστε διαχειριστής. Οι απλοί χρήστες δεν μπορούν να δουν αυτήν τη σελίδα.'
-helpcenter.sidebar.news_title: Νέα
 helpcenter.emails.news_sub_new: Νέα
 helpcenter.emails.kb_sub_new: 'Νέα άρθρα'
 helpcenter.emails.news_sub_new_and_updated: 'Νέα και Ενημερωμένα Νέα'
@@ -323,7 +320,6 @@ helpcenter.account.section_desc_login_external: 'Χρησιμοποιήστε τ
 helpcenter.error.403_title: 'Χωρίς Πρόσβαση'
 helpcenter.tickets.timeline_re_opened: 'άνοιξε εκ νέου αυτό το ticket'
 helpcenter.messenger.tickets.form.or: ή
-helpcenter.sidebar.satisfied_customers: 'ικανοποιημένοι πελάτες'
 helpcenter.general.in: μέσα
 helpcenter.general.tagged_with: 'με ετικέτα'
 helpcenter.tickets.timeline_marked: 'σημείωσε αυτό το ticket:'
