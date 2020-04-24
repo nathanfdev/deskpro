@@ -13,79 +13,79 @@
 	[{{ message.date_created|date('time') }}] *
 	{% if message.metadata.phrase_id %}
 		{% if message.is_html %}
-				{% if metadata.phrase_id = 'message_user-joined' %}
+				{% if message.metadata.phrase_id = 'message_user-joined' %}
 					{{ phrase('helpcenter.messenger.chat_message_user_joined', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_user-left' %}
+				{% elseif message.metadata.phrase_id = 'message_user-left' %}
 					{{ phrase('helpcenter.messenger.chat_message_user_left', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_agent-timeout' %}
+				{% elseif message.metadata.phrase_id = 'message_agent-timeout' %}
 					{{ phrase('helpcenter.messenger.chat_message_agent_timeout', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_assigned' %}
+				{% elseif message.metadata.phrase_id = 'message_assigned' %}
 					{{ phrase('helpcenter.messenger.message_assigned', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_chatting-with' %}
+				{% elseif message.metadata.phrase_id = 'message_chatting-with' %}
 					{{ phrase('helpcenter.messenger.message_chatting_with', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_ended' %}
+				{% elseif message.metadata.phrase_id = 'message_ended' %}
 					{{ phrase('helpcenter.messenger.message_ended', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_ended-by' %}
+				{% elseif message.metadata.phrase_id = 'message_ended-by' %}
 					{{ phrase('helpcenter.messenger.message_ended_by', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_ended-by-user' %}
+				{% elseif message.metadata.phrase_id = 'message_ended-by-user' %}
 					{{ phrase('helpcenter.messenger.message_ended_by_user', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_finding-agent' %}
+				{% elseif message.metadata.phrase_id = 'message_finding-agent' %}
 					{{ phrase('helpcenter.messenger.message_finding_agent', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_long-wait' %}
+				{% elseif message.metadata.phrase_id = 'message_long-wait' %}
 					{{ phrase('helpcenter.messenger.message_long_wait', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_set-department' %}
+				{% elseif message.metadata.phrase_id = 'message_set-department' %}
 					{{ phrase('helpcenter.messenger.message_set_department', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_started' %}
+				{% elseif message.metadata.phrase_id = 'message_started' %}
 					{{ phrase('helpcenter.messenger.message_started', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_unassigned' %}
+				{% elseif message.metadata.phrase_id = 'message_unassigned' %}
 					{{ phrase('helpcenter.messenger.message_unassigned', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_uploading' %}
+				{% elseif message.metadata.phrase_id = 'message_uploading' %}
 					{{ phrase('helpcenter.messenger.message_uploading', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_user-returned' %}
+				{% elseif message.metadata.phrase_id = 'message_user-returned' %}
 					{{ phrase('helpcenter.messenger.message_user_returned', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_user-timeout' %}
+				{% elseif message.metadata.phrase_id = 'message_user-timeout' %}
 					{{ phrase('helpcenter.messenger.message_user_timeout', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_wait' %}
+				{% elseif message.metadata.phrase_id = 'message_wait' %}
 					{{ phrase('helpcenter.messenger.message_wait', message.metadata) }}
-				{% elseif metadata.phrase_id = 'message_wait-timeout' %}
+				{% elseif message.metadata.phrase_id = 'message_wait-timeout' %}
 					{{ phrase('helpcenter.messenger.message_wait_timeout', message.metadata) }}
 				{% endif %}
 			{% else %}
-				{% if metadata.phrase_id = 'message_user-joined' %}
+				{% if message.metadata.phrase_id = 'message_user-joined' %}
 					{{ phrase('helpcenter.messenger.chat_message_user_joined', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_user-left' %}
+				{% elseif message.metadata.phrase_id = 'message_user-left' %}
 					{{ phrase('helpcenter.messenger.chat_message_user_left', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_agent-timeout' %}
+				{% elseif message.metadata.phrase_id = 'message_agent-timeout' %}
 					{{ phrase('helpcenter.messenger.chat_message_agent_timeout', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_assigned' %}
+				{% elseif message.metadata.phrase_id = 'message_assigned' %}
 					{{ phrase('helpcenter.messenger.message_assigned', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_chatting-with' %}
+				{% elseif message.metadata.phrase_id = 'message_chatting-with' %}
 					{{ phrase('helpcenter.messenger.message_chatting_with', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_ended' %}
+				{% elseif message.metadata.phrase_id = 'message_ended' %}
 					{{ phrase('helpcenter.messenger.message_ended', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_ended-by' %}
+				{% elseif message.metadata.phrase_id = 'message_ended-by' %}
 					{{ phrase('helpcenter.messenger.message_ended_by', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_ended-by-user' %}
+				{% elseif message.metadata.phrase_id = 'message_ended-by-user' %}
 					{{ phrase('helpcenter.messenger.message_ended_by_user', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_finding-agent' %}
+				{% elseif message.metadata.phrase_id = 'message_finding-agent' %}
 					{{ phrase('helpcenter.messenger.message_finding_agent', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_long-wait' %}
+				{% elseif message.metadata.phrase_id = 'message_long-wait' %}
 					{{ phrase('helpcenter.messenger.message_long_wait', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_set-department' %}
+				{% elseif message.metadata.phrase_id = 'message_set-department' %}
 					{{ phrase('helpcenter.messenger.message_set_department', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_started' %}
+				{% elseif message.metadata.phrase_id = 'message_started' %}
 					{{ phrase('helpcenter.messenger.message_started', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_unassigned' %}
+				{% elseif message.metadata.phrase_id = 'message_unassigned' %}
 					{{ phrase('helpcenter.messenger.message_unassigned', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_uploading' %}
+				{% elseif message.metadata.phrase_id = 'message_uploading' %}
 					{{ phrase('helpcenter.messenger.message_uploading', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_user-returned' %}
+				{% elseif message.metadata.phrase_id = 'message_user-returned' %}
 					{{ phrase('helpcenter.messenger.message_user_returned', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_user-timeout' %}
+				{% elseif message.metadata.phrase_id = 'message_user-timeout' %}
 					{{ phrase('helpcenter.messenger.message_user_timeout', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_wait' %}
+				{% elseif message.metadata.phrase_id = 'message_wait' %}
 					{{ phrase('helpcenter.messenger.message_wait', message.metadata)|e }}
-				{% elseif metadata.phrase_id = 'message_wait-timeout' %}
+				{% elseif message.metadata.phrase_id = 'message_wait-timeout' %}
 					{{ phrase('helpcenter.messenger.message_wait_timeout', message.metadata)|e }}
 				{% endif %}
 			{% endif %}
