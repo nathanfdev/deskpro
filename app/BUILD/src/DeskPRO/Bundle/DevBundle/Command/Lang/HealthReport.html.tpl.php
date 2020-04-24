@@ -21,6 +21,8 @@
                 <?php if (!empty($badKeys)): ?><li data-body-id="bad_phrase_ids"><a>Bad Phrase IDs</a></li><?php endif ?>
                 <?php if (!empty($badStrings)): ?><li data-body-id="bad_strings"><a>Bad Strings</a></li><?php endif ?>
                 <?php if (!empty($similarPhrases)): ?><li data-body-id="similar_strings"><a>Similar Strings</a></li><?php endif ?>
+                <?php if (!empty($usages)): ?><li data-body-id="usages"><a>Usage Links</a></li><?php endif ?>
+                <?php if (!empty($usagesNotFound)): ?><li data-body-id="unknown_usages"><a>Unknown Usage</a></li><?php endif ?>
                 <li data-body-id="help"><a>Help</a></li>
             </ul>
         </div>
@@ -37,7 +39,7 @@
                     <tbody>
                         <?php foreach ($badKeys as $keyId => $probs): ?>
                             <tr>
-                                <td><?php echo $keyId ?></td>
+                                <td><code><?php echo $keyId ?></code></td>
                                 <td><?php echo implode(', ', $probs) ?></td>
                             </tr>
                         <?php endforeach; ?>
@@ -59,7 +61,7 @@
                     <tbody>
                     <?php foreach ($badStrings as $keyId => $desc): ?>
                         <tr>
-                            <td><?php echo $keyId ?></td>
+                            <td><code><?php echo $keyId ?></code></td>
                             <td><?php echo implode(', ', $desc['problems']) ?></td>
                             <td><?php echo htmlspecialchars($desc['text']) ?></td>
                         </tr>
@@ -75,13 +77,64 @@
                     <table class="table">
                         <?php foreach ($group as $keyId => $text): ?>
                             <tr>
-                                <td width="350"><?php echo $keyId ?></td>
+                                <td width="350"><code><?php echo $keyId ?></code></td>
                                 <td><?php echo htmlspecialchars($text) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </table>
                     <hr />
                 <?php endforeach; ?>
+            </section>
+        <?php endif ?>
+
+        <?php if (!empty($baseUrl) && !empty($usages)): ?>
+            <section class="tab-body-section" id="usages">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>PhraseID</th>
+                        <th>String &amp; Uses</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($usages as $keyId => $tpls): ?>
+                        <tr>
+                            <td><code><?php echo $keyId ?></code></td>
+                            <td>
+                                <article class="message is-marginless">
+                                    <div class="message-body is-size-7">
+                                        <?php echo $phrases[$keyId] ?? '' ?>
+                                    </div>
+                                </article>
+                                <?php foreach ($tpls as $t): ?>
+                                    <a href="<?php echo $baseUrl ?><?php echo $t ?>" target="_blank"><?php echo $t ?></a>
+                                <?php endforeach; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </section>
+        <?php endif ?>
+
+        <?php if (!empty($usagesNotFound)): ?>
+            <section class="tab-body-section" id="unknown_usages">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>PhraseID</th>
+                        <th>String</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($usagesNotFound as $keyId => $string): ?>
+                        <tr>
+                            <td><code><?php echo $keyId ?></code></td>
+                            <td><?php echo htmlspecialchars($string) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
             </section>
         <?php endif ?>
 

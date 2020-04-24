@@ -2,14 +2,27 @@
 
 namespace DeskPRO\Bundle\DevBundle\Command\Lang;
 
+use DeskPRO\Bundle\DevBundle\Language\PhrasesFinder;
+use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\MapUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class HealthReportCommand extends ContainerAwareCommand
 {
+    static $knownPhraseIdExceptions = [
+        'helpcenter.duration_short.days' => ['uppercase-only'],
+        'helpcenter.duration_short.months' => ['uppercase-only'],
+        'helpcenter.duration_short.years' => ['uppercase-only'],
+        'helpcenter.general.cc' => ['uppercase-only'],
+        'helpcenter.general.eula' => ['uppercase-only'],
+        'helpcenter.tickets.view_btn_add_cc' => ['uppercase-only'],
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -17,6 +30,7 @@ class HealthReportCommand extends ContainerAwareCommand
     {
         $this->setName('dpdev:lang:health-report')
             ->setDescription('Generates a report file with phrase usage')
+            ->addOption('with-usage', null, InputOption::VALUE_OPTIONAL, 'Include usage report. Optionally with a base URL to link to files (e.g. github).')
             ->addArgument('file', InputArgument::REQUIRED, 'The file to scan. E.g. helpcenter.yml');
     }
 
@@ -99,6 +113,15 @@ class HealthReportCommand extends ContainerAwareCommand
             }
         }
 
+        $badStrings = MapUtils::filter($badStrings, function($keyId, $info) {
+            if (!isset(self::$knownPhraseIdExceptions[$keyId])) {
+                return true;
+            }
+
+            $probs = ListUtils::filterOutValues($info['problems'], self::$knownPhraseIdExceptions[$keyId]);
+            return !empty($probs);
+        });
+
         //-----------------------------------------
         // Similar strings
         //-----------------------------------------
@@ -132,6 +155,39 @@ class HealthReportCommand extends ContainerAwareCommand
                 }
                 $similarPhrases[] = $s;
             }
+        }
+
+        //-----------------------------------------
+        // Usage
+        //-----------------------------------------
+
+        $usages = null;
+        $usagesNotFound = null;
+        if (($baseUrl = $input->getOption('with-usage')) || $input->hasOption('with-usage')) {
+            if (!is_string($baseUrl)) {
+                $baseUrl = 'https://github.com/deskpro/deskpro/tree/develop';
+            }
+
+            $baseUrl = rtrim($baseUrl, '/') ?: '';
+
+            $env = $this->getContainer()->get('deskpro.low_dp_env');
+
+            $pfinder = new PhrasesFinder($env->getAppDir(), array_keys($phrases), 0, ['twig', 'php']);
+            $usageInfo = $pfinder->getUseInfo(true);
+
+            $usages = MapUtils::map($usageInfo['phrase_uses'], function($keyId, $tpls) {
+                return [$keyId, ListUtils::map($tpls, function($tpl) {
+                    return '/app/BUILD'.$tpl;
+                })];
+            });
+            $usagesNotFound = MapUtils::map($usageInfo['phrase_counts'], function ($keyId, $count) use ($phrases) {
+                if ($count === 0) {
+                    return [$keyId, $phrases[$keyId]];
+                } else {
+                    return [$keyId, null];
+                }
+            });
+            $usagesNotFound = MapUtils::filterOutFalsey($usagesNotFound);
         }
 
         //-----------------------------------------
