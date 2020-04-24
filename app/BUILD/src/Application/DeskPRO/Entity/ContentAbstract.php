@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -667,10 +665,6 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
 
         $this->_authors = [];
 
-        if ($this->person) {
-            $this->_authors[$this->person['id']] = $this->person;
-        }
-
         $ent   = $this->getEntityName().'Revision';
         $field = Strings::camelCaseToUnderscore((str_replace('DeskPRO:', '', $this->getEntityName())));
 
@@ -685,9 +679,14 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
         )->setParameter(1, $this)->execute();
 
         foreach ($revs as $r) {
-            if ($r->person) {
+            if ($r->person && !isset($this->_authors[$r->person->id])) {
                 $this->_authors[$r->person->id] = $r->person;
             }
+        }
+        $this->_authors = array_reverse($this->_authors);
+
+        if ($this->person and !isset($this->_authors[$this->person['id']])) {
+            array_unshift($this->_authors, $this->person);
         }
 
         return $this->_authors;

@@ -181,13 +181,13 @@
 {# Main page body #}
 {# ------------------------------------------ #}
 {% block page_body %}
-    {% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
+    {% if article.status != 'published' and article.status != 'archived' and app.user is not null and app.user.is_agent %}
         <div class="alert alert-icon alert-danger" role="alert">
             <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.articles.view_as_agent') }}
         </div>
     {% endif %}
 
-    {% if article.end_action == 'unpublish' and app.user.is_agent %}
+    {% if article.end_action == 'unpublish' and app.user is not null and app.user.is_agent %}
         <div class="alert alert-icon alert-danger" role="alert">
             <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.flashes.article_unpublish', {unpublish_date: article.date_end}) }}
         </div>
