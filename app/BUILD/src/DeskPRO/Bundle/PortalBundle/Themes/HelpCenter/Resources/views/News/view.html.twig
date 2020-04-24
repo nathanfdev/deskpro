@@ -26,7 +26,7 @@
               <div class="dp-po-post-info">
                 <ul class="dp-po-post-info-list">
                   <li class="dp-po-post-info-item">
-                    {{ phrase('helpcenter.general.published_by', {person: post.last_author.name}) | raw }}
+                    {{ phrase('helpcenter.general.published_by', {person_name: post.last_author.name}) | raw }}
                   </li>
                   <li class="dp-po-post-info-item">
                     {{ phrase('helpcenter.news.news_type') }}: <b>{{ post.category }}</b>
