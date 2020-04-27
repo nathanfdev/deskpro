@@ -19,7 +19,7 @@ class ResizeFormListener extends BaseListener
     /**
      * @var array
      */
-    protected $newEntriesMap;
+    protected $newEntriesMap = [];
 
     public function __construct($type, array $options, $allowAdd, $allowDelete, $deleteEmpty, EntityManager $em)
     {
@@ -116,11 +116,14 @@ class ResizeFormListener extends BaseListener
     {
         $form = $event->getForm();
 
-        foreach ($this->newEntriesMap as $name) {
-            if ($form[$name]->getData() instanceof DomainObject) {
-                $this->em->persist($form[$name]->getData());
+        if ($this->newEntriesMap) {
+            foreach ($this->newEntriesMap as $name) {
+                if ($form[$name]->getData() instanceof DomainObject) {
+                    $this->em->persist($form[$name]->getData());
+                }
             }
         }
+
 
         $this->newEntriesMap = [];
     }
