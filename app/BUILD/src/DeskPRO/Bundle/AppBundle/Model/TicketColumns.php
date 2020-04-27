@@ -39,6 +39,10 @@ class TicketColumns implements \IteratorAggregate, \Countable
      */
     public function addColumn($id, $label, $type, $widgetType)
     {
+        if (!$label) {
+            $label = $id;
+        }
+
         $this->appendColumn(new TicketColumn($id, $label, $type, $widgetType));
     }
 

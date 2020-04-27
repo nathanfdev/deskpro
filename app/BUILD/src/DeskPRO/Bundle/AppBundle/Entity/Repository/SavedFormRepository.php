@@ -16,6 +16,9 @@ class SavedFormRepository extends EntityRepository
     public function getByExternalCode($external_code)
     {
         $parsed = SavedForm::parseExternalCode($external_code);
+        if (!$parsed) {
+            return;
+        }
 
         return $this->findOneBy(
             [
