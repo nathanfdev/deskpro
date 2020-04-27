@@ -3,11 +3,10 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
+use DeskPRO\Bundle\AppBundle\Form\Type\EntityWithMaxLimitType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -24,6 +23,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class BaseMassActionsType extends AbstractType
 {
+    const MAX_ENTITIES = 200;
+
     /**
      * @var FormFactory
      */
@@ -56,15 +57,16 @@ class BaseMassActionsType extends AbstractType
         ]);
 
         $builder
-            ->add('ids', EntityType::class, [
-                'class'       => $subType->getConfig()->getOption('data_class'),
-                'multiple'    => true,
-                'required'    => false,
+            ->add('ids', EntityWithMaxLimitType::class, [
+                'class'        => $subType->getConfig()->getOption('data_class'),
+                'required'     => false,
+                'max_entities' => self::MAX_ENTITIES,
             ])
             ->add('date_created', DateRangeType::class, [
                 'class'         => $subType->getConfig()->getOption('data_class'),
                 'date_property' => 'date_created',
                 'required'      => false,
+                'max_entities'  => self::MAX_ENTITIES,
             ])
             ->add('params', $options['params_class'], [
                 'required' => true,
@@ -85,6 +87,9 @@ class BaseMassActionsType extends AbstractType
             ->setRequired(['params_class', 'person'])
             ->setAllowedTypes('params_class', 'string')
             ->setAllowedTypes('person', Person::class)
+            ->setDefaults([
+                'validation_groups' => false,
+            ])
         ;
     }
 
@@ -126,11 +131,6 @@ class BaseMassActionsType extends AbstractType
         if (is_object($data) && $data->getId()) {
             return;
         }
-
-        // clear unmapped errors
-        FormValidatorChecker::clearFormErrors($form, false);
-        FormValidatorChecker::clearFormErrors($form->get('ids'), true);
-        FormValidatorChecker::clearFormErrors($form->get('date_created'), true);
 
         $hasModifyActions = false;
         $hasDeleteActions = false;
@@ -191,16 +191,18 @@ class BaseMassActionsType extends AbstractType
                 }
             }
 
-            $violations = $this->validator->validate($keys, new Assert\Count(['min' => 1]));
+            if (!$form->get($groupName)->getErrors()->count()) {
+                $violations = $this->validator->validate($keys, new Assert\Count(['min' => 1]));
 
-            foreach ($violations as $violation) {
-                $form->get($groupName)->addError(new FormError(
-                    $violation->getMessage(),
-                    $violation->getMessageTemplate(),
-                    $violation->getParameters(),
-                    $violation->getPlural(),
-                    $violation
-                ));
+                foreach ($violations as $violation) {
+                    $form->get($groupName)->addError(new FormError(
+                        $violation->getMessage(),
+                        $violation->getMessageTemplate(),
+                        $violation->getParameters(),
+                        $violation->getPlural(),
+                        $violation
+                    ));
+                }
             }
         };
 

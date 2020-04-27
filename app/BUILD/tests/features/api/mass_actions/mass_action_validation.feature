@@ -67,8 +67,23 @@ Feature: Mass action validation
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.ids" should not exist
-    And the JSON node "errors.fields.params.fields.set_category.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.ids.fields.ids_0.fields.set_category.errors[0].code" should be equal to "required"
+
+  Scenario: I try to unset required field via mass action
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "date_created": {
+    "min": "2020-03-04 12:00:00",
+    "max": "2020-03-05 12:00:00"
+  },
+  "params":{
+     "set_category": null
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.ids.fields.ids_0.fields.set_category.errors[0].code" should be equal to "required"
 
   Scenario: I post mass actions request with empty ids
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
