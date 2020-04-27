@@ -1,8 +1,8 @@
 <div class="dp-po-section db-po-post-rating">
     <a href="{{ portal_path(item, 'vote_up') }}" class="btn btn-icon btn-outline-success"> <i class="dp-po-icon far fa-check"></i>
-        {{ phrase('helpcenter.general.rate-page-positive') }} </a>
+        {{ phrase('helpcenter.general.rate_page_positive') }} </a>
     <a href="{{ portal_path(item, 'vote_down') }}" class="btn btn-icon btn-outline-danger"> <i class="dp-po-icon far fa-times"></i>
-        {{ phrase('helpcenter.general.rate-page-negative') }} </a>
+        {{ phrase('helpcenter.general.rate_page_negative') }} </a>
     {% if rating_counts['total'] > 0 %}
         <p class="db-po-post-rating-count">{{ phrase('helpcenter.general.rating_x_of_y_found_helpful', { vote_up: rating_counts['positive'], vote_count: rating_counts['total'] }) }}</p>
     {% endif %}

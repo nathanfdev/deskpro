@@ -70,6 +70,7 @@ class PhrasesFinder
                 ->in($this->app_root.'/src/Application/AgentBundle/Resources/views')
                 ->in($this->app_root.'/src/Application/DeskPRO/Resources/views')
                 ->in($this->app_root.'/src/Application/EmailBundle/Resources/views')
+                ->in($this->app_root.'/src/DeskPRO/Bundle/SendmailBundle/Resources/views')
                 ->in($this->app_root.'/src/Application/ReportsInterfaceBundle/Resources/views')
                 ->in($this->app_root.'/src/DeskPRO/Bundle/AppBundle/Resources/views')
                 ->in($this->app_root.'/src/DeskPRO/Bundle/PortalBundle/Resources/views')
@@ -98,9 +99,10 @@ class PhrasesFinder
     }
 
     /**
-     * @return array
+     * @param bool $withLineNumber
+     * @return array[]
      */
-    public function getUseInfo()
+    public function getUseInfo($withLineNumber = false)
     {
         $files = $this->getTplList();
 
@@ -126,11 +128,18 @@ class PhrasesFinder
                 if (!isset($phrase_use_counts[$id])) {
                     $phrase_use_counts[$id] = 0;
                 }
-                if (strpos($content, $id) !== false) {
+                if (($pos = strpos($content, $id)) !== false) {
                     if (!isset($uses[$id])) {
                         $uses[$id] = [];
                     }
-                    $uses[$id][] = str_replace($this->app_root, '', $f->getRealPath());
+
+                    if ($withLineNumber) {
+                        $line = substr_count($content, "\n", 0, $pos) + 1;
+                        $uses[$id][] = str_replace($this->app_root, '', $f->getRealPath()) . '#L' . $line;
+                    } else {
+                        $uses[$id][] = str_replace($this->app_root, '', $f->getRealPath());
+                    }
+
                     ++$phrase_use_counts[$id];
                 }
             }

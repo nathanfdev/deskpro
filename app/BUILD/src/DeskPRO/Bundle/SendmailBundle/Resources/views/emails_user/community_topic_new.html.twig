@@ -9,12 +9,12 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    {{ phrase('helpcenter.emails.community-topic_thank-you', {'title':topic.title}) }}
+    {{ phrase('helpcenter.emails.community_topic_thank_you', {'title':topic.title}) }}
 
     <br /><br />
 
     {% if topic.status == 'hidden' and not topic.is_reviewed %}
-    {{ phrase('helpcenter.emails.community-topic_agent-validation') }}
+    {{ phrase('helpcenter.emails.community_topic_agent_validation') }}
     {% endif %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}

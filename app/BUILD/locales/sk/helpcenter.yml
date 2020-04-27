@@ -1,0 +1,129 @@
+helpcenter.tickets.rate_question: 'Ako by ste hodnotili pomoc, ktorú ste obdržal?'
+helpcenter.emails.kb_sub_updated: 'Aktualizované články'
+helpcenter.emails.community_topic_agent_validation: 'Berte na vedomie, že vaša spätná väzba nebude verejne zobrazená na našej stránke pokiaľ ju jeden z našich operátorov neprezrie.'
+helpcenter.chat.form_feedback_rate_satisfaction: 'Boli ste s konverzáciou spokojný?'
+helpcenter.emails.ticket_rate_neutral: 'Bolo to OK'
+helpcenter.tickets.rate_positive: 'Bolo to dobré'
+helpcenter.chat.message_unassigned: 'Chat nepriradený'
+helpcenter.chat.message_ended_by_user: 'Chat ukončený užívateľom'
+helpcenter.chat.error: 'Chyba konverzácie'
+helpcenter.articles.section_title: 'Databáza znalostí'
+helpcenter.tickets.list_date_created: 'Dátum vytvorený'
+helpcenter.chat.submit_ticket_title: 'E-mailujte nás radšej'
+helpcenter.general.password: Heslo
+helpcenter.chat.message_finding_agent: 'Hľadá sa operátor'
+helpcenter.chat.message_wait: 'Hľadáme pre Vás operátora'
+helpcenter.chat.log_chat_id: 'ID konverzácie'
+helpcenter.members.language: Jazyk
+helpcenter.chat.ended_no_agent: 'Je nám ľúto, ale momentálne nemáme nikoho voľného aby prevzal Vašu konverzáciu. Prosíme kontaktujte nás e-mailom alebo skúste neskôr.'
+helpcenter.emails.profile_email_link_validate: 'Jednoducho kliknite na nasledovný odkaz pre overenie Vašej e-mailovej adresy'
+helpcenter.messenger.tickets.form.category: Kategórie
+helpcenter.chat.window_offline_button: 'Kliknite sem a kontaktujte nás'
+helpcenter.chat.window_start_button: 'Kliknite sem pre konverzáciu s nami'
+helpcenter.general.comments: 'Komentáre?'
+helpcenter.tickets.new_section_title: 'Kontaktujte nás'
+helpcenter.chat.message_chatting_with: 'Konverzujete s'
+helpcenter.messenger.chat.ended: 'Konverzácia ukončená'
+helpcenter.chat.message_started: 'Konverzácia zahájená'
+helpcenter.community.form_full_name: Meno
+helpcenter.error.permission_denied_title: 'Na danú akciu nemáte oprávnenie'
+helpcenter.community.form_topic_title: Nadpis
+helpcenter.chat.form_chat_send_file: 'Nahrať súbor'
+helpcenter.chat.message_uploading: 'Nahráva sa ...'
+helpcenter.tickets.rate_negative: 'Nebolo to dobré'
+helpcenter.emails.ticket_flood: 'Nedávno ste zaslali e-mail na náš helpdesk. Náš automatizovaný systém zistil, že ste zaslali viacero správ v krátkom časovom intervale, ktoré boli pravdepodobne automatizované.<br /><br />Aby sme sa ubránili cyklu z automatických odpovedí náš helpdesk Vám už viacero automatických odpovedí nezašle.'
+helpcenter.error.404_title: Nenájdené
+helpcenter.tickets.view_unassigned: Nepridelené
+helpcenter.chat.log_unassigned: 'Nepridelené žiadnemu operátorovi'
+helpcenter.messenger.chat.save_ticket.button_no: Nie
+helpcenter.chat.window_close: 'Nie ďakujem, len uzavri okno'
+helpcenter.emails.ticket_new_participant: 'Nová osoba bola pridaná do Vášho tiketu'
+helpcenter.emails.kb_sub_new_and_updated: 'Nové a aktualizované články'
+helpcenter.emails.kb_sub_new: 'Nové články'
+helpcenter.messenger.tickets.form.department: Oddelenie
+helpcenter.emails.chat_transcript_subject: 'Odpis konverzácie'
+helpcenter.chat.form_feedback_rate_time: 'Odpovedali sme Vám dostatočne rýchlo?'
+helpcenter.tickets.rate_support: 'Ohodnoťte Vašu pomoc'
+helpcenter.general.agent: Operátor
+helpcenter.emails.password_agent_reset_subject: 'Operátor Vám resetol heslo'
+helpcenter.emails.password_agent_reset: 'Operátor resetol heslo Vášho účtu. Môžete sa prihlásiť s nasledovnými údajmi'
+helpcenter.emails.ticket_no_autoresponse: 'Opozornenie: E-mailové potvrdenia vypnuté'
+helpcenter.chat.window_resume_button: 'Otvoriť konverzáciu'
+helpcenter.chat.window_open_new: 'Otvoriť túto koverzáciu v novom okne'
+helpcenter.general.related_community: 'Podobná spätná väzba'
+helpcenter.general.related_news: 'Podobné novinky'
+helpcenter.general.rate_page_positive: Pomocné
+helpcenter.emails.ticket_rate_question: 'Pomohla Vámtáto správa?'
+helpcenter.chat.form_chat_button_submit: Poslať
+helpcenter.messenger.tickets.form.submit: Potvrdiť
+helpcenter.emails.email_new_confirm: 'Potvrďte Vašu e-mailovú adresu'
+helpcenter.emails.label_view_online: 'Pozri online'
+helpcenter.emails.password_reset: 'Požiadali ste o resetnutie hesla. Pre resetnutie Vašeho hesla, kliknite na odkaz nižšie:'
+helpcenter.tickets.list_subject: Predmet
+helpcenter.general.nav_downloads_desc: 'Prehľadávať naše stiahnutia'
+helpcenter.chat.window_upload_drag: 'Presuňte súbor sem pre nahranie do konverzácie'
+helpcenter.general.add_comment: 'Pridať komentár'
+helpcenter.tickets.list_agent: 'Pridelený agent'
+helpcenter.messenger.tickets.form.priority: Priorita
+helpcenter.general.attachments: Pripojenia
+helpcenter.tickets.new_intro: 'Prosím vyplňte tento formulár a jeden z našich opertátorov vás bude kontaktovať e-mailom akonáhle bude vedieť.'
+helpcenter.general.related_downloads: 'Príbuzné súbory'
+helpcenter.account.login_register_btn: Registrovať
+helpcenter.emails.password_reset_subject: 'Reset hesla'
+helpcenter.direct_messages.reply_message: Správa
+helpcenter.community.section_title: 'Spätná väzba'
+helpcenter.chat.window_cancel_confirm: 'Ste si istý, že chcete ukončiť konverzáciu?'
+helpcenter.general.downloads_type: Stiahnutia
+helpcenter.downloads.download: Stiahnuť
+helpcenter.guides.download_pdf: 'Stiahnuť PDF'
+helpcenter.community.btn_vote: Súhlasím
+helpcenter.chat.window_end_chat: 'Ukončiť konverzáciu'
+helpcenter.general.show: Ukáž
+helpcenter.forms.label_save: Uložiť
+helpcenter.tickets.view_btn_edit: Upraviť
+helpcenter.chat.message_user_timeout: 'Užívateľ sa odpojil'
+helpcenter.chat.message_user_returned: 'Užívateľ sa vrátil'
+helpcenter.chat.email: 'Vaša e-mailová adresa'
+helpcenter.emails.reject_resolved: 'Vaša odpoveď nebola prijatá, pretože Váš tiket bol už označený ako vyriešený. Naši operátori túto správu nebudú čítať ani na ňu odpovedať.'
+helpcenter.emails.community_topic_new_approved: 'Vaša spätná väzba bol prijatá'
+helpcenter.emails.community_topic_new_disapproved: 'Vaša spätná väzba bola odmietnutá'
+helpcenter.chat.log_title: 'Vaše konverzácie'
+helpcenter.chat.name: 'Vaše meno'
+helpcenter.messenger.blocks.tickets.title: 'Vaše tikety'
+helpcenter.articles.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
+helpcenter.news.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
+helpcenter.general.you: Vy
+helpcenter.chat.form_create_department: 'Vyberte si oddelenie'
+helpcenter.tickets.list_status_resolved: Vyriešené
+helpcenter.tickets.resolve_my_ticket_btn: 'Vyriešiť môj tiket'
+helpcenter.emails.comment_deleted: 'Váš komentár bol použitý na vylepšenie stránky.'
+helpcenter.emails.comment_deleted_subject: 'Váš komentár bol prečítaný našimi operátormi'
+helpcenter.emails.comment_approved_subject: 'Váš komentár bol schválený'
+helpcenter.emails.comment_approved: 'Váš komentár bol uverejnený.'
+helpcenter.emails.ticket_received: 'Váš tiket bol prijatý. Jeden z našich operátorov Vám čoskoro odpovie.'
+helpcenter.profile.account_disabled_message: 'Váš účet je momentálne deaktivovaný. Nebudete schopný komunikovať s tiketmi alebo v konverzáciách.'
+helpcenter.general.everything: Všetko
+helpcenter.emails.community_topic_approved: 'Zasielame Vám e-mail, aby sme Vás upovedomili, že Vaša spätná väzba bola prijatá a je verejne zobrazená na našej stránke.'
+helpcenter.emails.community_topic_disapproved: 'Zasielame Vám e-mail, aby sme Vás upovedomili, že Vaša spätná väzba bola zamietnutá a nebude zobrazená na našej stránke.'
+helpcenter.chat.form_feedback_transcript_email: 'Zaslať odpis konverzácie'
+helpcenter.chat.form_feedback_button_submit: 'Zaslať spätnú väzbu a zatvoriť okno'
+helpcenter.chat.window_close_only: 'Zavrieť okno'
+helpcenter.chat.form_create_title: 'Začat konverzáciu s operátorom'
+helpcenter.chat.form_create_button_submit: 'Začať konverzáciu'
+helpcenter.chat.submit_ticket_button: 'Zašlite nám e-mail'
+helpcenter.chat.form_feedback_title: 'Zašlite nám spätnú väzbu'
+helpcenter.account.email_btn_resend_validation: 'Znovu odoslať overovací e-mail'
+helpcenter.emails.ticket_access_ticket_online: 'Zobraziť a upraviť tento tiket online:'
+helpcenter.general.btn_cancel: Zrušiť
+helpcenter.messenger.chat.transcript_block.yes_button: Áno
+helpcenter.general.go: Ísť
+helpcenter.members.timezone: 'Časové pásmo'
+helpcenter.tickets.guest_thank_you_title: Ďakujeme
+helpcenter.emails.chat_transcript: 'Ďakujeme za Vašu konverzáciu s nami. Tu je Váš odpis konverzácie.'
+helpcenter.emails.ticket_reply_confirm: 'Ďakujeme za Vašu odpoveď. Jeden z našich operátorov Vám čoskoro odpovie.'
+helpcenter.emails.register_welcome_subject: 'Ďakujeme za Vašu registráci'
+helpcenter.emails.comment_confirmation: 'Ďakujeme za Váš komentár'
+helpcenter.emails.community_new: 'Ďakujeme za podanie Vašej spätnej väzby'
+helpcenter.emails.ticket_validate: 'Ďakujeme, že ste nás kontaktovali.<br /><br />Prv, než Vašu správu naši operátori spracujú si musíte overiť Vašu e-mailovú adresu.'
+helpcenter.chat.log_no_department: 'Žiadne oddelenie'
+helpcenter.chat.message_wait_timeout: 'Žiadny operátor sa nenašiel'

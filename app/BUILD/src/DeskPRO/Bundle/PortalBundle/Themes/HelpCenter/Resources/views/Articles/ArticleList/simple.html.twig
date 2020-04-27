@@ -13,8 +13,8 @@
 
 {% if show_category_link and pager|length > 0 %}
 <div class="dp-po-viewall">
-    <a class="dp-po-viewall-link" href="{{ category ? portal_path(category) : path('portal_kb') }}" aria-label="{{ phrase('helpcenter.articles.view-x-articles', {count: pager|length}) }} on {{ object_phrase(category) }}">
-        {{ phrase('helpcenter.articles.view-x-articles', {count: pager|length}) }}<i class="dp-po-icon far fa-angle-right"></i>
+    <a class="dp-po-viewall-link" href="{{ category ? portal_path(category) : path('portal_kb') }}" aria-label="{{ phrase('helpcenter.articles.view_x_articles', {count: pager|length}) }} on {{ object_phrase(category) }}">
+        {{ phrase('helpcenter.articles.view_x_articles', {count: pager|length}) }}<i class="dp-po-icon far fa-angle-right"></i>
     </a>
 </div>
 {% endif %}

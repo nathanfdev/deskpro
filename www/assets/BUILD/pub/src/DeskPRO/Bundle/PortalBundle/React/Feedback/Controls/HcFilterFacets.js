@@ -70,7 +70,7 @@ export class HcFilterFacets extends React.Component {
     const { activities } = this.props.filter.available;
 
     const phrases = {
-      myActivity: portalPhrases.get('helpcenter.community.my-activity'),
+      myActivity: portalPhrases.get('helpcenter.community.my_activity'),
     };
 
     return (
@@ -104,7 +104,7 @@ export class HcFilterFacets extends React.Component {
     };
 
     const phrases = {
-      resetAllFilters: portalPhrases.get('helpcenter.community.reset-all-filters'),
+      resetAllFilters: portalPhrases.get('helpcenter.community.reset_all_filters'),
       status:          portalPhrases.get('helpcenter.community.status'),
     };
 

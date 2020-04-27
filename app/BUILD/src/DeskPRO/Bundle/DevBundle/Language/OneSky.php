@@ -6,10 +6,6 @@ use Onesky\Api\Client as OneSkyClient;
 
 class OneSky extends OneSkyClient
 {
-    const PROJECT_PORTAL = 'portal';
-    const PROJECT_AGENT  = 'agent';
-    const PROJECT_OTHER  = 'other';
-
     /**
      * Array of name => projectId.
      *

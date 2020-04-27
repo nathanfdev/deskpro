@@ -18,7 +18,7 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	{% if new_articles %}
-		<h1>{{ phrase('helpcenter.emails.kb-new-articles', {count: new_articles|length}) }}</h1>
+		<h1>{{ phrase('helpcenter.emails.kb_new_articles', {count: new_articles|length}) }}</h1>
 		<ul>
 			{% for article in new_articles %}
 				<li><a href="{{ url_full('portal_kb_view', {slug: article.slug}) }}">{{ article.title }}</a></li>
@@ -27,7 +27,7 @@
 	{% endif %}
 
 	{% if updated_articles %}
-		<h1>{{ phrase('helpcenter.emails.kb-updated-articles', {count: updated_articles|length}) }}</h1>
+		<h1>{{ phrase('helpcenter.emails.kb_updated_articles', {count: updated_articles|length}) }}</h1>
 		<ul>
 			{% for article in updated_articles %}
 				<li><a href="{{ url_full('portal_kb_view', {slug: article.slug}) }}">{{ article.title }}</a></li>
@@ -36,7 +36,7 @@
 	{% endif %}
 
 	<div class="dp-hr">&nbsp;</div>
-	{{ phrase('helpcenter.emails.kb-explain', {deskpro_url: portal_home }) }}
+	{{ phrase('helpcenter.emails.kb_explain', {deskpro_url: portal_home }) }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

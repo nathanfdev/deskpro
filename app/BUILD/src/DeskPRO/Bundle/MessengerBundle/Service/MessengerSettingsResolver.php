@@ -38,10 +38,8 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_ENABLED              = 'messenger.chat.enabled';
     const CHAT_DEFAULT_DEPARTMENT   = 'messenger.chat.department';
     const CHAT_USERGROUPS           = 'messenger.chat.usergroups';
-    const CHAT_PROMPT               = 'messenger.chat.prompt';
     const CHAT_TIMEOUT              = 'messenger.chat.timeout';
     const CHAT_NO_ANSWER_BEHAVIOR   = 'messenger.chat.no_answer';
-    const CHAT_BUSY_MESSAGE         = 'messenger.chat.busy';
 
     const CHAT_OPTIONS_SHOW_PHOTOS = 'messenger.chat.options.show_photos';
 
@@ -57,7 +55,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const PRE_CHAT_FORM_DEPARTMENT           = 'messenger.chat.pre_chat_form.department';
     const PRE_CHAT_FORM_FIELDS               = 'messenger.chat.pre_chat_form.fields';
     const PRE_CHAT_FORM_FORM_MESSAGE_ENABLED = 'messenger.chat.pre_chat_form.form_message_enabled';
-    const PRE_CHAT_FORM_FORM_MESSAGE         = 'messenger.chat.pre_chat_form.form_message';
 
     const PROACTIVE_AUTOSTART = 'messenger.proactive.autostart';
     const PROACTIVE_TIMEOUT   = 'messenger.proactive.autostart_timeout';
@@ -124,18 +121,21 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getEditablePhrases()
     {
         return [
-            'blocks.ticket.title',
-            'blocks.ticket.description',
-            'blocks.ticket.button',
-            'blocks.start-chat.title',
-            'blocks.start-chat.description',
-            'blocks.start-chat.button',
-            'proactive.greeting',
-            'proactive.title',
-            'proactive.description',
-            'proactive.button',
-            'proactive.placeholder',
-            'greeting',
+            'helpcenter.messenger.chat_no_agent_online',
+            'helpcenter.messenger.chat_pre_chat_form_form_message',
+            'helpcenter.messenger.chat_prompt',
+            'helpcenter.messenger.blocks_ticket_title',
+            'helpcenter.messenger.blocks_ticket_description',
+            'helpcenter.messenger.blocks_ticket_button',
+            'helpcenter.messenger.blocks_start_chat_title',
+            'helpcenter.messenger.blocks_start_chat_description',
+            'helpcenter.messenger.blocks_start_chat_button',
+            'helpcenter.messenger.proactive_greeting',
+            'helpcenter.messenger.proactive_title',
+            'helpcenter.messenger.proactive_description',
+            'helpcenter.messenger.proactive_button',
+            'helpcenter.messenger.proactive_placeholder',
+            'helpcenter.messenger.greeting',
         ];
     }
 
@@ -163,8 +163,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
                 $translations[$snakeCasePhrase] = [];
             }
 
-            $phraseName        = sprintf('helpcenter.messenger.%s', $phrase);
-            $defaultPhraseText = $translator->phrase($phraseName, [], $defaultLanguageId);
+            $defaultPhraseText = $translator->phrase($phrase, [], $defaultLanguageId);
 
             foreach ($languages as $language) {
                 $translation  = new MessengerTranslation();
@@ -173,7 +172,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
                 if ($language->getId() === $defaultLanguageId) {
                     $fallbackText = $defaultPhraseText;
                 } else {
-                    $translatorPhrase = $translator->phrase($phraseName, [], $language);
+                    $translatorPhrase = $translator->phrase($phrase, [], $language);
                     if ($translatorPhrase !== $defaultPhraseText) {
                         $fallbackText = $translatorPhrase;
                     }
@@ -235,12 +234,10 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setEnabled($this->getSettings(self::CHAT_ENABLED, $brand, $mChat->isEnabled()))
             ->setDepartment($this->getSettings(self::CHAT_DEFAULT_DEPARTMENT, $brand, $this->getDefaultDepartment('chat')))
             ->setUsergroups(unserialize($this->getSettings(self::CHAT_USERGROUPS, $brand, serialize($mChat->getUsergroups()))))
-            ->setPrompt($this->getSettings(self::CHAT_PROMPT, $brand, $mChat->getPrompt()))
             ->setOptions($this->getMessengerChatOptions($brand))
             ->setPreChatForm($this->getPreChatForm($brand))
             ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
             ->setNoAnswerBehavior($this->getSettings(self::CHAT_NO_ANSWER_BEHAVIOR, $brand, $mChat->getNoAnswerBehavior()))
-            ->setBusyMessage($this->getSettings(self::CHAT_BUSY_MESSAGE, $brand, $mChat->getBusyMessage()))
             ->setTicketDefaults($this->getMessengerChatTicketDefaults($brand));
     }
 
@@ -283,7 +280,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setIsEmailRequired($this->getSettings(self::PRE_CHAT_FORM_EMAIL_REQUIRED, $brand, $mPreChatForm->isEmailRequired()))
             ->setIsDepartmentSelectable($this->getSettings(self::PRE_CHAT_FORM_DEPARTMENT, $brand, $mPreChatForm->isDepartmentSelectable()))
             ->setFormMessageEnabled($this->getSettings(self::PRE_CHAT_FORM_FORM_MESSAGE_ENABLED, $brand, $mPreChatForm->isFormMessageEnabled()))
-            ->setFormMessage($this->getSettings(self::PRE_CHAT_FORM_FORM_MESSAGE, $brand, $mPreChatForm->getFormMessage()))
             ->setFields($fields);
     }
 

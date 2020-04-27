@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('helpcenter.emails.community_topic_new-disapproved') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.community_topic_new_disapproved') }}</dp:subject>
 
 <html>
 <head>
@@ -9,16 +9,16 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	{{ phrase('helpcenter.emails.community-topic_thank-you', {'title':topic.title}) }}
+	{{ phrase('helpcenter.emails.community_topic_thank_you', {'title':topic.title}) }}
 
 	<br /><br />
 
 	{% if reason %}
-		{{ phrase('helpcenter.emails.community-topic_disapproved-reason', {name: agent.display_name_user}) }}
+		{{ phrase('helpcenter.emails.community_topic_disapproved_reason', {name: agent.display_name_user}) }}
 		<br /><br />
 		{{ reason }}
 	{% else %}
-		{{ phrase('helpcenter.emails.community-topic_disapproved') }}
+		{{ phrase('helpcenter.emails.community_topic_disapproved') }}
 	{% endif %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}

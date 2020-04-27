@@ -1,0 +1,147 @@
+helpcenter.tickets.list_subject: Aihe
+helpcenter.community.form_topic_title: Aihe
+helpcenter.members.timezone: Aikavyöhyke
+helpcenter.chat.form_create_button_submit: 'Aloita keskustelu'
+helpcenter.chat.form_create_title: 'Aloita keskustelu tukihenkilön kanssa'
+helpcenter.tickets.rate_support: 'Arvioi tuki'
+helpcenter.general.agent: Asiantuntija
+helpcenter.chat.log_unassigned: 'Asiantuntijaa ei ole vielä valittu'
+helpcenter.chat.window_start_button: 'Avaa chat keskustelu kanssamme tästä'
+helpcenter.chat.window_resume_button: 'Avaa keskustelu'
+helpcenter.chat.window_open_new: 'Avaa keskustelu uuteen ikkunaan'
+helpcenter.account.login_captcha_failed: 'CAPTCHAn kaikki merkit eivät olleet oikein. Yritä uudelleen.'
+helpcenter.chat.message_wait_timeout: 'Edustajaa ei löytynyt'
+helpcenter.emails.comment_deleted_subject: 'Edustajamme on lukenut kommenttisi'
+helpcenter.messenger.chat.save_ticket.button_no: Ei
+helpcenter.chat.window_close: 'Ei kiitos, sulje ikkuna'
+helpcenter.chat.log_no_department: 'Ei lajia'
+helpcenter.chat.message_unassigned: 'Ei liitettyä kesksutelua'
+helpcenter.error.404_title: 'Ei löytynyt.'
+helpcenter.messenger.tickets.form.priority: Ensisijainen
+helpcenter.chat.message_finding_agent: 'Etsimme asiantuntijaa'
+helpcenter.chat.message_wait: 'Etsimme sinulle asiantuntijan'
+helpcenter.emails.community_topic_agent_validation: 'Huomioithan että palautteesi näkyy julkisena vasta kun se on esiluettu.'
+helpcenter.general.rate_page_positive: Hyödyllinen
+helpcenter.emails.community_topic_approved: 'Ilmoitamme sähköpostitse kun palautteesi on luettu ja näkyvissä sivuillamme.'
+helpcenter.general.everything: Kaikki
+helpcenter.messenger.tickets.form.category: Kategoria
+helpcenter.emails.label_view_online: 'Katso online'
+helpcenter.chat.message_chatting_with: Keskustelet
+helpcenter.chat.log_chat_id: 'Keskustelu ID'
+helpcenter.chat.message_started: 'Keskustelu aloitettu'
+helpcenter.emails.chat_transcript_subject: 'Keskustelu kopio'
+helpcenter.messenger.chat.ended: 'Keskustelu päätetty'
+helpcenter.chat.error: 'Keskustelu virhe'
+helpcenter.chat.log_title: Keskustelusi
+helpcenter.members.language: Kieli
+helpcenter.tickets.guest_thank_you_title: Kiitos
+helpcenter.emails.chat_transcript: 'Kiitos keskustelusta kanssamme. Tässä kopio keskustelustamme.'
+helpcenter.emails.comment_confirmation: 'Kiitos kommentistasi'
+helpcenter.emails.community_new: 'Kiitos lähettämästäsi palautteesta'
+helpcenter.emails.register_welcome_subject: 'Kiitos rekisteröitymisestä'
+helpcenter.emails.ticket_reply_confirm: 'Kiitos vastauksestasi. Edustajamme ottaa sinuun pian yhteyttä.'
+helpcenter.emails.ticket_validate: 'Kiitos yhteydenotosta.<br /><br />ennen kuin edustajamme lukee tai vastaa viestiisi, pitää sähköpostiosoitteesi vahvistaa.'
+helpcenter.general.log_in: Kirjaudu
+helpcenter.account.logout_btn: 'Kirjaudu ulos'
+helpcenter.emails.profile_email_link_validate: 'Klikkaa linkkiä vahvistaaksesti sähköpostiosoite'
+helpcenter.account.reset_password_click_here: 'Klikkaa tästä saadaksesi salasanan vaihtokoodin'
+helpcenter.emails.comment_deleted: 'Kommenttiasi käytettiin sivumme parantamiseen.'
+helpcenter.emails.comment_approved_subject: 'Kommenttisi hyväksyttiin'
+helpcenter.emails.comment_approved: 'Kommenttisi on julkaistu.'
+helpcenter.messenger.blocks.tickets.title: Kutsusi
+helpcenter.messenger.chat.transcript_block.yes_button: Kyllä
+helpcenter.chat.message_user_timeout: 'Käyttäjä aika katkaistu'
+helpcenter.chat.message_ended_by_user: 'Käyttäjä on päättänyt keskustelun'
+helpcenter.chat.message_user_returned: 'Käyttäjä palasi takaisin'
+helpcenter.profile.account_disabled_message: 'Käyttäjätilisi on väliaikaisesti suljettu. '
+helpcenter.emails.password_agent_reset: 'Käyttäjätilisi salasana on vaihdettu. Kirjaudu uudella salasanalla'
+helpcenter.downloads.download: Lataa
+helpcenter.chat.message_uploading: 'Lataa ...'
+helpcenter.guides.download_pdf: 'Lataa PDF'
+helpcenter.chat.form_chat_send_file: 'Lataa tiedosto'
+helpcenter.general.downloads_type: Lataukset
+helpcenter.general.attachments: Liitetiedostot
+helpcenter.tickets.list_agent: 'Liitetty tukihenkilö'
+helpcenter.general.add_comment: 'Lisää kommentti'
+helpcenter.account.email_btn_usersource_set: 'Lisää sähköpostiosoite'
+helpcenter.chat.window_end_chat: 'Lopeta keskustelu'
+helpcenter.tickets.list_date_created: Luotu
+helpcenter.chat.form_chat_button_submit: Lähetetty
+helpcenter.account.reset_password_sent_to: 'Lähetimme sähköpostin seuraavaan osoitteeseen'
+helpcenter.messenger.tickets.form.submit: Lähetä
+helpcenter.chat.form_feedback_transcript_email: 'Lähetä kopio tästä keskustelusta osoitteeseen'
+helpcenter.chat.form_feedback_title: 'Lähetä meille palautetta'
+helpcenter.chat.submit_ticket_title: 'Lähetä meille sähköpostia'
+helpcenter.chat.submit_ticket_button: 'Lähetä meille sähköpostia'
+helpcenter.chat.form_feedback_button_submit: 'Lähetä palautetta ja sulje ikkuna'
+helpcenter.account.email_btn_resend_validation: 'Lähetä vahvistussähköposti uudelleen'
+helpcenter.emails.community_topic_disapproved: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme.'
+helpcenter.general.go: Mene
+helpcenter.tickets.rate_question: 'Miten arvioisit tuen jota sait?'
+helpcenter.tickets.view_btn_edit: Muokkaa
+helpcenter.account.email_btn_make_primary: 'Muuta pääasialliseksi'
+helpcenter.chat.name: Nimesi
+helpcenter.community.form_full_name: Nimesi
+helpcenter.articles.view_as_agent: 'Näet tämän sivun koska olet asiantuntijamme. Peruskäyttäjät eivät näe tätä sivua.'
+helpcenter.news.view_as_agent: 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.'
+helpcenter.general.show: Näytä
+helpcenter.chat.log_view_linked_ticket: 'Näytä palvelupyyntö'
+helpcenter.articles.section_title: Ohjeet
+helpcenter.account.login_lockout: 'Olet yrittänyt kirjautua sisään väärillä tiedoilla liian monta kertaa. Yritä uudelleen myöhemmin.'
+helpcenter.chat.window_cancel_confirm: 'Oletko varma että haluat lopettaa keskustelun'
+helpcenter.emails.ticket_rate_question: 'Oliko tämä viesti avuksi?'
+helpcenter.chat.form_feedback_rate_time: 'Oliko vastausaika riittävä?'
+helpcenter.chat.form_feedback_rate_satisfaction: 'Olitko tyytyväinen saamaasi palveluun?'
+helpcenter.account.section_desc_login: 'Onko teillä jo tili? Kirjautukaa alta.'
+helpcenter.messenger.tickets.form.department: Osasto
+helpcenter.chat.window_offline_button: 'Ota meihin yhteyttä tästä'
+helpcenter.tickets.new_section_title: 'Ota yhteyttä'
+helpcenter.community.section_title: Palaute
+helpcenter.emails.community_topic_new_disapproved: 'Palautteesi hylättiin'
+helpcenter.emails.community_topic_new_approved: 'Palautteesi hyväskyttiin'
+helpcenter.general.btn_cancel: Peruuta
+helpcenter.account.email_btn_remove: 'Poista sähköpostiosoite'
+helpcenter.account.login_remember: 'Pysy kirjautuneena?'
+helpcenter.emails.kb_sub_updated: 'Päivitetyt artikkelit'
+helpcenter.account.change_password_btn: 'Päivitä salasana'
+helpcenter.tickets.list_status_resolved: Päätetty
+helpcenter.tickets.resolve_my_ticket_btn: 'Päätä kutsuni'
+helpcenter.account.login_register_btn: Rekisteröidy
+helpcenter.general.password: Salasana
+helpcenter.account.reset_password_request_title: 'Salasana unohtunut?'
+helpcenter.account.reset_password_invalid_desc: 'Salasananvaihtokoodi on väärä tai vanhentunut. Hae uusi koodi vaihtaaksesi salasanan.'
+helpcenter.profile.your_password: Salasanasi
+helpcenter.account.set_password_success: 'Salasanasi on päivitetty'
+helpcenter.emails.password_agent_reset_subject: 'Salasanasi on vaihdettu'
+helpcenter.community.btn_vote: 'Samaa mieltä'
+helpcenter.general.related_downloads: 'Samanlaisia tiedostoja'
+helpcenter.general.related_news: 'Samanlaisia uutisia'
+helpcenter.tickets.rate_negative: 'Se ei ollut hyvä'
+helpcenter.emails.ticket_rate_neutral: 'Se oli OK'
+helpcenter.tickets.rate_positive: 'Se oli loistava'
+helpcenter.general.nav_downloads_desc: 'Selaa latauksiamme'
+helpcenter.chat.window_upload_drag: 'Siirrä tiedosto tähän ladataksesi se keskusteluun'
+helpcenter.general.you: Sinä
+helpcenter.chat.window_close_only: 'Sulje ikkuna'
+helpcenter.chat.email: Sähköpostiosoite
+helpcenter.account.reset_password_invalid_input: 'Sähköpostiosoite tai käyttäjätunnus'
+helpcenter.account.login_email: Sähköpostiosoitteesi
+helpcenter.forms.label_save: Tallenna
+helpcenter.account.profile_btn_save: 'Tallenna profiili'
+helpcenter.emails.ticket_access_ticket_online: 'Tarkastele ja muokkaa tukipyyntöäsi online tilassa:'
+helpcenter.account.login_password_reminder: 'Tarvitsetko salasanan muistutuksen?'
+helpcenter.error.permission_denied_title: 'Toimenpide ei ole sallittu'
+helpcenter.emails.ticket_received: 'Tukipyyntösi on vastaanotettu. Edustajamme ottaa sinuun pian yhteyttä.'
+helpcenter.tickets.new_intro: 'Täytä lomake niin otamme mahdollisimman pian yhteyttä.'
+helpcenter.emails.kb_sub_new: 'Uudet artikkelit'
+helpcenter.emails.ticket_new_participant: 'Uusi henkilö lisätty tukipyyntöösi'
+helpcenter.emails.email_new_confirm: 'Vahvista sähköpostiosoitteesi'
+helpcenter.emails.password_reset_subject: 'Vaihda salasana'
+helpcenter.emails.password_reset: 'Vaihda salasanasi klikkamalla linkkiä:'
+helpcenter.chat.ended_no_agent: 'Valitettavasti emme ole nyt tavoitettavissa online keskusteluun. Lähetä meille sähköpostia tai yritä myöhemmin uudellen.'
+helpcenter.chat.form_create_department: 'Valitse laji'
+helpcenter.emails.ticket_no_autoresponse: 'Varoitus: vahvistus sähköpostit pois käytöstä'
+helpcenter.general.related_community: 'Vastaava palaute'
+helpcenter.direct_messages.reply_message: Viesti
+helpcenter.emails.reject_resolved: 'Viestiäsi ei voitu hyväksyä, koska tukipyyntösi on jo ratkaistu. Edustajamme ei lue tai vastaa tähän viestiin.'
+helpcenter.emails.kb_sub_new_and_updated: 'uudet ja päivitetyt artikkelit'

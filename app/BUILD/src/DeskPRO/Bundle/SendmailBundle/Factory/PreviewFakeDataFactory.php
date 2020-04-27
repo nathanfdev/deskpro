@@ -83,6 +83,8 @@ class PreviewFakeDataFactory
 
                         throw new EntityNotFoundException('No '.$entityName.' found, preview is disabled');
                     }
+
+                    return $argument;
                 }
             } else {
                 switch ($parameter->getName()) {

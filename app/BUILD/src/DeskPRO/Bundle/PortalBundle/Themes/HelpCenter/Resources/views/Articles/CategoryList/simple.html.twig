@@ -1,6 +1,6 @@
 {% if category_children|length > 0 %}
     <div class="dp-po-kb-featured mb-0">
-        <h2 class="dp-po-kb-featured-title">{{ phrase('helpcenter.knowledgebase.categories') }}</h2>
+        <h2 class="dp-po-kb-featured-title">{{ phrase('helpcenter.general.categories') }}</h2>
         <div class="row">
             {% for category in category_children %}
                 {% if loop.index0 > 0 and loop.index0 % 2 == 0 %}</div><div class="row">{% endif %}

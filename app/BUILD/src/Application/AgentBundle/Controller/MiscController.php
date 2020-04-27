@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\FragmentRouter;
@@ -620,7 +618,7 @@ JS;
             if ($this->in->getBool('is_image') && !$blob->isImage()) {
                 $error = [
                     'error_code'   => 'not_in_allowed_exts',
-                    'error_detail' => implode(',', $allowedImageExtensions),
+                    'error_detail' => implode(', ', $allowedImageExtensions),
                 ];
                 $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 

@@ -6,9 +6,9 @@
                     <div class="dp-po-message-bar-wrap">
                         <p class="dp-po-message-bar-icon"> <i class="dp-po-icon far fa-times-circle"></i></p>
                         <p class="dp-po-message-bar-text">
-                            {{ phrase('helpcenter.general.lang-diff', { active_lang: alerts.lang_diff.active_lang.title, person_lang: alerts.lang_diff.person_lang.title }) }}
-                            <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.active_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang-change-to-current', { lang: alerts.lang_diff.active_lang.title }) }}</a>
-                            <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.person_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang-switch', { lang: alerts.lang_diff.person_lang.title }) }}</a>
+                            {{ phrase('helpcenter.general.lang_diff', { active_lang: alerts.lang_diff.active_lang.title, person_lang: alerts.lang_diff.person_lang.title }) }}
+                            <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.active_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang_change_to_current', { lang: alerts.lang_diff.active_lang.title }) }}</a>
+                            <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.person_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang_switch', { lang: alerts.lang_diff.person_lang.title }) }}</a>
                         </p>
                         <a href="{{ path('portal_dismiss_lang_alert') }}" class="dp-po-message-bar-close" aria-label="{{ phrase('helpcenter.general.close') }}"><i class="dp-po-icon fal fa-times"></i></a>
                     </div>
@@ -20,8 +20,8 @@
             {% set alert_id = saved.link %}
             <span class="alert" data-alert-id="{{ alert_id }}">
                 <div class="click-to-dismiss"><i class="fas fa-times"></i></div>
-                {% if saved.dataType is defined %}{{ phrase('helpcenter.account.submit-saved-form' ~ saved.dataType) }}{% endif %}
-                <a class="alert-button" href="{{ saved.link }}">{{ phrase('helpcenter.account.submit-saved-form-go') }}</a>
+                {% if saved.dataType is defined %}{{ phrase('helpcenter.account.submit_saved_form' ~ saved.dataType) }}{% endif %}
+                <a class="alert-button" href="{{ saved.link }}">{{ phrase('helpcenter.account.submit_saved_form_go') }}</a>
             </span>
         {% endfor %}
 
@@ -31,8 +31,8 @@
                     <img class="dp-po-notification-image" src="{{ asset('img/docs/notification.png', 'help_center') }}" alt="envelope icon">
                     <span class="dp-po-notification-count">{{ alerts.tickets_awaiting_reply | length }}</span>
                 </figure>
-                <span class="dp-po-notification-title">{{ phrase('helpcenter.alerts.tickets-to-respond', { count: alerts.tickets_awaiting_reply | length })}}
-                    <a href="{{ path('portal_tickets') }}" class="dp-po-notification-link">{{ phrase('helpcenter.general.click-here-to-view') }}</a>
+                <span class="dp-po-notification-title">{{ phrase('helpcenter.alerts.tickets_to_respond', { count: alerts.tickets_awaiting_reply | length })}}
+                    <a href="{{ path('portal_tickets') }}" class="dp-po-notification-link">{{ phrase('helpcenter.general.click_here_to_view') }}</a>
                 </span>
             </div>
         {% endif %}

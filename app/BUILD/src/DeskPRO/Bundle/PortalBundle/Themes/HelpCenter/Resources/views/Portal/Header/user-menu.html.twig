@@ -2,10 +2,10 @@
     <div class="dp-po-user">
         {% if is_guest() %}
             <a href="javascript:void(0)" class="dp-po-user-login" data-toggle="dropdown" aria-haspopup="true"
-               aria-expanded="false" id="hc-top-login-btn">{{ phrase('helpcenter.account.login-btn') }}</a>
+               aria-expanded="false" id="hc-top-login-btn">{{ phrase('helpcenter.general.log_in') }}</a>
             <div class="dropdown-menu dropdown-menu-right dp-po-user-dropdown">
                 {% if helpcenter.getUserInfo().display_registration_link %}
-                <h4 class="dropdown-item-text dp-po-user-dropdown-title">{{ phrase('helpcenter.account.new-to-brand', {brand: brand_setting('core.deskpro_name')|e}) }} <a href="{{ path('portal_user_registration') }}">{{ phrase('helpcenter.account.login-register-header') }}</a></h4>
+                <h4 class="dropdown-item-text dp-po-user-dropdown-title">{{ phrase('helpcenter.account.new_to_brand', {brand: brand_setting('core.deskpro_name')|e}) }} <a href="{{ path('portal_user_registration') }}">{{ phrase('helpcenter.account.login_register_header') }}</a></h4>
                 {% endif %}
                 {% if has_login_form() %}
                 <section class="dp-po-loginform">
@@ -20,7 +20,7 @@
                                 tabIndex="21"
                                 autocomplete="username"
                                 aria-describedby="emailHelp"
-                                placeholder="{{ phrase('helpcenter.account.email-address') }}"
+                                placeholder="{{ phrase('helpcenter.general.email_address') }}"
                             >
                         </div>
                         <div class="form-group">
@@ -31,7 +31,7 @@
                                 id="login-form-password"
                                 name="dropdown_password"
                                 autocomplete="current-password"
-                                placeholder="{{ phrase('helpcenter.account.password') }}"
+                                placeholder="{{ phrase('helpcenter.general.password') }}"
                                 tabIndex="22"
                             >
                         </div>
@@ -45,12 +45,12 @@
                                 onclick="var event = arguments[0] || window.event; event.stopPropagation();"
                             >
                             <label class="form-check-label" for="login-form-remember-me" onclick="var event = arguments[0] || window.event; event.stopPropagation();">
-                                {{ phrase('helpcenter.account.login-stay-logged-in') }}
+                                {{ phrase('helpcenter.account.login_stay_logged_in') }}
                             </label>
                         </div>
-                        <input type="submit" class="btn btn-primary btn-lg" tabIndex="24" value="{{ phrase('helpcenter.account.login-btn') }}"/>
+                        <input type="submit" class="btn btn-primary btn-lg" tabIndex="24" value="{{ phrase('helpcenter.general.log_in') }}"/>
                         {% if has_login_form() %}
-                            <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25" class="dp-po-form-btntext">{{ phrase('helpcenter.account.login-password-reminder') }}</a>
+                            <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25" class="dp-po-form-btntext">{{ phrase('helpcenter.account.login_password_reminder') }}</a>
                         {% endif %}
                     </form>
                 </section>
@@ -83,7 +83,7 @@
                     {% if helpcenter.getUserInfo().ticket_count > 0 and can_use_tickets() %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_tickets') }}">
-                                <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.tickets.my-tickets') }}
+                                <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.tickets.my_tickets') }}
                                 {% if pageData.alerts.tickets_awaiting_reply | length > 0 %}
                                     ({{ pageData.alerts.tickets_awaiting_reply | length }})
                                 {% endif %}
@@ -93,7 +93,7 @@
                     {% if app.getSetting('portal.members_community') %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_dm') }}">
-                                <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.tickets.my-messages') }}
+                                <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.tickets.my_messages') }}
                                 {% if pageData.alerts.unread_direct_messages > 0 %}
                                     ({{ pageData.alerts.unread_direct_messages }})
                                 {% endif %}
@@ -103,7 +103,7 @@
                     {% if helpcenter.getUserInfo().chat_count > 0 and can_use_chat() %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_chats') }}">
-                                <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.chats.my-chats') }}
+                                <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.chats.my_chats') }}
                             </a>
                         </li>
                     {% endif %}
@@ -112,12 +112,12 @@
                         <li class="dp-po-user-menu-item">
                             <span class="disc"></span>
                             <a class="dp-po-user-menu-link" href="{{ path('ticket_approvals') }}">
-                                <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}"> {{ phrase('helpcenter.approvals.my-approvals') }}
+                                <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}"> {{ phrase('helpcenter.approvals.my_approvals') }}
                             </a>
                         </li>
                     {% endif %}
                 </ul>
-                <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="btn btn-primary">{{ phrase('helpcenter.account.logout-btn') }}</a>
+                <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="btn btn-primary">{{ phrase('helpcenter.account.logout_btn') }}</a>
             </div>
         {% endif %}
     </div>

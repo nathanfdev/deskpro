@@ -6,7 +6,7 @@
             <div class="container">
                 <div class="dp-po-title">
                     <img class="dp-po-title-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}">
-                    <h1 class="dp-po-title-text">{{ phrase('helpcenter.approvals.my-approvals') }}</h1>
+                    <h1 class="dp-po-title-text">{{ phrase('helpcenter.approvals.my_approvals') }}</h1>
                 </div>
             </div>
             <div class="container">
@@ -18,24 +18,24 @@
                                 <ul class="dp-po-ticket-pages-list">
                                     <li class="dp-po-ticket-pages-item">
                                         <a href="{{ path('portal_tickets') }}" class="dp-po-ticket-pages-link">
-                                            <i class="dp-po-icon fal fa-envelope-open-text"></i> {{ phrase('helpcenter.tickets.my-tickets') }}
+                                            <i class="dp-po-icon fal fa-envelope-open-text"></i> {{ phrase('helpcenter.tickets.my_tickets') }}
                                         </a>
                                     </li>
                                     {% if person.organization and person.organization_manager %}
                                         <li class="dp-po-ticket-pages-item">
                                             <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-ticket-pages-link">
-                                                <i class="dp-po-icon fal fa-atom-alt"></i> {{ phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) }}
+                                                <i class="dp-po-icon fal fa-atom-alt"></i> {{ phrase('helpcenter.tickets.organization_tickets', {org_name: person.organization }) }}
                                             </a>
                                         </li>
                                     {% endif %}
                                     <li class="dp-po-ticket-pages-item">
                                         <a href="{{ path('portal_chats') }}" class="dp-po-ticket-pages-link">
-                                            <i class="dp-po-icon fal fa-comments-alt"></i> {{ phrase('helpcenter.chats.my-chats') }}
+                                            <i class="dp-po-icon fal fa-comments-alt"></i> {{ phrase('helpcenter.chats.my_chats') }}
                                         </a>
                                     </li>
                                     <li class="dp-po-ticket-pages-item active">
                                         <a href="{{ path('ticket_approvals') }}" class="dp-po-ticket-pages-link">
-                                            <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my-approvals') }}
+                                            <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my_approvals') }}
                                         </a>
                                     </li>
                                 </ul>
@@ -43,10 +43,10 @@
                             <form method="get" class="dp-po-ticket-filter dpx-sidebar-filters">
                                 <div class="row mb-4">
                                     <div class="col-sm-6">
-                                        <h4 class="dp-po-ticket-filter-title">{{ phrase('helpcenter.tickets.filter-by') }}</h4>
+                                        <h4 class="dp-po-ticket-filter-title">{{ phrase('helpcenter.tickets.filter_by') }}</h4>
                                     </div>
                                     <div class="col-sm-6 text-right">
-                                        <a href="#" class="dp-po-ticket-filter-clearall dpx-clear-all">{{ phrase('helpcenter.general.clear-all') }}</a>
+                                        <a href="#" class="dp-po-ticket-filter-clearall dpx-clear-all">{{ phrase('helpcenter.general.clear_all') }}</a>
                                     </div>
                                 </div>
 
@@ -98,7 +98,7 @@
                                     </li>
                                 </ul>
 
-                                <button type="submit" class="btn btn-primary">Apply</button>
+                                <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.general.apply') }}</button>
                             </form>
                         </div>
                     </div>
@@ -116,7 +116,7 @@
                                     <div class="col-sm-4"></div>
                                     <div class="col-sm-8">
                                         <form class="dp-po-ticket-search" method="get">
-                                            <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-approvals') }}" value="{{ search_query }}" />
+                                            <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search_approvals') }}" value="{{ search_query }}" />
                                             <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
                                         </form>
                                     </div>
@@ -174,7 +174,7 @@
                     </div>
                     <div class="col-sm-8">
                         <form class="dp-po-ticket-search" method="get">
-                            <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-approvals') }}" value="{{ search_query }}" />
+                            <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search_approvals') }}" value="{{ search_query }}" />
                             <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
                         </form>
                     </div>

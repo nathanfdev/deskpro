@@ -1,0 +1,120 @@
+helpcenter.emails.ticket_rate_question: 'A fost acest mesaj de ajutor?'
+helpcenter.tickets.rate_positive: 'A fost exceptional'
+helpcenter.emails.ticket_rate_neutral: 'A fost in regula'
+helpcenter.general.add_comment: 'Adauga un comentariu'
+helpcenter.chat.email: 'Adresa dumneavoastra de Email'
+helpcenter.tickets.list_agent: 'Agentul asignat'
+helpcenter.chat.form_create_department: 'Alegeti un departament'
+helpcenter.general.btn_cancel: Anulare
+helpcenter.general.attachments: Atasamente
+helpcenter.chat.window_upload_drag: 'Atasati fisierul aici pentru a fi urcat in chat'
+helpcenter.chat.form_feedback_rate_satisfaction: 'Ati fost multumiti de aceasta conversatie?'
+helpcenter.emails.password_reset: 'Ati solicitat resetarea parolei. Pentru a va reseta parola, dati click pe link-ul de mai jos:'
+helpcenter.emails.ticket_flood: 'Ati trimis recent un email catre Helpdesk-ul nostru. Sistemul nostru automat a detectat ca ati trimis o succesiune de mesaje care, cel mai probabil, au fost automate. <br /><br />Pentru a preveni intrarea intr-o bucla de raspunsuri automate, Helpdesk-ul nostru nu va va mai trimite notificari automate.'
+helpcenter.emails.ticket_no_autoresponse: 'Avertizare: Email-urile de confirmare au fost oprite'
+helpcenter.messenger.tickets.form.category: Categorie
+helpcenter.chat.message_wait: 'Cautam un agent pentru dumneavoastra'
+helpcenter.chat.message_ended_by_user: 'Chat inchis de catre user'
+helpcenter.chat.message_unassigned: 'Chat neasignat'
+helpcenter.messenger.chat.ended: 'Chat terminat'
+helpcenter.chat.message_started: 'Chat-ul a pornit'
+helpcenter.chat.log_title: 'Chat-urile dumneavoastra'
+helpcenter.chat.window_start_button: 'Click aici pentru a intra in chat cu noi'
+helpcenter.chat.window_offline_button: 'Click aici pentru a ne contacta'
+helpcenter.general.comments: 'Comentarii?'
+helpcenter.emails.comment_approved_subject: 'Comentariul dumneavoastra a fost aprobat'
+helpcenter.emails.comment_deleted_subject: 'Comentariul dumneavoastra a fost citit de agentii nostri'
+helpcenter.emails.comment_deleted: 'Comentariul dumneavoastra a fost folosit pentru imbunatatirea paginii'
+helpcenter.emails.comment_approved: 'Comentariul dumneavoastra a fost publicat'
+helpcenter.general.related_community: 'Community topic legat de'
+helpcenter.emails.community_topic_new_approved: 'Community topic-ul dumneavoastra a fost aprobat'
+helpcenter.emails.community_topic_new_disapproved: 'Community topic-ul dumneavoastra a fost respins'
+helpcenter.tickets.new_section_title: Contacteaza-ne
+helpcenter.profile.account_disabled_message: 'Contul dumneavoastra este dezactivat. Nu va veti putea loga, intra pe Chat sau modifica tichete.'
+helpcenter.tickets.rate_question: 'Cum ai cataloga suportul oferit de departamentul nostru?'
+helpcenter.messenger.chat.transcript_block.yes_button: Da
+helpcenter.tickets.list_date_created: 'Data crearii'
+helpcenter.emails.profile_email_link_validate: 'Dati click pe urmatorul link pentru a valida adresa dumneavoastra de email'
+helpcenter.general.rate_page_positive: 'De ajutor'
+helpcenter.messenger.tickets.form.department: Departament
+helpcenter.downloads.download: Descarca
+helpcenter.general.downloads_type: Descarcari
+helpcenter.chat.window_open_new: 'Deschideti acest chat intr-o noua fereastra'
+helpcenter.chat.window_resume_button: 'Deschideti chat-ul dumneavoastra'
+helpcenter.guides.download_pdf: 'Downloadati PDF-ul'
+helpcenter.general.you: Dumneavoastra
+helpcenter.tickets.view_btn_edit: Editare
+helpcenter.chat.error: 'Eroare chat'
+helpcenter.chat.window_end_chat: 'Finalizati chat-ul'
+helpcenter.general.related_downloads: 'Fisiere legate'
+helpcenter.members.timezone: 'Fus orar'
+helpcenter.chat.log_chat_id: 'ID Chat'
+helpcenter.chat.message_finding_agent: 'In cautarea unui agent disponibil'
+helpcenter.chat.form_chat_send_file: 'Incarca un fisier'
+helpcenter.chat.message_uploading: Incarcare...
+helpcenter.chat.form_create_title: 'Incepeti Chat-ul cu un agent'
+helpcenter.chat.window_close_only: 'Inchideti fereastra'
+helpcenter.emails.chat_transcript_subject: 'Inregistrare Chat'
+helpcenter.account.login_register_btn: Inrestreaza-te
+helpcenter.members.language: Limba
+helpcenter.direct_messages.reply_message: Mesaj
+helpcenter.emails.reject_resolved: 'Mesajul dumneavoastra nu a fost acceptat deoarece tichetul a fost deja marcat ca fiind rezolvat. Agentii nostri nu vor citi sau raspunde la acest mesaj.'
+helpcenter.emails.comment_confirmation: 'Multumim pentru comentariu'
+helpcenter.emails.community_new: 'Multumim pentru community topic'
+helpcenter.tickets.view_unassigned: Neasignat
+helpcenter.chat.log_unassigned: 'Niciun agent nu a fost asignat'
+helpcenter.chat.message_wait_timeout: 'Niciun agent nu este disponibil'
+helpcenter.chat.log_no_department: 'Niciun departament'
+helpcenter.tickets.rate_support: 'Noteaza suportul'
+helpcenter.messenger.chat.save_ticket.button_no: Nu
+helpcenter.tickets.rate_negative: 'Nu a fost bun'
+helpcenter.error.404_title: 'Nu a fost gasit'
+helpcenter.error.permission_denied_title: 'Nu aveti voie sa faceti acesta actiune'
+helpcenter.chat.window_close: 'Nu multumesc, inchideti fereastra'
+helpcenter.community.form_full_name: Nume
+helpcenter.chat.name: 'Numele dumneavoastra'
+helpcenter.emails.ticket_new_participant: 'O noua persoana a fost adaugata tichetului dumneavoastra'
+helpcenter.general.password: Parola
+helpcenter.chat.ended_no_agent: 'Pentru moment toti operatorii nostri sunt ocupati. Va rugam sa ne trimiteti un email sau sa incercati mai tarziu.'
+helpcenter.messenger.tickets.form.priority: Prioritate
+helpcenter.news.view_as_agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
+helpcenter.articles.view_as_agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
+helpcenter.general.nav_downloads_desc: 'Rasfoiesti printre descarcarile noastre'
+helpcenter.emails.password_reset_subject: 'Resetare parola'
+helpcenter.account.email_btn_resend_validation: 'Retrimite email-ul de validare'
+helpcenter.tickets.resolve_my_ticket_btn: 'Rezolva tichetul meu'
+helpcenter.tickets.list_status_resolved: Rezolvat
+helpcenter.forms.label_save: Salveaza
+helpcenter.chat.message_user_timeout: 'Sesiunea userului a expirat'
+helpcenter.general.go: Start
+helpcenter.general.related_news: 'Stiri cu referire la'
+helpcenter.tickets.list_subject: Subiect
+helpcenter.community.btn_vote: 'Sunt de acord'
+helpcenter.chat.message_chatting_with: 'Sunteti in chat cu'
+helpcenter.chat.window_cancel_confirm: 'Sunteti sigur ca vreti sa inchideti conversatia?'
+helpcenter.messenger.blocks.tickets.title: 'Tichetele dumneavoastra'
+helpcenter.emails.ticket_received: 'Tichetul dumneavoastra a fost primit. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.'
+helpcenter.chat.form_feedback_rate_time: 'Timpul nostru de raspuns a fost suficient de rapid?'
+helpcenter.general.everything: Tot
+helpcenter.chat.form_chat_button_submit: Trimite
+helpcenter.messenger.tickets.form.submit: Trimite
+helpcenter.chat.form_feedback_button_submit: 'Trimite community topic-ul si inchide fereastra'
+helpcenter.chat.form_feedback_transcript_email: 'Trimite conversatia anterioara catre'
+helpcenter.chat.form_feedback_title: 'Trimiteti-ne feedback'
+helpcenter.chat.submit_ticket_button: 'Trimiteti-ne un email'
+helpcenter.chat.submit_ticket_title: 'Trimiteti-ne un email in loc'
+helpcenter.emails.password_agent_reset_subject: 'Un agent v-a resetat parola'
+helpcenter.emails.password_agent_reset: 'Un agent v-a resetat parola contului dumneavoastra. Va puteti loga folosind urmatoarele credentiale'
+helpcenter.chat.message_user_returned: 'User-ul s-a intors'
+helpcenter.emails.community_topic_agent_validation: 'Va informam ca community topic-ul dumneavoastra nu va fi facut public pe site-ul nostru pana cand va fi revizuit de unul dintre agentii nostri.'
+helpcenter.tickets.guest_thank_you_title: 'Va multumim'
+helpcenter.emails.ticket_validate: 'Va multumim ca ne-ati contactat. <br /><br />Inainte ca agentii nostri sa citeasca si sa raspunda la mesajul dumneavostra, trebuie sa validati adresa dumneavoastra de email.'
+helpcenter.emails.register_welcome_subject: 'Va multumim ca v-ati inregistrat'
+helpcenter.emails.chat_transcript: 'Va multumim pentru conversatie. Aceasta este o copie a acesteia'
+helpcenter.emails.ticket_reply_confirm: 'Va multumim pentru raspuns. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.'
+helpcenter.tickets.new_intro: 'Va rugam sa completati acest formular iar unul din agentii nostri va va raspunde cu un email in cel mai scurt timp posibil.'
+helpcenter.emails.email_new_confirm: 'Va rugam sa validati adresa dumneavoastra de email'
+helpcenter.emails.community_topic_approved: 'Va trimitem acest email pentru a va anunta ca community topic-ul dumneavoastra a fost aprobat si este vizibil pe site-ul nostru.'
+helpcenter.emails.community_topic_disapproved: 'Va trimitem acest email pentru a va anunta ca community topic-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.'
+helpcenter.emails.label_view_online: 'Vedeti Online'
+helpcenter.emails.ticket_access_ticket_online: 'Vedeti si modificati acest tichet online:'

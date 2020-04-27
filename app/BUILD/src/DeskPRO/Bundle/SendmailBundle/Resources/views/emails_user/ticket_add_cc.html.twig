@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('helpcenter.emails.ticket_added_cc') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.ticket_added_cc', {subject: ticket.subject}) }}</dp:subject>
 
 <html>
 <head>
@@ -13,7 +13,7 @@
 
     <br /><br />
 
-    {{ phrase('helpcenter.emails.ticket_cc-added', {author_name: author.name, author_email: author.primary_email}) }}
+    {{ phrase('helpcenter.emails.ticket_cc_added', {author_name: author.name, author_email: author.primary_email, subject: ticket.subject}) }}
 
     {% if app.isPortalEnabled() %}
         <br /><br />

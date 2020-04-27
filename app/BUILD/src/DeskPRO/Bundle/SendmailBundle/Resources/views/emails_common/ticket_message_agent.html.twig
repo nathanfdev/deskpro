@@ -3,7 +3,7 @@
 {% if app.isPortalEnabled() and message.attachments | filter(a => not a.is_inline)  | length > 0 and not app.getSetting('core_tickets.disable_attachments_list') %}
 	<div style="font-size:11px">
 		<br />
-		<strong>{{ phrase('helpcenter.emails.attachments') }}</strong>
+		<strong>{{ phrase('helpcenter.general.attachments') }}</strong>
 		{% for attach in message.attachments %}
 			{% if not attach.is_inline  %}
 				<br />

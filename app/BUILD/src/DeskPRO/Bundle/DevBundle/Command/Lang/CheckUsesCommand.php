@@ -30,14 +30,14 @@ class CheckUsesCommand extends ContainerAwareCommand
                 'zone',
                 'z',
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Specify the zone as comma-sep list: admin, agent, api, portal',
+                'Specify the zone as comma-sep list: backend, user, helpcenter',
                 ['all']
             )
             ->addOption(
                 'ignore-zone',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Specify the zones to IGNORE as comma-sep list: admin, agent, api, portal',
+                'Specify the zones to IGNORE as comma-sep list: backend, user, helpcenter',
                 []
             )
             ->addOption(

@@ -4,7 +4,7 @@
   <div class="dpx-attachment">
     <a href="{{ attachment.download_url }}?dl=1"
        class="dp-po-chat-attachments-link {% if attachment.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
-       {% if not attachment.is_image %}data-content-type="{{ attachment.content_type }}"{% endif %}
+       {% if not attachment.is_image and attachment.content_type is defined %}data-content-type="{{ attachment.content_type }}"{% endif %}
     >
 
       {% if attachment.is_image %}
@@ -25,7 +25,7 @@
       {% else %}
         {{ phrase('helpcenter.chat.you') }} ({{ message.author.primary_email }})
       {% endif %}
-      {% if message.origin == 'agent'  %}<span class="badge badge-primary badge-small">{{ phrase('helpcenter.chat.agent') }}</span>{% endif %}
+      {% if message.origin == 'agent'  %}<span class="badge badge-primary badge-small">{{ phrase('helpcenter.general.agent') }}</span>{% endif %}
     </div>
     <div class="dp-po-time">
       <i class="dp-po-icon far fa-clock"></i>
@@ -54,7 +54,7 @@
           <div class="col-sm-9">
             <div class="dp-po-title">
               <img class="dp-po-title-svg" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}">
-              <h1 class="dp-po-title-text">{{ phrase('helpcenter.chat.log_title', { person: chat.agent.display_name_user }) }}</h1>
+              <h1 class="dp-po-title-text">{{ phrase('helpcenter.chat.your_chat_with', { person_name: chat.agent.display_name_user }) }}</h1>
             </div>
             <div class="row align-items-center">
               <div class="col-sm-10">
@@ -64,7 +64,7 @@
                     {% set lastMessage = chat_messages|filter(m => m.author)|last %}
                     {% set lastPerson = lastMessage.author %}
                     <li class="dp-po-post-info-item">
-                      {{ phrase('helpcenter.chat.last_updated_by', { date: date(lastMessage.date_created, 'day'), person: lastPerson }) }}
+                      {{ phrase('helpcenter.general.last_update_by', { date_updated: lastMessage.date_created, person_name: lastPerson }) }}
                     </li>
                     <li class="dp-po-post-info-item">
                       <i class="dp-po-icon far fa-calendar-alt"></i> <b>{{ date(chat.date_created, 'day') }}</b>
@@ -80,7 +80,7 @@
                       <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}"><i class="dp-po-icon fal fa-print"></i></a>
                     </li>
                     <li class="dp-po-post-extra-item">
-                      <a href="" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.guides.download-pdf') }}"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                      <a href="" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.guides.download_pdf') }}"><i class="dp-po-icon fal fa-file-pdf"></i></a>
                     </li>
                   </ul>
                 </div>
@@ -102,9 +102,81 @@
                       <span>
                       {% if message.metadata.phrase_id %}
                         {% if message.is_html %}
-                          {{ phrase('portal.chat.'~ message.metadata.phrase_id, message.metadata, true) }}
+                          {% if message.metadata.phrase_id =='message_user-joined' %}
+                            {{ phrase('helpcenter.messenger.chat_message_user_joined', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_user-left' %}
+                            {{ phrase('helpcenter.messenger.chat_message_user_left', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_agent-timeout' %}
+                            {{ phrase('helpcenter.messenger.chat_message_agent_timeout', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_assigned' %}
+                            {{ phrase('helpcenter.messenger.message_assigned', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_chatting-with' %}
+                            {{ phrase('helpcenter.messenger.message_chatting_with', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_ended' %}
+                            {{ phrase('helpcenter.messenger.message_ended', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_ended-by' %}
+                            {{ phrase('helpcenter.messenger.message_ended_by', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_ended-by-user' %}
+                            {{ phrase('helpcenter.messenger.message_ended_by_user', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_finding-agent' %}
+                            {{ phrase('helpcenter.messenger.message_finding_agent', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_long-wait' %}
+                            {{ phrase('helpcenter.messenger.message_long_wait', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_set-department' %}
+                            {{ phrase('helpcenter.messenger.message_set_department', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_started' %}
+                            {{ phrase('helpcenter.messenger.message_started', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_unassigned' %}
+                            {{ phrase('helpcenter.messenger.message_unassigned', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_uploading' %}
+                            {{ phrase('helpcenter.messenger.message_uploading', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_user-returned' %}
+                            {{ phrase('helpcenter.messenger.message_user_returned', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_user-timeout' %}
+                            {{ phrase('helpcenter.messenger.message_user_timeout', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_wait' %}
+                            {{ phrase('helpcenter.messenger.message_wait', message.metadata, true) }}
+                          {% elseif message.metadata.phrase_id =='message_wait-timeout' %}
+                            {{ phrase('helpcenter.messenger.message_wait_timeout', message.metadata, true) }}
+                          {% endif %}
                         {% else %}
-                          {{ phrase('portal.chat.'~ message.metadata.phrase_id, message.metadata) }}
+                          {% if message.metadata.phrase_id =='message_user-joined' %}
+                            {{ phrase('helpcenter.messenger.chat_message_user_joined', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_user-left' %}
+                            {{ phrase('helpcenter.messenger.chat_message_user_left', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_agent-timeout' %}
+                            {{ phrase('helpcenter.messenger.chat_message_agent_timeout', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_assigned' %}
+                            {{ phrase('helpcenter.messenger.message_assigned', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_chatting-with' %}
+                            {{ phrase('helpcenter.messenger.message_chatting_with', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_ended' %}
+                            {{ phrase('helpcenter.messenger.message_ended', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_ended-by' %}
+                            {{ phrase('helpcenter.messenger.message_ended_by', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_ended-by-user' %}
+                            {{ phrase('helpcenter.messenger.message_ended_by_user', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_finding-agent' %}
+                            {{ phrase('helpcenter.messenger.message_finding_agent', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_long-wait' %}
+                            {{ phrase('helpcenter.messenger.message_long_wait', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_set-department' %}
+                            {{ phrase('helpcenter.messenger.message_set_department', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_started' %}
+                            {{ phrase('helpcenter.messenger.message_started', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_unassigned' %}
+                            {{ phrase('helpcenter.messenger.message_unassigned', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_uploading' %}
+                            {{ phrase('helpcenter.messenger.message_uploading', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_user-returned' %}
+                            {{ phrase('helpcenter.messenger.message_user_returned', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_user-timeout' %}
+                            {{ phrase('helpcenter.messenger.message_user_timeout', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_wait' %}
+                            {{ phrase('helpcenter.messenger.message_wait', message.metadata) }}
+                          {% elseif message.metadata.phrase_id =='message_wait-timeout' %}
+                            {{ phrase('helpcenter.messenger.message_wait_timeout', message.metadata) }}
+                          {% endif %}
                         {% endif %}
                       {% elseif message.is_html %}
                         {{message.content|raw}}
@@ -136,7 +208,7 @@
               </p>
               {% set allAgentsExceptAssigned = chat.agent_participants|filter(a => a != chat.agent) %}
               {% if allAgentsExceptAssigned|length > 0 %}
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_agents') }}</h3>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.agents') }}</h3>
               <p>
                 <div class="dp-po-avatar dp-po-avatar-round">
                   {% for agent in allAgentsExceptAssigned %}
@@ -148,11 +220,11 @@
               {% endif %}
             </div>
             <div class="dp-po-post-meta">
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_department') }}</h3>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.department') }}</h3>
               <p>{{ chat.department ? chat.department.user_title : '-' }}</p>
               <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_chat_time') }}</h3>
               <p>{{ date_diff(chat.date_created, chat.date_ended) }}</p>
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.last_activity') }}</h3>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.last_activity') }}</h3>
               <p>{{date(lastMessage.date_created, 'l')}}, {{date(lastMessage.date_created, 'time')}}</p>
               {% for custom in custom_data %}
                 {% if custom['value'] %}
@@ -164,7 +236,7 @@
 
             {% if chat_attachments|length  > 0 %}
             <div class="dp-po-sidebar dp-po-chat-attachments">
-              <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.chat.files-on-this-chat') }}</h3>
+              <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.chat.files_on_this_chat') }}</h3>
               <ul class="dp-po-chat-attachments-list">
                 {% for attachment in chat_attachments %}
                   <li class="dp-po-chat-attachments-item">

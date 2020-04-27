@@ -230,12 +230,12 @@ export default class HcAttach extends React.Component {
           onBlur={this.handleBlur}
         >
           <i className="far fa-file-alt" />
-          {multiple ? portalPhrases.get('helpcenter.forms.label-choose-files') : portalPhrases.get('helpcenter.forms.label-choose-a-file')}
+          {multiple ? portalPhrases.get('helpcenter.general.form_choose_files') : portalPhrases.get('helpcenter.general.form_choose_file')}
         </div>
         <div className="or">{portalPhrases.get('helpcenter.general.or')}</div>
         <div className="dnd">
           <i className="far fa-clone" />
-          {portalPhrases.get('helpcenter.forms.label-drag-and-drop')}
+          {portalPhrases.get('helpcenter.general.drag_and_drop')}
         </div>
         <Progress percent={this.state.progress} />
       </div>

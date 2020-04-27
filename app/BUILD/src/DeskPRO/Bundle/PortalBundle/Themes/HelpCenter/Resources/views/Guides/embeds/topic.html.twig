@@ -39,8 +39,8 @@
                     {% include 'Theme:PublishCommon:post-avatars.html.twig' with {
                         item: topic
                     } %}
-                    <p>Published: <strong>{{ topic.date_published|date('d/m/Y') }}</strong></p>
-                    <p>Last updated: <strong>{{ topic.date_updated|date('d/m/Y') }}</strong></p>
+                    <p>{{ phrase('helpcenter.general.published') }}: <strong>{{ topic.date_published|date('d/m/Y') }}</strong></p>
+                    <p>{{ phrase('helpcenter.general.last_update_by', {date_updated: topic.date_updated, person_name: topic.last_author.name}) | raw }}</p>
                 </div>
             </div>
         </div>

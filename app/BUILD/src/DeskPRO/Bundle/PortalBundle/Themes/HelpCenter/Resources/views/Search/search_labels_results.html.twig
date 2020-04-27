@@ -12,22 +12,22 @@
                                {{ phrase('helpcenter.general.everything') }}
                            </option>
                            <option value="articles"{% if type == 'articles' %} selected="selected"{% endif %}>
-                               {{ phrase('helpcenter.general.nav-kb') }}
+                               {{ phrase('helpcenter.general.nav_kb') }}
                            </option>
                            <option value="news"{% if type == 'news' %} selected="selected"{% endif %}>
-                               {{ phrase('helpcenter.general.nav-news') }}
+                               {{ phrase('helpcenter.general.nav_news') }}
                            </option>
                            <option value="downloads"{% if type == 'downloads' %} selected="selected"{% endif %}>
-                               {{ phrase('helpcenter.general.nav-downloads') }}
+                               {{ phrase('helpcenter.general.downloads_type') }}
                            </option>
                            <option value="community"{% if type == 'community' %} selected="selected"{% endif %}>
-                               {{ phrase('helpcenter.general.nav-community') }}
+                               {{ phrase('helpcenter.general.nav_community') }}
                            </option>
                        </select>
                        {{ phrase('helpcenter.general.tagged_with') }}
                        <input type="text" name="label" value="{{ label }}" style="width:250px;" />
                        <button class="button button-small button-blank">
-                           {{ phrase('helpcenter.general.btn-go') }}
+                           {{ phrase('helpcenter.general.btn_go') }}
                        </button>
                    </div>
                 </form>
@@ -35,12 +35,12 @@
             <div class="search-result-count">
                 {% if pageinfo is not null and pageinfo.total_results %}
                     {% if label %}
-                        {{ phrase('helpcenter.general.x-search-results', { num: num_results, query: label }) }}
+                        {{ phrase('helpcenter.general.x_search_results', { num: num_results, query: label }) }}
                     {% else %}
-                        {{ phrase('helpcenter.general.x-search-results-no-query', { num: num_results }) }}
+                        {{ phrase('helpcenter.general.x_search_results_no_query', { num: num_results }) }}
                     {% endif %}
                 {% else %}
-                    {{ phrase('helpcenter.general.label-search-enter-label') }}
+                    {{ phrase('helpcenter.general.label_search_enter_label') }}
                 {% endif %}
             </div>
             <div class="search-results">
@@ -78,7 +78,7 @@
                                         {% if result.calc_num_comments > 0 %}
                                             <hr>
                                             <a href="{{ portal_path(result) }}#comments">
-                                                {{ phrase('helpcenter.general.comments-count', { count: result.calc_num_comments }) }}
+                                                {{ phrase('helpcenter.general.comments_count', { count: result.calc_num_comments }) }}
                                             </a>
                                         {% endif %}
                                     </div>

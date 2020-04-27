@@ -212,7 +212,7 @@ export class HcOmniSearchResultSection extends React.Component {
         </ul>
 
         <a href={portalUrlGenerator.path(`/search/${nameApi}?q=${q}`)} className="dp-po-search-hint-viewall">
-          <FormattedMessage id="helpcenter.search.view-all-results" values={{ count: total_results }} />
+          <FormattedMessage id="helpcenter.search.view_all_results" values={{ count: total_results }} />
         </a>
 
         {this.state.doSpin && <div className="search-result-collection-loading inline-loading" />}
@@ -281,7 +281,7 @@ export class HcOmniSearchResultTickets extends React.Component {
     return (
       <div className={classNames('dp-po-search-hint-tickets', { 'no-results': this.state.items.isEmpty() })}>
         <div className="dp-po-search-hint-header">
-          <h3 className="dp-po-search-hint-header-title"><i className="dp-po-icon fad fa-envelope" /> <FormattedMessage id="helpcenter.search.your-tickets" tagName="div" />
+          <h3 className="dp-po-search-hint-header-title"><i className="dp-po-icon fad fa-envelope" /> <FormattedMessage id="helpcenter.search.your_tickets" tagName="div" />
             <span>{totalResults}</span>
           </h3>
         </div>
@@ -290,7 +290,7 @@ export class HcOmniSearchResultTickets extends React.Component {
           <ul className="dp-po-search-list">
             {map(this.state.items.getNum(this.state.currently_displaying), item => HcOmniSearchResultTickets.renderItem(item))}
           </ul>
-          <a href={portalUrlGenerator.path(`/search/ticket?q=${q}`)} className="dp-po-search-hint-viewall"><FormattedMessage id="helpcenter.search.view-all-results" values={{ count: totalResults }} /></a>
+          <a href={portalUrlGenerator.path(`/search/ticket?q=${q}`)} className="dp-po-search-hint-viewall"><FormattedMessage id="helpcenter.search.view_all_results" values={{ count: totalResults }} /></a>
         </div>
         }
       </div>

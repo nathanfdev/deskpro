@@ -17,9 +17,9 @@
         {% include 'Theme:Common:flashes.html.twig' with { flashes: pageData.flashes } %}
         <div class="column-full">
             {% if app.user and app.user.can_admin %}
-                {{ phrase('helpcenter.general.helpcenter-disabled-re-enable-from-setup', {setup_link: path('agent')~'#admin:/portal/setup'}) }}
+                {{ phrase('helpcenter.general.helpcenter_disabled_re_enable_from_setup', {setup_link: path('agent')~'#admin:/portal/setup'}) }}
             {% else %}
-                {{ phrase('helpcenter.general.helpcenter-disabled-click-below') }}
+                {{ phrase('helpcenter.general.helpcenter_disabled_click_below') }}
             {% endif %}
         </div>
         <section class="welcome-news">
@@ -27,14 +27,14 @@
                 <li>
                     <a href="{{ path('agent') }}">
                         <i class="fas fa-user"></i>
-                        <span class="title">{{ phrase('helpcenter.general.agent-interface') }}</span>
+                        <span class="title">{{ phrase('helpcenter.general.agent_interface') }}</span>
                     </a>
                 </li>
                 {% if app.user and app.user.can_admin %}
                     <li>
                         <a href="{{ path('agent') }}#admin:/">
                             <i class="fas fa-cog"></i>
-                            <span class="title">{{ phrase('helpcenter.general.agent-interface') }}</span>
+                            <span class="title">{{ phrase('helpcenter.general.agent_interface') }}</span>
                         </a>
                     </li>
                 {% endif %}

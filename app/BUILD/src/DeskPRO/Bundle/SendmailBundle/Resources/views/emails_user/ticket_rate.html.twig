@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('helpcenter.emails.ticket-rate') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.ticket_rate', {subject: ticket.subject}) }}</dp:subject>
 
 <html>
 <head>
@@ -11,7 +11,7 @@
 
 	<table border="0" width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
 		<td style="vertical-align: top;" valign="middle">
-			<p>{{ phrase('helpcenter.emails.ticket_rate-request') }}</p>
+			<p>{{ phrase('helpcenter.emails.ticket_rate_request', {subject: ticket.subject}) }}</p>
 
 			<table class="dp-layout" width="550"><tr>
 				<td width="33%">
@@ -22,7 +22,7 @@
 							</div>
 							<div class="rate-text">
 								<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': 0, 'rating': 1}) }}">
-									{{ phrase('helpcenter.tickets.rate-positive') }}
+									{{ phrase('helpcenter.tickets.rate_positive') }}
 								</a>
 							</div>
 						</div>
@@ -36,7 +36,7 @@
 							</div>
 							<div class="rate-text">
 								<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': 0, 'rating': 0}) }}">
-									{{ phrase('helpcenter.tickets.rate-neutral') }}
+									{{ phrase('helpcenter.tickets.rate_neutral') }}
 								</a>
 							</div>
 						</div>
@@ -50,7 +50,7 @@
 							</div>
 							<div class="rate-text">
 								<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': 0, 'rating': -1}) }}">
-									{{ phrase('helpcenter.tickets.rate-negative') }}
+									{{ phrase('helpcenter.tickets.rate_negative') }}
 								</a>
 							</div>
 						</div>

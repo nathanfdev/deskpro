@@ -6,18 +6,18 @@
                     {{ phrase('helpcenter.community.votes') }}
                 </div>
                 <div class="dp-po-community-view-title">
-                    {{ phrase(is_compact ? 'helpcenter.community.title' : 'helpcenter.community.title-author') }}
+                    {{ phrase(is_compact ? 'helpcenter.community.title' : 'helpcenter.community.title_author') }}
                 </div>
                 {% if is_compact %}
                     <div class="dp-po-community-view-office">
-                        <i class="dp-po-icon fas fa-comment-alt-check" data-toggle="tooltip" data-placement="bottom" title="Official response"></i>
+                        <i class="dp-po-icon fas fa-comment-alt-check" data-toggle="tooltip" data-placement="bottom" title="{{ phrase('helpcenter.community.official_response') }}"></i>
                     </div>
                 {% endif %}
                 <div class="dp-po-community-view-status">
                     {{ phrase('helpcenter.community.status') }}
                 </div>
                 <div class="dp-po-community-view-comments">
-                    {{ phrase('helpcenter.community.comments') }}
+                    {{ phrase('helpcenter.general.comments') }}
                 </div>
                 {% if is_compact %}
                     <div class="dp-po-community-view-author">
@@ -93,7 +93,7 @@
                         <div class="dp-po-community-view-official">
                             <span class="dp-po-community-view-official-time">{{ date_ago(topic.official_response.date_created) }}</span>
                             <div class="dp-po-community-view-official-wrap">
-                                <h4 class="dp-po-community-view-official-title">Official response</h4>
+                                <h4 class="dp-po-community-view-official-title">{{ phrase('helpcenter.community.official_response') }}</h4>
                             </div>
                             <div class="dp-po-community-view-official-wrap">
                                 <img src="{{ avatar_url(topic.official_response.person) }}"

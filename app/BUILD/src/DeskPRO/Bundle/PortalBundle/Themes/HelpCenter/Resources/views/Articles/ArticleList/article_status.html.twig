@@ -1,11 +1,11 @@
 {% if is_agent() and brand_setting('user.non_published_articles_on_helpcenter')%}
     {% if article.status == 'published' %}
-    <span class="badge badge-success badge-small">{{ phrase('helpcenter.articles.status-published') }}</span>
+    <span class="badge badge-success badge-small">{{ phrase('helpcenter.articles.status_published') }}</span>
     {% elseif article.status == 'archived' %}
-    <span class="badge badge-dark badge-small">{{ phrase('helpcenter.articles.status-archived') }}</span>
+    <span class="badge badge-dark badge-small">{{ phrase('helpcenter.articles.status_archived') }}</span>
     {% elseif article.status == 'hidden' %}
         {% if article.hidden_status == 'draft' %}
-            <span class="badge badge-dark badge-small">{{ phrase('helpcenter.articles.status-draft') }}</span>
+            <span class="badge badge-dark badge-small">{{ phrase('helpcenter.articles.status_draft') }}</span>
         {% endif %}
     {% endif %}
 {% endif %}

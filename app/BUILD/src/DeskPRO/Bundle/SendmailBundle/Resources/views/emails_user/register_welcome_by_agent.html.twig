@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('helpcenter.emails.register-welcome-byagent_subject') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.register_welcome_byagent_subject') }}</dp:subject>
 
 <html>
 <head>
@@ -13,13 +13,13 @@
 
     <br /><br />
 
-    {{ phrase('helpcenter.emails.register-welcome-byagent') }}<br/>
+    {{ phrase('helpcenter.emails.register_welcome_byagent') }}<br/>
     <a href="{{ portal_home }}">{{ portal_home }}</a><br/>
 
     <br/>
 
     {% if new_password %}
-        {{ phrase('helpcenter.emails.register-password', {password: new_password}) }}<br/>
+        {{ phrase('helpcenter.emails.register_password', {password: new_password}) }}<br/>
     {% endif %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}

@@ -1,9 +1,9 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% if type == 'own' %}
-    {% set page_title = phrase('helpcenter.tickets.my-tickets') %}
+    {% set page_title = phrase('helpcenter.tickets.my_tickets') %}
 {% else %}
-    {% set page_title = phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) %}
+    {% set page_title = phrase('helpcenter.tickets.organization_tickets', {org_name: person.organization }) %}
 {% endif %}
 
 {% block page_content %}
@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6 text-right">
-                        <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary mb-4">{{ phrase('helpcenter.tickets.submit-a-ticket') }}</a>
+                        <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary mb-4">{{ phrase('helpcenter.tickets.submit_a_ticket') }}</a>
                     </div>
                 </div>
             </div>
@@ -33,10 +33,10 @@
 {#                            <div class="dp-po-ticket-filter">#}
 {#                                <div class="row mb-4">#}
 {#                                    <div class="col-sm-6">#}
-{#                                        <h4 class="dp-po-ticket-filter-title">{{ phrase('helpcenter.tickets.filter-by') }}</h4>#}
+{#                                        <h4 class="dp-po-ticket-filter-title">{{ phrase('helpcenter.tickets.filter_by') }}</h4>#}
 {#                                    </div>#}
 {#                                    <div class="col-sm-6 text-right">#}
-{#                                        <a href="" class="dp-po-ticket-filter-clearall">{{ phrase('helpcenter.general.clear-all') }}</a>#}
+{#                                        <a href="" class="dp-po-ticket-filter-clearall">{{ phrase('helpcenter.general.clear_all') }}</a>#}
 {#                                    </div>#}
 {#                                </div>#}
 
@@ -128,7 +128,7 @@
 {#                                    <li class="dp-po-ticket-filter-item">#}
 {#                                        <div class="form-group dp-po-form-check">#}
 {#                                            <input type="checkbox" class="form-check-input" id="activityCheck" checked>#}
-{#                                            <label class="form-check-label" for="activityCheck">{{ phrase('helpcenter.tickets.last-activity') }}</label>#}
+{#                                            <label class="form-check-label" for="activityCheck">{{ phrase('helpcenter.general.last_activity') }}</label>#}
 {#                                        </div>#}
 {#                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample2"#}
 {#                                           role="button" aria-expanded="false" aria-controls="collapseExample">#}
@@ -207,7 +207,7 @@
                                         </div>
                                         <div class="col-sm-7">
                                             <form class="dp-po-ticket-search" method="get">
-                                                <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-tickets') }}" value="{{ search_query }}" aria-label="{{ phrase('helpcenter.gerenal.search')}}" />
+                                                <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search_tickets') }}" value="{{ search_query }}" aria-label="{{ phrase('helpcenter.gerenal.search')}}" />
                                                 <button type="submit" aria-label="{{ phrase('helpcenter.gerenal.search')}}"> <i class="dp-po-icon far fa-search"></i></button>
                                             </form>
                                         </div>
@@ -257,7 +257,7 @@
     {% if col.id == 'department_subject' %}
         {{ _self.sort_link(
         ticket_table,
-        phrase('helpcenter.tickets.list_department'),
+        phrase('helpcenter.general.department'),
         'department'
         ) }}
         /
@@ -271,11 +271,11 @@
         {% if col.id == 'agent' %}
             {% set label = phrase('helpcenter.tickets.list_agent' ) %}
         {% elseif col.id == 'department' %}
-            {% set label = phrase('helpcenter.tickets.list_department') %}
+            {% set label = phrase('helpcenter.general.department') %}
         {% elseif col.id == 'subject' %}
             {% set label = phrase('helpcenter.tickets.list_subject') %}
         {% elseif col.id == 'user' %}
-            {% set label = phrase('helpcenter.tickets.list_user') %}
+            {% set label = phrase('helpcenter.general.user') %}
         {% elseif col.id == 'date_activity' %}
             {% set label = phrase('helpcenter.tickets.list_last_action') %}
         {% elseif col.id == 'date_created' %}
@@ -387,7 +387,7 @@
                 </div>
                 <div class="col-sm-7">
                     <form class="dp-po-ticket-search" method="get">
-                        <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-tickets') }}" value="{{ search_query }}" />
+                        <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search_tickets') }}" value="{{ search_query }}" />
                         <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
                     </form>
                 </div>

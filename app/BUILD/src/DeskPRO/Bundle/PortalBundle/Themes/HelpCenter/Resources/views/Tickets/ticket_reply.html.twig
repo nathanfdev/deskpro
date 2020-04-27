@@ -22,7 +22,7 @@
                 {% if ticket.participants | length > 0 %}
                 <div class="dp-po-ticket-block-cc">
                     <ul class="dp-po-ticket-block-cc-list">
-                        <li class="dp-po-ticket-block-cc-item">CC</li>
+                        <li class="dp-po-ticket-block-cc-item">{{ phrase('helpcenter.general.cc') }}</li>
                         {% for participant in ticket.participants %}
                             {% if not  participant.person.isAgent() %}
                                 <li class="dp-po-ticket-block-cc-item">
@@ -80,7 +80,7 @@
 
         {% if ticket.resolved and is_granted('TICKET_REOPEN_RESOLVED', ticket) %}
             <a href="{{ portal_path(ticket, 'unresolve') }}" class="btn btn-outline-primary post-link">
-                {{ phrase('helpcenter.tickets.mark-unresolved') }}
+                {{ phrase('helpcenter.tickets.mark_unresolved') }}
             </a>
         {% endif %}
     {% endif %}

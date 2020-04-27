@@ -30,7 +30,6 @@ use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
-use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -77,12 +76,12 @@ class TicketsController extends AbstractController
         } else {
             $ticketCategories = $resolved_only ?
                 [
-                    TicketFilter::CATEGORY_RESOLVED => $this->phrase('portal.tickets.list_status_resolved'),
+                    TicketFilter::CATEGORY_RESOLVED => $this->phrase(['portal.tickets.list_status_resolved', 'helpcenter.tickets.list_status_resolved']),
                 ]
                 :
                 [
-                    TicketFilter::CATEGORY_AWAITING_USER  => $this->phrase('portal.tickets.list_status_user'),
-                    TicketFilter::CATEGORY_AWAITING_AGENT => $this->phrase('portal.tickets.list_status_agent'),
+                    TicketFilter::CATEGORY_AWAITING_USER  => $this->phrase(['portal.tickets.list_status_user', 'helpcenter.tickets.list_status_user']),
+                    TicketFilter::CATEGORY_AWAITING_AGENT => $this->phrase(['portal.tickets.list_status_agent', 'helpcenter.tickets.list_status_agent']),
                 ];
         }
         /* @var TicketListTable[] $tables */
@@ -174,7 +173,7 @@ class TicketsController extends AbstractController
             // we don't process the reply if they simply clicked the "add more attachments" button (non-JS users)
             if (!$form->getClickedButton() || $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 if ($ticket->isResolved() && !$this->isGranted(TicketsVoter::TICKET_REOPEN_RESOLVED, $ticket)) {
-                    $this->addFlash('error', $this->phrase('user.error.permission-denied'));
+                    $this->addFlash('error', $this->phrase(['user.error.permission-denied', 'helpcenter.error.permission_denied']));
 
                     return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
                 }
@@ -183,7 +182,7 @@ class TicketsController extends AbstractController
 
                 $this->saveNewReply($ticket, $message);
 
-                $this->addFlash('success', $this->phrase('portal.flashes.ticket_replied'));
+                $this->addFlash('success', $this->phrase(['portal.flashes.ticket_replied', 'helpcenter.flashes.ticket_replied']));
 
                 $ccsRemovedValue = $form['cc_remove']->getData();
 
@@ -201,7 +200,7 @@ class TicketsController extends AbstractController
                             $ccPerson = $participant->getPerson();
                             $ticket->removeParticipantPerson($ccPerson);
                             $this->getEm()->flush();
-                            $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_remove', [
+                            $this->addFlash('success', $this->phrase(['portal.flashes.ticket_participant_remove', 'helpcenter.flashes.ticket_participant_remove'], [
                                 'name'  => $ccPerson->getDisplayNameUser(),
                                 'email' => $ccPerson->getPrimaryEmailAddress(),
                             ]));
@@ -288,7 +287,7 @@ class TicketsController extends AbstractController
             if (!$rerendering) {
                 $this->saveEditedTicket($ticket, $person);
 
-                $this->addFlash('success', $this->phrase('portal.flashes.ticket_updated'));
+                $this->addFlash('success', $this->phrase(['portal.flashes.ticket_updated', 'helpcenter.flashes.ticket_updated']));
 
                 return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
             }
@@ -310,7 +309,7 @@ class TicketsController extends AbstractController
         if ($person && !$person instanceof PersonGuest) {
             $fullFormOptions['person'] = $person;
         }
-        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, $fullFormOptions);
+        $form_full         = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, $fullFormOptions);
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
@@ -362,7 +361,7 @@ class TicketsController extends AbstractController
         if ($csrfForm->isValid() || ($request->getMethod() === 'POST' && !count($csrfForm->all()))) {
             $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_RESOLVED));
             $this->saveEditedTicket($ticket, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.ticket_resolved'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.ticket_resolved', 'helpcenter.flashes.ticket_resolved']));
 
             if ($this->get('settings_resolver')->getGlobalSettings()->get('core_tickets.enable_feedback')) {
                 if ($request->isXmlHttpRequest()) {
@@ -424,7 +423,7 @@ class TicketsController extends AbstractController
             $email = $form->get('email')->getData();
             $maxCc = (int) $this->getBrandSetting('core_tickets.email_cc_max_count');
             if ($maxCc && $ticket->getCcs()->count() >= $maxCc) {
-                $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_cc_limit_reached', ['max' => $maxCc]));
+                $this->addFlash('error', $this->phrase(['portal.flashes.ticket_participant_cc_limit_reached', 'helpcenter.flashes.ticket_participant_cc_limit_reached'], ['max' => $maxCc]));
 
                 return $redirectResponse;
             }
@@ -441,7 +440,7 @@ class TicketsController extends AbstractController
                 }
 
                 if ($ticket->hasParticipantPerson($person)) {
-                    $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_already_error'));
+                    $this->addFlash('success', $this->phrase(['portal.flashes.ticket_participant_already_error', 'helpcenter.flashes.ticket_participant_already_error']));
 
                     return $redirectResponse;
                 }
@@ -454,7 +453,7 @@ class TicketsController extends AbstractController
                 $this->getEm()->flush();
 
                 // return success
-                $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_add', [
+                $this->addFlash('success', $this->phrase(['portal.flashes.ticket_participant_add', 'helpcenter.flashes.ticket_participant_add'], [
                     'name'  => $person->getDisplayNameUser(),
                     'email' => $person->getPrimaryEmailAddress(),
                 ]));
@@ -465,10 +464,10 @@ class TicketsController extends AbstractController
 
         if (count($form->get('email')->getErrors()) > 0) {
             // return error with email
-            $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_email_error'));
+            $this->addFlash('error', $this->phrase(['portal.flashes.ticket_participant_email_error', 'helpcenter.flashes.ticket_participant_email_error']));
         } else {
             // return general error
-            $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_add_unknown_error'));
+            $this->addFlash('error', $this->phrase(['portal.flashes.ticket_participant_add_unknown_error', 'helpcenter.flashes.ticket_participant_add_unknown_error']));
         }
 
         return $redirectResponse;
@@ -505,7 +504,7 @@ class TicketsController extends AbstractController
 
             $ticket->removeParticipantPerson($ccPerson);
             $this->getEm()->flush();
-            $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_remove', [
+            $this->addFlash('success', $this->phrase(['portal.flashes.ticket_participant_remove', 'helpcenter.flashes.ticket_participant_remove'], [
                 'name'  => $ccPerson->getDisplayNameUser(),
                 'email' => $ccPerson->getPrimaryEmailAddress(),
             ]));
@@ -514,7 +513,7 @@ class TicketsController extends AbstractController
         }
 
         // return general error, likely the participant id and ticket id are not the same, which would be bad!
-        $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_remove_unknown_error'));
+        $this->addFlash('error', $this->phrase(['portal.flashes.ticket_participant_remove_unknown_error', 'helpcenter.flashes.ticket_participant_remove_unknown_error']));
 
         return $redirectResponse;
     }
@@ -629,14 +628,14 @@ class TicketsController extends AbstractController
             $this->getEm()->persist($feedback);
             $this->getEm()->flush();
 
-            $this->addFlash('success', $this->phrase('portal.flashes.ticket_feedback_thank_you'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.ticket_feedback_thank_you', 'helpcenter.flashes.ticket_feedback_thank_you']));
 
             if ($this->getBrandSetting('core.iface_portal')) {
                 return $this->redirectToRoute('portal_home');
             }
         } elseif ($form->isSubmitted()) {
             // return general error
-            $this->addFlash('error', $this->phrase('portal.flashes.ticket_feedback_unknown_error'));
+            $this->addFlash('error', $this->phrase(['portal.flashes.ticket_feedback_unknown_error', 'helpcenter.flashes.ticket_feedback_unknown_error']));
         }
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
@@ -691,7 +690,7 @@ class TicketsController extends AbstractController
 
         $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
         $this->saveEditedTicket($ticket, $person);
-        $this->addFlash('success', $this->phrase('portal.flashes.ticket_re_opened'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.ticket_re_opened', 'helpcenter.flashes.ticket_re_opened']));
 
         return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
     }

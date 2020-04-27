@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('helpcenter.emails.email_new-confirm') }}</dp:subject>
+<dp:subject>{{ phrase('helpcenter.emails.email_new_confirm') }}</dp:subject>
 
 <html>
 <head>
@@ -13,7 +13,7 @@
 
     <br /><br />
 
-    {{ phrase('helpcenter.emails.profile_email_link-validate') }}:
+    {{ phrase('helpcenter.emails.profile_email_link_validate') }}:
     {% if verify_url %}<a href="{{ verify_url }}">{{ verify_url }}</a>{% else %}<a href="{{ url_full('user_validate_ticket', {'access_code': access_code}) }}">{{ url_full('user_validate_ticket', {'access_code': access_code}) }}</a>{% endif %}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}

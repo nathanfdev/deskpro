@@ -4,12 +4,12 @@
         <ul class="dp-po-community-tabs-list">
             <li class="dp-po-community-tabs-item {{ 'list' == view ? 'active' }}">
                 <a href="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}/view-list" }) }}" class="dp-po-community-tabs-link">
-                    <i class="dp-po-icon far fa-list-ul"></i> {{ phrase('helpcenter.community.view-list') }}
+                    <i class="dp-po-icon far fa-list-ul"></i> {{ phrase('helpcenter.community.view_list') }}
                 </a>
             </li>
             <li class="dp-po-community-tabs-item {{ 'status-change' == view ? 'active' }}">
                 <a href="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}/view-status-change" }) }}" class="dp-po-community-tabs-link">
-                    <i class="dp-po-icon far fa-exchange"></i> {{ phrase('helpcenter.community.view-status-change') }}
+                    <i class="dp-po-icon far fa-exchange"></i> {{ phrase('helpcenter.community.view_status_change') }}
                 </a>
             </li>
         </ul>

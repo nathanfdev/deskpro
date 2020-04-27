@@ -39,7 +39,7 @@
                                 <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}"><i class="dp-po-icon fal fa-print" title="{{ phrase('helpcenter.general.print') }}"></i></a>
                             </li>
                             <li class="dp-po-post-extra-item">
-                                <a href="{{ path('portal_community_topic_pdf', {slug: topic.slug}) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.guides.download-pdf') }}"><i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i></a>
+                                <a href="{{ path('portal_community_topic_pdf', {slug: topic.slug}) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.guides.download_pdf') }}"><i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -51,7 +51,7 @@
                 {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
                     current_forum: topic.forum,
                     is_sidebar: true,
-                    button_label: phrase('helpcenter.community.create-topic-full'),
+                    button_label: phrase('helpcenter.community.create_topic_full'),
                 } %}
 
                 {% if brand_setting('user.community_subscriptions') %}
@@ -60,7 +60,7 @@
                         {
                             toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
                             icon: 'fal fa-file-spreadsheet',
-                            title: phrase('helpcenter.community.section-title'),
+                            title: phrase('helpcenter.community.section_title'),
                             active: is_subscribed_root
                         },
                         {
@@ -80,7 +80,7 @@
         {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
             current_forum: topic.forum,
             is_sidebar: true,
-            button_label: phrase('helpcenter.community.create-topic-full'),
+            button_label: phrase('helpcenter.community.create_topic_full'),
         } %}
 
         {% if brand_setting('user.community_subscriptions') %}
@@ -90,7 +90,7 @@
                 {
                     toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
                     icon: 'fal fa-file-spreadsheet',
-                    title: phrase('helpcenter.community.section-title'),
+                    title: phrase('helpcenter.community.section_title'),
                     active: is_subscribed_root
                 },
                 {
@@ -108,7 +108,7 @@
 
 {% block page_body %}
     <div class="dp-po-section">
-        {{  macros.lockout_notice(phrase('helpcenter.account.comment-lockout'), lockout, lockout_time) }}
+        {{  macros.lockout_notice(phrase('helpcenter.account.comment_lockout'), lockout, lockout_time) }}
         <div class="dp-po-post-content dp-po-block">
             {{ topic.getContentHtml()|raw }}
         </div>
@@ -172,7 +172,7 @@
 
     {% if topic.attachments|length  > 0 %}
         <div class="dp-po-sidebar dp-po-post-attachments">
-            <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.community.attachments') }}</h3>
+            <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.general.attachments') }}</h3>
             <ul class="dp-po-post-attachments-list">
                 {% for attachment in topic.attachments %}
                     <li class="dp-po-post-attachments-item">
@@ -190,7 +190,7 @@
         <p>{{ date(topic.date_published, 'day')}}</p>
 
         {% if topic.getCustomDataSelection() %}
-            <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.community.form_custom_cat') }}</h3>
+            <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.category') }}</h3>
             <p>{{ topic.getCustomDataSelection().title }}</p>
         {% endif %}
         {% if topic.isClosed() %}

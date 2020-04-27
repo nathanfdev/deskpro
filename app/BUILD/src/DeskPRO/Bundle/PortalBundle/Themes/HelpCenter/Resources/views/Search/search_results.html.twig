@@ -36,20 +36,20 @@
                 <div class="col-sm-9 col-centered">
                     <div class="dp-po-title">
                         <img class="dp-po-title-svg" src="{{ asset('img/page-icons/search.svg', 'help_center') }}" />
-                        <h1 class="dp-po-title-text">{{ phrase('helpcenter.search.search-results') }}</h1>
+                        <h1 class="dp-po-title-text">{{ phrase('helpcenter.search.search_results') }}</h1>
                     </div>
                     <div class="dp-po-block dp-po-section">
                         {% if not is_search %}
                             <p class="dp-po-search-no-results">
-                                {{ phrase('helpcenter.general.no-search-query') }}
+                                {{ phrase('helpcenter.general.no_search_query') }}
                             </p>
                         {% elseif combined['total_results'] < 1 %}
                             <div class="dp-po-search-no-results">
                                 <p>
-                                    {{ phrase('helpcenter.general.no-search-results') }}
+                                    {{ phrase('helpcenter.general.no_search_results') }}
                                 </p>
                                 <p>
-                                    {{ phrase('helpcenter.general.no-search-results-explain', {kb_url: path('portal_kb')}) }}
+                                    {{ phrase('helpcenter.general.no_search_results_explain', {kb_url: path('portal_kb')}) }}
                                 </p>
                             </div>
                         {% else %}
@@ -63,7 +63,7 @@
                                         <li class="dp-po-search-tabs-item">
                                             <a class="dp-po-search-tabs-link {% if not article_results %}no-results{% endif %} {% if active == 'article' %}active{% endif %}" href="" data-type="article">
                                                 <img class="dp-po-search-tabs-image icon-svg"
-                                                     src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-kb') }}
+                                                     src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_kb') }}
                                                 <span>{{ article_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}
@@ -71,7 +71,7 @@
                                         <li class="dp-po-search-tabs-item">
                                             <a class="dp-po-search-tabs-link {% if not guide_results %}no-results{% endif %} {% if active == 'guide' %}active{% endif %}" href="" data-type="guide">
                                                 <img class="dp-po-search-tabs-image icon-svg"
-                                                     src="{{ asset('img/page-icons/guides.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-guides') }}
+                                                     src="{{ asset('img/page-icons/guides.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_guides') }}
                                                 <span>{{ guide_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}
@@ -79,7 +79,7 @@
                                         <li class="dp-po-search-tabs-item">
                                             <a class="dp-po-search-tabs-link {% if not community_results %}no-results{% endif %} {% if active == 'community' %}active{% endif %}" href="" data-type="community">
                                                 <img class="dp-po-search-tabs-image icon-svg"
-                                                     src="{{ asset('img/page-icons/community.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-community') }}
+                                                     src="{{ asset('img/page-icons/community.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_community') }}
                                                 <span>{{ community_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}
@@ -87,7 +87,7 @@
                                         <li class="dp-po-search-tabs-item">
                                             <a class="dp-po-search-tabs-link {% if not news_results %}no-results{% endif %} {% if active == 'news' %}active{% endif %}" href="" data-type="news">
                                                 <img class="dp-po-search-tabs-image icon-svg"
-                                                     src="{{ asset('img/page-icons/news.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-news') }}
+                                                     src="{{ asset('img/page-icons/news.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_news') }}
                                                 <span>{{ news_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}
@@ -95,7 +95,7 @@
                                         <li class="dp-po-search-tabs-item">
                                             <a class="dp-po-search-tabs-link {% if not download_results %}no-results{% endif %} {% if active == 'download' %}active{% endif %}" href="" data-type="download">
                                                 <img class="dp-po-search-tabs-image icon-svg"
-                                                     src="{{ asset('img/page-icons/download.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-downloads') }}
+                                                     src="{{ asset('img/page-icons/download.svg', 'help_center') }}">{{ phrase('helpcenter.general.downloads_type') }}
                                                 <span>{{ download_info.total_results | default(0) }}</span></a>
                                         </li>
                                     {% endif %}
@@ -106,7 +106,7 @@
                                             {{ search_macros.search_result(result_set) }}
                                         {% endfor %}
                                     </ul>
-                                    <a href="{{ path('portal_type_search', {type: 'article', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: article_info.total_results | default(0) }) }}</a>
+                                    <a href="{{ path('portal_type_search', {type: 'article', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view_all_results', {count: article_info.total_results | default(0) }) }}</a>
                                 </div>
                                 <div id="guide_tab" class="dp-po-search-tab" {% if active != 'guide' %}style="display: none" {% endif %}>
                                     <ul class="dp-po-search-list">
@@ -114,7 +114,7 @@
                                             {{ search_macros.search_result(result_set) }}
                                         {% endfor %}
                                     </ul>
-                                    <a href="{{ path('portal_type_search', {type: 'guide', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: guide_info.total_results | default(0) }) }}</a>
+                                    <a href="{{ path('portal_type_search', {type: 'guide', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view_all_results', {count: guide_info.total_results | default(0) }) }}</a>
                                 </div>
                                 <div id="community_tab" class="dp-po-search-tab" {% if active != 'community' %}style="display: none" {% endif %}>
                                     <ul class="dp-po-search-list">
@@ -122,7 +122,7 @@
                                             {{ search_macros.search_result(result_set) }}
                                         {% endfor %}
                                     </ul>
-                                    <a href="{{ path('portal_type_search', {type: 'community', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: community_info.total_results | default(0) }) }}</a>
+                                    <a href="{{ path('portal_type_search', {type: 'community', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view_all_results', {count: community_info.total_results | default(0) }) }}</a>
                                 </div>
                                 <div id="news_tab" class="dp-po-search-tab" {% if active != 'news' %}style="display: none" {% endif %}>
                                     <ul class="dp-po-search-list">
@@ -130,7 +130,7 @@
                                             {{ search_macros.search_result(result_set) }}
                                         {% endfor %}
                                     </ul>
-                                    <a href="{{ path('portal_type_search', {type: 'news', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: news_info.total_results | default(0) }) }}</a>
+                                    <a href="{{ path('portal_type_search', {type: 'news', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view_all_results', {count: news_info.total_results | default(0) }) }}</a>
                                 </div>
                                 <div id="download_tab" class="dp-po-search-tab" {% if active != 'download' %}style="display: none" {% endif %}>
                                     <ul class="dp-po-search-list">
@@ -138,7 +138,7 @@
                                             {{ search_macros.search_result(result_set) }}
                                         {% endfor %}
                                     </ul>
-                                    <a href="{{ path('portal_type_search', {type: 'download', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: download_info.total_results | default(0) }) }}</a>
+                                    <a href="{{ path('portal_type_search', {type: 'download', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view_all_results', {count: download_info.total_results | default(0) }) }}</a>
                                 </div>
                             </div>
                             {% endif %}

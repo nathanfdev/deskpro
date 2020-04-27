@@ -6,7 +6,7 @@
             <div class="container">
                 <div class="dp-po-title">
                     <img class="dp-po-title-svg" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}">
-                    <h1 class="dp-po-title-text">{{ phrase('helpcenter.chats.my-chats') }}</h1>
+                    <h1 class="dp-po-title-text">{{ phrase('helpcenter.chats.my_chats') }}</h1>
                 </div>
             </div>
             <div class="container">
@@ -18,7 +18,7 @@
                                 <ul class="dp-po-ticket-pages-list">
                                     <li class="dp-po-ticket-pages-item">
                                         <a href="{{ path('portal_tickets') }}" class="dp-po-ticket-pages-link">
-                                            <i class="dp-po-icon fal fa-envelope-open-text"></i> {{ phrase('helpcenter.tickets.my-tickets') }}
+                                            <i class="dp-po-icon fal fa-envelope-open-text"></i> {{ phrase('helpcenter.tickets.my_tickets') }}
                                         </a>
                                     </li>
 {#                                    <li class="dp-po-ticket-pages-item">#}
@@ -29,19 +29,19 @@
                                     {% if person.organization and person.organization_manager %}
                                         <li class="dp-po-ticket-pages-item">
                                             <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-ticket-pages-link">
-                                                <i class="dp-po-icon fal fa-atom-alt"></i> {{ phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) }}
+                                                <i class="dp-po-icon fal fa-atom-alt"></i> {{ phrase('helpcenter.tickets.organization_tickets', {org_name: person.organization }) }}
                                             </a>
                                         </li>
                                     {% endif %}
                                     <li class="dp-po-ticket-pages-item active">
                                         <a href="{{ path('portal_chats') }}" class="dp-po-ticket-pages-link">
-                                            <i class="dp-po-icon fal fa-comments-alt"></i> {{ phrase('helpcenter.chats.my-chats') }}
+                                            <i class="dp-po-icon fal fa-comments-alt"></i> {{ phrase('helpcenter.chats.my_chats') }}
                                         </a>
                                     </li>
                                     {% if app.getSetting('core_tickets.ticket_approvals') %}
                                     <li class="dp-po-ticket-pages-item">
                                         <a href="{{ path('ticket_approvals') }}" class="dp-po-ticket-pages-link">
-                                            <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my-approvals') }}
+                                            <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my_approvals') }}
                                         </a>
                                     </li>
                                     {% endif %}
@@ -149,13 +149,13 @@
                                 <div class="dp-po-table-row dp-po-table-row-head">
                   <span class="dp-po-table-cell dp-po-table-cell-small">{{ phrase('helpcenter.chat.list_date') }}
                   </span>
-                                    <span class="dp-po-table-cell">{{ phrase('helpcenter.chat.list_agent') }}
+                                    <span class="dp-po-table-cell">{{ phrase('helpcenter.general.agent') }}
                   </span>
                                     {% if type == 'organization' %}
-                                        <span class="dp-po-table-cell">{{ phrase('helpcenter.chat.list_user') }}
+                                        <span class="dp-po-table-cell">{{ phrase('helpcenter.general.user') }}
                   </span>
                                     {% endif %}
-                                    <span class="dp-po-table-cell">{{ phrase('helpcenter.chat.list_chat') }}</span>
+                                    <span class="dp-po-table-cell">{{ phrase('helpcenter.general.chat') }}</span>
                                 </div>
                                 {% for chat in pager %}
                                 <div class="dp-po-table-row">

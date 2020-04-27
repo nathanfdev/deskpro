@@ -13,7 +13,7 @@
                 {% if viewCategory %}
                     <h1 class="dp-po-title-text">{{ object_phrase(viewCategory) }}</h1>
                 {% else %}
-                    <h1 class="dp-po-title-text">{{ phrase('helpcenter.news.section-title') }}</h1>
+                    <h1 class="dp-po-title-text">{{ phrase('helpcenter.news.section_title') }}</h1>
                 {% endif %}
             </div>
         </div>
@@ -36,7 +36,7 @@
         {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
             buttonId: 'subscribeDropdownMenuMobile',
             subscriptionInfo: [
-                { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section-title'), active: is_subscribed },
+                { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed },
             ]
         } %}
         <a href="javascript:void(0)" data-toggle="modal" data-target="#postExtraMobile"><i
@@ -98,7 +98,7 @@
             </div>
             <div class="modal-body">
                 <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
-                    <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-cat') }}</h3>
+                    <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter_cat') }}</h3>
                     <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#news_categories_mobile" role="button" aria-expanded="true" aria-controls="news_categories_mobile">
                         <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
                     </a>
@@ -108,7 +108,7 @@
                                 {% if not viewCategory %}<i class="dp-po-icon fa fa-long-arrow-right"></i>{% endif %}
                                 <div class="dp-po-form-check">
                                     <a href="{{ path('user_news_home') }}" class="dp-po-news-filter-type-link {% if not viewCategory %}active{% endif %}">
-                                        {{ phrase('helpcenter.news.all-news') }}
+                                        {{ phrase('helpcenter.news.all_news') }}
                                     </a>
                                 </div>
                             </li>
@@ -127,7 +127,7 @@
                 </div>
 
                 <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-date">
-                    <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-date') }}</h3>
+                    <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter_date') }}</h3>
                     <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#date_filter_mobile" role="button"
                     aria-expanded="false" aria-controls="date_filter_mobile">
                         <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
@@ -138,7 +138,7 @@
                                 <li class="dp-po-news-filter-date-year-item">
                                     <a href="{{ _self.news_date_filter_path({date: ''}) }}"
                                     class="dp-po-news-filter-date-year-link text-uppercase {{ not filter_date ? 'active' }}">
-                                        {{ phrase('helpcenter.news.any-date') }}
+                                        {{ phrase('helpcenter.news.any_date') }}
                                     </a>
                                 </li>
                                 {% for y in newsData.ymCounts %}
@@ -157,7 +157,7 @@
                                         <li class="dp-po-news-filter-date-month-item">
                                             <a href="{{ _self.news_date_filter_path({date: date}) }}"
                                             class="dp-po-news-filter-date-month-link {{ filter_date matches "/#{date}.*/" ? 'active' }}" style="{{ filter_date and 0 == m.count ? 'color: #DDD;' }}">
-                                                {{ date("#{m.year}-#{m.month}-01") | date('M') | upper }}
+                                                {{ date("#{m.year}-#{m.month}-01", "c") | date('M') | upper }}
                                             </a>
                                         </li>
                                     {% endfor %}
@@ -179,12 +179,12 @@
     <div class="d-none d-sm-block">
         {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
             subscriptionInfo: [
-                { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section-title'), active: is_subscribed },
+                { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed },
             ]
         } %}
 
         <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
-            <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-cat') }}</h3>
+            <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter_cat') }}</h3>
             <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#news_categories" role="button" aria-expanded="true" aria-controls="news_categories">
                 <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
             </a>
@@ -194,7 +194,7 @@
                         {% if not viewCategory %}<i class="dp-po-icon fa fa-long-arrow-right"></i>{% endif %}
                         <div class="dp-po-form-check">
                             <a href="{{ path('user_news_home') }}" class="dp-po-news-filter-type-link {% if not viewCategory %}active{% endif %}">
-                                {{ phrase('helpcenter.news.all-news') }}
+                                {{ phrase('helpcenter.news.all_news') }}
                             </a>
                         </div>
                     </li>
@@ -213,7 +213,7 @@
         </div>
 
         <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-date">
-            <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-date') }}</h3>
+            <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter_date') }}</h3>
             <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#date_filter" role="button"
             aria-expanded="false" aria-controls="date_filter">
                 <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
@@ -224,7 +224,7 @@
                         <li class="dp-po-news-filter-date-year-item">
                             <a href="{{ _self.news_date_filter_path({date: ''}) }}"
                             class="dp-po-news-filter-date-year-link text-uppercase {{ not filter_date ? 'active' }}">
-                                {{ phrase('helpcenter.news.any-date') }}
+                                {{ phrase('helpcenter.news.any_date') }}
                             </a>
                         </li>
                         {% for y in newsData.ymCounts %}
@@ -243,7 +243,7 @@
                                 <li class="dp-po-news-filter-date-month-item">
                                     <a href="{{ _self.news_date_filter_path({date: date}) }}"
                                     class="dp-po-news-filter-date-month-link {{ filter_date matches "/#{date}.*/" ? 'active' }}" style="{{ filter_date and 0 == m.count ? 'color: #DDD;' }}">
-                                        {{ date("#{m.year}-#{m.month}-01") | date('M') | upper }}
+                                        {{ date("#{m.year}-#{m.month}-01", "c") | date('M') | upper }}
                                     </a>
                                 </li>
                             {% endfor %}

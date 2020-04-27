@@ -97,7 +97,7 @@ class SavedFormController extends AbstractController
         $runner = new Runner();
         $runner->executeSource($source);
 
-        $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.ticket_created', 'helpcenter.flashes.ticket_created']));
 
         return $this->redirectToRoute('portal_home');
     }
@@ -131,7 +131,7 @@ class SavedFormController extends AbstractController
             // fire an email with a link to validate
             $verify_url = $this->generateUrl('user_validate_usersource_email_2', ['tmp_auth' => $new_tmp->getAuth()], UrlGeneratorInterface::ABSOLUTE_URL);
             $this->get('portal_validation')->sendUsersourceEmailValidation($email_address, $verify_url);
-            $this->addFlash('success', $this->phrase('portal.flashes.usersource_new_add_email_verify'));
+            $this->addFlash('success', $this->phrase(['portal.flashes.usersource_new_add_email_verify', 'helpcenter.flashes.usersource_new_add_email_verify']));
 
             return $this->redirectToRoute('portal_home');
         }
@@ -166,7 +166,7 @@ class SavedFormController extends AbstractController
 
         $this->loginAndAuthenticateTmpUsersource($usersource_tmp_auth, $email);
 
-        $this->addFlash('success', $this->phrase('portal.flashes.usersource_new_add_email_verified'));
+        $this->addFlash('success', $this->phrase(['portal.flashes.usersource_new_add_email_verified', 'helpcenter.flashes.usersource_new_add_email_verified']));
 
         $this->removeUsedTmpData($usersource_tmp_auth, $tmp_data);
 
@@ -197,7 +197,7 @@ class SavedFormController extends AbstractController
                     ]);
 
                     if ($email && $email->isValidated()) {
-                        $this->addFlash('success', $this->phrase('portal.flashes.user_registered_verified'));
+                        $this->addFlash('success', $this->phrase(['portal.flashes.user_registered_verified', 'helpcenter.flashes.user_registered_verified']));
 
                         return $this->redirectToRoute('portal_home');
                     } else {

@@ -1,6 +1,6 @@
 <div class="dp-po-section dp-po-comments no-print">
     <div class="dp-po-title">
-        <h2 class="dp-po-title-text dp-po-title-small">{{ phrase('helpcenter.general.add-comment') }}</h2>
+        <h2 class="dp-po-title-text dp-po-title-small">{{ phrase('helpcenter.general.add_comment') }}</h2>
     </div>
 
     {# ------------------------------------------ #}
@@ -67,10 +67,10 @@
         <div class="dpx-tabs">
             <ul class="dp-po-tab">
                 <li class="dp-po-tab-item">
-                    <a href="{{ url('portal_login') }}" data-tab-id="comment_login_form" class="dp-po-tab-link dpx-tab">{{ phrase('helpcenter.account.login-btn') }}</a>
+                    <a href="{{ url('portal_login') }}" data-tab-id="comment_login_form" class="dp-po-tab-link dpx-tab">{{ phrase('helpcenter.general.log_in') }}</a>
                 </li>
                 <li class="dp-po-tab-item" >
-                    <a href="{{ url('portal_user_registration') }}" data-tab-id="comment_register_form" class="dp-po-tab-link dpx-tab">{{ phrase('helpcenter.account.register-btn') }}</a>
+                    <a href="{{ url('portal_user_registration') }}" data-tab-id="comment_register_form" class="dp-po-tab-link dpx-tab">{{ phrase('helpcenter.account.register_btn') }}</a>
                 </li>
             </ul>
             <div class="row">
@@ -83,26 +83,26 @@
                             <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
                             <div class="form-group">
                                 <input type="email" class="form-control" id="comments_login_form_email_input" aria-describedby="comments_login_form_email"
-                                       name="username" placeholder="{{ phrase('helpcenter.account.login-email-placeholder') }}" tabindex="1"
+                                       name="username" placeholder="{{ phrase('helpcenter.account.login_email_placeholder') }}" tabindex="1"
                                        value="{{ last_username | default('') }}" />
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" id="comments_login_form_password_input"
-                                       placeholder="{{ phrase('helpcenter.forms.label_password') }}" name="password" tabindex="2" />
+                                       placeholder="{{ phrase('helpcenter.general.password') }}" name="password" tabindex="2" />
                             </div>
                             <div class="form-group dp-po-form-check">
                                 <input type="checkbox" class="form-check-input" id="comments_login_form_rememberme">
-                                <label class="form-check-label" for="comments_login_form_rememberme">{{ phrase('helpcenter.account.login-remember') }}</label>
+                                <label class="form-check-label" for="comments_login_form_rememberme">{{ phrase('helpcenter.account.login_remember') }}</label>
                             </div>
 
                             {% if captcha_form is not null %}
                                 {{ form_widget(captcha_form) }}
                             {% endif %}
 
-                            <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.account.login-btn') }}</button>
+                            <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.general.log_in') }}</button>
                             {% if auth_manager.isForgotPasswordVisible %}
                                 <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5" class="dp-po-form-btntext">
-                                    {{ phrase('helpcenter.account.login-password-reminder') }}
+                                    {{ phrase('helpcenter.account.login_password_reminder') }}
                                 </a>
                             {% endif %}
 
@@ -120,7 +120,7 @@
                         {{ form_start(register_form) }}
                         {{ form_widget(register_form) }}
                         {{ form_rest(register_form) }}
-                        <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.account.register-btn') }}</button>
+                        <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.account.register_btn') }}</button>
                         {{ form_end(register_form) }}
                     </section>
                     {% endif %}
@@ -140,7 +140,7 @@
     {% else %}
         <div class="alert alert-icon alert-danger" role="alert">
             <i class="dp-po-icon fas fa-ban"></i>
-            {{ phrase('helpcenter.error.permission-denied-title', { login_url: url('portal_login') }) }}
+            {{ phrase('helpcenter.error.permission_denied_title', { login_url: url('portal_login') }) }}
         </div>
     {% endif %}
     </div>

@@ -13,7 +13,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -71,7 +70,6 @@ class MessengerChatType extends AbstractType
                 'allow_add'     => true,
                 'allow_delete'  => true,
             ])
-            ->add('prompt', TextType::class)
             ->add('options', MessengerChatOptionsType::class)
             ->add('preChatForm', MessengerPreChatFormType::class)
             ->add('timeout', NumberType::class)
@@ -88,7 +86,6 @@ class MessengerChatType extends AbstractType
                 ],
 
             ])
-            ->add('busyMessage', TextType::class)
             ->add('ticketDefaults', MessengerChatTicketDefaultsType::class, ['brand' => $brand])
 
         ;

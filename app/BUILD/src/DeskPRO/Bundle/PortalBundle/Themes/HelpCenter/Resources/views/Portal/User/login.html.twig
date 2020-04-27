@@ -15,29 +15,29 @@
                     {% if auth_manager.isAuthVisible %}
                         <div class="dp-po-title">
                             <h1 class="dp-po-title-text">
-                                {{ phrase('helpcenter.account.section-title-login') }}
+                                {{ phrase('helpcenter.general.log_in') }}
                             </h1>
                         </div>
-                        <p>{{ phrase('helpcenter.account.section-desc-login') }}</p>
+                        <p>{{ phrase('helpcenter.account.section_desc_login') }}</p>
 
                         <div class="dp-po-section dp-po-block">
                             <section class="padded">
                                 {% if reset_success %}
-                                    {{ macros.user_notice('success', phrase('helpcenter.account.reset-password-success')) }}
+                                    {{ macros.user_notice('success', phrase('helpcenter.account.reset_password_success')) }}
                                 {% endif %}
 
                                 {% if set_password_success %}
-                                    {{ macros.user_notice('success', phrase('helpcenter.account.set-password-success')) }}
+                                    {{ macros.user_notice('success', phrase('helpcenter.account.set_password_success')) }}
                                 {% endif %}
 
                                 {% if login_error %}
                                     {{ macros.user_notice('danger', phrase(login_error)) }}
                                 {% endif %}
 
-                                {{  macros.lockout_notice(phrase('helpcenter.account.login-lockout'), lockout_error, lockout_time) }}
+                                {{  macros.lockout_notice(phrase('helpcenter.account.login_lockout'), lockout_error, lockout_time) }}
 
                                 {% if login_captcha_failed %}
-                                    {{ macros.user_notice('danger', phrase('helpcenter.account.login-captcha-failed')) }}
+                                    {{ macros.user_notice('danger', phrase('helpcenter.account.login_captcha_failed')) }}
                                 {% endif %}
 
                                 {% if saved_form %}
@@ -52,21 +52,21 @@
                                         {% endif %}
 
                                         <div class="form-group">
-                                            <label for="login_username" class="title{% if login_error %} error{% endif %}">{{ phrase('helpcenter.account.login-email') }}</label>
-                                            <input type="text" placeholder="{{ phrase('helpcenter.account.login-email') }}" name="username"
+                                            <label for="login_username" class="title{% if login_error %} error{% endif %}">{{ phrase('helpcenter.account.login_email') }}</label>
+                                            <input type="text" placeholder="{{ phrase('helpcenter.account.login_email') }}" name="username"
                                                    id="login_username" value="{{ last_username }}" tabindex="1" class="form-control"
                                             >
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="login_password" class="title{% if login_error %} error{% endif %}">{{ phrase('helpcenter.account.login-password') }}</label>
-                                            <input type="password" placeholder="{{ phrase('helpcenter.account.login-password') }}"
+                                            <label for="login_password" class="title{% if login_error %} error{% endif %}">{{ phrase('helpcenter.account.login_password') }}</label>
+                                            <input type="password" placeholder="{{ phrase('helpcenter.account.login_password') }}"
                                                    name="password" id="login_password" tabindex="2" class="form-control"
                                             >
                                             {% if auth_manager.isForgotPasswordVisible %}
                                                 <div class="form-meta form-meta-grey form-meta-top">
                                                     <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5">
-                                                        {{ phrase('helpcenter.account.login-password-reminder') }}
+                                                        {{ phrase('helpcenter.account.login_password_reminder') }}
                                                     </a>
                                                 </div>
                                             {% endif %}
@@ -76,14 +76,14 @@
                                             {{ form_widget(captcha_form) }}
                                         {% endif %}
 
-                                        <button class="btn btn-primary" id="login_button" tabindex="4">{{ phrase('helpcenter.account.login-btn') }}</button>
+                                        <button class="btn btn-primary" id="login_button" tabindex="4">{{ phrase('helpcenter.general.log_in') }}</button>
                                         {% if auth_manager.isRememberMeEnabled %}
                                             <div class="form-group">
                                                 <div class="remember-me checkboxes">
                                                     <label for="remember_me">
                                                         <input tabindex="3" type="checkbox" name="remember_me" id="remember_me">
                                                         <i></i>
-                                                        <span>{{ phrase('helpcenter.account.login-remember') }}</span>
+                                                        <span>{{ phrase('helpcenter.account.login_remember') }}</span>
                                                     </label>
                                                 </div>
                                             </div>
@@ -98,8 +98,8 @@
                                     <hr class="divider" />
                                 {% endif %}
                                 <header class="large-title">
-                                    <h2>{{ phrase('helpcenter.account.login-external') }}</h2>
-                                    <p>{{ phrase('helpcenter.account.section-desc-login-external') }}</p>
+                                    <h2>{{ phrase('helpcenter.account.login_external') }}</h2>
+                                    <p>{{ phrase('helpcenter.account.section_desc_login_external') }}</p>
                                 </header>
 
                                 <section class="padded">
@@ -120,12 +120,12 @@
                                     <hr class="divider" />
                                 {% endif %}
                                 <header class="large-title">
-                                    <h1>{{ phrase('helpcenter.account.login-register-header') }}</h1>
-                                    <p>{{ phrase('helpcenter.account.section-desc-register') }}</p>
+                                    <h1>{{ phrase('helpcenter.account.login_register_header') }}</h1>
+                                    <p>{{ phrase('helpcenter.account.section_desc_register') }}</p>
                                 </header>
 
                                 <section class="padded">
-                                    <a class="btn btn-secondary" href="{{ path('portal_user_registration') }}">{{ phrase('helpcenter.account.login-register-btn') }}</a>
+                                    <a class="btn btn-secondary" href="{{ path('portal_user_registration') }}">{{ phrase('helpcenter.account.login_register_btn') }}</a>
                                 </section>
                             {% endif %}
                         </div>

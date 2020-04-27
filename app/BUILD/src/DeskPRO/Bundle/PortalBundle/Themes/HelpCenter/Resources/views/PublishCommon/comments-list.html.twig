@@ -1,6 +1,6 @@
 <div class="dp-po-section dp-po-comments">
     <div class="dp-po-title">
-        <h2 class="dp-po-title-text dp-po-title-small">{{ phrase('helpcenter.general.comments-title', { count: comments|length }) }}</h2>
+        <h2 class="dp-po-title-text dp-po-title-small">{{ phrase('helpcenter.general.comments_title', { count: comments|length }) }}</h2>
     </div>
     <div class="dp-po-block">
         <div class="dp-po-comments-thread">
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                         {% if not comment.is_visible and comment.person == get_user() %}
-                            <p class="dp-po-comment-subtitle">{{ phrase('helpcenter.general.comments-pending-validation') }}</p>
+                            <p class="dp-po-comment-subtitle">{{ phrase('helpcenter.general.comments_pending_validation') }}</p>
                         {% endif %}
                         {#<div class="dp-po-comments-vote">
                             <a href="" class="dp-po-comments-upvote"><i class="dp-po-icon fal fa-angle-up"></i> 2</a>

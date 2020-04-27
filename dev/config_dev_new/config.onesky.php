@@ -2,8 +2,7 @@
 
 /*
  * These values are for use with the OneSky commands:
- * - dpdev:lang:onesky:download
- * - dpdev:lang:onesky:upload
+ * - bin/console dpdev:lang:tms:sync
  *
  * See also: http://languages.deskpro.com/
  */
@@ -14,7 +13,6 @@ $CONFIG['api_key']    = 'xxx';
 $CONFIG['api_secret'] = 'xxx';
 
 $CONFIG['projects'] = [
-    'portal' => 142711,
-    'agent'  => 142713,
-    'other'  => 142714
+    'deskpro' => 322372, // backend, user
+    'helpcenter' => 359982, // helpcenter
 ];

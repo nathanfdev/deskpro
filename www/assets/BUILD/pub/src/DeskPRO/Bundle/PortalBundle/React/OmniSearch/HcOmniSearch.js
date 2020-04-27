@@ -245,7 +245,7 @@ export class HcOmniSearch extends React.Component {
               <ul className="dp-po-search-tabs-list">
                 <ResultTab
                   tab="article"
-                  title="helpcenter.general.nav-kb"
+                  title="helpcenter.general.nav_kb"
                   icon={KnowledgebaseSvg}
                   data={data}
                   activeTab={activeTab}
@@ -253,7 +253,7 @@ export class HcOmniSearch extends React.Component {
                 />
                 <ResultTab
                   tab="topic"
-                  title="helpcenter.general.nav-guides"
+                  title="helpcenter.general.nav_guides"
                   icon={GuidesSvg}
                   data={data}
                   activeTab={activeTab}
@@ -261,7 +261,7 @@ export class HcOmniSearch extends React.Component {
                 />
                 <ResultTab
                   tab="community"
-                  title="helpcenter.general.nav-community"
+                  title="helpcenter.general.nav_community"
                   icon={CommunitySvg}
                   data={data}
                   activeTab={activeTab}
@@ -269,7 +269,7 @@ export class HcOmniSearch extends React.Component {
                 />
                 <ResultTab
                   tab="news"
-                  title="helpcenter.general.nav-news"
+                  title="helpcenter.general.nav_news"
                   icon={NewsSvg}
                   data={data}
                   activeTab={activeTab}
@@ -277,7 +277,7 @@ export class HcOmniSearch extends React.Component {
                 />
                 <ResultTab
                   tab="download"
-                  title="helpcenter.general.nav-downloads"
+                  title="helpcenter.general.downloads_type"
                   icon={DownloadSvg}
                   data={data}
                   activeTab={activeTab}
@@ -285,7 +285,7 @@ export class HcOmniSearch extends React.Component {
                 />
                 <ResultTab
                   tab="chat_conversation"
-                  title="helpcenter.general.nav-chats"
+                  title="helpcenter.general.chats"
                   icon={ChatsSvg}
                   data={data}
                   activeTab={activeTab}

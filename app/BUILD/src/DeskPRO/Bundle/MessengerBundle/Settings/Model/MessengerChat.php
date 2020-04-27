@@ -24,15 +24,6 @@ class MessengerChat
     private $enabled = true;
 
     /**
-     * A short prompt to chat.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $prompt = 'What can we help you with today?';
-
-    /**
      * How long to wait before consider chat is timed out.
      *
      * @JMS\Type("integer")
@@ -50,16 +41,6 @@ class MessengerChat
      * @var string
      */
     private $noAnswerBehavior = 'save_ticket';
-
-    /**
-     * A message to show when there is no answer.
-     *
-     * @JMS\Type("string")
-     * @JMS\SerializedName("busyMessage")
-     *
-     * @var string
-     */
-    private $busyMessage = 'It looks like all of our agents are busy at the moment. You can still send us a ticket below and we will get back to you as soon as possible';
 
     /**
      * A default department ID.
@@ -124,26 +105,6 @@ class MessengerChat
     }
 
     /**
-     * @return string
-     */
-    public function getPrompt()
-    {
-        return $this->prompt;
-    }
-
-    /**
-     * @param string $prompt
-     *
-     * @return $this
-     */
-    public function setPrompt($prompt)
-    {
-        $this->prompt = $prompt;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getTimeout()
@@ -179,26 +140,6 @@ class MessengerChat
     public function setNoAnswerBehavior($noAnswerBehavior)
     {
         $this->noAnswerBehavior = $noAnswerBehavior;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBusyMessage()
-    {
-        return $this->busyMessage;
-    }
-
-    /**
-     * @param string $busyMessage
-     *
-     * @return $this
-     */
-    public function setBusyMessage($busyMessage)
-    {
-        $this->busyMessage = $busyMessage;
 
         return $this;
     }
