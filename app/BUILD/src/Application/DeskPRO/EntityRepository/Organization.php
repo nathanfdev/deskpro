@@ -10,6 +10,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Query;
 use Orb\Util\Numbers;
@@ -239,5 +240,94 @@ class Organization extends AbstractEntityRepository
         return $this->getEntityManager()->createQuery('
             SELECT p FROM DeskPRO:Person p WHERE p.organization = :org
         ')->setParameter('org', $org)->setMaxResults((int) $limit)->getResult();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReportAssociations()
+    {
+        return [
+            // To be able to reach ManyToMany associated table `usergroups`
+            // add virtual association `organization_usergroup` to intermediate table `organization2usergroups`
+            'organization_usergroup' => [
+                'conditions'   => '%1$s.organization_id = %2$s.id',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationUsergroup', // non existing Entity
+                                                                                         // pass it to generate proper
+                                                                                         // doc in console command
+                'repository' => $this->getReportManyToManyVirtualRepository(
+                    'organization2usergroups',
+                    'OrganizationUsergroup',
+                    [
+                        'organization' => [
+                            'fieldName' => 'organization',
+                            'targetEntity' => 'Application\DeskPRO\Entity\Organization',
+                            'joinColumns' => [[
+                                'name' => 'organization_id',
+                                'referencedColumnName' => 'id',
+                                'nullable' => null,
+                                'onDelete' => 'CASCADE',
+                            ]],
+                            'type' => ClassMetadata::MANY_TO_ONE,
+                            'isOwningSide' => 1,
+                            'sourceToTargetKeyColumns' => [
+                                'organization_id' => 'id'
+                            ],
+                            'joinColumnFieldNames' => [
+                                'organization_id' => 'organization_id'
+                            ],
+                            'targetToSourceKeyColumns' => [
+                                'id' => 'organization_id'
+                            ]
+                        ],
+                        'usergroup' => [
+                            'fieldName' => 'usergroup',
+                            'targetEntity' => 'Application\DeskPRO\Entity\Usergroup',
+                            'joinColumns' => [[
+                                'name' => 'usergroup_id',
+                                'referencedColumnName' => 'id',
+                                'nullable' => null,
+                                'onDelete' => 'CASCADE',
+                            ]],
+                            'type' => ClassMetadata::MANY_TO_ONE,
+                            'isOwningSide' => 1,
+                            'sourceToTargetKeyColumns' => [
+                                'usergroup_id' => 'id'
+                            ],
+                            'joinColumnFieldNames' => [
+                                'usergroup_id' => 'usergroup_id'
+                            ],
+                            'targetToSourceKeyColumns' => [
+                                'id' => 'usergroup_id'
+                            ]
+                        ]                        
+                    ]
+                )
+            ],
+        ];
+    }
+
+    /**
+     * Generate Repository used in reports to get metadata about the table which has no corresponding entity
+     * i.e. intermediate table used for ManyToMany association
+     *
+     * @param string $tableName
+     * @param string $virtualEntityName
+     * @param array $associationMapping
+     * @return \Application\DeskPRO\EntityRepository\Basic
+     */
+    protected function getReportManyToManyVirtualRepository($tableName, $virtualEntityName, $associationMapping)
+    {
+        $metaData = new ClassMetadata($virtualEntityName);
+        $metaData->setPrimaryTable([
+            'name' => $tableName
+        ]);
+        $metaData->associationMappings = $associationMapping;
+        $metaData->validateAssociations();
+
+        return new Basic(
+            $this->getEntityManager(),
+            $metaData
+        );
     }
 }

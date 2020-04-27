@@ -93,7 +93,9 @@ class ColumnStar extends AbstractPart
             foreach ($repository->getReportAssociations() as $name => $association) {
                 if (strtolower($name) == $part) {
                     $target          = $association['targetEntity'];
-                    $childRepository = $target::getRepository();
+                    $childRepository = isset($association['repository'])
+                                       ? $association['repository']
+                                       : App::getEntityRepository($target);
 
                     if (!($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)) {
                         throw new Exception("$partsString cannot be accessed via DPQL.");

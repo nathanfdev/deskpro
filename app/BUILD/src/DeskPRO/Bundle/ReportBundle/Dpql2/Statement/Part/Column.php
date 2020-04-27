@@ -105,6 +105,7 @@ END)
         'custom_data_organizations'   => ['id', 'title'],
         'custom_data_ticket'          => ['id', 'title'],
         'custom_data_people'          => ['id', 'title'],
+        'usergroups'                  => ['id', 'title'],
         'voice_queues'                => ['id', 'name'],
         'voice_numbers'               => ['id', 'number'],
     ];
@@ -357,7 +358,9 @@ END)
             foreach ($repository->getReportAssociations() as $name => $association) {
                 if (strtolower(Strings::camelCaseToUnderscore($name)) == $part) {
                     $target          = $association['targetEntity'];
-                    $childRepository = $this->em->getRepository($target);
+                    $childRepository = isset($association['repository'])
+                                       ? $association['repository']
+                                       : $this->em->getRepository($target);
 
                     if (!($childRepository instanceof AbstractEntityRepository)) {
                         throw new DpqlException("$partsString cannot be accessed via DPQL.");
