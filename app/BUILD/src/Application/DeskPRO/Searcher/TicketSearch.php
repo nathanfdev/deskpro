@@ -1560,7 +1560,7 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'ticket.category_id';
 
                         if (!$choice) {
-                            $choice = '0';
+                            $choice = ['0'];
                         }
                         if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
                             $choice = (array) $choice;
@@ -1586,7 +1586,7 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'ticket.product_id';
 
                         if (!$choice) {
-                            $choice = '0';
+                            $choice = ['0'];
                         }
                         if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
                             $choice = (array) $choice;
