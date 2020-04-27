@@ -341,7 +341,10 @@ class DpqlCompiler
                             return $this->replaceGroup($variable, $variables, $variable['type']);
                         // this would include 'value' and all custom def stuff
                         default:
-                            $value = @$variable['value'] ?: @$variable['field_value'] ?: $match[0];
+                            $value = @$variable['value']
+                                     ?: @$variable['field_value']
+                                     ?: @$variable['default']
+                                     ?: $match[0];
 
                             if ($variable['type'] === DashboardWidgetManager::WIDGET_VAR_TYPE_BILLING) {
                                 // it's internal vars, which are not accessible by a user
