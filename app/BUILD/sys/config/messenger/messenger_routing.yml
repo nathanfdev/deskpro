@@ -35,5 +35,10 @@ portal_kb_view:
   requirements:
     slug: '.+'
 
+portal_tickets_view:
+  path: '/tickets/{ticket_ref}'
+  requirements:
+    ticket_ref: '.+'
+
 portal_home:
   path: '/'
