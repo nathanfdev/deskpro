@@ -92,17 +92,51 @@ class TicketType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (array_key_exists('message_ticket', $options)) {
-            $builder->setData($options['message_ticket']);
-        }
+        // resolve field name aliases
+        $fieldNameResolver = $this->fieldManager->getFieldNameResolver(CustomDefTicket::class);
+        $builder->addEventSubscriber($fieldNameResolver);
 
-        $builder
+        $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
+        $builder->addEventListener(FormEvents::POST_SET_DATA, [$this, 'onPostSetData']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], 100);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setRequired('person')
+            ->setDefaults([
+                'data_class'            => Ticket::class,
+                'agent_interface'       => false,
+                'admin_api_key_request' => false,
+            ])
+            ->setAllowedTypes('admin_api_key_request', 'bool')
+            ->setAllowedTypes('person', Person::class)
+        ;
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSetData(FormEvent $event)
+    {
+        $form    = $event->getForm();
+        $data    = $event->getData();
+        $options = $form->getConfig()->getOptions();
+
+        $form
             ->add('subject', TextType::class, [
                 'empty_data' => '(No Subject)',
             ])
             ->add('department', EntityType::class, [
                 'class' => Department::class,
-                'data'  => $this->getDefaultDepartment($builder),
+                'data'  => $this->getDefaultDepartment($options),
             ])
             ->add('parent', EntityType::class, [
                 'class'         => Ticket::class,
@@ -142,20 +176,20 @@ class TicketType extends AbstractType
             ->add('urgency', NumberType::class)
             ->add('labels', LabelsCollectionType::class, [
                 'labels_class'   => LabelTicket::class,
-                'labels_owner'   => $builder->getData(),
+                'labels_owner'   => $data,
                 'owner_property' => 'ticket',
             ])
             ->add('cc', TicketParticipantsType::class, [
-                'owner'           => $builder->getData(),
+                'owner'           => $data,
                 'agent_interface' => $options['agent_interface'],
             ])
             ->add('fields', CombinedType::class, [
-                'forms'          => $this->getCustomDataFields($builder, $options),
+                'forms'          => $this->getCustomDataFields($data, $options),
                 'error_bubbling' => false,
             ])
             ->add('star', TicketStarType::class, [
                 'mapped' => false,
-                'ticket' => $builder->getData(),
+                'ticket' => $data,
                 'person' => $options['person'],
                 'inline' => true,
             ])
@@ -173,8 +207,8 @@ class TicketType extends AbstractType
             ])
         ;
 
-        if ($builder->getOption('admin_api_key_request')) {
-            $builder
+        if ($options['admin_api_key_request']) {
+            $form
                 ->add('date_feedback_rating', CoreDateTimeType::class, [
                     'widget'   => 'single_text',
                     'required' => false,
@@ -236,38 +270,11 @@ class TicketType extends AbstractType
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
         if (count($brands) > 1) {
-            $builder->add('brand', EntityType::class, [
+            $form->add('brand', EntityType::class, [
                 'class'    => Brand::class,
                 'required' => false,
             ]);
         }
-
-        // resolve field name aliases
-        $fieldNameResolver = $this->fieldManager->getFieldNameResolver(CustomDefTicket::class);
-        $builder->addEventSubscriber($fieldNameResolver);
-
-        $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], 100);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver
-            ->setRequired('person')
-            ->setDefaults([
-                'data_class'            => Ticket::class,
-                'agent_interface'       => false,
-                'admin_api_key_request' => false,
-                'message_ticket'        => null
-            ])
-            ->setAllowedTypes('message_ticket', ['null', Ticket::class])
-            ->setAllowedTypes('admin_api_key_request', 'bool')
-            ->setAllowedTypes('person', Person::class)
-        ;
     }
 
     /**
@@ -383,12 +390,12 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @param Ticket $ticket
+     * @param array  $options
      *
      * @return array
      */
-    private function getCustomDataFields(FormBuilderInterface $builder, array $options)
+    private function getCustomDataFields($ticket, array $options)
     {
         $defs   = $this->fieldManager->getAvailableTicketDefs();
         $fields = [];
@@ -402,7 +409,7 @@ class TicketType extends AbstractType
                     'property_path'   => 'custom_data',
                     'agent_interface' => $options['agent_interface'],
                     'inline'          => true,
-                    'ticket'          => $builder->getData(),
+                    'ticket'          => $ticket,
 
                     // don't validate if custom field is required
                     // because we don't use ticket layouts here in this form
@@ -415,13 +422,13 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface $builder
+     * @param array $options
      *
      * @return Department|null
      */
-    private function getDefaultDepartment(FormBuilderInterface $builder)
+    private function getDefaultDepartment(array $options)
     {
-        $type = $builder->getOption('agent_interface')
+        $type = $options['agent_interface']
             ? DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE
             : DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE;
 

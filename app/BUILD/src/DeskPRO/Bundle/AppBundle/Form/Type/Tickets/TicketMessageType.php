@@ -242,16 +242,10 @@ class TicketMessageType extends AbstractType
         }
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'ensureAttachments'], 99);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetTicketFormField'], 98);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureMessageTextExists'], 100);
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetMessageFromOptions']);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat'], 100);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
-
-        if ($this->apiClientInfo && $this->apiClientInfo->isIos()) {
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPurifyIosMessage']);
-        }
     }
 
     /**
@@ -313,32 +307,16 @@ class TicketMessageType extends AbstractType
         ;
     }
 
-    public function onSetTicketFormField(FormEvent $event)
-    {
-        $form = $event->getForm();
-        $data = $event->getData();
-
-        if (isset($data['ticket'])) {
-            $form->add('ticket', TicketType::class, [
-                'mapped'                => false,
-                'agent_interface'       => true,
-                'data'                  => $data['ticket'],
-                'message_ticket'        => $form->getConfig()->getOption('ticket'),
-                'person'                => $form->getConfig()->getOption('person'),
-                'admin_api_key_request' => $form->getConfig()->getOption('admin_api_key_request'),
-            ]);
-        }
-    }
-
     /**
      * @internal
      *
      * @param FormEvent $event
      */
-    public function onEnsureMessageTextExists(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $form = $event->getForm();
         $data = $event->getData();
+
         if (is_array($data) && !isset($data['message'])) {
             $data['message'] = '';
         }
@@ -349,31 +327,37 @@ class TicketMessageType extends AbstractType
             $ticketMessage->setOriginalMessage(isset($data['message']) ? $data['message'] : '');
         }
 
-        $event->setData($data);
-    }
-
-    public function ensureAttachments(FormEvent $event)
-    {
-        $data = $event->getData();
-
-        if (!isset($data['attachments'])) {
-            return;
+        if (isset($data['ticket'])) {
+            $form->add('ticket', TicketType::class, [
+                'agent_interface'       => true,
+                'person'                => $form->getConfig()->getOption('person'),
+                'admin_api_key_request' => $form->getConfig()->getOption('admin_api_key_request'),
+            ]);
         }
 
-        /** @var BlobRepository $blobRepository */
-        $blobRepository = $this->em->getRepository(Blob::class);
-        /** @var TicketMessage $data */
-        foreach ($data['attachments'] as $index => $attachment) {
-            if (isset($attachment['is_inline']) && $attachment['is_inline'] === '1') {
-                $blob = $blobRepository->getByAuthCode($attachment['blob_auth']);
+        if (isset($data['attachments'])) {
+            /** @var BlobRepository $blobRepository */
+            $blobRepository = $this->em->getRepository(Blob::class);
+            /** @var TicketMessage $data */
+            foreach ($data['attachments'] as $index => $attachment) {
+                if (isset($attachment['is_inline']) && $attachment['is_inline'] === '1') {
+                    $blob = $blobRepository->getByAuthCode($attachment['blob_auth']);
 
-                if (!StringUtils::ensureAttachment($blob, $data['message'])) {
-                    unset($data['attachments'][$index]);
+                    if (!StringUtils::ensureAttachment($blob, $data['message'])) {
+                        unset($data['attachments'][$index]);
+                    }
                 }
             }
+            // also check if there are other blobs, which have probably been inserted via copy-paste or somehow
+            $this->attachmentHelper->processInlineBlobs($data['message']);
         }
-        // also check if there are other blobs, which have probably been inserted via copy-paste or somehow
-        $this->attachmentHelper->processInlineBlobs($data['message']);
+
+        if ($this->apiClientInfo && $this->apiClientInfo->isIos()) {
+            $message = isset($data['message']) ? $data['message'] : '';
+
+            $data['format']  = 'html';
+            $data['message'] = nl2br($message);
+        }
 
         $event->setData($data);
     }
@@ -383,7 +367,7 @@ class TicketMessageType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetMessageFromOptions(FormEvent $event)
+    public function onPreSetData(FormEvent $event)
     {
         $config = $event->getForm()->getConfig();
         if ($config->getOption('ticket_message')) {
@@ -476,24 +460,6 @@ class TicketMessageType extends AbstractType
         $property->setAccessible(true);
         $property->setValue($config, false);
         $property->setAccessible(false);
-    }
-
-    /**
-     * The ios app sends html message in bad format so we need to 'fix' it before submit.
-     *
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onPurifyIosMessage(FormEvent $event)
-    {
-        $data    = $event->getData();
-        $message = isset($data['message']) ? $data['message'] : '';
-
-        $data['format']  = 'html';
-        $data['message'] = nl2br($message);
-
-        $event->setData($data);
     }
 
     /**
