@@ -95,12 +95,12 @@
                                 <label class="form-check-label" for="comments_login_form_rememberme">{{ phrase('helpcenter.account.login_remember') }}</label>
                             </div>
 
-                            {% if captcha_form is not null %}
+                            {% if captcha_form is defined and captcha_form is not null %}
                                 {{ form_widget(captcha_form) }}
                             {% endif %}
 
                             <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.general.log_in') }}</button>
-                            {% if auth_manager.isForgotPasswordVisible %}
+                            {% if auth_manager is defined and auth_manager.isForgotPasswordVisible %}
                                 <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5" class="dp-po-form-btntext">
                                     {{ phrase('helpcenter.account.login_password_reminder') }}
                                 </a>
@@ -115,7 +115,7 @@
                     {# ------------------------------------------ #}
                     {# Register form start #}
                     {# ------------------------------------------ #}
-                    {% if auth_manager.isRegistrationFormVisible() %}
+                    {% if auth_manager is defined and auth_manager.isRegistrationFormVisible() %}
                     <section class="dp-po-loginform dpx-tab-content" id="comment_register_form" style="display: none;">
                         {{ form_start(register_form) }}
                         {{ form_widget(register_form) }}
