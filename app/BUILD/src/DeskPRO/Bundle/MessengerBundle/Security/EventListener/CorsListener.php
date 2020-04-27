@@ -28,11 +28,12 @@ class CorsListener extends NelmioCorsListener
         $settingsUrls = [];
 
         foreach ($this->settingsResolver->getAllBrandsSettings('core.deskpro_url') as $brandUrl) {
-            $urlArray = parse_url($brandUrl);
-            // we're going to allow both http and https because tons of people have wrong url set up
-            // also we don't care about paths (for cases like "http://some.site/helpdesk")
-            $brandUrls[] = 'http://'.$urlArray['host'];
-            $brandUrls[] = 'https://'.$urlArray['host'];
+            if ($host = parse_url($brandUrl, PHP_URL_HOST)) {
+                // we're going to allow both http and https because tons of people have wrong url set up
+                // also we don't care about paths (for cases like "http://some.site/helpdesk")
+                $brandUrls[] = 'http://'.$host;
+                $brandUrls[] = 'https://'.$host;
+            }
         }
 
         if ($origins = $this->settingsResolver->getSetting(MessengerSettingsResolver::EMBED_AUTHORIZE_DOMAINS)) {
