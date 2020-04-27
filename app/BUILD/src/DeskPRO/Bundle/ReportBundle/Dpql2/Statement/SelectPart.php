@@ -501,6 +501,10 @@ class SelectPart
             return $results;
         }
 
+        if (!$results) {
+            return $results;
+        }
+
         $first = reset($results);
         $last  = end($results);
 
