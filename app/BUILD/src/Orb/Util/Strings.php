@@ -1242,10 +1242,11 @@ break;
      * Trims whitespace and whitespace-like HTML from beginning/end of a string.
      *
      * @param string $string
+     * @param mixed $keepHorizontalBar
      *
      * @return string
      */
-    public static function trimHtml($string)
+    public static function trimHtml($string, $keepHorizontalBar = false)
     {
         // Dont attempt to run on very large strings
         // the regex can be slow
@@ -1280,7 +1281,9 @@ break;
             $string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
             $string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
 
-            $string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
+            if (!$keepHorizontalBar) {
+                $string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
+            }
         } while ($string != $old_string && $x++ < 1000 && (time() - $time_start) < 10);
 
         return $string;
@@ -1333,11 +1336,10 @@ break;
 
             /** @var $div \QueryPath\DOMQuery */
             $div = $qp->top()->find('body > *');
-            if ($div->length == 1 
+            if ($div->length == 1
                 && ($div->first() && ($div->tag() == 'div' || $div->tag() == 'p' || $div->tag() == 'span'))
                 && !trim($div->textBefore().$div->textAfter())
-                && ($confirmTrimCallback === null || $confirmTrimCallback($div)))
-            {
+                && ($confirmTrimCallback === null || $confirmTrimCallback($div))) {
                 $changed = true;
                 $html    = $div->html();
                 $html    = trim($html);
@@ -2359,15 +2361,16 @@ break;
      * by translating into <divs> or replacing with a simple <br>.
      *
      * @param $html
+     * @param mixed $keepHorizontalBar
      *
      * @return string
      */
-    public static function prepareWysiwygHtml($html)
+    public static function prepareWysiwygHtml($html, $keepHorizontalBar = false)
     {
         $html = str_replace(['<p>', '</p>'], ['<div>', '</div>'], $html);
         $html = preg_replace('#<p(\b)#', '<div$1', $html);
         $html = preg_replace('#<div[^>]+class="dp-signature-start"[^>]*>#', '<div>', $html);
-        $html = self::trimHtml($html);
+        $html = self::trimHtml($html, $keepHorizontalBar);
 
         return $html;
     }
