@@ -331,6 +331,14 @@ class Message extends \Orb\Mail\Message
      */
     public function attachBlob(Blob $blob, $embedImageSrc = null, $includeEmbeddedOnly = false)
     {
+        $blobDupes = array_filter($this->attach_blobs, function (Blob $attachedBlob) use ($blob) {
+            return $attachedBlob->getId() === $blob->getId();
+        });
+
+        if ($blobDupes) {
+            return;
+        }
+
         if ($embedImageSrc && !ctype_digit($embedImageSrc)) {
             $this->attach_blobs[$embedImageSrc] = $blob;
             if ($includeEmbeddedOnly) {
