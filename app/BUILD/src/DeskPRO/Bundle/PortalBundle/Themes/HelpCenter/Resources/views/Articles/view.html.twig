@@ -114,7 +114,7 @@
                     <ul class="dp-po-post-share-mobile-list">
                         {% if app.getSetting('core.show_share_linkedin') %}
                         <li class="dp-po-post-share-mobile-item">
-                        <a href="{{ share_social_url(item, 'linkedin') }}" class="dp-po-post-share-mobile-link">
+                        <a href="{{ share_social_url(article, 'linkedin') }}" class="dp-po-post-share-mobile-link">
                             <img class="dp-po-icon" src="{{ asset('img/brand-icons/linkedin.png', 'help_center') }}" />
                             Linkedin
                         </a>
@@ -122,7 +122,7 @@
                         {% endif %}
                         {% if app.getSetting('core.show_share_facebook') %}
                         <li class="dp-po-post-share-mobile-item">
-                        <a href="{{ share_social_url(item, 'facebook') }}" class="dp-po-post-share-mobile-link">
+                        <a href="{{ share_social_url(article, 'facebook') }}" class="dp-po-post-share-mobile-link">
                             <img class="dp-po-icon" src="{{ asset('img/brand-icons/facebook.png', 'help_center') }}" />
                             Facebook
                         </a>
@@ -130,7 +130,7 @@
                         {% endif %}
                         {% if app.getSetting('core.show_share_whatsapp') %}
                         <li class="dp-po-post-share-mobile-item">
-                        <a href="{{ share_social_url(item, 'whatsapp') }}" class="dp-po-post-share-mobile-link">
+                        <a href="{{ share_social_url(article, 'whatsapp') }}" class="dp-po-post-share-mobile-link">
                             <img class="dp-po-icon" src="{{ asset('img/brand-icons/whatsapp.png', 'help_center') }}" />
                             Whatsapp
                         </a>
@@ -138,7 +138,7 @@
                         {% endif %}
                         {% if app.getSetting('core.show_share_twitter') %}
                         <li class="dp-po-post-share-mobile-item">
-                        <a href="{{ share_social_url(item, 'twitter') }}" class="dp-po-post-share-mobile-link">
+                        <a href="{{ share_social_url(article, 'twitter') }}" class="dp-po-post-share-mobile-link">
                             <img class="dp-po-icon" src="{{ asset('img/brand-icons/twitter.png', 'help_center') }}" />
                             Whatsapp
                         </a>
