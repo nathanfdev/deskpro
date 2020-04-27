@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\DevBundle\Command\MassLoader;
 
-use Application\DeskPRO\Entity\Ticket;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,6 +21,7 @@ class AddTicketsCommand extends AbstractLoadDataCommand
             ->setDescription('Add tickets to the current database')
             ->addOption('batches', 'c', InputOption::VALUE_REQUIRED, 'The number of batches to insert. Default: 5', 5)
             ->addOption('batch-size', 't', InputOption::VALUE_REQUIRED, 'The size of each batch. Default: 1000', 1000)
+            ->addOption('messages-count', 'm', InputOption::VALUE_REQUIRED, 'The size of each batch. Default: 1000', 10)
             ->addOption('include', 'z', InputOption::VALUE_REQUIRED, 'Path to a file to include that can optionally define a post_ticket_batch function to execute code after each batch (e.g. to add some extra data to the db etc)')
         ;
     }
@@ -33,9 +33,10 @@ class AddTicketsCommand extends AbstractLoadDataCommand
     {
         $this->output = $output;
 
-        $batches     = (int) $input->getOption('batches');
-        $batchSize   = (int) $input->getOption('batch-size');
-        $includeFile = $input->getOption('include');
+        $batches       = (int) $input->getOption('batches');
+        $batchSize     = (int) $input->getOption('batch-size');
+        $messagesCount = (int) $input->getOption('messages-count');
+        $includeFile   = $input->getOption('include');
 
         if ($includeFile) {
             if (!file_exists($includeFile)) {
@@ -56,8 +57,9 @@ class AddTicketsCommand extends AbstractLoadDataCommand
         }
 
         $this->iterate('Create %s ticket batches', $batches, 'loadTicketBatch', [
-            'ticketsBatchCount' => $batchSize,
-            'postBatchCallback' => $cb,
+            'ticketsBatchCount'  => $batchSize,
+            'messagesBatchCount' => $messagesCount,
+            'postBatchCallback'  => $cb,
         ]);
 
         $output->writeln('');

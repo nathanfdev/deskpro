@@ -157,28 +157,36 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
         // load widget rendered results in batches
         const widgetIds = widgets.map(widget => widget.id);
-        const idBatches = ((() => {
-          const result = [];
-          while (widgetIds.length) {
-            result.push(widgetIds.splice(0, 10));
-          }
-          return result;
-        })());
+        const idBatches = [];
+        while (widgetIds.length) {
+          idBatches.push(widgetIds.splice(0, 10));
+        }
+
         for (const idBatch of Array.from(idBatches)) {
           this.Api2
             .sendGet(`/dashboard_reports/${reportId}/widgets?include=rendered_result,report_widget&inline_sideloads=1&ids=${idBatch}`)
-            .then((batchResp) => {
-              const batchWidgets = batchResp.data.data;
-              return (() => {
-                const result1 = [];
-                for (widget of Array.from(batchWidgets)) {
-                  if (this.widgetsResults[widget.id]) {
-                    result1.push(this.widgetsResults[widget.id].resolve(widget.rendered_result));
+            .then(
+              (batchResp) => {
+                const batchWidgets = batchResp.data.data;
+                for (const batchWidget of Array.from(batchWidgets)) {
+                  if (this.widgetsResults[batchWidget.id]) {
+                    this.widgetsResults[batchWidget.id].resolve(batchWidget.rendered_result);
                   }
                 }
-                return result1;
-              })();
-            });
+              },
+              () => {
+                // if we couldn't load a batch of widgets then try to load each widget separately
+                idBatch.forEach((id) => {
+                  this.Api2
+                    .sendGet(`/dashboard_reports/${reportId}/widgets?include=rendered_result,report_widget&inline_sideloads=1&ids=${id}`)
+                    .then((widgetResponse) => {
+                      const batchWidget = widgetResponse.data.data[0];
+                      if (this.widgetsResults[batchWidget.id]) {
+                        this.widgetsResults[batchWidget.id].resolve(batchWidget.rendered_result);
+                      }
+                    });
+                });
+              });
         }
 
         return deferred.resolve(widgets);
