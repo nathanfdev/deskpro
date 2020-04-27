@@ -131,29 +131,39 @@ class EmailRenderer
         );
         $code = $this->getTemplateEngine()->render($templateName, $vars);
 
-        $blobAuthIds = [];
-
-        // We look for <attachment id='{id}'> and remove it from the template
-        $code = preg_replace_callback('#<attachment[^>]*id=("([^"]+)"|\'([^\']+)\')[^>]*>#',
-            function ($matches) use (&$blobAuthIds) {
-                $blobAuthIds[] = $matches[2] ? $matches[2] : $matches[3];
-
-                return '';
-            },
-            $code
-        );
-
+        $blobAuthIds  = [];
         $blobSysNames = [];
 
-        // We look for <attachment sys='{id}'> and remove it from the template
-        $code = preg_replace_callback('#<attachment[^>]*sys=("([^"]+)"|\'([^\']+)\')[^>]*>#',
-            function ($matches) use (&$blobSysNames) {
-                $blobSysNames[] = $matches[2] ? $matches[2] : $matches[3];
+        $firstMessageCode   = $code;
+        $firstMessageLength = strpos($firstMessageCode, '<!-- DP_BLOCKQUOTE_BEGIN -->');
+        if ($firstMessageLength !== false) {
+            $firstMessageCode = substr($firstMessageCode, 0, $firstMessageLength);
+        }
 
-                return '';
-            },
-            $code
-        );
+        $parseBlobs = function ($pattern, &$blobs) {
+            return function ($code, $collect = false) use ($pattern, &$blobs) {
+                return preg_replace_callback($pattern,
+                    function ($matches) use (&$blobs, $collect) {
+                        if ($collect) {
+                            $blobs[] = $matches[2] ? $matches[2] : $matches[3];
+                        }
+
+                        return '';
+                    },
+                    $code
+                );
+            };
+        };
+
+        // We look for <attachment id='{id}'> and remove it from the template
+        $parseBlobIds  = $parseBlobs('#<attachment[^>]*id=("([^"]+)"|\'([^\']+)\')[^>]*>#', $blobAuthIds);
+        $code = $parseBlobIds($code);
+        $parseBlobIds($firstMessageCode, true);
+
+        // We look for <attachment sys='{id}'> and remove it from the template
+        $parseSysNames = $parseBlobs('#<attachment[^>]*sys=("([^"]+)"|\'([^\']+)\')[^>]*>#', $blobSysNames);
+        $code = $parseSysNames($code);
+        $parseSysNames($firstMessageCode, true);
 
         $templateCode = new EmailTemplateCode($code);
 
