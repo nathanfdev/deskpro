@@ -19,6 +19,8 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
 
 	initPage: function(el) {
 
+    console.log('Topic init page');
+
 		var self = this;
 		this.wrapper = el;
 
@@ -647,18 +649,15 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
     });
   },
 
-	toggleContent: function (value) {
-    if (value) {
+	toggleContent: function (noContent) {
+    if (noContent) {
+      this.getEl('properties_section').detach().appendTo(this.getEl('no_content_block'));
       this.getEl('no_content_block').show();
       this.getEl('with_content_block').hide();
-      console.log(this.getEl('no_content_block').find('input.no_content_input.section'));
-      this.getEl('no_content_block').find('input.no_content_input.section').prop('checked', true);
-      this.getEl('with_content_block').find('input.no_content_input.section').prop('checked', true);
     } else {
+      this.getEl('properties_section').detach().appendTo(this.getEl('with_content_block').find('.deskpro-tab-item.topic-props'));
       this.getEl('no_content_block').hide();
       this.getEl('with_content_block').show();
-      this.getEl('no_content_block').find('input.no_content_input.content').prop('checked', true);
-      this.getEl('with_content_block').find('input.no_content_input.content').prop('checked', true);
     }
   },
 

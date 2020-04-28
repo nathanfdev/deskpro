@@ -9,7 +9,7 @@ namespace Application\AgentBundle\Form\Type;
 use Application\AgentBundle\Form\Model\NewTopic as NewTopicModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\RadioType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,7 +31,10 @@ class NewTopic extends AbstractType
             ->add('parent_id', TextType ::class)
             ->add('status', TextType::class)
             ->add('slug', TextType::class)
-            ->add('no_content', RadioType::class)
+            ->add('no_content', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [0, 1],
+            ])
             ->add('attach', CollectionType::class, [
                 'type'         => 'hidden',
                 'required'     => false,

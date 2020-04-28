@@ -64,7 +64,9 @@ pageMeta.baseId = '{{ baseId }}';
 	<header>
 		<h4>{{ phrase('agent.general.properties') }}</h4>
 	</header>
-	{% include 'AgentBundle:Guide:view-properties-tab.html.twig' with { type: 'section'} %}
+  {% if noContent %}
+    {% include 'AgentBundle:Guide:view-properties-tab.html.twig' %}
+  {%  endif %}
 </div>
 
 
@@ -101,7 +103,9 @@ pageMeta.baseId = '{{ baseId }}';
 
 			{# Tab: Properties #}
 			<div class="deskpro-tab-item content-tab-item topic-props">
-                {% include 'AgentBundle:Guide:view-properties-tab.html.twig' with { type: 'content'}  %}
+        {% if not noContent %}
+          {% include 'AgentBundle:Guide:view-properties-tab.html.twig'  %}
+        {% endif %}
 			</div>
 
 
