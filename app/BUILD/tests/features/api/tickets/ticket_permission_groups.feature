@@ -113,6 +113,7 @@ Feature: Ticket permission groups
     Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
     And I set permission "agent_tickets.create" = 1 for "registered" usergroup
     And I set permission "agent_tickets.modify_own" = 1 for "registered" usergroup
+    And I set permission "agent_tickets.reply_own" = 1 for "registered" usergroup
     And I grant the "{d1}" department permission of "tickets" app for "agent"
 
     When I send a GET request to "/api/v2/tickets"
