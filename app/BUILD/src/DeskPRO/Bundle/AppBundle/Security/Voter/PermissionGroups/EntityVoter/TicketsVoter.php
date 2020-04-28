@@ -44,7 +44,7 @@ class TicketsVoter extends AbstractTicketsVoter
             case PermissionGroupVoter::CREATE:
                 return $user->hasPerm('agent_tickets.create');
             case PermissionGroupVoter::MODIFY:
-                return $this->canModify($user, $ticket);
+                return $this->canModifyTicket($user, $ticket);
             case PermissionGroupVoter::DELETE:
                 return $this->getTicketChecker($user)->canDelete($ticket);
             case self::ADD_APPROVAL:
@@ -63,33 +63,5 @@ class TicketsVoter extends AbstractTicketsVoter
     {
         // no access for now
         return false;
-    }
-
-    /**
-     * @param Person $user
-     * @param Ticket $ticket
-     *
-     * @return bool
-     */
-    private function canModify(Person $user, Ticket $ticket)
-    {
-        if (!$this->getTicketChecker($user)->canView($ticket)) {
-            return false;
-        }
-
-        $ticketAgent = $ticket->getAgent();
-        $ticketTeam  = $ticket->getAgentTeam();
-
-        if (($ticketAgent && $ticketAgent === $user) || ($ticketTeam && $ticketTeam->hasMember($user))) {
-            $type = 'own';
-        } elseif (!$ticketAgent && !$ticketTeam) {
-            $type = 'unassigned';
-        } elseif ($ticket->hasParticipantPerson($user)) {
-            $type = 'followed';
-        } else {
-            $type = 'others';
-        }
-
-        return $user->hasPerm('agent_tickets.modify_'.$type);
     }
 }
