@@ -19,8 +19,6 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
 
 	initPage: function(el) {
 
-    console.log('Topic init page');
-
 		var self = this;
 		this.wrapper = el;
 
