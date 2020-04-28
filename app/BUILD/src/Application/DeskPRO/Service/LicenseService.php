@@ -93,7 +93,7 @@ class LicenseService
             ]);
 
             try {
-                $response = $client->get('/news/2-product.rss');
+                $response = $client->get('/news.rss');
             } catch (ClientException $e) {
                 return;
             }
