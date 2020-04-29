@@ -39,6 +39,8 @@ services:
 
   dp.importer.source.helper.attachments:
     class: DeskPRO\ImporterTools\Helpers\AttachmentHelper
+    arguments:
+      - "@dp.importer_logger"
     tags:
       - { name: dp.importer.source.helper }
 
