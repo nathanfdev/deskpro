@@ -380,15 +380,6 @@ return [
      */
     'core.ga_property_id' => '',
 
-    /*
-     * Interval to limit allowed requests to API in seconds
-     */
-    'core.api_rate_limit_interval' => 60,
-    /*
-     * Number of allowed requests to the API per interval. 0 to disable.
-     */
-    'core.api_rate_limit' => defined('DPC_IS_CLOUD') ? 80 : 0,
-
     'core.twitter_agent_consumer_key'    => '',
     'core.twitter_agent_consumer_secret' => '',
     'core.twitter_user_consumer_key'     => '',
@@ -1148,7 +1139,7 @@ return [
     ],
     'api_log.writer.file.serializer.type' => 'serialize',
 
-    'api_limits.global.hour' => -1,
+    'api_limits.global.hour' => defined('DPC_IS_CLOUD') ? 4800 : -1,
     'api_limits.global.day'  => -1,
 
     'api_limits.key.hour'    => -1,

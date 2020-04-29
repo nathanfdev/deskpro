@@ -14,6 +14,8 @@ use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\PermissionStrategyInterface;
 use Application\LegacyApiBundle\Request\RequestAuth;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Limits\Exception\LimitExhaustedException;
+use DeskPRO\Bundle\AppBundle\Limits\LimitsService;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -209,40 +211,30 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             }
         }
 
-        if (App::getSetting('core.api_rate_limit')) {
-            $error = $this->_checkRateLimit($action, $arguments);
-            if ($error) {
-                return $error;
-            }
-            $this->_updateRateLimit($action, $arguments);
+        $error = $this->_checkRateLimit($action, $arguments);
+        if ($error) {
+            return $error;
         }
+
+        $this->_updateRateLimit($action, $arguments);
     }
 
     protected function _checkRateLimit($action, $arguments = null)
     {
+        // rate limit just api keys for now
         if ($this->apikey) {
-            $this->rate_info = $this->em->getRepository('DeskPRO:ApiKey')->getRateLimitInfo($this->apikey);
-        } else {
-            $this->rate_info = $this->em->getRepository('DeskPRO:ApiToken')->getRateLimitInfo($this->api_token);
+            try {
+                $this->container->get('api_limits.limits_service')->checkLimits($this->apikey);
+            } catch (LimitExhaustedException $e) {
+                return $this->createApiErrorResponse('rate_limit_exceeded', 'Rate Limit Exceeded', 429);
+            }
         }
-
-        if ($this->rate_info['hits'] >= App::getSetting('core.api_rate_limit')) {
-            return $this->createApiErrorResponse('rate_limit_exceeded', 'Rate Limit Exceeded', 429);
-        }
-
-        return;
     }
 
     protected function _updateRateLimit($action, $arguments = null)
     {
         if ($this->apikey) {
-            $this->em->getRepository('DeskPRO:ApiKey')->updateRateLimit($this->apikey);
-        } else {
-            $this->em->getRepository('DeskPRO:ApiToken')->updateRateLimit($this->api_token);
-        }
-
-        if ($this->rate_info) {
-            ++$this->rate_info['hits'];
+            $this->container->get('api_limits.limits_service')->reduceLimits($this->apikey);
         }
     }
 
@@ -310,11 +302,16 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         $response = $this->createJsonResponse($data, $status);
 
-        if ($this->rate_info) {
-            $response->headers->set('X-RateLimit-Limit', App::getSetting('core.api_rate_limit'));
-            $response->headers->set('X-RateLimit-Remaining', max(0, App::getSetting('core.api_rate_limit') - $this->rate_info['hits']));
-            $response->headers->set('X-RateLimit-Reset', $this->rate_info['reset_stamp']);
+        if ($this->apikey) {
+            /** @var LimitsService $limitsService */
+            $limitsService = $this->container->get('api_limits.limits_service');
+            if ($minLimit = $limitsService->getMinLimit($this->apikey)) {
+                $response->headers->set('X-RateLimit-Limit', $minLimit->getLimit());
+                $response->headers->set('X-RateLimit-Remaining', max(0, $minLimit->getCurrentLimit()));
+                $response->headers->set('X-RateLimit-Reset', $minLimit->getDateExpire()->getTimestamp());
+            }
         }
+
 
         /** @var RequestAuth $auth */
         $auth = $this->get('deskpro.api.request_auth');

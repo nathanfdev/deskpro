@@ -122,6 +122,17 @@ abstract class AbstractLimit implements LimitInterface
     /**
      * {@inheritdoc}
      */
+    public function getDateExpire()
+    {
+        $date = clone $this->start_time;
+        $date->add($this->interval);
+
+        return $date;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getIntervalInSeconds()
     {
         $date1 = new \DateTime();
@@ -136,10 +147,10 @@ abstract class AbstractLimit implements LimitInterface
      */
     public function replenish()
     {
-        $next_replenish = clone $this->start_time;
-        $next_replenish->add($this->interval);
-        $current = new \DateTime();
-        if ($next_replenish->getTimestamp() > $current->getTimestamp()) {
+        $nextReplenish = $this->getDateExpire();
+        $current       = new \DateTime();
+
+        if ($nextReplenish->getTimestamp() > $current->getTimestamp()) {
             return false;
         }
         $this->current    = $this->limit;

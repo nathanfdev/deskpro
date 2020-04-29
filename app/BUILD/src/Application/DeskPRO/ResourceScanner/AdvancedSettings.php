@@ -53,7 +53,8 @@ class AdvancedSettings extends SettingFiles
         ];
 
         if (!defined('DPC_IS_CLOUD')) {
-            $accept_settings[] = 'core.api_rate_limit';
+            $accept_settings[] = 'api_limits.global.hour';
+            $accept_settings[] = 'api_limits.global.day';
         }
 
         $ret = [];

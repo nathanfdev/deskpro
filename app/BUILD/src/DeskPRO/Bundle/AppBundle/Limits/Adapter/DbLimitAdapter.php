@@ -22,16 +22,6 @@ class DbLimitAdapter implements LimitAdapterInterface
     protected $em;
 
     /**
-     * @var \SplObjectStorage
-     */
-    protected $globalLimits;
-
-    /**
-     * @var \SplObjectStorage
-     */
-    protected $keyLimits;
-
-    /**
      * @var SettingsResolver
      */
     protected $settingsResolver;
@@ -45,8 +35,6 @@ class DbLimitAdapter implements LimitAdapterInterface
     public function __construct(EntityManager $em, SettingsResolver $resolver)
     {
         $this->em               = $em;
-        $this->globalLimits     = new \SplObjectStorage();
-        $this->keyLimits        = new \SplObjectStorage();
         $this->settingsResolver = $resolver;
     }
 
@@ -55,12 +43,21 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function getGlobalLimits()
     {
-        $dbGlobalLimits = $this->getLimitsFromSettings();
-        foreach ($dbGlobalLimits as $dbLimit) {
-            $this->globalLimits->attach($this->getLimit($dbLimit), $dbLimit);
+        $globalSettings = $this->settingsResolver->getGlobalSettings();
+        $limitSettings  = [
+            AbstractLimit::INTERVAL_DAY  => $globalSettings->get('api_limits.global.day'),
+            AbstractLimit::INTERVAL_HOUR => $globalSettings->get('api_limits.global.hour'),
+        ];
+
+        $limits = [];
+        foreach ($limitSettings as $interval => $value) {
+            $dbLimit = $this->getOrCreateGlobalLimitInDb($value, $interval);
+            if ($dbLimit) {
+                $limits[] = $this->createLimitModel($dbLimit);
+            }
         }
 
-        return $this->globalLimits;
+        return $limits;
     }
 
     /**
@@ -68,52 +65,14 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function getKeyLimits(ApiKey $key)
     {
-        $dbKeyLimits = $this->repo()->findBy(['limit_type' => AbstractLimit::TYPE_KEY, 'api_key' => $key]);
-        foreach ($dbKeyLimits as $dbLimit) {
-            $this->keyLimits->attach($this->getLimit($dbLimit), $dbLimit);
-        }
+        $keyLimits = $this->em->getRepository(ApiKeyLimit::class)->findBy([
+            'limit_type' => AbstractLimit::TYPE_KEY,
+            'api_key'    => $key,
+        ]);
 
-        return $this->keyLimits;
-    }
-
-    protected function getLimitsFromSettings()
-    {
-        $limits   = [];
-        $dayLimit = $this->settingsResolver->getGlobalSettings()->get('api_limits.global.day');
-        if ($dayLimit && $dayLimit !== -1) {
-            $dbDayLimit = $this->repo()->findOneBy([
-                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
-                'time_interval' => AbstractLimit::INTERVAL_DAY,
-            ]);
-            if (!$dbDayLimit) {
-                $dbDayLimit = new ApiKeyLimit();
-                $dbDayLimit
-                    ->setInterval(AbstractLimit::INTERVAL_DAY)
-                    ->setCurrent($dayLimit)
-                    ->setLimit($dayLimit)
-                    ->setType(AbstractLimit::TYPE_GLOBAL);
-                $this->persistAndFlush($dbDayLimit);
-            }
-            $dbDayLimit->setLimit($dayLimit);
-            $limits[] = $dbDayLimit;
-        }
-        $hourLimit = $this->settingsResolver->getGlobalSettings()->get('api_limits.global.hour');
-        if ($hourLimit && $hourLimit !== -1) {
-            $dbHourLimit = $this->repo()->findOneBy([
-                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
-                'time_interval' => AbstractLimit::INTERVAL_HOUR,
-            ]);
-            if (!$dbHourLimit) {
-                $dbHourLimit = new ApiKeyLimit();
-                $dbHourLimit
-                    ->setInterval(AbstractLimit::INTERVAL_HOUR)
-                    ->setCurrent($hourLimit)
-                    ->setLimit($hourLimit)
-                    ->setType(AbstractLimit::TYPE_GLOBAL);
-                $this->persistAndFlush($dbHourLimit);
-            }
-            $dbHourLimit->setLimit($hourLimit);
-            $limits[] = $dbHourLimit;
+        $limits = [];
+        foreach ($keyLimits as $dbLimit) {
+            $limits[] = $this->createLimitModel($dbLimit);
         }
 
         return $limits;
@@ -124,7 +83,16 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function saveGlobalLimit(LimitInterface $limit)
     {
-        $this->saveLimit($limit);
+        $dbLimit = $this->getOrCreateGlobalLimitInDb($limit->getLimit(), $limit->getIntervalInSeconds());
+        if (!$dbLimit) {
+            return;
+        }
+
+        $dbLimit->setCurrent($limit->getCurrentLimit());
+        $dbLimit->setStartTime($limit->getStartTime());
+
+        $this->em->persist($dbLimit);
+        $this->em->flush();
     }
 
     /**
@@ -132,49 +100,14 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function saveKeyLimit(LimitInterface $limit, $key)
     {
-        if (!$this->keyLimits->offsetExists($limit)) {
-            $this->createKeyLimit($key, $limit);
-        } else {
-            $this->saveLimit($limit);
-        }
-    }
-
-    protected function createKeyLimit(ApiKey $key, LimitInterface $limit)
-    {
-        $dbLimit = new ApiKeyLimit();
-        $dbLimit
-            ->setInterval($limit->getIntervalInSeconds())
-            ->setCurrent($limit->getCurrentLimit())
-            ->setLimit($limit->getLimit())
-            ->setApiKey($key)
-            ->setType($limit->getType());
-        $this->persistAndFlush($dbLimit);
-    }
-
-    /**
-     * @param LimitInterface $limit
-     */
-    protected function saveLimit(LimitInterface $limit)
-    {
-        if ($limit->getType() === AbstractLimit::TYPE_GLOBAL) {
-            $storage = $this->globalLimits;
-        } else {
-            $storage = $this->keyLimits;
+        $dbLimit = $this->getOrCreateKeyLimitInDb($key, $limit->getLimit(), $limit->getIntervalInSeconds());
+        if (!$dbLimit) {
+            return;
         }
 
-        $dbLimit = $storage->offsetGet($limit);
-        /* @var ApiKeyLimit $dbLimit */
-        $dbLimit
-            ->setCurrent($limit->getCurrentLimit())
-            ->setLimit($limit->getLimit())
-            ->setInterval($limit->getIntervalInSeconds())
-            ->setStartTime($limit->getStartTime());
+        $dbLimit->setCurrent($limit->getCurrentLimit());
+        $dbLimit->setStartTime($limit->getStartTime());
 
-        $this->persistAndFlush($dbLimit);
-    }
-
-    protected function persistAndFlush(ApiKeyLimit $dbLimit)
-    {
         $this->em->persist($dbLimit);
         $this->em->flush();
     }
@@ -184,40 +117,108 @@ class DbLimitAdapter implements LimitAdapterInterface
      *
      * @return GlobalLimit|KeyLimit
      */
-    protected function getLimit(ApiKeyLimit $dbLimit)
+    private function createLimitModel(ApiKeyLimit $dbLimit)
     {
-        switch ($dbLimit->getType()) {
-            case AbstractLimit::TYPE_GLOBAL:
-                $limit = new GlobalLimit();
-                break;
-            case AbstractLimit::TYPE_KEY:
-                $limit = new KeyLimit();
-                break;
-            default:
-                throw new \LogicException(
-                    sprintf(
-                        'Unknown limit type [ %s ], expecting one of [ %s ]',
-                        $dbLimit->getType(),
-                        implode(',', [AbstractLimit::TYPE_KEY, AbstractLimit::TYPE_GLOBAL]))
-                );
+        if ($dbLimit->getType() === AbstractLimit::TYPE_GLOBAL) {
+            $limit = new GlobalLimit();
+        } elseif ($dbLimit->getType() === AbstractLimit::TYPE_KEY) {
+            $limit = new KeyLimit();
+        } else {
+            throw new \LogicException(
+                sprintf(
+                    'Unknown limit type [ %s ], expecting one of [ %s ]',
+                    $dbLimit->getType(),
+                    implode(',', [AbstractLimit::TYPE_KEY, AbstractLimit::TYPE_GLOBAL]))
+            );
         }
 
-        !$dbLimit->getStartTime() ? $dbLimit->setStartTime(new \DateTime()) : null;
+        if (!$dbLimit->getStartTime()) {
+            $dbLimit->setStartTime(new \DateTime());
+        }
 
         $limit
             ->setInterval(\DateInterval::createFromDateString($dbLimit->getInterval().' seconds'))
             ->setStartTime($dbLimit->getStartTime())
             ->setCurrent($dbLimit->getCurrent())
-            ->setLimit($dbLimit->getLimit());
+            ->setLimit($dbLimit->getLimit())
+        ;
 
         return $limit;
     }
 
     /**
-     * @return \Doctrine\ORM\EntityRepository
+     * @param int $value
+     * @param int $interval
+     *
+     * @return ApiKeyLimit|null
      */
-    private function repo()
+    private function getOrCreateGlobalLimitInDb($value, $interval)
     {
-        return $this->em->getRepository(ApiKeyLimit::class);
+        if ($value <= 0) {
+            return;
+        }
+
+        $dbLimit = $this->em->getRepository(ApiKeyLimit::class)->findOneBy([
+            'limit_type'    => AbstractLimit::TYPE_GLOBAL,
+            'time_interval' => $interval,
+        ]);
+
+        if (!$dbLimit) {
+            $dbLimit = new ApiKeyLimit();
+            $dbLimit
+                ->setInterval($interval)
+                ->setCurrent($value)
+                ->setLimit($value)
+                ->setType(AbstractLimit::TYPE_GLOBAL)
+                ->setStartTime(new \DateTime())
+            ;
+
+            $this->em->persist($dbLimit);
+            $this->em->flush();
+        } elseif ($dbLimit->getLimit() !== $value) {
+            $dbLimit->setLimit($value);
+
+            $this->em->persist($dbLimit);
+            $this->em->flush();
+        }
+
+        return $dbLimit;
+    }
+
+    /**
+     * @param ApiKey $key
+     * @param int    $value
+     * @param int    $interval
+     *
+     * @return ApiKeyLimit|null
+     */
+    private function getOrCreateKeyLimitInDb(ApiKey $key, $value, $interval)
+    {
+        if ($value <= 0) {
+            return;
+        }
+
+        $dbLimit = $this->em->getRepository(ApiKeyLimit::class)->findOneBy([
+            'limit_type'    => AbstractLimit::TYPE_KEY,
+            'time_interval' => $interval,
+            'api_key'       => $key,
+        ]);
+
+        if (!$dbLimit) {
+            $dbLimit = new ApiKeyLimit();
+            $dbLimit
+                ->setInterval($interval)
+                ->setCurrent($value)
+                ->setLimit($value)
+                ->setApiKey($key)
+                ->setType(AbstractLimit::TYPE_KEY)
+                ->setStartTime(new \DateTime())
+            ;
+
+            $this->em->persist($dbLimit);
+            $this->em->flush();
+        }
+
+        return $dbLimit;
     }
 }

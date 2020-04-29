@@ -9,9 +9,6 @@ use DeskPRO\Bundle\AppBundle\Limits\Exception\LimitExhaustedException;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\KeyLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface;
-use DeskPRO\Bundle\AppBundle\Limits\Model\LimitSet;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class LimitsService.
@@ -19,69 +16,25 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class LimitsService
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Limits\Model\LimitSet
-     */
-    protected $limit_set;
-    /**
      * @var SettingsResolver
      */
-    protected $resolver;
+    protected $settingsResolver;
 
     /**
-     * @var TokenStorageInterface
+     * @var LimitAdapterInterface
      */
-    protected $storage;
-
-    /**
-     * @var \DeskPRO\Bundle\AppBundle\Limits\Adapter\LimitAdapterInterface
-     */
-    protected $limit_adapter;
-
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var ApiKey
-     */
-    protected $key;
+    protected $limitAdapter;
 
     /**
      * Constructor.
      *
-     * @param SettingsResolver      $resolver
-     * @param TokenStorageInterface $storage
-     * @param LimitAdapterInterface $limit_adapter
-     * @param EntityManager         $em
+     * @param SettingsResolver      $settingsResolver
+     * @param LimitAdapterInterface $limitAdapter
      */
-    public function __construct(
-        SettingsResolver $resolver,
-        TokenStorageInterface $storage,
-        LimitAdapterInterface $limit_adapter,
-        EntityManager $em
-    ) {
-        $this->limit_set     = new LimitSet();
-        $this->resolver      = $resolver;
-        $this->storage       = $storage;
-        $this->limit_adapter = $limit_adapter;
-        $this->em            = $em;
-        $this->collectLimits();
-    }
-
-    /**
-     * Collection all limits.
-     */
-    protected function collectLimits()
+    public function __construct(SettingsResolver $settingsResolver, LimitAdapterInterface $limitAdapter)
     {
-        foreach ($this->limit_adapter->getGlobalLimits() as $global_limit) {
-            $this->limit_set->addLimit($global_limit);
-        }
-        if ($key = $this->getKey()) { // I have no idea how to prevent multiple collecting when testing.
-            foreach ($this->getKeyLimits($key) as $key_limit) {
-                $this->limit_set->addLimit($key_limit);
-            }
-        }
+        $this->settingsResolver = $settingsResolver;
+        $this->limitAdapter     = $limitAdapter;
     }
 
     /**
@@ -91,47 +44,69 @@ class LimitsService
      */
     public function getKeyLimits(ApiKey $key)
     {
-        return $this->limit_adapter->getKeyLimits($key);
+        return $this->limitAdapter->getKeyLimits($key);
     }
 
+    /**
+     * @param ApiKey         $key
+     * @param LimitInterface $limit
+     */
     public function saveLimit(ApiKey $key, LimitInterface $limit)
     {
         if ($limit->getType() === AbstractLimit::TYPE_GLOBAL) {
-            $this->limit_adapter->saveGlobalLimit($limit);
+            $this->limitAdapter->saveGlobalLimit($limit);
         } elseif ($limit->getType() === AbstractLimit::TYPE_KEY) {
-            $this->limit_adapter->saveKeyLimit($limit, $key);
+            $this->limitAdapter->saveKeyLimit($limit, $key);
         }
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\ApiKey
+     * @param ApiKey $apiKey
+     *
+     * @throws LimitExhaustedException
      */
-    protected function getKey()
+    public function checkLimits(ApiKey $apiKey)
     {
-        $credentials = $this->storage->getToken()->getCredentials();
-        /** @var \Application\DeskPRO\EntityRepository\ApiKey $repository */
-        $repository = $this->em->getRepository(ApiKey::class);
-
-        return $repository->findByKeyString($credentials);
-    }
-
-    public function checkLimits()
-    {
-        foreach ($this->limit_set as $limit) {
-            /** @var \DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface $limit */
+        $limits = $this->collectLimits($apiKey);
+        foreach ($limits as $limit) {
             if (!$limit->replenish() && !$limit->hasLimit()) {
                 throw new LimitExhaustedException();
             }
         }
     }
 
-    public function reduceLimits()
+    /**
+     * @param ApiKey $apiKey
+     */
+    public function reduceLimits(ApiKey $apiKey)
     {
-        foreach ($this->limit_set as $limit) {
-            /* @var \DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface $limit */
+        $limits = $this->collectLimits($apiKey);
+        foreach ($limits as $limit) {
+            $limit->replenish();
             $limit->reduceLimit();
-            $this->saveLimit($this->getKey(), $limit);
+
+            $this->saveLimit($apiKey, $limit);
         }
+    }
+
+    /**
+     * @param ApiKey $apiKey
+     *
+     * @return LimitInterface|null
+     */
+    public function getMinLimit(ApiKey $apiKey)
+    {
+        /** @var LimitInterface $minLimit */
+        $minLimit = null;
+        $limits   = $this->collectLimits($apiKey);
+
+        foreach ($limits as $limit) {
+            if (!$minLimit || $minLimit->getCurrentLimit() > $limit->getCurrentLimit()) {
+                $minLimit = $limit;
+            }
+        }
+
+        return $minLimit;
     }
 
     /**
@@ -143,23 +118,45 @@ class LimitsService
     {
         switch ($interval) {
             case 3600:
-                $limit_hit = $this->resolver->getGlobalSettings()->get('api_limits.key.hour');
+                $limitHit = $this->settingsResolver->getGlobalSettings()->get('api_limits.key.hour');
                 break;
             case 86400:
-                $limit_hit = $this->resolver->getGlobalSettings()->get('api_limits.key.day');
+                $limitHit = $this->settingsResolver->getGlobalSettings()->get('api_limits.key.day');
                 break;
             default:
-                $default_limit = $this->resolver->getGlobalSettings()->get('api_limits.key.default', 0);
-                $limit_hit     = $this->resolver->getGlobalSettings()->get('api_limits.key.day', $default_limit);
+                $defaultLimit = $this->settingsResolver->getGlobalSettings()->get('api_limits.key.default', 0);
+                $limitHit     = $this->settingsResolver->getGlobalSettings()->get('api_limits.key.day', $defaultLimit);
                 break;
         }
 
         $limit = new KeyLimit();
         $limit
-            ->setCurrent($limit_hit)
-            ->setLimit($limit_hit)
-            ->setInterval(new \DateInterval(sprintf('PT%dS', $interval)));
+            ->setCurrent($limitHit)
+            ->setLimit($limitHit)
+            ->setInterval(new \DateInterval(sprintf('PT%dS', $interval)))
+        ;
 
         return $limit;
+    }
+
+    /**
+     * Collection all limits.
+     *
+     * @param ApiKey $apiKey
+     *
+     * @return LimitInterface[]
+     */
+    private function collectLimits(ApiKey $apiKey)
+    {
+        $limits = [];
+
+        foreach ($this->limitAdapter->getGlobalLimits() as $globalLimit) {
+            $limits[] = $globalLimit;
+        }
+        foreach ($this->getKeyLimits($apiKey) as $keyLimit) {
+            $limits[] = $keyLimit;
+        }
+
+        return $limits;
     }
 }
