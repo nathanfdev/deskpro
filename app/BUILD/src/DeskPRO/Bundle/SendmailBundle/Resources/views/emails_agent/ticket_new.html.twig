@@ -1,9 +1,9 @@
 {{ set_tplvar('agent_notification_footer', 'ticket-notify') }}
 {{ set_tplvar('agent_reply_above_line', true) }}
 <dp:subject>
-	{% if ticket.agent.id == person.id %}
+	{% if ticket.agent.id and ticket.agent.id == recipient.id %}
 		{{ phrase('agent.emails.subject_new_ticket_assigned') }}
-	{% elseif person.id in ticket.agent_team.agents %}
+	{% elseif recipient.id in ticket.agent_team.agents %}
 		{{ phrase('agent.emails.subject_new_ticket_assignedteam') }}
 	{% else %}
 		{{ phrase('agent.emails.subject_new_ticket') }}
