@@ -34,6 +34,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const WIDGET_BG_COLOR      = 'messenger.widget.bg_color';
     const WIDGET_TEXT_COLOR    = 'messenger.widget.text_color';
     const WIDGET_POSITION      = 'messenger.widget.position';
+    const WIDGET_ICON          = 'messenger.widget.icon';
 
     const CHAT_ENABLED              = 'messenger.chat.enabled';
     const CHAT_DEFAULT_DEPARTMENT   = 'messenger.chat.department';
@@ -297,6 +298,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setBackgroundColor($this->getSettings(self::WIDGET_BG_COLOR, $brand, $messengerWidget->getBackgroundColor()))
             ->setTextColor($this->getSettings(self::WIDGET_TEXT_COLOR, $brand, $messengerWidget->getTextColor()))
             ->setPosition($this->getSettings(self::WIDGET_POSITION, $brand, $messengerWidget->getPosition()))
+            ->setIcon($this->getSettings(self::WIDGET_ICON, $brand, $messengerWidget->getIcon()))
         ;
     }
 

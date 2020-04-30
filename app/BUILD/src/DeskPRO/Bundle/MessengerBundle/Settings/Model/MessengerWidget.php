@@ -43,6 +43,11 @@ class MessengerWidget
     private $textColor = '#ffffff';
 
     /**
+     * @JMS\Type("entity<Application\Deskpro\Entity\Blob>")
+     */
+    private $icon;
+
+    /**
      * Widget position
      *
      * @JMS\Type("string")
@@ -127,6 +132,26 @@ class MessengerWidget
     public function setPosition($position)
     {
         $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @param mixed $icon
+     *
+     * @return $this
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
 
         return $this;
     }
