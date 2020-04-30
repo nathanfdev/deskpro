@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Service;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\Department;
@@ -81,6 +83,11 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @var LanguageManager
      */
     private $languageManager;
+
+    /**
+     * @var DeskproBlobStorage
+     */
+    private $blobStorage;
 
     /**
      * Constructor.
@@ -298,7 +305,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setBackgroundColor($this->getSettings(self::WIDGET_BG_COLOR, $brand, $messengerWidget->getBackgroundColor()))
             ->setTextColor($this->getSettings(self::WIDGET_TEXT_COLOR, $brand, $messengerWidget->getTextColor()))
             ->setPosition($this->getSettings(self::WIDGET_POSITION, $brand, $messengerWidget->getPosition()))
-            ->setIcon($this->getSettings(self::WIDGET_ICON, $brand, $messengerWidget->getIcon()))
+            ->setIcon($this->getIcon($messengerWidget, $brand))
         ;
     }
 
@@ -348,5 +355,16 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         $department = $this->em->getRepository(Department::class)->getDefaultDepartment($type);
 
         return $department ? $department->getId() : 0;
+    }
+
+    /**
+     * @param MessengerWidget $messengerWidget
+     * @param Brand           $brand
+     *
+     * @return Blob|null
+     */
+    private function getIcon(MessengerWidget $messengerWidget, Brand $brand)
+    {
+        return $this->em->getRepository(Blob::class)->find($this->getSettings(self::WIDGET_ICON, $brand));
     }
 }

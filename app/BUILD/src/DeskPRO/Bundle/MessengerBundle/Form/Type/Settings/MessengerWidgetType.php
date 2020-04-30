@@ -19,7 +19,7 @@ class MessengerWidgetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('logo', BlobAuthType::class, ['required' => false])
+            ->add('icon', BlobAuthType::class, ['required' => false])
             ->add('primaryColor', TextType::class)
             ->add('backgroundColor', TextType::class)
             ->add('textColor', TextType::class)
