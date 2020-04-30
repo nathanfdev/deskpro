@@ -89,7 +89,7 @@ class MessengerSetupContainer extends React.Component {
     const postData = settings.setIn(
       ['chat', 'preChatForm', 'fields'],
       settings.getIn(['chat', 'preChatForm', 'fields']).filter(f => f && f.get('id'))
-    );
+    ).setIn(['widget.icon', settings.getIn(['widget', 'icon', 'blob_auth'])]);
 
     const promise = dispatch(saveSettings(brandId, postData));
 

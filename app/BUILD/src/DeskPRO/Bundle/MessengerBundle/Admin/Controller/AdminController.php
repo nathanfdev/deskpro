@@ -307,6 +307,7 @@ CODE;
             ->updateSetting(MSR::WIDGET_BG_COLOR, $messengerWidget->getBackgroundColor(), $brand)
             ->updateSetting(MSR::WIDGET_TEXT_COLOR, $messengerWidget->getTextColor(), $brand)
             ->updateSetting(MSR::WIDGET_POSITION, $messengerWidget->getPosition(), $brand)
+            ->updateSetting(MSR::WIDGET_ICON, $messengerWidget->getIcon()->getId(), $brand)
 
             // Chat settings
             ->updateSetting(MSR::CHAT_ENABLED, $messengerChat->isEnabled(), $brand)

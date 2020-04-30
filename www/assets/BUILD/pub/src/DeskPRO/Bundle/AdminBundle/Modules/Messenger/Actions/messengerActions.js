@@ -8,7 +8,7 @@ export const getCode = createAction(
 
 export const getSettings = createAction(
   'MESSENGER_GET_SETTINGS_ACTION',
-  brandId => api.sendGet(`DP_API/messenger/settings/${brandId}/setup`)
+  brandId => api.sendGet(`DP_API/messenger/settings/${brandId}/setup?include=blob&inline_sideloads=1`)
 );
 
 export const saveSettings = createAction(
