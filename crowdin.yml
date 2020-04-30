@@ -1,0 +1,3 @@
+files:
+  - source: /app/BUILD/locales/en-US/helpcenter.yml
+    translation: /app/BUILD/locales/%locale%/helpcenter.yml
