@@ -1,332 +1,282 @@
-helpcenter.account.section_desc_login_external: '  如果你有其他提供者的账户，请使用下面的链接'
-helpcenter.account.new_ticket_no_login: 'Portal CRM已禁用。无法提交门票。'
-helpcenter.emails.ticket_new_participant: 一个新人已被添加到您的帮助请求
-helpcenter.tickets.view_unassigned_more: 一名代理将被指派
-helpcenter.chat.form_chat_send_file: 上传一个文件
-helpcenter.chat.message_uploading: 上传中·
-helpcenter.general.downloads_type: 下载
-helpcenter.downloads.download: 下载
-helpcenter.guides.download_pdf: 下载PDF
-helpcenter.general.agent_bar_admin_dl: 下载设置
-helpcenter.messenger.chat.save_ticket.button_no: 不
-helpcenter.chat.window_close: 不，谢谢，就把窗口关闭
-helpcenter.tickets.new_section_title: 与我们联系
-helpcenter.account.registration_set_password: '与此电子邮件的帐户已存在。 我们已经向您发出一封电子邮件，让您设置您的密码和登录。'
-helpcenter.general.tagged_with: 与（）一起被标记
-helpcenter.account.section_desc_register: 为了能够轻松地管理您的对话，请注册一个账户。
-helpcenter.tickets.rate_support: 为您的帮助评分
-helpcenter.tickets.list_subject: 主题
-helpcenter.messenger.tickets.form.product: 产品
-helpcenter.general.agent: 代理
-helpcenter.general.agent_bar_agent_home: 代理主页
-helpcenter.general.agents: 代理们
-helpcenter.emails.password_agent_reset_subject: 代理已经从新设置了您的密码
-helpcenter.emails.password_agent_reset: '代理已重置您的帐户密码。 您可以使用这些详细信息登录'
-helpcenter.messenger.tickets.form.priority: 优先
-helpcenter.general.you: 你
+---
+helpcenter.account.change_password_btn: '更新密码'
 helpcenter.account.comment_lockout: '你已经提交了很多评论。 请稍后再提交。'
-helpcenter.flashes.user_updated_profile: 你的个人资料已经更新。
-helpcenter.tickets.list_status_user: 你需要回复
-helpcenter.account.login_external: 使用外部服务登录
-helpcenter.forms.label_save: 保存
-helpcenter.general.comment_btn_save: 保存评论
-helpcenter.account.profile_btn_save: 保存资料
-helpcenter.account.login_remember: 保持登录状态？
-helpcenter.direct_messages.reply_message: 信息
-helpcenter.chat.window_close_only: 关闭窗口
-helpcenter.general.share: 分享
-helpcenter.tickets.new_ticket_button: 创建一个新票证
-helpcenter.account.email_btn_remove: 删除邮件
-helpcenter.general.go: 去
-helpcenter.tickets.list_ticket_ref: 参考
+helpcenter.account.email_btn_make_primary: '设为主要'
+helpcenter.account.email_btn_remove: '删除邮件'
+helpcenter.account.email_btn_resend_validation: '重新发送验证电邮'
+helpcenter.account.email_btn_usersource_set: '添加电邮地址'
+helpcenter.account.login_captcha_failed: '您输入了一个无效的验证码。 请再试一遍。'
+helpcenter.account.login_email: '您的电子邮件'
+helpcenter.account.login_external: '使用外部服务登录'
+helpcenter.account.login_lockout: '您登录失败的次数过多，因此您已被锁定。 请稍后再试。'
+helpcenter.account.login_password_reminder: '密码提醒？'
+helpcenter.account.login_register_btn: 注册
+helpcenter.account.login_remember: '保持登录状态？'
+helpcenter.account.logout_btn: 退出
+helpcenter.account.new_ticket_no_login: 'Portal CRM已禁用。无法提交门票。'
+helpcenter.account.profile_btn_save: '保存资料'
+helpcenter.account.profile_delete_picture: '替换或删除头像？'
+helpcenter.account.registration_set_password: '与此电子邮件的帐户已存在。 我们已经向您发出一封电子邮件，让您设置您的密码和登录。'
+helpcenter.account.reset_password_click_here: '点击这里获取密码重设代码'
+helpcenter.account.reset_password_invalid_desc: '您的密码重设代码无效或过期。请重新设置密码，发送代码请求。'
+helpcenter.account.reset_password_invalid_input: '请输入有效的邮箱地址或用户名。'
+helpcenter.account.reset_password_lockout: '您尝试重置密码的次数过多。 你将被锁定一段很短的时间。 请稍后再试。'
+helpcenter.account.reset_password_request_desc: '完成此表格以便向您发送密码重置链接。'
+helpcenter.account.reset_password_request_title: '忘记密码？'
+helpcenter.account.reset_password_sent_desc: '我们已收到您的密码重设要求。 如果此电子邮件地址属于注册帐户，我们会向该帐户的主电子邮件地址发送一封包含密码重置链接的电子邮件。 请检查您的电子邮件收件箱中获得进一步的说明。'
+helpcenter.account.reset_password_sent_title: '已接收密码请求'
+helpcenter.account.reset_password_sent_to: '我们发送了邮件到'
+helpcenter.account.section_desc_login: '已拥有账户？请在下方登录。'
+helpcenter.account.section_desc_login_external: '  如果你有其他提供者的账户，请使用下面的链接'
+helpcenter.account.section_desc_register: '为了能够轻松地管理您的对话，请注册一个账户。'
+helpcenter.account.section_title_set_password: '设置密码'
+helpcenter.account.section_title_usersource_email: '请输入邮箱地址'
+helpcenter.account.section_title_your_account: '您的账户'
+helpcenter.account.set_password_click_here: '点击这里设置密码'
+helpcenter.account.set_password_for_user: '您的账户还没有设置密码。请设置密码, 以便以后登录发布内容。'
+helpcenter.account.set_password_invalid_desc: '您的密码代码无效或过期。请重新发送代码申请，申请密码。'
+helpcenter.account.set_password_request_desc: '填写此表格，我们将通过电子邮件向您发送设置密码的链接。'
+helpcenter.account.set_password_sent_desc: '我们已向您发送一封电子邮件，说明如何设置密码。'
+helpcenter.account.set_password_sent_title: '设置密码'
+helpcenter.account.set_password_success: "您的密码已经更新。\n"
+helpcenter.account.submit_saved_form: '您的（TYPE）还没有提交，但是我们已经替您保存了。'
+helpcenter.account.submit_saved_form_go: '请点击这里自动重新提交表格。'
+helpcenter.account.tickets_lockout: '您已经提交了很多评论，账户已被锁住。请稍后再试。'
+helpcenter.account.usersource_set_email_desc: '在您登录之前我们需要您的邮箱地址。请在下方输入您的邮箱地址以便我们发送确认邮件。'
+helpcenter.account.your_pending_email_addresses: '您的待定邮箱地址'
+helpcenter.articles.published: 已发布的
+helpcenter.articles.section_title: 知识库
+helpcenter.articles.view_as_agent: '因为您是代理所以您可以看到此页。用户是查阅不到此页的。'
+helpcenter.chat.email: '您的电子邮件地址'
+helpcenter.chat.list_date: 日期
+helpcenter.chat.log_chat_time: '聊天总时间'
+helpcenter.chat.log_linked_ticket: '已经指定的来单'
+helpcenter.chat.log_view_linked_ticket: '查阅来单'
+helpcenter.community.btn_vote: '我同意'
+helpcenter.community.error_hidden: '此反馈项已隐藏'
+helpcenter.community.error_login: '请登录'
+helpcenter.community.form_full_name: 姓名
+helpcenter.community.form_topic_title: 标题
+helpcenter.community.module_forbidden: '您无权访问此模块'
+helpcenter.community.no_matching: '没有匹配的反馈'
+helpcenter.community.rate_forbidden: '您不能投票'
 helpcenter.community.section_title: 反馈
-helpcenter.general.agent_bar_admin_community: 反馈设置
-helpcenter.error.general_title: 发生错误
-helpcenter.chat.form_chat_button_submit: 发送
-helpcenter.chat.form_feedback_button_submit: 发送反馈＆关闭窗口
-helpcenter.chat.submit_ticket_title: 发送电子邮件给我们
-helpcenter.chat.submit_ticket_button: 发送电子邮件给我们
-helpcenter.general.btn_cancel: 取消
-helpcenter.tickets.cancel_ticket_edit: 取消编辑并再次向我显示帮助请求
-helpcenter.general.btn_unsubscribe: 取消订阅
-helpcenter.emails.profile_email_link_validate: 只需点击以下链接验证您的电子邮件地址
-helpcenter.chat.form_feedback_title: 向我们发送反馈
-helpcenter.articles.view_as_agent: 因为您是代理所以您可以看到此页。用户是查阅不到此页的。
-helpcenter.general.in: 在
-helpcenter.account.usersource_set_email_desc: 在您登录之前我们需要您的邮箱地址。请在下方输入您的邮箱地址以便我们发送确认邮件。
+helpcenter.direct_messages.reply_message: 信息
+helpcenter.downloads.download: 下载
+helpcenter.downloads.none: '没有下载内容'
+helpcenter.downloads.uploaded_on: 已上传
+helpcenter.emails.chat_transcript: '感谢您与我们聊天。 这是您的聊天记录。'
+helpcenter.emails.chat_transcript_subject: '聊天记录'
+helpcenter.emails.comment_approved: '您的评论已发布。'
+helpcenter.emails.comment_approved_subject: '您的评论已被通过'
+helpcenter.emails.comment_confirmation: '感谢您的评论'
+helpcenter.emails.comment_deleted: '您的评论用于改进页面。'
+helpcenter.emails.comment_deleted_subject: '我们的代理已经阅读过您的建议'
+helpcenter.emails.community_new: '感谢您的反馈'
+helpcenter.emails.community_sub_updated: '已更新的反馈'
+helpcenter.emails.community_topic_agent_validation: '请注意，在我们的代理审核您的反馈之前，您的反馈不会公开显示'
+helpcenter.emails.community_topic_approved: '我们想通知您，您的反馈已获得批准，现在已在我们的网站上公开显示。'
+helpcenter.emails.community_topic_disapproved: '谨此通知您，很抱歉，您的反馈已被拒绝，不会公开显示在我们的网站上。'
+helpcenter.emails.community_topic_new_approved: '您的反馈已获得批准'
+helpcenter.emails.community_topic_new_disapproved: '抱歉，您的反馈已被拒绝'
+helpcenter.emails.download_sub_new: '新的下载'
+helpcenter.emails.download_sub_new_and_updated: '新的已更新的下载'
+helpcenter.emails.download_sub_updated: '已更新到下载'
+helpcenter.emails.email_new_confirm: '验证您的邮箱'
+helpcenter.emails.email_ticket_reminder: '请采取必要的行动：您的任务还没有提交'
+helpcenter.emails.kb_sub_new: '新的文章'
+helpcenter.emails.kb_sub_new_and_updated: '新的和已更新的文章'
+helpcenter.emails.kb_sub_updated: '已更新的文章'
+helpcenter.emails.label_view_online: '在线查看'
+helpcenter.emails.new_ticket_guest: '谢谢您与我们联系'
+helpcenter.emails.new_ticket_guest_link: '感谢您与我们联系。 您可以在这里查看您的帮助请求的状态：'
+helpcenter.emails.news_sub_new: '新的新闻'
+helpcenter.emails.news_sub_new_and_updated: '新的和已更新的新闻'
+helpcenter.emails.news_sub_updated: '更新的新闻'
+helpcenter.emails.password_agent_reset: '代理已重置您的帐户密码。 您可以使用这些详细信息登录'
+helpcenter.emails.password_agent_reset_subject: '代理已经从新设置了您的密码'
+helpcenter.emails.password_reset: '您请求重置密码。请点击下面的链接来重置您的密码：'
+helpcenter.emails.password_reset_subject: '重新设置密码'
+helpcenter.emails.password_set: '要设置您的密码，请点击以下链接：'
+helpcenter.emails.profile_email_link_validate: '只需点击以下链接验证您的电子邮件地址'
+helpcenter.emails.profile_email_primary_confirm: '要验证您的主要电子邮件地址，只需点击以下链接'
+helpcenter.emails.ratelimit_submit_online: '如果这是一个错误，您需要立即与我们联系，您可以绕过此电子邮件过滤器并在线提交帮助请求：'
+helpcenter.emails.register_welcome_byagent_subject: '您新的帮助台的账号'
+helpcenter.emails.register_welcome_subject: '感谢您的注册'
+helpcenter.emails.reject_resolved: '您的回复未被接受，因为您的请求帮助已标记为已解决。 我们的代理不会阅读或回复此邮件。'
+helpcenter.emails.ticket_access_ticket_online: '在线查看和管理此来单：'
+helpcenter.emails.ticket_flood: '您最近向我们的帮助台发送了一封电子邮件。 我们可以看到，您已经快速连续发送了很多自动化的邮件。<br /> <br />为了防止自动回复程序循环，我们的帮助台不会向您发送任何更多的自动通知电子邮件。'
+helpcenter.emails.ticket_new_participant: '一个新人已被添加到您的帮助请求'
+helpcenter.emails.ticket_no_autoresponse: '警告：确认邮件已关闭'
+helpcenter.emails.ticket_rate_neutral: '还可以'
+helpcenter.emails.ticket_rate_question: '此消息是否有帮助？'
+helpcenter.emails.ticket_received: '您的来单已收到。 我们的代理将尽快给您回复。'
+helpcenter.emails.ticket_reply_confirm: '谢谢您的回复。 我们的代理会尽快给您回复。'
+helpcenter.emails.ticket_validate: '感谢您与我们联系。<br /> <br />在我们的代理回复之前，您必须验证您的电子邮件地址。'
+helpcenter.emails.too_many_emails: '注意：您发送的电子邮件过多'
+helpcenter.emails.validate_email: '请点击下面的链接确认此电子邮件地址是您的电子邮件地址。'
+helpcenter.error.400_desc: '抱歉，您的请求格式不正确。'
+helpcenter.error.400_title: '错误的请求'
+helpcenter.error.403_desc: '很抱歉，您无权查看此页面。'
+helpcenter.error.403_title: '无访问权限'
+helpcenter.error.404_desc: '很抱歉，我们找不到此网页。'
+helpcenter.error.404_title: '未找到'
+helpcenter.error.general_title: '发生错误'
+helpcenter.error.permission_denied_title: '您不能这样做'
+helpcenter.flashes.article_cat_subscribe: '您已成功订阅此类文章。 当新文章发布时，您将收到通知。'
+helpcenter.flashes.article_cat_unsubscribe: '您已成功取消订阅此类文章。'
+helpcenter.flashes.article_subscribe: '您已成功订阅此文章。 当有更新或有新评论时，系统会通知您。'
+helpcenter.flashes.article_unsubscribe: '您已成功取消订阅本文。'
+helpcenter.flashes.article_unsubscribe_everything: '您已取消订阅所有知识库通知'
+helpcenter.flashes.community_login: '您应该登录投票'
+helpcenter.flashes.community_subscribe: '您已成功订阅此反馈项目。 当有更新或有新评论时，系统会通知您。'
+helpcenter.flashes.community_unsubscribe: '您已成功取消订阅此反馈项目。'
+helpcenter.flashes.community_unsubscribe_everything: '您已取消订阅所有反馈通知'
+helpcenter.flashes.download_cat_subscribe: '您已成功订阅此类文章。 当有新文件可供下载时，您将收到通知。'
+helpcenter.flashes.download_subscribe: '您已成功订阅此下载。 当有更新或有新评论时，系统会通知您。'
+helpcenter.flashes.download_unsubscribe: '您已成功取消订阅此下载。'
+helpcenter.flashes.download_unsubscribe_everything: '您已取消订阅所有下载通知'
+helpcenter.flashes.email_sent: '您的电子邮件已发送'
 helpcenter.flashes.guest_content_must_verify: '在我们发布您的内容之前，您必须验证您的电子邮件。 请检查您的电子邮件收件箱。 我们已向您发送验证链接。'
 helpcenter.flashes.guest_new_ticket_must_verify: '在我们接受您的帮助请求之前，我们必须验证您的电子邮件地址。 请检查您的电子邮件收件箱。 我们已向您发送验证链接。'
-helpcenter.chat.window_open_new: 在新窗口中打开此聊天
-helpcenter.emails.label_view_online: 在线查看
-helpcenter.emails.ticket_access_ticket_online: 在线查看和管理此来单：
-helpcenter.account.set_password_request_desc: 填写此表格，我们将通过电子邮件向您发送设置密码的链接。
-helpcenter.emails.ratelimit_submit_online: 如果这是一个错误，您需要立即与我们联系，您可以绕过此电子邮件过滤器并在线提交帮助请求：
-helpcenter.community.form_full_name: 姓名
-helpcenter.tickets.view_label_your_name_placeholder: 姓名（必填的）
-helpcenter.account.reset_password_request_desc: 完成此表格以便向您发送密码重置链接。
-helpcenter.general.password: 密码
-helpcenter.account.login_password_reminder: 密码提醒？
-helpcenter.chat.window_upload_drag: 将您的的文件放到这里上传到会话
-helpcenter.chat.form_feedback_transcript_email: 将此聊天的脚本发送到
-helpcenter.flashes.ticket_participant_remove_unknown_error: 尝试删除您的参与者时出现问题。请再试一次。
-helpcenter.flashes.ticket_participant_add_unknown_error: 尝试添加参与者时出现问题。请再试一次。
-helpcenter.downloads.uploaded_on: 已上传
-helpcenter.articles.published: 已发布的
-helpcenter.account.section_desc_login: 已拥有账户？请在下方登录。
-helpcenter.account.reset_password_sent_title: 已接收密码请求
-helpcenter.general.updated: 已更新
-helpcenter.emails.download_sub_updated: 已更新到下载
-helpcenter.emails.community_sub_updated: 已更新的反馈
-helpcenter.emails.kb_sub_updated: 已更新的文章
-helpcenter.chat.log_linked_ticket: 已经指定的来单
-helpcenter.tickets.list_status_resolved: 已解决的
-helpcenter.chat.form_create_title: 开始与代理聊天
-helpcenter.messenger.proactive.title: 开始对话
-helpcenter.chat.form_create_button_submit: 开始聊天
-helpcenter.error.403_desc: 很抱歉，您无权查看此页面。
-helpcenter.error.404_desc: 很抱歉，我们找不到此网页。
-helpcenter.chat.ended_no_agent: '很抱歉，我们目前没有任何人可以开始聊天。 请电邮我们或稍后再试。'
-helpcenter.account.reset_password_request_title: 忘记密码？
-helpcenter.community.rate_forbidden: 您不能投票
-helpcenter.error.permission_denied_title: 您不能这样做
-helpcenter.chat.form_feedback_rate_satisfaction: 您对这次的对话满意吗？
-helpcenter.flashes.ticket_participant_already_error: 您尝试添加为参与者的人已经是此故障单的参与者。
-helpcenter.account.reset_password_lockout: '您尝试重置密码的次数过多。 你将被锁定一段很短的时间。 请稍后再试。'
-helpcenter.flashes.download_unsubscribe_everything: 您已取消订阅所有下载通知
-helpcenter.flashes.community_unsubscribe_everything: 您已取消订阅所有反馈通知
-helpcenter.flashes.news_unsubscribe_everything: 您已取消订阅所有新闻文章通知
-helpcenter.flashes.article_unsubscribe_everything: 您已取消订阅所有知识库通知
-helpcenter.chat.you_have_been_invited: 您已受邀加入聊天
-helpcenter.flashes.article_unsubscribe: 您已成功取消订阅本文。
-helpcenter.flashes.download_unsubscribe: 您已成功取消订阅此下载。
-helpcenter.flashes.community_unsubscribe: 您已成功取消订阅此反馈项目。
-helpcenter.flashes.news_unsubscribe: 您已成功取消订阅此新闻文章。
-helpcenter.flashes.article_cat_unsubscribe: 您已成功取消订阅此类文章。
-helpcenter.flashes.download_subscribe: '您已成功订阅此下载。 当有更新或有新评论时，系统会通知您。'
-helpcenter.flashes.community_subscribe: '您已成功订阅此反馈项目。 当有更新或有新评论时，系统会通知您。'
-helpcenter.flashes.article_subscribe: '您已成功订阅此文章。 当有更新或有新评论时，系统会通知您。'
-helpcenter.flashes.news_subscribe: '您已成功订阅此新闻文章。 当有新评论时，您会收到通知。'
-helpcenter.flashes.news_cat_subscribe: '您已成功订阅此类别。 您将收到新帖子的通知。'
-helpcenter.flashes.article_cat_subscribe: '您已成功订阅此类文章。 当新文章发布时，您将收到通知。'
-helpcenter.flashes.download_cat_subscribe: '您已成功订阅此类文章。 当有新文件可供下载时，您将收到通知。'
-helpcenter.account.tickets_lockout: 您已经提交了很多评论，账户已被锁住。请稍后再试。
-helpcenter.flashes.ticket_re_opened: 您已重新打开此请求。
-helpcenter.flashes.community_login: 您应该登录投票
-helpcenter.forms.error_email_required: 您必须提供您的电子邮件地址
-helpcenter.tickets.rate_question: 您怎样评价您得到的帮助？
-helpcenter.emails.register_welcome_byagent_subject: 您新的帮助台的账号
-helpcenter.community.module_forbidden: 您无权访问此模块
-helpcenter.emails.ticket_flood: '您最近向我们的帮助台发送了一封电子邮件。 我们可以看到，您已经快速连续发送了很多自动化的邮件。<br /> <br />为了防止自动回复程序循环，我们的帮助台不会向您发送任何更多的自动通知电子邮件。'
-helpcenter.chat.message_chatting_with: '您正在与  聊天'
-helpcenter.account.login_lockout: '您登录失败的次数过多，因此您已被锁定。 请稍后再试。'
-helpcenter.flashes.user_changed_primary_email: 您的主要电子邮件地址已更改。
-helpcenter.emails.community_topic_new_approved: 您的反馈已获得批准
-helpcenter.chat.name: 您的名字
-helpcenter.flashes.ticket_replied: '您的回复已提交。 谢谢！'
-helpcenter.emails.reject_resolved: '您的回复未被接受，因为您的请求帮助已标记为已解决。 我们的代理不会阅读或回复此邮件。'
-helpcenter.profile.your_password: 您的密码
-helpcenter.account.set_password_invalid_desc: 您的密码代码无效或过期。请重新发送代码申请，申请密码。
-helpcenter.account.set_password_success: "您的密码已经更新。\n"
-helpcenter.account.reset_password_invalid_desc: 您的密码重设代码无效或过期。请重新设置密码，发送代码请求。
-helpcenter.messenger.blocks.tickets.title: 您的工单
-helpcenter.flashes.ticket_created: '您的帮助请求已提交。 谢谢！'
-helpcenter.flashes.ticket_resolved: '您的帮助请求现在标记为已解决。 谢谢。'
-helpcenter.account.your_pending_email_addresses: 您的待定邮箱地址
-helpcenter.tickets.view_reply_errors: 您的提交出现了一些错误。
-helpcenter.emails.ticket_received: '您的来单已收到。 我们的代理将尽快给您回复。'
-helpcenter.account.login_email: 您的电子邮件
-helpcenter.chat.email: 您的电子邮件地址
-helpcenter.flashes.user_add_email_verified: 您的电子邮件地址已添加到您的帐户。
-helpcenter.flashes.email_sent: 您的电子邮件已发送
-helpcenter.chat.log_title: 您的聊天
-helpcenter.emails.comment_approved: 您的评论已发布。
-helpcenter.emails.comment_approved_subject: 您的评论已被通过
-helpcenter.emails.comment_deleted: 您的评论用于改进页面。
-helpcenter.flashes.ticket_updated: '您的请求已更新。 谢谢！'
-helpcenter.account.section_title_your_account: 您的账户
-helpcenter.profile.account_disabled_message: 您的账户现在不可用。您不能登录或者来单或会话。
-helpcenter.account.set_password_for_user: '您的账户还没有设置密码。请设置密码, 以便以后登录发布内容。'
-helpcenter.account.submit_saved_form: 您的（TYPE）还没有提交，但是我们已经替您保存了。
-helpcenter.chat.window_cancel_confirm: 您确定要结束聊天吗？
-helpcenter.news.view_as_agent: 您能看到此页面因为您是代理。普通用户无法查看此页面。
-helpcenter.emails.password_reset: 您请求重置密码。请点击下面的链接来重置您的密码：
-helpcenter.account.login_captcha_failed: '您输入了一个无效的验证码。 请再试一遍。'
-helpcenter.tickets.need_login_title: 您需要登录打开一个工单
-helpcenter.emails.chat_transcript: '感谢您与我们聊天。 这是您的聊天记录。'
-helpcenter.emails.new_ticket_guest_link: '感谢您与我们联系。 您可以在这里查看您的帮助请求的状态：'
-helpcenter.emails.ticket_validate: '感谢您与我们联系。<br /> <br />在我们的代理回复之前，您必须验证您的电子邮件地址。'
-helpcenter.tickets.guest_thank_you_desc: 感谢您与我们联系。我们已向您发送了一封邮件，说明如何管理您的帮助请求。
-helpcenter.flashes.user_registered_must_verify: '感谢您注册。 请检查您的电子邮件，我们已向您发送验证链接。'
-helpcenter.emails.community_new: 感谢您的反馈
-helpcenter.flashes.new_community_topic_posted: 感谢您的反馈意见。
 helpcenter.flashes.new_community_topic_awaiting_review: '感谢您的反馈意见。 它将在代理审查后在我们的支持门户上可见。'
-helpcenter.emails.register_welcome_subject: 感谢您的注册
-helpcenter.emails.comment_confirmation: 感谢您的评论
-helpcenter.flashes.usersource_new_add_email_verified: '感谢您验证电子邮件地址。 您的帐户现已启用。'
-helpcenter.tickets.not_allowed_title: 我们会马上回来
-helpcenter.account.reset_password_sent_to: 我们发送了邮件到
-helpcenter.account.set_password_sent_desc: 我们已向您发送一封电子邮件，说明如何设置密码。
-helpcenter.account.reset_password_sent_desc: '我们已收到您的密码重设要求。 如果此电子邮件地址属于注册帐户，我们会向该帐户的主电子邮件地址发送一封包含密码重置链接的电子邮件。 请检查您的电子邮件收件箱中获得进一步的说明。'
-helpcenter.emails.community_topic_approved: 我们想通知您，您的反馈已获得批准，现在已在我们的网站上公开显示。
-helpcenter.chat.message_wait: 我们正在为您找到一个代理
-helpcenter.tickets.list_status_agent: 我们的代理将回复
-helpcenter.emails.comment_deleted_subject: 我们的代理已经阅读过您的建议
-helpcenter.chat.form_feedback_rate_time: 我们的回复时间够快吗？
+helpcenter.flashes.new_community_topic_posted: '感谢您的反馈意见。'
+helpcenter.flashes.news_cat_subscribe: '您已成功订阅此类别。 您将收到新帖子的通知。'
+helpcenter.flashes.news_subscribe: '您已成功订阅此新闻文章。 当有新评论时，您会收到通知。'
+helpcenter.flashes.news_unsubscribe: '您已成功取消订阅此新闻文章。'
+helpcenter.flashes.news_unsubscribe_everything: '您已取消订阅所有新闻文章通知'
+helpcenter.flashes.ticket_created: '您的帮助请求已提交。 谢谢！'
+helpcenter.flashes.ticket_feedback_thank_you: '谢谢您的反馈'
+helpcenter.flashes.ticket_participant_add_unknown_error: '尝试添加参与者时出现问题。请再试一次。'
+helpcenter.flashes.ticket_participant_already_error: '您尝试添加为参与者的人已经是此故障单的参与者。'
+helpcenter.flashes.ticket_participant_email_error: '请为您的参与者输入有效的电子邮件，然后重试。'
+helpcenter.flashes.ticket_participant_remove_unknown_error: '尝试删除您的参与者时出现问题。请再试一次。'
+helpcenter.flashes.ticket_re_opened: '您已重新打开此请求。'
+helpcenter.flashes.ticket_replied: '您的回复已提交。 谢谢！'
+helpcenter.flashes.ticket_resolved: '您的帮助请求现在标记为已解决。 谢谢。'
+helpcenter.flashes.ticket_updated: '您的请求已更新。 谢谢！'
+helpcenter.flashes.user_add_email_verified: '您的电子邮件地址已添加到您的帐户。'
 helpcenter.flashes.user_add_email_verify: '我们需要先验证您的电子邮件，然后再将其添加到您的帐户。 请检查您的电子邮件收件箱中的验证链接。'
-helpcenter.flashes.usersource_new_add_email_verify: '我们需要在创建您的帐户之前验证您的电子邮件。 请检查您的收件箱中的验证链接。'
-helpcenter.community.btn_vote: 我同意
-helpcenter.messenger.tickets.form.or: 或者
-helpcenter.general.everything: 所有
-helpcenter.general.print: 打印
-helpcenter.chat.window_resume_button: 打开您的聊天
-helpcenter.chat.message_wait_timeout: '抱歉; 现在没有代理在线。'
-helpcenter.tickets.not_allowed_desc: '抱歉， 我们的代理现在无法接受您的会话'
-helpcenter.emails.community_topic_new_disapproved: 抱歉，您的反馈已被拒绝
-helpcenter.error.400_desc: 抱歉，您的请求格式不正确。
-helpcenter.general.nav_guides: 指南
-helpcenter.messenger.tickets.form.submit: 提交
-helpcenter.emails.download_sub_new: 新的下载
-helpcenter.emails.kb_sub_new_and_updated: 新的和已更新的文章
-helpcenter.emails.news_sub_new_and_updated: 新的和已更新的新闻
-helpcenter.emails.download_sub_new_and_updated: 新的已更新的下载
-helpcenter.emails.kb_sub_new: 新的文章
-helpcenter.emails.news_sub_new: 新的新闻
-helpcenter.general.agent_bar_admin_news: 新闻设置
-helpcenter.error.403_title: 无访问权限
-helpcenter.chat.list_date: 日期
-helpcenter.tickets.list_date_created: 日期已经创建
-helpcenter.members.timezone: 时区
-helpcenter.messenger.chat.transcript_block.yes_button: 是
-helpcenter.general.show: 显示
-helpcenter.account.change_password_btn: 更新密码
-helpcenter.emails.news_sub_updated: 更新的新闻
-helpcenter.account.profile_delete_picture: 替换或删除头像？
-helpcenter.general.prop_popularity_asc: 最不受欢迎的优先
-helpcenter.general.prop_rating_asc: 最低评分的优先
-helpcenter.general.prop_popularity_desc: 最受欢迎的优先
-helpcenter.tickets.list_date_last_agent: 最后一个回复的代理
-helpcenter.tickets.list_date_last_user: 最后一个回复的用户
-helpcenter.general.last_activity: 最后一次活跃
-helpcenter.tickets.list_last_action: 最后的操作
-helpcenter.general.prop_views_desc: 最多浏览的优先
-helpcenter.general.prop_comments_desc: 最多评论优先
-helpcenter.general.prop_views_asc: 最少浏览的优先
-helpcenter.general.prop_comments_asc: 最少评论优先
-helpcenter.general.prop_date_desc: 最新的优先
-helpcenter.general.prop_date_asc: 最早的优先
-helpcenter.news.recent_title: 最近的消息
-helpcenter.general.prop_rating_desc: 最高评分的优先
-helpcenter.general.rate_page_positive: 有用的
-helpcenter.chat.log_unassigned: "未分配任何代理\n"
-helpcenter.error.404_title: 未找到
-helpcenter.chat.message_finding_agent: 查找代理
-helpcenter.chat.log_view_linked_ticket: 查阅来单
-helpcenter.general.tags: 标签
-helpcenter.tickets.timeline_marked: 标记这个来单
-helpcenter.community.form_topic_title: 标题
-helpcenter.general.impersonation_mode: 模拟模式
-helpcenter.community.error_hidden: 此反馈项已隐藏
-helpcenter.emails.ticket_rate_question: 此消息是否有帮助？
-helpcenter.general.comments_pending_validation: '此评论正在审核中。 它将很快显示'
-helpcenter.downloads.none: 没有下载内容
-helpcenter.community.no_matching: 没有匹配的反馈
-helpcenter.tickets.no_participants: 没有参与者
-helpcenter.news.none: 没有新消息
-helpcenter.tickets.view_unassigned: 没有被指派的
-helpcenter.chat.log_no_department: 没有部门
-helpcenter.account.login_register_btn: 注册
-helpcenter.emails.too_many_emails: 注意：您发送的电子邮件过多
-helpcenter.general.nav_downloads_desc: 浏览我们的下载
-helpcenter.general.add_comment: 添加一条评论
-helpcenter.tickets.view_btn_add_to_ticket: 添加到工单
-helpcenter.tickets.view_reply: 添加回复
-helpcenter.account.email_btn_usersource_set: 添加电邮地址
-helpcenter.chat.window_offline_button: 点击这里与我们联系
-helpcenter.tickets.view_scroll_reply: 点击这里向下滚动到表格。
-helpcenter.chat.window_start_button: 点击这里和我们进行会话
-helpcenter.account.reset_password_click_here: 点击这里获取密码重设代码
-helpcenter.account.set_password_click_here: 点击这里设置密码
-helpcenter.general.user: 用户
-helpcenter.chat.message_user_returned: 用户已回来
-helpcenter.chat.message_user_timeout: 用户超时
-helpcenter.general.email_address: 电子邮件
-helpcenter.general.log_in: 登录
-helpcenter.tickets.please_login_to_reply: 登录进行回复。
-helpcenter.general.related_community: 相关的反馈
-helpcenter.general.related_downloads: 相关的文件
-helpcenter.general.related_news: 相关的消息
-helpcenter.general.related_pages: 相关的页面
-helpcenter.articles.section_title: 知识库
-helpcenter.general.agent_bar_admin_kb: 知识库设置
-helpcenter.general.agent_bar_agent_dl: 管理下载
-helpcenter.general.agent_bar_agent_community: 管理反馈
-helpcenter.general.admin: 管理员
-helpcenter.general.admin_home: 管理员主页
-helpcenter.general.agent_bar_agent_news: 管理新闻
-helpcenter.general.agent_bar_agent_kb: 管理知识库
-helpcenter.chat.window_end_chat: 结束聊天
-helpcenter.tickets.view_btn_edit: 编辑
-helpcenter.tickets.view_btn_edit_full: 编辑这条来单
-helpcenter.general.chat: 聊天
-helpcenter.chat.log_chat_id: 聊天ID
-helpcenter.chat.message_unassigned: 聊天已取消分配
-helpcenter.chat.message_started: 聊天开始
-helpcenter.chat.log_chat_time: 聊天总时间
-helpcenter.messenger.chat.ended: 聊天结束
-helpcenter.chat.message_ended_by_user: 聊天被用户终止
-helpcenter.emails.chat_transcript_subject: 聊天记录
-helpcenter.chat.error: 聊天错误
-helpcenter.tickets.form_changed_notice: 表单添加了新的区域。请查看这些区域然后再次提交表单。
-helpcenter.tickets.list_agent: 被指派的代理
-helpcenter.emails.password_set: 要设置您的密码，请点击以下链接：
-helpcenter.emails.profile_email_primary_confirm: 要验证您的主要电子邮件地址，只需点击以下链接
-helpcenter.tickets.resolve_my_ticket_btn: 解决我的工单
-helpcenter.emails.ticket_no_autoresponse: 警告：确认邮件已关闭
-helpcenter.general.btn_subscribe: 订阅
-helpcenter.account.email_btn_make_primary: 设为主要
-helpcenter.account.section_title_set_password: 设置密码
-helpcenter.account.set_password_sent_title: 设置密码
-helpcenter.general.rate_page: 评价此页面的质量
-helpcenter.general.comments: 评论
-helpcenter.members.language: 语言
-helpcenter.general.agent_bar_admin_lang: 语言设定
-helpcenter.flashes.ticket_participant_email_error: 请为您的参与者输入有效的电子邮件，然后重试。
-helpcenter.general.rerender_form: 请在提交前审查此表。
-helpcenter.general.no_search_query: 请在搜索框中输入搜索查询。
-helpcenter.tickets.new_intro: 请完成填写这张表单，我们的代理将通过邮件尽快与您取得联系。
-helpcenter.general.label_search_enter_label: 请提供要搜索的标签
-helpcenter.emails.community_topic_agent_validation: 请注意，在我们的代理审核您的反馈之前，您的反馈不会公开显示
-helpcenter.emails.validate_email: 请点击下面的链接确认此电子邮件地址是您的电子邮件地址。
-helpcenter.account.submit_saved_form_go: 请点击这里自动重新提交表格。
-helpcenter.community.error_login: 请登录
-helpcenter.account.reset_password_invalid_input: 请输入有效的邮箱地址或用户名。
-helpcenter.account.section_title_usersource_email: 请输入邮箱地址
-helpcenter.emails.email_ticket_reminder: 请采取必要的行动：您的任务还没有提交
-helpcenter.tickets.thank_you_check_email: 请验证您的电子邮箱地址
-helpcenter.tickets.thank_you_check_email_desc: 请验证邮箱来完成帮助请求的提交。请点击我们发送给您的验证链接。
-helpcenter.tickets.guest_thank_you_title: 谢谢
+helpcenter.flashes.user_changed_primary_email: '您的主要电子邮件地址已更改。'
+helpcenter.flashes.user_registered_must_verify: '感谢您注册。 请检查您的电子邮件，我们已向您发送验证链接。'
+helpcenter.flashes.user_registered_verified: '谢谢。您的电子邮件地址已经过验证。'
 helpcenter.flashes.user_registered_verified_authenticated: '谢谢。 您的电子邮件地址已通过验证，您已登录。'
-helpcenter.flashes.user_registered_verified: 谢谢。您的电子邮件地址已经过验证。
-helpcenter.emails.new_ticket_guest: 谢谢您与我们联系
-helpcenter.flashes.ticket_feedback_thank_you: 谢谢您的反馈
-helpcenter.emails.ticket_reply_confirm: '谢谢您的回复。 我们的代理会尽快给您回复。'
-helpcenter.emails.community_topic_disapproved: 谨此通知您，很抱歉，您的反馈已被拒绝，不会公开显示在我们的网站上。
-helpcenter.emails.ticket_rate_neutral: 还可以
-helpcenter.tickets.switched_department_rerender: 这张表格的的结构已经更改。请审查表格并再次提交。
-helpcenter.tickets.timeline_attached: 这条消息的附件：
-helpcenter.tickets.rate_negative: 这样不好
-helpcenter.tickets.rate_positive: 这样非常好
-helpcenter.account.logout_btn: 退出
-helpcenter.messenger.tickets.form.chooseAFile: 选择文件
-helpcenter.chat.form_create_department: 选择部门
-helpcenter.tickets.view_label_your_email_placeholder: 邮箱地址（必要）
-helpcenter.messenger.tickets.form.department: 部门
-helpcenter.account.email_btn_resend_validation: 重新发送验证电邮
-helpcenter.tickets.mark_unresolved: 重新打开工单
-helpcenter.tickets.timeline_re_opened: 重新打开这条来单
-helpcenter.emails.password_reset_subject: 重新设置密码
-helpcenter.error.400_title: 错误的请求
+helpcenter.flashes.user_resend_email_verify: '验证电子邮件已重新发送到您的电子邮件地址。'
+helpcenter.flashes.user_updated_profile: '你的个人资料已经更新。'
+helpcenter.flashes.usersource_new_add_email_verified: '感谢您验证电子邮件地址。 您的帐户现已启用。'
+helpcenter.flashes.usersource_new_add_email_verify: '我们需要在创建您的帐户之前验证您的电子邮件。 请检查您的收件箱中的验证链接。'
+helpcenter.forms.error_email_required: '您必须提供您的电子邮件地址'
+helpcenter.forms.label_save: 保存
+helpcenter.general.add_comment: '添加一条评论'
+helpcenter.general.admin: 管理员
+helpcenter.general.admin_home: '管理员主页'
+helpcenter.general.agent: 代理
+helpcenter.general.agent_bar_admin_community: '反馈设置'
+helpcenter.general.agent_bar_admin_dl: '下载设置'
+helpcenter.general.agent_bar_admin_kb: '知识库设置'
+helpcenter.general.agent_bar_admin_lang: '语言设定'
+helpcenter.general.agent_bar_admin_news: '新闻设置'
+helpcenter.general.agent_bar_agent_community: '管理反馈'
+helpcenter.general.agent_bar_agent_dl: '管理下载'
+helpcenter.general.agent_bar_agent_home: '代理主页'
+helpcenter.general.agent_bar_agent_kb: '管理知识库'
+helpcenter.general.agent_bar_agent_news: '管理新闻'
+helpcenter.general.agents: 代理们
 helpcenter.general.attachments: 附件
-helpcenter.messenger.tickets.form.category: 類別
-helpcenter.emails.email_new_confirm: 验证您的邮箱
-helpcenter.flashes.user_resend_email_verify: 验证电子邮件已重新发送到您的电子邮件地址。
+helpcenter.general.btn_cancel: 取消
+helpcenter.general.btn_subscribe: 订阅
+helpcenter.general.btn_unsubscribe: 取消订阅
+helpcenter.general.chat: 聊天
+helpcenter.general.comment_btn_save: '保存评论'
+helpcenter.general.comments: 评论
+helpcenter.general.comments_pending_validation: '此评论正在审核中。 它将很快显示'
+helpcenter.general.downloads_type: 下载
+helpcenter.general.email_address: '电子邮件'
+helpcenter.general.everything: 所有
+helpcenter.general.go: 去
+helpcenter.general.impersonation_mode: '模拟模式'
+helpcenter.general.in: 在
+helpcenter.general.label_search_enter_label: '请提供要搜索的标签'
+helpcenter.general.last_activity: '最后一次活跃'
+helpcenter.general.log_in: '登录'
+helpcenter.general.nav_downloads_desc: '浏览我们的下载'
+helpcenter.general.nav_guides: 指南
+helpcenter.general.no_search_query: '请在搜索框中输入搜索查询。'
+helpcenter.general.password: 密码
+helpcenter.general.print: 打印
+helpcenter.general.prop_comments_asc: '最少评论优先'
+helpcenter.general.prop_comments_desc: '最多评论优先'
+helpcenter.general.prop_date_asc: '最早的优先'
+helpcenter.general.prop_date_desc: '最新的优先'
+helpcenter.general.prop_popularity_asc: '最不受欢迎的优先'
+helpcenter.general.prop_popularity_desc: '最受欢迎的优先'
+helpcenter.general.prop_rating_asc: '最低评分的优先'
+helpcenter.general.prop_rating_desc: '最高评分的优先'
+helpcenter.general.prop_views_asc: '最少浏览的优先'
+helpcenter.general.prop_views_desc: '最多浏览的优先'
+helpcenter.general.rate_page: '评价此页面的质量'
+helpcenter.general.rate_page_positive: 有用的
+helpcenter.general.related_community: '相关的反馈'
+helpcenter.general.related_downloads: '相关的文件'
+helpcenter.general.related_news: '相关的消息'
+helpcenter.general.related_pages: '相关的页面'
+helpcenter.general.rerender_form: '请在提交前审查此表。'
+helpcenter.general.share: 分享
+helpcenter.general.show: 显示
+helpcenter.general.tagged_with: '与（）一起被标记'
+helpcenter.general.tags: 标签
+helpcenter.general.updated: 已更新
+helpcenter.general.user: 用户
+helpcenter.general.you: 你
+helpcenter.guides.download_pdf: '下载PDF'
+helpcenter.members.language: 语言
+helpcenter.members.timezone: 时区
+helpcenter.news.none: '没有新消息'
+helpcenter.news.recent_title: '最近的消息'
+helpcenter.news.view_as_agent: '您能看到此页面因为您是代理。普通用户无法查看此页面。'
+helpcenter.profile.account_disabled_message: '您的账户现在不可用。您不能登录或者来单或会话。'
+helpcenter.profile.your_password: '您的密码'
+helpcenter.tickets.cancel_ticket_edit: '取消编辑并再次向我显示帮助请求'
+helpcenter.tickets.form_changed_notice: '表单添加了新的区域。请查看这些区域然后再次提交表单。'
+helpcenter.tickets.guest_thank_you_desc: '感谢您与我们联系。我们已向您发送了一封邮件，说明如何管理您的帮助请求。'
+helpcenter.tickets.guest_thank_you_title: '谢谢'
+helpcenter.tickets.list_agent: '被指派的代理'
+helpcenter.tickets.list_date_created: '日期已经创建'
+helpcenter.tickets.list_date_last_agent: '最后一个回复的代理'
+helpcenter.tickets.list_date_last_user: '最后一个回复的用户'
+helpcenter.tickets.list_last_action: '最后的操作'
+helpcenter.tickets.list_status_agent: '我们的代理将回复'
+helpcenter.tickets.list_status_resolved: 已解决的
+helpcenter.tickets.list_status_user: '你需要回复'
+helpcenter.tickets.list_subject: 主题
+helpcenter.tickets.list_ticket_ref: 参考
+helpcenter.tickets.mark_unresolved: '重新打开工单'
+helpcenter.tickets.need_login_title: '您需要登录打开一个工单'
+helpcenter.tickets.new_intro: '请完成填写这张表单，我们的代理将通过邮件尽快与您取得联系。'
+helpcenter.tickets.new_section_title: '与我们联系'
+helpcenter.tickets.new_ticket_button: '创建一个新票证'
+helpcenter.tickets.no_participants: '没有参与者'
+helpcenter.tickets.not_allowed_desc: '抱歉， 我们的代理现在无法接受您的会话'
+helpcenter.tickets.not_allowed_title: '我们会马上回来'
+helpcenter.tickets.please_login_to_reply: '登录进行回复。'
+helpcenter.tickets.rate_negative: '这样不好'
+helpcenter.tickets.rate_positive: '这样非常好'
+helpcenter.tickets.rate_question: '您怎样评价您得到的帮助？'
+helpcenter.tickets.rate_support: '为您的帮助评分'
+helpcenter.tickets.resolve_my_ticket_btn: '解决我的工单'
+helpcenter.tickets.switched_department_rerender: '这张表格的的结构已经更改。请审查表格并再次提交。'
+helpcenter.tickets.thank_you_check_email: '请验证您的电子邮箱地址'
+helpcenter.tickets.thank_you_check_email_desc: '请验证邮箱来完成帮助请求的提交。请点击我们发送给您的验证链接。'
+helpcenter.tickets.timeline_attached: '这条消息的附件：'
+helpcenter.tickets.timeline_marked: '标记这个来单'
+helpcenter.tickets.timeline_re_opened: '重新打开这条来单'
+helpcenter.tickets.view_btn_add_to_ticket: '添加到工单'
+helpcenter.tickets.view_btn_edit: 编辑
+helpcenter.tickets.view_btn_edit_full: '编辑这条来单'
+helpcenter.tickets.view_label_your_email_placeholder: '邮箱地址（必要）'
+helpcenter.tickets.view_label_your_name_placeholder: '姓名（必填的）'
+helpcenter.tickets.view_reply: '添加回复'
+helpcenter.tickets.view_reply_errors: '您的提交出现了一些错误。'
+helpcenter.tickets.view_scroll_reply: '点击这里向下滚动到表格。'
+helpcenter.tickets.view_unassigned: 没有被指派的
+helpcenter.tickets.view_unassigned_more: '一名代理将被指派'
