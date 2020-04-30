@@ -1,90 +1,56 @@
-helpcenter.emails.ticket_no_autoresponse: 'Advarsel: Bekreftelsesepost er skrudd av.'
-helpcenter.general.btn_cancel: Avbryt
-helpcenter.messenger.tickets.form.department: Avdeling
-helpcenter.chat.window_end_chat: 'Avslutt samtale'
-helpcenter.emails.email_new_confirm: 'Bekreft epost addressen din'
-helpcenter.messenger.chat.ended: 'Chat avsluttet'
-helpcenter.chat.message_ended_by_user: 'Chat ble avsluttet av kunde'
-helpcenter.chat.message_started: 'Chat startet'
+---
+helpcenter.articles.section_title: Kunnskapsbase
+helpcenter.articles.view_as_agent: 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.'
 helpcenter.chat.email: 'Din epost adresse'
+helpcenter.community.form_full_name: Navn
+helpcenter.direct_messages.reply_message: Melding
+helpcenter.downloads.download: Last ned
+helpcenter.emails.chat_transcript: 'Takk for praten. Her er et referat av vår samtale.'
+helpcenter.emails.chat_transcript_subject: 'Samtale referat'
+helpcenter.emails.comment_approved: 'Din kommentar har blitt publisert.'
+helpcenter.emails.comment_approved_subject: 'Din kommentar har blitt godkjent'
+helpcenter.emails.comment_confirmation: 'Takk for din kommentar'
 helpcenter.emails.comment_deleted: 'Din kommentar ble brukt til å forbedre siden.'
 helpcenter.emails.comment_deleted_subject: 'Din kommentar ble lest av våre medarbeidere'
-helpcenter.emails.comment_approved_subject: 'Din kommentar har blitt godkjent'
-helpcenter.emails.comment_approved: 'Din kommentar har blitt publisert.'
-helpcenter.emails.ticket_received: 'Din sak har blitt mottatt. En av våre medarbeidere vil svare innen kort tid.'
-helpcenter.emails.community_topic_new_disapproved: 'Din tilbakemelding har blitt avvist'
-helpcenter.emails.community_topic_new_approved: 'Din tilbakemelding har blitt godkjent'
-helpcenter.messenger.blocks.tickets.title: 'Dine saker'
-helpcenter.chat.name: 'Ditt navn'
-helpcenter.emails.password_agent_reset_subject: 'Ditt passord har blitt nullstillt'
-helpcenter.general.you: Du
-helpcenter.chat.message_chatting_with: 'Du chatter med'
-helpcenter.emails.password_reset: 'Du har spurt etter et nytt passord. For å sette nytt passord, klikk på følgende lenke:'
-helpcenter.articles.view_as_agent: 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.'
-helpcenter.news.view_as_agent: 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.'
-helpcenter.emails.ticket_flood: 'Du sendte en epost til vår kundesenter. Vårt automatiske system har oppdaget at du har sendt mange meldinger rett etter hverandre, som for oss ser ut til å være automatiske. <br /><br />For å beskytte oss mot en autosvar løkke, så vil ikke vårt kundesenter sende flere automatiske meldinger til deg.'
-helpcenter.tickets.list_subject: Emne
-helpcenter.emails.password_agent_reset: 'En av våre medarbeidere har tilbakestilt passordet ditt. Du kan logge inn med følgende detaljer:'
-helpcenter.emails.ticket_new_participant: 'En ny person har blitt lagt til din sak'
-helpcenter.chat.form_feedback_rate_satisfaction: 'Er du fornøyd med samtalen?'
-helpcenter.chat.window_cancel_confirm: 'Er du sikker på at du avslutte samtalen?'
-helpcenter.error.404_title: 'Fant Ikke'
-helpcenter.chat.message_finding_agent: 'Finner en medarbeider'
-helpcenter.general.go: Gå
-helpcenter.general.rate_page_positive: 'Hjalp meg'
-helpcenter.messenger.chat.transcript_block.yes_button: Ja
-helpcenter.messenger.tickets.form.category: Kategori
-helpcenter.chat.window_start_button: 'Klikk her for å chatte med oss'
-helpcenter.general.comments: 'Kommentar'
-helpcenter.tickets.new_section_title: 'Kontakt oss'
-helpcenter.chat.message_user_timeout: 'Kunde har tidsavbrudd'
-helpcenter.chat.message_user_returned: 'Kunde kom tilbake'
-helpcenter.articles.section_title: Kunnskapsbase
-helpcenter.forms.label_save: Lagre
-helpcenter.downloads.download: 'Last ned'
-helpcenter.guides.download_pdf: 'Last ned PDF'
-helpcenter.chat.form_chat_send_file: 'Last opp fil'
-helpcenter.chat.message_uploading: 'Laster opp ...'
-helpcenter.emails.community_topic_agent_validation: 'Legg merke til at din tilbakemelding ikke vil bli publisert før en av våre medarbeidere godkjenner den.'
-helpcenter.tickets.resolve_my_ticket_btn: 'Lukk saken'
-helpcenter.tickets.list_status_resolved: Lukket
-helpcenter.direct_messages.reply_message: Melding
-helpcenter.community.form_full_name: Navn
-helpcenter.general.downloads_type: Nedlastninger
-helpcenter.messenger.chat.save_ticket.button_no: Nei
-helpcenter.chat.window_close: 'Nei takk, bare lukk vinduet'
-helpcenter.emails.password_reset_subject: 'Nullstill passord'
-helpcenter.general.add_comment: 'Ny kommentar'
-helpcenter.messenger.tickets.form.priority: Prioritet
-helpcenter.tickets.view_btn_edit: Rediger
-helpcenter.general.related_downloads: 'Relaterte filer'
-helpcenter.emails.chat_transcript_subject: 'Samtale referat'
-helpcenter.emails.label_view_online: 'Se denne online'
-helpcenter.emails.ticket_access_ticket_online: 'Se og administrer denne saken online:'
-helpcenter.messenger.tickets.form.submit: Send
-helpcenter.chat.form_feedback_transcript_email: 'Send et referat av denne samtalen til'
-helpcenter.chat.submit_ticket_button: 'Send oss en epost'
-helpcenter.chat.submit_ticket_title: 'Send oss en epost istedet'
-helpcenter.chat.form_feedback_title: 'Send oss tilbakemelding'
-helpcenter.chat.form_feedback_button_submit: 'Send tilbakemelding og lukk vindu'
-helpcenter.chat.window_upload_drag: 'Slipp filen din her for å laste den opp i chatten'
-helpcenter.chat.form_create_title: 'Start en chat med en medarbeider'
-helpcenter.chat.form_feedback_rate_time: 'Svarte vi raskt nok?'
-helpcenter.tickets.guest_thank_you_title: Takk
 helpcenter.emails.community_new: 'Takk for at du sendte tilbakemelding'
-helpcenter.emails.ticket_validate: 'Takk for at du tok kontakt.<br /><br />Før en av våre medarbeidere vil lese og svare på meldingen din, må du bekrefte epost-addressen din.'
-helpcenter.emails.comment_confirmation: 'Takk for din kommentar'
-helpcenter.emails.ticket_reply_confirm: 'Takk for ditt svar. En av våre medarbeidere vil svare innen kort tid.'
-helpcenter.emails.chat_transcript: 'Takk for praten. Her er et referat av vår samtale.'
-helpcenter.tickets.list_agent: 'Tildelt medarbeider'
-helpcenter.tickets.view_unassigned: Utildelt
-helpcenter.general.attachments: Vedlegg
-helpcenter.chat.form_create_department: 'Velg avdeling'
-helpcenter.tickets.new_intro: 'Vennligst fyll ut skjema og en av våre medarbeidere vil svare deg på epost så snart som mulig.'
-helpcenter.emails.profile_email_link_validate: 'Vennligst klikk følgende lenke for å bekrefte epost addressen din:'
-helpcenter.chat.ended_no_agent: 'Vi beklager, men det er ingen som kan chatte med deg akkurat nå. Vennligst send oss en epost eller prøv senere.'
-helpcenter.chat.message_wait: 'Vi finner en medarbeider til deg'
-helpcenter.emails.community_topic_disapproved: 'Vi sender deg denne eposten for å fortelle deg at din tilbakemelding ikke vil bli vist på våre nettsider.'
+helpcenter.emails.community_topic_agent_validation: 'Legg merke til at din tilbakemelding ikke vil bli publisert før en av våre medarbeidere godkjenner den.'
 helpcenter.emails.community_topic_approved: 'Vi sender deg en epost for å fortelle deg at din tilbakemelding har blitt godkjent og kan ses på nettsiden vår.'
-helpcenter.chat.window_resume_button: 'Åpne chat'
-helpcenter.chat.window_open_new: 'Åpne opp denne samtalen i et nytt vindu'
+helpcenter.emails.community_topic_disapproved: 'Vi sender deg denne eposten for å fortelle deg at din tilbakemelding ikke vil bli vist på våre nettsider.'
+helpcenter.emails.community_topic_new_approved: 'Din tilbakemelding har blitt godkjent'
+helpcenter.emails.community_topic_new_disapproved: 'Din tilbakemelding har blitt avvist'
+helpcenter.emails.email_new_confirm: 'Bekreft epost addressen din'
+helpcenter.emails.label_view_online: 'Se denne online'
+helpcenter.emails.password_agent_reset: 'En av våre medarbeidere har tilbakestilt passordet ditt. Du kan logge inn med følgende detaljer:'
+helpcenter.emails.password_agent_reset_subject: 'Ditt passord har blitt nullstillt'
+helpcenter.emails.password_reset: 'Du har spurt etter et nytt passord. For å sette nytt passord, klikk på følgende lenke:'
+helpcenter.emails.password_reset_subject: 'Nullstill passord'
+helpcenter.emails.profile_email_link_validate: 'Vennligst klikk følgende lenke for å bekrefte epost addressen din:'
+helpcenter.emails.ticket_access_ticket_online: 'Se og administrer denne saken online:'
+helpcenter.emails.ticket_flood: 'Du sendte en epost til vår kundesenter. Vårt automatiske system har oppdaget at du har sendt mange meldinger rett etter hverandre, som for oss ser ut til å være automatiske. <br /><br />For å beskytte oss mot en autosvar løkke, så vil ikke vårt kundesenter sende flere automatiske meldinger til deg.'
+helpcenter.emails.ticket_new_participant: 'En ny person har blitt lagt til din sak'
+helpcenter.emails.ticket_no_autoresponse: 'Advarsel: Bekreftelsesepost er skrudd av.'
+helpcenter.emails.ticket_received: 'Din sak har blitt mottatt. En av våre medarbeidere vil svare innen kort tid.'
+helpcenter.emails.ticket_reply_confirm: 'Takk for ditt svar. En av våre medarbeidere vil svare innen kort tid.'
+helpcenter.emails.ticket_validate: 'Takk for at du tok kontakt.<br /><br />Før en av våre medarbeidere vil lese og svare på meldingen din, må du bekrefte epost-addressen din.'
+helpcenter.error.404_title: 'Fant Ikke'
+helpcenter.forms.label_save: Lagre
+helpcenter.general.add_comment: 'Ny kommentar'
+helpcenter.general.attachments: Vedlegg
+helpcenter.general.btn_cancel: Avbryt
+helpcenter.general.comments: Kommentar
+helpcenter.general.downloads_type: Nedlastninger
+helpcenter.general.go: Gå
+helpcenter.general.rate_page_positive: Hjalp meg
+helpcenter.general.related_downloads: 'Relaterte filer'
+helpcenter.general.you: Du
+helpcenter.guides.download_pdf: 'Last ned PDF'
+helpcenter.news.view_as_agent: 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.'
+helpcenter.tickets.guest_thank_you_title: 'Takk'
+helpcenter.tickets.list_agent: 'Tildelt medarbeider'
+helpcenter.tickets.list_status_resolved: Lukket
+helpcenter.tickets.list_subject: Emne
+helpcenter.tickets.new_intro: 'Vennligst fyll ut skjema og en av våre medarbeidere vil svare deg på epost så snart som mulig.'
+helpcenter.tickets.new_section_title: 'Kontakt oss'
+helpcenter.tickets.resolve_my_ticket_btn: 'Lukk saken'
+helpcenter.tickets.view_btn_edit: Rediger
+helpcenter.tickets.view_unassigned: Utildelt
