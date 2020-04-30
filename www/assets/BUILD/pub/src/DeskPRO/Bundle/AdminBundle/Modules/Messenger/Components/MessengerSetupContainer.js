@@ -64,7 +64,9 @@ class MessengerSetupContainer extends React.Component {
     } else if (name) {
       const keyPath = name.split('.');
       if (typeof value === 'object' && !Immutable.Iterable.isIterable(value)) {
-        config = settings.mergeIn(keyPath, value);
+        config = settings.getIn(keyPath)
+          ? settings.mergeIn(keyPath, value)
+          : settings.setIn(keyPath, Immutable.fromJS(value));
       } else {
         config = settings.setIn(keyPath, value);
       }
@@ -89,7 +91,7 @@ class MessengerSetupContainer extends React.Component {
     const postData = settings.setIn(
       ['chat', 'preChatForm', 'fields'],
       settings.getIn(['chat', 'preChatForm', 'fields']).filter(f => f && f.get('id'))
-    ).setIn(['widget.icon', settings.getIn(['widget', 'icon', 'blob_auth'])]);
+    ).setIn(['widget', 'icon'], settings.getIn(['widget', 'icon', 'blob_auth']));
 
     const promise = dispatch(saveSettings(brandId, postData));
 

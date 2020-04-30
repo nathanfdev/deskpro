@@ -305,7 +305,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setBackgroundColor($this->getSettings(self::WIDGET_BG_COLOR, $brand, $messengerWidget->getBackgroundColor()))
             ->setTextColor($this->getSettings(self::WIDGET_TEXT_COLOR, $brand, $messengerWidget->getTextColor()))
             ->setPosition($this->getSettings(self::WIDGET_POSITION, $brand, $messengerWidget->getPosition()))
-            ->setIcon($this->getIcon($messengerWidget, $brand))
+            ->setIcon($this->getIcon($brand))
         ;
     }
 
@@ -363,8 +363,10 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
      *
      * @return Blob|null
      */
-    private function getIcon(MessengerWidget $messengerWidget, Brand $brand)
+    private function getIcon(Brand $brand)
     {
-        return $this->em->getRepository(Blob::class)->find($this->getSettings(self::WIDGET_ICON, $brand));
+        $blobId = $this->getSettings(self::WIDGET_ICON, $brand, null);
+
+        return $blobId ? $this->em->getRepository(Blob::class)->find($blobId) : null;
     }
 }
