@@ -77,8 +77,18 @@ class ObjectRouterExtension extends \Twig_Extension
         return $this->objectRouter->getAgentUrl($object, $type, $extra_params);
     }
 
+    /**
+     * @param object $object
+     * @param string $network
+     *
+     * @return string
+     */
     public function generatePortalSocialUrl($object, $network)
     {
+        if (!is_object($object)) {
+            return '';
+        }
+
         $objectUrl = $this->generatePortalUrl($object);
         switch ($network) {
             case 'linkedin':
@@ -89,6 +99,8 @@ class ObjectRouterExtension extends \Twig_Extension
                 return 'https://twitter.com/intent/tweet?url='.urlencode($objectUrl);
             case 'whatsapp':
                 return 'https://wa.me/?text='.urlencode($objectUrl);
+            default:
+                return '';
         }
     }
 
