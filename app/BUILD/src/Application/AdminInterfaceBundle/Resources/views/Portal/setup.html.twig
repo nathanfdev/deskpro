@@ -127,14 +127,16 @@
                 {% else %}
                     <h2 class="with-divider form-header"><span>Helpdesk URL</span></h2>
 
-                    <div class="bucket-third">
-                        <div class="inline-input">
-                            <label>{{ phrase('admin.setup.helpdesk_url') }}:</label>
-                            <input id="helpdesk_url" type="text" placeholder="{{ phrase('admin.setup.helpdesk_url') }}" ng-model="Ctrl.settings.deskpro_url" />
+                    <div class="row">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.helpdesk_url') }}:</label>
+                                <input id="helpdesk_url" type="text" placeholder="{{ phrase('admin.setup.helpdesk_url') }}" ng-model="Ctrl.settings.deskpro_url" />
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row" ng-show="brand.id">
                         <div class="bucket-third">
                             <div class="inline-input">
                                 <label>{{ phrase('admin.setup.view_brand') }}:</label>
