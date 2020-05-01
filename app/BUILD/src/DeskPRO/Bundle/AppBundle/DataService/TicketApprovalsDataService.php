@@ -42,15 +42,22 @@ class TicketApprovalsDataService extends AbstractDataService
 
     /**
      * @param Person $person
+     * @param bool $onlyPending
      *
      * @return int
      */
-    public function getApprovalCountWhereUserIsApprover(Person $person = null)
+    public function getApprovalCountWhereUserIsApprover(Person $person = null, $onlyPending = false)
     {
-        return $this->generateAndCache([__FUNCTION__, $person], function () use ($person) {
+        return $this->generateAndCache([__FUNCTION__, $person], function () use ($person, $onlyPending) {
             $qb = $this->em->createQueryBuilder();
             $time = microtime(true);
             $this->logger->debug('[TicketApprovalsDataService] Count started');
+
+            $statuses = $onlyPending ? [TicketApproval::STATUS_PENDING] : [
+                TicketApproval::STATUS_PENDING,
+                TicketApproval::STATUS_APPROVED,
+                TicketApproval::STATUS_REJECTED,
+            ];
 
             $qb
                     ->select('COUNT(DISTINCT ta.id)')
@@ -59,11 +66,7 @@ class TicketApprovalsDataService extends AbstractDataService
                     ->andWhere('a = :person')
                     ->andWhere('ta.status IN (:statuses)')
                     ->setParameter('person', $person)
-                    ->setParameter('statuses', [
-                        TicketApproval::STATUS_PENDING,
-                        TicketApproval::STATUS_APPROVED,
-                        TicketApproval::STATUS_REJECTED,
-                    ], Connection::PARAM_STR_ARRAY)
+                    ->setParameter('statuses', $statuses, Connection::PARAM_STR_ARRAY)
                 ;
 
             $singleScalarResult = $qb->getQuery()->getSingleScalarResult();

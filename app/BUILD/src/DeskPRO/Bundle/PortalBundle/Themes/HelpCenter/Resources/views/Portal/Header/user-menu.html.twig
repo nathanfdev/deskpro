@@ -59,7 +59,7 @@
                 </section>
             </div>
         {% else %}
-            {% set user_notification_count = pageData.alerts.tickets_awaiting_reply | length + pageData.alerts.unread_direct_messages %}
+            {% set user_notification_count = pageData.alerts.tickets_awaiting_reply | length + pageData.alerts.unread_direct_messages + pageData.alerts.pending_approvals %}
             <a href="javascript:void(0)" class="dp-po-user-login dp-po-avatar" data-toggle="dropdown" aria-haspopup="true"
                aria-expanded="false">
                 <span class="dp-po-user-login-figure">
@@ -113,6 +113,9 @@
                             <span class="disc"></span>
                             <a class="dp-po-user-menu-link" href="{{ path('ticket_approvals') }}">
                                 <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}"> {{ phrase('helpcenter.approvals.my_approvals') }}
+                                {% if pageData.alerts.pending_approvals > 0 %}
+                                    ({{ pageData.alerts.pending_approvals }})
+                                {% endif %}
                             </a>
                         </li>
                     {% endif %}
