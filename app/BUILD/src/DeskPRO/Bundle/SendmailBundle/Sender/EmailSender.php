@@ -211,8 +211,8 @@ class EmailSender
         }
         if ($language instanceof Language) {
             $emailCode = null;
-            $this->getContainer()->get('deskpro.core.translate')->setTemporaryLanguage($language, function () use ($template, $model, &$emailCode) {
-                $emailCode = $this->getRenderer()->render($template, $model);
+            $emailCode = $this->getContainer()->get('language_manager')->callWithLanguage($language, function () use ($template, $model) {
+                return $this->getRenderer()->render($template, $model);
             });
         } else {
             $emailCode = $this->getRenderer()->render($template, $model);

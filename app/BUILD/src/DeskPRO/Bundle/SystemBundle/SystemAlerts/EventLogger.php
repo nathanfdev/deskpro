@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts;
 
@@ -55,7 +53,6 @@ class EventLogger
             if ($aloud) {
                 echo 'An error occurred: ', (string) $event, "\n";
             }
-
             !is_null($halt) or $halt = $aloud;
 
             if ($halt) {
@@ -143,6 +140,7 @@ class EventLogger
             if ($type = gettype($eventOrException) === 'object') {
                 $type = get_class($eventOrException);
             }
+
             throw new \Exception(
                 'EventLogger::log() can accept either an Exception or Event instance, got '.$type);
         }
