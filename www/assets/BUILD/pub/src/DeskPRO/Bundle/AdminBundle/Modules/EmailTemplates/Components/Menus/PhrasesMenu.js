@@ -37,6 +37,7 @@ export class PhrasesMenuContainer extends React.Component {
       phrases={phrases}
       languages={this.props.languages}
       onSelectPhrase={this.selectPhrase}
+      ref={(c) => { this.phrasesMenu = c; }}
     />);
   }
 }
@@ -67,12 +68,6 @@ export class PhrasesMenu extends React.Component {
     this.selectFirstMenu();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.phrases !== this.props.phrases) {
-      this.selectFirstMenu();
-    }
-  }
-
   setActive = (item) => {
     this.setState({
       selectedLeft: item
@@ -95,7 +90,8 @@ export class PhrasesMenu extends React.Component {
             .size > 0;
         }
       )
-      .valueSeq().map((group, key) =>
+      .valueSeq().sort((a, b) => a.get('title').localeCompare(b.get('title')))
+      .map((group, key) =>
         <MenuItem
           key={`phrase${key}`}
           label={PhrasesMenu.formatTitle(group.get('title'))}
