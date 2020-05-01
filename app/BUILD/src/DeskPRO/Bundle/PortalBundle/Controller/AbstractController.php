@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -273,9 +271,9 @@ class AbstractController extends BaseController
             $unreadDirectMessages         = $directMessageParticipantRepo->getUnreadThreadCount($person);
         }
 
-        $pendingApprovals = 0;
+        $approvalNeedingAction = 0;
         if ($this->getBrandSetting('core_tickets.ticket_approvals') && $user) {
-            $pendingApprovals = $this->getTicketApprovalsDataService()->getApprovalCountWhereUserIsApprover($user, true);
+            $approvalNeedingAction = $this->getTicketApprovalsDataService()->getApprovalCountWhereUserNeedAnAction($user);
         }
 
         $shouldDisplay = count($savedForms) || $langDiff || count($ticketsAwaitingReply);
@@ -287,7 +285,7 @@ class AbstractController extends BaseController
             'lang_diff'              => $langDiff,
             'tickets_awaiting_reply' => $ticketsAwaitingReply,
             'unread_direct_messages' => $unreadDirectMessages,
-            'pending_approvals'      => $pendingApprovals,
+            'pending_approvals'      => $approvalNeedingAction,
         ];
     }
 
