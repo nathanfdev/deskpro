@@ -313,6 +313,9 @@ class TicketsController extends AbstractController
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
+        $csrfForm  = $this->createForm(CsrfType::class);
+        $addCcForm = $this->createForm(TicketAddCcType::class);
+
         return $this->renderThemeView('Theme:Tickets:edit.html.twig', [
             'ticket'                     => $ticket,
             'form'                       => $form->createView(),
@@ -326,6 +329,8 @@ class TicketsController extends AbstractController
             'ticket_view'                => $ticket_view,
             'ticket_display_js'          => $ticket_display_js,
             'form_full'                  => $form_full->createView(),
+            'csrf_form'                  => $csrfForm->createView(),
+            'add_cc_form'                => $addCcForm->createView(),
         ]);
     }
 
