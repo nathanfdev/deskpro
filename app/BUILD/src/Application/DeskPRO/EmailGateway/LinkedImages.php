@@ -59,6 +59,7 @@ class LinkedImages
             foreach ($m as $match) {
                 // Check if it is even an inline image
                 $src = Strings::extractRegexMatch('#src=("|\')((https?:)?//.*?)(\1)#iu', $match[0], 2);
+                $src = str_replace(['__DP_AMP_AMP__'], ['&'], $src);
                 if ($src) {
                     if (isset($cache[$src])) {
                         $body = str_replace($match[0], $cache[$src], $body);
@@ -66,6 +67,7 @@ class LinkedImages
                         $tmpFile  = $tmpDir.'/email-image-'.mt_rand(1000, 9999);
                         $resource = fopen($tmpFile, 'w');
                         $errors   = [];
+
                         try {
                             SystemErrorHandler::runWithoutErrorHandler(function () use ($client, $src, $resource) {
                                 $client->request('GET', $src, ['sink' => $resource]);
@@ -77,6 +79,7 @@ class LinkedImages
                                 $body = str_replace($match[0], $tag, $body);
 
                                 @fclose($resource);
+
                                 continue;
                             }
                         } catch (\Exception $e) {
@@ -84,6 +87,7 @@ class LinkedImages
                             $tag  = "<a href=\"$src\" target=\"_blank\">$src</a>";
                             $body = str_replace($match[0], $tag, $body);
                             @fclose($resource);
+
                             continue;
                         }
                         @fclose($resource);
@@ -96,6 +100,7 @@ class LinkedImages
                             unlink($tmpFile);
                             $tag  = "<a href=\"$src\" target=\"_blank\">$src</a>";
                             $body = str_replace($match[0], $tag, $body);
+
                             continue;
                         }
                         $totalImageSize += $imageSize;
@@ -103,12 +108,14 @@ class LinkedImages
                             if (!$type = @exif_imagetype($tmpFile)) {
                                 // The downloaded file is not an image
                                 unlink($tmpFile);
+
                                 continue;
                             }
                         } else {
                             if (!$size = @getimagesize($tmpFile)) {
                                 // The downloaded file is not an image
                                 unlink($tmpFile);
+
                                 continue;
                             }
                             $type = $size[2];
