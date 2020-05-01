@@ -6,7 +6,7 @@ Feature: /tickets/{id}/messages endpoint
 
   Background:
     Given I'm authenticated as admin
-    And there are no Blob records in the DB
+    And no Blob records exist
     And no TicketMessage records exist
     And only the following TicketStatus records exist:
       | #   | StatusType     | SysId        | Title    |

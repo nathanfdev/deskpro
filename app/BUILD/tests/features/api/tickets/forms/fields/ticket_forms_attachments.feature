@@ -4,8 +4,6 @@ Feature: /ticket_forms
 
   Background:
     Given I'm authenticated as admin
-    And I create blob with auth code "AAAAAAAAAAAAAAAAAA"
-    And I create blob with auth code "BBBBBBBBBBBBBBBBBB"
     And the only default ticket layout exists with fields:
       | agent_layout |
       | attachments  |
@@ -15,6 +13,8 @@ Feature: /ticket_forms
     And only the following TicketMessage records exist:
       | #  | Ticket | Person  | Message         |
       | m1 | {t1}   | {admin} | my text message |
+    And I create blob with auth code "AAAAAAAAAAAAAAAAAA"
+    And I create blob with auth code "BBBBBBBBBBBBBBBBBB"
 
   Scenario: I add attachments
     When I send a PUT request to "/api/v2/ticket_forms/agent/{t1}" with body:

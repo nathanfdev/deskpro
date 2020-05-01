@@ -137,6 +137,12 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
+  event_listener.doctrine.ticket_attachment:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TicketAttachmentListener
+    arguments: ["@service_container"]
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+
   event_listener.listener.client_message_listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageListener
     arguments:
