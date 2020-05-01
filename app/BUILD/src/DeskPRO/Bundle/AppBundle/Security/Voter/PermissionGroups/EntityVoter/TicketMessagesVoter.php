@@ -37,6 +37,12 @@ class TicketMessagesVoter extends AbstractTicketsVoter
         /** @var TicketMessage $message */
         $message = $context->getChild();
 
+        $changes       = $ticket->getStateChangeRecorder()->getChangedFields();
+        $messageFields = ['date_last_user_reply', 'date_last_agent_reply', 'message'];
+        if (array_diff($changes, $messageFields) && !$this->canModifyTicket($user, $ticket)) {
+            return false;
+        }
+
         switch ($attribute) {
             case PermissionGroupVoter::VIEW_LIST:
             case PermissionGroupVoter::VIEW:

@@ -334,3 +334,26 @@ Feature: /tickets/{id}/messages endpoint
     Then the response status code should be 201
     And the JSON node "data.attachments" should have 1 elements
     And the "{lastCreatedId}" message should have "1" attachments properly tagged
+
+  Scenario: If I send ticket argument then ticket should be updated
+    Given I'm authenticated as agent
+    Given only the following Ticket records exist:
+      | #  | Subject  | Status   |
+      | t1 | Ticket 1 | resolved |
+
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "my message",
+  "is_note": false,
+  "ticket": {
+    "status": "pending",
+    "subject": "New Ticket 1 Subject"
+  }
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{t1}"
+    Then the JSON node "data.status" should be equal to the string "pending"
+    Then the JSON node "data.subject" should be equal to the string "New Ticket 1 Subject"
