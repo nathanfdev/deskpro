@@ -125,11 +125,11 @@ class BrandsController extends CrudController
         $brand->setUrl($url);
 
         $themeSet = new ThemeSet();
-        $themeSet->setThemeId('standard');
+        $themeSet->setThemeId('helpcenter');
         $themeSet->setBrand($brand);
 
         $editThemeSet = new ThemeSet();
-        $editThemeSet->setThemeId('standard');
+        $editThemeSet->setThemeId('helpcenter');
         $editThemeSet->setBrand($brand);
 
         $brand->setThemeSet($themeSet);
