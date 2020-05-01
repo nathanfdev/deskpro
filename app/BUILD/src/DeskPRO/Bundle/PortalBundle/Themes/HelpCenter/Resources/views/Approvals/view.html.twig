@@ -149,7 +149,7 @@
                                     </span>
                                     <span class="dp-po-ticket-approval-info-item-value">
                                         {% for approver in approval.approversPendingResponse %}
-                                            <span class="{% if approval.status == 'pending' %}dp-po-ticket-approval-info-item-comma-list{% else %}dp-po-ticket-approval-info-item-list{% endif %}"><span class="dp-po-ticket-approval-info-item-person-name">{{ approver.communityName }}</span>{% if not approval.ticket.person.isAgent %} ({{ approval.ticket.person.email_address }}){% endif %}</span>
+                                            <span class="{% if approval.status == 'pending' %}dp-po-ticket-approval-info-item-comma-list{% else %}dp-po-ticket-approval-info-item-list{% endif %}"><span class="dp-po-ticket-approval-info-item-person-name">{{ approver.communityName }}</span>{% if not approval.ticket.person.isAgent %} ({{ approver.email_address }}){% endif %}</span>
                                         {% endfor %}
                                     </span>
                                 </div>
