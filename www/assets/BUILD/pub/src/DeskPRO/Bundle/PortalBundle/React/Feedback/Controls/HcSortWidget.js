@@ -83,6 +83,8 @@ export class HcSortWidget extends React.Component {
             className="dp-po-community-header-sort-link"
             aria-haspopup="true"
             aria-expanded={this.state.is_shown}
+            aria-label={portalPhrases.get('helpcenter.general.sort')}
+            title={portalPhrases.get('helpcenter.general.sort')}
             onClick={this.toggle}
             ref={this.onGetRef}
           >
