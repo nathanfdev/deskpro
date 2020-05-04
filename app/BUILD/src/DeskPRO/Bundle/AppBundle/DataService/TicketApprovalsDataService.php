@@ -7,6 +7,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\Expr\Join;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Psr\Log\LoggerInterface;
@@ -42,6 +43,7 @@ class TicketApprovalsDataService extends AbstractDataService
 
     /**
      * @param Person $person
+     * @param bool $onlyPending
      *
      * @return int
      */
@@ -76,6 +78,38 @@ class TicketApprovalsDataService extends AbstractDataService
             return $singleScalarResult;
         }
         );
+    }
+
+    public function getApprovalCountWhereUserNeedAnAction(Person $person = null)
+    {
+        return $this->generateAndCache([__FUNCTION__, $person], function () use ($person) {
+            $qb = $this->em->createQueryBuilder();
+            $time = microtime(true);
+            $this->logger->debug('[TicketApprovalsDataService] Count started');
+
+            $qb
+                ->select('COUNT(DISTINCT ta.id)')
+                ->from(TicketApproval::class, 'ta')
+                ->innerJoin('ta.approvers', 'a')
+                ->leftJoin('ta.responses', 'r', Join::WITH, 'r.approver = :person')
+                ->andWhere('a = :person')
+                ->andWhere('ta.status IN (:statuses)')
+                ->andWhere('r.approver IS NULL')
+                ->setParameter('person', $person)
+                ->setParameter('statuses', [
+                    TicketApproval::STATUS_PENDING,
+                ], Connection::PARAM_STR_ARRAY)
+            ;
+
+            $singleScalarResult = $qb->getQuery()->getSingleScalarResult();
+
+            $this->logger->debug(
+                '[TicketApprovalsDataService] Time taken: '.sprintf('%.5f', microtime(true) - $time)
+            );
+            $this->logger->debug("[TicketApprovalsDataService] Count: $singleScalarResult");
+
+            return $singleScalarResult;
+        });
     }
 
     /**

@@ -18,10 +18,10 @@
 
         {% for saved in alerts.saved_forms %}
             {% set alert_id = saved.link %}
-            <span class="alert" data-alert-id="{{ alert_id }}">
-                <div class="click-to-dismiss"><i class="fas fa-times"></i></div>
+            <span class="dp-po-notification alert" data-alert-id="{{ alert_id }}">
                 {% if saved.dataType is defined %}{{ phrase('helpcenter.account.submit_saved_form' ~ saved.dataType) }}{% endif %}
                 <a class="alert-button" href="{{ saved.link }}">{{ phrase('helpcenter.account.submit_saved_form_go') }}</a>
+                <a class="dp-po-message-bar-close" aria-label="{{ phrase('helpcenter.general.close') }}"><i class="dp-po-icon fal fa-times"></i></a>
             </span>
         {% endfor %}
 

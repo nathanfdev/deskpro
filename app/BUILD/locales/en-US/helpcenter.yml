@@ -68,8 +68,12 @@ helpcenter.account.validation_email_sent: 'We’ve sent you an email to {email}<
 helpcenter.account.your_pending_email_addresses: 'Your Pending Email Addresses'
 helpcenter.alerts.tickets_to_respond: '{count, plural, one {You have one ticket to respond to.} other {You have # tickets to respond to.}}'
 helpcenter.approvals.approved_by: 'Approved by'
+helpcenter.approvals.approved_status: Approved
+helpcenter.approvals.cancelled_status: Cancelled
 helpcenter.approvals.my_approvals: 'My Approvals'
 helpcenter.approvals.no_ticket_approvals_found: 'No ticket approvals found'
+helpcenter.approvals.pending_status: Pending
+helpcenter.approvals.rejected_status: Rejected
 helpcenter.approvals.rejected_by: 'Rejected by'
 helpcenter.approvals.view_approved: Approved
 helpcenter.approvals.view_awaiting_response: 'Awaiting response'
@@ -413,9 +417,15 @@ helpcenter.general.lang_change_to_current: 'Make <em>{lang}</em> my default lang
 helpcenter.general.lang_diff: 'This page is in <em>{active_lang}</em> but your account is in <em>{person_lang}</em>.'
 helpcenter.general.lang_switch: 'Switch to <em>{lang}</em>'
 helpcenter.general.last_activity: 'Last Activity'
+helpcenter.general.last_24_hours: 'Last 24 hours'
+helpcenter.general.last_6_month: 'Last 6 month'
+helpcenter.general.last_month: 'Last month'
+helpcenter.general.last_week: 'Last week'
+helpcenter.general.last_year: 'Last year'
 helpcenter.general.last_update_by: 'Last updated: <strong>{date_updated, date, medium}</strong> by <strong>{person_name}</strong>'
 helpcenter.general.latest_status_changes: 'Latest status changes'
 helpcenter.general.log_in: 'Log in'
+helpcenter.general.more_than_1_year: 'More than 1 year'
 helpcenter.general.nav_community: Community
 helpcenter.general.nav_community_desc: 'View all the articles'
 helpcenter.general.nav_contact: 'Contact Us'

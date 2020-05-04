@@ -60,7 +60,15 @@
                                     {{ approval.template.name }}
                                 </div>
                                 <div class="dp-po-ticket-approval-header-status dp-po-ticket-approval-header-status-{{ approval_type }}">
-                                    {{ phrase('helpcenter.approvals.'~approval.status~'-status') }}
+                                    {% if approval.status == 'approved' %}
+                                        {{ phrase('helpcenter.approvals.approved_status') }}
+                                    {% elseif approval.status == 'cancelled' %}
+                                        {{ phrase('helpcenter.approvals.cancelled_status') }}
+                                    {% elseif approval.status == 'pending' %}
+                                        {{ phrase('helpcenter.approvals.pending_status') }}
+                                    {% elseif approval.status == 'rejected' %}
+                                        {{ phrase('helpcenter.approvals.rejected_status') }}
+                                    {% endif %}
                                 </div>
                             </div>
 
@@ -141,7 +149,7 @@
                                     </span>
                                     <span class="dp-po-ticket-approval-info-item-value">
                                         {% for approver in approval.approversPendingResponse %}
-                                            <span class="{% if approval.status == 'pending' %}dp-po-ticket-approval-info-item-comma-list{% else %}dp-po-ticket-approval-info-item-list{% endif %}"><span class="dp-po-ticket-approval-info-item-person-name">{{ approver.communityName }}</span>{% if not approval.ticket.person.isAgent %} ({{ approval.ticket.person.email_address }}){% endif %}</span>
+                                            <span class="{% if approval.status == 'pending' %}dp-po-ticket-approval-info-item-comma-list{% else %}dp-po-ticket-approval-info-item-list{% endif %}"><span class="dp-po-ticket-approval-info-item-person-name">{{ approver.communityName }}</span>{% if not approval.ticket.person.isAgent %} ({{ approver.email_address }}){% endif %}</span>
                                         {% endfor %}
                                     </span>
                                 </div>

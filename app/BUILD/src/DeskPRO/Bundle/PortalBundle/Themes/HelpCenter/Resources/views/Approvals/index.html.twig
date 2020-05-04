@@ -62,14 +62,30 @@
                                         </a>
                                         <div class="collapse show" id="collapseStatus">
                                             <ul class="dp-po-ticket-filter-list">
-                                                {% for status in ['pending', 'approved', 'rejected', 'cancelled'] %}
-                                                    <li class="dp-po-ticket-filter-item">
-                                                        <div class="form-group dp-po-form-check">
-                                                            <input type="checkbox" name=status[]" value="{{ status }}" class="form-check-input" id="{{ status }}Check" {% if status in statuses %}checked="checked" {% endif %}>
-                                                            <label class="form-check-label" for="{{ status }}Check">{{ phrase('helpcenter.approvals.'~status~'-status') }}</label>
-                                                        </div>
-                                                    </li>
-                                                {% endfor %}
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" name=status[]" value="pending" class="form-check-input" id="pendingCheck" {% if 'pending' in statuses %}checked="checked" {% endif %}>
+                                                        <label class="form-check-label" for="pendingCheck">{{ phrase('helpcenter.approvals.pending_status') }}</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" name=status[]" value="approved" class="form-check-input" id="approvedCheck" {% if 'approved' in statuses %}checked="checked" {% endif %}>
+                                                        <label class="form-check-label" for="approvedCheck">{{ phrase('helpcenter.approvals.approved_status') }}</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" name=status[]" value="rejected" class="form-check-input" id="rejectedCheck" {% if 'rejected' in statuses %}checked="checked" {% endif %}>
+                                                        <label class="form-check-label" for="rejectedCheck">{{ phrase('helpcenter.approvals.rejected_status') }}</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" name=status[]" value="cancelled" class="form-check-input" id="cancelledCheck" {% if 'cancelled' in statuses %}checked="checked" {% endif %}>
+                                                        <label class="form-check-label" for="cancelledCheck">{{ phrase('helpcenter.approvals.cancelled_status') }}</label>
+                                                    </div>
+                                                </li>
                                             </ul>
                                         </div>
                                     </li>
@@ -85,14 +101,42 @@
                                         </a>
                                         <div class="collapse show" id="collapseTimeCompletion">
                                             <ul class="dp-po-ticket-filter-list">
-                                                {% for timeInterval in ['last_24_hours', 'last_week', 'last_month', 'last_6_month', 'last_year', 'more_than_1_year'] %}
-                                                    <li class="dp-po-ticket-filter-item">
-                                                        <div class="form-group dp-po-form-check">
-                                                            <input type="checkbox" name="time_completion[]" value="{{ timeInterval }}" class="form-check-input" id="{{ timeInterval }}Check" {% if timeInterval in time_completion %}checked="checked" {% endif %}>
-                                                            <label class="form-check-label" for="{{ timeInterval }}Check">{{ phrase('helpcenter.general.'~timeInterval) }}</label>
-                                                        </div>
-                                                    </li>
-                                                {% endfor %}
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" name="time_completion[]" value="last_24_hours" class="form-check-input" id="last_24_hoursCheck" {% if 'last_24_hours' in time_completion %}checked="checked" {% endif %}>
+                                                        <label class="form-check-label" for="last_24_hoursCheck">{{ phrase('helpcenter.general.last_24_hours') }}</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" name="time_completion[]" value="last_week" class="form-check-input" id="last_weekCheck" {% if 'last_week' in time_completion %}checked="checked" {% endif %}>
+                                                        <label class="form-check-label" for="last_weekCheck">{{ phrase('helpcenter.general.last_week') }}</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" name="time_completion[]" value="last_month" class="form-check-input" id="last_monthCheck" {% if 'last_month' in time_completion %}checked="checked" {% endif %}>
+                                                        <label class="form-check-label" for="last_monthCheck">{{ phrase('helpcenter.general.last_month') }}</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" name="time_completion[]" value="last_6_month" class="form-check-input" id="last_6_monthCheck" {% if 'last_6_month' in time_completion %}checked="checked" {% endif %}>
+                                                        <label class="form-check-label" for="last_6_monthCheck">{{ phrase('helpcenter.general.last_6_month') }}</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" name="time_completion[]" value="last_year" class="form-check-input" id="last_yearCheck" {% if 'last_year' in time_completion %}checked="checked" {% endif %}>
+                                                        <label class="form-check-label" for="last_yearCheck">{{ phrase('helpcenter.general.last_year') }}</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" name="time_completion[]" value="more_than_1_year" class="form-check-input" id="more_than_1_yearCheck" {% if 'more_than_1_year' in time_completion %}checked="checked" {% endif %}>
+                                                        <label class="form-check-label" for="more_than_1_yearCheck">{{ phrase('helpcenter.general.more_than_1_year') }}</label>
+                                                    </div>
+                                                </li>
                                             </ul>
                                         </div>
                                     </li>
@@ -169,7 +213,16 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ table_type }}" id="{{ table_info.status }}">
-                            <span class="dp-po-ticketbadge-number">{{ table_info.pager|length }}</span>{{ phrase('helpcenter.approvals.'~table_info.status~'-status') }}
+                            <span class="dp-po-ticketbadge-number">{{ table_info.pager|length }}</span>
+                            {% if table_info.status == 'approved' %}
+                                {{ phrase('helpcenter.approvals.approved_status') }}
+                            {% elseif table_info.status == 'cancelled' %}
+                                {{ phrase('helpcenter.approvals.cancelled_status') }}
+                            {% elseif table_info.status == 'pending' %}
+                                {{ phrase('helpcenter.approvals.pending_status') }}
+                            {% elseif table_info.status == 'rejected' %}
+                                {{ phrase('helpcenter.approvals.rejected_status') }}
+                            {% endif %}
                         </div>
                     </div>
                     <div class="col-sm-8">
@@ -181,7 +234,16 @@
                 </div>
             {% else %}
                 <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ table_type }}" id="{{ table_info.status }}">
-                    <span class="dp-po-ticketbadge-number">{{ table_info.pager|length }}</span>{{ phrase('helpcenter.approvals.'~table_info.status~'-status') }}
+                    <span class="dp-po-ticketbadge-number">{{ table_info.pager|length }}</span>
+                    {% if table_info.status == 'approved' %}
+                        {{ phrase('helpcenter.approvals.approved_status') }}
+                    {% elseif table_info.status == 'cancelled' %}
+                        {{ phrase('helpcenter.approvals.cancelled_status') }}
+                    {% elseif table_info.status == 'pending' %}
+                        {{ phrase('helpcenter.approvals.pending_status') }}
+                    {% elseif table_info.status == 'rejected' %}
+                        {{ phrase('helpcenter.approvals.rejected_status') }}
+                    {% endif %}
                 </div>
             {% endif %}
 

@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
@@ -53,6 +51,7 @@ class Environment extends \Twig_Environment
     public function loadTemplate($name, $index = null)
     {
         $nameStr = (string) $name;
+
         try {
             return $this->loadTemplateFromDb($nameStr, $index);
         } catch (CustomTemplateCompilationException $e) {
@@ -136,7 +135,7 @@ class Environment extends \Twig_Environment
         } else {
             if (!is_file($cache) || ($this->isAutoReload() && !$this->isTemplateFresh($name, filemtime($cache)))) {
                 try {
-                    $this->writeCacheFile($cache, $this->compileSource($this->loader->getSource($name), $name));
+                    $this->writeCacheFile($cache, $this->compileSource($this->loader->getSourceContext($name), $name));
                     require_once $cache;
                 } catch (\Exception $e) {
                     $this->fallback($name, $e);
