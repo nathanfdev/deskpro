@@ -668,10 +668,10 @@ class CommunityTopicsController extends AbstractPublishController
 
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
 
-        if ('down' === $up_or_down) {
-            $this->getRatingsHelper()->rateContentDown($topic, $visitor_id, $person);
-        } else {
+        if ('up' === $up_or_down) {
             $this->getRatingsHelper()->rateContentUp($topic, $visitor_id, $person);
+        } else {
+            throw $this->createAccessDeniedException($this->phrase(['portal.community.rate_forbidden', 'helpcenter.community.rate_forbidden']));
         }
 
         if ($request->getContentType() == 'json') {
