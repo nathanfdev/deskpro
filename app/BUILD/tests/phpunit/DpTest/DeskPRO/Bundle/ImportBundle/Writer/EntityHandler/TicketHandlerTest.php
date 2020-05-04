@@ -560,6 +560,49 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertTrue($attachment->isInline());
     }
 
+    public function test_reply_date_fields()
+    {
+        $message1 = new Model\TicketMessage();
+        $message1->setOid(1);
+        $message1->setMessage('first message');
+        $message1->setPerson(1);
+        $message1->setDateCreated(new \DateTime('2020-05-01'));
+
+        $message2 = new Model\TicketMessage();
+        $message2->setOid(2);
+        $message2->setMessage('first agent reply');
+        $message2->setPerson(2);
+        $message2->setDateCreated(new \DateTime('2020-05-02'));
+
+        $message3 = new Model\TicketMessage();
+        $message3->setOid(3);
+        $message3->setMessage('last agent reply');
+        $message3->setPerson(2);
+        $message3->setDateCreated(new \DateTime('2020-05-03'));
+
+        $message4 = new Model\TicketMessage();
+        $message4->setOid(4);
+        $message4->setMessage('last user reply');
+        $message4->setPerson(1);
+        $message4->setDateCreated(new \DateTime('2020-05-04'));
+
+        $model = $this->createBaseModel();
+        $model->setDateCreated(new \DateTime('2020-05-01'));
+
+        $model->addMessage($message1);
+        $model->addMessage($message2);
+        $model->addMessage($message3);
+        $model->addMessage($message4);
+
+        $this->writer->writeModel($model);
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals('2020-05-01', $entity->getDateFirstAgentAssign()->format('Y-m-d'));
+        $this->assertEquals('2020-05-02', $entity->getDateFirstAgentReply()->format('Y-m-d'));
+        $this->assertEquals('2020-05-03', $entity->getDateLastAgentReply()->format('Y-m-d'));
+        $this->assertEquals('2020-05-04', $entity->getDateLastUserReply()->format('Y-m-d'));
+    }
+
     /**
      * @return Model\Ticket
      */

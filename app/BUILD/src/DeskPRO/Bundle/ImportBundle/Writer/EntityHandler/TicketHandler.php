@@ -200,6 +200,7 @@ class TicketHandler extends AbstractEntityHandler
             foreach ($ticketDepartment->getAllChildren() as $childDepartment) {
                 if ($childDepartment->isLeaf()) {
                     $entity->setDepartment($childDepartment);
+
                     break;
                 }
             }
@@ -215,6 +216,19 @@ class TicketHandler extends AbstractEntityHandler
 
         // set on hold status after message updates otherwise it will be overwritten
         $entity->setIsHold($model->isHold());
+
+        // refresh date fields
+        $entity->setDateFirstAgentAssign($entity->getDateCreated());
+        if ($firstAgentReply = $entity->getFirstAgentReply()) {
+            $entity->setDateFirstAgentReply($firstAgentReply->getDateCreated());
+        }
+        if ($lastAgentReply = $entity->getLastAgentReply()) {
+            $entity->setDateLastAgentReply($lastAgentReply->getDateCreated());
+        }
+        if ($lastUserReply = $entity->getLastUserReply()) {
+            $entity->setDateLastUserReply($lastUserReply->getDateCreated());
+        }
+
         $this->persister->persistAndFlush($entity, $model);
 
         // write ticket logs

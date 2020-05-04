@@ -1726,6 +1726,45 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return TicketMessage
+     */
+    public function getLastUserReply()
+    {
+        $criteria = new Criteria();
+        $criteria->setMaxResults(1);
+        $criteria->andWhere($criteria->expr()->eq('person', $this->person));
+        $criteria->orderBy(['id' => 'desc']);
+
+        return $this->messages->matching($criteria)->first();
+    }
+
+    /**
+     * @return TicketMessage
+     */
+    public function getFirstAgentReply()
+    {
+        $criteria = new Criteria();
+        $criteria->setMaxResults(1);
+        $criteria->andWhere($criteria->expr()->neq('person', $this->person));
+        $criteria->orderBy(['id' => 'asc']);
+
+        return $this->messages->matching($criteria)->first();
+    }
+
+    /**
+     * @return TicketMessage
+     */
+    public function getLastAgentReply()
+    {
+        $criteria = new Criteria();
+        $criteria->setMaxResults(1);
+        $criteria->andWhere($criteria->expr()->neq('person', $this->person));
+        $criteria->orderBy(['id' => 'desc']);
+
+        return $this->messages->matching($criteria)->first();
+    }
+
+    /**
      * Reset the message collection.
      * todo add onPropertyChanged() if change tracking is needed.
      *
@@ -1758,7 +1797,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->messages->add($message);
         $message->ticket = $this;
 
-        $now = new \DateTime();
+        $now = $message->getDateCreated();
         if ($message->person && $message->person->isAgent() && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
             if (!$message->isAgentNote() && !$this->_is_new) {
                 if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
@@ -4785,11 +4824,35 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param \DateTime $date_first_agent_assign
+     *
+     * @return $this
+     */
+    public function setDateFirstAgentAssign($date_first_agent_assign)
+    {
+        $this->setModelField('date_first_agent_assign', $date_first_agent_assign);
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getDateFirstAgentReply()
     {
         return $this->date_first_agent_reply;
+    }
+
+    /**
+     * @param \DateTime $date_first_agent_reply
+     *
+     * @return $this
+     */
+    public function setDateFirstAgentReply($date_first_agent_reply)
+    {
+        $this->setModelField('date_first_agent_reply', $date_first_agent_reply);
+
+        return $this;
     }
 
     /**
@@ -4801,11 +4864,35 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param \DateTime $date_last_agent_reply
+     *
+     * @return $this
+     */
+    public function setDateLastAgentReply($date_last_agent_reply)
+    {
+        $this->setModelField('date_last_agent_reply', $date_last_agent_reply);
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getDateLastUserReply()
     {
         return $this->date_last_user_reply;
+    }
+
+    /**
+     * @param \DateTime $date_last_user_reply
+     *
+     * @return $this
+     */
+    public function setDateLastUserReply($date_last_user_reply)
+    {
+        $this->setModelField('date_last_user_reply', $date_last_user_reply);
+
+        return $this;
     }
 
     /**
