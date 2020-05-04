@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0136f1fc0fe7c556863ad9122321b056",
+    "content-hash": "2324e6084788dac713ddcdb7ce80df82",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -433,6 +433,56 @@
             "homepage": "https://github.com/container-interop/container-interop",
             "abandoned": "psr/container",
             "time": "2017-02-14T19:40:03+00:00"
+        },
+        {
+            "name": "crowdin/crowdin-api-client",
+            "version": "1.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/crowdin/crowdin-api-client-php.git",
+                "reference": "0e48d42e20246cc5b2d5545d80bfd2cbfd4d119f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/crowdin/crowdin-api-client-php/zipball/0e48d42e20246cc5b2d5545d80bfd2cbfd4d119f",
+                "reference": "0e48d42e20246cc5b2d5545d80bfd2cbfd4d119f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^6.2",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.15",
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CrowdinApiClient\\": "src/CrowdinApiClient"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Crowdin",
+                    "homepage": "https://crowdin.com"
+                }
+            ],
+            "description": "PHP client library for Crowdin API v2",
+            "homepage": "https://github.com/crowdin/crowdin-api-client-php",
+            "keywords": [
+                "API-Client",
+                "api",
+                "client",
+                "crowdin",
+                "sdk"
+            ],
+            "time": "2020-05-04T14:46:00+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -1837,6 +1887,7 @@
                 "manipulation",
                 "path"
             ],
+            "abandoned": "mschop/pathogen",
             "time": "2014-10-22T01:04:35+00:00"
         },
         {
@@ -4976,6 +5027,7 @@
                 }
             ],
             "description": "Polyfill of PECL Mongo extension",
+            "abandoned": true,
             "time": "2016-11-13T21:50:29+00:00"
         },
         {
@@ -11485,6 +11537,7 @@
                 }
             ],
             "description": "This bundle generates code for you",
+            "abandoned": "symfony/maker-bundle",
             "time": "2017-12-07T15:36:41+00:00"
         },
         {
@@ -11872,6 +11925,7 @@
                 "code",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-code",
             "time": "2016-04-20T17:26:42+00:00"
         },
         {
@@ -11926,6 +11980,7 @@
                 "events",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-eventmanager",
             "time": "2018-04-25T15:33:34+00:00"
         },
         {
@@ -12011,7 +12066,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.5.0"
+        "php": ">=5.6"
     },
     "platform-dev": [],
     "platform-overrides": {
