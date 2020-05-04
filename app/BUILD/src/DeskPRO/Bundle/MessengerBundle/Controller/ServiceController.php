@@ -13,6 +13,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
@@ -67,7 +68,9 @@ class ServiceController extends AbstractMessengerController
         $brand                     = $this->get('brand_stack')->getActive()->getBrand();
         $messengerSettingsResolver = $this->get('messenger.service.settings_resolver');
         $settings                  = $messengerSettingsResolver->getMessengerSettings($brand);
-        $data                      = $this->get('serializer')->toArray($settings, new SideloadSerializationContext());
+        $context                   = new SideloadSerializationContext();
+        $context->setInlineSideloads(true)->setIncludes(['blob']);
+        $data                      = $this->get('serializer')->toArray(new ApiWrapper($settings), $context)['data'];
 
         $preChatForm     = $settings->getChat()->getPreChatForm();
         $ticketsSettings = $settings->getTickets();

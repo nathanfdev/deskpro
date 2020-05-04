@@ -1601,7 +1601,7 @@ var RLANG = {
 
 				if (cmd === 'inserthorizontalrule')
 				{
-					this.$editor.find('hr').removeAttr('id');
+					this.$editor.find('hr').replaceWith('<hr />');
 				}
 
 				this.syncCode();

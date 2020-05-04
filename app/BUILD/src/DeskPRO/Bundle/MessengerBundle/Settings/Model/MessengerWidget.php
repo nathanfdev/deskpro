@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 
+use Application\DeskPRO\Entity\Blob;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -41,6 +42,12 @@ class MessengerWidget
      * @var string
      */
     private $textColor = '#ffffff';
+
+    /**
+     * @var Blob
+     * @JMS\Type("entity<Application\Deskpro\Entity\Blob>")
+     */
+    private $icon;
 
     /**
      * Widget position
@@ -127,6 +134,26 @@ class MessengerWidget
     public function setPosition($position)
     {
         $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @param Blob $icon
+     *
+     * @return $this
+     */
+    public function setIcon($icon = null)
+    {
+        $this->icon = $icon;
 
         return $this;
     }

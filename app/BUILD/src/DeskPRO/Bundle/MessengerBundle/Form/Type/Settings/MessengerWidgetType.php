@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Form\Type\Settings;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -18,6 +19,7 @@ class MessengerWidgetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('icon', BlobAuthType::class, ['required' => false])
             ->add('primaryColor', TextType::class)
             ->add('backgroundColor', TextType::class)
             ->add('textColor', TextType::class)

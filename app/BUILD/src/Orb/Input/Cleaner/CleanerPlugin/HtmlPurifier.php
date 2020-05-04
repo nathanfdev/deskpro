@@ -1,10 +1,6 @@
 <?php
 
-/**
- * Orb.
- *
- * @category Input
- */
+
 
 namespace Orb\Input\Cleaner\CleanerPlugin;
 
@@ -108,7 +104,7 @@ class HtmlPurifier implements CleanerPlugin
             // Malformed email might contain </html> not at the end. Move it to the end
             if (stripos($value, '</html>') !== false) {
                 $value = str_ireplace('</html>', '', $value);
-                $value = $value . "</html>";
+                $value = $value."</html>";
             }
 
             $value = preg_replace('#<!DOCTYPE.*?>#is', '', $value);
@@ -186,7 +182,7 @@ class HtmlPurifier implements CleanerPlugin
             // decoded, or the DOMDocument->substituteEntities not being honoured etc.
             // Easiest solution is to hack around entiites altogether so DOMDocument doesnt mess them up
             $value = Strings::preDomDocument($value);
-          
+
             return $value;
         }
 
@@ -218,7 +214,7 @@ class HtmlPurifier implements CleanerPlugin
         if ($type == 'html_email') {
             $value = $this->cleanValue($value, 'html_email_basicclean', $options, $cleaner);
             $value = Strings::decodeWhitespaceHtmlEntities($value);
-            $value = Strings::trimHtmlAdvanced($value, function(\QueryPath\DOMQuery $elem) {
+            $value = Strings::trimHtmlAdvanced($value, function (\QueryPath\DOMQuery $elem) {
                 return !$elem->hasClass("dp_div_from_pre");
             });
 
@@ -297,14 +293,16 @@ class HtmlPurifier implements CleanerPlugin
                         'type' => 'Text',
                     ]);
                 }
+
                 break;
 
             case 'html_core':
-                $config->set('HTML.Allowed', '*[style],em,i,strong,b,u,strike,a[href|target],img[src|class|title|alt],ul,li,dd,dt,dl,ol,table[border|cellspacing|cellpadding|align|summary],thead,tbody,tfoot,tr,td[colspan|rowspan],th,pre,div[align|class],p[align|class],blockquote,span[class],font[color|face|size],br,hr');
+                $config->set('HTML.Allowed', '*[style],em,i,strong,b,u,strike,a[href|target],img[src|class|title|alt],ul,li,dd,dt,dl,ol,table[border|cellspacing|cellpadding|align|summary],thead,tbody,tfoot,tr,td[colspan|rowspan],th,pre,div[align|class],p[align|class],blockquote,span[class],font[color|face|size],br,hr,h1,h2,h3,h4,h5,h6,code');
                 $config->set('AutoFormat.AutoParagraph', true);
                 $config->set('AutoFormat.Linkify', true);
                 $config->set('AutoFormat.RemoveSpansWithoutAttributes', true);
                 $config->set('AutoFormat.RemoveEmpty', true);
+
                 break;
 
             case 'simple_html':
@@ -315,6 +313,7 @@ class HtmlPurifier implements CleanerPlugin
                 $config->set('AutoFormat.RemoveEmpty', true);
                 $config->set('AutoFormat.RemoveSpansWithoutAttributes', true);
                 $config->set('AutoFormat.RemoveEmpty', true);
+
                 break;
 
             case 'html_email':
@@ -360,11 +359,13 @@ class HtmlPurifier implements CleanerPlugin
                 ]);
                 $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
                 $config->set('HTML.TidyLevel', 'medium');
+
                 break;
 
             case 'html_fix':
                 $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
                 $config->set('HTML.TidyLevel', 'none');
+
                 break;
         }
 

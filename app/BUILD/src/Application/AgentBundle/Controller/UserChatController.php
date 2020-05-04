@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\AgentBundle\Controller;
 
@@ -351,6 +349,8 @@ class UserChatController extends AbstractController
     }
 
     /**
+     * @param mixed $conversation_id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function saveFieldsAction($conversation_id)
@@ -379,14 +379,17 @@ class UserChatController extends AbstractController
                     case 'min_length':
                         $code = 'text_min';
                         $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
                         break;
                     case 'max_length':
                         $code = 'text_max';
                         $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
                         break;
                     case 'regex_fail':
                         $code = 'text_regex';
                         $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
                         break;
                     default:
                         $msg = $trans->getPhraseText('user.error.form_'.$code);
@@ -571,9 +574,8 @@ class UserChatController extends AbstractController
             $metadata = [];
             if ($this->in->getBool('is_html')) {
                 $metadata['is_html'] = true;
-
-                $content = Strings::trimHtml($this->in->getHtmlCore('content'));
-                $content = Strings::prepareWysiwygHtml($content);
+                $content             = Strings::trimHtml($this->in->getHtmlCore('content'), true);
+                $content             = Strings::prepareWysiwygHtml($content, true);
 
                 $this->get('attachment_helper')->processInlineBlobs($content, $this->in->getArrayOfInts('blob_inline_ids'));
             } else {
@@ -634,10 +636,12 @@ class UserChatController extends AbstractController
                     if ($convo->agent && $convo->agent->getId() == $this->person->getId()) {
                         $chatManager->unassignAgent($convo);
                     }
+
                     break;
 
                 case 'end':
                     $chatManager->endChat($convo, $this->person);
+
                     break;
             }
         }
@@ -928,6 +932,8 @@ class UserChatController extends AbstractController
     /**
      * Lists previously closed chats.
      *
+     * @param mixed $filter_id
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function filterAction($filter_id)
@@ -960,6 +966,7 @@ class UserChatController extends AbstractController
                 case 'agent':
                     $groupId = $this->in->getInt('group_val');
                     $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, $groupId);
+
                     break;
                 case 'date_created':
                     $groupId   = $this->in->getString('group_val');
@@ -984,10 +991,12 @@ class UserChatController extends AbstractController
                 case 'department':
                     $groupId = $this->in->getInt('group_val');
                     $searcher->addTerm(ChatConversationSearch::TERM_DEPARTMENT_ID, SearcherAbstract::OP_IS, $groupId);
+
                     break;
                 case 'total_to_ended':
                     $groupId = $this->in->getInt('group_val');
                     $searcher->addTerm(ChatConversationSearch::TERM_TOTAL_TO_ENDED, SearcherAbstract::OP_IS, $groupId);
+
                     break;
             }
         }
@@ -1102,14 +1111,17 @@ class UserChatController extends AbstractController
         switch ($filter) {
             case 'mine':
                 $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, $this->person['id']);
+
                 break;
 
             case 'assigned':
                 $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_NOT, 0);
+
                 break;
 
             case 'missed':
                 $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, 0);
+
                 break;
         }
     }

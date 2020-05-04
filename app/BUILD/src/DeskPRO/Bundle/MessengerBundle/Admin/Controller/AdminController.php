@@ -299,6 +299,7 @@ CODE;
         ) {
             $messengerChat->setNoAnswerBehavior(MessengerChat::NO_ANSWER_SAVE_TICKET);
         }
+
         $this
             ->getSettingRepository()
 
@@ -307,6 +308,7 @@ CODE;
             ->updateSetting(MSR::WIDGET_BG_COLOR, $messengerWidget->getBackgroundColor(), $brand)
             ->updateSetting(MSR::WIDGET_TEXT_COLOR, $messengerWidget->getTextColor(), $brand)
             ->updateSetting(MSR::WIDGET_POSITION, $messengerWidget->getPosition(), $brand)
+            ->updateSetting(MSR::WIDGET_ICON, $messengerWidget->getIcon()->setIsTemp(false)->getId(), $brand)
 
             // Chat settings
             ->updateSetting(MSR::CHAT_ENABLED, $messengerChat->isEnabled(), $brand)
@@ -349,7 +351,8 @@ CODE;
             ->updateSetting(MSR::EMBED_AUTHORIZE_DOMAINS, $messengerEmbed->getAuthorizeDomains(), $brand)
             ->updateSetting(MSR::EMBED_ENABLED_ON_PORTAL, $messengerEmbed->isShowOnPortal(), $brand)
             ->updateSetting(MSR::JWT_SECRET, $messengerEmbed->getJwtSecret(), $brand)
-
         ;
+
+        $this->container->get('doctrine.orm.default_entity_manager')->flush();
     }
 }
