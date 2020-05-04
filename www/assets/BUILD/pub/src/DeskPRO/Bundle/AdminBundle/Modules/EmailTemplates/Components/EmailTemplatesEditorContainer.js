@@ -753,6 +753,12 @@ class EmailTemplatesEditor extends React.Component {
     });
   };
 
+  openPhraseMenu = () => {
+    if (this.phrasesMenuContainer && this.phrasesMenuContainer.phrasesMenu) {
+      this.phrasesMenuContainer.phrasesMenu.selectFirstMenu();
+    }
+  }
+
   markAsConverted = () => {
     this.props.saveTemplate().then(() => {
       this.props.markAsConverted().then(() => {
@@ -847,6 +853,7 @@ class EmailTemplatesEditor extends React.Component {
                   label="Phrases"
                   className="phrases-button"
                   disabled={textareaDisabled}
+                  onClick={this.openPhraseMenu}
                   ref={(c) => { this.phrasesMenu = c; }}
                 >
                   <PhrasesMenuContainer
@@ -854,6 +861,7 @@ class EmailTemplatesEditor extends React.Component {
                     languages={window.DP_ENABLED_LANGS}
                     insertPhrase={this.props.insertPhrase}
                     data={this.props.emailTemplates}
+                    ref={(c) => { this.phrasesMenuContainer = c; }}
                   />
                 </DropDownMenu>
               </div>

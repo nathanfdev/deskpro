@@ -359,6 +359,12 @@ class PortalEditor extends React.Component {
     });
   };
 
+  openPhraseMenu = () => {
+    if (this.phrasesMenuContainer && this.phrasesMenuContainer.phrasesMenu) {
+      this.phrasesMenuContainer.phrasesMenu.selectFirstMenu();
+    }
+  }
+
   saveTemplate = () => {
     this.props.saveTemplate().then((newTemplate) => {
       this.checkChanges(newTemplate);
@@ -431,6 +437,7 @@ class PortalEditor extends React.Component {
                   label="Phrases"
                   className="phrases-button"
                   disabled={textareaDisabled}
+                  onClick={this.openPhraseMenu}
                   ref={(c) => { this.phrasesMenu = c; }}
                   positionMy="right top-1px"
                   positionAt="right bottom"
@@ -440,6 +447,7 @@ class PortalEditor extends React.Component {
                     languages={window.DP_ENABLED_LANGS}
                     insertPhrase={this.props.insertPhrase}
                     data={this.props.portalEditor}
+                    ref={(c) => { this.phrasesMenuContainer = c; }}
                   />
                 </DropDownMenu>
               </div>
