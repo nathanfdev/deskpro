@@ -530,15 +530,17 @@ class CommunityTopicsController extends AbstractPublishController
 
         // RENDER THEME
 
-        $communityTopicLinksRepo    = $this->get('doctrine.orm.default_entity_manager')->getRepository(TicketCommunityTopicLink::class);
-        $ticketCommunityTopicsLinks = $communityTopicLinksRepo->findByTopic($topic);
-
-        $self = $this;
-
-        $ticketCommunityTopicsLinks = array_filter($ticketCommunityTopicsLinks, function ($linkedTicket) use ($self) {
-            /* @var TicketCommunityTopicLink $linkedTicket */
-            return $self->isGranted(TicketsVoter::TICKET_VIEW, $linkedTicket->getTicket());
-        });
+        $ticketCommunityTopicsLinks = [];
+        // Related tickets disabled for now
+//        $communityTopicLinksRepo    = $this->get('doctrine.orm.default_entity_manager')->getRepository(TicketCommunityTopicLink::class);
+//        $ticketCommunityTopicsLinks = $communityTopicLinksRepo->findByTopic($topic);
+//
+//        $self = $this;
+//
+//        $ticketCommunityTopicsLinks = array_filter($ticketCommunityTopicsLinks, function ($linkedTicket) use ($self) {
+//            /* @var TicketCommunityTopicLink $linkedTicket */
+//            return $self->isGranted(TicketsVoter::TICKET_VIEW, $linkedTicket->getTicket());
+//        });
 
         $viewVars = [
             'topic'              => $topic,
