@@ -101,7 +101,7 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
       if (this.username) {
         const or = window.document.createElement('div');
         or.className = 'dp-po-divider';
-        or.innerHTML = `<div class="dp-po-divider-text">${portalPhrases.get('portal.general.or')}</div>`;
+        or.innerHTML = `<div class="dp-po-divider-text">${portalPhrases.get('helpcenter.general.or')}</div>`;
         div.appendChild(or);
       }
       map(usersources, (us) => {
