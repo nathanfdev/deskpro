@@ -26,6 +26,7 @@ class LanguageController extends AbstractApiController
     public function widgetPhrasesAction(Request $request)
     {
         $phrases = [
+            'helpcenter.account.login_invalid',
             'helpcenter.community.filters',
             'helpcenter.community.my_activity',
             'helpcenter.community.reset_all_filters',
