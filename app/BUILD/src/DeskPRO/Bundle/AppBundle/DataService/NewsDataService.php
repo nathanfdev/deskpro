@@ -8,7 +8,7 @@ use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\RelatedContent;
 use Application\DeskPRO\Hierarchy\PreloadedHierarchy;
-use Application\DeskPRO\Translate\SystemLanguage;
+use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\DBAL\Connection;
@@ -30,10 +30,16 @@ class NewsDataService extends AbstractDataService
      */
     protected $permissionsManager;
 
-    public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
+    /**
+     * @var Translate
+     */
+    protected $translate;
+
+    public function __construct(EntityManager $em, PermissionsManager $permissionsManager, Translate $translate)
     {
         $this->em                 = $em;
         $this->permissionsManager = $permissionsManager;
+        $this->translate          = $translate;
     }
 
     /**
@@ -249,9 +255,8 @@ class NewsDataService extends AbstractDataService
                     ORDER BY year DESC, month ASC
                 ', [$using_ids, News::STATUS_PUBLISHED], [Connection::PARAM_INT_ARRAY, \PDO::PARAM_STR]);
 
-                $language = SystemLanguage::getInstance();
                 $dateFormatter = datefmt_create(
-                    $language->getLocale(),
+                    $this->translate->getLocale(),
                     IntlDateFormatter::FULL,
                     IntlDateFormatter::FULL,
                     \date_default_timezone_get(),

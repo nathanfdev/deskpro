@@ -390,6 +390,8 @@ helpcenter.general.copied: copied
 helpcenter.general.copy_to_clipboard: 'Copy to Clipboard'
 helpcenter.general.created_by: 'Created by'
 helpcenter.general.date_short: '{date, date, short}'
+helpcenter.general.date_day_month: '{date, date, MMM d}'
+helpcenter.general.date_short_month: '{date, date, MMM}'
 helpcenter.general.department: Department
 helpcenter.general.download_type: Download
 helpcenter.general.downloads_type: Downloads

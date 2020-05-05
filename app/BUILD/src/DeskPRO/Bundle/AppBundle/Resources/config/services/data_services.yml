@@ -38,7 +38,7 @@ services:
 
   data.news:
     class: DeskPRO\Bundle\AppBundle\DataService\NewsDataService
-    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager", "@deskpro.core.translate"]
 
   data.email:
     class: DeskPRO\Bundle\AppBundle\DataService\EmailDataService

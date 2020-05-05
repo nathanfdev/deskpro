@@ -185,6 +185,7 @@ helpcenter.general.btn_unsubscribe: Se désabonner
 helpcenter.general.comment_btn_save: 'Enregistrer le commentaire'
 helpcenter.general.comments: Commentaires
 helpcenter.general.comments_pending_validation: 'Ce commentaire n''a pas encore été validé. Il sera publié prochainement.'
+helpcenter.general.date_day_month: '{date, date, d MMM}'
 helpcenter.general.downloads_type: Téléchargements
 helpcenter.general.everything: Tout
 helpcenter.general.go: Valider
