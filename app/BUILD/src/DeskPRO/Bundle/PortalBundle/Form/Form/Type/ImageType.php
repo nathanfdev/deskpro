@@ -20,7 +20,16 @@ class ImageType extends AbstractType
     {
         $builder->add('file', FileType::class, [
             'constraints' => [
-                new Image(),
+                new Image([
+                    'mimeTypes' => [
+                        'image/gif',
+                        'image/png',
+                        'image/jpeg',
+                        'image/jpeg',
+                        'image/pjpeg',
+                    ],
+                    'mimeTypesMessage' => 'Please upload a PNG, JPG or GIF',
+                ]),
             ],
         ]);
     }
