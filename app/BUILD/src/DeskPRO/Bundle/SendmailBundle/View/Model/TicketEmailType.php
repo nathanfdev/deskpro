@@ -78,6 +78,8 @@ abstract class TicketEmailType extends EmailBaseType
     protected $actionPerformer;
 
     /**
+     * Context
+     *
      * @JMS\Type("array")
      *
      * @var []

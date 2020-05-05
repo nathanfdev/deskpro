@@ -9,7 +9,7 @@
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-    {{ phrase('helpcenter.emails.ratelimit_explain') }}
+    {{ phrase('helpcenter.emails.ratelimit_explain',{num_messages: num_messages, time_limit: time_limit, time_lock: time_lock, date_lock_end: date_lock_end}) }}
 
     {% if app.isPortalEnabled() %}
         <br /><br />

@@ -241,7 +241,9 @@ class PhraseWidget extends Widget {
         .split(/,\s*(?![^()]*\))/)
         .forEach((variable) => {
           const pieces = variable.split(':');
-          variables[pieces[0].trim()] = pieces[1].trim();
+          if (pieces[1]) {
+            variables[pieces[0].trim()] = pieces[1].trim();
+          }
         }
         );
     }

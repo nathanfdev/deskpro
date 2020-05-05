@@ -43,6 +43,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\NewsSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketGuest;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketRegClosed;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketValidate;
+use DeskPRO\Bundle\SendmailBundle\View\Model\RateLimitNotice;
 use DeskPRO\Bundle\SendmailBundle\View\Model\RegisterWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\RegisterWelcomeByAgent;
 use DeskPRO\Bundle\SendmailBundle\View\Model\ResetPassword;
@@ -254,7 +255,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @return CommunityTopicSubscription
      */
-    public function createCommunityTopicsSubscriptionModel(array $updatedTopics)
+    public function createCommunityTopicSubscriptionModel(array $updatedTopics)
     {
         $portalHome     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $unsubscribeUrl = $this->router->generate('portal_community_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -670,6 +671,35 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
+     * @param Ticket $ticket
+     * @param string $subject
+     * @param string $name
+     * @param int $numMessages
+     * @param string $timeLimit
+     * @param string $timeLock
+     * @param string $dateLockEnd
+     *
+     * @throws \Exception
+     *
+     * @return RateLimitNotice
+     */
+    public function createRateLimitNoticeModel(Ticket $ticket, $subject, $name, $numMessages, $timeLimit, $timeLock, $dateLockEnd)
+    {
+        return $this->convertParameters(
+            RateLimitNotice::class,
+            [
+                $ticket,
+                $subject,
+                $name,
+                $numMessages,
+                $timeLimit,
+                $timeLock,
+                $dateLockEnd,
+            ]
+        );
+    }
+
+    /**
      * @param string $event
      * @param Ticket $ticket
      * @param TicketApproval $approval
@@ -718,7 +748,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalApproverApproved
      */
     public function createTicketApprovalApproverApprovedModel(Ticket $ticket, Person $recipient)
     {
@@ -734,7 +764,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalApproverCancel
      */
     public function createTicketApprovalApproverCancelModel(Ticket $ticket, Person $recipient)
     {
@@ -750,7 +780,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalApproverCreate
      */
     public function createTicketApprovalApproverCreateModel(Ticket $ticket, Person $recipient)
     {
@@ -766,7 +796,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalApproverPartialApprovalResponse
      */
     public function createTicketApprovalApproverPartialApprovalResponseModel(Ticket $ticket, Person $recipient)
     {
@@ -782,7 +812,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalApproverPartialRejectionResponse
      */
     public function createTicketApprovalApproverPartialRejectionResponseModel(Ticket $ticket, Person $recipient)
     {
@@ -798,7 +828,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalApproverRejected
      */
     public function createTicketApprovalApproverRejectedModel(Ticket $ticket, Person $recipient)
     {
@@ -814,7 +844,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalOwnerApproved
      */
     public function createTicketApprovalOwnerApprovedModel(Ticket $ticket, Person $recipient)
     {
@@ -830,7 +860,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalOwnerCancel
      */
     public function createTicketApprovalOwnerCancelModel(Ticket $ticket, Person $recipient)
     {
@@ -846,7 +876,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalOwnerCreate
      */
     public function createTicketApprovalOwnerCreateModel(Ticket $ticket, Person $recipient)
     {
@@ -862,7 +892,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalOwnerPartialApprovalResponse
      */
     public function createTicketApprovalOwnerPartialApprovalResponseModel(Ticket $ticket, Person $recipient)
     {
@@ -878,7 +908,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalOwnerPartialRejectionResponse
      */
     public function createTicketApprovalOwnerPartialRejectionResponseModel(Ticket $ticket, Person $recipient)
     {
@@ -894,7 +924,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @throws \Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return TicketApprovalOwnerRejected
      */
     public function createTicketApprovalOwnerRejectedModel(Ticket $ticket, Person $recipient)
     {

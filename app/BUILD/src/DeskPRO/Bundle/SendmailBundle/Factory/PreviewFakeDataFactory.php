@@ -10,12 +10,15 @@ use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Task;
+use Application\DeskPRO\Settings\EmailAccountsSettings;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
+use Orb\Util\Dates;
 use Orb\Util\Numbers;
 use ReflectionClass;
 use ReflectionParameter;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -33,15 +36,21 @@ class PreviewFakeDataFactory
     protected $router;
 
     /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
      * PreviewFakeDataFactory constructor.
      *
      * @param RouterInterface $router
      * @param EntityManager   $manager
      */
-    public function __construct(RouterInterface $router, EntityManager $manager)
+    public function __construct(RouterInterface $router, EntityManager $manager, ContainerInterface $container)
     {
-        $this->router  = $router;
-        $this->manager = $manager;
+        $this->router    = $router;
+        $this->manager   = $manager;
+        $this->container = $container;
     }
 
     /**
@@ -117,6 +126,7 @@ class PreviewFakeDataFactory
                     case 'updatedNews':
                         return $this->manager->getRepository(News::class)->findBy([], [], 10);
                     case 'updatedCommunityTopic':
+                    case 'updatedTopics':
                         return $this->manager->getRepository(CommunityTopic::class)->findBy([], [], 10);
                     case 'task':
                         return $this->manager->getRepository(Task::class)->findBy([], [], 10);
@@ -127,7 +137,10 @@ class PreviewFakeDataFactory
                     case 'message':
                         return 'Example message';
                     case 'email':
+                    case 'origEmail':
                         return 'email@example.com';
+                    case 'newEmail':
+                        return 'new-email@example.com';
                     case 'name':
                         return 'First Name Last Name';
                     case 'subject':
@@ -136,6 +149,18 @@ class PreviewFakeDataFactory
                         return 'Here\'s my forwarded ticket';
                     case 'maxSize':
                         return Numbers::filesizeDisplay(20971520);
+                    case 'numMessages':
+                        return $this->container->getSetting('core.emails.rate_count', EmailAccountsSettings::DEFAULT_RATE_COUNT);
+                    case 'timeLimit':
+                        return Dates::secsToReadable($this->container->getSetting('core.emails.rate_time', EmailAccountsSettings::DEFAULT_RATE_TIME));
+                    case 'timeLock':
+                        return Dates::secsToReadable($this->container->getSetting('core.emails.rate_locktime', EmailAccountsSettings::DEFAULT_RATE_LOCK_TIME));
+                    case 'dateLockEnd':
+                        $rateLocktime = $this->container->getSetting('core.emails.rate_locktime', EmailAccountsSettings::DEFAULT_RATE_LOCK_TIME);
+                        $dateLockEnd = new \DateTime();
+                        $dateLockEnd->add(new \DateInterval('PT'.$rateLocktime.'S'));
+
+                        return $dateLockEnd;
                     case 'expireDate':
                         $now = new DateTime();
 

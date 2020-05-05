@@ -172,6 +172,9 @@ abstract class AbstractViewModelFactory
                 $handler = $this->container->get('api_serializer.handler.approval_response');
 
                 break;
+            case \DateTime::class:
+                /* @var \DateTime $entity */
+                return $entity->format('c');
             default:
                 throw new \Exception('Unset handler for class '.$className);
 

@@ -266,6 +266,11 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
             case 'system':
                 $arguments = [$ticket];
 
+                if ($template === 'SendmailBundle:emails_user:ticket_add_cc.html.twig' && $context->getPersonContext()) {
+                    // We add the action author for add_cc email
+                    $arguments[] = $context->getPersonContext();
+                }
+
                 break;
             case TicketTrigger::EVENT_TYPE_NEWREPLY:
                 if ($messages) {
