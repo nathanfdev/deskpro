@@ -8,7 +8,7 @@
 
 <br /><br />
 
-{% if app.isPortalEnabled() %}
+{% if app.isPortalEnabled() and can_login(person) %}
     {{ phrase('portal.emails.ticket_cc-added-reply-view') }}
     <a href="{{ portal_url(ticket) }}">{{ portal_url(ticket) }}</a>
 {% else %}

@@ -10,7 +10,7 @@
 
 <dp:ticket-messages />
 
-{% if app.isPortalEnabled() %}
+{% if app.isPortalEnabled() and can_login(person) %}
 	<br /><br />
 
 	{{ phrase('user.emails.ticket_access_ticket_online') }}

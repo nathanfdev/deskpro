@@ -2,7 +2,7 @@
 
 {{ phrase('portal.emails.ratelimit_explain') }}
 
-{% if app.isPortalEnabled() %}
+{% if app.isPortalEnabled() and can_login(person) %}
     <br /><br />
 
     {{ phrase('portal.emails.ratelimit_submit-online') }}

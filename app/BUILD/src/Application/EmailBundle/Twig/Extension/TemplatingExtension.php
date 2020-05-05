@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\EmailBundle\Twig\Extension;
 
 use Application\DeskPRO\App;
@@ -172,6 +170,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
             new \Twig_SimpleFunction('can_view_email_addresses', [$this, 'canViewEmailAddresses'], []),
             new \Twig_SimpleFunction('show_email_address', [$this, 'showEmailAddress'], []),
+            new \Twig_SimpleFunction('can_login', [$this, 'canLogin'], []),
         ];
     }
 
@@ -2650,26 +2649,46 @@ HTML;
     }
 
     /**
-     * @param int $agentId
+     * @param Person $person
      *
      * @return bool
      */
-    public function canViewEmailAddresses($agentId)
+    public function canViewEmailAddresses($person)
     {
-        $user = $agentId ? $this->container->get('doctrine.orm.default_entity_manager')->getRepository(Person::class)->find($agentId) : null;
+        if (!$person instanceof Person) {
+            return false;
+        }
 
-        return $user instanceof Person ? $user->hasPerm('agent_people.view_email_addresses') : false;
+        return $person->hasPerm('agent_people.view_email_addresses');
     }
 
     /**
-     * @param int    $agentId
+     * @param Person $person
      * @param string $email
      * @param string $pattern
      *
      * @return string
      */
-    public function showEmailAddress($agentId, $email, $pattern = '%s')
+    public function showEmailAddress($person, $email, $pattern = '%s')
     {
-        return $this->canViewEmailAddresses($agentId) ? sprintf($pattern, $email) : '';
+        return $this->canViewEmailAddresses($person) ? sprintf($pattern, $email) : '';
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return bool
+     */
+    public function canLogin($person)
+    {
+        if (!$person instanceof Person) {
+            return false;
+        }
+
+        if (!$this->container->get('dp_limit_email_domains_checker')->checkPerson($person)) {
+            return false;
+        }
+
+        return true;
     }
 }
