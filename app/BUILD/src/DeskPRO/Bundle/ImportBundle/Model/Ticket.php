@@ -72,21 +72,21 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      *
      * @JMS\Type("DateTime")
      */
-    private $date_created;
+    private $dateCreated;
 
     /**
      * @var \DateTime
      *
      * @JMS\Type("DateTime")
      */
-    private $date_resolved;
+    private $dateResolved;
 
     /**
      * @var \DateTime
      *
      * @JMS\Type("DateTime")
      */
-    private $date_archived;
+    private $dateArchived;
 
     /**
      * @var string
@@ -144,7 +144,7 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      *
      * @JMS\Type("boolean")
      */
-    private $is_hold = false;
+    private $isHold = false;
 
     /**
      * @var int
@@ -303,17 +303,17 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      */
     public function getDateCreated()
     {
-        return $this->date_created;
+        return $this->dateCreated;
     }
 
     /**
-     * @param \DateTime $date_created
+     * @param \DateTime $dateCreated
      *
      * @return $this
      */
-    public function setDateCreated(\DateTime $date_created = null)
+    public function setDateCreated(\DateTime $dateCreated = null)
     {
-        $this->date_created = $date_created;
+        $this->dateCreated = $dateCreated;
 
         return $this;
     }
@@ -323,17 +323,17 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      */
     public function getDateArchived()
     {
-        return $this->date_archived;
+        return $this->dateArchived;
     }
 
     /**
-     * @param \DateTime $date_archived
+     * @param \DateTime $dateArchived
      *
      * @return $this
      */
-    public function setDateArchived(\DateTime $date_archived = null)
+    public function setDateArchived(\DateTime $dateArchived = null)
     {
-        $this->date_archived = $date_archived;
+        $this->dateArchived = $dateArchived;
 
         return $this;
     }
@@ -343,17 +343,17 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      */
     public function getDateResolved()
     {
-        return $this->date_resolved;
+        return $this->dateResolved;
     }
 
     /**
-     * @param \DateTime $date_resolved
+     * @param \DateTime $dateResolved
      *
      * @return $this
      */
-    public function setDateResolved(\DateTime $date_resolved = null)
+    public function setDateResolved(\DateTime $dateResolved = null)
     {
-        $this->date_resolved = $date_resolved;
+        $this->dateResolved = $dateResolved;
 
         return $this;
     }
@@ -505,7 +505,7 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      */
     public function isHold()
     {
-        return $this->is_hold;
+        return $this->isHold;
     }
 
     /**
@@ -515,7 +515,7 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      */
     public function setAsHold($is_hold)
     {
-        $this->is_hold = $is_hold;
+        $this->isHold = $is_hold;
 
         return $this;
     }
