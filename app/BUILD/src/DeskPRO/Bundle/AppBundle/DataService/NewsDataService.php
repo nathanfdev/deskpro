@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\News;
@@ -10,10 +8,12 @@ use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\RelatedContent;
 use Application\DeskPRO\Hierarchy\PreloadedHierarchy;
+use Application\DeskPRO\Translate\SystemLanguage;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
+use IntlDateFormatter;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -249,6 +249,16 @@ class NewsDataService extends AbstractDataService
                     ORDER BY year DESC, month ASC
                 ', [$using_ids, News::STATUS_PUBLISHED], [Connection::PARAM_INT_ARRAY, \PDO::PARAM_STR]);
 
+                $language = SystemLanguage::getInstance();
+                $dateFormatter = datefmt_create(
+                    $language->getLocale(),
+                    IntlDateFormatter::FULL,
+                    IntlDateFormatter::FULL,
+                    \date_default_timezone_get(),
+                    IntlDateFormatter::GREGORIAN,
+                    'MMM'
+                );
+
                 $table = [];
                 if ($res) {
                     $minYear = 999999;
@@ -258,6 +268,8 @@ class NewsDataService extends AbstractDataService
                         $r['year'] = (int) $r['year'];
                         $r['month'] = (int) $r['month'];
                         $r['count'] = (int) $r['count'];
+                        $date = \DateTime::createFromFormat('Y-n-j', $r['year'].'-'.$r['month'].'-1');
+                        $r['formatted'] = $dateFormatter->format($date);
 
                         if (!isset($table[$r['year']])) {
                             $table[$r['year']] = ['year' => $r['year'], 'count' => 0, 'months' => []];
@@ -281,7 +293,13 @@ class NewsDataService extends AbstractDataService
                     foreach ($table as $y => &$dat) {
                         for ($i = 1; $i <= 12; ++$i) {
                             if (!isset($dat['months'][$i])) {
-                                $dat['months'][$i] = ['year' => $y, 'count' => 0, 'month' => $i];
+                                $dat['months'][$i] = [
+                                    'year'  => $y,
+                                    'count' => 0,
+                                    'month' => $i,
+                                ];
+                                $date = \DateTime::createFromFormat('Y-n-j', $y.'-'.$i.'-1');
+                                $dat['months'][$i]['formatted'] = $dateFormatter->format($date);
                             }
                         }
                         ksort($dat['months'], SORT_NUMERIC);
