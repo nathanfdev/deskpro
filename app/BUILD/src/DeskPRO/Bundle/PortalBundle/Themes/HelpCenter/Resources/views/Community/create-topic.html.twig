@@ -44,7 +44,7 @@
                                     {% endif %}
 
                                     <button type="submit" class="btn btn-primary btn-lg">
-                                        {{ phrase('helpcenter.community.form_submit') }}
+                                        {{ phrase('helpcenter.community.create_topic_in_forum', {forum: current_forum.noun}) }}
                                     </button>
 
                                 {{ form_rest(form) }}

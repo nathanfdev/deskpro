@@ -32,7 +32,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.community.filters',
             'helpcenter.community.my_activity',
             'helpcenter.community.reset_all_filters',
-            'helpcenter.community.search_suggestions',
+            'helpcenter.community.search_forum',
             'helpcenter.community.status',
             'helpcenter.forms.date_picker_next_month',
             'helpcenter.forms.date_picker_previous_month',

@@ -127,7 +127,7 @@ helpcenter.community.like_action: Like
 helpcenter.community.channel: Channel
 helpcenter.community.create_topic: Create
 helpcenter.community.create_topic_full: 'Create topic'
-helpcenter.community.create_topic_in_forum: 'Submit {forum}'
+helpcenter.community.create_topic_in_forum: 'Create new {forum}'
 helpcenter.community.error_login: 'Please login'
 helpcenter.community.featured_topics: 'Featured topics'
 helpcenter.community.filters: Filters
@@ -145,7 +145,7 @@ helpcenter.community.official_response: 'Official response'
 helpcenter.community.rate_forbidden: 'You are not allowed to vote'
 helpcenter.community.recent_activity: 'Recent activity'
 helpcenter.community.reset_all_filters: 'Reset all filters'
-helpcenter.community.search_suggestions: 'Search suggestions'
+helpcenter.community.search_forum: 'Search {forum}'
 helpcenter.community.section_title: Community
 helpcenter.community.status: Status
 helpcenter.community.status_change: 'Status change'

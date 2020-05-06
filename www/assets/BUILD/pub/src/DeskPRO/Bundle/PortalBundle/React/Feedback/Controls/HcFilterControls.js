@@ -8,6 +8,7 @@ export class HcFilterControls extends React.Component {
 
   static propTypes = {
     available:    PropTypes.object,
+    forum:        PropTypes.object,
     updateFilter: PropTypes.func,
     filterModel:  PropTypes.object,
   };
@@ -74,7 +75,7 @@ export class HcFilterControls extends React.Component {
   }
 
   render() {
-    const { available, filterModel } = this.props;
+    const { available, forum, filterModel } = this.props;
 
     return (
       <div className="d-none d-sm-block">
@@ -87,6 +88,7 @@ export class HcFilterControls extends React.Component {
           <HcSearch
             filter={filterModel}
             setSearch={this.onSearch}
+            forum={forum}
           />
           <HcFilters
             filter={filterModel}
