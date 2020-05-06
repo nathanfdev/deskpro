@@ -285,14 +285,14 @@
                         type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />{{ checkbox_label|trans }}
             </label>
         {% else %}
-            <label class="title" for="{{ id }}"><input type="checkbox" id="{{ id }}" value="{{ value }}" {{ block('widget_attributes') }}><i></i><span class="label">{{ label }}</span></label>
+            <label class="title" for="{{ id }}"><input type="checkbox" id="{{ id }}" value="{{ value }}"{% if checked %} checked="checked"{% endif %} {{ block('widget_attributes') }}><i></i><span class="label">{{ label }}</span></label>
         {% endif %}
     {% endspaceless %}
 {% endblock checkbox_widget %}
 
 {% block radio_widget %}
     {% spaceless %}
-        <label class="title" for="{{ id }}"><input type="radio" id="{{ id }}" value="{{ value }}" {{ block('widget_attributes') }}><i></i><span class="label">{{ label }}</span></label>
+        <label class="title" for="{{ id }}"><input type="radio" id="{{ id }}" value="{{ value }}"{% if checked %} checked="checked"{% endif %} {{ block('widget_attributes') }}><i></i><span class="label">{{ label }}</span></label>
     {% endspaceless %}
 {% endblock radio_widget %}
 
