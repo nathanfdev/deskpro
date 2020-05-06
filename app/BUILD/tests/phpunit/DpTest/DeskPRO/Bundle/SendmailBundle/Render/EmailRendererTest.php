@@ -608,7 +608,7 @@ we detect that the user has replied to a message inline rather than above the cu
                 'properties'  => $personProperties,
             ],
             'context' => [
-                'description' => '',
+                'description' => 'Context',
                 'type'        => 'array',
                 'attribute'   => 'context',
             ],
