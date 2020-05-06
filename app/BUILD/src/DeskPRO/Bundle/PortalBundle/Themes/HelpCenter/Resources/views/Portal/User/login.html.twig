@@ -102,13 +102,13 @@
                                     <p>{{ phrase('helpcenter.account.section_desc_login_external') }}</p>
                                 </header>
 
-                                <section class="padded">
+                                <section class="padded dp-po-social-login">
                                     {% for usersource in usersources_view %}
                                     <a
                                         href="{{ path('portal_login_authenticate', { usersource_id: usersource.id }) }}"
-                                        class="{{ usersource.classes|join(' ') }}"
+                                        class="btn btn-icon btn-lg btn-brand {{ usersource.classes|join(' ') }}"
                                     >
-                                        {% if usersource.icon %}<i class="{{ usersource.icon }}"></i>{% endif %}
+                                        {% if usersource.icon %}<i class="{{ usersource.icon }} dp-po-icon"></i>{% endif %}
                                         {{ usersource.text }}
                                     </a>
                                     {% endfor %}
