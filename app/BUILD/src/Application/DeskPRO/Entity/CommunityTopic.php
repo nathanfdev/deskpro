@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -330,10 +326,12 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
             case self::STATUS_ACTIVE:
             case self::STATUS_CLOSED:
                 $this['hidden_status'] = null;
+
                 break;
 
             case self::STATUS_HIDDEN:
                 $this['status_category'] = null;
+
                 break;
         }
 
@@ -369,11 +367,13 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
                     $this->setModelField('status_category', null);
                     $this->setModelField('date_updated', new \DateTime());
                 }
+
                 break;
 
             case self::STATUS_HIDDEN:
                 $this['status']        = $status;
                 $this['hidden_status'] = $sub_status;
+
                 break;
         }
     }
@@ -772,6 +772,18 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $dateTwo = Carbon::createFromTimestamp($transitions[0]->getDateCreated()->getTimestamp());
 
         return $dateOne->diffForHumans($dateTwo, true, true);
+    }
+
+    /**
+     * We filter out the official response as it is not displayed in the same section
+     *
+     * @return ArrayCollection|CommentAbstract[]
+     */
+    public function getVisibleComments()
+    {
+        return $this->comments->filter(function (CommentAbstract $comment) {
+            return $comment->isVisible() && $this->getOfficialResponse() !== $comment;
+        });
     }
 
     /**

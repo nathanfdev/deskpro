@@ -111,6 +111,22 @@
         {{  macros.lockout_notice(phrase('helpcenter.account.comment_lockout'), lockout, lockout_time) }}
         <div class="dp-po-post-content dp-po-block">
             {{ topic.getContentHtml()|raw }}
+            {% if topic.official_response %}
+                <div class="dp-po-post-official-response">
+                    <h3><i class="fad fa-flag-alt"></i> {{ phrase('helpcenter.community.official_response') }}</h3>
+                    <div class="dp-po-post-official-response-block">
+                        <div class="dp-po-post-official-response-avatar">
+                            <div class="dp-po-avatar">
+                                {{ hc_avatar(topic.official_response.person, '', 60) }}
+                                {{ topic.official_response.userName(true) }}
+                            </div>
+                        </div>
+                        <p>
+                            {{ topic.official_response.content_html_plain|raw }}
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 
