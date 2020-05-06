@@ -9,6 +9,26 @@
     <style>
         .tab-body-section { display: none; }
         .tab-body-section.is-active { display: block; }
+        .usage-screenshot-ctrl {
+            font-size: 11px;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .usage-screenshot-link {
+            float: right;
+            font-size: 11px;
+        }
+
+        .message-body .screenshot-img-wrap {
+            display: none;
+            max-width: 80%;
+        }
+
+        .message-body.show-screenshot .screenshot-img-wrap, body.show-all-screenshots .screenshot-img-wrap {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -89,6 +109,11 @@
 
         <?php if (!empty($baseUrl) && !empty($usages)): ?>
             <section class="tab-body-section" id="usages">
+                <div class="usage-screenshot-ctrl">
+                    Screenshot base URL: <input class="input is-small" type="text" id="screenshot_base_url" value="./screenshots/" style="width: 150px" />
+                    <button class="button is-small" id="screenshot_update_url">Update</button>
+                    <button class="button is-small is-link is-light" id="screenshot_show_all">Expand All Screenshots</button>
+                </div>
                 <table class="table">
                     <thead>
                     <tr>
@@ -102,8 +127,14 @@
                             <td><code><?php echo $keyId ?></code></td>
                             <td>
                                 <article class="message is-marginless">
+                                    <div class="usage-screenshot-link">
+                                        <a class="screenshot-link" href="./screenshots/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">Screenshot</a>
+                                    </div>
                                     <div class="message-body is-size-7">
                                         <?php echo $phrases[$keyId] ?? '' ?>
+                                        <a class="screenshot-img-wrap screenshot-link" href="./screenshots/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">
+                                            <img class="screenshot-img" src="./screenshots/<?php echo $keyId ?>.png" alt="<?php echo $keyId ?>" data-key-id="<?php echo $keyId ?>" />
+                                        </a>
                                     </div>
                                 </article>
                                 <?php foreach ($tpls as $t): ?>
@@ -250,6 +281,26 @@ $(document).ready(function () {
     });
 
     $tabs.first().click();
+
+    $('#screenshot_update_url').on('click', function() {
+        var baseUrl = $('#screenshot_base_url').val().replace(/\/$/, '') + '/';
+        $('a.screenshot-link').each(function () {
+            var el = $(this);
+            el.attr('href', baseUrl + el.data('key-id') + '.png');
+        });
+        $('img.screenshot-img').each(function () {
+            var el = $(this);
+            el.attr('src', baseUrl + el.data('key-id') + '.png');
+        });
+    });
+
+    $('#screenshot_show_all').on('click', function() {
+        $('body').toggleClass('show-all-screenshots');
+    });
+    $('.usage-screenshot-link > a').on('click', function(ev) {
+        ev.preventDefault();
+        $(this).parent().parent().find('.message-body').toggleClass('show-screenshot');
+    });
 });
 </script>
 
