@@ -79,7 +79,7 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
           window.location.reload();
         }
       } else {
-        const phrase = r.data.reason || 'portal.account.login-invalid';
+        const phrase = r.data.reason || 'helpcenter.account.login_invalid';
         this.failedReason.innerHTML = `<div class="message">${portalPhrases.get(phrase)}</div>`;
         this.usernameLabel.classList.add('error');
         this.passwordLabel.classList.add('error');
