@@ -13,7 +13,7 @@
 
     <br /><br />
 
-    {{ phrase('helpcenter.emails.profile_email_new_confirm') }}
+    {{ phrase('helpcenter.emails.profile_email_new_confirm', {orig_email: orig_email, new_email: new_email, site_name: site_name}) }}
 
     <br/><br/>
 
@@ -21,7 +21,7 @@
 
     <br/><br/>
 
-    {{  phrase('helpcenter.emails.end_greeting') }}
+    {{  phrase('helpcenter.emails.end_greeting', { site_name: site_name }) }}
 
   {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

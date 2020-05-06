@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -73,6 +71,11 @@ class SendUserNewEmail extends AbstractEmailAction
             case TicketTrigger::EVENT_TYPE_UPDATE:
             case 'system':
                 $arguments = [$ticket];
+
+                if ($template === 'SendmailBundle:emails_user:ticket_add_cc.html.twig' && $context->getPersonContext()) {
+                    // We add the action author for add_cc email
+                    $arguments[] = $context->getPersonContext();
+                }
 
                 break;
             case TicketTrigger::EVENT_TYPE_NEWREPLY:

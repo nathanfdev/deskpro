@@ -13,7 +13,7 @@
 
 	<br/><br/>
 
-	{{ phrase('helpcenter.emails.register_welcome') }}<br/>
+	{{ phrase('helpcenter.emails.register_welcome', {to_email: to_email}) }}<br/>
 	<a href="{{ portal_home }}">{{ portal_home }}</a>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}

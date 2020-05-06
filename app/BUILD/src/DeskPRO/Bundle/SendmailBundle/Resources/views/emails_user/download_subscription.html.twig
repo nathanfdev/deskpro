@@ -36,7 +36,7 @@
 	{% endif %}
 
 	<div class="dp-hr">&nbsp;</div>
-	{{ phrase('helpcenter.emails.downloads_explain', {deskpro_url: portal_home }) }}
+	{{ phrase('helpcenter.emails.downloads_explain', {deskpro_url: portal_home, unsubscribe_url: unsubscribe_url}) }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
 

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\EmailGateway;
 
@@ -185,19 +181,44 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $isRateReject = true;
                 $this->logMessage('Rate limited -- this is the first message over the threshold');
 
-                $message = $this->container->getMailer()->createMessage();
-                $message->setTemplate('DeskPRO:emails_user:rate-limit-notice.html.twig', [
-                    'ticket'        => $ticket,
-                    'subject'       => $this->reader->getSubject()->getSubjectUtf8(),
-                    'name'          => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                    'num_messagess' => $rateLimit,
-                    'time_limit'    => Dates::secsToReadable($rateTime),
-                    'time_lock'     => Dates::secsToReadable($rateLocktime),
-                    'date_lock_end' => date($this->container->getSetting('core.date_time'), time() + $rateLocktime),
-                ]);
-                $message->setTo($this->reader->getFromAddress()->getEmail());
+                if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                    $dateLockEnd = new \DateTime();
+                    $dateLockEnd->add(new \DateInterval('P'.$rateLocktime.'S'));
+                    $viewModel = $this->container->get('email.user_viewmodel_factory')
+                        ->createRateLimitNoticeModel(
+                            $ticket,
+                            $this->reader->getSubject()->getSubjectUtf8(),
+                            $this->reader->getFromAddress()->getName(
+                            ) ?: $this->reader->getFromAddress()->getEmail(),
+                            $rateLimit,
+                            Dates::secsToReadable($rateTime),
+                            Dates::secsToReadable($rateLocktime),
+                            $dateLockEnd
+                        );
+                    $this->getContainer()->get('email.email_sender')
+                        ->send($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
+                } else {
+                    $message = $this->container->getMailer()->createMessage();
+                    $message->setTemplate(
+                        'DeskPRO:emails_user:rate-limit-notice.html.twig',
+                        [
+                            'ticket'        => $ticket,
+                            'subject'       => $this->reader->getSubject()->getSubjectUtf8(),
+                            'name'          => $this->reader->getFromAddress()->getName(
+                            ) ?: $this->reader->getFromAddress()->getEmail(),
+                            'num_messagess' => $rateLimit,
+                            'time_limit'    => Dates::secsToReadable($rateTime),
+                            'time_lock'     => Dates::secsToReadable($rateLocktime),
+                            'date_lock_end' => date(
+                                $this->container->getSetting('core.date_time'),
+                                time() + $rateLocktime
+                            ),
+                        ]
+                    );
+                    $message->setTo($this->reader->getFromAddress()->getEmail());
 
-                $this->container->get('mailer.utils')->sendWithPersonContext($message, $person);
+                    $this->container->get('mailer.utils')->sendWithPersonContext($message, $person);
+                }
             }
 
             if ($isRateReject) {
