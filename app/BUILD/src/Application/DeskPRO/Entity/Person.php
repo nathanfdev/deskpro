@@ -2258,6 +2258,9 @@ class Person extends DomainObject implements
         $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, [$f_def]);
 
         $value    = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
+        if (!$f_def) {
+            return '';
+        }
         $rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
 
         return trim($rendered);
