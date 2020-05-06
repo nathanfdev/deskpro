@@ -429,20 +429,30 @@ helpcenter.general.last_update_by: 'Last updated: <strong>{date_updated, date, m
 helpcenter.general.latest_status_changes: 'Latest status changes'
 helpcenter.general.log_in: 'Log in'
 helpcenter.general.more_than_1_year: 'More than 1 year'
+helpcenter.general.nav_chat: Chats
+helpcenter.general.nav_chatlogs: 'Chats Logs'
 helpcenter.general.nav_community: Community
 helpcenter.general.nav_community_desc: 'View all the articles'
 helpcenter.general.nav_contact: 'Contact Us'
 helpcenter.general.nav_contact_desc: 'Get in touch for help'
+helpcenter.general.nav_direct_messages: Messages
+helpcenter.general.nav_downloads: Downloads
 helpcenter.general.nav_downloads_desc: 'Browse our downloads'
+helpcenter.general.nav_emails: Emails
 helpcenter.general.nav_guides: Guides
 helpcenter.general.nav_guides_desc: 'View all the guides'
 helpcenter.general.nav_kb: Knowledgebase
 helpcenter.general.nav_kb_desc: 'View all help center'
+helpcenter.general.nav_login: Login
+helpcenter.general.nav_members: Members
 helpcenter.general.nav_news: News
 helpcenter.general.nav_news_desc: 'View all news posts'
 helpcenter.general.nav_news_desc_short: 'View all news'
 helpcenter.general.nav_newticket: 'Contact Us'
+helpcenter.general.nav_profile: Profile
+helpcenter.general.nav_register: 'Register'
 helpcenter.general.nav_support_center: 'Help Center'
+helpcenter.general.nav_your_account: 'Your Account'
 helpcenter.general.next: Next
 helpcenter.general.no_search_query: 'Please type a search query into the search box.'
 helpcenter.general.no_search_results: 'We couldn''t find any results for "{query}"'
@@ -474,6 +484,7 @@ helpcenter.general.related_news: 'Related News'
 helpcenter.general.related_pages: 'Related Pages'
 helpcenter.general.rerender_form: 'Please review this form before you submit it.'
 helpcenter.general.search: 'How can we help you today?'
+helpcenter.general.search_labels: 'Search Labels'
 helpcenter.general.select: Select
 helpcenter.general.send_user_direct_message: 'Send user a Direct Message'
 helpcenter.general.share: Share

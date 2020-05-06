@@ -86,7 +86,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_chats'),
             Breadcrumbs::CHAT,
-            ['phrase' => 'portal.general.nav-chat']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_chat' : 'portal.general.nav-chat']
         );
 
         return $this;
@@ -97,7 +97,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->objectRouter->getPortalPath($chat),
             Breadcrumbs::CHAT_VIEW,
-            ['phrase' => 'portal.general.nav-chatlog']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_chatlog' : 'portal.general.nav-chatlog']
         );
 
         return $this;
@@ -112,7 +112,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_kb'),
             Breadcrumbs::KB,
-            ['phrase' => 'portal.general.nav-kb']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_kb' : 'portal.general.nav-kb']
         );
 
         return $this;
@@ -149,7 +149,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_news'),
             Breadcrumbs::NEWS,
-            ['phrase' => 'portal.general.nav-news']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_news' : 'portal.general.nav_news']
         );
 
         return $this;
@@ -186,7 +186,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_downloads'),
             Breadcrumbs::DOWNLOADS,
-            ['phrase' => 'portal.general.nav-downloads']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_downloads' : 'portal.general.nav-downloads']
         );
 
         return $this;
@@ -223,7 +223,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_guides'),
             Breadcrumbs::TOPICS,
-            ['phrase' => 'portal.general.nav-guides']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_guides' : 'portal.general.nav-guides']
         );
 
         return $this;
@@ -260,7 +260,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_user_profile'),
             Breadcrumbs::PROFILE,
-            ['phrase' => 'portal.general.nav-your-account']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_your_account' : 'portal.general.nav-your-account']
         );
 
         return $this;
@@ -271,7 +271,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_user_profile'),
             Breadcrumbs::PROFILE,
-            ['phrase' => 'portal.general.nav-profile']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_profile' : 'portal.general.nav-profile']
         );
 
         return $this;
@@ -282,7 +282,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_user_profile_emails'),
             Breadcrumbs::PROFILE_EMAILS,
-            ['phrase' => 'portal.general.nav-emails']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_emails' : 'portal.general.nav-emails']
         );
 
         return $this;
@@ -293,7 +293,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_user_registration'),
             Breadcrumbs::REGISTER,
-            ['phrase' => 'portal.general.nav-register']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_register' : 'portal.general.nav-register']
         );
 
         return $this;
@@ -304,7 +304,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_login'),
             Breadcrumbs::LOGIN,
-            ['phrase' => 'portal.general.nav-login']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_login' : 'portal.general.nav-login']
         );
 
         return $this;
@@ -315,7 +315,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_reset_password'),
             Breadcrumbs::PASSWORD_RESET,
-            ['phrase' => 'portal.general.nav-reset-password']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.account.section_title_reset_password' : 'portal.general.nav-reset-password']
         );
 
         return $this;
@@ -326,7 +326,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_set_password'),
             Breadcrumbs::PASSWORD_SET,
-            ['phrase' => 'portal.general.nav-set-password']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.account.section_title_set_password' : 'portal.general.nav-set-password']
         );
 
         return $this;
@@ -341,7 +341,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_search', ['q' => $query]),
             Breadcrumbs::SEARCH,
-            ['phrase' => 'portal.general.search-section-title']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.label.search' : 'portal.general.search-section-title']
         );
 
         $this->breadcrumbs->add(
@@ -358,7 +358,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_search_labels', ['type' => $type, 'label' => $label]),
             Breadcrumbs::SEARCH,
-            ['phrase' => 'portal.general.search-labels-section-title']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.search_labels' : 'portal.general.search-labels-section-title']
         );
 
         if ($label) {
@@ -382,7 +382,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_community'),
             Breadcrumbs::COMMUNITY,
-            ['phrase' => 'portal.general.nav-community']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_community' : 'portal.general.nav-community']
         );
 
         return $this;
@@ -429,7 +429,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_members'),
             Breadcrumbs::MEMBERS,
-            ['phrase' => 'portal.general.nav-members']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_members' : 'portal.general.nav-members']
         );
 
         return $this;
@@ -443,7 +443,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_dm'),
             Breadcrumbs::DIRECT_MESSAGES,
-            ['phrase' => 'portal.general.nav-dm']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_direct_messages' : 'portal.general.nav-dm']
         );
 
         return $this;
@@ -461,7 +461,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_new_ticket'),
             Breadcrumbs::TICKETS_NEW,
-            ['phrase' => 'portal.general.nav-newticket']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_newticket' : 'portal.general.nav-newticket']
         );
 
         return $this;
@@ -475,7 +475,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_tickets'),
             Breadcrumbs::TICKETS,
-            ['phrase' => 'portal.general.nav-tickets']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.tickets' : 'portal.general.nav-tickets']
         );
 
         return $this;
@@ -539,6 +539,11 @@ class BreadcrumbBuilder
     public function done()
     {
         return $this->breadcrumbs;
+    }
+
+    private function isHelpcenter()
+    {
+        return $this->getThemeId() === HelpCenterTheme::THEME_ID;
     }
 
     /**
