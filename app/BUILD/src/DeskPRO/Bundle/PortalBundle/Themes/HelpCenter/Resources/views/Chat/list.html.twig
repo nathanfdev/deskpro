@@ -159,7 +159,7 @@
                                 </div>
                                 {% for chat in pager %}
                                 <div class="dp-po-table-row">
-                                    <span class="dp-po-table-cell dp-po-table-cell-small">{{ date(chat.date_created) | date('day') }}</span>
+                                    <span class="dp-po-table-cell dp-po-table-cell-small">{{ phrase('helpcenter.general.date_short', {date: chat.date_created}) }}</span>
                                     <span class="dp-po-table-cell">
                     <div class="dp-po-avatar dp-po-avatar-round">
                       {{ hc_avatar(chat.agent) }} {{ chat.agent}}
