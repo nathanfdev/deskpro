@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
@@ -67,8 +65,7 @@ class BrandController extends AbstractApiController
             );
         } catch (Exception $e) {
             $errors = ['fields' => ['file' => ['errors' => [['code' => 'wrong_type', 'message' => 'This image could not
-             be 
-            processed']]]]];
+             be processed']]]]];
 
             return new View($errors, Response::HTTP_BAD_REQUEST);
         }
