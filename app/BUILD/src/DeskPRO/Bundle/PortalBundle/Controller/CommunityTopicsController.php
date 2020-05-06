@@ -530,15 +530,17 @@ class CommunityTopicsController extends AbstractPublishController
 
         // RENDER THEME
 
-        $communityTopicLinksRepo    = $this->get('doctrine.orm.default_entity_manager')->getRepository(TicketCommunityTopicLink::class);
-        $ticketCommunityTopicsLinks = $communityTopicLinksRepo->findByTopic($topic);
-
-        $self = $this;
-
-        $ticketCommunityTopicsLinks = array_filter($ticketCommunityTopicsLinks, function ($linkedTicket) use ($self) {
-            /* @var TicketCommunityTopicLink $linkedTicket */
-            return $self->isGranted(TicketsVoter::TICKET_VIEW, $linkedTicket->getTicket());
-        });
+        $ticketCommunityTopicsLinks = [];
+        // Related tickets disabled for now
+//        $communityTopicLinksRepo    = $this->get('doctrine.orm.default_entity_manager')->getRepository(TicketCommunityTopicLink::class);
+//        $ticketCommunityTopicsLinks = $communityTopicLinksRepo->findByTopic($topic);
+//
+//        $self = $this;
+//
+//        $ticketCommunityTopicsLinks = array_filter($ticketCommunityTopicsLinks, function ($linkedTicket) use ($self) {
+//            /* @var TicketCommunityTopicLink $linkedTicket */
+//            return $self->isGranted(TicketsVoter::TICKET_VIEW, $linkedTicket->getTicket());
+//        });
 
         $viewVars = [
             'topic'              => $topic,
@@ -668,10 +670,10 @@ class CommunityTopicsController extends AbstractPublishController
 
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
 
-        if ('down' === $up_or_down) {
-            $this->getRatingsHelper()->rateContentDown($topic, $visitor_id, $person);
-        } else {
+        if ('up' === $up_or_down) {
             $this->getRatingsHelper()->rateContentUp($topic, $visitor_id, $person);
+        } else {
+            throw $this->createAccessDeniedException($this->phrase(['portal.community.rate_forbidden', 'helpcenter.community.rate_forbidden']));
         }
 
         if ($request->getContentType() == 'json') {

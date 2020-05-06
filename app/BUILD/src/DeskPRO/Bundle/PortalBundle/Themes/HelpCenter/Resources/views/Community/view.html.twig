@@ -114,12 +114,6 @@
         </div>
     </div>
 
-    {% if can_rate_community(topic) and not topic.isClosed() %}
-        {% include 'Theme:PublishCommon:rating.html.twig' with {
-            item: topic
-        } %}
-    {% endif %}
-
     {% if brand_setting('user.publish_comments') %}
         {% if topic.visible_comments | length %}
             {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: topic.visible_comments } %}
