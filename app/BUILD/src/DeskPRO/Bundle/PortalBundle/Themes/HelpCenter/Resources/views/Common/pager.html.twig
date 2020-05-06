@@ -9,7 +9,7 @@
             css_active_class: 'active'
         }|merge(pager_options|default({}))) }}
     </nav>
-    {% if pager.nbPages > 10 and pager_options and pager_options.routeName is defined %}
+    {% if pager.nbPages > 10 and pager_options is defined and pager_options.routeName is defined %}
     <div class="dp-po-pagination-goto">
         <form action="{{ path(pager_options.routeName, pager_options.routeParams|default({})) }}">
             <span>{{ phrase('helpcenter.general.go_to_page') }}</span>

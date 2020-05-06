@@ -72,7 +72,7 @@
                   {% elseif field == 'phone_number' %}
                     <span class="dp-po-table-cell">{{ phrase('helpcenter.members.phone') }}</span>
                   {% else %}
-                    <span class="dp-po-table-cell">{{ custom_fields[field].field_def.title }}</span>
+                    <span class="dp-po-table-cell">{{ custom_fields[field] is defined and custom_fields[field].field_def.title }}</span>
                   {% endif %}
                 {% endfor %}
               {% else %}
