@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -328,10 +324,9 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
         if (!$property) {
             $property = 'title';
         }
-        $name        = strtolower(Util::getBaseClassname($this));
-        $phrase_name = 'obj_'.$name.'.'.$this->id.'_'.$property;
+        $name       = strtolower(Util::getBaseClassname($this));
 
-        return $phrase_name;
+        return 'obj_'.$name.'.'.$this->id.'_'.$property;
     }
 
     /**

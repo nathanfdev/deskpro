@@ -500,6 +500,10 @@ adm.community_forums.delete_community_forum: 'Delete Community Forum'
 adm.community_forums.delete_community_forum_confirm: 'Are you sure you want to delete this community forum?'
 adm.community_forums.delete_community_forums_moved: 'Any community topic that is currently under this community forum will be moved to:'
 adm.community_forums.no_delete_last: 'At least one community forum must always exist. You cannot delete the last community forum.'
+adm.community_forums.noun: Noun
+adm.community_forums.noun_explain: 'How to refer to the forum when singular across the agent and user interfaces.'
+adm.community_forums.plural: Plural
+adm.community_forums.plural_explain: 'How to refer to the forum when plural across the agent and user interfaces.'
 adm.community_forums.title: Title
 adm.community_forums.title_error: 'You must enter a valid title'
 adm.community_forums.title_explain: 'This is the title as it will appear throughout the agent and user interfaces.'

@@ -153,7 +153,7 @@ helpcenter.community.title: Title
 helpcenter.community.title_author: 'Title / Author'
 helpcenter.community.view_list: 'List View'
 helpcenter.community.view_status_change: 'Status Change'
-helpcenter.community.view_topics: '{count, plural, one {View 1 topic} other {View # topics}}'
+helpcenter.community.view_topics: '{count, plural, one {View 1 {singular}} other {View # {plural}}}'
 helpcenter.community.likes: Likes
 helpcenter.direct_messages.back_to_messages: 'Back to my messages'
 helpcenter.direct_messages.block_user: 'block user'
