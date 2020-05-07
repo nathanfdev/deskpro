@@ -1,20 +1,20 @@
 ---
-helpcenter.account.change_password_btn: 'Обнови парола'
+helpcenter.account.change_password_action: 'Обнови парола'
 helpcenter.account.comment_lockout: 'Подали сте много коментари. Моля изчакайте за да можете да подадете още.'
 helpcenter.account.email_btn_make_primary: 'Направи основен'
-helpcenter.account.email_btn_remove: 'Премахни имейл'
-helpcenter.account.email_btn_resend_validation: 'Изпрати имейл за потвърждение отново'
+helpcenter.account.email_remove_action: 'Премахни имейл'
+helpcenter.account.email_resend_validation_action: 'Изпрати имейл за потвърждение отново'
 helpcenter.account.email_btn_usersource_set: 'Добави имейл адрес'
 helpcenter.account.login_captcha_failed: 'Въвели сте невалиден CAPTCHA код. Моля опитайте отново.'
 helpcenter.account.login_email: 'Вашият имейл'
 helpcenter.account.login_external: 'Влезте с външна услуга'
 helpcenter.account.login_lockout: 'Не успяхте да влезете прекалено много пъти и поради това сте заключени. Моля опитайте отново по-късно.'
-helpcenter.account.login_password_reminder: 'Имате ли нужда от ново подсещане за парола?'
-helpcenter.account.login_register_btn: Регистрирай
+helpcenter.account.login_reset_password_link: 'Имате ли нужда от ново подсещане за парола?'
+helpcenter.account.login_register_action: Регистрирай
 helpcenter.account.login_remember: 'Остани логнат?'
-helpcenter.account.logout_btn: Излез
+helpcenter.account.logout_action: Излез
 helpcenter.account.new_ticket_no_login: 'Порталната CRM е забранена. Невъзможно е подаване на тикет.'
-helpcenter.account.profile_btn_save: 'Запази профил'
+helpcenter.account.profile_save_action: 'Запази профил'
 helpcenter.account.profile_delete_picture: 'Промени или изтрий профилна снимка?'
 helpcenter.account.registration_set_password: 'Вече съществува акаунт с този имейл адрес. Изпратихме ви имейл който ще ви позволи да си изберете парола и да влезете.'
 helpcenter.account.reset_password_click_here: 'Кликни тук за да изискаш код за нулиране на парола'
@@ -44,7 +44,7 @@ helpcenter.account.submit_saved_form_go: 'Кликни тук за да изпр
 helpcenter.account.tickets_lockout: 'Изпратихте прекалено много тикети и поради това сте заключени. Моля опитайте отново по-късно.'
 helpcenter.account.usersource_set_email_desc: 'Преди да можете да влезете се нуждаем от вашия имейл адрес. Моля въведете имейл адреса си отдолу за да можем да ви изпратим имейл за потвърждение.'
 helpcenter.account.your_pending_email_addresses: 'Вашите чакащи имейл адреси'
-helpcenter.articles.published: Публикуван
+helpcenter.articles.published_label: Публикуван
 helpcenter.articles.section_title: База знание
 helpcenter.articles.view_as_agent: 'Виждате тази страница защото сте агент. Потребителите няма да виждат тази страница.'
 helpcenter.chat.email: 'Вашият имейл адрес'
@@ -66,7 +66,7 @@ helpcenter.direct_messages.new_message: 'Ново съобщение'
 helpcenter.direct_messages.none: 'Няма съобщения'
 helpcenter.direct_messages.reply_message: Съобщение
 helpcenter.direct_messages.title: 'Съобщения'
-helpcenter.downloads.download: Изтегли
+helpcenter.downloads.download_action: Изтегли
 helpcenter.downloads.none: 'Все още няма изтегляния'
 helpcenter.downloads.uploaded_on: Качен
 helpcenter.emails.chat_transcript: 'Благодарим ви за чата. Ето го вашия препис от чата.'
@@ -186,11 +186,11 @@ helpcenter.general.agent_bar_agent_home: 'Начало на агент'
 helpcenter.general.agent_bar_agent_kb: 'Управлявай база знания'
 helpcenter.general.agent_bar_agent_news: 'Управлявай новини'
 helpcenter.general.agents: Агенти
-helpcenter.general.agree: Съгласен съм
+helpcenter.eula.agree: Съгласен съм
 helpcenter.general.attachments: Прикачвания
-helpcenter.general.btn_cancel: Откажи
-helpcenter.general.btn_subscribe: Абонирай се
-helpcenter.general.btn_unsubscribe: Прекрати абонамент
+helpcenter.general.cancel_action_action: Откажи
+helpcenter.general.subscribe_action: Абонирай се
+helpcenter.general.unsubscribe_action: Прекрати абонамент
 helpcenter.general.chat: Чат
 helpcenter.general.comment_btn_save: 'Запази коментар'
 helpcenter.general.comments: Коментари
@@ -269,7 +269,7 @@ helpcenter.tickets.rate_negative: 'Не беше добре'
 helpcenter.tickets.rate_positive: 'Беше страхотно'
 helpcenter.tickets.rate_question: 'Как бихте оценили поддръжката която получихте?'
 helpcenter.tickets.rate_support: 'Оценете вашата поддръжка'
-helpcenter.tickets.resolve_my_ticket_btn: 'Разреши тикета ми'
+helpcenter.tickets.resolve_my_ticket_action: 'Разреши тикета ми'
 helpcenter.tickets.switched_department_rerender: 'Структурата на тази форма може да се е променила. Моля прегледайте формата и изпратете отново.'
 helpcenter.tickets.thank_you_check_email: 'Моля потвърдете имейл адреса си'
 helpcenter.tickets.thank_you_check_email_desc: 'За да довършите изпращането на тикета си, трябва да проверите входната кутия на имейла си. Моля кликнете на линка за потвърждение, който сме ви изпратили.'

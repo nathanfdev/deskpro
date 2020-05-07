@@ -37,14 +37,14 @@
                                                                     id="{{ email.email }}"
                                                                     href="{{ path('portal_user_profile_emails', { new_primary: email.id }) }}"
                                                                     class="dp-po-account-email-action-link">
-                                                                {{ phrase('helpcenter.account.email_btn_make_primary') }}
+                                                                {{ phrase('helpcenter.account.email_make_primary_action') }}
                                                             </a>
                                                         </li>
                                                         <li class="dp-po-account-email-action-item">
                                                             <a
                                                                     href="{{ path('portal_user_profile_emails', { remove_email: email.id }) }}"
                                                                     class="dp-po-account-email-action-link">
-                                                                {{ phrase('helpcenter.account.email_btn_remove') }}
+                                                                {{ phrase('helpcenter.account.email_remove_action') }}
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -67,14 +67,14 @@
                                                         <a
                                                             href="{{ path('portal_user_profile_emails_resend_validation', { id: saved_form_id}) }}"
                                                             class="dp-po-account-email-action-link">
-                                                            {{ phrase('helpcenter.account.email_btn_resend_validation') }}
+                                                            {{ phrase('helpcenter.account.email_resend_validation_action') }}
                                                         </a>
                                                     </li>
                                                     <li class="dp-po-account-email-action-item">
                                                         <a
                                                             href="{{ path('portal_user_profile_emails_remove_pending', { id: saved_form_id}) }}"
                                                             class="dp-po-account-email-action-link">
-                                                            {{ phrase('helpcenter.account.email_btn_remove') }}
+                                                            {{ phrase('helpcenter.account.email_remove_action') }}
                                                         </a>
                                                     </li>
                                                 </ul>

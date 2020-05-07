@@ -40,7 +40,7 @@
                                         {% if is_blocked is not null %}
                                             {% if is_blocked %}
                                                 <a href="{{ path('portal_dm_unblock', {id: thread.id}) }}" class="dp-po-messages-block-btn">
-                                                    <i class="dp-po-icon far fa-ban"></i> {{ phrase('helpcenter.direct_messages.unblock_user') }}
+                                                    <i class="dp-po-icon far fa-ban"></i> {{ phrase('helpcenter.direct_messages.unblock_user_action') }}
                                                 </a>
                                             {% else %}
                                                 <a href="{{ path('portal_dm_block', {id: thread.id}) }}" class="dp-po-messages-block-btn">

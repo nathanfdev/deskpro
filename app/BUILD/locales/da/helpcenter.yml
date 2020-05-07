@@ -1,20 +1,20 @@
 ---
-helpcenter.account.change_password_btn: 'Opdater adgangskode'
+helpcenter.account.change_password_action: 'Opdater adgangskode'
 helpcenter.account.comment_lockout: 'Du har tilføjet for mange kommentarer. Vent med at tilføje flere kommentarer.'
 helpcenter.account.email_btn_make_primary: 'Gør primær'
-helpcenter.account.email_btn_remove: 'Fjern e-mailadresse'
-helpcenter.account.email_btn_resend_validation: 'Gensend bekræftelses mail'
+helpcenter.account.email_remove_action: 'Fjern e-mailadresse'
+helpcenter.account.email_resend_validation_action: 'Gensend bekræftelses mail'
 helpcenter.account.email_btn_usersource_set: 'Tilføj e-mailadresse'
 helpcenter.account.login_captcha_failed: 'Du har indtastet en forkert CAPTCHA kode fra billedet. Prøv venligst igen.'
 helpcenter.account.login_email: 'Din e-mailadresse'
 helpcenter.account.login_external: 'Log ind med en ekstern service'
 helpcenter.account.login_lockout: 'Du har prøvet at logge ind for mange gange uden held, så din konto er blevet lukket. Prøv venligst senere.'
-helpcenter.account.login_password_reminder: 'Har du glemt dit password?'
-helpcenter.account.login_register_btn: Registrer
+helpcenter.account.login_reset_password_link: 'Har du glemt dit password?'
+helpcenter.account.login_register_action: Registrer
 helpcenter.account.login_remember: 'Forbliv logget ind?'
-helpcenter.account.logout_btn: Log ud
+helpcenter.account.logout_action: Log ud
 helpcenter.account.new_ticket_no_login: 'Portal CRM er deaktiveret. Kunne ikke indsende en billet.'
-helpcenter.account.profile_btn_save: 'Gem profil'
+helpcenter.account.profile_save_action: 'Gem profil'
 helpcenter.account.profile_delete_picture: 'Skift eller slet profilbillede?'
 helpcenter.account.registration_set_password: 'En konto med denne e-mailadresse findes allerede. Vi har sendt dig en e-mail som beskriver hvad du skal gøre for at angive et nyt password og logge ind.'
 helpcenter.account.reset_password_click_here: 'Klik her for at modtage en kode til nulstilling af dit password'
@@ -44,7 +44,7 @@ helpcenter.account.submit_saved_form_go: 'Klik her hvis du automatisk ønsker at
 helpcenter.account.tickets_lockout: 'Du har oprettet for mange sager, så din konto er blevet låst. Prøv venligst senere.'
 helpcenter.account.usersource_set_email_desc: 'Før du kan logge ind skal du angive din e-mailadresse. Angiv venligst din e-mailadresse så vi kan sende dig en e-mail hvori du kan verificere din e-mailadresse.'
 helpcenter.account.your_pending_email_addresses: 'Dine afventende og endnu ikke verificerede e-mailadresser'
-helpcenter.articles.published: Udgivet
+helpcenter.articles.published_label: Udgivet
 helpcenter.articles.section_title: Videnbase
 helpcenter.articles.view_as_agent: 'Du kan se denne side fordi du er sagsbehandler. Brugere vil ikke kunne se siden.'
 helpcenter.chat.email: 'Din emailadresse'
@@ -179,9 +179,9 @@ helpcenter.general.agent_bar_agent_kb: 'Administrer vidensbase'
 helpcenter.general.agent_bar_agent_news: 'Administrer nyheder'
 helpcenter.general.agents: Sagsbehandler
 helpcenter.general.attachments: Vedhæftelser
-helpcenter.general.btn_cancel: Fortryd
-helpcenter.general.btn_subscribe: Tilmeld
-helpcenter.general.btn_unsubscribe: Afmeld
+helpcenter.general.cancel_action_action: Fortryd
+helpcenter.general.subscribe_action: Tilmeld
+helpcenter.general.unsubscribe_action: Afmeld
 helpcenter.general.comment_btn_save: 'Gem kommentar'
 helpcenter.general.comments: Kommentarer
 helpcenter.general.comments_pending_validation: 'Denne kommentar bliver gennemgået. Den vil blive vist om kort tid'
@@ -253,7 +253,7 @@ helpcenter.tickets.rate_negative: 'Det var ikke godt'
 helpcenter.tickets.rate_positive: 'Det var godt'
 helpcenter.tickets.rate_question: 'Hvordan vil du bedømme den hjælp, du har modtaget?'
 helpcenter.tickets.rate_support: 'Bedøm din hjælp'
-helpcenter.tickets.resolve_my_ticket_btn: 'Luk min sag'
+helpcenter.tickets.resolve_my_ticket_action: 'Luk min sag'
 helpcenter.tickets.switched_department_rerender: 'Opbygningen af denne formular kan have ændret sig. Gennemse venligst formularen og indsend den igen.'
 helpcenter.tickets.thank_you_check_email: 'Kontroller din e-mailadresse'
 helpcenter.tickets.thank_you_check_email_desc: 'For at indsende din sag, skal du tjekke din e-mail indbakke. Klik på bekræftelseslinket vi har sendt dig.'

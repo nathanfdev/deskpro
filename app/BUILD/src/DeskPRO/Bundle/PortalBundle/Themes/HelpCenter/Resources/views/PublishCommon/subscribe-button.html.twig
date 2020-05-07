@@ -2,7 +2,7 @@
     <div class="dropdown">
         <button class="dp-po-subscribe-btn" type="button" id="{{ buttonId is defined ? buttonId : 'subscribeDropdownMenu' }}" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false" data-offset="0,10">
-            <i class="dp-po-icon fad fa-envelope"></i> {{ phrase('helpcenter.general.btn_subscribe') }} <i class="dp-po-icon far fa-check"></i>
+            <i class="dp-po-icon fad fa-envelope"></i> {{ phrase('helpcenter.general.subscribe_action') }} <i class="dp-po-icon far fa-check"></i>
         </button>
         <div class="dropdown-menu" aria-labelledby="{{ buttonId is defined ? buttonId : 'subscribeDropdownMenu' }}">
             {% for sub in subscriptionInfo %}

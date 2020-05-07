@@ -1,20 +1,20 @@
 ---
-helpcenter.account.change_password_btn: 'Aggiorna Password'
+helpcenter.account.change_password_action: 'Aggiorna Password'
 helpcenter.account.comment_lockout: 'Hai inviato troppi commenti. Aspetta prima di poterne inviare ulteriori'
 helpcenter.account.email_btn_make_primary: 'Imposta come Principale'
-helpcenter.account.email_btn_remove: 'Rimuovi email'
-helpcenter.account.email_btn_resend_validation: 'Invia nuovamente l''email di convalida'
+helpcenter.account.email_remove_action: 'Rimuovi email'
+helpcenter.account.email_resend_validation_action: 'Invia nuovamente l''email di convalida'
 helpcenter.account.email_btn_usersource_set: 'Aggiungi Indirizzo Email'
 helpcenter.account.login_captcha_failed: 'Hai inserito un codice CAPTCHA invalido. Per favore riprova di nuovo.'
 helpcenter.account.login_email: 'La tua email'
 helpcenter.account.login_external: 'Esegui il Login tramite servizio esterno'
 helpcenter.account.login_lockout: 'Hai sbagliato il login per troppe volte. Per un breve periodo di tempo il tuo account è bloccato. Riprova più tardi'
-helpcenter.account.login_password_reminder: 'Hai dimenticato la password?'
-helpcenter.account.login_register_btn: Registrati
+helpcenter.account.login_reset_password_link: 'Hai dimenticato la password?'
+helpcenter.account.login_register_action: Registrati
 helpcenter.account.login_remember: 'Rimani connesso?'
-helpcenter.account.logout_btn: Esci?
+helpcenter.account.logout_action: Esci?
 helpcenter.account.new_ticket_no_login: 'Il CRM del portale è disabilitato. Impossibile inviare un ticket.'
-helpcenter.account.profile_btn_save: 'Salva Profilo'
+helpcenter.account.profile_save_action: 'Salva Profilo'
 helpcenter.account.profile_delete_picture: 'Elimina o sostituisci l''immagine profilo?'
 helpcenter.account.registration_set_password: 'Abbiamo rilevato che un account per l''email esiste già, ma non ha ancora capacità d''accesso. Abbiamo mandato una mail che ti permette di impostare una password ed effettuare l''accesso. Controlla la tua email'
 helpcenter.account.reset_password_click_here: 'Fai click qui per richiedere il codice per il ripristino della password'
@@ -44,7 +44,7 @@ helpcenter.account.submit_saved_form_go: 'Clicca qui per re- inviare automaticam
 helpcenter.account.tickets_lockout: 'Hai inviato troppi ticket e sei stato bloccato. Per favore prova di nuovo più tardi.'
 helpcenter.account.usersource_set_email_desc: 'Prima che tu possa accedere, abbiamo bisogno del tuo indirizzo email. Per favore inserisci l''indirizzo email sotto, così possiamo inviarti un''email di verifica.'
 helpcenter.account.your_pending_email_addresses: 'I tuoi Indirizzi Email in attesa'
-helpcenter.articles.published: Pubblicato
+helpcenter.articles.published_label: Pubblicato
 helpcenter.articles.view_as_agent: 'Puoi visualizzare questa pagina perchè sei un agente. Gli utenti normali non sono in grado di vedere questa pagina.'
 helpcenter.chat.email: 'Il tuo Indirizzo Email'
 helpcenter.chat.list_date: Data
@@ -177,9 +177,9 @@ helpcenter.general.agent_bar_agent_kb: 'Gestisci la Knowledgebase'
 helpcenter.general.agent_bar_agent_news: 'Gestisci le Novità'
 helpcenter.general.agents: Agenti
 helpcenter.general.attachments: Allegati
-helpcenter.general.btn_cancel: Annulla
-helpcenter.general.btn_subscribe: Iscriviti
-helpcenter.general.btn_unsubscribe: Annulla l'iscrizione
+helpcenter.general.cancel_action_action: Annulla
+helpcenter.general.subscribe_action: Iscriviti
+helpcenter.general.unsubscribe_action: Annulla l'iscrizione
 helpcenter.general.comment_btn_save: 'Salva Commento'
 helpcenter.general.comments: Commenti
 helpcenter.general.comments_pending_validation: 'Questo commento è in fase di revisione. Sarà reso visibile a breve'
@@ -253,7 +253,7 @@ helpcenter.tickets.rate_negative: 'Non era buono'
 helpcenter.tickets.rate_positive: 'Era buono'
 helpcenter.tickets.rate_question: 'Come valuteresti il supporto che hai ricevuto?'
 helpcenter.tickets.rate_support: 'Valuta il tuo supporto'
-helpcenter.tickets.resolve_my_ticket_btn: 'Risolvi il mio ticket'
+helpcenter.tickets.resolve_my_ticket_action: 'Risolvi il mio ticket'
 helpcenter.tickets.switched_department_rerender: 'La struttura di questo modulo dev''essere cambiata. Per favore rivedi il modulo e invialo di nuovo.'
 helpcenter.tickets.thank_you_check_email: 'Per favore verifica il tuo indirizzo email'
 helpcenter.tickets.thank_you_check_email_desc: 'Per finire di inviare il tuo ticket, devi controllare la tua casella di posta in arrivo. Fai click sul link di convalida che ti è stato mandato.'

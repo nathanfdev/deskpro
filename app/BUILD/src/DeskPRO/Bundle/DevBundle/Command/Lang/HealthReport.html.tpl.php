@@ -133,7 +133,7 @@
                                     <div class="message-body is-size-7">
                                         <?php echo $phrases[$keyId] ?? '' ?>
                                         <a class="screenshot-img-wrap screenshot-link" href="./screenshots/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">
-                                            <img class="screenshot-img" src="./screenshots/<?php echo $keyId ?>.png" alt="<?php echo $keyId ?>" data-key-id="<?php echo $keyId ?>" />
+                                            <img class="screenshot-img" src="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/<?php echo $keyId ?>.png" alt="<?php echo $keyId ?>" data-key-id="<?php echo $keyId ?>" />
                                         </a>
                                     </div>
                                 </article>

@@ -50,7 +50,7 @@
                         </div>
                         <input type="submit" class="btn btn-primary btn-lg" tabIndex="24" value="{{ phrase('helpcenter.general.log_in') }}"/>
                         {% if has_login_form() %}
-                            <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25" class="dp-po-form-btntext">{{ phrase('helpcenter.account.login_password_reminder') }}</a>
+                            <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25" class="dp-po-form-btntext">{{ phrase('helpcenter.account.login_reset_password_link') }}</a>
                         {% endif %}
                     </form>
                 </section>
@@ -120,7 +120,7 @@
                         </li>
                     {% endif %}
                 </ul>
-                <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="btn btn-primary">{{ phrase('helpcenter.account.logout_btn') }}</a>
+                <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="btn btn-primary">{{ phrase('helpcenter.account.logout_action') }}</a>
             </div>
         {% endif %}
     </div>

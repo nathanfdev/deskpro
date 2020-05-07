@@ -1,19 +1,19 @@
 ---
-helpcenter.account.change_password_btn: 'به روزرسانی رمز عبور'
+helpcenter.account.change_password_action: 'به روزرسانی رمز عبور'
 helpcenter.account.comment_lockout: 'شما نظرات بسیاری را ارسال کرده اید. لطفا منتظر بمانید'
 helpcenter.account.email_btn_make_primary: 'ابتدا'
-helpcenter.account.email_btn_remove: 'حذف کردن ایمیل'
-helpcenter.account.email_btn_resend_validation: 'ارسال ایمیل تایید'
+helpcenter.account.email_remove_action: 'حذف کردن ایمیل'
+helpcenter.account.email_resend_validation_action: 'ارسال ایمیل تایید'
 helpcenter.account.email_btn_usersource_set: 'اضافه کردن ادرس ایمیل'
 helpcenter.account.login_captcha_failed: 'شما کد امنیتی نامعتبر وارد کرده اید. لطفا دوباره تلاش کنید'
 helpcenter.account.login_email: 'ادرس ایمیل شما'
 helpcenter.account.login_external: 'با یک سرویس خارجی وارد شوید'
 helpcenter.account.login_lockout: 'شما بیش از حد وارد حساب کاربری شده اید، بنابراین شما قفل شده اید. لطفا بعدا دوباره امتحان کنید'
-helpcenter.account.login_password_reminder: 'نیاز به یادآور رمز عبوردارید؟'
-helpcenter.account.login_register_btn: ثبت نام
+helpcenter.account.login_reset_password_link: 'نیاز به یادآور رمز عبوردارید؟'
+helpcenter.account.login_register_action: ثبت نام
 helpcenter.account.login_remember: 'در حساب باقی میمانید؟'
-helpcenter.account.logout_btn: خروج
-helpcenter.account.profile_btn_save: 'ذخیره کردن پروفایل'
+helpcenter.account.logout_action: خروج
+helpcenter.account.profile_save_action: 'ذخیره کردن پروفایل'
 helpcenter.account.profile_delete_picture: 'تغییر یا حذف عکس پروفایل'
 helpcenter.account.registration_set_password: 'یک حساب کاربری با این ایمیل قبلا وجود دارد ما به شما یک ایمیل ارسال کرده ایم که به شما امکان می دهد گذرواژه خود را وارد کنید و وارد شوید'
 helpcenter.account.reset_password_click_here: 'برای درخواست کد بازنشانی رمز عبور اینجا را کلیک کنید'
@@ -57,7 +57,7 @@ helpcenter.community.form_full_name: نام
 helpcenter.community.form_topic_title: عنوان
 helpcenter.community.section_title: انتقادات و پیشنهادات
 helpcenter.direct_messages.reply_message: پیغام
-helpcenter.downloads.download: دانلود
+helpcenter.downloads.download_action: دانلود
 helpcenter.downloads.none: 'دانلود وجود ندارد'
 helpcenter.downloads.uploaded_on: اپلود ها
 helpcenter.emails.chat_transcript: 'با تشکر از شما برای چت کردن با ما . در اینجا متن چت شما قرار دارد .'
@@ -162,9 +162,9 @@ helpcenter.general.agent_bar_agent_kb: 'مدیریت دانش پایگاه'
 helpcenter.general.agent_bar_agent_news: 'مدیریت اخبار'
 helpcenter.general.agents: افراد سازمان
 helpcenter.general.attachments: فایل پیوست
-helpcenter.general.btn_cancel: انصراف
-helpcenter.general.btn_subscribe: اشتراک گذاری
-helpcenter.general.btn_unsubscribe: لغو اشتراک
+helpcenter.general.cancel_action_action: انصراف
+helpcenter.general.subscribe_action: اشتراک گذاری
+helpcenter.general.unsubscribe_action: لغو اشتراک
 helpcenter.general.chat: پیام
 helpcenter.general.comment_btn_save: 'ذخیره نظر'
 helpcenter.general.comments: نظرات
@@ -221,7 +221,7 @@ helpcenter.tickets.please_login_to_reply: 'برای پاسخ دادن وارد �
 helpcenter.tickets.rate_negative: 'خوب نبود'
 helpcenter.tickets.rate_positive: 'عالی بود'
 helpcenter.tickets.rate_support: 'به پشتیبانی امتیاز دهید '
-helpcenter.tickets.resolve_my_ticket_btn: 'پیام من را ببند'
+helpcenter.tickets.resolve_my_ticket_action: 'پیام من را ببند'
 helpcenter.tickets.switched_department_rerender: 'ساختار این فرم ممکن است تغییر کند. لطفا فرم را بررسی کنید و دوباره ارسال کنید'
 helpcenter.tickets.thank_you_check_email: 'لطفا آدرس ایمیل خود را تایید کنید'
 helpcenter.tickets.timeline_re_opened: 'این پیام مجدد باز شده است'

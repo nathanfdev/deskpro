@@ -1,21 +1,21 @@
 ---
-helpcenter.account.change_password_btn: 'Actualiza contraseña'
+helpcenter.account.change_password_action: 'Actualiza contraseña'
 helpcenter.account.comment_lockout: 'Has enviado muchos comentarios. Por favor, espere para enviar más.'
 helpcenter.account.email_btn_make_primary: 'Hacer primaria'
-helpcenter.account.email_btn_remove: 'Eliminar email'
-helpcenter.account.email_btn_resend_validation: 'Reenviar correo electrónico de validación'
+helpcenter.account.email_remove_action: 'Eliminar email'
+helpcenter.account.email_resend_validation_action: 'Reenviar correo electrónico de validación'
 helpcenter.account.email_btn_usersource_set: 'Administrar correos electrónicos'
 helpcenter.account.login_captcha_failed: 'Ha introducido un código CAPTCHA no válido. Inténtalo de nuevo.'
 helpcenter.account.login_email: 'Tu correo electrónico'
 helpcenter.account.login_email_placeholder: email@example.es
 helpcenter.account.login_external: 'Iniciar sesión con un servicio externo'
 helpcenter.account.login_lockout: 'Ha fallado el inicio de sesión demasiadas veces por lo que ha sido bloqueado. Por favor, inténtelo de nuevo más tarde.'
-helpcenter.account.login_password_reminder: '¿Necesita un recordatorio de contraseña?'
-helpcenter.account.login_register_btn: Registro
+helpcenter.account.login_reset_password_link: '¿Necesita un recordatorio de contraseña?'
+helpcenter.account.login_register_action: Registro
 helpcenter.account.login_remember: '¿Permanecer conectado?'
-helpcenter.account.logout_btn: Cerrar sesión
+helpcenter.account.logout_action: Cerrar sesión
 helpcenter.account.new_ticket_no_login: 'Portal CRM está deshabilitado. No se puede enviar un boleto.'
-helpcenter.account.profile_btn_save: 'Guardar perfil'
+helpcenter.account.profile_save_action: 'Guardar perfil'
 helpcenter.account.profile_delete_picture: '¿Cambiar o borrar la foto de perfil?'
 helpcenter.account.registration_set_password: 'Ya existe una cuenta con este correo electrónico. Le hemos enviado un correo electrónico que le permitirá configurar su contraseña e iniciar sesión.'
 helpcenter.account.reset_password_click_here: 'Haga clic aquí para solicitar un código de restablecimiento de contraseña'
@@ -45,7 +45,7 @@ helpcenter.account.submit_saved_form_go: 'Haga clic aquí para volver a enviar a
 helpcenter.account.tickets_lockout: 'Has enviado demasiados boletos por lo que has sido bloqueado. Por favor, inténtelo de nuevo más tarde.'
 helpcenter.account.usersource_set_email_desc: 'Antes de que pueda iniciar sesión necesitamos su dirección de correo electrónico. Introduzca su dirección de correo electrónico a continuación para que podamos enviarle un correo electrónico de verificación.'
 helpcenter.account.your_pending_email_addresses: 'Sus direcciones de correo electrónico pendientes'
-helpcenter.articles.published: Publicado
+helpcenter.articles.published_label: Publicado
 helpcenter.articles.section_title: Base de conocimiento
 helpcenter.articles.view_as_agent: 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.'
 helpcenter.chat.email: 'Su dirección de correo electrónico'
@@ -63,7 +63,7 @@ helpcenter.community.no_matching: 'No hay comentarios coincidentes'
 helpcenter.community.rate_forbidden: 'No tienes permitido votar'
 helpcenter.community.section_title: Comentarios
 helpcenter.direct_messages.reply_message: Mensaje
-helpcenter.downloads.download: Descarga
+helpcenter.downloads.download_action: Descarga
 helpcenter.downloads.none: 'No hay descargas aún'
 helpcenter.downloads.uploaded_on: Subido
 helpcenter.emails.chat_transcript: 'Gracias por conversar con nosotros. Aquí tiene su transcripción'
@@ -184,9 +184,9 @@ helpcenter.general.agent_bar_agent_kb: 'Gestionar Knowledgebase'
 helpcenter.general.agent_bar_agent_news: 'Gestionar Noticias'
 helpcenter.general.agents: Agentes
 helpcenter.general.attachments: Adjuntos
-helpcenter.general.btn_cancel: Cancelar
-helpcenter.general.btn_subscribe: Suscribir
-helpcenter.general.btn_unsubscribe: Darse de baja
+helpcenter.general.cancel_action_action: Cancelar
+helpcenter.general.subscribe_action: Suscribir
+helpcenter.general.unsubscribe_action: Darse de baja
 helpcenter.general.comment_btn_save: 'Guardar comentario'
 helpcenter.general.comments: Comentarios
 helpcenter.general.comments_pending_validation: 'Este comentario está siendo revisado. Se mostrará en breve.'
@@ -262,7 +262,7 @@ helpcenter.tickets.rate_negative: 'No ha sido bueno'
 helpcenter.tickets.rate_positive: 'Muy bueno'
 helpcenter.tickets.rate_question: '¿Cómo calificaría el soporte que recibió?'
 helpcenter.tickets.rate_support: 'Valore el servicio de soporte'
-helpcenter.tickets.resolve_my_ticket_btn: 'Resolver mi ticket'
+helpcenter.tickets.resolve_my_ticket_action: 'Resolver mi ticket'
 helpcenter.tickets.switched_department_rerender: 'La estructura de esta forma puede haber cambiado. Por favor revise el formulario y envíelo nuevamente.'
 helpcenter.tickets.thank_you_check_email: 'Por favor verifique su dirección de correo electrónico'
 helpcenter.tickets.thank_you_check_email_desc: 'Para terminar de enviar su boleto, debe revisar su bandeja de entrada de correo electrónico. Por favor haga clic en el enlace de verificación que le enviamos.'

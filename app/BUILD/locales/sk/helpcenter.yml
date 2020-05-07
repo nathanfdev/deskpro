@@ -1,6 +1,6 @@
 ---
-helpcenter.account.email_btn_resend_validation: 'Znovu odoslať overovací e-mail'
-helpcenter.account.login_register_btn: Registrovať
+helpcenter.account.email_resend_validation_action: 'Znovu odoslať overovací e-mail'
+helpcenter.account.login_register_action: Registrovať
 helpcenter.articles.section_title: Databáza znalostí
 helpcenter.articles.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
 helpcenter.chat.email: 'Vaša e-mailová adresa'
@@ -9,7 +9,7 @@ helpcenter.community.form_full_name: Meno
 helpcenter.community.form_topic_title: Nadpis
 helpcenter.community.section_title: Spätná väzba
 helpcenter.direct_messages.reply_message: Správa
-helpcenter.downloads.download: Stiahnuť
+helpcenter.downloads.download_action: Stiahnuť
 helpcenter.emails.chat_transcript: 'Ďakujeme za Vašu konverzáciu s nami. Tu je Váš odpis konverzácie.'
 helpcenter.emails.chat_transcript_subject: 'Odpis konverzácie'
 helpcenter.emails.comment_approved: 'Váš komentár bol uverejnený.'
@@ -50,7 +50,7 @@ helpcenter.forms.label_save: Uložiť
 helpcenter.general.add_comment: 'Pridať komentár'
 helpcenter.general.agent: Operátor
 helpcenter.general.attachments: Pripojenia
-helpcenter.general.btn_cancel: Zrušiť
+helpcenter.general.cancel_action_action: Zrušiť
 helpcenter.general.comments: Komentáre?
 helpcenter.general.downloads_type: Stiahnutia
 helpcenter.general.everything: Všetko
@@ -79,6 +79,6 @@ helpcenter.tickets.rate_negative: 'Nebolo to dobré'
 helpcenter.tickets.rate_positive: 'Bolo to dobré'
 helpcenter.tickets.rate_question: 'Ako by ste hodnotili pomoc, ktorú ste obdržal?'
 helpcenter.tickets.rate_support: 'Ohodnoťte Vašu pomoc'
-helpcenter.tickets.resolve_my_ticket_btn: 'Vyriešiť môj tiket'
+helpcenter.tickets.resolve_my_ticket_action: 'Vyriešiť môj tiket'
 helpcenter.tickets.view_btn_edit: Upraviť
 helpcenter.tickets.view_unassigned: Nepridelené

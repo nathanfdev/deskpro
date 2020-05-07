@@ -66,7 +66,7 @@
                                             {% if auth_manager.isForgotPasswordVisible %}
                                                 <div class="form-meta form-meta-grey form-meta-top">
                                                     <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5">
-                                                        {{ phrase('helpcenter.account.login_password_reminder') }}
+                                                        {{ phrase('helpcenter.account.login_reset_password_link') }}
                                                     </a>
                                                 </div>
                                             {% endif %}
@@ -125,7 +125,7 @@
                                 </header>
 
                                 <section class="padded">
-                                    <a class="btn btn-secondary" href="{{ path('portal_user_registration') }}">{{ phrase('helpcenter.account.login_register_btn') }}</a>
+                                    <a class="btn btn-secondary" href="{{ path('portal_user_registration') }}">{{ phrase('helpcenter.account.login_register_action') }}</a>
                                 </section>
                             {% endif %}
                         </div>

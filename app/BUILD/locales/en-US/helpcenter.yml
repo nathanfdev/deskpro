@@ -1,10 +1,10 @@
 helpcenter.account.add: Add
 helpcenter.account.add_email: 'Add email'
-helpcenter.account.change_password_btn: 'Update Password'
+helpcenter.account.change_password_action: 'Update Password'
 helpcenter.account.comment_lockout: 'You have submitted a lot of comments. Please wait to submit more.'
-helpcenter.account.email_btn_make_primary: 'Make Primary'
-helpcenter.account.email_btn_remove: 'Remove email'
-helpcenter.account.email_btn_resend_validation: 'Resend validation email'
+helpcenter.account.email_make_primary_action: 'Make Primary'
+helpcenter.account.email_remove_action: 'Remove email'
+helpcenter.account.email_resend_validation_action: 'Resend validation email'
 helpcenter.account.email_btn_usersource_set: 'Add Email Address'
 helpcenter.account.email_management_from_form: 'Manage my email addresses'
 helpcenter.account.email_primary_description: Primary
@@ -16,20 +16,20 @@ helpcenter.account.login_external: 'Login with an external service'
 helpcenter.account.login_invalid: 'Login invalid'
 helpcenter.account.login_lockout: 'You have failed login too many times so you have been locked out. Please try again later.'
 helpcenter.account.login_password: 'Your password'
-helpcenter.account.login_password_reminder: 'Need a password reminder?'
-helpcenter.account.login_register_btn: Register
+helpcenter.account.login_reset_password_link: 'Need a password reminder?'
+helpcenter.account.login_register_action: Register
 helpcenter.account.login_register_header: 'Register for an account'
 helpcenter.account.login_remember: 'Stay Logged In?'
 helpcenter.account.login_stay_logged_in: 'Stay Logged In?'
-helpcenter.account.logout_btn: Logout
+helpcenter.account.logout_action: Logout
 helpcenter.account.new_ticket_no_login: 'Portal CRM is disabled. Unable to submit a ticket.'
 helpcenter.account.new_to_brand: 'New to {brand}?'
-helpcenter.account.profile_btn_save: 'Save Profile'
+helpcenter.account.profile_save_action: 'Save Profile'
 helpcenter.account.profile_delete_picture: 'Change or delete profile picture?'
-helpcenter.account.register_btn: Register
+helpcenter.account.register_action: Register
 helpcenter.account.registration_set_password: 'An account with this email already exists. We have sent you an email that will allow you to set your password and login.'
 helpcenter.account.resend_registration_email: 'Resend registration email'
-helpcenter.account.reset_password_btn: 'Reset Password'
+helpcenter.account.reset_password_action: 'Reset Password'
 helpcenter.account.reset_password_click_here: 'Click here to request a password reset code'
 helpcenter.account.reset_password_invalid_desc: 'Your password reset code is invalid or has expired. To reset your password, please request a new code.'
 helpcenter.account.reset_password_invalid_input: 'Please enter a valid email address or username'
@@ -48,7 +48,7 @@ helpcenter.account.section_title_reset_password: 'Reset Password'
 helpcenter.account.section_title_set_password: 'Set Password'
 helpcenter.account.section_title_usersource_email: 'Enter Your Email'
 helpcenter.account.section_title_your_account: 'Your Account'
-helpcenter.account.set_password_btn: 'Set Password'
+helpcenter.account.set_password_action: 'Set Password'
 helpcenter.account.set_password_click_here: 'Click here to set your password'
 helpcenter.account.set_password_expired: 'Your password has expired.'
 helpcenter.account.set_password_for_user: 'Your account does not have a password yet. Please set one now so that you can login to post content in the future.'
@@ -85,7 +85,7 @@ helpcenter.approvals.view_requesting_agent: 'Requesting agent'
 helpcenter.approvals.view_ticket: Ticket
 helpcenter.approvals.view_to_approve: 'To approve'
 helpcenter.approvals.view_to_reject: 'To reject'
-helpcenter.articles.published: Published
+helpcenter.articles.published_label: Published
 helpcenter.articles.section_title: Knowledgebase
 helpcenter.articles.status_archived: Archived
 helpcenter.articles.status_draft: Draft
@@ -154,8 +154,8 @@ helpcenter.direct_messages.reply_cancel: Cancel
 helpcenter.direct_messages.reply_message: Message
 helpcenter.direct_messages.reply_send_message: 'Send Message'
 helpcenter.direct_messages.title: 'My Messages'
-helpcenter.direct_messages.unblock_user: 'unblock user'
-helpcenter.downloads.download: Download
+helpcenter.direct_messages.unblock_user_action: 'unblock user'
+helpcenter.downloads.download_action: Download
 helpcenter.downloads.file_name: 'File Name'
 helpcenter.downloads.file_size: 'File Size'
 helpcenter.downloads.none: 'No downloads yet'
@@ -341,8 +341,8 @@ helpcenter.forms.date_picker_next_month: 'Next Month'
 helpcenter.forms.date_picker_previous_month: 'Previous Month'
 helpcenter.forms.date_picker_time: Time
 helpcenter.forms.error_email_required: 'You must provide your email address'
-helpcenter.forms.label_kb_article: Article
-helpcenter.forms.label_news_post: 'News Post'
+helpcenter.articles.article_object: Article
+helpcenter.news.news_post_object: 'News Post'
 helpcenter.forms.label_save: Save
 helpcenter.forms.message_description: ''
 helpcenter.general.add_comment: 'Add a comment'
@@ -364,16 +364,16 @@ helpcenter.general.agent_bar_agent_kb: 'Manage Knowledgebase'
 helpcenter.general.agent_bar_agent_news: 'Manage News'
 helpcenter.general.agent_interface: 'Agent interface'
 helpcenter.general.agents: Agents
-helpcenter.general.agree: Agree
+helpcenter.eula.agree: Agree
 helpcenter.general.apply: Apply
 helpcenter.general.attachments: Attachments
 helpcenter.general.back: Back
-helpcenter.general.btn_cancel: Cancel
-helpcenter.general.btn_go: Go
+helpcenter.general.cancel_action_action: Cancel
+helpcenter.general.go_action: Go
 helpcenter.general.btn_manage_subscriptions: 'Manage your subscriptions'
-helpcenter.general.btn_subscribe: Subscribe
-helpcenter.general.btn_unsubscribe: Unsubscribe
-helpcenter.general.cancel: Cancel
+helpcenter.general.subscribe_action: Subscribe
+helpcenter.general.unsubscribe_action: Unsubscribe
+helpcenter.general.cancel_action: Cancel
 helpcenter.general.categories: Categories
 helpcenter.general.category: Category
 helpcenter.general.cc: CC
@@ -683,7 +683,7 @@ helpcenter.tickets.rate_question: 'How would you rate the support you received?'
 helpcenter.tickets.rate_support: 'Rate your support'
 helpcenter.tickets.rated_your_support: 'Rated your support from'
 helpcenter.tickets.reference_number: 'Reference number: {ref}'
-helpcenter.tickets.resolve_my_ticket_btn: 'Resolve my ticket'
+helpcenter.tickets.resolve_my_ticket_action: 'Resolve my ticket'
 helpcenter.tickets.resolve_ticket_explain: 'Once your ticket is resolved, our agents will no longer respond.'
 helpcenter.tickets.resolve_ticket_title: 'Are you sure you want to close that ticket?'
 helpcenter.tickets.search_approvals: 'Search Approvals'

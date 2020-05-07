@@ -30,11 +30,11 @@
                             </div>
                             <div class="col-sm-3">
                                 {% if file.blob and file.blob.is_image %}
-                                    <a href="{{ portal_path(file, 'save') }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download') }}</a><br>
+                                    <a href="{{ portal_path(file, 'save') }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download_action') }}</a><br>
                                 {% elseif file.blob %}
-                                    <a href="{{ portal_path(file, 'save') }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download') }}</a>
+                                    <a href="{{ portal_path(file, 'save') }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download_action') }}</a>
                                 {% elseif file.fileurl %}
-                                    <a href="{{ file.fileurl }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download') }}</a><br>
+                                    <a href="{{ file.fileurl }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download_action') }}</a><br>
                                 {% endif %}
                             </div>
                         </div>

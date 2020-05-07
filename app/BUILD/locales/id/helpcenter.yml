@@ -1,20 +1,20 @@
 ---
-helpcenter.account.change_password_btn: 'Perbarui kata sandi'
+helpcenter.account.change_password_action: 'Perbarui kata sandi'
 helpcenter.account.comment_lockout: 'Anda terlalu banyak memberikan komentar. Mohon tunggu beberapa saat.'
 helpcenter.account.email_btn_make_primary: 'Jadikan utama'
-helpcenter.account.email_btn_remove: 'Hapus email/surat elektronik'
-helpcenter.account.email_btn_resend_validation: 'Kirim ulang email/surat elektronik validasi'
+helpcenter.account.email_remove_action: 'Hapus email/surat elektronik'
+helpcenter.account.email_resend_validation_action: 'Kirim ulang email/surat elektronik validasi'
 helpcenter.account.email_btn_usersource_set: 'Tambahkan alamat email/surat elektronik'
 helpcenter.account.login_captcha_failed: 'Anda telah memasukkan kode CAPTCHA yang tidak valid. Silahkan coba lagi'
 helpcenter.account.login_email: 'email/surat elektronik anda'
 helpcenter.account.login_external: 'masuk dengan layanan eksternal'
 helpcenter.account.login_lockout: 'Anda telah gagal masuk berkali-kali sehingga anda terkunci. Silahkan coba lagi nanti'
-helpcenter.account.login_password_reminder: 'Memerlukan pengingat kata sandi'
-helpcenter.account.login_register_btn: Mendaftar
+helpcenter.account.login_reset_password_link: 'Memerlukan pengingat kata sandi'
+helpcenter.account.login_register_action: Mendaftar
 helpcenter.account.login_remember: 'Anda yakin tetap masuk?'
-helpcenter.account.logout_btn: keluar
+helpcenter.account.logout_action: keluar
 helpcenter.account.new_ticket_no_login: 'Portal CRM dinonaktifkan. Tidak dapat mengirim tiket.'
-helpcenter.account.profile_btn_save: 'simpan profil'
+helpcenter.account.profile_save_action: 'simpan profil'
 helpcenter.account.profile_delete_picture: 'ubah atau hapus '
 helpcenter.account.registration_set_password: 'Akun dengan email/surat elektronik ini sudah ada. Kami telah mengirimi Anda email/surat elektronik yang memungkinkan Anda mengatur kata sandi dan masuk'
 helpcenter.account.reset_password_click_here: 'klik disini untuk permintaan kode perubahan kata sandi'
@@ -44,7 +44,7 @@ helpcenter.account.submit_saved_form_go: 'Klik di sini untuk mengirimkan kembali
 helpcenter.account.tickets_lockout: 'Anda telah mengirimkan terlalu banyak tiket sehingga Anda terkunci. Silakan coba lagi nanti'
 helpcenter.account.usersource_set_email_desc: 'Sebelum bisa masuk kita butuh alamat email/surat elektronik anda. Harap masukkan alamat email/surat elektronik Anda di bawah ini sehingga kami dapat mengirimkan email verifikasi kepada Anda'
 helpcenter.account.your_pending_email_addresses: 'Alamat email/surat elektronik anda yang tertunda'
-helpcenter.articles.published: Diterbitkan
+helpcenter.articles.published_label: Diterbitkan
 helpcenter.articles.section_title: Dasar Pengetahuan
 helpcenter.articles.view_as_agent: 'Anda dapat melihat laman ini karena anda adalah seorang agen. Pengguna tidak akan dapat melihat laman ini.'
 helpcenter.chat.email: 'Alamat Email Anda'
@@ -62,7 +62,7 @@ helpcenter.community.no_matching: 'Tidak ada tanggapan yang sesuai'
 helpcenter.community.rate_forbidden: 'Anda tidak diizinkan untuk memilih'
 helpcenter.community.section_title: Tanggapan
 helpcenter.direct_messages.reply_message: Pesan
-helpcenter.downloads.download: Unduh
+helpcenter.downloads.download_action: Unduh
 helpcenter.downloads.none: 'Belum ada unduhan'
 helpcenter.downloads.uploaded_on: Terunggah
 helpcenter.emails.chat_transcript: 'Terima kasih telah mengobrol dengan kami. Ini adalah transkrip obrolan Anda.'
@@ -181,9 +181,9 @@ helpcenter.general.agent_bar_agent_kb: 'Kelola dasar pengetahuan'
 helpcenter.general.agent_bar_agent_news: 'Kelola Berita'
 helpcenter.general.agents: Agent
 helpcenter.general.attachments: Lampiran
-helpcenter.general.btn_cancel: Batalkan
-helpcenter.general.btn_subscribe: Berlangganan
-helpcenter.general.btn_unsubscribe: Berhenti Berlangganan
+helpcenter.general.cancel_action_action: Batalkan
+helpcenter.general.subscribe_action: Berlangganan
+helpcenter.general.unsubscribe_action: Berhenti Berlangganan
 helpcenter.general.chat: Obrolan
 helpcenter.general.comment_btn_save: 'Simpan Komentar'
 helpcenter.general.comments: Komentar
@@ -261,7 +261,7 @@ helpcenter.tickets.rate_negative: 'Ini tidak baik'
 helpcenter.tickets.rate_positive: 'Ini hebat'
 helpcenter.tickets.rate_question: 'Bagaimana nilai atas dukungan yang Anda dapatkan?'
 helpcenter.tickets.rate_support: 'Tingkatkan dukungan Anda'
-helpcenter.tickets.resolve_my_ticket_btn: 'Selesaikan tiket saya'
+helpcenter.tickets.resolve_my_ticket_action: 'Selesaikan tiket saya'
 helpcenter.tickets.switched_department_rerender: 'Struktur formulir ini mungkin telah berubah. Harap tinjau formulir dan kirim lagi.'
 helpcenter.tickets.thank_you_check_email: 'Silakan verifikasi alamat email Anda'
 helpcenter.tickets.thank_you_check_email_desc: 'Untuk menyelesaikan pengiriman tiket Anda, Anda harus memeriksa kotak masuk email Anda. Silakan klik tautan verifikasi yang kami kirimkan kepada Anda.'

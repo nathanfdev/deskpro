@@ -1,20 +1,20 @@
 ---
-helpcenter.account.change_password_btn: 'Uppdatera lösenordet'
+helpcenter.account.change_password_action: 'Uppdatera lösenordet'
 helpcenter.account.comment_lockout: 'Du har postat för många kommentarer. Var vänligen vänta en stund.'
 helpcenter.account.email_btn_make_primary: 'Gör till primär'
-helpcenter.account.email_btn_remove: 'Ta bort e-postadress'
-helpcenter.account.email_btn_resend_validation: 'Skicka valideringsmailet igen'
+helpcenter.account.email_remove_action: 'Ta bort e-postadress'
+helpcenter.account.email_resend_validation_action: 'Skicka valideringsmailet igen'
 helpcenter.account.email_btn_usersource_set: 'Lägg till e-postadress'
 helpcenter.account.login_captcha_failed: 'Du har skrivit en felaktig CAPTCHA kod. Var vänlig och försök igen.'
 helpcenter.account.login_email: 'Din e-postadress'
 helpcenter.account.login_external: 'Logga in med en extern tjänst'
 helpcenter.account.login_lockout: 'Du har misslyckats med din inloggning för många gånger. Ditt konto har spärrats. Var vänlig försök igen senare.'
-helpcenter.account.login_password_reminder: 'Behöver du en lösenordspåminnelse?'
-helpcenter.account.login_register_btn: Registrera
+helpcenter.account.login_reset_password_link: 'Behöver du en lösenordspåminnelse?'
+helpcenter.account.login_register_action: Registrera
 helpcenter.account.login_remember: 'Förbli inloggad?'
-helpcenter.account.logout_btn: Logga ut
+helpcenter.account.logout_action: Logga ut
 helpcenter.account.new_ticket_no_login: 'Portal CRM är inaktiverad. Kan inte skicka in en biljett.'
-helpcenter.account.profile_btn_save: 'Spara profil'
+helpcenter.account.profile_save_action: 'Spara profil'
 helpcenter.account.profile_delete_picture: 'Ändra eller radera profilbilden?'
 helpcenter.account.registration_set_password: 'Ett konto med denna e-postadress finns redan. Vi har skickat dig ett e-postmeddelande som gör att du kan återställa ditt lösenord.'
 helpcenter.account.reset_password_click_here: 'Klicka här för att begära en återställningskod'
@@ -44,7 +44,7 @@ helpcenter.account.submit_saved_form_go: 'Klicka här för att skicka formuläre
 helpcenter.account.tickets_lockout: 'Du har registrerat för många ärenden. Ditt konto har spärrats. Var vänlig och försök igen senare.'
 helpcenter.account.usersource_set_email_desc: 'Innan du kan logga in så behöver vi din e-postadress. Ange din e-postadress här nedan så skickar vi dig ett aktiveringsmail.'
 helpcenter.account.your_pending_email_addresses: 'Dina väntande e-postadresser'
-helpcenter.articles.published: Publicerad
+helpcenter.articles.published_label: Publicerad
 helpcenter.articles.section_title: Kunskapsbas
 helpcenter.articles.view_as_agent: 'Du kan se denna sida för att du är en agent. Användare kommer inte att kunna se denna sida.'
 helpcenter.chat.email: 'Din E-Postadress'
@@ -61,7 +61,7 @@ helpcenter.community.module_forbidden: 'Du har inte behörighet att se denna mod
 helpcenter.community.no_matching: 'Ingen matchande community topic'
 helpcenter.community.rate_forbidden: 'Du har inte behörighet att rösta'
 helpcenter.direct_messages.reply_message: Meddelande
-helpcenter.downloads.download: Ladda ner
+helpcenter.downloads.download_action: Ladda ner
 helpcenter.downloads.none: 'Inga nedladdningar finns tillgängliga'
 helpcenter.downloads.uploaded_on: Uppladdad
 helpcenter.emails.chat_transcript: 'Tack för att du chattade med oss. Här är en utskrift av chatten.'
@@ -180,9 +180,9 @@ helpcenter.general.agent_bar_agent_kb: 'Hantera kunskapsbas'
 helpcenter.general.agent_bar_agent_news: 'Hantera nyheter'
 helpcenter.general.agents: Agenter
 helpcenter.general.attachments: Bifogade filer
-helpcenter.general.btn_cancel: Avbryt
-helpcenter.general.btn_subscribe: Prenumerera
-helpcenter.general.btn_unsubscribe: Avprenumerera
+helpcenter.general.cancel_action_action: Avbryt
+helpcenter.general.subscribe_action: Prenumerera
+helpcenter.general.unsubscribe_action: Avprenumerera
 helpcenter.general.chat: Chatt
 helpcenter.general.comment_btn_save: 'Spara kommentar'
 helpcenter.general.comments: Kommentarer
@@ -260,7 +260,7 @@ helpcenter.tickets.rate_negative: 'Den var dålig'
 helpcenter.tickets.rate_positive: 'Den var bra'
 helpcenter.tickets.rate_question: 'Hur skulle du betygsätta den support du fick?'
 helpcenter.tickets.rate_support: 'Betygsätt din support'
-helpcenter.tickets.resolve_my_ticket_btn: 'Markera som löst'
+helpcenter.tickets.resolve_my_ticket_action: 'Markera som löst'
 helpcenter.tickets.switched_department_rerender: 'Strukturen för det här formuläret har ändrats. Läs igenom formuläret igen.'
 helpcenter.tickets.thank_you_check_email: 'Vänligen bekräfta din e-postadress'
 helpcenter.tickets.thank_you_check_email_desc: 'För att registrera ditt ärende måste du först klicka på länken i det mail som vi har skickat till dig.'
