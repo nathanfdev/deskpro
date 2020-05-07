@@ -292,6 +292,7 @@ CODE;
         $messengerChatTicketDefaults = $messengerChat->getTicketDefaults();
         $messengerTickets            = $model->getTickets();
         $messengerProactive          = $model->getProactive();
+        $icon                        = $messengerWidget->getIcon();
 
         if (
             !$messengerTickets->isEnabled() &&
@@ -308,7 +309,11 @@ CODE;
             ->updateSetting(MSR::WIDGET_BG_COLOR, $messengerWidget->getBackgroundColor(), $brand)
             ->updateSetting(MSR::WIDGET_TEXT_COLOR, $messengerWidget->getTextColor(), $brand)
             ->updateSetting(MSR::WIDGET_POSITION, $messengerWidget->getPosition(), $brand)
-            ->updateSetting(MSR::WIDGET_ICON, $messengerWidget->getIcon()->setIsTemp(false)->getId(), $brand)
+            ->updateSetting(
+                MSR::WIDGET_ICON,
+                $icon ? $icon->setIsTemp(false)->getId() : null,
+                $brand
+            )
 
             // Chat settings
             ->updateSetting(MSR::CHAT_ENABLED, $messengerChat->isEnabled(), $brand)
