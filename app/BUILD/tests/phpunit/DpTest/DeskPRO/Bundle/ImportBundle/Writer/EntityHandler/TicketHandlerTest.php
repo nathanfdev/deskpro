@@ -603,6 +603,18 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('2020-05-04', $entity->getDateLastUserReply()->format('Y-m-d'));
     }
 
+    public function test_check_date_resolved_and_date_archived_are_not_set_if_not_defined()
+    {
+        $model = $this->createBaseModel();
+        $model->setDateCreated(new \DateTime('2020-05-01'));
+
+        $this->writer->writeModel($model);
+
+        $entity = $this->getBaseEntity();
+        $this->assertNull($entity->getDateResolved());
+        $this->assertNull($entity->getDateArchived());
+    }
+
     /**
      * @return Model\Ticket
      */
