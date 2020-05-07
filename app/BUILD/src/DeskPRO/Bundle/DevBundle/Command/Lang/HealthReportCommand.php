@@ -180,6 +180,7 @@ class HealthReportCommand extends ContainerAwareCommand
                     return '/app/BUILD'.$tpl;
                 })];
             });
+            ksort($usages);
             $usagesNotFound = MapUtils::map($usageInfo['phrase_counts'], function ($keyId, $count) use ($phrases) {
                 if ($count === 0) {
                     return [$keyId, $phrases[$keyId]];
