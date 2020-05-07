@@ -23,6 +23,7 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
     {
         $this->container = $container;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -64,8 +65,6 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
             'frame-src'   => ['*'],
         ];
 
-        $referrerPolicy = 'no-referrer-when-downgrade';
-
         if (strpos($path, '/frame-embed') === 0 || strpos($path, '/focus-win') === 0) {
             // these portal modes can be framed,
             // so no X-Frame-Options header and use wildcard frame frame-ancestors
@@ -77,11 +76,9 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
         // Lock down agent/admin a bit
         if (strpos($path, '/agent') || strpos($path, '/admin')) {
             $csp['form-action'] = 'self';
-            $referrerPolicy     = 'no-referrer';
         }
 
         $response->headers->add(['Content-Security-Policy' => $this->buildCspString($csp)]);
-        $response->headers->add(['Referrer-Policy' => $referrerPolicy]);
     }
 
     /**
@@ -107,6 +104,7 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
                     case 'unsafe-eval':
                     case 'none':
                         return "'$v'";
+
                         break;
                     default:
                         return $v;
