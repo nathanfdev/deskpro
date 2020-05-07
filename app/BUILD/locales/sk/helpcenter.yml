@@ -1,6 +1,6 @@
 ---
 helpcenter.account.email_btn_resend_validation: 'Znovu odoslať overovací e-mail'
-helpcenter.account.login_register_btn: Registrovať
+helpcenter.account.login_register_action: Registrovať
 helpcenter.articles.section_title: Databáza znalostí
 helpcenter.articles.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
 helpcenter.chat.email: 'Vaša e-mailová adresa'
@@ -79,6 +79,6 @@ helpcenter.tickets.rate_negative: 'Nebolo to dobré'
 helpcenter.tickets.rate_positive: 'Bolo to dobré'
 helpcenter.tickets.rate_question: 'Ako by ste hodnotili pomoc, ktorú ste obdržal?'
 helpcenter.tickets.rate_support: 'Ohodnoťte Vašu pomoc'
-helpcenter.tickets.resolve_my_ticket_btn: 'Vyriešiť môj tiket'
+helpcenter.tickets.resolve_my_ticket_action: 'Vyriešiť môj tiket'
 helpcenter.tickets.view_btn_edit: Upraviť
 helpcenter.tickets.view_unassigned: Nepridelené

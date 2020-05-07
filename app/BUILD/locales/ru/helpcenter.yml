@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Обновить пароль'
+helpcenter.account.change_password_action: 'Обновить пароль'
 helpcenter.account.comment_lockout: 'Вы оставили слишком много комментариев. Пожалуйста, подождите для того, чтобы оставить другие комментарии.'
 helpcenter.account.email_btn_make_primary: 'Сделать главным'
 helpcenter.account.email_btn_remove: 'Удалить email'
@@ -11,9 +11,9 @@ helpcenter.account.login_email_placeholder: email@example.ru
 helpcenter.account.login_external: 'Войти с помощью другого сервиса'
 helpcenter.account.login_lockout: 'Вы ввели неправильный логин или пароль слишком много раз. Пожалуйста, попробуйте ещё раз через некоторое время.'
 helpcenter.account.login_password_reminder: 'Вам нужно напоминание пароля?'
-helpcenter.account.login_register_btn: Зарегистрироваться
+helpcenter.account.login_register_action: Зарегистрироваться
 helpcenter.account.login_remember: 'Остаться в системе'
-helpcenter.account.logout_btn: Выйти из системы
+helpcenter.account.logout_action: Выйти из системы
 helpcenter.account.new_ticket_no_login: 'Портал CRM отключен. Не удалось отправить билет.'
 helpcenter.account.profile_btn_save: 'Сохранить профиль'
 helpcenter.account.profile_delete_picture: 'Изменить или удалить картинку профиля'
@@ -321,7 +321,7 @@ helpcenter.tickets.rate_negative: 'Неудовлетворительно'
 helpcenter.tickets.rate_positive: 'Отлично'
 helpcenter.tickets.rate_question: 'Как бы Вы оценили помощь, полученную от нашей службы поддержки клиентов?'
 helpcenter.tickets.rate_support: 'Оцените нашу службу поддержки клиентов'
-helpcenter.tickets.resolve_my_ticket_btn: 'Закрыть заявку'
+helpcenter.tickets.resolve_my_ticket_action: 'Закрыть заявку'
 helpcenter.tickets.switched_department_rerender: 'Структура данной анкеты могла измениться. Пожалуйста, проверьте анкету и подтвердите её ещё раз.'
 helpcenter.tickets.thank_you_check_email: 'Пожалуйста, проверьте Ваш адрес электронной почты'
 helpcenter.tickets.thank_you_check_email_desc: 'Для того, чтобы завершить создание обращения, Вам необходимо проверить Вашу почту. Пожалуйста, перейдите по ссылке, которую Вам прислали.'

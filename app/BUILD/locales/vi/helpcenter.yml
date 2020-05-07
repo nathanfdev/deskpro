@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Cập nhật mật khẩu'
+helpcenter.account.change_password_action: 'Cập nhật mật khẩu'
 helpcenter.account.comment_lockout: 'Bạn đã gửi rất nhiều nhận xét. Vui lòng đợi để gửi thêm.'
 helpcenter.account.email_btn_make_primary: 'Đặt chính'
 helpcenter.account.email_btn_remove: 'Xóa email'
@@ -10,9 +10,9 @@ helpcenter.account.login_email: 'Email của bạn'
 helpcenter.account.login_external: 'Đăng nhập bằng dịch vụ bên ngoài'
 helpcenter.account.login_lockout: 'Bạn đã đăng nhập thất bại quá nhiều lần nên bạn đã bị khóa. Vui lòng thử lại sau.'
 helpcenter.account.login_password_reminder: 'Cần lời nhắc nhở mật khẩu?'
-helpcenter.account.login_register_btn: Trình diện
+helpcenter.account.login_register_action: Trình diện
 helpcenter.account.login_remember: 'Giữ trạng thái đăng nhập?'
-helpcenter.account.logout_btn: Đăng xuất
+helpcenter.account.logout_action: Đăng xuất
 helpcenter.account.profile_btn_save: 'Lưu hồ sơ'
 helpcenter.account.profile_delete_picture: 'Thay đổi hoặc xóa ảnh hồ sơ?'
 helpcenter.account.registration_set_password: 'Tài khoản với email này đã tồn tại. Chúng tôi đã gửi cho bạn một email cho phép bạn đặt mật khẩu và đăng nhập.'
@@ -250,7 +250,7 @@ helpcenter.tickets.rate_negative: 'Nó không được tốt'
 helpcenter.tickets.rate_positive: 'Thật tuyệt'
 helpcenter.tickets.rate_question: 'Bạn đánh giá mức hỗ trợ bạn nhận được như thế nào?'
 helpcenter.tickets.rate_support: 'Đánh giá hỗ trợ của bạn'
-helpcenter.tickets.resolve_my_ticket_btn: 'Giải quyết đơn đặt hàng của tôi'
+helpcenter.tickets.resolve_my_ticket_action: 'Giải quyết đơn đặt hàng của tôi'
 helpcenter.tickets.switched_department_rerender: 'Cấu trúc của biểu mẫu này có thể đã thay đổi. Vui lòng xem lại biểu mẫu và nộp lại.'
 helpcenter.tickets.thank_you_check_email: 'Vui lòng xác nhận địa chỉ email'
 helpcenter.tickets.thank_you_check_email_desc: 'Để hoàn tất việc gửi vé, bạn phải kiểm tra hộp thư email của mình. Vui lòng nhấp vào liên kết xác minh mà chúng tôi đã gửi cho bạn.'

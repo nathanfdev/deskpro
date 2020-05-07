@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Обнови парола'
+helpcenter.account.change_password_action: 'Обнови парола'
 helpcenter.account.comment_lockout: 'Подали сте много коментари. Моля изчакайте за да можете да подадете още.'
 helpcenter.account.email_btn_make_primary: 'Направи основен'
 helpcenter.account.email_btn_remove: 'Премахни имейл'
@@ -10,9 +10,9 @@ helpcenter.account.login_email: 'Вашият имейл'
 helpcenter.account.login_external: 'Влезте с външна услуга'
 helpcenter.account.login_lockout: 'Не успяхте да влезете прекалено много пъти и поради това сте заключени. Моля опитайте отново по-късно.'
 helpcenter.account.login_password_reminder: 'Имате ли нужда от ново подсещане за парола?'
-helpcenter.account.login_register_btn: Регистрирай
+helpcenter.account.login_register_action: Регистрирай
 helpcenter.account.login_remember: 'Остани логнат?'
-helpcenter.account.logout_btn: Излез
+helpcenter.account.logout_action: Излез
 helpcenter.account.new_ticket_no_login: 'Порталната CRM е забранена. Невъзможно е подаване на тикет.'
 helpcenter.account.profile_btn_save: 'Запази профил'
 helpcenter.account.profile_delete_picture: 'Промени или изтрий профилна снимка?'
@@ -269,7 +269,7 @@ helpcenter.tickets.rate_negative: 'Не беше добре'
 helpcenter.tickets.rate_positive: 'Беше страхотно'
 helpcenter.tickets.rate_question: 'Как бихте оценили поддръжката която получихте?'
 helpcenter.tickets.rate_support: 'Оценете вашата поддръжка'
-helpcenter.tickets.resolve_my_ticket_btn: 'Разреши тикета ми'
+helpcenter.tickets.resolve_my_ticket_action: 'Разреши тикета ми'
 helpcenter.tickets.switched_department_rerender: 'Структурата на тази форма може да се е променила. Моля прегледайте формата и изпратете отново.'
 helpcenter.tickets.thank_you_check_email: 'Моля потвърдете имейл адреса си'
 helpcenter.tickets.thank_you_check_email_desc: 'За да довършите изпращането на тикета си, трябва да проверите входната кутия на имейла си. Моля кликнете на линка за потвърждение, който сме ви изпратили.'

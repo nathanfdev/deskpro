@@ -1,6 +1,6 @@
 ---
 helpcenter.account.email_btn_resend_validation: 'Retrimite email-ul de validare'
-helpcenter.account.login_register_btn: Inrestreaza-te
+helpcenter.account.login_register_action: Inrestreaza-te
 helpcenter.articles.view_as_agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
 helpcenter.chat.email: 'Adresa dumneavoastra de Email'
 helpcenter.community.btn_vote: 'Sunt de acord'
@@ -71,6 +71,6 @@ helpcenter.tickets.rate_negative: 'Nu a fost bun'
 helpcenter.tickets.rate_positive: 'A fost exceptional'
 helpcenter.tickets.rate_question: 'Cum ai cataloga suportul oferit de departamentul nostru?'
 helpcenter.tickets.rate_support: 'Noteaza suportul'
-helpcenter.tickets.resolve_my_ticket_btn: 'Rezolva tichetul meu'
+helpcenter.tickets.resolve_my_ticket_action: 'Rezolva tichetul meu'
 helpcenter.tickets.view_btn_edit: Editare
 helpcenter.tickets.view_unassigned: Neasignat

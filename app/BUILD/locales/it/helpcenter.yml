@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Aggiorna Password'
+helpcenter.account.change_password_action: 'Aggiorna Password'
 helpcenter.account.comment_lockout: 'Hai inviato troppi commenti. Aspetta prima di poterne inviare ulteriori'
 helpcenter.account.email_btn_make_primary: 'Imposta come Principale'
 helpcenter.account.email_btn_remove: 'Rimuovi email'
@@ -10,9 +10,9 @@ helpcenter.account.login_email: 'La tua email'
 helpcenter.account.login_external: 'Esegui il Login tramite servizio esterno'
 helpcenter.account.login_lockout: 'Hai sbagliato il login per troppe volte. Per un breve periodo di tempo il tuo account è bloccato. Riprova più tardi'
 helpcenter.account.login_password_reminder: 'Hai dimenticato la password?'
-helpcenter.account.login_register_btn: Registrati
+helpcenter.account.login_register_action: Registrati
 helpcenter.account.login_remember: 'Rimani connesso?'
-helpcenter.account.logout_btn: Esci?
+helpcenter.account.logout_action: Esci?
 helpcenter.account.new_ticket_no_login: 'Il CRM del portale è disabilitato. Impossibile inviare un ticket.'
 helpcenter.account.profile_btn_save: 'Salva Profilo'
 helpcenter.account.profile_delete_picture: 'Elimina o sostituisci l''immagine profilo?'
@@ -253,7 +253,7 @@ helpcenter.tickets.rate_negative: 'Non era buono'
 helpcenter.tickets.rate_positive: 'Era buono'
 helpcenter.tickets.rate_question: 'Come valuteresti il supporto che hai ricevuto?'
 helpcenter.tickets.rate_support: 'Valuta il tuo supporto'
-helpcenter.tickets.resolve_my_ticket_btn: 'Risolvi il mio ticket'
+helpcenter.tickets.resolve_my_ticket_action: 'Risolvi il mio ticket'
 helpcenter.tickets.switched_department_rerender: 'La struttura di questo modulo dev''essere cambiata. Per favore rivedi il modulo e invialo di nuovo.'
 helpcenter.tickets.thank_you_check_email: 'Per favore verifica il tuo indirizzo email'
 helpcenter.tickets.thank_you_check_email_desc: 'Per finire di inviare il tuo ticket, devi controllare la tua casella di posta in arrivo. Fai click sul link di convalida che ti è stato mandato.'

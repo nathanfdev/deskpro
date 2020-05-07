@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Opdater adgangskode'
+helpcenter.account.change_password_action: 'Opdater adgangskode'
 helpcenter.account.comment_lockout: 'Du har tilføjet for mange kommentarer. Vent med at tilføje flere kommentarer.'
 helpcenter.account.email_btn_make_primary: 'Gør primær'
 helpcenter.account.email_btn_remove: 'Fjern e-mailadresse'
@@ -10,9 +10,9 @@ helpcenter.account.login_email: 'Din e-mailadresse'
 helpcenter.account.login_external: 'Log ind med en ekstern service'
 helpcenter.account.login_lockout: 'Du har prøvet at logge ind for mange gange uden held, så din konto er blevet lukket. Prøv venligst senere.'
 helpcenter.account.login_password_reminder: 'Har du glemt dit password?'
-helpcenter.account.login_register_btn: Registrer
+helpcenter.account.login_register_action: Registrer
 helpcenter.account.login_remember: 'Forbliv logget ind?'
-helpcenter.account.logout_btn: Log ud
+helpcenter.account.logout_action: Log ud
 helpcenter.account.new_ticket_no_login: 'Portal CRM er deaktiveret. Kunne ikke indsende en billet.'
 helpcenter.account.profile_btn_save: 'Gem profil'
 helpcenter.account.profile_delete_picture: 'Skift eller slet profilbillede?'
@@ -253,7 +253,7 @@ helpcenter.tickets.rate_negative: 'Det var ikke godt'
 helpcenter.tickets.rate_positive: 'Det var godt'
 helpcenter.tickets.rate_question: 'Hvordan vil du bedømme den hjælp, du har modtaget?'
 helpcenter.tickets.rate_support: 'Bedøm din hjælp'
-helpcenter.tickets.resolve_my_ticket_btn: 'Luk min sag'
+helpcenter.tickets.resolve_my_ticket_action: 'Luk min sag'
 helpcenter.tickets.switched_department_rerender: 'Opbygningen af denne formular kan have ændret sig. Gennemse venligst formularen og indsend den igen.'
 helpcenter.tickets.thank_you_check_email: 'Kontroller din e-mailadresse'
 helpcenter.tickets.thank_you_check_email_desc: 'For at indsende din sag, skal du tjekke din e-mail indbakke. Klik på bekræftelseslinket vi har sendt dig.'

@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Obnovi geslo'
+helpcenter.account.change_password_action: 'Obnovi geslo'
 helpcenter.account.email_btn_remove: 'Odstrani sporočilo'
 helpcenter.account.email_btn_resend_validation: 'Ponovno pošlji potrditveno sporočilo'
 helpcenter.account.email_btn_usersource_set: 'Dodaj elektronski naslov'
@@ -8,5 +8,5 @@ helpcenter.account.login_email: 'Vaš elektronski naslov'
 helpcenter.account.login_email_placeholder: ime@primer.si
 helpcenter.account.login_external: 'Vpiši se z  zunanjim servisom'
 helpcenter.account.login_password_reminder: 'Potrebujete opomnik za geslo?'
-helpcenter.account.login_register_btn: Registriraj se
+helpcenter.account.login_register_action: Registriraj se
 helpcenter.general.log_in: 'Vpiši se'

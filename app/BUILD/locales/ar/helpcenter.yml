@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'حدث كلمة المرور'
+helpcenter.account.change_password_action: 'حدث كلمة المرور'
 helpcenter.account.comment_lockout: 'لقد قمت بارسال العديد من التعليقات. الرجاء الإنتظار للتمكن من إرسال المزيد.'
 helpcenter.account.email_btn_make_primary: 'إجعلها الأساسية'
 helpcenter.account.email_btn_remove: 'إحذف البريد الإلكتروني'
@@ -11,9 +11,9 @@ helpcenter.account.login_email_placeholder: 'نموذج البريد : email@exa
 helpcenter.account.login_external: 'قم بتسجيل الدخول بواسطة وسائل تسجيل خارجية'
 helpcenter.account.login_lockout: 'لقد استنفذت العدد المسموح به للتسجيل  الخاطئ، لذا فقد تم حجبك. الرجاء المحاولة مرة أخرى'
 helpcenter.account.login_password_reminder: 'هل تحتاج الى عرض مساعدة لتذكر كلمة المرور'
-helpcenter.account.login_register_btn: تسجيل عضوية
+helpcenter.account.login_register_action: تسجيل عضوية
 helpcenter.account.login_remember: 'ابق مسجلا؟'
-helpcenter.account.logout_btn: سجل الخروج
+helpcenter.account.logout_action: سجل الخروج
 helpcenter.account.new_ticket_no_login: 'بوابة الخدمة غير مفعلة. لا يمكنك ارسال تذاكر'
 helpcenter.account.profile_btn_save: 'أحفظ بيانات التعريف'
 helpcenter.account.profile_delete_picture: 'غير أو احذف الصورة الخاصة بسجل بيانات التعريف؟'
@@ -264,7 +264,7 @@ helpcenter.tickets.rate_negative: 'لم تكن مناسبة'
 helpcenter.tickets.rate_positive: 'رائع'
 helpcenter.tickets.rate_question: 'كيف تقيم الدعم الذي تلقيته؟'
 helpcenter.tickets.rate_support: 'قيم الدعم الخاص بك'
-helpcenter.tickets.resolve_my_ticket_btn: 'حل تذكرتي'
+helpcenter.tickets.resolve_my_ticket_action: 'حل تذكرتي'
 helpcenter.tickets.switched_department_rerender: 'قد يتغير هيكل النموذج. قم بمراجعته وارساله مرة اخرى.'
 helpcenter.tickets.thank_you_check_email: 'رجاء اثبات هوية بريدك'
 helpcenter.tickets.thank_you_check_email_desc: 'لانهاء ارسال تذكرتك ارجع الى بريدك الوارد. قم بالنقر على رابط التأكيد الذي تم ارساله لك.'

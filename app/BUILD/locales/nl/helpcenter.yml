@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Wachtwoord bijwerken'
+helpcenter.account.change_password_action: 'Wachtwoord bijwerken'
 helpcenter.account.comment_lockout: 'U heeft veel reacties verstuurd. Wacht om er meer te versturen.'
 helpcenter.account.email_btn_make_primary: 'Primair maken'
 helpcenter.account.email_btn_remove: 'E-mailadres verwijderen'
@@ -10,9 +10,9 @@ helpcenter.account.login_email: 'Uw e-mailadres'
 helpcenter.account.login_external: 'Inloggen met een externe service'
 helpcenter.account.login_lockout: 'U heeft te veel mislukte inlogpogingen, dus u bent uitgesloten. Probeer het later nogmaals.'
 helpcenter.account.login_password_reminder: 'Wachtwoordherinnering nodig?'
-helpcenter.account.login_register_btn: Registreren
+helpcenter.account.login_register_action: Registreren
 helpcenter.account.login_remember: 'Ingelogd blijven?'
-helpcenter.account.logout_btn: Uitloggen
+helpcenter.account.logout_action: Uitloggen
 helpcenter.account.new_ticket_no_login: 'Portal CRM is uitgeschakeld. Kon geen ticket plaatsen.'
 helpcenter.account.profile_btn_save: 'Profiel opslaan'
 helpcenter.account.profile_delete_picture: 'Profielfoto wijzigen of verwijderen?'
@@ -258,7 +258,7 @@ helpcenter.tickets.rate_negative: 'Het was niet goed'
 helpcenter.tickets.rate_positive: 'Het was geweldig'
 helpcenter.tickets.rate_question: 'Hoe zou u de ondersteuning die u heeft ontvangen beoordelen?'
 helpcenter.tickets.rate_support: 'Beoordeel uw ondersteuning'
-helpcenter.tickets.resolve_my_ticket_btn: 'Markeer mijn ticket als opgelost'
+helpcenter.tickets.resolve_my_ticket_action: 'Markeer mijn ticket als opgelost'
 helpcenter.tickets.switched_department_rerender: 'De structuur van dit formulier kan gewijzigd zijn. Controleer het formulier en verstuur het nogmaals.'
 helpcenter.tickets.thank_you_check_email: 'Verifieer uw e-mailadres'
 helpcenter.tickets.thank_you_check_email_desc: 'Om verzending van uw ticket te voltooien, moet u uw inbox van uw e-mail controleren. Klik op de verificatielink die we u hebben gestuurd.'

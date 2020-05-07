@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Aktualizuj hasło'
+helpcenter.account.change_password_action: 'Aktualizuj hasło'
 helpcenter.account.comment_lockout: 'Umieściłeś dużo komentarzy. Poczekaj chwilę, zanim będziesz mógł umieszczać kolejne.'
 helpcenter.account.email_btn_make_primary: 'Ustaw jako główny'
 helpcenter.account.email_btn_remove: 'Usuń email'
@@ -10,9 +10,9 @@ helpcenter.account.login_email: 'Twój email'
 helpcenter.account.login_external: 'Zaloguj za pomocą usługi zewnętrznej'
 helpcenter.account.login_lockout: 'Nie udało ci się zalogować za wiele razy. Zostałeś zablokowany. Spróbuj ponownie później.'
 helpcenter.account.login_password_reminder: 'Potrzebujesz przypomnienia hasła?'
-helpcenter.account.login_register_btn: Zarejestruj się
+helpcenter.account.login_register_action: Zarejestruj się
 helpcenter.account.login_remember: 'Pozostać jako zalogowany?'
-helpcenter.account.logout_btn: Wyloguj
+helpcenter.account.logout_action: Wyloguj
 helpcenter.account.new_ticket_no_login: 'Portal CRM jest wyłączony. Nie można przesłać biletu.'
 helpcenter.account.profile_btn_save: 'Zapisz profil'
 helpcenter.account.profile_delete_picture: 'Zmienić lub usunąć zdjęcie profilowe?'
@@ -261,7 +261,7 @@ helpcenter.tickets.rate_negative: 'Poniżej oczekiwań'
 helpcenter.tickets.rate_positive: 'Powyżej oczekiwań'
 helpcenter.tickets.rate_question: 'Jak oceniasz otrzymane wsparcie?'
 helpcenter.tickets.rate_support: 'Oceń naszą pracę'
-helpcenter.tickets.resolve_my_ticket_btn: 'Rozwiąż zgłoszenie'
+helpcenter.tickets.resolve_my_ticket_action: 'Rozwiąż zgłoszenie'
 helpcenter.tickets.switched_department_rerender: 'Struktura tego formularza mogła ulec zmianie. Przejrzyj formularz i wyślij jeszcze raz.'
 helpcenter.tickets.thank_you_check_email: 'Proszę zweryfikować swój adres email'
 helpcenter.tickets.thank_you_check_email_desc: 'Aby zakończyć tworzenie zgłoszenia, musisz sprawdzić swoją skrzynkę email. Kliknij w link weryfikujący, który ci posłaliśmy.'

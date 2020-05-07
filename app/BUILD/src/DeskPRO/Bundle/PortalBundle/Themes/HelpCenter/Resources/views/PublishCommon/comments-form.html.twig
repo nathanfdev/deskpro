@@ -70,7 +70,7 @@
                     <a href="{{ url('portal_login') }}" data-tab-id="comment_login_form" class="dp-po-tab-link dpx-tab">{{ phrase('helpcenter.general.log_in') }}</a>
                 </li>
                 <li class="dp-po-tab-item" >
-                    <a href="{{ url('portal_user_registration') }}" data-tab-id="comment_register_form" class="dp-po-tab-link dpx-tab">{{ phrase('helpcenter.account.register_btn') }}</a>
+                    <a href="{{ url('portal_user_registration') }}" data-tab-id="comment_register_form" class="dp-po-tab-link dpx-tab">{{ phrase('helpcenter.account.register_action') }}</a>
                 </li>
             </ul>
             <div class="row">
@@ -120,7 +120,7 @@
                         {{ form_start(register_form) }}
                         {{ form_widget(register_form) }}
                         {{ form_rest(register_form) }}
-                        <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.account.register_btn') }}</button>
+                        <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.account.register_action') }}</button>
                         {{ form_end(register_form) }}
                     </section>
                     {% endif %}

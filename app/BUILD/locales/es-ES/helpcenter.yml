@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Actualiza contraseña'
+helpcenter.account.change_password_action: 'Actualiza contraseña'
 helpcenter.account.comment_lockout: 'Has enviado muchos comentarios. Por favor, espere para enviar más.'
 helpcenter.account.email_btn_make_primary: 'Hacer primaria'
 helpcenter.account.email_btn_remove: 'Eliminar email'
@@ -11,9 +11,9 @@ helpcenter.account.login_email_placeholder: email@example.es
 helpcenter.account.login_external: 'Iniciar sesión con un servicio externo'
 helpcenter.account.login_lockout: 'Ha fallado el inicio de sesión demasiadas veces por lo que ha sido bloqueado. Por favor, inténtelo de nuevo más tarde.'
 helpcenter.account.login_password_reminder: '¿Necesita un recordatorio de contraseña?'
-helpcenter.account.login_register_btn: Registro
+helpcenter.account.login_register_action: Registro
 helpcenter.account.login_remember: '¿Permanecer conectado?'
-helpcenter.account.logout_btn: Cerrar sesión
+helpcenter.account.logout_action: Cerrar sesión
 helpcenter.account.new_ticket_no_login: 'Portal CRM está deshabilitado. No se puede enviar un boleto.'
 helpcenter.account.profile_btn_save: 'Guardar perfil'
 helpcenter.account.profile_delete_picture: '¿Cambiar o borrar la foto de perfil?'
@@ -262,7 +262,7 @@ helpcenter.tickets.rate_negative: 'No ha sido bueno'
 helpcenter.tickets.rate_positive: 'Muy bueno'
 helpcenter.tickets.rate_question: '¿Cómo calificaría el soporte que recibió?'
 helpcenter.tickets.rate_support: 'Valore el servicio de soporte'
-helpcenter.tickets.resolve_my_ticket_btn: 'Resolver mi ticket'
+helpcenter.tickets.resolve_my_ticket_action: 'Resolver mi ticket'
 helpcenter.tickets.switched_department_rerender: 'La estructura de esta forma puede haber cambiado. Por favor revise el formulario y envíelo nuevamente.'
 helpcenter.tickets.thank_you_check_email: 'Por favor verifique su dirección de correo electrónico'
 helpcenter.tickets.thank_you_check_email_desc: 'Para terminar de enviar su boleto, debe revisar su bandeja de entrada de correo electrónico. Por favor haga clic en el enlace de verificación que le enviamos.'

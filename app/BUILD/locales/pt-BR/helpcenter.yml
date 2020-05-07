@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Atualizar senha'
+helpcenter.account.change_password_action: 'Atualizar senha'
 helpcenter.account.comment_lockout: 'Você enviou muitos comentários. Por favor, aguarde para enviar mais.'
 helpcenter.account.email_btn_make_primary: 'Torne a Primária'
 helpcenter.account.email_btn_remove: 'Remover email'
@@ -10,9 +10,9 @@ helpcenter.account.login_email: 'Seu email'
 helpcenter.account.login_external: 'Faça o login com um serviço externo'
 helpcenter.account.login_lockout: 'Você falhou no login muitas vezes, por isso você foi bloqueado. Por favor, tente novamente mais tarde.'
 helpcenter.account.login_password_reminder: 'Precisa de um lembrete de senha?'
-helpcenter.account.login_register_btn: Registar
+helpcenter.account.login_register_action: Registar
 helpcenter.account.login_remember: 'Permaneça logado?'
-helpcenter.account.logout_btn: Sair
+helpcenter.account.logout_action: Sair
 helpcenter.account.new_ticket_no_login: 'O Portal CRM está desativado. Não é possível enviar um ticket.'
 helpcenter.account.profile_btn_save: 'Salvar perfil'
 helpcenter.account.profile_delete_picture: 'Alterar ou excluir a foto do perfil?'
@@ -119,6 +119,6 @@ helpcenter.tickets.rate_negative: 'Não foi bom'
 helpcenter.tickets.rate_positive: 'Foi óptimo'
 helpcenter.tickets.rate_question: 'Como classificaria o apoio que recebeu?'
 helpcenter.tickets.rate_support: 'Avalie o seu suporte'
-helpcenter.tickets.resolve_my_ticket_btn: 'Fechar o meu bilhete'
+helpcenter.tickets.resolve_my_ticket_action: 'Fechar o meu bilhete'
 helpcenter.tickets.view_btn_edit: Editar
 helpcenter.tickets.view_unassigned: Não atribuído

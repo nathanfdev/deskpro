@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'به روزرسانی رمز عبور'
+helpcenter.account.change_password_action: 'به روزرسانی رمز عبور'
 helpcenter.account.comment_lockout: 'شما نظرات بسیاری را ارسال کرده اید. لطفا منتظر بمانید'
 helpcenter.account.email_btn_make_primary: 'ابتدا'
 helpcenter.account.email_btn_remove: 'حذف کردن ایمیل'
@@ -10,9 +10,9 @@ helpcenter.account.login_email: 'ادرس ایمیل شما'
 helpcenter.account.login_external: 'با یک سرویس خارجی وارد شوید'
 helpcenter.account.login_lockout: 'شما بیش از حد وارد حساب کاربری شده اید، بنابراین شما قفل شده اید. لطفا بعدا دوباره امتحان کنید'
 helpcenter.account.login_password_reminder: 'نیاز به یادآور رمز عبوردارید؟'
-helpcenter.account.login_register_btn: ثبت نام
+helpcenter.account.login_register_action: ثبت نام
 helpcenter.account.login_remember: 'در حساب باقی میمانید؟'
-helpcenter.account.logout_btn: خروج
+helpcenter.account.logout_action: خروج
 helpcenter.account.profile_btn_save: 'ذخیره کردن پروفایل'
 helpcenter.account.profile_delete_picture: 'تغییر یا حذف عکس پروفایل'
 helpcenter.account.registration_set_password: 'یک حساب کاربری با این ایمیل قبلا وجود دارد ما به شما یک ایمیل ارسال کرده ایم که به شما امکان می دهد گذرواژه خود را وارد کنید و وارد شوید'
@@ -221,7 +221,7 @@ helpcenter.tickets.please_login_to_reply: 'برای پاسخ دادن وارد �
 helpcenter.tickets.rate_negative: 'خوب نبود'
 helpcenter.tickets.rate_positive: 'عالی بود'
 helpcenter.tickets.rate_support: 'به پشتیبانی امتیاز دهید '
-helpcenter.tickets.resolve_my_ticket_btn: 'پیام من را ببند'
+helpcenter.tickets.resolve_my_ticket_action: 'پیام من را ببند'
 helpcenter.tickets.switched_department_rerender: 'ساختار این فرم ممکن است تغییر کند. لطفا فرم را بررسی کنید و دوباره ارسال کنید'
 helpcenter.tickets.thank_you_check_email: 'لطفا آدرس ایمیل خود را تایید کنید'
 helpcenter.tickets.timeline_re_opened: 'این پیام مجدد باز شده است'

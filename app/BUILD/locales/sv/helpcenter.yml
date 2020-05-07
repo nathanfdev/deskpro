@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Uppdatera lösenordet'
+helpcenter.account.change_password_action: 'Uppdatera lösenordet'
 helpcenter.account.comment_lockout: 'Du har postat för många kommentarer. Var vänligen vänta en stund.'
 helpcenter.account.email_btn_make_primary: 'Gör till primär'
 helpcenter.account.email_btn_remove: 'Ta bort e-postadress'
@@ -10,9 +10,9 @@ helpcenter.account.login_email: 'Din e-postadress'
 helpcenter.account.login_external: 'Logga in med en extern tjänst'
 helpcenter.account.login_lockout: 'Du har misslyckats med din inloggning för många gånger. Ditt konto har spärrats. Var vänlig försök igen senare.'
 helpcenter.account.login_password_reminder: 'Behöver du en lösenordspåminnelse?'
-helpcenter.account.login_register_btn: Registrera
+helpcenter.account.login_register_action: Registrera
 helpcenter.account.login_remember: 'Förbli inloggad?'
-helpcenter.account.logout_btn: Logga ut
+helpcenter.account.logout_action: Logga ut
 helpcenter.account.new_ticket_no_login: 'Portal CRM är inaktiverad. Kan inte skicka in en biljett.'
 helpcenter.account.profile_btn_save: 'Spara profil'
 helpcenter.account.profile_delete_picture: 'Ändra eller radera profilbilden?'
@@ -260,7 +260,7 @@ helpcenter.tickets.rate_negative: 'Den var dålig'
 helpcenter.tickets.rate_positive: 'Den var bra'
 helpcenter.tickets.rate_question: 'Hur skulle du betygsätta den support du fick?'
 helpcenter.tickets.rate_support: 'Betygsätt din support'
-helpcenter.tickets.resolve_my_ticket_btn: 'Markera som löst'
+helpcenter.tickets.resolve_my_ticket_action: 'Markera som löst'
 helpcenter.tickets.switched_department_rerender: 'Strukturen för det här formuläret har ändrats. Läs igenom formuläret igen.'
 helpcenter.tickets.thank_you_check_email: 'Vänligen bekräfta din e-postadress'
 helpcenter.tickets.thank_you_check_email_desc: 'För att registrera ditt ärende måste du först klicka på länken i det mail som vi har skickat till dig.'

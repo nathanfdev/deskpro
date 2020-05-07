@@ -51,6 +51,6 @@ helpcenter.tickets.list_status_resolved: Lukket
 helpcenter.tickets.list_subject: Emne
 helpcenter.tickets.new_intro: 'Vennligst fyll ut skjema og en av våre medarbeidere vil svare deg på epost så snart som mulig.'
 helpcenter.tickets.new_section_title: 'Kontakt oss'
-helpcenter.tickets.resolve_my_ticket_btn: 'Lukk saken'
+helpcenter.tickets.resolve_my_ticket_action: 'Lukk saken'
 helpcenter.tickets.view_btn_edit: Rediger
 helpcenter.tickets.view_unassigned: Utildelt

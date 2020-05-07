@@ -1,6 +1,6 @@
 ---
 helpcenter.account.email_btn_resend_validation: '승인 이메일 다시 보내기'
-helpcenter.account.login_register_btn: 가입
+helpcenter.account.login_register_action: 가입
 helpcenter.articles.section_title: 지식 베이스
 helpcenter.articles.view_as_agent: '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.'
 helpcenter.chat.email: '이메일 주소'
@@ -77,6 +77,6 @@ helpcenter.tickets.rate_negative: '좋지 않았습니다'
 helpcenter.tickets.rate_positive: '아주 좋았습니다'
 helpcenter.tickets.rate_question: '서비스에 대해서 평가해 주세요?'
 helpcenter.tickets.rate_support: '서비스 평가하기'
-helpcenter.tickets.resolve_my_ticket_btn: '티켓 해결하기'
+helpcenter.tickets.resolve_my_ticket_action: '티켓 해결하기'
 helpcenter.tickets.view_btn_edit: 수정
 helpcenter.tickets.view_unassigned: 미배정

@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Passwort aktualisieren'
+helpcenter.account.change_password_action: 'Passwort aktualisieren'
 helpcenter.account.comment_lockout: 'Sie haben in kurzer Zeit sehr viele Kommentare gesendet. Bitte warten Sie einige Zeit, bevor Sie weitere senden.'
 helpcenter.account.email_btn_make_primary: 'Als primäre Adresse verwenden'
 helpcenter.account.email_btn_remove: 'E-Mail entfernen'
@@ -11,9 +11,9 @@ helpcenter.account.login_email_placeholder: email@beispiel.de
 helpcenter.account.login_external: 'Anmelden über einen externen Dienst'
 helpcenter.account.login_lockout: 'Der Zugang wurde wegen zu vieler ungültiger Versuche gesperrt. Bitte versuchen Sie es später noch einmal.'
 helpcenter.account.login_password_reminder: 'Benötigen Sie eine Passwort-Erinnerung?'
-helpcenter.account.login_register_btn: Registrieren
+helpcenter.account.login_register_action: Registrieren
 helpcenter.account.login_remember: 'Angemeldet bleiben?'
-helpcenter.account.logout_btn: Abmelden
+helpcenter.account.logout_action: Abmelden
 helpcenter.account.new_ticket_no_login: 'Portal CRM ist deaktiviert. Es konnte kein Ticket gesendet werden.'
 helpcenter.account.profile_btn_save: 'Profil speichern'
 helpcenter.account.profile_delete_picture: 'Profilbild ändern oder löschen?'
@@ -257,7 +257,7 @@ helpcenter.tickets.rate_negative: 'Es war nicht gut'
 helpcenter.tickets.rate_positive: 'Es war großartig'
 helpcenter.tickets.rate_question: 'Wie würden Sie den Support bewerten den Sie erhalten haben?'
 helpcenter.tickets.rate_support: 'Bewerten Sie den Support'
-helpcenter.tickets.resolve_my_ticket_btn: 'Mein Ticket schließen'
+helpcenter.tickets.resolve_my_ticket_action: 'Mein Ticket schließen'
 helpcenter.tickets.switched_department_rerender: 'Die Eingaben dieses Formulares haben sich geändert. Bitte überprüfen Sie die Eingaben und übermitteln dies erneuert,'
 helpcenter.tickets.thank_you_check_email: 'Bitte bestätigen Sie Ihre E-Mail-Adresse'
 helpcenter.tickets.thank_you_check_email_desc: 'Um Ihr Ticket einzureichen, müssen Sie Ihre Mailbox überprüfen. Wir haben Ihnen einen Verifizierungslink zugestellt, welchen Sie bitte anklicken.'

@@ -1,7 +1,7 @@
 ---
 helpcenter.account.email_btn_resend_validation: 'Megerősítő e-mail újraküldése'
-helpcenter.account.login_register_btn: Regisztráljon
-helpcenter.account.logout_btn: Kijelentkezés
+helpcenter.account.login_register_action: Regisztráljon
+helpcenter.account.logout_action: Kijelentkezés
 helpcenter.articles.section_title: Tudásbázis
 helpcenter.articles.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
 helpcenter.chat.email: 'Az Ön e-mail címe'
@@ -73,6 +73,6 @@ helpcenter.tickets.rate_negative: 'Nem jó'
 helpcenter.tickets.rate_positive: 'Jó'
 helpcenter.tickets.rate_question: 'Hogyan értékelné munkánkat?'
 helpcenter.tickets.rate_support: 'Értékelje munkánkat'
-helpcenter.tickets.resolve_my_ticket_btn: 'Ügy megoldva'
+helpcenter.tickets.resolve_my_ticket_action: 'Ügy megoldva'
 helpcenter.tickets.view_btn_edit: Szerkesztés
 helpcenter.tickets.view_unassigned: Gazdátlan

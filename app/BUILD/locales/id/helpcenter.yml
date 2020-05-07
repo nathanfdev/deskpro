@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Perbarui kata sandi'
+helpcenter.account.change_password_action: 'Perbarui kata sandi'
 helpcenter.account.comment_lockout: 'Anda terlalu banyak memberikan komentar. Mohon tunggu beberapa saat.'
 helpcenter.account.email_btn_make_primary: 'Jadikan utama'
 helpcenter.account.email_btn_remove: 'Hapus email/surat elektronik'
@@ -10,9 +10,9 @@ helpcenter.account.login_email: 'email/surat elektronik anda'
 helpcenter.account.login_external: 'masuk dengan layanan eksternal'
 helpcenter.account.login_lockout: 'Anda telah gagal masuk berkali-kali sehingga anda terkunci. Silahkan coba lagi nanti'
 helpcenter.account.login_password_reminder: 'Memerlukan pengingat kata sandi'
-helpcenter.account.login_register_btn: Mendaftar
+helpcenter.account.login_register_action: Mendaftar
 helpcenter.account.login_remember: 'Anda yakin tetap masuk?'
-helpcenter.account.logout_btn: keluar
+helpcenter.account.logout_action: keluar
 helpcenter.account.new_ticket_no_login: 'Portal CRM dinonaktifkan. Tidak dapat mengirim tiket.'
 helpcenter.account.profile_btn_save: 'simpan profil'
 helpcenter.account.profile_delete_picture: 'ubah atau hapus '
@@ -261,7 +261,7 @@ helpcenter.tickets.rate_negative: 'Ini tidak baik'
 helpcenter.tickets.rate_positive: 'Ini hebat'
 helpcenter.tickets.rate_question: 'Bagaimana nilai atas dukungan yang Anda dapatkan?'
 helpcenter.tickets.rate_support: 'Tingkatkan dukungan Anda'
-helpcenter.tickets.resolve_my_ticket_btn: 'Selesaikan tiket saya'
+helpcenter.tickets.resolve_my_ticket_action: 'Selesaikan tiket saya'
 helpcenter.tickets.switched_department_rerender: 'Struktur formulir ini mungkin telah berubah. Harap tinjau formulir dan kirim lagi.'
 helpcenter.tickets.thank_you_check_email: 'Silakan verifikasi alamat email Anda'
 helpcenter.tickets.thank_you_check_email_desc: 'Untuk menyelesaikan pengiriman tiket Anda, Anda harus memeriksa kotak masuk email Anda. Silakan klik tautan verifikasi yang kami kirimkan kepada Anda.'

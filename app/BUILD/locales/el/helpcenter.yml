@@ -1,5 +1,5 @@
 ---
-helpcenter.account.change_password_btn: 'Ενημέρωση κωδικού πρόσβασης'
+helpcenter.account.change_password_action: 'Ενημέρωση κωδικού πρόσβασης'
 helpcenter.account.comment_lockout: 'Έχετε προσθέσει πολλά σχόλια. Θα χρειαστεί να περιμένετε πριν προσθέσετε περισσότερα.'
 helpcenter.account.email_btn_make_primary: 'Να γίνει κύριο'
 helpcenter.account.email_btn_remove: 'Αφαίρεση email'
@@ -10,9 +10,9 @@ helpcenter.account.login_email: 'Email'
 helpcenter.account.login_external: 'Είσοδος με εξωτερική υπηρεσία'
 helpcenter.account.login_lockout: 'Έχετε αποτύχει να συνδεθείτε πολλές φορές, με αποτέλεσμα να έχετε μπλοκαριστεί. Παρακαλούμε δοκιμάστε ξανά αργότερα.'
 helpcenter.account.login_password_reminder: 'Ξεχάσατε τον κωδικό πρόσβασης;'
-helpcenter.account.login_register_btn: Εγγραφή
+helpcenter.account.login_register_action: Εγγραφή
 helpcenter.account.login_remember: 'Θέλετε να παραμείνετε σε σύνδεση;'
-helpcenter.account.logout_btn: Αποσύνδεση
+helpcenter.account.logout_action: Αποσύνδεση
 helpcenter.account.new_ticket_no_login: 'Το portal CRM είναι ανενεργό. Δεν μπορείτε να καταχωρήσετε αίτημα.'
 helpcenter.account.profile_btn_save: 'Αποθήκευση προφίλ'
 helpcenter.account.profile_delete_picture: 'Αλλαγή ή διαγραφή φωτογραφίας προφίλ;'
@@ -257,7 +257,7 @@ helpcenter.tickets.rate_negative: 'Δεν ήταν καλή'
 helpcenter.tickets.rate_positive: 'Ήταν εξαιρετική'
 helpcenter.tickets.rate_question: 'Πώς θα βαθμολογούσατε την εξυπηρέτηση που λάβατε;'
 helpcenter.tickets.rate_support: 'Αξιολογήστε την υποστήριξη που λάβατε'
-helpcenter.tickets.resolve_my_ticket_btn: 'Κλείσιμο του ticket μου'
+helpcenter.tickets.resolve_my_ticket_action: 'Κλείσιμο του ticket μου'
 helpcenter.tickets.switched_department_rerender: 'Η δομή αυτής της φόρμας ίσως έχει αλλάξει. Παρακαλούμε ελέξτε τη φόρμα και υποβάλετε την ξανά.'
 helpcenter.tickets.thank_you_check_email: 'Παρακαλούμε επιβεβαιώστε το email σας'
 helpcenter.tickets.thank_you_check_email_desc: 'Για να ολοκληρώσετε την υποβολή του ticket σας, πρέπει να ελέγξετε τα email σας. Παρακαλούμε, κάντε click στο link επιβεβαίωσης που σας έχουμε στείλει.'

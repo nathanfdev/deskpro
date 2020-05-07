@@ -1,6 +1,6 @@
 ---
 helpcenter.account.email_btn_resend_validation: '承認のためのEメールを再送'
-helpcenter.account.login_register_btn: 登録
+helpcenter.account.login_register_action: 登録
 helpcenter.articles.section_title: ナレッジベース
 helpcenter.chat.email: 'メールアドレス'
 helpcenter.community.btn_vote: '同意'
@@ -60,6 +60,6 @@ helpcenter.tickets.list_status_resolved: 解決
 helpcenter.tickets.list_subject: 件名
 helpcenter.tickets.new_intro: 'フォームへの記入を完了してください。担当エージェントが折り返し電子メールにてご連絡します。'
 helpcenter.tickets.new_section_title: '連絡先'
-helpcenter.tickets.resolve_my_ticket_btn: 'リクエストを解決にする'
+helpcenter.tickets.resolve_my_ticket_action: 'リクエストを解決にする'
 helpcenter.tickets.view_btn_edit: 編集
 helpcenter.tickets.view_unassigned: アサイン前

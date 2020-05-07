@@ -51,7 +51,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     {{ form_start(csrf_form) }}
-                                                        <button type="button" id="closeTicketBtn" data-url="{{ path('portal_tickets_resolve', { ticket_ref: ticket.ref }) }}" class="btn btn-primary">{{ phrase('helpcenter.tickets.resolve_my_ticket_btn') }}</button>
+                                                        <button type="button" id="closeTicketBtn" data-url="{{ path('portal_tickets_resolve', { ticket_ref: ticket.ref }) }}" class="btn btn-primary">{{ phrase('helpcenter.tickets.resolve_my_ticket_action') }}</button>
                                                         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{{ phrase('helpcenter.general.btn_cancel') }}</button>
                                                         {{ form_rest(csrf_form) }}
                                                     {{ form_end(csrf_form) }}

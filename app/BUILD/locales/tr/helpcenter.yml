@@ -1,6 +1,6 @@
 ---
 helpcenter.account.email_btn_resend_validation: 'Doğrulama Epostasını Tekrar Gönder'
-helpcenter.account.login_register_btn: Kayı ol
+helpcenter.account.login_register_action: Kayı ol
 helpcenter.articles.section_title: Bilgi Bankası
 helpcenter.articles.view_as_agent: 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.'
 helpcenter.chat.email: 'Eposta Adresiniz'
@@ -78,6 +78,6 @@ helpcenter.tickets.rate_negative: 'Kötü'
 helpcenter.tickets.rate_positive: 'Harika'
 helpcenter.tickets.rate_question: 'Almış olduğunuz destek hizmetini değerlendirebilir misiniz ?'
 helpcenter.tickets.rate_support: 'Destek ekibimizi puanlayınız'
-helpcenter.tickets.resolve_my_ticket_btn: 'Çağrı kaydımı çözüldü olarak işaretle.'
+helpcenter.tickets.resolve_my_ticket_action: 'Çağrı kaydımı çözüldü olarak işaretle.'
 helpcenter.tickets.view_btn_edit: Düzenle
 helpcenter.tickets.view_unassigned: Atanmamış
