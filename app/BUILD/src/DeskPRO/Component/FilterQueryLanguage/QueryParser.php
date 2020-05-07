@@ -169,10 +169,12 @@ class QueryParser
             switch ($token['type']) {
                 case Lexer::T_OPEN_PARENTHESIS:
                     ++$numUnmatched;
+
                     break;
 
                 case Lexer::T_CLOSE_PARENTHESIS:
                     --$numUnmatched;
+
                     break;
 
                 default:
@@ -355,8 +357,9 @@ class QueryParser
         // Peek beyond the matching closing parenthesis ')'
         $peek = $this->peekBeyondClosingParenthesis();
 
-        if (in_array($peek['value'], ['=',  '<', '<=', '>', '>=', '!=']) ||
-            in_array($peek['type'], [Lexer::T_NOT, Lexer::T_BETWEEN, Lexer::T_IN, Lexer::T_IS, Lexer::T_EXISTS, Lexer::T_HAS])) {
+        if ((isset($peek['value']) && in_array($peek['value'], ['=',  '<', '<=', '>', '>=', '!='])) ||
+            (isset($peek['type']) && in_array($peek['type'], [Lexer::T_NOT, Lexer::T_BETWEEN, Lexer::T_IN, Lexer::T_IS, Lexer::T_EXISTS, Lexer::T_HAS]))
+        ) {
             return $this->SimpleConditionalExpression();
         }
 
@@ -393,6 +396,7 @@ class QueryParser
                     if ($token['type'] === Lexer::T_IS) {
                         $lookahead = $this->lexer->peek();
                     }
+
                     break;
 
                 default:
@@ -511,6 +515,7 @@ class QueryParser
                         $this->lexer->token['value']
                     ), $this->lexer->token['position']);
                 }
+
                 break;
 
             case Lexer::T_INTEGER:
@@ -549,12 +554,28 @@ class QueryParser
                     $num = substr($t, 0, -1);
                     $unit = null;
                     switch (substr($t, -1)) {
-                        case 'h': $unit = 'hour'; break;
-                        case 'd': $unit = 'day'; break;
-                        case 'w': $unit = 'week'; break;
-                        case 'm': $unit = 'month'; break;
-                        case 'y': $unit = 'year'; break;
-                        default: $this->semanticalError('Invalid relative date unit ', $this->lexer->token);
+                        case 'h':
+                            $unit = 'hour';
+
+                            break;
+                        case 'd':
+                            $unit = 'day';
+
+                            break;
+                        case 'w':
+                            $unit = 'week';
+
+                            break;
+                        case 'm':
+                            $unit = 'month';
+
+                            break;
+                        case 'y':
+                            $unit = 'year';
+
+                            break;
+                        default:
+                            $this->semanticalError('Invalid relative date unit ', $this->lexer->token);
                     }
 
                     return Query\Val\RelativeTimeVal::makeTime($num, $unit);
@@ -656,6 +677,7 @@ class QueryParser
                 }
 
                 $this->syntaxError("'.' or '('");
+
                 break;
 
             case Lexer::T_STRING:
@@ -865,12 +887,14 @@ class QueryParser
                 $token = $this->lexer->glimpse();
                 $expr  = $this->InputParameter();
                 $this->semanticalError("Only fields can be filtered on, got a variable \${$expr->identity}", $token);
+
                 break;
 
             case $this->isFunction():
                 $token = $this->lexer->token;
                 $expr  = $this->FunctionDeclaration();
                 $this->semanticalError("Only fields can be filtered on, got a function {$expr->name}()", $token);
+
                 break;
         }
 
