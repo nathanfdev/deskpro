@@ -2,13 +2,13 @@
 
 <dp:agent-reply />
 
-{% if show_rating_link and app.isPortalEnabled() %}<dp:ticket-rating-links />{% endif %}
+{% if show_rating_link and app.isPortalEnabled() and can_login(person) %}<dp:ticket-rating-links />{% endif %}
 
 <br /><br />
 
 <dp:ticket-history />
 
-{% if app.isPortalEnabled() %}
+{% if app.isPortalEnabled() and can_login(person) %}
 	<br /><br />
 
 	{{ phrase('user.emails.ticket_access_ticket_online') }}

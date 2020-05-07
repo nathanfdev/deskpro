@@ -15,7 +15,7 @@
 
     {{ phrase('helpcenter.emails.ticket_cc_added', {author_name: author.name, author_email: author.primary_email, subject: ticket.subject}) }}
 
-    {% if app.isPortalEnabled() %}
+    {% if app.isPortalEnabled() and can_login(recipient.id) %}
         <br /><br />
 
         {{ phrase('helpcenter.emails.ticket_access_ticket_online') }}

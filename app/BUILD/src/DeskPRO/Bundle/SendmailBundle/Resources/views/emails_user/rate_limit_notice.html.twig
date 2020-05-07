@@ -11,7 +11,7 @@
 
     {{ phrase('helpcenter.emails.ratelimit_explain',{num_messages: num_messages, time_limit: time_limit, time_lock: time_lock, date_lock_end: date_lock_end}) }}
 
-    {% if app.isPortalEnabled() %}
+    {% if app.isPortalEnabled() and can_login(recipient.id) %}
         <br /><br />
 
         {{ phrase('helpcenter.emails.ratelimit_submit_online') }}

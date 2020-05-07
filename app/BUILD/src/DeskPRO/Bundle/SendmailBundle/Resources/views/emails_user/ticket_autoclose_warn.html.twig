@@ -23,7 +23,7 @@
         {% endif %}
     {% endfor %}
 
-    {% if app.isPortalEnabled() %}
+    {% if app.isPortalEnabled() and can_login(recipient.id) %}
         <br/><br/>
 
         {{ phrase('helpcenter.emails.ticket_access_ticket_online') }}

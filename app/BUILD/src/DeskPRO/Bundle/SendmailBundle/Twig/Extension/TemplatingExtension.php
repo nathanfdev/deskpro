@@ -180,6 +180,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
             new \Twig_SimpleFunction('can_view_email_addresses', [$this, 'canViewEmailAddresses'], []),
             new \Twig_SimpleFunction('show_email_address', [$this, 'showEmailAddress'], []),
+            new \Twig_SimpleFunction('can_login', [$this, 'canLogin'], []),
         ];
     }
 
@@ -2658,5 +2659,28 @@ HTML;
     public function showEmailAddress($agentId, $email, $pattern = '%s')
     {
         return $this->canViewEmailAddresses($agentId) ? sprintf($pattern, $email) : '';
+    }
+
+    /**
+     * @param int $personId
+     *
+     * @return bool
+     */
+    public function canLogin($personId)
+    {
+        if (!$personId) {
+            return false;
+        }
+
+        $person = $this->container->get('doctrine.orm.default_entity_manager')->getRepository(Person::class)->find($personId);
+        if (!$person instanceof Person) {
+            return false;
+        }
+
+        if (!$this->container->get('dp_limit_email_domains_checker')->checkPerson($person)) {
+            return false;
+        }
+
+        return true;
     }
 }

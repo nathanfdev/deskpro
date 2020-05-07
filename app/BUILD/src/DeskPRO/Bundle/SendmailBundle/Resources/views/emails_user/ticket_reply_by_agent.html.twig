@@ -14,7 +14,7 @@
 		{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: reply, ticketdisplay: context.ticketdisplay } %}
 	{% endif %}
 
-	{% if show_rating_link and app.isPortalEnabled() %}
+	{% if show_rating_link and app.isPortalEnabled() and can_login(recipient.id) %}
 		{% set message = reply %}
 		{% include 'SendmailBundle:emails_common:ticket_rating_links.html.twig' with {message: message, ticket: ticket} %}
 	{% endif %}
@@ -27,7 +27,7 @@
 		{% endif %}
 	{% endfor %}
 
-	{% if app.isPortalEnabled() %}
+	{% if app.isPortalEnabled() and can_login(recipient.id) %}
 		<br /><br />
 
 		{{ phrase('helpcenter.emails.ticket_access_ticket_online') }}
