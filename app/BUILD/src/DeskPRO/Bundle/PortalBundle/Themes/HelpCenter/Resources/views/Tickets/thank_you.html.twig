@@ -10,7 +10,7 @@
                         <img class="dp-po-title-svg" src="{{ asset('img/page-icons/contact-us.svg', 'help_center') }}">
                         <h1 class="dp-po-title-text">{{ phrase('helpcenter.tickets.new_section_title') }}</h1>
                     </div>
-                    <div class="dp-po-block">
+                    <div class="dp-po-block dpx-clear-draft" data-save-draft="new_ticket{{ app.user ? '-' ~ app.user.id : '' }}">
                         <div class="dp-po-ticket-success">
                             <img class="dp-po-title-svg" src="{{ asset('img/page-icons/rocket.svg', 'help_center') }}">
                             {% if verify_email %}

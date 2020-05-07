@@ -10,11 +10,11 @@ import { DpxFormRteBlobsDraft } from './DpxFormRteBlobsDraft';
 import { DpxFormAttachDraft } from './DpxFormAttachDraft';
 
 
-function updateDrafts(obj) {
+export function updateDrafts(obj) {
   window.localStorage.form_drafts = JSON.stringify(obj);
 }
 
-function getDrafts() {
+export function getDrafts() {
   let object;
 
   if (window.localStorage.form_drafts) {
@@ -33,7 +33,7 @@ function getDrafts() {
 
 export default class DpxFormDraft extends PageWidget {
 
-  onClearDraft = () => {
+  clearDraft = () => {
     const drafts = getDrafts();
     drafts[this.getFormName()] = {};
 
@@ -75,11 +75,10 @@ export default class DpxFormDraft extends PageWidget {
   }
 
   renderWidget() {
-    this.$element.on('submit', this.onClearDraft);
     const $formSubmit = this.$element.find('input[type="submit"]:visible, button[type="submit"]:visible');
 
     if (!this.options.isWidget) {
-      this.$element.on('reset', this.onClearDraft);
+      this.$element.on('reset', this.clearDraft);
       $(`<button type="reset" class="btn btn-outline-secondary btn-reset">${portalPhrases.get('portal.forms.label_reset')}</button>`)
         .on('click', DpxFormDraft.resetForm)
         .insertAfter($formSubmit);

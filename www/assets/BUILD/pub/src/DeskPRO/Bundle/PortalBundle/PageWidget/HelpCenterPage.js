@@ -28,6 +28,7 @@ import { SearchTabs } from './SearchTabs';
 import { TitleAnchorWidget } from './TitleAnchorWidget';
 import { RemoveCCTicketReply } from './RemoveCCTicketReply';
 import { MobileCategories } from './MobileCategories';
+import { DpxFormClearDraft } from './Common/Form/Draft/DpxFormClearDraft';
 
 class HelpCenterPage extends PageWidget {
 
@@ -64,6 +65,7 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(RemoveCCTicketReply, '.remove-cc-from-reply');
     this.addWidgetDef(MobileCategories, '.dp-po-category-title-expand');
     this.addWidgetDef(HelpcenterSidebarFilters, '.dpx-sidebar-filters');
+    this.addWidgetDef(DpxFormClearDraft, '.dpx-clear-draft');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

@@ -22,7 +22,7 @@ export class DpxFormCheckboxDraft extends DpxFormFieldDraft {
           if (index === -1) {
             storedValue.push(value);
           }
-        } else {
+        } else if (index !== -1) {
           storedValue.splice(index, 1);
         }
 
