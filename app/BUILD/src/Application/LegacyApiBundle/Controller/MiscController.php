@@ -20,6 +20,7 @@ use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\TokenExchangeAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
+use DeskPRO\Bundle\AppBundle\Limits\LimitsService;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
@@ -416,23 +417,27 @@ class MiscController extends AbstractController
 
     public function getRateLimitAction()
     {
-        if (!$this->container->getSetting('core.api_rate_limit')) {
+        if (!$this->apikey) {
             return $this->createApiResponse([
                 'limit' => 0,
             ]);
         }
 
-        if ($this->apikey) {
-            $this->rate_info = $this->em->getRepository(ApiKey::class)->getRateLimitInfo($this->apikey);
-        } else {
-            $this->rate_info = $this->em->getRepository(ApiToken::class)->getRateLimitInfo($this->api_token);
+        /** @var LimitsService $limitsService */
+        $limitsService = $this->container->get('api_limits.limits_service');
+
+        $minLimit = $limitsService->getMinLimit($this->apikey);
+        if (!$minLimit) {
+            return $this->createApiResponse([
+                'limit' => 0,
+            ]);
         }
 
         return $this->createApiResponse([
-            'limit'       => $this->container->getSetting('core.api_rate_limit'),
-            'remaining'   => max(0, $this->container->getSetting('core.api_rate_limit') - $this->rate_info['hits']),
-            'reset_stamp' => $this->rate_info['reset_stamp'],
-            'reset_date'  => gmdate('r', $this->rate_info['reset_stamp']),
+            'limit'       => $minLimit->getLimit(),
+            'remaining'   => max(0, $minLimit->getCurrentLimit()),
+            'reset_stamp' => $minLimit->getDateExpire()->getTimestamp(),
+            'reset_date'  => gmdate('r', $minLimit->getDateExpire()->getTimestamp()),
         ]);
     }
 

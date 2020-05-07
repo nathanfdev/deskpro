@@ -68,4 +68,9 @@ interface LimitInterface
      * @return string
      */
     public function getType();
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateExpire();
 }

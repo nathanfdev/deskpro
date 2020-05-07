@@ -2,10 +2,12 @@
 
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
+use Application\DeskPRO\Entity\ApiKey;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Controller\ExceptionController;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Annotation\Limits\Metadata\MethodMetadata;
+use DeskPRO\Bundle\AppBundle\Limits\LimitsService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -76,8 +78,19 @@ class ApiLimitsListener implements EventSubscriberInterface
             }
         }
 
+        $credentials = $token->getCredentials();
+        if (!$credentials) {
+            return;
+        }
+
+        $apiKey = $this->container->get('doctrine.orm.default_entity_manager')->getRepository(ApiKey::class)->findByKeyString($credentials);
+        if (!$apiKey) {
+            return;
+        }
+
+        /** @var LimitsService $limits */
         $limits = $this->container->get('api_limits.limits_service');
-        $limits->checkLimits();
-        $limits->reduceLimits();
+        $limits->checkLimits($apiKey);
+        $limits->reduceLimits($apiKey);
     }
 }

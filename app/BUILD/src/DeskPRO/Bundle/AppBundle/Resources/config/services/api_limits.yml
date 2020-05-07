@@ -36,6 +36,4 @@ services:
     class: DeskPRO\Bundle\AppBundle\Limits\LimitsService
     arguments:
       - "@settings_resolver"
-      - "@security.token_storage"
       - "@api_limits.limit_adapter"
-      - "@doctrine.orm.default_entity_manager"

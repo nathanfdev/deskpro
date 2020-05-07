@@ -74,6 +74,29 @@
 									</div>
 								</div>
 							</div>
+                            <div class="form-group">
+                                <div class="col-lg-2">
+                                    <h3>Global Limit</h3>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="inner-group">
+                                        {% if app.getSetting('api_limits.global.hour') or app.getSetting('api_limits.global.day') %}
+                                            {% if app.getSetting('api_limits.global.hour') %}
+                                                <p>{{ app.getSetting('api_limits.global.hour')}} requests per hour.</p>
+                                            {% endif %}
+                                            {% if app.getSetting('api_limits.global.day') %}
+                                                <p>{{ app.getSetting('api_limits.global.day')}} requests per day.</p>
+                                            {% endif %}
+                                            <p>This is the helpdesk global limit that is applied to all API requests.</p>
+                                            {% if app.isCloud() %}
+                                                <p>Please contact support@deskpro.com if you require a higher limit.</p>
+                                            {% endif %}
+                                        {% else %}
+                                            No limit
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
 							<div class="form-group">
 								<div class="col-lg-2">
 									<h3>
