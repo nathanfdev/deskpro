@@ -1,5 +1,5 @@
 ---
-helpcenter.account.email_btn_resend_validation: 'Doğrulama Epostasını Tekrar Gönder'
+helpcenter.account.email_resend_validation_action: 'Doğrulama Epostasını Tekrar Gönder'
 helpcenter.account.login_register_action: Kayı ol
 helpcenter.articles.section_title: Bilgi Bankası
 helpcenter.articles.view_as_agent: 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.'
@@ -9,7 +9,7 @@ helpcenter.community.form_full_name: Adı
 helpcenter.community.form_topic_title: Başlık
 helpcenter.community.section_title: Geri Bildirim
 helpcenter.direct_messages.reply_message: Mesaj
-helpcenter.downloads.download: İndir
+helpcenter.downloads.download_action: İndir
 helpcenter.emails.chat_transcript: 'Sohbet için teşekkürler. Sohbet dökümünü burada.'
 helpcenter.emails.chat_transcript_subject: 'Sohbet Dökümü'
 helpcenter.emails.comment_approved: 'Yorumunuz yayınlandı.'
@@ -49,7 +49,7 @@ helpcenter.forms.label_save: Kaydet
 helpcenter.general.add_comment: 'Yorum ekle'
 helpcenter.general.agent: Personel
 helpcenter.general.attachments: Ekler
-helpcenter.general.btn_cancel: Vazgeç
+helpcenter.general.cancel_action_action: Vazgeç
 helpcenter.general.comments: Yorumlar?
 helpcenter.general.downloads_type: İndirmeler
 helpcenter.general.everything: Her şey

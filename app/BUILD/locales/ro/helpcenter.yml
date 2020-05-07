@@ -1,12 +1,12 @@
 ---
-helpcenter.account.email_btn_resend_validation: 'Retrimite email-ul de validare'
+helpcenter.account.email_resend_validation_action: 'Retrimite email-ul de validare'
 helpcenter.account.login_register_action: Inrestreaza-te
 helpcenter.articles.view_as_agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
 helpcenter.chat.email: 'Adresa dumneavoastra de Email'
 helpcenter.community.btn_vote: 'Sunt de acord'
 helpcenter.community.form_full_name: Nume
 helpcenter.direct_messages.reply_message: Mesaj
-helpcenter.downloads.download: Descarca
+helpcenter.downloads.download_action: Descarca
 helpcenter.emails.chat_transcript: 'Va multumim pentru conversatie. Aceasta este o copie a acesteia'
 helpcenter.emails.chat_transcript_subject: 'Inregistrare Chat'
 helpcenter.emails.comment_approved: 'Comentariul dumneavoastra a fost publicat'
@@ -43,7 +43,7 @@ helpcenter.error.permission_denied_title: 'Nu aveti voie sa faceti acesta actiun
 helpcenter.forms.label_save: Salveaza
 helpcenter.general.add_comment: 'Adauga un comentariu'
 helpcenter.general.attachments: Atasamente
-helpcenter.general.btn_cancel: Anulare
+helpcenter.general.cancel_action_action: Anulare
 helpcenter.general.comments: Comentarii?
 helpcenter.general.downloads_type: Descarcari
 helpcenter.general.everything: Tot

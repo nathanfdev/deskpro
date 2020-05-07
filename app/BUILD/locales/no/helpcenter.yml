@@ -4,7 +4,7 @@ helpcenter.articles.view_as_agent: 'Du kan se denne siden for du er en medarbeid
 helpcenter.chat.email: 'Din epost adresse'
 helpcenter.community.form_full_name: Navn
 helpcenter.direct_messages.reply_message: Melding
-helpcenter.downloads.download: Last ned
+helpcenter.downloads.download_action: Last ned
 helpcenter.emails.chat_transcript: 'Takk for praten. Her er et referat av vår samtale.'
 helpcenter.emails.chat_transcript_subject: 'Samtale referat'
 helpcenter.emails.comment_approved: 'Din kommentar har blitt publisert.'
@@ -36,7 +36,7 @@ helpcenter.error.404_title: 'Fant Ikke'
 helpcenter.forms.label_save: Lagre
 helpcenter.general.add_comment: 'Ny kommentar'
 helpcenter.general.attachments: Vedlegg
-helpcenter.general.btn_cancel: Avbryt
+helpcenter.general.cancel_action_action: Avbryt
 helpcenter.general.comments: Kommentar
 helpcenter.general.downloads_type: Nedlastninger
 helpcenter.general.go: Gå

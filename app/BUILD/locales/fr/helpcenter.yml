@@ -2,19 +2,19 @@
 helpcenter.account.change_password_action: 'Mise à jour du mot de passe'
 helpcenter.account.comment_lockout: 'Vous avez soumis un grand nombre de commentaires. Veuillez patienter avant d''en soumettre d''autres.'
 helpcenter.account.email_btn_make_primary: 'Rendre principale'
-helpcenter.account.email_btn_remove: 'Supprimer l''adresse'
-helpcenter.account.email_btn_resend_validation: 'Renvoyer l''email d''activation'
+helpcenter.account.email_remove_action: 'Supprimer l''adresse'
+helpcenter.account.email_resend_validation_action: 'Renvoyer l''email d''activation'
 helpcenter.account.email_btn_usersource_set: 'Ajouter une adresse email'
 helpcenter.account.login_captcha_failed: 'Le code CAPTCHA saisi est incorrect. Veuillez réessayer.'
 helpcenter.account.login_email: 'Votre email'
 helpcenter.account.login_external: 'Connexion avec un service externe'
 helpcenter.account.login_lockout: 'Vous avez été bloqué en raison d''un trop grand nombre d''échecs de connexion. Veuillez réessayer plus tard.'
-helpcenter.account.login_password_reminder: 'Mot de passe oublié ?'
+helpcenter.account.login_reset_password_link: 'Mot de passe oublié ?'
 helpcenter.account.login_register_action: S'inscrire
 helpcenter.account.login_remember: 'Rester connecté ?'
 helpcenter.account.logout_action: Déconnexion
 helpcenter.account.new_ticket_no_login: 'Le portail CRM est désactivé. Impossible de soumettre un ticket.'
-helpcenter.account.profile_btn_save: 'Enregistrer le profil'
+helpcenter.account.profile_save_action: 'Enregistrer le profil'
 helpcenter.account.profile_delete_picture: 'Modifier ou supprimer la photo de profil ?'
 helpcenter.account.registration_set_password: 'Un compte avec cette adresse email existe déjà. Nous vous avons envoyé un email pour vous permettre de définir un mot de passe et un nom d''utilisateur.'
 helpcenter.account.reset_password_click_here: 'Cliquez ici pour demander un code de réinitialisation du mot de passe'
@@ -44,7 +44,7 @@ helpcenter.account.submit_saved_form_go: 'Cliquez ici pour soumettre le formulai
 helpcenter.account.tickets_lockout: 'Vous avez soumis un trop grand nombre de tickets donc vous avez été bloqué. Veuillez réessayer plus tard.'
 helpcenter.account.usersource_set_email_desc: 'Pour vous identifier, nous avons besoin de votre adresse email. Veuillez entrer votre adresse email ci-dessous pour que nous puissions vous envoyer un email de vérification.'
 helpcenter.account.your_pending_email_addresses: 'Vos adresses email en attente'
-helpcenter.articles.published: Publié
+helpcenter.articles.published_label: Publié
 helpcenter.articles.section_title: Base de connaissances
 helpcenter.articles.view_as_agent: 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs ne peuvent pas voir cette page.'
 helpcenter.chat.email: 'Votre adresse email'
@@ -60,7 +60,7 @@ helpcenter.community.module_forbidden: 'Vous n''avez pas accès à ce module'
 helpcenter.community.no_matching: 'Aucun commentaire correspondant'
 helpcenter.community.rate_forbidden: 'Vous n''êtes pas autorisé à voter'
 helpcenter.community.section_title: Remarques
-helpcenter.downloads.download: Télécharger
+helpcenter.downloads.download_action: Télécharger
 helpcenter.downloads.none: 'Pas encore de téléchargements'
 helpcenter.downloads.uploaded_on: Téléchargé
 helpcenter.emails.chat_transcript: 'Nous vous remercions pour cet échange. Voici une transcription du Chat.'
@@ -179,9 +179,9 @@ helpcenter.general.agent_bar_agent_home: 'Interface agent'
 helpcenter.general.agent_bar_agent_kb: 'Base de connaissances'
 helpcenter.general.agent_bar_agent_news: 'Actualités'
 helpcenter.general.attachments: Pièce jointes
-helpcenter.general.btn_cancel: Annuler
-helpcenter.general.btn_subscribe: S'abonner
-helpcenter.general.btn_unsubscribe: Se désabonner
+helpcenter.general.cancel_action_action: Annuler
+helpcenter.general.subscribe_action: S'abonner
+helpcenter.general.unsubscribe_action: Se désabonner
 helpcenter.general.comment_btn_save: 'Enregistrer le commentaire'
 helpcenter.general.comments: Commentaires
 helpcenter.general.comments_pending_validation: 'Ce commentaire n''a pas encore été validé. Il sera publié prochainement.'

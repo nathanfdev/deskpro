@@ -2,18 +2,18 @@
 helpcenter.account.change_password_action: 'Cập nhật mật khẩu'
 helpcenter.account.comment_lockout: 'Bạn đã gửi rất nhiều nhận xét. Vui lòng đợi để gửi thêm.'
 helpcenter.account.email_btn_make_primary: 'Đặt chính'
-helpcenter.account.email_btn_remove: 'Xóa email'
-helpcenter.account.email_btn_resend_validation: 'Gửi lại email xác nhận'
+helpcenter.account.email_remove_action: 'Xóa email'
+helpcenter.account.email_resend_validation_action: 'Gửi lại email xác nhận'
 helpcenter.account.email_btn_usersource_set: 'Thêm Địa chỉ Email'
 helpcenter.account.login_captcha_failed: 'Bạn đã nhập mã CAPTCHA không hợp lệ. Vui lòng thử lại.'
 helpcenter.account.login_email: 'Email của bạn'
 helpcenter.account.login_external: 'Đăng nhập bằng dịch vụ bên ngoài'
 helpcenter.account.login_lockout: 'Bạn đã đăng nhập thất bại quá nhiều lần nên bạn đã bị khóa. Vui lòng thử lại sau.'
-helpcenter.account.login_password_reminder: 'Cần lời nhắc nhở mật khẩu?'
+helpcenter.account.login_reset_password_link: 'Cần lời nhắc nhở mật khẩu?'
 helpcenter.account.login_register_action: Trình diện
 helpcenter.account.login_remember: 'Giữ trạng thái đăng nhập?'
 helpcenter.account.logout_action: Đăng xuất
-helpcenter.account.profile_btn_save: 'Lưu hồ sơ'
+helpcenter.account.profile_save_action: 'Lưu hồ sơ'
 helpcenter.account.profile_delete_picture: 'Thay đổi hoặc xóa ảnh hồ sơ?'
 helpcenter.account.registration_set_password: 'Tài khoản với email này đã tồn tại. Chúng tôi đã gửi cho bạn một email cho phép bạn đặt mật khẩu và đăng nhập.'
 helpcenter.account.reset_password_click_here: 'Nhấp vào đây để yêu cầu mã đặt lại mật khẩu'
@@ -60,7 +60,7 @@ helpcenter.community.no_matching: 'Không có phản hồi phù hợp'
 helpcenter.community.rate_forbidden: 'Bạn không được phép bỏ phiếu'
 helpcenter.community.section_title: Phản hồi
 helpcenter.direct_messages.reply_message: Thông điệp
-helpcenter.downloads.download: Tải về
+helpcenter.downloads.download_action: Tải về
 helpcenter.downloads.none: 'Chưa tải xuống'
 helpcenter.downloads.uploaded_on: Đã tải lên
 helpcenter.emails.chat_transcript: 'Cảm ơn bạn đã trò chuyện với chúng tôi. Đây là bảng điểm trò chuyện của bạn.'
@@ -174,9 +174,9 @@ helpcenter.general.agent_bar_agent_kb: 'Quản lý Cơ sở Kiến thức'
 helpcenter.general.agent_bar_agent_news: 'Quản lý Tin tức'
 helpcenter.general.agents: Đại lý
 helpcenter.general.attachments: File đính kèm
-helpcenter.general.btn_cancel: Hủy
-helpcenter.general.btn_subscribe: Đăng ký
-helpcenter.general.btn_unsubscribe: Hủy đăng ký
+helpcenter.general.cancel_action_action: Hủy
+helpcenter.general.subscribe_action: Đăng ký
+helpcenter.general.unsubscribe_action: Hủy đăng ký
 helpcenter.general.chat: Trò chuyện
 helpcenter.general.comment_btn_save: 'Bình luận Tiết kiệm'
 helpcenter.general.comments: Bình luận

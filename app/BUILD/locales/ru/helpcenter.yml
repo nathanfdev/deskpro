@@ -2,20 +2,20 @@
 helpcenter.account.change_password_action: 'Обновить пароль'
 helpcenter.account.comment_lockout: 'Вы оставили слишком много комментариев. Пожалуйста, подождите для того, чтобы оставить другие комментарии.'
 helpcenter.account.email_btn_make_primary: 'Сделать главным'
-helpcenter.account.email_btn_remove: 'Удалить email'
-helpcenter.account.email_btn_resend_validation: 'Повторно выслать письмо'
+helpcenter.account.email_remove_action: 'Удалить email'
+helpcenter.account.email_resend_validation_action: 'Повторно выслать письмо'
 helpcenter.account.email_btn_usersource_set: 'Добавить email'
 helpcenter.account.login_captcha_failed: 'Вы ввели неправильный код. Пожалуйста, попробуйте ещё раз.'
 helpcenter.account.login_email: 'Ваш email'
 helpcenter.account.login_email_placeholder: email@example.ru
 helpcenter.account.login_external: 'Войти с помощью другого сервиса'
 helpcenter.account.login_lockout: 'Вы ввели неправильный логин или пароль слишком много раз. Пожалуйста, попробуйте ещё раз через некоторое время.'
-helpcenter.account.login_password_reminder: 'Вам нужно напоминание пароля?'
+helpcenter.account.login_reset_password_link: 'Вам нужно напоминание пароля?'
 helpcenter.account.login_register_action: Зарегистрироваться
 helpcenter.account.login_remember: 'Остаться в системе'
 helpcenter.account.logout_action: Выйти из системы
 helpcenter.account.new_ticket_no_login: 'Портал CRM отключен. Не удалось отправить билет.'
-helpcenter.account.profile_btn_save: 'Сохранить профиль'
+helpcenter.account.profile_save_action: 'Сохранить профиль'
 helpcenter.account.profile_delete_picture: 'Изменить или удалить картинку профиля'
 helpcenter.account.registration_set_password: 'Аккаунт, привязанный к такому почтовому адресу уже существует. Мы отправили Вам письмо, которое поможет Вам обновить пароль и зайти на аккаунт.'
 helpcenter.account.reset_password_click_here: 'Нажмите сюда для того, чтобы получить код для восстановления пароля'
@@ -45,7 +45,7 @@ helpcenter.account.submit_saved_form_go: 'Пожалуйста, нажмите �
 helpcenter.account.tickets_lockout: 'Вы создали слишком много обращений. Вам необходимо будет подождать некоторое время перед тем, как Вы сможете создать новое обращение.'
 helpcenter.account.usersource_set_email_desc: 'Перед тем как Вы войдете в систему, нам необходим Ваш email. Пожалуйста, введите Ваш электронный адрес, чтобы мы могли отправить Вам письмо с подтверждением.'
 helpcenter.account.your_pending_email_addresses: 'Электронные адреса, находящиеся на рассмотрении'
-helpcenter.articles.published: Опубликованный
+helpcenter.articles.published_label: Опубликованный
 helpcenter.articles.section_title: База знаний
 helpcenter.articles.view_as_agent: 'Вы можете увидеть эту страницу, потому что вы агент. Пользователи не смогут просматривать эту страницу.'
 helpcenter.chat.email: 'Адрес Вашей электронной почты'
@@ -63,7 +63,7 @@ helpcenter.community.no_matching: 'Нет подходящих отзывов'
 helpcenter.community.rate_forbidden: 'Вы не можете проголосовать'
 helpcenter.community.section_title: Предложения
 helpcenter.direct_messages.reply_message: Сообщение
-helpcenter.downloads.download: Загрузить
+helpcenter.downloads.download_action: Загрузить
 helpcenter.downloads.none: 'Нет загруженных файлов'
 helpcenter.downloads.uploaded_on: Загружено
 helpcenter.emails.chat_transcript: 'Благодарим Ваc за общение с нами. Предоставляем Вам копию диалога.'
@@ -184,9 +184,9 @@ helpcenter.general.agent_bar_agent_kb: 'Управлять базой знани
 helpcenter.general.agent_bar_agent_news: 'Управлять новостями'
 helpcenter.general.agents: Агенты
 helpcenter.general.attachments: Приложение
-helpcenter.general.btn_cancel: Отмена
-helpcenter.general.btn_subscribe: Подписаться
-helpcenter.general.btn_unsubscribe: Отписаться
+helpcenter.general.cancel_action_action: Отмена
+helpcenter.general.subscribe_action: Подписаться
+helpcenter.general.unsubscribe_action: Отписаться
 helpcenter.general.category: Пользовательский канал
 helpcenter.general.chat: Чат
 helpcenter.general.comment_btn_save: 'Сохранить комментарий'

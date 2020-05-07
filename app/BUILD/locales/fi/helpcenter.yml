@@ -1,17 +1,17 @@
 ---
 helpcenter.account.change_password_action: 'Päivitä salasana'
 helpcenter.account.email_btn_make_primary: 'Muuta pääasialliseksi'
-helpcenter.account.email_btn_remove: 'Poista sähköpostiosoite'
-helpcenter.account.email_btn_resend_validation: 'Lähetä vahvistussähköposti uudelleen'
+helpcenter.account.email_remove_action: 'Poista sähköpostiosoite'
+helpcenter.account.email_resend_validation_action: 'Lähetä vahvistussähköposti uudelleen'
 helpcenter.account.email_btn_usersource_set: 'Lisää sähköpostiosoite'
 helpcenter.account.login_captcha_failed: 'CAPTCHAn kaikki merkit eivät olleet oikein. Yritä uudelleen.'
 helpcenter.account.login_email: 'Sähköpostiosoitteesi'
 helpcenter.account.login_lockout: 'Olet yrittänyt kirjautua sisään väärillä tiedoilla liian monta kertaa. Yritä uudelleen myöhemmin.'
-helpcenter.account.login_password_reminder: 'Tarvitsetko salasanan muistutuksen?'
+helpcenter.account.login_reset_password_link: 'Tarvitsetko salasanan muistutuksen?'
 helpcenter.account.login_register_action: Rekisteröidy
 helpcenter.account.login_remember: 'Pysy kirjautuneena?'
 helpcenter.account.logout_action: Kirjaudu ulos
-helpcenter.account.profile_btn_save: 'Tallenna profiili'
+helpcenter.account.profile_save_action: 'Tallenna profiili'
 helpcenter.account.reset_password_click_here: 'Klikkaa tästä saadaksesi salasanan vaihtokoodin'
 helpcenter.account.reset_password_invalid_desc: 'Salasananvaihtokoodi on väärä tai vanhentunut. Hae uusi koodi vaihtaaksesi salasanan.'
 helpcenter.account.reset_password_invalid_input: 'Sähköpostiosoite tai käyttäjätunnus'
@@ -28,7 +28,7 @@ helpcenter.community.form_full_name: Nimesi
 helpcenter.community.form_topic_title: Aihe
 helpcenter.community.section_title: Palaute
 helpcenter.direct_messages.reply_message: Viesti
-helpcenter.downloads.download: Lataa
+helpcenter.downloads.download_action: Lataa
 helpcenter.emails.chat_transcript: 'Kiitos keskustelusta kanssamme. Tässä kopio keskustelustamme.'
 helpcenter.emails.chat_transcript_subject: 'Keskustelu kopio'
 helpcenter.emails.comment_approved: 'Kommenttisi on julkaistu.'
@@ -68,7 +68,7 @@ helpcenter.forms.label_save: Tallenna
 helpcenter.general.add_comment: 'Lisää kommentti'
 helpcenter.general.agent: Asiantuntija
 helpcenter.general.attachments: Liitetiedostot
-helpcenter.general.btn_cancel: Peruuta
+helpcenter.general.cancel_action_action: Peruuta
 helpcenter.general.downloads_type: Lataukset
 helpcenter.general.everything: Kaikki
 helpcenter.general.go: Mene

@@ -11,7 +11,7 @@
     {% if new_comment_form and app.user %}
         <div class="dp-po-comments-add">
             <div class="dp-po-comments-add-cancel">
-                <a href="javascript:void(0)" class="btn btn-outline-secondary">{{ phrase('helpcenter.general.cancel') }}</a>
+                <a href="javascript:void(0)" class="btn btn-outline-secondary">{{ phrase('helpcenter.general.cancel_action') }}</a>
             </div>
             <div class="dp-po-avatar">
                 {{ hc_avatar(app.user, '', 60) }}
@@ -102,7 +102,7 @@
                             <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.general.log_in') }}</button>
                             {% if auth_manager is defined and auth_manager.isForgotPasswordVisible %}
                                 <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5" class="dp-po-form-btntext">
-                                    {{ phrase('helpcenter.account.login_password_reminder') }}
+                                    {{ phrase('helpcenter.account.login_reset_password_link') }}
                                 </a>
                             {% endif %}
 

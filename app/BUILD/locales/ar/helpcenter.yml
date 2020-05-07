@@ -1,21 +1,21 @@
 ---
 helpcenter.account.change_password_action: 'حدث كلمة المرور'
 helpcenter.account.comment_lockout: 'لقد قمت بارسال العديد من التعليقات. الرجاء الإنتظار للتمكن من إرسال المزيد.'
-helpcenter.account.email_btn_make_primary: 'إجعلها الأساسية'
-helpcenter.account.email_btn_remove: 'إحذف البريد الإلكتروني'
-helpcenter.account.email_btn_resend_validation: 'إعد أرسال بريد التفعيل'
+helpcenter.account.email_make_primary_action: 'إجعلها الأساسية'
+helpcenter.account.email_remove_action: 'إحذف البريد الإلكتروني'
+helpcenter.account.email_resend_validation_action: 'إعد أرسال بريد التفعيل'
 helpcenter.account.email_btn_usersource_set: 'أضف حساب بريد إلكتروني'
 helpcenter.account.login_captcha_failed: 'لقد قمت بادخال رمز تحقق خاطئ. الرجاء المحاولة مرة أخرى'
 helpcenter.account.login_email: 'بريدك الإلكتروني'
 helpcenter.account.login_email_placeholder: 'نموذج البريد : email@example.com'
 helpcenter.account.login_external: 'قم بتسجيل الدخول بواسطة وسائل تسجيل خارجية'
 helpcenter.account.login_lockout: 'لقد استنفذت العدد المسموح به للتسجيل  الخاطئ، لذا فقد تم حجبك. الرجاء المحاولة مرة أخرى'
-helpcenter.account.login_password_reminder: 'هل تحتاج الى عرض مساعدة لتذكر كلمة المرور'
+helpcenter.account.login_reset_password_link: 'هل تحتاج الى عرض مساعدة لتذكر كلمة المرور'
 helpcenter.account.login_register_action: تسجيل عضوية
 helpcenter.account.login_remember: 'ابق مسجلا؟'
 helpcenter.account.logout_action: سجل الخروج
 helpcenter.account.new_ticket_no_login: 'بوابة الخدمة غير مفعلة. لا يمكنك ارسال تذاكر'
-helpcenter.account.profile_btn_save: 'أحفظ بيانات التعريف'
+helpcenter.account.profile_save_action: 'أحفظ بيانات التعريف'
 helpcenter.account.profile_delete_picture: 'غير أو احذف الصورة الخاصة بسجل بيانات التعريف؟'
 helpcenter.account.registration_set_password: 'يوجد حساب بهذا البريد الإلكتروني. لقد قمنا بارسال بريد الكتروني لك ستتمكن من خلاله تعيين كلمة مرورك و تسجيل الدخول'
 helpcenter.account.reset_password_click_here: 'اضغط هنا  لطلب رمز إعادة تعيين كلمة مرورك'
@@ -45,7 +45,7 @@ helpcenter.account.submit_saved_form_go: 'انقر هنا لإعادة تسلي�
 helpcenter.account.tickets_lockout: 'لقد قمت بتسليم عدد كبير من التذاكر لذلك تم حجبك. حاول مرة اخرى فيما بعد'
 helpcenter.account.usersource_set_email_desc: 'ضع عنوان بريدك قبل الدخول .قم بادخاله تحت وسنرسل لك بريد للمصادقة'
 helpcenter.account.your_pending_email_addresses: 'عناوين البريد المعلقة.'
-helpcenter.articles.published: منشور
+helpcenter.articles.published_label: منشور
 helpcenter.articles.section_title: قاعدة المعلومات
 helpcenter.articles.view_as_agent: 'أنت في هذه الصفحة لأنك أحد مقدمي الخدمة. المستخدمين العاديين لن يمكنهم مشاهدة هذه الصفحة.'
 helpcenter.chat.email: 'عنوانك البريدي'
@@ -63,7 +63,7 @@ helpcenter.community.no_matching: 'لا توجد تغذية راجعة مطاب�
 helpcenter.community.rate_forbidden: 'لا يحق لك التصويت'
 helpcenter.community.section_title: اقتراحات
 helpcenter.direct_messages.reply_message: رسالة
-helpcenter.downloads.download: تنزيل
+helpcenter.downloads.download_action: تنزيل
 helpcenter.downloads.none: 'لا توجد تنزيلات'
 helpcenter.downloads.uploaded_on: تم تحميله
 helpcenter.emails.chat_transcript: 'نشكركم على المحادثة معنا . اليك نسختك من المحادثة'
@@ -184,9 +184,9 @@ helpcenter.general.agent_bar_agent_kb: 'ادارة قاعدة المعلومات
 helpcenter.general.agent_bar_agent_news: 'ادارة الاخبار'
 helpcenter.general.agents: مقدمو الخدمة.
 helpcenter.general.attachments: مرفقات
-helpcenter.general.btn_cancel: الغاء
-helpcenter.general.btn_subscribe: مشترك
-helpcenter.general.btn_unsubscribe: غير مشترك
+helpcenter.general.cancel_action_action: الغاء
+helpcenter.general.subscribe_action: مشترك
+helpcenter.general.unsubscribe_action: غير مشترك
 helpcenter.general.chat: المحادثة
 helpcenter.general.comment_btn_save: 'احفظ التعليقات'
 helpcenter.general.comments: تعليقات

@@ -1,5 +1,5 @@
 ---
-helpcenter.account.email_btn_resend_validation: '승인 이메일 다시 보내기'
+helpcenter.account.email_resend_validation_action: '승인 이메일 다시 보내기'
 helpcenter.account.login_register_action: 가입
 helpcenter.articles.section_title: 지식 베이스
 helpcenter.articles.view_as_agent: '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.'
@@ -9,7 +9,7 @@ helpcenter.community.form_full_name: 이름
 helpcenter.community.form_topic_title: 제목
 helpcenter.community.section_title: 피드백
 helpcenter.direct_messages.reply_message: 메세지
-helpcenter.downloads.download: 다운로드
+helpcenter.downloads.download_action: 다운로드
 helpcenter.emails.chat_transcript: '상담 감사합니다. 상담 기록입니다.'
 helpcenter.emails.chat_transcript_subject: '대화 기록'
 helpcenter.emails.comment_approved: '코멘트가 발행되었습니다.'
@@ -49,7 +49,7 @@ helpcenter.forms.label_save: 저장
 helpcenter.general.add_comment: '댓글 등록'
 helpcenter.general.agent: 에이전트
 helpcenter.general.attachments: 첨부파일
-helpcenter.general.btn_cancel: 취소
+helpcenter.general.cancel_action_action: 취소
 helpcenter.general.downloads_type: 다운로드 파일들
 helpcenter.general.everything: 전체
 helpcenter.general.go: 등록

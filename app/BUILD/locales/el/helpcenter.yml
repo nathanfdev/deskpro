@@ -2,19 +2,19 @@
 helpcenter.account.change_password_action: 'Ενημέρωση κωδικού πρόσβασης'
 helpcenter.account.comment_lockout: 'Έχετε προσθέσει πολλά σχόλια. Θα χρειαστεί να περιμένετε πριν προσθέσετε περισσότερα.'
 helpcenter.account.email_btn_make_primary: 'Να γίνει κύριο'
-helpcenter.account.email_btn_remove: 'Αφαίρεση email'
-helpcenter.account.email_btn_resend_validation: 'Επαναποστολή email επιβεβαίωσης'
+helpcenter.account.email_remove_action: 'Αφαίρεση email'
+helpcenter.account.email_resend_validation_action: 'Επαναποστολή email επιβεβαίωσης'
 helpcenter.account.email_btn_usersource_set: 'Προσθήκη Email'
 helpcenter.account.login_captcha_failed: 'Έχετε εισάγει λανθασμένο κωδικό CAPTCHA. Παρακαλούμε δοκιμάστε ξανά.'
 helpcenter.account.login_email: 'Email'
 helpcenter.account.login_external: 'Είσοδος με εξωτερική υπηρεσία'
 helpcenter.account.login_lockout: 'Έχετε αποτύχει να συνδεθείτε πολλές φορές, με αποτέλεσμα να έχετε μπλοκαριστεί. Παρακαλούμε δοκιμάστε ξανά αργότερα.'
-helpcenter.account.login_password_reminder: 'Ξεχάσατε τον κωδικό πρόσβασης;'
+helpcenter.account.login_reset_password_link: 'Ξεχάσατε τον κωδικό πρόσβασης;'
 helpcenter.account.login_register_action: Εγγραφή
 helpcenter.account.login_remember: 'Θέλετε να παραμείνετε σε σύνδεση;'
 helpcenter.account.logout_action: Αποσύνδεση
 helpcenter.account.new_ticket_no_login: 'Το portal CRM είναι ανενεργό. Δεν μπορείτε να καταχωρήσετε αίτημα.'
-helpcenter.account.profile_btn_save: 'Αποθήκευση προφίλ'
+helpcenter.account.profile_save_action: 'Αποθήκευση προφίλ'
 helpcenter.account.profile_delete_picture: 'Αλλαγή ή διαγραφή φωτογραφίας προφίλ;'
 helpcenter.account.registration_set_password: 'Υπάρχει ήδη ένας λογαριασμός με αυτό το email. Σας στείλαμε ένα email ώστε να δημιουργήσετε νέο κωδικό πρόσβασης και να συνδεθείτε.'
 helpcenter.account.reset_password_click_here: 'Πατήστε εδώ για να ζητήσετε έναν κωδικό επαναφοράς κωδικού πρόσβασης.'
@@ -44,7 +44,7 @@ helpcenter.account.submit_saved_form_go: 'Πατήστε εδώ για να επ
 helpcenter.account.tickets_lockout: 'Έχετε καταχωρήσει πάρα πολλά tickets, με αποτέλεσμα να μπλοκαριστείτε. Παρακαλούμε δοκιμάστε ξανά αργότερα.'
 helpcenter.account.usersource_set_email_desc: 'Πριν συνδεθείτε, χρειαζόμαστε το email σας. Είναι απαραίτητο να το εισάγετε παρακάτω, ώστε να σας στείλουμε ένα email επιβεβαίωσης.'
 helpcenter.account.your_pending_email_addresses: 'Email διευθύνσεις σε αναμονή'
-helpcenter.articles.published: Δημοσιευμένα
+helpcenter.articles.published_label: Δημοσιευμένα
 helpcenter.articles.section_title: Γνωσιακή βάση
 helpcenter.articles.view_as_agent: 'Βλέπετε αυτήν τη σελίδα επειδή είστε εκπρόσωπος του Support. Οι χρήστες δεν μπορούν να δουν αυτήν τη σελίδα.'
 helpcenter.chat.email: 'Το email σας'
@@ -61,7 +61,7 @@ helpcenter.community.module_forbidden: 'Δεν έχετε πρόσβαση σε 
 helpcenter.community.no_matching: 'Δεν υπάρχει community topic που να ταιριάζει'
 helpcenter.community.rate_forbidden: 'Δεν έχετε δικαίωμα να ψηφίσετε'
 helpcenter.direct_messages.reply_message: Μήνυμα
-helpcenter.downloads.download: Λήψη
+helpcenter.downloads.download_action: Λήψη
 helpcenter.downloads.none: 'Δεν υπάρχουν λήψεις ακόμη'
 helpcenter.downloads.uploaded_on: Ανέβηκε
 helpcenter.emails.chat_transcript: 'Σας ευχαριστούμε που επικοινωνήσατε μαζί μας! Εδώ θα βρείτε ένα αντίγραφο της συνομιλίας μας.'
@@ -181,8 +181,8 @@ helpcenter.general.agent_bar_agent_kb: 'Διαχείριση γνωσιακής 
 helpcenter.general.agent_bar_agent_news: 'Διαχείριση Ενημερώσεων'
 helpcenter.general.agents: Εκπρόσωπος Support
 helpcenter.general.attachments: Επισυνάψεις
-helpcenter.general.btn_cancel: Ακύρωση
-helpcenter.general.btn_subscribe: Εγγραφή
+helpcenter.general.cancel_action_action: Ακύρωση
+helpcenter.general.subscribe_action: Εγγραφή
 helpcenter.general.comment_btn_save: 'Αποθήκευση σχολίου'
 helpcenter.general.comments: Σχόλια
 helpcenter.general.comments_pending_validation: 'Αυτό το σχόλιο είναι υπό έγκριση. Θα εμφανιστεί σύντομα'

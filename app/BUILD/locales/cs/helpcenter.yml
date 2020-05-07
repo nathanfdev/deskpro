@@ -2,22 +2,22 @@
 helpcenter.account.change_password_action: 'Upravit heslo'
 helpcenter.account.comment_lockout: 'Odeslali jste přiliš mnoho kometářů v krátké době, prosíme o strpení.'
 helpcenter.account.email_btn_make_primary: 'Označit jako primární'
-helpcenter.account.email_btn_remove: 'Odstranit e-mail'
-helpcenter.account.email_btn_resend_validation: 'Znovu odeslat ověřovací e-mail'
+helpcenter.account.email_remove_action: 'Odstranit e-mail'
+helpcenter.account.email_resend_validation_action: 'Znovu odeslat ověřovací e-mail'
 helpcenter.account.email_btn_usersource_set: 'Přidat e-mailovou adresu'
 helpcenter.account.login_captcha_failed: 'Zadali jste nesprávné CAPTCHA. Zkuste to, prosím, znovu.'
 helpcenter.account.login_email: 'Váš e-mail'
 helpcenter.account.login_external: 'Přihlásit se pomocí externí služby'
 helpcenter.account.login_lockout: 'Příliš mnoho neplatných pokusů o přihlášení. Váš účet byl dočasně pozastaven.'
-helpcenter.account.login_password_reminder: 'Potřebujete připomenout heslo?'
+helpcenter.account.login_reset_password_link: 'Potřebujete připomenout heslo?'
 helpcenter.account.login_register_action: Registrovat
 helpcenter.account.login_remember: 'Zůstat přihlášen(a)?'
 helpcenter.account.logout_action: Odhlásit
-helpcenter.account.profile_btn_save: 'Uložit profil'
+helpcenter.account.profile_save_action: 'Uložit profil'
 helpcenter.account.profile_delete_picture: 'Změnit nebo vymazat fotku?'
 helpcenter.account.reset_password_click_here: 'Klikněte zde pro vyžádání kódu pro reset hesla'
 helpcenter.account.reset_password_invalid_desc: 'Váš kód pro reset hesla je neplatný. Vyžádejte si nový.'
-helpcenter.articles.published: Publikováno
+helpcenter.articles.published_label: Publikováno
 helpcenter.community.btn_vote: 'Souhlasím'
 helpcenter.community.error_hidden: 'Tato připomínka je skrytá'
 helpcenter.community.error_login: 'Prosíme, přihlašte se'
@@ -83,9 +83,9 @@ helpcenter.general.agent_bar_agent_home: 'Operátor domov. stránka'
 helpcenter.general.agent_bar_agent_kb: 'Spravovat znalostní bázi'
 helpcenter.general.agent_bar_agent_news: 'Spravovat novinky'
 helpcenter.general.attachments: Přílohy
-helpcenter.general.btn_cancel: Zrušit
-helpcenter.general.btn_subscribe: Odebírat
-helpcenter.general.btn_unsubscribe: Vypnout odběr
+helpcenter.general.cancel_action_action: Zrušit
+helpcenter.general.subscribe_action: Odebírat
+helpcenter.general.unsubscribe_action: Vypnout odběr
 helpcenter.general.comment_btn_save: 'Uložit komentář'
 helpcenter.general.comments: Komentáře
 helpcenter.general.comments_pending_validation: 'Komentář čeká na schválení. Za chvíli se zobrazí'

@@ -2,19 +2,19 @@
 helpcenter.account.change_password_action: 'Aktualizuj hasło'
 helpcenter.account.comment_lockout: 'Umieściłeś dużo komentarzy. Poczekaj chwilę, zanim będziesz mógł umieszczać kolejne.'
 helpcenter.account.email_btn_make_primary: 'Ustaw jako główny'
-helpcenter.account.email_btn_remove: 'Usuń email'
-helpcenter.account.email_btn_resend_validation: 'Wyślij ponownie email potwierdzający'
+helpcenter.account.email_remove_action: 'Usuń email'
+helpcenter.account.email_resend_validation_action: 'Wyślij ponownie email potwierdzający'
 helpcenter.account.email_btn_usersource_set: 'Dodaj adres email'
 helpcenter.account.login_captcha_failed: 'Podałeś niepoprawny kod CAPTCHA. Spróbuj ponownie.'
 helpcenter.account.login_email: 'Twój email'
 helpcenter.account.login_external: 'Zaloguj za pomocą usługi zewnętrznej'
 helpcenter.account.login_lockout: 'Nie udało ci się zalogować za wiele razy. Zostałeś zablokowany. Spróbuj ponownie później.'
-helpcenter.account.login_password_reminder: 'Potrzebujesz przypomnienia hasła?'
+helpcenter.account.login_reset_password_link: 'Potrzebujesz przypomnienia hasła?'
 helpcenter.account.login_register_action: Zarejestruj się
 helpcenter.account.login_remember: 'Pozostać jako zalogowany?'
 helpcenter.account.logout_action: Wyloguj
 helpcenter.account.new_ticket_no_login: 'Portal CRM jest wyłączony. Nie można przesłać biletu.'
-helpcenter.account.profile_btn_save: 'Zapisz profil'
+helpcenter.account.profile_save_action: 'Zapisz profil'
 helpcenter.account.profile_delete_picture: 'Zmienić lub usunąć zdjęcie profilowe?'
 helpcenter.account.registration_set_password: 'Konto z tym adresem email już istnieje. Wysłaliśmy ci wiadomość email, która pozwoli ci zresetować hasło oraz zalogować się.'
 helpcenter.account.reset_password_click_here: 'Kliknij tutaj, aby zażądać kod resetowania hasła.'
@@ -44,7 +44,7 @@ helpcenter.account.submit_saved_form_go: 'Kliknij tutaj, aby automatycznie wysł
 helpcenter.account.tickets_lockout: 'Wysłałeś za dużo zgłoszeń więc zostałeś zablokowany. Spróbuj ponownie później.'
 helpcenter.account.usersource_set_email_desc: 'Zanim będziesz mógł się zalogować, potrzebujemy twojego adresu email. Podaj swój adres email, abyśmy mogli wysłać ci weryfikującą wiadomość email.'
 helpcenter.account.your_pending_email_addresses: 'Twoje oczekujące adresy email'
-helpcenter.articles.published: Opublikowane
+helpcenter.articles.published_label: Opublikowane
 helpcenter.articles.section_title: Baza Wiedzy
 helpcenter.articles.view_as_agent: 'Masz dostęp do tej strony, bo jesteś agentem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
 helpcenter.chat.email: 'Twój adres email'
@@ -62,7 +62,7 @@ helpcenter.community.no_matching: 'Brak pasującej opinii'
 helpcenter.community.rate_forbidden: 'Nie masz pozwolenia na głosowanie'
 helpcenter.community.section_title: Opinie
 helpcenter.direct_messages.reply_message: Treść zgłoszenia
-helpcenter.downloads.download: Pobierz
+helpcenter.downloads.download_action: Pobierz
 helpcenter.downloads.none: 'Na razie brak elementów do pobrania'
 helpcenter.downloads.uploaded_on: Wgrane
 helpcenter.emails.chat_transcript: 'Dziękujemy za czatowanie z nami. Oto log Twojego czatu:'
@@ -182,9 +182,9 @@ helpcenter.general.agent_bar_agent_kb: 'Zarządzaj bazą wiedzy'
 helpcenter.general.agent_bar_agent_news: 'Zarządzaj Aktualnościami'
 helpcenter.general.agents: Agenci
 helpcenter.general.attachments: Załączniki
-helpcenter.general.btn_cancel: Anuluj
-helpcenter.general.btn_subscribe: Subskrybuj
-helpcenter.general.btn_unsubscribe: Nie subskrybuj
+helpcenter.general.cancel_action_action: Anuluj
+helpcenter.general.subscribe_action: Subskrybuj
+helpcenter.general.unsubscribe_action: Nie subskrybuj
 helpcenter.general.chat: Czat
 helpcenter.general.comment_btn_save: 'Zapisz komentarz'
 helpcenter.general.comments: Komentarze

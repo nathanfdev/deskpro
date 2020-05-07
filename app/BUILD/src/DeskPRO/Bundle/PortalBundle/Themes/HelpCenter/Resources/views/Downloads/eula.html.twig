@@ -21,7 +21,7 @@
                         {% if for_download %}
                         <div class="text-center">
                             <form method="POST" action="{{ path('portal_downloads_eula', {'id': field.id, 'for_download': for_download}) }}">
-                                <button class="btn btn-primary" type="submit">{{ phrase('helpcenter.general.agree') }}</button>
+                                <button class="btn btn-primary" type="submit">{{ phrase('helpcenter.eula.agree') }}</button>
                             </form>
                         </div>
                         {% endif %}

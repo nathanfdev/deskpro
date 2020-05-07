@@ -2,19 +2,19 @@
 helpcenter.account.change_password_action: 'Atualizar senha'
 helpcenter.account.comment_lockout: 'Você enviou muitos comentários. Por favor, aguarde para enviar mais.'
 helpcenter.account.email_btn_make_primary: 'Torne a Primária'
-helpcenter.account.email_btn_remove: 'Remover email'
-helpcenter.account.email_btn_resend_validation: 'Reenviar E-mail de validação'
+helpcenter.account.email_remove_action: 'Remover email'
+helpcenter.account.email_resend_validation_action: 'Reenviar E-mail de validação'
 helpcenter.account.email_btn_usersource_set: 'Adicionar endereço de e-mail'
 helpcenter.account.login_captcha_failed: 'Você inseriu um código CAPTCHA inválido. Por favor, tente novamente.'
 helpcenter.account.login_email: 'Seu email'
 helpcenter.account.login_external: 'Faça o login com um serviço externo'
 helpcenter.account.login_lockout: 'Você falhou no login muitas vezes, por isso você foi bloqueado. Por favor, tente novamente mais tarde.'
-helpcenter.account.login_password_reminder: 'Precisa de um lembrete de senha?'
+helpcenter.account.login_reset_password_link: 'Precisa de um lembrete de senha?'
 helpcenter.account.login_register_action: Registar
 helpcenter.account.login_remember: 'Permaneça logado?'
 helpcenter.account.logout_action: Sair
 helpcenter.account.new_ticket_no_login: 'O Portal CRM está desativado. Não é possível enviar um ticket.'
-helpcenter.account.profile_btn_save: 'Salvar perfil'
+helpcenter.account.profile_save_action: 'Salvar perfil'
 helpcenter.account.profile_delete_picture: 'Alterar ou excluir a foto do perfil?'
 helpcenter.account.registration_set_password: 'Uma conta com este email já existe. Nós lhe enviamos um email que lhe permitirá definir sua senha e login.'
 helpcenter.account.reset_password_click_here: 'Clique aqui para solicitar um código de redefinição de senha'
@@ -51,7 +51,7 @@ helpcenter.community.btn_vote: 'Concordo'
 helpcenter.community.form_full_name: Nome
 helpcenter.community.section_title: Comentário
 helpcenter.direct_messages.reply_message: Mensagem
-helpcenter.downloads.download: Baixar
+helpcenter.downloads.download_action: Baixar
 helpcenter.emails.chat_transcript: 'Obrigado por conversar conosco. Aqui está a cópia da nossa conversa.'
 helpcenter.emails.chat_transcript_subject: 'Cópia do chat'
 helpcenter.emails.comment_approved: 'O seu comentário foi publicado.'
@@ -89,7 +89,7 @@ helpcenter.forms.label_save: Salvar
 helpcenter.general.add_comment: 'Adicionar comentário'
 helpcenter.general.agent: Agente
 helpcenter.general.attachments: Anexos
-helpcenter.general.btn_cancel: Cancelar
+helpcenter.general.cancel_action_action: Cancelar
 helpcenter.general.comments: Comentários?
 helpcenter.general.downloads_type: Transferências
 helpcenter.general.everything: Tudo

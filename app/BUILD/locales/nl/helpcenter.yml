@@ -2,19 +2,19 @@
 helpcenter.account.change_password_action: 'Wachtwoord bijwerken'
 helpcenter.account.comment_lockout: 'U heeft veel reacties verstuurd. Wacht om er meer te versturen.'
 helpcenter.account.email_btn_make_primary: 'Primair maken'
-helpcenter.account.email_btn_remove: 'E-mailadres verwijderen'
-helpcenter.account.email_btn_resend_validation: 'Stuur validatie e-mail'
+helpcenter.account.email_remove_action: 'E-mailadres verwijderen'
+helpcenter.account.email_resend_validation_action: 'Stuur validatie e-mail'
 helpcenter.account.email_btn_usersource_set: 'E-mailadres toevoegen'
 helpcenter.account.login_captcha_failed: 'U heeft een ongeldige CAPTCHA-code ingevuld. Probeer het nogmaals.'
 helpcenter.account.login_email: 'Uw e-mailadres'
 helpcenter.account.login_external: 'Inloggen met een externe service'
 helpcenter.account.login_lockout: 'U heeft te veel mislukte inlogpogingen, dus u bent uitgesloten. Probeer het later nogmaals.'
-helpcenter.account.login_password_reminder: 'Wachtwoordherinnering nodig?'
+helpcenter.account.login_reset_password_link: 'Wachtwoordherinnering nodig?'
 helpcenter.account.login_register_action: Registreren
 helpcenter.account.login_remember: 'Ingelogd blijven?'
 helpcenter.account.logout_action: Uitloggen
 helpcenter.account.new_ticket_no_login: 'Portal CRM is uitgeschakeld. Kon geen ticket plaatsen.'
-helpcenter.account.profile_btn_save: 'Profiel opslaan'
+helpcenter.account.profile_save_action: 'Profiel opslaan'
 helpcenter.account.profile_delete_picture: 'Profielfoto wijzigen of verwijderen?'
 helpcenter.account.registration_set_password: 'Een account met dit e-mailadres bestaat al. We hebben u een e-mail gestuurd waarmee u uw wachtwoord in kunt stellen en loggen.'
 helpcenter.account.reset_password_click_here: 'Klik hier om een wachtwoord reset code aan te vragen'
@@ -44,7 +44,7 @@ helpcenter.account.submit_saved_form_go: 'Klik hier om het formulier automatisch
 helpcenter.account.tickets_lockout: 'U heeft te vaak tickets verstuurd, dus u bent uitgesloten. Probeer het later nogmaals.'
 helpcenter.account.usersource_set_email_desc: 'Voordat u kunt inloggen hebben we uw e-mailadres nodig. Vul uw e-mailadres hieronder in, zodat we u een verificatiemail kunnen sturen.'
 helpcenter.account.your_pending_email_addresses: 'Uw e-mailadressen in afwachting'
-helpcenter.articles.published: Gepubliceerd
+helpcenter.articles.published_label: Gepubliceerd
 helpcenter.articles.section_title: Kennisbank
 helpcenter.articles.view_as_agent: 'U kunt deze pagina zien, omdat u een medewerker bent. Gebruikers zullen deze pagina niet kunnen zien.'
 helpcenter.chat.email: 'Uw e-mailadres'
@@ -61,7 +61,7 @@ helpcenter.community.module_forbidden: 'U heeft geen toegang tot deze module'
 helpcenter.community.no_matching: 'Geen overeenkomstige gemeenschapsonderwerpen'
 helpcenter.community.rate_forbidden: 'U mag niet stemmen'
 helpcenter.direct_messages.reply_message: Bericht
-helpcenter.downloads.download: Downloaden
+helpcenter.downloads.download_action: Downloaden
 helpcenter.downloads.none: 'Nog geen downloads'
 helpcenter.downloads.uploaded_on: Geüpload
 helpcenter.emails.chat_transcript: 'Bedankt voor het chatten met ons. Hierbij ontvangt u de kopie van het gesprek.'
@@ -182,9 +182,9 @@ helpcenter.general.agent_bar_agent_kb: 'Kennisbank beheren'
 helpcenter.general.agent_bar_agent_news: 'Nieuws beheren'
 helpcenter.general.agents: Medewerkers
 helpcenter.general.attachments: Bijlagen
-helpcenter.general.btn_cancel: Annuleren
-helpcenter.general.btn_subscribe: Abonneren
-helpcenter.general.btn_unsubscribe: Afmelden
+helpcenter.general.cancel_action_action: Annuleren
+helpcenter.general.subscribe_action: Abonneren
+helpcenter.general.unsubscribe_action: Afmelden
 helpcenter.general.comment_btn_save: 'Reactie opslaan'
 helpcenter.general.comments: Reacties
 helpcenter.general.comments_pending_validation: 'Deze reactie wordt gecontroleerd. Deze zal binnenkort zichtbaar zijn'
