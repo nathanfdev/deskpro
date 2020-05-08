@@ -37,7 +37,7 @@ export class Approval extends React.Component {
     return (
       <Container className="approvals">
         {this.state.showForm ?
-          (<div className="approvals-wrapper">
+          (<div>
             <ApprovalForm
               templates={this.props.templates}
               ticketPerms={this.props.ticketPerms}
