@@ -500,6 +500,18 @@ class GroupingCounter
 
                 $iterator($groupStructure);
             }
+        } elseif ($field === TicketSearch::TERM_AGENT) {
+            $missingIds = array_diff($ids, array_keys($titles));
+            if ($missingIds) {
+                $removedAgents = App::getEntityRepository(Person::class)->findBy([
+                    'id' => $missingIds,
+                ]);
+
+                /** @var Person $agent */
+                foreach ($removedAgents as $agent) {
+                    $titles[$agent->getId()] = $agent->getDisplayName();
+                }
+            }
         }
 
         if (!$groupStructure) {
