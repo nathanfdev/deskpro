@@ -17,7 +17,6 @@ use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 use DeskPRO\Bundle\ReportBundle\Serializer\Model\ReportWidget as ReportWidgetModel;
 use Doctrine\ORM\EntityManager;
-use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Class ReportWidgetHandler.
@@ -113,8 +112,6 @@ class ReportWidgetHandler extends AbstractEntityHandler
                     $entity->getId(),
                     new CallbackDeferredProperty([$this, 'getAdditionalInfo'], [$entity, $e])
                 );
-            } else {
-                SystemErrorHandler::logException($e);
             }
         }
 
