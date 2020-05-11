@@ -73,16 +73,14 @@ trait TicketsPagerTrait
      * Don't add limit if  using no criteria  and ordering by id
      * To be able to export all tickets.
      *
-     * @param QueryBuilder       $qb
+     * @param SqlBuilder         $qb
      * @param TicketSearchParams $searchParams
      * @param array              $params
-     *
-     * @return type
      */
     private function addLimitInCaseOfNoCriteria(SqlBuilder $qb, TicketSearchParams $searchParams, array $params)
     {
         $paramsToTest = $params;
-        foreach (['page', 'count'] as $paramKey) {
+        foreach (['page', 'count', 'ids_only'] as $paramKey) {
             if (isset($paramsToTest[$paramKey])) {
                 unset($paramsToTest[$paramKey]);
             }
@@ -94,7 +92,7 @@ trait TicketsPagerTrait
             && $searchParams->getOrderFields()[0][0] === TicketSearchParams::ORDER_ID
             && !$searchParams->hasGroupFields()
             && !$searchParams->hasSubFilterFields()
-            && $paramsToTest === ['not_status' => 'hidden'] // this is the default status during the search
+            && ($paramsToTest === ['not_status' => 'hidden'] || !$paramsToTest) // this is the default status during the search
         ) {
             return;
         }
