@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Application\DeskPRO\People\PasswordPolicyValidator;
@@ -37,8 +35,8 @@ class DpPasswordValidator extends ConstraintValidator
      */
     public function __construct(
         PasswordPolicyValidator $pwValidator,
-        PortalBrandThemeLoader $portalBrandThemeLoader,
-        BrandStack $brandStack
+        PortalBrandThemeLoader $portalBrandThemeLoader = null,
+        BrandStack $brandStack = null
     ) {
         $this->pwValidator             = $pwValidator;
         $this->portalBrandThemeLoader  = $portalBrandThemeLoader;

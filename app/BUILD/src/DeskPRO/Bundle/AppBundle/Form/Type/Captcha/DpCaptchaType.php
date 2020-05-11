@@ -47,10 +47,10 @@ class DpCaptchaType extends AbstractType
      * @param array $captchaConfig
      */
     public function __construct(
-        BrandStack $brandStack,
-        PortalBrandThemeLoader $portalBrandThemeLoader,
         LanguageManager $language_manager,
-        array $captchaConfig
+        array $captchaConfig,
+        BrandStack $brandStack,
+        PortalBrandThemeLoader $portalBrandThemeLoader
     ) {
         $this->language_manager       = $language_manager;
         $this->brandStack             = $brandStack;

@@ -43,8 +43,8 @@ class ErrorMessageFactory
     public function __construct(
         Translate $translate,
         $prefix,
-        PortalBrandThemeLoader $portalBrandThemeLoader,
-        BrandStack $brandStack
+        PortalBrandThemeLoader $portalBrandThemeLoader = null,
+        BrandStack $brandStack = null
     ) {
         $this->portalBrandThemeLoader  = $portalBrandThemeLoader;
         $this->brandStack              = $brandStack;
@@ -101,6 +101,10 @@ class ErrorMessageFactory
 
     private function isHelpcenter()
     {
-        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
+        if ($this->portalBrandThemeLoader) {
+            return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
+        }
+
+        return false;
     }
 }

@@ -71,8 +71,8 @@ class TicketTableDataService extends AbstractDataService
         TicketLayoutFactory $ticket_layout_factory,
         CustomFieldManager $form_field_manager,
         BrandAwareSettingsResolver $brand_aware_settings,
-        PortalBrandThemeLoader $portalBrandThemeLoader,
-        BrandStack $brandStack
+        PortalBrandThemeLoader $portalBrandThemeLoader = null,
+        BrandStack $brandStack = null
     ) {
         parent::__construct($em);
         $this->ticket_data_service     = $ticket_data_service;

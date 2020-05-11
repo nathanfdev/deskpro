@@ -47,10 +47,10 @@ class ReCaptchaType extends AbstractType
      * @param LanguageManager $languageManager
      */
     public function __construct(
-        BrandStack $brandStack,
-        PortalBrandThemeLoader $portalBrandThemeLoader,
         SettingsResolver $settingsResolver,
-        LanguageManager $languageManager
+        LanguageManager $languageManager,
+        BrandStack $brandStack,
+        PortalBrandThemeLoader $portalBrandThemeLoader = null
     ) {
         $this->languageManager        = $languageManager;
         $this->settingsResolver       = $settingsResolver;

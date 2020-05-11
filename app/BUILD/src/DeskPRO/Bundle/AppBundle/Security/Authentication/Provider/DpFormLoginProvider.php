@@ -189,6 +189,9 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
 
     protected function isHelpcenter()
     {
-        return $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($this->get('brand_stack')->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
+        $portalBrandThemeLoader = $this->container->get('portal_brand_theme_loader');
+        if ($portalBrandThemeLoader) {
+            return $portalBrandThemeLoader->getPortalBrandTheme($this->container->get('brand_stack')->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
+        }
     }
 }

@@ -66,18 +66,20 @@ class NewCommunityTopicType extends AbstractType
     /**
      * Constructor.
      *
-     * @param CaptchaDecider     $captchaDecider
-     * @param LanguageManager    $languageManager
+     * @param CaptchaDecider $captchaDecider
+     * @param LanguageManager $languageManager
      * @param CustomFieldManager $fieldManager
      * @param HierarchyGenerator $hierarchyGenerator
+     * @param PortalBrandThemeLoader|null $portalBrandThemeLoader
+     * @param BrandStack|null $brandStack
      */
     public function __construct(
         CaptchaDecider $captchaDecider,
         LanguageManager $languageManager,
         CustomFieldManager $fieldManager,
         HierarchyGenerator $hierarchyGenerator,
-        PortalBrandThemeLoader $portalBrandThemeLoader,
-        BrandStack $brandStack
+        PortalBrandThemeLoader $portalBrandThemeLoader = null,
+        BrandStack $brandStack = null
     ) {
         $this->captchaDecider          = $captchaDecider;
         $this->languageManager         = $languageManager;
