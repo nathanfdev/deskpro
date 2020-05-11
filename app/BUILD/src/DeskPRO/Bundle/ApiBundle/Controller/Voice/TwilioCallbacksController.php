@@ -1770,11 +1770,7 @@ class TwilioCallbacksController extends BaseController
             return;
         }
 
-        if ($target instanceof VoiceQueueTarget) {
-            if ($target->getQueue()->getGreetAsset()) {
-                $this->playGreetAsset($twiml, $target->getQueue()->getGreetAsset());
-            }
-        } elseif ($target instanceof VoiceAutoAttendantTarget) {
+        if ($target instanceof VoiceAutoAttendantTarget) {
             $autoAttendant = $target->getAutoAttendant();
             $dialNumbers   = $autoAttendant->getOrderedDialNumbers();
 
@@ -1821,9 +1817,15 @@ class TwilioCallbacksController extends BaseController
             } else {
                 $this->playGreetAsset($gather, $asset);
             }
-        }
+        } else {
+            if ($target instanceof VoiceQueueTarget) {
+                if ($target->getQueue()->getGreetAsset()) {
+                    $this->playGreetAsset($twiml, $target->getQueue()->getGreetAsset());
+                }
+            }
 
-        $twiml->redirect($this->getNewIncomingCallCallbackUrl($account, $phoneCall, $target));
+            $twiml->redirect($this->getNewIncomingCallCallbackUrl($account, $phoneCall, $target));
+        }
     }
 
     /**
