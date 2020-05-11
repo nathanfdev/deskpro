@@ -44,8 +44,6 @@ class TicketHandler extends AbstractEntityHandler
             ->setSubject($model->getSubject())
             ->setStatus($model->getStatus())
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
-            ->setDateResolved($model->getDateResolved())
-            ->setDateArchived($model->getDateArchived())
         ;
 
         if ($model->getBrand()) {
@@ -227,6 +225,12 @@ class TicketHandler extends AbstractEntityHandler
         }
         if ($lastUserReply = $entity->getLastUserReply()) {
             $entity->setDateLastUserReply($lastUserReply->getDateCreated());
+        }
+        if ($model->getDateResolved()) {
+            $entity->setDateResolved($model->getDateResolved());
+        }
+        if ($model->getDateArchived()) {
+            $entity->setDateArchived($model->getDateArchived());
         }
 
         $this->persister->persistAndFlush($entity, $model);
