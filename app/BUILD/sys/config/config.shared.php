@@ -49,6 +49,11 @@ $definition->addTag('kernel.event_subscriber');
 $container->setDefinition('listener.security_headers', $definition);
 
 $definition = new Definition();
+$definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\ReferrerPolicyListener');
+$definition->addTag('kernel.event_subscriber');
+$container->setDefinition('listener.referrer_policy', $definition);
+
+$definition = new Definition();
 $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\RequestIdResponseListener');
 $definition->addTag('kernel.event_subscriber');
 $container->setDefinition('listener.response_id_header', $definition);
