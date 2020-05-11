@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Inloggen met een externe service'
 helpcenter.account.login_lockout: 'U heeft te veel mislukte inlogpogingen, dus u bent uitgesloten. Probeer het later nogmaals.'
 helpcenter.account.login_reset_password_link: 'Wachtwoordherinnering nodig?'
 helpcenter.account.login_register_action: Registreren
-helpcenter.account.login_remember: 'Ingelogd blijven?'
+helpcenter.account.login_stay_logged_in: 'Ingelogd blijven?'
 helpcenter.account.logout_action: Uitloggen
 helpcenter.account.new_ticket_no_login: 'Portal CRM is uitgeschakeld. Kon geen ticket plaatsen.'
 helpcenter.account.profile_save_action: 'Profiel opslaan'
@@ -47,15 +47,14 @@ helpcenter.account.your_pending_email_addresses: 'Uw e-mailadressen in afwachtin
 helpcenter.articles.published_label: Gepubliceerd
 helpcenter.articles.section_title: Kennisbank
 helpcenter.articles.view_as_agent: 'U kunt deze pagina zien, omdat u een medewerker bent. Gebruikers zullen deze pagina niet kunnen zien.'
-helpcenter.chat.email: 'Uw e-mailadres'
-helpcenter.chat.list_date: Datum
-helpcenter.chat.log_chat_time: 'Totale chattijd'
-helpcenter.chat.log_linked_ticket: 'Toegewezen aan ticket'
-helpcenter.chat.log_view_linked_ticket: 'Ticket tonen'
+helpcenter.messenger.date_label: Datum
+helpcenter.messenger.total_chat_time_label: 'Totale chattijd'
+helpcenter.messenger.linked_ticket_label: 'Toegewezen aan ticket'
+helpcenter.messenger.view_linked_ticket_action: 'Ticket tonen'
 helpcenter.community.btn_vote: 'Ik ben het eens'
 helpcenter.community.error_hidden: 'Dit gemeenschapsonderwerp is verborgen'
 helpcenter.community.error_login: 'Inloggen'
-helpcenter.community.form_full_name: Naam
+helpcenter.general.name: Naam
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.module_forbidden: 'U heeft geen toegang tot deze module'
 helpcenter.community.no_matching: 'Geen overeenkomstige gemeenschapsonderwerpen'

@@ -1,8 +1,7 @@
 ---
 helpcenter.articles.section_title: Kunnskapsbase
 helpcenter.articles.view_as_agent: 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.'
-helpcenter.chat.email: 'Din epost adresse'
-helpcenter.community.form_full_name: Navn
+helpcenter.general.name: Navn
 helpcenter.direct_messages.reply_message: Melding
 helpcenter.downloads.download_action: Last ned
 helpcenter.emails.chat_transcript: 'Takk for praten. Her er et referat av vår samtale.'

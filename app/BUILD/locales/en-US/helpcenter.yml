@@ -19,7 +19,6 @@ helpcenter.account.login_password: 'Your password'
 helpcenter.account.login_reset_password_link: 'Need a password reminder?'
 helpcenter.account.login_register_action: Register
 helpcenter.account.login_register_header: 'Register for an account'
-helpcenter.account.login_remember: 'Stay Logged In?'
 helpcenter.account.login_stay_logged_in: 'Stay Logged In?'
 helpcenter.account.logout_action: Logout
 helpcenter.account.new_ticket_no_login: 'Portal CRM is disabled. Unable to submit a ticket.'
@@ -92,18 +91,17 @@ helpcenter.articles.status_draft: Draft
 helpcenter.articles.status_published: Published
 helpcenter.articles.view_as_agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
 helpcenter.articles.view_x_articles: '{count, plural, one {View 1 article} other {View # articles}}'
-helpcenter.chat.assigned_agent: 'Assigned agent'
-helpcenter.chat.email: 'Your Email Address'
-helpcenter.chat.email_validated_sucessfully: 'Email validated successfully'
-helpcenter.chat.files_on_this_chat: 'Files on this Chat'
-helpcenter.chat.invalid_validation_code: 'Invalid validation code'
-helpcenter.chat.list_date: Date
-helpcenter.chat.log_chat_time: 'Total Chat Time'
-helpcenter.chat.log_linked_ticket: 'Assigned to ticket'
-helpcenter.chat.log_view_linked_ticket: 'View Ticket'
-helpcenter.chat.view: View
-helpcenter.chat.you: You
-helpcenter.chat.your_chat_with: 'Your chat with {person_name}'
+helpcenter.messenger.assigned_agent: 'Assigned agent'
+helpcenter.messenger.email_validated_sucessfully: 'Email validated successfully'
+helpcenter.messenger.files_on_this_chat: 'Files on this Chat'
+helpcenter.messenger.invalid_validation_code: 'Invalid validation code'
+helpcenter.messenger.date_label: Date
+helpcenter.messenger.total_chat_time_label: 'Total Chat Time'
+helpcenter.messenger.linked_ticket_label: 'Assigned to ticket'
+helpcenter.messenger.view_linked_ticket_action: 'View Ticket'
+helpcenter.messenger.view_action: View
+helpcenter.messenger.you: You
+helpcenter.messenger.your_chat_with: 'Your chat with {person_name}'
 helpcenter.chats.my_chats: 'My chats'
 helpcenter.community.activity: Activity
 helpcenter.community.activity_commented: 'I commented'
@@ -121,7 +119,7 @@ helpcenter.community.filters: Filters
 helpcenter.community.form_add_attachments: 'Add attachments'
 helpcenter.community.form_complete_help_message: 'Please complete this form and one of our agents will reply to you by email as soon as possible.'
 helpcenter.community.form_create_topic: 'Create Topic'
-helpcenter.community.form_full_name: Name
+helpcenter.general.name: Name
 helpcenter.community.form_message: Message
 helpcenter.community.form_submit: Submit
 helpcenter.community.form_topic_title: Title
@@ -332,6 +330,7 @@ helpcenter.flashes.user_changed_primary_email: 'Your primary email address has b
 helpcenter.flashes.user_registered_must_verify: 'Thank you for registering. Please check your email, we have sent you a verification link.'
 helpcenter.flashes.user_registered_verified: 'Thank you. Your email address has been verified.'
 helpcenter.flashes.user_registered_verified_authenticated: 'Thank you. Your email address has been verified and you have been logged in.'
+helpcenter.flashes.user_removed_an_email: 'Your email address {email} was removed.'
 helpcenter.flashes.user_resend_email_verify: 'The validation email has been sent to your email address again.'
 helpcenter.flashes.user_updated_profile: 'Your profile has been updated.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Thank you for verifying your email address. Your account is now active.'

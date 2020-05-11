@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'با یک سرویس خارجی وارد ش�
 helpcenter.account.login_lockout: 'شما بیش از حد وارد حساب کاربری شده اید، بنابراین شما قفل شده اید. لطفا بعدا دوباره امتحان کنید'
 helpcenter.account.login_reset_password_link: 'نیاز به یادآور رمز عبوردارید؟'
 helpcenter.account.login_register_action: ثبت نام
-helpcenter.account.login_remember: 'در حساب باقی میمانید؟'
+helpcenter.account.login_stay_logged_in: 'در حساب باقی میمانید؟'
 helpcenter.account.logout_action: خروج
 helpcenter.account.profile_save_action: 'ذخیره کردن پروفایل'
 helpcenter.account.profile_delete_picture: 'تغییر یا حذف عکس پروفایل'
@@ -45,15 +45,14 @@ helpcenter.account.usersource_set_email_desc: 'قبل از اینکه بتوان
 helpcenter.account.your_pending_email_addresses: 'آدرس های ایمیل در حال انتظارشما'
 helpcenter.articles.section_title: مرکز آموزش
 helpcenter.articles.view_as_agent: 'شما می توانید این صفحه را ببینید زیرا شما یک عامل هستید. کاربران نمی توانند این صفحه را مشاهده کنند.'
-helpcenter.chat.email: 'آدرس ایمیل شما'
-helpcenter.chat.list_date: تاریخ
-helpcenter.chat.log_chat_time: 'زمان کامل چت'
-helpcenter.chat.log_linked_ticket: 'اختصاص دادن به پیام'
-helpcenter.chat.log_view_linked_ticket: 'مشاهده پیام'
+helpcenter.messenger.date_label: تاریخ
+helpcenter.messenger.total_chat_time_label: 'زمان کامل چت'
+helpcenter.messenger.linked_ticket_label: 'اختصاص دادن به پیام'
+helpcenter.messenger.view_linked_ticket_action: 'مشاهده پیام'
 helpcenter.community.btn_vote: 'من موافقت می کنم'
 helpcenter.community.error_hidden: 'این مورد بازخورد پنهان است'
 helpcenter.community.error_login: 'لطفا وارد شوید'
-helpcenter.community.form_full_name: نام
+helpcenter.general.name: نام
 helpcenter.community.form_topic_title: عنوان
 helpcenter.community.section_title: انتقادات و پیشنهادات
 helpcenter.direct_messages.reply_message: پیغام

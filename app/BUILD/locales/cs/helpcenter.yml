@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Přihlásit se pomocí externí služby'
 helpcenter.account.login_lockout: 'Příliš mnoho neplatných pokusů o přihlášení. Váš účet byl dočasně pozastaven.'
 helpcenter.account.login_reset_password_link: 'Potřebujete připomenout heslo?'
 helpcenter.account.login_register_action: Registrovat
-helpcenter.account.login_remember: 'Zůstat přihlášen(a)?'
+helpcenter.account.login_stay_logged_in: 'Zůstat přihlášen(a)?'
 helpcenter.account.logout_action: Odhlásit
 helpcenter.account.profile_save_action: 'Uložit profil'
 helpcenter.account.profile_delete_picture: 'Změnit nebo vymazat fotku?'
@@ -21,7 +21,7 @@ helpcenter.articles.published_label: Publikováno
 helpcenter.community.btn_vote: 'Souhlasím'
 helpcenter.community.error_hidden: 'Tato připomínka je skrytá'
 helpcenter.community.error_login: 'Prosíme, přihlašte se'
-helpcenter.community.form_full_name: Jméno
+helpcenter.general.name: Jméno
 helpcenter.community.form_topic_title: Název
 helpcenter.community.module_forbidden: 'Nemáte přístup k tomuto modulu'
 helpcenter.community.no_matching: 'Žádná související připomínka'

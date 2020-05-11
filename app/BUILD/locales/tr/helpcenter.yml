@@ -3,9 +3,8 @@ helpcenter.account.email_resend_validation_action: 'Doğrulama Epostasını Tekr
 helpcenter.account.login_register_action: Kayı ol
 helpcenter.articles.section_title: Bilgi Bankası
 helpcenter.articles.view_as_agent: 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.'
-helpcenter.chat.email: 'Eposta Adresiniz'
 helpcenter.community.btn_vote: 'Katılıyorum'
-helpcenter.community.form_full_name: Adı
+helpcenter.general.name: Adı
 helpcenter.community.form_topic_title: Başlık
 helpcenter.community.section_title: Geri Bildirim
 helpcenter.direct_messages.reply_message: Mesaj

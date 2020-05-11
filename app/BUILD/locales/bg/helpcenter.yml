@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Влезте с външна услуга'
 helpcenter.account.login_lockout: 'Не успяхте да влезете прекалено много пъти и поради това сте заключени. Моля опитайте отново по-късно.'
 helpcenter.account.login_reset_password_link: 'Имате ли нужда от ново подсещане за парола?'
 helpcenter.account.login_register_action: Регистрирай
-helpcenter.account.login_remember: 'Остани логнат?'
+helpcenter.account.login_stay_logged_in: 'Остани логнат?'
 helpcenter.account.logout_action: Излез
 helpcenter.account.new_ticket_no_login: 'Порталната CRM е забранена. Невъзможно е подаване на тикет.'
 helpcenter.account.profile_save_action: 'Запази профил'
@@ -47,16 +47,15 @@ helpcenter.account.your_pending_email_addresses: 'Вашите чакащи им
 helpcenter.articles.published_label: Публикуван
 helpcenter.articles.section_title: База знание
 helpcenter.articles.view_as_agent: 'Виждате тази страница защото сте агент. Потребителите няма да виждат тази страница.'
-helpcenter.chat.email: 'Вашият имейл адрес'
-helpcenter.chat.list_date: Дата
-helpcenter.chat.log_chat_time: 'Общо време на чат'
-helpcenter.chat.log_linked_ticket: 'Назначи по тикет'
-helpcenter.chat.log_view_linked_ticket: 'Виж тикет'
+helpcenter.messenger.date_label: Дата
+helpcenter.messenger.total_chat_time_label: 'Общо време на чат'
+helpcenter.messenger.linked_ticket_label: 'Назначи по тикет'
+helpcenter.messenger.view_linked_ticket_action: 'Виж тикет'
 helpcenter.community.btn_vote: 'Съгласен съм'
 helpcenter.community.create_topic: Създай
 helpcenter.community.error_hidden: 'Тази общностна тема е скрита'
 helpcenter.community.error_login: 'Моля влезте'
-helpcenter.community.form_full_name: Име
+helpcenter.general.name: Име
 helpcenter.community.form_topic_title: Заглавие
 helpcenter.community.module_forbidden: 'Нямате достъп до този модул'
 helpcenter.community.no_matching: 'Няма съвпадащи общностни теми'

@@ -223,7 +223,7 @@ export class HcProfilePictureInput extends React.Component {
                 value="1"
               />
               <i />
-              {portalPhrases.get('portal.account.profile-delete-picture')}
+              {portalPhrases.get('helpcenter.account.profile_delete_picture')}
             </label>
           </div>
         </div>

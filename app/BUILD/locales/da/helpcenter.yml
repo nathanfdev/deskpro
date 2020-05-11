@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Log ind med en ekstern service'
 helpcenter.account.login_lockout: 'Du har prøvet at logge ind for mange gange uden held, så din konto er blevet lukket. Prøv venligst senere.'
 helpcenter.account.login_reset_password_link: 'Har du glemt dit password?'
 helpcenter.account.login_register_action: Registrer
-helpcenter.account.login_remember: 'Forbliv logget ind?'
+helpcenter.account.login_stay_logged_in: 'Forbliv logget ind?'
 helpcenter.account.logout_action: Log ud
 helpcenter.account.new_ticket_no_login: 'Portal CRM er deaktiveret. Kunne ikke indsende en billet.'
 helpcenter.account.profile_save_action: 'Gem profil'
@@ -47,15 +47,14 @@ helpcenter.account.your_pending_email_addresses: 'Dine afventende og endnu ikke 
 helpcenter.articles.published_label: Udgivet
 helpcenter.articles.section_title: Videnbase
 helpcenter.articles.view_as_agent: 'Du kan se denne side fordi du er sagsbehandler. Brugere vil ikke kunne se siden.'
-helpcenter.chat.email: 'Din emailadresse'
-helpcenter.chat.list_date: Dato
-helpcenter.chat.log_chat_time: 'Total chat tid'
-helpcenter.chat.log_linked_ticket: 'Tildelt til sagen'
-helpcenter.chat.log_view_linked_ticket: 'Vis sag'
+helpcenter.messenger.date_label: Dato
+helpcenter.messenger.total_chat_time_label: 'Total chat tid'
+helpcenter.messenger.linked_ticket_label: 'Tildelt til sagen'
+helpcenter.messenger.view_linked_ticket_action: 'Vis sag'
 helpcenter.community.btn_vote: 'Jeg er enig'
 helpcenter.community.error_hidden: 'Dette community topic er skjult'
 helpcenter.community.error_login: 'Venligst login'
-helpcenter.community.form_full_name: Navn
+helpcenter.general.name: Navn
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.module_forbidden: 'Du har ikke adgang til dette modul'
 helpcenter.community.no_matching: 'Ingen matchende tilbagemeldinger'

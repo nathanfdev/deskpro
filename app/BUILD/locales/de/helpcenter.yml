@@ -12,7 +12,7 @@ helpcenter.account.login_external: 'Anmelden über einen externen Dienst'
 helpcenter.account.login_lockout: 'Der Zugang wurde wegen zu vieler ungültiger Versuche gesperrt. Bitte versuchen Sie es später noch einmal.'
 helpcenter.account.login_reset_password_link: 'Benötigen Sie eine Passwort-Erinnerung?'
 helpcenter.account.login_register_action: Registrieren
-helpcenter.account.login_remember: 'Angemeldet bleiben?'
+helpcenter.account.login_stay_logged_in: 'Angemeldet bleiben?'
 helpcenter.account.logout_action: Abmelden
 helpcenter.account.new_ticket_no_login: 'Portal CRM ist deaktiviert. Es konnte kein Ticket gesendet werden.'
 helpcenter.account.profile_save_action: 'Profil speichern'
@@ -48,11 +48,10 @@ helpcenter.account.your_pending_email_addresses: 'Ihre unbestätigten E-Mail-Adr
 helpcenter.articles.published_label: Veröffentlicht
 helpcenter.articles.section_title: Wissensdatenbank
 helpcenter.articles.view_as_agent: 'Sie können diese Seite sehen, weil Sie Mitarbeiter sind. Normale Benutzer können diese Seite nicht sehen.'
-helpcenter.chat.email: 'Ihre E-Mail-Adresse'
-helpcenter.chat.list_date: Datum
-helpcenter.chat.log_chat_time: 'Gesamte Chat-Zeit'
-helpcenter.chat.log_linked_ticket: 'Zugeordnet zum Ticket'
-helpcenter.chat.log_view_linked_ticket: 'Tickets anzeigen'
+helpcenter.messenger.date_label: Datum
+helpcenter.messenger.total_chat_time_label: 'Gesamte Chat-Zeit'
+helpcenter.messenger.linked_ticket_label: 'Zugeordnet zum Ticket'
+helpcenter.messenger.view_linked_ticket_action: 'Tickets anzeigen'
 helpcenter.community.btn_vote: 'Ich stimme zu'
 helpcenter.community.error_hidden: 'Dieser Community Topic-Eintrag ist versteckt'
 helpcenter.community.error_login: 'Bitte anmelden'

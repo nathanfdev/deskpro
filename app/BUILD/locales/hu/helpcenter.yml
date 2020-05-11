@@ -4,9 +4,8 @@ helpcenter.account.login_register_action: Regisztráljon
 helpcenter.account.logout_action: Kijelentkezés
 helpcenter.articles.section_title: Tudásbázis
 helpcenter.articles.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
-helpcenter.chat.email: 'Az Ön e-mail címe'
 helpcenter.community.btn_vote: 'Egyetértek'
-helpcenter.community.form_full_name: Név
+helpcenter.general.name: Név
 helpcenter.community.section_title: Ötlettár
 helpcenter.direct_messages.reply_message: Üzenet
 helpcenter.downloads.download_action: Letöltés

@@ -27,6 +27,7 @@ class LanguageController extends AbstractApiController
     {
         $phrases = [
             'helpcenter.account.login_invalid',
+            'helpcenter.account.profile_delete_picture',
             'helpcenter.community.filters',
             'helpcenter.community.my_activity',
             'helpcenter.community.reset_all_filters',

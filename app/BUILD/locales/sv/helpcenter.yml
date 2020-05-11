@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Logga in med en extern tjänst'
 helpcenter.account.login_lockout: 'Du har misslyckats med din inloggning för många gånger. Ditt konto har spärrats. Var vänlig försök igen senare.'
 helpcenter.account.login_reset_password_link: 'Behöver du en lösenordspåminnelse?'
 helpcenter.account.login_register_action: Registrera
-helpcenter.account.login_remember: 'Förbli inloggad?'
+helpcenter.account.login_stay_logged_in: 'Förbli inloggad?'
 helpcenter.account.logout_action: Logga ut
 helpcenter.account.new_ticket_no_login: 'Portal CRM är inaktiverad. Kan inte skicka in en biljett.'
 helpcenter.account.profile_save_action: 'Spara profil'
@@ -47,15 +47,14 @@ helpcenter.account.your_pending_email_addresses: 'Dina väntande e-postadresser'
 helpcenter.articles.published_label: Publicerad
 helpcenter.articles.section_title: Kunskapsbas
 helpcenter.articles.view_as_agent: 'Du kan se denna sida för att du är en agent. Användare kommer inte att kunna se denna sida.'
-helpcenter.chat.email: 'Din E-Postadress'
-helpcenter.chat.list_date: Datum
-helpcenter.chat.log_chat_time: 'Total chattid'
-helpcenter.chat.log_linked_ticket: 'Tilldelad till ärendet'
-helpcenter.chat.log_view_linked_ticket: 'Visa ärende'
+helpcenter.messenger.date_label: Datum
+helpcenter.messenger.total_chat_time_label: 'Total chattid'
+helpcenter.messenger.linked_ticket_label: 'Tilldelad till ärendet'
+helpcenter.messenger.view_linked_ticket_action: 'Visa ärende'
 helpcenter.community.btn_vote: 'Jag håller med'
 helpcenter.community.error_hidden: 'Denna community topic är dold.'
 helpcenter.community.error_login: 'Vänligen logga in.'
-helpcenter.community.form_full_name: Namn
+helpcenter.general.name: Namn
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.module_forbidden: 'Du har inte behörighet att se denna modul'
 helpcenter.community.no_matching: 'Ingen matchande community topic'

@@ -502,7 +502,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     protected function saveTmpDataAndRedirectToSetEmailPage(Usersource $usersource, Result $result)
     {
         // a usersource did NOT provide an email, and we were about to make a new person without an email.
-        // instead, trigger our workflow that requires the user to give us an email and verify it before we proceeed.
+        // instead, trigger our workflow that requires the user to give us an email and verify it before we proceed.
         $tmp_auth = $this->container->get('usersource_identity_saver')->save($usersource, $result->getIdentity());
 
         return $this->redirectRoute('user_validate_usersource_email', ['tmp_auth' => $tmp_auth]);

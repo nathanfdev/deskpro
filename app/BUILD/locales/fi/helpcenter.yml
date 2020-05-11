@@ -9,7 +9,7 @@ helpcenter.account.login_email: 'Sähköpostiosoitteesi'
 helpcenter.account.login_lockout: 'Olet yrittänyt kirjautua sisään väärillä tiedoilla liian monta kertaa. Yritä uudelleen myöhemmin.'
 helpcenter.account.login_reset_password_link: 'Tarvitsetko salasanan muistutuksen?'
 helpcenter.account.login_register_action: Rekisteröidy
-helpcenter.account.login_remember: 'Pysy kirjautuneena?'
+helpcenter.account.login_stay_logged_in: 'Pysy kirjautuneena?'
 helpcenter.account.logout_action: Kirjaudu ulos
 helpcenter.account.profile_save_action: 'Tallenna profiili'
 helpcenter.account.reset_password_click_here: 'Klikkaa tästä saadaksesi salasanan vaihtokoodin'
@@ -21,10 +21,9 @@ helpcenter.account.section_desc_login: 'Onko teillä jo tili? Kirjautukaa alta.'
 helpcenter.account.set_password_success: 'Salasanasi on päivitetty'
 helpcenter.articles.section_title: Ohjeet
 helpcenter.articles.view_as_agent: 'Näet tämän sivun koska olet asiantuntijamme. Peruskäyttäjät eivät näe tätä sivua.'
-helpcenter.chat.email: 'Sähköpostiosoite'
-helpcenter.chat.log_view_linked_ticket: 'Näytä palvelupyyntö'
+helpcenter.messenger.view_linked_ticket_action: 'Näytä palvelupyyntö'
 helpcenter.community.btn_vote: 'Samaa mieltä'
-helpcenter.community.form_full_name: Nimesi
+helpcenter.general.name: Nimesi
 helpcenter.community.form_topic_title: Aihe
 helpcenter.community.section_title: Palaute
 helpcenter.direct_messages.reply_message: Viesti

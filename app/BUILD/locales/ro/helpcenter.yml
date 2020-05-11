@@ -2,9 +2,8 @@
 helpcenter.account.email_resend_validation_action: 'Retrimite email-ul de validare'
 helpcenter.account.login_register_action: Inrestreaza-te
 helpcenter.articles.view_as_agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
-helpcenter.chat.email: 'Adresa dumneavoastra de Email'
 helpcenter.community.btn_vote: 'Sunt de acord'
-helpcenter.community.form_full_name: Nume
+helpcenter.general.name: Nume
 helpcenter.direct_messages.reply_message: Mesaj
 helpcenter.downloads.download_action: Descarca
 helpcenter.emails.chat_transcript: 'Va multumim pentru conversatie. Aceasta este o copie a acesteia'

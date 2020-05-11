@@ -12,7 +12,7 @@ helpcenter.account.login_external: 'Iniciar sesión con un servicio externo'
 helpcenter.account.login_lockout: 'Ha fallado el inicio de sesión demasiadas veces por lo que ha sido bloqueado. Por favor, inténtelo de nuevo más tarde.'
 helpcenter.account.login_reset_password_link: '¿Necesita un recordatorio de contraseña?'
 helpcenter.account.login_register_action: Registro
-helpcenter.account.login_remember: '¿Permanecer conectado?'
+helpcenter.account.login_stay_logged_in: '¿Permanecer conectado?'
 helpcenter.account.logout_action: Cerrar sesión
 helpcenter.account.new_ticket_no_login: 'Portal CRM está deshabilitado. No se puede enviar un boleto.'
 helpcenter.account.profile_save_action: 'Guardar perfil'
@@ -48,15 +48,14 @@ helpcenter.account.your_pending_email_addresses: 'Sus direcciones de correo elec
 helpcenter.articles.published_label: Publicado
 helpcenter.articles.section_title: Base de conocimiento
 helpcenter.articles.view_as_agent: 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.'
-helpcenter.chat.email: 'Su dirección de correo electrónico'
-helpcenter.chat.list_date: Fecha
-helpcenter.chat.log_chat_time: 'Tiempo total de chat'
-helpcenter.chat.log_linked_ticket: 'Asignado al boleto'
-helpcenter.chat.log_view_linked_ticket: 'Ver Ticket'
+helpcenter.messenger.date_label: Fecha
+helpcenter.messenger.total_chat_time_label: 'Tiempo total de chat'
+helpcenter.messenger.linked_ticket_label: 'Asignado al boleto'
+helpcenter.messenger.view_linked_ticket_action: 'Ver Ticket'
 helpcenter.community.btn_vote: 'Estoy de acuerdo'
 helpcenter.community.error_hidden: 'Este elemento de retroalimentación está oculto.'
 helpcenter.community.error_login: 'Por favor Iniciar sesión'
-helpcenter.community.form_full_name: Nombre
+helpcenter.general.name: Nombre
 helpcenter.community.form_topic_title: Título
 helpcenter.community.module_forbidden: 'No tienes acceso a este módulo.'
 helpcenter.community.no_matching: 'No hay comentarios coincidentes'

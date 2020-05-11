@@ -23,7 +23,7 @@
       {% if message.origin == 'agent' %}
         {{ message.author ? message.author.display_name_user : '' }}
       {% else %}
-        {{ phrase('helpcenter.chat.you') }} ({{ message.author.primary_email }})
+        {{ phrase('helpcenter.messenger.you') }} ({{ message.author.primary_email }})
       {% endif %}
       {% if message.origin == 'agent'  %}<span class="badge badge-primary badge-small">{{ phrase('helpcenter.general.agent') }}</span>{% endif %}
     </div>
@@ -54,7 +54,7 @@
           <div class="col-sm-9">
             <div class="dp-po-title">
               <img class="dp-po-title-svg" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}">
-              <h1 class="dp-po-title-text">{{ phrase('helpcenter.chat.your_chat_with', { person_name: chat.agent.display_name_user }) }}</h1>
+              <h1 class="dp-po-title-text">{{ phrase('helpcenter.messenger.your_chat_with', { person_name: chat.agent.display_name_user }) }}</h1>
             </div>
             <div class="row align-items-center">
               <div class="col-sm-10">
@@ -199,7 +199,7 @@
 
           <div class="col-sm-3">
             <div class="dp-po-post-meta">
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.assigned_agent' )}}</h3>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.messenger.assigned_agent' )}}</h3>
               <p>
                 <div class="dp-po-avatar dp-po-avatar-round">
                   {{ hc_avatar(chat.agent, '', 60) }}
@@ -222,7 +222,7 @@
             <div class="dp-po-post-meta">
               <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.department') }}</h3>
               <p>{{ chat.department ? chat.department.user_title : '-' }}</p>
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_chat_time') }}</h3>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.messenger.total_chat_time_label') }}</h3>
               <p>{{ date_diff(chat.date_created, chat.date_ended) }}</p>
               <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.last_activity') }}</h3>
               <p>{{date(lastMessage.date_created, 'l')}}, {{date(lastMessage.date_created, 'time')}}</p>
@@ -236,7 +236,7 @@
 
             {% if chat_attachments|length  > 0 %}
             <div class="dp-po-sidebar dp-po-chat-attachments">
-              <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.chat.files_on_this_chat') }}</h3>
+              <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.messenger.files_on_this_chat') }}</h3>
               <ul class="dp-po-chat-attachments-list">
                 {% for attachment in chat_attachments %}
                   <li class="dp-po-chat-attachments-item">
@@ -248,11 +248,11 @@
             {% endif %}
             {% if linked_ticket %}
               <div class="dp-po-sidebar dp-po-chat-links">
-                <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.chat.log_linked_ticket') }}</h3>
+                <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.messenger.linked_ticket_label') }}</h3>
                 <ul class="dp-po-chat-links-list">
                   <li class="dp-po-chat-links-item">
                     <a href="{{ portal_path(linked_ticket) }}" class="dp-po-chat-links-link">
-                      {{ phrase('helpcenter.chat.log_view_linked_ticket') }}: {{ linked_ticket.subject }}
+                      {{ phrase('helpcenter.messenger.view_linked_ticket_action') }}: {{ linked_ticket.subject }}
                       <i class="dp-po-icon fal fa-link"></i>
                       {{ portal_path(linked_ticket) }}
                     </a>

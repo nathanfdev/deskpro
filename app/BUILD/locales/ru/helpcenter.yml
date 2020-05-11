@@ -12,7 +12,7 @@ helpcenter.account.login_external: 'Войти с помощью другого 
 helpcenter.account.login_lockout: 'Вы ввели неправильный логин или пароль слишком много раз. Пожалуйста, попробуйте ещё раз через некоторое время.'
 helpcenter.account.login_reset_password_link: 'Вам нужно напоминание пароля?'
 helpcenter.account.login_register_action: Зарегистрироваться
-helpcenter.account.login_remember: 'Остаться в системе'
+helpcenter.account.login_stay_logged_in: 'Остаться в системе'
 helpcenter.account.logout_action: Выйти из системы
 helpcenter.account.new_ticket_no_login: 'Портал CRM отключен. Не удалось отправить билет.'
 helpcenter.account.profile_save_action: 'Сохранить профиль'
@@ -48,15 +48,14 @@ helpcenter.account.your_pending_email_addresses: 'Электронные адр�
 helpcenter.articles.published_label: Опубликованный
 helpcenter.articles.section_title: База знаний
 helpcenter.articles.view_as_agent: 'Вы можете увидеть эту страницу, потому что вы агент. Пользователи не смогут просматривать эту страницу.'
-helpcenter.chat.email: 'Адрес Вашей электронной почты'
-helpcenter.chat.list_date: Дата
-helpcenter.chat.log_chat_time: 'Суммарное время диалога'
-helpcenter.chat.log_linked_ticket: 'Назначен на запрос'
-helpcenter.chat.log_view_linked_ticket: 'Посмотреть обращение'
+helpcenter.messenger.date_label: Дата
+helpcenter.messenger.total_chat_time_label: 'Суммарное время диалога'
+helpcenter.messenger.linked_ticket_label: 'Назначен на запрос'
+helpcenter.messenger.view_linked_ticket_action: 'Посмотреть обращение'
 helpcenter.community.btn_vote: 'Я согласен/-на'
 helpcenter.community.error_hidden: 'Отзыв скрыт'
 helpcenter.community.error_login: 'Пожалуйста, войдите в систему'
-helpcenter.community.form_full_name: Имя
+helpcenter.general.name: Имя
 helpcenter.community.form_topic_title: Заголовок
 helpcenter.community.module_forbidden: 'У Вас нет доступа к этому разделу'
 helpcenter.community.no_matching: 'Нет подходящих отзывов'

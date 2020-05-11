@@ -390,7 +390,7 @@ class ProfileController extends AbstractController
                         $this->addFlash(
                             'success',
                             $this->phrase(
-                                'portal.flashes.user_removed_an_email',
+                                ['portal.flashes.user_removed_an_email', 'helpcenter.flashes.user_removed_an_email'],
                                 ['email' => $proposedEmailRemoval->email]
                             )
                         );
