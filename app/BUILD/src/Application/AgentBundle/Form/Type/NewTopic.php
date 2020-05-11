@@ -34,6 +34,7 @@ class NewTopic extends AbstractType
             ->add('no_content', ChoiceType::class, [
                 'choices_as_values' => true,
                 'choices'           => [0, 1],
+                'empty_data'        => '0',
             ])
             ->add('attach', CollectionType::class, [
                 'type'         => 'hidden',

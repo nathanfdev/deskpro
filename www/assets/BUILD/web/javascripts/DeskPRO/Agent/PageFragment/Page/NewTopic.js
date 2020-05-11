@@ -49,7 +49,8 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 			if (this.value !== '0') {
         self.setTopic();
         if ($( '#' + self.meta.baseId + '_parent option:selected' ).text().match('>')) {
-          $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", true);
+          // this option should stay enabled to pass it on server
+          $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", false);
           $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", true);
         } else {
           $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", false);
