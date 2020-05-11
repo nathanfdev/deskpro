@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Faça o login com um serviço externo'
 helpcenter.account.login_lockout: 'Você falhou no login muitas vezes, por isso você foi bloqueado. Por favor, tente novamente mais tarde.'
 helpcenter.account.login_reset_password_link: 'Precisa de um lembrete de senha?'
 helpcenter.account.login_register_action: Registar
-helpcenter.account.login_remember: 'Permaneça logado?'
+helpcenter.account.login_stay_logged_in: 'Permaneça logado?'
 helpcenter.account.logout_action: Sair
 helpcenter.account.new_ticket_no_login: 'O Portal CRM está desativado. Não é possível enviar um ticket.'
 helpcenter.account.profile_save_action: 'Salvar perfil'
@@ -46,9 +46,8 @@ helpcenter.account.usersource_set_email_desc: 'Antes que você possa entrar, pre
 helpcenter.account.your_pending_email_addresses: 'Seus endereços de e-mail pendentes'
 helpcenter.articles.section_title: Base de Conhecimento
 helpcenter.articles.view_as_agent: 'Pode ver esta página, porque é um agente. Os usuários normais não serão capazes de ver esta página.'
-helpcenter.chat.email: 'O seu endereço de email'
 helpcenter.community.btn_vote: 'Concordo'
-helpcenter.community.form_full_name: Nome
+helpcenter.general.name: Nome
 helpcenter.community.section_title: Comentário
 helpcenter.direct_messages.reply_message: Mensagem
 helpcenter.downloads.download_action: Baixar

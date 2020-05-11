@@ -6,6 +6,7 @@
         src="https://code.jquery.com/jquery-3.5.0.slim.min.js"
         integrity="sha256-MlusDLJIP1GRgLrOflUQtshyP0TwT/RHXsI1wWGnQhs="
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-rc.2/lazyload.js"></script>
     <style>
         .tab-body-section { display: none; }
         .tab-body-section.is-active { display: block; }
@@ -128,12 +129,12 @@
                             <td>
                                 <article class="message is-marginless">
                                     <div class="usage-screenshot-link">
-                                        <a class="screenshot-link" href="./screenshots/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">Screenshot</a>
+                                        <a class="screenshot-link" href="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/context/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">Screenshot</a>
                                     </div>
                                     <div class="message-body is-size-7">
                                         <?php echo $phrases[$keyId] ?? '' ?>
-                                        <a class="screenshot-img-wrap screenshot-link" href="./screenshots/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">
-                                            <img class="screenshot-img" src="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/<?php echo $keyId ?>.png" alt="<?php echo $keyId ?>" data-key-id="<?php echo $keyId ?>" />
+                                        <a class="screenshot-img-wrap screenshot-link" href="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/context/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">
+                                            <img class="screenshot-img lazyload" data-src="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/context/<?php echo $keyId ?>.png" alt="<?php echo $keyId ?>" data-key-id="<?php echo $keyId ?>" />
                                         </a>
                                     </div>
                                 </article>
@@ -270,6 +271,7 @@ some_example: 'RE: {ticket_subject}'
 
 <script>
 $(document).ready(function () {
+    lazyload();
     var $tabs = $('#page_tabs').find('li');
     var $tabBodies = $('.tab-body-section');
 

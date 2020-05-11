@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Είσοδος με εξωτερική υπ�
 helpcenter.account.login_lockout: 'Έχετε αποτύχει να συνδεθείτε πολλές φορές, με αποτέλεσμα να έχετε μπλοκαριστεί. Παρακαλούμε δοκιμάστε ξανά αργότερα.'
 helpcenter.account.login_reset_password_link: 'Ξεχάσατε τον κωδικό πρόσβασης;'
 helpcenter.account.login_register_action: Εγγραφή
-helpcenter.account.login_remember: 'Θέλετε να παραμείνετε σε σύνδεση;'
+helpcenter.account.login_stay_logged_in: 'Θέλετε να παραμείνετε σε σύνδεση;'
 helpcenter.account.logout_action: Αποσύνδεση
 helpcenter.account.new_ticket_no_login: 'Το portal CRM είναι ανενεργό. Δεν μπορείτε να καταχωρήσετε αίτημα.'
 helpcenter.account.profile_save_action: 'Αποθήκευση προφίλ'
@@ -47,15 +47,14 @@ helpcenter.account.your_pending_email_addresses: 'Email διευθύνσεις �
 helpcenter.articles.published_label: Δημοσιευμένα
 helpcenter.articles.section_title: Γνωσιακή βάση
 helpcenter.articles.view_as_agent: 'Βλέπετε αυτήν τη σελίδα επειδή είστε εκπρόσωπος του Support. Οι χρήστες δεν μπορούν να δουν αυτήν τη σελίδα.'
-helpcenter.chat.email: 'Το email σας'
-helpcenter.chat.list_date: Ημερομηνία
-helpcenter.chat.log_chat_time: 'Συνολική διάρκεια chat'
-helpcenter.chat.log_linked_ticket: 'Ανατέθηκε το αίτημα'
-helpcenter.chat.log_view_linked_ticket: 'Προβολή ticket'
+helpcenter.messenger.date_label: Ημερομηνία
+helpcenter.messenger.total_chat_time_label: 'Συνολική διάρκεια chat'
+helpcenter.messenger.linked_ticket_label: 'Ανατέθηκε το αίτημα'
+helpcenter.messenger.view_linked_ticket_action: 'Προβολή ticket'
 helpcenter.community.btn_vote: 'Συμφωνώ'
 helpcenter.community.error_hidden: 'Το στοιχείο community topic είναι κρυμμένο'
 helpcenter.community.error_login: 'Παρακαλούμε συνδεθείτε'
-helpcenter.community.form_full_name: Όνομα
+helpcenter.general.name: Όνομα
 helpcenter.community.form_topic_title: Τίτλος
 helpcenter.community.module_forbidden: 'Δεν έχετε πρόσβαση σε αυτήν την ενότητα'
 helpcenter.community.no_matching: 'Δεν υπάρχει community topic που να ταιριάζει'

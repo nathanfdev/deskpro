@@ -12,7 +12,7 @@ helpcenter.account.login_external: 'قم بتسجيل الدخول بواسطة 
 helpcenter.account.login_lockout: 'لقد استنفذت العدد المسموح به للتسجيل  الخاطئ، لذا فقد تم حجبك. الرجاء المحاولة مرة أخرى'
 helpcenter.account.login_reset_password_link: 'هل تحتاج الى عرض مساعدة لتذكر كلمة المرور'
 helpcenter.account.login_register_action: تسجيل عضوية
-helpcenter.account.login_remember: 'ابق مسجلا؟'
+helpcenter.account.login_stay_logged_in: 'ابق مسجلا؟'
 helpcenter.account.logout_action: سجل الخروج
 helpcenter.account.new_ticket_no_login: 'بوابة الخدمة غير مفعلة. لا يمكنك ارسال تذاكر'
 helpcenter.account.profile_save_action: 'أحفظ بيانات التعريف'
@@ -48,15 +48,14 @@ helpcenter.account.your_pending_email_addresses: 'عناوين البريد ال
 helpcenter.articles.published_label: منشور
 helpcenter.articles.section_title: قاعدة المعلومات
 helpcenter.articles.view_as_agent: 'أنت في هذه الصفحة لأنك أحد مقدمي الخدمة. المستخدمين العاديين لن يمكنهم مشاهدة هذه الصفحة.'
-helpcenter.chat.email: 'عنوانك البريدي'
-helpcenter.chat.list_date: التاريخ
-helpcenter.chat.log_chat_time: 'الوقت الكلي للمحادثة.'
-helpcenter.chat.log_linked_ticket: 'تحديد لتذكرة'
-helpcenter.chat.log_view_linked_ticket: "استعراض التذكرة.\n"
+helpcenter.messenger.date_label: التاريخ
+helpcenter.messenger.total_chat_time_label: 'الوقت الكلي للمحادثة.'
+helpcenter.messenger.linked_ticket_label: 'تحديد لتذكرة'
+helpcenter.messenger.view_linked_ticket_action: "استعراض التذكرة.\n"
 helpcenter.community.btn_vote: 'موافق'
 helpcenter.community.error_hidden: 'التغذية الراجعة مخفية'
 helpcenter.community.error_login: 'فضلا ادخل'
-helpcenter.community.form_full_name: أسم
+helpcenter.general.name: أسم
 helpcenter.community.form_topic_title: العنوان
 helpcenter.community.module_forbidden: 'لم تدخل الى هذة الوحدة'
 helpcenter.community.no_matching: 'لا توجد تغذية راجعة مطابقة'

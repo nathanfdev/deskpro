@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Đăng nhập bằng dịch vụ bên ngoài
 helpcenter.account.login_lockout: 'Bạn đã đăng nhập thất bại quá nhiều lần nên bạn đã bị khóa. Vui lòng thử lại sau.'
 helpcenter.account.login_reset_password_link: 'Cần lời nhắc nhở mật khẩu?'
 helpcenter.account.login_register_action: Trình diện
-helpcenter.account.login_remember: 'Giữ trạng thái đăng nhập?'
+helpcenter.account.login_stay_logged_in: 'Giữ trạng thái đăng nhập?'
 helpcenter.account.logout_action: Đăng xuất
 helpcenter.account.profile_save_action: 'Lưu hồ sơ'
 helpcenter.account.profile_delete_picture: 'Thay đổi hoặc xóa ảnh hồ sơ?'
@@ -45,15 +45,14 @@ helpcenter.account.usersource_set_email_desc: 'Trước khi bạn có thể đă
 helpcenter.account.your_pending_email_addresses: 'Địa chỉ email đang chờ bạn'
 helpcenter.articles.section_title: Kiến thức cơ bản
 helpcenter.articles.view_as_agent: 'Bạn có thể xem trang này vì bạn là đại lý. Người dùng sẽ không thể xem trang này.'
-helpcenter.chat.email: 'Địa chỉ email của bạn'
-helpcenter.chat.list_date: Ngày
-helpcenter.chat.log_chat_time: 'Tổng thời gian trò chuyện'
-helpcenter.chat.log_linked_ticket: 'Được chỉ định để mua vé'
-helpcenter.chat.log_view_linked_ticket: 'Xem vé'
+helpcenter.messenger.date_label: Ngày
+helpcenter.messenger.total_chat_time_label: 'Tổng thời gian trò chuyện'
+helpcenter.messenger.linked_ticket_label: 'Được chỉ định để mua vé'
+helpcenter.messenger.view_linked_ticket_action: 'Xem vé'
 helpcenter.community.btn_vote: 'Tôi đồng ý'
 helpcenter.community.error_hidden: 'Mục phản hồi này bị ẩn'
 helpcenter.community.error_login: 'Vui lòng hãy đăng nhập'
-helpcenter.community.form_full_name: Tên
+helpcenter.general.name: Tên
 helpcenter.community.form_topic_title: Chức vụ
 helpcenter.community.module_forbidden: 'Bạn không có quyền truy cập vào mô-đun này'
 helpcenter.community.no_matching: 'Không có phản hồi phù hợp'

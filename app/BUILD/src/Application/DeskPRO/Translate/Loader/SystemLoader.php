@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Translate
- */
+
 
 namespace Application\DeskPRO\Translate\Loader;
 
@@ -111,6 +107,8 @@ class SystemLoader implements LoaderInterface
 
     /**
      * @param string $file
+     * @param mixed $localeDir
+     * @param mixed $name
      *
      * @return array
      */
@@ -121,7 +119,7 @@ class SystemLoader implements LoaderInterface
             return $this->loadedResources[$base];
         }
 
-        if ($this->appEnv->isQa() && $name === 'user' && $this->brandThemeLoader) {
+        if (($this->appEnv->isDebug() || $this->appEnv->isQa()) && $name === 'user' && $this->brandThemeLoader) {
             $theme = $this->brandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand());
             if ($theme && $theme->getActiveThemeSet()->getThemeId() === 'helpcenter') {
                 if (!isset($this->loadedResources[$base])) {

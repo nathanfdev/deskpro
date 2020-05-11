@@ -2,9 +2,8 @@
 helpcenter.account.email_resend_validation_action: '承認のためのEメールを再送'
 helpcenter.account.login_register_action: 登録
 helpcenter.articles.section_title: ナレッジベース
-helpcenter.chat.email: 'メールアドレス'
 helpcenter.community.btn_vote: '同意'
-helpcenter.community.form_full_name: 名前
+helpcenter.general.name: 名前
 helpcenter.community.section_title: フィードバック
 helpcenter.direct_messages.reply_message: メッセージ
 helpcenter.downloads.download_action: ダウンロード

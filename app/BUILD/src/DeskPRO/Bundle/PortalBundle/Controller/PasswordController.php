@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -223,7 +221,7 @@ class PasswordController extends AbstractController
             // log the user in
             if ($this->get('person_manipulator')->authenticatePerson($person)) {
                 $this->addFlash('success', $this->phrase(
-                    $isResetting ? 'portal.account.reset-password-success' : 'portal.account.set-password-success'
+                    $isResetting ? ['portal.account.reset-password-success', 'helpcenter.account.reset_password_success'] : ['portal.account.set-password-success', 'helpcenter.account.set_password_success']
                 ));
 
                 if ($redirect = $request->getSession()->get(self::SET_PASSWORD_REDIRECT)) {

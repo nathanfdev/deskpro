@@ -14,12 +14,12 @@ use Symfony\Component\Yaml\Yaml;
 
 class HealthReportCommand extends ContainerAwareCommand
 {
-    static $knownPhraseIdExceptions = [
-        'helpcenter.duration_short.days' => ['uppercase-only'],
-        'helpcenter.duration_short.months' => ['uppercase-only'],
-        'helpcenter.duration_short.years' => ['uppercase-only'],
-        'helpcenter.general.cc' => ['uppercase-only'],
-        'helpcenter.general.eula' => ['uppercase-only'],
+    public static $knownPhraseIdExceptions = [
+        'helpcenter.duration_short.days'     => ['uppercase-only'],
+        'helpcenter.duration_short.months'   => ['uppercase-only'],
+        'helpcenter.duration_short.years'    => ['uppercase-only'],
+        'helpcenter.general.cc'              => ['uppercase-only'],
+        'helpcenter.general.eula'            => ['uppercase-only'],
         'helpcenter.tickets.view_btn_add_cc' => ['uppercase-only'],
     ];
 
@@ -113,12 +113,13 @@ class HealthReportCommand extends ContainerAwareCommand
             }
         }
 
-        $badStrings = MapUtils::filter($badStrings, function($keyId, $info) {
+        $badStrings = MapUtils::filter($badStrings, function ($keyId, $info) {
             if (!isset(self::$knownPhraseIdExceptions[$keyId])) {
                 return true;
             }
 
             $probs = ListUtils::filterOutValues($info['problems'], self::$knownPhraseIdExceptions[$keyId]);
+
             return !empty($probs);
         });
 
@@ -161,7 +162,7 @@ class HealthReportCommand extends ContainerAwareCommand
         // Usage
         //-----------------------------------------
 
-        $usages = null;
+        $usages         = null;
         $usagesNotFound = null;
         if (($baseUrl = $input->getOption('with-usage')) || $input->hasOption('with-usage')) {
             if (!is_string($baseUrl)) {
@@ -172,11 +173,11 @@ class HealthReportCommand extends ContainerAwareCommand
 
             $env = $this->getContainer()->get('deskpro.low_dp_env');
 
-            $pfinder = new PhrasesFinder($env->getAppDir(), array_keys($phrases), 0, ['twig', 'php']);
+            $pfinder   = new PhrasesFinder($env->getAppDir(), array_keys($phrases), 0, ['twig', 'php']);
             $usageInfo = $pfinder->getUseInfo(true);
 
-            $usages = MapUtils::map($usageInfo['phrase_uses'], function($keyId, $tpls) {
-                return [$keyId, ListUtils::map($tpls, function($tpl) {
+            $usages = MapUtils::map($usageInfo['phrase_uses'], function ($keyId, $tpls) {
+                return [$keyId, ListUtils::map($tpls, function ($tpl) {
                     return '/app/BUILD'.$tpl;
                 })];
             });

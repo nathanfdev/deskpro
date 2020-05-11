@@ -213,9 +213,10 @@ class PortalController extends AbstractController
         }
 
         if ($error = $request->getSession()->get(Security::AUTHENTICATION_ERROR)) {
-            $error = $error instanceof AuthenticationException
+            $defaultMessage = $this->isHelpCenterTheme() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+            $error          = $error instanceof AuthenticationException
                 ? $error->getMessage()
-                : 'portal.account.login-invalid';
+                : $defaultMessage;
         }
 
         return $this->renderThemeView(

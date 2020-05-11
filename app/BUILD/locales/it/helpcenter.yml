@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Esegui il Login tramite servizio esterno'
 helpcenter.account.login_lockout: 'Hai sbagliato il login per troppe volte. Per un breve periodo di tempo il tuo account è bloccato. Riprova più tardi'
 helpcenter.account.login_reset_password_link: 'Hai dimenticato la password?'
 helpcenter.account.login_register_action: Registrati
-helpcenter.account.login_remember: 'Rimani connesso?'
+helpcenter.account.login_stay_logged_in: 'Rimani connesso?'
 helpcenter.account.logout_action: Esci?
 helpcenter.account.new_ticket_no_login: 'Il CRM del portale è disabilitato. Impossibile inviare un ticket.'
 helpcenter.account.profile_save_action: 'Salva Profilo'
@@ -46,15 +46,14 @@ helpcenter.account.usersource_set_email_desc: 'Prima che tu possa accedere, abbi
 helpcenter.account.your_pending_email_addresses: 'I tuoi Indirizzi Email in attesa'
 helpcenter.articles.published_label: Pubblicato
 helpcenter.articles.view_as_agent: 'Puoi visualizzare questa pagina perchè sei un agente. Gli utenti normali non sono in grado di vedere questa pagina.'
-helpcenter.chat.email: 'Il tuo Indirizzo Email'
-helpcenter.chat.list_date: Data
-helpcenter.chat.log_chat_time: 'Tempo di chat totale'
-helpcenter.chat.log_linked_ticket: 'Assegnato al ticket'
-helpcenter.chat.log_view_linked_ticket: 'Visualizza il Ticket'
+helpcenter.messenger.date_label: Data
+helpcenter.messenger.total_chat_time_label: 'Tempo di chat totale'
+helpcenter.messenger.linked_ticket_label: 'Assegnato al ticket'
+helpcenter.messenger.view_linked_ticket_action: 'Visualizza il Ticket'
 helpcenter.community.btn_vote: 'Concordo'
 helpcenter.community.error_hidden: 'Il tema è nascosto'
 helpcenter.community.error_login: 'Per favore effettua l''accesso'
-helpcenter.community.form_full_name: Nome
+helpcenter.general.name: Nome
 helpcenter.community.form_topic_title: Titolo
 helpcenter.community.module_forbidden: 'Non hai accesso a questo modulo'
 helpcenter.community.no_matching: 'Non ci sono tema corrispondenti'

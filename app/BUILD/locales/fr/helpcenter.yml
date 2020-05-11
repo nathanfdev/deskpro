@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Connexion avec un service externe'
 helpcenter.account.login_lockout: 'Vous avez été bloqué en raison d''un trop grand nombre d''échecs de connexion. Veuillez réessayer plus tard.'
 helpcenter.account.login_reset_password_link: 'Mot de passe oublié ?'
 helpcenter.account.login_register_action: S'inscrire
-helpcenter.account.login_remember: 'Rester connecté ?'
+helpcenter.account.login_stay_logged_in: 'Rester connecté ?'
 helpcenter.account.logout_action: Déconnexion
 helpcenter.account.new_ticket_no_login: 'Le portail CRM est désactivé. Impossible de soumettre un ticket.'
 helpcenter.account.profile_save_action: 'Enregistrer le profil'
@@ -47,14 +47,13 @@ helpcenter.account.your_pending_email_addresses: 'Vos adresses email en attente'
 helpcenter.articles.published_label: Publié
 helpcenter.articles.section_title: Base de connaissances
 helpcenter.articles.view_as_agent: 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs ne peuvent pas voir cette page.'
-helpcenter.chat.email: 'Votre adresse email'
-helpcenter.chat.log_chat_time: 'Durée totale du chat'
-helpcenter.chat.log_linked_ticket: 'Lié au ticket'
-helpcenter.chat.log_view_linked_ticket: 'Voir le ticket'
+helpcenter.messenger.total_chat_time_label: 'Durée totale du chat'
+helpcenter.messenger.linked_ticket_label: 'Lié au ticket'
+helpcenter.messenger.view_linked_ticket_action: 'Voir le ticket'
 helpcenter.community.btn_vote: 'Je suis d''accord'
 helpcenter.community.error_hidden: 'Cet article de commentaires est caché'
 helpcenter.community.error_login: 'Veuillez vous connecter'
-helpcenter.community.form_full_name: Nom
+helpcenter.general.name: Nom
 helpcenter.community.form_topic_title: Titre
 helpcenter.community.module_forbidden: 'Vous n''avez pas accès à ce module'
 helpcenter.community.no_matching: 'Aucun commentaire correspondant'

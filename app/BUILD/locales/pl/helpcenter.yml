@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Zaloguj za pomocą usługi zewnętrznej'
 helpcenter.account.login_lockout: 'Nie udało ci się zalogować za wiele razy. Zostałeś zablokowany. Spróbuj ponownie później.'
 helpcenter.account.login_reset_password_link: 'Potrzebujesz przypomnienia hasła?'
 helpcenter.account.login_register_action: Zarejestruj się
-helpcenter.account.login_remember: 'Pozostać jako zalogowany?'
+helpcenter.account.login_stay_logged_in: 'Pozostać jako zalogowany?'
 helpcenter.account.logout_action: Wyloguj
 helpcenter.account.new_ticket_no_login: 'Portal CRM jest wyłączony. Nie można przesłać biletu.'
 helpcenter.account.profile_save_action: 'Zapisz profil'
@@ -47,15 +47,14 @@ helpcenter.account.your_pending_email_addresses: 'Twoje oczekujące adresy email
 helpcenter.articles.published_label: Opublikowane
 helpcenter.articles.section_title: Baza Wiedzy
 helpcenter.articles.view_as_agent: 'Masz dostęp do tej strony, bo jesteś agentem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
-helpcenter.chat.email: 'Twój adres email'
-helpcenter.chat.list_date: Data
-helpcenter.chat.log_chat_time: 'Całkowity czas czatu'
-helpcenter.chat.log_linked_ticket: 'Przydzielono do zgłoszenia'
-helpcenter.chat.log_view_linked_ticket: 'Zobacz zgłoszenie'
+helpcenter.messenger.date_label: Data
+helpcenter.messenger.total_chat_time_label: 'Całkowity czas czatu'
+helpcenter.messenger.linked_ticket_label: 'Przydzielono do zgłoszenia'
+helpcenter.messenger.view_linked_ticket_action: 'Zobacz zgłoszenie'
 helpcenter.community.btn_vote: 'Zgadzam się'
 helpcenter.community.error_hidden: 'Ten element oceny jest ukryty'
 helpcenter.community.error_login: 'Proszę się zalogować'
-helpcenter.community.form_full_name: Imię
+helpcenter.general.name: Imię
 helpcenter.community.form_topic_title: Tytuł
 helpcenter.community.module_forbidden: 'Nie masz dostępu do tego modułu'
 helpcenter.community.no_matching: 'Brak pasującej opinii'

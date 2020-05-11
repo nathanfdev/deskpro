@@ -11,7 +11,7 @@ helpcenter.account.login_external: '使用外部服务登录'
 helpcenter.account.login_lockout: '您登录失败的次数过多，因此您已被锁定。 请稍后再试。'
 helpcenter.account.login_reset_password_link: '密码提醒？'
 helpcenter.account.login_register_action: 注册
-helpcenter.account.login_remember: '保持登录状态？'
+helpcenter.account.login_stay_logged_in: '保持登录状态？'
 helpcenter.account.logout_action: 退出
 helpcenter.account.new_ticket_no_login: 'Portal CRM已禁用。无法提交门票。'
 helpcenter.account.profile_save_action: '保存资料'
@@ -47,15 +47,14 @@ helpcenter.account.your_pending_email_addresses: '您的待定邮箱地址'
 helpcenter.articles.published_label: 已发布的
 helpcenter.articles.section_title: 知识库
 helpcenter.articles.view_as_agent: '因为您是代理所以您可以看到此页。用户是查阅不到此页的。'
-helpcenter.chat.email: '您的电子邮件地址'
-helpcenter.chat.list_date: 日期
-helpcenter.chat.log_chat_time: '聊天总时间'
-helpcenter.chat.log_linked_ticket: '已经指定的来单'
-helpcenter.chat.log_view_linked_ticket: '查阅来单'
+helpcenter.messenger.date_label: 日期
+helpcenter.messenger.total_chat_time_label: '聊天总时间'
+helpcenter.messenger.linked_ticket_label: '已经指定的来单'
+helpcenter.messenger.view_linked_ticket_action: '查阅来单'
 helpcenter.community.btn_vote: '我同意'
 helpcenter.community.error_hidden: '此反馈项已隐藏'
 helpcenter.community.error_login: '请登录'
-helpcenter.community.form_full_name: 姓名
+helpcenter.general.name: 姓名
 helpcenter.community.form_topic_title: 标题
 helpcenter.community.module_forbidden: '您无权访问此模块'
 helpcenter.community.no_matching: '没有匹配的反馈'

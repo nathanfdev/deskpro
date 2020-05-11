@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'Mewngofnodwch â gwasanaeth allanol'
 helpcenter.account.login_lockout: 'Rydych chi wedi methu mengofnodi gormod o weithiau felly rydych wedi cael eich cloi allan. Rhowch gynnig arall mewn ychydig os gwelwch yn dda.'
 helpcenter.account.login_reset_password_link: 'Angen atgofiad am eich cyfrinair?'
 helpcenter.account.login_register_action: Cofrestrwch
-helpcenter.account.login_remember: 'Arhoswch wedi mewngofnodi?'
+helpcenter.account.login_stay_logged_in: 'Arhoswch wedi mewngofnodi?'
 helpcenter.account.logout_action: Allgofnodwch
 helpcenter.account.profile_save_action: 'Cadw''ch proffil'
 helpcenter.account.profile_delete_picture: 'Newid neu ddileu''ch llun proffil?'

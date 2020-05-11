@@ -4,7 +4,10 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Captcha;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha\HcValidRecaptcha2;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha\ValidRecaptcha2;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -26,15 +29,33 @@ class ReCaptchaType extends AbstractType
     private $languageManager;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
+     * @var PortalBrandThemeLoader
+     */
+    private $portalBrandThemeLoader;
+
+    /**
      * Constructor.
      *
+     * @param BrandStack $brandStack
+     * @param PortalBrandThemeLoader $portalBrandThemeLoader
      * @param SettingsResolver $settingsResolver
-     * @param LanguageManager  $languageManager
+     * @param LanguageManager $languageManager
      */
-    public function __construct(SettingsResolver $settingsResolver, LanguageManager $languageManager)
-    {
-        $this->languageManager  = $languageManager;
-        $this->settingsResolver = $settingsResolver;
+    public function __construct(
+        SettingsResolver $settingsResolver,
+        LanguageManager $languageManager,
+        BrandStack $brandStack,
+        PortalBrandThemeLoader $portalBrandThemeLoader = null
+    ) {
+        $this->languageManager        = $languageManager;
+        $this->settingsResolver       = $settingsResolver;
+        $this->brandStack             = $brandStack;
+        $this->portalBrandThemeLoader = $portalBrandThemeLoader;
     }
 
     /**
@@ -42,16 +63,16 @@ class ReCaptchaType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $site_key = $this->getSiteKey();
+        $siteKey = $this->getSiteKey();
 
-        $view->vars['site_key'] = $site_key;
+        $view->vars['site_key'] = $siteKey;
 
-        $secure_token = null;
+        $secureToken = null;
         if (self::isCloudRecapchaEnabled()) {
             // TODO cloud recaptcha
         }
 
-        $view->vars['secure_token'] = $secure_token;
+        $view->vars['secure_token'] = $secureToken;
     }
 
     /**
@@ -67,11 +88,12 @@ class ReCaptchaType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        $contraint = $this->isHelpcenter() ? new HcValidRecaptcha2() : new ValidRecaptcha2();
         $resolver->setDefaults([
             'label'       => false,
             'mapped'      => false,
             'constraints' => [
-                new ValidRecaptcha2(),
+                $contraint,
             ],
         ]);
     }
@@ -147,5 +169,10 @@ class ReCaptchaType extends AbstractType
         }
 
         return;
+    }
+
+    private function isHelpcenter()
+    {
+        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }

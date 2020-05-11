@@ -89,10 +89,14 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             $person          = $login_processor->getPerson();
 
             if ($this->dpPersonProvider->personHasBannedEmail($person)) {
-                throw new DisabledException('portal.account.login-disabled');
+                $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_disabled' : 'portal.account.login-disabled';
+
+                throw new DisabledException($errorMessage);
             }
             if (!$this->container->get('dp_limit_email_domains_checker')->checkPerson($person)) {
-                throw new BadCredentialsException('portal.account.login-invalid');
+                $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+
+                throw new BadCredentialsException($errorMessage);
             }
 
             // check if user has this brand
@@ -102,7 +106,9 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 // add person to this brand and continue log in
                 if ($usersource->getSourceType() === DeskPRO::class && !$this->container->get('dp_authentication_manager.user')->isRegistrationFormVisible()) {
                     // no way to log in, show incorrect credentials message
-                    throw new BadCredentialsException('portal.account.login-invalid');
+                    $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+
+                    throw new BadCredentialsException($errorMessage);
                 }
 
                 $person->addBrand($brand);
@@ -124,7 +130,9 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             return $authenticatedToken;
         }
 
-        throw new BadCredentialsException('portal.account.login-invalid');
+        $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+
+        throw new BadCredentialsException($errorMessage);
     }
 
     /**
@@ -177,5 +185,13 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
         }
 
         return [new Result(Result::FAILURE_INVALID_CREDS), isset($us) ? $us : null];
+    }
+
+    protected function isHelpcenter()
+    {
+        $portalBrandThemeLoader = $this->container->get('portal_brand_theme_loader');
+        if ($portalBrandThemeLoader) {
+            return $portalBrandThemeLoader->getPortalBrandTheme($this->container->get('brand_stack')->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
+        }
     }
 }

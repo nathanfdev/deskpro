@@ -23,7 +23,7 @@
                   <div class="dp-po-messages-wrap">
                     <h3 class="dp-po-messages-name">
                       {% if message.author.person.id == app.user.id %}
-                        {{ phrase('helpcenter.chat.you') }}
+                        {{ phrase('helpcenter.messenger.you') }}
                       {% else %}
                         {{ message.author.person.display_name }}
                       {% endif %}

@@ -11,7 +11,7 @@ helpcenter.account.login_external: 'masuk dengan layanan eksternal'
 helpcenter.account.login_lockout: 'Anda telah gagal masuk berkali-kali sehingga anda terkunci. Silahkan coba lagi nanti'
 helpcenter.account.login_reset_password_link: 'Memerlukan pengingat kata sandi'
 helpcenter.account.login_register_action: Mendaftar
-helpcenter.account.login_remember: 'Anda yakin tetap masuk?'
+helpcenter.account.login_stay_logged_in: 'Anda yakin tetap masuk?'
 helpcenter.account.logout_action: keluar
 helpcenter.account.new_ticket_no_login: 'Portal CRM dinonaktifkan. Tidak dapat mengirim tiket.'
 helpcenter.account.profile_save_action: 'simpan profil'
@@ -47,15 +47,14 @@ helpcenter.account.your_pending_email_addresses: 'Alamat email/surat elektronik 
 helpcenter.articles.published_label: Diterbitkan
 helpcenter.articles.section_title: Dasar Pengetahuan
 helpcenter.articles.view_as_agent: 'Anda dapat melihat laman ini karena anda adalah seorang agen. Pengguna tidak akan dapat melihat laman ini.'
-helpcenter.chat.email: 'Alamat Email Anda'
-helpcenter.chat.list_date: Tanggal
-helpcenter.chat.log_chat_time: 'Total Waktu Obrolan'
-helpcenter.chat.log_linked_ticket: 'Dialihkan ke tiket'
-helpcenter.chat.log_view_linked_ticket: 'Lihat Tiket'
+helpcenter.messenger.date_label: Tanggal
+helpcenter.messenger.total_chat_time_label: 'Total Waktu Obrolan'
+helpcenter.messenger.linked_ticket_label: 'Dialihkan ke tiket'
+helpcenter.messenger.view_linked_ticket_action: 'Lihat Tiket'
 helpcenter.community.btn_vote: 'Saya setuju'
 helpcenter.community.error_hidden: 'Tanggapan ini disembunyikan'
 helpcenter.community.error_login: 'Silahkan masuk'
-helpcenter.community.form_full_name: Nama
+helpcenter.general.name: Nama
 helpcenter.community.form_topic_title: Judul
 helpcenter.community.module_forbidden: 'Anda tidak memiliki akses terhadap modul ini'
 helpcenter.community.no_matching: 'Tidak ada tanggapan yang sesuai'
