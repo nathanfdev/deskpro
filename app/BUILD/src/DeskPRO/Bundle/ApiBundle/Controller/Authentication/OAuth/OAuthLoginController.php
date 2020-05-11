@@ -99,11 +99,12 @@ class OAuthLoginController extends BaseController
             ]);
         }
 
+        $defaultError = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
         if (isset($sessionData['_security.last_error'])) {
             $loginError = $sessionData['_security.last_error'];
             $loginError = $loginError instanceof AuthenticationException
                 ? $loginError->getMessage()
-                : 'portal.account.login-invalid';
+                : $defaultError;
         } else {
             $loginError = null;
         }

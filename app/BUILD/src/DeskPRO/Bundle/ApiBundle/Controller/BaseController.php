@@ -227,6 +227,7 @@ class BaseController extends FOSRestController
 
     /**
      * @param Request $request
+     * @param mixed $etag
      *
      * @return null|\Symfony\Component\HttpFoundation\Response
      */
@@ -270,5 +271,10 @@ class BaseController extends FOSRestController
         }
 
         return $data;
+    }
+
+    protected function isHelpcenter()
+    {
+        return $this->get('portal_brand_theme_loader')->getPortalBrandTheme($this->get('brand_stack')->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }

@@ -3,6 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Symfony\Component\Form\FormError;
 
 /**
@@ -21,15 +23,38 @@ class ErrorMessageFactory
     private $prefix;
 
     /**
+     * @var PortalBrandThemeLoader
+     */
+    private $portalBrandThemeLoader;
+
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * Constructor.
      *
      * @param Translate $translate
-     * @param string    $prefix
+     * @param string $prefix
+     * @param PortalBrandThemeLoader $portalBrandThemeLoader
+     * @param BrandStack $brandStack
      */
-    public function __construct(Translate $translate, $prefix)
-    {
-        $this->translate = $translate;
-        $this->prefix    = $prefix;
+    public function __construct(
+        Translate $translate,
+        $prefix,
+        PortalBrandThemeLoader $portalBrandThemeLoader,
+        BrandStack $brandStack
+    ) {
+        $this->portalBrandThemeLoader  = $portalBrandThemeLoader;
+        $this->brandStack              = $brandStack;
+        $this->translate               = $translate;
+
+        if ($this->isHelpcenter()) {
+            $this->prefix    = str_replace('portal.', 'helpcenter.', $prefix);
+        } else {
+            $this->prefix    = $prefix;
+        }
     }
 
     /**
@@ -72,5 +97,10 @@ class ErrorMessageFactory
         }
 
         return $new;
+    }
+
+    private function isHelpcenter()
+    {
+        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }

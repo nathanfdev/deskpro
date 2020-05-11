@@ -66,6 +66,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPasswordValidator
     arguments:
       - "@deskpro_password_policy_validator"
+      - "@?portal_brand_theme_loader"
+      - "@brand_stack"
     tags:
       - { name: validator.constraint_validator, alias: 'dp_password' }
 

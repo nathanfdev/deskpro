@@ -10,11 +10,13 @@ helpcenter.account.email_management_from_form: 'Manage my email addresses'
 helpcenter.account.email_primary_description: Primary
 helpcenter.account.lockout_time: 'You can try again in {minutes} minutes.'
 helpcenter.account.login_captcha_failed: 'You have entered an invalid CAPTCHA code. Please try again.'
+helpcenter.account.login_disabled: 'Your email address has been banned.'
 helpcenter.account.login_email: 'Your email'
 helpcenter.account.login_email_placeholder: email@example.com
 helpcenter.account.login_external: 'Login with an external service'
 helpcenter.account.login_invalid: 'Login invalid'
 helpcenter.account.login_lockout: 'You have failed login too many times so you have been locked out. Please try again later.'
+helpcenter.account.login_not_configured: 'External service is not configured.'
 helpcenter.account.login_password: 'Your password'
 helpcenter.account.login_reset_password_link: 'Need a password reminder?'
 helpcenter.account.login_register_action: Register
@@ -342,6 +344,16 @@ helpcenter.forms.date_picker_time: Time
 helpcenter.forms.error_email_required: 'You must provide your email address'
 helpcenter.articles.article_object: Article
 helpcenter.news.news_post_object: 'News Post'
+helpcenter.forms.error_captcha: 'The CAPTCHA value was incorrect'
+helpcenter.forms.error_password_current: 'This must be your current password'
+helpcenter.forms.error_password_forbid_reuse: 'You cannot use a password you have used before'
+helpcenter.forms.error_password_reset_required: 'You have to reset password'
+helpcenter.forms.error_password_min_length: '{count, plural, one {Minimum of # character} other {Minimum of # characters}}'
+helpcenter.forms.error_password_require_num_lowercase: '{count, plural, one {At least # lowercase character} other {At least # lowercase character}}'
+helpcenter.forms.error_password_require_num_number: '{count, plural, one {At least # number} other {At least # numbers}}'
+helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {At least # symbol} other {At least # symbols}}'
+helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {At least # uppercase character} other {At least # uppercase characters}}'
+helpcenter.forms.error_required: 'This value is required'
 helpcenter.forms.label_save: Save
 helpcenter.forms.message_description: ''
 helpcenter.general.add_comment: 'Add a comment'

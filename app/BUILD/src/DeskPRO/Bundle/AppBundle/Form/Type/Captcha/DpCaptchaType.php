@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Captcha;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Gregwar\CaptchaBundle\Type\CaptchaType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,7 +26,12 @@ class DpCaptchaType extends AbstractType
     /**
      * @var BrandStack
      */
-    private $brand_stack;
+    private $brandStack;
+
+    /**
+     * @var PortalBrandThemeLoader
+     */
+    private $portalBrandThemeLoader;
 
     /**
      * @var array
@@ -35,15 +41,21 @@ class DpCaptchaType extends AbstractType
     /**
      * Constructor.
      *
-     * @param BrandStack      $brand_stack
+     * @param BrandStack $brandStack
+     * @param PortalBrandThemeLoader $portalBrandThemeLoader
      * @param LanguageManager $language_manager
-     * @param array           $captchaConfig
+     * @param array $captchaConfig
      */
-    public function __construct(BrandStack $brand_stack, LanguageManager $language_manager, array $captchaConfig)
-    {
-        $this->language_manager = $language_manager;
-        $this->brand_stack      = $brand_stack;
-        $this->captchaConfig    = $captchaConfig;
+    public function __construct(
+        BrandStack $brandStack,
+        PortalBrandThemeLoader $portalBrandThemeLoader,
+        LanguageManager $language_manager,
+        array $captchaConfig
+    ) {
+        $this->language_manager       = $language_manager;
+        $this->brandStack             = $brandStack;
+        $this->portalBrandThemeLoader = $portalBrandThemeLoader;
+        $this->captchaConfig          = $captchaConfig;
     }
 
     /**
@@ -65,10 +77,11 @@ class DpCaptchaType extends AbstractType
             if ($this->isRecaptchaEnabled()) {
                 $form->add('captcha', ReCaptchaType::class);
             } else {
+                $errorMessage = $this->isHelpcenter() ? 'helpcenter.forms.error_captcha' : 'portal.forms.error_captcha';
                 $form->add('captcha', CaptchaType::class, [
                     'label'           => false,
                     'as_url'          => true,
-                    'invalid_message' => 'portal.forms.error_captcha',
+                    'invalid_message' => $errorMessage,
                     // Workaround to avoid null bypass_code to be cast as a string that de-require the captcha
                     'bypass_code' => rand(0, 123456),
                     'length'      => $this->captchaConfig['length'],
@@ -114,7 +127,12 @@ class DpCaptchaType extends AbstractType
      */
     protected function isRecaptchaEnabled()
     {
-        return $this->brand_stack->getActive()->getSetting('core.use_recaptcha2')
+        return $this->brandStack->getActive()->getSetting('core.use_recaptcha2')
             || ReCaptchaType::isCloudRecapchaEnabled();
+    }
+
+    private function isHelpcenter()
+    {
+        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }

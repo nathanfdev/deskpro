@@ -226,7 +226,9 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             try {
                 $result = $adapter->authenticate();
             } catch (\Exception $e) {
-                throw new BadCredentialsException('portal.account.login-not-configured');
+                $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_not_configured' : 'portal.account.login-not-configured';
+
+                throw new BadCredentialsException($errorMessage);
             }
 
             // The user is already logged in
@@ -241,19 +243,25 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 return $r;
             }
 
-            throw new BadCredentialsException('portal.account.login-invalid');
+            $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+
+            throw new BadCredentialsException($errorMessage);
         } else {
             try {
                 $result = $adapter->authenticate();
             } catch (\Exception $e) {
-                throw new BadCredentialsException('portal.account.login-not-configured');
+                $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_not_configured' : 'portal.account.login-not-configured';
+
+                throw new BadCredentialsException($errorMessage);
             }
 
             if ($result->isValid()) {
                 return $this->createTokenFromUsersourceResult($usersource, $result);
             }
 
-            throw new BadCredentialsException('portal.account.login-invalid');
+            $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+
+            throw new BadCredentialsException($errorMessage);
         }
     }
 
@@ -288,7 +296,9 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         if (!$adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
             $session->getFlashBag()->set('login_failed', true);
 
-            throw new BadCredentialsException('portal.account.login-invalid');
+            $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+
+            throw new BadCredentialsException($errorMessage);
         }
 
         $adapter->setCallbackContext($_REQUEST);
@@ -327,7 +337,9 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             return $this->getFailedTestResponse($writer);
         }
 
-        throw new BadCredentialsException('portal.account.login-invalid');
+        $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+
+        throw new BadCredentialsException($errorMessage);
     }
 
     /**
@@ -373,7 +385,9 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             return $this->getFailedTestResponse($writer);
         }
 
-        throw new BadCredentialsException('portal.account.login-invalid');
+        $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+
+        throw new BadCredentialsException($errorMessage);
     }
 
     /**
@@ -413,7 +427,9 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
         $email = $mappedFields->get('email');
         if ($email && !$this->container->get('dp_limit_email_domains_checker')->checkEmail($email)) {
-            throw new BadCredentialsException('portal.account.login-invalid');
+            $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+
+            throw new BadCredentialsException($errorMessage);
         }
 
         try {
@@ -432,7 +448,9 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
         $token = $this->createTokenFromPerson($person);
         if (!$token->isAuthenticated()) {
-            throw new BadCredentialsException('portal.account.login-invalid');
+            $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+
+            throw new BadCredentialsException($errorMessage);
         }
 
         return $token;
@@ -562,5 +580,10 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             'log'            => $writer->getMessagesAsString(),
             'display_errors' => '',
         ]);
+    }
+
+    protected function isHelpcenter()
+    {
+        return $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($this->get('brand_stack')->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }
