@@ -76,7 +76,7 @@ HTML;
      */
     public function isEnabledOnInstall()
     {
-        return false;
+        return true;
     }
 
     public function beforeEnable(ContainerInterface $container, $newInstall = false)
