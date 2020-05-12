@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
@@ -94,6 +92,7 @@ class TicketTimelineDataService extends AbstractDataService
             switch ($l->action_type) {
                 case 'ticket_created':
                     $timeline->addLine(new Line\TicketCreatedLine($l->date_created, $l->person));
+
                     break;
 
                 case 'message_created':
@@ -119,6 +118,7 @@ class TicketTimelineDataService extends AbstractDataService
                             }
                         }
                     }
+
                     break;
 
                 case 'changed_status':
@@ -134,13 +134,120 @@ class TicketTimelineDataService extends AbstractDataService
                             $timeline->addLine(new Line\TicketClosedLine($l->date_created, $l->person));
                         }
                     }
+
                     break;
                 case 'ticket_approval':
                     if (isset($approvals[$l->getIdObject()]) && self::ADD_TICKET_APPROVALS_TO_TIMELINE) {
                         $timeline->addLine(new Line\TicketApprovalLine($approvals[$l->getIdObject()], $l->person));
                     }
+
                     break;
             }
+        }
+
+        return $timeline;
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param int    $page
+     * @param int    $perPage
+     * @param Person $person
+     *
+     * @return TicketTimeline
+     */
+    public function getHcUserTimeline(Ticket $ticket, $page = 1, $perPage = 50, $person = null)
+    {
+        $raw_logs = $this->getTicketLogRepo()->getLogsForTicket($ticket, [
+            'order_dir' => 'ASC',
+            'types'     => ['ticket_created', 'message_created', 'changed_status', 'ticket_approval'],
+        ]);
+
+        $messages = $this->getTicketMessageRepo()->getTicketMessages($ticket, [
+            'order'      => 'ASC',
+            'with_notes' => false,
+        ]);
+
+        $messages = MapUtils::rekeyByProperty($messages, 'id');
+
+        $approvals = [];
+        if ($currentUser = $this->getCurrentUser() && self::ADD_TICKET_APPROVALS_TO_TIMELINE) {
+            $approvals = $this->getTicketApprovalRepo()->getTicketApprovalsByTicketAndApprover(
+                $ticket,
+                $currentUser
+            );
+            $approvals = MapUtils::rekeyByProperty($approvals, 'id');
+        }
+
+        $logsSource = $this->procLogLines($ticket, $raw_logs, $messages);
+
+        // pager. see TicketTimelinePagerfantaAdapter.
+        $haveMessages = [];
+
+        $timelineLines = [];
+
+        /** @var TicketLog $l */
+        foreach ($logsSource as $l) {
+            switch ($l->action_type) {
+                case 'message_created':
+                    if (isset($messages[$l->id_after]) && !isset($haveMessages[$l->id_after])) {
+                        // This prevents dupe messages appearing if the log isn't correct and has
+                        // dupe entries for whatever reason
+                        $haveMessages[$l->id_after] = true;
+
+                        $m = $messages[$l->id_after];
+                        if ($m->person && $m->person->is_agent && $m->person !== $ticket->person) {
+                            $timelineLines[] = new Line\AgentMessageLine($m);
+                        } else {
+                            $timelineLines[] = new Line\UserMessageLine($m);
+                        }
+                        if ($person) {
+                            if ($person->isAgent() || $person->isOrganizationManager()) {
+                                $feedback = $this->getTicketFeedbackRepo()->getFeedbackForMessage($m);
+                            } else {
+                                $feedback = $this->getTicketFeedbackRepo()->getFeedback($m, $person, false);
+                            }
+                            if ($feedback) {
+                                $timelineLines[] = new Line\FeedbackRatingLine($feedback);
+                            }
+                        }
+                    }
+
+                    break;
+
+                case 'changed_status':
+                    $oldStatus = isset($l->details['old_status']) ? $l->details['old_status'] : null;
+                    $newStatus = isset($l->details['new_status']) ? $l->details['new_status'] : null;
+
+                    $oldType = $this->getStatusType($oldStatus);
+                    $newType = $this->getStatusType($newStatus);
+                    if ($oldStatus && $oldType !== $newType && $oldType !== 'hidden') {
+                        if ($newType == 'open') {
+                            $timelineLines[] = new Line\TicketReOpenedLine($l->date_created, $l->person);
+                        } else {
+                            $timelineLines[] = new Line\TicketClosedLine($l->date_created, $l->person);
+                        }
+                    }
+
+                    break;
+                case 'ticket_approval':
+                    if (isset($approvals[$l->getIdObject()]) && self::ADD_TICKET_APPROVALS_TO_TIMELINE) {
+                        $timelineLines[] = new Line\TicketApprovalLine($approvals[$l->getIdObject()], $l->person);
+                    }
+
+                    break;
+            }
+        }
+
+        $numPages = ceil(count($timelineLines) / $perPage);
+        if ($page === 'last') {
+            $page = $numPages;
+        }
+        $pageOffset = ($perPage * ($page - 1));
+        $logs       = array_slice($timelineLines, $pageOffset, $perPage);
+        $timeline   = new TicketTimeline(count($timelineLines));
+        foreach ($logs as $line) {
+            $timeline->addLine($line);
         }
 
         return $timeline;
@@ -170,16 +277,19 @@ class TicketTimelineDataService extends AbstractDataService
                 case 'ticket_created':
                     $has_created = true;
                     $use_logs[]  = $l;
+
                     break;
                 case 'message_created':
                     if (isset($messages[$l->id_after])) {
                         $messages_with_log[] = $l->id_after;
                     }
                     $use_logs[] = $l;
+
                     break;
                 case 'changed_status':
                 case 'ticket_approval':
                     $use_logs[] = $l;
+
                     break;
             }
         }

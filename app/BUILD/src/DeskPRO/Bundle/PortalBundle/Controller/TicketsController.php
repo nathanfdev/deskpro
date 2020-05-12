@@ -217,7 +217,11 @@ class TicketsController extends AbstractController
         // create timeline with pagination
         $page     = $request->get('page', 'last');
         $per_page = 10;
-        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket, $page, $per_page, $this->getUser());
+        if ($this->isHelpCenterTheme()) {
+            $timeline = $this->get('data.ticket_timeline')->getHcUserTimeline($ticket, $page, $per_page, $this->getUser());
+        } else {
+            $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket, $page, $per_page, $this->getUser());
+        }
         $pager    = new Pagerfanta(new TicketTimelinePagerfantaAdapter($timeline));
         $pager->setMaxPerPage($per_page);
         $pager->setCurrentPage($page === 'last' ? $pager->getNbPages() : $page);
