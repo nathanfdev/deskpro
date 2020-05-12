@@ -51,7 +51,7 @@ helpcenter.messenger.date_label: Дата
 helpcenter.messenger.total_chat_time_label: 'Общо време на чат'
 helpcenter.messenger.linked_ticket_label: 'Назначи по тикет'
 helpcenter.messenger.view_linked_ticket_action: 'Виж тикет'
-helpcenter.community.btn_vote: 'Съгласен съм'
+helpcenter.community.vote_action: 'Съгласен съм'
 helpcenter.community.create_topic: Създай
 helpcenter.community.error_hidden: 'Тази общностна тема е скрита'
 helpcenter.community.error_login: 'Моля влезте'
@@ -187,7 +187,7 @@ helpcenter.general.agent_bar_agent_news: 'Управлявай новини'
 helpcenter.general.agents: Агенти
 helpcenter.eula.agree: Съгласен съм
 helpcenter.general.attachments: Прикачвания
-helpcenter.general.cancel_action_action: Откажи
+helpcenter.general.cancel_action: Откажи
 helpcenter.general.subscribe_action: Абонирай се
 helpcenter.general.unsubscribe_action: Прекрати абонамент
 helpcenter.general.chat: Чат

@@ -475,7 +475,7 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_tickets'),
             Breadcrumbs::TICKETS,
-            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.tickets' : 'portal.general.nav-tickets']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.tickets.my_tickets' : 'portal.general.nav-tickets']
         );
 
         return $this;

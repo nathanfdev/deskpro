@@ -337,7 +337,7 @@ export class HcOmniSearch extends React.Component {
 
     return (
       <div className="search-result-collection-empty">
-        <div><FormattedMessage id="portal.general.no-search-results-general" /></div>
+        <div><FormattedMessage id="helpcenter.general.no_search_results_general" /></div>
       </div>
     );
   }

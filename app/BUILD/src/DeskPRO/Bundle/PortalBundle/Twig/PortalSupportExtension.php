@@ -590,7 +590,7 @@ class PortalSupportExtension extends \Twig_Extension
         return $agoString;
     }
 
-    public function shortDateAgo($date, $timezone = null)
+    public function shortDateAgo($date, $timezone = null, $includeHtmlWrapper = true)
     {
         $date = $this->ensureDateTime($date);
 
@@ -649,13 +649,17 @@ class PortalSupportExtension extends \Twig_Extension
                 break;
         }
 
-        // a standard <time> element, set $include_html_wrapper to false to get the raw ago string
-        return sprintf(
-            '<time class="date-ago" datetime="%s" title="%s">%s</time>',
-            $carbon->toIso8601String(),
-            $this->date($date, 'fulltime'),
-            "$count$unit"
-        );
+        if ($includeHtmlWrapper) {
+            // a standard <time> element, set $include_html_wrapper to false to get the raw ago string
+            return sprintf(
+                '<time class="date-ago" datetime="%s" title="%s">%s</time>',
+                $carbon->toIso8601String(),
+                $this->date($date, 'fulltime'),
+                "$count$unit"
+            );
+        }
+
+        return "$count$unit";
     }
 
     /**

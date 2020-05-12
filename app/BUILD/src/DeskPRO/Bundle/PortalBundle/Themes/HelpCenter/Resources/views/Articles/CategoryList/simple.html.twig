@@ -7,7 +7,9 @@
                 <div class="col-sm-6">
                     <div class="dp-po-category-title">
                         <a href="{{ portal_path(category) }}" class="dp-po-category-title-link">
-                            {{ render_icon_from(category) }}
+                            <span class="dp-po-category-title-icon" role="presentation">
+                                {{ render_icon_from(category) }}
+                            </span>
                             <h2 class="dp-po-category-title-text">{{ object_phrase(category) }} <span>({{ category_children_pagers[category.id]|length }})</span></h2>
                         </a>
                         <a href="javascript:void(0)" class="dp-po-category-title-expand">

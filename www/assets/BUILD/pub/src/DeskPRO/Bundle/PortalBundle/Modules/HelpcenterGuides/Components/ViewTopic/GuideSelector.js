@@ -61,7 +61,7 @@ class GuideSelector extends React.Component {
       {withSplash && guide.splash_image_property ? <SplashImageRenderer className="dp-po-guides-carousel-image" object={guide} />: null}
       <div className="dp-po-guides-carousel-content">
         <a href={`${baseUrl}/guides/${guide.slug}`} className="dp-po-guides-carousel-link" onClick={e => this.onClickGuide(e, guide)}>
-          <IconRenderer object={guide} default={<i className="dp-po-icon fal fa-user-headset" />} /> {guide.title}
+          <figure className="dp-po-icon"><IconRenderer object={guide} default={<i className="fal fa-user-headset" />} /></figure> {guide.title}
         </a>
       </div>
     </div>

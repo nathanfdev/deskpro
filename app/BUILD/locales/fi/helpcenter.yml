@@ -22,7 +22,7 @@ helpcenter.account.set_password_success: 'Salasanasi on päivitetty'
 helpcenter.articles.section_title: Ohjeet
 helpcenter.articles.view_as_agent: 'Näet tämän sivun koska olet asiantuntijamme. Peruskäyttäjät eivät näe tätä sivua.'
 helpcenter.messenger.view_linked_ticket_action: 'Näytä palvelupyyntö'
-helpcenter.community.btn_vote: 'Samaa mieltä'
+helpcenter.community.vote_action: 'Samaa mieltä'
 helpcenter.general.name: Nimesi
 helpcenter.community.form_topic_title: Aihe
 helpcenter.community.section_title: Palaute
@@ -67,7 +67,7 @@ helpcenter.forms.label_save: Tallenna
 helpcenter.general.add_comment: 'Lisää kommentti'
 helpcenter.general.agent: Asiantuntija
 helpcenter.general.attachments: Liitetiedostot
-helpcenter.general.cancel_action_action: Peruuta
+helpcenter.general.cancel_action: Peruuta
 helpcenter.general.downloads_type: Lataukset
 helpcenter.general.everything: Kaikki
 helpcenter.general.go: Mene

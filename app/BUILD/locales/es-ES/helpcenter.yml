@@ -52,7 +52,7 @@ helpcenter.messenger.date_label: Fecha
 helpcenter.messenger.total_chat_time_label: 'Tiempo total de chat'
 helpcenter.messenger.linked_ticket_label: 'Asignado al boleto'
 helpcenter.messenger.view_linked_ticket_action: 'Ver Ticket'
-helpcenter.community.btn_vote: 'Estoy de acuerdo'
+helpcenter.community.vote_action: 'Estoy de acuerdo'
 helpcenter.community.error_hidden: 'Este elemento de retroalimentación está oculto.'
 helpcenter.community.error_login: 'Por favor Iniciar sesión'
 helpcenter.general.name: Nombre
@@ -183,7 +183,7 @@ helpcenter.general.agent_bar_agent_kb: 'Gestionar Knowledgebase'
 helpcenter.general.agent_bar_agent_news: 'Gestionar Noticias'
 helpcenter.general.agents: Agentes
 helpcenter.general.attachments: Adjuntos
-helpcenter.general.cancel_action_action: Cancelar
+helpcenter.general.cancel_action: Cancelar
 helpcenter.general.subscribe_action: Suscribir
 helpcenter.general.unsubscribe_action: Darse de baja
 helpcenter.general.comment_btn_save: 'Guardar comentario'

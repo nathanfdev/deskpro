@@ -73,7 +73,7 @@ class PortalIconRenderer
             $class .= ' '.$options['class'];
         }
 
-        return '<i class="dp-po-icon '.$class.'" style="color:'.$this->getIconColor($object).'"></i>';
+        return '<figure class="dp-po-icon"><i class="'.$class.'" style="color:'.$this->getIconColor($object).'"></i></figure>';
     }
 
     /**

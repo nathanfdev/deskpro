@@ -51,7 +51,7 @@ helpcenter.messenger.date_label: Ημερομηνία
 helpcenter.messenger.total_chat_time_label: 'Συνολική διάρκεια chat'
 helpcenter.messenger.linked_ticket_label: 'Ανατέθηκε το αίτημα'
 helpcenter.messenger.view_linked_ticket_action: 'Προβολή ticket'
-helpcenter.community.btn_vote: 'Συμφωνώ'
+helpcenter.community.vote_action: 'Συμφωνώ'
 helpcenter.community.error_hidden: 'Το στοιχείο community topic είναι κρυμμένο'
 helpcenter.community.error_login: 'Παρακαλούμε συνδεθείτε'
 helpcenter.general.name: Όνομα
@@ -180,7 +180,7 @@ helpcenter.general.agent_bar_agent_kb: 'Διαχείριση γνωσιακής 
 helpcenter.general.agent_bar_agent_news: 'Διαχείριση Ενημερώσεων'
 helpcenter.general.agents: Εκπρόσωπος Support
 helpcenter.general.attachments: Επισυνάψεις
-helpcenter.general.cancel_action_action: Ακύρωση
+helpcenter.general.cancel_action: Ακύρωση
 helpcenter.general.subscribe_action: Εγγραφή
 helpcenter.general.comment_btn_save: 'Αποθήκευση σχολίου'
 helpcenter.general.comments: Σχόλια

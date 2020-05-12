@@ -399,14 +399,10 @@
             {% if form.vars.data.blob.is_image %}data-blob-thumb-url="{{ form.vars.data.blob.thumbnailUrl }}"{% endif %}
         >
             <a href="{{ form.vars.data.blob.downloadUrl }}" class="dp-po-comments-attachments-link">
-                {% if form.vars.data.blob.is_image %}
-                    <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
-                {% else %}
-                    {{ content_icon(form.vars.data) }}
-                {% endif %}
+                {{ content_icon(form.vars.data) }}
                 {{ form.vars.data.blob.filename }}
             </a>
-            [ {{ form_widget(form.delete) }} {{ phrase('helpcenter.form.delete_question') }} ]
+            [&nbsp;{{ form_widget(form.delete) }}&nbsp;{{ phrase('helpcenter.form.delete_question') }} ]
             {{ form_widget(form.blob_auth) }}
         </li>
     {% endif %}
@@ -458,11 +454,7 @@
                 {{ form_errors(form) }}
             </div>
             <a href="{{ form.vars.data.blob.downloadUrl }}">
-                {% if form.vars.data.blob.is_image %}
-                    <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
-                {% else %}
-                    {{ content_icon(form.vars.data) }}
-                {% endif %}
+                {{ content_icon(form.vars.data) }}
                 {{ form.vars.data.blob.filename }}
             </a>
             [ {{ form_widget(form.delete) }} {{ phrase('helpcenter.form.delete_question') }} ]

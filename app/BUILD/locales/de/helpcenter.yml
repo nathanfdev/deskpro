@@ -52,7 +52,7 @@ helpcenter.messenger.date_label: Datum
 helpcenter.messenger.total_chat_time_label: 'Gesamte Chat-Zeit'
 helpcenter.messenger.linked_ticket_label: 'Zugeordnet zum Ticket'
 helpcenter.messenger.view_linked_ticket_action: 'Tickets anzeigen'
-helpcenter.community.btn_vote: 'Ich stimme zu'
+helpcenter.community.vote_action: 'Ich stimme zu'
 helpcenter.community.error_hidden: 'Dieser Community Topic-Eintrag ist versteckt'
 helpcenter.community.error_login: 'Bitte anmelden'
 helpcenter.community.form_topic_title: Titel
@@ -180,7 +180,7 @@ helpcenter.general.agent_bar_agent_kb: 'Wissensdatenbank verwalten'
 helpcenter.general.agent_bar_agent_news: 'Neuigkeiten verwalten'
 helpcenter.general.agents: Mitarbeiter
 helpcenter.general.attachments: Anhänge
-helpcenter.general.cancel_action_action: Abbrechen
+helpcenter.general.cancel_action: Abbrechen
 helpcenter.general.subscribe_action: Abonnieren
 helpcenter.general.unsubscribe_action: Abbestellen
 helpcenter.general.comment_btn_save: 'Kommentar speichern'

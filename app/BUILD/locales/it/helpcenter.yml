@@ -50,7 +50,7 @@ helpcenter.messenger.date_label: Data
 helpcenter.messenger.total_chat_time_label: 'Tempo di chat totale'
 helpcenter.messenger.linked_ticket_label: 'Assegnato al ticket'
 helpcenter.messenger.view_linked_ticket_action: 'Visualizza il Ticket'
-helpcenter.community.btn_vote: 'Concordo'
+helpcenter.community.vote_action: 'Concordo'
 helpcenter.community.error_hidden: 'Il tema è nascosto'
 helpcenter.community.error_login: 'Per favore effettua l''accesso'
 helpcenter.general.name: Nome
@@ -176,7 +176,7 @@ helpcenter.general.agent_bar_agent_kb: 'Gestisci la Knowledgebase'
 helpcenter.general.agent_bar_agent_news: 'Gestisci le Novità'
 helpcenter.general.agents: Agenti
 helpcenter.general.attachments: Allegati
-helpcenter.general.cancel_action_action: Annulla
+helpcenter.general.cancel_action: Annulla
 helpcenter.general.subscribe_action: Iscriviti
 helpcenter.general.unsubscribe_action: Annulla l'iscrizione
 helpcenter.general.comment_btn_save: 'Salva Commento'
