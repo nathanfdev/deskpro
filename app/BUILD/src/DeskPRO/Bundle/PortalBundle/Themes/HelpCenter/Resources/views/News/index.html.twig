@@ -33,12 +33,14 @@
     </div>
     <div class="d-block d-sm-none">
         <div class="dp-po-post-mobile-area">
-        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-            buttonId: 'subscribeDropdownMenuMobile',
-            subscriptionInfo: [
-                { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed },
-            ]
-        } %}
+        {% if brand_setting('user.news_subscriptions') %}
+            {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                buttonId: 'subscribeDropdownMenuMobile',
+                subscriptionInfo: [
+                    { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed },
+                ]
+            } %}
+        {% endif %}
         <a href="javascript:void(0)" data-toggle="modal" data-target="#postExtraMobile"><i
             class="far fa-align-center" title="menu"></i></a>
         </div>
@@ -177,11 +179,13 @@
 {# ------------------------------------------ #}
 {% block page_sidebar %}
     <div class="d-none d-sm-block">
-        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-            subscriptionInfo: [
-                { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed },
-            ]
-        } %}
+        {% if brand_setting('user.news_subscriptions') %}
+            {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                subscriptionInfo: [
+                    { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed },
+                ]
+            } %}
+        {% endif %}
 
         <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
             <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter_cat') }}</h3>

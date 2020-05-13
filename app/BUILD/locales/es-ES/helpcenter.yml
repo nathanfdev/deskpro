@@ -185,13 +185,12 @@ helpcenter.general.agents: Agentes
 helpcenter.general.attachments: Adjuntos
 helpcenter.general.cancel_action: Cancelar
 helpcenter.general.subscribe_action: Suscribir
-helpcenter.general.unsubscribe_action: Darse de baja
 helpcenter.general.comment_btn_save: 'Guardar comentario'
 helpcenter.general.comments: Comentarios
 helpcenter.general.comments_pending_validation: 'Este comentario está siendo revisado. Se mostrará en breve.'
 helpcenter.general.downloads_type: Descargas
 helpcenter.general.everything: Todo
-helpcenter.general.go: Ir
+helpcenter.general.go_action: Ir
 helpcenter.general.impersonation_mode: 'Modo de suplantación'
 helpcenter.general.in: en
 helpcenter.general.label_search_enter_label: 'Por favor, proporcione una etiqueta para buscar'
@@ -214,10 +213,6 @@ helpcenter.general.prop_views_asc: 'Menos vistas primero'
 helpcenter.general.prop_views_desc: 'La mayoría de las vistas primero'
 helpcenter.general.rate_page: 'Califica la calidad de esta página.'
 helpcenter.general.rate_page_positive: De ayuda
-helpcenter.general.related_community: 'Comentarios relacionados'
-helpcenter.general.related_downloads: 'Archivos relacionados'
-helpcenter.general.related_news: 'Noticias relacionadas'
-helpcenter.general.related_pages: 'páginas relacionadas'
 helpcenter.general.rerender_form: 'Por favor revise este formulario antes de enviarlo.'
 helpcenter.general.share: Compartir
 helpcenter.general.show: Mostrar

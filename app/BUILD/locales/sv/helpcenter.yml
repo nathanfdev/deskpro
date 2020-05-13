@@ -181,7 +181,6 @@ helpcenter.general.agents: Agenter
 helpcenter.general.attachments: Bifogade filer
 helpcenter.general.cancel_action: Avbryt
 helpcenter.general.subscribe_action: Prenumerera
-helpcenter.general.unsubscribe_action: Avprenumerera
 helpcenter.general.chat: Chatt
 helpcenter.general.comment_btn_save: 'Spara kommentar'
 helpcenter.general.comments: Kommentarer
@@ -189,7 +188,7 @@ helpcenter.general.comments_pending_validation: 'Den här kommentaren granskas. 
 helpcenter.general.downloads_type: Nedladdningar
 helpcenter.general.email_address: 'E-post'
 helpcenter.general.everything: Allt
-helpcenter.general.go: Kör
+helpcenter.general.go_action: Kör
 helpcenter.general.impersonation_mode: 'Personifieringsläge'
 helpcenter.general.in: i
 helpcenter.general.label_search_enter_label: 'Vänligen ange en etikett att söka efter'
@@ -212,10 +211,6 @@ helpcenter.general.prop_views_asc: 'Minst visade först'
 helpcenter.general.prop_views_desc: 'Mest visade först'
 helpcenter.general.rate_page: 'Betygsätt kvalitén på denna sidan'
 helpcenter.general.rate_page_positive: Hjälpfull
-helpcenter.general.related_community: 'Relaterad community topic'
-helpcenter.general.related_downloads: 'Relaterade filer'
-helpcenter.general.related_news: 'Relaterade nyheter'
-helpcenter.general.related_pages: 'Relaterade sidor'
 helpcenter.general.rerender_form: 'Vänligen läs igenom det här formuläret innan du skickar det.'
 helpcenter.general.share: Dela
 helpcenter.general.show: Visa

@@ -163,14 +163,13 @@ helpcenter.general.agents: افراد سازمان
 helpcenter.general.attachments: فایل پیوست
 helpcenter.general.cancel_action: انصراف
 helpcenter.general.subscribe_action: اشتراک گذاری
-helpcenter.general.unsubscribe_action: لغو اشتراک
 helpcenter.general.chat: پیام
 helpcenter.general.comment_btn_save: 'ذخیره نظر'
 helpcenter.general.comments: نظرات
 helpcenter.general.comments_pending_validation: "این نظر در حال بررسی است آن را به زودی نمایش داده خواهد شد\n"
 helpcenter.general.downloads_type: دانلود
 helpcenter.general.everything: همه چیز
-helpcenter.general.go: برو
+helpcenter.general.go_action: برو
 helpcenter.general.impersonation_mode: 'حالت منفجر شدن'
 helpcenter.general.in: در
 helpcenter.general.label_search_enter_label: 'لطفا برچسب را برای جستجو انتخاب کنید'
@@ -191,9 +190,6 @@ helpcenter.general.prop_views_asc: 'کمترین بازدیدها'
 helpcenter.general.prop_views_desc: 'بیشترین بازدید'
 helpcenter.general.rate_page: 'به کیفیت این صفحه امتیاز بده'
 helpcenter.general.rate_page_positive: مفید
-helpcenter.general.related_community: 'انتقادات و پیشنهادات مرتبط'
-helpcenter.general.related_downloads: 'فایل های مرتبط'
-helpcenter.general.related_news: 'اخبار مرتبط'
 helpcenter.general.share: اشتراک گذاری
 helpcenter.general.updated: بروز شده
 helpcenter.general.user: کاربر

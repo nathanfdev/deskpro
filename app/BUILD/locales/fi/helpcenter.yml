@@ -70,14 +70,11 @@ helpcenter.general.attachments: Liitetiedostot
 helpcenter.general.cancel_action: Peruuta
 helpcenter.general.downloads_type: Lataukset
 helpcenter.general.everything: Kaikki
-helpcenter.general.go: Mene
+helpcenter.general.go_action: Mene
 helpcenter.general.log_in: 'Kirjaudu'
 helpcenter.general.nav_downloads_desc: 'Selaa latauksiamme'
 helpcenter.general.password: Salasana
 helpcenter.general.rate_page_positive: Hyödyllinen
-helpcenter.general.related_community: 'Vastaava palaute'
-helpcenter.general.related_downloads: 'Samanlaisia tiedostoja'
-helpcenter.general.related_news: 'Samanlaisia uutisia'
 helpcenter.general.show: Näytä
 helpcenter.general.you: Sinä
 helpcenter.guides.download_pdf: 'Lataa PDF'

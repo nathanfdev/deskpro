@@ -184,7 +184,6 @@ helpcenter.general.agents: 代理们
 helpcenter.general.attachments: 附件
 helpcenter.general.cancel_action: 取消
 helpcenter.general.subscribe_action: 订阅
-helpcenter.general.unsubscribe_action: 取消订阅
 helpcenter.general.chat: 聊天
 helpcenter.general.comment_btn_save: '保存评论'
 helpcenter.general.comments: 评论
@@ -192,7 +191,7 @@ helpcenter.general.comments_pending_validation: '此评论正在审核中。 它
 helpcenter.general.downloads_type: 下载
 helpcenter.general.email_address: '电子邮件'
 helpcenter.general.everything: 所有
-helpcenter.general.go: 去
+helpcenter.general.go_action: 去
 helpcenter.general.impersonation_mode: '模拟模式'
 helpcenter.general.in: 在
 helpcenter.general.label_search_enter_label: '请提供要搜索的标签'
@@ -215,10 +214,6 @@ helpcenter.general.prop_views_asc: '最少浏览的优先'
 helpcenter.general.prop_views_desc: '最多浏览的优先'
 helpcenter.general.rate_page: '评价此页面的质量'
 helpcenter.general.rate_page_positive: 有用的
-helpcenter.general.related_community: '相关的反馈'
-helpcenter.general.related_downloads: '相关的文件'
-helpcenter.general.related_news: '相关的消息'
-helpcenter.general.related_pages: '相关的页面'
 helpcenter.general.rerender_form: '请在提交前审查此表。'
 helpcenter.general.share: 分享
 helpcenter.general.show: 显示

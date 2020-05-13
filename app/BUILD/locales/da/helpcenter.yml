@@ -180,12 +180,11 @@ helpcenter.general.agents: Sagsbehandler
 helpcenter.general.attachments: Vedhæftelser
 helpcenter.general.cancel_action: Fortryd
 helpcenter.general.subscribe_action: Tilmeld
-helpcenter.general.unsubscribe_action: Afmeld
 helpcenter.general.comment_btn_save: 'Gem kommentar'
 helpcenter.general.comments: Kommentarer
 helpcenter.general.comments_pending_validation: 'Denne kommentar bliver gennemgået. Den vil blive vist om kort tid'
 helpcenter.general.everything: Alt
-helpcenter.general.go: Kør
+helpcenter.general.go_action: Kør
 helpcenter.general.impersonation_mode: 'Personefterlignings tilstand'
 helpcenter.general.in: i
 helpcenter.general.label_search_enter_label: 'Angiv venligst en etiket at søge efter'
@@ -207,10 +206,6 @@ helpcenter.general.prop_views_asc: 'Mindst visninger først'
 helpcenter.general.prop_views_desc: 'Flest visninger først'
 helpcenter.general.rate_page: 'Bedøm kvaliteten af denne side'
 helpcenter.general.rate_page_positive: Hjælpsom
-helpcenter.general.related_community: 'Lignende indlæg'
-helpcenter.general.related_downloads: 'Relaterede filer'
-helpcenter.general.related_news: 'Relaterede nyheder'
-helpcenter.general.related_pages: 'Relaterede sider'
 helpcenter.general.rerender_form: 'Læs venligst denne formular, inden du sender den.'
 helpcenter.general.share: Del
 helpcenter.general.show: Vis

@@ -187,7 +187,7 @@ helpcenter.general.comments: Σχόλια
 helpcenter.general.comments_pending_validation: 'Αυτό το σχόλιο είναι υπό έγκριση. Θα εμφανιστεί σύντομα'
 helpcenter.general.downloads_type: Λήψεις
 helpcenter.general.everything: Όλα
-helpcenter.general.go: Εκκίνηση
+helpcenter.general.go_action: Εκκίνηση
 helpcenter.general.impersonation_mode: 'Λειτουργία πλαστοπροσωπίας'
 helpcenter.general.in: μέσα
 helpcenter.general.label_search_enter_label: 'Παρακαλούμε υποβάλετε μια ετικέτα για αναζήτηση'
@@ -210,10 +210,6 @@ helpcenter.general.prop_views_asc: 'Λιγότερες προβολές πρώτ
 helpcenter.general.prop_views_desc: 'Περισσότερες προβολές πρώτα'
 helpcenter.general.rate_page: 'Βαθμολογήστε την ποιότητα της σελίδας'
 helpcenter.general.rate_page_positive: Βοηθητικό
-helpcenter.general.related_community: 'Σχετικό community topic'
-helpcenter.general.related_downloads: 'Σχετικά αρχεία'
-helpcenter.general.related_news: 'Σχετικά νέα'
-helpcenter.general.related_pages: 'Σχετικές σελίδες'
 helpcenter.general.rerender_form: 'Παρακαλούμε ελέγξτε τη φόρμα πριν την υποβάλετε.'
 helpcenter.general.share: Κοινή χρήση
 helpcenter.general.show: Προβολή

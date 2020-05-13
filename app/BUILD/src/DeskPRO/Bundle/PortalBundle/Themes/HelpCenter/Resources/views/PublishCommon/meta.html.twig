@@ -2,7 +2,7 @@
     <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.sidebar.article_posted_by') }}</h3>
     <p>{{ item.person.display_name_user }}</p>
     <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.tickets.list_date_created') }}</h3>
-    <p>{{ item.date_published | date('day') }}</p>
+    <p>{{ phrase('helpcenter.general.date_medium', { date:item.date_published }) }}</p>
     {% if custom_data | length %}
         {% include 'Theme:PublishCommon:custom-data-sidebar-list.html.twig' %}
     {% endif %}
@@ -30,6 +30,6 @@
     {% if item['end_action'] is defined and item.end_action == 'unpublish' and app.user is not null and app.user.is_agent %}
     <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }} <i class="dp-po-icon fal fa-info-circle text-primary"
                                                        data-toggle="tooltip" title="{{ phrase('helpcenter.general.viewed_by_agents_only') }}" data-placement="right"></i></h3>
-    <p>{{ item.date_end | date('day') }}</p>
+    <p>{{ phrase('helpcenter.general.date_medium', { date:item.date_end }) }}</p>
     {% endif %}
 </div>

@@ -185,7 +185,6 @@ helpcenter.general.agents: مقدمو الخدمة.
 helpcenter.general.attachments: مرفقات
 helpcenter.general.cancel_action: الغاء
 helpcenter.general.subscribe_action: مشترك
-helpcenter.general.unsubscribe_action: غير مشترك
 helpcenter.general.chat: المحادثة
 helpcenter.general.comment_btn_save: 'احفظ التعليقات'
 helpcenter.general.comments: تعليقات
@@ -193,7 +192,7 @@ helpcenter.general.comments_pending_validation: 'تمت مراجعة التعل�
 helpcenter.general.downloads_type: تنزيلات
 helpcenter.general.email_address: 'البريد'
 helpcenter.general.everything: كل شئ
-helpcenter.general.go: أذهب
+helpcenter.general.go_action: أذهب
 helpcenter.general.impersonation_mode: 'التقمص'
 helpcenter.general.in: في
 helpcenter.general.label_search_enter_label: 'ادخل اسما للبحث عنه'
@@ -216,10 +215,6 @@ helpcenter.general.prop_views_asc: 'الأقل مشاهدة في الاول'
 helpcenter.general.prop_views_desc: 'الأكثر مشاهدة الاول'
 helpcenter.general.rate_page: 'قيم جودة الصفحة'
 helpcenter.general.rate_page_positive: مفيد.
-helpcenter.general.related_community: 'ملاحظات مشابهة'
-helpcenter.general.related_downloads: 'ملفات ذات صلة'
-helpcenter.general.related_news: 'أخبار ذات علاقة'
-helpcenter.general.related_pages: 'صفحات ذات علاقة'
 helpcenter.general.rerender_form: 'الرجاء مراجعة الاستمارة قبل ارسالها'
 helpcenter.general.share: شارك
 helpcenter.general.show: عرض

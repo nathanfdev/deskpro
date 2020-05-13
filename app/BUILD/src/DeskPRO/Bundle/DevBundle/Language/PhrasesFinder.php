@@ -107,34 +107,37 @@ class PhrasesFinder
     {
         $files = $this->getTplList();
 
-        $phrase_use_counts = [];
-        $uses              = [];
-        $skip_pids         = [];
+        $phraseUseCounts = [];
+        $uses            = [];
+        $skipPids        = [];
 
         foreach ($files as $f) {
             $content = file_get_contents($f->getRealPath());
 
             foreach ($this->phrase_ids as $id) {
-                if (isset($skip_pids[$id])) {
+                if (isset($skipPids[$id])) {
                     continue;
                 }
                 if ($this->exclude_dynamic && $this->isDynamicPhrase($id)) {
-                    $skip_pids[$id] = true;
+                    $skipPids[$id] = true;
 
                     continue;
                 }
-                if ($this->limit && isset($phrase_use_counts[$id]) && $phrase_use_counts[$id] >= $this->limit) {
-                    $skip_pids[$id] = true;
+                if ($this->limit && isset($phraseUseCounts[$id]) && $phraseUseCounts[$id] >= $this->limit) {
+                    $skipPids[$id] = true;
 
                     continue;
                 }
-                if (!isset($phrase_use_counts[$id])) {
-                    $phrase_use_counts[$id] = 0;
+                if (!isset($phraseUseCounts[$id])) {
+                    $phraseUseCounts[$id] = 0;
                 }
-                if (($pos = strpos($content, $id)) !== false) {
+                $pos = 0;
+                while (($pos = strpos($content, $id, $pos)) !== false) {
                     $nextChar = $content[strlen($id) + $pos];
                     // We don't want helpcenter.general.chat_logs to match helpcenter.general.chat
                     if ($nextChar === '_' || ($nextChar >= 'a' && $nextChar <= 'z')) {
+                        $pos += strlen($id);
+
                         continue;
                     }
                     if (!isset($uses[$id])) {
@@ -148,14 +151,15 @@ class PhrasesFinder
                         $uses[$id][] = str_replace($this->app_root, '', $f->getRealPath());
                     }
 
-                    ++$phrase_use_counts[$id];
+                    ++$phraseUseCounts[$id];
+                    $pos += strlen($id);
                 }
             }
         }
 
         return [
             'phrase_uses'   => $uses,
-            'phrase_counts' => $phrase_use_counts,
+            'phrase_counts' => $phraseUseCounts,
         ];
     }
 

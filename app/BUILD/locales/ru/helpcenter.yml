@@ -185,7 +185,6 @@ helpcenter.general.agents: Агенты
 helpcenter.general.attachments: Приложение
 helpcenter.general.cancel_action: Отмена
 helpcenter.general.subscribe_action: Подписаться
-helpcenter.general.unsubscribe_action: Отписаться
 helpcenter.general.category: Пользовательский канал
 helpcenter.general.chat: Чат
 helpcenter.general.comment_btn_save: 'Сохранить комментарий'
@@ -198,7 +197,7 @@ helpcenter.general.email_address: 'Email'
 helpcenter.general.everything: Всё
 helpcenter.general.form_choose_file: 'выбрать файл'
 helpcenter.general.form_choose_files: 'Выберите файлы'
-helpcenter.general.go: Продолжить
+helpcenter.general.go_action: Продолжить
 helpcenter.general.impersonation_mode: 'Анонимный режим'
 helpcenter.general.in: в
 helpcenter.general.label_search_enter_label: 'Пожалуйста, предоставьте обозначение для того, чтобы начать поиск'
@@ -221,10 +220,6 @@ helpcenter.general.prop_views_asc: 'Начать с наименее просм�
 helpcenter.general.prop_views_desc: 'Начать с наиболее просматриваемых'
 helpcenter.general.rate_page: 'Оценить качество этой страницы'
 helpcenter.general.rate_page_positive: Полезно
-helpcenter.general.related_community: 'Похожий отзыв'
-helpcenter.general.related_downloads: 'Файлы по теме'
-helpcenter.general.related_news: 'Новости по теме'
-helpcenter.general.related_pages: 'Похожие страницы'
 helpcenter.general.rerender_form: 'Пожалуйста, проверьте перед тем, как подтвердить.'
 helpcenter.general.share: Поделиться
 helpcenter.general.show: Показать

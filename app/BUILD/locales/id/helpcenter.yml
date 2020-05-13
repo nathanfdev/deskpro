@@ -182,7 +182,6 @@ helpcenter.general.agents: Agent
 helpcenter.general.attachments: Lampiran
 helpcenter.general.cancel_action: Batalkan
 helpcenter.general.subscribe_action: Berlangganan
-helpcenter.general.unsubscribe_action: Berhenti Berlangganan
 helpcenter.general.chat: Obrolan
 helpcenter.general.comment_btn_save: 'Simpan Komentar'
 helpcenter.general.comments: Komentar
@@ -190,7 +189,7 @@ helpcenter.general.comments_pending_validation: 'Komentar ini telah ditinjau dan
 helpcenter.general.downloads_type: Unduhan
 helpcenter.general.email_address: 'Surat Elektronik/E-Mail'
 helpcenter.general.everything: Semuanya
-helpcenter.general.go: Jalankan
+helpcenter.general.go_action: Jalankan
 helpcenter.general.impersonation_mode: 'Mode tiruan'
 helpcenter.general.in: dalam
 helpcenter.general.label_search_enter_label: 'Harap berikan label untuk mencari'
@@ -213,10 +212,6 @@ helpcenter.general.prop_views_asc: 'Lebih sedikit dilihat dulu'
 helpcenter.general.prop_views_desc: 'Sebagian besar dilihat lebih dulu'
 helpcenter.general.rate_page: 'Beri nilai kualitas halaman ini'
 helpcenter.general.rate_page_positive: Membantu
-helpcenter.general.related_community: 'Tanggapan Terkait'
-helpcenter.general.related_downloads: 'Berkas Terkait'
-helpcenter.general.related_news: 'Berita Terkait'
-helpcenter.general.related_pages: 'Laman Terkait'
 helpcenter.general.rerender_form: 'Harap tinjau formulir ini sebelum Anda mengirimkannya.'
 helpcenter.general.share: Bagikan
 helpcenter.general.show: Tunjukkan

@@ -175,14 +175,13 @@ helpcenter.general.agents: Đại lý
 helpcenter.general.attachments: File đính kèm
 helpcenter.general.cancel_action: Hủy
 helpcenter.general.subscribe_action: Đăng ký
-helpcenter.general.unsubscribe_action: Hủy đăng ký
 helpcenter.general.chat: Trò chuyện
 helpcenter.general.comment_btn_save: 'Bình luận Tiết kiệm'
 helpcenter.general.comments: Bình luận
 helpcenter.general.comments_pending_validation: 'Nhận xét này đang được xem xét. Nó sẽ được hiển thị ngay'
 helpcenter.general.downloads_type: Tải xuống
 helpcenter.general.everything: Mọi điều
-helpcenter.general.go: Đi
+helpcenter.general.go_action: Đi
 helpcenter.general.impersonation_mode: 'Chế độ mạo danh'
 helpcenter.general.in: trong
 helpcenter.general.label_search_enter_label: 'Vui lòng cung cấp nhãn để tìm kiếm'
@@ -204,10 +203,6 @@ helpcenter.general.prop_views_asc: 'Ít lần xem đầu tiên'
 helpcenter.general.prop_views_desc: 'Hầu hết lượt xem trước tiên'
 helpcenter.general.rate_page: 'Đánh giá chất lượng của trang này'
 helpcenter.general.rate_page_positive: Hữu ích
-helpcenter.general.related_community: 'Phản hồi liên quan'
-helpcenter.general.related_downloads: 'Các tệp có liên quan'
-helpcenter.general.related_news: 'Tin tức liên quan'
-helpcenter.general.related_pages: 'Các trang liên quan'
 helpcenter.general.rerender_form: 'Vui lòng xem lại biểu mẫu này trước khi bạn nộp.'
 helpcenter.general.share: Chia sẻ
 helpcenter.general.show: Chỉ

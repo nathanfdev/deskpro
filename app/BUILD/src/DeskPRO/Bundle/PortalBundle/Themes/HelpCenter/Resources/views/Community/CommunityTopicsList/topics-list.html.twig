@@ -43,7 +43,7 @@
                                 {{ topic.person.display_name }}
                             </div>
                             <span class="dp-po-community-view-time">
-                                {{ topic.date_published ? topic.date_published|date('day') : topic.date_created|date('day') }}
+                                {{ phrase('helpcenter.general.date_medium', {date: topic.date_published ? topic.date_published : topic.date_created}) }}
                             </span>
                         {% endif %}
                     </div>
