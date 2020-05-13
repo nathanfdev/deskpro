@@ -321,7 +321,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
         $subject,
         $attachments = []
     ) {
-        $arguments = $this->getTicketArguments($ticket);
+        $arguments = $this->getTicketArguments($ticket, false);
 
         array_push($arguments, $agentMessage, $subject, $attachments);
 
@@ -330,7 +330,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
 
     public function getTicketArguments($ticket, $forAgent = true)
     {
-        $arguments = parent::getTicketArguments($ticket, true);
+        $arguments = parent::getTicketArguments($ticket, $forAgent);
 
         $department = $ticket->getDepartment();
         $layoutId   = $department ? $department->getId() : null;

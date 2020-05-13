@@ -242,7 +242,7 @@ class ProfileController extends AbstractController
             $this->addFlash('success', $this->phrase(['portal.flashes.user_updated_profile', 'helpcenter.flashes.user_updated_profile']));
 
             return $this->redirectToRoute('portal_user_profile');
-        } else {
+        } elseif (!$profileForm->isSubmitted()) {
             FormValidatorChecker::submitForm($profileForm);
             if (!$profileForm->isValid()) {
                 $this->addFlash('error', $this->phrase(['portal.flashes.update_user_profile', 'helpcenter.flashes.update_user_profile']));
