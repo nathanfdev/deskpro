@@ -20,7 +20,7 @@
                 </a>
               </div>
               <div class="dp-po-article-date">
-                <p>{{ phrase('helpcenter.articles.published_label') }}: <span>{{ article.date_published | date('day') }}</span></p>
+                <p>{{ phrase('helpcenter.articles.published_label') }}: <span>{{ phrase('helpcenter.general.date_medium', {date: article.date_published}) }}</span></p>
               </div>
               {% if brand_setting('user.publish_comments') %}
               <div class="dp-po-article-comments">
@@ -30,9 +30,9 @@
             </div>
           </div>
           <div class="col-sm-3">
-            <div class="dp-po-time">
+            <div class="dp-po-time" title="{{ phrase('helpcenter.general.updated') }}">
               <i class="dp-po-icon far fa-clock"></i>
-              {{ article.date_updated | date('day') }}
+              {{ phrase('helpcenter.general.date_medium', {date: article.date_updated}) }}
             </div>
           </div>
         </div>

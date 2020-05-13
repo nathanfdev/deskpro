@@ -189,7 +189,6 @@ helpcenter.eula.agree: Съгласен съм
 helpcenter.general.attachments: Прикачвания
 helpcenter.general.cancel_action: Откажи
 helpcenter.general.subscribe_action: Абонирай се
-helpcenter.general.unsubscribe_action: Прекрати абонамент
 helpcenter.general.chat: Чат
 helpcenter.general.comment_btn_save: 'Запази коментар'
 helpcenter.general.comments: Коментари
@@ -197,7 +196,7 @@ helpcenter.general.comments_pending_validation: 'Този коментар се 
 helpcenter.general.downloads_type: Изтегляния
 helpcenter.general.email_address: 'Имейл'
 helpcenter.general.everything: Всичко
-helpcenter.general.go: Давай
+helpcenter.general.go_action: Давай
 helpcenter.general.impersonation_mode: 'Режим на представяне'
 helpcenter.general.in: в
 helpcenter.general.label_search_enter_label: 'Моля въведете етикет за който да търсите'
@@ -220,10 +219,6 @@ helpcenter.general.prop_views_asc: 'Първо тези с най-малко п�
 helpcenter.general.prop_views_desc: 'Първо тези с най-много прегледи'
 helpcenter.general.rate_page: 'Оценете качеството на тази страница'
 helpcenter.general.rate_page_positive: Полезен
-helpcenter.general.related_community: 'Свързани общностни теми'
-helpcenter.general.related_downloads: 'Свързани филтри'
-helpcenter.general.related_news: 'Свързани новини'
-helpcenter.general.related_pages: 'Свързани страници'
 helpcenter.general.rerender_form: 'Моля прегледайте тази форма преди да я изпратите.'
 helpcenter.general.share: Сподели
 helpcenter.general.show: Покажи

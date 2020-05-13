@@ -92,14 +92,11 @@ helpcenter.general.cancel_action: Cancelar
 helpcenter.general.comments: Comentários?
 helpcenter.general.downloads_type: Transferências
 helpcenter.general.everything: Tudo
-helpcenter.general.go: Seguinte
+helpcenter.general.go_action: Seguinte
 helpcenter.general.log_in: 'Entrar'
 helpcenter.general.nav_downloads_desc: 'Procure nas nossas transferências'
 helpcenter.general.password: Palavra-chave
 helpcenter.general.rate_page_positive: Útil
-helpcenter.general.related_community: 'Comentário relacionado'
-helpcenter.general.related_downloads: 'Arquivos relacionados'
-helpcenter.general.related_news: 'Notícias relacionadas'
 helpcenter.general.you: Você
 helpcenter.guides.download_pdf: 'Baixar PDF'
 helpcenter.members.language: Linguagem

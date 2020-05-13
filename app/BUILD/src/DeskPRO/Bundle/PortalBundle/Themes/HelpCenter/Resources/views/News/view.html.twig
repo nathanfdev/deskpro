@@ -57,27 +57,31 @@
     </div>
     <div class="col-sm-3">
       <div class="d-none d-sm-block">
-        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-          subscriptionInfo: [
-            { toggleUrl: portal_path(post, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.news.news_post_object'), active: is_subscribed },
-            { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category },
-            { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed_root },
-          ]
-        } %}
+        {% if brand_setting('user.news_subscriptions') %}
+          {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+            subscriptionInfo: [
+              { toggleUrl: portal_path(post, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.news.news_post_object'), active: is_subscribed },
+              { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category },
+              { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed_root },
+            ]
+          } %}
+        {% endif %}
       </div>
     </div>
   </div>
 
   <div class="d-block d-sm-none">
     <div class="dp-po-post-mobile-area">
-      {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-          buttonId: 'subscribeDropdownMenuMobile',
-          subscriptionInfo: [
-            { toggleUrl: portal_path(post, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.news.news_post_object'), active: is_subscribed },
-            { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category },
-            { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed_root },
-          ]
-        } %}
+      {% if brand_setting('user.news_subscriptions') %}
+        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+            buttonId: 'subscribeDropdownMenuMobile',
+            subscriptionInfo: [
+              { toggleUrl: portal_path(post, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.news.news_post_object'), active: is_subscribed },
+              { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category },
+              { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed_root },
+            ]
+          } %}
+      {% endif %}
     </div>
   </div>
 {% endblock page_top %}

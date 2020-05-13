@@ -51,13 +51,10 @@ helpcenter.general.attachments: 첨부파일
 helpcenter.general.cancel_action: 취소
 helpcenter.general.downloads_type: 다운로드 파일들
 helpcenter.general.everything: 전체
-helpcenter.general.go: 등록
+helpcenter.general.go_action: 등록
 helpcenter.general.nav_downloads_desc: '다운로드 보기'
 helpcenter.general.password: 비밀번호
 helpcenter.general.rate_page_positive: 도움이 되었습니다
-helpcenter.general.related_community: '관련 피드백'
-helpcenter.general.related_downloads: '관련 파일들'
-helpcenter.general.related_news: '관련 뉴스'
 helpcenter.general.show: 보기
 helpcenter.general.you: 고객님
 helpcenter.guides.download_pdf: 'PDF 다운로드'

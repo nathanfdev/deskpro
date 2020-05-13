@@ -53,13 +53,10 @@ helpcenter.general.cancel_action: Zrušiť
 helpcenter.general.comments: Komentáre?
 helpcenter.general.downloads_type: Stiahnutia
 helpcenter.general.everything: Všetko
-helpcenter.general.go: Ísť
+helpcenter.general.go_action: Ísť
 helpcenter.general.nav_downloads_desc: 'Prehľadávať naše stiahnutia'
 helpcenter.general.password: Heslo
 helpcenter.general.rate_page_positive: Pomocné
-helpcenter.general.related_community: 'Podobná spätná väzba'
-helpcenter.general.related_downloads: 'Príbuzné súbory'
-helpcenter.general.related_news: 'Podobné novinky'
 helpcenter.general.show: Ukáž
 helpcenter.general.you: Vy
 helpcenter.guides.download_pdf: 'Stiahnuť PDF'

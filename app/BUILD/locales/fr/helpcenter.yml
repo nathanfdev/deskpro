@@ -180,14 +180,13 @@ helpcenter.general.agent_bar_agent_news: 'Actualités'
 helpcenter.general.attachments: Pièce jointes
 helpcenter.general.cancel_action: Annuler
 helpcenter.general.subscribe_action: S'abonner
-helpcenter.general.unsubscribe_action: Se désabonner
 helpcenter.general.comment_btn_save: 'Enregistrer le commentaire'
 helpcenter.general.comments: Commentaires
 helpcenter.general.comments_pending_validation: 'Ce commentaire n''a pas encore été validé. Il sera publié prochainement.'
 helpcenter.general.date_day_month: '{date, date, d MMM}'
 helpcenter.general.downloads_type: Téléchargements
 helpcenter.general.everything: Tout
-helpcenter.general.go: Valider
+helpcenter.general.go_action: Valider
 helpcenter.general.impersonation_mode: 'Connexion en tant que'
 helpcenter.general.in: dans
 helpcenter.general.label_search_enter_label: 'Veuillez fournir une étiquette à rechercher'
@@ -210,10 +209,6 @@ helpcenter.general.prop_views_asc: 'Les moins vues en premier'
 helpcenter.general.prop_views_desc: 'La plupart des vues en premier'
 helpcenter.general.rate_page: 'Évaluez la qualité de cette page'
 helpcenter.general.rate_page_positive: Utile
-helpcenter.general.related_community: 'Remarque associée'
-helpcenter.general.related_downloads: 'Fichiers similaires'
-helpcenter.general.related_news: 'Actualités similaires'
-helpcenter.general.related_pages: 'Pages associées'
 helpcenter.general.rerender_form: 'Veuillez examiner ce formulaire avant de le soumettre.'
 helpcenter.general.share: Partager
 helpcenter.general.show: Montrer

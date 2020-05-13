@@ -52,13 +52,10 @@ helpcenter.general.cancel_action: Vazgeç
 helpcenter.general.comments: Yorumlar?
 helpcenter.general.downloads_type: İndirmeler
 helpcenter.general.everything: Her şey
-helpcenter.general.go: Git
+helpcenter.general.go_action: Git
 helpcenter.general.nav_downloads_desc: 'İndirmelere gözat'
 helpcenter.general.password: Parola
 helpcenter.general.rate_page_positive: Yararlı
-helpcenter.general.related_community: 'İlgili Geri Bildirimler'
-helpcenter.general.related_downloads: 'İlişkili Dosyalar'
-helpcenter.general.related_news: 'İlişkili Haberler'
 helpcenter.general.show: Gösteri
 helpcenter.general.you: Siz
 helpcenter.guides.download_pdf: 'PDF İndir'

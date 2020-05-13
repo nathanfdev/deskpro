@@ -46,13 +46,10 @@ helpcenter.general.cancel_action: Anulare
 helpcenter.general.comments: Comentarii?
 helpcenter.general.downloads_type: Descarcari
 helpcenter.general.everything: Tot
-helpcenter.general.go: Start
+helpcenter.general.go_action: Start
 helpcenter.general.nav_downloads_desc: 'Rasfoiesti printre descarcarile noastre'
 helpcenter.general.password: Parola
 helpcenter.general.rate_page_positive: De ajutor
-helpcenter.general.related_community: 'Community topic legat de'
-helpcenter.general.related_downloads: 'Fisiere legate'
-helpcenter.general.related_news: 'Stiri cu referire la'
 helpcenter.general.you: Dumneavoastra
 helpcenter.guides.download_pdf: 'Downloadati PDF-ul'
 helpcenter.members.language: Limba

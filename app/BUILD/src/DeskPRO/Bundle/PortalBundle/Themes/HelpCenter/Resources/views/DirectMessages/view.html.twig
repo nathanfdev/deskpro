@@ -33,7 +33,7 @@
                     </p>
                   </div>
                   <div class="dp-po-time">
-                    {{ message.dateCreated|date('j M Y') }}
+                    {{ phrase('helpcenter.general.date_medium', { date:message.dateCreated }) }}
                   </div>
                 </div>
               {% else %}

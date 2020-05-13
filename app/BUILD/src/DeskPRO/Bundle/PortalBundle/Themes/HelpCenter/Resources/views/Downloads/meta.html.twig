@@ -1,6 +1,6 @@
 <div class="dp-po-post-meta">
     <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.first_published') }}</h3>
-    <p>{{ file.date_published | date('day') }}</p>
+    <p>{{ phrase('helpcenter.general.date_medium', {date: file.date_published}) }}</p>
 {#    <h3 class="dp-po-post-meta-title">File type</h3>#}
 {#    <p>PDF</p>#}
     <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.downloads.file_name') }}</h3>

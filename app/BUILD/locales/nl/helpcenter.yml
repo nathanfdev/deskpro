@@ -183,13 +183,12 @@ helpcenter.general.agents: Medewerkers
 helpcenter.general.attachments: Bijlagen
 helpcenter.general.cancel_action: Annuleren
 helpcenter.general.subscribe_action: Abonneren
-helpcenter.general.unsubscribe_action: Afmelden
 helpcenter.general.comment_btn_save: 'Reactie opslaan'
 helpcenter.general.comments: Reacties
 helpcenter.general.comments_pending_validation: 'Deze reactie wordt gecontroleerd. Deze zal binnenkort zichtbaar zijn'
 helpcenter.general.email_address: 'E-mailadres'
 helpcenter.general.everything: Alles
-helpcenter.general.go: Gaan
+helpcenter.general.go_action: Gaan
 helpcenter.general.impersonation_mode: 'Verpersoonlijking modus'
 helpcenter.general.label_search_enter_label: 'Geef een label om naar te zoek op'
 helpcenter.general.last_activity: 'Laatste activiteit'
@@ -211,10 +210,6 @@ helpcenter.general.prop_views_asc: 'Minste weergaven eerst'
 helpcenter.general.prop_views_desc: 'Meeste weergaven eerst'
 helpcenter.general.rate_page: 'Beoordeel de kwaliteit van deze pagina'
 helpcenter.general.rate_page_positive: Behulpzaam
-helpcenter.general.related_community: 'Gerelateerde gemeenschapsonderwerp'
-helpcenter.general.related_downloads: 'Gerelateerde bestanden'
-helpcenter.general.related_news: 'Gerelateerd nieuws'
-helpcenter.general.related_pages: 'Gerelateerde pagina''s'
 helpcenter.general.rerender_form: 'Controleer dit formulier voordat u het verstuurd.'
 helpcenter.general.share: Delen
 helpcenter.general.show: Tonen

@@ -29,7 +29,7 @@
                     </li>
                 {% endfor %}
             {% endif %}
-            {% if 'community' == type and related|length %}
+            {% if 'community_topics' == type and related|length %}
                 {% for content in related %}
                     <li class="dp-po-related-content-item">
                         <a href="{{ path('portal_community_topic_view', { slug: content.slug }) }}" class="dp-po-related-content-link">

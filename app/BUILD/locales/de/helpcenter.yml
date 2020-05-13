@@ -182,13 +182,12 @@ helpcenter.general.agents: Mitarbeiter
 helpcenter.general.attachments: Anhänge
 helpcenter.general.cancel_action: Abbrechen
 helpcenter.general.subscribe_action: Abonnieren
-helpcenter.general.unsubscribe_action: Abbestellen
 helpcenter.general.comment_btn_save: 'Kommentar speichern'
 helpcenter.general.comments: Kommentare
 helpcenter.general.comments_pending_validation: 'Dieser Kommentar wird überprüft und in Kürze angezeigt.'
 helpcenter.general.email_address: 'E-Mail'
 helpcenter.general.everything: Alles
-helpcenter.general.go: Los
+helpcenter.general.go_action: Los
 helpcenter.general.impersonation_mode: 'Identitätswechsel -Modus'
 helpcenter.general.label_search_enter_label: 'Bitte geben Sie eine Bezeichnung für die Suche ein'
 helpcenter.general.last_activity: 'Letzte Aktivität'
@@ -210,10 +209,6 @@ helpcenter.general.prop_views_asc: 'am wenigsten zuerst'
 helpcenter.general.prop_views_desc: 'am höchsten zuerst'
 helpcenter.general.rate_page: 'Bewerten Sie die Qualität von dieser Seite'
 helpcenter.general.rate_page_positive: Hilfreich
-helpcenter.general.related_community: 'Verwandtes Community Topic'
-helpcenter.general.related_downloads: 'Ähnliche Dateien'
-helpcenter.general.related_news: 'Verwandte Neuigkeiten'
-helpcenter.general.related_pages: 'Verwandte Seiten'
 helpcenter.general.rerender_form: 'Bitte prüfen Sie vor dem Absenden Ihre Angaben.'
 helpcenter.general.share: Teilen
 helpcenter.general.show: Anzeigen

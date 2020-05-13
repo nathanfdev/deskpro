@@ -85,12 +85,11 @@ helpcenter.general.agent_bar_agent_news: 'Spravovat novinky'
 helpcenter.general.attachments: Přílohy
 helpcenter.general.cancel_action: Zrušit
 helpcenter.general.subscribe_action: Odebírat
-helpcenter.general.unsubscribe_action: Vypnout odběr
 helpcenter.general.comment_btn_save: 'Uložit komentář'
 helpcenter.general.comments: Komentáře
 helpcenter.general.comments_pending_validation: 'Komentář čeká na schválení. Za chvíli se zobrazí'
 helpcenter.general.everything: Vše
-helpcenter.general.go: Dál
+helpcenter.general.go_action: Dál
 helpcenter.general.in: v
 helpcenter.general.label_search_enter_label: 'Prosíme, uveďte štítek, který se má vyhledat'
 helpcenter.general.log_in: 'Přihlásit'
@@ -110,10 +109,6 @@ helpcenter.general.prop_rating_desc: 'Nejlíp hodnocené nejdřív'
 helpcenter.general.prop_views_asc: 'Nejmíň shlédnutí nejdřív'
 helpcenter.general.prop_views_desc: 'Nejvíc shlédnutí nejdřív'
 helpcenter.general.rate_page: 'Ohodnoťte tuto stránku'
-helpcenter.general.related_community: 'Související připomínky'
-helpcenter.general.related_downloads: 'Související soubory'
-helpcenter.general.related_news: 'Související novinky'
-helpcenter.general.related_pages: 'Související stránky'
 helpcenter.general.rerender_form: 'Prosíme, překontrolujte formulář před jeho odesláním.'
 helpcenter.general.share: Sdílet
 helpcenter.general.show: Zobraz

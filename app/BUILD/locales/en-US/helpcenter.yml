@@ -379,10 +379,8 @@ helpcenter.eula.agree: Agree
 helpcenter.general.apply: Apply
 helpcenter.general.attachments: Attachments
 helpcenter.general.back: Back
-helpcenter.general.go_action: Go
 helpcenter.general.btn_manage_subscriptions: 'Manage your subscriptions'
 helpcenter.general.subscribe_action: Subscribe
-helpcenter.general.unsubscribe_action: Unsubscribe
 helpcenter.general.cancel_action: Cancel
 helpcenter.general.categories: Categories
 helpcenter.general.category: Category
@@ -402,8 +400,8 @@ helpcenter.general.copied: copied
 helpcenter.general.copy_to_clipboard: 'Copy to Clipboard'
 helpcenter.general.created_by: 'Created by'
 helpcenter.general.date_day_month: '{date, date, MMM d}'
-helpcenter.general.date_short: '{date, date, short}'
 helpcenter.general.date_medium: '{date, date, medium}'
+helpcenter.general.date_short: '{date, date, short}'
 helpcenter.general.date_short_month: '{date, date, MMM}'
 helpcenter.general.department: Department
 helpcenter.general.download_type: Download
@@ -419,7 +417,7 @@ helpcenter.general.filter: Filter
 helpcenter.general.first_published: 'First published'
 helpcenter.general.form_choose_file: 'Choose a file'
 helpcenter.general.form_choose_files: 'Choose files'
-helpcenter.general.go: Go
+helpcenter.general.go_action: Go
 helpcenter.general.go_to_page: 'Go to page'
 helpcenter.general.helpcenter_disabled_click_below: 'The portal has been disabled. If you are an agent, click the button below to go to the agent interface.'
 helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'The portal has been disabled. You can re-enable the portal from <a href="{setup_link}">Admin > Portal > Setup</a>'
@@ -443,7 +441,6 @@ helpcenter.general.latest_status_changes: 'Latest status changes'
 helpcenter.general.log_in: 'Log in'
 helpcenter.general.more_than_1_year: 'More than 1 year'
 helpcenter.general.nav_chat: Chats
-helpcenter.general.nav_chatlogs: 'Chats Logs'
 helpcenter.general.nav_community: Community
 helpcenter.general.nav_community_desc: 'View all the articles'
 helpcenter.general.nav_contact: 'Contact Us'
@@ -468,9 +465,7 @@ helpcenter.general.nav_support_center: 'Help Center'
 helpcenter.general.nav_your_account: 'Your Account'
 helpcenter.general.next: Next
 helpcenter.general.no_search_query: 'Please type a search query into the search box.'
-helpcenter.general.no_search_results: 'We couldn''t find any results for "{query}"'
 helpcenter.general.no_search_results_general: 'We couldn''t find any results'
-helpcenter.general.no_search_results_explain: 'Try a different search or have a look at our <a href="{kb_url}">Knowledgebase</a>'
 helpcenter.general.or: or
 helpcenter.general.password: Password
 helpcenter.general.previous: Previous
@@ -487,15 +482,10 @@ helpcenter.general.prop_views_asc: 'Least views first'
 helpcenter.general.prop_views_desc: 'Most views first'
 helpcenter.general.published: 'First published'
 helpcenter.general.published_by: 'Published by <strong>{person_name}</strong>'
-helpcenter.general.rate_page: 'Rate the quality of this page'
 helpcenter.general.rate_page_negative: Unhelpful
 helpcenter.general.rate_page_positive: Helpful
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} of {vote_count} people found this page helpful'
-helpcenter.general.related_community: 'Related Community Topics'
 helpcenter.general.related_content: 'Related Content'
-helpcenter.general.related_downloads: 'Related Files'
-helpcenter.general.related_news: 'Related News'
-helpcenter.general.related_pages: 'Related Pages'
 helpcenter.general.rerender_form: 'Please review this form before you submit it.'
 helpcenter.general.search: 'How can we help you today?'
 helpcenter.general.search_labels: 'Search Labels'
@@ -514,7 +504,6 @@ helpcenter.general.unpublished: 'Unpublished date'
 helpcenter.general.updated: Updated
 helpcenter.general.user: User
 helpcenter.general.user_profile: 'User Profile'
-helpcenter.general.view_all: 'View All'
 helpcenter.general.view_all_status_changes: 'View all status changes'
 helpcenter.general.view_all_topics: 'View all topics'
 helpcenter.general.view_profile: 'View profile'
@@ -650,7 +639,7 @@ helpcenter.search.for_query: 'for “{query}”'
 helpcenter.search.search_results: 'Search Results'
 helpcenter.search.view_all_results: '{count, plural, one {View result} other {View all # results}}'
 helpcenter.search.your_tickets: 'Your tickets'
-helpcenter.sidebar.article_posted_by: 'Posted by {name}'
+helpcenter.sidebar.article_posted_by: 'Posted by'
 helpcenter.ticket_approvals.approved_by: 'You approved the request {template} requested by {person_name}'
 helpcenter.ticket_approvals.rejected_by: 'You rejected the request {template} requested by {person_name}'
 helpcenter.tickets.agent_reply: 'Agent reply'

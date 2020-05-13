@@ -43,15 +43,6 @@
                             <p class="dp-po-search-no-results">
                                 {{ phrase('helpcenter.general.no_search_query') }}
                             </p>
-                        {% elseif combined['total_results'] < 1 %}
-                            <div class="dp-po-search-no-results">
-                                <p>
-                                    {{ phrase('helpcenter.general.no_search_results') }}
-                                </p>
-                                <p>
-                                    {{ phrase('helpcenter.general.no_search_results_explain', {kb_url: path('portal_kb')}) }}
-                                </p>
-                            </div>
                         {% else %}
                             {% if can_use_tickets() %}
                                 {% include('Theme:Search:blocks/search_tickets.html.twig') with { viewall: true } %}

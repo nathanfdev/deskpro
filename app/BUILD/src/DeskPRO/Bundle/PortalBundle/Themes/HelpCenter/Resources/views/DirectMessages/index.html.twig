@@ -50,7 +50,7 @@
                                         {% endif %}
                                     </div>
                                     <div class="dp-po-time">
-                                        {{ thread.dateLastMessage|date('j M Y') }}
+                                        {{ phrase('helpcenter.general.date_medium', { date:thread.dateLastMessage }) }}
                                     </div>
                                     <div class="dp-po-messages-status"><i class="dp-po-icon fas fa-circle"></i></div>
                                 </div>
