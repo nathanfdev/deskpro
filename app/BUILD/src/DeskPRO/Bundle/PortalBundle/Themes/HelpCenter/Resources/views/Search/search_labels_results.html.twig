@@ -34,11 +34,7 @@
             </div>
             <div class="search-result-count">
                 {% if pageinfo is not null and pageinfo.total_results %}
-                    {% if label %}
-                        {{ phrase('helpcenter.general.x_search_results', { num: num_results, query: label }) }}
-                    {% else %}
-                        {{ phrase('helpcenter.general.x_search_results_no_query', { num: num_results }) }}
-                    {% endif %}
+                    {{ phrase('helpcenter.general.x_search_results', { num: num_results, query: label }) }}
                 {% else %}
                     {{ phrase('helpcenter.general.label_search_enter_label') }}
                 {% endif %}

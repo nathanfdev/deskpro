@@ -246,7 +246,6 @@ helpcenter.messenger.chat_end_block_buttons_no: 'Нет'
 helpcenter.messenger.chat_end_block_buttons_yes: 'Да'
 helpcenter.messenger.chat_end_block_question_header: 'Закончить чат?'
 helpcenter.messenger.chat_ended: 'Разговор завершен'
-helpcenter.messenger.chat_enter_form_button: 'Начать беседу'
 helpcenter.messenger.chat_header_title: 'Беседа с {department}'
 helpcenter.messenger.chat_no_agent_online: 'Мы сожалеем, но нет в данный момент никто не может ответить вам.'
 helpcenter.messenger.chat_rating_block_buttons_helpful: Полезно
