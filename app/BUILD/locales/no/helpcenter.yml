@@ -35,7 +35,7 @@ helpcenter.error.404_title: 'Fant Ikke'
 helpcenter.forms.label_save: Lagre
 helpcenter.general.add_comment: 'Ny kommentar'
 helpcenter.general.attachments: Vedlegg
-helpcenter.general.cancel_action_action: Avbryt
+helpcenter.general.cancel_action: Avbryt
 helpcenter.general.comments: Kommentar
 helpcenter.general.downloads_type: Nedlastninger
 helpcenter.general.go: Gå

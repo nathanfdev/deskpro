@@ -23,6 +23,7 @@ helpcenter.account.login_register_action: Register
 helpcenter.account.login_register_header: 'Register for an account'
 helpcenter.account.login_stay_logged_in: 'Stay Logged In?'
 helpcenter.account.logout_action: Logout
+helpcenter.account.logout_confirm: 'Are you sure you want to log out?'
 helpcenter.account.new_ticket_no_login: 'Portal CRM is disabled. Unable to submit a ticket.'
 helpcenter.account.new_to_brand: 'New to {brand}?'
 helpcenter.account.profile_save_action: 'Save Profile'
@@ -109,7 +110,7 @@ helpcenter.community.activity: Activity
 helpcenter.community.activity_commented: 'I commented'
 helpcenter.community.activity_created: 'I created'
 helpcenter.community.activity_voted: 'I voted'
-helpcenter.community.btn_vote: 'I Agree'
+helpcenter.community.vote_action: 'I Agree'
 helpcenter.community.channel: Channel
 helpcenter.community.create_topic: Create
 helpcenter.community.create_topic_full: 'Create topic'
@@ -160,7 +161,6 @@ helpcenter.downloads.file_name: 'File Name'
 helpcenter.downloads.file_size: 'File Size'
 helpcenter.downloads.none: 'No downloads yet'
 helpcenter.downloads.total_downloads: 'Total downloads'
-helpcenter.downloads.uploaded_on: Uploaded
 helpcenter.downloads.view_x_files: '{count, plural, one {View 1 download} other {View # downloads}}'
 helpcenter.duration_short.days: D
 helpcenter.duration_short.hours: h
@@ -379,7 +379,6 @@ helpcenter.eula.agree: Agree
 helpcenter.general.apply: Apply
 helpcenter.general.attachments: Attachments
 helpcenter.general.back: Back
-helpcenter.general.cancel_action_action: Cancel
 helpcenter.general.go_action: Go
 helpcenter.general.btn_manage_subscriptions: 'Manage your subscriptions'
 helpcenter.general.subscribe_action: Subscribe
@@ -402,8 +401,9 @@ helpcenter.general.comments_title: '{count, plural, one {Comments (1)} other {Co
 helpcenter.general.copied: copied
 helpcenter.general.copy_to_clipboard: 'Copy to Clipboard'
 helpcenter.general.created_by: 'Created by'
-helpcenter.general.date_short: '{date, date, short}'
 helpcenter.general.date_day_month: '{date, date, MMM d}'
+helpcenter.general.date_short: '{date, date, short}'
+helpcenter.general.date_medium: '{date, date, medium}'
 helpcenter.general.date_short_month: '{date, date, MMM}'
 helpcenter.general.department: Department
 helpcenter.general.download_type: Download
@@ -469,6 +469,7 @@ helpcenter.general.nav_your_account: 'Your Account'
 helpcenter.general.next: Next
 helpcenter.general.no_search_query: 'Please type a search query into the search box.'
 helpcenter.general.no_search_results: 'We couldn''t find any results for "{query}"'
+helpcenter.general.no_search_results_general: 'We couldn''t find any results'
 helpcenter.general.no_search_results_explain: 'Try a different search or have a look at our <a href="{kb_url}">Knowledgebase</a>'
 helpcenter.general.or: or
 helpcenter.general.password: Password
@@ -723,7 +724,7 @@ helpcenter.tickets.view_btn_edit_full: 'Edit this ticket'
 helpcenter.tickets.view_label_your_email_placeholder: 'Email Address (required)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Name (required)'
 helpcenter.tickets.view_last_message: 'Last message'
-helpcenter.tickets.view_participants: 'Also on this ticket (#)'
+helpcenter.tickets.view_participants: 'Also on this ticket ({count})'
 helpcenter.tickets.view_reply: 'Add a reply'
 helpcenter.tickets.view_reply_errors: 'There are some errors with your submission.'
 helpcenter.tickets.view_reply_or_close: 'Reply or <a href="{close_url}">close the ticket</a>'

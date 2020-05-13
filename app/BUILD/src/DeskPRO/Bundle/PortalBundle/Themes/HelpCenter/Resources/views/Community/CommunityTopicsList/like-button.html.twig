@@ -3,7 +3,7 @@
         href="{{ portal_path(topic, user_up_voted(topic) ? 'vote_down' : 'vote_up') }}"
         data-vote-up-url="{{ portal_path(topic, 'vote_up') }}"
         data-vote-down-url="{{ portal_path(topic, 'vote_down') }}"
-        title="{{ phrase('helpcenter.community.btn_vote') }}"
+        title="{{ phrase('helpcenter.community.vote_action') }}"
     {% endif %}
     class="dp-po-like {{ is_compact ? 'dp-po-like-small' }} {{ user_up_voted(topic) ? 'agreed' }}"
     rel="noindex, nofollow"

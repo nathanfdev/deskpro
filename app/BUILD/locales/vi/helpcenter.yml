@@ -49,7 +49,7 @@ helpcenter.messenger.date_label: Ngày
 helpcenter.messenger.total_chat_time_label: 'Tổng thời gian trò chuyện'
 helpcenter.messenger.linked_ticket_label: 'Được chỉ định để mua vé'
 helpcenter.messenger.view_linked_ticket_action: 'Xem vé'
-helpcenter.community.btn_vote: 'Tôi đồng ý'
+helpcenter.community.vote_action: 'Tôi đồng ý'
 helpcenter.community.error_hidden: 'Mục phản hồi này bị ẩn'
 helpcenter.community.error_login: 'Vui lòng hãy đăng nhập'
 helpcenter.general.name: Tên
@@ -173,7 +173,7 @@ helpcenter.general.agent_bar_agent_kb: 'Quản lý Cơ sở Kiến thức'
 helpcenter.general.agent_bar_agent_news: 'Quản lý Tin tức'
 helpcenter.general.agents: Đại lý
 helpcenter.general.attachments: File đính kèm
-helpcenter.general.cancel_action_action: Hủy
+helpcenter.general.cancel_action: Hủy
 helpcenter.general.subscribe_action: Đăng ký
 helpcenter.general.unsubscribe_action: Hủy đăng ký
 helpcenter.general.chat: Trò chuyện

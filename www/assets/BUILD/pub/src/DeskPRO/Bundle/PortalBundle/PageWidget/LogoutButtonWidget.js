@@ -5,9 +5,7 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 export class LogoutButtonWidget extends PageWidget {
 
   renderWidget() {
-    let $logoutBtn = this.$element;
-    $logoutBtn.click(function () {
-      return confirm(portalPhrases.get('portal.account.logout-confirm'));
-    });
+    const $logoutBtn = this.$element;
+    $logoutBtn.click(() => confirm(portalPhrases.get('helpcenter.account.logout_confirm')));
   }
 }

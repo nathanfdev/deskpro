@@ -52,7 +52,7 @@ helpcenter.messenger.date_label: التاريخ
 helpcenter.messenger.total_chat_time_label: 'الوقت الكلي للمحادثة.'
 helpcenter.messenger.linked_ticket_label: 'تحديد لتذكرة'
 helpcenter.messenger.view_linked_ticket_action: "استعراض التذكرة.\n"
-helpcenter.community.btn_vote: 'موافق'
+helpcenter.community.vote_action: 'موافق'
 helpcenter.community.error_hidden: 'التغذية الراجعة مخفية'
 helpcenter.community.error_login: 'فضلا ادخل'
 helpcenter.general.name: أسم
@@ -183,7 +183,7 @@ helpcenter.general.agent_bar_agent_kb: 'ادارة قاعدة المعلومات
 helpcenter.general.agent_bar_agent_news: 'ادارة الاخبار'
 helpcenter.general.agents: مقدمو الخدمة.
 helpcenter.general.attachments: مرفقات
-helpcenter.general.cancel_action_action: الغاء
+helpcenter.general.cancel_action: الغاء
 helpcenter.general.subscribe_action: مشترك
 helpcenter.general.unsubscribe_action: غير مشترك
 helpcenter.general.chat: المحادثة

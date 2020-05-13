@@ -51,7 +51,7 @@ helpcenter.messenger.date_label: Dato
 helpcenter.messenger.total_chat_time_label: 'Total chat tid'
 helpcenter.messenger.linked_ticket_label: 'Tildelt til sagen'
 helpcenter.messenger.view_linked_ticket_action: 'Vis sag'
-helpcenter.community.btn_vote: 'Jeg er enig'
+helpcenter.community.vote_action: 'Jeg er enig'
 helpcenter.community.error_hidden: 'Dette community topic er skjult'
 helpcenter.community.error_login: 'Venligst login'
 helpcenter.general.name: Navn
@@ -178,7 +178,7 @@ helpcenter.general.agent_bar_agent_kb: 'Administrer vidensbase'
 helpcenter.general.agent_bar_agent_news: 'Administrer nyheder'
 helpcenter.general.agents: Sagsbehandler
 helpcenter.general.attachments: Vedhæftelser
-helpcenter.general.cancel_action_action: Fortryd
+helpcenter.general.cancel_action: Fortryd
 helpcenter.general.subscribe_action: Tilmeld
 helpcenter.general.unsubscribe_action: Afmeld
 helpcenter.general.comment_btn_save: 'Gem kommentar'

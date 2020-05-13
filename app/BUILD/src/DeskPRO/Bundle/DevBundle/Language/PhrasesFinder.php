@@ -100,6 +100,7 @@ class PhrasesFinder
 
     /**
      * @param bool $withLineNumber
+     *
      * @return array[]
      */
     public function getUseInfo($withLineNumber = false)
@@ -119,23 +120,30 @@ class PhrasesFinder
                 }
                 if ($this->exclude_dynamic && $this->isDynamicPhrase($id)) {
                     $skip_pids[$id] = true;
+
                     continue;
                 }
                 if ($this->limit && isset($phrase_use_counts[$id]) && $phrase_use_counts[$id] >= $this->limit) {
                     $skip_pids[$id] = true;
+
                     continue;
                 }
                 if (!isset($phrase_use_counts[$id])) {
                     $phrase_use_counts[$id] = 0;
                 }
                 if (($pos = strpos($content, $id)) !== false) {
+                    $nextChar = $content[strlen($id) + $pos];
+                    // We don't want helpcenter.general.chat_logs to match helpcenter.general.chat
+                    if ($nextChar === '_' || ($nextChar >= 'a' && $nextChar <= 'z')) {
+                        continue;
+                    }
                     if (!isset($uses[$id])) {
                         $uses[$id] = [];
                     }
 
                     if ($withLineNumber) {
-                        $line = substr_count($content, "\n", 0, $pos) + 1;
-                        $uses[$id][] = str_replace($this->app_root, '', $f->getRealPath()) . '#L' . $line;
+                        $line        = substr_count($content, "\n", 0, $pos) + 1;
+                        $uses[$id][] = str_replace($this->app_root, '', $f->getRealPath()).'#L'.$line;
                     } else {
                         $uses[$id][] = str_replace($this->app_root, '', $f->getRealPath());
                     }
@@ -167,6 +175,7 @@ class PhrasesFinder
             foreach ($this->phrase_ids as $id) {
                 if ($this->exclude_dynamic && $this->isDynamicPhrase($id)) {
                     $skip_pids[$id] = true;
+
                     continue;
                 }
                 if (preg_match_all('/'.preg_quote($id).'[-_0-9a-zA-Z\.]+/', $content, $matches) > 0) {

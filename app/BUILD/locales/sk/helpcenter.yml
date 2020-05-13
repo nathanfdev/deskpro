@@ -3,7 +3,7 @@ helpcenter.account.email_resend_validation_action: 'Znovu odoslať overovací e-
 helpcenter.account.login_register_action: Registrovať
 helpcenter.articles.section_title: Databáza znalostí
 helpcenter.articles.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
-helpcenter.community.btn_vote: 'Súhlasím'
+helpcenter.community.vote_action: 'Súhlasím'
 helpcenter.general.name: Meno
 helpcenter.community.form_topic_title: Nadpis
 helpcenter.community.section_title: Spätná väzba
@@ -49,7 +49,7 @@ helpcenter.forms.label_save: Uložiť
 helpcenter.general.add_comment: 'Pridať komentár'
 helpcenter.general.agent: Operátor
 helpcenter.general.attachments: Pripojenia
-helpcenter.general.cancel_action_action: Zrušiť
+helpcenter.general.cancel_action: Zrušiť
 helpcenter.general.comments: Komentáre?
 helpcenter.general.downloads_type: Stiahnutia
 helpcenter.general.everything: Všetko

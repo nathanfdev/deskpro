@@ -18,7 +18,7 @@
                     </div>
                     <div class="dp-po-download-listing-time">
                         <i class="dp-po-icon far fa-clock"></i>
-                        {{ dl.date_published | date('day_short') }}
+                        {{ phrase('helpcenter.general.date_medium', {date: dl.date_published}) }}
                     </div>
                 </div>
             </a>

@@ -51,7 +51,7 @@ helpcenter.messenger.date_label: Tanggal
 helpcenter.messenger.total_chat_time_label: 'Total Waktu Obrolan'
 helpcenter.messenger.linked_ticket_label: 'Dialihkan ke tiket'
 helpcenter.messenger.view_linked_ticket_action: 'Lihat Tiket'
-helpcenter.community.btn_vote: 'Saya setuju'
+helpcenter.community.vote_action: 'Saya setuju'
 helpcenter.community.error_hidden: 'Tanggapan ini disembunyikan'
 helpcenter.community.error_login: 'Silahkan masuk'
 helpcenter.general.name: Nama
@@ -180,7 +180,7 @@ helpcenter.general.agent_bar_agent_kb: 'Kelola dasar pengetahuan'
 helpcenter.general.agent_bar_agent_news: 'Kelola Berita'
 helpcenter.general.agents: Agent
 helpcenter.general.attachments: Lampiran
-helpcenter.general.cancel_action_action: Batalkan
+helpcenter.general.cancel_action: Batalkan
 helpcenter.general.subscribe_action: Berlangganan
 helpcenter.general.unsubscribe_action: Berhenti Berlangganan
 helpcenter.general.chat: Obrolan

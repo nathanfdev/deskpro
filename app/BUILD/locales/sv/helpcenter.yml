@@ -51,7 +51,7 @@ helpcenter.messenger.date_label: Datum
 helpcenter.messenger.total_chat_time_label: 'Total chattid'
 helpcenter.messenger.linked_ticket_label: 'Tilldelad till ärendet'
 helpcenter.messenger.view_linked_ticket_action: 'Visa ärende'
-helpcenter.community.btn_vote: 'Jag håller med'
+helpcenter.community.vote_action: 'Jag håller med'
 helpcenter.community.error_hidden: 'Denna community topic är dold.'
 helpcenter.community.error_login: 'Vänligen logga in.'
 helpcenter.general.name: Namn
@@ -179,7 +179,7 @@ helpcenter.general.agent_bar_agent_kb: 'Hantera kunskapsbas'
 helpcenter.general.agent_bar_agent_news: 'Hantera nyheter'
 helpcenter.general.agents: Agenter
 helpcenter.general.attachments: Bifogade filer
-helpcenter.general.cancel_action_action: Avbryt
+helpcenter.general.cancel_action: Avbryt
 helpcenter.general.subscribe_action: Prenumerera
 helpcenter.general.unsubscribe_action: Avprenumerera
 helpcenter.general.chat: Chatt

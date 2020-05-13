@@ -49,7 +49,7 @@ helpcenter.messenger.date_label: تاریخ
 helpcenter.messenger.total_chat_time_label: 'زمان کامل چت'
 helpcenter.messenger.linked_ticket_label: 'اختصاص دادن به پیام'
 helpcenter.messenger.view_linked_ticket_action: 'مشاهده پیام'
-helpcenter.community.btn_vote: 'من موافقت می کنم'
+helpcenter.community.vote_action: 'من موافقت می کنم'
 helpcenter.community.error_hidden: 'این مورد بازخورد پنهان است'
 helpcenter.community.error_login: 'لطفا وارد شوید'
 helpcenter.general.name: نام
@@ -161,7 +161,7 @@ helpcenter.general.agent_bar_agent_kb: 'مدیریت دانش پایگاه'
 helpcenter.general.agent_bar_agent_news: 'مدیریت اخبار'
 helpcenter.general.agents: افراد سازمان
 helpcenter.general.attachments: فایل پیوست
-helpcenter.general.cancel_action_action: انصراف
+helpcenter.general.cancel_action: انصراف
 helpcenter.general.subscribe_action: اشتراک گذاری
 helpcenter.general.unsubscribe_action: لغو اشتراک
 helpcenter.general.chat: پیام

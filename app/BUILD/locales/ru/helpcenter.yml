@@ -52,7 +52,7 @@ helpcenter.messenger.date_label: Дата
 helpcenter.messenger.total_chat_time_label: 'Суммарное время диалога'
 helpcenter.messenger.linked_ticket_label: 'Назначен на запрос'
 helpcenter.messenger.view_linked_ticket_action: 'Посмотреть обращение'
-helpcenter.community.btn_vote: 'Я согласен/-на'
+helpcenter.community.vote_action: 'Я согласен/-на'
 helpcenter.community.error_hidden: 'Отзыв скрыт'
 helpcenter.community.error_login: 'Пожалуйста, войдите в систему'
 helpcenter.general.name: Имя
@@ -183,7 +183,7 @@ helpcenter.general.agent_bar_agent_kb: 'Управлять базой знани
 helpcenter.general.agent_bar_agent_news: 'Управлять новостями'
 helpcenter.general.agents: Агенты
 helpcenter.general.attachments: Приложение
-helpcenter.general.cancel_action_action: Отмена
+helpcenter.general.cancel_action: Отмена
 helpcenter.general.subscribe_action: Подписаться
 helpcenter.general.unsubscribe_action: Отписаться
 helpcenter.general.category: Пользовательский канал

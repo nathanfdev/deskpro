@@ -52,7 +52,7 @@
                                                 <div class="modal-footer">
                                                     {{ form_start(csrf_form) }}
                                                         <button type="button" id="closeTicketBtn" data-url="{{ path('portal_tickets_resolve', { ticket_ref: ticket.ref }) }}" class="btn btn-primary">{{ phrase('helpcenter.tickets.resolve_my_ticket_action') }}</button>
-                                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{{ phrase('helpcenter.general.cancel_action_action') }}</button>
+                                                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{{ phrase('helpcenter.general.cancel_action') }}</button>
                                                         {{ form_rest(csrf_form) }}
                                                     {{ form_end(csrf_form) }}
                                                 </div>
@@ -181,7 +181,7 @@
                 {# similarly, only show the "created ago" message if it has been more than 10 mins #}
             {% elseif created_in_seconds > 600 %}
                 <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_you_created') }}</h3>
-                <p>{{ date_ago(ticket.date_last_user_reply, null, false) }}</p>
+                <p>{{ date_ago(ticket.date_created, null, false) }}</p>
             {% endif %}
         {% endif %}
     </div>

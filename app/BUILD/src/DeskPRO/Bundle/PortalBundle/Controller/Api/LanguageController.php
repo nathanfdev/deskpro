@@ -27,6 +27,7 @@ class LanguageController extends AbstractApiController
     {
         $phrases = [
             'helpcenter.account.login_invalid',
+            'helpcenter.account.logout_confirm',
             'helpcenter.account.profile_delete_picture',
             'helpcenter.community.filters',
             'helpcenter.community.my_activity',
@@ -49,6 +50,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.general.nav_guides',
             'helpcenter.general.nav_kb',
             'helpcenter.general.nav_news',
+            'helpcenter.general.no_search_results_general',
             'helpcenter.general.or',
             'helpcenter.general.prop_comments_asc',
             'helpcenter.general.prop_comments_desc',
