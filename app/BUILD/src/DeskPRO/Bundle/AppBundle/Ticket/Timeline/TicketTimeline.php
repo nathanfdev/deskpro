@@ -32,7 +32,7 @@ class TicketTimeline implements \IteratorAggregate
 
     public function getTotalLinesForPager()
     {
-        return $this->total_lines !== null ? $this->total_lines : count($this->lines);
+        return $this->total_lines !== 0 ? $this->total_lines : count($this->lines);
     }
 
     /**
