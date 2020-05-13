@@ -268,6 +268,9 @@ class LanguageController extends AbstractApiController
         }
 
         $translatedPhrases = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
+            if ($this->isHelpCenterTheme()) {
+                return [$id, $translate->getPhraseText($id, $language)];
+            }
             $phraseText = $translate->phrase($id, [], $language);
             if (!$phraseText && $translate->hasPhrasePlural($id, $language)) {
                 $phraseText = $translate->getPhrasePluralTexts($id, $language);

@@ -150,7 +150,6 @@ class ServiceController extends AbstractMessengerController
             'helpcenter.messenger.chat_end_block_question_header',
             'helpcenter.messenger.chat_end_chat',
             'helpcenter.messenger.chat_ended',
-            'helpcenter.messenger.chat_enter_form_button',
             'helpcenter.messenger.chat_header_title',
             'helpcenter.messenger.chat_no_agent_online',
             'helpcenter.messenger.chat_pre_chat_form_form_message',
