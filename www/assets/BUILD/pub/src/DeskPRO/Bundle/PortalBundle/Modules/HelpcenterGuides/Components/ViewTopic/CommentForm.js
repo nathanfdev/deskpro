@@ -173,7 +173,7 @@ class CommentForm extends React.Component {
             <form action="" className="dp-po-form" method="post">
               <div className="form-group">
                 <label className="title title required" htmlFor="comment_content_real">
-                  <FormattedMessage id="portal.general.your_comment_label" /> *
+                  <FormattedMessage id="helpcenter.general.your_comment_label" /> *
                 </label>
                 <textarea
                   className="form-control"

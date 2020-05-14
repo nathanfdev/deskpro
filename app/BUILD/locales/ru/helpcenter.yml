@@ -326,7 +326,6 @@ helpcenter.tickets.view_btn_edit: Редактировать
 helpcenter.tickets.view_btn_edit_full: 'Изменить обращение'
 helpcenter.tickets.view_label_your_email_placeholder: 'Требуется ввести Email'
 helpcenter.tickets.view_label_your_name_placeholder: 'Требуется ввести имя'
-helpcenter.tickets.view_reply: 'Добавить ответ'
 helpcenter.tickets.view_reply_errors: 'В Вашей заявке есть некоторые ошибки'
 helpcenter.tickets.view_scroll_reply: 'Нажмите здесь для того, чтобы перейти к анкете.'
 helpcenter.tickets.view_unassigned: Неотсортированное

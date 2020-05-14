@@ -264,7 +264,6 @@ helpcenter.tickets.view_btn_edit: Επεξεργασία
 helpcenter.tickets.view_btn_edit_full: 'Επεξεργασία αυτού του ticket'
 helpcenter.tickets.view_label_your_email_placeholder: 'Διεύθυνση email (απαραίτητη)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Όνομα (απαραίτητο)'
-helpcenter.tickets.view_reply: 'Προσθέστε απάντηση'
 helpcenter.tickets.view_reply_errors: 'Υπάρχουν κάποια σφάλματα στην υποβολή.'
 helpcenter.tickets.view_scroll_reply: 'Κάντε click εδώ για να μεταβείτε στο τέλος της φόρμας.'
 helpcenter.tickets.view_unassigned: Δεν έχει ανατεθεί

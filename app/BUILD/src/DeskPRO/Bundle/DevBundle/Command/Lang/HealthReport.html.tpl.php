@@ -136,6 +136,9 @@
                                         <a class="screenshot-img-wrap screenshot-link" href="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/context/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">
                                             <img class="screenshot-img lazyload" data-src="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/context/<?php echo $keyId ?>.png" alt="<?php echo $keyId ?>" data-key-id="<?php echo $keyId ?>" />
                                         </a>
+                                        <a class="screenshot-img-wrap screenshot-link" href="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/fullscreen/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">
+                                            Fullscreen
+                                        </a>
                                     </div>
                                 </article>
                                 <?php foreach ($tpls as $t): ?>

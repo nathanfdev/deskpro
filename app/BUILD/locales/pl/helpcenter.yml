@@ -267,7 +267,6 @@ helpcenter.tickets.view_btn_edit: Edytuj
 helpcenter.tickets.view_btn_edit_full: 'Edytuj to zgłoszenie'
 helpcenter.tickets.view_label_your_email_placeholder: 'Twój adres email (wymagany)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Imię (wymagane)'
-helpcenter.tickets.view_reply: 'Dodaj odpowiedź'
 helpcenter.tickets.view_reply_errors: 'Występują błędy w twoim zgłoszeniu.'
 helpcenter.tickets.view_scroll_reply: 'Kliknij tutaj, aby przewinąć formularz.'
 helpcenter.tickets.view_unassigned: Nieprzypisane

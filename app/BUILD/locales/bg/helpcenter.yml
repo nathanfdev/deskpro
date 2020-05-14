@@ -275,7 +275,6 @@ helpcenter.tickets.view_btn_edit: Редактирай
 helpcenter.tickets.view_btn_edit_full: 'Редактирай този тикет'
 helpcenter.tickets.view_label_your_email_placeholder: 'Имейл адрес (изисква се)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Име (изисква се)'
-helpcenter.tickets.view_reply: 'Добави отговор'
 helpcenter.tickets.view_reply_errors: 'Има някои грешки с вашето изпращане.'
 helpcenter.tickets.view_scroll_reply: 'Кликни тук за да отидеш надолу във формата,'
 helpcenter.tickets.view_unassigned: Неназначен

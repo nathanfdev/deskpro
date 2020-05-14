@@ -79,7 +79,7 @@ export default class DpxFormDraft extends PageWidget {
 
     if (!this.options.isWidget) {
       this.$element.on('reset', this.clearDraft);
-      $(`<button type="reset" class="btn btn-outline-secondary btn-reset">${portalPhrases.get('portal.forms.label_reset')}</button>`)
+      $(`<button type="reset" class="btn btn-outline-secondary btn-reset">${portalPhrases.get('helpcenter.forms.label_reset')}</button>`)
         .on('click', DpxFormDraft.resetForm)
         .insertAfter($formSubmit);
     }

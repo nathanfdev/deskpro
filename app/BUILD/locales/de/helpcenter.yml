@@ -263,7 +263,6 @@ helpcenter.tickets.view_btn_edit: Bearbeiten
 helpcenter.tickets.view_btn_edit_full: 'Das Ticket bearbeiten'
 helpcenter.tickets.view_label_your_email_placeholder: 'E-Mail-Adresse (Pflichtangabe)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Name (Pflichtangabe)'
-helpcenter.tickets.view_reply: 'Fügen Sie eine Antwort hinzu'
 helpcenter.tickets.view_reply_errors: 'Bei der Übertragung ist ein Fehler aufgetreten'
 helpcenter.tickets.view_scroll_reply: 'Klicken Sie hier um an das Ende des Formulars zu scrollen.'
 helpcenter.tickets.view_unassigned: Nicht zugewiesen

@@ -259,7 +259,6 @@ helpcenter.tickets.view_btn_edit: Modifica
 helpcenter.tickets.view_btn_edit_full: 'Modifica questo Ticket'
 helpcenter.tickets.view_label_your_email_placeholder: 'Indirizzo Email (richiesto)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Nome (richiesto)'
-helpcenter.tickets.view_reply: 'Aggiungi una risposta'
 helpcenter.tickets.view_reply_errors: 'Ci sono degli errori con il tuo invio'
 helpcenter.tickets.view_scroll_reply: 'Fai click qui per scorrere in basso fino al modulo.'
 helpcenter.tickets.view_unassigned: Non assegnato

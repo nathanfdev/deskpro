@@ -264,7 +264,6 @@ helpcenter.tickets.view_btn_edit: Modifier
 helpcenter.tickets.view_btn_edit_full: 'Editer ce ticket'
 helpcenter.tickets.view_label_your_email_placeholder: 'Adresse email: (requis)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Nom (obligatoire)'
-helpcenter.tickets.view_reply: 'Ajouter une réponse'
 helpcenter.tickets.view_reply_errors: 'Il y a des erreurs dans votre soumission.'
 helpcenter.tickets.view_scroll_reply: 'Cliquez ici pour faire défiler jusqu''au formulaire.'
 helpcenter.tickets.view_unassigned: Non attribué

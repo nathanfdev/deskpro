@@ -55,7 +55,23 @@
                                     <div class="dp-po-timeline">
                                         <span class="dp-po-timeline-block">
                                             <i class="dp-po-icon far fa-calendar"></i>
-                                            {{ phrase("portal.members.activity_group.#{group}") }}
+                                            {% if group == 'today' %}
+                                                {{ phrase('helpcenter.members.activity_group_today') }}
+                                            {% elseif group == 'this_week' %}
+                                                {{ phrase('helpcenter.members.activity_group_this_week') }}
+                                            {% elseif group == 'last_week' %}
+                                                {{ phrase('helpcenter.members.activity_group_last_week') }}
+                                            {% elseif group == 'this_month' %}
+                                                {{ phrase('helpcenter.members.activity_group_this_month') }}
+                                            {% elseif group == 'last_month' %}
+                                                {{ phrase('helpcenter.members.activity_group_last_month') }}
+                                            {% elseif group == 'this_year' %}
+                                                {{ phrase('helpcenter.members.activity_group_this_year') }}
+                                            {% elseif group == 'last_year' %}
+                                                {{ phrase('helpcenter.members.activity_group_last_year') }}
+                                            {% elseif group == 'everything_else' %}
+                                                {{ phrase('helpcenter.members.activity_group_everything_else') }}
+                                            {% endif %}
                                         </span>
                                     </div>
                                     <ul class="dp-po-profile-activity-list">

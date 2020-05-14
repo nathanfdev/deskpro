@@ -259,7 +259,6 @@ helpcenter.tickets.view_btn_edit: Rediger
 helpcenter.tickets.view_btn_edit_full: 'Rediger denne sag'
 helpcenter.tickets.view_label_your_email_placeholder: 'E-mailadresse (påkrævet)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Navn (påkrævet)'
-helpcenter.tickets.view_reply: 'Tilføj et svar'
 helpcenter.tickets.view_reply_errors: 'Der er nogle fejl med din indsendelse.'
 helpcenter.tickets.view_scroll_reply: 'Klik her for at scrolle ned til formularen.'
 helpcenter.tickets.view_unassigned: Ikke tildelt

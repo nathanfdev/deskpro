@@ -127,7 +127,7 @@
         <div class="dp-po-ticket-meta-cc">
             <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_participants', {count: ticket.getCcs()|length} ) }}</h3>
             <ul class="dp-po-ticket-meta-cc-list">
-                {% if ticket.getCcs() %}
+                {% if ticket.getCcs()|length > 0 %}
                     {% for participant in ticket.getCcs() %}
                         {% if participant.id %}
                             <li class="dp-po-ticket-meta-cc-item">
@@ -136,11 +136,10 @@
                         {% endif %}
                     {% endfor %}
                 {% else %}
-                <li class="dp-po-ticket-meta-cc-item">
-                    <img src="{{ avatar_default_url(null, 30) }}" />
-                    <span class="dp-po-ticket-meta-cc-name">{{ phrase('helpcenter.tickets.no_participants') }}</span>
-                </li>
-            {% endif %}
+                    <li class="dp-po-ticket-meta-cc-item">
+                        <span class="dp-po-ticket-meta-cc-name">{{ phrase('helpcenter.tickets.no_participants') }}</span>
+                    </li>
+                {% endif %}
             </ul>
 
             {% block page_sidebar_add_participant_form %}
