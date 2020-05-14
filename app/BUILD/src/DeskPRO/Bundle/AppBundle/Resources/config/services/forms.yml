@@ -476,6 +476,13 @@ services:
     tags:
       - { name: form.type }
 
+  form.api.chat_message:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatMessageType
+    arguments:
+      - "@serializer"
+    tags:
+      - { name: form.type }
+
   form.api.base_approval_type:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Approval\BaseApprovalType
     arguments:
