@@ -12,7 +12,6 @@ export class HcCommunityFilter extends React.Component {
 
   static propTypes = {
     filter_data: PropTypes.object,
-    forum:       PropTypes.object
   };
 
   constructor(props) {
@@ -90,7 +89,6 @@ export class HcCommunityFilter extends React.Component {
         />
         <HcFilterControls
           filterModel={this.state.filter}
-          forum={this.props.forum}
           available={this.state.available}
           updateFilter={this.onUpdateFilter}
           doSpin={this.state.doSpin}

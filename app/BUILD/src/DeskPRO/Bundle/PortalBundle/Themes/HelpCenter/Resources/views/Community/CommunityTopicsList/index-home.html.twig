@@ -81,7 +81,7 @@
                             <p class="dp-po-community-row-description">{{ forum.description }}</p>
                             <a href="{{ path('portal_community_browse', {filter_uri: "type-#{forum.id}"}) }}"
                                class="dp-po-community-row-btn">
-                                {{ phrase('helpcenter.community.view_topics', {count: topic_count_per_forum[forum.id], singular: forum.title, plural: forum.plural}) }}
+                                {{ phrase('helpcenter.community.view_topics', {count: topic_count_per_forum[forum.id], singular: forum.noun, plural: forum.plural}) }}
                             </a>
                         </div>
                         <div class="dp-po-community-row-right">
