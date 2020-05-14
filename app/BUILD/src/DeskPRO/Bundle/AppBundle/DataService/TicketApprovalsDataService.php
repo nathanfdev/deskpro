@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
@@ -43,13 +44,13 @@ class TicketApprovalsDataService extends AbstractDataService
 
     /**
      * @param Person $person
-     * @param bool $onlyPending
+     * @param Brand|null $brand
      *
      * @return int
      */
-    public function getApprovalCountWhereUserIsApprover(Person $person = null)
+    public function getApprovalCountWhereUserIsApprover(Person $person = null, $brand = null)
     {
-        return $this->generateAndCache([__FUNCTION__, $person], function () use ($person) {
+        return $this->generateAndCache([__FUNCTION__, $person], function () use ($person, $brand) {
             $qb = $this->em->createQueryBuilder();
             $time = microtime(true);
             $this->logger->debug('[TicketApprovalsDataService] Count started');
@@ -68,6 +69,12 @@ class TicketApprovalsDataService extends AbstractDataService
                     ], Connection::PARAM_STR_ARRAY)
                 ;
 
+            if ($brand !== null) {
+                $qb->innerJoin('ta.ticket', 't')
+                    ->andWhere('t.brand = :brand')
+                    ->setParameter('brand', $brand);
+            }
+
             $singleScalarResult = $qb->getQuery()->getSingleScalarResult();
 
             $this->logger->debug(
@@ -80,9 +87,15 @@ class TicketApprovalsDataService extends AbstractDataService
         );
     }
 
-    public function getApprovalCountWhereUserNeedAnAction(Person $person = null)
+    /**
+     * @param Person|null $person
+     * @param null $brand
+     *
+     * @return mixed|null
+     */
+    public function getApprovalCountWhereUserNeedAnAction(Person $person = null, $brand = null)
     {
-        return $this->generateAndCache([__FUNCTION__, $person], function () use ($person) {
+        return $this->generateAndCache([__FUNCTION__, $person], function () use ($person, $brand) {
             $qb = $this->em->createQueryBuilder();
             $time = microtime(true);
             $this->logger->debug('[TicketApprovalsDataService] Count started');
@@ -100,6 +113,12 @@ class TicketApprovalsDataService extends AbstractDataService
                     TicketApproval::STATUS_PENDING,
                 ], Connection::PARAM_STR_ARRAY)
             ;
+
+            if ($brand !== null) {
+                $qb->innerJoin('ta.ticket', 't')
+                    ->andWhere('t.brand = :brand')
+                    ->setParameter('brand', $brand);
+            }
 
             $singleScalarResult = $qb->getQuery()->getSingleScalarResult();
 

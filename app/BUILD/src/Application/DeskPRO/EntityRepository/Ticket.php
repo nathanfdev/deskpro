@@ -31,7 +31,7 @@ class Ticket extends AbstractEntityRepository
     public function saveNewTicket(
         Entity\Ticket $ticket,
         Entity\TicketMessage $message,
-        Entity\Person $person,
+        PersonEntity $person,
         Entity\Brand $brand
     ) {
         $ticket->addMessage($message);
@@ -347,8 +347,8 @@ class Ticket extends AbstractEntityRepository
      * @return array
      */
     public function getPersonTickets(
-        Entity\Person $person,
-        Entity\Person $agent,
+        PersonEntity $person,
+        PersonEntity $agent,
         $limit = null,
         $sort_by = null,
         $sort_order = 'DESC',
@@ -519,16 +519,16 @@ class Ticket extends AbstractEntityRepository
     /**
      * Count how many tickets a person has.
      *
-     * @param Entity\Person $person
-     * @param Entity\Person $agent
+     * @param PersonEntity $person
+     * @param PersonEntity $agent
      * @param mixed         $status
      * @param array         $departmentIds
      *
      * @return int
      */
     public function countTicketsForPerson(
-        Entity\Person $person,
-        Entity\Person $agent,
+        PersonEntity $person,
+        PersonEntity $agent,
         $status = null,
         $departmentIds = []
     ) {
@@ -628,12 +628,12 @@ class Ticket extends AbstractEntityRepository
      * - person: Number of their tickets
      * - org: Number of their org tickets, if they area a manger.
      *
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @param PersonEntity $person
      * @param null                               $status
      *
      * @return array
      */
-    public function getCountInfoForPerson(Entity\Person $person, $status = null)
+    public function getCountInfoForPerson(PersonEntity $person, $status = null)
     {
         $counts = [
             'person' => $this->countTicketsForPerson($person),
@@ -731,13 +731,13 @@ class Ticket extends AbstractEntityRepository
     /**
      * Get the latest tickets from a particular user.
      *
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @param PersonEntity $person
      * @param int                                $max       The max number of results
      * @param bool                               $only_open
      *
      * @return array
      */
-    public function getLatestByUser(Entity\Person $person, $max = 20, $only_open = false)
+    public function getLatestByUser(PersonEntity $person, $max = 20, $only_open = false)
     {
         if ($only_open) {
             $status = [
@@ -766,27 +766,36 @@ class Ticket extends AbstractEntityRepository
     /**
      * Get the latest tickets awaiting user from a particular user.
      *
-     * @param \Application\DeskPRO\Entity\Person $person
-     * @param int                                $max    The max number of results
+     * @param PersonEntity $person
+     * @param int $max The max number of results
+     * @param null|Entity\Brand $brand
      *
      * @return array
      */
-    public function getWaitingForReplyForPerson(Entity\Person $person, $max = 5)
+    public function getWaitingForReplyForPerson(PersonEntity $person, $max = 5, $brand = null)
     {
         $status = TicketStatus::STATUS_TYPE_AWAITING_USER;
 
-        $query = $this->getEntityManager()->createQuery('
-            SELECT t
-            FROM DeskPRO:Ticket t
-            WHERE t.person = ?1 AND t.status IN(?2)
-            ORDER BY t.date_last_agent_reply DESC
-        ');
-        if ((int) $max > 0) {
-            $query->setMaxResults((int) $max);
-        }
-        $tickets = $query->execute([1 => $person, 2 => $status]);
+        $qb = $this->getEntityManager()->createQueryBuilder();
 
-        return $tickets;
+        $qb->select('t')
+            ->from(TicketEntity::class, 't')
+            ->where('t.person = :person')
+            ->andWhere('t.status = :status')
+            ->orderBy('t.date_last_agent_reply', 'desc')
+            ->setParameter('person', $person)
+            ->setParameter('status', $status);
+
+        if ($brand !== null) {
+            $qb->andWhere('t.brand = :brand')
+                ->setParameter('brand', $brand);
+        }
+
+        if ((int) $max > 0) {
+            $qb->setMaxResults((int) $max);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -883,7 +892,7 @@ class Ticket extends AbstractEntityRepository
 
     public function getTicketCountsForPeople(
         array $people,
-        Entity\Person $agent
+        PersonEntity $agent
     ) {
         $permissionsHelper          = $agent->getHelper('AgentPermissions');
         $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'assign');
@@ -1203,7 +1212,7 @@ class Ticket extends AbstractEntityRepository
         return $this->getQueryForPerson($person, $sort)->setFirstResult($offset)->setMaxResults($limit)->getResult();
     }
 
-    public function countTicketsForPerson2(Entity\Person $person)
+    public function countTicketsForPerson2(PersonEntity $person)
     {
         list($parts, $params, $parts_union) = $this->getQueryPartsForPerson($person);
 
@@ -1293,7 +1302,7 @@ class Ticket extends AbstractEntityRepository
         return $qb->getQuery()->getOneOrNullResult();
     }
 
-    protected function getQueryPartsForPerson(Entity\Person $person)
+    protected function getQueryPartsForPerson(PersonEntity $person)
     {
         $parts  = [];
         $params = [];
@@ -1317,7 +1326,7 @@ class Ticket extends AbstractEntityRepository
      *
      * @return \Doctrine\ORM\Query
      */
-    protected function getQueryForPerson(Entity\Person $person, $sort = null)
+    protected function getQueryForPerson(PersonEntity $person, $sort = null)
     {
         list($parts, $params, $parts_union) = $this->getQueryPartsForPerson($person);
 

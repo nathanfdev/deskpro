@@ -117,7 +117,7 @@ class CommonController extends AbstractController
         if (!$person instanceof PersonGuest) {
             /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepo */
             $ticketRepo           = $this->getRepo(Ticket::class);
-            $ticketsAwaitingReply = $ticketRepo->getWaitingForReplyForPerson($person, 3);
+            $ticketsAwaitingReply = $ticketRepo->getWaitingForReplyForPerson($person, 3, $this->getBrandContainer()->getBrand());
         }
 
         $should_display = count($saved_forms) || $langDiff || count($ticketsAwaitingReply);
@@ -214,15 +214,19 @@ class CommonController extends AbstractController
         switch ($content_type) {
             case Article::CONTENT_TYPE:
                 $content = $this->getArticlesDataService()->getArticle($content_id);
+
                 break;
             case Download::CONTENT_TYPE:
                 $content = $this->getDownloadsDataService()->getDownload($content_id);
+
                 break;
             case News::CONTENT_TYPE:
                 $content = $this->getNewsDataService()->getPost($content_id);
+
                 break;
             case CommunityTopic::CONTENT_TYPE:
                 $content = $this->getCommunityDataService()->getItem($content_id);
+
                 break;
         }
 
