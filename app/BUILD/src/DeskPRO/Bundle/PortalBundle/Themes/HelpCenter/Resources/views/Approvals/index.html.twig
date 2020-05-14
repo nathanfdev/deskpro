@@ -251,33 +251,33 @@
                 <div class="dp-po-table-row dp-po-table-row-head">
                     <span class="dp-po-table-cell dp-po-table-cell-indicator"></span>
                     <span class="dp-po-table-cell dp-po-table-cell-small" data-col="id">
-                        {{ phrase('portal.tickets.approvals.list_column_id') }}
+                        {{ phrase('helpcenter.approvals.list_column_id') }}
                     </span>
                     <span class="dp-po-table-cell dp-po-table-cell-large" data-col="description">
-                        {{ phrase('portal.tickets.approvals.list_column_subject') }}
+                        {{ phrase('helpcenter.approvals.list_column_subject') }}
                     </span>
                     <span class="dp-po-table-cell dp-po-table-cell-medium" data-col="agent">
-                        {{ phrase('portal.tickets.approvals.list_column_agent') }}{{ _self.sort_link(table_info, 'agent') }}
+                        {{ phrase('helpcenter.approvals.list_column_agent') }}{{ _self.sort_link(table_info, 'agent') }}
                     </span>
                     <span class="dp-po-table-cell dp-po-table-cell-medium" data-col="user">
-                        {{ phrase('portal.tickets.approvals.list_column_user') }}{{ _self.sort_link(table_info, 'user') }}
+                        {{ phrase('helpcenter.approvals.list_column_user') }}{{ _self.sort_link(table_info, 'user') }}
                     </span>
                     {% if table_info.status == 'pending' %}
                         <span class="dp-po-table-cell dp-po-table-cell-medium" data-col="approvers">
-                            {{ phrase('portal.tickets.approvals.list_column_approvers') }}
+                            {{ phrase('helpcenter.approvals.list_column_approvers') }}
                         </span>
                     {% else %}
                         {% if table_info.status == 'cancelled' %}
                             <span class="dp-po-table-cell dp-po-table-cell-medium" data-col="cancelled">
-                                {{ phrase('portal.tickets.approvals.list_column_cancelled') }}{{ _self.sort_link(table_info, 'cancelled') }}
+                                {{ phrase('helpcenter.approvals.list_column_cancelled') }}{{ _self.sort_link(table_info, 'cancelled') }}
                             </span>
                         {% else %}
                             <span class="dp-po-table-cell dp-po-table-cell-medium" data-col="completed">
-                                {{ phrase('portal.tickets.approvals.list_column_completed') }}{{ _self.sort_link(table_info, 'completed') }}
+                                {{ phrase('helpcenter.approvals.list_column_completed') }}{{ _self.sort_link(table_info, 'completed') }}
                             </span>
                         {% endif %}
                         <span class="dp-po-table-cell dp-po-table-cell-small" data-col="your_vote">
-                            {{ phrase('portal.tickets.approvals.list_column_your_vote') }}
+                            {{ phrase('helpcenter.approvals.list_column_your_vote') }}
                         </span>
                     {% endif %}
                 </div>
@@ -303,7 +303,7 @@
                         </span>
                         <span class="dp-po-table-cell dp-po-table-cell-medium dp-po-hide-on-hover">
                             <a href="{{ viewUrl }}" class="dp-po-table-cell-link">
-                                {{ approval.createdBy ? approval.createdBy.communityName : phrase('portal.tickets.approvals.system') }}
+                                {{ approval.createdBy ? approval.createdBy.communityName : phrase('helpcenter.approvals.system') }}
                             </a>
                         </span>
                         <span class="dp-po-table-cell dp-po-table-cell-medium dp-po-hide-on-hover">

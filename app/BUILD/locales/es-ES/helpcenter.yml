@@ -268,7 +268,6 @@ helpcenter.tickets.view_btn_edit: Modificar
 helpcenter.tickets.view_btn_edit_full: 'Editar este ticket'
 helpcenter.tickets.view_label_your_email_placeholder: 'Dirección de correo electrónico: (obligatorio)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Nombre (requerido)'
-helpcenter.tickets.view_reply: 'Añadir una respuesta'
 helpcenter.tickets.view_reply_errors: 'Hay algunos errores con su presentación.'
 helpcenter.tickets.view_scroll_reply: 'Haga clic aquí para desplazarse hacia abajo hasta el formulario.'
 helpcenter.tickets.view_unassigned: No asignado

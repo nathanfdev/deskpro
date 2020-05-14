@@ -70,14 +70,25 @@ helpcenter.account.usersource_set_email_desc: 'Before you can login we need your
 helpcenter.account.validation_email_sent: 'We’ve sent you an email to {email}<br />Please validate your email address to access your support centre.'
 helpcenter.account.your_pending_email_addresses: 'Your Pending Email Addresses'
 helpcenter.alerts.tickets_to_respond: '{count, plural, one {You have one ticket to respond to.} other {You have # tickets to respond to.}}'
+helpcenter.approvals.approve_action: Approve
 helpcenter.approvals.approved_by: 'Approved by'
 helpcenter.approvals.approved_status: Approved
 helpcenter.approvals.cancelled_status: Cancelled
+helpcenter.approvals.list_column_agent: 'Agent'
+helpcenter.approvals.list_column_approvers: 'Approvers'
+helpcenter.approvals.list_column_cancelled: 'Cancelled'
+helpcenter.approvals.list_column_completed: 'Completed'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: 'Subject'
+helpcenter.approvals.list_column_user: 'User'
+helpcenter.approvals.list_column_your_vote: 'Your Vote'
 helpcenter.approvals.my_approvals: 'My Approvals'
 helpcenter.approvals.no_ticket_approvals_found: 'No ticket approvals found'
 helpcenter.approvals.pending_status: Pending
-helpcenter.approvals.rejected_status: Rejected
+helpcenter.approvals.reject_action: Reject
 helpcenter.approvals.rejected_by: 'Rejected by'
+helpcenter.approvals.rejected_status: Rejected
+helpcenter.approvals.system: System
 helpcenter.approvals.view_approved: Approved
 helpcenter.approvals.view_awaiting_response: 'Awaiting response'
 helpcenter.approvals.view_criteria: 'Approval criteria'
@@ -87,6 +98,8 @@ helpcenter.approvals.view_requesting_agent: 'Requesting agent'
 helpcenter.approvals.view_ticket: Ticket
 helpcenter.approvals.view_to_approve: 'To approve'
 helpcenter.approvals.view_to_reject: 'To reject'
+helpcenter.approvals.you_approved: 'You approved the request {template} requested by {person_name}'
+helpcenter.approvals.you_rejected: 'You rejected the request {template} requested by {person_name}'
 helpcenter.articles.published_label: Published
 helpcenter.articles.section_title: Knowledgebase
 helpcenter.articles.status_archived: Archived
@@ -355,6 +368,7 @@ helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {At lea
 helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {At least # uppercase character} other {At least # uppercase characters}}'
 helpcenter.forms.error_required: 'This value is required'
 helpcenter.forms.label_save: Save
+helpcenter.forms.label_reset: Reset
 helpcenter.forms.message_description: ''
 helpcenter.general.add_comment: 'Add a comment'
 helpcenter.general.admin: Admin
@@ -401,6 +415,7 @@ helpcenter.general.copy_to_clipboard: 'Copy to Clipboard'
 helpcenter.general.created_by: 'Created by'
 helpcenter.general.date_day_month: '{date, date, MMM d}'
 helpcenter.general.date_medium: '{date, date, medium}'
+helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.date_short: '{date, date, short}'
 helpcenter.general.date_short_month: '{date, date, MMM}'
 helpcenter.general.department: Department
@@ -521,6 +536,14 @@ helpcenter.members.activity_down_voted: 'Down voted'
 helpcenter.members.activity_down_voted_comment_on: 'Down voted comment on'
 helpcenter.members.activity_up_voted: 'Up voted'
 helpcenter.members.activity_up_voted_comment_on: 'Up voted comment on'
+helpcenter.members.activity_group_today: 'Today'
+helpcenter.members.activity_group_this_week: 'This Week'
+helpcenter.members.activity_group_last_week: 'Last Week'
+helpcenter.members.activity_group_this_month: 'The Month'
+helpcenter.members.activity_group_last_month: 'Last Month'
+helpcenter.members.activity_group_this_year: 'This Year'
+helpcenter.members.activity_group_last_year: 'Last Year'
+helpcenter.members.activity_group_everything_else: 'Everything Else'
 helpcenter.members.company: 'Job Title & Company'
 helpcenter.members.joined_portal: 'Joined Portal'
 helpcenter.members.language: Language
@@ -638,8 +661,6 @@ helpcenter.search.search_results: 'Search Results'
 helpcenter.search.view_all_results: '{count, plural, one {View result} other {View all # results}}'
 helpcenter.search.your_tickets: 'Your tickets'
 helpcenter.sidebar.article_posted_by: 'Posted by'
-helpcenter.ticket_approvals.approved_by: 'You approved the request {template} requested by {person_name}'
-helpcenter.ticket_approvals.rejected_by: 'You rejected the request {template} requested by {person_name}'
 helpcenter.tickets.agent_reply: 'Agent reply'
 helpcenter.tickets.cancel_ticket_edit: 'Cancel edit and show me the ticket again'
 helpcenter.tickets.close_ticket: 'Close ticket'
@@ -712,7 +733,6 @@ helpcenter.tickets.view_label_your_email_placeholder: 'Email Address (required)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Name (required)'
 helpcenter.tickets.view_last_message: 'Last message'
 helpcenter.tickets.view_participants: 'Also on this ticket ({count})'
-helpcenter.tickets.view_reply: 'Add a reply'
 helpcenter.tickets.view_reply_errors: 'There are some errors with your submission.'
 helpcenter.tickets.view_reply_or_close: 'Reply or <a href="{close_url}">close the ticket</a>'
 helpcenter.tickets.view_requester: Requester

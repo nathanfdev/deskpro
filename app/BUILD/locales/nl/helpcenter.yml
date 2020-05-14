@@ -264,7 +264,6 @@ helpcenter.tickets.view_btn_edit: Bewerken
 helpcenter.tickets.view_btn_edit_full: 'Dit ticket bewerken'
 helpcenter.tickets.view_label_your_email_placeholder: 'E-mailadres (vereist)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Naam (vereist)'
-helpcenter.tickets.view_reply: 'Voeg een antwoord toe'
 helpcenter.tickets.view_reply_errors: 'Er zijn enkele fouten bij uw inzending.'
 helpcenter.tickets.view_scroll_reply: 'Klik hier om te scrollen naar het formulier.'
 helpcenter.tickets.view_unassigned: Niet toegewezen

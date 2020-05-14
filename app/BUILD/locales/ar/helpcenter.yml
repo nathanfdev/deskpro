@@ -270,7 +270,6 @@ helpcenter.tickets.view_btn_edit: تحرير
 helpcenter.tickets.view_btn_edit_full: 'حرر التذكرة'
 helpcenter.tickets.view_label_your_email_placeholder: 'البريد الإلكتروني (مطلوب)'
 helpcenter.tickets.view_label_your_name_placeholder: 'الاسم مطلوب'
-helpcenter.tickets.view_reply: 'اضف رداً'
 helpcenter.tickets.view_reply_errors: 'يوجد بعض الاخطاء في تسليمك'
 helpcenter.tickets.view_scroll_reply: 'انقر هنا للتمرير الى النموذج'
 helpcenter.tickets.view_unassigned: غير معينة لأحد
