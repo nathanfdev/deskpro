@@ -28,7 +28,7 @@ class CancelForwardingCallsListener implements EventSubscriberInterface
     /**
      * @var StorageAdapterInterface
      */
-    private $storageAdapter;
+    private $storage;
 
     /**
      * @var ContainerInterface
@@ -40,19 +40,19 @@ class CancelForwardingCallsListener implements EventSubscriberInterface
      *
      * @param EntityManager           $em
      * @param VoiceTaskHelper         $taskHelper
-     * @param StorageAdapterInterface $storageAdapter
+     * @param StorageAdapterInterface $storage
      * @param ContainerInterface      $container
      */
     public function __construct(
-        EntityManager           $em,
-        VoiceTaskHelper         $taskHelper,
-        StorageAdapterInterface $storageAdapter,
-        ContainerInterface      $container
+        EntityManager $em,
+        VoiceTaskHelper $taskHelper,
+        StorageAdapterInterface $storage,
+        ContainerInterface $container
     ) {
-        $this->em             = $em;
-        $this->taskHelper     = $taskHelper;
-        $this->storageAdapter = $storageAdapter;
-        $this->container      = $container;
+        $this->em         = $em;
+        $this->taskHelper = $taskHelper;
+        $this->storage    = $storage;
+        $this->container  = $container;
     }
 
     /**
@@ -62,6 +62,7 @@ class CancelForwardingCallsListener implements EventSubscriberInterface
     {
         return [
             TaskRouterEvent::ASSIGN_TIMEOUT => 'onAssignTimeout',
+            TaskRouterEvent::ACCEPTED       => 'onAccepted',
         ];
     }
 
@@ -82,8 +83,39 @@ class CancelForwardingCallsListener implements EventSubscriberInterface
             return;
         }
 
-        $taskWorkers = $this->storageAdapter->getWorkers($task->getWorkerIds());
+        $taskWorkers = $this->storage->getWorkers($task->getWorkerIds());
         foreach ($taskWorkers as $taskWorker) {
+            /** @var Person $agent */
+            $agent = $this->em->getRepository(Person::class)->find($taskWorker->getTypeId());
+            if ($agent) {
+                $this->container->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $agent);
+            }
+        }
+    }
+
+    /**
+     * @internal
+     *
+     * @param TaskRouterEvent $event
+     */
+    public function onAccepted(TaskRouterEvent $event)
+    {
+        $task = $event->getTask();
+        if (!$task) {
+            return;
+        }
+
+        $phoneCall = $this->taskHelper->getPhoneCall($task);
+        if (!$phoneCall) {
+            return;
+        }
+
+        $taskWorkers = $this->storage->getWorkers($task->getWorkerIds());
+        foreach ($taskWorkers as $taskWorker) {
+            if ($taskWorker->getId() === $task->getAcceptedWorkerId()) {
+                continue;
+            }
+
             /** @var Person $agent */
             $agent = $this->em->getRepository(Person::class)->find($taskWorker->getTypeId());
             if ($agent) {

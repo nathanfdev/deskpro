@@ -936,6 +936,7 @@ class TwilioCallbacksController extends BaseController
             $callId  = $request->query->get('CallId');
             $agentId = $request->query->get('AgentId');
 
+            /** @var VoicePhoneCall $phoneCall */
             if (!$callId || !$phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId)) {
                 throw new \RuntimeException('Phone call not found');
             }
@@ -944,8 +945,16 @@ class TwilioCallbacksController extends BaseController
             }
 
             if (count($phoneCall->getActiveParticipants()) >= 2) {
-                if (!$this->get('dp.voice.task_router')->joinTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
-                    throw new \RuntimeException('Unable to join this phone call');
+                if ($phoneCall->isActive()) {
+                    // handle possible race condition
+                    // when first agent has accepted the incoming call
+                    // but other forwarding calls to others agents hasn't been cancelled yet
+                    // it could happen if it's a simultaneous call
+                    throw new \RuntimeException('Phone call is already accepted');
+                } else {
+                    if (!$this->get('dp.voice.task_router')->joinTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+                        throw new \RuntimeException('Unable to join this phone call');
+                    }
                 }
             } else {
                 if (!$this->get('dp.voice.task_router')->acceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
@@ -1761,11 +1770,7 @@ class TwilioCallbacksController extends BaseController
             return;
         }
 
-        if ($target instanceof VoiceQueueTarget) {
-            if ($target->getQueue()->getGreetAsset()) {
-                $this->playGreetAsset($twiml, $target->getQueue()->getGreetAsset());
-            }
-        } elseif ($target instanceof VoiceAutoAttendantTarget) {
+        if ($target instanceof VoiceAutoAttendantTarget) {
             $autoAttendant = $target->getAutoAttendant();
             $dialNumbers   = $autoAttendant->getOrderedDialNumbers();
 
@@ -1812,9 +1817,15 @@ class TwilioCallbacksController extends BaseController
             } else {
                 $this->playGreetAsset($gather, $asset);
             }
-        }
+        } else {
+            if ($target instanceof VoiceQueueTarget) {
+                if ($target->getQueue()->getGreetAsset()) {
+                    $this->playGreetAsset($twiml, $target->getQueue()->getGreetAsset());
+                }
+            }
 
-        $twiml->redirect($this->getNewIncomingCallCallbackUrl($account, $phoneCall, $target));
+            $twiml->redirect($this->getNewIncomingCallCallbackUrl($account, $phoneCall, $target));
+        }
     }
 
     /**

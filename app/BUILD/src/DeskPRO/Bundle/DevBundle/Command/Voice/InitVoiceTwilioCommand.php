@@ -33,6 +33,10 @@ class InitVoiceTwilioCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
+        $appEnv    = $container->get('deskpro.app_env');
+
+        $accountId = $input->getOption('account_id') ?: $appEnv->getConfig('env.voice.dev.account_id');
+        $authToken = $input->getOption('auth_token') ?: $appEnv->getConfig('env.voice.dev.auth_token');
 
         // enable voice if it has not been enabled yet
         // init settings resolver first to be possible to use deskpro.feature_flags
@@ -72,25 +76,25 @@ class InitVoiceTwilioCommand extends ContainerAwareCommand
             // configure as proxied account
             $container->get('dp.voice.cloud_proxy')->createTwilioProxyAccount(
                 $input->getOption('public_proxy_url'),
-                $input->getOption('account_id') ?: 'xxx-access-xxx',
-                $input->getOption('auth_token') ?: 'xxx-auth-xxx'
+                $accountId ?: 'xxx-access-xxx',
+                $authToken ?: 'xxx-auth-xxx'
             );
         } else {
             // configure as own account
-            if (!$input->getOption('account_id')) {
+            if (!$accountId) {
                 $output->writeln("<error>No account SID was specified</error>");
 
                 return 1;
             }
-            if (!$input->getOption('auth_token')) {
+            if (!$authToken) {
                 $output->writeln("<error>No account auth token was specified</error>");
 
                 return 1;
             }
 
             $account = new TwilioVoiceAccount();
-            $account->setAccountId($input->getOption('account_id'));
-            $account->setAuthToken($input->getOption('auth_token'));
+            $account->setAccountId($accountId);
+            $account->setAuthToken($authToken);
             $account->setAccountName('Deskpro Voice Account');
 
             $em->persist($account);
