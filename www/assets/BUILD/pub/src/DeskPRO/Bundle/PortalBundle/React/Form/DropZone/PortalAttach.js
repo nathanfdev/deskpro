@@ -113,8 +113,8 @@ export default class PortalAttach extends React.Component {
         const maxFileInfo = maxFileSize.split(' ');
 
         lastError =  portalPhrases.get('portal.forms.error_upload_ini_size', {
-          '{ limit }':  maxFileInfo[0],
-          '{ suffix }': maxFileInfo[1]
+          limit:  maxFileInfo[0],
+          suffix: maxFileInfo[1]
         });
       } else {
         lastError = portalPhrases.get('portal.forms.error_upload_html_size');
