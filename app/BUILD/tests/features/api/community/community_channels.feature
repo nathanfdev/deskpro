@@ -10,10 +10,10 @@ Feature: /community_forums endpoint
   Scenario: I GET all community forums
     Given no "CommunityTopic" records exist
     And only the following "CommunityForum" records exist:
-      | #   | title    | slug     |
-      | cc1 | Feature  | feature  |
-      | cc2 | Question | question |
-      | cc3 | Garbage  | garbage  |
+      | #   | title    | slug     | noun     | plural    |
+      | cc1 | Feature  | feature  | Feature  | Features  |
+      | cc2 | Question | question | Question | Questions |
+      | cc3 | Garbage  | garbage  | Garbage  | Garbage   |
     When I send a GET request to "/api/v2/community_forums"
     Then the response should be in JSON
     And the response status code should be 200

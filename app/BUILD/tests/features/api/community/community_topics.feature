@@ -15,10 +15,10 @@ Feature: /community_topics/counts endpoint
       | csc3 | closed      | Declined  | 0             |
       | csc4 | closed      | Spam      | 0             |
     And only the following "CommunityForum" records exist:
-      | #   | title    | slug     |
-      | cc1 | Feature  | feature  |
-      | cc2 | Question | question |
-      | cc3 | Garbage  | garbage  |
+      | #   | title    | slug     | noun     | plural    |
+      | cc1 | Feature  | feature  | Feature  | Features  |
+      | cc2 | Question | question | Question | Questions |
+      | cc3 | Garbage  | garbage  | Garbage  | Garbage   |
 
   Scenario: I GET count of community topics with hidden_status set to validating
     Given only the following "CommunityTopic" records exist:

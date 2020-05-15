@@ -8,9 +8,9 @@ Feature:
     Given I'm authenticated as agent
     And I have permissions to use community
     And I have the following "CommunityForum" records:
-      | #  | Title                  |
-      | c1 | First community forum  |
-      | c2 | Second community forum |
+      | #  | Title                  | Noun                   | Plural                  |
+      | c1 | First community forum  | First community forum  | First community forums  |
+      | c2 | Second community forum | Second community forum | Second community forums |
     And I have the following "CommunityTopicStatusCategory" records:
       | #   | StatusType | Title                                   |
       | sc1 | active     | First active community status category  |
