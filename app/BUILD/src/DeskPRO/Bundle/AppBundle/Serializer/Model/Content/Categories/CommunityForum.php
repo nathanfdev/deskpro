@@ -94,6 +94,8 @@ class CommunityForum extends CategoryAbstract
         parent::__construct($entity);
 
         $this->parent       = $entity->getParent();
+        $this->noun         = $entity->getNoun();
+        $this->plural       = $entity->getPlural();
         $this->children     = $entity->getChildren();
         $this->usergroups   = $entity->getUserGroups();
         $this->customFields = $entity->getTopicFields()->map(function (CommunityForumToCustomDefCommunityTopic $pivot) {
