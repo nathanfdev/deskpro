@@ -13,8 +13,8 @@ Feature: /mass_actions/community_topic_comments endpoint
       | #     | status_type | title     | display_order |
       | ctsc1 | active      | Collected | 0             |
     And only the following "CommunityForum" records exist:
-      | #   | title   | slug    |
-      | cc1 | Feature | feature |
+      | #   | title   | slug    | noun    | plural   |
+      | cc1 | Feature | feature | Feature | Features |
     And only the following "CommunityTopic" records exist:
       | #     | status_category | forum   | person  | is_reviewed | slug   | title  | content | status |
       | topic | {ctsc1}         | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |

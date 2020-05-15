@@ -53,18 +53,12 @@ Feature: /community_topics/counts endpoint
 
     And the JSON node "data.nested[0].count" should be equal to 2
     And the JSON node "data.nested[0].title" should be equal to "Feature"
-    And the JSON node "data.nested[0].noun" should be equal to "Feature"
-    And the JSON node "data.nested[0].plural" should be equal to "Features"
 
     And the JSON node "data.nested[1].count" should be equal to 2
     And the JSON node "data.nested[1].title" should be equal to "Question"
-    And the JSON node "data.nested[1].noun" should be equal to "Question"
-    And the JSON node "data.nested[1].plural" should be equal to "Questions"
 
     And the JSON node "data.nested[2].count" should be equal to 2
     And the JSON node "data.nested[2].title" should be equal to "Garbage"
-    And the JSON node "data.nested[2].noun" should be equal to "Garbage"
-    And the JSON node "data.nested[2].plural" should be equal to "Garbage"
 
   Scenario: I GET count of community topics with status active grouped by status_category
     Given only the following "CommunityTopic" records exist:

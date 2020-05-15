@@ -13,9 +13,9 @@ Feature: /mass_actions/community_topics endpoint
       | ctsc2 | active      | Accepted  | 0             |
       | ctsc3 | closed      | Declined  | 0             |
     And only the following "CommunityForum" records exist:
-      | #   | title      | slug       |
-      | cc1 | Feature    | feature    |
-      | cc2 | Suggestion | suggestion |
+      | #   | title      | slug       | noun       | plural      |
+      | cc1 | Feature    | feature    | Feature    | Features    |
+      | cc2 | Suggestion | suggestion | Suggestion | Suggestions |
     And only the following "CommunityTopic" records exist:
       | #     | status_category | forum   | person  | is_reviewed | slug   | title  | content | status |
       | topic | {ctsc1}         | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |

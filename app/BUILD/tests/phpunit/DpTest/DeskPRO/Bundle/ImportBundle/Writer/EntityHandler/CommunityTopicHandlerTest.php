@@ -98,6 +98,8 @@ class CommunityTopicHandlerTest extends AbstractEntityHandlerTest
     {
         $forum = new Entity\CommunityForum();
         $forum->setRealTitle('forum');
+        $forum->setNoun('forum');
+        $forum->setPlural('forums');
 
         $this->em()->persist($forum);
         $this->em()->flush();
