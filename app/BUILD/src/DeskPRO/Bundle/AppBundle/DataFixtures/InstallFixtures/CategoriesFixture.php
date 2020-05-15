@@ -95,7 +95,7 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
             $splashProp->setBlob($splash)->setUrn(SplashImageProperty::$blobNs.':'.$splash->getAuthId());
 
             $forum = new CommunityForum();
-            $forum->setTitle($title)->setDescription($info['desc'])->setSplashImage($splashProp);
+            $forum->setTitle($title)->setDescription($info['desc'])->setSplashImage($splashProp)->setNoun($title)->setPlural($title.'s');
             $manager->persist($splashProp);
             $manager->persist($forum);
 
