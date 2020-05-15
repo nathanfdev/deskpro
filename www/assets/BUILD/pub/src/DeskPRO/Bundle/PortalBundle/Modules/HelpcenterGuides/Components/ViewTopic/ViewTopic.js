@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import moment from 'moment';
+import $ from 'jquery';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import browserHistory from 'react-router/lib/browserHistory';
 import { Link, Element, Events, scroller } from 'react-scroll';
@@ -86,6 +87,11 @@ class ViewTopic extends React.Component {
       this.contentChanged = false;
       this.defineSizes();
     }
+    const toolOptions = {
+      template: '<div class="tooltip dp-po-tip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
+    };
+
+    $('[data-toggle="tooltip"]').tooltip(toolOptions);
   }
 
   componentWillUnmount() {

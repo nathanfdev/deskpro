@@ -73,14 +73,23 @@ class Topic extends React.PureComponent {
                 <div>
                   <h2 className="dp-po-guides-block-title dp-po-clipboard">
                     {topic.title}
+                    {topic.status === 'hidden' ?
+                      <span
+                        className="dp-po-icon dp-info" data-toggle="tooltip"
+                        title={intl.formatMessage({ id: 'helpcenter.general.viewed_by_agents_only' })} data-placement="top"
+                      >
+                        <i className="fal fa-info-circle text-primary" />
+                      </span>
+                      : null}
                     <a
                       className="dp-po-clipboard-link"
                       data-toggle="tooltip"
                       data-placement="top"
                       href={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
                       onClick={this.copyLinkToClipBoard}
+                      title={intl.formatMessage({ id: 'helpcenter.general.copy_to_clipboard' })}
                     >
-                      <i className="dp-po-icon far fa-anchor" title={intl.formatMessage({ id: 'helpcenter.general.copy_to_clipboard' })} />
+                      <span className="dp-po-icon far fa-anchor" />
                       {this.state.copied && <FormattedMessage id="helpcenter.general.copied" />}
                     </a>
                   </h2>
@@ -116,7 +125,7 @@ class Topic extends React.PureComponent {
             <div className="dp-po-guides-block-article-right" style={style}>
               <TopicSummary content={data.content} fixed={fixed} agentBarHeight={agentBarHeight} />
               <div className="dp-po-guides-meta">
-                <p>Published: <strong>{moment(data.date_published).format('DD/MM/YYYY')}</strong></p>
+                {data.date_published && <p>Published: <strong>{moment(data.date_published).format('DD/MM/YYYY')}</strong></p>}
                 <p>Last updated: <strong>{moment(data.date_updated).format('DD/MM/YYYY')}</strong></p>
               </div>
             </div>

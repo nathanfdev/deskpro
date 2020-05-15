@@ -65,6 +65,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.general.prop_views_desc',
             'helpcenter.general.select',
             'helpcenter.general.sort',
+            'helpcenter.general.viewed_by_agents_only',
             'helpcenter.general.your_comment_label',
             'helpcenter.search.view_all_results',
             'helpcenter.search.your_tickets',

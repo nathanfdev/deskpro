@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Topic as TopicEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -28,12 +29,13 @@ class Topic extends AbstractEntityRepository
     /**
      * Get a plain hierarchy array.
      *
-     * @param bool           $reset
+     * @param bool $reset
      * @param Guide|int|null $guide
+     * @param PersonEntity|null $person
      *
      * @return array|null
      */
-    public function getInHierarchy($reset = false, $guide = null)
+    public function getInHierarchy($reset = false, $guide = null, $person = null)
     {
         if (!$reset && $this->topicHierarchy !== null) {
             return $this->topicHierarchy;
@@ -42,15 +44,17 @@ class Topic extends AbstractEntityRepository
         if (is_array($reset)) {
             $topics = $reset;
         } else {
-            $select = 'id, parent_id, title, slug, display_order, no_content';
+            $select = 'id, parent_id, title, slug, display_order, no_content, status';
 
             $params = [];
 
             $qb = $this->_em->getConnection()->createQueryBuilder();
             $qb->select($select);
             $qb->from($this->tableName);
-            $qb->where('status <> ?');
-            $params[] = TopicEntity::STATUS_HIDDEN;
+            if (!$person || !$person->isAgent() || !$person->hasPerm('agent_publish.use')) {
+                $qb->where('status <> ?');
+                $params[] = TopicEntity::STATUS_HIDDEN;
+            }
             $qb->orderBy('display_order', 'ASC');
 
             if ($guide) {

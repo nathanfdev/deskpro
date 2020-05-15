@@ -35,7 +35,7 @@ class GuidesDataService extends AbstractDataService
     }
 
     /**
-     * @param mixed Person
+     * @param mixed Person $person
      *
      * @return bool
      */
@@ -118,7 +118,7 @@ class GuidesDataService extends AbstractDataService
                     }
                 }
                 $result = $this->getTopicsRepo()
-                    ->getInHierarchy(false, $guide);
+                    ->getInHierarchy(false, $guide, $person);
 
                 return $result;
             }
