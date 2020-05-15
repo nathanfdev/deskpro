@@ -66,7 +66,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         /** @var CommunityForum|NewsCategory|ArticleCategory|DownloadCategory $communityForum1 */
         $communityForum1 = new $entityClass();
         $communityForum1->setTitle('communityForum 1');
-        if ($entityClass === 'CommunityForum') {
+        if (get_class($communityForum1) === CommunityForum::class) {
             $communityForum1->setNoun('communityForum 1');
             $communityForum1->setPlural('communityForums 1');
         }
@@ -79,7 +79,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         /** @var CommunityForum|NewsCategory|ArticleCategory|DownloadCategory $communityForum2 */
         $communityForum2 = new $entityClass();
         $communityForum2->setTitle('communityForum 2');
-        if ($entityClass === 'CommunityForum') {
+        if (get_class($communityForum2) === CommunityForum::class) {
             $communityForum1->setNoun('communityForum 2');
             $communityForum1->setPlural('communityForums 2');
         }
@@ -92,7 +92,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         /** @var CommunityForum|NewsCategory|ArticleCategory|DownloadCategory $communityForum3 */
         $communityForum3 = new $entityClass();
         $communityForum3->setTitle('communityForum 3');
-        if ($entityClass === 'CommunityForum') {
+        if (get_class($communityForum3) === CommunityForum::class) {
             $communityForum1->setNoun('communityForum 3');
             $communityForum1->setPlural('communityForums 3');
         }
