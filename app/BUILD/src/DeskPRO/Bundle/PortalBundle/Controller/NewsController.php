@@ -27,7 +27,7 @@ class NewsController extends AbstractPublishController
 {
     /**
      * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"},
-     *     requirements={"_format":"html|rss"})
+     *     requirements={"_format":"html|rss|ics"})
      * @Route("/news", name="user_news_home")
      * @Security("is_granted('USE_NEWS')")
      * @PageHttpCache()
@@ -67,15 +67,25 @@ class NewsController extends AbstractPublishController
                 'category'   => null,
             ], new Response(null, Response::HTTP_OK, ['Content-Type' => 'text/calendar']));
         }
-        $icsLink = preg_replace('/https?/', 'webcal', $this->generateUrl(
-            'portal_news_ics',
-            [],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        ));
-
-        // BREADCRUMBS
-
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildNews();
+        if ($category) {
+            $icsLink = preg_replace('/https?/', 'webcal', $this->generateUrl(
+                'portal_news_browse',
+                ['slug' => $category->getSlug()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ));
+            $downloadCalendar = $this->generateUrl('portal_news_download_category_ics', ['slug' => $category->getSlug()]);
+            $breadcrumbs      = $this->getBreadcrumbGenerator()->buildNewsCategory($category);
+            $pageTitle        = $this->createPageTitle()->news($category);
+        } else {
+            $icsLink = preg_replace('/https?/', 'webcal', $this->generateUrl(
+                'portal_news',
+                ['_format' => 'ics'],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ));
+            $downloadCalendar = $this->generateUrl('portal_news_download_ics');
+            $breadcrumbs      = $this->getBreadcrumbGenerator()->buildNews();
+            $pageTitle        = $this->createPageTitle()->news();
+        }
 
         // RENDER THEME
 
@@ -98,47 +108,82 @@ class NewsController extends AbstractPublishController
         return $this->renderThemeView(
             'Theme:News:index.html.twig',
             [
-                'page'          => $page,
-                'count'         => $this->getBrandSetting('portal.per_page_content'),
-                'main_class'    => 'dp-po-news',
-                'viewCategory'  => $category,
-                'newsData'      => $newsData,
-                'pager'         => $pager,
-                'page_title'    => $this->createPageTitle()->news(),
-                'breadcrumbs'   => $breadcrumbs,
-                'rss_link'      => $rssLink,
-                'ics_link'      => $icsLink,
-                'is_subscribed' => $this->isSubscribedRootCategory(),
-                'filter_date'   => $filterDate,
-                'filter_year'   => $filterYear,
+                'page'              => $page,
+                'count'             => $this->getBrandSetting('portal.per_page_content'),
+                'main_class'        => 'dp-po-news',
+                'viewCategory'      => $category,
+                'newsData'          => $newsData,
+                'pager'             => $pager,
+                'page_title'        => $pageTitle,
+                'breadcrumbs'       => $breadcrumbs,
+                'rss_link'          => $rssLink,
+                'ics_link'          => $icsLink,
+                'download_calendar' => $downloadCalendar,
+                'is_subscribed'     => $this->isSubscribedRootCategory(),
+                'filter_date'       => $filterDate,
+                'filter_year'       => $filterYear,
             ]
         );
     }
 
     /**
-     * @Route("/news.ics", name="portal_news_ics")
+     * @Route("/news/download_calendar", name="portal_news_download_ics")
+     * @Security("is_granted('USE_NEWS')")
      * @PageHttpCache()
      *
-     * @param Request      $request
+     * @param NewsCategory|null $category
+     *
+     * @return Response
+     */
+    public function downloadCalendarAction(NewsCategory $category = null)
+    {
+        if ($category) {
+            $downloadLink = $this->generateUrl(
+                'portal_news_browse',
+                ['_format' => 'ics', 'slug' => $category->getSlug()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewsCategory($category);
+            $pageTitle   = $this->createPageTitle()->news($category);
+        } else {
+            $downloadLink = $this->generateUrl(
+                'portal_news',
+                ['_format' => 'ics'],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildNews();
+            $pageTitle   = $this->createPageTitle()->news();
+        }
+        $icsLink = preg_replace('/https?/', 'webcal', $downloadLink);
+
+        return $this->renderThemeView(
+            'Theme:News:calendar_download.html.twig',
+            [
+                'download_link'     => $downloadLink,
+                'page_title'        => $pageTitle,
+                'breadcrumbs'       => $breadcrumbs,
+                'ics_link'          => $icsLink,
+            ]
+        );
+    }
+
+    /**
+     * @Route("/news/{slug}/download_calendar", name="portal_news_download_category_ics")
+     * @ParamConverter(name="category", converter="deskpro_slug")
+     * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS_CATEGORY', category)")
+     * @PageHttpCache()
+     *
      * @param NewsCategory $category
      *
      * @return Response
      */
-    public function icsAction(Request $request, NewsCategory $category = null)
+    public function downloadCategoryCalendarAction(NewsCategory $category = null)
     {
-        $page   = $request->query->getInt('page', 1);
-        $person = $this->getCurrentPerson();
-        $pager  = $this->getNewsPager($request, $page, $person, $category);
-
-        return $this->render('PortalBundle:News:feed.ics.twig', [
-            'page_title' => $this->createPageTitle()->news(),
-            'pager'      => $pager,
-            'category'   => null,
-        ], new Response(null, Response::HTTP_OK, ['Content-Type' => 'text/calendar']));
+        return $this->downloadCalendarAction($category);
     }
 
     /**
-     * @Route("/news/{slug}.{_format}", name="portal_news_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/news/{slug}.{_format}", name="portal_news_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss|ics"})
      * @Route("/news/{slug}", name="user_news")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS_CATEGORY', category)")

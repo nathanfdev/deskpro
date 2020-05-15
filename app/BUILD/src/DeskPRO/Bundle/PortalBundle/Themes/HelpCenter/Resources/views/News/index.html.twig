@@ -20,9 +20,9 @@
         <div class="col-sm-3">
             <div class="dp-po-news-extra">
                 <ul class="dp-po-news-extra-list">
-                    {% if ics_link is defined and ics_link|length > 0 %}
+                    {% if download_calendar is defined and download_calendar|length > 0 %}
                         <li class="dp-po-news-extra-item">
-                            <a href="{{ ics_link }}" class="dp-po-news-extra-link" title="{{ phrase('helpcenter.general.ics_subscribe') }}">
+                            <a href="{{ download_calendar }}" class="dp-po-news-extra-link" title="{{ phrase('helpcenter.general.ics_subscribe') }}">
                                 <i class="dp-po-icon fal fa-calendar-alt" title="calendar"></i>
                             </a>
                         </li>
