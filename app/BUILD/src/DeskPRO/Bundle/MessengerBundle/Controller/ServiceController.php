@@ -83,7 +83,7 @@ class ServiceController extends AbstractMessengerController
 
         $person   = $this->getUser();
         $language = $person && $person->getId()
-            ? $person->getLanguage()->getId()
+            ? $person->getLanguage()
             : $this->container->get('language_stack')->getActiveOrDefault();
 
         $data['language'] = [
