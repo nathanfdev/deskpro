@@ -69,19 +69,25 @@ class ServiceController extends AbstractMessengerController
         $messengerSettingsResolver = $this->get('messenger.service.settings_resolver');
         $settings                  = $messengerSettingsResolver->getMessengerSettings($brand);
         $context                   = new SideloadSerializationContext();
-        $context->setInlineSideloads(true)->setIncludes(['blob']);
-        $data                      = $this->get('serializer')->toArray(new ApiWrapper($settings), $context)['data'];
 
-        $preChatForm     = $settings->getChat()->getPreChatForm();
-        $ticketsSettings = $settings->getTickets();
+        $context->setInlineSideloads(true)->setIncludes(['blob']);
+        $data              = $this->get('serializer')->toArray(new ApiWrapper($settings), $context)['data'];
+        $person            = $this->getUser();
+        $preChatForm       = $settings->getChat()->getPreChatForm();
+        $ticketsSettings   = $settings->getTickets();
+        $permissionManager = $this->container->get('portal_permissions_manager');
+        $permissionBag     = $person && $person->getId() > 0
+            ? $permissionManager->getPermissionsBagForPerson($person)
+            : $permissionManager->getPermissionsBagForGuest()
+        ;
 
         unset($data['embed']['jwtSecret']); // should use serializer views
 
         $data['chat']['preChatForm']        = $this->getPreChatFormConfig($preChatForm);
+        $data['tickets']['enabled']         = $ticketsSettings->isEnabled() && $permissionBag->get('tickets.use');
         $data['tickets']['formConfig']      = $this->getTicketFormConfig($ticketsSettings);
         $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();
 
-        $person   = $this->getUser();
         $language = $person && $person->getId()
             ? $person->getLanguage()
             : $this->container->get('language_stack')->getActiveOrDefault();
