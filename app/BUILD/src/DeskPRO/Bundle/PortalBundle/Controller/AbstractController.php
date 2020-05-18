@@ -256,13 +256,15 @@ class AbstractController extends BaseController
             }
         }
 
+        $brand = $this->getBrandContainer()->getBrand();
+
         // TICKETS AWAITING REPLY
 
         $ticketsAwaitingReply = [];
         if (!$person instanceof PersonGuest) {
             /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepo */
             $ticketRepo           = $this->getRepo(Ticket::class);
-            $ticketsAwaitingReply = $ticketRepo->getWaitingForReplyForPerson($person, 0);
+            $ticketsAwaitingReply = $ticketRepo->getWaitingForReplyForPerson($person, 0, $brand);
         }
 
         $unreadDirectMessages = 0;
@@ -273,7 +275,7 @@ class AbstractController extends BaseController
 
         $approvalNeedingAction = 0;
         if ($this->getBrandSetting('core_tickets.ticket_approvals') && $user) {
-            $approvalNeedingAction = $this->getTicketApprovalsDataService()->getApprovalCountWhereUserNeedAnAction($user);
+            $approvalNeedingAction = $this->getTicketApprovalsDataService()->getApprovalCountWhereUserNeedAnAction($user, $brand);
         }
 
         $shouldDisplay = count($savedForms) || $langDiff || count($ticketsAwaitingReply);
