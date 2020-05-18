@@ -49,6 +49,11 @@ class TechInfo implements MessengerModelInterface
     private $canUseChat = false;
 
     /**
+     * @var boolean
+     */
+    private $canUseTickets = false;
+
+    /**
      * TechInfo constructor.
      *
      * @param AvatarResolver $avatarResolver
@@ -88,6 +93,7 @@ class TechInfo implements MessengerModelInterface
 
         return [
             'canUseChat'         => $this->canUseChat,
+            'canUseTickets'      => $this->canUseTickets,
             'chat_departments'   => array_values($chatDepartments),
             'ticket_departments' => array_values($ticketDepartments),
             'agents_online'      => $agentsOnline,
@@ -179,6 +185,18 @@ class TechInfo implements MessengerModelInterface
     public function setCanUseChat($canUseChat)
     {
         $this->canUseChat = $canUseChat;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $canUseTickets
+     *
+     * @return $this
+     */
+    public function setCanUseTickets($canUseTickets)
+    {
+        $this->canUseTickets = $canUseTickets;
 
         return $this;
     }

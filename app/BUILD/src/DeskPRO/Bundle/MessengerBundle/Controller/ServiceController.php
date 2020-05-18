@@ -75,16 +75,11 @@ class ServiceController extends AbstractMessengerController
         $person            = $this->getUser();
         $preChatForm       = $settings->getChat()->getPreChatForm();
         $ticketsSettings   = $settings->getTickets();
-        $permissionManager = $this->container->get('portal_permissions_manager');
-        $permissionBag     = $person && $person->getId() > 0
-            ? $permissionManager->getPermissionsBagForPerson($person)
-            : $permissionManager->getPermissionsBagForGuest()
-        ;
 
         unset($data['embed']['jwtSecret']); // should use serializer views
 
         $data['chat']['preChatForm']        = $this->getPreChatFormConfig($preChatForm);
-        $data['tickets']['enabled']         = $ticketsSettings->isEnabled() && $permissionBag->get('tickets.use');
+        $data['tickets']['enabled']         = $ticketsSettings->isEnabled();
         $data['tickets']['formConfig']      = $this->getTicketFormConfig($ticketsSettings);
         $data['chat']['formMessageEnabled'] = $preChatForm->isFormMessageEnabled();
 
