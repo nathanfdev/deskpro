@@ -20,6 +20,7 @@ use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
@@ -116,6 +117,11 @@ class CommentFormHandler
     private $emailSender;
 
     /**
+     * @var PortalBrandThemeLoader
+     */
+    private $brandThemeLoader;
+
+    /**
      * Constructor.
      *
      * @param FormSaver                  $saver
@@ -133,23 +139,25 @@ class CommentFormHandler
      * @param TokenStorage               $tokenStorage
      * @param AntiAbuse                  $antiAbuse
      * @param PortalEmailSender          $emailSender
+     * @param PortalBrandThemeLoader     $portalBrandThemeLoader
      */
     public function __construct(
-        FormSaver                  $saver,
-        PortalValidation           $portalValidation,
-        LanguageManager            $languageManager,
-        ObjectRouter               $objectRouter,
-        UrlGeneratorInterface      $urlGenerator,
-        PersonDataService          $personDataService,
-        BrandStack                 $brandStack,
-        PortalPermissionsManager   $permissionsManager,
+        FormSaver $saver,
+        PortalValidation $portalValidation,
+        LanguageManager $languageManager,
+        ObjectRouter $objectRouter,
+        UrlGeneratorInterface $urlGenerator,
+        PersonDataService $personDataService,
+        BrandStack $brandStack,
+        PortalPermissionsManager $permissionsManager,
         ContentSubscriptionsHelper $subscriptionsHelper,
-        EntityManager              $em,
-        PersonFactory              $personFactory,
-        FormFactory                $formFactory,
-        TokenStorage               $tokenStorage,
-        AntiAbuse                  $antiAbuse,
-        PortalEmailSender          $emailSender
+        EntityManager $em,
+        PersonFactory $personFactory,
+        FormFactory $formFactory,
+        TokenStorage $tokenStorage,
+        AntiAbuse $antiAbuse,
+        PortalEmailSender $emailSender,
+        PortalBrandThemeLoader $portalBrandThemeLoader
     ) {
         $this->saver               = $saver;
         $this->em                  = $em;
@@ -166,6 +174,7 @@ class CommentFormHandler
         $this->personDataService   = $personDataService;
         $this->brandStack          = $brandStack;
         $this->emailSender         = $emailSender;
+        $this->brandThemeLoader    = $portalBrandThemeLoader;
     }
 
     /**
@@ -262,6 +271,7 @@ class CommentFormHandler
         $email->email = $comment->getEmail();
         $person->setPrimaryEmail($email);
         $person->setName($comment->getName());
+
         try {
             $this->personFactory->checkGuestForValidation($person, $request->attributes->get('saved-form'));
 
@@ -304,7 +314,7 @@ class CommentFormHandler
                 $person->getDisplayName()
             );
             $this->portalValidation->sendVerificationEmail(PortalValidation::COMMENT, $saved_form);
-            $this->addFlash($request, 'success', 'portal.flashes.guest_content_must_verify');
+            $this->addFlash($request, 'success', ['portal.flashes.guest_content_must_verify', 'helpcenter.flashes.guest_content_must_verify']);
 
             return new RedirectResponse($this->objectRouter->getPortalPath($content));
         }
@@ -324,10 +334,10 @@ class CommentFormHandler
         ) {
             // hide the comment until its approved
             $comment->setStatus(CommentAbstract::STATUS_HIDDEN);
-            $this->addFlash($request, 'success', 'portal.flashes.comment_thank_you_review');
+            $this->addFlash($request, 'success', ['portal.flashes.comment_thank_you_review', 'helpcenter.flashes.comment_thank_you_review']);
         } else {
             $comment->setStatus(CommentAbstract::STATUS_VISIBLE);
-            $this->addFlash($request, 'success', 'portal.flashes.comment_thank_you');
+            $this->addFlash($request, 'success', ['portal.flashes.comment_thank_you', 'helpcenter.flashes.comment_thank_you']);
         }
         $content->addComment($comment);
         $this->em->persist($comment);
@@ -340,7 +350,7 @@ class CommentFormHandler
             if ($person instanceof Person) {
                 if (!$this->subscriptionsHelper->isSubscribedContent($content, $person)) {
                     $this->subscriptionsHelper->subscribeToContent($content, $person);
-                    $this->addFlash($request, 'success', 'portal.flashes.article_subscribe');
+                    $this->addFlash($request, 'success', ['portal.flashes.article_subscribe', 'helpcenter.flashes.article_subscribe']);
                 }
             }
         }
@@ -373,7 +383,7 @@ class CommentFormHandler
     /**
      * @param Request $request
      * @param string  $type
-     * @param string  $phrase
+     * @param array   $phrase
      */
     protected function addFlash(Request $request, $type, $phrase)
     {
@@ -409,13 +419,35 @@ class CommentFormHandler
     }
 
     /**
-     * @param string $name
-     * @param array  $vars
+     * @param array|string $name
+     * @param array        $vars
      *
      * @return string
      */
     private function phrase($name, array $vars = [])
     {
+        if (is_array($name)) {
+            if ($this->isHelpCenterTheme()) {
+                $name = array_filter($name, function ($p) {
+                    return strpos($p, 'helpcenter.') === 0;
+                });
+            } else {
+                $name = array_filter($name, function ($p) {
+                    return strpos($p, 'helpcenter.') !== 0;
+                });
+            }
+
+            $name = array_pop($name);
+        }
+
         return $this->languageManager->phrase($name, $vars);
+    }
+
+    /**
+     * @return bool
+     */
+    private function isHelpCenterTheme()
+    {
+        return $this->brandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }

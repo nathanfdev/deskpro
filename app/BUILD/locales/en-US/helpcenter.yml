@@ -303,6 +303,8 @@ helpcenter.flashes.article_subscribe: 'You have successfully subscribed to this 
 helpcenter.flashes.article_unpublish: 'This article will unpublish on {unpublish_date, date, medium}.'
 helpcenter.flashes.article_unsubscribe: 'You have successfully unsubscribed from this article.'
 helpcenter.flashes.article_unsubscribe_everything: 'You have unsubscribed from all Knowledgebase notifications'
+helpcenter.flashes.comment_thank_you: 'Thank you for your comment!'
+helpcenter.flashes.comment_thank_you_review: 'Thank you for your comment! It will be visible on the portal after agent review.'
 helpcenter.flashes.community_login: 'You should log in to vote'
 helpcenter.flashes.community_subscribe: 'You have successfully subscribed to this community topic. You will be notified when it is updated or when there is a new comment.'
 helpcenter.flashes.community_unsubscribe: 'You have successfully unsubscribed from this community topic.'

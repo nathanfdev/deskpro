@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
@@ -17,6 +15,7 @@ use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Twig\Markup;
 
 /**
  * This class is responsible for loading phrases from a language stored in the database.
@@ -890,6 +889,9 @@ class Translate implements PersonContextInterface, TranslatorInterface
                         $v = new \DateTime($v);
                     }
                     $icuVars[$k] = $v;
+                }
+                if ($v instanceof Markup) {
+                    $icuVars[$k] = $v->__toString();
                 }
             }
 
