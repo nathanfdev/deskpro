@@ -644,6 +644,8 @@ helpcenter.messenger.tickets_form_thanks: 'Thank you for contacting us. One of o
 helpcenter.messenger.tickets_form_thanks_header: 'Your request on its way'
 helpcenter.news.all_news: 'All News'
 helpcenter.news.any_date: Any
+helpcenter.news.download_calendar_action: 'Download calendar'
+helpcenter.news.download_calendar_desc: 'The calendar should automatically download, if it is not please use the button below'
 helpcenter.news.filter_cat: 'Select Category'
 helpcenter.news.filter_date: 'Select Date'
 helpcenter.news.news_type: 'News type'

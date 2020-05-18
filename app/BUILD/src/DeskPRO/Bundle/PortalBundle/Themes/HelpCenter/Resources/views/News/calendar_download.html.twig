@@ -1,0 +1,21 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_body %}
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="dp-po-section">
+                <div class="dp-po-block">
+                    {{ phrase('helpcenter.news.download_calendar_desc') }}
+                </div>
+            </div>
+            <div class="dp-po-section">
+                <a href="{{ download_link }}" class="btn btn-primary">
+                    {{ phrase('helpcenter.news.download_calendar_action') }}
+                </a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        window.location.href = '{{ ics_link }}';
+    </script>
+{% endblock %}
