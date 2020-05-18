@@ -218,6 +218,35 @@ class ChatController extends AbstractMessengerController
     }
 
     /**
+     * Task router evaluation
+     *
+     * @ApiDoc(
+     *     section="Messenger",
+     *     resourceDescription="Service actions",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     * @Rest\Get("/{idToken}/evaluate")
+     *
+     * @param string  $idToken
+     *
+     * @return View
+     */
+    public function evaluateTaskRouterAction($idToken)
+    {
+        $chat = $this->findChatByIdToken($idToken);
+        if (!$chat->getAgent()) {
+            $this->get('dp.voice.task_router')->evaluate();
+        }
+
+        return View::create(
+            null,
+            Response::HTTP_NO_CONTENT
+        );
+    }
+
+    /**
      * @param $idToken
      *
      * @return ChatConversation|null|object
