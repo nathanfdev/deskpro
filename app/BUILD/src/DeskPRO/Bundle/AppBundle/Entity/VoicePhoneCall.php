@@ -619,6 +619,17 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     {
         $this->setModelField('status', $status);
 
+        $endStatuses = [
+            self::STATUS_ENDED,
+            self::STATUS_CANCELED,
+            self::STATUS_VOICEMAIL,
+            self::STATUS_FAILED,
+        ];
+
+        if (in_array($status, $endStatuses)) {
+            $this->setDateEnded(new \DateTime());
+        }
+
         return $this;
     }
 
