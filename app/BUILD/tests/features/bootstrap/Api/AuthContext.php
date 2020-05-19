@@ -2,6 +2,7 @@
 
 namespace DpBehat\Api;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Person;
@@ -151,6 +152,10 @@ class AuthContext extends BaseContext
 
     /**
      * @Given a valid api token with the code :token for :who and referenced as :ref exists
+     *
+     * @param mixed $token
+     * @param mixed $who
+     * @param mixed $ref
      */
     public function aValidApiTokenExistsWithTheCodeAndIdForAgent($token, $who, $ref)
     {
@@ -168,6 +173,11 @@ class AuthContext extends BaseContext
 
     /**
      * @Given a valid api token for oauth client :client with the code :token for :who and referenced as :ref exists
+     *
+     * @param mixed $client
+     * @param mixed $token
+     * @param mixed $who
+     * @param mixed $ref
      */
     public function aValidApiTokenForOauthClientExistsWithTheCodeAndIdForAgent($client, $token, $who, $ref)
     {
@@ -191,6 +201,9 @@ class AuthContext extends BaseContext
 
     /**
      * @Given a valid api key exists with the code :code for :who
+     *
+     * @param mixed $code
+     * @param mixed $who
      */
     public function aValidApiKeyExistsWithTheCodeForUser($code, $who)
     {
@@ -200,6 +213,8 @@ class AuthContext extends BaseContext
 
     /**
      * @Given I remove a flag :flag from ApiKey
+     *
+     * @param mixed $flag
      */
     public function removeFlagFromApiKey($flag)
     {
@@ -213,6 +228,10 @@ class AuthContext extends BaseContext
 
     /**
      * @Given the agent session auth :session_id is valid for :who and referenced as :ref
+     *
+     * @param mixed $session_id
+     * @param mixed $who
+     * @param mixed $ref
      */
     public function theAgentSessionIsValidForPerson($session_id, $who, $ref)
     {
@@ -239,6 +258,8 @@ class AuthContext extends BaseContext
 
     /**
      * @Then I should have an authenticated token with the role :role
+     *
+     * @param mixed $role
      */
     public function iShouldHaveAnAuthenticatedTokenWithTheRole($role)
     {
@@ -313,17 +334,21 @@ class AuthContext extends BaseContext
 
     /**
      * @param Person $person
+     * @param mixed $super
      * @
      */
     private function authenticateAs(Person $person, $super = false)
     {
         $key = $this->ensureApiKey($person, 'Testing'.($super ? 'super' : ''), $super);
         $this->restContext->iAddHeaderEqualTo('Authorization', 'key '.$key->getKeyString());
+
+        App::setCurrentPerson(null, false);
     }
 
     /**
      * @param Person $person
      * @param string $code
+     * @param mixed $super
      *
      * @return ApiKey
      */

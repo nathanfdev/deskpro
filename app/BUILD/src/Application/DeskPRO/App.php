@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO;
 
 use Application\DeskPRO\People\PersonGuest;
@@ -56,10 +52,11 @@ class App
      * the request.
      *
      * @param \Application\DeskPRO\Entity\Person $person
+     * @param mixed $setGuest
      */
-    public static function setCurrentPerson(Entity\Person $person = null)
+    public static function setCurrentPerson(Entity\Person $person = null, $setGuest = true)
     {
-        if (!$person) {
+        if (!$person && $setGuest) {
             $person = new PersonGuest();
         }
         self::$_current_person = $person;
