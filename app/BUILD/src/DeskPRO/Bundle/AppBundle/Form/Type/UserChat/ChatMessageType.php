@@ -2,12 +2,16 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\UserChat;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use JMS\Serializer\Serializer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,6 +24,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ChatMessageType extends AbstractType
 {
+    /**
+     * @var Serializer
+     */
+    private $serializer;
+
+    /**
+     * Constructor.
+     *
+     * @param Serializer $serializer
+     */
+    public function __construct(Serializer $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -41,8 +60,13 @@ class ChatMessageType extends AbstractType
             ->add('person_name', TextType::class, [
                 'required' => false,
             ])
+            ->add('blob', BlobAuthType::class, [
+                'required' => false,
+                'mapped'   => false,
+            ])
         ;
 
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
@@ -62,6 +86,46 @@ class ChatMessageType extends AbstractType
     }
 
     /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSubmit(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $blob = $form->get('blob')->getData();
+        $data = $event->getData();
+
+        if (!$data instanceof ChatMessage) {
+            return;
+        }
+
+        if ($blob instanceof Blob) {
+            // Support old attachment message format
+            $content = sprintf(
+                'File: <a href="%s" target="_blank">%s</a> (%s)',
+
+                $blob->getDownloadUrl(true),
+                htmlspecialchars($blob->getFilename()),
+                $blob->getReadableFilesize()
+            );
+
+            if ($blob->isImage()) {
+                $content .= sprintf('<div class="file-thumb"><img src="%s" /></div>', $blob->getThumbnailUrl(50, true));
+            }
+
+            $data->setContent($content);
+            $data->setMetadata(array_merge($data->getMetadata(), [
+                'type'    => 'file',
+                'blob_id' => $blob->getId(),
+                'blob'    => $this->serializer->toArray($blob, new SideloadSerializationContext()),
+            ]));
+        }
+    }
+
+    /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onPostSubmit(FormEvent $event)
@@ -78,6 +142,7 @@ class ChatMessageType extends AbstractType
         }
 
         $message->setOrigin($origin);
+        $message->setIsHtml(true);
 
         /** @var ChatConversation $conversation */
         $conversation = $config->getOption('conversation');

@@ -92,3 +92,16 @@ Feature: /user_chats endpoint
     When I send a PUT request to "api/v2/user_chats/{c1}/end"
     Then the response status code should be 204
 
+  Scenario: I set rating overall and comment
+    When I send a PUT request to "/api/v2/user_chats/{c1}" with body:
+    """
+{
+  "rating_comment": "my comment",
+  "rating_overall": 1
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/user_chats/{c1}"
+    Then the JSON node "data.rating_comment" should be equal to "my comment"
+    Then the JSON node "data.rating_overall" should be equal to 1

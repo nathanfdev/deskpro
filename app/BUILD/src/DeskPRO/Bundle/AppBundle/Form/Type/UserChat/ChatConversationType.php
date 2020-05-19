@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\UserChat;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ChatRatingOverallTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
@@ -81,8 +82,15 @@ class ChatConversationType extends AbstractType
                     return $qb;
                 },
             ])
+            ->add('rating_comment', TextType::class, [
+                'required' => false,
+            ])
+            ->add('rating_overall', ApiBooleanType::class, [
+                'required' => false,
+            ])
         ;
 
+        $builder->get('rating_overall')->addViewTransformer(new ChatRatingOverallTransformer(), true);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 

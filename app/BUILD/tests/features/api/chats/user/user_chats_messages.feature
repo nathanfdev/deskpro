@@ -66,10 +66,7 @@ Feature: /user_chats endpoint
     And the JSON node "data.is_user" should be false
 
   Scenario: I get the last messages on a conversation
-    Given only the following "Chat" records exist:
-      | #  | Subject  |
-      | c1 | Chat1    |
-    And only the following "ChatMessage" records exist:
+    Given only the following "ChatMessage" records exist:
       | #  | Conversation | Author  | Person name | Content      |
       | m1 | {c1}         | {agent} | agent       | test message |
       | m2 | {c1}         | {agent} | agent       | test         |
@@ -79,14 +76,24 @@ Feature: /user_chats endpoint
     And the JSON node "data[1].content" should be equal to "test message"
 
   Scenario: I get the last messages on a conversation
-    Given only the following "Chat" records exist:
-      | #  | Subject  |
-      | c1 | Chat1    |
-    And only the following "ChatMessage" records exist:
+    Given only the following "ChatMessage" records exist:
       | #  | Conversation | Author  | Person name | Content      |
       | m1 | {c1}         | {agent} | agent       | test message |
       | m2 | {c1}         | {agent} | agent       | test         |
     When I send a GET request to "/api/v2/user_chats/{c1}/messages/counts"
     Then the response should be in JSON
     And the JSON node "data.count" should be equal to 2
-    And print last response
+
+  Scenario: I add an attachment
+    Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
+    When I send a POST request to "/api/v2/user_chats/{c1}/messages" with body:
+    """
+{
+  "content": "Test Message",
+  "blob": {"blob_auth": "AAAAAAAAAAAAAAAAAA"}
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.content" should contain "File: <a href="
+    And the JSON node "data.content_html" should contain "File: <a href="
+    And the JSON node "data.metadata.blob.blob_auth" should contain "AAAAAAAAAAAAAAAAAA"
