@@ -2367,9 +2367,8 @@ break;
      */
     public static function prepareWysiwygHtml($html, $keepHorizontalBar = false)
     {
-        $html = str_replace(['<p>', '</p>'], ['<div>', '</div>'], $html);
-        $html = preg_replace('#<p(\b)#', '<div$1', $html);
         $html = preg_replace('#<div[^>]+class="dp-signature-start"[^>]*>#', '<div>', $html);
+        $html = preg_replace('#<p[^>]+class="dp-signature-start"[^>]*>#', '<p>', $html);
         $html = self::trimHtml($html, $keepHorizontalBar);
 
         return $html;
