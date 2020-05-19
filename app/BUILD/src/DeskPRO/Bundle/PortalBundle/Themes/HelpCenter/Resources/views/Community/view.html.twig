@@ -142,21 +142,6 @@
 {% endblock page_body %}
 
 {% block page_sidebar %}
-    {% if linked_tickets %}
-        <div class="dp-po-sidebar dp-po-related-content">
-            <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.community.related_tickets') }}</h3>
-            <ul class="dp-po-related-content-list">
-                {% for linked_ticket in linked_tickets %}
-                    <li class="dp-po-related-content-item">
-                        <a href="{{ portal_path(linked_ticket.ticket) }}" class="dp-po-related-content-link">
-                            <i class="dp-po-icon fal fa-link"></i> {{ linked_ticket.ticket.subject }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-
     {% if related_content_data.related_content|length %}
         {% include 'Theme:PublishCommon:related-content.html.twig' with {
             related_content: related_content_data.related_content,

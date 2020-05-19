@@ -128,26 +128,22 @@ helpcenter.community.channel: Channel
 helpcenter.community.create_topic: Create
 helpcenter.community.create_topic_full: 'Create topic'
 helpcenter.community.create_topic_in_forum: 'Submit {forum}'
-helpcenter.community.error_hidden: 'This community topic is hidden'
 helpcenter.community.error_login: 'Please login'
 helpcenter.community.featured_topics: 'Featured topics'
 helpcenter.community.filters: Filters
 helpcenter.community.form_add_attachments: 'Add attachments'
-helpcenter.community.form_complete_help_message: 'Please complete this form and one of our agents will reply to you by email as soon as possible.'
 helpcenter.community.form_create_topic: 'Create Topic'
 helpcenter.general.name: Name
-helpcenter.community.form_message: Message
+helpcenter.community.form_description: Description
 helpcenter.community.form_submit: Submit
 helpcenter.community.form_topic_title: Title
 helpcenter.community.forum_name: 'Forum name'
-helpcenter.community.module_forbidden: 'You don''t have access to this module'
 helpcenter.community.my_activity: 'My Activity'
 helpcenter.community.no_matching: 'No matching community topics'
 helpcenter.community.none: 'No community topics could be found'
 helpcenter.community.official_response: 'Official response'
 helpcenter.community.rate_forbidden: 'You are not allowed to vote'
 helpcenter.community.recent_activity: 'Recent activity'
-helpcenter.community.related_tickets: 'Related tickets'
 helpcenter.community.reset_all_filters: 'Reset all filters'
 helpcenter.community.search_suggestions: 'Search suggestions'
 helpcenter.community.section_title: Community

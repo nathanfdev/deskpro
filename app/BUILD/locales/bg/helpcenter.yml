@@ -53,11 +53,9 @@ helpcenter.messenger.linked_ticket_label: 'Назначи по тикет'
 helpcenter.messenger.view_linked_ticket_action: 'Виж тикет'
 helpcenter.community.vote_action: 'Съгласен съм'
 helpcenter.community.create_topic: Създай
-helpcenter.community.error_hidden: 'Тази общностна тема е скрита'
 helpcenter.community.error_login: 'Моля влезте'
 helpcenter.general.name: Име
 helpcenter.community.form_topic_title: Заглавие
-helpcenter.community.module_forbidden: 'Нямате достъп до този модул'
 helpcenter.community.no_matching: 'Няма съвпадащи общностни теми'
 helpcenter.community.rate_forbidden: 'Не ви е разрешено да гласувате'
 helpcenter.community.section_title: Общност

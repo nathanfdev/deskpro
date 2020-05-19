@@ -52,11 +52,9 @@ helpcenter.messenger.total_chat_time_label: 'Całkowity czas czatu'
 helpcenter.messenger.linked_ticket_label: 'Przydzielono do zgłoszenia'
 helpcenter.messenger.view_linked_ticket_action: 'Zobacz zgłoszenie'
 helpcenter.community.vote_action: 'Zgadzam się'
-helpcenter.community.error_hidden: 'Ten element oceny jest ukryty'
 helpcenter.community.error_login: 'Proszę się zalogować'
 helpcenter.general.name: Imię
 helpcenter.community.form_topic_title: Tytuł
-helpcenter.community.module_forbidden: 'Nie masz dostępu do tego modułu'
 helpcenter.community.no_matching: 'Brak pasującej opinii'
 helpcenter.community.rate_forbidden: 'Nie masz pozwolenia na głosowanie'
 helpcenter.community.section_title: Opinie

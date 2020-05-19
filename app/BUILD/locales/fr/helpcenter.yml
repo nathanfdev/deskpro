@@ -51,11 +51,9 @@ helpcenter.messenger.total_chat_time_label: 'Durée totale du chat'
 helpcenter.messenger.linked_ticket_label: 'Lié au ticket'
 helpcenter.messenger.view_linked_ticket_action: 'Voir le ticket'
 helpcenter.community.vote_action: 'Je suis d''accord'
-helpcenter.community.error_hidden: 'Cet article de commentaires est caché'
 helpcenter.community.error_login: 'Veuillez vous connecter'
 helpcenter.general.name: Nom
 helpcenter.community.form_topic_title: Titre
-helpcenter.community.module_forbidden: 'Vous n''avez pas accès à ce module'
 helpcenter.community.no_matching: 'Aucun commentaire correspondant'
 helpcenter.community.rate_forbidden: 'Vous n''êtes pas autorisé à voter'
 helpcenter.community.section_title: Remarques

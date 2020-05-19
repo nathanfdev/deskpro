@@ -50,7 +50,6 @@ helpcenter.messenger.total_chat_time_label: 'زمان کامل چت'
 helpcenter.messenger.linked_ticket_label: 'اختصاص دادن به پیام'
 helpcenter.messenger.view_linked_ticket_action: 'مشاهده پیام'
 helpcenter.community.vote_action: 'من موافقت می کنم'
-helpcenter.community.error_hidden: 'این مورد بازخورد پنهان است'
 helpcenter.community.error_login: 'لطفا وارد شوید'
 helpcenter.general.name: نام
 helpcenter.community.form_topic_title: عنوان

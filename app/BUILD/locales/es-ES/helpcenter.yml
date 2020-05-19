@@ -53,11 +53,9 @@ helpcenter.messenger.total_chat_time_label: 'Tiempo total de chat'
 helpcenter.messenger.linked_ticket_label: 'Asignado al boleto'
 helpcenter.messenger.view_linked_ticket_action: 'Ver Ticket'
 helpcenter.community.vote_action: 'Estoy de acuerdo'
-helpcenter.community.error_hidden: 'Este elemento de retroalimentación está oculto.'
 helpcenter.community.error_login: 'Por favor Iniciar sesión'
 helpcenter.general.name: Nombre
 helpcenter.community.form_topic_title: Título
-helpcenter.community.module_forbidden: 'No tienes acceso a este módulo.'
 helpcenter.community.no_matching: 'No hay comentarios coincidentes'
 helpcenter.community.rate_forbidden: 'No tienes permitido votar'
 helpcenter.community.section_title: Comentarios

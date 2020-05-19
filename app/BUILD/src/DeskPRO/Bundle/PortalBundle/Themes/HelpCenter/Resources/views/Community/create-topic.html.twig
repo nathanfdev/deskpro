@@ -12,7 +12,6 @@
                         </div>
                         <div class="dp-po-block">
                             <div class="dp-po-community-form dpx-form helpcenter-form">
-                                <p>{{ phrase('helpcenter.community.form_complete_help_message') }}</p>
                                 {{ form_errors(form) }}
                                 {{ form_start(form, {attr: {class: 'do-po-form'}}) }}
 
@@ -29,12 +28,12 @@
 
                                     {{ form_row(form.title, {label: 'helpcenter.community.form_topic_title'}) }}
 
-                                    {{ form_row(form.content, {label: 'helpcenter.community.form_message'}) }}
+                                    {{ form_row(form.content, {label: 'helpcenter.community.form_description'}) }}
 
                                     {{ form_widget(form.custom_data) }}
 
                                     <div class="form-group">
-                                        {{ form_label(form.attachments, phrase('helpcenter.community.form_add_attachments')) }}
+                                        {{ form_label(form.attachments, phrase('helpcenter.forms.add_attachments_action')) }}
                                         {{ form_errors(form.attachments) }}
                                         {{ form_widget(form.attachments) }}
                                         {{ form_widget(form.more_attachments, {attr: {style: 'display: none;'}}) }}

@@ -19,11 +19,9 @@ helpcenter.account.reset_password_click_here: 'Klikněte zde pro vyžádání k�
 helpcenter.account.reset_password_invalid_desc: 'Váš kód pro reset hesla je neplatný. Vyžádejte si nový.'
 helpcenter.articles.published_label: Publikováno
 helpcenter.community.vote_action: 'Souhlasím'
-helpcenter.community.error_hidden: 'Tato připomínka je skrytá'
 helpcenter.community.error_login: 'Prosíme, přihlašte se'
 helpcenter.general.name: Jméno
 helpcenter.community.form_topic_title: Název
-helpcenter.community.module_forbidden: 'Nemáte přístup k tomuto modulu'
 helpcenter.community.no_matching: 'Žádná související připomínka'
 helpcenter.community.rate_forbidden: 'Nemůžete hlasovat'
 helpcenter.community.section_title: Připomínka

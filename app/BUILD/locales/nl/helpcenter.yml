@@ -52,11 +52,9 @@ helpcenter.messenger.total_chat_time_label: 'Totale chattijd'
 helpcenter.messenger.linked_ticket_label: 'Toegewezen aan ticket'
 helpcenter.messenger.view_linked_ticket_action: 'Ticket tonen'
 helpcenter.community.vote_action: 'Ik ben het eens'
-helpcenter.community.error_hidden: 'Dit gemeenschapsonderwerp is verborgen'
 helpcenter.community.error_login: 'Inloggen'
 helpcenter.general.name: Naam
 helpcenter.community.form_topic_title: Titel
-helpcenter.community.module_forbidden: 'U heeft geen toegang tot deze module'
 helpcenter.community.no_matching: 'Geen overeenkomstige gemeenschapsonderwerpen'
 helpcenter.community.rate_forbidden: 'U mag niet stemmen'
 helpcenter.direct_messages.reply_message: Bericht

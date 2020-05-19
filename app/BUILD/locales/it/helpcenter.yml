@@ -51,11 +51,9 @@ helpcenter.messenger.total_chat_time_label: 'Tempo di chat totale'
 helpcenter.messenger.linked_ticket_label: 'Assegnato al ticket'
 helpcenter.messenger.view_linked_ticket_action: 'Visualizza il Ticket'
 helpcenter.community.vote_action: 'Concordo'
-helpcenter.community.error_hidden: 'Il tema è nascosto'
 helpcenter.community.error_login: 'Per favore effettua l''accesso'
 helpcenter.general.name: Nome
 helpcenter.community.form_topic_title: Titolo
-helpcenter.community.module_forbidden: 'Non hai accesso a questo modulo'
 helpcenter.community.no_matching: 'Non ci sono tema corrispondenti'
 helpcenter.community.rate_forbidden: 'Non hai il permesso di votare'
 helpcenter.direct_messages.reply_message: Messaggio

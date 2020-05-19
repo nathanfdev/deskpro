@@ -52,11 +52,9 @@ helpcenter.messenger.total_chat_time_label: '聊天总时间'
 helpcenter.messenger.linked_ticket_label: '已经指定的来单'
 helpcenter.messenger.view_linked_ticket_action: '查阅来单'
 helpcenter.community.vote_action: '我同意'
-helpcenter.community.error_hidden: '此反馈项已隐藏'
 helpcenter.community.error_login: '请登录'
 helpcenter.general.name: 姓名
 helpcenter.community.form_topic_title: 标题
-helpcenter.community.module_forbidden: '您无权访问此模块'
 helpcenter.community.no_matching: '没有匹配的反馈'
 helpcenter.community.rate_forbidden: '您不能投票'
 helpcenter.community.section_title: 反馈
