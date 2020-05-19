@@ -50,7 +50,7 @@ helpcenter.articles.view_as_agent: 'Vous pouvez voir cette page car vous êtes u
 helpcenter.messenger.total_chat_time_label: 'Durée totale du chat'
 helpcenter.messenger.linked_ticket_label: 'Lié au ticket'
 helpcenter.messenger.view_linked_ticket_action: 'Voir le ticket'
-helpcenter.community.vote_action: 'Je suis d''accord'
+helpcenter.community.like_action: 'Je suis d''accord'
 helpcenter.community.error_login: 'Veuillez vous connecter'
 helpcenter.general.name: Nom
 helpcenter.community.form_topic_title: Titre
@@ -58,7 +58,7 @@ helpcenter.community.no_matching: 'Aucun commentaire correspondant'
 helpcenter.community.rate_forbidden: 'Vous n''êtes pas autorisé à voter'
 helpcenter.community.section_title: Remarques
 helpcenter.downloads.download_action: Télécharger
-helpcenter.downloads.none: 'Pas encore de téléchargements'
+helpcenter.downloads.no_files: 'Pas encore de téléchargements'
 helpcenter.downloads.uploaded_on: Téléchargé
 helpcenter.emails.chat_transcript: 'Nous vous remercions pour cet échange. Voici une transcription du Chat.'
 helpcenter.emails.chat_transcript_subject: 'Relevé du Chat'

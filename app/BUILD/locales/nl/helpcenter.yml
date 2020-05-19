@@ -51,7 +51,7 @@ helpcenter.messenger.date_label: Datum
 helpcenter.messenger.total_chat_time_label: 'Totale chattijd'
 helpcenter.messenger.linked_ticket_label: 'Toegewezen aan ticket'
 helpcenter.messenger.view_linked_ticket_action: 'Ticket tonen'
-helpcenter.community.vote_action: 'Ik ben het eens'
+helpcenter.community.like_action: 'Ik ben het eens'
 helpcenter.community.error_login: 'Inloggen'
 helpcenter.general.name: Naam
 helpcenter.community.form_topic_title: Titel
@@ -59,7 +59,7 @@ helpcenter.community.no_matching: 'Geen overeenkomstige gemeenschapsonderwerpen'
 helpcenter.community.rate_forbidden: 'U mag niet stemmen'
 helpcenter.direct_messages.reply_message: Bericht
 helpcenter.downloads.download_action: Downloaden
-helpcenter.downloads.none: 'Nog geen downloads'
+helpcenter.downloads.no_files: 'Nog geen downloads'
 helpcenter.downloads.uploaded_on: Geüpload
 helpcenter.emails.chat_transcript: 'Bedankt voor het chatten met ons. Hierbij ontvangt u de kopie van het gesprek.'
 helpcenter.emails.chat_transcript_subject: 'Kopie van chatgeschiedenis'

@@ -50,14 +50,14 @@ helpcenter.messenger.date_label: Data
 helpcenter.messenger.total_chat_time_label: 'Tempo di chat totale'
 helpcenter.messenger.linked_ticket_label: 'Assegnato al ticket'
 helpcenter.messenger.view_linked_ticket_action: 'Visualizza il Ticket'
-helpcenter.community.vote_action: 'Concordo'
+helpcenter.community.like_action: 'Concordo'
 helpcenter.community.error_login: 'Per favore effettua l''accesso'
 helpcenter.general.name: Nome
 helpcenter.community.form_topic_title: Titolo
 helpcenter.community.no_matching: 'Non ci sono tema corrispondenti'
 helpcenter.community.rate_forbidden: 'Non hai il permesso di votare'
 helpcenter.direct_messages.reply_message: Messaggio
-helpcenter.downloads.none: 'Non c''è alcun download'
+helpcenter.downloads.no_files: 'Non c''è alcun download'
 helpcenter.downloads.uploaded_on: Caricato
 helpcenter.emails.chat_transcript: 'Grazie per avere chattato con noi. Ecco la trascrittura della chat.'
 helpcenter.emails.chat_transcript_subject: 'Trascrittura della Chat'

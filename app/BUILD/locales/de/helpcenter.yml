@@ -52,14 +52,14 @@ helpcenter.messenger.date_label: Datum
 helpcenter.messenger.total_chat_time_label: 'Gesamte Chat-Zeit'
 helpcenter.messenger.linked_ticket_label: 'Zugeordnet zum Ticket'
 helpcenter.messenger.view_linked_ticket_action: 'Tickets anzeigen'
-helpcenter.community.vote_action: 'Ich stimme zu'
+helpcenter.community.like_action: 'Ich stimme zu'
 helpcenter.community.error_login: 'Bitte anmelden'
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Kein passendes Community Topic'
 helpcenter.community.rate_forbidden: 'Sie dürfen nicht abstimmen'
 helpcenter.direct_messages.reply_message: Nachricht
 helpcenter.downloads.download_action: Herunterladen
-helpcenter.downloads.none: 'Bisher keine Downloads'
+helpcenter.downloads.no_files: 'Bisher keine Downloads'
 helpcenter.downloads.uploaded_on: Hochgeladen
 helpcenter.emails.chat_transcript: 'Vielen Dank für den Chat mit uns. Hier ist Ihre Chat-Abschrift.'
 helpcenter.emails.chat_transcript_subject: 'Chat-Abschrift'

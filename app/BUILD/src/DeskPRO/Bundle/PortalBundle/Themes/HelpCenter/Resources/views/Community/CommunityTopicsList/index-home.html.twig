@@ -109,8 +109,9 @@
                                                         {{ activity.topic.content_plain|truncate(80) }}
                                                     </h4>
                                                     <span class="dp-po-community-row-activity-time">
-                                                    {{ date_ago(activity.topic.date_created) }}
-                                                </span>
+                                                        {% set dateAgo = short_date_ago(activity.topic.date_created, null, false) %}
+                                                        {{ dateAgo }}
+                                                    </span>
                                                 {% endif %}
                                             </a>
                                         </li>

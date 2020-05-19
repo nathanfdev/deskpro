@@ -51,7 +51,7 @@ helpcenter.messenger.date_label: Дата
 helpcenter.messenger.total_chat_time_label: 'Общо време на чат'
 helpcenter.messenger.linked_ticket_label: 'Назначи по тикет'
 helpcenter.messenger.view_linked_ticket_action: 'Виж тикет'
-helpcenter.community.vote_action: 'Съгласен съм'
+helpcenter.community.like_action: 'Съгласен съм'
 helpcenter.community.create_topic: Създай
 helpcenter.community.error_login: 'Моля влезте'
 helpcenter.general.name: Име
@@ -64,7 +64,7 @@ helpcenter.direct_messages.none: 'Няма съобщения'
 helpcenter.direct_messages.reply_message: Съобщение
 helpcenter.direct_messages.title: 'Съобщения'
 helpcenter.downloads.download_action: Изтегли
-helpcenter.downloads.none: 'Все още няма изтегляния'
+helpcenter.downloads.no_files: 'Все още няма изтегляния'
 helpcenter.downloads.uploaded_on: Качен
 helpcenter.emails.chat_transcript: 'Благодарим ви за чата. Ето го вашия препис от чата.'
 helpcenter.emails.chat_transcript_subject: 'Чат препис'

@@ -49,7 +49,7 @@ helpcenter.messenger.date_label: Ngày
 helpcenter.messenger.total_chat_time_label: 'Tổng thời gian trò chuyện'
 helpcenter.messenger.linked_ticket_label: 'Được chỉ định để mua vé'
 helpcenter.messenger.view_linked_ticket_action: 'Xem vé'
-helpcenter.community.vote_action: 'Tôi đồng ý'
+helpcenter.community.like_action: 'Tôi đồng ý'
 helpcenter.community.error_login: 'Vui lòng hãy đăng nhập'
 helpcenter.general.name: Tên
 helpcenter.community.form_topic_title: Chức vụ
@@ -58,7 +58,7 @@ helpcenter.community.rate_forbidden: 'Bạn không được phép bỏ phiếu'
 helpcenter.community.section_title: Phản hồi
 helpcenter.direct_messages.reply_message: Thông điệp
 helpcenter.downloads.download_action: Tải về
-helpcenter.downloads.none: 'Chưa tải xuống'
+helpcenter.downloads.no_files: 'Chưa tải xuống'
 helpcenter.downloads.uploaded_on: Đã tải lên
 helpcenter.emails.chat_transcript: 'Cảm ơn bạn đã trò chuyện với chúng tôi. Đây là bảng điểm trò chuyện của bạn.'
 helpcenter.emails.chat_transcript_subject: 'Bản ghi trò chuyện'

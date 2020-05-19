@@ -51,7 +51,7 @@ helpcenter.messenger.date_label: Tanggal
 helpcenter.messenger.total_chat_time_label: 'Total Waktu Obrolan'
 helpcenter.messenger.linked_ticket_label: 'Dialihkan ke tiket'
 helpcenter.messenger.view_linked_ticket_action: 'Lihat Tiket'
-helpcenter.community.vote_action: 'Saya setuju'
+helpcenter.community.like_action: 'Saya setuju'
 helpcenter.community.error_login: 'Silahkan masuk'
 helpcenter.general.name: Nama
 helpcenter.community.form_topic_title: Judul
@@ -60,7 +60,7 @@ helpcenter.community.rate_forbidden: 'Anda tidak diizinkan untuk memilih'
 helpcenter.community.section_title: Tanggapan
 helpcenter.direct_messages.reply_message: Pesan
 helpcenter.downloads.download_action: Unduh
-helpcenter.downloads.none: 'Belum ada unduhan'
+helpcenter.downloads.no_files: 'Belum ada unduhan'
 helpcenter.downloads.uploaded_on: Terunggah
 helpcenter.emails.chat_transcript: 'Terima kasih telah mengobrol dengan kami. Ini adalah transkrip obrolan Anda.'
 helpcenter.emails.chat_transcript_subject: 'Transkrip Obrolan'

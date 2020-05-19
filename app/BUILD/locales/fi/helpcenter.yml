@@ -22,7 +22,7 @@ helpcenter.account.set_password_success: 'Salasanasi on päivitetty'
 helpcenter.articles.section_title: Ohjeet
 helpcenter.articles.view_as_agent: 'Näet tämän sivun koska olet asiantuntijamme. Peruskäyttäjät eivät näe tätä sivua.'
 helpcenter.messenger.view_linked_ticket_action: 'Näytä palvelupyyntö'
-helpcenter.community.vote_action: 'Samaa mieltä'
+helpcenter.community.like_action: 'Samaa mieltä'
 helpcenter.general.name: Nimesi
 helpcenter.community.form_topic_title: Aihe
 helpcenter.community.section_title: Palaute

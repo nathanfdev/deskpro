@@ -50,9 +50,9 @@ helpcenter.articles.section_title: قاعدة المعلومات
 helpcenter.articles.view_as_agent: 'أنت في هذه الصفحة لأنك أحد مقدمي الخدمة. المستخدمين العاديين لن يمكنهم مشاهدة هذه الصفحة.'
 helpcenter.messenger.date_label: التاريخ
 helpcenter.messenger.total_chat_time_label: 'الوقت الكلي للمحادثة.'
+helpcenter.community.like_action: 'موافق'
 helpcenter.messenger.linked_ticket_label: 'تحديد لتذكرة'
 helpcenter.messenger.view_linked_ticket_action: "استعراض التذكرة.\n"
-helpcenter.community.vote_action: 'موافق'
 helpcenter.community.error_login: 'فضلا ادخل'
 helpcenter.general.name: أسم
 helpcenter.community.form_topic_title: العنوان
@@ -61,7 +61,7 @@ helpcenter.community.rate_forbidden: 'لا يحق لك التصويت'
 helpcenter.community.section_title: اقتراحات
 helpcenter.direct_messages.reply_message: رسالة
 helpcenter.downloads.download_action: تنزيل
-helpcenter.downloads.none: 'لا توجد تنزيلات'
+helpcenter.downloads.no_files: 'لا توجد تنزيلات'
 helpcenter.downloads.uploaded_on: تم تحميله
 helpcenter.emails.chat_transcript: 'نشكركم على المحادثة معنا . اليك نسختك من المحادثة'
 helpcenter.emails.chat_transcript_subject: 'سجل المحادثه'

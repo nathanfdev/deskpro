@@ -52,7 +52,7 @@ helpcenter.messenger.date_label: Дата
 helpcenter.messenger.total_chat_time_label: 'Суммарное время диалога'
 helpcenter.messenger.linked_ticket_label: 'Назначен на запрос'
 helpcenter.messenger.view_linked_ticket_action: 'Посмотреть обращение'
-helpcenter.community.vote_action: 'Я согласен/-на'
+helpcenter.community.like_action: 'Я согласен/-на'
 helpcenter.community.error_login: 'Пожалуйста, войдите в систему'
 helpcenter.general.name: Имя
 helpcenter.community.form_topic_title: Заголовок
@@ -61,7 +61,7 @@ helpcenter.community.rate_forbidden: 'Вы не можете проголосо�
 helpcenter.community.section_title: Предложения
 helpcenter.direct_messages.reply_message: Сообщение
 helpcenter.downloads.download_action: Загрузить
-helpcenter.downloads.none: 'Нет загруженных файлов'
+helpcenter.downloads.no_files: 'Нет загруженных файлов'
 helpcenter.downloads.uploaded_on: Загружено
 helpcenter.emails.chat_transcript: 'Благодарим Ваc за общение с нами. Предоставляем Вам копию диалога.'
 helpcenter.emails.chat_transcript_subject: 'История чата'
