@@ -220,33 +220,6 @@ class GuideController extends PublishController
 
                 break;
 
-            case 'auto-unpub':
-                $date   = date_create('@'.$this->in->getUInt('end_timestamp'));
-                $action = $this->in->getString('end_action');
-
-                $topic->date_end   = $date;
-                $topic->end_action = $action;
-
-                break;
-
-            case 'remove-auto-unpub':
-                $topic->date_end   = null;
-                $topic->end_action = null;
-
-                break;
-
-            case 'auto-pub':
-                $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
-
-                $topic->setDatePublished($date);
-
-                break;
-
-            case 'remove-auto-pub':
-                $topic->setDatePublished(null);
-
-                break;
-
             case 'no_content':
                 $topic->setNoContent($this->in->getBoolInt('no_content'));
 

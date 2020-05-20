@@ -26,66 +26,6 @@
             }, true) }}
         </dd>
 
-        <dd id="{{baseId}}_auto_unpub_readonly" {% if not (topic.status == 'published') or perms.can_edit %}style="display: none"{% endif %}>
-					<span class="auto-unpublish" {% if not topic.date_end %}style="display: none"{% endif %}>
-            {{ phrase('user.knowledgebase.auto_action_on_date', {action: topic.end_action|default('unpublish'), date: topic.date_end|date('day')}, true) }}
-					</span>
-        </dd>
-
-        <dd id="{{baseId}}_auto_unpub" {% if not (topic.status == 'published' and perms.can_edit) %}style="display: none"{% endif %}>
-					<span class="auto-unpublish" {% if not topic.date_end %}style="display: none"{% endif %}>
-						{% set phrase_part1 %}<span class="end-action opt" data-val="{{topic.end_action|default('unpublish')}}">{{topic.end_action|default(phrase('agent.general.unpublish'))}}</span>{% endset %}
-                        {% set phrase_part2 %}
-                            <div style="display: inline-block; position: relative;">
-								<span class="end-date opt" {% if topic.date_end %}data-val="{{ topic.date_end|date('j M, y') }}"{% endif %}> {% if topic.date_end %}{{ topic.date_end|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
-							</div>
-                        {% endset %}
-                        {{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-                        <input type="text"
-                               class="end-date-input"
-                               autocomplete="{{ "now" | date("U") }}"
-                               value="{{ topic.date_end|date('j M, y') }}"
-                               style="display: none; height: 10px;" />
-						(<span class="remove-auto-unpublish options-text">{{ phrase('agent.general.remove') }}</span>)
-					</span>
-            <span class="options-text auto-unpublish-set" {% if topic.date_end %}style="display: none"{% endif %}>
-						{{ phrase('agent.publish.set_auto_unpublish_date') }}
-					</span>
-            <br />
-
-            <ul class="end-action-menu" style="display: none">
-                <li data-action="unpublish">{{ phrase('agent.general.unpublish') }}</li>
-                <li data-action="archive">{{ phrase('agent.general.archive') }}</li>
-            </ul>
-        </dd>
-
-        <dd id="{{baseId}}_auto_pub_readonly" {% if not (topic.hidden_status == 'unpublished') or perms.can_edit %}style="display: none"{% endif %}>
-					<span class="auto-publish" {% if not topic.date_published %}style="display: none"{% endif %}>
-            {{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase('agent.general.publish'), date: topic.date_published|date('day')}, true) }}
-					</span>
-        </dd>
-
-        <dd id="{{baseId}}_auto_pub" {% if not (topic.hidden_status == 'unpublished' and perms.can_edit) %}style="display: none"{% endif %}>
-					<span class="auto-publish" {% if not topic.date_published %}style="display: none"{% endif %}>
-						{% set phrase_part1 %}{{ phrase('agent.general.publish') }}{% endset %}
-                        {% set phrase_part2 %}
-                            <div style="display: inline-block; position: relative;">
-								<span class="pub-date opt" {% if topic.date_published %}data-val="{{ topic.date_published|date('U') }}"{% endif %}> {% if topic.date_published %}{{ topic.date_published|date('day') }}{% else %}{{ phrase('agent.publish.click_to_set_date') }}{% endif %}</span>
-							</div>
-                        {% endset %}
-                        {{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-                        <input type="text"
-                               class="pub-date-input"
-                               autocomplete="{{ "now" | date("U") }}"
-                               value="{{ topic.date_published|date('j M, y') }}000"
-                               style="display: none; height: 10px;" />
-						(<span class="remove-auto-publish options-text">{{ phrase('agent.general.remove') }}</span>)
-					</span>
-            <span class="options-text auto-publish-set" {% if topic.date_published %}style="display: none"{% endif %}>
-						{{ phrase('agent.publish.set_auto_publish_date') }}
-					</span>
-        </dd>
-
         <div {% if topic.parent is null or topic.parent.parent is not null %}style="display: none"{% endif %} id="{{ baseId }}_no_content">
             <dt>Section</dt>
             <dd>
