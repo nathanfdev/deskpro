@@ -70,7 +70,12 @@
 							{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
 							{% else %} Unassigned {% endif %}
 						</label><span class="drop-icon"></span>
-						<select class="agents_sel dpe_select"  style="min-width: 170px;" data-invisible-trigger="1">
+						<select class="agents_sel dpe_select"
+                                style="min-width: 170px;"
+                                data-invisible-trigger="1"
+                                data-style-type="icons"
+                                data-select-icon-size="22"
+                        >
 							<optgroup label="{{ phrase('agent.general.agents') }}">
 								{% for agent in app.agents.getAgents() %}
 									<option {% if task.assigned_agent and agent.id == task.assigned_agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
