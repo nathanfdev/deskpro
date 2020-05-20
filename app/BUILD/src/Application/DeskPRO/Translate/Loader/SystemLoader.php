@@ -1,9 +1,8 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Translate\Loader;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
@@ -42,6 +41,11 @@ class SystemLoader implements LoaderInterface
     private $appEnv;
 
     /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
      * @var PortalBrandThemeLoader
      */
     private $brandThemeLoader;
@@ -54,13 +58,15 @@ class SystemLoader implements LoaderInterface
     /**
      * Constructor.
      *
-     * @param AppEnvInterface        $appEnv
+     * @param AppEnvInterface $appEnv
+     * @param SettingsResolver $settingsResolver
      * @param PortalBrandThemeLoader $brandThemeLoader
-     * @param BrandStack             $brandStack
+     * @param BrandStack $brandStack
      */
-    public function __construct(AppEnvInterface $appEnv, PortalBrandThemeLoader $brandThemeLoader = null, BrandStack $brandStack = null)
+    public function __construct(AppEnvInterface $appEnv, SettingsResolver $settingsResolver = null, PortalBrandThemeLoader $brandThemeLoader = null, BrandStack $brandStack = null)
     {
         $this->appEnv           = $appEnv;
+        $this->settingsResolver = $settingsResolver;
         $this->brandThemeLoader = $brandThemeLoader;
         $this->brandStack       = $brandStack;
     }
@@ -119,7 +125,12 @@ class SystemLoader implements LoaderInterface
             return $this->loadedResources[$base];
         }
 
-        if (($this->appEnv->isDebug() || $this->appEnv->isQa()) && $name === 'user' && $this->brandThemeLoader) {
+        $allowLegacyPhrases = false;
+        if ($this->settingsResolver) {
+            $allowLegacyPhrases = $this->settingsResolver->getGlobalSettings()->get('settings.language.allow_legacy_phrases', false);
+        }
+
+        if ((($this->appEnv->isDebug() && !$allowLegacyPhrases) || $this->appEnv->isQa()) && $name === 'user' && $this->brandThemeLoader) {
             $theme = $this->brandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand());
             if ($theme && $theme->getActiveThemeSet()->getThemeId() === 'helpcenter') {
                 if (!isset($this->loadedResources[$base])) {

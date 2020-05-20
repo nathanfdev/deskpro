@@ -18,3 +18,4 @@ services:
       - "@security.token_storage"
       - "@anti_abuse"
       - "@portal_email_sender"
+      - "@?portal_brand_theme_loader"

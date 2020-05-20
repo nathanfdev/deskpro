@@ -10,7 +10,7 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
     {% set phrase_link %}<a href="{{ content_link }}">{{ content.title }}</a>{% endset %}
-    {{ phrase('helpcenter.emails.comment_thank_you', {'link': phrase_link}, true) }}
+    {{ phrase('helpcenter.emails.comment_thank_you', {'link': phrase_link}) | raw }}
     {{ phrase('helpcenter.emails.comment_deleted') }}
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
