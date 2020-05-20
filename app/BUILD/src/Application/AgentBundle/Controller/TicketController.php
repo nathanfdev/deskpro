@@ -4501,9 +4501,13 @@ class TicketController extends AbstractController
             return str_replace($accessCodes, '', $body);
         });
 
-        $message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
-        $message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
-        $message->getHeaders()->addIdHeader('In-Reply-To', $ticket->getEmailReferencesHeader());
+        // Often Forwarding is used to create a separate email chain with a 3rd party
+        // Replies to a forwarded ticket should not be merging into the original ticket
+        // so, don't include any TAC/PTAC in header to prevent detecting original ticket during `email gateway` processing
+        //
+        // $message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+        // $message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
+        // $message->getHeaders()->addIdHeader('In-Reply-To', $ticket->getEmailReferencesHeader());
 
         foreach ($tos as $k => $x) {
             $message->addTo($k, $x);
