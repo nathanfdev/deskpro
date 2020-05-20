@@ -10,10 +10,10 @@ Feature: /community_forums endpoint
   Scenario: I GET all community forums
     Given no "CommunityTopic" records exist
     And only the following "CommunityForum" records exist:
-      | #   | title    | slug     | noun     | plural    |
-      | cc1 | Feature  | feature  | Feature  | Features  |
-      | cc2 | Question | question | Question | Questions |
-      | cc3 | Garbage  | garbage  | Garbage  | Garbage   |
+      | #   | title    | slug     | noun     | plural    | verb_action  |
+      | cc1 | Feature  | feature  | Feature  | Features  | New Feature  |
+      | cc2 | Question | question | Question | Questions | New Question |
+      | cc3 | Garbage  | garbage  | Garbage  | Garbage   | New Garbage  |
     When I send a GET request to "/api/v2/community_forums"
     Then the response should be in JSON
     And the response status code should be 200
@@ -29,3 +29,6 @@ Feature: /community_forums endpoint
     And the JSON node "data[0].plural" should be equal to "Features"
     And the JSON node "data[1].plural" should be equal to "Garbage"
     And the JSON node "data[2].plural" should be equal to "Questions"
+    And the JSON node "data[0].verb_action" should be equal to "New Feature"
+    And the JSON node "data[1].verb_action" should be equal to "New Garbage"
+    And the JSON node "data[2].verb_action" should be equal to "New Question"

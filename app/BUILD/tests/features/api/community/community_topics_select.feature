@@ -15,10 +15,10 @@ Feature: /community_topics endpoint
       | ctsc3 | closed      | Declined  | 0             |
       | ctsc4 | closed      | Spam      | 0             |
     And only the following "CommunityForum" records exist:
-      | #   | title    | slug     | noun     | plural    |
-      | cc1 | Feature  | feature  | Feature  | Features  |
-      | cc2 | Question | question | Question | Questions |
-      | cc3 | Garbage  | garbage  | Garbage  | Garbage   |
+      | #   | title    | slug     | noun     | plural    | verb_action  |
+      | cc1 | Feature  | feature  | Feature  | Features  | New Feature  |
+      | cc2 | Question | question | Question | Questions | New Question |
+      | cc3 | Garbage  | garbage  | Garbage  | Garbage   | New Garbage  |
     And only the following "CommunityTopic" records exist:
       | #   | status_category | forum   | person  | is_reviewed | slug   | title  | content | status | date_created | num_ratings | total_rating |
       | ct1 | {ctsc1}         | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active | 2015-01-01   | 0           | 0            |

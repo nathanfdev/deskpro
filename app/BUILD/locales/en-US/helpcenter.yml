@@ -126,8 +126,8 @@ helpcenter.community.activity_voted: 'I voted'
 helpcenter.community.like_action: Like
 helpcenter.community.channel: Channel
 helpcenter.community.create_topic: Create
-helpcenter.community.create_topic_full: 'Create topic'
-helpcenter.community.create_topic_in_forum: 'Create new {forum}'
+helpcenter.community.create_topic_full: 'Create {forum}'
+helpcenter.community.create_topic_in_forum: 'Submit {forum}'
 helpcenter.community.error_login: 'Please login'
 helpcenter.community.featured_topics: 'Featured topics'
 helpcenter.community.filters: Filters
@@ -135,7 +135,6 @@ helpcenter.community.form_add_attachments: 'Add attachments'
 helpcenter.community.form_create_topic: 'Create Topic'
 helpcenter.general.name: Name
 helpcenter.community.form_description: Description
-helpcenter.community.form_submit: Submit
 helpcenter.community.form_topic_title: Title
 helpcenter.community.forum_name: 'Forum name'
 helpcenter.community.my_activity: 'My Activity'
@@ -152,7 +151,7 @@ helpcenter.community.title: Title
 helpcenter.community.title_author: 'Title / Author'
 helpcenter.community.view_list: 'List View'
 helpcenter.community.view_status_change: 'Status Change'
-helpcenter.community.view_topics: '{count, plural, one {View 1 {singular}} other {View # {plural}}}'
+helpcenter.community.view_all_topics: 'View all {plural}'
 helpcenter.community.likes: Likes
 helpcenter.direct_messages.back_to_messages: 'Back to my messages'
 helpcenter.direct_messages.block_user: 'block user'

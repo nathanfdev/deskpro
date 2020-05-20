@@ -42,6 +42,11 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     protected $plural;
 
     /**
+     * @var string|null
+     */
+    protected $verb_action;
+
+    /**
      * @var CommunityForum
      */
     protected $parent;
@@ -158,6 +163,26 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     public function setPlural($plural)
     {
         $this->setModelField('plural', $plural);
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getVerbAction()
+    {
+        return $this->verb_action;
+    }
+
+    /**
+     * @param string|null $verb_action
+     *
+     * @return CommunityForum
+     */
+    public function setVerbAction($verb_action)
+    {
+        $this->setModelField('verb_action', $verb_action);
 
         return $this;
     }
@@ -438,6 +463,17 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'plural',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'verb_action',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'verb_action',
             ]
         );
         $metadata->mapField(

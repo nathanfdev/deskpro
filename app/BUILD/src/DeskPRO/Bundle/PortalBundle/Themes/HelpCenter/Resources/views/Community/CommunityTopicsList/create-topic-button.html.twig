@@ -7,12 +7,12 @@
       {% if current_forum is defined %}
         <a class="dp-po-community-create-link" href="{{ path('portal_community_topic_create', {id: current_forum.id}) }}">
           <i class="dp-po-icon fad fa-money-check-edit"></i>
-            {{ phrase('helpcenter.community.create_topic_in_forum', {forum: current_forum.noun}) }}
+            {{ current_forum.verb_action }}
         </a>
       {% else %}
         <a href="javascript:void(0);" class="dp-po-community-create-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="dp-po-icon fad fa-money-check-edit"></i>
-          {{ button_label|default(phrase('helpcenter.community.create_topic')) }}
+          {{ phrase('helpcenter.community.create_topic') }}
         </a>
         {% if community_forums is defined %}
           <a class="dp-po-community-title-button-dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

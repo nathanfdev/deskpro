@@ -145,6 +145,7 @@ class CategoryHelper
                     if (property_exists($entity, 'noun')) {
                         $entity->setNoun($categoryTitle);
                         $entity->setPlural($categoryTitle.'s');
+                        $entity->setVerbAction('New '.$categoryTitle);
                     }
                     $entity->setParent($parent);
                     $this->setDefaultBrand($entity, $brandName);

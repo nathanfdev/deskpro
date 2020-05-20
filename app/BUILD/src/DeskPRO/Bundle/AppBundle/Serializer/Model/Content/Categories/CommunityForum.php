@@ -71,6 +71,16 @@ class CommunityForum extends CategoryAbstract
     protected $plural;
 
     /**
+     * Forum`s verb action
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
+     *
+     * @var string
+     */
+    protected $verbAction;
+
+    /**
      * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Phrase>")
      *
      * @var Phrase[]
@@ -96,6 +106,7 @@ class CommunityForum extends CategoryAbstract
         $this->parent       = $entity->getParent();
         $this->noun         = $entity->getNoun();
         $this->plural       = $entity->getPlural();
+        $this->verbAction   = $entity->getVerbAction();
         $this->children     = $entity->getChildren();
         $this->usergroups   = $entity->getUserGroups();
         $this->customFields = $entity->getTopicFields()->map(function (CommunityForumToCustomDefCommunityTopic $pivot) {

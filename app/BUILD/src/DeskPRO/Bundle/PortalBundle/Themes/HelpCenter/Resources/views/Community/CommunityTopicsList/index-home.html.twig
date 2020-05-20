@@ -77,11 +77,11 @@
                                     <i class="dp-po-icon dp-po-icon-white fad fa-comments"></i>
                                 </div>
                             {% endif %}
-                            <h2 class="dp-po-community-row-title">{{ forum.title }}</h2>
+                            <h2 class="dp-po-community-row-title">{{ forum.title }} ({{ topic_count_per_forum[forum.id] }})</h2>
                             <p class="dp-po-community-row-description">{{ forum.description }}</p>
                             <a href="{{ path('portal_community_browse', {filter_uri: "type-#{forum.id}"}) }}"
                                class="dp-po-community-row-btn">
-                                {{ phrase('helpcenter.community.view_topics', {count: topic_count_per_forum[forum.id], singular: forum.noun, plural: forum.plural}) }}
+                                {{ phrase('helpcenter.community.view_all_topics', {plural: forum.plural}) }}
                             </a>
                         </div>
                         <div class="dp-po-community-row-right">

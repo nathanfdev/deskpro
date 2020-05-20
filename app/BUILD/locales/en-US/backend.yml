@@ -509,6 +509,8 @@ adm.community_forums.title_error: 'You must enter a valid title'
 adm.community_forums.title_explain: 'This is the title as it will appear throughout the agent and user interfaces.'
 adm.community_forums.usergroups: Usergroups
 adm.community_forums.usergroups_explain: 'These are usergroups to which this community forum belongs.'
+adm.community_forums.verb: Verb
+adm.community_forums.verb_explain: 'This will be used as click to action of this forum creation, ex: new suggestion or create topic'
 adm.general.action_cannot_be_undone: 'This action cannot be undone.'
 adm.general.agent_perms: 'Agent Permissions'
 adm.general.api_keys: 'API Keys'

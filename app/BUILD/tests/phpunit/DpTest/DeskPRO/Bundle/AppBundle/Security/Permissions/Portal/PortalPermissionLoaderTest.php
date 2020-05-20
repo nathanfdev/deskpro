@@ -69,6 +69,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         if (property_exists($communityForum1, 'noun')) {
             $communityForum1->setNoun('communityForum 1');
             $communityForum1->setPlural('communityForums 1');
+            $communityForum1->setVerbAction('New Forum');
         }
         $communityForum1->addUsergroup($everyone);
         if (property_exists($communityForum1, 'brand')) {
@@ -82,6 +83,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         if (property_exists($communityForum2, 'noun')) {
             $communityForum2->setNoun('communityForum 2');
             $communityForum2->setPlural('communityForums 2');
+            $communityForum1->setVerbAction('New Forum');
         }
         $communityForum2->addUsergroup($registered);
         if (property_exists($communityForum2, 'brand')) {
@@ -95,6 +97,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         if (property_exists($communityForum3, 'noun')) {
             $communityForum3->setNoun('communityForum 3');
             $communityForum3->setPlural('communityForums 3');
+            $communityForum1->setVerbAction('New Forum');
         }
         $communityForum3->addUsergroup($everyone);
         if (property_exists($communityForum3, 'brand')) {

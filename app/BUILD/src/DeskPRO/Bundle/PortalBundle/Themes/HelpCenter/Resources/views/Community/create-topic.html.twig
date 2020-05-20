@@ -8,7 +8,7 @@
                     <div class="col-sm-7 col-centered">
                         <div class="dp-po-title">
                             <img class="dp-po-title-svg" src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
-                            <h1 class="dp-po-title-text">{{ phrase('helpcenter.community.form_create_topic') }}</h1>
+                            <h1 class="dp-po-title-text">{{ current_forum.verb_action }}</h1>
                         </div>
                         <div class="dp-po-block">
                             <div class="dp-po-community-form dpx-form helpcenter-form">
@@ -44,7 +44,7 @@
                                     {% endif %}
 
                                     <button type="submit" class="btn btn-primary btn-lg">
-                                        {{ phrase('helpcenter.community.create_topic_in_forum', {forum: current_forum.noun}) }}
+                                        {{ current_forum.verb_action }}
                                     </button>
 
                                 {{ form_rest(form) }}

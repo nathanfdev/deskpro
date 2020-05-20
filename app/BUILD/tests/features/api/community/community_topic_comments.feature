@@ -12,9 +12,9 @@ Feature: /community_topic_comments/counts endpoint
       | csc1 | active      | Collected | 0             |
       | csc2 | active      | Accepted  | 0             |
     And only the following "CommunityForum" records exist:
-      | #   | title      | slug       | noun       | plural      |
-      | cc1 | Feature    | feature    | Feature    | Features    |
-      | cc2 | Suggestion | suggestion | Suggestion | Suggestions |
+      | #   | title      | slug       | noun       | plural      | verb_action    |
+      | cc1 | Feature    | feature    | Feature    | Features    | New Feature    |
+      | cc2 | Suggestion | suggestion | Suggestion | Suggestions | New Suggestion |
 
   Scenario: I GET community topic comments list awaiting review and side-loaded author info
     Given only the following "CommunityTopic" records exist:
