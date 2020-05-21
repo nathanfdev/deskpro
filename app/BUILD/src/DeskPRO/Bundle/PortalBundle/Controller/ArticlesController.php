@@ -24,6 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ArticlesController extends AbstractPublishController
 {
@@ -330,7 +331,7 @@ class ArticlesController extends AbstractPublishController
             $this->getRatingsHelper()->rateContentUp($article, $visitor_id, $person);
         }
 
-        $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.rating_thanks']));
+        $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.content_rating_thanks']));
 
         return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
     }
@@ -490,13 +491,17 @@ class ArticlesController extends AbstractPublishController
      * @param Request $request
      * @param Article $article
      *
-     * @return Response
+     * @return Response|NotFoundHttpException
      */
     public function shareAction(Request $request, Article $article)
     {
         $form = $this->createForm('share_article');
 
         $form->handleRequest($request);
+
+        if ($this->isHelpCenterTheme()) {
+            return $this->createNotFoundException();
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->runAntiAbuseCheck($request, $article);
@@ -515,7 +520,7 @@ class ArticlesController extends AbstractPublishController
 
             $this->getEmailSender()->sendShareArticle($article, $this->getUser(), $emails, $form->getViewData());
 
-            $this->addFlash('success', $this->phrase(['portal.flashes.email_sent', 'helpcenter.flashes.email_sent']));
+            $this->addFlash('success', $this->phrase('portal.flashes.email_sent'));
 
             return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
         }

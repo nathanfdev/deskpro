@@ -46,7 +46,7 @@ helpcenter.account.usersource_set_email_desc: 'Antes que você possa entrar, pre
 helpcenter.account.your_pending_email_addresses: 'Seus endereços de e-mail pendentes'
 helpcenter.articles.section_title: Base de Conhecimento
 helpcenter.articles.view_as_agent: 'Pode ver esta página, porque é um agente. Os usuários normais não serão capazes de ver esta página.'
-helpcenter.community.vote_action: 'Concordo'
+helpcenter.community.like_action: 'Concordo'
 helpcenter.general.name: Nome
 helpcenter.community.section_title: Comentário
 helpcenter.direct_messages.reply_message: Mensagem
@@ -90,7 +90,7 @@ helpcenter.general.agent: Agente
 helpcenter.general.attachments: Anexos
 helpcenter.general.cancel_action: Cancelar
 helpcenter.general.comments: Comentários?
-helpcenter.general.downloads_type: Transferências
+helpcenter.general.files_type: Transferências
 helpcenter.general.everything: Tudo
 helpcenter.general.go_action: Seguinte
 helpcenter.general.log_in: 'Entrar'

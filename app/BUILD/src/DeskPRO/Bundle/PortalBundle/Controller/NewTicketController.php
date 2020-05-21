@@ -248,7 +248,7 @@ class NewTicketController extends AbstractController
         $fullFormOptions = [
             'action'              => $this->generateUrl('portal_new_ticket'),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
-            'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW
+            'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
         ];
         if ($person && !$person instanceof PersonGuest) {
             $fullFormOptions['person'] = $person;
@@ -310,15 +310,15 @@ class NewTicketController extends AbstractController
      */
     public function thankYouAction(Request $request, $ticket_ref = null, $do_verify = false)
     {
-        $create_pw_link    = $request->get('create_pw_link');
-        $is_confirmed_user = $request->get('is_confirmed_user');
+        $createPwLink    = $request->get('create_pw_link');
+        $isConfirmedUser = $request->get('is_confirmed_user');
 
         return $this->renderThemeView('Theme:Tickets:thank_you.html.twig', [
             'ticket_ref'        => $ticket_ref,
             'page_title'        => $this->createPageTitle()->newticketGuestThankYou(),
             'verify_email'      => $do_verify,
-            'create_pw_link'    => $create_pw_link,
-            'is_confirmed_user' => $is_confirmed_user,
+            'create_pw_link'    => $createPwLink,
+            'is_confirmed_user' => $isConfirmedUser,
         ]);
     }
 
@@ -331,21 +331,20 @@ class NewTicketController extends AbstractController
     protected function onSavedTicket(Ticket $ticket, Request $request)
     {
         $person = $ticket->getPerson();
-        $this->addFlash('success', $this->phrase(['portal.flashes.ticket_created', 'helpcenter.flashes.ticket_created']));
 
         // IF this person can't login but they are confirmed. show the thank you screen, but on that screen give
         // them a link to setup an account straight away if they want to
-        $destination    = $this->getObjectRouter()->getPortalPath($ticket);
-        $create_pw_link = null;
+        $destination  = $this->getObjectRouter()->getPortalPath($ticket);
+        $createPwLink = null;
 
         $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
         if ($redirect) {
-            $create_pw_link = $redirect->getTargetUrl();
+            $createPwLink = $redirect->getTargetUrl();
         }
 
         $params = [
             'ticket_ref'        => $this->get('ticket.public_id_resolver')->findId($ticket),
-            'create_pw_link'    => $create_pw_link,
+            'create_pw_link'    => $createPwLink,
             'is_confirmed_user' => $person->isConfirmed(),
         ];
 

@@ -18,7 +18,7 @@
                                {{ phrase('helpcenter.general.nav_news') }}
                            </option>
                            <option value="downloads"{% if type == 'downloads' %} selected="selected"{% endif %}>
-                               {{ phrase('helpcenter.general.downloads_type') }}
+                               {{ phrase('helpcenter.general.files_type') }}
                            </option>
                            <option value="community"{% if type == 'community' %} selected="selected"{% endif %}>
                                {{ phrase('helpcenter.general.nav_community') }}
@@ -74,7 +74,7 @@
                                         {% if result.calc_num_comments > 0 %}
                                             <hr>
                                             <a href="{{ portal_path(result) }}#comments">
-                                                {{ phrase('helpcenter.general.comments_count', { count: result.calc_num_comments }) }}
+                                                {{ phrase('helpcenter.general.comments_title', { count: result.calc_num_comments }) }}
                                             </a>
                                         {% endif %}
                                     </div>

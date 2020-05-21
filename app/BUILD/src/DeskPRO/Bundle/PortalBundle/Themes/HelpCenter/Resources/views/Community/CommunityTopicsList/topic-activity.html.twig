@@ -3,7 +3,7 @@
         {% set dateAgo = short_date_ago(comment.date_created, null, false) %}
         <li class="dp-po-community-view-activity-item">
             <a href="javascript:void(0)" class="dp-po-community-view-activity-link" data-toggle="tooltip"
-               data-placement="bottom" title="Latest comment, {{ comment.person.display_name }} {{ dateAgo }}">
+               data-placement="bottom" title="Latest comment, {{ comment.person.display_name }} {{ date_ago(comment.date_created, null, false) }}">
                 {{ hc_avatar(comment.person, 'dp-po-community-view-activity') }}
                 {% if not is_compact %}{{ dateAgo | raw }}{% endif %}
             </a>

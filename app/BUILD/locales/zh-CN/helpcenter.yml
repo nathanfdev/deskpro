@@ -51,18 +51,16 @@ helpcenter.messenger.date_label: 日期
 helpcenter.messenger.total_chat_time_label: '聊天总时间'
 helpcenter.messenger.linked_ticket_label: '已经指定的来单'
 helpcenter.messenger.view_linked_ticket_action: '查阅来单'
-helpcenter.community.vote_action: '我同意'
-helpcenter.community.error_hidden: '此反馈项已隐藏'
+helpcenter.community.like_action: '我同意'
 helpcenter.community.error_login: '请登录'
 helpcenter.general.name: 姓名
 helpcenter.community.form_topic_title: 标题
-helpcenter.community.module_forbidden: '您无权访问此模块'
 helpcenter.community.no_matching: '没有匹配的反馈'
 helpcenter.community.rate_forbidden: '您不能投票'
 helpcenter.community.section_title: 反馈
 helpcenter.direct_messages.reply_message: 信息
 helpcenter.downloads.download_action: 下载
-helpcenter.downloads.none: '没有下载内容'
+helpcenter.downloads.no_files: '没有下载内容'
 helpcenter.downloads.uploaded_on: 已上传
 helpcenter.emails.chat_transcript: '感谢您与我们聊天。 这是您的聊天记录。'
 helpcenter.emails.chat_transcript_subject: '聊天记录'
@@ -127,7 +125,6 @@ helpcenter.flashes.article_cat_unsubscribe: '您已成功取消订阅此类文�
 helpcenter.flashes.article_subscribe: '您已成功订阅此文章。 当有更新或有新评论时，系统会通知您。'
 helpcenter.flashes.article_unsubscribe: '您已成功取消订阅本文。'
 helpcenter.flashes.article_unsubscribe_everything: '您已取消订阅所有知识库通知'
-helpcenter.flashes.community_login: '您应该登录投票'
 helpcenter.flashes.community_subscribe: '您已成功订阅此反馈项目。 当有更新或有新评论时，系统会通知您。'
 helpcenter.flashes.community_unsubscribe: '您已成功取消订阅此反馈项目。'
 helpcenter.flashes.community_unsubscribe_everything: '您已取消订阅所有反馈通知'
@@ -135,7 +132,6 @@ helpcenter.flashes.download_cat_subscribe: '您已成功订阅此类文章。 �
 helpcenter.flashes.download_subscribe: '您已成功订阅此下载。 当有更新或有新评论时，系统会通知您。'
 helpcenter.flashes.download_unsubscribe: '您已成功取消订阅此下载。'
 helpcenter.flashes.download_unsubscribe_everything: '您已取消订阅所有下载通知'
-helpcenter.flashes.email_sent: '您的电子邮件已发送'
 helpcenter.flashes.guest_content_must_verify: '在我们发布您的内容之前，您必须验证您的电子邮件。 请检查您的电子邮件收件箱。 我们已向您发送验证链接。'
 helpcenter.flashes.guest_new_ticket_must_verify: '在我们接受您的帮助请求之前，我们必须验证您的电子邮件地址。 请检查您的电子邮件收件箱。 我们已向您发送验证链接。'
 helpcenter.flashes.new_community_topic_awaiting_review: '感谢您的反馈意见。 它将在代理审查后在我们的支持门户上可见。'
@@ -144,9 +140,8 @@ helpcenter.flashes.news_cat_subscribe: '您已成功订阅此类别。 您将收
 helpcenter.flashes.news_subscribe: '您已成功订阅此新闻文章。 当有新评论时，您会收到通知。'
 helpcenter.flashes.news_unsubscribe: '您已成功取消订阅此新闻文章。'
 helpcenter.flashes.news_unsubscribe_everything: '您已取消订阅所有新闻文章通知'
-helpcenter.flashes.ticket_created: '您的帮助请求已提交。 谢谢！'
+helpcenter.flashes.ticket_created: '您的帮助请求已提交。'
 helpcenter.flashes.ticket_feedback_thank_you: '谢谢您的反馈'
-helpcenter.flashes.ticket_participant_add_unknown_error: '尝试添加参与者时出现问题。请再试一次。'
 helpcenter.flashes.ticket_participant_already_error: '您尝试添加为参与者的人已经是此故障单的参与者。'
 helpcenter.flashes.ticket_participant_email_error: '请为您的参与者输入有效的电子邮件，然后重试。'
 helpcenter.flashes.ticket_participant_remove_unknown_error: '尝试删除您的参与者时出现问题。请再试一次。'
@@ -188,12 +183,11 @@ helpcenter.general.chat: 聊天
 helpcenter.general.comment_btn_save: '保存评论'
 helpcenter.general.comments: 评论
 helpcenter.general.comments_pending_validation: '此评论正在审核中。 它将很快显示'
-helpcenter.general.downloads_type: 下载
+helpcenter.general.files_type: 下载
 helpcenter.general.email_address: '电子邮件'
 helpcenter.general.everything: 所有
 helpcenter.general.go_action: 去
 helpcenter.general.impersonation_mode: '模拟模式'
-helpcenter.general.in: 在
 helpcenter.general.label_search_enter_label: '请提供要搜索的标签'
 helpcenter.general.last_activity: '最后一次活跃'
 helpcenter.general.log_in: '登录'
@@ -230,7 +224,6 @@ helpcenter.news.recent_title: '最近的消息'
 helpcenter.news.view_as_agent: '您能看到此页面因为您是代理。普通用户无法查看此页面。'
 helpcenter.profile.account_disabled_message: '您的账户现在不可用。您不能登录或者来单或会话。'
 helpcenter.profile.your_password: '您的密码'
-helpcenter.tickets.cancel_ticket_edit: '取消编辑并再次向我显示帮助请求'
 helpcenter.tickets.form_changed_notice: '表单添加了新的区域。请查看这些区域然后再次提交表单。'
 helpcenter.tickets.guest_thank_you_desc: '感谢您与我们联系。我们已向您发送了一封邮件，说明如何管理您的帮助请求。'
 helpcenter.tickets.guest_thank_you_title: '谢谢'
@@ -261,7 +254,6 @@ helpcenter.tickets.resolve_my_ticket_action: '解决我的工单'
 helpcenter.tickets.switched_department_rerender: '这张表格的的结构已经更改。请审查表格并再次提交。'
 helpcenter.tickets.thank_you_check_email: '请验证您的电子邮箱地址'
 helpcenter.tickets.thank_you_check_email_desc: '请验证邮箱来完成帮助请求的提交。请点击我们发送给您的验证链接。'
-helpcenter.tickets.timeline_attached: '这条消息的附件：'
 helpcenter.tickets.timeline_marked: '标记这个来单'
 helpcenter.tickets.timeline_re_opened: '重新打开这条来单'
 helpcenter.tickets.view_btn_add_to_ticket: '添加到工单'

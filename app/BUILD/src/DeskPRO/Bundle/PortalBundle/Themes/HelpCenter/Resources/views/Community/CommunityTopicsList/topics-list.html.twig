@@ -2,8 +2,8 @@
     <div class="dp-po-community-view {{ is_compact ? 'dp-po-community-view-compact' }}">
         <div class="dp-po-community-view-list">
             <div class="dp-po-community-view-item dp-po-community-view-item-head">
-                <div class="dp-po-community-view-votes">
-                    {{ phrase('helpcenter.community.votes') }}
+                <div class="dp-po-community-view-likes">
+                    {{ phrase('helpcenter.community.likes') }}
                 </div>
                 <div class="dp-po-community-view-title">
                     {{ phrase(is_compact ? 'helpcenter.community.title' : 'helpcenter.community.title_author') }}
@@ -30,7 +30,7 @@
             </div>
             {% for topic in topics_list.topics_data.pager %}
                 <div class="dp-po-community-view-item">
-                    <div class="dp-po-community-view-votes community-topic-controls">
+                    <div class="dp-po-community-view-likes community-topic-controls">
                         {% include 'Theme:Community:CommunityTopicsList/like-button.html.twig' with { topic: topic, is_compact: is_compact } %}
                     </div>
                     <div class="dp-po-community-view-title">

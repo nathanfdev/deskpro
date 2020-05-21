@@ -20,7 +20,7 @@
             {{ form_start(new_comment_form, { attr: { class: 'dp-po-form' } }) }}
                 <div class="form-group">
                     <label for="comment_content_real">{{ phrase('helpcenter.general.your_comment_label') }} *</label>
-                    {{ form_widget(new_comment_form.content_real, { attr: { placeholder: phrase('helpcenter.general.enter_comment_placeholder'), class: 'form-control' }}) }}
+                    {{ form_widget(new_comment_form.content_real, { attr: { class: 'form-control' }}) }}
                 </div>
                 {{ form_rest(new_comment_form) }}
                 {#

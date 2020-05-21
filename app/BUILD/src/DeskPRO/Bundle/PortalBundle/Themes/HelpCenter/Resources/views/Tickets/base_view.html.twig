@@ -108,13 +108,13 @@
     </div>
 
     <div class="dp-po-ticket-meta">
-        <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_ticket_id') }}</h3>
+        <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.list_ticket_ref') }}</h3>
         <p>
             {{ ticket_public_id(ticket) }}
             <div class="item-clear"></div>
         </p>
 
-        {% if (ticket.person) %}
+        {% if ticket.person and ticket.person.id != app.user.id %}
             <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_requester') }}</h3>
             {% include 'Theme:Tickets:embeds/person_sidebar.html.twig' with {person: ticket.person, avatar_link: false }%}
         {% endif %}

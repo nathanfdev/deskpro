@@ -142,21 +142,6 @@
 {% endblock page_body %}
 
 {% block page_sidebar %}
-    {% if linked_tickets %}
-        <div class="dp-po-sidebar dp-po-related-content">
-            <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.community.related_tickets') }}</h3>
-            <ul class="dp-po-related-content-list">
-                {% for linked_ticket in linked_tickets %}
-                    <li class="dp-po-related-content-item">
-                        <a href="{{ portal_path(linked_ticket.ticket) }}" class="dp-po-related-content-link">
-                            <i class="dp-po-icon fal fa-link"></i> {{ linked_ticket.ticket.subject }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-
     {% if related_content_data.related_content|length %}
         {% include 'Theme:PublishCommon:related-content.html.twig' with {
             related_content: related_content_data.related_content,
@@ -197,7 +182,7 @@
         <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.created_by') }}</h3>
         <p>{{ topic.person.display_name_user }}</p>
         <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.published') }}</h3>
-        <p>{{ date(topic.date_published, 'day')}}</p>
+        <p>{{ phrase('helpcenter.general.date_medium', { date:topic.date_published }) }}</p>
 
         {% if topic.getCustomDataSelection() %}
             <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.category') }}</h3>
@@ -205,7 +190,7 @@
         {% endif %}
         {% if topic.isClosed() %}
             <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }}</h3>
-            <p>{{ date(topic.date_updated, 'day')}} {{ topic.status }}</p>
+            <p>{{ phrase('helpcenter.general.date_medium', { date:topic.date_updated }) }} {{ topic.status }}</p>
         {% endif %}
     </div>
 {% endblock page_sidebar %}

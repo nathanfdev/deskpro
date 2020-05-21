@@ -24,6 +24,8 @@ class SavedFormController extends AbstractController
     /**
      * @Route("/saved-form/{auth_code}", name="saved_form_auto_submit", defaults={"auth_code":null})
      * @Security("is_granted('ROLE_USER')")
+     *
+     * @param mixed $auth_code
      */
     public function autoSubmitAction($auth_code, Request $request)
     {
@@ -52,6 +54,8 @@ class SavedFormController extends AbstractController
      * @Route("/validate/new-ticket/auth/{access_code}", name="user_validate_ticket")
      *
      * @deprecated
+     *
+     * @param mixed $access_code
      */
     public function ticketValidateAction($access_code)
     {
@@ -65,6 +69,8 @@ class SavedFormController extends AbstractController
 
     /**
      * @Route("/validate/new-ticket-email/auth/{auth_code}", name="user_validate_ticketemail")
+     *
+     * @param mixed $auth_code
      */
     public function ticketEmailValidateAction($auth_code)
     {
@@ -84,12 +90,12 @@ class SavedFormController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $person_email = $this->getEm()->find('DeskPRO:PersonEmail', $tmp->getData('person_email_id', 0));
-        if (!$person_email || !$person_email->person) {
+        $personEmail = $this->getEm()->find('DeskPRO:PersonEmail', $tmp->getData('person_email_id', 0));
+        if (!$personEmail || !$personEmail->person) {
             throw new NotFoundHttpException();
         }
 
-        $this->validateThisPerson($person_email->person, $person_email->getEmail());
+        $this->validateThisPerson($personEmail->person, $personEmail->getEmail());
 
         $source['status']     = 'inserted';
         $source['error_code'] = null;
@@ -104,6 +110,8 @@ class SavedFormController extends AbstractController
 
     /**
      * @Route("/validate/usersource-email/auth/{tmp_auth}", name="user_validate_usersource_email")
+     *
+     * @param mixed $tmp_auth
      */
     public function validateUsersourceEmailAction(Request $request, $tmp_auth)
     {
@@ -145,6 +153,8 @@ class SavedFormController extends AbstractController
 
     /**
      * @Route("/validate/usersource-email-clicked/auth/{tmp_auth}", name="user_validate_usersource_email_2")
+     *
+     * @param mixed $tmp_auth
      */
     public function validateUsersourceEmailAfterClickAction(Request $request, $tmp_auth)
     {

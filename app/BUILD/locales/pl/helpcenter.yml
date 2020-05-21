@@ -51,18 +51,16 @@ helpcenter.messenger.date_label: Data
 helpcenter.messenger.total_chat_time_label: 'Całkowity czas czatu'
 helpcenter.messenger.linked_ticket_label: 'Przydzielono do zgłoszenia'
 helpcenter.messenger.view_linked_ticket_action: 'Zobacz zgłoszenie'
-helpcenter.community.vote_action: 'Zgadzam się'
-helpcenter.community.error_hidden: 'Ten element oceny jest ukryty'
+helpcenter.community.like_action: 'Zgadzam się'
 helpcenter.community.error_login: 'Proszę się zalogować'
 helpcenter.general.name: Imię
 helpcenter.community.form_topic_title: Tytuł
-helpcenter.community.module_forbidden: 'Nie masz dostępu do tego modułu'
 helpcenter.community.no_matching: 'Brak pasującej opinii'
 helpcenter.community.rate_forbidden: 'Nie masz pozwolenia na głosowanie'
 helpcenter.community.section_title: Opinie
 helpcenter.direct_messages.reply_message: Treść zgłoszenia
 helpcenter.downloads.download_action: Pobierz
-helpcenter.downloads.none: 'Na razie brak elementów do pobrania'
+helpcenter.downloads.no_files: 'Na razie brak elementów do pobrania'
 helpcenter.downloads.uploaded_on: Wgrane
 helpcenter.emails.chat_transcript: 'Dziękujemy za czatowanie z nami. Oto log Twojego czatu:'
 helpcenter.emails.chat_transcript_subject: 'Log czatu'
@@ -127,7 +125,6 @@ helpcenter.flashes.article_cat_unsubscribe: 'Udało cie się usunąć subskrypcj
 helpcenter.flashes.article_subscribe: 'Udało ci się uruchomić subskrypcję tego artykułu.'
 helpcenter.flashes.article_unsubscribe: 'Udało cie się usunąć subskrypcję tego artykułu.'
 helpcenter.flashes.article_unsubscribe_everything: 'Udało cie się usunąć subskrypcję powiadomień dotyczących bazy wiedzy.'
-helpcenter.flashes.community_login: 'Powinieneś się zalogować aby zagłosować.'
 helpcenter.flashes.community_subscribe: 'Udało ci się uruchomić subskrypcję tej opinii. Zostaniesz poinformowany, gdy zostanie zaktualizowana lub pojawi się nowy komentarz.'
 helpcenter.flashes.community_unsubscribe: 'Udało cie się usunąć subskrypcję tej opinii.'
 helpcenter.flashes.community_unsubscribe_everything: 'Udało cie się usunąć subskrypcję powiadomień o wszystkich opiniach.'
@@ -135,7 +132,6 @@ helpcenter.flashes.download_cat_subscribe: 'Udało ci się uruchomić subskrypcj
 helpcenter.flashes.download_subscribe: 'Udało ci się uruchomić subskrypcję tego pobierania. Zostaniesz poinformowany, gdy to pobieranie zostanie zaktualizowane lub gdy pojawi się nowy komentarz.'
 helpcenter.flashes.download_unsubscribe: 'Udało cie się usunąć subskrypcję tego pobierania.'
 helpcenter.flashes.download_unsubscribe_everything: 'Udało cie się usunąć subskrypcję powiadomień o wszystkich pobieraniach'
-helpcenter.flashes.email_sent: 'Twój email został wysłany'
 helpcenter.flashes.guest_content_must_verify: 'Zanim będziesz mógł publikować zawartość, musisz zweryfikować swój adres email. Sprawdź swoją skrzynkę odbiorczą. Wysłaliśmy ci wiadomość z linkiem weryfikującym.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Zanim zaakceptujemy twoje zgłoszenie, musisz zweryfikować swój adres email. Sprawdź swoją skrzynkę odbiorczą. Wysłaliśmy ci wiadomość z linkiem weryfikującym.'
 helpcenter.flashes.new_community_topic_awaiting_review: 'Dziękujemy za twoją opinię! Będzie widoczna po zatwierdzeniu przez agenta.'
@@ -144,9 +140,8 @@ helpcenter.flashes.news_cat_subscribe: 'Udało ci się uruchomić subskrypcję t
 helpcenter.flashes.news_subscribe: 'Udało ci się uruchomić subskrypcję tego artykułu. Zostaniesz poinformowany, gdy pojawią się nowe komentarze.'
 helpcenter.flashes.news_unsubscribe: 'Udało cie się usunąć subskrypcję tego artykułu dotyczącego wiadomości.'
 helpcenter.flashes.news_unsubscribe_everything: 'Udało cie się usunąć subskrypcję powiadomień o wszystkich artykułach dotyczących wiadomości.'
-helpcenter.flashes.ticket_created: 'Twoje zgłoszenie zostało przesłane. Dziękujemy!'
+helpcenter.flashes.ticket_created: 'Twoje zgłoszenie zostało przesłane.'
 helpcenter.flashes.ticket_feedback_thank_you: 'Dziękujemy za twoją ocenę!'
-helpcenter.flashes.ticket_participant_add_unknown_error: 'Wystąpił problem podczas próby dodania uczestnika. Proszę spróbuj ponownie.'
 helpcenter.flashes.ticket_participant_already_error: 'Osoba, którą próbowałeś dodać jako uczestnik, jest już uczestnikiem tego biletu.'
 helpcenter.flashes.ticket_participant_email_error: 'Podaj prawidłowy adres e-mail swojego uczestnika i spróbuj ponownie.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Wystąpił problem podczas próby usunięcia uczestnika. Proszę spróbuj ponownie.'
@@ -187,11 +182,10 @@ helpcenter.general.chat: Czat
 helpcenter.general.comment_btn_save: 'Zapisz komentarz'
 helpcenter.general.comments: Komentarze
 helpcenter.general.comments_pending_validation: 'Ten komentarz jest oceniany. Będzie wyświetlony wkrótce'
-helpcenter.general.downloads_type: Pliki do pobrania
+helpcenter.general.files_type: Pliki do pobrania
 helpcenter.general.everything: Wszystkie
 helpcenter.general.go_action: Przejdź
 helpcenter.general.impersonation_mode: 'Tryb innego użytkownika'
-helpcenter.general.in: w
 helpcenter.general.label_search_enter_label: 'Podaj etykietę, aby ją wyszukać'
 helpcenter.general.last_activity: 'Ostatnia aktywność'
 helpcenter.general.log_in: 'Zaloguj'
@@ -228,7 +222,6 @@ helpcenter.news.recent_title: 'Ostatnie Aktualizacje'
 helpcenter.news.view_as_agent: 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
 helpcenter.profile.account_disabled_message: 'Twoje konto jest czasowo zablokowane. Nie możesz się zalogować, pracować z petycjami i korzystać z czatu.'
 helpcenter.profile.your_password: 'Twoje hasło'
-helpcenter.tickets.cancel_ticket_edit: 'Anuluj edytowanie i pokaż mi zgłoszenie ponownie'
 helpcenter.tickets.form_changed_notice: 'Nowe pola zostały dodane do formularza. Zwróć uwagę na te pola i wyślij formularz ponownie.'
 helpcenter.tickets.guest_thank_you_desc: 'Dziękujemy za kontakt z nami. Wysłaliśmy ci wiadomość email z informacjami jak zarządzać swoimi zgłoszeniami.'
 helpcenter.tickets.guest_thank_you_title: 'Dziękujemy'
@@ -259,7 +252,6 @@ helpcenter.tickets.resolve_my_ticket_action: 'Rozwiąż zgłoszenie'
 helpcenter.tickets.switched_department_rerender: 'Struktura tego formularza mogła ulec zmianie. Przejrzyj formularz i wyślij jeszcze raz.'
 helpcenter.tickets.thank_you_check_email: 'Proszę zweryfikować swój adres email'
 helpcenter.tickets.thank_you_check_email_desc: 'Aby zakończyć tworzenie zgłoszenia, musisz sprawdzić swoją skrzynkę email. Kliknij w link weryfikujący, który ci posłaliśmy.'
-helpcenter.tickets.timeline_attached: 'Dołączone z ta wiadomością:'
 helpcenter.tickets.timeline_marked: 'oznaczył to zgłoszenie:'
 helpcenter.tickets.timeline_re_opened: 'ponownie otworzył to zgłoszenie'
 helpcenter.tickets.view_btn_add_to_ticket: 'Dodaj do zgłoszenia'

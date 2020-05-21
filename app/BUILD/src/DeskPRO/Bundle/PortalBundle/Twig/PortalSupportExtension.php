@@ -552,12 +552,13 @@ class PortalSupportExtension extends \Twig_Extension
 
     /**
      * @param $date
-     * @param null      $timezone
+     * @param null $timezone
      * @param bool|true $includeHtmlWrapper
+     * @param bool $short
      *
      * @return string
      */
-    public function dateAgo($date, $timezone = null, $includeHtmlWrapper = true)
+    public function dateAgo($date, $timezone = null, $includeHtmlWrapper = true, $short = false)
     {
         $date = $this->ensureDateTime($date);
 
@@ -575,7 +576,7 @@ class PortalSupportExtension extends \Twig_Extension
 
         $carbon = Carbon::createFromTimestamp($date->getTimestamp(), $timezone);
         $carbon->setLocale($locale);
-        $agoString = $carbon->diffForHumans();
+        $agoString = $carbon->diffForHumans(null, false, $short);
 
         if ($includeHtmlWrapper) {
             // a standard <time> element, set $include_html_wrapper to false to get the raw ago string

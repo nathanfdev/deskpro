@@ -15,32 +15,9 @@
                     <div class="col-sm-3">
                         <div class="dp-po-ticket-sidebar">
 
-                            <div class="dp-po-ticket-pages">
-                                <ul class="dp-po-ticket-pages-list">
-                                    <li class="dp-po-ticket-pages-item">
-                                        <a href="{{ path('portal_tickets') }}" class="dp-po-ticket-pages-link">
-                                            <i class="dp-po-icon fal fa-envelope-open-text"></i> {{ phrase('helpcenter.tickets.my_tickets') }}
-                                        </a>
-                                    </li>
-                                    {% if person.organization and person.organization_manager %}
-                                        <li class="dp-po-ticket-pages-item">
-                                            <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-ticket-pages-link">
-                                                <i class="dp-po-icon fal fa-atom-alt"></i> {{ phrase('helpcenter.tickets.organization_tickets', {org_name: person.organization }) }}
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                    <li class="dp-po-ticket-pages-item">
-                                        <a href="{{ path('portal_chats') }}" class="dp-po-ticket-pages-link">
-                                            <i class="dp-po-icon fal fa-comments-alt"></i> {{ phrase('helpcenter.chats.my_chats') }}
-                                        </a>
-                                    </li>
-                                    <li class="dp-po-ticket-pages-item active">
-                                        <a href="{{ path('ticket_approvals') }}" class="dp-po-ticket-pages-link">
-                                            <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my_approvals') }}
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            {% include 'Theme:Tickets:sidebar.html.twig' with {
+                                type: 'approvals',
+                            } %}
                         </div>
                     </div>
                     <div class="col-sm-9">

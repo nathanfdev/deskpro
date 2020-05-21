@@ -277,7 +277,7 @@ export class HcOmniSearch extends React.Component {
                 />
                 <ResultTab
                   tab="download"
-                  title="helpcenter.general.downloads_type"
+                  title="helpcenter.general.files_type"
                   icon={DownloadSvg}
                   data={data}
                   activeTab={activeTab}

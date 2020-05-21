@@ -31,8 +31,10 @@
                     <img class="dp-po-notification-image" src="{{ asset('img/docs/notification.png', 'help_center') }}" alt="envelope icon">
                     <span class="dp-po-notification-count">{{ alerts.tickets_awaiting_reply | length }}</span>
                 </figure>
-                <span class="dp-po-notification-title">{{ phrase('helpcenter.alerts.tickets_to_respond', { count: alerts.tickets_awaiting_reply | length })}}
-                    <a href="{{ path('portal_tickets') }}" class="dp-po-notification-link">{{ phrase('helpcenter.general.click_here_to_view') }}</a>
+                <span class="dp-po-notification-title">
+                    <a href="{{ path('portal_tickets') }}" class="dp-po-notification-link">
+                        {{ phrase('helpcenter.alerts.tickets_to_respond', { count: alerts.tickets_awaiting_reply | length })}}
+                    </a>
                 </span>
             </div>
         {% endif %}

@@ -2,7 +2,7 @@
 helpcenter.account.email_resend_validation_action: 'Retrimite email-ul de validare'
 helpcenter.account.login_register_action: Inrestreaza-te
 helpcenter.articles.view_as_agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
-helpcenter.community.vote_action: 'Sunt de acord'
+helpcenter.community.like_action: 'Sunt de acord'
 helpcenter.general.name: Nume
 helpcenter.direct_messages.reply_message: Mesaj
 helpcenter.downloads.download_action: Descarca
@@ -44,7 +44,7 @@ helpcenter.general.add_comment: 'Adauga un comentariu'
 helpcenter.general.attachments: Atasamente
 helpcenter.general.cancel_action: Anulare
 helpcenter.general.comments: Comentarii?
-helpcenter.general.downloads_type: Descarcari
+helpcenter.general.files_type: Descarcari
 helpcenter.general.everything: Tot
 helpcenter.general.go_action: Start
 helpcenter.general.nav_downloads_desc: 'Rasfoiesti printre descarcarile noastre'

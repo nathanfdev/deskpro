@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\EntityRepository;
 
@@ -104,18 +100,16 @@ class TicketMessage extends AbstractEntityRepository
         $q->leftJoin('m.person', 'p');
         $q->where('m.ticket = :ticket');
         $q->addOrderBy('m.date_created', $order);
+        $q->setParameter('ticket', $ticket);
 
         if ($options['with_attachments']) {
             $q->addSelect('a');
             $q->leftJoin('m.attachments', 'a');
         }
 
-        $params           = [];
-        $params['ticket'] = $ticket;
-
         if (isset($options['since_id']) && $options['since_id']) {
             $q->andWhere('m.id > :since_id');
-            $params['since_id'] = $options['since_id'];
+            $q->setParameter('since_id', $options['since_id']);
         }
 
         if ($options['ids'] !== null) {
@@ -126,7 +120,7 @@ class TicketMessage extends AbstractEntityRepository
             }
 
             $q->andWhere('m.id IN (:ids)');
-            $params['ids'] = $ids;
+            $q->setParameter('ids', $ids);
         }
 
         if (!$options['with_notes']) {
@@ -137,11 +131,7 @@ class TicketMessage extends AbstractEntityRepository
             $q->setMaxResults($options['limit']);
         }
 
-        $q = $q->getQuery();
-
-        $messages = $q->execute($params);
-
-        return $messages;
+        return $q->getQuery()->getResult();
     }
 
     /**
@@ -151,6 +141,7 @@ class TicketMessage extends AbstractEntityRepository
      *
      * @param \Application\DeskPRO\Entity\TicketMessage $message
      * @param int                                       $secs_ago
+     * @param null|mixed $ticket
      *
      * @return bool|mixed
      */

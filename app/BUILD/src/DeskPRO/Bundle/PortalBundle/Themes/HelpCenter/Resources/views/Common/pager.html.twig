@@ -1,3 +1,4 @@
+{% if pager.nbPages > 1 %}
 <div class="dp-po-pagination">
     <nav aria-label="{% if title is defined %}{{ title }} {% endif %}Pagination">
         {{ pagerfanta(pager, null, {
@@ -25,3 +26,4 @@
     </div>
     {% endif %}
 </div>
+{% endif %}

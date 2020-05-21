@@ -412,7 +412,7 @@ class NewsController extends AbstractPublishController
             $this->getRatingsHelper()->rateContentUp($post, $visitor_id, $person);
         }
 
-        $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.rating_thanks']));
+        $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.content_rating_thanks']));
 
         return $this->redirectToRoute('portal_news_view', ['slug' => $post->getSlug()]);
     }

@@ -643,7 +643,7 @@ class CommunityTopicsController extends AbstractPublishController
     public function communityRateAction(Request $request, CommunityTopic $topic, $visitor_id, $up_or_down)
     {
         if (!$this->isGranted('USE_COMMUNITY')) {
-            throw $this->createAccessDeniedException($this->phrase(['portal.community.module_forbidden', 'helpcenter.community.module_forbidden']));
+            throw $this->createNotFoundException();
         }
         if (!$this->isGranted('RATE_COMMUNITY', $topic)) {
             if ($this->getUser()) {
@@ -652,20 +652,18 @@ class CommunityTopicsController extends AbstractPublishController
             if ($request->getContentType() == 'json') {
                 return new JsonResponse(
                     [
-                        'error'    => $this->phrase(['portal.community.error_login', 'helpcenter.community.error_login']),
+                        'error'    => 'need login',
                         'redirect' => $this->generateUrl('portal_login', [
                             '_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $topic->getSlug()]),
                         ]),
                     ]
                 );
             } else {
-                $this->addFlash('notice', $this->phrase(['portal.flashes.community_login', 'helpcenter.flashes.community_login']));
-
                 return $this->redirectToRoute('portal_login', ['_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $topic->getSlug()])]);
             }
         }
         if (!$topic->isVisibleOnPortal()) {
-            throw $this->createNotFoundException($this->phrase(['portal.community.error_hidden', 'helpcenter.community.error_hidden']));
+            throw $this->createNotFoundException();
         }
 
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
@@ -681,7 +679,7 @@ class CommunityTopicsController extends AbstractPublishController
                 'success' => true,
             ]);
         } else {
-            $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.rating_thanks']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.content_rating_thanks']));
 
             return $this->redirectToRoute('portal_community_topic_view', ['slug' => $topic->getSlug()]);
         }

@@ -21,13 +21,13 @@
                         -
 
                         <span class="comments"><i class="fas fa-comments"></i>
-                            <a href="#comments">{{ phrase('helpcenter.general.comments_count', {count: post.calc_num_comments}) }}</a>
+                            <a href="#comments">{{ phrase('helpcenter.general.comments_title', {count: post.calc_num_comments}) }}</a>
                         </span>
                     {% endif %}
 
                     {% if post.category %}
                         -
-                        {{ phrase('helpcenter.general.in') }} <a href="{{ portal_path(post.category) }}">{{ object_phrase(post.category) }}</a>
+                        <a href="{{ portal_path(post.category) }}">{{ object_phrase(post.category) }}</a>
                     {% endif %}
 
                 </div>

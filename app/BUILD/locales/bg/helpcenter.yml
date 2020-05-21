@@ -51,13 +51,11 @@ helpcenter.messenger.date_label: Дата
 helpcenter.messenger.total_chat_time_label: 'Общо време на чат'
 helpcenter.messenger.linked_ticket_label: 'Назначи по тикет'
 helpcenter.messenger.view_linked_ticket_action: 'Виж тикет'
-helpcenter.community.vote_action: 'Съгласен съм'
+helpcenter.community.like_action: 'Съгласен съм'
 helpcenter.community.create_topic: Създай
-helpcenter.community.error_hidden: 'Тази общностна тема е скрита'
 helpcenter.community.error_login: 'Моля влезте'
 helpcenter.general.name: Име
 helpcenter.community.form_topic_title: Заглавие
-helpcenter.community.module_forbidden: 'Нямате достъп до този модул'
 helpcenter.community.no_matching: 'Няма съвпадащи общностни теми'
 helpcenter.community.rate_forbidden: 'Не ви е разрешено да гласувате'
 helpcenter.community.section_title: Общност
@@ -66,7 +64,7 @@ helpcenter.direct_messages.none: 'Няма съобщения'
 helpcenter.direct_messages.reply_message: Съобщение
 helpcenter.direct_messages.title: 'Съобщения'
 helpcenter.downloads.download_action: Изтегли
-helpcenter.downloads.none: 'Все още няма изтегляния'
+helpcenter.downloads.no_files: 'Все още няма изтегляния'
 helpcenter.downloads.uploaded_on: Качен
 helpcenter.emails.chat_transcript: 'Благодарим ви за чата. Ето го вашия препис от чата.'
 helpcenter.emails.chat_transcript_subject: 'Чат препис'
@@ -131,7 +129,6 @@ helpcenter.flashes.article_cat_unsubscribe: 'Успешно прекратихт
 helpcenter.flashes.article_subscribe: 'Успешно се абонирахте към тази статия. Ще бъдете известени когато бъде обновена или когато има нов коментар.'
 helpcenter.flashes.article_unsubscribe: 'Успешно прекратихте абонамента си към тази статия.'
 helpcenter.flashes.article_unsubscribe_everything: 'Вие прекратихте абонамента си към всички известия относно базата знания'
-helpcenter.flashes.community_login: 'Трябва да влезете за да гласувате'
 helpcenter.flashes.community_subscribe: 'Успешно се абонирахте към тази общностна тема. Ще получите известия когато бъде обновена или когато има нов коментар.'
 helpcenter.flashes.community_unsubscribe: 'Успешно прекратихте абонамента си към тази общностна тема.'
 helpcenter.flashes.community_unsubscribe_everything: 'Успешно прекратихте абонамента си към всички известия относно общностни теми'
@@ -139,7 +136,6 @@ helpcenter.flashes.download_cat_subscribe: 'Успешно се абонирах
 helpcenter.flashes.download_subscribe: 'Успешно се абонирахте към това изтегляне. Ще получите известия когато бъде обновено или когато има нов коментар.'
 helpcenter.flashes.download_unsubscribe: 'Успешно прекратихте абонамента си към това изтегляне.'
 helpcenter.flashes.download_unsubscribe_everything: 'Успешно прекратихте абонамента си към всички известия относно изтегляния'
-helpcenter.flashes.email_sent: 'Имейлът ви беше изпратен'
 helpcenter.flashes.guest_content_must_verify: 'Преди да качим съдържанието ви трябва да потвърдите имейл адреса си. Моля провереде входящата си кутия. Изпратили сме ви линк за потвъждение.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Преди да можем да приемем тикета ви трябва да потвърдите имейл адреса си. Моля провереде входящата си кутия. Изпратили сме ви линк за потвъждение.'
 helpcenter.flashes.new_community_topic_awaiting_review: 'Благодарим ви за общностната тема. Ще бъде видима на портала за поддръжка след като агент я прегледа.'
@@ -150,7 +146,6 @@ helpcenter.flashes.news_unsubscribe: 'Успешно прекратихте аб
 helpcenter.flashes.news_unsubscribe_everything: 'Успешно прекратихте абонамента си към всички известия за новинарски статии'
 helpcenter.flashes.ticket_created: 'Тикетът ви беше изпратен. Благодарим ви!'
 helpcenter.flashes.ticket_feedback_thank_you: 'Благодарим ви за обратната връзка!'
-helpcenter.flashes.ticket_participant_add_unknown_error: 'Възникна проблем докато се опитвахме да добавим участника. Моля опитайте отново.'
 helpcenter.flashes.ticket_participant_already_error: 'Човекът който се опитвате да добавите като участник вече е участник в този тикет.'
 helpcenter.flashes.ticket_participant_email_error: 'Моля въведете валиден имейл адрес за вашия участник и опитайте отново.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Имаше проблем при опит за премахване на участника ви. Моля опитайте отново.'
@@ -193,12 +188,11 @@ helpcenter.general.chat: Чат
 helpcenter.general.comment_btn_save: 'Запази коментар'
 helpcenter.general.comments: Коментари
 helpcenter.general.comments_pending_validation: 'Този коментар се разглежда. Ще се визуализира скоро.'
-helpcenter.general.downloads_type: Изтегляния
+helpcenter.general.files_type: Изтегляния
 helpcenter.general.email_address: 'Имейл'
 helpcenter.general.everything: Всичко
 helpcenter.general.go_action: Давай
 helpcenter.general.impersonation_mode: 'Режим на представяне'
-helpcenter.general.in: в
 helpcenter.general.label_search_enter_label: 'Моля въведете етикет за който да търсите'
 helpcenter.general.last_activity: 'Последна активност'
 helpcenter.general.log_in: 'Влез'
@@ -236,7 +230,6 @@ helpcenter.news.recent_title: 'Скорошни новини'
 helpcenter.news.view_as_agent: 'Виждате рази страница защото сте агент. Нормалните потребители няма да могат да виждат тази страница.'
 helpcenter.profile.account_disabled_message: 'Акаунтът ви в момента е деактивиран. Не можете да влизате, да взаимодействате с тикети или да чатите.'
 helpcenter.profile.your_password: 'Вашата парола'
-helpcenter.tickets.cancel_ticket_edit: 'Отмени редакцията и ми покажи тикета отново'
 helpcenter.tickets.form_changed_notice: 'Добавени са нови полета към тази форма. Моля прегледайте тези полета и отново изпратете формата.'
 helpcenter.tickets.guest_thank_you_desc: 'Благодарим ви, че се свързахте с нас. Изпратихме ви имейл с инструкции как да управлявате тикета си при нас.'
 helpcenter.tickets.guest_thank_you_title: 'Благодарим ви'
@@ -267,7 +260,6 @@ helpcenter.tickets.resolve_my_ticket_action: 'Разреши тикета ми'
 helpcenter.tickets.switched_department_rerender: 'Структурата на тази форма може да се е променила. Моля прегледайте формата и изпратете отново.'
 helpcenter.tickets.thank_you_check_email: 'Моля потвърдете имейл адреса си'
 helpcenter.tickets.thank_you_check_email_desc: 'За да довършите изпращането на тикета си, трябва да проверите входната кутия на имейла си. Моля кликнете на линка за потвърждение, който сме ви изпратили.'
-helpcenter.tickets.timeline_attached: 'Прикачено с това съобщение:'
 helpcenter.tickets.timeline_marked: 'маркиран този тикет:'
 helpcenter.tickets.timeline_re_opened: 'отвори отново този тикет'
 helpcenter.tickets.view_btn_add_to_ticket: 'Добави към тикет'

@@ -410,7 +410,7 @@ class TicketsController extends AbstractController
      * @param Request $request
      * @param string  $ticket_ref
      *
-     * @return Response
+     * @return Response|NotFoundHttpException
      */
     public function addCcAction(Request $request, $ticket_ref)
     {
@@ -437,9 +437,9 @@ class TicketsController extends AbstractController
                 return $redirectResponse;
             }
 
-            $person_factory = $this->get('person_factory');
-            $context        = new CreatePersonContext('gateway.person');
-            $person         = $person_factory->getOrCreatePersonByEmail($email, $context);
+            $personFactory = $this->get('person_factory');
+            $context       = new CreatePersonContext('gateway.person');
+            $person        = $personFactory->getOrCreatePersonByEmail($email, $context);
 
             if ($person) {
                 // only set the name if this email doesn't have a name (a new person)
@@ -476,7 +476,7 @@ class TicketsController extends AbstractController
             $this->addFlash('error', $this->phrase(['portal.flashes.ticket_participant_email_error', 'helpcenter.flashes.ticket_participant_email_error']));
         } else {
             // return general error
-            $this->addFlash('error', $this->phrase(['portal.flashes.ticket_participant_add_unknown_error', 'helpcenter.flashes.ticket_participant_add_unknown_error']));
+            return $this->createNotFoundException();
         }
 
         return $redirectResponse;

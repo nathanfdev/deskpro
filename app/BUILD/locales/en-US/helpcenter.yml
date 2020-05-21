@@ -123,31 +123,27 @@ helpcenter.community.activity: Activity
 helpcenter.community.activity_commented: 'I commented'
 helpcenter.community.activity_created: 'I created'
 helpcenter.community.activity_voted: 'I voted'
-helpcenter.community.vote_action: 'I Agree'
+helpcenter.community.like_action: Like
 helpcenter.community.channel: Channel
 helpcenter.community.create_topic: Create
 helpcenter.community.create_topic_full: 'Create topic'
 helpcenter.community.create_topic_in_forum: 'Submit {forum}'
-helpcenter.community.error_hidden: 'This community topic is hidden'
 helpcenter.community.error_login: 'Please login'
 helpcenter.community.featured_topics: 'Featured topics'
 helpcenter.community.filters: Filters
 helpcenter.community.form_add_attachments: 'Add attachments'
-helpcenter.community.form_complete_help_message: 'Please complete this form and one of our agents will reply to you by email as soon as possible.'
 helpcenter.community.form_create_topic: 'Create Topic'
 helpcenter.general.name: Name
-helpcenter.community.form_message: Message
+helpcenter.community.form_description: Description
 helpcenter.community.form_submit: Submit
 helpcenter.community.form_topic_title: Title
 helpcenter.community.forum_name: 'Forum name'
-helpcenter.community.module_forbidden: 'You don''t have access to this module'
 helpcenter.community.my_activity: 'My Activity'
 helpcenter.community.no_matching: 'No matching community topics'
 helpcenter.community.none: 'No community topics could be found'
 helpcenter.community.official_response: 'Official response'
 helpcenter.community.rate_forbidden: 'You are not allowed to vote'
 helpcenter.community.recent_activity: 'Recent activity'
-helpcenter.community.related_tickets: 'Related tickets'
 helpcenter.community.reset_all_filters: 'Reset all filters'
 helpcenter.community.search_suggestions: 'Search suggestions'
 helpcenter.community.section_title: Community
@@ -158,7 +154,7 @@ helpcenter.community.title_author: 'Title / Author'
 helpcenter.community.view_list: 'List View'
 helpcenter.community.view_status_change: 'Status Change'
 helpcenter.community.view_topics: '{count, plural, one {View 1 topic} other {View # topics}}'
-helpcenter.community.votes: Votes
+helpcenter.community.likes: Likes
 helpcenter.direct_messages.back_to_messages: 'Back to my messages'
 helpcenter.direct_messages.block_user: 'block user'
 helpcenter.direct_messages.new_message: 'New Message'
@@ -172,7 +168,7 @@ helpcenter.direct_messages.unblock_user_action: 'unblock user'
 helpcenter.downloads.download_action: Download
 helpcenter.downloads.file_name: 'File Name'
 helpcenter.downloads.file_size: 'File Size'
-helpcenter.downloads.none: 'No downloads yet'
+helpcenter.downloads.no_files: 'No files'
 helpcenter.downloads.total_downloads: 'Total downloads'
 helpcenter.downloads.view_x_files: '{count, plural, one {View 1 download} other {View # downloads}}'
 helpcenter.duration_short.days: D
@@ -305,7 +301,6 @@ helpcenter.flashes.article_unsubscribe: 'You have successfully unsubscribed from
 helpcenter.flashes.article_unsubscribe_everything: 'You have unsubscribed from all Knowledgebase notifications'
 helpcenter.flashes.comment_thank_you: 'Thank you for your comment!'
 helpcenter.flashes.comment_thank_you_review: 'Thank you for your comment! It will be visible on the portal after agent review.'
-helpcenter.flashes.community_login: 'You should log in to vote'
 helpcenter.flashes.community_subscribe: 'You have successfully subscribed to this community topic. You will be notified when it is updated or when there is a new comment.'
 helpcenter.flashes.community_unsubscribe: 'You have successfully unsubscribed from this community topic.'
 helpcenter.flashes.community_unsubscribe_everything: 'You have unsubscribed from all community topics notifications'
@@ -314,7 +309,6 @@ helpcenter.flashes.download_cat_unsubscribe: 'You have successfully unsubscribed
 helpcenter.flashes.download_subscribe: 'You have successfully subscribed to this download. You will be notified when it is updated or when there is a new comment.'
 helpcenter.flashes.download_unsubscribe: 'You have successfully unsubscribed from this download.'
 helpcenter.flashes.download_unsubscribe_everything: 'You have unsubscribed from all downloads notifications'
-helpcenter.flashes.email_sent: 'Your email has been sent'
 helpcenter.flashes.guest_content_must_verify: 'Before we can post your content you must verify your email. Please check your email inbox. We have sent you a verification link.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Before we can accept your ticket we must verify your email address. Please check your email inbox. We have sent you a verification link.'
 helpcenter.flashes.new_community_topic_awaiting_review: 'Thank you for your community topic. It will be visible on our support portal after agent review.'
@@ -324,12 +318,11 @@ helpcenter.flashes.news_cat_unsubscribe: 'You have successfully unsubscribed fro
 helpcenter.flashes.news_subscribe: 'You have successfully subscribed to this news article. You will be notified when there are new comments.'
 helpcenter.flashes.news_unsubscribe: 'You have successfully unsubscribed from this news article.'
 helpcenter.flashes.news_unsubscribe_everything: 'You have unsubscribed from all news article notifications'
-helpcenter.flashes.rating_thanks: 'Thank you for your feedback!'
-helpcenter.flashes.ticket_created: 'Your ticket has been submitted. Thanks!'
+helpcenter.flashes.ticket_created: 'Your ticket has been submitted.'
+helpcenter.flashes.content_rating_thanks: 'Thank you for your feedback.'
 helpcenter.flashes.ticket_feedback_thank_you: 'Thank you for your feedback!'
 helpcenter.flashes.ticket_feedback_unknown_error: 'There was a problem when trying to send feedback. Please try again.'
 helpcenter.flashes.ticket_participant_add: 'We have added {name} ({email}) as a participant to this ticket.'
-helpcenter.flashes.ticket_participant_add_unknown_error: 'There was a problem when trying to add your participant. Please try again.'
 helpcenter.flashes.ticket_participant_already_error: 'The person you tried to add as a participant is already a participant on this ticket.'
 helpcenter.flashes.ticket_participant_cc_limit_reached: 'Maximum CC''s limit ({max}) reached'
 helpcenter.flashes.ticket_participant_email_error: 'Please enter a valid email for your participant and try again.'
@@ -404,12 +397,10 @@ helpcenter.general.cc: CC
 helpcenter.general.chat: Chat
 helpcenter.general.chats: Chats
 helpcenter.general.clear_all: 'Clear all'
-helpcenter.general.click_here_to_view: 'Click here to view'
 helpcenter.general.close: Close
 helpcenter.general.comment_btn_save: 'Save Comment'
 helpcenter.general.comment_login_first: 'You need to log in before you can submit a comment.'
 helpcenter.general.comments: Comments
-helpcenter.general.comments_count: '{count, plural, one {1 Comment} other {# Comments}}'
 helpcenter.general.comments_pending_validation: 'This comment is being reviewed. It will be displayed shortly'
 helpcenter.general.comments_title: '{count, plural, one {Comments (1)} other {Comments(#)}}'
 helpcenter.general.copied: copied
@@ -421,17 +412,16 @@ helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.date_short: '{date, date, short}'
 helpcenter.general.date_short_month: '{date, date, MMM}'
 helpcenter.general.department: Department
-helpcenter.general.download_type: Download
-helpcenter.general.downloads_type: Downloads
 helpcenter.general.drag_and_drop: 'Drag and drop'
 helpcenter.general.edit_this_page: 'Edit this page'
 helpcenter.general.email_address: 'Email Address'
-helpcenter.general.enter_comment_placeholder: 'Enter your comment here...'
 helpcenter.general.eula: EULA
 helpcenter.general.everything: Everything
 helpcenter.general.expand: Expand
+helpcenter.general.file_type: File
+helpcenter.general.files_type: Files
 helpcenter.general.filter: Filter
-helpcenter.general.first_published: 'First published'
+helpcenter.general.first_published: 'First Published'
 helpcenter.general.form_choose_file: 'Choose a file'
 helpcenter.general.form_choose_files: 'Choose files'
 helpcenter.general.go_action: Go
@@ -441,7 +431,6 @@ helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'The portal has bee
 helpcenter.general.helpdesk_system: 'Helpdesk system'
 helpcenter.general.ics_subscribe: iCalendar
 helpcenter.general.impersonation_mode: 'Impersonation mode'
-helpcenter.general.in: in
 helpcenter.general.label_search_enter_label: 'Please provide a label to search for'
 helpcenter.general.labels: Labels
 helpcenter.general.lang_change_to_current: 'Make <em>{lang}</em> my default language'
@@ -546,8 +535,8 @@ helpcenter.members.activity_group_last_month: 'Last Month'
 helpcenter.members.activity_group_this_year: 'This Year'
 helpcenter.members.activity_group_last_year: 'Last Year'
 helpcenter.members.activity_group_everything_else: 'Everything Else'
-helpcenter.members.company: 'Job Title & Company'
-helpcenter.members.joined_portal: 'Joined Portal'
+helpcenter.members.company: 'Company'
+helpcenter.members.date_joined: 'Date joined'
 helpcenter.members.language: Language
 helpcenter.members.name: Name
 helpcenter.members.no_activities: 'No Activities'
@@ -666,7 +655,6 @@ helpcenter.search.view_all_results: '{count, plural, one {View result} other {Vi
 helpcenter.search.your_tickets: 'Your tickets'
 helpcenter.sidebar.article_posted_by: 'Posted by'
 helpcenter.tickets.agent_reply: 'Agent reply'
-helpcenter.tickets.cancel_ticket_edit: 'Cancel edit and show me the ticket again'
 helpcenter.tickets.close_ticket: 'Close ticket'
 helpcenter.tickets.feedback_message_leave_comment: 'Or leave a comment'
 helpcenter.tickets.feedback_message_your_comment: 'Your comment'
@@ -724,7 +712,6 @@ helpcenter.tickets.ticket_closed: 'Ticket closed'
 helpcenter.tickets.ticket_properties: 'Ticket Properties'
 helpcenter.tickets.ticket_status: 'Ticket Status'
 helpcenter.tickets.tickets_i_m_cc_on: 'Tickets i’m CC’d on'
-helpcenter.tickets.timeline_attached: 'Attached with this message:'
 helpcenter.tickets.timeline_marked: 'marked this ticket:'
 helpcenter.tickets.timeline_marked_resolved: Resolved
 helpcenter.tickets.timeline_re_opened: 'reopened this ticket'
@@ -741,7 +728,6 @@ helpcenter.tickets.view_reply_errors: 'There are some errors with your submissio
 helpcenter.tickets.view_reply_or_close: 'Reply or <a href="{close_url}">close the ticket</a>'
 helpcenter.tickets.view_requester: Requester
 helpcenter.tickets.view_scroll_reply: 'Click here to scroll down to the form.'
-helpcenter.tickets.view_ticket_id: 'Ticket ID'
 helpcenter.tickets.view_unassigned: Unassigned
 helpcenter.tickets.view_unassigned_more: 'An agent will be assigned'
 helpcenter.tickets.view_you_created: 'Created'

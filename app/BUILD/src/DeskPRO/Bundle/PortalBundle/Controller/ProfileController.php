@@ -19,6 +19,7 @@ use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -245,7 +246,7 @@ class ProfileController extends AbstractController
         } elseif (!$profileForm->isSubmitted()) {
             FormValidatorChecker::submitForm($profileForm);
             if (!$profileForm->isValid()) {
-                $this->addFlash('error', $this->phrase(['portal.flashes.update_user_profile', 'helpcenter.flashes.update_user_profile']));
+                $profileForm->addError(new FormError($this->phrase(['portal.flashes.update_user_profile', 'helpcenter.flashes.update_user_profile'])));
             }
         }
 
