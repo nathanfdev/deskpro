@@ -47,7 +47,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.general.filter',
             'helpcenter.general.chats',
             'helpcenter.general.nav_community',
-            'helpcenter.general.downloads_type',
+            'helpcenter.general.files_type',
             'helpcenter.general.nav_guides',
             'helpcenter.general.nav_kb',
             'helpcenter.general.nav_news',

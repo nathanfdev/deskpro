@@ -13,8 +13,8 @@
         {% if person.organization and person.organization_manager %}
             <li class="dp-po-ticket-pages-item{% if type == 'organization' %} active{% endif %}">
                 <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-ticket-pages-link">
-                    {% if portal_custom_favicon() %}
-                        <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_favicon().url }}" class="dp-po-icon" />
+                    {% if person.organization.picture %}
+                        <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ person.organization.picture.thumbnailUrl }}" class="dp-po-icon" />
                     {% else %}
                         <span class="dp-po-icon fal fa-building"></span>
                     {% endif %}
@@ -22,13 +22,13 @@
                 </a>
             </li>
         {% endif %}
-        <li class="dp-po-ticket-pages-item">
+        <li class="dp-po-ticket-pages-item{% if type == 'chats' %} active{% endif %}">
             <a href="{{ path('portal_chats') }}" class="dp-po-ticket-pages-link">
                 <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/chats-light.svg', 'help_center') }}" /> {{ phrase('helpcenter.chats.my_chats') }}
             </a>
         </li>
         {% if app.getSetting('core_tickets.ticket_approvals') %}
-        <li class="dp-po-ticket-pages-item">
+        <li class="dp-po-ticket-pages-item{% if type == 'approvals' %} active{% endif %}">
             <a href="{{ path('ticket_approvals') }}" class="dp-po-ticket-pages-link">
                 <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my_approvals') }}
             </a>

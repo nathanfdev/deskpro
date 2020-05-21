@@ -40,7 +40,7 @@ helpcenter.forms.label_save: 保存
 helpcenter.general.add_comment: 'コメントを追加'
 helpcenter.general.attachments: 添付
 helpcenter.general.cancel_action: キャンセル
-helpcenter.general.downloads_type: ダウンロード
+helpcenter.general.files_type: ダウンロード
 helpcenter.general.everything: 全て
 helpcenter.general.go_action: 進む
 helpcenter.general.nav_downloads_desc: 'ダウンロードを検索'

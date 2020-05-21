@@ -44,9 +44,9 @@
                         {% if brand_setting('user.downloads_subscriptions') %}
                             {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
                                 subscriptionInfo: [
-                                    { toggleUrl: portal_path(file, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.general.download_type'), active: is_subscribed },
+                                    { toggleUrl: portal_path(file, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.general.file_type'), active: is_subscribed },
                                     { toggleUrl: portal_path(file.category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category },
-                                    { toggleUrl: path('portal_downloads_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.general.downloads_type'), active: is_subscribed_root },
+                                    { toggleUrl: path('portal_downloads_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.general.files_type'), active: is_subscribed_root },
                                 ]
                             } %}
                         {% endif %}

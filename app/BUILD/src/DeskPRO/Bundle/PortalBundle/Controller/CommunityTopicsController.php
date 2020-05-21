@@ -659,8 +659,6 @@ class CommunityTopicsController extends AbstractPublishController
                     ]
                 );
             } else {
-                $this->addFlash('notice', $this->phrase(['portal.flashes.community_login', 'helpcenter.flashes.community_login']));
-
                 return $this->redirectToRoute('portal_login', ['_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $topic->getSlug()])]);
             }
         }
@@ -681,7 +679,7 @@ class CommunityTopicsController extends AbstractPublishController
                 'success' => true,
             ]);
         } else {
-            $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.rating_thanks']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.content_rating_thanks']));
 
             return $this->redirectToRoute('portal_community_topic_view', ['slug' => $topic->getSlug()]);
         }

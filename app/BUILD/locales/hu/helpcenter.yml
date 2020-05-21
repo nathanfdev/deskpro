@@ -45,7 +45,7 @@ helpcenter.general.add_comment: 'Kérjük ebbe a mezőbe írja hozzászólását
 helpcenter.general.attachments: Mellékletek
 helpcenter.general.cancel_action: Mégsem
 helpcenter.general.comments: Hozzászólás?
-helpcenter.general.downloads_type: Letöltések
+helpcenter.general.files_type: Letöltések
 helpcenter.general.everything: Minden
 helpcenter.general.go_action: Mehet
 helpcenter.general.log_in: 'Bejelentkezés'

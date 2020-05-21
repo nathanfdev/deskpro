@@ -68,7 +68,7 @@ helpcenter.general.add_comment: 'Lisää kommentti'
 helpcenter.general.agent: Asiantuntija
 helpcenter.general.attachments: Liitetiedostot
 helpcenter.general.cancel_action: Peruuta
-helpcenter.general.downloads_type: Lataukset
+helpcenter.general.files_type: Lataukset
 helpcenter.general.everything: Kaikki
 helpcenter.general.go_action: Mene
 helpcenter.general.log_in: 'Kirjaudu'

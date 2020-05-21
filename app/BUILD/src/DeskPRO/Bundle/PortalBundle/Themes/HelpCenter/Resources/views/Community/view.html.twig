@@ -182,7 +182,7 @@
         <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.created_by') }}</h3>
         <p>{{ topic.person.display_name_user }}</p>
         <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.published') }}</h3>
-        <p>{{ date(topic.date_published, 'day')}}</p>
+        <p>{{ phrase('helpcenter.general.date_medium', { date:topic.date_published }) }}</p>
 
         {% if topic.getCustomDataSelection() %}
             <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.category') }}</h3>
@@ -190,7 +190,7 @@
         {% endif %}
         {% if topic.isClosed() %}
             <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }}</h3>
-            <p>{{ date(topic.date_updated, 'day')}} {{ topic.status }}</p>
+            <p>{{ phrase('helpcenter.general.date_medium', { date:topic.date_updated }) }} {{ topic.status }}</p>
         {% endif %}
     </div>
 {% endblock page_sidebar %}

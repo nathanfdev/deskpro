@@ -36,7 +36,7 @@
                                         <h3 class="dp-po-profile-extras-title">{{ phrase('helpcenter.members.timezone') }}</h3>
                                         <p class="dp-po-profile-extras-desc">{{ null|date('(e P) ', person.timezone) ~ " #{person.timezone}" }}</p>
                                     {% endif %}
-                                    <h3 class="dp-po-profile-extras-title">{{ phrase('helpcenter.members.joined_portal') }}</h3>
+                                    <h3 class="dp-po-profile-extras-title">{{ phrase('helpcenter.members.date_joined') }}</h3>
                                     <p class="dp-po-profile-extras-desc">{{ date_ago(person.date_created) }}</p>
                                 </div>
                                 {% if person.primary_email %}
@@ -54,7 +54,9 @@
                                 {% for group, activities in activities %}
                                     <div class="dp-po-timeline">
                                         <span class="dp-po-timeline-block">
-                                            <i class="dp-po-icon far fa-calendar"></i>
+                                            <span class="dp-po-icon">
+                                                <i class="far fa-calendar"></i>
+                                            </span>
                                             {% if group == 'today' %}
                                                 {{ phrase('helpcenter.members.activity_group_today') }}
                                             {% elseif group == 'this_week' %}
@@ -83,7 +85,7 @@
                                                 } %}
                                                 <div class="dp-po-time">
                                                     <i class="dp-po-icon far fa-clock"></i>
-                                                    {{ date_ago(activity.date) }}
+                                                    {{ date_ago(activity.date, null, true, true) }}
                                                 </div>
                                             </li>
                                         {% endfor %}

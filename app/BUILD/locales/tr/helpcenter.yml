@@ -50,7 +50,7 @@ helpcenter.general.agent: Personel
 helpcenter.general.attachments: Ekler
 helpcenter.general.cancel_action: Vazgeç
 helpcenter.general.comments: Yorumlar?
-helpcenter.general.downloads_type: İndirmeler
+helpcenter.general.files_type: İndirmeler
 helpcenter.general.everything: Her şey
 helpcenter.general.go_action: Git
 helpcenter.general.nav_downloads_desc: 'İndirmelere gözat'

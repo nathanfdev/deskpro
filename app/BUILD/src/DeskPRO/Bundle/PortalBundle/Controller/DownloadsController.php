@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
@@ -446,7 +444,7 @@ class DownloadsController extends AbstractController
             $this->getRatingsHelper()->rateContentUp($file, $visitor_id, $person);
         }
 
-        $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.rating_thanks']));
+        $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.content_rating_thanks']));
 
         return $this->redirectToRoute('portal_downloads_view', ['slug' => $file->getSlug()]);
     }

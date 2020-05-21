@@ -67,7 +67,7 @@
                       {{ phrase('helpcenter.general.last_update_by', { date_updated: lastMessage.date_created, person_name: lastPerson }) }}
                     </li>
                     <li class="dp-po-post-info-item">
-                      <i class="dp-po-icon far fa-calendar-alt"></i> <b>{{ date(chat.date_created, 'day') }}</b>
+                      <i class="dp-po-icon far fa-calendar-alt"></i> <b>{{ phrase('helpcenter.general.date_medium', { date:chat.date_created }) }}</b>
                     </li>
                   </ul>
                 </div>

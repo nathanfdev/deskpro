@@ -123,7 +123,6 @@ helpcenter.flashes.article_cat_unsubscribe: 'Έχετε απεγγραφεί ε�
 helpcenter.flashes.article_subscribe: 'Έχετε εγγραφεί επιτυχώς σε αυτό το άρθρο. Θα ειδοποιείστε όταν το άρθρο ενημερώνεται ή υπάρχει νέο σχόλιο.'
 helpcenter.flashes.article_unsubscribe: 'Έχετε απεγγραφεί επιτυχώς από αυτό το άρθρο.'
 helpcenter.flashes.article_unsubscribe_everything: 'Έχετε απεγγραφεί επιτυχώς από όλες τις ειδοποιήσεις της Γνωσιακής Βάσης'
-helpcenter.flashes.community_login: 'Πρέπει να συνδεθείτε για να ψηφίσετε'
 helpcenter.flashes.community_subscribe: 'Έχετε εγγραφεί επιτυχώς σε αυτό το στοιχείο community topic. Θα ειδοποιείστε όταν υπάρχουν ενημερώσεις ή νέα σχόλια.'
 helpcenter.flashes.community_unsubscribe: 'Έχετε απεγγραφεί επιτυχώς από αυτό το στοιχείο community topic.'
 helpcenter.flashes.community_unsubscribe_everything: 'Έχετε απεγγραφεί επιτυχώς από όλες τις ειδοποιήσεις στοιχείων community topic.'
@@ -131,7 +130,6 @@ helpcenter.flashes.download_cat_subscribe: 'Έχετε εγγραφεί επιτ
 helpcenter.flashes.download_subscribe: 'Έχετε εγγραφεί επιτυχώς σε αυτή τη λήψη. Θα ειδοποιείστε όταν υπάρχουν ενημερώσεις ή νέα σχόλια.'
 helpcenter.flashes.download_unsubscribe: 'Έχετε απεγγραφεί επιτυχώς από αυτή τη λήψη.'
 helpcenter.flashes.download_unsubscribe_everything: 'Έχετε απεγγραφεί από όλες τις ειδοποιήσεις λήψεων'
-helpcenter.flashes.email_sent: 'Το email σας έχει σταλεί'
 helpcenter.flashes.guest_content_must_verify: 'Προτού μπορέσουμε να δημοσιεύσουμε το περιεχόμενό σας, πρέπει να επιβεβαιώσετε το email σας. Ελέγξτε τα εισερχόμενα email σας. Σας έχουμε στείλει ένα link επιβεβαίωσης.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Προτού αποδεχτούμε το αίτημά σας, πρέπει να επιβεβαιώσετε το email σας. Ελέγξτε τα εισερχόμενα email σας. Σας έχουμε στείλει ένα link επιβεβαίωσης.'
 helpcenter.flashes.new_community_topic_awaiting_review: 'Ευχαριστούμε για το community topic. Θα είναι ορατό στην πλατφόρμα μας αφού εγκριθεί από κάποιον εκπρόσωπο του Support μας.'
@@ -140,9 +138,8 @@ helpcenter.flashes.news_cat_subscribe: 'Έχετε εγγραφεί επιτυχ
 helpcenter.flashes.news_subscribe: 'Έχετε εγγραφεί επιτυχώς σε αυτό το ενημερωτικό άρθρο. Θα ενημερώνεστε όταν υπάρχουν νέα σχόλια.'
 helpcenter.flashes.news_unsubscribe: 'Έχετε απεγγραφεί επιτυχώς από αυτό το ενημερωτικό άρθρο.'
 helpcenter.flashes.news_unsubscribe_everything: 'Έχετε απεγγραφεί επιτυχώς από όλα τα ενημερωτικά άρθρα.'
-helpcenter.flashes.ticket_created: 'Το αίτημά σας έχει καταχωρηθεί. Ευχαριστούμε!'
+helpcenter.flashes.ticket_created: 'Το αίτημά σας έχει καταχωρηθεί.'
 helpcenter.flashes.ticket_feedback_thank_you: 'Ευχαριστούμε για το community topic!'
-helpcenter.flashes.ticket_participant_add_unknown_error: 'Υπήρξε ένα πρόβλημα όταν προσπαθήσατε να προσθέσετε τον συμμετέχοντα. Παρακαλούμε δοκιμάστε ξανά.'
 helpcenter.flashes.ticket_participant_already_error: 'Το άτομο που προσπαθήσατε να προσθέσετε σαν συμμετέχοντα, συμμετέχει ήδη σε αυτό το ticket.'
 helpcenter.flashes.ticket_participant_email_error: 'Παρακαλούμε προσθέστε ένα έγκυρο email για τον συμμετέχοντα και δοκιμάστε ξανά.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Υπήρξε ένα πρόβλημα όταν προσπαθήσατε να αφαιρέσετε τον συμμετέχοντα. Παρακαλούμε δοκιμάστε ξανά.'
@@ -183,11 +180,10 @@ helpcenter.general.subscribe_action: Εγγραφή
 helpcenter.general.comment_btn_save: 'Αποθήκευση σχολίου'
 helpcenter.general.comments: Σχόλια
 helpcenter.general.comments_pending_validation: 'Αυτό το σχόλιο είναι υπό έγκριση. Θα εμφανιστεί σύντομα'
-helpcenter.general.downloads_type: Λήψεις
+helpcenter.general.files_type: Λήψεις
 helpcenter.general.everything: Όλα
 helpcenter.general.go_action: Εκκίνηση
 helpcenter.general.impersonation_mode: 'Λειτουργία πλαστοπροσωπίας'
-helpcenter.general.in: μέσα
 helpcenter.general.label_search_enter_label: 'Παρακαλούμε υποβάλετε μια ετικέτα για αναζήτηση'
 helpcenter.general.last_activity: 'Τελευταία δραστηριότητα'
 helpcenter.general.log_in: 'Σύνδεση'
@@ -223,7 +219,6 @@ helpcenter.news.recent_title: 'Πρόσφατα νέα'
 helpcenter.news.view_as_agent: 'Μπορείτε να δείτε αυτήν τη σελίδα επειδή είστε διαχειριστής. Οι απλοί χρήστες δεν μπορούν να δουν αυτήν τη σελίδα.'
 helpcenter.profile.account_disabled_message: 'Ο λογαριασμός σας είναι προσωρινά απενεργοποιημένος. Δεν μπορείτε να συνδεθείτε ή να χρησιμοποιήσετε τα tickets και το chat.'
 helpcenter.profile.your_password: 'Κωδικός πρόσβασης'
-helpcenter.tickets.cancel_ticket_edit: 'Ακύρωση επεξεργασίας και προβολή του ticket'
 helpcenter.tickets.form_changed_notice: 'Έχουν προστεθεί νέα πεδία στη φόρμα. Παρακαλούμε ελέγξτε τα και υποβάλετε ξανά τη φόρμα.'
 helpcenter.tickets.guest_thank_you_desc: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας! Σας έχουμε στείλει ένα email με οδηγίες σχετικά με την διαχείριση του ticket σας.'
 helpcenter.tickets.guest_thank_you_title: 'Ευχαριστούμε!'
@@ -254,7 +249,6 @@ helpcenter.tickets.resolve_my_ticket_action: 'Κλείσιμο του ticket μ�
 helpcenter.tickets.switched_department_rerender: 'Η δομή αυτής της φόρμας ίσως έχει αλλάξει. Παρακαλούμε ελέξτε τη φόρμα και υποβάλετε την ξανά.'
 helpcenter.tickets.thank_you_check_email: 'Παρακαλούμε επιβεβαιώστε το email σας'
 helpcenter.tickets.thank_you_check_email_desc: 'Για να ολοκληρώσετε την υποβολή του ticket σας, πρέπει να ελέγξετε τα email σας. Παρακαλούμε, κάντε click στο link επιβεβαίωσης που σας έχουμε στείλει.'
-helpcenter.tickets.timeline_attached: 'Επισύναψη σε αυτό το μήνυμα:'
 helpcenter.tickets.timeline_marked: 'σημείωσε αυτό το ticket:'
 helpcenter.tickets.timeline_re_opened: 'άνοιξε εκ νέου αυτό το ticket'
 helpcenter.tickets.view_btn_add_to_ticket: 'Προσθήκη σε ticket'

@@ -22,7 +22,7 @@
                         {% for participant in ticket.participants %}
                             {% if not  participant.person.isAgent() %}
                                 <li class="dp-po-ticket-block-cc-item">
-                                    {{ participant.person }}
+                                    {{ participant.person }} ({{ participant.email_address }})
                                     <a href="{{ path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id }) }}" class="remove-cc-from-reply" data-participant-id="{{ participant.id }}">
                                         <i class="fal fa-times"></i>
                                     </a>
@@ -67,15 +67,15 @@
             </div>
         </div>
     {% else %}
-        {% if can_view_tickets_link() %}
-            <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary">
-                {{ phrase('helpcenter.tickets.new_ticket_button') }}
+        {% if ticket.resolved and is_granted('TICKET_REOPEN_RESOLVED', ticket) %}
+            <a href="{{ portal_path(ticket, 'unresolve') }}" class="btn btn-primary post-link">
+                {{ phrase('helpcenter.tickets.mark_unresolved') }}
             </a>
         {% endif %}
 
-        {% if ticket.resolved and is_granted('TICKET_REOPEN_RESOLVED', ticket) %}
-            <a href="{{ portal_path(ticket, 'unresolve') }}" class="btn btn-outline-primary post-link">
-                {{ phrase('helpcenter.tickets.mark_unresolved') }}
+        {% if can_view_tickets_link() %}
+            <a href="{{ path('portal_new_ticket') }}" class="btn btn-outline-primary">
+                {{ phrase('helpcenter.tickets.new_ticket_button') }}
             </a>
         {% endif %}
     {% endif %}

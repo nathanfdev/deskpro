@@ -49,7 +49,7 @@ helpcenter.general.add_comment: '댓글 등록'
 helpcenter.general.agent: 에이전트
 helpcenter.general.attachments: 첨부파일
 helpcenter.general.cancel_action: 취소
-helpcenter.general.downloads_type: 다운로드 파일들
+helpcenter.general.files_type: 다운로드 파일들
 helpcenter.general.everything: 전체
 helpcenter.general.go_action: 등록
 helpcenter.general.nav_downloads_desc: '다운로드 보기'

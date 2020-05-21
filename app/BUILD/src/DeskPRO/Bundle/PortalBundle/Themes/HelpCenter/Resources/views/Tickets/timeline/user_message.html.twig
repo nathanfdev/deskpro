@@ -20,7 +20,7 @@
 
   {% if msg.getAttachmentsList()|length > 0 %}
     <div class="dp-po-ticket-attachments">
-      <h4 class="dp-po-ticket-attachments-title">{{ phrase('helpcenter.tickets.timeline_attached') }}</h4>
+      <h4 class="dp-po-ticket-attachments-title">{{ phrase('helpcenter.general.attachments') }}</h4>
       <ul class="dp-po-ticket-attachments-list">
         {% for attachment in msg.getAttachmentsList() %}
           <li class="dp-po-ticket-attachments-item">

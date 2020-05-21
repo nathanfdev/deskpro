@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import moment from 'moment';
+import $ from 'jquery';
 import { copyTextToClipboard } from 'DeskPRO/Component/Util/ClipBoard';
 import { TopicSummary } from '../index';
 
@@ -22,24 +23,22 @@ class Topic extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {
-      copied: false
-    };
+    this.anchor = React.createRef();
   }
 
   copyLinkToClipBoard = (e) => {
     e.preventDefault();
-    const { topic, guideSlug } = this.props;
+    const { topic, guideSlug, intl } = this.props;
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
     const url = `${window.location.origin}${baseUrl}/guides/${guideSlug}/${topic.slug}`;
     if (copyTextToClipboard(url)) {
-      this.setState({
-        copied: true
-      });
-      setTimeout(() => { this.setState({ copied: false }); }, 1000);
+      $(this.anchor.current).attr('data-original-title', intl.formatMessage({ id: 'helpcenter.general.copied' })).tooltip('show');
+      setTimeout(() => {
+        $(this.anchor.current).attr('data-original-title', intl.formatMessage({ id: 'helpcenter.general.copy_to_clipboard' })).tooltip('hide');
+      }, 1000);
     }
     return false;
   };
@@ -87,10 +86,10 @@ class Topic extends React.PureComponent {
                       data-placement="top"
                       href={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
                       onClick={this.copyLinkToClipBoard}
+                      ref={this.anchor}
                       title={intl.formatMessage({ id: 'helpcenter.general.copy_to_clipboard' })}
                     >
                       <span className="dp-po-icon far fa-anchor" />
-                      {this.state.copied && <FormattedMessage id="helpcenter.general.copied" />}
                     </a>
                   </h2>
                   { topic.parent &&
