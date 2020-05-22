@@ -3916,8 +3916,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           hourVal = parseInt(hourVal);
           minVal = parseInt(minVal) || 0;
 
-          setTime = hourVal + ':' + minVal;
-          setTimeDisplay = (hourVal < 10 ? '0'+hourVal : hourVal) + ':' + (minVal < 10 ? '0'+minVal : minVal);
+          setTime = (hourVal < 10 ? '0'+hourVal : hourVal) + ':' + (minVal < 10 ? '0'+minVal : minVal);
+          setTimeDisplay = setTime;
         }
 
         field.val(setTime);
