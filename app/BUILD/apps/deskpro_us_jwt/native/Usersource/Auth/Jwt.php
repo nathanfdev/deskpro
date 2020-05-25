@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace deskpro_us_jwt\Usersource\Auth;
 
 use Firebase\JWT\JWT as BaseJWT;
@@ -62,6 +58,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
                 'Attempting JWT Callback', Logger::DEBUG
             );
         }
+
         try {
             return $this->tryJwtAuth($callback_data);
         } catch (\Exception $e) {
@@ -82,6 +79,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
                 'Attempting SSO Action', Logger::DEBUG
             );
         }
+
         try {
             return $this->tryJwtAuth($_REQUEST);
         } catch (\Exception $e) {
@@ -135,6 +133,8 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
     /**
      * Allow external processes to determine and set the logout URL if needed. Should override any internal logic for
      * logout URL.
+     *
+     * @param mixed $url
      */
     public function setLogoutRedirectUrl($url)
     {
@@ -173,9 +173,12 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
             $secret          = $this->options->get('secret');
             BaseJWT::$leeway = 60 * 15; // give 15 minutes of "leeway" around the token expiration
             $payload         = BaseJWT::decode($jwt, $secret, [$this->options->get('algo', 'HS256')]);
-            $payload_array   = Arrays::fromStdClass($payload);
+            $payloadArray    = Arrays::fromStdClass($payload);
 
-            if (empty($payload_array['email'])) {
+            if (empty($payloadArray['id'])) {
+                throw new \InvalidArgumentException('Missing required `id` in payload data');
+            }
+            if (empty($payloadArray['email'])) {
                 throw new \InvalidArgumentException('Missing required `email` in payload data');
             }
 
@@ -189,15 +192,15 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
                     "Decoding with secret: $secret", Logger::DEBUG
                 );
                 $this->logger->log(
-                    "Payload contents: \n".trim(Arrays::implodeTemplate($payload_array, "{KEY}: {VAL}\n")), Logger::DEBUG
+                    "Payload contents: \n".trim(Arrays::implodeTemplate($payloadArray, "{KEY}: {VAL}\n")), Logger::DEBUG
                 );
                 $this->logger->log(
-                    'Identity: '.$payload_array['id'], Logger::DEBUG
+                    'Identity: '.$payloadArray['id'], Logger::DEBUG
                 );
             }
 
-            $identity = new Identity($payload_array['id'], $payload_array);
-            $identity->setFriendlyIdentity($payload_array['email']);
+            $identity = new Identity($payloadArray['id'], $payloadArray);
+            $identity->setFriendlyIdentity($payloadArray['email']);
             $result = new Result(Result::SUCCESS, $identity);
         } catch (\Exception $e) {
             if ($this->logger) {
