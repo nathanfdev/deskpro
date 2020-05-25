@@ -4609,6 +4609,7 @@ class TicketController extends AbstractController
                     'messages'      => $messages,
                     'person'        => $this->getPerson(),
                     'agent_message' => $customMessage,
+                    'attachments'   => $attachments,
                 ]
             );
         }
@@ -4836,11 +4837,13 @@ class TicketController extends AbstractController
         $ticketEmail = $emailBuilder->buildTicketEmail();
 
         $vars = [
-            'ticket'        => $ticket,
-            'subject'       => $this->in->getString('subject'),
-            'messages'      => $messages,
-            'person'        => $this->getPerson(),
-            'agent_message' => $customMessage,
+            'ticket'         => $ticket,
+            'subject'        => $this->in->getString('subject'),
+            'messages'       => $messages,
+            'person'         => $this->getPerson(),
+            'agent_message'  => $customMessage,
+            'attachments'    => $attachments,
+            'attached_blobs' => $ticketMessage->getAttachments(),
         ];
 
         if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
