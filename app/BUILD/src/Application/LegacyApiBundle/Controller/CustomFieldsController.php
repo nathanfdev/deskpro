@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\LegacyApiBundle\Controller;
 
@@ -12,6 +10,7 @@ use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefDownload;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
@@ -291,6 +290,7 @@ class CustomFieldsController extends AbstractController
             'chats'         => CustomDefChat::class,
             'kb'            => CustomDefArticle::class,
             'download'      => CustomDefDownload::class,
+            'community'     => CustomDefCommunityTopic::class,
         ];
 
         if (!$repClass = @$types[$this->in->getString('type')]) {
@@ -346,6 +346,7 @@ class CustomFieldsController extends AbstractController
                 $response['default'] = $options ? key($options) : null;
 
                 return $this->createJsonResponse($response);
+
                 break;
 
             case 2:
@@ -360,6 +361,7 @@ class CustomFieldsController extends AbstractController
                 $rep->delete($ids);
 
                 return $this->createSuccessResponse();
+
                 break;
         }
 

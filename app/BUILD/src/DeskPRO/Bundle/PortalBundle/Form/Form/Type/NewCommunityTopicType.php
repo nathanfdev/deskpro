@@ -213,7 +213,8 @@ class NewCommunityTopicType extends AbstractType
             if (!$def->getTitle()) {
                 switch ($def->sys_name) {
                     case 'chan':
-                        $def->setTitle($this->phrase(["portal.community.form_custom_cat", "helpcenter.community.channel"]));
+                    case 'cat':
+                        $def->setTitle($this->phrase(["portal.community.form_custom_cat", "helpcenter.community.category"]));
 
                         break;
                     default:

@@ -966,6 +966,7 @@
 				</div>
 			</footer>
 			<footer ng-hide="EditCtrl.field_type == '0'">
+				{% block bottomdefault_buttons %}
 				<div class="dp-content">
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
@@ -987,6 +988,7 @@
 						</div>
 					</div>
 				</div>
+				{% endblock %}
 			</footer>
 		</section>
 	</form>

@@ -37,3 +37,27 @@
 
 {% block bottomdefault_fields %}
 {% endblock %}
+
+{% block bottomdefault_buttons %}
+    <div class="dp-content">
+        <div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+            <p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
+            <ul>
+                <li ng-show="form_props.title.$error.required">{{ phrase('adm.custom_fields.title_error') }}</li>
+            </ul>
+        </div>
+
+        <div class="dp-delete-control" ng-if="EditCtrl.field.id && EditCtrl.field.sys_name == null" ng-hide="form_props.$attempted && form_props.$invalid">
+            <button class="btn btn-danger" type="button" ng-click="EditCtrl.startDelete();">Delete</button>
+        </div>
+
+        <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+            <div dp-hide-spinning="saving">
+                <button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
+            </div>
+            <div dp-show-spinning="saving">
+                <i class="spinner-flat"></i>
+            </div>
+        </div>
+    </div>
+{% endblock %}
