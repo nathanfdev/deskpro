@@ -84,6 +84,7 @@ class CommunityTopicType extends AbstractType
                 'required'       => false,
                 'forms'          => $this->getCustomDataFields($options),
                 'error_bubbling' => false,
+                'fields_group'   => true,
             ])
             ->add('is_reviewed', ApiBooleanType::class, [
                 'required' => false,

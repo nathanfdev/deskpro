@@ -32,6 +32,10 @@ class CombinedType extends AbstractType
             ->setDefaults([
                 'mapped'       => false,
                 'inherit_data' => true,
+
+                // mark child forms as separate form fields
+                // it allows to display 'help' block in each form field and wrap the fields in a 'form-group'
+                'fields_group' => false,
             ])
         ;
     }
