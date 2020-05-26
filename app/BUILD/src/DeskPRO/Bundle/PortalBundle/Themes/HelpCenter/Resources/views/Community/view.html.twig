@@ -184,8 +184,10 @@
     <dl class="dp-po-post-meta">
         <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.created_by') }}</dt>
         <dd>{{ topic.person.display_name_user }}</dd>
-        <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.published') }}</dt>
-        <dd>{{ phrase('helpcenter.general.date_medium', { date:topic.date_published }) }}</dd>
+        {% if topic.date_published %}
+            <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.published') }}</dt>
+            <dd>{{ phrase('helpcenter.general.date_medium', { date:topic.date_published }) }}</dd>
+        {% endif %}
 
         {% if topic.getCustomDataSelection() %}
             <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.category') }}</dt>

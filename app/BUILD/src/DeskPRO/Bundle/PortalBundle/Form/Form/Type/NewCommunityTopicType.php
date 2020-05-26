@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
@@ -121,9 +122,14 @@ class NewCommunityTopicType extends AbstractType
             }
         }
 
+        $forum = null;
+        if ($options['data']) {
+            $forum = $options['data']->getForum();
+        }
+
         $builder
             ->add('custom_data', CombinedType::class, [
-                'forms'        => $this->getCustomDataForms(),
+                'forms'        => $this->getCustomDataForms($forum),
                 'fields_group' => true,
             ])
             ->add('attachments', CommunityTopicAttachmentCollectionType::class, [
@@ -203,14 +209,29 @@ class NewCommunityTopicType extends AbstractType
     }
 
     /**
+     * @param null|CommunityForum $forum
+     *
+     * @throws \Exception
+     *
      * @return array
      */
-    protected function getCustomDataForms()
+    protected function getCustomDataForms($forum = null)
     {
         $forms = [];
         $defs  = $this->fieldManager->getAvailableCommunityDefs();
 
         foreach ($defs as $def) {
+            if ($forum && count($def->getForums()) > 0) {
+                $forumPresent = false;
+                foreach ($def->getForums() as $defForum) {
+                    if ($defForum->getForum()->getId() === $forum->getId()) {
+                        $forumPresent = true;
+                    }
+                }
+                if (!$forumPresent) {
+                    continue;
+                }
+            }
             if (!$def->getTitle()) {
                 switch ($def->sys_name) {
                     case 'chan':
