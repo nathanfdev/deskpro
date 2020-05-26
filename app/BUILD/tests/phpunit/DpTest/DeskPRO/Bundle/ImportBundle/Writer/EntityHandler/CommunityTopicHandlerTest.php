@@ -100,6 +100,7 @@ class CommunityTopicHandlerTest extends AbstractEntityHandlerTest
         $forum->setRealTitle('forum');
         $forum->setNoun('forum');
         $forum->setPlural('forums');
+        $forum->setVerbAction('Add forum');
 
         $this->em()->persist($forum);
         $this->em()->flush();
