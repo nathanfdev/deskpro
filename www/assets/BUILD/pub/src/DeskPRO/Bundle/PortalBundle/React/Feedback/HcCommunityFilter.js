@@ -11,7 +11,7 @@ import { HcResultsPartial } from './HcResultsPartial';
 export class HcCommunityFilter extends React.Component {
 
   static propTypes = {
-    filter_data: PropTypes.object
+    filter_data: PropTypes.object,
   };
 
   constructor(props) {

@@ -1,13 +1,8 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Translate\Translate;
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
 use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
@@ -35,6 +30,21 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
      * @var string|null
      */
     protected $description;
+
+    /**
+     * @var string|null
+     */
+    protected $noun;
+
+    /**
+     * @var string|null
+     */
+    protected $plural;
+
+    /**
+     * @var string|null
+     */
+    protected $verb_action;
 
     /**
      * @var CommunityForum
@@ -118,6 +128,66 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     }
 
     /**
+     * @return string|null
+     */
+    public function getNoun()
+    {
+        return $this->noun;
+    }
+
+    /**
+     * @param string|null $noun
+     *
+     * @return CommunityForum
+     */
+    public function setNoun($noun)
+    {
+        $this->setModelField('noun', $noun);
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPlural()
+    {
+        return $this->plural;
+    }
+
+    /**
+     * @param string|null $plural
+     *
+     * @return CommunityForum
+     */
+    public function setPlural($plural)
+    {
+        $this->setModelField('plural', $plural);
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getVerbAction()
+    {
+        return $this->verb_action;
+    }
+
+    /**
+     * @param string|null $verb_action
+     *
+     * @return CommunityForum
+     */
+    public function setVerbAction($verb_action)
+    {
+        $this->setModelField('verb_action', $verb_action);
+
+        return $this;
+    }
+
+    /**
      * @return Brand
      */
     public function getBrand()
@@ -171,6 +241,20 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     public function removeUsergroup(Usergroup $usergroup)
     {
         $this->usergroups->removeElement($usergroup);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPhraseDefault($property, Translate $translate)
+    {
+        if ($property === 'noon') {
+            return $this->getNoun();
+        } elseif ($property === 'plural') {
+            return $this->getPlural();
+        }
+
+        return parent::getPhraseDefault($property, $translate);
     }
 
     /**
@@ -357,6 +441,39 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'title',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'noun',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'noun',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'plural',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'plural',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'verb_action',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'verb_action',
             ]
         );
         $metadata->mapField(

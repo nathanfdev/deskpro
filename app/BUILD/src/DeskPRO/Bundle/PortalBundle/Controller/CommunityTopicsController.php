@@ -287,9 +287,9 @@ class CommunityTopicsController extends AbstractPublishController
         // SECURITY
         // a permissions check, if the user can't see one of these filtered "types" (i.e. CommunityForum)
         $permissionsBag       = $this->getPermissionBag($person);
-        $allowed_category_ids = $permissionsBag->getAllowedCommunityForumIds();
+        $allowedCategoryIds   = $permissionsBag->getAllowedCommunityForumIds();
         foreach ($filter->getTypes() as $type) {
-            if (!in_array($type, $allowed_category_ids)) {
+            if (!in_array($type, $allowedCategoryIds)) {
                 throw new AccessDeniedException(
                     'you dont have access to a category you are trying to filter for
                 ');
@@ -461,8 +461,9 @@ class CommunityTopicsController extends AbstractPublishController
         }
 
         return $this->renderThemeView('Theme:Community:create-topic.html.twig', [
-            'form'        => $form->createView(),
-            'breadcrumbs' => $this->getBreadcrumbGenerator()->buildCommunityCreate($forum),
+            'form'          => $form->createView(),
+            'current_forum' => $forum,
+            'breadcrumbs'   => $this->getBreadcrumbGenerator()->buildCommunityCreate($forum),
         ]);
     }
 
@@ -792,7 +793,8 @@ class CommunityTopicsController extends AbstractPublishController
 
         $allowedTypesParsed = [];
         foreach ($communityForums as $cat) {
-            $allowedTypesParsed[$cat->getId()] = $this->objectPhrase($cat);
+            $allowedTypesParsed[$cat->getId()]['title']  = $this->objectPhrase($cat);
+            $allowedTypesParsed[$cat->getId()]['plural'] = $this->objectPhrase($cat, 'plural');
         }
 
         $statusCategories       = [];

@@ -25,7 +25,7 @@ export class HcSearch extends React.Component {
   render() {
     return (
       <form className="dp-po-community-header-search" onSubmit={this.handleSubmit}>
-        <input type="text" value={this.state.q} onChange={this.setQ} placeholder={portalPhrases.get('helpcenter.community.search_suggestions')} />
+        <input type="text" value={this.state.q} onChange={this.setQ} placeholder={portalPhrases.get('helpcenter.label.search')} />
         <button type="submit"><i className="dp-po-icon far fa-search" /></button>
       </form>
     );

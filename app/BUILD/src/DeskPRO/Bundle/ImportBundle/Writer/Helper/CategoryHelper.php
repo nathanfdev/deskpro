@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ImportBundle\Writer\Helper;
 
 use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\ImportMap;
 use Application\DeskPRO\Entity\TicketCategory;
 use DeskPRO\Bundle\ImportBundle\Writer\EntityPersister;
@@ -51,7 +52,7 @@ class CategoryHelper
      */
     public function __construct(
         ImportMapMapper $importMapMapper,
-        BrandHelper     $brandHelper,
+        BrandHelper $brandHelper,
         UserGroupHelper $userGroupHelper,
         EntityPersister $persister,
         LoggerInterface $logger
@@ -106,6 +107,10 @@ class CategoryHelper
                 /** @var CategoryAbstract $entity */
                 $entity = new $categoryClass();
                 $entity->setTitle($categoryTitle);
+                if ($entity instanceof CommunityForum) {
+                    $entity->setNoun($categoryTitle);
+                    $entity->setPlural($categoryTitle.'s');
+                }
                 $this->setDefaultBrand($entity, $brandName);
                 $this->userGroupHelper->updateUserGroups($entity);
 
@@ -137,6 +142,11 @@ class CategoryHelper
                     /** @var CategoryAbstract $entity */
                     $entity = new $categoryClass();
                     $entity->setTitle($categoryTitle);
+                    if (property_exists($entity, 'noun')) {
+                        $entity->setNoun($categoryTitle);
+                        $entity->setPlural($categoryTitle.'s');
+                        $entity->setVerbAction('New '.$categoryTitle);
+                    }
                     $entity->setParent($parent);
                     $this->setDefaultBrand($entity, $brandName);
                     $this->userGroupHelper->updateUserGroups($entity);

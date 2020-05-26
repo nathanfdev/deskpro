@@ -56,8 +56,87 @@
 										   dp-server-validation="title.not_blank"
 										   style="width: 50%;"
 										   autofocus required>
+									{% if app.getLanguages().isMultiLang() %}
+										<span
+												class="translate-button"
+												tooltip="{{ phrase('adm.general.translate') }}"
+												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_community_forum_title.' + CommunityForumsEdit.community_forum.id }"
+										></span>
+									{% endif %}
 								<span class="help-block">
 									{{ phrase('adm.community_forums.title_explain') }}
+								</span>
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<h3>{{ phrase('adm.community_forums.noun') }} *</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.noun">
+									<input type="text"
+										   class="form-control"
+										   name="noun"
+										   ng-model="CommunityForumsEdit.community_forum.noun"
+										   dp-server-validation="noun.not_blank"
+										   style="width: 50%;"
+										   autofocus required>
+									{% if app.getLanguages().isMultiLang() %}
+										<span
+												class="translate-button"
+												tooltip="{{ phrase('adm.general.translate') }}"
+												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_community_forum_noun.' + CommunityForumsEdit.community_forum.id }"
+										></span>
+									{% endif %}
+								<span class="help-block">
+									{{ phrase('adm.community_forums.noun_explain') }}
+								</span>
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<h3>{{ phrase('adm.community_forums.plural') }} *</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.plural">
+									<input type="text"
+										   class="form-control"
+										   name="plural"
+										   ng-model="CommunityForumsEdit.community_forum.plural"
+										   dp-server-validation="plural.not_blank"
+										   style="width: 50%;"
+										   autofocus required>
+									{% if app.getLanguages().isMultiLang() %}
+										<span
+												class="translate-button"
+												tooltip="{{ phrase('adm.general.translate') }}"
+												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_community_forum_plural.' + CommunityForumsEdit.community_forum.id }"
+										></span>
+									{% endif %}
+								<span class="help-block">
+									{{ phrase('adm.community_forums.plural_explain') }}
+								</span>
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<h3>{{ phrase('adm.community_forums.verb') }} *</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.verb_action">
+									<input type="text"
+										   class="form-control"
+										   name="verb_action"
+										   ng-model="CommunityForumsEdit.community_forum.verb_action"
+										   dp-server-validation="verb_action.not_blank"
+										   style="width: 50%;"
+										   autofocus required>
+									{% if app.getLanguages().isMultiLang() %}
+										<span
+												class="translate-button"
+												tooltip="{{ phrase('adm.general.translate') }}"
+												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_community_forum_verb_action.' + CommunityForumsEdit.community_forum.id }"
+										></span>
+									{% endif %}
+								<span class="help-block">
+									{{ phrase('adm.community_forums.verb_explain') }}
 								</span>
 								</div>
 							</div>

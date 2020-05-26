@@ -62,7 +62,7 @@ export class Tab extends React.Component {
     return (
       <div className={'quick-jump no-dropdown'} ref={(c) => { this.quickJump = c; }}>
         <a
-          href={`/community/browse/${this.props.id}/${this.props.types}`}
+          href={`/community/browse/${this.props.id}/${this.props.types.title}`}
           className={this.props.active ? 'active' : ''}
           onClick={this.clickTab}
           onTouchStart={this.clickTab}
