@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
 
@@ -35,7 +33,7 @@ class AntiAbuse
     const ACTION_SHARE_CONTENT          = 'share_content';
 
     // the EVENT_ consts are needed, because the ACTION_ are legacy and
-    // cannot be used by themselves as event names for this sytem.
+    // cannot be used by themselves as event names for this system.
     const EVENT_NAME = 'anti_abuse.event';
 
     /**
