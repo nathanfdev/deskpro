@@ -2,9 +2,13 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\BlobAuthTransformer;
 use Doctrine\ORM\EntityManager;
+use Guzzle\Http\Mimetypes;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,13 +27,20 @@ class BlobAuthType extends AbstractType
     private $em;
 
     /**
+     * @var DeskproBlobStorage
+     */
+    private $blobStorage;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager      $em
+     * @param DeskproBlobStorage $blobStorage
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, DeskproBlobStorage $blobStorage)
     {
-        $this->em = $em;
+        $this->em          = $em;
+        $this->blobStorage = $blobStorage;
     }
 
     /**
@@ -69,7 +80,26 @@ class BlobAuthType extends AbstractType
     {
         $data = $event->getData();
         if (is_array($data)) {
-            $event->setData(isset($data['blob_auth']) ? $data['blob_auth'] : null);
+            if (isset($data['blob_auth'])) {
+                $event->setData($data['blob_auth']);
+            } elseif (isset($data['url'])) {
+                try {
+                    $client  = new Client();
+                    $request = new Request('GET', $data['url']);
+
+                    $content     = $client->send($request)->getBody()->getContents();
+                    $filename    = preg_replace('#(^(.*)/(.*?)(\?.*)?$)#', '${3}', $data['url']);
+                    $contentType = Mimetypes::getInstance()->fromFilename($filename) ?: 'application/octet-stream';
+
+                    $blob = $this->blobStorage->createBlobRecordFromString($content, $filename, $contentType, ['is_temp' => true]);
+                } catch (\Exception $e) {
+                    $blob = null;
+                }
+
+                $event->setData($blob ? $blob->getAuthcode() : null);
+            } else {
+                $event->setData(null);
+            }
         }
     }
 
