@@ -3,7 +3,7 @@ import React from 'react';
 import uniqueId from 'lodash/uniqueId';
 import $ from 'jquery';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
-import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
+import HcRteEditor from 'DeskPRO/Component/Rte/HcRteEditor';
 import DropZone from 'DeskPRO/Component/Uploader/DropZone';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
@@ -138,7 +138,7 @@ export default class HelpcenterRte extends React.Component {
 
     return (
       <div ref={(node) => { this.node = node; }}>
-        <RteEditor
+        <HcRteEditor
           ref={(i) => { this.refInput = i; }}
           className={className}
           value={$textarea.val()}
