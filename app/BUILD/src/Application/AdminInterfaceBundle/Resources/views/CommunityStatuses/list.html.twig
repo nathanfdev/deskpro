@@ -18,7 +18,7 @@
 		</header>
 		<article>
 			<div class="dp-add-control">
-			<h4 ng-pluralize count="CommunityStatusesList.community_active_statuses.length || 0" when="{{ ng_plural_phrase('adm.general.x_community_active_statuses') }}"></h4>
+			<h4 ng-pluralize count="(CommunityStatusesList.community_active_statuses| filter:{brand:brand_id}).length || 0" when="{{ ng_plural_phrase('adm.general.x_community_active_statuses') }}"></h4>
 			</div>
 			<ul class="dp-item-list" ui-sortable="CommunityStatusesList.sortedListOptions">
 				<li class="with-drag-handle" ng-repeat="status in CommunityStatusesList.community_active_statuses" dp-state-mark="portal.community_statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}" ng-if="status.brand == brand_id">
@@ -34,7 +34,7 @@
 		</article>
 		<article>
 			<div class="dp-add-control">
-				<h4 ng-pluralize count="CommunityStatusesList.community_closed_statuses.length || 0" when="{{ ng_plural_phrase('adm.general.x_community_closed_statuses') }}"></h4>
+				<h4 ng-pluralize count="(CommunityStatusesList.community_closed_statuses| filter:{brand:brand_id}).length || 0" when="{{ ng_plural_phrase('adm.general.x_community_closed_statuses') }}"></h4>
 			</div>
 			<ul class="dp-item-list" ui-sortable="CommunityStatusesList.sortedListOptions">
 				<li class="with-drag-handle" ng-repeat="status in CommunityStatusesList.community_closed_statuses" dp-state-mark="portal.community_statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}" ng-if="status.brand == brand_id">

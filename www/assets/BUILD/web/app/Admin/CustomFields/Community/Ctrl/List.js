@@ -7,7 +7,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     init() {
-      return this.$scope.fields = [];
+      this.$scope.brand_id = this.$stateParams.brandId;
+      this.$scope.fields = [];
     }
 
     initialLoad() {

@@ -4,6 +4,7 @@ namespace Application\DeskPRO\CustomFields\Form\Model;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Form\StringObject;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommunityForumToCustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefCommunityTopic;
@@ -114,6 +115,11 @@ abstract class CustomFieldAbstract
     public $forums = [];
 
     /**
+     * @var Brand
+     */
+    public $brand;
+
+    /**
      * @var \Application\DeskPRO\Entity\CustomDefAbstract|null
      */
     protected $_field = null;
@@ -143,6 +149,7 @@ abstract class CustomFieldAbstract
         $this->is_public = $field instanceof CustomDefPerson ? $field->is_public : false;
         $this->is_global = $field instanceof CustomDefCommunityTopic ? $field->isGlobal() : false;
         $this->forums    = $field instanceof CustomDefCommunityTopic ? $field->getForums() : [];
+        $this->brand     = $field instanceof CustomDefCommunityTopic ? $field->getBrand() : null;
 
         if ($field->getOption('required')) {
             $this->required = true;
@@ -210,6 +217,7 @@ abstract class CustomFieldAbstract
         if ($field instanceof CustomDefCommunityTopic) {
             $field->setIsGlobal($this->is_global);
             $field->setForums($this->forums);
+            $field->setBrand($this->brand);
         }
 
         if ($this->isNewField()) {
@@ -225,6 +233,7 @@ abstract class CustomFieldAbstract
         $this->setFieldProperties();
 
         $this->_em->beginTransaction();
+
         try {
             $this->_em->persist($field);
             $this->_em->flush();
@@ -243,6 +252,7 @@ abstract class CustomFieldAbstract
             $this->_em->commit();
         } catch (\Exception $e) {
             $this->_em->rollback();
+
             throw $e;
         }
     }

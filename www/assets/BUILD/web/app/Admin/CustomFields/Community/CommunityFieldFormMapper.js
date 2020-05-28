@@ -17,6 +17,7 @@ define(['Admin/CustomFields/FieldFormMapper',], function(FieldFormMapper) {
       const postData = super.getPostDataFromForm(fieldType, formModel);
       postData.is_global = formModel.is_global;
       postData.forums = formModel.forums;
+      postData.brand = formModel.brand;
 
       return postData;
     }

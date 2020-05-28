@@ -116,6 +116,8 @@ define([
 
       promise.success(() => {
         mapper.applyFormToModel(fieldModel, formModel);
+        fieldModel.brand = formModel.brand;
+
         return this.mergeDataModel(fieldModel);
       });
 
