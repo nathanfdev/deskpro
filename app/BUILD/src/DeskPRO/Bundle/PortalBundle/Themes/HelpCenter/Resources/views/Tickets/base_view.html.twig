@@ -125,40 +125,43 @@
         {% endif %}
 
         <div class="dp-po-ticket-meta-cc">
-            <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_participants', {count: ticket.getCcs()|length} ) }}</h3>
+            <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_participants', {participants: '<span class="count">' ~ (ticket.getCcs()|length) ~ '</span>'}, true) }}</h3>
             <ul class="dp-po-ticket-meta-cc-list">
-                {% if ticket.getCcs()|length > 0 %}
-                    {% for participant in ticket.getCcs() %}
-                        {% if participant.id %}
-                            <li class="dp-po-ticket-meta-cc-item">
-                                {% include 'Theme:Tickets:embeds/ticket_cc_sidebar.html.twig' with {person: participant.person, avatar_link: path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id }) }%}
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    <li class="dp-po-ticket-meta-cc-item">
-                        <span class="dp-po-ticket-meta-cc-name">{{ phrase('helpcenter.tickets.no_participants') }}</span>
-                    </li>
-                {% endif %}
+                {% for participant in ticket.getCcs() %}
+                    {% if participant.id %}
+                        {% include 'Theme:Tickets:embeds/ticket_cc_sidebar.html.twig' with {person: participant.person, avatar_link: path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id }), cc_id: participant.id }%}
+                    {% endif %}
+                {% endfor %}
+                <li class="dp-po-ticket-meta-cc-item none" {% if ticket.getCcs()|length > 0 %}style="display: none"{% endif %}>
+                    <span class="dp-po-ticket-meta-cc-name">{{ phrase('helpcenter.tickets.no_participants') }}</span>
+                </li>
             </ul>
 
             {% block page_sidebar_add_participant_form %}
                 <a href="#" data-clickaway-target="add-cc-user-popover" class="dp-po-ticket-meta-cc-link clickaway-dropdown">{{ phrase('helpcenter.tickets.view_btn_add_cc') }}</a>
                 <div class="dp-po-ticket-meta-cc-form" id="add-cc-user-popover" style="display: none;">
+                    <div class="alert alert-danger" style="display: none">
+                    </div>
                     <form action="{{ portal_path(ticket, 'add-cc') }}" method="POST" class="do-po-form">
 
                         <div class="form-group">
-                            <input type="text" name="ticket_add_cc[name]" required class="form-control" placeholder="{{ phrase('helpcenter.tickets.view_label_your_name_placeholder') }}" />
+                            <label for="ticket_add_cc_name">{{ phrase('helpcenter.general.name') }} *</label>
+                            <input type="text" id="ticket_add_cc_name" name="ticket_add_cc[name]" required class="form-control" />
                         </div>
-                        <div class="form-group">
-                            <input type="text" name="ticket_add_cc[email]" required class="form-control"  placeholder="{{ phrase('helpcenter.tickets.view_label_your_email_placeholder') }}" />
+                        <div class="form-group email">
+                            <label for="ticket_add_cc_email">{{ phrase('helpcenter.general.email_address') }} *</label>
+                            <input type="text" id="ticket_add_cc_email" name="ticket_add_cc[email]" required class="form-control" />
+                            <small class="form-text text-danger" style="display: none"></small>
                         </div>
 
                         {% for widget in add_cc_form.children if widget.vars.name in ['_token', '_dp_csrf_token'] %}
                             {{ form_row(widget) }}
                         {% endfor %}
 
-                        <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.tickets.view_btn_add_to_ticket') }}</button>
+                        <button type="submit" class="dp-po-ticket-meta-cc-submit btn btn-primary" >
+                            {{ phrase('helpcenter.tickets.view_btn_add_to_ticket') }}
+                            <i class="fas fa-circle-notch fa-spin dp-po-icon"></i>
+                        </button>
                     </form>
                 </div>
             {% endblock page_sidebar_add_participant_form %}

@@ -29,6 +29,8 @@ import { TitleAnchorWidget } from './TitleAnchorWidget';
 import { RemoveCCTicketReply } from './RemoveCCTicketReply';
 import { MobileCategories } from './MobileCategories';
 import { DpxFormClearDraft } from './Common/Form/Draft/DpxFormClearDraft';
+import { HelpcenterCCForm } from './HelpcenterCCForm';
+import { HelpcenterCCDelete } from './HelpcenterCCDelete';
 
 class HelpCenterPage extends PageWidget {
 
@@ -66,6 +68,8 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(MobileCategories, '.dp-po-category-title-expand');
     this.addWidgetDef(HelpcenterSidebarFilters, '.dpx-sidebar-filters');
     this.addWidgetDef(DpxFormClearDraft, '.dpx-clear-draft');
+    this.addWidgetDef(HelpcenterCCForm, '#add-cc-user-popover form');
+    this.addWidgetDef(HelpcenterCCDelete, '.dp-po-ticket-meta-cc-remove');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);
