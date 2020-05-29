@@ -174,7 +174,8 @@ helpcenter.duration_short.hours: h
 helpcenter.duration_short.minutes: m
 helpcenter.duration_short.months: M
 helpcenter.duration_short.seconds: s
-helpcenter.duration_short.years: 'Y'
+helpcenter.duration_short.weeks: W
+helpcenter.duration_short.years: Y
 helpcenter.emails.account_disabled_message: 'Your account is currently disabled. You may not login or interact with tickets or chat.'
 helpcenter.emails.auto_close: 'Your ticket "{subject}" will be closed shortly as we haven''t heard from you lately. If you need further assistance simply reply and one of our agents will help you.'
 helpcenter.emails.chat_transcript: 'Thank you for chatting with us. Here is your chat transcript.'
@@ -647,7 +648,7 @@ helpcenter.profile.account_disabled_message: 'Your account is currently disabled
 helpcenter.profile.your_account: 'Your account'
 helpcenter.profile.your_email_addresses: 'Your email addresses'
 helpcenter.profile.your_password: 'Your password'
-helpcenter.search.for_query: 'for “{query}”'
+helpcenter.search.showing_results_for: 'Showing results in {type} for: <span class="query">“{query}”</span>'
 helpcenter.search.search_results: 'Search Results'
 helpcenter.search.view_all_results: '{count, plural, one {View result} other {View all # results}}'
 helpcenter.search.your_tickets: 'Your tickets'
