@@ -18,14 +18,19 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
           (data) => {
             this.status = data.status;
             this.form = {
-              title: this.status.title
+              title: this.status.title,
+              status_type: this.status.status_type
             };
+            if (this.status.status_type === 'pending') {
+              this.form.pending_waiting_time_mode = this.status.pending_waiting_time_mode;
+            }
           });
       }
       this.status = {};
       this.form = {
         title:       '',
-        status_type: 'awaiting_agent'
+        status_type: 'awaiting_agent',
+        pending_waiting_time_mode: 'user'
       };
     }
 
@@ -37,6 +42,9 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       };
       if (!this.status.id) {
         postData.status_type = this.form.status_type;
+      }
+      if (this.form.status_type === 'pending') {
+        postData.pending_waiting_time_mode = this.form.pending_waiting_time_mode;
       }
 
       this.startSpinner('saving');
@@ -52,6 +60,9 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         if (!this.status.id) {
           this.status.id = result.data.id;
           this.status.status_type = this.form.status_type;
+          if (this.form.status_type === 'pending') {
+            this.status.pending_waiting_time_mode = this.form.pending_waiting_time_mode;
+          }
         }
         this.status.title = this.form.title;
 

@@ -34,6 +34,10 @@ class VirtualTicketStatus extends TicketStatus
                 TicketStatus::STATUS_TYPE_ARCHIVED       => new self(TicketStatus::STATUS_TYPE_ARCHIVED),
                 TicketStatus::STATUS_TYPE_HIDDEN         => new self(TicketStatus::STATUS_TYPE_HIDDEN),
             ];
+
+            self::$ticketStatuses[TicketStatus::STATUS_TYPE_PENDING]->setPendingWaitingTimeMode(
+                App::getSetting('core_tickets.pending_status_waiting_time_mode', TicketStatus::PENDING_WAITING_TIME_MODE_USER)
+            );
         }
 
         if (!isset(self::$ticketStatuses[$id])) {

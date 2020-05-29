@@ -37,6 +37,13 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
     const SYS_ID_DELETED = 'deleted';
     const SYS_ID_SPAM    = 'spam';
 
+    // Time spent in pending status count towards total USER waiting time
+    const PENDING_WAITING_TIME_MODE_USER  = 'user';
+    // Time spent in pending status count towards total AGENT waiting time
+    const PENDING_WAITING_TIME_MODE_AGENT = 'agent';
+    // Time spent in pending status does NOT count towards waiting time
+    const PENDING_WAITING_TIME_MODE_NONE  = 'none';
+
     /**
      * @return array
      */
@@ -135,6 +142,16 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
      * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Entity\TicketStatus>")
      */
     protected $children;
+
+    /**
+     * @ORM\Column(type="json_array", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
+     * @var int
+     */
+    protected $options;
 
     public function __construct($statusType)
     {
@@ -316,5 +333,86 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
     public function isSpam()
     {
         return $this->sysId == 'spam';
+    }
+
+    /**
+     * Where to count time spending in pending status. Check PENDING_WAITING_TIME_MODE_ constants
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("string")
+     * @JMS\SerializedName("pending_waiting_time_mode")
+     *
+     * @return string|string
+     */
+    public function getPendingWaitingTimeMode()
+    {
+        if ($this->getStatusType() !== self::STATUS_TYPE_PENDING) {
+            return null;
+        }
+
+        if ($this->options && !empty($this->options['pending_waiting_time_mode'])) {
+            return $this->options['pending_waiting_time_mode'];
+        }
+
+        return self::PENDING_WAITING_TIME_MODE_USER;
+    }
+
+    /**
+     *
+     * @param string $mode
+     *
+     * @return self
+     */
+    public function setPendingWaitingTimeMode($mode)
+    {
+        if (!in_array($mode, [
+            self::PENDING_WAITING_TIME_MODE_AGENT,
+            self::PENDING_WAITING_TIME_MODE_USER,
+            self::PENDING_WAITING_TIME_MODE_NONE,
+        ])) {
+            throw new InvalidArgumentException("Wrong pending time mode");
+        }
+
+        $options = $this->options ?: [];
+        $options['pending_waiting_time_mode'] = $mode;
+
+        $this->setModelField('options', $options);
+
+        return  $this;
+    }
+
+    /**
+     * Retrun true if time spent in this status count towards total USER waiting time
+     *
+     * @return boolean
+     */
+    public function isCountUserWaitingTime()
+    {
+        if ($this->getStatusType() === self::STATUS_TYPE_AWAITING_AGENT) {
+            return true;
+        }
+
+        if (
+            $this->getStatusType() === self::STATUS_TYPE_PENDING
+            && $this->getPendingWaitingTimeMode() === self::PENDING_WAITING_TIME_MODE_USER
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Retrun true if time spent in this status count towards total AGENT waiting time
+     *
+     * @return boolean
+     */
+    public function isCountAgentWaitingTime()
+    {
+        if ($this->getStatusType() === self::STATUS_TYPE_AWAITING_USER) {
+            return true;
+        }
+
+        return false;
     }
 }

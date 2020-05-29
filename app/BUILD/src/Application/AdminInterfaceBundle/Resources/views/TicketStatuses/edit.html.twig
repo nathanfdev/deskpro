@@ -1,15 +1,15 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
-				<div class="panel panel-innertable">
-					<div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
 						<div class="form-group">
-							<div class="col-lg-2">
+							<div class="col-lg-3">
 								<h3>Status Type</h3>
 							</div>
-							<div class="col-lg-10" ng-if="!EditCtrl.status.id">
+							<div class="col-lg-9" ng-if="!EditCtrl.status.id">
 								<select ng-model="EditCtrl.form.status_type" style="min-width: 200px;" ui-select2="{dropdownAutoWidth:true}">
                   <option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
                   <option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
@@ -17,7 +17,7 @@
                   <option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
 								</select>
 							</div>
-							<div class="col-lg-10" ng-if="EditCtrl.status.id"
+							<div class="col-lg-9" ng-if="EditCtrl.status.id"
                   ng-init="
                     EditCtrl.statusTrans.awaiting_agent='{{ phrase('agent.tickets.status_awaiting_agent') | replace({'\'': '\\\''}) }}';
                     EditCtrl.statusTrans.awaiting_user='{{ phrase('agent.tickets.status_awaiting_user') | replace({'\'': '\\\''}) }}';
@@ -29,13 +29,31 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="col-lg-2">
+							<div class="col-lg-3">
 								<h3>{{ phrase('agent.general.title') }} *</h3>
 							</div>
-							<div class="col-lg-10">
+							<div class="col-lg-9">
 								<div class="inner-group" dp-error-class="form_props.title">
 									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title" style="width: 50%;" required autofocus />
 								</div>
+							</div>
+						</div>
+
+						<div class="form-group" ng-if="EditCtrl.form.status_type == 'pending'">
+							<div class="col-lg-3">
+								<h3>{{ phrase('adm.ticket_statuses.pending_time_title') }}</h3>
+							</div>
+							<div class="col-lg-9">
+                <select
+                  ui-select2
+                  ng-model="EditCtrl.form.pending_waiting_time_mode"
+                  style="min-width: 240px"
+                  class="no-search"
+                >
+                  <option value="user">{{ phrase('adm.ticket_statuses.pending_time_user') }}</option>
+                  <option value="agent">{{ phrase('adm.ticket_statuses.pending_time_agent') }}</option>
+                  <option value="none">{{ phrase('adm.ticket_statuses.pending_time_none') }}</option>
+                </select>
 							</div>
 						</div>
 					</div>
