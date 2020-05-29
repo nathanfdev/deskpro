@@ -98,8 +98,11 @@ class TicketMessageListener implements EventSubscriber
         $result = [];
         /** @var Person $participant */
         foreach ($participants as $participant) {
-            if (!array_intersect($participant->getEmailAddresses(false, false), $recipients)
-                    && !array_intersect($participant->getEmailAddresses(false, false), $ticketMessage->getPerson()->getEmailAddresses(false, false))
+            $participantEmails = $participant->getEmailAddresses(false, false);
+            $messagePerson     = $ticketMessage->getPerson();
+
+            if (!array_intersect($participantEmails, $recipients)
+                && (!$messagePerson || !array_intersect($participantEmails, $messagePerson->getEmailAddresses(false, false)))
             ) {
                 $result['absent'][] = $participant;
             }
