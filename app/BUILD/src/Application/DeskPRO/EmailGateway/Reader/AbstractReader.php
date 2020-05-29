@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
@@ -167,12 +163,15 @@ abstract class AbstractReader
             switch ($header) {
                 case 'from':
                     $val = $this->getRealFromAddress();
+
                     break;
                 case 'reply-to':
                     $val = $this->getReplyToAddress();
+
                     break;
                 case 'x-original-from':
                     $val = $this->getOriginalFromAddress();
+
                     break;
                 default:
                     throw new \InvalidArgumentException("Unknown from header: $header");
@@ -250,14 +249,14 @@ abstract class AbstractReader
         }
 
         $all = [];
+        if ($orig_to) {
+            $all = array_merge($all, $orig_to);
+        }
         if ($to) {
             $all = array_merge($all, $to);
         }
         if ($cc) {
             $all = array_merge($all, $cc);
-        }
-        if ($orig_to) {
-            $all = array_merge($all, $orig_to);
         }
 
         return $all;
@@ -326,6 +325,8 @@ abstract class AbstractReader
     }
 
     /**
+     * @param mixed $header
+     *
      * @return \Application\DeskPRO\EmailGateway\Reader\Item\Header
      */
     public function getHeader($header)
@@ -500,6 +501,7 @@ abstract class AbstractReader
 
             if ('<' === $char) {
                 $matchLt = true;
+
                 continue;
             }
 
