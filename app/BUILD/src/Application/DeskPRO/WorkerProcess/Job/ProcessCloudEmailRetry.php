@@ -16,7 +16,7 @@ class ProcessCloudEmailRetry extends AbstractJob
 {
     const DEFAULT_INTERVAL      = 1;
     const BATCH_SIZE            = 100;
-    const MAX_EXECUTION_SECONDS = 10;
+    const MAX_EXECUTION_SECONDS = 45;
 
     /**
      * {@inheritDoc}
