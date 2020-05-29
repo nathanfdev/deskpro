@@ -114,6 +114,44 @@ class IncomingEmailController extends BaseController
     }
 
     /**
+     * Reset the email source back to "inserted"
+     *
+     * @Rest\Post("/{uuid}/reset", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
+     *
+     * @param $request
+     * @param $uuid
+     *
+     * @return View
+     */
+    public function resetAction(Request $request, $uuid)
+    {
+        return $this->handleSetSourceStatus(
+            $request,
+            $uuid,
+            EmailSource::STATUS_INSERTED
+        );
+    }
+
+    /**
+     * Mark the email source as having a processing error
+     *
+     * @Rest\Post("/{uuid}/error", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
+     *
+     * @param $request
+     * @param $uuid
+     *
+     * @return View
+     */
+    public function errorAction(Request $request, $uuid)
+    {
+        return $this->handleSetSourceStatus(
+            $request,
+            $uuid,
+            EmailSource::STATUS_ERROR
+        );
+    }
+
+    /**
      * @Rest\Post("/{uuid}/abort", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
      *
      * @param $request
@@ -266,5 +304,32 @@ class IncomingEmailController extends BaseController
         $em->flush();
 
         return $model;
+    }
+
+    /**
+     * @param Request $request
+     * @param string $uuid
+     * @param string $newStatus
+     * @return View
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function handleSetSourceStatus(Request $request, $uuid, $newStatus)
+    {
+        /** @var EmailSource $source */
+        $source  = $this->findEntity($uuid, $request);
+
+        if (!$source) {
+            return View::create([
+                'message' => 'Email source could not be found',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $source->setStatus($newStatus);
+
+        $em = $this->getContainer()->getEm();
+        $em->persist($source);
+        $em->flush();
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 }
