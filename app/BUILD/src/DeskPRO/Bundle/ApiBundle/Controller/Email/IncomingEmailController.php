@@ -41,7 +41,7 @@ class IncomingEmailController extends BaseController
     /**
      * Process a particular email.
      *
-     * @Rest\Post("/{uuid}/execute", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
+     * @Rest\Post("/{uuid}/execute", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"}, name="api_v2_incoming_email_execute")
      *
      * @param $request
      * @param $uuid
