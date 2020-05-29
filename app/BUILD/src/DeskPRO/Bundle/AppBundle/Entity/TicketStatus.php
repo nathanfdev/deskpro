@@ -342,7 +342,7 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
      * @JMS\Type("string")
      * @JMS\SerializedName("pending_waiting_time_mode")
      *
-     * @return string|string
+     * @return string|null
      */
     public function getPendingWaitingTimeMode()
     {
@@ -410,6 +410,13 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
     public function isCountAgentWaitingTime()
     {
         if ($this->getStatusType() === self::STATUS_TYPE_AWAITING_USER) {
+            return true;
+        }
+
+        if (
+            $this->getStatusType() === self::STATUS_TYPE_PENDING
+            && $this->getPendingWaitingTimeMode() === self::PENDING_WAITING_TIME_MODE_AGENT
+        ) {
             return true;
         }
 
