@@ -189,7 +189,7 @@
 										<label
 												data-id="{{ ng_var('status.id') }}"
 												class="with-drag-handle"
-												ng-repeat="status in CommunityForumsEdit.community_statuses.active | orderBy: 'display_order'"
+												ng-repeat="status in CommunityForumsEdit.community_statuses.active | filter:{brand:brand_id} | orderBy: 'display_order'"
 												style="font-weight: normal; display: block;"
 										>
 											<i class="fas fa-bars drag-handle"></i>
@@ -210,7 +210,7 @@
 										<label
 												data-id="{{ ng_var('status.id') }}"
 												class="with-drag-handle"
-												ng-repeat="status in CommunityForumsEdit.community_statuses.closed | orderBy: 'display_order'"
+												ng-repeat="status in CommunityForumsEdit.community_statuses.closed | filter:{brand:brand_id} | orderBy: 'display_order'"
 												style="font-weight: normal; display: block;"
 										>
 											<i class="fas fa-bars drag-handle"></i>
@@ -221,7 +221,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="form-group" ng-if="CommunityForumsEdit.custom_fields.length > 0">
+						<div class="form-group" ng-if="(CommunityForumsEdit.custom_fields| filter:{brand:brand_id}).length > 0">
 							<div class="col-lg-3">
 								<h3>{{ phrase('admin.general.custom_fields') }}</h3>
 							</div>
@@ -231,7 +231,7 @@
 										<label
 												class="with-drag-handle"
 												data-id="{{ ng_var('custom_field.id') }}"
-												ng-repeat="custom_field in CommunityForumsEdit.custom_fields | orderBy: 'display_order'"
+												ng-repeat="custom_field in CommunityForumsEdit.custom_fields | filter:{brand:brand_id} | orderBy: 'display_order'"
 												style="font-weight: normal; display: block;"
 										>
 											<i class="fas fa-bars drag-handle"></i>

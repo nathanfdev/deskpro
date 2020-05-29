@@ -23,7 +23,7 @@
                     <label
                             class="with-drag-handle"
                             data-id="{{ ng_var('forum.id') }}"
-                            ng-repeat="forum in EditCtrl.community_forums"
+                            ng-repeat="forum in EditCtrl.community_forums | filter:{brand:brand_id}"
                             style="font-weight: normal; display: block;"
                     >
                         <input type="checkbox" ng-model="EditCtrl.selectedForums[forum.id]">
