@@ -91,6 +91,7 @@ class TicketSlasController extends AbstractController
         $sla->warn_time_unit = $this->in->getString('warn_time_unit');
         $sla->fail_time      = $this->in->getUint('fail_time');
         $sla->fail_time_unit = $this->in->getString('fail_time_unit');
+        $sla->setExcludeTicketStatuses($this->in->getArrayOfStrings('exclude_ticket_statuses'));
 
         $apply_terms = new TriggerTerms();
         foreach ($this->in->getArrayValue('apply_terms') as $set) {

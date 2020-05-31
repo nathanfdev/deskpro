@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketStatusesType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * Class TicketStatusesNewController.
@@ -24,6 +25,16 @@ use Symfony\Component\HttpFoundation\Request;
  *      "options"={
  *          "data"="DeskPRO\Bundle\AppBundle\Entity\TicketStatus"
  *      }
+ *     }
+ * )
+ * @ApiDoc(
+ *     target="listAction",
+ *     description="Get list of hidden and custom ticket statuses",
+ *     filters={
+ *         {"name"="status_type", "pattern"="pending|awaiting_agent|awaiting_user|resolved", "description"="Filter by status type", "dataType"="string"}
+ *     },
+ *     statusCodes={
+ *         200="OK"
  *     }
  * )
  */
@@ -64,6 +75,17 @@ class TicketStatusesController extends CrudController
     public function getAction(Request $request, $id)
     {
         return parent::getAction($request, $id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        if (null !== $request->get('status_type')) {
+            $qb->andWhere("$alias.statusType = :status_type");
+            $qb->setParameter('status_type', $request->get('status_type'));
+        }
     }
 
     /**

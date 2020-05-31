@@ -24,6 +24,7 @@ define([
       form.warn_actions  = {};
       form.fail_actions  = {};
       form.apply_terms   = {};
+      form.exclude_ticket_statuses = model.exclude_ticket_statuses;
 
       if (model.active_time === 'custom') {
         const days = [null, false, false, false, false, false, false, false];
@@ -103,7 +104,8 @@ define([
         fail_time_unit: form.fail_time[1],
         warn_actions:   [],
         fail_actions:   [],
-        apply_terms:    []
+        apply_terms:    [],
+        exclude_ticket_statuses: form.exclude_ticket_statuses,
       };
 
       if (form.active_type === 'custom') {

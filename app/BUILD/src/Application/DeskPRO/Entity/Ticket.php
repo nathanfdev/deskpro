@@ -3238,7 +3238,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 'total_user_waiting',
                 $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp()
             );
-            $this->addWaitingTimeRecord('user', $this->date_user_waiting);
+            $this->addWaitingTimeRecord('user', $this->date_user_waiting, null, $oldTicketStatus->getStatusCode());
         }
         if ($ticketStatus->isCountUserWaitingTime() && !$this->date_user_waiting) {
             $this->setModelField('date_user_waiting', new \DateTime());
@@ -3248,7 +3248,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
 
         if (!$ticketStatus->isCountAgentWaitingTime() && $oldTicketStatus->isCountAgentWaitingTime() && $this->date_agent_waiting) {
-            $this->addWaitingTimeRecord('agent', $this->date_agent_waiting);
+            $this->addWaitingTimeRecord('agent', $this->date_agent_waiting, null, $oldTicketStatus->getStatusCode());
         }
         if ($ticketStatus->isCountAgentWaitingTime() && !$this->date_agent_waiting) {
             $this->setModelField('date_agent_waiting', new \DateTime());
@@ -3661,7 +3661,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $status;
     }
 
-    public function addWaitingTimeRecord($type, $start_ts, $end_ts = null)
+    public function addWaitingTimeRecord($type, $start_ts, $end_ts = null, $ticketStatusCode = null)
     {
         $start_ts = ($start_ts instanceof \DateTime ? $start_ts->getTimestamp() : intval($start_ts));
         $end_ts   = ($end_ts instanceof \DateTime ? $end_ts->getTimestamp() : intval($end_ts));
@@ -3680,10 +3680,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $old                   = $this->waiting_times;
         $this->waiting_times[] = [
-            'type'   => $type,
-            'start'  => $start_ts,
-            'end'    => $end_ts,
-            'length' => ($end_ts - $start_ts),
+            'type'          => $type,
+            'start'         => $start_ts,
+            'end'           => $end_ts,
+            'length'        => ($end_ts - $start_ts),
+            'ticket_status' => $ticketStatusCode
         ];
         $this->_onPropertyChanged('waiting_times', $old, $this->waiting_times);
     }

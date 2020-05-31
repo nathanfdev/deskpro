@@ -149,7 +149,7 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
      * @JMS\Expose()
      * @JMS\Type("array")
      *
-     * @var int
+     * @var array
      */
     protected $options;
 
@@ -350,7 +350,7 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
             return null;
         }
 
-        if ($this->options && !empty($this->options['pending_waiting_time_mode'])) {
+        if ($this->options && isset($this->options['pending_waiting_time_mode'])) {
             return $this->options['pending_waiting_time_mode'];
         }
 
