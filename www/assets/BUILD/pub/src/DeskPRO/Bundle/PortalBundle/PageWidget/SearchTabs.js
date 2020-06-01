@@ -5,6 +5,9 @@ export class SearchTabs extends PageWidget {
     this.$element.on('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
+      if (e.target.classList.contains('no-results')) {
+        return false;
+      }
       Array.prototype.forEach.call(document.getElementsByClassName('dp-po-search-sidebar-link active'), tab => tab.classList.remove('active'));
       Array.prototype.forEach.call(document.getElementsByClassName('dp-po-search-tabs-link active'), tab => tab.classList.remove('active'));
       const tab = e.target.dataset.type;
@@ -22,6 +25,7 @@ export class SearchTabs extends PageWidget {
           newPager.style.display = 'block';
         }
       }
+      return true;
     });
   }
 }

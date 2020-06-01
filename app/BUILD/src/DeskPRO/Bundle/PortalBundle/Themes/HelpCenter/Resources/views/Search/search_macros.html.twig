@@ -19,8 +19,8 @@
         <a href="{{ portal_path(article) }}" class="{{root}}-link">
           {{ article.title }}
             <div class="dp-po-time">
-                {{ date_ago(article.date_updated) }}
                 <i class="dp-po-icon far fa-clock"></i>
+                {{ short_date_ago(article.date_updated) }}
             </div>
         </a>
   </li>
@@ -31,8 +31,8 @@
         <a href="{{ portal_path(ticket) }}" class="{{root}}-link">
             {{ ticket.subject }}
             <div class="dp-po-time">
-                {{ date_ago(ticket.getLastActivityDate()) }}
                 <i class="dp-po-icon far fa-clock"></i>
+                {{ short_date_ago(ticket.getLastActivityDate()) }}
             </div>
         </a>
   </li>
