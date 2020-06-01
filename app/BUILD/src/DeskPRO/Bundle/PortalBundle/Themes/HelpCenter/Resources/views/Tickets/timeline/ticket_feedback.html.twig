@@ -1,13 +1,13 @@
 <div class="dp-po-ticket-block dp-po-ticket-block-mine dp-po-ticket-block-rate">
     <div class="dp-po-ticket-block-header">
-        <i class="dp-po-icon fad fa-comments-alt"></i> {{ phrase('helpcenter.tickets.rate_support') }}
+        <img class="dp-po-icon icon-svg" src="{{ asset('img/page-icons/ticket-rate.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.rate_support') }}
     </div>
     <div class="dp-po-avatar dp-po-avatar-round">
         {{ hc_avatar(feedback.person) }}
         {% if feedback.person.id == app.user.id %}
-            {{ phrase('helpcenter.general.you') }} ({{ app.user.email }})
+            {{ phrase('helpcenter.tickets.you_rated_support', { email: app.user.email}) }}
         {% else %}
-            {{ feedback.person }} ({{ feedback.person.email }})
+            {{ phrase('helpcenter.tickets.user_rated_support', { person: feedback.person, email: feedback.person.email }) }}
         {% endif %}
     </div>
 
