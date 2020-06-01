@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email;
 
 use Application\DeskPRO\Entity\PersonEmail;
+use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -34,6 +35,22 @@ class FreeEmailValidator extends AbstractEmailValidator
             'email' => $value->getEmail(),
         ]);
 
-        return !$existEmail || $existEmail->getId() === $value->getId();
+        if ($existEmail && $existEmail->getId() === $value->getId()) {
+            return true;
+        }
+
+        // check pending emails as well
+        $qb = $this->em->getRepository(SavedForm::class)->createQueryBuilder('f');
+        $qb
+            ->select('f')
+            ->where('f.intention_type = :type')
+            ->andWhere('f.form_data LIKE :email')
+            ->setParameter('type', SavedForm::INTENTION_VERIFY_EMAIL)
+            ->setParameter('email', '%'.$value->getEmail().'%')
+        ;
+
+        $savedForms = $qb->getQuery()->getResult();
+
+        return !$existEmail && !$savedForms;
     }
 }

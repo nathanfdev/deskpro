@@ -366,6 +366,7 @@ helpcenter.forms.error_password_require_num_lowercase: '{count, plural, one {At 
 helpcenter.forms.error_password_require_num_number: '{count, plural, one {At least # number} other {At least # numbers}}'
 helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {At least # symbol} other {At least # symbols}}'
 helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {At least # uppercase character} other {At least # uppercase characters}}'
+helpcenter.forms.error_dupe_email: 'This email address is already in use.'
 helpcenter.forms.error_required: 'This value is required'
 helpcenter.forms.label_save: Save
 helpcenter.forms.label_reset: Reset
