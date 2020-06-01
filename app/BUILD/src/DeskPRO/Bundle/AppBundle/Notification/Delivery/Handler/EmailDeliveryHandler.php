@@ -87,7 +87,7 @@ class EmailDeliveryHandler extends AbstractDeliveryHandler
         $em          = $this->container->get('doctrine.orm.default_entity_manager');
         $agent       = $this->getAgent($message->getTarget());
         $chatMessage = $this->getChatMessage($message->getData()['data']['data']['id']);
-        $session     = $em->getRepository(Session::class)->getSessionForPerson($agent, 3);
+        $session     = $em->getRepository(Session::class)->getSessionForPerson($agent, 30);
 
         if (!$session && $agent->getPref('agent_notif.chat_message.email')) {
             if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
