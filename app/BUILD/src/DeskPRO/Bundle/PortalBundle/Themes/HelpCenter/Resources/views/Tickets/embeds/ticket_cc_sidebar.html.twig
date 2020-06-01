@@ -1,12 +1,14 @@
-<div class="dp-po-avatar">
-	{{ hc_avatar(person) }}
-</div>
-<div class="dp-po-ticket-meta-cc-title">
-	<span class="dp-po-ticket-meta-cc-name">{{person.display_name_user}}</span>
-	{% if person.getEmailAddress() %}
-		<span class="dp-po-ticket-meta-cc-email">{{person.getEmailAddress()}}</span>
+<li class="dp-po-ticket-meta-cc-item participant-{{ cc_id }}">
+	<div class="dp-po-avatar">
+		{{ hc_avatar(person) }}
+	</div>
+	<div class="dp-po-ticket-meta-cc-title">
+		<span class="dp-po-ticket-meta-cc-name">{{person.display_name_user}}</span>
+		{% if person.getEmailAddress() %}
+			<span class="dp-po-ticket-meta-cc-email">{{person.getEmailAddress()}}</span>
+		{% endif %}
+	</div>
+	{% if avatar_link %}
+		<a href="{{ avatar_link }}" class="dp-po-ticket-meta-cc-remove"><i class="far fa-times-circle"></i></a>
 	{% endif %}
-</div>
-{% if avatar_link %}
-	<a href="{{ avatar_link }}" class="dp-po-ticket-meta-cc-remove post-link"><i class="far fa-times-circle"></i></a>
-{% endif %}
+</li>

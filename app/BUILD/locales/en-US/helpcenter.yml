@@ -721,7 +721,7 @@ helpcenter.tickets.view_btn_edit_full: 'Edit this ticket'
 helpcenter.tickets.view_label_your_email_placeholder: 'Email Address (required)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Name (required)'
 helpcenter.tickets.view_last_message: 'Last message'
-helpcenter.tickets.view_participants: 'Also on this ticket ({count})'
+helpcenter.tickets.view_participants: 'Also on this ticket ({participants})'
 helpcenter.tickets.view_reply_errors: 'There are some errors with your submission.'
 helpcenter.tickets.view_reply_or_close: 'Reply or <a href="{close_url}">close the ticket</a>'
 helpcenter.tickets.view_requester: Requester
