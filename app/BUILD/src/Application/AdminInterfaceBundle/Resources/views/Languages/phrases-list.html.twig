@@ -35,7 +35,7 @@
 		</article>
 	</section>
 
-	<section class="dp-paneblock dp-listpane">
+	<section class="dp-paneblock dp-listpane" ng-if="ListCtrl.phraseGroups.user">
 		<header>
 			<h3>User Interface Phrases</h3>
 		</header>
@@ -53,6 +53,25 @@
 			</ul>
 		</article>
 	</section>
+
+    <section class="dp-paneblock dp-listpane" ng-if="ListCtrl.phraseGroups.helpcenter">
+        <header>
+            <h3>Helpcenter Phrases</h3>
+        </header>
+        <article>
+            <ul class="dp-item-list">
+                <li ng-repeat="group in ListCtrl.phraseGroups.helpcenter" dp-state-mark="id,groupId:setup.phrases.viewgroup.{{ ng_var("'phrases-' + ListCtrl.pack.id") }}.{{ ng_var("group.id") }}">
+                    <a href="{{ ng_href('setup.phrases.viewgroup', "{id: 'phrases-' + ListCtrl.pack.id, groupId: group.id}") }}">
+                        <h4>
+							<span class="title-text">
+								{{ ng_var('group.title') }}
+							</span>
+                        </h4>
+                    </a>
+                </li>
+            </ul>
+        </article>
+    </section>
 
 {% endblock %}
 {% block listpane_help %}{% endblock %}

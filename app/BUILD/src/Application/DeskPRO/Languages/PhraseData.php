@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Languages;
 
@@ -26,13 +22,14 @@ use Symfony\Component\Yaml\Yaml;
 class PhraseData
 {
     private static $groupFileMap = [
-        'adm'     => 'backend',
-        'admin'   => 'backend',
-        'api'     => 'backend',
-        'agent'   => 'backend',
-        'general' => 'backend',
-        'portal'  => 'user',
-        'user'    => 'user',
+        'adm'        => 'backend',
+        'admin'      => 'backend',
+        'api'        => 'backend',
+        'agent'      => 'backend',
+        'general'    => 'backend',
+        'portal'     => 'user',
+        'user'       => 'user',
+        'helpcenter' => 'helpcenter',
     ];
 
     private static $reverseMap = [
@@ -355,18 +352,22 @@ class PhraseData
         switch ($fm->getEntityName()) {
             case 'DeskPRO:CustomDefTicket':
                 $phrase_group = 'obj_customdefticket';
+
                 break;
 
             case 'DeskPRO:CustomDefPerson':
                 $phrase_group = 'obj_customdefperson';
+
                 break;
 
             case 'DeskPRO:CustomDefOrganization':
                 $phrase_group = 'obj_customdeforganization';
+
                 break;
 
             case 'DeskPRO:CustomDefChat':
                 $phrase_group = 'obj_customdefchat';
+
                 break;
 
             default: return [];
@@ -660,8 +661,8 @@ class PhraseData
             $phrase_groups = array_unique($phrase_groups);
 
             foreach ($phrase_groups as $group_id) {
-                $default_phrases = array_merge($default_phrases,   $this->loadSystemPhrases('en-US', $group_id));
-                $lang_phrases    = array_merge($lang_phrases,      $this->loadSystemPhrases($language->getLocale(), $group_id));
+                $default_phrases = array_merge($default_phrases, $this->loadSystemPhrases('en-US', $group_id));
+                $lang_phrases    = array_merge($lang_phrases, $this->loadSystemPhrases($language->getLocale(), $group_id));
             }
         }
 
@@ -734,6 +735,7 @@ class PhraseData
     /**
      * @param Language $language
      * @param string   $group_id
+     * @param mixed $isManaged
      *
      * @return array
      */
