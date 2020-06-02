@@ -8,223 +8,225 @@
 
 {% block page_content %}
     <div class="dp-po">
-        <main id="main" tabindex="-1" class="dp-po-main dp-po-tickets-home" id="hc_ticket_list_page">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="dp-po-title">
-                            <img class="dp-po-title-svg" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}">
-                            <h1 class="dp-po-title-text">{{ page_title }}</h1>
+        <main id="main" tabindex="-1" class="dp-po-main dp-po-tickets-home">
+            <div id="hc_ticket_list_page">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="dp-po-title">
+                                <img class="dp-po-title-svg" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}">
+                                <h1 class="dp-po-title-text">{{ page_title }}</h1>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6 text-right">
-                        <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary mb-4">{{ phrase('helpcenter.tickets.submit_a_ticket') }}</a>
+                        <div class="col-sm-6 text-right">
+                            <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary mb-4">{{ phrase('helpcenter.tickets.submit_a_ticket') }}</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="dp-po-ticket-sidebar">
-                            {% include 'Theme:Tickets:sidebar.html.twig' with {
-                                type: type,
-                            } %}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="dp-po-ticket-sidebar">
+                                {% include 'Theme:Tickets:sidebar.html.twig' with {
+                                    type: type,
+                                } %}
 
-{#                            <div class="dp-po-ticket-filter">#}
-{#                                <div class="row mb-4">#}
-{#                                    <div class="col-sm-6">#}
-{#                                        <h4 class="dp-po-ticket-filter-title">{{ phrase('helpcenter.tickets.filter_by') }}</h4>#}
-{#                                    </div>#}
-{#                                    <div class="col-sm-6 text-right">#}
-{#                                        <a href="" class="dp-po-ticket-filter-clearall">{{ phrase('helpcenter.general.clear_all') }}</a>#}
-{#                                    </div>#}
-{#                                </div>#}
+    {#                            <div class="dp-po-ticket-filter">#}
+    {#                                <div class="row mb-4">#}
+    {#                                    <div class="col-sm-6">#}
+    {#                                        <h4 class="dp-po-ticket-filter-title">{{ phrase('helpcenter.tickets.filter_by') }}</h4>#}
+    {#                                    </div>#}
+    {#                                    <div class="col-sm-6 text-right">#}
+    {#                                        <a href="" class="dp-po-ticket-filter-clearall">{{ phrase('helpcenter.general.clear_all') }}</a>#}
+    {#                                    </div>#}
+    {#                                </div>#}
 
-{#                                <ul class="dp-po-ticket-filter-list">#}
+    {#                                <ul class="dp-po-ticket-filter-list">#}
 
-{#                                    <li class="dp-po-ticket-filter-item">#}
-{#                                        <div class="form-group dp-po-form-check">#}
-{#                                            <input type="checkbox" class="form-check-input" id="departmentCheck" checked>#}
-{#                                            <label class="form-check-label" for="departmentCheck">Department</label>#}
-{#                                        </div>#}
-{#                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample" role="button"#}
-{#                                           aria-expanded="false" aria-controls="collapseExample">#}
-{#                                            <i class="dp-po-icon far fa-angle-down"></i>#}
-{#                                        </a>#}
-{#                                        <div class="collapse show" id="collapseExample">#}
-{#                                            <ul class="dp-po-ticket-filter-list">#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="supportCheck">#}
-{#                                                        <label class="form-check-label" for="supportCheck">Support</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="hrCheck">#}
-{#                                                        <label class="form-check-label" for="hrCheck">HR</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="rndCheck" checked>#}
-{#                                                        <label class="form-check-label" for="rndCheck">R&D</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="salesCheck">#}
-{#                                                        <label class="form-check-label" for="salesCheck">Sales</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="customerCheck">#}
-{#                                                        <label class="form-check-label" for="customerCheck">Customer Success</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                            </ul>#}
-{#                                        </div>#}
+    {#                                    <li class="dp-po-ticket-filter-item">#}
+    {#                                        <div class="form-group dp-po-form-check">#}
+    {#                                            <input type="checkbox" class="form-check-input" id="departmentCheck" checked>#}
+    {#                                            <label class="form-check-label" for="departmentCheck">Department</label>#}
+    {#                                        </div>#}
+    {#                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample" role="button"#}
+    {#                                           aria-expanded="false" aria-controls="collapseExample">#}
+    {#                                            <i class="dp-po-icon far fa-angle-down"></i>#}
+    {#                                        </a>#}
+    {#                                        <div class="collapse show" id="collapseExample">#}
+    {#                                            <ul class="dp-po-ticket-filter-list">#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="supportCheck">#}
+    {#                                                        <label class="form-check-label" for="supportCheck">Support</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="hrCheck">#}
+    {#                                                        <label class="form-check-label" for="hrCheck">HR</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="rndCheck" checked>#}
+    {#                                                        <label class="form-check-label" for="rndCheck">R&D</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="salesCheck">#}
+    {#                                                        <label class="form-check-label" for="salesCheck">Sales</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="customerCheck">#}
+    {#                                                        <label class="form-check-label" for="customerCheck">Customer Success</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                            </ul>#}
+    {#                                        </div>#}
 
-{#                                    </li>#}
+    {#                                    </li>#}
 
-{#                                    <li class="dp-po-ticket-filter-item">#}
-{#                                        <div class="form-group dp-po-form-check">#}
-{#                                            <input type="checkbox" class="form-check-input" id="userCheck">#}
-{#                                            <label class="form-check-label" for="userCheck">User</label>#}
-{#                                        </div>#}
-{#                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample1"#}
-{#                                           role="button" aria-expanded="false" aria-controls="collapseExample1">#}
-{#                                            <i class="dp-po-icon far fa-angle-down"></i>#}
-{#                                        </a>#}
-{#                                        <div class="collapse show" id="collapseExample1">#}
-{#                                            <ul class="dp-po-ticket-filter-list">#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="user1">#}
-{#                                                        <label class="form-check-label" for="user1"><img#}
-{#                                                                    src="{{ asset('img/docs/avatar.png', 'help_center') }}"> Jonathan Jones</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="user2">#}
-{#                                                        <label class="form-check-label" for="user2"><img#}
-{#                                                                    src="{{ asset('img/docs/avatar.png', 'help_center') }}"> Wendy Pride</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="user3" checked>#}
-{#                                                        <label class="form-check-label" for="user3"><img#}
-{#                                                                    src="{{ asset('img/docs/avatar.png', 'help_center') }}"> Elaine#}
-{#                                                            Fredericks</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                            </ul>#}
-{#                                        </div>#}
-{#                                    </li>#}
+    {#                                    <li class="dp-po-ticket-filter-item">#}
+    {#                                        <div class="form-group dp-po-form-check">#}
+    {#                                            <input type="checkbox" class="form-check-input" id="userCheck">#}
+    {#                                            <label class="form-check-label" for="userCheck">User</label>#}
+    {#                                        </div>#}
+    {#                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample1"#}
+    {#                                           role="button" aria-expanded="false" aria-controls="collapseExample1">#}
+    {#                                            <i class="dp-po-icon far fa-angle-down"></i>#}
+    {#                                        </a>#}
+    {#                                        <div class="collapse show" id="collapseExample1">#}
+    {#                                            <ul class="dp-po-ticket-filter-list">#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="user1">#}
+    {#                                                        <label class="form-check-label" for="user1"><img#}
+    {#                                                                    src="{{ asset('img/docs/avatar.png', 'help_center') }}"> Jonathan Jones</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="user2">#}
+    {#                                                        <label class="form-check-label" for="user2"><img#}
+    {#                                                                    src="{{ asset('img/docs/avatar.png', 'help_center') }}"> Wendy Pride</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="user3" checked>#}
+    {#                                                        <label class="form-check-label" for="user3"><img#}
+    {#                                                                    src="{{ asset('img/docs/avatar.png', 'help_center') }}"> Elaine#}
+    {#                                                            Fredericks</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                            </ul>#}
+    {#                                        </div>#}
+    {#                                    </li>#}
 
-{#                                    <li class="dp-po-ticket-filter-item">#}
-{#                                        <div class="form-group dp-po-form-check">#}
-{#                                            <input type="checkbox" class="form-check-input" id="activityCheck" checked>#}
-{#                                            <label class="form-check-label" for="activityCheck">{{ phrase('helpcenter.general.last_activity') }}</label>#}
-{#                                        </div>#}
-{#                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample2"#}
-{#                                           role="button" aria-expanded="false" aria-controls="collapseExample">#}
-{#                                            <i class="dp-po-icon far fa-angle-down"></i>#}
-{#                                        </a>#}
-{#                                        <div class="collapse show" id="collapseExample2">#}
-{#                                            <ul class="dp-po-ticket-filter-list">#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="lasthour" checked>#}
-{#                                                        <label class="form-check-label" for="lasthour">Last 24 hours</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="lastweek" checked>#}
-{#                                                        <label class="form-check-label" for="lastweek">Last week</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="lastmonth" checked>#}
-{#                                                        <label class="form-check-label" for="lastmonth">Last month</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="6months">#}
-{#                                                        <label class="form-check-label" for="6months">Last 6 month</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="lastyear">#}
-{#                                                        <label class="form-check-label" for="lastyear">Last year</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                                <li class="dp-po-ticket-filter-item">#}
-{#                                                    <div class="form-group dp-po-form-check">#}
-{#                                                        <input type="checkbox" class="form-check-input" id="moreyear">#}
-{#                                                        <label class="form-check-label" for="moreyear">More than 1 year</label>#}
-{#                                                    </div>#}
-{#                                                </li>#}
-{#                                            </ul>#}
-{#                                        </div>#}
-{#                                    </li>#}
+    {#                                    <li class="dp-po-ticket-filter-item">#}
+    {#                                        <div class="form-group dp-po-form-check">#}
+    {#                                            <input type="checkbox" class="form-check-input" id="activityCheck" checked>#}
+    {#                                            <label class="form-check-label" for="activityCheck">{{ phrase('helpcenter.general.last_activity') }}</label>#}
+    {#                                        </div>#}
+    {#                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample2"#}
+    {#                                           role="button" aria-expanded="false" aria-controls="collapseExample">#}
+    {#                                            <i class="dp-po-icon far fa-angle-down"></i>#}
+    {#                                        </a>#}
+    {#                                        <div class="collapse show" id="collapseExample2">#}
+    {#                                            <ul class="dp-po-ticket-filter-list">#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="lasthour" checked>#}
+    {#                                                        <label class="form-check-label" for="lasthour">Last 24 hours</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="lastweek" checked>#}
+    {#                                                        <label class="form-check-label" for="lastweek">Last week</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="lastmonth" checked>#}
+    {#                                                        <label class="form-check-label" for="lastmonth">Last month</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="6months">#}
+    {#                                                        <label class="form-check-label" for="6months">Last 6 month</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="lastyear">#}
+    {#                                                        <label class="form-check-label" for="lastyear">Last year</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                                <li class="dp-po-ticket-filter-item">#}
+    {#                                                    <div class="form-group dp-po-form-check">#}
+    {#                                                        <input type="checkbox" class="form-check-input" id="moreyear">#}
+    {#                                                        <label class="form-check-label" for="moreyear">More than 1 year</label>#}
+    {#                                                    </div>#}
+    {#                                                </li>#}
+    {#                                            </ul>#}
+    {#                                        </div>#}
+    {#                                    </li>#}
 
-{#                                </ul>#}
-{#                            </div>#}
+    {#                                </ul>#}
+    {#                            </div>#}
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-9">
-                        <div class="dp-po-section dp-po-block">
-                            {% set search_displayed = false %}
+                        <div class="col-sm-9">
+                            <div class="dp-po-section dp-po-block">
+                                {% set search_displayed = false %}
 
-                            {% set displayed_at_least_one_table = false %}
+                                {% set displayed_at_least_one_table = false %}
 
-                            {% for table in ticket_list_tables %}
-                                {% if table.pager|length > 0 %}
-                                    {% set displayed_at_least_one_table = true %}
-                                    {% if table.ticketCategory == 'awaiting_agent' %}
-                                        {% set table_type = 'neutral' %}
-                                    {% elseif table.ticketCategory == 'resolved'%}
-                                        {% set table_type = 'success' %}
-                                    {% else %}
-                                        {% set table_type = 'danger' %}
+                                {% for table in ticket_list_tables %}
+                                    {% if table.pager|length > 0 %}
+                                        {% set displayed_at_least_one_table = true %}
+                                        {% if table.ticketCategory == 'awaiting_agent' %}
+                                            {% set table_type = 'neutral' %}
+                                        {% elseif table.ticketCategory == 'resolved'%}
+                                            {% set table_type = 'success' %}
+                                        {% else %}
+                                            {% set table_type = 'danger' %}
+                                        {% endif %}
+                                        {{ _self.tickets_table(table, table.ticketCategory, table_type, not search_displayed, search_query) }}
+                                        {% set search_displayed = true %}
                                     {% endif %}
-                                    {{ _self.tickets_table(table, table.ticketCategory, table_type, not search_displayed, search_query) }}
-                                    {% set search_displayed = true %}
+                                {% endfor %}
+                                {% if not displayed_at_least_one_table %}
+                                    {% if search_query %}
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                            </div>
+                                            <div class="col-sm-7">
+                                                <form class="dp-po-ticket-search" method="get">
+                                                    <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search_tickets') }}" value="{{ search_query }}" aria-label="{{ phrase('helpcenter.gerenal.search')}}" />
+                                                    <button type="submit" aria-label="{{ phrase('helpcenter.gerenal.search')}}"> <i class="dp-po-icon far fa-search"></i></button>
+                                                </form>
+                                            </div>
+                                            <div class="col-sm-1 text-right">
+                                            </div>
+                                        </div>
+                                        <div class="dp-po-table">
+                                            <div class="col-sm-12">
+                                                {{ phrase('helpcenter.tickets.list_no_tickets_filter', { open_ticket_url: path('portal_new_ticket') }) }}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row">
+                                            {{ phrase('helpcenter.tickets.list_no_tickets', { open_ticket_url: path('portal_new_ticket') }) }}
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
-                            {% endfor %}
-                            {% if not displayed_at_least_one_table %}
-                                {% if search_query %}
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                        </div>
-                                        <div class="col-sm-7">
-                                            <form class="dp-po-ticket-search" method="get">
-                                                <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search_tickets') }}" value="{{ search_query }}" aria-label="{{ phrase('helpcenter.gerenal.search')}}" />
-                                                <button type="submit" aria-label="{{ phrase('helpcenter.gerenal.search')}}"> <i class="dp-po-icon far fa-search"></i></button>
-                                            </form>
-                                        </div>
-                                        <div class="col-sm-1 text-right">
-                                        </div>
-                                    </div>
-                                    <div class="dp-po-table">
-                                        <div class="col-sm-12">
-                                            {{ phrase('helpcenter.tickets.list_no_tickets_filter', { open_ticket_url: path('portal_new_ticket') }) }}
-                                        </div>
-                                    </div>
-                                {% else %}
-                                    <div class="row">
-                                        {{ phrase('helpcenter.tickets.list_no_tickets', { open_ticket_url: path('portal_new_ticket') }) }}
-                                    </div>
-                                {% endif %}
-                            {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
