@@ -603,3 +603,56 @@ Feature: /tickets endpoint
     """
     Then the response status code should be 201
     And the JSON node "data.person.name" should be equal to "Admin Admin"
+
+  Scenario: I create first message in default context
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+	"agent": ~agent~,
+	"person": ~user~,
+	"message": {
+		"message": "my ticket 2"
+	}
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
+    Then the JSON node "data[0].person" should be equal to "{admin}"
+
+  Scenario: I create first message in agent context
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+	"agent": ~agent~,
+	"person": ~user~,
+	"context": "agent",
+	"message": {
+		"message": "my ticket 2"
+	}
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
+    Then the JSON node "data[0].person" should be equal to "{admin}"
+
+  Scenario: I create first message in user context
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+	"agent": ~agent~,
+	"person": ~user~,
+	"context": "user",
+	"message": {
+		"message": "my ticket 2"
+	}
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
+    Then the JSON node "data[0].person" should be equal to "{user}"
