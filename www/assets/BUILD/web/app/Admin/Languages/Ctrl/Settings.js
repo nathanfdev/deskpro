@@ -85,32 +85,46 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     doDownloadLanguages() {
-      const syncLanguage = (nameId, locale) => {
+      const syncLanguage = (nameId, locale, hasHelpcenter) => {
         console.log('[Language sync] Process: ', locale);
         this.syncLog += `Downloading ${locale} ...\n`;
-        return this.$q.all([
+
+        const promises = [
           this.LangSyncApi.getPhrases(locale, 'backend'),
-          this.LangSyncApi.getPhrases(locale, 'user')
-        ]).then((res) => {
+          this.LangSyncApi.getPhrases(locale, 'user'),
+        ];
+
+        if (hasHelpcenter) {
+          promises.push(this.LangSyncApi.getPhrases(locale, 'helpcenter'));
+        }
+
+        return this.$q.all(promises).then((res) => {
           // combine user and backend phrases
-          const postData = {
-            phrases: Object.assign({}, res[0].data, res[1].data)
-          };
+          let phrases = Object.assign({}, res[0].data, res[1].data);
+          if (hasHelpcenter) {
+            phrases = Object.assign(phrases, res[2].data.data);
+          }
 
           this.syncLog += `Syncing ${locale} ...\n`;
-          return this.Api.sendPostJson(`/langs/${nameId}/phrases/sync`, postData);
+          return this.Api.sendPostJson(`/langs/${nameId}/phrases/sync`, { phrases });
         });
       };
 
       return this.showConfirm('@confirm_download_languages').result.then(() => {
         this.startSpinner('update_languages');
 
-        this.syncLog = '';
         this.showLog = true;
+        this.syncLog = 'Downloading Manifest ...\n';
 
-        this.syncLog += 'Downloading Manifest ...\n';
-        return this.LangSyncApi.getManifest().then((result) => {
-          const manifest = result.data;
+        const promises = [
+          this.LangSyncApi.getDeskproManifest(),
+          this.LangSyncApi.getCrowdinLocales()
+        ];
+
+        return this.$q.all(promises).then((result) => {
+          const manifest = result[0].data;
+          const crowdinLocales = result[1].data.data;
+
           let langs = this.langChoices;
           if (this.form.download_language !== 'all') {
             langs = [{ system_name: this.form.download_language }];
@@ -124,7 +138,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
           // queue promises to process languages sync one by one
           manifest.forEach((lang) => {
             if (langs.indexOf(lang.id) !== -1) {
-              return res = res.then(() => syncLanguage(lang.id, lang.locale));
+              res = res.then(() => syncLanguage(lang.id, lang.locale, crowdinLocales.indexOf(lang.locale) !== -1));
             }
           });
 
