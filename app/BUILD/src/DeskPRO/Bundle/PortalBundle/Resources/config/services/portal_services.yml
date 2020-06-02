@@ -10,6 +10,7 @@ services:
   pagerfanta.view.deskpro:
     class: DeskPRO\Bundle\PortalBundle\View\Pagerfanta\DeskproView
     public: false
+    arguments: [null, "@language_manager"]
     tags:
       - { name: pagerfanta.view, alias: deskpro }
 
