@@ -473,6 +473,8 @@ helpcenter.general.no_search_query: 'Please type a search query into the search 
 helpcenter.general.no_search_results_general: 'We couldn''t find any results'
 helpcenter.general.or: or
 helpcenter.general.pagination_page: 'Page {page}'
+helpcenter.general.pagination_next_page: 'Next page'
+helpcenter.general.pagination_previous_page: 'Previous page'
 helpcenter.general.password: Password
 helpcenter.general.previous: Previous
 helpcenter.general.print: Print
