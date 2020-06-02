@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
@@ -492,10 +490,10 @@ class DownloadsController extends AbstractController
 
         if ($subscriptionsHelper->isSubscribedCategory($category, $person)) {
             $subscriptionsHelper->unsubscribeFromCategory($category, $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_unsubscribe', 'helpcenter.flashes.download_cat_unsubscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_unsubscribe', 'helpcenter.flashes.download_cat_unsubscribe', ['category' => $category->getTitle()]]));
         } else {
             $subscriptionsHelper->subscribeToCategory($category, $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_subscribe', 'helpcenter.flashes.download_cat_subscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_subscribe', 'helpcenter.flashes.download_cat_subscribe', ['category' => $category->getTitle()]]));
         }
 
         return $this->redirectToRoute('portal_downloads_browse', ['slug' => $category->getSlug()]);
@@ -515,10 +513,10 @@ class DownloadsController extends AbstractController
 
         if ($subscriptionsHelper->isSubscribedRootCategory('downloads', $person)) {
             $subscriptionsHelper->unsubscribeFromRootCategory('downloads', $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_unsubscribe', 'helpcenter.flashes.download_cat_unsubscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_unsubscribe', 'helpcenter.flashes.download_root_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToRootCategory('downloads', $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_subscribe', 'helpcenter.flashes.download_cat_subscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.download_cat_subscribe', 'helpcenter.flashes.download_root_subscribe']));
         }
 
         return $this->redirectToRoute('portal_downloads');
