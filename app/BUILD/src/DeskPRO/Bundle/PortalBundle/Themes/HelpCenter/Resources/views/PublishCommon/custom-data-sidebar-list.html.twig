@@ -1,24 +1,24 @@
 {% for custom in custom_data %}
     {% if custom['value'] %}
-        <h3 class="dp-po-post-meta-title">{{ custom['label'] }}</h3>
+        <dt class="dp-po-post-meta-title">{{ custom['label'] }}</dt>
         {% if custom['type'] == 'url' %}
-            <p><a href="{{ custom['value'] }}" target="_blank">{{ custom['value'] }}</a></p>
+            <dd><a href="{{ custom['value'] }}" target="_blank">{{ custom['value'] }}</a></dd>
         {% elseif custom['type'] == 'date' %}
-            <p>{{ custom['value']|date('full') }}</p>
+            <dd>{{ custom['value']|date('full') }}</dd>
         {% elseif custom['type'] == 'datetime' %}
-            <p>{{ custom['value']|date('fulltime') }}</p>
+            <dd>{{ custom['value']|date('fulltime') }}</dd>
         {% elseif custom['type'] == 'file' %}
             {% for file in custom['value'] %}
-                <p>
+                <dd>
                     <a href="{{ file.downloadUrl }}{{ file.is_image ? '' : '?dl=1' }}" target="_blank">
                         {{ content_icon(file) }}
                         {{ file.filename }}
                         ({{ file.readableFilesize }})
                     </a>
-                </p>
+                </dd>
             {% endfor %}
         {% else %}
-            <p>{% if custom['value'] is iterable %}{{ custom['value']|join(', ') }}{% else %}{{ custom['value'] }}{% endif %}</p>
+            <dd>{% if custom['value'] is iterable %}{{ custom['value']|join(', ') }}{% else %}{{ custom['value'] }}{% endif %}</dd>
         {% endif %}
     {% endif %}
 {% endfor %}

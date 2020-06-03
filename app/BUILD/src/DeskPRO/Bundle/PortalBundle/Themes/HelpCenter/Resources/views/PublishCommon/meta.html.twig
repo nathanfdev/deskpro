@@ -1,8 +1,8 @@
-<div class="dp-po-post-meta">
-    <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.sidebar.article_posted_by') }}</h3>
-    <p>{{ item.person.display_name_user }}</p>
-    <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.tickets.list_date_created') }}</h3>
-    <p>{{ phrase('helpcenter.general.date_medium', { date:item.date_published }) }}</p>
+<dl class="dp-po-post-meta">
+    <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.sidebar.article_posted_by') }}</dt>
+    <dd>{{ item.person.display_name_user }}</dd>
+    <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.tickets.list_date_created') }}</dt>
+    <dd>{{ phrase('helpcenter.general.date_medium', { date:item.date_published }) }}</dd>
     {% if custom_data | length %}
         {% include 'Theme:PublishCommon:custom-data-sidebar-list.html.twig' %}
     {% endif %}
@@ -10,7 +10,7 @@
     <table class="table table-borderless">
         <tr>
             <th>
-                <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.translations') }}</h3>
+                <span class="dp-po-post-meta-title">{{ phrase('helpcenter.general.translations') }}</span>
             </th>
             {#<th class="text-right">
                 <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.updated') }}</h3>
@@ -19,7 +19,7 @@
         {% for translation in  item.object_props_translations %}
             {% if translation.prop_name == 'content' %}
             <tr>
-                <td><img class="dp-po-icon" src="{{ asset('images/flags/' ~ translation.language.flag_image) }}" />
+                <td><img class="dp-po-icon" src="{{ asset('images/flags/' ~ translation.language.flag_image) }}" alt="" />
                     {{ translation.language.title_local }}</td>
                 {#<td class="text-right text-success">23 days</td>#}
             </tr>
@@ -28,9 +28,9 @@
     </table>
     {% endif %}
     {% if item['end_action'] is defined and item.end_action == 'unpublish' and app.user is not null and app.user.is_agent %}
-    <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }} <span class="dp-po-icon" data-toggle="tooltip" title="{{ phrase('helpcenter.general.viewed_by_agents_only') }}" data-placement="top">
+    <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }} <span class="dp-po-icon" data-toggle="tooltip" title="{{ phrase('helpcenter.general.viewed_by_agents_only') }}" data-placement="top">
             <i class="fal fa-info-circle text-primary" ></i>
-        </span></h3>
-    <p>{{ phrase('helpcenter.general.date_medium', { date:item.date_end }) }}</p>
+        </span></dt>
+    <dd>{{ phrase('helpcenter.general.date_medium', { date:item.date_end }) }}</dd>
     {% endif %}
-</div>
+</dl>

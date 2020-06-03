@@ -316,7 +316,7 @@ class TicketTableDataService extends AbstractDataService
         return;
     }
 
-    private function isHelpcenter()
+    protected function isHelpcenter()
     {
         return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
