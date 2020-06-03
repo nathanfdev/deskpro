@@ -2,7 +2,7 @@
 
 {% block page_content %}
     <div class="dp-po">
-        <main class="dp-po-main dp-po-guides" id="react_helpcenter_bundle">
+        <main id="main" tabindex="-1" class="dp-po-main dp-po-guides">
             {% if guides | length > 1 %}
                 {% include 'Theme:Guides:embeds/guides_carousel.html.twig' %}
             {% endif %}
@@ -84,7 +84,7 @@
         if (typeof window.HelpcenterBundle === 'undefined') {
           setTimeout(start.bind(this), 100);
         } else {
-          window.HelpcenterBundle.render(reactProps, document.getElementById('react_helpcenter_bundle'));
+          window.HelpcenterBundle.render(reactProps, document.getElementById('main'));
         }
       }
 

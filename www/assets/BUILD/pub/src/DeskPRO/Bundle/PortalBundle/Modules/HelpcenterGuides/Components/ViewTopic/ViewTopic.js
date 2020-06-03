@@ -112,7 +112,7 @@ class ViewTopic extends React.Component {
   defineSizes = () => {
     if (!this.elements) {
       this.elements = {
-        guidesMain:   window.document.getElementById('react_helpcenter_bundle'),
+        guidesMain:   window.document.getElementById('main'),
         search:       window.document.getElementsByClassName('dp-po-guides-search')[0],
         articleRight: window.document.getElementsByClassName('dp-po-guides-block-article-right')[0],
       };
