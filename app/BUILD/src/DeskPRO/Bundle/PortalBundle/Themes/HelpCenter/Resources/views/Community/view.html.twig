@@ -36,10 +36,14 @@
                     <div class="dp-po-post-extra">
                         <ul class="dp-po-post-extra-list">
                             <li class="dp-po-post-extra-item">
-                                <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}"><i class="dp-po-icon fal fa-print" title="{{ phrase('helpcenter.general.print') }}"></i></a>
+                                <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}">
+                                    <i class="dp-po-icon fal fa-print" title="{{ phrase('helpcenter.general.print') }}"></i>
+                                </a>
                             </li>
                             <li class="dp-po-post-extra-item">
-                                <a href="{{ path('portal_community_topic_pdf', {slug: topic.slug}) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.guides.download_pdf') }}"><i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i></a>
+                                <a href="{{ path('portal_community_topic_pdf', {slug: topic.slug}) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.download_pdf') }} - {{ topic.translated_title }}.pdf">
+                                    <i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i>
+                                </a>
                             </li>
                         </ul>
                     </div>

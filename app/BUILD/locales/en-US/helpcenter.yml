@@ -522,7 +522,7 @@ helpcenter.general.x_search_results: '{num} search results for "{query}"'
 helpcenter.general.you: You
 helpcenter.general.your_comment_label: 'Your comment'
 helpcenter.general.your_comment_optional_label: 'Your comment (optional)'
-helpcenter.guides.download_pdf: 'Download PDF'
+helpcenter.general.download_pdf: 'Download PDF'
 helpcenter.knowledgebase.featured_articles: 'Featured articles'
 helpcenter.label.search: Search
 helpcenter.members.activity_commented_on: 'Commented on'
