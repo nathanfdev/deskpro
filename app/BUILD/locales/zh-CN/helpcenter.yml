@@ -216,7 +216,7 @@ helpcenter.general.tags: 标签
 helpcenter.general.updated: 已更新
 helpcenter.general.user: 用户
 helpcenter.general.you: 你
-helpcenter.guides.download_pdf: '下载PDF'
+helpcenter.general.download_pdf: '下载PDF'
 helpcenter.members.language: 语言
 helpcenter.members.timezone: 时区
 helpcenter.news.none: '没有新消息'

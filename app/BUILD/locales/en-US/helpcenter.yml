@@ -386,6 +386,7 @@ helpcenter.general.agents: Agents
 helpcenter.eula.agree: Agree
 helpcenter.general.apply: Apply
 helpcenter.general.attachments: Attachments
+helpcenter.general.authors_list: Authors list
 helpcenter.general.back: Back
 helpcenter.general.btn_manage_subscriptions: 'Manage your subscriptions'
 helpcenter.general.subscribe_action: Subscribe
@@ -521,7 +522,7 @@ helpcenter.general.x_search_results: '{num} search results for "{query}"'
 helpcenter.general.you: You
 helpcenter.general.your_comment_label: 'Your comment'
 helpcenter.general.your_comment_optional_label: 'Your comment (optional)'
-helpcenter.guides.download_pdf: 'Download PDF'
+helpcenter.general.download_pdf: 'Download PDF'
 helpcenter.knowledgebase.featured_articles: 'Featured articles'
 helpcenter.label.search: Search
 helpcenter.members.activity_commented_on: 'Commented on'

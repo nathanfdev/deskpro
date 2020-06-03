@@ -112,7 +112,7 @@ helpcenter.general.show: Zobraz
 helpcenter.general.tagged_with: 'označen'
 helpcenter.general.tags: Označení
 helpcenter.general.updated: Aktualizováno
-helpcenter.guides.download_pdf: 'Stáhnout PDF'
+helpcenter.general.download_pdf: 'Stáhnout PDF'
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
 helpcenter.profile.account_disabled_message: 'Váš účet je v tuto chvíli pozastaven. Nemůžete se přihlásit ani spravovat své tikety.'

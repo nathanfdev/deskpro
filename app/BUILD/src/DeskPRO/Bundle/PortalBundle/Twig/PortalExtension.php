@@ -648,23 +648,32 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
-     * @param null   $obj
-     * @param int    $size
+     * @param Entity\Person $obj
      * @param string $className
+     * @param int $size
+     * @param bool $hidden
+     *
+     * @throws Exception
      *
      * @return string
      */
-    public function getHelpcenterAvatar($obj = null, $className = 'dp-po-avatar', $size = 80)
+    public function getHelpcenterAvatar($obj = null, $className = 'dp-po-avatar', $size = 80, $hidden = true)
     {
         $avatarUrl = $this->getAvatarUrl($obj, $size, false);
         if ($avatarUrl) {
             if ($className) {
-                $className = 'class="'.$className.'-image"';
+                $attributes = 'class="'.$className.'-image"';
             } else {
-                $className = 'class="dp-po-avatar-image"';
+                $attributes = 'class="dp-po-avatar-image"';
             }
 
-            return "<span $className style='background-image: url(\"$avatarUrl\");'></span>";
+            if ($hidden) {
+                $attributes .= ' aria-hidden="true"';
+            } else {
+                $attributes .= ' aria-label="'.$obj->getDisplayName().'"';
+            }
+
+            return "<span $attributes style='background-image: url(\"$avatarUrl\");'></span>";
         } elseif ($obj) {
             if ($className) {
                 $className = 'class="'.$className.'-name"';
@@ -673,7 +682,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             }
             $initials = substr($obj->getFirstName(), 0, 1).substr($obj->getLastName(), 0, 1);
 
-            return "<span $className>$initials</span>";
+            if ($hidden) {
+                return "<span $className aria-hidden=\"true\">$initials</span>";
+            }
+
+            return "<span $className aria-hidden=\"true\">$initials</span><span class='sr-only'>".$obj->getDisplayName()."</span>";
         }
     }
 

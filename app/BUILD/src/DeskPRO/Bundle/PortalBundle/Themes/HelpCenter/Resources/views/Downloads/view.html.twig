@@ -30,7 +30,7 @@
                             </div>
                             <div class="col-sm-3">
                                 {% if file.blob and file.blob.is_image %}
-                                    <a href="{{ portal_path(file, 'save') }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download_action') }}</a><br>
+                                    <a href="{{ portal_path(file, 'save') }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link" aria-label="Down"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download_action') }}</a><br>
                                 {% elseif file.blob %}
                                     <a href="{{ portal_path(file, 'save') }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download_action') }}</a>
                                 {% elseif file.fileurl %}
