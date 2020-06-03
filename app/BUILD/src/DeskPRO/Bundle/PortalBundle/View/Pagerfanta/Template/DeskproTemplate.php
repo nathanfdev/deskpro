@@ -1,15 +1,19 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\View\Pagerfanta\Template;
 
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Pagerfanta\View\Template\Template;
 
 class DeskproTemplate extends Template
 {
+    /**
+     * @var LanguageManager
+     */
+    private $languageManager;
+
     protected static $defaultOptions = [
         'prev_message'        => '&larr; Previous',
         'next_message'        => 'Next &rarr;',
@@ -23,6 +27,18 @@ class DeskproTemplate extends Template
         'css_active_class'    => 'active-page',
         'omitFirstPage'       => true,
     ];
+
+    /**
+     * DeskproTemplate constructor.
+     *
+     * @param LanguageManager|null $languageManager
+     */
+    public function __construct(LanguageManager $languageManager = null)
+    {
+        parent::__construct();
+
+        $this->languageManager = $languageManager;
+    }
 
     public function container()
     {
@@ -39,6 +55,8 @@ class DeskproTemplate extends Template
     public function pageWithText($page, $text)
     {
         $class = null;
+
+        $text = '<span aria-hidden="true">'.$text.'</span><span class="sr-only">'.$this->languageManager->phrase('helpcenter.general.pagination_page', ['page' => $text]).'</span>';
 
         return $this->pageWithTextAndClass($page, $text, $class);
     }
