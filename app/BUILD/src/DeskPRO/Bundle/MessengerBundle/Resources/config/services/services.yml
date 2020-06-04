@@ -26,6 +26,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@permissions_manager"
+      - "@portal_permissions_manager"
       - "@portal_usergroup_decider"
       - "@brand_stack"
       - "@service_container"

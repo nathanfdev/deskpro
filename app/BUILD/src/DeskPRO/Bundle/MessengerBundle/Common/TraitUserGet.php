@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Common;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -13,7 +14,7 @@ trait TraitUserGet
     protected $container;
 
     /**
-     * @return object|null
+     * @return Person|null
      */
     protected function getUser()
     {
