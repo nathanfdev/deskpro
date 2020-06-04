@@ -176,11 +176,11 @@ class TemplateController extends BaseController
      *     },
      * )
      * @ApiUnstable()
-     * @Rest\Delete("/template/{brandId}/{name}", requirements={"brandId"="\d+"})
+     * @Rest\Delete("/template/{brandId}/{name}", requirements={"brandId"="\d+", "name"=".+"})
      * @Rest\Delete("/template/{name}")
      * @ParamConverter("brand", class="DeskPRO:Brand", options={"id" = "brandId"})
      *
-     * @param $name
+     * @param string $name
      * @param null|Brand $brand
      *
      * @return View
