@@ -57,6 +57,7 @@ class DeskproFormExtension extends AbstractTypeExtension
         $view->vars['has_root_parent'] = $form->getParent() ? $form->getParent()->isRoot() : false;
         $view->vars['has_children']    = $view->children;
         $view->vars['fully_hidden']    = $options['fully_hidden'];
+        $view->vars['field_set']       = false;
     }
 
     /**
