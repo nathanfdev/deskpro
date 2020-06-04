@@ -77,6 +77,10 @@ class CustomDataType extends AbstractType
                 }
             }
         }
+
+        if ($options['custom_def'] && $options['custom_def']->getOption('expanded')) {
+            $view->vars['field_set'] = true;
+        }
     }
 
     /**
