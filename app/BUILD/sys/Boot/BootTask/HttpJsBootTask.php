@@ -2,6 +2,7 @@
 
 namespace DpSys\Boot\BootTask;
 
+use DpRun\LowUtil;
 use GuzzleHttp\Psr7;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\File;
@@ -55,7 +56,9 @@ class HttpJsBootTask implements BootTaskInterface
             exit;
         }
 
-        if ($legacyWidget = $this->getLegacyAsset($path)) {
+        if ($this->isMessengerV1LoaderRequest($path) && $this->isMessengerV2Enabled()) {
+            $this->serveMessngerV2Loader();
+        } elseif ($legacyWidget = $this->getLegacyAsset($path)) {
             $this->serveLegacyWidget($legacyWidget);
         } elseif ($dynAsset = $this->getDynAsset($path)) {
             $this->serveDynAsset($dynAsset);
@@ -107,13 +110,16 @@ class HttpJsBootTask implements BootTaskInterface
         switch ($widget) {
             case 'ChatWidget/ChatWidget.js':
                 $code = $this->getChatWidget();
+
                 break;
             case 'TicketFormWidget/TicketFormWidget.js':
                 $code = $this->getFormWidget();
+
                 break;
             case 'WebsiteWidget/Overlay.js':
             case 'HelpdeskWidget/HelpdeskWidget.js':
                 $code = $this->getHdWidget();
+
                 break;
             default:
                 $code = '';
@@ -263,8 +269,8 @@ CODE;
                     'buildId'     => $this->env->getAppName(),
                 ];
                 if ($assetRoot = $this->env->getConfig('paths.asset_paths.assets_root.value')) {
-                   $assetRoot = str_replace('%DP_ACTIVE_BUILD%', DP_ACTIVE_BUILD, $assetRoot);
-                   $info['assetUrl'] = $assetRoot;
+                    $assetRoot        = str_replace('%DP_ACTIVE_BUILD%', DP_ACTIVE_BUILD, $assetRoot);
+                    $info['assetUrl'] = $assetRoot;
                 }
                 $cb   = preg_replace('#[^a-zA-Z0-9_\.\-]#', '', $cb);
                 $code = "$cb(".json_encode($info).')';
@@ -305,18 +311,23 @@ CODE;
         switch ($file->getExtension()) {
             case 'js':
                 $contentType = 'text/javascript';
+
                 break;
             case 'css':
                 $contentType = 'text/css';
+
                 break;
             case 'woff':
                 $contentType = 'application/x-font-woff';
+
                 break;
             case 'woff2':
                 $contentType = 'application/x-font-woff2';
+
                 break;
             case 'ttf':
                 $contentType = 'application/x-font-ttf';
+
                 break;
             default:
                 $contentType = Psr7\mimetype_from_extension($file->getExtension());
@@ -351,5 +362,74 @@ CODE;
         }
 
         return $res;
+    }
+
+    //###################################################################################################################
+    // Messenger v2 instead of v1
+    //###################################################################################################################
+
+    /**
+     * @param $path
+     *
+     * @return bool
+     */
+    private function isMessengerV1LoaderRequest($path)
+    {
+        return strpos($path, '/pub/build/widget_loader.min.js') !== false;
+    }
+
+    private function isMessengerV2Enabled()
+    {
+        $pdo         = LowUtil::getPdoFromMysqlInfo($this->env->getConfig('database'));
+        $q           = $pdo->query("SELECT value FROM settings WHERE name = 'beta_features.messenger'");
+
+        return (bool) $q->fetchColumn();
+    }
+
+    private function serveMessngerV2Loader()
+    {
+        $code = $this->getMessengerWidget();
+
+        $res = new Response($code, 200, ['Content-Type' => 'application/javascript']);
+        $res->setTtl(3600);
+        $res->setEtag(sha1($code));
+        $res->setPublic();
+        $res->isNotModified($this->request);
+        $res->sendHeaders();
+        $res->sendContent();
+        exit;
+    }
+
+    private function getMessengerWidget()
+    {
+        $baseUrl   = $this->request->getUriForPath('');
+        $loaderSrc = $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/messenger/loader.js?v=1323444089');
+
+        $assetRoot = $this->env->getConfig('paths.asset_paths.messenger_assets.value');
+
+        $options = [
+            'helpdeskURL' => $baseUrl,
+            'baseUrl'     => $assetRoot,
+            'language'    => [
+                'id' => 'DESKPRO_WIDGET_OPTIONS.language',
+            ],
+        ];
+
+        $options = json_encode($options);
+
+        return <<<CODE
+(function() {
+window.parent.DESKPRO_MESSENGER_OPTIONS = $options;
+if (window.DESKPRO_WIDGET_OPTIONS.jwt) {
+    window.parent.DESKPRO_MESSENGER_OPTIONS.jwt = window.DESKPRO_WIDGET_OPTIONS.jwt;
+}
+var scr   = document.createElement('script');
+scr.type  = 'text/javascript';
+scr.async = true;
+scr.src   = '$loaderSrc';
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
+
+})();
+CODE;
     }
 }
