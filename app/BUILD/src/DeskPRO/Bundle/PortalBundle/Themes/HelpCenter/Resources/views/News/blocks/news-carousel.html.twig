@@ -1,4 +1,4 @@
-<div class="dp-po-news-carousel">
+<div class="dp-po-news-carousel" aria-hidden="true">
     <div
         class="dp-po-news-carousel-list dpx-carousel unloaded"
         data-next-button-template="<button class='dp-po-news-carousel-arrow dp-po-news-carousel-arrow-right'><i class='dp-po-icon far fa-angle-right' title='{{ phrase('helpcenter.general.next') }}'></i></button>"
@@ -46,5 +46,22 @@
             </div>
         {% endif %}
     </div>
+</div>
+<div class="sr-only">
+    <ul>
+        {% for item in posts %}
+            <li>
+                <a href="{{ portal_path(item) }}" class="dp-po-news-carousel-link">{{ item.title }}</a>
+                <p class="dp-po-news-carousel-desc">{{ item.getExcerptHtml(40)|raw }}</p>
+            </li>
+        {% endfor %}
+        {% if showSectionLink %}
+            <li>
+                <a href="{{ path('portal_news') }}" class="dp-po-news-carousel-link">
+                    <p class="dp-po-news-carousel-allink">{{ phrase('helpcenter.news.see_all_news') }}</p>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
 </div>
 
