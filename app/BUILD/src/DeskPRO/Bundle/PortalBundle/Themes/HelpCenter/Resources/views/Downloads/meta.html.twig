@@ -1,13 +1,13 @@
-<div class="dp-po-post-meta">
-    <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.first_published') }}</h3>
-    <p>{{ phrase('helpcenter.general.date_medium', {date: file.date_published}) }}</p>
-{#    <h3 class="dp-po-post-meta-title">File type</h3>#}
-{#    <p>PDF</p>#}
-    <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.downloads.file_name') }}</h3>
-    <p>{{ file.filename}}</p>
-    <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.downloads.file_size') }}</h3>
-    <p>{{ file.readable_file_size}}</p>
-    <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.downloads.total_downloads') }}</h3>
-    <p>{{ file.num_downloads }}</p>
-</div>
+<dl class="dp-po-post-meta">
+    <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.first_published') }}</dt>
+    <dd>{{ phrase('helpcenter.general.date_medium', {date: file.date_published}) }}</dd>
+{#    <dt class="dp-po-post-meta-title">File type</h3>#}
+{#    <dd>PDF</p>#}
+    <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.downloads.file_name') }}</dt>
+    <dd>{{ file.filename}}</dd>
+    <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.downloads.file_size') }}</dt>
+    <dd>{{ file.readable_file_size}}</dd>
+    <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.downloads.total_downloads') }}</dt>
+    <dd>{{ file.num_downloads }}</dd>
+</dl>
 

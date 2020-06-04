@@ -13,6 +13,8 @@ use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -46,30 +48,46 @@ class TicketViewDataService extends AbstractDataService
     private $customFieldUtil;
 
     /**
+     * @var PortalBrandThemeLoader
+     */
+    private $portalBrandThemeLoader;
+
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager              $em
-     * @param CustomFieldManager         $customFieldManager
-     * @param TicketLayoutFactory        $ticketLayoutFactory
-     * @param Translate                  $translate
+     * @param EntityManager $em
+     * @param CustomFieldManager $customFieldManager
+     * @param TicketLayoutFactory $ticketLayoutFactory
+     * @param Translate $translate
      * @param BrandAwareSettingsResolver $brandAwareSettings
-     * @param CustomFieldUtil            $customFieldUtil
+     * @param CustomFieldUtil $customFieldUtil
+     * @param PortalBrandThemeLoader|null $portalBrandThemeLoader
+     * @param BrandStack|null $brandStack
      */
     public function __construct(
-        EntityManager              $em,
-        CustomFieldManager         $customFieldManager,
-        TicketLayoutFactory        $ticketLayoutFactory,
-        Translate                  $translate,
+        EntityManager $em,
+        CustomFieldManager $customFieldManager,
+        TicketLayoutFactory $ticketLayoutFactory,
+        Translate $translate,
         BrandAwareSettingsResolver $brandAwareSettings,
-        CustomFieldUtil            $customFieldUtil
+        CustomFieldUtil $customFieldUtil,
+        PortalBrandThemeLoader $portalBrandThemeLoader = null,
+        BrandStack $brandStack = null
     ) {
         parent::__construct($em);
 
-        $this->customFieldManager  = $customFieldManager;
-        $this->ticketLayoutFactory = $ticketLayoutFactory;
-        $this->translate           = $translate;
-        $this->brandAwareSettings  = $brandAwareSettings;
-        $this->customFieldUtil     = $customFieldUtil;
+        $this->customFieldManager     = $customFieldManager;
+        $this->ticketLayoutFactory    = $ticketLayoutFactory;
+        $this->translate              = $translate;
+        $this->brandAwareSettings     = $brandAwareSettings;
+        $this->customFieldUtil        = $customFieldUtil;
+        $this->portalBrandThemeLoader = $portalBrandThemeLoader;
+        $this->brandStack             = $brandStack;
     }
 
     /**
@@ -97,8 +115,9 @@ class TicketViewDataService extends AbstractDataService
                 // field has criteria that this ticket does not match, dont add it to the view
                 continue;
             }
-            $field_id = $layout_field->getId();
-            $defId    = $layout_field->getFieldId();
+            $field_id     = $layout_field->getId();
+            $defId        = $layout_field->getFieldId();
+            $isHelpcenter = true;
             switch ($layout_field->getFieldType()) {
                 case FormFields::DEPARTMENT:
                     $title = '';
@@ -113,43 +132,47 @@ class TicketViewDataService extends AbstractDataService
                     $view->addProperty(
                         $field_id,
                         CustomDefAbstract::TYPE_CHOICE,
-                        $this->translate->phrase('user.tickets.fields_department'),
+                        $this->phrase(['user.tickets.fields_department', 'helpcenter.general.department']),
                         $title,
                         $layout_field->isVisibleOnViewAlways()
                     );
+
                     break;
                 case FormFields::CATEGORY:
                     if ($this->hasSetting('core.use_ticket_category')) {
                         $view->addProperty(
                             $field_id,
                             CustomDefAbstract::TYPE_CHOICE,
-                            $this->translate->phrase('user.tickets.fields_category'),
+                            $this->phrase(['user.tickets.fields_category', 'helpcenter.general.category']),
                             $ticket->getCategory(),
                             $layout_field->isVisibleOnViewAlways()
                         );
                     }
+
                     break;
                 case FormFields::PRODUCT:
                     if ($this->hasSetting('core.use_product')) {
                         $view->addProperty(
                             $field_id,
                             CustomDefAbstract::TYPE_CHOICE,
-                            $this->translate->phrase('user.tickets.fields_product'),
+                            $this->phrase(['user.tickets.fields_product', 'helpcenter.general.product']),
                             $ticket->getProduct(),
                             $layout_field->isVisibleOnViewAlways()
                         );
                     }
+
                     break;
                 case FormFields::PRIORITY:
                     if ($this->hasSetting('core.use_ticket_priority')) {
                         $view->addProperty(
                             $field_id,
                             CustomDefAbstract::TYPE_CHOICE,
-                            $this->translate->phrase('user.tickets.fields_priority'),
+                            $this->phrase(['user.tickets.fields_priority', 'helpcenter.general.priority']),
                             $ticket->getPriority(),
                             $layout_field->isVisibleOnViewAlways()
                         );
                     }
+
                     break;
                 case FormFields::TICKET_FIELD:
                     /** @var \Application\DeskPRO\Entity\CustomDefTicket $fieldDef */
@@ -165,6 +188,7 @@ class TicketViewDataService extends AbstractDataService
                     /* @var \Application\DeskPRO\Entity\CustomDataTicket $data */
                     $data = $this->customFieldUtil->getCustomDataForField($fieldDef, $ticket->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
+
                     break;
                 case FormFields::ORG_FIELD:
                     $organization = $ticket->getOrganization();
@@ -184,6 +208,7 @@ class TicketViewDataService extends AbstractDataService
                     /* @var \Application\DeskPRO\Entity\CustomDataOrganization $data */
                     $data = $this->customFieldUtil->getCustomDataForField($fieldDef, $organization->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
+
                     break;
                 case FormFields::USER_FIELD:
                     /* @var \Application\DeskPRO\Entity\CustomDefPerson $fieldDef */
@@ -199,6 +224,7 @@ class TicketViewDataService extends AbstractDataService
                     /* @var \Application\DeskPRO\Entity\CustomDataPerson $data */
                     $data = $this->customFieldUtil->getCustomDataForField($fieldDef, $ticket->person->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
+
                     break;
                 case FormFields::CUSTOM_FIELD: // per-user custom fields
                     $value = null;
@@ -223,6 +249,7 @@ class TicketViewDataService extends AbstractDataService
                             $layout_field->isVisibleOnViewAlways()
                         );
                     }
+
                     break;
             }
         }
@@ -268,6 +295,25 @@ class TicketViewDataService extends AbstractDataService
         return $value;
     }
 
+    protected function phrase($phraseName, $vars = [])
+    {
+        if (is_array($phraseName)) {
+            if ($this->isHelpcenter()) {
+                $phraseName = array_filter($phraseName, function ($p) {
+                    return strpos($p, 'helpcenter.') === 0;
+                });
+            } else {
+                $phraseName = array_filter($phraseName, function ($p) {
+                    return strpos($p, 'helpcenter.') !== 0;
+                });
+            }
+
+            $phraseName = array_pop($phraseName);
+        }
+
+        return $this->translate->phrase($phraseName, $vars);
+    }
+
     /**
      * @param $name
      *
@@ -276,5 +322,10 @@ class TicketViewDataService extends AbstractDataService
     private function hasSetting($name)
     {
         return (bool) $this->brandAwareSettings->getSetting($name);
+    }
+
+    protected function isHelpcenter()
+    {
+        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }

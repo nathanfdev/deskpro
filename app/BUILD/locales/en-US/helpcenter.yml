@@ -479,6 +479,8 @@ helpcenter.general.pagination_previous_page: 'Previous page'
 helpcenter.general.password: Password
 helpcenter.general.previous: Previous
 helpcenter.general.print: Print
+helpcenter.general.priority: Priority
+helpcenter.general.product: Product
 helpcenter.general.prop_comments_asc: 'Least comments first'
 helpcenter.general.prop_comments_desc: 'Most comments first'
 helpcenter.general.prop_date_asc: 'Oldest first'
