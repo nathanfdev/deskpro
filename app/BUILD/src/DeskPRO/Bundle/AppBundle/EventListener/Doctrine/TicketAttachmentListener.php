@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Doctrine\Common\EventSubscriber;
@@ -81,10 +82,12 @@ class TicketAttachmentListener implements EventSubscriber
     public function postFlush(PostFlushEventArgs $args)
     {
         if ($this->blobsToRemove) {
-            foreach ($this->blobsToRemove as $num => $blob) {
-                unset($this->blobsToRemove[$num]);
-                $this->container->get('deskpro.blob_storage')->deleteBlobRecord($blob);
-            }
+            $connection = $args->getEntityManager()->getConnection();
+            $connection->executeUpdate(
+                'UPDATE blobs SET is_temp = 1 WHERE id IN (?)',
+                [array_keys($this->blobsToRemove)],
+                [Connection::PARAM_INT_ARRAY]
+            );
 
             $this->blobsToRemove = [];
         }
