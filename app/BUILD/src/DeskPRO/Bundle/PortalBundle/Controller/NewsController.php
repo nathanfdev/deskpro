@@ -463,7 +463,7 @@ class NewsController extends AbstractPublishController
             $this->addFlash('success', $this->phrase(['portal.flashes.news_cat_unsubscribe', 'helpcenter.flashes.news_cat_unsubscribe'], ['category' => $category->getTitle()]));
         } else {
             $subscriptionsHelper->subscribeToCategory($category, $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.news_cat_subscribe', 'helpcenter.flashes.news_cat_subscribe', ['category' => $category->getTitle()]]));
+            $this->addFlash('success', $this->phrase(['portal.flashes.news_cat_subscribe', 'helpcenter.flashes.news_cat_subscribe'], ['category' => $category->getTitle()]));
         }
 
         return $this->redirectToRoute('portal_news_browse', ['slug' => $category->getSlug()]);
