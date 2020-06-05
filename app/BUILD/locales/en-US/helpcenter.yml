@@ -164,7 +164,7 @@ helpcenter.duration_short.minutes: m
 helpcenter.duration_short.months: M
 helpcenter.duration_short.seconds: s
 helpcenter.duration_short.weeks: W
-helpcenter.duration_short.years: Y
+helpcenter.duration_short.years: 'Y'
 helpcenter.emails.account_disabled_message: 'Your account is currently disabled. You may not login or interact with tickets or chat.'
 helpcenter.emails.auto_close: 'Your ticket "{subject}" will be closed shortly as we haven''t heard from you lately. If you need further assistance simply reply and one of our agents will help you.'
 helpcenter.emails.chat_transcript: 'Thank you for chatting with us. Here is your chat transcript.'
