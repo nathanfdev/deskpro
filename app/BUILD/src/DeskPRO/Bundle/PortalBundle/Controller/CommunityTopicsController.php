@@ -712,7 +712,7 @@ class CommunityTopicsController extends AbstractPublishController
             $this->addFlash('success', $this->phrase(['portal.flashes.community_unsubscribe', 'helpcenter.flashes.community_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToContent($topic, $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.community_subscribe', 'helpcenter.flashes.community_subscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.community_subscribe', 'helpcenter.flashes.community_subscribe'], ['topic' => $topic->getTitle()]));
         }
 
         return $this->redirectToRoute('portal_community_topic_view', ['slug' => $topic->getSlug()]);
@@ -734,10 +734,10 @@ class CommunityTopicsController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedRootCategory('community', $person)) {
             $subscriptionsHelper->unsubscribeFromRootCategory('community', $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.article_cat_unsubscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.community_root_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToRootCategory('community', $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.article_cat_subscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.community_root_subscribe']));
         }
 
         if ($request->query->get('target')) {
