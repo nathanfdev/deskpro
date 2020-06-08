@@ -637,8 +637,8 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param $verifyUrl
-     * @param $expireDate
+     * @param string $verifyUrl
+     * @param DateTime $expireDate
      *
      * @throws \Exception
      *
@@ -646,8 +646,6 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createTicketNewReminderModel($verifyUrl, $expireDate)
     {
-        $expireDate = $expireDate->format('D, jS M Y g:ia');
-
         return $this->convertParameters(TicketNewReminder::class, [$verifyUrl, $expireDate]);
     }
 
