@@ -8,6 +8,7 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 		this.parent();
 		this.TYPENAME = 'neworganization';
 		this.allowDupe = true;
+    this.jsfields = {};
 	},
 
 	initPage: function(el) {
@@ -24,6 +25,7 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 
 		this._initNameSection();
 		this._initOtherSection();
+		this._initJavascriptCustomFields();
 
 		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
 			stateId: 'neworg',
@@ -146,5 +148,55 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 			}).bind(this)
 		});
 		this.ownObject(this.otherTabs);
-	}
+	},
+
+  _initJavascriptCustomFields: function () {
+    var self = this;
+    self.wrapper.find('.js-custom-field').each(function () {
+      var $el       = $(this);
+      var code      = $el.data('code');
+      var $field    = $el.find('input.js-custom-field-hidden-input');
+      var fieldData = JSON.parse($field.val() ? $field.val() : "{}") || {"value": null, "data": {}};
+      var fieldId   = $field.data('field-id');
+      var evCode = function(){};
+      var fullCode = "evCode = " + code;
+      eval(fullCode);
+      var ctx = {
+        jQuery:      $,
+        Handlebars:  Handlebars,
+        'interface': 'agent',
+        context:     'newticket',
+        ticket:      {},
+        person:      {},
+      };
+      evCode(ctx);
+
+      self.jsfields[fieldId] = {
+        ctx:          ctx,
+        element:      null,
+        field:        $field,
+        currentData:  fieldData.data || {},
+        currentValue: fieldData.value,
+      };
+
+      var field = self.jsfields[fieldId];
+
+      var $renderedElement = field.ctx.renderField.call(field.ctx, function (value, data) {
+        var dataObject = { value: null, data: null };
+        if (
+          (value === null || typeof value === "undefined")
+          && (data === null || typeof data === "undefined")
+        ) {
+          dataObject.value = null;
+          dataObject.data  = null;
+        } else {
+          dataObject = Object.assign({}, { value: value }, { data: data || {} });
+        }
+        field.field.val(JSON.stringify(dataObject));
+        field.currentData = dataObject.data;
+        field.currentValue = dataObject.value;
+      }, field.currentValue, field.currentData);
+      field.field.after($renderedElement);
+    });
+  }
 });
