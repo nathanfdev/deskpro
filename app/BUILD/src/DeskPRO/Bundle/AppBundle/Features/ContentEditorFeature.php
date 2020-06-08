@@ -25,7 +25,7 @@ class ContentEditorFeature extends AbstractBetaFeature
      */
     public function getShortDescription()
     {
-        return 'Editor in the agent interface';
+        return 'Editor in the agent interface.';
     }
 
     /**

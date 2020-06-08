@@ -202,26 +202,36 @@
 			</tr>
 			<tr ng-show="keys(Home.features).length > 0">
 				<td class="dp-item">
-					<header>
-						<h3>Beta features</h3>
-					</header>
-					<article>
-						<div class="dp-mpadded">
-							<div style="padding-bottom: 20px;" ng-repeat="(featureId, feature) in Home.features">
-								<strong>{{ ng_var('feature.title') }}: </strong> <span ng-bind-html="feature.short_description"></span>
-								<a ng-show="!feature.enabled && !feature.processing" class="btn btn-success" href="{{ ng_href('features.enable', '{id: feature.id}') }}">Enable</a>
-								<a ng-show="feature.enabled && !feature.processing"  class="btn btn-danger" href="{{ ng_href('features.disable', '{id: feature.id}') }}">Disable</a>
-								<span ng-show="feature.enabled && feature.processing">
-									<br/>
-									Please wait while the feature is <span style='color: red'>disabled</span>. This may take a few minutes
-								</span>
-								<span ng-show="!feature.enabled && feature.processing">
-									Please wait while the feature is <span style='color: green'>enabled</span>. This may take a few minutes
-								</span>
-								<i ng-show="feature.processing" class="spinner-flat"></i>
-							</div>
-						</div>
-					</article>
+                    <header>
+                        <h3>Features</h3>
+                    </header>
+                    <article>
+                        <div class="dp-mpadded">
+                            <div style="padding-bottom: 20px; display: flex; align-items: flex-start;" ng-repeat="(featureId, feature) in Home.features">
+                                <div ng-style="(!feature.processing && ((feature.enabled && feature.can_be_disabled) || !feature.enabled)) && {'padding-top':'5px'}">
+                                    <strong>{{ ng_var('feature.title') }}: </strong>
+                                </div>
+                                <div style="margin-left: 10px">
+                                    <span ng-bind-html="feature.short_description"></span>
+                                    <a ng-show="!feature.enabled && !feature.processing" class="btn btn-success" href="{{ ng_href('features.enable', '{id: feature.id}') }}">Enable</a>
+                                    <a ng-show="feature.enabled && feature.can_be_disabled && !feature.processing"  class="btn btn-danger" href="{{ ng_href('features.disable', '{id: feature.id}') }}">Disable</a>
+                                    <span ng-show="feature.enabled && !feature.can_be_disabled && !feature.processing" style="color: green">Enabled</span>
+                                    <span ng-show="feature.enabled && feature.processing">
+                                        <br/>
+                                        Please wait while the feature is <span style='color: red'>disabled</span>. This may take a few minutes
+                                    </span>
+                                    <span ng-show="!feature.enabled && feature.processing">
+                                        Please wait while the feature is <span style='color: green'>enabled</span>. This may take a few minutes
+                                    </span>
+                                    <i ng-show="feature.processing" class="spinner-flat"></i>
+                                    <div ng-show="feature.extra_info_content" ng-bind-html="feature.extra_info_content"></div>
+                                    <div ng-show="!feature.enabled && !feature.processing && feature.due_date" style="color: red;">
+                                        This feature will be automatically enabled after {{ ng_var('feature.due_date | date : "longDate"') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
 				</td>
 				<td class="dp-item" ng-class="{'with-error':Home.cron_status.is_problem}">
 					<header>

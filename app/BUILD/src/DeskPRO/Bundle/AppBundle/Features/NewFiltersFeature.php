@@ -25,7 +25,7 @@ class NewFiltersFeature extends AbstractBetaFeature
      */
     public function getShortDescription()
     {
-        return 'Improved filtering in the agent interface';
+        return 'Improved filtering in the agent interface.';
     }
 
     /**

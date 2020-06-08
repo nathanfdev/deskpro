@@ -56,6 +56,20 @@ class Feature
     private $disableDescription;
 
     /**
+     * @JMS\Type("DateTime")
+     *
+     * @var \DateTime
+     */
+    private $dueDate;
+
+    /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $canBeDisabled;
+
+    /**
      * Redirect to the url.
      *
      * @JMS\Type("string")
@@ -83,6 +97,13 @@ class Feature
     private $processing;
 
     /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $extraInfoContent;
+
+    /**
      * Constructor.
      *
      * @param BetaFeatureInterface $betaFeature
@@ -96,7 +117,17 @@ class Feature
         $this->enableDescription  = $betaFeature->getEnableDescription();
         $this->disableDescription = $betaFeature->getDisableDescription();
         $this->routePath          = $betaFeature->getRoutePath();
+        $this->dueDate            = $betaFeature->getDueDate();
+        $this->canBeDisabled      = $betaFeature->canBeDisabled();
         $this->enabled            = $betaFeature->isEnabled();
         $this->processing         = $processing;
+    }
+
+    /**
+     * @param $extraInfoContent
+     */
+    public function setExtraInfoContent($extraInfoContent)
+    {
+        $this->extraInfoContent = $extraInfoContent;
     }
 }

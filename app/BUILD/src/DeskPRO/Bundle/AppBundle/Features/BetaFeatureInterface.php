@@ -22,6 +22,15 @@ interface BetaFeatureInterface extends FeatureInterface
     public function getTitle();
 
     /**
+     * This is arbitrary content that'll go in the features box on the main page.
+     *
+     * @param ContainerInterface $container
+     *
+     * @return string
+     */
+    public function getExtraInfoContent(ContainerInterface $container);
+
+    /**
      * @return string
      */
     public function getShortDescription();
@@ -55,6 +64,13 @@ interface BetaFeatureInterface extends FeatureInterface
     public function isEnabled();
 
     /**
+     * When false, we should NOT show the [Disable] button in the features box.
+     *
+     * @return mixed
+     */
+    public function canBeDisabled();
+
+    /**
      * The feature should be installed on install.
      *
      * @return bool
@@ -62,10 +78,17 @@ interface BetaFeatureInterface extends FeatureInterface
     public function isEnabledOnInstall();
 
     /**
+     * This represents when we are going to "force" the feature.
+     *
+     * @return \DateTime|false
+     */
+    public function getDueDate();
+
+    /**
      * Feature release date (release from beta)
      * From this date feature enabled by default for new installs
      *
-     * @return \DateTime|false
+     * @return \DateTime|null
      */
     public function getDateReleased();
 

@@ -194,7 +194,10 @@ class FeaturesController extends BaseController
             $processing = $tmpData->getDateExpire()->getTimestamp() > time();
         }
 
-        return new Feature($feature, $processing);
+        $model = new Feature($feature, $processing);
+        $model->setExtraInfoContent($feature->getExtraInfoContent($this->container));
+
+        return $model;
     }
 
     /**
