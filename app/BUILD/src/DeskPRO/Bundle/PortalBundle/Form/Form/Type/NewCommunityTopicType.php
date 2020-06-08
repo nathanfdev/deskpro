@@ -123,7 +123,8 @@ class NewCommunityTopicType extends AbstractType
 
         $builder
             ->add('custom_data', CombinedType::class, [
-                'forms' => $this->getCustomDataForms(),
+                'forms'        => $this->getCustomDataForms(),
+                'fields_group' => true,
             ])
             ->add('attachments', CommunityTopicAttachmentCollectionType::class, [
                 'person' => $options['person'],
