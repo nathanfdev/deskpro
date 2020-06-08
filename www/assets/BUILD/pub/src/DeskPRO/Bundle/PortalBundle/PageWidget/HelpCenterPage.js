@@ -8,7 +8,6 @@ import { DownloadPopupWidget } from './DownloadPopupWidget';
 import { HcCommunityTopicPage } from './HcCommunityTopicPage';
 import { CommunityVoteWidget } from './CommunityVoteWidget';
 import { ClickAwayDropdownWidget } from './ClickAwayDropdownWidget';
-import { LoginPage } from './LoginPage';
 import { HtmlLinkToPostWidget } from './HtmlLinkToPostWidget';
 import { HcOmniSearchWidget } from './HcOmniSearchWidget';
 import { HelpcenterLanguageChangerWidget } from './HelpcenterLanguageChangerWidget';
@@ -54,7 +53,6 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(ClickAwayDropdownWidget, '.clickaway-dropdown');
     this.addWidgetDef(HcArticleHighlighter, '.dpx-hc-kb-article-content');
     this.addWidgetDef(MobileMenuWidget, '.dpx-toggle-big-buttons');
-    this.addWidgetDef(LoginPage, '#login-page');
     this.addWidgetDef(Attachment, '.dpx-attachment');
     this.addWidgetDef(DpxTabs, '.dpx-tabs');
     this.addWidgetDef(SocialShare, '#social-share');

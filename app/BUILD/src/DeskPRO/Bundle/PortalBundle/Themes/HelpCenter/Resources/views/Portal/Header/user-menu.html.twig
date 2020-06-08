@@ -17,7 +17,6 @@
                                 class="form-control"
                                 name="dropdown_username"
                                 id="login-form-username"
-                                tabIndex="21"
                                 autocomplete="username"
                                 aria-describedby="emailHelp"
                                 placeholder="{{ phrase('helpcenter.general.email_address') }}"
@@ -32,7 +31,6 @@
                                 name="dropdown_password"
                                 autocomplete="current-password"
                                 placeholder="{{ phrase('helpcenter.general.password') }}"
-                                tabIndex="22"
                             >
                         </div>
                         <div class="form-group dp-po-form-check">
@@ -41,16 +39,15 @@
                                 name="remember_me"
                                 class="form-check-input"
                                 id="login-form-remember-me"
-                                tabIndex="23"
                                 onclick="var event = arguments[0] || window.event; event.stopPropagation();"
                             >
                             <label class="form-check-label" for="login-form-remember-me" onclick="var event = arguments[0] || window.event; event.stopPropagation();">
                                 {{ phrase('helpcenter.account.login_stay_logged_in') }}
                             </label>
                         </div>
-                        <input type="submit" class="btn btn-primary btn-lg" tabIndex="24" value="{{ phrase('helpcenter.general.log_in') }}"/>
+                        <input type="submit" class="btn btn-primary btn-lg" value="{{ phrase('helpcenter.general.log_in') }}"/>
                         {% if has_login_form() %}
-                            <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25" class="dp-po-form-btntext">{{ phrase('helpcenter.account.login_reset_password_link') }}</a>
+                            <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" class="dp-po-form-btntext">{{ phrase('helpcenter.account.login_reset_password_link') }}</a>
                         {% endif %}
                     </form>
                 </section>
