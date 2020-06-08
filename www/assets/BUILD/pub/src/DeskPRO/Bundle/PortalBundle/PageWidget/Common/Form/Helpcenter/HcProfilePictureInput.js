@@ -247,6 +247,7 @@ export class HcProfilePictureInput extends React.Component {
               onMouseEnter={this.handleMouseEnter}
               onMouseLeave={this.handleMouseLeave}
               {...getRootProps()}
+              tabIndex={-1}
             >
               <input id={id} name={name} {...getInputProps()} />
               <div
