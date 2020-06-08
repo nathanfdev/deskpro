@@ -23,6 +23,7 @@ use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
@@ -103,6 +104,9 @@ abstract class AbstractViewModelFactory
                 $handler = $this->container->get('api_serializer.handler.chat_message');
 
                 break;
+            case AgentChatMessage::class:
+                return $entity;
+
             case Download::class:
                 $handler = $this->container->get('api_serializer.handler.download');
 

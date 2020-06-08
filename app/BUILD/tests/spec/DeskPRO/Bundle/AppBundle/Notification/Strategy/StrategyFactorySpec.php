@@ -8,6 +8,7 @@ use DeskPRO\Bundle\AppBundle\EventListener\CliStrategyListener;
 use DeskPRO\Bundle\AppBundle\EventListener\ImmediateStrategyListener;
 use DeskPRO\Bundle\AppBundle\Notification\ActionAlertHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler;
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\EmailDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\PusherDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
@@ -28,11 +29,12 @@ class StrategyFactorySpec extends ObjectBehavior
         SettingsBag $settings,
         ContainerInterface $container,
         DbDeliveryHandler $dbHandler,
+        EmailDeliveryHandler $emailDeliveryHandler,
         PusherDeliveryHandler $pusherHandler,
         PersistenceAdapterInterface $adapterInterface
 
         ) {
-        $this->configureContainer($container, $settings_resolver, $dbHandler, $pusherHandler, $adapterInterface);
+        $this->configureContainer($container, $settings_resolver, $dbHandler, $pusherHandler, $adapterInterface, $emailDeliveryHandler);
         $this->configureSettingsResolver($settings_resolver, $settings);
         $this->configureSettings($settings);
         $this->beConstructedWith($container);
@@ -69,13 +71,17 @@ class StrategyFactorySpec extends ObjectBehavior
         SettingsResolver $settings_resolver,
         DbDeliveryHandler $dbHandler,
         PusherDeliveryHandler $pusherHandler,
-        PersistenceAdapterInterface $adapterInterface)
-    {
+        PersistenceAdapterInterface $adapterInterface,
+        EmailDeliveryHandler $emailHandler
+    ) {
         $container->get('settings_resolver')->willReturn($settings_resolver);
         $container->getParameter('notification.settings')->willReturn([]);
 
         $container->has('deskpro.notification.delivery.handler.db')->willReturn(true);
         $container->get('deskpro.notification.delivery.handler.db')->willReturn($dbHandler);
+
+        $container->has('deskpro.notification.delivery.handler.email')->willReturn(true);
+        $container->get('deskpro.notification.delivery.handler.email')->willReturn($emailHandler);
 
         $container->has('deskpro.notification.delivery.handler.pusher')->willReturn(true);
         $container->get('deskpro.notification.delivery.handler.pusher')->willReturn($pusherHandler);

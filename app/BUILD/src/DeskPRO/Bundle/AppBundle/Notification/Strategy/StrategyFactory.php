@@ -168,6 +168,12 @@ class StrategyFactory
             $deliveryService->attachTargettedHandler($dbHandler);
         }
 
+        // we're going to add that handler anyway, it's rarely used
+        $emailHandler = $this->container->get('deskpro.notification.delivery.handler.email');
+        if (!$deliveryService->hasTargettedHandler($emailHandler)) {
+            $deliveryService->attachTargettedHandler($emailHandler);
+        }
+
         return $deliveryService;
     }
 

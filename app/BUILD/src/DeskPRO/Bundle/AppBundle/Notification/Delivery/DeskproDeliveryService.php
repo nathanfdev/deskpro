@@ -71,6 +71,11 @@ class DeskproDeliveryService extends DeliveryService
         return $this;
     }
 
+    public function hasTargettedHandler(DeliveryHandlerInterface $handler)
+    {
+        return $this->targettedHandlers->hasHandler($handler->getType());
+    }
+
     /**
      * @param DeliveryHandlerInterface $handler
      *

@@ -69,6 +69,11 @@ services:
       - "@settings_resolver"
       - "@deskpro.notification.deskpro_client"
 
+  deskpro.notification.delivery.handler.email:
+    class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\EmailDeliveryHandler
+    arguments:
+      - "@service_container"
+
   deskpro.notification.deskpro_client_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\DeskproClientFactory
   deskpro.notification.deskpro_client:
