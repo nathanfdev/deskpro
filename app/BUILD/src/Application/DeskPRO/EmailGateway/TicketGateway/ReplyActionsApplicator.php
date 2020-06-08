@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -62,31 +58,37 @@ class ReplyActionsApplicator implements Loggable
         switch ($id) {
             case 'status':
                 $ticket->status = $param;
+
                 break;
 
             case 'is_hold':
                 $ticket->is_hold = $param;
+
                 break;
 
             case 'is_note':
                 if ($param && $message) {
                     $message->is_agent_note = true;
                 }
+
                 break;
 
             case 'urgency':
                 if ($param) {
                     $ticket->setUrgency($param);
                 }
+
                 break;
 
             case 'assign_agent':
                 $ticket->agent = $param ?: null;
+
                 break;
 
             case 'user':
                 $ticket->person = $param;
                 $ticket->person->addBrand($ticket->getBrand());
+
                 break;
 
             case 'add_followers':
@@ -95,6 +97,7 @@ class ReplyActionsApplicator implements Loggable
                         $ticket->addParticipantPerson($a);
                     }
                 }
+
                 break;
 
             case 'remove_followers':
@@ -103,10 +106,12 @@ class ReplyActionsApplicator implements Loggable
                         $ticket->removeParticipantPerson($a);
                     }
                 }
+
                 break;
 
             case 'assign_agent_team':
                 $ticket->agent_team = $param;
+
                 break;
 
             case 'labels':
@@ -115,26 +120,32 @@ class ReplyActionsApplicator implements Loggable
                         $ticket->addLabelByString($l);
                     }
                 }
+
                 break;
 
             case 'department':
                 $ticket->department = $param;
+
                 break;
 
             case 'category':
                 $ticket->category = $param;
+
                 break;
 
             case 'priority':
                 $ticket->priority = $param;
+
                 break;
 
             case 'workflow':
                 $ticket->workflow = $param;
+
                 break;
 
             case 'product':
                 $ticket->product = $param;
+
                 break;
 
             case 'ticket_fields':
@@ -147,8 +158,10 @@ class ReplyActionsApplicator implements Loggable
                 if ($custom_field_data) {
                     $fm->saveFormToObject($custom_field_data, $ticket, true, false);
                 }
+
                 break;
             case 'is_reply':
+            case 'no_reply':
                 // should be noop
                 break;
 
