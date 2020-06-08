@@ -113,7 +113,7 @@ helpcenter.community.activity: Activity
 helpcenter.community.activity_commented: 'I commented'
 helpcenter.community.activity_created: 'I created'
 helpcenter.community.activity_voted: 'I voted'
-helpcenter.community.channel: Channel
+helpcenter.community.category: Category
 helpcenter.community.create_topic: Create
 helpcenter.community.create_topic_full: 'Create {forum}'
 helpcenter.community.create_topic_in_forum: 'Submit {forum}'

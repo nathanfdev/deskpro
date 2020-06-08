@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\LegacyApiBundle\Controller;
 
@@ -38,11 +36,17 @@ class CommunityFieldsController extends AbstractController
     {
         $data = [];
 
-        /** @var FieldManager $fieldManager */
-        $fieldManager = $this->container->getSystemService('community_fields_manager');
-        $customFields = array_filter($fieldManager->getDefinedFields(), function (CustomDefCommunityTopic $customField) {
-            return !$customField->getSysName();
-        });
+        $customFields = $this->container->getSystemService('community_fields_manager')->getDefinedFields();
+//        $customFields = array_filter($customFields, function (CustomDefCommunityTopic $customField) {
+//            return !$customField->getSysName();
+//        });
+        $customFields = array_map(function (CustomDefCommunityTopic $customField) {
+            if ($customField->getSysName()) {
+                $customField->setTitle($this->container->getTranslator()->phrase('helpcenter.community.category'));
+            }
+
+            return $customField;
+        }, $customFields);
 
         $data['custom_fields'] = array_values($this->getApiData($customFields, false));
 
@@ -118,6 +122,7 @@ class CommunityFieldsController extends AbstractController
 
         $container = $this->getContainer();
         $helper    = new Form\FormHelper($container->getEm(), $container->getFormFactory());
+
         try {
             $helper->saveFormToField($field, $post);
         } catch (\RuntimeException $e) {
@@ -216,6 +221,7 @@ class CommunityFieldsController extends AbstractController
             if (!$field || $field->parent) {
                 throw $this->createNotFoundException();
             }
+
             try {
                 $helper->saveFormToField($field, $fieldData);
             } catch (\RuntimeException $e) {
