@@ -18,10 +18,14 @@
 {# Basic structure #}
 
 {%- block form_row -%}
-    {% if help %}
-        {{ block('form_row_help_text') }}
+    {% if toggle_checkbox %}
+        {{ block('form_row_toggle_checkbox') }}
     {% else %}
-        {{ block('form_row_nohelp') }}
+        {% if help %}
+            {{ block('form_row_help_text') }}
+        {% else %}
+            {{ block('form_row_nohelp') }}
+        {% endif %}
     {% endif %}
 {%- endblock form_row -%}
 
@@ -306,7 +310,9 @@
     <div class="dpx-checkbox-group dp-checkbox-group-widget">
         <input
             type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
-        <label for="{{ id }}">{{ checkbox_label|trans }}</label>
+        <label for="{{ id }}">
+            {{ checkbox_label|trans }}
+        </label>
     </div>
 {% endblock %}
 
@@ -788,3 +794,24 @@ END HIERARCHY
     </div>
 {% endblock %}
 
+{% block form_row_toggle_checkbox %}
+    {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : '' %}
+    {% if checkbox_label %}
+        <fieldset class="form-group dp-toggle-checkbox">
+            <legend class="title">{{ label|trans({}, translation_domain) }}</legend>
+            {% if help %}
+                <small class="form-text">{{ help }}</small>
+            {% endif %}
+            {{- form_widget(form, 1 ? {'attr': {'class': widgetClass}} : {}) -}}
+            {{- form_errors(form) -}}
+        </fieldset>
+    {% else %}
+        <div class="form-group dp-toggle-checkbox">
+            {{- form_widget(form, 1 ? {'attr': {'class': widgetClass}} : {}) -}}
+            {% if help %}
+                <small class="form-text">{{ help }}</small>
+            {% endif %}
+            {{- form_errors(form) -}}
+        </div>
+    {% endif %}
+{% endblock %}

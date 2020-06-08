@@ -81,6 +81,10 @@ class CustomDataType extends AbstractType
         if ($options['custom_def'] && $options['custom_def']->getOption('expanded')) {
             $view->vars['field_set'] = true;
         }
+        if ($options['custom_def'] && $options['custom_def']->isToggleType()) {
+            $view->vars['toggle_checkbox'] = true;
+            $view->vars['checkbox_label']  = $options['custom_def']->getOption('label_text') ?: '';
+        }
     }
 
     /**
@@ -559,7 +563,7 @@ class CustomDataType extends AbstractType
                 }
 
                 $options = [
-                    'checkbox_label' => $def->getOption('label_text') ?: '',
+                    'checkbox_label' => $def->getOption('label_text') ?: $def->getTitle(),
                     'force_boolean'  => true,
                     'help'           => $def->getRealDescription(),
                 ];

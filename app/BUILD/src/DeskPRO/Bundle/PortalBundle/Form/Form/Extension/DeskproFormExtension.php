@@ -58,6 +58,7 @@ class DeskproFormExtension extends AbstractTypeExtension
         $view->vars['has_children']    = $view->children;
         $view->vars['fully_hidden']    = $options['fully_hidden'];
         $view->vars['field_set']       = false;
+        $view->vars['toggle_checkbox'] = false;
     }
 
     /**
