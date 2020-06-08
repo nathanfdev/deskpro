@@ -45,13 +45,16 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     sort(values) {
-      return (values || []).sort((a, b) => {
-        const orderA = parseInt(a.display_order);
-        const orderB = parseInt(b.display_order);
-        if (orderA < orderB) { return -1; }
-        if (orderA > orderB) { return 1; }
-        return 0;
-      });
+      return (values || [])
+        .filter(a => a.brand === parseInt(this.$scope.brand_id, 10))
+        .sort((a, b) => {
+          const orderA = parseInt(a.display_order);
+          const orderB = parseInt(b.display_order);
+          if (orderA < orderB) { return -1; }
+          if (orderA > orderB) { return 1; }
+          return 0;
+        }
+      );
     }
 
     initialLoad() {

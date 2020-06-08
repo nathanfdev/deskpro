@@ -15,7 +15,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 		this.wrapper = el;
 		this.parent(el);
 
-		if (!this.getEl('chan').find('option')[0]) {
+		if (!this.getEl('forum').find('option')[0]) {
 			this.wrapper.find('.form-header-error').show();
 			this.wrapper.find('.form-outer').hide();
 			this.markForReload();
@@ -41,8 +41,11 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 
     $('#new_topic_brand_id').on('change', function() {
       self.updateForums();
-      self.updateStatusCategories();
     });
+
+    this.getEl('forum').on('change', function() {
+      self.updateStatusCategories();
+    })
 
 		window.setTimeout(function() {
 			if (self.OBJ_DESTROYED) return;
@@ -136,7 +139,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 	_initForumSection: function() {
 		var self = this;
 
-		this.getEl('chan').on('change', function() {
+		this.getEl('forum').on('change', function() {
 			if (parseInt($(this).val())) {
 				self.getEl('forum_section').addClass('done');
 			} else {
@@ -148,7 +151,8 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
   updateForums: function() {
     var brand_select = $('#new_topic_brand_id');
     var brand_id = brand_select.val();
-    var forums_select = $(brand_select.parents('.cat-section')[0]).find('select.forum_id');
+    var forums_select = this.getEl('forum');
+    console.log(this.getEl('forum'));
     $.ajax({
       url: BASE_URL + 'agent/community/forums/brand/'+brand_id,
       type: 'GET',
@@ -162,17 +166,17 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
   },
 
   updateStatusCategories: function() {
-    var brand_select = $('#new_topic_brand_id');
-    var brand_id = brand_select.val();
-    var channels_select = $(brand_select.parents('.cat-section')[0]).find('select.status_id');
+    var forum_select = this.getEl('forum');
+    var forum_id = forum_select.val();
+    var status_select = this.getEl('status');
     $.ajax({
-      url: BASE_URL + 'agent/community/statuses/brand/'+brand_id,
+      url: BASE_URL + 'agent/community/statuses/forum/'+forum_id,
       type: 'GET',
       context: this,
       success: function(result) {
-        channels_select.children().remove();
-        channels_select.append($(result).find('optgroup'));
-        channels_select.select2("val", '');
+        status_select.children().remove();
+        status_select.append($(result).find('optgroup'));
+        status_select.select2("val", '');
       }
     });
   },
