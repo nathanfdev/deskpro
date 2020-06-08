@@ -1,0 +1,264 @@
+import PropTypes from 'prop-types';
+import React from 'react';
+import MediumEditor from 'medium-editor';
+import $ from 'jquery';
+import { debounce } from 'lodash';
+import {
+  clipboardHasImages,
+  clipboardIEHasImages,
+  getBlobsFromItems,
+  getBlobsFromIEItems,
+  getBlobsFromHtml,
+  getBlobFromUrl
+} from 'DeskPRO/Component/Uploader/PasteCatcher';
+
+export default class HcRteEditor extends React.Component {
+
+  static propTypes = {
+    tag:             PropTypes.string,
+    value:           PropTypes.string,
+    inline:          PropTypes.bool,
+    ctrlEnterSubmit: PropTypes.bool,
+    options:         PropTypes.object,
+    onChange:        PropTypes.func,
+    onSubmit:        PropTypes.func,
+    onPasteImage:    PropTypes.func,
+    onFocus:         PropTypes.func,
+    onBlur:          PropTypes.func
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      value: this.props.value
+    };
+  }
+
+  componentDidMount() {
+    const { inline, ctrlEnterSubmit, value = '', options = {} } = this.props;
+    const {
+      onChange = () => {},
+      onSubmit = () => {},
+      onFocus = () => {},
+      onBlur = () => {}
+    } = this.props;
+
+    const node = this.getNode();
+
+    const onChangeContent = debounce(() => {
+      onChange(node.innerHTML);
+    }, 100);
+
+    // Override default paste listener to upload images
+    node.addEventListener('paste', this.onPaste);
+    const overrideOptions = {
+      // check below comments regarding `cleanPastedHTML` option
+      paste: { cleanPastedHTML: false, forcePlainText: false, keyboardCommands: false }
+    };
+
+    this.medium = new MediumEditor(node, { ...options, ...overrideOptions });
+    this.medium.elements[0].setAttribute('aria-label', 'Message');
+    this.medium.setContent(value);
+    this.medium.subscribe('editableInput', onChangeContent);
+    this.medium.subscribe('onChange', onChangeContent);
+    this.medium.subscribe('focus', onFocus);
+    this.medium.subscribe('blur', onBlur);
+    this.medium.subscribe('editableKeydownEnter', (event) => {
+      const ctrlKey = event.ctrlKey || event.metaKey;
+
+      if ((inline && !event.altKey && !ctrlKey && !event.shiftKey) || (ctrlEnterSubmit && ctrlKey)) {
+        onSubmit(event, node.innerHTML);
+      }
+    });
+    this.medium.subscribe('editableClick', () => {
+      setTimeout(() => this.medium.startSelectionUpdates(), 1);
+    });
+
+    this.getDocument().addEventListener('mousemove', this.onMouseMove, true);
+
+    if (options.toolbar) {
+      node.addEventListener('focus', this.onShowToolbar, true);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.state.value && !this.updated) {
+      this.setState({ value: nextProps.value });
+    }
+
+    if (this.updated) this.updated = false;
+  }
+
+  componentDidUpdate() {
+    this.medium.restoreSelection();
+  }
+
+  componentWillUnmount() {
+    this.getNode().removeEventListener('paste', this.onPaste);
+    this.medium.destroy();
+  }
+
+  onMouseMove = () => {
+    this.mousePresent = true;
+    this.getDocument().removeEventListener('mousemove', this.onMouseMove, true);
+  };
+
+  onPaste = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.medium.saveSelection();
+
+    const { onPasteImage } = this.props;
+    const clipboardData = event.clipboardData;
+
+    if (clipboardData) {
+      // Non-IE browsers
+      if (!clipboardHasImages(clipboardData)) {
+        const pastedText = clipboardData.getData('text/plain');
+        if (pastedText) {
+          // to make below line work - medium-editor option `cleanPastedHTML` should be set to false
+          this.medium.getExtensionByName('paste').doPaste(pastedText, pastedText, this.getNode());
+        }
+      }
+
+      if (onPasteImage) {
+        const pastedHtml = clipboardData.getData('text/html');
+        if (clipboardData.items) {
+          getBlobsFromItems(clipboardData.items, onPasteImage);
+        } else if (pastedHtml) {
+          getBlobsFromHtml(pastedHtml, onPasteImage);
+        }
+      }
+    } else if (window.clipboardData) {
+      // IE browser
+      if (!clipboardIEHasImages(window.clipboardData)) {
+        const content = window.clipboardData.getData('Text');
+        if (content) {
+          try {
+            getBlobFromUrl(content, onPasteImage);
+          } catch (e) {
+            // to make below line work - medium-editor option `cleanPastedHTML` should be set to false
+            this.medium.getExtensionByName('paste').doPaste(content, content, this.getNode());
+          }
+        }
+      } else {
+        getBlobsFromIEItems(window.clipboardData.files, event, onPasteImage);
+      }
+    }
+
+    // Move selection state to the next position after paste
+    this.medium.selectionState = {
+      start: this.medium.selectionState.start + 1,
+      end:   this.medium.selectionState.end + 1,
+    };
+  };
+
+  onShowToolbar = () => {
+    if (this.mousePresent) {
+      $('.medium-editor-toolbar').show();
+      $('.dp-medium-rte').addClass('with-toolbar');
+      this.getNode().removeEventListener('focus', this.onShowToolbar, true);
+    }
+  };
+
+  getMediumEditor() {
+    return this.medium;
+  }
+
+  getNode() {
+    return this.node;
+  }
+
+  getDocument() {
+    return this.medium.options.ownerDocument;
+  }
+
+  getContent() {
+    return this.getNode().innerHTML;
+  }
+
+  setContent(html) {
+    this.medium.setContent(html);
+  }
+
+  pasteHtml(html, options) {
+    this.medium.pasteHTML(html, options);
+  }
+
+  focus() {
+    this.prepareFocusContent();
+
+    const doc = this.getDocument();
+    const node = this.getNode();
+
+    this.medium.restoreSelection();
+    if (this.medium.checkSelection().selectionState) {
+      // has stored selection
+      if (doc.getSelection) {
+        const sel = doc.getSelection();
+        if (sel.focusNode === node) {
+          // focus outside the <p> tag
+          // could cause for empty content
+          this.focusEnd();
+        } else {
+          const range = sel.getRangeAt(0);
+          range.collapse(false);
+
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+    } else {
+      // no selection, move caret to end
+      this.focusEnd();
+    }
+  }
+
+  focusEnd() {
+    this.prepareFocusContent();
+
+    const doc = this.getDocument();
+    const node = this.getNode();
+    const $p = $('p', node);
+
+    if (doc.getSelection) {
+      const range = doc.createRange();
+      range.selectNodeContents($p.last().get(0));
+      range.collapse(false);
+
+      const sel = doc.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    $(node).focus();
+  }
+
+  prepareFocusContent() {
+    const node = this.getNode();
+    const $p = $('p', node);
+
+    if (!$p.length || node.innerHTML === '<p><br></p>') {
+      node.innerHTML = '<p></p>';
+    }
+  }
+
+  render() {
+    const { tag = 'div' } = this.props;
+    const props = Object.assign({}, this.props);
+    delete props.onPasteImage;
+    delete props.ctrlEnterSubmit;
+    delete props.options;
+    delete props.inline;
+
+    props.dangerouslySetInnerHTML = { __html: this.state.value };
+
+    if (this.medium) {
+      this.medium.saveSelection();
+    }
+
+    return React.createElement(tag, { ...props, ref: (c) => { this.node = c; } });
+  }
+}
