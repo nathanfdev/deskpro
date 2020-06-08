@@ -10,7 +10,6 @@ import { CommunityVoteWidget } from './CommunityVoteWidget';
 import { ClickAwayDropdownWidget } from './ClickAwayDropdownWidget';
 import { HtmlLinkToPostWidget } from './HtmlLinkToPostWidget';
 import { HcOmniSearchWidget } from './HcOmniSearchWidget';
-import { HelpcenterLanguageChangerWidget } from './HelpcenterLanguageChangerWidget';
 import { HelpcenterLoginDropdownWidget } from './HelpcenterLoginDropdownWidget';
 import { HelpcenterSidebarFilters } from './HelpcenterSidebarFilters';
 import { LogoutButtonWidget } from './LogoutButtonWidget';
@@ -38,7 +37,6 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(HcOmniSearchWidget, '#helpcenter-omnisearch');
     this.addWidgetDef(HelpcenterLoginDropdownWidget, '#hc-top-login-btn');
     this.addWidgetDef(LogoutButtonWidget, '#top-logout-btn');
-    this.addWidgetDef(HelpcenterLanguageChangerWidget, '#hc-language-changer');
     this.addWidgetDef(TicketForm, '#new_ticket_page');
     this.addWidgetDef(TicketForm, '#edit_ticket_form');
     this.addWidgetDef(HcTicketList, '#hc_ticket_list_page');
