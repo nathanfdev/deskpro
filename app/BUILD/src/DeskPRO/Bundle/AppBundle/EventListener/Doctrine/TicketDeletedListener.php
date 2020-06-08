@@ -99,7 +99,7 @@ class TicketDeletedListener implements EventSubscriber
 
             if ($performer instanceof Person && $performer->getId()) {
                 foreach ($this->ticketsToUpdate as $ticket) {
-                    if ($ticket->isDeleted()) {
+                    if ($ticket->isDeleted() && !$ticket->getDeletionRecord()) {
                         $connection->executeUpdate(
                             "
                                 INSERT INTO tickets_deleted
