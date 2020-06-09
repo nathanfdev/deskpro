@@ -134,13 +134,22 @@ class ProfileController extends AbstractController
                     $context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
                     $this->getPersonFactory()->saveNewPerson($person, $context);
                     $this->getEmailSender()->sendWelcomeEmail($person);
-                    $this->get('person_manipulator')->authenticatePerson($person);
-                    $this->addFlash('success', $this->phrase(['portal.flashes.user_registered_verified_authenticated', 'helpcenter.flashes.user_registered_verified_authenticated']));
+                    $loggedIn = false;
+                    if ($this->get('person_manipulator')->authenticatePerson($person)) {
+                        $this->addFlash('success', $this->phrase(['portal.flashes.user_registered_verified_authenticated', 'helpcenter.flashes.user_registered_verified_authenticated']));
+                        $loggedIn = true;
+                    } else {
+                        $this->addFlash('success', $this->phrase(['portal.flashes.user_registered_verified', 'helpcenter.flashes.user_registered_verified']));
+                    }
 
                     $notify = new NewRegistrationNotification($person);
                     $notify->send();
 
-                    return $this->redirectToRoute('portal_home');
+                    if ($loggedIn) {
+                        return $this->redirectToRoute('portal_home');
+                    }
+
+                    return $this->redirectToRoute('user_login');
                 } else {
                     // this is a normal web request, and we need email validation
                     $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
