@@ -416,17 +416,6 @@ CODE;
         $options = [
             'helpdeskURL' => $baseUrl,
             'baseUrl'     => $assetRoot,
-            'language'    => [
-                'id' => 'DESKPRO_WIDGET_OPTIONS.language',
-            ],
-            'widget' => [
-
-            ],
-            'chat' => [
-            ],
-            'proactive' => [
-
-            ],
         ];
 
         $options = json_encode($options);
@@ -434,18 +423,41 @@ CODE;
         return <<<CODE
 (function() {
 window.parent.DESKPRO_MESSENGER_OPTIONS = $options;
+window.parent.DESKPRO_MESSENGER_OPTIONS.language = {
+    id: DESKPRO_WIDGET_OPTIONS.lagnauge
+};
 if (window.DESKPRO_WIDGET_OPTIONS.jwt) {
     window.parent.DESKPRO_MESSENGER_OPTIONS.jwt = window.DESKPRO_WIDGET_OPTIONS.jwt;
 }
 if (window.DESKPRO_WIDGET_OPTIONS.widget) {
+    window.parent.DESKPRO_MESSENGER_OPTIONS.widget = {};
+    window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars = {};
     if (window.DESKPRO_WIDGET_OPTIONS.widget.primary_color) {
         window.parent.DESKPRO_MESSENGER_OPTIONS.widget.primaryColor = window.DESKPRO_WIDGET_OPTIONS.widget.primary_color;
+        window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars['--color-primary'] = window.DESKPRO_WIDGET_OPTIONS.widget.primary_color;
+        window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars['--brand-primary'] = window.DESKPRO_WIDGET_OPTIONS.widget.primary_color;
     }
     if (window.DESKPRO_WIDGET_OPTIONS.widget.position) {
-        window.parent.DESKPRO_MESSENGER_OPTIONS.widget.primaryColor = window.DESKPRO_WIDGET_OPTIONS.widget.position;
+        window.parent.DESKPRO_MESSENGER_OPTIONS.widget.position = window.DESKPRO_WIDGET_OPTIONS.widget.position;
+        window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars.position = window.DESKPRO_WIDGET_OPTIONS.widget.position;
+
+    }
+
+    if (window.DESKPRO_WIDGET_OPTIONS.button && window.DESKPRO_WIDGET_OPTIONS.button.colors) {
+        if(window.DESKPRO_WIDGET_OPTIONS.button.colors.background) {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.widget.backgroundColor = window.DESKPRO_WIDGET_OPTIONS.button.colors.background;
+            window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars['--color-secondary'] = window.DESKPRO_WIDGET_OPTIONS.button.colors.background;
+            window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars['--brand-secondary'] = window.DESKPRO_WIDGET_OPTIONS.button.colors.background;
+        }
+
+        if(window.DESKPRO_WIDGET_OPTIONS.button.colors.text) {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.widget.textColor = window.DESKPRO_WIDGET_OPTIONS.button.colors.text;
+            window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars['--header-icon-text-color'] = window.DESKPRO_WIDGET_OPTIONS.button.colors.text;
+        }
     }
 }
 if (window.DESKPRO_WIDGET_OPTIONS.chat) {
+    window.DESKPRO_WIDGET_OPTIONS.chat = {};
     if (window.DESKPRO_WIDGET_OPTIONS.chat.default_department) {
         window.parent.DESKPRO_MESSENGER_OPTIONS.chat.department = window.DESKPRO_WIDGET_OPTIONS.chat.default_department;
     }
@@ -455,6 +467,8 @@ if (window.DESKPRO_WIDGET_OPTIONS.chat) {
     if (window.DESKPRO_WIDGET_OPTIONS.chat.user_groups) {
         window.parent.DESKPRO_MESSENGER_OPTIONS.chat.usergroups = window.DESKPRO_WIDGET_OPTIONS.chat.user_groups;
     }
+    window.parent.DESKPRO_MESSENGER_OPTIONS.proactive = {};
+
     if (window.DESKPRO_WIDGET_OPTIONS.chat.proactive !== undefined) {
         window.parent.DESKPRO_MESSENGER_OPTIONS.proactive.autoStart = window.DESKPRO_WIDGET_OPTIONS.chat.proactive;
     }
@@ -473,7 +487,7 @@ if (window.DESKPRO_WIDGET_OPTIONS.chat) {
             }
         ];
         if(window.DESKPRO_WIDGET_OPTIONS.chat.request_user_info) {
-            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm.fields.push(
+            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm[0].fields.push(
                 {
                     field_type: "text",
                     field_id: "name",
@@ -481,7 +495,7 @@ if (window.DESKPRO_WIDGET_OPTIONS.chat) {
                     data: {title: "Name"}
                 }
             );
-            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm.fields.push(
+            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm[0].fields.push(
                 {
                     field_type: "email",
                     field_id: "email",
@@ -489,7 +503,7 @@ if (window.DESKPRO_WIDGET_OPTIONS.chat) {
                     data: {title: "Email"}
                 }
             );
-            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm.fields.push(
+            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm[0].fields.push(
                 {
                     field_type: "department",
                     field_id: "chat_department",
