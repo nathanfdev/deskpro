@@ -51,9 +51,9 @@ class ErrorMessageFactory
         $this->translate               = $translate;
 
         if ($this->isHelpcenter()) {
-            $this->prefix    = str_replace('portal.', 'helpcenter.', $prefix);
+            $this->prefix = str_replace('portal.', 'helpcenter.', $prefix);
         } else {
-            $this->prefix    = $prefix;
+            $this->prefix = $prefix;
         }
     }
 

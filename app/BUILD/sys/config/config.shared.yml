@@ -21,6 +21,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Routing\RouterWithDynamicContext
     decorates: "router"
     arguments:
+      - "@deskpro.app_env"
       - "@dp.dynamic_context_router.inner"
       - "@dp.url_request_context_factory"
 

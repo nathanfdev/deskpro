@@ -323,7 +323,7 @@ class ChatHandler
                     $person = new Person();
                     $person->setEmail($request['email'], false);
                     if (isset($request['name']) && trim($request['name'])) {
-                        $person->setName($request['name']);
+                        $person->setName($this->chatMapper->cleanText($request['name']));
                     }
                     $this->em->persist($person);
                 }
@@ -350,16 +350,21 @@ class ChatHandler
      */
     private function handleChatTypingStartCommand(ChatConversation $chat, array $request)
     {
+        $message = $this->chatMapper->cleanText($request['message']);
+
         $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent(
             $chat->getId(),
             ChatEvent::TYPING_START_EVENT_TYPE,
             [
-                'message' => $request['message'],
+                'message' => $message,
                 'origin'  => $request['origin'],
             ]
         ));
 
-        $this->eventDispatcher->dispatch(UserChatEvent::USER_TYPING, new UserChatEvent($chat, $request['message']));
+        $this->eventDispatcher->dispatch(UserChatEvent::USER_TYPING, new UserChatEvent(
+            $chat,
+            $message
+        ));
 
         return new ApiWrapper($chat);
     }
@@ -455,7 +460,7 @@ class ChatHandler
 
         // determine username for person
         if (isset($request['name'])) {
-            $username = $request['name'];
+            $username = $this->chatMapper->cleanText($request['name']);
         } elseif ($person) {
             $username = $person->getDisplayName();
         } else {
@@ -465,7 +470,7 @@ class ChatHandler
         // if email was sent but person wasn't found - create person
         if (!$person) {
             $person = new Person();
-            $person->setEmail($request['email']);
+            $person->setEmail($this->chatMapper->cleanText($request['email']));
             $person->setName($username);
         }
 
@@ -477,8 +482,8 @@ class ChatHandler
         }
         $messages = $chat->getMessages()->filter(function ($message) {
             /* @var ChatMessage $message */
-            return $message->getOrigin() == ChatMessage::ORIGIN_USER
-                || $message->getOrigin() == ChatMessage::ORIGIN_AGENT;
+            return $message->getOrigin() === ChatMessage::ORIGIN_USER
+                || $message->getOrigin() === ChatMessage::ORIGIN_AGENT;
         });
 
         foreach ($messages as $message) {

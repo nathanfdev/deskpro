@@ -17,6 +17,7 @@ use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonRegistrationType;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormError;
@@ -467,18 +468,24 @@ class ProfileController extends AbstractController
 
     /**
      * @Route("/profile/emails/resend/{id}", name="portal_user_profile_emails_resend_validation")
+     * @Method("POST")
      *
      * @Security("is_granted('EDIT_PROFILE', user)")
      *
      * @param SavedForm $savedForm
+     * @param Request   $request
      *
      * @return RedirectResponse
      */
-    public function resendValidationAction(SavedForm $savedForm)
+    public function resendValidationAction(SavedForm $savedForm, Request $request)
     {
-        if ($savedForm->getPerson() != $this->getUser()) {
+        if ($savedForm->getPerson() !== $this->getUser()) {
             throw $this->createAccessDeniedException('You are not allowed to access this email address');
         }
+
+        $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $event->setResponse($this->redirectToRoute('portal_user_profile_emails'));
+        $this->getAntiAbuseService()->check($event);
 
         $this->addFlash('success', $this->phrase(['portal.flashes.user_resend_email_verify', 'helpcenter.flashes.user_resend_email_verify']));
 

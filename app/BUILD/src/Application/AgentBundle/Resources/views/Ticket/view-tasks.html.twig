@@ -40,7 +40,12 @@
 					</li>
 					<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; width: 120px; position: relative;">
 						<label>{{ phrase('agent.general.me') }}</label><span class="drop-icon"></span>
-						<select class="agents_sel dpe_select"  style="min-width: 170px;" data-invisible-trigger="1">
+						<select class="agents_sel dpe_select"
+                                style="min-width: 170px;"
+                                data-invisible-trigger-right="1"
+                                data-style-type="icons"
+                                data-select-icon-size="22"
+                        >
 							<optgroup label="{{ phrase('agent.general.agents') }}">
 								{% for agent in app.getAgentData().getAgentAvatarList() %}
 									<option {% if agent.id == app.user.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
