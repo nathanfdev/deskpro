@@ -94,11 +94,14 @@
                             </li>
                             {% endif %}
                             <li class="dp-po-post-extra-mobile-item">
-                            <a href="" class="dp-po-post-extra-mobile-link"><i class="dp-po-icon fal fa-print"></i> Print this article</a>
+                                <a href="javascript:window.print();" class="dp-po-post-extra-mobile-link"><i class="dp-po-icon fal fa-print"></i>
+                                    {{ phrase('helpcenter.general.print') }}
+                                </a>
                             </li>
                             <li class="dp-po-post-extra-mobile-item">
-                            <a href="" class="dp-po-post-extra-mobile-link"><i class="dp-po-icon fal fa-file-pdf"></i> Download this
-                                article</a>
+                                <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-post-extra-mobile-link" aria-label="{{ phrase('helpcenter.general.download_pdf') }} - {{ article.translated_title }}.pdf"><i class="dp-po-icon fal fa-file-pdf"></i>
+                                    {{ phrase('helpcenter.general.download_pdf') }}
+                                </a>
                             </li>
                         </ul>
                     </div>
