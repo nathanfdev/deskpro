@@ -267,7 +267,11 @@ class ChatMapper
             throw new MessengerApiException($errors);
         }
 
-        return UserChatMessages::createUserTrackMessage($chat, $request['page_url'], $request['page_title']);
+        return UserChatMessages::createUserTrackMessage(
+            $chat,
+            $this->cleanText($request['page_url']),
+            $this->cleanText($request['page_title'])
+        );
     }
 
     /**
@@ -285,6 +289,6 @@ class ChatMapper
             $message .= sprintf('The user was browsing %s', trim($request['page_title']));
         }
 
-        return $message;
+        return $this->cleanText($message);
     }
 }
