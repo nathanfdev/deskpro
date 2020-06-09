@@ -2,6 +2,7 @@
 
 namespace DpSys\Boot\BootTask;
 
+use DpRun\LowUtil;
 use GuzzleHttp\Psr7;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\File;
@@ -55,7 +56,9 @@ class HttpJsBootTask implements BootTaskInterface
             exit;
         }
 
-        if ($legacyWidget = $this->getLegacyAsset($path)) {
+        if ($this->isMessengerV1LoaderRequest($path) && $this->isMessengerV2Enabled()) {
+            $this->serveMessngerV2Loader();
+        } elseif ($legacyWidget = $this->getLegacyAsset($path)) {
             $this->serveLegacyWidget($legacyWidget);
         } elseif ($dynAsset = $this->getDynAsset($path)) {
             $this->serveDynAsset($dynAsset);
@@ -107,13 +110,16 @@ class HttpJsBootTask implements BootTaskInterface
         switch ($widget) {
             case 'ChatWidget/ChatWidget.js':
                 $code = $this->getChatWidget();
+
                 break;
             case 'TicketFormWidget/TicketFormWidget.js':
                 $code = $this->getFormWidget();
+
                 break;
             case 'WebsiteWidget/Overlay.js':
             case 'HelpdeskWidget/HelpdeskWidget.js':
                 $code = $this->getHdWidget();
+
                 break;
             default:
                 $code = '';
@@ -263,8 +269,8 @@ CODE;
                     'buildId'     => $this->env->getAppName(),
                 ];
                 if ($assetRoot = $this->env->getConfig('paths.asset_paths.assets_root.value')) {
-                   $assetRoot = str_replace('%DP_ACTIVE_BUILD%', DP_ACTIVE_BUILD, $assetRoot);
-                   $info['assetUrl'] = $assetRoot;
+                    $assetRoot        = str_replace('%DP_ACTIVE_BUILD%', DP_ACTIVE_BUILD, $assetRoot);
+                    $info['assetUrl'] = $assetRoot;
                 }
                 $cb   = preg_replace('#[^a-zA-Z0-9_\.\-]#', '', $cb);
                 $code = "$cb(".json_encode($info).')';
@@ -305,18 +311,23 @@ CODE;
         switch ($file->getExtension()) {
             case 'js':
                 $contentType = 'text/javascript';
+
                 break;
             case 'css':
                 $contentType = 'text/css';
+
                 break;
             case 'woff':
                 $contentType = 'application/x-font-woff';
+
                 break;
             case 'woff2':
                 $contentType = 'application/x-font-woff2';
+
                 break;
             case 'ttf':
                 $contentType = 'application/x-font-ttf';
+
                 break;
             default:
                 $contentType = Psr7\mimetype_from_extension($file->getExtension());
@@ -351,5 +362,203 @@ CODE;
         }
 
         return $res;
+    }
+
+    //###################################################################################################################
+    // Messenger v2 instead of v1
+    //###################################################################################################################
+
+    /**
+     * @param $path
+     *
+     * @return bool
+     */
+    private function isMessengerV1LoaderRequest($path)
+    {
+        return strpos($path, '/pub/build/widget_loader.min.js') !== false;
+    }
+
+    private function isMessengerV2Enabled()
+    {
+        $pdo = LowUtil::getPdoFromMysqlInfo(
+            $this->env->getConfig('database_advanced.read')
+            ?: $this->env->getConfig('database')
+        );
+
+        $q = $pdo->query("SELECT value FROM settings WHERE name = 'beta_features.messenger'");
+
+        return (bool) $q->fetchColumn();
+    }
+
+    private function serveMessngerV2Loader()
+    {
+        $code = $this->getMessengerWidget();
+
+        $res = new Response($code, 200, ['Content-Type' => 'application/javascript']);
+        $res->setTtl(3600);
+        $res->setEtag(sha1($code));
+        $res->setPublic();
+        $res->isNotModified($this->request);
+        $res->sendHeaders();
+        $res->sendContent();
+        exit;
+    }
+
+    private function getMessengerWidget()
+    {
+        $baseUrl   = $this->request->getUriForPath('');
+        $loaderSrc = $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/messenger/loader.js?v=1323444089');
+
+        $assetRoot = $this->env->getConfig('paths.asset_paths.messenger_assets.value');
+
+        $options = [
+            'helpdeskURL' => $baseUrl,
+            'baseUrl'     => $assetRoot,
+        ];
+
+        $options = json_encode($options);
+
+        return <<<CODE
+(function() {
+window.parent.DESKPRO_MESSENGER_OPTIONS = $options;
+window.parent.DESKPRO_MESSENGER_OPTIONS.language = {
+    id: DESKPRO_WIDGET_OPTIONS.lagnauge
+};
+if (window.DESKPRO_WIDGET_OPTIONS.jwt) {
+    window.parent.DESKPRO_MESSENGER_OPTIONS.jwt = window.DESKPRO_WIDGET_OPTIONS.jwt;
+}
+if (window.DESKPRO_WIDGET_OPTIONS.widget) {
+    window.parent.DESKPRO_MESSENGER_OPTIONS.widget = {};
+    window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars = {};
+    if (window.DESKPRO_WIDGET_OPTIONS.widget.primary_color) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.widget.primaryColor = window.DESKPRO_WIDGET_OPTIONS.widget.primary_color;
+        window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars['--color-primary'] = window.DESKPRO_WIDGET_OPTIONS.widget.primary_color;
+        window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars['--brand-primary'] = window.DESKPRO_WIDGET_OPTIONS.widget.primary_color;
+    }
+    if (window.DESKPRO_WIDGET_OPTIONS.widget.position) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.widget.position = window.DESKPRO_WIDGET_OPTIONS.widget.position;
+        window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars.position = window.DESKPRO_WIDGET_OPTIONS.widget.position;
+
+    }
+
+    if (window.DESKPRO_WIDGET_OPTIONS.button && window.DESKPRO_WIDGET_OPTIONS.button.colors) {
+        if(window.DESKPRO_WIDGET_OPTIONS.button.colors.background) {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.widget.backgroundColor = window.DESKPRO_WIDGET_OPTIONS.button.colors.background;
+            window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars['--color-secondary'] = window.DESKPRO_WIDGET_OPTIONS.button.colors.background;
+            window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars['--brand-secondary'] = window.DESKPRO_WIDGET_OPTIONS.button.colors.background;
+        }
+
+        if(window.DESKPRO_WIDGET_OPTIONS.button.colors.text) {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.widget.textColor = window.DESKPRO_WIDGET_OPTIONS.button.colors.text;
+            window.parent.DESKPRO_MESSENGER_OPTIONS.themeVars['--header-icon-text-color'] = window.DESKPRO_WIDGET_OPTIONS.button.colors.text;
+        }
+    }
+}
+if (window.DESKPRO_WIDGET_OPTIONS.chat) {
+    window.DESKPRO_WIDGET_OPTIONS.chat = {};
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.default_department) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.chat.department = window.DESKPRO_WIDGET_OPTIONS.chat.default_department;
+    }
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.waiting_timeout) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.chat.timeout = window.DESKPRO_WIDGET_OPTIONS.chat.waiting_timeout;
+    }
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.user_groups) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.chat.usergroups = window.DESKPRO_WIDGET_OPTIONS.chat.user_groups;
+    }
+    window.parent.DESKPRO_MESSENGER_OPTIONS.proactive = {};
+
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.proactive !== undefined) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.proactive.autoStart = window.DESKPRO_WIDGET_OPTIONS.chat.proactive;
+    }
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.proactive !== undefined) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.proactive.autoStart = window.DESKPRO_WIDGET_OPTIONS.chat.proactive;
+    }
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.popup && window.DESKPRO_WIDGET_OPTIONS.chat.popup.delay !== undefined) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.proactive.autoStartTimeout = window.DESKPRO_WIDGET_OPTIONS.chat.popup.delay;
+    }
+
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.begin_mode && window.DESKPRO_WIDGET_OPTIONS.chat.begin_mode === 'form') {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm = [
+            {
+                department: 0,
+                fields: []
+            }
+        ];
+        if(window.DESKPRO_WIDGET_OPTIONS.chat.request_user_info) {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm[0].fields.push(
+                {
+                    field_type: "text",
+                    field_id: "name",
+                    required: window.DESKPRO_WIDGET_OPTIONS.chat.required_name ? '1' : '',
+                    data: {title: "Name"}
+                }
+            );
+            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm[0].fields.push(
+                {
+                    field_type: "email",
+                    field_id: "email",
+                    required: window.DESKPRO_WIDGET_OPTIONS.chat.required_email ? '1' : '',
+                    data: {title: "Email"}
+                }
+            );
+            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm[0].fields.push(
+                {
+                    field_type: "department",
+                    field_id: "chat_department",
+                    is_hidden: window.DESKPRO_WIDGET_OPTIONS.chat.select_department === 'default',
+                    required: true
+                }
+            );
+        }
+    }
+
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.popup && window.DESKPRO_WIDGET_OPTIONS.chat.popup.style) {
+        var style = 'avatar-text-button'
+        switch(window.DESKPRO_WIDGET_OPTIONS.chat.popup.style) {
+            case 'agents_button':
+                style = 'avatar-button';
+                break;
+            case 'text_button':
+                style = 'text-button';
+                break;
+            case 'widget_button_agent':
+                style = 'avatar-widget';
+                break;
+            case 'agent_text_input':
+                style = 'avatar-text-input';
+                break;
+            case 'text_input':
+                style = 'text-input';
+                break;
+        }
+        window.parent.DESKPRO_MESSENGER_OPTIONS.proactive.autoStartStyle = style;
+    }
+
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.ticket) {
+        if (window.DESKPRO_WIDGET_OPTIONS.chat.ticket.select_department === 'custom') {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.tickets.departmentOption = 'choose';
+        } else {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.tickets.departmentOption = 'hidden';
+        }
+
+        if (window.DESKPRO_WIDGET_OPTIONS.chat.ticket.select_subject === 'custom') {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.tickets.subjectOption = 'user';
+        } else {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.tickets.subjectOption = 'preset';
+        }
+        if (window.DESKPRO_WIDGET_OPTIONS.chat.ticket.default_subject) {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.tickets.subject = window.DESKPRO_WIDGET_OPTIONS.chat.ticket.default_subject;
+        }
+    }
+}
+
+var scr   = document.createElement('script');
+scr.type  = 'text/javascript';
+scr.async = true;
+scr.src   = '$loaderSrc';
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
+
+})();
+CODE;
     }
 }
