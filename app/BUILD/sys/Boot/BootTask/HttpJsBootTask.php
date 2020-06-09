@@ -413,6 +413,14 @@ CODE;
             'language'    => [
                 'id' => 'DESKPRO_WIDGET_OPTIONS.language',
             ],
+            'widget' => [
+
+            ],
+            'chat' => [
+            ],
+            'proactive' => [
+
+            ],
         ];
 
         $options = json_encode($options);
@@ -423,6 +431,109 @@ window.parent.DESKPRO_MESSENGER_OPTIONS = $options;
 if (window.DESKPRO_WIDGET_OPTIONS.jwt) {
     window.parent.DESKPRO_MESSENGER_OPTIONS.jwt = window.DESKPRO_WIDGET_OPTIONS.jwt;
 }
+if (window.DESKPRO_WIDGET_OPTIONS.widget) {
+    if (window.DESKPRO_WIDGET_OPTIONS.widget.primary_color) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.widget.primaryColor = window.DESKPRO_WIDGET_OPTIONS.widget.primary_color;
+    }
+    if (window.DESKPRO_WIDGET_OPTIONS.widget.position) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.widget.primaryColor = window.DESKPRO_WIDGET_OPTIONS.widget.position;
+    }
+}
+if (window.DESKPRO_WIDGET_OPTIONS.chat) {
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.default_department) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.chat.department = window.DESKPRO_WIDGET_OPTIONS.chat.default_department;
+    }
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.waiting_timeout) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.chat.timeout = window.DESKPRO_WIDGET_OPTIONS.chat.waiting_timeout;
+    }
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.user_groups) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.chat.usergroups = window.DESKPRO_WIDGET_OPTIONS.chat.user_groups;
+    }
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.proactive !== undefined) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.proactive.autoStart = window.DESKPRO_WIDGET_OPTIONS.chat.proactive;
+    }
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.proactive !== undefined) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.proactive.autoStart = window.DESKPRO_WIDGET_OPTIONS.chat.proactive;
+    }
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.popup && window.DESKPRO_WIDGET_OPTIONS.chat.popup.delay !== undefined) {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.proactive.autoStartTimeout = window.DESKPRO_WIDGET_OPTIONS.chat.popup.delay;
+    }
+
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.begin_mode && window.DESKPRO_WIDGET_OPTIONS.chat.begin_mode === 'form') {
+        window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm = [
+            {
+                department: 0,
+                fields: []
+            }
+        ];
+        if(window.DESKPRO_WIDGET_OPTIONS.chat.request_user_info) {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm.fields.push(
+                {
+                    field_type: "text",
+                    field_id: "name",
+                    required: window.DESKPRO_WIDGET_OPTIONS.chat.required_name ? '1' : '',
+                    data: {title: "Name"}
+                }
+            );
+            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm.fields.push(
+                {
+                    field_type: "email",
+                    field_id: "email",
+                    required: window.DESKPRO_WIDGET_OPTIONS.chat.required_email ? '1' : '',
+                    data: {title: "Email"}
+                }
+            );
+            window.parent.DESKPRO_MESSENGER_OPTIONS.chat.preChatForm.fields.push(
+                {
+                    field_type: "department",
+                    field_id: "chat_department",
+                    is_hidden: window.DESKPRO_WIDGET_OPTIONS.chat.select_department === 'default',
+                    required: true
+                }
+            );
+        }
+    }
+
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.popup && window.DESKPRO_WIDGET_OPTIONS.chat.popup.style) {
+        var style = 'avatar-text-button'
+        switch(window.DESKPRO_WIDGET_OPTIONS.chat.popup.style) {
+            case 'agents_button':
+                style = 'avatar-button';
+                break;
+            case 'text_button':
+                style = 'text-button';
+                break;
+            case 'widget_button_agent':
+                style = 'avatar-widget';
+                break;
+            case 'agent_text_input':
+                style = 'avatar-text-input';
+                break;
+            case 'text_input':
+                style = 'text-input';
+                break;
+        }
+        window.parent.DESKPRO_MESSENGER_OPTIONS.proactive.autoStartStyle = style;
+    }
+
+    if (window.DESKPRO_WIDGET_OPTIONS.chat.ticket) {
+        if (window.DESKPRO_WIDGET_OPTIONS.chat.ticket.select_department === 'custom') {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.tickets.departmentOption = 'choose';
+        } else {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.tickets.departmentOption = 'hidden';
+        }
+
+        if (window.DESKPRO_WIDGET_OPTIONS.chat.ticket.select_subject === 'custom') {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.tickets.subjectOption = 'user';
+        } else {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.tickets.subjectOption = 'preset';
+        }
+        if (window.DESKPRO_WIDGET_OPTIONS.chat.ticket.default_subject) {
+            window.parent.DESKPRO_MESSENGER_OPTIONS.tickets.subject = window.DESKPRO_WIDGET_OPTIONS.chat.ticket.default_subject;
+        }
+    }
+}
+
 var scr   = document.createElement('script');
 scr.type  = 'text/javascript';
 scr.async = true;
