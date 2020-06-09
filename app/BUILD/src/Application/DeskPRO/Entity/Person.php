@@ -3523,6 +3523,14 @@ class Person extends DomainObject implements
         return $this->date_created;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDatePasswordSet()
+    {
+        return $this->date_password_set;
+    }
+
     public function getTimezone()
     {
         if (!$this->timezone) {
