@@ -347,6 +347,7 @@ helpcenter.forms.date_picker_next_month: 'Next Month'
 helpcenter.forms.date_picker_previous_month: 'Previous Month'
 helpcenter.forms.date_picker_time: Time
 helpcenter.forms.error_captcha: 'The CAPTCHA value was incorrect'
+helpcenter.forms.error_dupe_email: 'This email address is already in use.'
 helpcenter.forms.error_email_required: 'You must provide your email address'
 helpcenter.forms.error_password_current: 'This must be your current password'
 helpcenter.forms.error_password_forbid_reuse: 'You cannot use a password you have used before'
