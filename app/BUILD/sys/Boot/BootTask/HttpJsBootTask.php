@@ -380,7 +380,13 @@ CODE;
 
     private function isMessengerV2Enabled()
     {
-        $pdo         = LowUtil::getPdoFromMysqlInfo($this->env->getConfig('database_advanced.read'));
+        try {
+            // we're just trying to obtain read connection, if it doesn't exist - proceed to default one
+            $pdo = LowUtil::getPdoFromMysqlInfo($this->env->getConfig('database_advanced.read'));
+        } catch (\Exception $e) {
+            $pdo = LowUtil::getPdoFromMysqlInfo($this->env->getConfig('database'));
+        }
+
         $q           = $pdo->query("SELECT value FROM settings WHERE name = 'beta_features.messenger'");
 
         return (bool) $q->fetchColumn();
