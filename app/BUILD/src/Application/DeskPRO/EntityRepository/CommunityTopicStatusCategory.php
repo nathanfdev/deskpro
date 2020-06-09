@@ -3,7 +3,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
-use Application\DeskPRO\Entity\CommunityForum;
+use Application\DeskPRO\Entity\CommunityForum as CommunityForumEntity;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory as CommunityTopicStatusCategoryEntity;
 use Doctrine\ORM\Query\Expr;
 
@@ -23,7 +23,7 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
     }
 
     /**
-     * @param int|CommunityForum $forum
+     * @param int|CommunityForumEntity $forum
      *
      * @return CommunityTopicStatusCategoryEntity[]
      */
@@ -43,7 +43,7 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
     }
 
     /**
-     * @param int|CommunityForum $forum
+     * @param int|CommunityForumEntity $forum
      *
      * @return CommunityTopicStatusCategoryEntity[]
      */
@@ -70,7 +70,7 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
     /**
      * @param string $type
      * @param int|BrandEntity $brand
-     * @param int|CommunityForum $forum
+     * @param int|CommunityForumEntity $forum
      *
      * @return array
      */
@@ -90,7 +90,7 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
         }
 
         if ($forum) {
-            $qb->innerJoin(CommunityForum::class, 'f', Expr\Join::WITH, 'f.id = :forum')
+            $qb->innerJoin(CommunityForumEntity::class, 'f', Expr\Join::WITH, 'f.id = :forum')
                 ->setParameter('forum', $forum);
         }
 
