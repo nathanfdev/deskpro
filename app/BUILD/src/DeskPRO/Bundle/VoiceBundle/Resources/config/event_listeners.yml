@@ -93,11 +93,10 @@ services:
   event_listener.doctrine.twilio_account:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\TwilioAccountListener
     arguments:
-      - "@twilio_adapter"
-      - "@doctrine.orm.default_entity_manager"
-      - "@router"
+      - "@service_container"
     tags:
       - { name: doctrine.entity_listener }
+      - { name: doctrine.event_subscriber, connection: default }
 
   event_listener.doctrine.plivo_account:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\PlivoAccountListener

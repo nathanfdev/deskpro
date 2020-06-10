@@ -74,7 +74,7 @@ class InitVoiceTwilioCommand extends ContainerAwareCommand
 
         if ($input->getOption('public_proxy_url')) {
             // configure as proxied account
-            $container->get('dp.voice.cloud_proxy')->createTwilioProxyAccount(
+            $container->get('dp.voice.proxy')->createTwilioProxyAccount(
                 $input->getOption('public_proxy_url'),
                 $accountId ?: 'xxx-access-xxx',
                 $authToken ?: 'xxx-auth-xxx'
@@ -92,13 +92,20 @@ class InitVoiceTwilioCommand extends ContainerAwareCommand
                 return 1;
             }
 
-            $account = new TwilioVoiceAccount();
-            $account->setAccountId($accountId);
-            $account->setAuthToken($authToken);
-            $account->setAccountName('Deskpro Voice Account');
+            $account = $em->getRepository(TwilioVoiceAccount::class)->findOneBy([
+                'accountId' => $accountId,
+                'authToken' => $authToken,
+            ]);
 
-            $em->persist($account);
-            $em->flush();
+            if (!$account) {
+                $account = new TwilioVoiceAccount();
+                $account->setAccountId($accountId);
+                $account->setAuthToken($authToken);
+                $account->setAccountName('Deskpro Voice Account');
+
+                $em->persist($account);
+                $em->flush();
+            }
         }
 
         return 0;

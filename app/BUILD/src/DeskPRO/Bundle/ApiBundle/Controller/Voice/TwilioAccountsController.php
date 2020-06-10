@@ -16,7 +16,6 @@ use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceBuyNumberType;
 use DeskPRO\Bundle\VoiceBundle\Serializer\Model\TwilioClientCredentials;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
-use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioExistingNumber;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -283,7 +282,7 @@ class TwilioAccountsController extends AbstractVoiceCrudController
             $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 
             try {
-                $proxySettings = $this->get('dp.voice.cloud_proxy')->loadTwilioProxySettings($this->getUser());
+                $proxySettings = $this->get('dp.voice.proxy')->loadTwilioProxySettings($this->getUser());
             } catch (InsufficientBalanceException $e) {
                 return new View([
                     'code'    => 'invalid_input',
@@ -305,7 +304,7 @@ class TwilioAccountsController extends AbstractVoiceCrudController
                 throw $this->createAccessDeniedException($e->getMessage());
             }
 
-            $account = $this->get('dp.voice.cloud_proxy')->createTwilioProxyAccount(
+            $account = $this->get('dp.voice.proxy')->createTwilioProxyAccount(
                 $proxySettings['twilioProxyServiceUrl'],
                 $proxySettings['accessToken'],
                 $proxySettings['authToken']
