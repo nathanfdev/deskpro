@@ -228,8 +228,9 @@ class ProfileController extends AbstractController
      * @param Request $request
      * @param string $mode
      *
-     * @return RedirectResponse|Response
      * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return RedirectResponse|Response
      */
     public function editAction(Request $request, $mode = 'account')
     {
