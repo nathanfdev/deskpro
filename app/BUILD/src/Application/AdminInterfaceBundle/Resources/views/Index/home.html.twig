@@ -434,11 +434,11 @@
 					<article>
 						<div class="dp-mpadded">
 							<div style="padding-bottom: 20px; display: flex; align-items: flex-start;" ng-repeat="(featureId, feature) in Home.features">
-                                <div ng-style="(!feature.processing && ((feature.enabled && feature.can_be_disabled) || !feature.enabled)) && {'padding-top':'5px'}">
+                                <div style="white-space: nowrap; line-height: 30px;">
                                     <strong>{{ ng_var('feature.title') }}: </strong>
                                 </div>
-                                <div style="margin-left: 10px">
-                                    <span ng-bind-html="feature.short_description"></span>
+                                <div style="margin-left: 5px">
+                                    <span style="line-height: 30px;" ng-bind-html="feature.short_description"></span>
                                         <a ng-show="!feature.enabled && !feature.processing" class="btn btn-success" href="{{ ng_href('features.enable', '{id: feature.id}') }}">Enable</a>
                                         <a ng-show="feature.enabled && feature.can_be_disabled && !feature.processing"  class="btn btn-danger" href="{{ ng_href('features.disable', '{id: feature.id}') }}">Disable</a>
                                         <span ng-show="feature.enabled && !feature.can_be_disabled && !feature.processing" style="color: green">Enabled</span>
