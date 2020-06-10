@@ -4,6 +4,7 @@ namespace Application\LegacyApiBundle\Event;
 
 use Application\LegacyApiBundle\Controller\AbstractController;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Doctrine\DBAL\DBALException;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -73,11 +74,20 @@ class Apiv1EndpointListener implements EventSubscriberInterface
             (($exception instanceof AccessDeniedHttpException || $exception instanceof AccessDeniedException) && $request->isXmlHttpRequest())
             || strpos($request->getRequestUri(), '/api') === 0
         ) {
+            $errorCode    = 'bad_request';
+            $errorMessage = $exception->getMessage();
+
+            if ($exception instanceof DBALException) {
+                $errorMessage = 'A database error has occurred.';
+            } elseif ($exception instanceof AccessDeniedHttpException || $exception instanceof AccessDeniedException) {
+                $errorCode = $exception->getCode() === 42 ? 'insufficient_rights' : 'forbidden';
+            }
+
             $response = new JsonResponse();
             $response->headers->set('X-Status-Code', Response::HTTP_FORBIDDEN);
             $response->setContent([
-                'error_code'    => $exception->getCode() === 42 ? 'insufficient_rights' : 'forbidden',
-                'error_message' => $exception->getMessage(),
+                'error_code'    => $errorCode,
+                'error_message' => $errorMessage,
             ]);
 
             $event->setResponse($response);
