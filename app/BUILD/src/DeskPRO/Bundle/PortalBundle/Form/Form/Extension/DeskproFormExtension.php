@@ -60,7 +60,7 @@ class DeskproFormExtension extends AbstractTypeExtension
                 $hasRootParent = true;
             } else {
                 $parentOptions = $parentForm->getConfig()->getOptions();
-                if ($parentOptions['compound'] && $parentOptions['fields_group']) {
+                if ($parentOptions['compound'] && isset($parentOptions['fields_group']) && $parentOptions['fields_group']) {
                     $hasRootParent = true;
                 }
             }

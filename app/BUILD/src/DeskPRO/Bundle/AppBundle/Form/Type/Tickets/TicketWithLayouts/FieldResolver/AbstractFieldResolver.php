@@ -630,6 +630,7 @@ abstract class AbstractFieldResolver
                 // ignore the "unique entity" constraint here
                 'constraints' => [
                     new AppAssert\Person\Email\NotSystemEmail(),
+                    new AppAssert\Person\Email\NotBannedEmail(),
                 ],
             ];
 
