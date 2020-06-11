@@ -231,13 +231,17 @@ class ProfileController extends AbstractController
     /**
      * @Route("/profile", name="portal_user_profile")
      * @Route("/profile", name="user_profile")
+     * @Route("/profile/mobile/{mode}", name="portal_user_profile_mobile", defaults={"mode":"account"})
      * @Security("is_granted('EDIT_PROFILE', user)")
      *
      * @param Request $request
+     * @param string $mode
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return RedirectResponse|Response
      */
-    public function editAction(Request $request)
+    public function editAction(Request $request, $mode = 'account')
     {
         $person = $this->getUser();
 
@@ -282,8 +286,101 @@ class ProfileController extends AbstractController
                 }
                 $this->getEm()->flush();
                 $this->addFlash('success', $this->phrase(['portal.flashes.user_changed_password', 'helpcenter.flashes.user_changed_password']));
+                $mode = 'password';
 
                 return $this->redirectToRoute('portal_user_profile');
+            }
+        }
+
+        $addEmailForm  = null;
+        $pendingEmails = [];
+        if ($person->isConfirmed()) {
+
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            // CHANGE PRIMARY EMAIL
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            if ($emailId = $request->query->getInt('new_primary')) {
+                /** @var \Application\DeskPRO\Entity\PersonEmail $proposedNewPrimaryEmail */
+                $proposedNewPrimaryEmail = $this->getRepo('DeskPRO:PersonEmail')->find($emailId);
+                if ($proposedNewPrimaryEmail->getPerson()->getId() == $person->getId()) {
+                    $person->setPrimaryEmail($proposedNewPrimaryEmail);
+                    $this->getEm()->flush();
+                    $this->addFlash('success', $this->phrase(['portal.flashes.user_changed_primary_email', 'helpcenter.flashes.user_changed_primary_email']));
+
+                    return $this->redirectToRoute('portal_user_profile_mobile', ['mode' => 'emails']);
+                }
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            // REMOVE EMAIL
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            if ($emailId = $request->query->getInt('remove_email')) {
+                /** @var \Application\DeskPRO\Entity\PersonEmail $proposedEmailRemoval */
+                $proposedEmailRemoval = $this->getRepo('DeskPRO:PersonEmail')->find($emailId);
+                if ($proposedEmailRemoval->getPerson()->getId() == $person->getId()) {
+                    if (!$proposedEmailRemoval->isPrimary()) { // cannot remove primary email
+                        $person->removeEmailAddressId($proposedEmailRemoval->getId());
+                        $this->getEm()->remove($proposedEmailRemoval);
+                        $this->getEm()->flush();
+                        $this->addFlash(
+                            'success',
+                            $this->phrase(
+                                ['portal.flashes.user_removed_an_email', 'helpcenter.flashes.user_removed_an_email'],
+                                ['email' => $proposedEmailRemoval->email]
+                            )
+                        );
+
+                        return $this->redirectToRoute('portal_user_profile_mobile', ['mode' => 'emails']);
+                    }
+                }
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            // NEW EMAIL
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            $newEmail     = new PersonEmail();
+            $language     = $this->container->get('language_stack')->getActiveOrDefault();
+            $addEmailForm = $this->createForm(PersonEmailType::class, $newEmail, [
+                'action'      => $this->generateUrl('portal_user_profile_mobile', ['mode' => 'emails']),
+                'email_label' => $this->get('deskpro.core.translate')->phrase('helpcenter.general.email_address', [], $language),
+            ]);
+            $addEmailForm->handleRequest($request);
+            if ($addEmailForm->isValid()) {
+                if ($this->isSavedFormSubRequest($request)) {
+                    // this is coming from a validation link, so we can actually save the email now
+                    $this->get('user_rule_processor')->newEmail($person, $newEmail);
+                    $this->getEm()->persist($newEmail);
+                    $newEmail->person = $person;
+                    $newEmail->setIsValidated(true);
+                    $this->getCurrentPerson()->addEmail($newEmail);
+                    $this->getEm()->flush();
+                    $this->addFlash('success', $this->phrase(['portal.flashes.user_add_email_verified', 'helpcenter.flashes.user_add_email_verified']));
+
+                    return $this->redirectToRoute('portal_user_profile_mobile', ['mode' => 'emails']);
+                } else {
+                    $this->getEm()->detach($newEmail);
+                    // valid email, but we need email validation before adding it
+                    $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $addEmailForm, $request, $newEmail->getEmail(), $person->getDisplayName(), $person);
+                    $this->get('portal_validation')->sendVerificationEmail(PortalValidation::ADD_EMAIL, $savedForm, false);
+                    $this->addFlash('success', $this->phrase(['portal.flashes.user_add_email_verify', 'helpcenter.flashes.user_add_email_verify']));
+
+                    return $this->redirectToRoute('portal_user_profile_mobile', ['mode' => 'emails']);
+                }
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            // PENDING EMAIL ADDRESSES
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            $savedForms = $this->getRepo(SavedForm::class)->findBy([
+                'person'         => $person,
+                'intention_type' => SavedForm::INTENTION_VERIFY_EMAIL,
+            ]);
+            /** @var SavedForm $savedForm */
+            foreach ($savedForms as $savedForm) {
+                $formData = $savedForm->getFormData();
+                if (isset($formData['person_email']['email'])) {
+                    $pendingEmails[$savedForm->getId()] = $formData['person_email']['email'];
+                }
             }
         }
 
@@ -293,11 +390,14 @@ class ProfileController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Portal:User/profile.html.twig', [
-                'person'        => $person,
-                'profile_form'  => $profileForm->createView(),
-                'password_form' => $passwordForm->createView(),
-                'breadcrumbs'   => $breadcrumbs,
-                'page_title'    => $this->createPageTitle()->profile(),
+                'person'         => $person,
+                'mode'           => $mode,
+                'profile_form'   => $profileForm->createView(),
+                'password_form'  => $passwordForm->createView(),
+                'pending_emails' => $pendingEmails,
+                'add_email_form' => $addEmailForm ? $addEmailForm->createView() : null,
+                'breadcrumbs'    => $breadcrumbs,
+                'page_title'     => $this->createPageTitle()->profile(),
             ]
         );
     }
@@ -423,7 +523,7 @@ class ProfileController extends AbstractController
             $addEmailForm->handleRequest($request);
             if ($addEmailForm->isValid()) {
                 if ($this->isSavedFormSubRequest($request)) {
-                    // this is coming from a validtion link, so we can actually save the email now
+                    // this is coming from a validation link, so we can actually save the email now
                     $this->get('user_rule_processor')->newEmail($person, $newEmail);
                     $this->getEm()->persist($newEmail);
                     $newEmail->person = $person;
