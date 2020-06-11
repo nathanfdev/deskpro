@@ -30,6 +30,7 @@
                 <div class="flex-nowrap ml-auto">
                     <div class="dp-po-header-right">
                         {% include 'Theme:Common:agent_bar.html.twig' %}
+                        {% if enabled_languages()| length > 1 %}
                         <div class="dp-po-language">
                             <a href="#" class="dp-po-language-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="{{ asset_data_url('images/flags/' ~ current_language().flag_image, 'legacy_web') }}" alt=""> <span class="dp-po-language-link-text">{{ current_language().title }}</span>
@@ -46,6 +47,7 @@
                                 {% endfor %}
                             </div>
                         </div>
+                        {% endif %}
                         <div class="dp-po-header-button">
                             <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary">{{ phrase('helpcenter.general.nav_newticket') }}</a>
                         </div>
