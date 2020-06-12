@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Controller
- */
+
 
 namespace Application\DeskPRO\ResourceScanner;
 
@@ -32,15 +28,15 @@ class LanguagePhrases
         $groups = [];
 
         $groupToReal = [
-            'adm'     => 'backend',
-            'admin'   => 'backend',
-            'reports' => 'backend',
-            'api'     => 'backend',
-            'agent'   => 'backend',
-            'general' => 'backend',
-            'portal'  => 'user',
-            'user'    => 'user',
-            'reports' => 'backend',
+            'adm'        => 'backend',
+            'admin'      => 'backend',
+            'reports'    => 'backend',
+            'api'        => 'backend',
+            'agent'      => 'backend',
+            'general'    => 'backend',
+            'portal'     => 'user',
+            'user'       => 'user',
+            'helpcenter' => 'helpcenter',
         ];
 
         $lang_dir = dir($this->lang_root);
