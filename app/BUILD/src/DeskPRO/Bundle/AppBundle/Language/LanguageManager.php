@@ -4,6 +4,8 @@ namespace DeskPRO\Bundle\AppBundle\Language;
 
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -37,18 +39,37 @@ class LanguageManager
     private $callLanguage;
 
     /**
+     * @var PortalBrandThemeLoader
+     */
+    private $portalBrandThemeLoader;
+
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * Constructor.
      *
-     * @param Translate     $translate
+     * @param Translate $translate
      * @param LanguageStack $languageStack
      * @param EntityManager $em
+     * @param PortalBrandThemeLoader $portalBrandThemeLoader
+     * @param BrandStack $brandStack
      */
-    public function __construct(Translate $translate, LanguageStack $languageStack, EntityManager $em)
-    {
-        $this->translate     = $translate;
-        $this->languageStack = $languageStack;
-        $this->em            = $em;
-        $this->multiLanguage = null;
+    public function __construct(
+        Translate $translate,
+        LanguageStack $languageStack,
+        EntityManager $em,
+        PortalBrandThemeLoader $portalBrandThemeLoader,
+        BrandStack $brandStack
+    ) {
+        $this->translate              = $translate;
+        $this->languageStack          = $languageStack;
+        $this->em                     = $em;
+        $this->multiLanguage          = null;
+        $this->portalBrandThemeLoader = $portalBrandThemeLoader;
+        $this->brandStack             = $brandStack;
     }
 
     /**
@@ -162,6 +183,10 @@ class LanguageManager
     /**
      * Shortcut method to use the existing brand stack language to fetch a phrase from the Translator.
      *
+     * If $phrase is an array, then any of these phrase IDs are expected to be suitable, and we will select
+     * the best choice. E.g. if using helpcenter, then we will try to use a helpcenter phrase.
+     *
+     *
      * Optionally, you can provide the $lang to use.
      *
      * @param $name
@@ -172,6 +197,20 @@ class LanguageManager
      */
     public function phrase($name, array $vars = [], Language $lang = null)
     {
+        if (is_array($name)) {
+            if ($this->isHelpCenterTheme()) {
+                $name = array_filter($name, function ($p) {
+                    return strpos($p, 'helpcenter.') === 0;
+                });
+            } else {
+                $name = array_filter($name, function ($p) {
+                    return strpos($p, 'helpcenter.') !== 0;
+                });
+            }
+
+            $name = array_pop($name);
+        }
+
         return $this->getTranslator($lang)->phrase($name, $vars);
     }
 
@@ -205,5 +244,13 @@ class LanguageManager
         } finally {
             $this->callLanguage = null;
         }
+    }
+
+    /**
+     * @return bool
+     */
+    private function isHelpCenterTheme()
+    {
+        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }

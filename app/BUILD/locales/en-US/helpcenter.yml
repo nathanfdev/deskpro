@@ -359,9 +359,14 @@ helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {At 
 helpcenter.forms.error_password_reset_required: 'You have to reset password'
 helpcenter.forms.error_required: 'This value is required'
 helpcenter.forms.error_banned_email: 'Email is banned.'
+helpcenter.forms.label_email: Email
+helpcenter.forms.label_password: Password
+helpcenter.forms.label_password_confirm: Confirm
 helpcenter.forms.label_reset: Reset
 helpcenter.forms.label_save: Save
+helpcenter.forms.label_timezone: Timezone
 helpcenter.forms.message_description: ''
+helpcenter.forms.password_description: ''
 helpcenter.general.add_comment: 'Add a comment'
 helpcenter.general.admin: Admin
 helpcenter.general.admin_home: 'Admin Home'

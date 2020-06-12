@@ -32,8 +32,6 @@ services:
       - "@ticket_layout_factory"
       - "@custom_field_manager"
       - "@brand_aware_settings_resolver"
-      - "@?portal_brand_theme_loader"
-      - "@brand_stack"
 
   tickets.statuses:
     class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService

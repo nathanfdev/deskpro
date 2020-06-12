@@ -556,9 +556,6 @@ class AbstractController extends BaseController
      * Leave language null unless you need a specific lang. The user's lang should already be in the
      * LanguageStack.
      *
-     * If $phrase is an array, then any of these phrase IDs are expected to be suitable, and we will select
-     * the best choice. E.g. if using helpcenter, then we will try to use a helpcenter phrase.
-     *
      * @param string|string[] $phrase
      * @param array    $vars
      * @param Language $lang
@@ -567,20 +564,6 @@ class AbstractController extends BaseController
      */
     protected function phrase($phrase, array $vars = [], Language $lang = null)
     {
-        if (is_array($phrase)) {
-            if ($this->isHelpCenterTheme()) {
-                $phrase = array_filter($phrase, function ($p) {
-                    return strpos($p, 'helpcenter.') === 0;
-                });
-            } else {
-                $phrase = array_filter($phrase, function ($p) {
-                    return strpos($p, 'helpcenter.') !== 0;
-                });
-            }
-
-            $phrase = array_pop($phrase);
-        }
-
         return $this->get('language_manager')->phrase($phrase, $vars, $lang);
     }
 
