@@ -61,8 +61,8 @@ class LanguageManager
         Translate $translate,
         LanguageStack $languageStack,
         EntityManager $em,
-        PortalBrandThemeLoader $portalBrandThemeLoader,
-        BrandStack $brandStack
+        PortalBrandThemeLoader $portalBrandThemeLoader = null,
+        BrandStack $brandStack = null
     ) {
         $this->translate              = $translate;
         $this->languageStack          = $languageStack;
