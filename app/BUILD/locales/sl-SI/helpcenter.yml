@@ -1,12 +1,7 @@
 ---
-helpcenter.account.change_password_action: 'Obnovi geslo'
-helpcenter.account.email_remove_action: 'Odstrani sporočilo'
-helpcenter.account.email_resend_validation_action: 'Ponovno pošlji potrditveno sporočilo'
 helpcenter.account.email_btn_usersource_set: 'Dodaj elektronski naslov'
 helpcenter.account.login_captcha_failed: 'Vnesli ste napačno kodo. Prosimo poskusite ponovno.'
 helpcenter.account.login_email: 'Vaš elektronski naslov'
 helpcenter.account.login_email_placeholder: ime@primer.si
 helpcenter.account.login_external: 'Vpiši se z  zunanjim servisom'
-helpcenter.account.login_reset_password_link: 'Potrebujete opomnik za geslo?'
-helpcenter.account.login_register_action: Registriraj se
 helpcenter.general.log_in: 'Vpiši se'
