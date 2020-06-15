@@ -582,8 +582,14 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         ]);
     }
 
+    /**
+     * @return bool
+     */
     protected function isHelpcenter()
     {
-        return $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($this->get('brand_stack')->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
+        $themeLoader = $this->container->get('portal_brand_theme_loader');
+        $brandStack  = $this->container->get('brand_stack');
+
+        return $themeLoader->getPortalBrandTheme($brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }
