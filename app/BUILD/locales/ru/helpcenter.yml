@@ -1,21 +1,12 @@
 ---
-helpcenter.account.change_password_action: 'Обновить пароль'
 helpcenter.account.comment_lockout: 'Вы оставили слишком много комментариев. Пожалуйста, подождите для того, чтобы оставить другие комментарии.'
-helpcenter.account.email_btn_make_primary: 'Сделать главным'
-helpcenter.account.email_remove_action: 'Удалить email'
-helpcenter.account.email_resend_validation_action: 'Повторно выслать письмо'
 helpcenter.account.email_btn_usersource_set: 'Добавить email'
 helpcenter.account.login_captcha_failed: 'Вы ввели неправильный код. Пожалуйста, попробуйте ещё раз.'
 helpcenter.account.login_email: 'Ваш email'
 helpcenter.account.login_email_placeholder: email@example.ru
 helpcenter.account.login_external: 'Войти с помощью другого сервиса'
 helpcenter.account.login_lockout: 'Вы ввели неправильный логин или пароль слишком много раз. Пожалуйста, попробуйте ещё раз через некоторое время.'
-helpcenter.account.login_reset_password_link: 'Вам нужно напоминание пароля?'
-helpcenter.account.login_register_action: Зарегистрироваться
-helpcenter.account.login_stay_logged_in: 'Остаться в системе'
-helpcenter.account.logout_action: Выйти из системы
 helpcenter.account.new_ticket_no_login: 'Портал CRM отключен. Не удалось отправить билет.'
-helpcenter.account.profile_save_action: 'Сохранить профиль'
 helpcenter.account.profile_delete_picture: 'Изменить или удалить картинку профиля'
 helpcenter.account.registration_set_password: 'Аккаунт, привязанный к такому почтовому адресу уже существует. Мы отправили Вам письмо, которое поможет Вам обновить пароль и зайти на аккаунт.'
 helpcenter.account.reset_password_click_here: 'Нажмите сюда для того, чтобы получить код для восстановления пароля'
@@ -45,24 +36,13 @@ helpcenter.account.submit_saved_form_go: 'Пожалуйста, нажмите �
 helpcenter.account.tickets_lockout: 'Вы создали слишком много обращений. Вам необходимо будет подождать некоторое время перед тем, как Вы сможете создать новое обращение.'
 helpcenter.account.usersource_set_email_desc: 'Перед тем как Вы войдете в систему, нам необходим Ваш email. Пожалуйста, введите Ваш электронный адрес, чтобы мы могли отправить Вам письмо с подтверждением.'
 helpcenter.account.your_pending_email_addresses: 'Электронные адреса, находящиеся на рассмотрении'
-helpcenter.articles.published_label: Опубликованный
 helpcenter.articles.section_title: База знаний
-helpcenter.articles.view_as_agent: 'Вы можете увидеть эту страницу, потому что вы агент. Пользователи не смогут просматривать эту страницу.'
-helpcenter.messenger.date_label: Дата
-helpcenter.messenger.total_chat_time_label: 'Суммарное время диалога'
-helpcenter.messenger.linked_ticket_label: 'Назначен на запрос'
-helpcenter.messenger.view_linked_ticket_action: 'Посмотреть обращение'
-helpcenter.community.like_action: 'Я согласен/-на'
 helpcenter.community.error_login: 'Пожалуйста, войдите в систему'
-helpcenter.general.name: Имя
 helpcenter.community.form_topic_title: Заголовок
 helpcenter.community.no_matching: 'Нет подходящих отзывов'
 helpcenter.community.rate_forbidden: 'Вы не можете проголосовать'
 helpcenter.community.section_title: Предложения
 helpcenter.direct_messages.reply_message: Сообщение
-helpcenter.downloads.download_action: Загрузить
-helpcenter.downloads.no_files: 'Нет загруженных файлов'
-helpcenter.downloads.uploaded_on: Загружено
 helpcenter.emails.chat_transcript: 'Благодарим Ваc за общение с нами. Предоставляем Вам копию диалога.'
 helpcenter.emails.chat_transcript_subject: 'История чата'
 helpcenter.emails.comment_approved: 'Ваш комментарий опубликован.'
@@ -121,35 +101,11 @@ helpcenter.error.404_desc: 'Приносим свои извинения, но �
 helpcenter.error.404_title: 'Не найдено'
 helpcenter.error.general_title: 'Произошла ошибка'
 helpcenter.error.permission_denied_title: 'Данное действие запрещено'
-helpcenter.flashes.article_cat_subscribe: 'Вы подписались на данную тему. К Вам придет оповещение при появлении новых статей.'
-helpcenter.flashes.article_cat_unsubscribe: 'Вы успешно отписались от данной темы.'
-helpcenter.flashes.article_subscribe: 'Вы подписались на данную статью. К Вам придет оповещение при появлении новых комментариев или при обновлении статьи.'
 helpcenter.flashes.article_unsubscribe: 'Вы успешно отменили подписку на эту статью.'
-helpcenter.flashes.article_unsubscribe_everything: 'Вы отписались от всех статей в базе знаний'
-helpcenter.flashes.community_subscribe: 'Вы подписались на обновления этого отзыва. Вам придет оповещение при появлении новых комментариев.'
-helpcenter.flashes.community_unsubscribe: 'Вы отписались от данного отзыва.'
-helpcenter.flashes.community_unsubscribe_everything: 'Вы отписались от всех извещений об отзывах'
-helpcenter.flashes.download_cat_subscribe: 'Вы подписались на данную статью. К Вам придет оповещение при появлении новых файлов для скачивания.'
-helpcenter.flashes.download_subscribe: 'Вы подписались на данную загрузку. К Вам придет оповещение при её обновлении или при появлении новых комментариев.'
-helpcenter.flashes.download_unsubscribe: 'Вы отписались от данной загрузки.'
-helpcenter.flashes.download_unsubscribe_everything: 'Вы отписались от всех извещений о загрузках'
 helpcenter.flashes.guest_content_must_verify: 'Для того, чтобы разместить Ваш материал нам необходимо, чтобы Вы подтвердили свой email. Пожалуйста, проверьте Вашу почту. Мы отправили Вам ссылку для подтверждения.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Для того, чтобы принять Ваш запрос нам необходимо, чтобы Вы подтвердили свой email. Пожалуйста, проверьте Вашу почту. Мы отправили Вам ссылку для подтверждения.'
-helpcenter.flashes.new_community_topic_awaiting_review: 'Спасибо за Ваш отзыв. Он станет доступен для всеобщего просмотра после подтверждения агентом.'
-helpcenter.flashes.new_community_topic_posted: 'Спасибо за Ваш отзыв. '
-helpcenter.flashes.news_cat_subscribe: 'Вы подписались на данную тему. К Вам придет оповещение при появлении новых статей.'
-helpcenter.flashes.news_subscribe: 'Вы подписались на данную статью. К Вам придет оповещение при появлении новых комментариев.'
-helpcenter.flashes.news_unsubscribe: 'Вы отписались от данной статьи.'
-helpcenter.flashes.news_unsubscribe_everything: 'Вы отписались от всех новостей.'
-helpcenter.flashes.ticket_created: 'Ваше обращение было принято.'
-helpcenter.flashes.ticket_feedback_thank_you: 'Спасибо Вам за Ваш отзыв!'
 helpcenter.flashes.ticket_participant_already_error: 'Человек, которого вы пытались добавить в качестве участника, уже является участником этого билета.'
-helpcenter.flashes.ticket_participant_email_error: 'Введите действительный адрес электронной почты для своего участника и повторите попытку.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'При попытке удалить участника была проблема. Пожалуйста, попробуйте еще раз.'
-helpcenter.flashes.ticket_re_opened: 'Вы переоткрыли обращение.'
-helpcenter.flashes.ticket_replied: 'Ваш ответ был принят. Спасибо!'
-helpcenter.flashes.ticket_resolved: 'Ваше обращение теперь отмечено, как "решенное". Спасибо.'
-helpcenter.flashes.ticket_updated: 'Ваше обращение было обновлено. Спасибо!'
 helpcenter.flashes.user_add_email_verified: 'Ваш email был привязан к аккаунту.'
 helpcenter.flashes.user_add_email_verify: 'Вам необходимо подтвердить email перед добавлением. Пожалуйста, проверьте Вашу почту. Мы отправили Вам ссылку для подтверждения.'
 helpcenter.flashes.user_changed_primary_email: 'Ваш основной email был изменен.'
@@ -167,37 +123,28 @@ helpcenter.general.admin: Админ
 helpcenter.general.admin_home: 'Страница Администрации'
 helpcenter.general.agent: Агент
 helpcenter.general.agent_bar_admin_community: 'Обратная связь'
-helpcenter.general.agent_bar_admin_dl: 'Параметры загрузки'
 helpcenter.general.agent_bar_admin_kb: 'Параметры базы знаний'
 helpcenter.general.agent_bar_admin_lang: 'Языковые настройки'
 helpcenter.general.agent_bar_admin_news: 'Настройки новостей'
 helpcenter.general.agent_bar_agent_community: 'Управлять отзывами'
-helpcenter.general.agent_bar_agent_dl: 'Управлять Загруженными файлами'
 helpcenter.general.agent_bar_agent_home: 'Страница агента'
 helpcenter.general.agent_bar_agent_kb: 'Управлять базой знаний'
 helpcenter.general.agent_bar_agent_news: 'Управлять новостями'
 helpcenter.general.agents: Агенты
 helpcenter.general.attachments: Приложение
-helpcenter.general.cancel_action: Отмена
-helpcenter.general.subscribe_action: Подписаться
 helpcenter.general.category: Пользовательский канал
 helpcenter.general.chat: Чат
-helpcenter.general.comment_btn_save: 'Сохранить комментарий'
 helpcenter.general.comments: Комментарии
-helpcenter.general.comments_pending_validation: 'Этот комментарий редактируется. В скором времени он будет доступен для просмотра.'
 helpcenter.general.department: Отдел
-helpcenter.general.files_type: Загрузки
 helpcenter.general.drag_and_drop: 'Перетащите'
 helpcenter.general.email_address: 'Email'
 helpcenter.general.everything: Всё
 helpcenter.general.form_choose_file: 'выбрать файл'
 helpcenter.general.form_choose_files: 'Выберите файлы'
-helpcenter.general.go_action: Продолжить
 helpcenter.general.impersonation_mode: 'Анонимный режим'
 helpcenter.general.label_search_enter_label: 'Пожалуйста, предоставьте обозначение для того, чтобы начать поиск'
 helpcenter.general.last_activity: 'Последняя активность'
 helpcenter.general.log_in: 'Войти'
-helpcenter.general.nav_downloads_desc: 'Отобразить Ваши загрузки'
 helpcenter.general.nav_guides: руководства
 helpcenter.general.no_search_query: 'Пожалуйста, введите необходимое Вам слово в окно поиска.'
 helpcenter.general.password: Пароль
@@ -212,7 +159,6 @@ helpcenter.general.prop_rating_asc: 'Начать с последних в ре�
 helpcenter.general.prop_rating_desc: 'Начать с первых в рейтинге'
 helpcenter.general.prop_views_asc: 'Начать с наименее просматриваемых'
 helpcenter.general.prop_views_desc: 'Начать с наиболее просматриваемых'
-helpcenter.general.rate_page: 'Оценить качество этой страницы'
 helpcenter.general.rate_page_positive: Полезно
 helpcenter.general.rerender_form: 'Пожалуйста, проверьте перед тем, как подтвердить.'
 helpcenter.general.share: Поделиться
@@ -222,7 +168,6 @@ helpcenter.general.tags: Отметки
 helpcenter.general.updated: ОБНОВЛЕНО
 helpcenter.general.user: Пользователь
 helpcenter.general.you: Вы
-helpcenter.general.download_pdf: 'Загрузить PDF'
 helpcenter.members.language: Язык
 helpcenter.members.timezone: Часовой пояс
 helpcenter.messenger.blocks_continue_chat_link: Продолжить
@@ -241,7 +186,7 @@ helpcenter.messenger.chat_end_block_buttons_yes: 'Да'
 helpcenter.messenger.chat_end_block_question_header: 'Закончить чат?'
 helpcenter.messenger.chat_ended: 'Разговор завершен'
 helpcenter.messenger.chat_header_title: 'Беседа с {department}'
-helpcenter.messenger.chat_no_agent_online: 'Мы сожалеем, но в данный момент никто не может ответить вам.'
+helpcenter.messenger.chat_no_agent_online: 'Мы сожалеем, но нет в данный момент никто не может ответить вам.'
 helpcenter.messenger.chat_rating_block_buttons_helpful: Полезно
 helpcenter.messenger.chat_rating_block_buttons_unhelpful: Бесползено
 helpcenter.messenger.chat_rating_block_question_header: 'Оцените Вашу беседу с {name}'
@@ -289,12 +234,10 @@ helpcenter.tickets.list_date_created: 'Дата создания'
 helpcenter.tickets.list_date_last_agent: 'Последний ответ агента'
 helpcenter.tickets.list_date_last_user: 'Последний ответ пользователя'
 helpcenter.tickets.list_last_action: 'Последнее действие'
-helpcenter.tickets.list_status_agent: 'Наш агент Вам ответит'
 helpcenter.tickets.list_status_resolved: Разобрано
 helpcenter.tickets.list_status_user: 'Вам необходимо ответить'
 helpcenter.tickets.list_subject: Тема
 helpcenter.tickets.list_ticket_ref: Справка
-helpcenter.tickets.mark_unresolved: 'Переоткрыть обращение'
 helpcenter.tickets.need_login_title: 'Вам необходимо зайти в систему для того, чтобы открыть обращение'
 helpcenter.tickets.new_intro: 'Пожалуйста, заполните эту форму, и один из наших специалистов свяжется с Вами по электронной почте в ближайшее время'
 helpcenter.tickets.new_section_title: 'Обратная связь'
@@ -303,16 +246,13 @@ helpcenter.tickets.no_participants: 'Нет участников'
 helpcenter.tickets.not_allowed_desc: 'К сожалению, на данный момент нет агентов, которые могли бы ответить на Ваше обращение'
 helpcenter.tickets.not_allowed_title: 'Мы скоро вернемся'
 helpcenter.tickets.please_login_to_reply: 'Войдите в систему, чтобы ответить.'
-helpcenter.tickets.rate_negative: 'Неудовлетворительно'
 helpcenter.tickets.rate_positive: 'Отлично'
 helpcenter.tickets.rate_question: 'Как бы Вы оценили помощь, полученную от нашей службы поддержки клиентов?'
 helpcenter.tickets.rate_support: 'Оцените нашу службу поддержки клиентов'
-helpcenter.tickets.resolve_my_ticket_action: 'Закрыть заявку'
 helpcenter.tickets.switched_department_rerender: 'Структура данной анкеты могла измениться. Пожалуйста, проверьте анкету и подтвердите её ещё раз.'
 helpcenter.tickets.thank_you_check_email: 'Пожалуйста, проверьте Ваш адрес электронной почты'
 helpcenter.tickets.thank_you_check_email_desc: 'Для того, чтобы завершить создание обращения, Вам необходимо проверить Вашу почту. Пожалуйста, перейдите по ссылке, которую Вам прислали.'
 helpcenter.tickets.timeline_marked: 'пометить это обращение:'
-helpcenter.tickets.timeline_re_opened: 'переоткрыл обращение'
 helpcenter.tickets.view_btn_add_to_ticket: 'Добавить к обращению'
 helpcenter.tickets.view_btn_edit: Редактировать
 helpcenter.tickets.view_btn_edit_full: 'Изменить обращение'
