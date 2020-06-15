@@ -1,17 +1,8 @@
 ---
-helpcenter.account.change_password_action: 'Päivitä salasana'
-helpcenter.account.email_btn_make_primary: 'Muuta pääasialliseksi'
-helpcenter.account.email_remove_action: 'Poista sähköpostiosoite'
-helpcenter.account.email_resend_validation_action: 'Lähetä vahvistussähköposti uudelleen'
 helpcenter.account.email_btn_usersource_set: 'Lisää sähköpostiosoite'
 helpcenter.account.login_captcha_failed: 'CAPTCHAn kaikki merkit eivät olleet oikein. Yritä uudelleen.'
 helpcenter.account.login_email: 'Sähköpostiosoitteesi'
 helpcenter.account.login_lockout: 'Olet yrittänyt kirjautua sisään väärillä tiedoilla liian monta kertaa. Yritä uudelleen myöhemmin.'
-helpcenter.account.login_reset_password_link: 'Tarvitsetko salasanan muistutuksen?'
-helpcenter.account.login_register_action: Rekisteröidy
-helpcenter.account.login_stay_logged_in: 'Pysy kirjautuneena?'
-helpcenter.account.logout_action: Kirjaudu ulos
-helpcenter.account.profile_save_action: 'Tallenna profiili'
 helpcenter.account.reset_password_click_here: 'Klikkaa tästä saadaksesi salasanan vaihtokoodin'
 helpcenter.account.reset_password_invalid_desc: 'Salasananvaihtokoodi on väärä tai vanhentunut. Hae uusi koodi vaihtaaksesi salasanan.'
 helpcenter.account.reset_password_invalid_input: 'Sähköpostiosoite tai käyttäjätunnus'
@@ -20,14 +11,9 @@ helpcenter.account.reset_password_sent_to: 'Lähetimme sähköpostin seuraavaan 
 helpcenter.account.section_desc_login: 'Onko teillä jo tili? Kirjautukaa alta.'
 helpcenter.account.set_password_success: 'Salasanasi on päivitetty'
 helpcenter.articles.section_title: Ohjeet
-helpcenter.articles.view_as_agent: 'Näet tämän sivun koska olet asiantuntijamme. Peruskäyttäjät eivät näe tätä sivua.'
-helpcenter.messenger.view_linked_ticket_action: 'Näytä palvelupyyntö'
-helpcenter.community.like_action: 'Samaa mieltä'
-helpcenter.general.name: Nimesi
 helpcenter.community.form_topic_title: Aihe
 helpcenter.community.section_title: Palaute
 helpcenter.direct_messages.reply_message: Viesti
-helpcenter.downloads.download_action: Lataa
 helpcenter.emails.chat_transcript: 'Kiitos keskustelusta kanssamme. Tässä kopio keskustelustamme.'
 helpcenter.emails.chat_transcript_subject: 'Keskustelu kopio'
 helpcenter.emails.comment_approved: 'Kommenttisi on julkaistu.'
@@ -67,17 +53,12 @@ helpcenter.forms.label_save: Tallenna
 helpcenter.general.add_comment: 'Lisää kommentti'
 helpcenter.general.agent: Asiantuntija
 helpcenter.general.attachments: Liitetiedostot
-helpcenter.general.cancel_action: Peruuta
-helpcenter.general.files_type: Lataukset
 helpcenter.general.everything: Kaikki
-helpcenter.general.go_action: Mene
 helpcenter.general.log_in: 'Kirjaudu'
-helpcenter.general.nav_downloads_desc: 'Selaa latauksiamme'
 helpcenter.general.password: Salasana
 helpcenter.general.rate_page_positive: Hyödyllinen
 helpcenter.general.show: Näytä
 helpcenter.general.you: Sinä
-helpcenter.general.download_pdf: 'Lataa PDF'
 helpcenter.members.language: Kieli
 helpcenter.members.timezone: Aikavyöhyke
 helpcenter.news.view_as_agent: 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.'
@@ -90,9 +71,7 @@ helpcenter.tickets.list_status_resolved: Päätetty
 helpcenter.tickets.list_subject: Aihe
 helpcenter.tickets.new_intro: 'Täytä lomake niin otamme mahdollisimman pian yhteyttä.'
 helpcenter.tickets.new_section_title: 'Ota yhteyttä'
-helpcenter.tickets.rate_negative: 'Se ei ollut hyvä'
 helpcenter.tickets.rate_positive: 'Se oli loistava'
 helpcenter.tickets.rate_question: 'Miten arvioisit tuen jota sait?'
 helpcenter.tickets.rate_support: 'Arvioi tuki'
-helpcenter.tickets.resolve_my_ticket_action: 'Päätä kutsuni'
 helpcenter.tickets.view_btn_edit: Muokkaa
