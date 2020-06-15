@@ -1,20 +1,11 @@
 ---
-helpcenter.account.change_password_action: 'Uppdatera lösenordet'
 helpcenter.account.comment_lockout: 'Du har postat för många kommentarer. Var vänligen vänta en stund.'
-helpcenter.account.email_btn_make_primary: 'Gör till primär'
-helpcenter.account.email_remove_action: 'Ta bort e-postadress'
-helpcenter.account.email_resend_validation_action: 'Skicka valideringsmailet igen'
 helpcenter.account.email_btn_usersource_set: 'Lägg till e-postadress'
 helpcenter.account.login_captcha_failed: 'Du har skrivit en felaktig CAPTCHA kod. Var vänlig och försök igen.'
 helpcenter.account.login_email: 'Din e-postadress'
 helpcenter.account.login_external: 'Logga in med en extern tjänst'
 helpcenter.account.login_lockout: 'Du har misslyckats med din inloggning för många gånger. Ditt konto har spärrats. Var vänlig försök igen senare.'
-helpcenter.account.login_reset_password_link: 'Behöver du en lösenordspåminnelse?'
-helpcenter.account.login_register_action: Registrera
-helpcenter.account.login_stay_logged_in: 'Förbli inloggad?'
-helpcenter.account.logout_action: Logga ut
 helpcenter.account.new_ticket_no_login: 'Portal CRM är inaktiverad. Kan inte skicka in en biljett.'
-helpcenter.account.profile_save_action: 'Spara profil'
 helpcenter.account.profile_delete_picture: 'Ändra eller radera profilbilden?'
 helpcenter.account.registration_set_password: 'Ett konto med denna e-postadress finns redan. Vi har skickat dig ett e-postmeddelande som gör att du kan återställa ditt lösenord.'
 helpcenter.account.reset_password_click_here: 'Klicka här för att begära en återställningskod'
@@ -44,23 +35,12 @@ helpcenter.account.submit_saved_form_go: 'Klicka här för att skicka formuläre
 helpcenter.account.tickets_lockout: 'Du har registrerat för många ärenden. Ditt konto har spärrats. Var vänlig och försök igen senare.'
 helpcenter.account.usersource_set_email_desc: 'Innan du kan logga in så behöver vi din e-postadress. Ange din e-postadress här nedan så skickar vi dig ett aktiveringsmail.'
 helpcenter.account.your_pending_email_addresses: 'Dina väntande e-postadresser'
-helpcenter.articles.published_label: Publicerad
 helpcenter.articles.section_title: Kunskapsbas
-helpcenter.articles.view_as_agent: 'Du kan se denna sida för att du är en agent. Användare kommer inte att kunna se denna sida.'
-helpcenter.messenger.date_label: Datum
-helpcenter.messenger.total_chat_time_label: 'Total chattid'
-helpcenter.messenger.linked_ticket_label: 'Tilldelad till ärendet'
-helpcenter.messenger.view_linked_ticket_action: 'Visa ärende'
-helpcenter.community.like_action: 'Jag håller med'
 helpcenter.community.error_login: 'Vänligen logga in.'
-helpcenter.general.name: Namn
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Ingen matchande community topic'
 helpcenter.community.rate_forbidden: 'Du har inte behörighet att rösta'
 helpcenter.direct_messages.reply_message: Meddelande
-helpcenter.downloads.download_action: Ladda ner
-helpcenter.downloads.no_files: 'Inga nedladdningar finns tillgängliga'
-helpcenter.downloads.uploaded_on: Uppladdad
 helpcenter.emails.chat_transcript: 'Tack för att du chattade med oss. Här är en utskrift av chatten.'
 helpcenter.emails.chat_transcript_subject: 'Chatlogg'
 helpcenter.emails.comment_approved: 'Din kommentar har blivit publicerad.'
@@ -119,35 +99,11 @@ helpcenter.error.404_desc: 'Tyvärr, sidan kan inte hittas.'
 helpcenter.error.404_title: 'Hittades Inte'
 helpcenter.error.general_title: 'Ett fel inträffade'
 helpcenter.error.permission_denied_title: 'Du är inte tillåten att göra detta'
-helpcenter.flashes.article_cat_subscribe: 'Du prenumererar nu på denna kategori. Du kommer att få en notis när nytt innehåll postas.'
-helpcenter.flashes.article_cat_unsubscribe: 'Du har sagt upp prenumerationen på denna kategori.'
-helpcenter.flashes.article_subscribe: 'Du prenumererar nu på denna artikel. Du kommer att få en notis när innehållet uppdateras eller när en ny kommentar postas.'
 helpcenter.flashes.article_unsubscribe: 'Du har sagt upp prenumerationen på denna artikel.'
-helpcenter.flashes.article_unsubscribe_everything: 'Du har sagt upp prenumerationen på alla notifieringar från kunskapsdatabasen.'
-helpcenter.flashes.community_subscribe: 'Du prenumererar nu på denna community topic. Du kommer att få en notis när innehållet uppdateras eller när en ny kommentar postas.'
-helpcenter.flashes.community_unsubscribe: 'Du har sagt upp prenumerationen på denna community topic.'
-helpcenter.flashes.community_unsubscribe_everything: 'Du har sagt upp prenumerationen på alla community topicnotiser.'
-helpcenter.flashes.download_cat_subscribe: 'Du prenumererar nu på denna kategori. Du kommer att få notiser när nya filer finns tillgängliga för nedladdning.'
-helpcenter.flashes.download_subscribe: 'Du prenumererar nu på denna nedladdning. Du kommer att få en notis när innehållet uppdateras eller när en ny kommentar postas.'
-helpcenter.flashes.download_unsubscribe: 'Du har sagt upp prenumerationen på denna nedladdning.'
-helpcenter.flashes.download_unsubscribe_everything: 'Du har sagt upp prenumerationen på alla nedladdningsnotiser.'
 helpcenter.flashes.guest_content_must_verify: 'Innan ditt innehåll kan postas måste du verifiera din e-postadress. Var vänlig och kontrollera din inkorg. Vi har skickat dig en verifieringslänk.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Innan ditt ärende kan registreras måste du verifiera din e-postadress. Var vänlig och kontrollera din inkorg. Vi har skickat dig en verifieringslänk.'
-helpcenter.flashes.new_community_topic_awaiting_review: 'Tack för din community topic! Den kommer att visas på vår supportportal efter att en agent har godkänt den.'
-helpcenter.flashes.new_community_topic_posted: 'Tack för din community topic.'
-helpcenter.flashes.news_cat_subscribe: 'Du prenumererar nu på denna kategori. Du kommer att få en notis när nytt innehåll postas.'
-helpcenter.flashes.news_subscribe: 'Du prenumerar nu på denna nyhetsartikel. Du kommer att få en notis när innehållet uppdateras eller när en ny kommentar postas.'
-helpcenter.flashes.news_unsubscribe: 'Du har sagt upp prenumerationen på denna nyhetsartikel.'
-helpcenter.flashes.news_unsubscribe_everything: 'Du har sagt upp prenumerationen på alla nyhetsartiklar.'
-helpcenter.flashes.ticket_created: 'Ditt ärende har registrerats!'
-helpcenter.flashes.ticket_feedback_thank_you: 'Tack för din feedback!'
 helpcenter.flashes.ticket_participant_already_error: 'Den person du försökte lägga till som deltagare är redan deltagare på denna biljett.'
-helpcenter.flashes.ticket_participant_email_error: 'Ange ett giltigt e-postmeddelande till din deltagare och försök igen.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Ett problem uppstod när du försökte ta bort din deltagare. Var god försök igen.'
-helpcenter.flashes.ticket_re_opened: 'Du har öppnat ärendet på nytt.'
-helpcenter.flashes.ticket_replied: 'Ditt svar har skickats. Tack!'
-helpcenter.flashes.ticket_resolved: 'Ditt ärende är nu markerat som löst. Tack!'
-helpcenter.flashes.ticket_updated: 'Ditt ärendet har uppdaterats. Tack!'
 helpcenter.flashes.user_add_email_verified: 'Din e-postadress har blivit tillagd till ditt konto.'
 helpcenter.flashes.user_add_email_verify: 'Vi måste verifiera din e-postadress innan vi lägger till den till ditt konto. Var vänlig och kontrollera din inkorg efter en verifieringslänk.'
 helpcenter.flashes.user_changed_primary_email: 'Din primära e-postadress har blivit ändrad.'
@@ -163,32 +119,23 @@ helpcenter.forms.label_save: Spara
 helpcenter.general.add_comment: 'Posta en kommentar'
 helpcenter.general.admin_home: 'Admin hem'
 helpcenter.general.agent_bar_admin_community: 'Feedbackinställningar'
-helpcenter.general.agent_bar_admin_dl: 'Nedladdningsinställningar'
 helpcenter.general.agent_bar_admin_kb: 'Kunskapsbasinställningar'
 helpcenter.general.agent_bar_admin_lang: 'Språkinställningar'
 helpcenter.general.agent_bar_admin_news: 'Nyhetsinställningar'
 helpcenter.general.agent_bar_agent_community: 'Hantera community topic'
-helpcenter.general.agent_bar_agent_dl: 'Hantera nedladdningar'
 helpcenter.general.agent_bar_agent_home: 'Agent hem'
 helpcenter.general.agent_bar_agent_kb: 'Hantera kunskapsbas'
 helpcenter.general.agent_bar_agent_news: 'Hantera nyheter'
 helpcenter.general.agents: Agenter
 helpcenter.general.attachments: Bifogade filer
-helpcenter.general.cancel_action: Avbryt
-helpcenter.general.subscribe_action: Prenumerera
 helpcenter.general.chat: Chatt
-helpcenter.general.comment_btn_save: 'Spara kommentar'
 helpcenter.general.comments: Kommentarer
-helpcenter.general.comments_pending_validation: 'Den här kommentaren granskas. Den kommer snart att visas.'
-helpcenter.general.files_type: Nedladdningar
 helpcenter.general.email_address: 'E-post'
 helpcenter.general.everything: Allt
-helpcenter.general.go_action: Kör
 helpcenter.general.impersonation_mode: 'Personifieringsläge'
 helpcenter.general.label_search_enter_label: 'Vänligen ange en etikett att söka efter'
 helpcenter.general.last_activity: 'Senaste aktiviteten'
 helpcenter.general.log_in: 'Logga in'
-helpcenter.general.nav_downloads_desc: 'Bläddra bland våra nedladdningar'
 helpcenter.general.nav_guides: Guider
 helpcenter.general.no_search_query: 'Vänligen skriv en söksträng i sökrutan'
 helpcenter.general.password: Lösenord
@@ -203,7 +150,6 @@ helpcenter.general.prop_rating_asc: 'Lägst rankade först'
 helpcenter.general.prop_rating_desc: 'Högst rankade först'
 helpcenter.general.prop_views_asc: 'Minst visade först'
 helpcenter.general.prop_views_desc: 'Mest visade först'
-helpcenter.general.rate_page: 'Betygsätt kvalitén på denna sidan'
 helpcenter.general.rate_page_positive: Hjälpfull
 helpcenter.general.rerender_form: 'Vänligen läs igenom det här formuläret innan du skickar det.'
 helpcenter.general.share: Dela
@@ -213,7 +159,6 @@ helpcenter.general.tags: Taggar
 helpcenter.general.updated: Uppdaterad
 helpcenter.general.user: Användare
 helpcenter.general.you: Du
-helpcenter.general.download_pdf: 'Ladda ned PDF'
 helpcenter.members.language: Språk
 helpcenter.members.timezone: Tidszon
 helpcenter.news.none: 'Det finns inga nyheter ännu'
@@ -229,12 +174,10 @@ helpcenter.tickets.list_date_created: 'Skapad'
 helpcenter.tickets.list_date_last_agent: 'Senaste svar från agent'
 helpcenter.tickets.list_date_last_user: 'Senaste svar från användare'
 helpcenter.tickets.list_last_action: 'Senaste åtgärd'
-helpcenter.tickets.list_status_agent: 'Vår agent kommet att svara'
 helpcenter.tickets.list_status_resolved: Löst
 helpcenter.tickets.list_status_user: 'Du måste besvara'
 helpcenter.tickets.list_subject: Ämne
 helpcenter.tickets.list_ticket_ref: Referens
-helpcenter.tickets.mark_unresolved: 'Öppna ärendet igen'
 helpcenter.tickets.need_login_title: 'Du måste logga in för att registrera ett ärende'
 helpcenter.tickets.new_intro: 'Fyll i formuläret så kommer en agent att kontakta dig så fort som möjligt.'
 helpcenter.tickets.new_section_title: 'Kontakta oss'
@@ -243,16 +186,13 @@ helpcenter.tickets.no_participants: 'Inga deltagare'
 helpcenter.tickets.not_allowed_desc: 'Tyvärr, våra agenter kan inte ta din chatt just nu'
 helpcenter.tickets.not_allowed_title: 'Vi är strax tillbaka'
 helpcenter.tickets.please_login_to_reply: 'Logga in för att svara.'
-helpcenter.tickets.rate_negative: 'Den var dålig'
 helpcenter.tickets.rate_positive: 'Den var bra'
 helpcenter.tickets.rate_question: 'Hur skulle du betygsätta den support du fick?'
 helpcenter.tickets.rate_support: 'Betygsätt din support'
-helpcenter.tickets.resolve_my_ticket_action: 'Markera som löst'
 helpcenter.tickets.switched_department_rerender: 'Strukturen för det här formuläret har ändrats. Läs igenom formuläret igen.'
 helpcenter.tickets.thank_you_check_email: 'Vänligen bekräfta din e-postadress'
 helpcenter.tickets.thank_you_check_email_desc: 'För att registrera ditt ärende måste du först klicka på länken i det mail som vi har skickat till dig.'
 helpcenter.tickets.timeline_marked: 'markerade ärendet som:'
-helpcenter.tickets.timeline_re_opened: 'återupptog det här ärendet'
 helpcenter.tickets.view_btn_add_to_ticket: 'Lägg till i ärendet'
 helpcenter.tickets.view_btn_edit: Redigera
 helpcenter.tickets.view_btn_edit_full: 'Redigera det här ärendet'
