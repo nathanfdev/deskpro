@@ -1,20 +1,23 @@
 ---
-helpcenter.account.change_password_action: 'Mise à jour du mot de passe'
+helpcenter.account.add: Ajouter
+helpcenter.account.change_password_action: 'Mettre à jour le mot de passe'
 helpcenter.account.comment_lockout: 'Vous avez soumis un grand nombre de commentaires. Veuillez patienter avant d''en soumettre d''autres.'
-helpcenter.account.email_btn_make_primary: 'Rendre principale'
-helpcenter.account.email_remove_action: 'Supprimer l''adresse'
-helpcenter.account.email_resend_validation_action: 'Renvoyer l''email d''activation'
 helpcenter.account.email_btn_usersource_set: 'Ajouter une adresse email'
+helpcenter.account.email_make_primary_action: 'Rendre principale'
+helpcenter.account.email_primary_description: Principale
+helpcenter.account.email_remove_action: 'Supprimer l''adresse'
+helpcenter.account.lockout_time: 'Vous pouvez essayer à nouveau dans {minutes} minutes.'
 helpcenter.account.login_captcha_failed: 'Le code CAPTCHA saisi est incorrect. Veuillez réessayer.'
 helpcenter.account.login_email: 'Votre email'
+helpcenter.account.login_email_placeholder: email@exemple.com
 helpcenter.account.login_external: 'Connexion avec un service externe'
 helpcenter.account.login_lockout: 'Vous avez été bloqué en raison d''un trop grand nombre d''échecs de connexion. Veuillez réessayer plus tard.'
-helpcenter.account.login_reset_password_link: 'Mot de passe oublié ?'
+helpcenter.account.login_password: 'Votre mot de passe'
 helpcenter.account.login_register_action: S'inscrire
-helpcenter.account.login_stay_logged_in: 'Rester connecté ?'
-helpcenter.account.logout_action: Déconnexion
+helpcenter.account.login_register_header: 'Créer un compte'
+helpcenter.account.login_reset_password_link: 'Mot de passe oublié ?'
+helpcenter.account.logout_action: Se déconnecter
 helpcenter.account.new_ticket_no_login: 'Le portail CRM est désactivé. Impossible de soumettre un ticket.'
-helpcenter.account.profile_save_action: 'Enregistrer le profil'
 helpcenter.account.profile_delete_picture: 'Modifier ou supprimer la photo de profil ?'
 helpcenter.account.registration_set_password: 'Un compte avec cette adresse email existe déjà. Nous vous avons envoyé un email pour vous permettre de définir un mot de passe et un nom d''utilisateur.'
 helpcenter.account.reset_password_click_here: 'Cliquez ici pour demander un code de réinitialisation du mot de passe'
@@ -44,22 +47,36 @@ helpcenter.account.submit_saved_form_go: 'Cliquez ici pour soumettre le formulai
 helpcenter.account.tickets_lockout: 'Vous avez soumis un trop grand nombre de tickets donc vous avez été bloqué. Veuillez réessayer plus tard.'
 helpcenter.account.usersource_set_email_desc: 'Pour vous identifier, nous avons besoin de votre adresse email. Veuillez entrer votre adresse email ci-dessous pour que nous puissions vous envoyer un email de vérification.'
 helpcenter.account.your_pending_email_addresses: 'Vos adresses email en attente'
-helpcenter.articles.published_label: Publié
+helpcenter.approvals.list_column_agent: 'Agent'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: 'Sujet'
+helpcenter.approvals.list_column_user: 'Utilisateur'
+helpcenter.approvals.list_column_your_vote: 'Votre Vote'
 helpcenter.articles.section_title: Base de connaissances
-helpcenter.articles.view_as_agent: 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs ne peuvent pas voir cette page.'
-helpcenter.messenger.total_chat_time_label: 'Durée totale du chat'
-helpcenter.messenger.linked_ticket_label: 'Lié au ticket'
-helpcenter.messenger.view_linked_ticket_action: 'Voir le ticket'
-helpcenter.community.like_action: 'Je suis d''accord'
+helpcenter.articles.view_x_articles: 'Voir tous les articles dans {category}'
+helpcenter.community.activity_commented: 'J''ai commenté'
+helpcenter.community.activity_created: 'J''ai créé'
+helpcenter.community.activity_voted: 'J''ai voté'
+helpcenter.community.create_topic_full: 'Créer {forum}'
 helpcenter.community.error_login: 'Veuillez vous connecter'
-helpcenter.general.name: Nom
+helpcenter.community.filters: Filtres
+helpcenter.community.form_add_attachments: 'Ajouter des fichiers'
+helpcenter.community.form_description: Description
 helpcenter.community.form_topic_title: Titre
 helpcenter.community.no_matching: 'Aucun commentaire correspondant'
 helpcenter.community.rate_forbidden: 'Vous n''êtes pas autorisé à voter'
 helpcenter.community.section_title: Remarques
-helpcenter.downloads.download_action: Télécharger
-helpcenter.downloads.no_files: 'Pas encore de téléchargements'
-helpcenter.downloads.uploaded_on: Téléchargé
+helpcenter.community.title: Titre
+helpcenter.direct_messages.reply_message: Message
+helpcenter.direct_messages.reply_send_message: 'Envoyer Message'
+helpcenter.direct_messages.title: 'Mes Messages'
+helpcenter.duration_short.days: J
+helpcenter.duration_short.hours: h
+helpcenter.duration_short.minutes: m
+helpcenter.duration_short.months: M
+helpcenter.duration_short.seconds: s
+helpcenter.duration_short.weeks: S
+helpcenter.duration_short.years: 'A'
 helpcenter.emails.chat_transcript: 'Nous vous remercions pour cet échange. Voici une transcription du Chat.'
 helpcenter.emails.chat_transcript_subject: 'Relevé du Chat'
 helpcenter.emails.comment_approved: 'Votre commentaire a été publié.'
@@ -96,14 +113,16 @@ helpcenter.emails.password_set: 'Pour définir un mot de passe, cliquez sur le l
 helpcenter.emails.profile_email_link_validate: 'Cliquez simplement sur le lien suivant pour valider votre adresse email.'
 helpcenter.emails.profile_email_primary_confirm: 'Pour valider votre adresse email principale, veuillez cliquer sur le lien suivant'
 helpcenter.emails.ratelimit_submit_online: 'S''il s''agit d''une erreur et que vous souhaitez nous contacter immédiatement, vous pouvez passer outre ce filtre sur vos emails et soumettre un ticket en ligne :'
-helpcenter.emails.register_welcome_byagent_subject: 'Votre nouveau compte sur le helpdesk'
+helpcenter.emails.register_welcome_byagent_subject: 'Votre nouveau compte sur le site d''assistance'
 helpcenter.emails.register_welcome_subject: 'Merci pour votre inscription'
 helpcenter.emails.reject_resolved: 'Votre réponse n''a pu aboutir car votre ticket a déjà été résolu. Nos agents ne liront pas ou ne répondront pas à ce message.'
-helpcenter.emails.ticket_access_ticket_online: 'Voir et gérer votre ticket en ligne'
+helpcenter.emails.ticket_access_ticket_online: 'Voir et gérer votre ticket en ligne :'
 helpcenter.emails.ticket_flood: 'Vous avez récemment envoyé un email à notre service d''assistance, suite à quoi notre système a détecté l''envoi successifs par votre boite mail de nombreux messages certainement automatiques.<br /><br />Pour éviter la création d''une chaine de messages automatiques notre service d''assistance ne vous enverra plus de notifications automatiques par email.'
 helpcenter.emails.ticket_new_participant: 'Une nouvelle personne a été ajoutée à votre ticket'
-helpcenter.emails.ticket_no_autoresponse: 'Attention: Emails de confirmation désactivés.'
-helpcenter.emails.ticket_rate_neutral: 'Partiellement'
+helpcenter.emails.ticket_no_autoresponse: 'Attention : Emails de confirmation désactivés.'
+helpcenter.emails.ticket_rate_negative: 'C''était médiocre'
+helpcenter.emails.ticket_rate_neutral: 'C''était moyen'
+helpcenter.emails.ticket_rate_positive: 'C''était bon'
 helpcenter.emails.ticket_rate_question: 'Ce message vous a-t-il aidé ?'
 helpcenter.emails.ticket_received: 'Votre ticket a bien été reçu. Un de nos agents va vous répondre sous peu.'
 helpcenter.emails.ticket_reply_confirm: 'Merci pour votre réponse. Un de nos agents va vous répondre sous peu.'
@@ -118,35 +137,11 @@ helpcenter.error.404_desc: 'Désolé, nous n''avons pas pu trouver cette page.'
 helpcenter.error.404_title: 'Introuvable'
 helpcenter.error.general_title: 'Une erreur s''est produite'
 helpcenter.error.permission_denied_title: 'Vous n''êtes pas autorisé à réaliser cette action'
-helpcenter.flashes.article_cat_subscribe: 'Vous avez souscrit avec succès à cette catégorie. Vous serez averti lorsque de nouveaux articles sont publiés.'
-helpcenter.flashes.article_cat_unsubscribe: 'Vous vous êtes désabonné de cette catégorie.'
-helpcenter.flashes.article_subscribe: 'Vous avez souscrit avec succès à cet article. Vous serez averti quand il est mis à jour ou quand il y a un nouveau commentaire.'
 helpcenter.flashes.article_unsubscribe: 'Vous vous êtes désabonné de cet article.'
-helpcenter.flashes.article_unsubscribe_everything: 'Vous vous êtes désabonné de toutes les notifications de la base de connaissances.'
-helpcenter.flashes.community_subscribe: 'Vous avez souscrit avec succès à cet élément de commentaires. Vous serez averti quand il est mis à jour ou quand il y a un nouveau commentaire.'
-helpcenter.flashes.community_unsubscribe: 'Vous vous êtes désabonné avec succès de cet élément de commentaires.'
-helpcenter.flashes.community_unsubscribe_everything: 'Vous vous êtes désabonné de toutes les notifications de sujets'
-helpcenter.flashes.download_cat_subscribe: 'Vous avez souscrit avec succès à cette catégorie. Vous serez averti lorsque de nouveaux fichiers sont disponibles pour le téléchargement.'
-helpcenter.flashes.download_subscribe: 'Vous avez souscrit avec succès à ce téléchargement. Vous serez averti quand il est mis à jour ou quand il y a un nouveau commentaire.'
-helpcenter.flashes.download_unsubscribe: 'Vous vous êtes désabonné avec succès de ce téléchargement.'
-helpcenter.flashes.download_unsubscribe_everything: 'Vous êtes désabonné de toutes les notifications de téléchargement'
 helpcenter.flashes.guest_content_must_verify: 'Avant que nous puissions publier votre contenu, vous devez vérifier votre courrier électronique. Veuillez vérifier votre boîte mail Nous vous avons envoyé un lien de vérification.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Avant que nous puissions accepter votre billet, nous devons vérifier votre adresse e-mail. Veuillez vérifier votre boîte mail Nous vous avons envoyé un lien de vérification.'
-helpcenter.flashes.new_community_topic_awaiting_review: 'Merci pour votre avis. Il sera visible sur notre portail de support après la révision de l''agent.'
-helpcenter.flashes.new_community_topic_posted: 'Merci pour vos remarques'
-helpcenter.flashes.news_cat_subscribe: 'Vous avez souscrit avec succès à cette catégorie. Vous serez informé des nouveaux messages.'
-helpcenter.flashes.news_subscribe: 'Vous vous êtes abonné avec succès à cet article. Vous serez averti quand il y a de nouveaux commentaires.'
-helpcenter.flashes.news_unsubscribe: 'Vous vous êtes désabonné avec succès de cet article.'
-helpcenter.flashes.news_unsubscribe_everything: 'Vous vous êtes désabonné de toutes les notifications d''articles d''actualité'
-helpcenter.flashes.ticket_created: 'Votre billet a été soumis.'
-helpcenter.flashes.ticket_feedback_thank_you: 'Merci pour vos remarques'
 helpcenter.flashes.ticket_participant_already_error: 'La personne que vous avez essayé d''ajouter en tant que participant est déjà un participant sur ce ticket.'
-helpcenter.flashes.ticket_participant_email_error: 'Veuillez entrer un email valide pour votre participant et réessayer.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Un problème est survenu lors de la tentative de suppression de votre participant. Veuillez réessayer.'
-helpcenter.flashes.ticket_re_opened: 'Vous avez rouvert ce ticket.'
-helpcenter.flashes.ticket_replied: 'Votre réponse a été soumise. Merci!'
-helpcenter.flashes.ticket_resolved: 'Votre ticket est maintenant marqué comme résolu. Je vous remercie.'
-helpcenter.flashes.ticket_updated: 'Votre billet a été mis à jour. Merci!'
 helpcenter.flashes.user_add_email_verified: 'Votre adresse e-mail a été ajoutée à votre compte.'
 helpcenter.flashes.user_add_email_verify: 'Nous devons vérifier votre courrier électronique avant de l''ajouter à votre compte. Veuillez vérifier votre boîte de réception pour un lien de vérification.'
 helpcenter.flashes.user_changed_primary_email: 'Votre adresse e-mail principale a été modifiée.'
@@ -162,35 +157,71 @@ helpcenter.forms.label_save: Enregistrer
 helpcenter.general.add_comment: 'Ajouter un commentaire'
 helpcenter.general.admin: Administration
 helpcenter.general.admin_home: 'Interface d''administration'
+helpcenter.general.agent: Agent
 helpcenter.general.agent_bar_admin_community: 'Remarques'
-helpcenter.general.agent_bar_admin_dl: 'Téléchargements'
+helpcenter.general.agent_bar_admin_guides: 'Guides'
 helpcenter.general.agent_bar_admin_kb: 'Base de connaissances'
 helpcenter.general.agent_bar_admin_lang: 'Langue'
 helpcenter.general.agent_bar_admin_news: 'Actualités'
 helpcenter.general.agent_bar_agent_community: 'Remarques'
-helpcenter.general.agent_bar_agent_dl: 'Téléchargements'
+helpcenter.general.agent_bar_agent_guides: 'Guides'
 helpcenter.general.agent_bar_agent_home: 'Interface agent'
 helpcenter.general.agent_bar_agent_kb: 'Base de connaissances'
 helpcenter.general.agent_bar_agent_news: 'Actualités'
+helpcenter.general.agent_interface: 'Interface agent'
+helpcenter.general.agents: Agents
+helpcenter.general.apply: Appliquer
 helpcenter.general.attachments: Pièce jointes
+helpcenter.general.authors_list: Liste des auteurs
 helpcenter.general.cancel_action: Annuler
-helpcenter.general.subscribe_action: S'abonner
-helpcenter.general.comment_btn_save: 'Enregistrer le commentaire'
+helpcenter.general.categories: Catégories
+helpcenter.general.category: Catégorie
+helpcenter.general.close: Fermer
+helpcenter.general.comment_btn_save: 'Ajouter le commentaire'
 helpcenter.general.comments: Commentaires
-helpcenter.general.comments_pending_validation: 'Ce commentaire n''a pas encore été validé. Il sera publié prochainement.'
+helpcenter.general.copied: copié
+helpcenter.general.copy_to_clipboard: 'Copier dans le presse-papier'
+helpcenter.general.created_by: 'Créé par'
 helpcenter.general.date_day_month: '{date, date, d MMM}'
-helpcenter.general.files_type: Téléchargements
+helpcenter.general.date_medium: '{date, date, medium}'
+helpcenter.general.date_short: '{date, date, short}'
+helpcenter.general.date_short_month: '{date, date, MMM}'
 helpcenter.general.everything: Tout
-helpcenter.general.go_action: Valider
 helpcenter.general.impersonation_mode: 'Connexion en tant que'
 helpcenter.general.label_search_enter_label: 'Veuillez fournir une étiquette à rechercher'
+helpcenter.general.last_24_hours: 'Dernières 24 heures'
+helpcenter.general.last_6_month: 'Derniers 6 mois'
 helpcenter.general.last_activity: 'Dernière activité'
+helpcenter.general.last_month: 'Mois dernier'
+helpcenter.general.last_update_by: 'Dernière mise à jour : le <strong>{date_updated, date, medium}</strong> par <strong>{person_name}</strong>'
+helpcenter.general.last_week: 'Semaine dernière'
+helpcenter.general.last_year: 'Année dernière'
+helpcenter.general.latest_status_changes: 'Derniers changements de statuts'
 helpcenter.general.log_in: 'Connexion'
-helpcenter.general.nav_downloads_desc: 'Consulter nos documents à télécharger'
-helpcenter.general.nav_guides: Des guides
+helpcenter.general.more_than_1_year: 'Plus d''un an'
+helpcenter.general.name: Nom
+helpcenter.general.nav_contact: 'Nous contacter'
+helpcenter.general.nav_direct_messages: Messages
+helpcenter.general.nav_downloads: Fichiers
+helpcenter.general.nav_downloads_desc: 'Naviguer nos fichiers'
+helpcenter.general.nav_emails: Emails
+helpcenter.general.nav_guides: Guides
+helpcenter.general.nav_guides_desc: 'Voir tous les guides'
+helpcenter.general.nav_kb: Base de connaissances
+helpcenter.general.nav_newticket: 'Nous contacter'
+helpcenter.general.nav_your_account: 'Votre compte'
+helpcenter.general.next: Suivant
 helpcenter.general.no_search_query: 'Veuillez entrer une requête dans le champ de recherche.'
+helpcenter.general.no_search_results_general: 'Pas de résultats trouvés'
+helpcenter.general.or: ou
+helpcenter.general.pagination_page: 'Page {page}'
+helpcenter.general.pagination_next_page: 'Page suivante'
+helpcenter.general.pagination_previous_page: 'Page précédente'
 helpcenter.general.password: Mot de passe
+helpcenter.general.previous: Précédent
 helpcenter.general.print: Imprimer
+helpcenter.general.priority: Priorité
+helpcenter.general.product: Produit
 helpcenter.general.prop_comments_asc: 'Les moins commentés d''abord'
 helpcenter.general.prop_comments_desc: 'Les plus commentés d''abord'
 helpcenter.general.prop_date_asc: 'Les plus anciens d''abord'
@@ -201,7 +232,7 @@ helpcenter.general.prop_rating_asc: 'Plus bas en premier'
 helpcenter.general.prop_rating_desc: 'Plus haut noté en premier'
 helpcenter.general.prop_views_asc: 'Les moins vues en premier'
 helpcenter.general.prop_views_desc: 'La plupart des vues en premier'
-helpcenter.general.rate_page: 'Évaluez la qualité de cette page'
+helpcenter.general.rate_page_negative: Peu Utile
 helpcenter.general.rate_page_positive: Utile
 helpcenter.general.rerender_form: 'Veuillez examiner ce formulaire avant de le soumettre.'
 helpcenter.general.share: Partager
@@ -211,9 +242,25 @@ helpcenter.general.tags: Mots clés
 helpcenter.general.updated: Mis à jour
 helpcenter.general.user: Utilisateur
 helpcenter.general.you: Vous
-helpcenter.general.download_pdf: 'Télécharger le PDF'
+helpcenter.members.activity_group_last_month: 'Le mois dernier'
+helpcenter.members.activity_group_last_week: 'La semaine dernière'
+helpcenter.members.activity_group_last_year: 'L''année dernière'
+helpcenter.members.activity_group_this_month: 'Ce mois'
+helpcenter.members.activity_group_this_week: 'Cette semaine'
+helpcenter.members.activity_group_this_year: 'Cette année'
+helpcenter.members.activity_group_today: 'Aujourd''hui'
+helpcenter.members.company: 'Entreprise'
 helpcenter.members.language: Langue
+helpcenter.members.name: Nom
+helpcenter.members.phone: 'Numéro de téléphone'
+helpcenter.members.send_message: 'Envoyer un message direct'
 helpcenter.members.timezone: Fuseau horaire
+helpcenter.members.title: 'Annuaire des Membres'
+helpcenter.messenger.assigned_agent: 'Agent assigné'
+helpcenter.messenger.blocks_continue_chat_link: Continuer
+helpcenter.messenger.blocks_knowledgebase_title: Base de connaissances
+helpcenter.messenger.blocks_search_block_see_more_results: 'Plus de résultats'
+helpcenter.messenger.blocks_tickets_title: 'Vos tickets'
 helpcenter.news.none: 'Pas encore de nouvelles'
 helpcenter.news.recent_title: 'Nouvelles récentes'
 helpcenter.news.view_as_agent: 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs normaux ne peuvent pas voir cette page.'
@@ -227,12 +274,10 @@ helpcenter.tickets.list_date_created: 'Date de création'
 helpcenter.tickets.list_date_last_agent: 'Dernière réponse Agent'
 helpcenter.tickets.list_date_last_user: 'Dernière réponse utilisateur'
 helpcenter.tickets.list_last_action: 'Dernière action'
-helpcenter.tickets.list_status_agent: 'Notre agent vous répondra'
 helpcenter.tickets.list_status_resolved: Clôturé
 helpcenter.tickets.list_status_user: 'Vous devez répondre'
 helpcenter.tickets.list_subject: Sujet
 helpcenter.tickets.list_ticket_ref: Référence
-helpcenter.tickets.mark_unresolved: 'Ticket de réouverture'
 helpcenter.tickets.need_login_title: 'Vous devez vous connecter pour ouvrir un ticket'
 helpcenter.tickets.new_intro: 'Merci de compléter ce formulaire, un de nos agents vous répondra par email dès que possible.'
 helpcenter.tickets.new_section_title: 'Nous contacter'
@@ -241,19 +286,18 @@ helpcenter.tickets.no_participants: 'Aucun participant'
 helpcenter.tickets.not_allowed_desc: 'Désolé, nos agents ne peuvent pas discuter avec vous pour le moment'
 helpcenter.tickets.not_allowed_title: 'Nous serons de retour'
 helpcenter.tickets.please_login_to_reply: 'Connectez-vous pour répondre.'
-helpcenter.tickets.rate_negative: 'Mauvaise'
-helpcenter.tickets.rate_positive: 'Super !'
+helpcenter.tickets.rate_negative: 'C''était médiocre'
+helpcenter.tickets.rate_neutral: 'C''était moyen'
+helpcenter.tickets.rate_positive: 'C''était bien'
 helpcenter.tickets.rate_question: 'Comment évaluez-vous l''aide reçue ?'
-helpcenter.tickets.rate_support: 'Evaluez l''aide reçue'
-helpcenter.tickets.resolve_my_ticket_action: 'Clôturer mon ticket'
+helpcenter.tickets.rate_support: 'Évaluez l''aide reçue'
 helpcenter.tickets.switched_department_rerender: 'La structure de cette forme peut avoir changé. S''il vous plaît examiner le formulaire et soumettre à nouveau.'
 helpcenter.tickets.thank_you_check_email: 'Veuillez vérifier votre adresse e-mail'
 helpcenter.tickets.thank_you_check_email_desc: 'Pour terminer la soumission de votre billet, vous devez vérifier votre boîte de réception. Veuillez cliquer sur le lien de vérification que nous vous avons envoyé.'
 helpcenter.tickets.timeline_marked: 'marqué ce billet:'
-helpcenter.tickets.timeline_re_opened: 'rouvert ce billet'
 helpcenter.tickets.view_btn_add_to_ticket: 'Ajouter au ticket'
 helpcenter.tickets.view_btn_edit: Modifier
-helpcenter.tickets.view_btn_edit_full: 'Editer ce ticket'
+helpcenter.tickets.view_btn_edit_full: 'Éditer ce ticket'
 helpcenter.tickets.view_label_your_email_placeholder: 'Adresse email: (requis)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Nom (obligatoire)'
 helpcenter.tickets.view_reply_errors: 'Il y a des erreurs dans votre soumission.'
