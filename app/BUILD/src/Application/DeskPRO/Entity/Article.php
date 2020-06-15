@@ -1135,8 +1135,8 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
         ObjectTranslatable::loadEntityMetadata($metadata);
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
-        $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
-        $metadata->addEntityListener(Events::postUpdate, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::prePersist, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::preUpdate, AttachmentHelper::class, 'verifyBlobs');
     }
 
     /**

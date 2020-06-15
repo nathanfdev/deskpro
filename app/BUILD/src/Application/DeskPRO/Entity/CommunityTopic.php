@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -1219,8 +1217,8 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         );
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
-        $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
-        $metadata->addEntityListener(Events::postUpdate, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::prePersist, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::preUpdate, AttachmentHelper::class, 'verifyBlobs');
     }
 
     protected function getUpdateFields()

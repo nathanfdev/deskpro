@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
@@ -99,12 +100,15 @@ class ReplyAction extends AbstractReplyAction
 
         if ($this->attach_ids) {
             foreach ($this->attach_ids as $blob_id) {
-                $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+                $blob = App::getOrm()->getRepository(Blob::class)->find($blob_id);
 
                 if ($blob) {
                     $attach           = new TicketAttachment();
                     $attach['blob']   = $blob;
                     $attach['person'] = $this->person_context;
+
+                    $blob->setIsTemp(false);
+                    App::getOrm()->persist($blob);
 
                     $message->addAttachment($attach);
                     App::getOrm()->persist($attach);

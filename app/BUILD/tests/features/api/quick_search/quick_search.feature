@@ -1,9 +1,9 @@
-@new
 Feature: Quick Search
   Doctrine search adapter
 
   Background:
-    Given there are no "Person" records
+    Given I install the api data set
+    And there are no "Person" records
     And I'm authenticated as "admin"
     And the setting "elastica.enabled" is set to 0
     And I set permission "articles.use" = 1 for "registered" usergroup

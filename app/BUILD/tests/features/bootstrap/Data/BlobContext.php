@@ -65,6 +65,32 @@ class BlobContext extends BaseContext
     }
 
     /**
+     * @Then blob :blobRef should be temp
+     *
+     * @param string $blobRef
+     */
+    public function blobShouldBeTemp($blobRef)
+    {
+        $blob    = DataContext::getReference('blob_'.$blobRef);
+        $message = sprintf('Blob '.$blobRef.' is not temp', $blobRef);
+
+        $this->assert($blob instanceof Blob && $blob->isTemp(), $message);
+    }
+
+    /**
+     * @Then blob :blobRef should not be temp
+     *
+     * @param string $blobRef
+     */
+    public function blobShouldNotBeTemp($blobRef)
+    {
+        $blob    = DataContext::getReference('blob_'.$blobRef);
+        $message = sprintf('Blob '.$blobRef.' is temp', $blobRef);
+
+        $this->assert($blob instanceof Blob && !$blob->isTemp(), $message);
+    }
+
+    /**
      * @Given I create an image blob with auth code :authCode
      *
      * @param string $authCode
