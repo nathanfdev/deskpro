@@ -114,7 +114,7 @@ HTML;
      */
     public function getDateReleased()
     {
-        return new \DateTime('2020-06-01');
+        return new \DateTime('2020-06-15');
     }
 
     /**
