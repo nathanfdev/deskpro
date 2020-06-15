@@ -1,14 +1,7 @@
 ---
-helpcenter.account.email_resend_validation_action: 'Megerősítő e-mail újraküldése'
-helpcenter.account.login_register_action: Regisztráljon
-helpcenter.account.logout_action: Kijelentkezés
 helpcenter.articles.section_title: Tudásbázis
-helpcenter.articles.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
-helpcenter.community.like_action: 'Egyetértek'
-helpcenter.general.name: Név
 helpcenter.community.section_title: Ötlettár
 helpcenter.direct_messages.reply_message: Üzenet
-helpcenter.downloads.download_action: Letöltés
 helpcenter.emails.chat_transcript: 'Reméljük, hogy elégedett munkatársunk munkájával. Mellékeljük legutóbbi beszélgetésük kivonatát.'
 helpcenter.emails.chat_transcript_subject: 'Beszélgetés összefoglaló'
 helpcenter.emails.comment_approved: 'Hozzászólása publikálásra került.'
@@ -43,17 +36,12 @@ helpcenter.error.permission_denied_title: 'Önnek nincs megfelelő engedélye'
 helpcenter.forms.label_save: Mentés
 helpcenter.general.add_comment: 'Kérjük ebbe a mezőbe írja hozzászólását, majd kattintson a ''Hozzászólás beküldése'' gombra...'
 helpcenter.general.attachments: Mellékletek
-helpcenter.general.cancel_action: Mégsem
 helpcenter.general.comments: Hozzászólás?
-helpcenter.general.files_type: Letöltések
 helpcenter.general.everything: Minden
-helpcenter.general.go_action: Mehet
 helpcenter.general.log_in: 'Bejelentkezés'
-helpcenter.general.nav_downloads_desc: 'Letölthető fájlok és dokumentumok'
 helpcenter.general.password: Jelszó
 helpcenter.general.rate_page_positive: Hasznos
 helpcenter.general.you: Ön
-helpcenter.general.download_pdf: 'PDF letöltés'
 helpcenter.members.language: Nyelv
 helpcenter.members.timezone: Időzóna
 helpcenter.news.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
@@ -65,10 +53,8 @@ helpcenter.tickets.list_status_resolved: Megoldott
 helpcenter.tickets.list_subject: Tárgy
 helpcenter.tickets.new_intro: 'Kérjük töltse ki ezt az űrlapot. Munkatársunk hamarosan e-mailben válaszol Önnek.'
 helpcenter.tickets.new_section_title: 'Írjon nekünk'
-helpcenter.tickets.rate_negative: 'Nem jó'
 helpcenter.tickets.rate_positive: 'Jó'
 helpcenter.tickets.rate_question: 'Hogyan értékelné munkánkat?'
 helpcenter.tickets.rate_support: 'Értékelje munkánkat'
-helpcenter.tickets.resolve_my_ticket_action: 'Ügy megoldva'
 helpcenter.tickets.view_btn_edit: Szerkesztés
 helpcenter.tickets.view_unassigned: Gazdátlan
