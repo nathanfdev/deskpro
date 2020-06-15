@@ -1,21 +1,12 @@
 ---
-helpcenter.account.change_password_action: 'حدث كلمة المرور'
 helpcenter.account.comment_lockout: 'لقد قمت بارسال العديد من التعليقات. الرجاء الإنتظار للتمكن من إرسال المزيد.'
-helpcenter.account.email_make_primary_action: 'إجعلها الأساسية'
-helpcenter.account.email_remove_action: 'إحذف البريد الإلكتروني'
-helpcenter.account.email_resend_validation_action: 'إعد أرسال بريد التفعيل'
 helpcenter.account.email_btn_usersource_set: 'أضف حساب بريد إلكتروني'
 helpcenter.account.login_captcha_failed: 'لقد قمت بادخال رمز تحقق خاطئ. الرجاء المحاولة مرة أخرى'
 helpcenter.account.login_email: 'بريدك الإلكتروني'
 helpcenter.account.login_email_placeholder: 'نموذج البريد : email@example.com'
 helpcenter.account.login_external: 'قم بتسجيل الدخول بواسطة وسائل تسجيل خارجية'
 helpcenter.account.login_lockout: 'لقد استنفذت العدد المسموح به للتسجيل  الخاطئ، لذا فقد تم حجبك. الرجاء المحاولة مرة أخرى'
-helpcenter.account.login_reset_password_link: 'هل تحتاج الى عرض مساعدة لتذكر كلمة المرور'
-helpcenter.account.login_register_action: تسجيل عضوية
-helpcenter.account.login_stay_logged_in: 'ابق مسجلا؟'
-helpcenter.account.logout_action: سجل الخروج
 helpcenter.account.new_ticket_no_login: 'بوابة الخدمة غير مفعلة. لا يمكنك ارسال تذاكر'
-helpcenter.account.profile_save_action: 'أحفظ بيانات التعريف'
 helpcenter.account.profile_delete_picture: 'غير أو احذف الصورة الخاصة بسجل بيانات التعريف؟'
 helpcenter.account.registration_set_password: 'يوجد حساب بهذا البريد الإلكتروني. لقد قمنا بارسال بريد الكتروني لك ستتمكن من خلاله تعيين كلمة مرورك و تسجيل الدخول'
 helpcenter.account.reset_password_click_here: 'اضغط هنا  لطلب رمز إعادة تعيين كلمة مرورك'
@@ -45,24 +36,13 @@ helpcenter.account.submit_saved_form_go: 'انقر هنا لإعادة تسلي�
 helpcenter.account.tickets_lockout: 'لقد قمت بتسليم عدد كبير من التذاكر لذلك تم حجبك. حاول مرة اخرى فيما بعد'
 helpcenter.account.usersource_set_email_desc: 'ضع عنوان بريدك قبل الدخول .قم بادخاله تحت وسنرسل لك بريد للمصادقة'
 helpcenter.account.your_pending_email_addresses: 'عناوين البريد المعلقة.'
-helpcenter.articles.published_label: منشور
 helpcenter.articles.section_title: قاعدة المعلومات
-helpcenter.articles.view_as_agent: 'أنت في هذه الصفحة لأنك أحد مقدمي الخدمة. المستخدمين العاديين لن يمكنهم مشاهدة هذه الصفحة.'
-helpcenter.messenger.date_label: التاريخ
-helpcenter.messenger.total_chat_time_label: 'الوقت الكلي للمحادثة.'
-helpcenter.community.like_action: 'موافق'
-helpcenter.messenger.linked_ticket_label: 'تحديد لتذكرة'
-helpcenter.messenger.view_linked_ticket_action: "استعراض التذكرة.\n"
 helpcenter.community.error_login: 'فضلا ادخل'
-helpcenter.general.name: أسم
 helpcenter.community.form_topic_title: العنوان
 helpcenter.community.no_matching: 'لا توجد تغذية راجعة مطابقة'
 helpcenter.community.rate_forbidden: 'لا يحق لك التصويت'
 helpcenter.community.section_title: اقتراحات
 helpcenter.direct_messages.reply_message: رسالة
-helpcenter.downloads.download_action: تنزيل
-helpcenter.downloads.no_files: 'لا توجد تنزيلات'
-helpcenter.downloads.uploaded_on: تم تحميله
 helpcenter.emails.chat_transcript: 'نشكركم على المحادثة معنا . اليك نسختك من المحادثة'
 helpcenter.emails.chat_transcript_subject: 'سجل المحادثه'
 helpcenter.emails.comment_approved: 'تم نشر تعليقك'
@@ -121,35 +101,11 @@ helpcenter.error.404_desc: 'معذرة لم نتمكن من العثور على 
 helpcenter.error.404_title: 'غير موجود'
 helpcenter.error.general_title: 'ظهر خطأ ما'
 helpcenter.error.permission_denied_title: 'غير مصرح لك القيام بذلك'
-helpcenter.flashes.article_cat_subscribe: 'تم الاشتراك بنجاح .سيتم إشعارك عند إرسال مقالات'
-helpcenter.flashes.article_cat_unsubscribe: 'تم الغاء اشتراكك في هذه الفئة بنجاح'
-helpcenter.flashes.article_subscribe: 'تم اشتراكك في هذه المقالة. سيتم اشعارك عندما يتم تحديثها او عندما يوجد تعليق عليها'
 helpcenter.flashes.article_unsubscribe: 'لقد تم الغاء الاشتراك بنجاح في هذه المقالة'
-helpcenter.flashes.article_unsubscribe_everything: 'لقد تم الغاء الاشتراك من كل اشعارات قاعدة المعلومات'
-helpcenter.flashes.community_subscribe: 'تم اشتراكك في التغذيات الراجعة سيتم اشعارك في حال تحديثها'
-helpcenter.flashes.community_unsubscribe: 'لقد تم الغاء اشتراكك في  التغذية الراجعة'
-helpcenter.flashes.community_unsubscribe_everything: 'لقد تم الغاء اشتراكك في كافة اشعارات التغذيات الراجعة'
-helpcenter.flashes.download_cat_subscribe: 'لقد تم اشتراكك بنجاح وسيتم اشعارك حال توفر ملفات للتنزيل'
-helpcenter.flashes.download_subscribe: 'تم اشتراكك بنجاح في هذا التنزيل .سيتم اشعارك عندما يتم تحديثه'
-helpcenter.flashes.download_unsubscribe: 'لقد تم الغاء اشتراكك في هذا التنزيل'
-helpcenter.flashes.download_unsubscribe_everything: 'لقد تم الغاء اشتراكك في كافة اشعارات التنزيل'
 helpcenter.flashes.guest_content_must_verify: 'قبل التمكن من  ارسال المحتوي يجب ان تتحقق من بريدك . فضلا شيك على بريدك الوارد لقد ارسلنا لك رابط التحقق'
 helpcenter.flashes.guest_new_ticket_must_verify: 'قبل ان تُقبل تذكرتك يجب ان نتحقق من بريدك. فضلا شيك بريدك الوارد تم ارسال رابط التحقق'
-helpcenter.flashes.new_community_topic_awaiting_review: 'نشكرك على تغذيتك الراجعة يمكن مشاهدتها على بوابة الدعم عندما يعتمدها مقدم الخدمة'
-helpcenter.flashes.new_community_topic_posted: 'نشكرك على تغذيتك الراجعة'
-helpcenter.flashes.news_cat_subscribe: 'لقد تم اشتراكك بنجاح سيتم اشعارك بالجديد'
-helpcenter.flashes.news_subscribe: 'لقد تم اشتراكك بنجاح في هذه المقالة الاخبارية. سيتم اشعارك بالتعليقات'
-helpcenter.flashes.news_unsubscribe: 'لقد تم الغاء اشتراكك في هذه المقالة الاخبارية'
-helpcenter.flashes.news_unsubscribe_everything: 'لقد تم الغاء اشتراكك في كافة الاشعارات'
-helpcenter.flashes.ticket_created: 'لقد تم ارسال تذكرتك'
-helpcenter.flashes.ticket_feedback_thank_you: 'شكرا على ملاحظاتك!'
 helpcenter.flashes.ticket_participant_already_error: 'الشخص الذي تحاول اضافته كمشارك ، هو مشارك حالي في هذه التذكرة'
-helpcenter.flashes.ticket_participant_email_error: 'الرجاء ادخال بريد الكتروني صالح للمشارك و المحاولة مرة اخرى'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'نواجه مشكلة عند محاولة حذف المشارك. الرجاء المحاولة من جديد'
-helpcenter.flashes.ticket_re_opened: 'لقد تم اعادة فتح التذكرة'
-helpcenter.flashes.ticket_replied: 'لقد تم ارسال ردك'
-helpcenter.flashes.ticket_resolved: 'تذكرتك معلمة كمحلولة'
-helpcenter.flashes.ticket_updated: 'لقد تم تحديث تذكرتك'
 helpcenter.flashes.user_add_email_verified: 'لقد تم اضافة بريدك الى الحساب'
 helpcenter.flashes.user_add_email_verify: 'نود التحقق من بريدك قبل اضافته لحسابك فضلا عد الى البريد الواردللحصول على رابط التحقق.'
 helpcenter.flashes.user_changed_primary_email: 'لقد تم تغيير بريدك الاول'
@@ -167,32 +123,23 @@ helpcenter.general.admin: المشرف
 helpcenter.general.admin_home: 'المشرف'
 helpcenter.general.agent: مقدم الخدمة
 helpcenter.general.agent_bar_admin_community: 'اعدادات التغذية الراجعة'
-helpcenter.general.agent_bar_admin_dl: 'اعدادات التنزيلات'
 helpcenter.general.agent_bar_admin_kb: 'اعدادت قاعدة المعلوات'
 helpcenter.general.agent_bar_admin_lang: 'اعدادات اللغة'
 helpcenter.general.agent_bar_admin_news: 'اعدادات الأخبار'
 helpcenter.general.agent_bar_agent_community: 'ادارة التغذية الراجعة'
-helpcenter.general.agent_bar_agent_dl: 'ادارة التنزيلات'
 helpcenter.general.agent_bar_agent_home: 'الصفحة الرئيسية لمقدم  الخدمة'
 helpcenter.general.agent_bar_agent_kb: 'ادارة قاعدة المعلومات'
 helpcenter.general.agent_bar_agent_news: 'ادارة الاخبار'
 helpcenter.general.agents: مقدمو الخدمة.
 helpcenter.general.attachments: مرفقات
-helpcenter.general.cancel_action: الغاء
-helpcenter.general.subscribe_action: مشترك
 helpcenter.general.chat: المحادثة
-helpcenter.general.comment_btn_save: 'احفظ التعليقات'
 helpcenter.general.comments: تعليقات
-helpcenter.general.comments_pending_validation: 'تمت مراجعة التعليق| سيتم نشره قريباً'
-helpcenter.general.files_type: تنزيلات
 helpcenter.general.email_address: 'البريد'
 helpcenter.general.everything: كل شئ
-helpcenter.general.go_action: أذهب
 helpcenter.general.impersonation_mode: 'التقمص'
 helpcenter.general.label_search_enter_label: 'ادخل اسما للبحث عنه'
 helpcenter.general.last_activity: 'اخر نشاط'
 helpcenter.general.log_in: 'تسجيل الدخول'
-helpcenter.general.nav_downloads_desc: 'تصفح قائمة التحميل لدينا'
 helpcenter.general.nav_guides: ارشادات
 helpcenter.general.no_search_query: 'اكتب  كلمة استعلام في مربع الحوار.'
 helpcenter.general.password: كلمة المرور
@@ -207,7 +154,6 @@ helpcenter.general.prop_rating_asc: 'الأقل تقييما اولا'
 helpcenter.general.prop_rating_desc: 'الأعلى تقييما اولا'
 helpcenter.general.prop_views_asc: 'الأقل مشاهدة في الاول'
 helpcenter.general.prop_views_desc: 'الأكثر مشاهدة الاول'
-helpcenter.general.rate_page: 'قيم جودة الصفحة'
 helpcenter.general.rate_page_positive: مفيد.
 helpcenter.general.rerender_form: 'الرجاء مراجعة الاستمارة قبل ارسالها'
 helpcenter.general.share: شارك
@@ -217,7 +163,6 @@ helpcenter.general.tags: البطاقات
 helpcenter.general.updated: محدث
 helpcenter.general.user: المستخدم.
 helpcenter.general.you: أنت
-helpcenter.general.download_pdf: 'تحميل ملف PDF'
 helpcenter.members.language: اللغة
 helpcenter.members.timezone: المنطقة الزمنية
 helpcenter.news.none: 'لا توجد أخبار بعد'
@@ -233,12 +178,10 @@ helpcenter.tickets.list_date_created: 'تاريخ الأنشاء'
 helpcenter.tickets.list_date_last_agent: 'اخر رد لمقدم الخدمة'
 helpcenter.tickets.list_date_last_user: 'اخر رد للمستخدم'
 helpcenter.tickets.list_last_action: 'اخر اجراء'
-helpcenter.tickets.list_status_agent: 'مقدم الخدمة  سيستجيب لك'
 helpcenter.tickets.list_status_resolved: حل
 helpcenter.tickets.list_status_user: 'يجب ان تستجيب'
 helpcenter.tickets.list_subject: الموضوع
 helpcenter.tickets.list_ticket_ref: المرجع
-helpcenter.tickets.mark_unresolved: 'اعادة فتح التذكرة'
 helpcenter.tickets.need_login_title: 'يجب الدخول لفتح التذكرة'
 helpcenter.tickets.new_intro: 'نأمل منكم - حفظكم الله - تعبئة نموذج الطلب وسيقوم أحد مقدمي الخدمة لدينا بالتواصل معك  في اقرب وقت ممكن ، نسعد بخدمتكم.'
 helpcenter.tickets.new_section_title: 'طلب / تواصل جديد'
@@ -247,16 +190,13 @@ helpcenter.tickets.no_participants: 'لا يوجد مشاركين'
 helpcenter.tickets.not_allowed_desc: 'معذرة. مقدمي الخدمةغير قادرين على التعامل مع محادثتك الان'
 helpcenter.tickets.not_allowed_title: 'سنعود قريبا'
 helpcenter.tickets.please_login_to_reply: 'ادخل للرد'
-helpcenter.tickets.rate_negative: 'لم تكن مناسبة'
 helpcenter.tickets.rate_positive: 'رائع'
 helpcenter.tickets.rate_question: 'كيف تقيم الدعم الذي تلقيته؟'
 helpcenter.tickets.rate_support: 'قيم الدعم الخاص بك'
-helpcenter.tickets.resolve_my_ticket_action: 'حل تذكرتي'
 helpcenter.tickets.switched_department_rerender: 'قد يتغير هيكل النموذج. قم بمراجعته وارساله مرة اخرى.'
 helpcenter.tickets.thank_you_check_email: 'رجاء اثبات هوية بريدك'
 helpcenter.tickets.thank_you_check_email_desc: 'لانهاء ارسال تذكرتك ارجع الى بريدك الوارد. قم بالنقر على رابط التأكيد الذي تم ارساله لك.'
 helpcenter.tickets.timeline_marked: 'تم تعيلم التذكرة:'
-helpcenter.tickets.timeline_re_opened: 'أعاد فتح التذكرة'
 helpcenter.tickets.view_btn_add_to_ticket: 'اضاف للتذكرة'
 helpcenter.tickets.view_btn_edit: تحرير
 helpcenter.tickets.view_btn_edit_full: 'حرر التذكرة'
