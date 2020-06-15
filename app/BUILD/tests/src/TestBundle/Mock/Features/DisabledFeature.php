@@ -112,4 +112,25 @@ class DisabledFeature implements BetaFeatureInterface
     public function getRoutePath()
     {
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDueDate()
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExtraInfoContent(ContainerInterface $container)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function canBeDisabled()
+    {
+    }
 }

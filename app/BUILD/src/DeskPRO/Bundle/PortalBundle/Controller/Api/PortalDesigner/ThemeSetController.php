@@ -31,6 +31,8 @@ class ThemeSetController extends AbstractApiController
      */
     public function getCustomThemeSetsAction()
     {
+        $brand = $this->container->get('brand_stack')->getActive()->getBrand();
+
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('t')
@@ -41,10 +43,15 @@ class ThemeSetController extends AbstractApiController
                 'b.id IS NULL',
                 'NOT (t.theme_id = \'helpcenter\' AND t.title IS NULL)'
             )
-            ->setParameter('current_brand', $this->container->get('brand_stack')->getActive()->getBrand())
+            ->setParameter('current_brand', $brand)
         ;
 
+        if ($brand->getThemeSet()->getThemeId() === 'helpcenter') {
+            $qb->andWhere('t.theme_id = \'helpcenter\'');
+        }
+
         $themeSets = $qb->getQuery()->getResult();
+
         // Standard and sidebar theme are not added in the view anymore we need to re add them for legacy installs
         return new View($themeSets);
     }
@@ -129,6 +136,13 @@ class ThemeSetController extends AbstractApiController
      */
     public function commitEditThemeSetAction()
     {
+        $brand = $this->container->get('brand_stack')->getActive()->getBrand();
+        if ($brand->getThemeSet()->getThemeId() !== 'helpcenter'
+            && $brand->getEditThemeSet()->getThemeId() === 'helpcenter'
+        ) {
+            $this->container->get('legacy_template_backup')->refreshLegacyTemplatesBackup();
+        }
+
         $this->getStylesManager()->commitEditThemeSet();
 
         return new JsonResponse();

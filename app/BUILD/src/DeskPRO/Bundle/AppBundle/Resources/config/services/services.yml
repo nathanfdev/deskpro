@@ -122,6 +122,13 @@ services:
       - "@security.token_storage"
       - "@language_stack"
 
+  legacy_template_backup:
+    class: DeskPRO\Bundle\AppBundle\Templating\LegacyThemeBackup
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@deskpro.app_env"
+      - "@blob.storage"
+
   app.environment:
     class: DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService
     arguments: ["@request_stack"]

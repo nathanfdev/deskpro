@@ -42,6 +42,14 @@ abstract class AbstractBetaFeature implements BetaFeatureInterface
     /**
      * {@inheritdoc}
      */
+    public function getExtraInfoContent(ContainerInterface $container)
+    {
+        return '';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isEnabled()
     {
         $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $this->getId());
@@ -60,9 +68,25 @@ abstract class AbstractBetaFeature implements BetaFeatureInterface
     /**
      * {@inheritdoc}
      */
+    public function canBeDisabled()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDueDate()
+    {
+        return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDateReleased()
     {
-        return false;
+        return;
     }
 
     /**
