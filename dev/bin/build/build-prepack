@@ -66,7 +66,7 @@ find . -type d \( \
 
 find . -type f \( \
     -name ".gitignore" -o -name ".gitmodules" -o -name ".gitattributes" -o -name ".gitkeep" -o -name ".editorconfig" \
-    -o -name ".php_cs" -o -name ".php_cs.cache" -o -name ".eslintignore" \
+    -o -name ".php_cs" -o -name ".php_cs.cache" -o -name ".eslintignore" -o -name "crowdin.yml" \
 \) -exec rm -rf {} \;
 
 rm -rf $DP_DIR/app/BUILD/.phan
