@@ -1,20 +1,11 @@
 ---
-helpcenter.account.change_password_action: 'Perbarui kata sandi'
 helpcenter.account.comment_lockout: 'Anda terlalu banyak memberikan komentar. Mohon tunggu beberapa saat.'
-helpcenter.account.email_btn_make_primary: 'Jadikan utama'
-helpcenter.account.email_remove_action: 'Hapus email/surat elektronik'
-helpcenter.account.email_resend_validation_action: 'Kirim ulang email/surat elektronik validasi'
 helpcenter.account.email_btn_usersource_set: 'Tambahkan alamat email/surat elektronik'
 helpcenter.account.login_captcha_failed: 'Anda telah memasukkan kode CAPTCHA yang tidak valid. Silahkan coba lagi'
 helpcenter.account.login_email: 'email/surat elektronik anda'
 helpcenter.account.login_external: 'masuk dengan layanan eksternal'
 helpcenter.account.login_lockout: 'Anda telah gagal masuk berkali-kali sehingga anda terkunci. Silahkan coba lagi nanti'
-helpcenter.account.login_reset_password_link: 'Memerlukan pengingat kata sandi'
-helpcenter.account.login_register_action: Mendaftar
-helpcenter.account.login_stay_logged_in: 'Anda yakin tetap masuk?'
-helpcenter.account.logout_action: keluar
 helpcenter.account.new_ticket_no_login: 'Portal CRM dinonaktifkan. Tidak dapat mengirim tiket.'
-helpcenter.account.profile_save_action: 'simpan profil'
 helpcenter.account.profile_delete_picture: 'ubah atau hapus '
 helpcenter.account.registration_set_password: 'Akun dengan email/surat elektronik ini sudah ada. Kami telah mengirimi Anda email/surat elektronik yang memungkinkan Anda mengatur kata sandi dan masuk'
 helpcenter.account.reset_password_click_here: 'klik disini untuk permintaan kode perubahan kata sandi'
@@ -44,24 +35,13 @@ helpcenter.account.submit_saved_form_go: 'Klik di sini untuk mengirimkan kembali
 helpcenter.account.tickets_lockout: 'Anda telah mengirimkan terlalu banyak tiket sehingga Anda terkunci. Silakan coba lagi nanti'
 helpcenter.account.usersource_set_email_desc: 'Sebelum bisa masuk kita butuh alamat email/surat elektronik anda. Harap masukkan alamat email/surat elektronik Anda di bawah ini sehingga kami dapat mengirimkan email verifikasi kepada Anda'
 helpcenter.account.your_pending_email_addresses: 'Alamat email/surat elektronik anda yang tertunda'
-helpcenter.articles.published_label: Diterbitkan
 helpcenter.articles.section_title: Dasar Pengetahuan
-helpcenter.articles.view_as_agent: 'Anda dapat melihat laman ini karena anda adalah seorang agen. Pengguna tidak akan dapat melihat laman ini.'
-helpcenter.messenger.date_label: Tanggal
-helpcenter.messenger.total_chat_time_label: 'Total Waktu Obrolan'
-helpcenter.messenger.linked_ticket_label: 'Dialihkan ke tiket'
-helpcenter.messenger.view_linked_ticket_action: 'Lihat Tiket'
-helpcenter.community.like_action: 'Saya setuju'
 helpcenter.community.error_login: 'Silahkan masuk'
-helpcenter.general.name: Nama
 helpcenter.community.form_topic_title: Judul
 helpcenter.community.no_matching: 'Tidak ada tanggapan yang sesuai'
 helpcenter.community.rate_forbidden: 'Anda tidak diizinkan untuk memilih'
 helpcenter.community.section_title: Tanggapan
 helpcenter.direct_messages.reply_message: Pesan
-helpcenter.downloads.download_action: Unduh
-helpcenter.downloads.no_files: 'Belum ada unduhan'
-helpcenter.downloads.uploaded_on: Terunggah
 helpcenter.emails.chat_transcript: 'Terima kasih telah mengobrol dengan kami. Ini adalah transkrip obrolan Anda.'
 helpcenter.emails.chat_transcript_subject: 'Transkrip Obrolan'
 helpcenter.emails.comment_approved: 'Komentar anda telah diterbitkan.'
@@ -120,35 +100,11 @@ helpcenter.error.404_desc: 'Maaf, laman tidak ditemukan'
 helpcenter.error.404_title: 'Tidak Ditemukan'
 helpcenter.error.general_title: 'Sedang terjadi gangguan'
 helpcenter.error.permission_denied_title: 'Anda tidak diizinkan untuk melakukan hal tersebut'
-helpcenter.flashes.article_cat_subscribe: 'Anda telah berlangganan kategori ini. Anda akan menerima pemberitahuan apabila terdapat artikel baru.'
-helpcenter.flashes.article_cat_unsubscribe: 'Anda telah berhenti berlangganan kategori ini.'
-helpcenter.flashes.article_subscribe: 'Anda telah berhasil berlangganan artikel ini. Anda akan menerima pemberitahuan apabila ada pembaharuan atau komentar baru'
 helpcenter.flashes.article_unsubscribe: 'Anda telah berhenti berlangganan artikel ini.'
-helpcenter.flashes.article_unsubscribe_everything: 'Anda telah berhenti berlangganan seluruh pemberitahuan dasar pengetahuan'
-helpcenter.flashes.community_subscribe: 'Anda telah berhasil berlangganan tanggapan ini. Anda akan menerima pemberitahuan apabila terdapat pembaharuan atau komentar baru'
-helpcenter.flashes.community_unsubscribe: 'Anda telah berhasil berhenti berlangganan umpan balik ini.'
-helpcenter.flashes.community_unsubscribe_everything: 'Anda telah berhenti berlangganan dari semua pemberitahuan umpan balik.'
-helpcenter.flashes.download_cat_subscribe: 'Anda telah berlangganan kategori ini. Anda akan menerima notifikasi apabila terdapat berkas baru yang dapat diunduh.'
-helpcenter.flashes.download_subscribe: 'Anda telah berhasil berlangganan unduhan ini. Anda akan menerima pemberitahuan apabila terdapat pembaharuan atau komentar baru'
-helpcenter.flashes.download_unsubscribe: 'Anda berhasil berhenti berlangganan unduhan ini.'
-helpcenter.flashes.download_unsubscribe_everything: 'Anda telah berhenti berlangganan seluruh pemberitahuan unduhan'
 helpcenter.flashes.guest_content_must_verify: 'Sebelum kami dapat memposting konten Anda, Anda harus memverifikasi email Anda. Silakan periksa kotak masuk email Anda. Kami telah mengirimi Anda tautan verifikasi.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Sebelum kami dapat menerima tiket Anda, kami harus memverifikasi alamat email Anda. Silakan periksa kotak masuk email Anda. Kami telah mengirimi Anda tautan verifikasi.'
-helpcenter.flashes.new_community_topic_awaiting_review: 'Terima kasih atas tanggapan anda! Tanggapan Anda akan ditampilkan setelah ditinjau oleh agen'
-helpcenter.flashes.new_community_topic_posted: 'Terima kasih atas tanggapan Anda'
-helpcenter.flashes.news_cat_subscribe: 'Anda telah berlangganan kategori ini. Anda akan menerima pemberitahuan apabila terdapat catatan baru.'
-helpcenter.flashes.news_subscribe: 'Anda telah berhasil berlangganan artikel berita ini. Anda akan diberikan notifikasi ketika ada yang berkomentar'
-helpcenter.flashes.news_unsubscribe: 'Anda telah berhenti berlangganan artikel berita ini.'
-helpcenter.flashes.news_unsubscribe_everything: 'Anda telah berhenti berlangganan seluruh pemberitahuan artikel berita'
-helpcenter.flashes.ticket_created: 'Tiket Anda telah dikirim.'
-helpcenter.flashes.ticket_feedback_thank_you: 'Terima kasih atas tanggapan Anda!'
 helpcenter.flashes.ticket_participant_already_error: 'Orang yang Anda coba tambahkan sebagai peserta sudah menjadi peserta pada tiket ini.'
-helpcenter.flashes.ticket_participant_email_error: 'Silakan masukkan email yang valid untuk peserta Anda dan coba lagi.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Terjadi masalah saat mencoba menghapus peserta Anda. Silakan coba lagi.'
-helpcenter.flashes.ticket_re_opened: 'Anda telah membuka kembali tiket ini.'
-helpcenter.flashes.ticket_replied: 'Balasan Anda telah dikirim. Terima Kasih!'
-helpcenter.flashes.ticket_resolved: 'Tiket Anda telah diselesaikan. Terima Kasih.'
-helpcenter.flashes.ticket_updated: 'Tiket Anda telah diperbarui. Terima Kasih!'
 helpcenter.flashes.user_add_email_verified: 'Alamat surel Anda telah ditambahkan ke akun Anda'
 helpcenter.flashes.user_add_email_verify: 'Kami perlu memverifikasi email Anda sebelum kami menambahkannya ke akun Anda. Silakan periksa kotak masuk email Anda untuk tautan verifikasi.'
 helpcenter.flashes.user_changed_primary_email: 'Alamat surel utama Anda telah diganti'
@@ -164,32 +120,23 @@ helpcenter.forms.label_save: Simpan
 helpcenter.general.add_comment: 'Tambah Komentar'
 helpcenter.general.admin_home: 'Beranda Admin'
 helpcenter.general.agent_bar_admin_community: 'Pengaturan Tanggapan'
-helpcenter.general.agent_bar_admin_dl: 'Pengaturan Unduhan'
 helpcenter.general.agent_bar_admin_kb: 'Pengaturan dasar pengetahuan'
 helpcenter.general.agent_bar_admin_lang: 'Pengaturan Bahasa'
 helpcenter.general.agent_bar_admin_news: 'Pengaturan  Berita'
 helpcenter.general.agent_bar_agent_community: 'Mengelola Tanggapan'
-helpcenter.general.agent_bar_agent_dl: 'Mengelola Unduhan '
 helpcenter.general.agent_bar_agent_home: 'Agen Rumah'
 helpcenter.general.agent_bar_agent_kb: 'Kelola dasar pengetahuan'
 helpcenter.general.agent_bar_agent_news: 'Kelola Berita'
 helpcenter.general.agents: Agent
 helpcenter.general.attachments: Lampiran
-helpcenter.general.cancel_action: Batalkan
-helpcenter.general.subscribe_action: Berlangganan
 helpcenter.general.chat: Obrolan
-helpcenter.general.comment_btn_save: 'Simpan Komentar'
 helpcenter.general.comments: Komentar
-helpcenter.general.comments_pending_validation: 'Komentar ini telah ditinjau dan akan segera ditampilkan'
-helpcenter.general.files_type: Unduhan
 helpcenter.general.email_address: 'Surat Elektronik/E-Mail'
 helpcenter.general.everything: Semuanya
-helpcenter.general.go_action: Jalankan
 helpcenter.general.impersonation_mode: 'Mode tiruan'
 helpcenter.general.label_search_enter_label: 'Harap berikan label untuk mencari'
 helpcenter.general.last_activity: 'Aktivitas terakhir'
 helpcenter.general.log_in: 'masuk'
-helpcenter.general.nav_downloads_desc: 'Jelajahi koleksi unduhan kami'
 helpcenter.general.nav_guides: Panduan
 helpcenter.general.no_search_query: 'Silakan ketik permintaan pencarian ke dalam kotak pencarian.'
 helpcenter.general.password: Kata Sandi
@@ -204,7 +151,6 @@ helpcenter.general.prop_rating_asc: 'Terendah diberi peringkat pertama'
 helpcenter.general.prop_rating_desc: 'Peringkat tertinggi pertama'
 helpcenter.general.prop_views_asc: 'Lebih sedikit dilihat dulu'
 helpcenter.general.prop_views_desc: 'Sebagian besar dilihat lebih dulu'
-helpcenter.general.rate_page: 'Beri nilai kualitas halaman ini'
 helpcenter.general.rate_page_positive: Membantu
 helpcenter.general.rerender_form: 'Harap tinjau formulir ini sebelum Anda mengirimkannya.'
 helpcenter.general.share: Bagikan
@@ -214,7 +160,6 @@ helpcenter.general.tags: Tanda
 helpcenter.general.updated: Diperbarui
 helpcenter.general.user: Pengguna
 helpcenter.general.you: Anda
-helpcenter.general.download_pdf: 'Unduh PDF'
 helpcenter.members.language: Bahasa
 helpcenter.members.timezone: Zona Waktu
 helpcenter.news.none: 'Belum ada berita'
@@ -230,12 +175,10 @@ helpcenter.tickets.list_date_created: 'Tanggal dibuat'
 helpcenter.tickets.list_date_last_agent: 'Balasan terakhir Agen'
 helpcenter.tickets.list_date_last_user: 'Balasan terakhir Pengguna'
 helpcenter.tickets.list_last_action: 'Tindakan Akhir'
-helpcenter.tickets.list_status_agent: 'Agen kami akan menanggapi'
 helpcenter.tickets.list_status_resolved: Terselesaikan
 helpcenter.tickets.list_status_user: 'Anda harus menanggapi'
 helpcenter.tickets.list_subject: Subjek
 helpcenter.tickets.list_ticket_ref: Referensi
-helpcenter.tickets.mark_unresolved: 'Buka tiket kembali'
 helpcenter.tickets.need_login_title: 'Anda harus masuk untuk membuka tiket'
 helpcenter.tickets.new_intro: 'Silakan lengkapi isian ini dan salah satu agen kami akan mengirimkan balasan melalui email secepatnya'
 helpcenter.tickets.new_section_title: 'Kontak Kami'
@@ -244,16 +187,13 @@ helpcenter.tickets.no_participants: 'Tidak ada peserta'
 helpcenter.tickets.not_allowed_desc: 'Maaf, agen kami tidak dapat melayani obrolan Anda saat ini.'
 helpcenter.tickets.not_allowed_title: 'Kami akan kembali'
 helpcenter.tickets.please_login_to_reply: 'Masuk untuk membalas'
-helpcenter.tickets.rate_negative: 'Ini tidak baik'
 helpcenter.tickets.rate_positive: 'Ini hebat'
 helpcenter.tickets.rate_question: 'Bagaimana nilai atas dukungan yang Anda dapatkan?'
 helpcenter.tickets.rate_support: 'Tingkatkan dukungan Anda'
-helpcenter.tickets.resolve_my_ticket_action: 'Selesaikan tiket saya'
 helpcenter.tickets.switched_department_rerender: 'Struktur formulir ini mungkin telah berubah. Harap tinjau formulir dan kirim lagi.'
 helpcenter.tickets.thank_you_check_email: 'Silakan verifikasi alamat email Anda'
 helpcenter.tickets.thank_you_check_email_desc: 'Untuk menyelesaikan pengiriman tiket Anda, Anda harus memeriksa kotak masuk email Anda. Silakan klik tautan verifikasi yang kami kirimkan kepada Anda.'
 helpcenter.tickets.timeline_marked: 'Tandai tiket ini:'
-helpcenter.tickets.timeline_re_opened: 'Buka kembali tiket ini'
 helpcenter.tickets.view_btn_add_to_ticket: 'Tambahkan ke tiket'
 helpcenter.tickets.view_btn_edit: Ubah
 helpcenter.tickets.view_btn_edit_full: 'Ubah tiket ini'
