@@ -1,19 +1,10 @@
 ---
-helpcenter.account.change_password_action: 'Cập nhật mật khẩu'
 helpcenter.account.comment_lockout: 'Bạn đã gửi rất nhiều nhận xét. Vui lòng đợi để gửi thêm.'
-helpcenter.account.email_btn_make_primary: 'Đặt chính'
-helpcenter.account.email_remove_action: 'Xóa email'
-helpcenter.account.email_resend_validation_action: 'Gửi lại email xác nhận'
 helpcenter.account.email_btn_usersource_set: 'Thêm Địa chỉ Email'
 helpcenter.account.login_captcha_failed: 'Bạn đã nhập mã CAPTCHA không hợp lệ. Vui lòng thử lại.'
 helpcenter.account.login_email: 'Email của bạn'
 helpcenter.account.login_external: 'Đăng nhập bằng dịch vụ bên ngoài'
 helpcenter.account.login_lockout: 'Bạn đã đăng nhập thất bại quá nhiều lần nên bạn đã bị khóa. Vui lòng thử lại sau.'
-helpcenter.account.login_reset_password_link: 'Cần lời nhắc nhở mật khẩu?'
-helpcenter.account.login_register_action: Trình diện
-helpcenter.account.login_stay_logged_in: 'Giữ trạng thái đăng nhập?'
-helpcenter.account.logout_action: Đăng xuất
-helpcenter.account.profile_save_action: 'Lưu hồ sơ'
 helpcenter.account.profile_delete_picture: 'Thay đổi hoặc xóa ảnh hồ sơ?'
 helpcenter.account.registration_set_password: 'Tài khoản với email này đã tồn tại. Chúng tôi đã gửi cho bạn một email cho phép bạn đặt mật khẩu và đăng nhập.'
 helpcenter.account.reset_password_click_here: 'Nhấp vào đây để yêu cầu mã đặt lại mật khẩu'
@@ -44,22 +35,12 @@ helpcenter.account.tickets_lockout: 'Bạn đã gửi quá nhiều vé vì vậy
 helpcenter.account.usersource_set_email_desc: 'Trước khi bạn có thể đăng nhập, chúng tôi cần địa chỉ email của bạn. Vui lòng nhập địa chỉ email của bạn dưới đây để chúng tôi có thể gửi cho bạn một email xác minh.'
 helpcenter.account.your_pending_email_addresses: 'Địa chỉ email đang chờ bạn'
 helpcenter.articles.section_title: Kiến thức cơ bản
-helpcenter.articles.view_as_agent: 'Bạn có thể xem trang này vì bạn là đại lý. Người dùng sẽ không thể xem trang này.'
-helpcenter.messenger.date_label: Ngày
-helpcenter.messenger.total_chat_time_label: 'Tổng thời gian trò chuyện'
-helpcenter.messenger.linked_ticket_label: 'Được chỉ định để mua vé'
-helpcenter.messenger.view_linked_ticket_action: 'Xem vé'
-helpcenter.community.like_action: 'Tôi đồng ý'
 helpcenter.community.error_login: 'Vui lòng hãy đăng nhập'
-helpcenter.general.name: Tên
 helpcenter.community.form_topic_title: Chức vụ
 helpcenter.community.no_matching: 'Không có phản hồi phù hợp'
 helpcenter.community.rate_forbidden: 'Bạn không được phép bỏ phiếu'
 helpcenter.community.section_title: Phản hồi
 helpcenter.direct_messages.reply_message: Thông điệp
-helpcenter.downloads.download_action: Tải về
-helpcenter.downloads.no_files: 'Chưa tải xuống'
-helpcenter.downloads.uploaded_on: Đã tải lên
 helpcenter.emails.chat_transcript: 'Cảm ơn bạn đã trò chuyện với chúng tôi. Đây là bảng điểm trò chuyện của bạn.'
 helpcenter.emails.chat_transcript_subject: 'Bản ghi trò chuyện'
 helpcenter.emails.comment_approved: 'Cảm nhận của bạn đã được xuất bản.'
@@ -116,32 +97,9 @@ helpcenter.error.404_desc: 'Rất tiếc, chúng tôi không thể tìm thấy t
 helpcenter.error.404_title: 'Không tìm thấy'
 helpcenter.error.general_title: 'Lỗi xuất hiện'
 helpcenter.error.permission_denied_title: 'Bạn không được phép làm điều đó'
-helpcenter.flashes.article_cat_subscribe: 'Bạn đã đăng ký thành công loại này. Bạn sẽ được thông báo khi bài viết mới được đăng.'
-helpcenter.flashes.article_cat_unsubscribe: 'Bạn đã hủy đăng ký khỏi danh mục này.'
-helpcenter.flashes.article_subscribe: 'Bạn đã đăng ký thành công bài báo này. Bạn sẽ được thông báo khi nó được cập nhật hoặc khi có một bình luận mới.'
 helpcenter.flashes.article_unsubscribe: 'Bạn đã hủy đăng ký thành công bài viết này.'
-helpcenter.flashes.article_unsubscribe_everything: 'Bạn đã hủy đăng ký nhận tất cả các thông báo của Kho lưu trữ'
-helpcenter.flashes.community_subscribe: 'Bạn đã đăng ký thành công mục phản hồi này. Bạn sẽ được thông báo khi nó được cập nhật hoặc khi có một bình luận mới.'
-helpcenter.flashes.community_unsubscribe: 'Bạn đã hủy đăng ký thành công mục phản hồi này.'
-helpcenter.flashes.community_unsubscribe_everything: 'Bạn đã hủy đăng ký nhận tất cả thông báo phản hồi'
-helpcenter.flashes.download_cat_subscribe: 'Bạn đã đăng ký thành công loại này. Bạn sẽ được thông báo khi có các tệp mới để tải xuống.'
-helpcenter.flashes.download_subscribe: 'Bạn đã đăng ký thành công tải xuống này. Bạn sẽ được thông báo khi nó được cập nhật hoặc khi có một bình luận mới.'
-helpcenter.flashes.download_unsubscribe: 'Bạn đã hủy đăng ký thành công lần tải xuống này.'
-helpcenter.flashes.download_unsubscribe_everything: 'Bạn đã hủy đăng ký tất cả thông báo tải xuống'
 helpcenter.flashes.guest_content_must_verify: 'Trước khi chúng tôi có thể đăng nội dung của bạn, bạn phải xác minh email của bạn. Vui lòng kiểm tra hộp thư email của bạn. Chúng tôi đã gửi cho bạn một liên kết xác minh.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Trước khi chúng tôi có thể chấp nhận vé của bạn, chúng tôi phải xác minh địa chỉ email của bạn. Vui lòng kiểm tra hộp thư email của bạn. Chúng tôi đã gửi cho bạn một liên kết xác minh.'
-helpcenter.flashes.new_community_topic_awaiting_review: 'Cảm ơn phản hôi của bạn. Nó sẽ được hiển thị trên cổng hỗ trợ của chúng tôi sau khi xem xét lại đại lý.'
-helpcenter.flashes.new_community_topic_posted: 'Cảm ơn phản hôi của bạn.'
-helpcenter.flashes.news_cat_subscribe: 'Bạn đã đăng ký thành công loại này. Bạn sẽ được thông báo về bài đăng mới.'
-helpcenter.flashes.news_subscribe: 'Bạn đã đăng ký thành công bài báo này. Bạn sẽ được thông báo khi có nhận xét mới.'
-helpcenter.flashes.news_unsubscribe: 'Bạn đã hủy đăng ký thành công bài báo này.'
-helpcenter.flashes.news_unsubscribe_everything: 'Bạn đã hủy đăng ký nhận tất cả thông báo bài viết mới'
-helpcenter.flashes.ticket_created: 'Vé của bạn đã được gửi.'
-helpcenter.flashes.ticket_feedback_thank_you: 'Cảm ơn phản hôi của bạn!'
-helpcenter.flashes.ticket_re_opened: 'Bạn đã mở lại vé này.'
-helpcenter.flashes.ticket_replied: 'Trả lời của bạn đã được gửi. Cảm ơn!'
-helpcenter.flashes.ticket_resolved: 'Vé của bạn hiện đã được đánh dấu là đã được giải quyết. Cảm ơn bạn.'
-helpcenter.flashes.ticket_updated: 'Vé của bạn đã được cập nhật. Cảm ơn!'
 helpcenter.flashes.user_add_email_verified: 'Địa chỉ email của bạn đã được thêm vào tài khoản của bạn.'
 helpcenter.flashes.user_add_email_verify: 'Chúng tôi cần phải xác minh email của bạn trước khi chúng tôi thêm nó vào tài khoản của bạn. Vui lòng kiểm tra hộp thư email của bạn để biết liên kết xác minh.'
 helpcenter.flashes.user_changed_primary_email: 'Địa chỉ email chính của bạn đã được thay đổi.'
@@ -158,31 +116,22 @@ helpcenter.general.admin: Quản trị viên
 helpcenter.general.admin_home: 'Trang chủ Quản trị'
 helpcenter.general.agent: Đặc vụ
 helpcenter.general.agent_bar_admin_community: 'Cài đặt phản hồi'
-helpcenter.general.agent_bar_admin_dl: 'Cài đặt tải xuống'
 helpcenter.general.agent_bar_admin_kb: 'Cài đặt Kiến thức'
 helpcenter.general.agent_bar_admin_lang: 'Cài đặt ngôn ngữ'
 helpcenter.general.agent_bar_admin_news: 'Cài đặt Tin tức'
 helpcenter.general.agent_bar_agent_community: 'Quản lý phản hồi'
-helpcenter.general.agent_bar_agent_dl: 'Quản lý tải xuống'
 helpcenter.general.agent_bar_agent_home: 'Đặc vụ Nhà'
 helpcenter.general.agent_bar_agent_kb: 'Quản lý Cơ sở Kiến thức'
 helpcenter.general.agent_bar_agent_news: 'Quản lý Tin tức'
 helpcenter.general.agents: Đại lý
 helpcenter.general.attachments: File đính kèm
-helpcenter.general.cancel_action: Hủy
-helpcenter.general.subscribe_action: Đăng ký
 helpcenter.general.chat: Trò chuyện
-helpcenter.general.comment_btn_save: 'Bình luận Tiết kiệm'
 helpcenter.general.comments: Bình luận
-helpcenter.general.comments_pending_validation: 'Nhận xét này đang được xem xét. Nó sẽ được hiển thị ngay'
-helpcenter.general.files_type: Tải xuống
 helpcenter.general.everything: Mọi điều
-helpcenter.general.go_action: Đi
 helpcenter.general.impersonation_mode: 'Chế độ mạo danh'
 helpcenter.general.label_search_enter_label: 'Vui lòng cung cấp nhãn để tìm kiếm'
 helpcenter.general.last_activity: 'Hoạt động cuối'
 helpcenter.general.log_in: 'Đăng nhập'
-helpcenter.general.nav_downloads_desc: 'Duyệt tải xuống của chúng tôi'
 helpcenter.general.no_search_query: 'Vui lòng nhập truy vấn tìm kiếm vào hộp tìm kiếm.'
 helpcenter.general.password: Mật khẩu
 helpcenter.general.print: In
@@ -196,7 +145,6 @@ helpcenter.general.prop_rating_asc: 'Xếp hạng thấp nhất đầu tiên'
 helpcenter.general.prop_rating_desc: 'Xếp hạng cao nhất trước tiên'
 helpcenter.general.prop_views_asc: 'Ít lần xem đầu tiên'
 helpcenter.general.prop_views_desc: 'Hầu hết lượt xem trước tiên'
-helpcenter.general.rate_page: 'Đánh giá chất lượng của trang này'
 helpcenter.general.rate_page_positive: Hữu ích
 helpcenter.general.rerender_form: 'Vui lòng xem lại biểu mẫu này trước khi bạn nộp.'
 helpcenter.general.share: Chia sẻ
@@ -205,7 +153,6 @@ helpcenter.general.tagged_with: 'được gắn thẻ với'
 helpcenter.general.tags: Thẻ
 helpcenter.general.user: Người dùng
 helpcenter.general.you: Bạn
-helpcenter.general.download_pdf: 'Tải về PDF'
 helpcenter.members.language: Ngôn ngữ
 helpcenter.members.timezone: Múi giờ
 helpcenter.news.none: 'Chưa có tin tức'
@@ -221,12 +168,10 @@ helpcenter.tickets.list_date_created: 'Ngày tạo'
 helpcenter.tickets.list_date_last_agent: 'Đại lý cuối cùng Trả lời'
 helpcenter.tickets.list_date_last_user: 'Người dùng cuối Trả lời'
 helpcenter.tickets.list_last_action: 'Tác vụ Cuối cùng'
-helpcenter.tickets.list_status_agent: 'Đại lý của chúng tôi sẽ đáp ứng'
 helpcenter.tickets.list_status_resolved: Giải quyết
 helpcenter.tickets.list_status_user: 'Bạn cần phản hồi'
 helpcenter.tickets.list_subject: Môn học
 helpcenter.tickets.list_ticket_ref: Tài liệu tham khảo
-helpcenter.tickets.mark_unresolved: 'Mở lại vé'
 helpcenter.tickets.need_login_title: 'Bạn cần phải đăng nhập để mở một vé'
 helpcenter.tickets.new_intro: 'Vui lòng hoàn tất biểu mẫu này và một trong các đại lý của chúng tôi sẽ trả lời bạn bằng email sớm nhất có thể.'
 helpcenter.tickets.new_section_title: 'Liên hệ chúng tôi'
@@ -234,16 +179,13 @@ helpcenter.tickets.no_participants: 'Không có người tham gia'
 helpcenter.tickets.not_allowed_desc: 'Rất tiếc, các đại lý của chúng tôi không thể trò chuyện của bạn vào lúc này'
 helpcenter.tickets.not_allowed_title: 'Chúng tôi sẽ quay lại ngay'
 helpcenter.tickets.please_login_to_reply: 'Đăng nhập để trả lời.'
-helpcenter.tickets.rate_negative: 'Nó không được tốt'
 helpcenter.tickets.rate_positive: 'Thật tuyệt'
 helpcenter.tickets.rate_question: 'Bạn đánh giá mức hỗ trợ bạn nhận được như thế nào?'
 helpcenter.tickets.rate_support: 'Đánh giá hỗ trợ của bạn'
-helpcenter.tickets.resolve_my_ticket_action: 'Giải quyết đơn đặt hàng của tôi'
 helpcenter.tickets.switched_department_rerender: 'Cấu trúc của biểu mẫu này có thể đã thay đổi. Vui lòng xem lại biểu mẫu và nộp lại.'
 helpcenter.tickets.thank_you_check_email: 'Vui lòng xác nhận địa chỉ email'
 helpcenter.tickets.thank_you_check_email_desc: 'Để hoàn tất việc gửi vé, bạn phải kiểm tra hộp thư email của mình. Vui lòng nhấp vào liên kết xác minh mà chúng tôi đã gửi cho bạn.'
 helpcenter.tickets.timeline_marked: 'Đánh dấu vé này:'
-helpcenter.tickets.timeline_re_opened: 'Mở lại vé này'
 helpcenter.tickets.view_btn_add_to_ticket: 'Thêm vào vé'
 helpcenter.tickets.view_btn_edit: Chỉnh sửa
 helpcenter.tickets.view_btn_edit_full: 'Chỉnh sửa vé này'
