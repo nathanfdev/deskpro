@@ -1,12 +1,7 @@
 ---
-helpcenter.account.email_resend_validation_action: '承認のためのEメールを再送'
-helpcenter.account.login_register_action: 登録
 helpcenter.articles.section_title: ナレッジベース
-helpcenter.community.like_action: '同意'
-helpcenter.general.name: 名前
 helpcenter.community.section_title: フィードバック
 helpcenter.direct_messages.reply_message: メッセージ
-helpcenter.downloads.download_action: ダウンロード
 helpcenter.emails.chat_transcript: 'チャットに参加いただきありがとうございました。以下、チャットの記録(トランスクリプト)です。'
 helpcenter.emails.chat_transcript_subject: 'チャットトランスクリプト'
 helpcenter.emails.comment_approved: 'コメントが公開されました。'
@@ -39,15 +34,10 @@ helpcenter.error.permission_denied_title: 'その動作は許可されていま�
 helpcenter.forms.label_save: 保存
 helpcenter.general.add_comment: 'コメントを追加'
 helpcenter.general.attachments: 添付
-helpcenter.general.cancel_action: キャンセル
-helpcenter.general.files_type: ダウンロード
 helpcenter.general.everything: 全て
-helpcenter.general.go_action: 進む
-helpcenter.general.nav_downloads_desc: 'ダウンロードを検索'
 helpcenter.general.password: パスワード
 helpcenter.general.rate_page_positive: 参考になった
 helpcenter.general.you: あなた
-helpcenter.general.download_pdf: 'PDFをダウンロード'
 helpcenter.members.language: 言語
 helpcenter.members.timezone: タイムゾーン
 helpcenter.tickets.guest_thank_you_title: 'ありがとうございました。'
@@ -56,6 +46,5 @@ helpcenter.tickets.list_status_resolved: 解決
 helpcenter.tickets.list_subject: 件名
 helpcenter.tickets.new_intro: 'フォームへの記入を完了してください。担当エージェントが折り返し電子メールにてご連絡します。'
 helpcenter.tickets.new_section_title: '連絡先'
-helpcenter.tickets.resolve_my_ticket_action: 'リクエストを解決にする'
 helpcenter.tickets.view_btn_edit: 編集
 helpcenter.tickets.view_unassigned: アサイン前

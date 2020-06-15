@@ -1,26 +1,14 @@
 ---
-helpcenter.account.change_password_action: 'Upravit heslo'
 helpcenter.account.comment_lockout: 'Odeslali jste přiliš mnoho kometářů v krátké době, prosíme o strpení.'
-helpcenter.account.email_btn_make_primary: 'Označit jako primární'
-helpcenter.account.email_remove_action: 'Odstranit e-mail'
-helpcenter.account.email_resend_validation_action: 'Znovu odeslat ověřovací e-mail'
 helpcenter.account.email_btn_usersource_set: 'Přidat e-mailovou adresu'
 helpcenter.account.login_captcha_failed: 'Zadali jste nesprávné CAPTCHA. Zkuste to, prosím, znovu.'
 helpcenter.account.login_email: 'Váš e-mail'
 helpcenter.account.login_external: 'Přihlásit se pomocí externí služby'
 helpcenter.account.login_lockout: 'Příliš mnoho neplatných pokusů o přihlášení. Váš účet byl dočasně pozastaven.'
-helpcenter.account.login_reset_password_link: 'Potřebujete připomenout heslo?'
-helpcenter.account.login_register_action: Registrovat
-helpcenter.account.login_stay_logged_in: 'Zůstat přihlášen(a)?'
-helpcenter.account.logout_action: Odhlásit
-helpcenter.account.profile_save_action: 'Uložit profil'
 helpcenter.account.profile_delete_picture: 'Změnit nebo vymazat fotku?'
 helpcenter.account.reset_password_click_here: 'Klikněte zde pro vyžádání kódu pro reset hesla'
 helpcenter.account.reset_password_invalid_desc: 'Váš kód pro reset hesla je neplatný. Vyžádejte si nový.'
-helpcenter.articles.published_label: Publikováno
-helpcenter.community.like_action: 'Souhlasím'
 helpcenter.community.error_login: 'Prosíme, přihlašte se'
-helpcenter.general.name: Jméno
 helpcenter.community.form_topic_title: Název
 helpcenter.community.no_matching: 'Žádná související připomínka'
 helpcenter.community.rate_forbidden: 'Nemůžete hlasovat'
@@ -71,26 +59,18 @@ helpcenter.forms.label_save: Uložit
 helpcenter.general.add_comment: 'Přidat komentář'
 helpcenter.general.admin_home: 'Admin domov. stránka'
 helpcenter.general.agent_bar_admin_community: 'Nastavení připomínek'
-helpcenter.general.agent_bar_admin_dl: 'Nastavení stahování'
 helpcenter.general.agent_bar_admin_kb: 'Nastavení znalostní báze'
 helpcenter.general.agent_bar_admin_lang: 'Nastavení jazyků'
 helpcenter.general.agent_bar_admin_news: 'Nastavení novinek'
 helpcenter.general.agent_bar_agent_community: 'Spravovat připomínky'
-helpcenter.general.agent_bar_agent_dl: 'Spravovat stahování'
 helpcenter.general.agent_bar_agent_home: 'Operátor domov. stránka'
 helpcenter.general.agent_bar_agent_kb: 'Spravovat znalostní bázi'
 helpcenter.general.agent_bar_agent_news: 'Spravovat novinky'
 helpcenter.general.attachments: Přílohy
-helpcenter.general.cancel_action: Zrušit
-helpcenter.general.subscribe_action: Odebírat
-helpcenter.general.comment_btn_save: 'Uložit komentář'
 helpcenter.general.comments: Komentáře
-helpcenter.general.comments_pending_validation: 'Komentář čeká na schválení. Za chvíli se zobrazí'
 helpcenter.general.everything: Vše
-helpcenter.general.go_action: Dál
 helpcenter.general.label_search_enter_label: 'Prosíme, uveďte štítek, který se má vyhledat'
 helpcenter.general.log_in: 'Přihlásit'
-helpcenter.general.nav_downloads_desc: 'Listujte našimi soubory'
 helpcenter.general.nav_guides: Návody
 helpcenter.general.no_search_query: 'Napište, co chcete vyhledat, do vyhledávacího okna.'
 helpcenter.general.password: Heslo
@@ -105,14 +85,12 @@ helpcenter.general.prop_rating_asc: 'Nejhůř hodnocené nejdřív'
 helpcenter.general.prop_rating_desc: 'Nejlíp hodnocené nejdřív'
 helpcenter.general.prop_views_asc: 'Nejmíň shlédnutí nejdřív'
 helpcenter.general.prop_views_desc: 'Nejvíc shlédnutí nejdřív'
-helpcenter.general.rate_page: 'Ohodnoťte tuto stránku'
 helpcenter.general.rerender_form: 'Prosíme, překontrolujte formulář před jeho odesláním.'
 helpcenter.general.share: Sdílet
 helpcenter.general.show: Zobraz
 helpcenter.general.tagged_with: 'označen'
 helpcenter.general.tags: Označení
 helpcenter.general.updated: Aktualizováno
-helpcenter.general.download_pdf: 'Stáhnout PDF'
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
 helpcenter.profile.account_disabled_message: 'Váš účet je v tuto chvíli pozastaven. Nemůžete se přihlásit ani spravovat své tikety.'

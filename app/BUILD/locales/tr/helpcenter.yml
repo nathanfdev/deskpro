@@ -1,14 +1,8 @@
 ---
-helpcenter.account.email_resend_validation_action: 'Doğrulama Epostasını Tekrar Gönder'
-helpcenter.account.login_register_action: Kayı ol
 helpcenter.articles.section_title: Bilgi Bankası
-helpcenter.articles.view_as_agent: 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.'
-helpcenter.community.like_action: 'Katılıyorum'
-helpcenter.general.name: Adı
 helpcenter.community.form_topic_title: Başlık
 helpcenter.community.section_title: Geri Bildirim
 helpcenter.direct_messages.reply_message: Mesaj
-helpcenter.downloads.download_action: İndir
 helpcenter.emails.chat_transcript: 'Sohbet için teşekkürler. Sohbet dökümünü burada.'
 helpcenter.emails.chat_transcript_subject: 'Sohbet Dökümü'
 helpcenter.emails.comment_approved: 'Yorumunuz yayınlandı.'
@@ -48,17 +42,12 @@ helpcenter.forms.label_save: Kaydet
 helpcenter.general.add_comment: 'Yorum ekle'
 helpcenter.general.agent: Personel
 helpcenter.general.attachments: Ekler
-helpcenter.general.cancel_action: Vazgeç
 helpcenter.general.comments: Yorumlar?
-helpcenter.general.files_type: İndirmeler
 helpcenter.general.everything: Her şey
-helpcenter.general.go_action: Git
-helpcenter.general.nav_downloads_desc: 'İndirmelere gözat'
 helpcenter.general.password: Parola
 helpcenter.general.rate_page_positive: Yararlı
 helpcenter.general.show: Gösteri
 helpcenter.general.you: Siz
-helpcenter.general.download_pdf: 'PDF İndir'
 helpcenter.members.language: Dil
 helpcenter.members.timezone: Zaman dilimi
 helpcenter.news.view_as_agent: 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.'
@@ -70,10 +59,8 @@ helpcenter.tickets.list_status_resolved: Çözüldü
 helpcenter.tickets.list_subject: Konu
 helpcenter.tickets.new_intro: 'Lütfen bu formu doldurun. Personelimiz mümkün olan en kısa sürede size eposta ile geri dönüş yapacaktır.'
 helpcenter.tickets.new_section_title: 'İletişim'
-helpcenter.tickets.rate_negative: 'Kötü'
 helpcenter.tickets.rate_positive: 'Harika'
 helpcenter.tickets.rate_question: 'Almış olduğunuz destek hizmetini değerlendirebilir misiniz ?'
 helpcenter.tickets.rate_support: 'Destek ekibimizi puanlayınız'
-helpcenter.tickets.resolve_my_ticket_action: 'Çağrı kaydımı çözüldü olarak işaretle.'
 helpcenter.tickets.view_btn_edit: Düzenle
 helpcenter.tickets.view_unassigned: Atanmamış

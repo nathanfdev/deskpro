@@ -1,20 +1,11 @@
 ---
-helpcenter.account.change_password_action: 'Wachtwoord bijwerken'
 helpcenter.account.comment_lockout: 'U heeft veel reacties verstuurd. Wacht om er meer te versturen.'
-helpcenter.account.email_btn_make_primary: 'Primair maken'
-helpcenter.account.email_remove_action: 'E-mailadres verwijderen'
-helpcenter.account.email_resend_validation_action: 'Stuur validatie e-mail'
 helpcenter.account.email_btn_usersource_set: 'E-mailadres toevoegen'
 helpcenter.account.login_captcha_failed: 'U heeft een ongeldige CAPTCHA-code ingevuld. Probeer het nogmaals.'
 helpcenter.account.login_email: 'Uw e-mailadres'
 helpcenter.account.login_external: 'Inloggen met een externe service'
 helpcenter.account.login_lockout: 'U heeft te veel mislukte inlogpogingen, dus u bent uitgesloten. Probeer het later nogmaals.'
-helpcenter.account.login_reset_password_link: 'Wachtwoordherinnering nodig?'
-helpcenter.account.login_register_action: Registreren
-helpcenter.account.login_stay_logged_in: 'Ingelogd blijven?'
-helpcenter.account.logout_action: Uitloggen
 helpcenter.account.new_ticket_no_login: 'Portal CRM is uitgeschakeld. Kon geen ticket plaatsen.'
-helpcenter.account.profile_save_action: 'Profiel opslaan'
 helpcenter.account.profile_delete_picture: 'Profielfoto wijzigen of verwijderen?'
 helpcenter.account.registration_set_password: 'Een account met dit e-mailadres bestaat al. We hebben u een e-mail gestuurd waarmee u uw wachtwoord in kunt stellen en loggen.'
 helpcenter.account.reset_password_click_here: 'Klik hier om een wachtwoord reset code aan te vragen'
@@ -44,23 +35,12 @@ helpcenter.account.submit_saved_form_go: 'Klik hier om het formulier automatisch
 helpcenter.account.tickets_lockout: 'U heeft te vaak tickets verstuurd, dus u bent uitgesloten. Probeer het later nogmaals.'
 helpcenter.account.usersource_set_email_desc: 'Voordat u kunt inloggen hebben we uw e-mailadres nodig. Vul uw e-mailadres hieronder in, zodat we u een verificatiemail kunnen sturen.'
 helpcenter.account.your_pending_email_addresses: 'Uw e-mailadressen in afwachting'
-helpcenter.articles.published_label: Gepubliceerd
 helpcenter.articles.section_title: Kennisbank
-helpcenter.articles.view_as_agent: 'U kunt deze pagina zien, omdat u een medewerker bent. Gebruikers zullen deze pagina niet kunnen zien.'
-helpcenter.messenger.date_label: Datum
-helpcenter.messenger.total_chat_time_label: 'Totale chattijd'
-helpcenter.messenger.linked_ticket_label: 'Toegewezen aan ticket'
-helpcenter.messenger.view_linked_ticket_action: 'Ticket tonen'
-helpcenter.community.like_action: 'Ik ben het eens'
 helpcenter.community.error_login: 'Inloggen'
-helpcenter.general.name: Naam
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Geen overeenkomstige gemeenschapsonderwerpen'
 helpcenter.community.rate_forbidden: 'U mag niet stemmen'
 helpcenter.direct_messages.reply_message: Bericht
-helpcenter.downloads.download_action: Downloaden
-helpcenter.downloads.no_files: 'Nog geen downloads'
-helpcenter.downloads.uploaded_on: Geüpload
 helpcenter.emails.chat_transcript: 'Bedankt voor het chatten met ons. Hierbij ontvangt u de kopie van het gesprek.'
 helpcenter.emails.chat_transcript_subject: 'Kopie van chatgeschiedenis'
 helpcenter.emails.comment_approved: 'Uw reactie is gepubliceerd.'
@@ -119,35 +99,11 @@ helpcenter.error.404_desc: 'Sorry, maar we konden deze pagina niet vinden.'
 helpcenter.error.404_title: 'Niet gevonden'
 helpcenter.error.general_title: 'Een fout deed zich voor'
 helpcenter.error.permission_denied_title: 'Dit is niet toegestaan'
-helpcenter.flashes.article_cat_subscribe: 'U heeft zich succesvol geabonneerd op deze categorie. U krijgt een melding wanneer nieuwe artikelen zijn geplaatst.'
-helpcenter.flashes.article_cat_unsubscribe: 'U heeft zich succesvol afgemeld voor deze categorie.'
-helpcenter.flashes.article_subscribe: 'U heeft zich succesvol geabonneerd op dit artikel. U krijgt een melding wanneer het is bijgewerkt of wanneer er een nieuwe reactie is geplaatst.'
 helpcenter.flashes.article_unsubscribe: 'U heeft zich succesvol afgemeld voor dit artikel.'
-helpcenter.flashes.article_unsubscribe_everything: 'U heeft zich afgemeld voor alle kennisbankmeldingen'
-helpcenter.flashes.community_subscribe: 'U heeft zich succesvol geabonneerd op dit gemeenschapsonderwerp. U krijgt een melding wanneer het is bijgewerkt of wanneer er een nieuwe reactie is geplaatst.'
-helpcenter.flashes.community_unsubscribe: 'U heeft zich succesvol afgemeld voor dit gemeenschapsonderwerp.'
-helpcenter.flashes.community_unsubscribe_everything: 'U heeft zich afgemeld voor alle gemeenschapsonderwerpen'
-helpcenter.flashes.download_cat_subscribe: 'U heeft zich succesvol geabonneerd op deze categorie. U krijgt een melding wanneer nieuwe bestanden beschikbaar zijn om te downloaden.'
-helpcenter.flashes.download_subscribe: 'U heeft zich succesvol geabonneerd op deze download. U krijgt een melding wanneer het is bijgewerkt of wanneer er een nieuwe reactie is geplaatst.'
-helpcenter.flashes.download_unsubscribe: 'U heeft zich succesvol afgemeld voor deze download.'
-helpcenter.flashes.download_unsubscribe_everything: 'U heeft zich succesvol afgemeld voor alle downloadmeldingen'
 helpcenter.flashes.guest_content_must_verify: 'Voordat we uw inhoud kunnen plaatsen, moet u uw e-mailadres verifiëren. Controleer uw inbox van uw e-mail. We hebben u een verificatielink gestuurd.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Voordat we uw ticket kunnen accepteren, moet u uw e-mailadres verifiëren. Controleer uw inbox van uw e-mail. We hebben u een verificatielink gestuurd.'
-helpcenter.flashes.new_community_topic_awaiting_review: 'Bedankt voor uw gemeenschapsonderwerp. Deze zal op onze ondersteuningsportal zichtbaar worden nadat deze is gecontroleerd door een medewerker.'
-helpcenter.flashes.new_community_topic_posted: 'Bedankt voor uw gemeenschapsonderwerp.'
-helpcenter.flashes.news_cat_subscribe: 'U heeft zich succesvol geabonneerd voor deze categorie. U krijgt een melding van nieuwe berichten.'
-helpcenter.flashes.news_subscribe: 'U heeft zich succesvol geabonneerd op dit nieuwsartikel. U krijgt een melding wanneer er een nieuwe reacties zijn geplaatst.'
-helpcenter.flashes.news_unsubscribe: 'U heeft zich succesvol afgemeld voor dit nieuwsartikel.'
-helpcenter.flashes.news_unsubscribe_everything: 'U heeft zich afgemeld voor alle nieuwsartikelmeldingen'
-helpcenter.flashes.ticket_created: 'Uw ticket is verstuurd.'
-helpcenter.flashes.ticket_feedback_thank_you: 'Bedankt voor uw feedback!'
 helpcenter.flashes.ticket_participant_already_error: 'De persoon die u als deelnemer probeerde toe te voegen, is al deelnemer aan dit ticket.'
-helpcenter.flashes.ticket_participant_email_error: 'Voer een geldig e-mailadres in voor uw deelnemer en probeer het opnieuw.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Er is een probleem opgetreden bij het verwijderen van uw deelnemer. Probeer het opnieuw.'
-helpcenter.flashes.ticket_re_opened: 'U heeft dit ticket heropend.'
-helpcenter.flashes.ticket_replied: 'Uw antwoord is verstuurd. Bedankt!'
-helpcenter.flashes.ticket_resolved: 'Uw ticket is nu gemarkeerd als opgelost. Bedankt.'
-helpcenter.flashes.ticket_updated: 'Uw ticket is bijgewerkt. Bedankt!'
 helpcenter.flashes.user_add_email_verified: 'Uw e-mailadres is toegevoegd aan uw account.'
 helpcenter.flashes.user_add_email_verify: 'We moeten uw e-mailadres verifiëren voordat we het aan uw account toevoegen. Controleer uw inbox van uw e-mail voor een verificatielink.'
 helpcenter.flashes.user_changed_primary_email: 'Uw primaire e-mailadres is gewijzigd.'
@@ -165,30 +121,22 @@ helpcenter.general.admin: Beheerder
 helpcenter.general.admin_home: 'Home beheerder'
 helpcenter.general.agent: Medewerker
 helpcenter.general.agent_bar_admin_community: 'Feedback-instellingen'
-helpcenter.general.agent_bar_admin_dl: 'Downloads-instellingen'
 helpcenter.general.agent_bar_admin_kb: 'Kennisbank-instellingen'
 helpcenter.general.agent_bar_admin_lang: 'Taalinstellingen'
 helpcenter.general.agent_bar_admin_news: 'Nieuws-instellingen'
 helpcenter.general.agent_bar_agent_community: 'Gemeenschapsonderwerp beheren'
-helpcenter.general.agent_bar_agent_dl: 'Downloads beheren'
 helpcenter.general.agent_bar_agent_home: 'Home medewerker'
 helpcenter.general.agent_bar_agent_kb: 'Kennisbank beheren'
 helpcenter.general.agent_bar_agent_news: 'Nieuws beheren'
 helpcenter.general.agents: Medewerkers
 helpcenter.general.attachments: Bijlagen
-helpcenter.general.cancel_action: Annuleren
-helpcenter.general.subscribe_action: Abonneren
-helpcenter.general.comment_btn_save: 'Reactie opslaan'
 helpcenter.general.comments: Reacties
-helpcenter.general.comments_pending_validation: 'Deze reactie wordt gecontroleerd. Deze zal binnenkort zichtbaar zijn'
 helpcenter.general.email_address: 'E-mailadres'
 helpcenter.general.everything: Alles
-helpcenter.general.go_action: Gaan
 helpcenter.general.impersonation_mode: 'Verpersoonlijking modus'
 helpcenter.general.label_search_enter_label: 'Geef een label om naar te zoek op'
 helpcenter.general.last_activity: 'Laatste activiteit'
 helpcenter.general.log_in: 'Inloggen'
-helpcenter.general.nav_downloads_desc: 'Bekijk onze downloads'
 helpcenter.general.nav_guides: Gidsen
 helpcenter.general.no_search_query: 'Typ een zoekterm in het zoekveld.'
 helpcenter.general.password: Wachtwoord
@@ -203,7 +151,6 @@ helpcenter.general.prop_rating_asc: 'Laagst beoordeeld eerst'
 helpcenter.general.prop_rating_desc: 'Hoogst beoordeeld eerst'
 helpcenter.general.prop_views_asc: 'Minste weergaven eerst'
 helpcenter.general.prop_views_desc: 'Meeste weergaven eerst'
-helpcenter.general.rate_page: 'Beoordeel de kwaliteit van deze pagina'
 helpcenter.general.rate_page_positive: Behulpzaam
 helpcenter.general.rerender_form: 'Controleer dit formulier voordat u het verstuurd.'
 helpcenter.general.share: Delen
@@ -212,7 +159,6 @@ helpcenter.general.tagged_with: 'getagd met'
 helpcenter.general.updated: Bijgewerkt
 helpcenter.general.user: Gebruiker
 helpcenter.general.you: U
-helpcenter.general.download_pdf: 'PDF downloaden'
 helpcenter.members.language: Taal
 helpcenter.members.timezone: Tijdzone
 helpcenter.news.none: 'Nog geen nieuws'
@@ -228,12 +174,10 @@ helpcenter.tickets.list_date_created: 'Datum aangemaakt'
 helpcenter.tickets.list_date_last_agent: 'Laatste antwoord medewerker'
 helpcenter.tickets.list_date_last_user: 'Laatste antwoord medewerker'
 helpcenter.tickets.list_last_action: 'Laatste actie'
-helpcenter.tickets.list_status_agent: 'Onze medewerker zal reageren'
 helpcenter.tickets.list_status_resolved: Opgelost
 helpcenter.tickets.list_status_user: 'U moet reageren'
 helpcenter.tickets.list_subject: Onderwerp
 helpcenter.tickets.list_ticket_ref: Referentie
-helpcenter.tickets.mark_unresolved: 'Ticket heropenen'
 helpcenter.tickets.need_login_title: 'U moet inloggen op een ticket te openen'
 helpcenter.tickets.new_intro: 'Vul dit formulier in en één van onze medewerkers zal u zo spoedig mogelijk via mail antwoorden.'
 helpcenter.tickets.new_section_title: 'Neem contact met ons op'
@@ -242,16 +186,13 @@ helpcenter.tickets.no_participants: 'Geen deelnemers'
 helpcenter.tickets.not_allowed_desc: 'Sorry, onze medewerker zijn niet in de gelegenheid om uw chat op dit moment aan te nemen'
 helpcenter.tickets.not_allowed_title: 'We zijn zo terug'
 helpcenter.tickets.please_login_to_reply: 'Log in om te antwoorden.'
-helpcenter.tickets.rate_negative: 'Het was niet goed'
 helpcenter.tickets.rate_positive: 'Het was geweldig'
 helpcenter.tickets.rate_question: 'Hoe zou u de ondersteuning die u heeft ontvangen beoordelen?'
 helpcenter.tickets.rate_support: 'Beoordeel uw ondersteuning'
-helpcenter.tickets.resolve_my_ticket_action: 'Markeer mijn ticket als opgelost'
 helpcenter.tickets.switched_department_rerender: 'De structuur van dit formulier kan gewijzigd zijn. Controleer het formulier en verstuur het nogmaals.'
 helpcenter.tickets.thank_you_check_email: 'Verifieer uw e-mailadres'
 helpcenter.tickets.thank_you_check_email_desc: 'Om verzending van uw ticket te voltooien, moet u uw inbox van uw e-mail controleren. Klik op de verificatielink die we u hebben gestuurd.'
 helpcenter.tickets.timeline_marked: 'heeft dit ticket gemarkeerd:'
-helpcenter.tickets.timeline_re_opened: 'heeft dit ticket heropend'
 helpcenter.tickets.view_btn_add_to_ticket: 'Aan ticket toevoegen'
 helpcenter.tickets.view_btn_edit: Bewerken
 helpcenter.tickets.view_btn_edit_full: 'Dit ticket bewerken'

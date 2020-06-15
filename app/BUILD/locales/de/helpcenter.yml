@@ -1,21 +1,12 @@
 ---
-helpcenter.account.change_password_action: 'Passwort aktualisieren'
 helpcenter.account.comment_lockout: 'Sie haben in kurzer Zeit sehr viele Kommentare gesendet. Bitte warten Sie einige Zeit, bevor Sie weitere senden.'
-helpcenter.account.email_btn_make_primary: 'Als primäre Adresse verwenden'
-helpcenter.account.email_remove_action: 'E-Mail entfernen'
-helpcenter.account.email_resend_validation_action: 'Validierungs-E-Mail erneut zusenden'
 helpcenter.account.email_btn_usersource_set: 'E-Mail-Adresse hinzufügen'
 helpcenter.account.login_captcha_failed: 'Sie haben einen falschen CAPTCHA-Code eingegeben. Bitte versuchen Sie es noch einmal.'
 helpcenter.account.login_email: 'Ihre E-Mail-Adresse'
 helpcenter.account.login_email_placeholder: email@beispiel.de
 helpcenter.account.login_external: 'Anmelden über einen externen Dienst'
 helpcenter.account.login_lockout: 'Der Zugang wurde wegen zu vieler ungültiger Versuche gesperrt. Bitte versuchen Sie es später noch einmal.'
-helpcenter.account.login_reset_password_link: 'Benötigen Sie eine Passwort-Erinnerung?'
-helpcenter.account.login_register_action: Registrieren
-helpcenter.account.login_stay_logged_in: 'Angemeldet bleiben?'
-helpcenter.account.logout_action: Abmelden
 helpcenter.account.new_ticket_no_login: 'Portal CRM ist deaktiviert. Es konnte kein Ticket gesendet werden.'
-helpcenter.account.profile_save_action: 'Profil speichern'
 helpcenter.account.profile_delete_picture: 'Profilbild ändern oder löschen?'
 helpcenter.account.registration_set_password: 'Ein Konto mit dieser Email-Adresse existiert bereits. Wir haben Ihnen eine E-Mail geschickt, über die Sie Ihr Passwort festlegen und sich anmelden können.'
 helpcenter.account.reset_password_click_here: 'Hier klicken, um einen Code zum Zurücksetzen des Passworts anzufordern'
@@ -45,22 +36,12 @@ helpcenter.account.submit_saved_form_go: 'Klicken Sie hier, um das Formular auto
 helpcenter.account.tickets_lockout: 'Sie haben zu viele Tickets übermittelt, deshalb wurden Sie gesperrt. Bitte versuchen Sie es später noch einmal.'
 helpcenter.account.usersource_set_email_desc: 'Bevor Sie sich anmelden können, benötigen wir Ihre E-Mail-Adresse. Bitte geben Sie diese ein, damit wir Ihnen eine Bestätigungs-E-Mail senden können.'
 helpcenter.account.your_pending_email_addresses: 'Ihre unbestätigten E-Mail-Adressen'
-helpcenter.articles.published_label: Veröffentlicht
 helpcenter.articles.section_title: Wissensdatenbank
-helpcenter.articles.view_as_agent: 'Sie können diese Seite sehen, weil Sie Mitarbeiter sind. Normale Benutzer können diese Seite nicht sehen.'
-helpcenter.messenger.date_label: Datum
-helpcenter.messenger.total_chat_time_label: 'Gesamte Chat-Zeit'
-helpcenter.messenger.linked_ticket_label: 'Zugeordnet zum Ticket'
-helpcenter.messenger.view_linked_ticket_action: 'Tickets anzeigen'
-helpcenter.community.like_action: 'Ich stimme zu'
 helpcenter.community.error_login: 'Bitte anmelden'
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Kein passendes Community Topic'
 helpcenter.community.rate_forbidden: 'Sie dürfen nicht abstimmen'
 helpcenter.direct_messages.reply_message: Nachricht
-helpcenter.downloads.download_action: Herunterladen
-helpcenter.downloads.no_files: 'Bisher keine Downloads'
-helpcenter.downloads.uploaded_on: Hochgeladen
 helpcenter.emails.chat_transcript: 'Vielen Dank für den Chat mit uns. Hier ist Ihre Chat-Abschrift.'
 helpcenter.emails.chat_transcript_subject: 'Chat-Abschrift'
 helpcenter.emails.comment_approved: 'Ihr Kommentar wurde veröffentlicht.'
@@ -119,35 +100,11 @@ helpcenter.error.404_desc: 'Es tut uns leid, aber diese Seite kann nicht gefunde
 helpcenter.error.404_title: 'Nicht gefunden'
 helpcenter.error.general_title: 'Es ist ein Fehler aufgetreten'
 helpcenter.error.permission_denied_title: 'Sie sind nicht berechtigt, dies zu tun'
-helpcenter.flashes.article_cat_subscribe: 'Sie haben diese Kategorie erfolgreich abonniert. Sie werden benachrichtigt, wenn neue Artikel veröffentlicht werden.'
-helpcenter.flashes.article_cat_unsubscribe: 'Sie haben sich aus dieser Kategorie erfolgreich abgemeldet.'
-helpcenter.flashes.article_subscribe: 'Sie haben diesen Artikel erfolgreich abonniert. Sie werden benachrichtigt, wenn er aktualisiert wird, oder wenn es einen neuen Kommentar gibt.'
 helpcenter.flashes.article_unsubscribe: 'Sie haben sich von diesem Artikel erfolgreich abgemeldet.'
-helpcenter.flashes.article_unsubscribe_everything: 'Sie haben sich von allen Wissensdatenbank-Benachrichtigungen abgemeldet'
-helpcenter.flashes.community_subscribe: 'Sie haben dieses Community Topic-Thema erfolgreich abonniert. Sie werden benachrichtigt, wenn es aktualisiert wird, oder wenn es einen neuen Kommentar gibt.'
-helpcenter.flashes.community_unsubscribe: 'Sie haben sich von diesem Community Topic-Artikel erfolgreich abgemeldet.'
-helpcenter.flashes.community_unsubscribe_everything: 'Sie haben sich von allen Community Topic-Benachrichtigungen abgemeldet'
-helpcenter.flashes.download_cat_subscribe: 'Sie haben diese Kategorie erfolgreich abonniert. Sie werden benachrichtigt, wenn neue Dateien zum Download verfügbar sind.'
-helpcenter.flashes.download_subscribe: 'Sie haben diesen Download erfolgreich abonniert. Sie werden benachrichtigt, wenn er aktualisiert wird, oder wenn es einen neuen Kommentar gibt.'
-helpcenter.flashes.download_unsubscribe: 'Sie haben sich von diesem Download erfolgreich abgemeldet.'
-helpcenter.flashes.download_unsubscribe_everything: 'Sie haben sich von allen Download-Benachrichtigungen abgemeldet'
 helpcenter.flashes.guest_content_must_verify: 'Bevor wir Ihre Inhalte veröffentlichen können, müssen Sie Ihre E-Mail bestätigen. Bitte überprüfen Sie Ihren E-Mail-Posteingang. Wir haben Ihnen einen Bestätigungslink gesendet.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Bevor wir Ihr Ticket akzeptieren können, müssen Sie Ihre E-Mail-Adresse bestätigen. Bitte überprüfen Sie Ihre E-Mail-Posteingang. Wir haben Ihnen einen Bestätigungslink geschickt.'
-helpcenter.flashes.new_community_topic_awaiting_review: 'Danke für Ihr Community Topic. Es wird sichtbar sein, nachdem ein Mitarbeiter es freigeschalten hat.'
-helpcenter.flashes.new_community_topic_posted: 'Danke für Ihr Community Topic.'
-helpcenter.flashes.news_cat_subscribe: 'Sie haben diese Kategorie erfolgreich abonniert. Sie werden über neue Einträge informiert.'
-helpcenter.flashes.news_subscribe: 'Sie haben diesen Neuigkeiten-Eintrag erfolgreich abonniert. Sie werden benachrichtigt, wenn es neue Kommentare gibt.'
-helpcenter.flashes.news_unsubscribe: 'Sie haben sich erfolgreich von diesem News Artikel abgemeldet.'
-helpcenter.flashes.news_unsubscribe_everything: 'Sie haben sich von allen Benachrichtigungen über Neuigkeiten-Einträge abgemeldet.'
-helpcenter.flashes.ticket_created: 'Ihr Ticket wurde übertragen.'
-helpcenter.flashes.ticket_feedback_thank_you: 'Vielen Dank für Ihr Community Topic!'
 helpcenter.flashes.ticket_participant_already_error: 'Die Person, die Sie als Teilnehmer hinzufügen wollten, ist bereits Teilnehmer dieses Tickets.'
-helpcenter.flashes.ticket_participant_email_error: 'Bitte geben Sie eine gültige E-Mail-Adresse für Ihren Teilnehmer ein und versuchen Sie es erneut.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Beim Versuch, den Teilnehmer zu entfernen, ist ein Problem aufgetreten. Bitte versuche es erneut.'
-helpcenter.flashes.ticket_re_opened: 'Sie haben das Ticket wieder geöffnet.'
-helpcenter.flashes.ticket_replied: 'Ihre Antwort wurde übertragen. Danke!'
-helpcenter.flashes.ticket_resolved: 'Ihr Ticket ist nun als "erledigt" markiert. Danke!'
-helpcenter.flashes.ticket_updated: 'Ihr Ticket wurde aktualisiert. Danke!'
 helpcenter.flashes.user_add_email_verified: 'Ihre Email-Adresse wurde Ihrem Konto hinzugefügt.'
 helpcenter.flashes.user_add_email_verify: 'Wir müssen Ihre E-Mail-Adresse verifizieren, bevor wir sie zu Ihrem Konto hinzufügen können. Bitte prüfen Sie Ihren Posteingang auf die E-Mail mit dem Validierungs-Link.'
 helpcenter.flashes.user_changed_primary_email: 'Ihre primäre E-Mail-Adresse wurde geändert.'
@@ -164,30 +121,22 @@ helpcenter.general.add_comment: 'Fügen Sie einen Kommentar hinzu'
 helpcenter.general.admin_home: 'Admin Startseite'
 helpcenter.general.agent: Mitarbeiter
 helpcenter.general.agent_bar_admin_community: 'Community Topic Einstellungen'
-helpcenter.general.agent_bar_admin_dl: 'Download Einstellungen'
 helpcenter.general.agent_bar_admin_kb: 'Wissensdatenbank Einstellungen'
 helpcenter.general.agent_bar_admin_lang: 'Sprache Einstellungen'
 helpcenter.general.agent_bar_admin_news: 'Neuigkeiten-Einstellungen'
 helpcenter.general.agent_bar_agent_community: 'Community Topic verwalten'
-helpcenter.general.agent_bar_agent_dl: 'Downloads verwalten'
 helpcenter.general.agent_bar_agent_home: 'Mitarbeiter-Startseite'
 helpcenter.general.agent_bar_agent_kb: 'Wissensdatenbank verwalten'
 helpcenter.general.agent_bar_agent_news: 'Neuigkeiten verwalten'
 helpcenter.general.agents: Mitarbeiter
 helpcenter.general.attachments: Anhänge
-helpcenter.general.cancel_action: Abbrechen
-helpcenter.general.subscribe_action: Abonnieren
-helpcenter.general.comment_btn_save: 'Kommentar speichern'
 helpcenter.general.comments: Kommentare
-helpcenter.general.comments_pending_validation: 'Dieser Kommentar wird überprüft und in Kürze angezeigt.'
 helpcenter.general.email_address: 'E-Mail'
 helpcenter.general.everything: Alles
-helpcenter.general.go_action: Los
 helpcenter.general.impersonation_mode: 'Identitätswechsel -Modus'
 helpcenter.general.label_search_enter_label: 'Bitte geben Sie eine Bezeichnung für die Suche ein'
 helpcenter.general.last_activity: 'Letzte Aktivität'
 helpcenter.general.log_in: 'Anmelden'
-helpcenter.general.nav_downloads_desc: 'Durchsuchen Sie unsere Downloads'
 helpcenter.general.nav_guides: das Handbuch
 helpcenter.general.no_search_query: 'Bitte geben Sie einen Suchbegriff in das Suchfeld ein.'
 helpcenter.general.password: Passwort
@@ -202,7 +151,6 @@ helpcenter.general.prop_rating_asc: 'der am niedrigsten bewertet zuerst'
 helpcenter.general.prop_rating_desc: 'der am höchsten bewertet zuerst'
 helpcenter.general.prop_views_asc: 'am wenigsten zuerst'
 helpcenter.general.prop_views_desc: 'am höchsten zuerst'
-helpcenter.general.rate_page: 'Bewerten Sie die Qualität von dieser Seite'
 helpcenter.general.rate_page_positive: Hilfreich
 helpcenter.general.rerender_form: 'Bitte prüfen Sie vor dem Absenden Ihre Angaben.'
 helpcenter.general.share: Teilen
@@ -211,7 +159,6 @@ helpcenter.general.tagged_with: 'getaggt mit'
 helpcenter.general.updated: Aktualisierte
 helpcenter.general.user: Benutzer
 helpcenter.general.you: Sie
-helpcenter.general.download_pdf: 'PDF herunterladen'
 helpcenter.members.language: Sprache
 helpcenter.members.timezone: Zeitzone
 helpcenter.news.none: 'Noch keine Neuigkeiten'
@@ -227,12 +174,10 @@ helpcenter.tickets.list_date_created: 'Erstellt am'
 helpcenter.tickets.list_date_last_agent: 'Letzte Mitarbeiter-Antwort'
 helpcenter.tickets.list_date_last_user: 'Letzte Antwort Benutzer'
 helpcenter.tickets.list_last_action: 'Letzte Aktivität'
-helpcenter.tickets.list_status_agent: 'Unser Mitarbeiter wird antworten'
 helpcenter.tickets.list_status_resolved: Gelöst
 helpcenter.tickets.list_status_user: 'Sie sollten antworten'
 helpcenter.tickets.list_subject: Betreff
 helpcenter.tickets.list_ticket_ref: Referenz
-helpcenter.tickets.mark_unresolved: 'Ticket wieder öffnen'
 helpcenter.tickets.need_login_title: 'Um ein Ticket zu schreiben loggen Sie sich bitte ein'
 helpcenter.tickets.new_intro: 'Bitte füllen Sie dieses Formular aus und einer unserer Mitarbeiter wird Ihnen per E-Mail so bald wie möglich antworten.'
 helpcenter.tickets.new_section_title: 'Kontaktieren Sie uns'
@@ -241,16 +186,13 @@ helpcenter.tickets.no_participants: 'Keine Teilnehmer'
 helpcenter.tickets.not_allowed_desc: 'Es tut uns leid. Momentan kann keiner unserer Mitarbeiter Ihren Chat übernehmen'
 helpcenter.tickets.not_allowed_title: 'Wir sind sofort zurück'
 helpcenter.tickets.please_login_to_reply: 'Anmelden um zu antworten'
-helpcenter.tickets.rate_negative: 'Es war nicht gut'
 helpcenter.tickets.rate_positive: 'Es war großartig'
 helpcenter.tickets.rate_question: 'Wie würden Sie den Support bewerten den Sie erhalten haben?'
 helpcenter.tickets.rate_support: 'Bewerten Sie den Support'
-helpcenter.tickets.resolve_my_ticket_action: 'Mein Ticket schließen'
 helpcenter.tickets.switched_department_rerender: 'Die Eingaben dieses Formulares haben sich geändert. Bitte überprüfen Sie die Eingaben und übermitteln dies erneuert,'
 helpcenter.tickets.thank_you_check_email: 'Bitte bestätigen Sie Ihre E-Mail-Adresse'
 helpcenter.tickets.thank_you_check_email_desc: 'Um Ihr Ticket einzureichen, müssen Sie Ihre Mailbox überprüfen. Wir haben Ihnen einen Verifizierungslink zugestellt, welchen Sie bitte anklicken.'
 helpcenter.tickets.timeline_marked: 'markieren Sie dieses Ticket'
-helpcenter.tickets.timeline_re_opened: 'wiedereröffnen Ticket'
 helpcenter.tickets.view_btn_add_to_ticket: 'Hinzufügen zum Ticket'
 helpcenter.tickets.view_btn_edit: Bearbeiten
 helpcenter.tickets.view_btn_edit_full: 'Das Ticket bearbeiten'
