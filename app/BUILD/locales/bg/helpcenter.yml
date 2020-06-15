@@ -1,20 +1,11 @@
 ---
-helpcenter.account.change_password_action: 'Обнови парола'
 helpcenter.account.comment_lockout: 'Подали сте много коментари. Моля изчакайте за да можете да подадете още.'
-helpcenter.account.email_btn_make_primary: 'Направи основен'
-helpcenter.account.email_remove_action: 'Премахни имейл'
-helpcenter.account.email_resend_validation_action: 'Изпрати имейл за потвърждение отново'
 helpcenter.account.email_btn_usersource_set: 'Добави имейл адрес'
 helpcenter.account.login_captcha_failed: 'Въвели сте невалиден CAPTCHA код. Моля опитайте отново.'
 helpcenter.account.login_email: 'Вашият имейл'
 helpcenter.account.login_external: 'Влезте с външна услуга'
 helpcenter.account.login_lockout: 'Не успяхте да влезете прекалено много пъти и поради това сте заключени. Моля опитайте отново по-късно.'
-helpcenter.account.login_reset_password_link: 'Имате ли нужда от ново подсещане за парола?'
-helpcenter.account.login_register_action: Регистрирай
-helpcenter.account.login_stay_logged_in: 'Остани логнат?'
-helpcenter.account.logout_action: Излез
 helpcenter.account.new_ticket_no_login: 'Порталната CRM е забранена. Невъзможно е подаване на тикет.'
-helpcenter.account.profile_save_action: 'Запази профил'
 helpcenter.account.profile_delete_picture: 'Промени или изтрий профилна снимка?'
 helpcenter.account.registration_set_password: 'Вече съществува акаунт с този имейл адрес. Изпратихме ви имейл който ще ви позволи да си изберете парола и да влезете.'
 helpcenter.account.reset_password_click_here: 'Кликни тук за да изискаш код за нулиране на парола'
@@ -44,17 +35,9 @@ helpcenter.account.submit_saved_form_go: 'Кликни тук за да изпр
 helpcenter.account.tickets_lockout: 'Изпратихте прекалено много тикети и поради това сте заключени. Моля опитайте отново по-късно.'
 helpcenter.account.usersource_set_email_desc: 'Преди да можете да влезете се нуждаем от вашия имейл адрес. Моля въведете имейл адреса си отдолу за да можем да ви изпратим имейл за потвърждение.'
 helpcenter.account.your_pending_email_addresses: 'Вашите чакащи имейл адреси'
-helpcenter.articles.published_label: Публикуван
 helpcenter.articles.section_title: База знание
-helpcenter.articles.view_as_agent: 'Виждате тази страница защото сте агент. Потребителите няма да виждат тази страница.'
-helpcenter.messenger.date_label: Дата
-helpcenter.messenger.total_chat_time_label: 'Общо време на чат'
-helpcenter.messenger.linked_ticket_label: 'Назначи по тикет'
-helpcenter.messenger.view_linked_ticket_action: 'Виж тикет'
-helpcenter.community.like_action: 'Съгласен съм'
 helpcenter.community.create_topic: Създай
 helpcenter.community.error_login: 'Моля влезте'
-helpcenter.general.name: Име
 helpcenter.community.form_topic_title: Заглавие
 helpcenter.community.no_matching: 'Няма съвпадащи общностни теми'
 helpcenter.community.rate_forbidden: 'Не ви е разрешено да гласувате'
@@ -63,9 +46,6 @@ helpcenter.direct_messages.new_message: 'Ново съобщение'
 helpcenter.direct_messages.none: 'Няма съобщения'
 helpcenter.direct_messages.reply_message: Съобщение
 helpcenter.direct_messages.title: 'Съобщения'
-helpcenter.downloads.download_action: Изтегли
-helpcenter.downloads.no_files: 'Все още няма изтегляния'
-helpcenter.downloads.uploaded_on: Качен
 helpcenter.emails.chat_transcript: 'Благодарим ви за чата. Ето го вашия препис от чата.'
 helpcenter.emails.chat_transcript_subject: 'Чат препис'
 helpcenter.emails.comment_approved: 'Вашият отговор беше публикуван.'
@@ -124,35 +104,11 @@ helpcenter.error.404_desc: 'Съжаляваме, но не можем да от
 helpcenter.error.404_title: 'Не е намерен'
 helpcenter.error.general_title: 'Възникна грешка'
 helpcenter.error.permission_denied_title: 'Нямате право да правите това'
-helpcenter.flashes.article_cat_subscribe: 'Успешно се абонирахте към тази категория. Ще получите известия когато бъдат постнати нови статии.'
-helpcenter.flashes.article_cat_unsubscribe: 'Успешно прекратихте абонамента си за тази категория.'
-helpcenter.flashes.article_subscribe: 'Успешно се абонирахте към тази статия. Ще бъдете известени когато бъде обновена или когато има нов коментар.'
 helpcenter.flashes.article_unsubscribe: 'Успешно прекратихте абонамента си към тази статия.'
-helpcenter.flashes.article_unsubscribe_everything: 'Вие прекратихте абонамента си към всички известия относно базата знания'
-helpcenter.flashes.community_subscribe: 'Успешно се абонирахте към тази общностна тема. Ще получите известия когато бъде обновена или когато има нов коментар.'
-helpcenter.flashes.community_unsubscribe: 'Успешно прекратихте абонамента си към тази общностна тема.'
-helpcenter.flashes.community_unsubscribe_everything: 'Успешно прекратихте абонамента си към всички известия относно общностни теми'
-helpcenter.flashes.download_cat_subscribe: 'Успешно се абонирахте към тази категория. Ще получавате известия когато има налични нови файлове за изтегляния.'
-helpcenter.flashes.download_subscribe: 'Успешно се абонирахте към това изтегляне. Ще получите известия когато бъде обновено или когато има нов коментар.'
-helpcenter.flashes.download_unsubscribe: 'Успешно прекратихте абонамента си към това изтегляне.'
-helpcenter.flashes.download_unsubscribe_everything: 'Успешно прекратихте абонамента си към всички известия относно изтегляния'
 helpcenter.flashes.guest_content_must_verify: 'Преди да качим съдържанието ви трябва да потвърдите имейл адреса си. Моля провереде входящата си кутия. Изпратили сме ви линк за потвъждение.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Преди да можем да приемем тикета ви трябва да потвърдите имейл адреса си. Моля провереде входящата си кутия. Изпратили сме ви линк за потвъждение.'
-helpcenter.flashes.new_community_topic_awaiting_review: 'Благодарим ви за общностната тема. Ще бъде видима на портала за поддръжка след като агент я прегледа.'
-helpcenter.flashes.new_community_topic_posted: 'Благодарим ви за общностната тема'
-helpcenter.flashes.news_cat_subscribe: 'Успешно се абонирахте за тази категория. Ще бъдете известени за нови постове.'
-helpcenter.flashes.news_subscribe: 'Успешно прекратихте абонамента си към тази новинарска статия. Ще бъдете известени когато има нови коментари.'
-helpcenter.flashes.news_unsubscribe: 'Успешно прекратихте абонамента си към тази новинарска статия.'
-helpcenter.flashes.news_unsubscribe_everything: 'Успешно прекратихте абонамента си към всички известия за новинарски статии'
-helpcenter.flashes.ticket_created: 'Тикетът ви беше изпратен. Благодарим ви!'
-helpcenter.flashes.ticket_feedback_thank_you: 'Благодарим ви за обратната връзка!'
 helpcenter.flashes.ticket_participant_already_error: 'Човекът който се опитвате да добавите като участник вече е участник в този тикет.'
-helpcenter.flashes.ticket_participant_email_error: 'Моля въведете валиден имейл адрес за вашия участник и опитайте отново.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Имаше проблем при опит за премахване на участника ви. Моля опитайте отново.'
-helpcenter.flashes.ticket_re_opened: 'Вие отворихте отново този тикет.'
-helpcenter.flashes.ticket_replied: 'Вашия отговор беше изпратен. Благодарим ви!'
-helpcenter.flashes.ticket_resolved: 'Тикетът ви е маркиран като разрешен. Благодарим ви.'
-helpcenter.flashes.ticket_updated: 'Вашият тикет беше обновен. Благодарим ви!'
 helpcenter.flashes.user_add_email_verified: 'Вашият имейл адрес беше добавен към акаунта ви.'
 helpcenter.flashes.user_add_email_verify: 'Трябва да потвърдим вашият имейл адрес преди да го добавин към акаунта ви. Моля проверете входящата си кутия за линк с потвърждение.'
 helpcenter.flashes.user_changed_primary_email: 'Основният имейл адрес беше променен.'
@@ -170,33 +126,23 @@ helpcenter.general.admin: Админ
 helpcenter.general.admin_home: 'Начало на админ'
 helpcenter.general.agent: Агент
 helpcenter.general.agent_bar_admin_community: 'Общностни настройки'
-helpcenter.general.agent_bar_admin_dl: 'Свали настройки'
 helpcenter.general.agent_bar_admin_kb: 'Настройки на базата знания'
 helpcenter.general.agent_bar_admin_lang: 'Настройки на език'
 helpcenter.general.agent_bar_admin_news: 'Нови настройки'
 helpcenter.general.agent_bar_agent_community: 'Управлявай общност'
-helpcenter.general.agent_bar_agent_dl: 'Управлявай изтегляния'
 helpcenter.general.agent_bar_agent_home: 'Начало на агент'
 helpcenter.general.agent_bar_agent_kb: 'Управлявай база знания'
 helpcenter.general.agent_bar_agent_news: 'Управлявай новини'
 helpcenter.general.agents: Агенти
-helpcenter.eula.agree: Съгласен съм
 helpcenter.general.attachments: Прикачвания
-helpcenter.general.cancel_action: Откажи
-helpcenter.general.subscribe_action: Абонирай се
 helpcenter.general.chat: Чат
-helpcenter.general.comment_btn_save: 'Запази коментар'
 helpcenter.general.comments: Коментари
-helpcenter.general.comments_pending_validation: 'Този коментар се разглежда. Ще се визуализира скоро.'
-helpcenter.general.files_type: Изтегляния
 helpcenter.general.email_address: 'Имейл'
 helpcenter.general.everything: Всичко
-helpcenter.general.go_action: Давай
 helpcenter.general.impersonation_mode: 'Режим на представяне'
 helpcenter.general.label_search_enter_label: 'Моля въведете етикет за който да търсите'
 helpcenter.general.last_activity: 'Последна активност'
 helpcenter.general.log_in: 'Влез'
-helpcenter.general.nav_downloads_desc: 'Рзгледай нашите файлове за изтегляне'
 helpcenter.general.nav_guides: Упътвания
 helpcenter.general.no_search_query: 'Моля въведете запитване в полето за търсене.'
 helpcenter.general.password: Парола
@@ -211,7 +157,6 @@ helpcenter.general.prop_rating_asc: 'Първи тези с най-нисък р
 helpcenter.general.prop_rating_desc: 'Първи тези с най-висок рейтинг'
 helpcenter.general.prop_views_asc: 'Първо тези с най-малко прегледи'
 helpcenter.general.prop_views_desc: 'Първо тези с най-много прегледи'
-helpcenter.general.rate_page: 'Оценете качеството на тази страница'
 helpcenter.general.rate_page_positive: Полезен
 helpcenter.general.rerender_form: 'Моля прегледайте тази форма преди да я изпратите.'
 helpcenter.general.share: Сподели
@@ -222,7 +167,6 @@ helpcenter.general.tags: Маркери
 helpcenter.general.updated: Обновен
 helpcenter.general.user: Потребител
 helpcenter.general.you: Вие
-helpcenter.general.download_pdf: 'Изтегли PDF'
 helpcenter.members.language: Език
 helpcenter.members.timezone: Часова зона
 helpcenter.news.none: 'Все още няма отговори'
@@ -238,12 +182,10 @@ helpcenter.tickets.list_date_created: 'Изтрий създаденото'
 helpcenter.tickets.list_date_last_agent: 'Последен агентски отговор'
 helpcenter.tickets.list_date_last_user: 'Последен потребителски отговор'
 helpcenter.tickets.list_last_action: 'Последно действие'
-helpcenter.tickets.list_status_agent: 'Нашите агенти ще отговорят'
 helpcenter.tickets.list_status_resolved: Разрешен
 helpcenter.tickets.list_status_user: 'Трябва да отговорите'
 helpcenter.tickets.list_subject: Тема
 helpcenter.tickets.list_ticket_ref: Препратка
-helpcenter.tickets.mark_unresolved: 'Отвори повторно тикет'
 helpcenter.tickets.need_login_title: 'Трябва да влезете за да отворите тикет'
 helpcenter.tickets.new_intro: 'Моля попълнете тази форма и един от нашите агенти ще ви отговори по имейл възможно най-скоро.'
 helpcenter.tickets.new_section_title: 'Свържете се с нас'
@@ -252,16 +194,13 @@ helpcenter.tickets.no_participants: 'Няма участници'
 helpcenter.tickets.not_allowed_desc: 'Съжаляваме, но агентите ни не могат да поемат чата ви в момента.'
 helpcenter.tickets.not_allowed_title: 'Връщаме се след малко'
 helpcenter.tickets.please_login_to_reply: 'Влез за да отговориш.'
-helpcenter.tickets.rate_negative: 'Не беше добре'
 helpcenter.tickets.rate_positive: 'Беше страхотно'
 helpcenter.tickets.rate_question: 'Как бихте оценили поддръжката която получихте?'
 helpcenter.tickets.rate_support: 'Оценете вашата поддръжка'
-helpcenter.tickets.resolve_my_ticket_action: 'Разреши тикета ми'
 helpcenter.tickets.switched_department_rerender: 'Структурата на тази форма може да се е променила. Моля прегледайте формата и изпратете отново.'
 helpcenter.tickets.thank_you_check_email: 'Моля потвърдете имейл адреса си'
 helpcenter.tickets.thank_you_check_email_desc: 'За да довършите изпращането на тикета си, трябва да проверите входната кутия на имейла си. Моля кликнете на линка за потвърждение, който сме ви изпратили.'
 helpcenter.tickets.timeline_marked: 'маркиран този тикет:'
-helpcenter.tickets.timeline_re_opened: 'отвори отново този тикет'
 helpcenter.tickets.view_btn_add_to_ticket: 'Добави към тикет'
 helpcenter.tickets.view_btn_edit: Редактирай
 helpcenter.tickets.view_btn_edit_full: 'Редактирай този тикет'
