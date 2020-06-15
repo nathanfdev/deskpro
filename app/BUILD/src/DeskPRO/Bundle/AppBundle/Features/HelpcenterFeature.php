@@ -85,8 +85,6 @@ class HelpcenterFeature extends AbstractBetaFeature
         return <<<'HTML'
 Enable Helpcenter theme<br /><br />
 
-!This theme should not be enabled on production as it is still under development!
-
 This will allow you to select the helpcenter theme in the admin interface.
 HTML;
     }

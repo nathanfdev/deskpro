@@ -217,7 +217,7 @@ class CommunityDataService extends AbstractDataService
                 }
 
                 // Activity filters
-                if (count($filter->getActivities()) && $person) {
+                if (count($filter->getActivities() ?: []) && $person) {
                     $activitiesClauses = [];
                     foreach ($filter->getActivities() as $activity) {
                         switch ($activity) {
