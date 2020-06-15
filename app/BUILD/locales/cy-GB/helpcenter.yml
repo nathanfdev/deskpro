@@ -1,19 +1,10 @@
 ---
-helpcenter.account.change_password_action: 'Diweddaru''ch cyfrinair'
 helpcenter.account.comment_lockout: 'Rydych chi wedi cynnig nifer mawr o sylwadau. Arhoswch am ychydig cyn cynnig rhagor.'
-helpcenter.account.email_btn_make_primary: 'Gwnewch yn gynradd'
-helpcenter.account.email_remove_action: 'Dilëwch yr ebost'
-helpcenter.account.email_resend_validation_action: 'Ail-ddanfon yr ebost cadarnhaol'
 helpcenter.account.email_btn_usersource_set: 'Ychwanegwch gyfeiriad ebost'
 helpcenter.account.login_captcha_failed: 'Rydych chi wedi gosod côd CAPTCHA anghywir. Ceisiwch eto os gwelwch yn dda.'
 helpcenter.account.login_email: 'Eich ebost'
 helpcenter.account.login_external: 'Mewngofnodwch â gwasanaeth allanol'
 helpcenter.account.login_lockout: 'Rydych chi wedi methu mengofnodi gormod o weithiau felly rydych wedi cael eich cloi allan. Rhowch gynnig arall mewn ychydig os gwelwch yn dda.'
-helpcenter.account.login_reset_password_link: 'Angen atgofiad am eich cyfrinair?'
-helpcenter.account.login_register_action: Cofrestrwch
-helpcenter.account.login_stay_logged_in: 'Arhoswch wedi mewngofnodi?'
-helpcenter.account.logout_action: Allgofnodwch
-helpcenter.account.profile_save_action: 'Cadw''ch proffil'
 helpcenter.account.profile_delete_picture: 'Newid neu ddileu''ch llun proffil?'
 helpcenter.account.registration_set_password: 'Mae cyfrif ar gael gyda''r ebost yma yn barod. Ry'' ni ''di danfon ebost i chi fydd yn eich allu i ailosod eich cyfrinair a mewngofnodi.'
 helpcenter.account.reset_password_click_here: 'Cliciwch yma i dderbyn côd ailosod cyfrinair'
