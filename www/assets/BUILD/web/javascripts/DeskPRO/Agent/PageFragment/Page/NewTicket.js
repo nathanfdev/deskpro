@@ -905,6 +905,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		api.$editor.linkify();
 		api.syncCode();
 
+    if (this.textarea.getEditor().find('img[data-paste-id]').length) {
+      DeskPRO_Window.showAlert('Image is still uploading. Please try again.');
+
+      return;
+    }
+
 		if (this.isNote) {
 			this.getEl('action').val(this.getEl('note_as_type').data('type'));
 		} else {

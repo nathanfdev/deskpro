@@ -1246,6 +1246,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
   handleReplySave: function (ev, formData, handler, meta) {
 
+    if (this.getReplyTextArea().getEditor().find('img[data-paste-id]').length) {
+      DeskPRO_Window.showAlert('Image is still uploading. Please try again.');
+
+      return;
+    }
+
     function onSuccess(response)
     {
       if (response.canceled) {
