@@ -161,7 +161,10 @@ class PasswordController extends AbstractController
 
         /* @var \Application\DeskPRO\Entity\Person $person */
         $reset = $this->getPersonDataService()->findPasswordReset($code);
-        if ($reset && $reset['date_requested']->getTimestamp() > (time() - $valid_seconds)) {
+        if ($reset
+            && $reset['date_requested']->getTimestamp() > (time() - $valid_seconds)
+            && $reset['date_requested'] > $reset['person']->getDatePasswordSet()
+        ) {
             $valid = true;
         }
 
