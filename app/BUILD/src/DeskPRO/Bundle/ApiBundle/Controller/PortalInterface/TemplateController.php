@@ -54,7 +54,7 @@ class TemplateController extends BaseController
      *     },
      *     output="array"
      * )
-     * @Rest\Get("/template/{name}")
+     * @Rest\Get("/template/{name}", requirements={"name"=".+"})
      *
      * @param $name
      *
@@ -96,7 +96,7 @@ class TemplateController extends BaseController
      *     output="array"
      * )
      * @ApiUnstable()
-     * @Rest\Post("/template/{name}")
+     * @Rest\Post("/template/{name}", requirements={"name"=".+"})
      *
      * @param Request $request
      * @param         $name
@@ -176,8 +176,8 @@ class TemplateController extends BaseController
      *     },
      * )
      * @ApiUnstable()
-     * @Rest\Delete("/template/{brandId}/{name}", requirements={"brandId"="\d+", "name"=".+"})
-     * @Rest\Delete("/template/{name}")
+     * @Rest\Delete("/template/{brandId}/{name}", requirements={"brandId"="\d+","name"=".+"})
+     * @Rest\Delete("/template/{name}", requirements={"name"=".+"})
      * @ParamConverter("brand", class="DeskPRO:Brand", options={"id" = "brandId"})
      *
      * @param string $name
