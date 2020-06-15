@@ -533,9 +533,7 @@ class NewsController extends AbstractController
     public function newNewsSaveAction(Request $request)
     {
         $newNews = new NewNews($this->person);
-
-        $formType = new NewNewsType();
-        $form     = $this->get('form.factory')->create($formType, $newNews);
+        $form    = $this->get('form.factory')->create(NewNewsType::class, $newNews);
 
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newnews' AND person_id = ?", [$this->person->id]);
 

@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\AgentBundle\Form\Model;
 
@@ -89,8 +87,10 @@ class NewNews
         if ($this->attach) {
             $attachBlobs = App::getOrm()->getRepository(Blob::class)->findBy(['id' => $this->attach]);
             foreach ($attachBlobs as $blob) {
+                $blob->setIsTemp(false);
+
                 $attach = new NewsAttachment();
-                $attach->setPerson($this->_person_context)->setBlob($blob->setIsTemp(false));
+                $attach->setPerson($this->_person_context)->setBlob($blob);
                 $this->_em->persist($attach);
                 $this->_em->persist($blob);
                 $news->addAttachment($attach);
@@ -101,7 +101,8 @@ class NewNews
         if ($this->blob_inline_ids) {
             $inlineBlobs = App::getOrm()->getRepository(Blob::class)->findBy(['id' => $this->blob_inline_ids]);
             foreach ($inlineBlobs as $blob) {
-                $this->_em->persist($blob->setIsTemp(false));
+                $blob->setIsTemp(false);
+                $this->_em->persist($blob);
             }
         }
 

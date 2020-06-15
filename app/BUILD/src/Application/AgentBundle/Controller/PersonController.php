@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewPerson as NewPersonModel;
@@ -542,6 +540,8 @@ class PersonController extends AbstractController
                 $person->setDisablePicture(false);
                 $blob = $this->em->find(Blob::class, $this->in->getUint('blob_id'));
                 if ($blob) {
+                    $blob->setIsTemp(false);
+
                     $blobCurr = $person->getPictureBlob();
                     if ($blobCurr && $blobCurr->getId() !== $blob->getId()) {
                         $this->container->getBlobStorage()->deleteBlobRecord($blobCurr);

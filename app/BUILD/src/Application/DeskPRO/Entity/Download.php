@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -948,8 +944,8 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
         );
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
-        $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
-        $metadata->addEntityListener(Events::postUpdate, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::prePersist, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::preUpdate, AttachmentHelper::class, 'verifyBlobs');
     }
 
     /**

@@ -53,6 +53,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.message" should contain 'IMGAAAAAAAAAAAAAAA/image.jpg'
     And the JSON node "data.message" should contain '<img'
     And the JSON node "data.attachments" should have 1 element
+    And blob IMGAAAAAAAAAAAAAAA should not be temp
 
   Scenario: I create a ticket message with specific date
     Given "admin_for_messages@deskpro.dev" admin exists
@@ -357,3 +358,18 @@ Feature: /tickets/{id}/messages endpoint
     When I send a GET request to "/api/v2/tickets/{t1}"
     Then the JSON node "data.status" should be equal to the string "pending"
     Then the JSON node "data.subject" should be equal to the string "New Ticket 1 Subject"
+
+  Scenario: I add a ticket message with inline attachments
+    Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
+    And I create blob with auth code "BBBBBBBBBBBBBBBBBB"
+
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "<p>Some fake download content <img class=\"dp-embed-blob-img-AAAAAAAAAAAAAAAAAA\" src=\"url\" /></p>",
+  "is_note": false
+}
+    """
+    Then the response status code should be 201
+    And blob AAAAAAAAAAAAAAAAAA should not be temp
+    And blob BBBBBBBBBBBBBBBBBB should be temp

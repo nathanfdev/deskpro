@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -1485,7 +1481,7 @@ class TicketMessage extends DomainObject
                 'orphanRemoval' => true,
             ]
         );
-        $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
-        $metadata->addEntityListener(Events::postUpdate, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::prePersist, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::preUpdate, AttachmentHelper::class, 'verifyBlobs');
     }
 }
