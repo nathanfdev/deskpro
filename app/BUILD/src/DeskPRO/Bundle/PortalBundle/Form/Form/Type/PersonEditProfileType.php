@@ -197,7 +197,7 @@ class PersonEditProfileType extends AbstractType
         $form   = $event->getForm();
 
         if ($person->getOrganization() && $person->isOrganizationManager()) {
-            $form->add('manager_auto_add', CheckboxType::class, [
+            $form->add('manager_auto_add', SingleCheckboxType::class, [
                 'required'       => false,
                 'mapped'         => false,
                 'label'          => false,
@@ -208,7 +208,7 @@ class PersonEditProfileType extends AbstractType
         }
 
         if ($person->getPictureBlob()) {
-            $form->add('delete_picture', CheckboxType::class, [
+            $form->add('delete_picture', SingleCheckboxType::class, [
                 'required' => false,
                 'mapped'   => false,
             ]);
