@@ -1,14 +1,8 @@
 ---
-helpcenter.account.email_resend_validation_action: 'Znovu odoslať overovací e-mail'
-helpcenter.account.login_register_action: Registrovať
 helpcenter.articles.section_title: Databáza znalostí
-helpcenter.articles.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
-helpcenter.community.like_action: 'Súhlasím'
-helpcenter.general.name: Meno
 helpcenter.community.form_topic_title: Nadpis
 helpcenter.community.section_title: Spätná väzba
 helpcenter.direct_messages.reply_message: Správa
-helpcenter.downloads.download_action: Stiahnuť
 helpcenter.emails.chat_transcript: 'Ďakujeme za Vašu konverzáciu s nami. Tu je Váš odpis konverzácie.'
 helpcenter.emails.chat_transcript_subject: 'Odpis konverzácie'
 helpcenter.emails.comment_approved: 'Váš komentár bol uverejnený.'
@@ -49,17 +43,12 @@ helpcenter.forms.label_save: Uložiť
 helpcenter.general.add_comment: 'Pridať komentár'
 helpcenter.general.agent: Operátor
 helpcenter.general.attachments: Pripojenia
-helpcenter.general.cancel_action: Zrušiť
 helpcenter.general.comments: Komentáre?
-helpcenter.general.files_type: Stiahnutia
 helpcenter.general.everything: Všetko
-helpcenter.general.go_action: Ísť
-helpcenter.general.nav_downloads_desc: 'Prehľadávať naše stiahnutia'
 helpcenter.general.password: Heslo
 helpcenter.general.rate_page_positive: Pomocné
 helpcenter.general.show: Ukáž
 helpcenter.general.you: Vy
-helpcenter.general.download_pdf: 'Stiahnuť PDF'
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
 helpcenter.news.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
@@ -71,10 +60,8 @@ helpcenter.tickets.list_status_resolved: Vyriešené
 helpcenter.tickets.list_subject: Predmet
 helpcenter.tickets.new_intro: 'Prosím vyplňte tento formulár a jeden z našich opertátorov vás bude kontaktovať e-mailom akonáhle bude vedieť.'
 helpcenter.tickets.new_section_title: 'Kontaktujte nás'
-helpcenter.tickets.rate_negative: 'Nebolo to dobré'
 helpcenter.tickets.rate_positive: 'Bolo to dobré'
 helpcenter.tickets.rate_question: 'Ako by ste hodnotili pomoc, ktorú ste obdržal?'
 helpcenter.tickets.rate_support: 'Ohodnoťte Vašu pomoc'
-helpcenter.tickets.resolve_my_ticket_action: 'Vyriešiť môj tiket'
 helpcenter.tickets.view_btn_edit: Upraviť
 helpcenter.tickets.view_unassigned: Nepridelené
