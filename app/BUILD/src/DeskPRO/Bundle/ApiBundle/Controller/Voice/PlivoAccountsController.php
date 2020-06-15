@@ -271,7 +271,7 @@ class PlivoAccountsController extends AbstractVoiceCrudController
         $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 
         try {
-            $this->get('dp.voice.cloud_proxy')->initPlivoProxy($this->getUser());
+            $this->get('dp.voice.proxy')->initPlivoProxy($this->getUser());
         } catch (InsufficientBalanceException $e) {
             return new View([
                 'code'    => 'invalid_input',

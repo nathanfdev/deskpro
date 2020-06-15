@@ -22,11 +22,19 @@ services:
     arguments:
       - "@settings_resolver"
 
-  dp.voice.cloud_proxy:
-    class: DeskPRO\Bundle\VoiceBundle\Cloud\VoiceCloudProxy
+  dp.voice.proxy:
+    class: DeskPRO\Bundle\VoiceBundle\Proxy\VoiceProxy
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@settings_resolver"
+      - "@deskpro.app_env"
+
+  dp.voice.twiml_app_configurator:
+    class: DeskPRO\Bundle\VoiceBundle\Twilio\TwimlAppConfigurator
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@twilio_adapter"
+      - "@router"
 
   twilio_adapter:
     class: DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter

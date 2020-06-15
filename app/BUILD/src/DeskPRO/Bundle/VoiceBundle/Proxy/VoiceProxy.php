@@ -1,11 +1,12 @@
 <?php
 
-namespace DeskPRO\Bundle\VoiceBundle\Cloud;
+namespace DeskPRO\Bundle\VoiceBundle\Proxy;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
@@ -15,9 +16,9 @@ use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * Class VoiceCloudProxy.
+ * Class VoiceProxy.
  */
-class VoiceCloudProxy
+class VoiceProxy
 {
     /**
      * @var EntityManager
@@ -30,15 +31,22 @@ class VoiceCloudProxy
     private $settingsResolver;
 
     /**
+     * @var AppEnvInterface
+     */
+    private $appEnv;
+
+    /**
      * Constructor.
      *
      * @param EntityManager    $em
      * @param SettingsResolver $settingsResolver
+     * @param AppEnvInterface  $appEnv
      */
-    public function __construct(EntityManager $em, SettingsResolver $settingsResolver)
+    public function __construct(EntityManager $em, SettingsResolver $settingsResolver, AppEnvInterface $appEnv)
     {
         $this->em               = $em;
         $this->settingsResolver = $settingsResolver;
+        $this->appEnv           = $appEnv;
     }
 
     /**
@@ -57,15 +65,28 @@ class VoiceCloudProxy
      * Get twilio proxy settings.
      *
      * @param Person $person
+     * @param bool   $forceReload
      *
      * @return array
      */
-    public function loadTwilioProxySettings(Person $person)
+    public function loadTwilioProxySettings(Person $person, $forceReload = false)
     {
-        if (defined('DPC_IS_CLOUD')) {
+        $proxyUrl    = $this->settingsResolver->getGlobalSettings()->get('dpss.twilio_proxy_service_url');
+        $accessToken = $this->settingsResolver->getGlobalSettings()->get('dpss.access_token');
+        $authToken   = $this->settingsResolver->getGlobalSettings()->get('dpss.auth_token');
+
+        if (!$forceReload && $accessToken && $authToken && $proxyUrl) {
+            return [
+                'accessToken'           => $accessToken,
+                'authToken'             => $authToken,
+                'twilioProxyServiceUrl' => $proxyUrl,
+            ];
+        }
+
+        if ($this->appEnv->isCloud()) {
             return $this->callMemberAreaCloud($person);
         } else {
-            return $this->callMemberAreaOnPrem($person);
+            return $this->callMemberAreaOnPrem($accessToken, $authToken);
         }
     }
 
@@ -118,32 +139,19 @@ class VoiceCloudProxy
      * Calls MA.
      *
      * @param Person $person
-     * @param array  $data
      *
      * @throws \Exception
      *
      * @return array
      */
-    private function callMemberAreaCloud(Person $person, array $data = [])
+    private function callMemberAreaCloud(Person $person)
     {
-        $accessToken = $this->settingsResolver->getGlobalSettings()->get('dpss.access_token');
-        $authToken   = $this->settingsResolver->getGlobalSettings()->get('dpss.auth_token');
-        $proxyUrl    = $this->settingsResolver->getGlobalSettings()->get('dpss.twilio_proxy_service_url');
-
-        if ($accessToken && $authToken && $proxyUrl) {
-            return [
-                'accessToken'           => $accessToken,
-                'authToken'             => $authToken,
-                'twilioProxyServiceUrl' => $proxyUrl,
-            ];
-        }
-
         $tmpdata = new TmpData();
         $tmpdata->setType('dpc_init_ms_client_for_voice');
         $tmpdata->setData('person_id', $person->getId());
         $tmpdata->setData('person_name', $person->getName());
         $tmpdata->setData('person_email', $person->getPrimaryEmailAddress());
-        $tmpdata->setData('data', $data);
+        $tmpdata->setData('data', []);
         $tmpdata->setDateExpire(new \DateTime('+10 minutes'));
 
         $this->em->persist($tmpdata);
@@ -184,27 +192,15 @@ class VoiceCloudProxy
     /**
      * Calls MA.
      *
-     * @param Person $person
-     * @param array  $data
+     * @param string $accessToken
+     * @param string $authToken
      *
      * @throws \Exception
      *
      * @return array
      */
-    private function callMemberAreaOnPrem(Person $person, array $data = [])
+    private function callMemberAreaOnPrem($accessToken, $authToken)
     {
-        $accessToken = $this->settingsResolver->getGlobalSettings()->get('dpss.access_token');
-        $authToken   = $this->settingsResolver->getGlobalSettings()->get('dpss.auth_token');
-        $proxyUrl    = $this->settingsResolver->getGlobalSettings()->get('dpss.twilio_proxy_service_url');
-
-        if ($accessToken && $authToken && $proxyUrl) {
-            return [
-                'accessToken'           => $accessToken,
-                'authToken'             => $authToken,
-                'twilioProxyServiceUrl' => $proxyUrl,
-            ];
-        }
-
         // dpss hasn't been set up yet
         if (empty($accessToken) || empty($authToken)) {
             throw new InsufficientBalanceException('No DPSS access token configured', 402);
