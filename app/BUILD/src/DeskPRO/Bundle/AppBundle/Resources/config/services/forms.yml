@@ -211,7 +211,7 @@ services:
 
   form.auth_blob:
     class: DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage"]
     tags:
       - { name: form.type }
 
