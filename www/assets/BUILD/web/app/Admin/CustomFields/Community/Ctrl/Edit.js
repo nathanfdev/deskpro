@@ -56,6 +56,10 @@ define([
 
     saveForm() {
       this.form.forums = [];
+      if (!this.$stateParams.id) {
+        this.form.brand = this.$stateParams.brandId;
+      }
+
       Object.keys(this.selectedForums).forEach((forum) => {
         if (this.selectedForums[forum]) {
           this.form.forums.push({ forum });

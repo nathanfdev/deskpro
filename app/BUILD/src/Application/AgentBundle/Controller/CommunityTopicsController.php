@@ -11,6 +11,7 @@ use Application\DeskPRO\Community\CommunityTopicsCollection;
 use Application\DeskPRO\Community\CommunityTopicsMerge;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\CustomFields\FieldDisplayArray;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
@@ -204,9 +205,11 @@ class CommunityTopicsController extends AbstractController
         $searchStickyResultRepository           = $this->em->getRepository(SearchStickyResult::class);
         $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
-        $customFields              = $fieldManager->getDisplayArrayForObject($communityTopic);
         $communityTopicComments    = [];
         $communityTopicCommentsRaw = $communityTopic->getComments();
+        $communityCustomFields     = array_filter($fieldManager->getDisplayArrayForObject($communityTopic), function (FieldDisplayArray $displayArray) use ($communityTopic) {
+            return $displayArray['field_def']->getBrand() === $communityTopic->getBrand();
+        });
 
         foreach ($communityTopicCommentsRaw as $c) {
             if ($c->status != 'temp') {
@@ -253,7 +256,7 @@ class CommunityTopicsController extends AbstractController
                 'state'                         => $state,
                 'forum'                         => $forum,
                 'forum_path'                    => $forumPath,
-                'custom_fields'                 => $customFields,
+                'custom_fields'                 => $communityCustomFields,
                 'rated_searches'                => $ratedSearches,
                 'related_content'               => $relatedContent,
                 'sticky_search_words'           => $stickySearchWords,

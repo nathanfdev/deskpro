@@ -23,6 +23,7 @@ define([
       this.selectedStatuses = [];
       this.selectedCustomFields = [];
 
+      this.$scope.brand_id = this.$stateParams.brandId;
       this.$scope.picker = false;
       this.$scope.colors = [
         '#e11d21', '#eb6420', '#fbca04', '#009800', '#006b75', '#207de5', '#0052cc', '#5319e7',

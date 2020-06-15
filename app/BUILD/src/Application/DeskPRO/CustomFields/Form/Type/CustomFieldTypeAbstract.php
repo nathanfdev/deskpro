@@ -4,9 +4,11 @@ namespace Application\DeskPRO\CustomFields\Form\Type;
 
 use Application\DeskPRO\CustomFields\Form\AliasType;
 use Application\DeskPRO\CustomFields\Form\StringObject;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -71,6 +73,9 @@ class CustomFieldTypeAbstract extends AbstractType
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'by_reference' => true,
+            ]);
+            $builder->add('brand', EntityType::class, [
+                'class' => Brand::class,
             ]);
         }
     }
