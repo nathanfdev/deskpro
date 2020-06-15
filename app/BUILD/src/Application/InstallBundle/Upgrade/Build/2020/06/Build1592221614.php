@@ -2,7 +2,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1588752103 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1592221614 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
