@@ -1,9 +1,6 @@
 ---
 helpcenter.articles.section_title: Kunnskapsbase
-helpcenter.articles.view_as_agent: 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.'
-helpcenter.general.name: Navn
 helpcenter.direct_messages.reply_message: Melding
-helpcenter.downloads.download_action: Last ned
 helpcenter.emails.chat_transcript: 'Takk for praten. Her er et referat av vår samtale.'
 helpcenter.emails.chat_transcript_subject: 'Samtale referat'
 helpcenter.emails.comment_approved: 'Din kommentar har blitt publisert.'
@@ -35,14 +32,9 @@ helpcenter.error.404_title: 'Fant Ikke'
 helpcenter.forms.label_save: Lagre
 helpcenter.general.add_comment: 'Ny kommentar'
 helpcenter.general.attachments: Vedlegg
-helpcenter.general.cancel_action: Avbryt
 helpcenter.general.comments: Kommentar
-helpcenter.general.files_type: Nedlastninger
-helpcenter.general.go_action: Gå
 helpcenter.general.rate_page_positive: Hjalp meg
-helpcenter.general.related_downloads: 'Relaterte filer'
 helpcenter.general.you: Du
-helpcenter.general.download_pdf: 'Last ned PDF'
 helpcenter.news.view_as_agent: 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.'
 helpcenter.tickets.guest_thank_you_title: 'Takk'
 helpcenter.tickets.list_agent: 'Tildelt medarbeider'
@@ -50,6 +42,5 @@ helpcenter.tickets.list_status_resolved: Lukket
 helpcenter.tickets.list_subject: Emne
 helpcenter.tickets.new_intro: 'Vennligst fyll ut skjema og en av våre medarbeidere vil svare deg på epost så snart som mulig.'
 helpcenter.tickets.new_section_title: 'Kontakt oss'
-helpcenter.tickets.resolve_my_ticket_action: 'Lukk saken'
 helpcenter.tickets.view_btn_edit: Rediger
 helpcenter.tickets.view_unassigned: Utildelt
