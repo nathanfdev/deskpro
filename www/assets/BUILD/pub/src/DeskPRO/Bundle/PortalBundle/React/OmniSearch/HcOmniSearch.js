@@ -364,6 +364,7 @@ export class HcOmniSearch extends React.Component {
             display: this.state.searchQuery.length > 0 ? 'block' : 'none',
             width:   $input.closest('.search-form').width()
           }}
+          aria-live="assertive"
         >
 
           {this.state.doSpin || (!this.doResultsExist() && this.state.userTyping)

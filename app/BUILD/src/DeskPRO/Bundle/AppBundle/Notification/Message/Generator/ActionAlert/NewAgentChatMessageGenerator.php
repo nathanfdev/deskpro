@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\EmailDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
@@ -44,7 +45,18 @@ class NewAgentChatMessageGenerator extends AbstractAgentChatMessageGenerator
     {
         $messages = [];
         foreach ($this->getTargets($event) as $target) {
-            $messages[] = new ActionAlert($target->getId(), $this->getData($event), $event->getName());
+            $meta = [];
+            if ($target !== $this->getChatMessage($event)->getPerson()) {
+                $meta = [
+                    'targettedHandlers' => [EmailDeliveryHandler::TYPE],
+                ];
+            }
+            $messages[] = new ActionAlert(
+                $target->getId(),
+                $this->getData($event),
+                $event->getName(),
+                $meta
+            );
         }
 
         return $messages;

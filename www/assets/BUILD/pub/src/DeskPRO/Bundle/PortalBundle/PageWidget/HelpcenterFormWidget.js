@@ -6,7 +6,7 @@ import DpxFormDraft from './Common/Form/Draft/DpxFormDraft';
 import DpxJavascript from './Common/Form/DpxJavascript';
 import HcFileUpload from './Common/Form/Helpcenter/HcFileUpload';
 import HcProfilePicture from './Common/Form/Helpcenter/HcProfilePicture';
-import DpxRte from './Common/Form/DpxRte';
+import HcRte from './Common/Form/Helpcenter/HcRte';
 import { HcDpxSelectBox } from './Common/Form/Helpcenter/HcSelectBox';
 import { HcDpxMultipleSelectBox } from './Common/Form/Helpcenter/HcMultipleSelectBox';
 
@@ -18,7 +18,7 @@ export default class HelpcenterFormWidget extends PageWidget {
     this.addWidgetDef(HcDpxSelectBox, 'select[dpx-select], select.dpx-select');
     this.addWidgetDef(HcDpxMultipleSelectBox, 'select[dpx-select-multiple], select.dpx-select-multiple');
     this.addWidgetDef(HcFileUpload, '.helpcenter-file-upload');
-    this.addWidgetDef(DpxRte, '[data-rte]');
+    this.addWidgetDef(HcRte, '[data-rte]');
     this.addWidgetDef(DpxFormDraft, 'form[data-save-draft]');
     this.addWidgetDef(HcCustomFieldAttach, '.dpx-custom-field-attach');
     this.addWidgetDef(DpxDoubleSubmitPrevention, '[type="submit"]');

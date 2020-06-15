@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
@@ -23,6 +24,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentLoginAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewChatMessage;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewComment;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewCommunityTopic;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewImMessage;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewRegistration;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentPasswordResetAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskAssigned;
@@ -126,6 +128,22 @@ class AgentViewModelFactory extends AbstractViewModelFactory
         }
 
         return $this->convertParameters(AgentNewChatMessage::class, [$chatMessage, $author]);
+    }
+
+    /**
+     * @param AgentChatMessage $chatMessage
+     *
+     * @return AgentNewChatMessage
+     */
+    public function createAgentNewImMessageModel(AgentChatMessage $chatMessage)
+    {
+        if ($chatMessage->getPerson()) {
+            $author = $chatMessage->getPerson();
+        } else {
+            $author = null;
+        }
+
+        return $this->convertParameters(AgentNewImMessage::class, [$chatMessage, $author]);
     }
 
     /**

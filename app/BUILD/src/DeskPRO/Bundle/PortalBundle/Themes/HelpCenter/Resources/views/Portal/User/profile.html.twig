@@ -22,7 +22,7 @@
 
 {% block page_content %}
 <div class="dp-po">
-    <main class="dp-po-main dp-po-your-account">
+    <main id="main" tabindex="-1" class="dp-po-main dp-po-your-account">
         <div class="container">
             <div class="dp-po-title">
                 <img src="{{ asset('img/page-icons/account.svg', 'help_center') }}" role="presentation" class="dp-po-title-svg">
@@ -36,30 +36,156 @@
                 </div>
                 <div class="col-sm-8">
                     <div class="dp-po-block dp-po-section">
-                        <section class="dp-po-account-form">
-                            {{ form_start(profile_form, { attr: { class: 'do-po-form helpcenter-form' } }) }}
-                            {{ form_errors(profile_form) }}
-                            {{ form_row(profile_form.name) }}
-                            {% if app.getSetting('portal.members_community') %}
-                                {{ form_row(profile_form.community_name) }}
-                            {% endif %}
-                            {% if profile_form.language_id is defined %}
-                                {{ form_row(profile_form.language_id) }}
-                            {% endif %}
-                            {% if profile_form.delete_picture is defined %}
-                                <img src="{{ person.picture_url }}" alt="{{ person }}"/>
-                                {{ form_row(profile_form.delete_picture, { checkbox_label: phrase('helpcenter.account.profile_delete_picture'), label: false }) }}
-                            {% else %}
-                                {{ form_row(profile_form.upload_picture) }}
-                            {% endif %}
-                            {{ form_row(profile_form.timezone) }}
-                            {% if profile_form.manager_auto_add is defined %}
-                                {{ form_row(profile_form.manager_auto_add) }}
-                            {% endif %}
-                            {{ form_rest(profile_form) }}
-                            <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.account.profile_save_action') }}</button>
-                            {{ form_end(profile_form) }}
-                        </section>
+                        <div class="accordion" id="profile_accordion">
+                            <div class="card">
+                                <div class="card-header" id="account_heading">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#account" aria-expanded="true" aria-controls="account">
+                                            {{ phrase('helpcenter.account.section_title_your_account') }} <i class="dp-po-icon fal fa-angle-down"></i
+                                        </button>
+                                    </h2>
+                                </div>
+
+                                <div class="collapse {% if mode == 'account' %}show{% endif %}" id="account" aria-labelledby="account_heading" data-parent="#profile_accordion">
+                                    <section class="dp-po-account-form">
+                                        {{ form_start(profile_form, { attr: { class: 'do-po-form helpcenter-form' } }) }}
+                                        {{ form_errors(profile_form) }}
+                                        {{ form_row(profile_form.name) }}
+                                        {% if app.getSetting('portal.members_community') %}
+                                            {{ form_row(profile_form.community_name) }}
+                                        {% endif %}
+                                        {% if profile_form.language_id is defined %}
+                                            {{ form_row(profile_form.language_id) }}
+                                        {% endif %}
+                                        {% if profile_form.delete_picture is defined %}
+                                            <img src="{{ person.picture_url }}" alt="{{ person }}"/>
+                                            {{ form_row(profile_form.delete_picture, { checkbox_label: phrase('helpcenter.account.profile_delete_picture'), label: false }) }}
+                                        {% else %}
+                                            {{ form_row(profile_form.upload_picture) }}
+                                        {% endif %}
+                                        {{ form_row(profile_form.timezone) }}
+                                        {% if profile_form.manager_auto_add is defined %}
+                                            {{ form_row(profile_form.manager_auto_add) }}
+                                        {% endif %}
+                                        {{ form_rest(profile_form) }}
+                                        <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.account.profile_save_action') }}</button>
+                                        {{ form_end(profile_form) }}
+                                    </section>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header" id="password_heading">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#password" aria-expanded="false" aria-controls="password">
+                                            {{ phrase('helpcenter.profile.your_password') }} <i class="dp-po-icon fal fa-angle-down"></i>
+                                        </button>
+                                    </h2>
+                                </div>
+
+                                <div id="password" class="collapse {% if mode == 'password' %}show{% endif %}" aria-labelledby="password_heading" data-parent="#profile_accordion">
+                                    <section class="dp-po-account-form">
+                                        {{ form_start(password_form, { attr: { class: 'form-ticket' } }) }}
+                                        {{ form_errors(password_form) }}
+                                        {% if password_form.current_password is defined %}
+                                            {{ form_row(password_form.current_password) }}
+                                        {% endif %}
+                                        {{ form_row(password_form.new_password) }}
+                                        <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.account.change_password_action') }}</button>
+                                        {{ form_rest(password_form) }}
+                                        {{ form_end(password_form) }}
+                                    </section>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header" id="emails_heading">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#emails" aria-expanded="false" aria-controls="emails">
+                                            {{ phrase('helpcenter.profile.your_email_addresses') }} <i class="dp-po-icon fal fa-angle-down"></i
+                                        </button>
+                                    </h2>
+                                </div>
+
+                                <div id="emails" class="collapse {% if mode == 'emails' %}show{% endif %}" aria-labelledby="emails_heading" data-parent="#profile_accordion">
+                                    <div class="dp-po-account-email">
+                                        <h3 class="dp-po-account-email-title">{{ phrase('helpcenter.general.email_address') }}</h3>
+                                        <ul class="dp-po-account-email-list">
+                                            {% for email in person.emails %}
+                                                <li class="dp-po-account-email-item">
+                                                    <p class="dp-po-account-email-address">
+                                                        <i class="dp-po-icon fad fa-envelope"></i>
+                                                        {{ email.email }}
+                                                    </p>
+                                                    {% if person.emails|length > 1 %}
+                                                        {% if email.isPrimary %}
+                                                            <ul class="dp-po-account-email-action">
+                                                                <li class="dp-po-account-email-action-item">{{ phrase('helpcenter.account.email_primary_description') }}</li>
+                                                            </ul>
+                                                        {% else %}
+                                                            <ul class="dp-po-account-email-action">
+                                                                <li class="dp-po-account-email-action-item">
+                                                                    <a
+                                                                            id="{{ email.email }}"
+                                                                            href="{{ path('portal_user_profile_mobile', { mode: 'email', new_primary: email.id }) }}"
+                                                                            class="dp-po-account-email-action-link">
+                                                                        {{ phrase('helpcenter.account.email_make_primary_action') }}
+                                                                    </a>
+                                                                </li>
+                                                                <li class="dp-po-account-email-action-item">
+                                                                    <a
+                                                                            href="{{ path('portal_user_profile_mobile', { mode: 'email', remove_email: email.id }) }}"
+                                                                            class="dp-po-account-email-action-link">
+                                                                        {{ phrase('helpcenter.account.email_remove_action') }}
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% if pending_emails|length  > 0 %}
+                                            <h3 class="dp-po-account-email-title">{{ phrase('helpcenter.account.your_pending_email_addresses') }}</h3>
+                                            <ul class="dp-po-account-email-list">
+                                                {% for saved_form_id, email in pending_emails %}
+                                                    <li class="dp-po-account-email-item">
+                                                        <p class="dp-po-account-email-address">
+                                                            <i class="dp-po-icon fad fa-envelope"></i>
+                                                            {{ email }}
+                                                        </p>
+                                                        <ul class="dp-po-account-email-action">
+                                                            <li class="dp-po-account-email-action-item">
+                                                                <a
+                                                                        href="{{ path('portal_user_profile_emails_resend_validation', { id: saved_form_id}) }}"
+                                                                        class="dp-po-account-email-action-link post-link">
+                                                                    {{ phrase('helpcenter.account.email_resend_validation_action') }}
+                                                                </a>
+                                                            </li>
+                                                            <li class="dp-po-account-email-action-item">
+                                                                <a
+                                                                        href="{{ path('portal_user_profile_emails_remove_pending', { id: saved_form_id}) }}"
+                                                                        class="dp-po-account-email-action-link">
+                                                                    {{ phrase('helpcenter.account.email_remove_action') }}
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                        {% if add_email_form %}
+                                            {{ form_start(add_email_form, { attr: { class: 'form-ticket' } }) }}
+                                            {{ form_errors(add_email_form) }}
+                                            {{ form_row(add_email_form.email) }}
+                                            {{ form_rest(add_email_form) }}
+                                            <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.account.add_email') }}</button>
+                                            {{ form_end(add_email_form) }}
+                                        {% else %}
+                                            <a href="javascript:void(0)" class="btn btn-primary">{{ phrase('helpcenter.account.add_email') }}</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

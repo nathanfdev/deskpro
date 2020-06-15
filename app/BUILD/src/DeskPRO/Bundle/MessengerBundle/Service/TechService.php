@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalUsergroupDecider;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\MessengerBundle\Common\TraitUserGet;
@@ -21,6 +22,11 @@ class TechService
      * @var PermissionsManager
      */
     private $permissionsManager;
+
+    /**
+     * @var PortalPermissionsManager
+     */
+    private $portalPermissionsManager;
 
     /**
      * @var PortalUsergroupDecider
@@ -40,24 +46,27 @@ class TechService
     /**
      * TechService constructor.
      *
-     * @param EntityManager          $em
-     * @param PermissionsManager     $permissionsManager
-     * @param PortalUsergroupDecider $usergroupDecider
-     * @param BrandStack             $brandStack
-     * @param ContainerInterface     $container
+     * @param EntityManager            $em
+     * @param PermissionsManager       $permissionsManager
+     * @param PortalPermissionsManager $portalPermissionsManager
+     * @param PortalUsergroupDecider   $usergroupDecider
+     * @param BrandStack               $brandStack
+     * @param ContainerInterface       $container
      */
     public function __construct(
         EntityManager $em,
         PermissionsManager $permissionsManager,
+        PortalPermissionsManager $portalPermissionsManager,
         PortalUsergroupDecider $usergroupDecider,
         BrandStack $brandStack,
         ContainerInterface $container
     ) {
-        $this->permissionsManager = $permissionsManager;
-        $this->usergroupDecider   = $usergroupDecider;
-        $this->em                 = $em;
-        $this->brandStack         = $brandStack;
-        $this->container          = $container;
+        $this->permissionsManager       = $permissionsManager;
+        $this->portalPermissionsManager = $portalPermissionsManager;
+        $this->usergroupDecider         = $usergroupDecider;
+        $this->em                       = $em;
+        $this->brandStack               = $brandStack;
+        $this->container                = $container;
     }
 
     /**
@@ -88,8 +97,7 @@ class TechService
 
         return $user
             ? $this->usergroupDecider->getUsergroupIdsForPerson($user)
-            : $this->usergroupDecider->getUsergroupIdsForGuest()
-        ;
+            : $this->usergroupDecider->getUsergroupIdsForGuest();
     }
 
     /**
@@ -110,8 +118,7 @@ class TechService
                 'd.id IN (:allowed_department_ids)',
                 'd.parent IS NULL'
             )
-            ->setParameter('allowed_department_ids', $allowedDepartmentIds)
-        ;
+            ->setParameter('allowed_department_ids', $allowedDepartmentIds);
 
         $self = $this;
 
@@ -145,5 +152,16 @@ class TechService
         $chatConversationRepo = $this->em->getRepository(ChatConversation::class);
 
         return $chatConversationRepo->findOneBy(['visitor_id' => $visitorId, 'status' => ChatConversation::STATUS_OPEN]);
+    }
+
+    public function canUseTickets()
+    {
+        $user = $this->getUser();
+
+        $permissionsBag = $user
+            ? $this->portalPermissionsManager->getPermissionsBagForPerson($user)
+            : $this->portalPermissionsManager->getPermissionsBagForGuest();
+
+        return $permissionsBag->get('tickets.use');
     }
 }

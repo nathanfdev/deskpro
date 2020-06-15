@@ -12,8 +12,6 @@ use DeskPRO\Bundle\AppBundle\Model\TicketColumn;
 use DeskPRO\Bundle\AppBundle\Model\TicketColumns;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
-use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,16 +51,6 @@ class TicketTableDataService extends AbstractDataService
      */
     private $brand_aware_settings;
 
-    /**
-     * @var PortalBrandThemeLoader
-     */
-    private $portalBrandThemeLoader;
-
-    /**
-     * @var BrandStack
-     */
-    private $brandStack;
-
     public function __construct(
         EntityManager $em,
         TicketsDataService $ticket_data_service,
@@ -70,9 +58,7 @@ class TicketTableDataService extends AbstractDataService
         DepartmentDataService $department_data_service,
         TicketLayoutFactory $ticket_layout_factory,
         CustomFieldManager $form_field_manager,
-        BrandAwareSettingsResolver $brand_aware_settings,
-        PortalBrandThemeLoader $portalBrandThemeLoader = null,
-        BrandStack $brandStack = null
+        BrandAwareSettingsResolver $brand_aware_settings
     ) {
         parent::__construct($em);
         $this->ticket_data_service     = $ticket_data_service;
@@ -81,8 +67,6 @@ class TicketTableDataService extends AbstractDataService
         $this->ticketLayoutFactory     = $ticket_layout_factory;
         $this->fieldManager            = $form_field_manager;
         $this->brand_aware_settings    = $brand_aware_settings;
-        $this->portalBrandThemeLoader  = $portalBrandThemeLoader;
-        $this->brandStack              = $brandStack;
     }
 
     public function makeTicketTable(Person $person, Request $request, $ticketType, $category, $categoryTitle)
@@ -107,20 +91,6 @@ class TicketTableDataService extends AbstractDataService
 
     protected function phrase($phraseName, $vars = [])
     {
-        if (is_array($phraseName)) {
-            if ($this->isHelpcenter()) {
-                $phraseName = array_filter($phraseName, function ($p) {
-                    return strpos($p, 'helpcenter.') === 0;
-                });
-            } else {
-                $phraseName = array_filter($phraseName, function ($p) {
-                    return strpos($p, 'helpcenter.') !== 0;
-                });
-            }
-
-            $phraseName = array_pop($phraseName);
-        }
-
         return $this->language_manager->phrase($phraseName, $vars);
     }
 
@@ -314,10 +284,5 @@ class TicketTableDataService extends AbstractDataService
         }
 
         return;
-    }
-
-    private function isHelpcenter()
-    {
-        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }

@@ -3,7 +3,7 @@
 {% set main_class = 'dp-po-ticket-view' %}
 {% block page_content %}
     <div class="dp-po">
-        <main class="dp-po-main dp-po-ticket-view">
+        <main id="main" tabindex="-1" class="dp-po-main dp-po-ticket-view">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-9">
@@ -18,10 +18,14 @@
                                 <div class="dp-po-post-extra">
                                     <ul class="dp-po-post-extra-list">
                                         <li class="dp-po-post-extra-item">
-                                            <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}"><i class="dp-po-icon fal fa-print"></i></a>
+                                            <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}">
+                                                <i class="dp-po-icon fal fa-print"></i>
+                                            </a>
                                         </li>
                                         <li class="dp-po-post-extra-item">
-                                            <a href="{{ path('portal_tickets_pdf', {ticketRef: ticket.ref }) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.guides.download_pdf') }}"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                                            <a href="{{ path('portal_tickets_pdf', {ticketRef: ticket.ref }) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.download_pdf') }} - Ticket_{{ ticket.ref }}.pdf">
+                                                <i class="dp-po-icon fal fa-file-pdf"></i>
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -107,12 +111,12 @@
       <span class="badge {{ class }} badge-icon"><i class="dp-po-icon far {{ icon }}"></i> {{ ticket.ticket_status.title }}</span>
     </div>
 
-    <div class="dp-po-ticket-meta">
-        <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.list_ticket_ref') }}</h3>
-        <p>
+    <dl class="dp-po-ticket-meta">
+        <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.list_ticket_ref') }}</dt>
+        <dd>
             {{ ticket_public_id(ticket) }}
             <div class="item-clear"></div>
-        </p>
+        </dd>
 
         {% if ticket.person and ticket.person.id != app.user.id %}
             <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_requester') }}</h3>
@@ -125,40 +129,45 @@
         {% endif %}
 
         <div class="dp-po-ticket-meta-cc">
-            <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_participants', {count: ticket.getCcs()|length} ) }}</h3>
-            <ul class="dp-po-ticket-meta-cc-list">
-                {% if ticket.getCcs()|length > 0 %}
+            <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_participants', {participants: '<span class="count">' ~ (ticket.getCcs()|length) ~ '</span>'}, true) }}</dt>
+            <dd>
+                <ul class="dp-po-ticket-meta-cc-list">
                     {% for participant in ticket.getCcs() %}
                         {% if participant.id %}
-                            <li class="dp-po-ticket-meta-cc-item">
-                                {% include 'Theme:Tickets:embeds/ticket_cc_sidebar.html.twig' with {person: participant.person, avatar_link: path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id }) }%}
-                            </li>
+                            {% include 'Theme:Tickets:embeds/ticket_cc_sidebar.html.twig' with {person: participant.person, avatar_link: path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id }), cc_id: participant.id }%}
                         {% endif %}
                     {% endfor %}
-                {% else %}
-                    <li class="dp-po-ticket-meta-cc-item">
+                    <li class="dp-po-ticket-meta-cc-item none" {% if ticket.getCcs()|length > 0 %}style="display: none"{% endif %}>
                         <span class="dp-po-ticket-meta-cc-name">{{ phrase('helpcenter.tickets.no_participants') }}</span>
                     </li>
-                {% endif %}
-            </ul>
+                </ul>
+            </dd>
 
             {% block page_sidebar_add_participant_form %}
                 <a href="#" data-clickaway-target="add-cc-user-popover" class="dp-po-ticket-meta-cc-link clickaway-dropdown">{{ phrase('helpcenter.tickets.view_btn_add_cc') }}</a>
                 <div class="dp-po-ticket-meta-cc-form" id="add-cc-user-popover" style="display: none;">
+                    <div class="alert alert-danger" style="display: none">
+                    </div>
                     <form action="{{ portal_path(ticket, 'add-cc') }}" method="POST" class="do-po-form">
 
                         <div class="form-group">
-                            <input type="text" name="ticket_add_cc[name]" required class="form-control" placeholder="{{ phrase('helpcenter.tickets.view_label_your_name_placeholder') }}" />
+                            <label for="ticket_add_cc_name">{{ phrase('helpcenter.general.name') }} *</label>
+                            <input type="text" id="ticket_add_cc_name" name="ticket_add_cc[name]" required class="form-control" />
                         </div>
-                        <div class="form-group">
-                            <input type="text" name="ticket_add_cc[email]" required class="form-control"  placeholder="{{ phrase('helpcenter.tickets.view_label_your_email_placeholder') }}" />
+                        <div class="form-group email">
+                            <label for="ticket_add_cc_email">{{ phrase('helpcenter.general.email_address') }} *</label>
+                            <input type="text" id="ticket_add_cc_email" name="ticket_add_cc[email]" required class="form-control" />
+                            <small class="form-text text-danger" style="display: none"></small>
                         </div>
 
                         {% for widget in add_cc_form.children if widget.vars.name in ['_token', '_dp_csrf_token'] %}
                             {{ form_row(widget) }}
                         {% endfor %}
 
-                        <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.tickets.view_btn_add_to_ticket') }}</button>
+                        <button type="submit" class="dp-po-ticket-meta-cc-submit btn btn-primary" >
+                            {{ phrase('helpcenter.tickets.view_btn_add_to_ticket') }}
+                            <i class="fas fa-circle-notch fa-spin dp-po-icon"></i>
+                        </button>
                     </form>
                 </div>
             {% endblock page_sidebar_add_participant_form %}
@@ -175,26 +184,28 @@
             {# only shows this if its been more than 10 minutes since the last message was posted #}
             {# to avoid "your last message was 1 second ago" after every reply #}
             {% if ticket.date_last_user_reply and ticket.messages|length > 1 and last_user_reply_in_seconds > 600 %}
-                <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_last_message') }}</h3>
-                <p>{{ date_ago(ticket.date_last_user_reply, null, false) }}</p>
+                <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_last_message') }}</dt>
+                <dd>{{ date_ago(ticket.date_last_user_reply, null, false) }}</dd>
                 {# similarly, only show the "created ago" message if it has been more than 10 mins #}
             {% elseif created_in_seconds > 600 %}
-                <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_you_created') }}</h3>
-                <p>{{ date_ago(ticket.date_created, null, false) }}</p>
+                <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_you_created') }}</dt>
+                <dd>{{ date_ago(ticket.date_created, null, false) }}</dd>
             {% endif %}
         {% endif %}
-    </div>
+    </dl>
 
     {% if ticket_view.getAttachments()|length > 0 %}
     <div class="dp-po-sidebar dp-po-post-attachments">
-        <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.general.attachments') }}</h3>
-        <ul class="dp-po-post-attachments-list">
-            {% for attachment in ticket_view.getAttachments() %}
-                <li class="dp-po-post-attachments-item">
-                    {{ block('ticket_attachment') }}
-                </li>
-            {% endfor %}
-        </ul>
+        <dt class="dp-po-sidebar-title">{{ phrase('helpcenter.general.attachments') }}</dt>
+        <dd>
+            <ul class="dp-po-post-attachments-list">
+                {% for attachment in ticket_view.getAttachments() %}
+                    <li class="dp-po-post-attachments-item">
+                        {{ block('ticket_attachment') }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </dd>
     </div>
     {% endif %}
 
@@ -211,9 +222,9 @@
         {% for property in ticket_view.properties %}
             {% set propValue = property.value is iterable ? property.value : property.value|smart_wrap(35) %}
             {% if property.isVisible and propValue %}
-                <h3 class="dp-po-ticket-meta-title">{{ property.label }}</h3>
+                <dt class="dp-po-ticket-meta-title">{{ property.label }}</dt>
                 {% if property.type == 'url' %}
-                    <p><a href="{{ propValue }}" target="_blank">{{ propValue }}</a></p>
+                    <dd><a href="{{ propValue }}" target="_blank">{{ propValue }}</a></dd>
                 {% elseif property.type == 'file' %}
                     {% for file in propValue %}
                         <div>
@@ -225,11 +236,11 @@
                         </div>
                     {% endfor %}
                 {% elseif property.type == 'javascript' %}
-                    <p>{{ propValue }}</p>
+                    <dd>{{ propValue }}</dd>
                 {% elseif property.isLinkify %}
-                    <p>{{ propValue|safe_link_urls }}</p>
+                    <dd>{{ propValue|safe_link_urls }}</dd>
                 {% else %}
-                    <p>{{ propValue }}</p>
+                    <dd>{{ propValue }}</dd>
                 {% endif %}
             {% endif %}
         {% endfor %}

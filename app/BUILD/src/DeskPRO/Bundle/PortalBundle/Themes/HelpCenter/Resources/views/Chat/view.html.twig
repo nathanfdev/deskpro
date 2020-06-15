@@ -48,7 +48,7 @@
 
 {% block page_content %}
   <div class="dp-po">
-    <main class="dp-po-main dp-po-chat-view-log">
+    <main id="main" tabindex="-1" class="dp-po-main dp-po-chat-view-log">
       <div class="container">
         <div class="row mb-4">
           <div class="col-sm-9">
@@ -80,7 +80,7 @@
                       <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}"><i class="dp-po-icon fal fa-print"></i></a>
                     </li>
                     <li class="dp-po-post-extra-item">
-                      <a href="" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.guides.download_pdf') }}"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                      <a href="" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.download_pdf') }}"><i class="dp-po-icon fal fa-file-pdf"></i></a>
                     </li>
                   </ul>
                 </div>
@@ -198,66 +198,70 @@
           </div>
 
           <div class="col-sm-3">
-            <div class="dp-po-post-meta">
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.messenger.assigned_agent' )}}</h3>
-              <p>
+            <dl class="dp-po-post-meta">
+              <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.messenger.assigned_agent' )}}</dt>
+              <dd>
                 <div class="dp-po-avatar dp-po-avatar-round">
                   {{ hc_avatar(chat.agent, '', 60) }}
                   <span>{{chat.agent.display_name_user}}</span>
                 </div>
-              </p>
+              </dd>
               {% set allAgentsExceptAssigned = chat.agent_participants|filter(a => a != chat.agent) %}
               {% if allAgentsExceptAssigned|length > 0 %}
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.agents') }}</h3>
-              <p>
+              <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.agents') }}</dt>
+              <dd>
                 <div class="dp-po-avatar dp-po-avatar-round">
                   {% for agent in allAgentsExceptAssigned %}
                     {{ hc_avatar(agent, '', 60) }}
                     <span>{{ agent.display_name_user }}</span>
                   {% endfor %}
                 </div>
-              </p>
+              </dd>
               {% endif %}
-            </div>
-            <div class="dp-po-post-meta">
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.department') }}</h3>
-              <p>{{ chat.department ? chat.department.user_title : '-' }}</p>
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.messenger.total_chat_time_label') }}</h3>
-              <p>{{ date_diff(chat.date_created, chat.date_ended) }}</p>
-              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.last_activity') }}</h3>
-              <p>{{date(lastMessage.date_created, 'l')}}, {{date(lastMessage.date_created, 'time')}}</p>
+            </dl>
+            <dl class="dp-po-post-meta">
+              <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.department') }}</dt>
+              <dd>{{ chat.department ? chat.department.user_title : '-' }}</dd>
+              <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.messenger.total_chat_time_label') }}</dt>
+              <dd>{{ date_diff(chat.date_created, chat.date_ended) }}</dd>
+              <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.last_activity') }}</dt>
+              <dd>{{ phrase('helpcenter.general.date_medium', {date:lastMessage.date_created}) }}, {{date(lastMessage.date_created, 'time')}}</dd>
               {% for custom in custom_data %}
                 {% if custom['value'] %}
-                  <h3 class="dp-po-post-meta-title">{{ custom['label'] }}</h3>
-                  <p>{{ custom['value'] }}</p>
+                  <dt class="dp-po-post-meta-title">{{ custom['label'] }}</dt>
+                  <dd>{{ custom['value'] }}</dd>
                 {% endif %}
               {% endfor %}
-            </div>
+            </dl>
 
             {% if chat_attachments|length  > 0 %}
-            <div class="dp-po-sidebar dp-po-chat-attachments">
-              <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.messenger.files_on_this_chat') }}</h3>
-              <ul class="dp-po-chat-attachments-list">
-                {% for attachment in chat_attachments %}
-                  <li class="dp-po-chat-attachments-item">
-                    {{ block('chat_attachment') }}
-                  </li>
-                {% endfor %}
-              </ul>
-            </div>
+            <dl class="dp-po-sidebar dp-po-chat-attachments">
+              <dt class="dp-po-sidebar-title">{{ phrase('helpcenter.messenger.files_on_this_chat') }}</dt>
+              <dd>
+                <ul class="dp-po-chat-attachments-list">
+                  {% for attachment in chat_attachments %}
+                    <li class="dp-po-chat-attachments-item">
+                      {{ block('chat_attachment') }}
+                    </li>
+                  {% endfor %}
+                </ul>
+              </dd>
+            </dl>
             {% endif %}
             {% if linked_ticket %}
               <div class="dp-po-sidebar dp-po-chat-links">
-                <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.messenger.linked_ticket_label') }}</h3>
-                <ul class="dp-po-chat-links-list">
-                  <li class="dp-po-chat-links-item">
-                    <a href="{{ portal_path(linked_ticket) }}" class="dp-po-chat-links-link">
-                      {{ phrase('helpcenter.messenger.view_linked_ticket_action') }}: {{ linked_ticket.subject }}
-                      <i class="dp-po-icon fal fa-link"></i>
-                      {{ portal_path(linked_ticket) }}
-                    </a>
-                  </li>
-                </ul>
+                <dt class="dp-po-sidebar-title">{{ phrase('helpcenter.messenger.linked_ticket_label') }}</dt>
+                <dd>
+                  <ul class="dp-po-chat-links-list">
+                    <li class="dp-po-chat-links-item">
+                      <a href="{{ portal_path(linked_ticket) }}" class="dp-po-chat-links-link">
+                        {{ phrase('helpcenter.messenger.view_linked_ticket_action') }}: {{ linked_ticket.subject }}
+                        <i class="dp-po-icon fal fa-link"></i>
+                        {{ portal_path(linked_ticket) }}
+                      </a>
+                    </li>
+                  </ul>
+                </dd>
               </div>
             {% endif %}
           </div>

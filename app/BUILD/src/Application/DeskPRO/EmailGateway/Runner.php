@@ -421,6 +421,12 @@ class Runner
 
         $this->logMessages->clear();
 
+        // Mark as processing now
+        $sourceLogger->logDebug('Marking source as processing');
+        $source->setStatus(EmailSource::STATUS_PROCESSING);
+        App::getOrm()->persist($source);
+        App::getOrm()->flush();
+
         $previousLogText = null;
         if ($source->log_blob) {
             try {
@@ -457,12 +463,6 @@ class Runner
                 throw new ProcessingException('Detected that we are at the memory limit', ProcessingException::MEMORY_LIMIT);
             }
         }
-
-        // Mark as processing now
-        $sourceLogger->logDebug('Marking source as processing');
-        $source->status = 'processing';
-        App::getOrm()->persist($source);
-        App::getOrm()->flush();
 
         $allowRetry = $this->enableRetryScheduling;
         $sourceLogger->logInfo('Retrying is '.($allowRetry ? 'on' : 'off'));

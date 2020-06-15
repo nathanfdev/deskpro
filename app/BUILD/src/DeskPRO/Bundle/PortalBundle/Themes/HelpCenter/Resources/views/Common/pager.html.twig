@@ -3,9 +3,9 @@
     <nav aria-label="{% if title is defined %}{{ title }} {% endif %}Pagination">
         {{ pagerfanta(pager, null, {
             routeParams: {tag_options: null},
-            prev_message: '<i class="dp-po-icon far fa-angle-left"></i>',
+            prev_message: '<i class="dp-po-icon far fa-angle-left"></i><span class="sr-only">' ~ phrase('helpcenter.general.pagination_previous_page') ~ '</span>',
             css_prev_class: 'page-item-icon',
-            next_message: '<i class="dp-po-icon far fa-angle-right"></i>',
+            next_message: '<i class="dp-po-icon far fa-angle-right"></i><span class="sr-only">' ~ phrase('helpcenter.general.pagination_next_page') ~ '</span>',
             css_next_class: 'page-item-icon',
             css_active_class: 'active'
         }|merge(pager_options|default({}))) }}

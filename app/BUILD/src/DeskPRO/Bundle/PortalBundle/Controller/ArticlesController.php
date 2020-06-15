@@ -379,10 +379,10 @@ class ArticlesController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedCategory($category, $person)) {
             $subscriptionsHelper->unsubscribeFromCategory($category, $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.article_cat_unsubscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.article_cat_unsubscribe'], ['category' => $category->getTitle()]));
         } else {
             $subscriptionsHelper->subscribeToCategory($category, $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.article_cat_subscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.article_cat_subscribe'], ['category' => $category->getTitle()]));
         }
 
         return $this->redirectToRoute('portal_kb_browse', ['slug' => $category->getSlug()]);
@@ -400,10 +400,10 @@ class ArticlesController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedRootCategory('kb', $person)) {
             $subscriptionsHelper->unsubscribeFromRootCategory('kb', $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.article_cat_unsubscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.article_root_subscribe'], []));
         } else {
             $subscriptionsHelper->subscribeToRootCategory('kb', $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.article_cat_subscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.article_root_subscribe']));
         }
 
         return $this->redirectToRoute('portal_kb');

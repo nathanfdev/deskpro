@@ -180,7 +180,7 @@ class TemplateController extends BaseController
      * @Rest\Delete("/template/{name}", requirements={"name"=".+"})
      * @ParamConverter("brand", class="DeskPRO:Brand", options={"id" = "brandId"})
      *
-     * @param $name
+     * @param string $name
      * @param null|Brand $brand
      *
      * @return View

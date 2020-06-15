@@ -23,6 +23,9 @@ class CommunityForumPropsType extends AbstractType
     {
         $builder
             ->add('title', 'text', ['required' => true])
+            ->add('noun', 'text', ['required' => true])
+            ->add('plural', 'text', ['required' => true])
+            ->add('verb_action', 'text', ['required' => true])
             ->add('description', 'text', ['required' => false])
             ->add('usergroups', 'entity', [
                 'class'         => 'DeskPRO:Usergroup',

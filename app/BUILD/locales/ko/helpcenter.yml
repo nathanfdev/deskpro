@@ -57,7 +57,7 @@ helpcenter.general.password: 비밀번호
 helpcenter.general.rate_page_positive: 도움이 되었습니다
 helpcenter.general.show: 보기
 helpcenter.general.you: 고객님
-helpcenter.guides.download_pdf: 'PDF 다운로드'
+helpcenter.general.download_pdf: 'PDF 다운로드'
 helpcenter.members.language: 언어
 helpcenter.members.timezone: 표준 시간대
 helpcenter.news.view_as_agent: '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.'

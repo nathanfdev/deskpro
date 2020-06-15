@@ -13,6 +13,8 @@ services:
       - "@deskpro.core.translate"
       - "@brand_aware_settings_resolver"
       - "@data.custom_field_util"
+      - "@?portal_brand_theme_loader"
+      - "@brand_stack"
 
   chat.view:
     class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatViewDataService
@@ -30,8 +32,6 @@ services:
       - "@ticket_layout_factory"
       - "@custom_field_manager"
       - "@brand_aware_settings_resolver"
-      - "@?portal_brand_theme_loader"
-      - "@brand_stack"
 
   tickets.statuses:
     class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService

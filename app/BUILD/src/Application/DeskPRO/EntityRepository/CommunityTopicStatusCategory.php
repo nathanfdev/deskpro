@@ -3,7 +3,9 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
+use Application\DeskPRO\Entity\CommunityForum as CommunityForumEntity;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory as CommunityTopicStatusCategoryEntity;
+use Doctrine\ORM\Query\Expr;
 
 /**
  * Class CommunityTopicStatusCategory.
@@ -21,6 +23,16 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
     }
 
     /**
+     * @param int|CommunityForumEntity $forum
+     *
+     * @return CommunityTopicStatusCategoryEntity[]
+     */
+    public function getActiveCategoriesByForum($forum = null)
+    {
+        return $this->getCategoriesForType('active', null, $forum);
+    }
+
+    /**
      * @param int|BrandEntity $brand
      *
      * @return CommunityTopicStatusCategoryEntity[]
@@ -28,6 +40,16 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
     public function getClosedCategories($brand = null)
     {
         return $this->getCategoriesForType('closed', $brand);
+    }
+
+    /**
+     * @param int|CommunityForumEntity $forum
+     *
+     * @return CommunityTopicStatusCategoryEntity[]
+     */
+    public function getClosedCategoriesByForum($forum = null)
+    {
+        return $this->getCategoriesForType('closed', null, $forum);
     }
 
     public function getNames(array $for_ids = null)
@@ -46,12 +68,13 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
     }
 
     /**
-     * @param string          $type
+     * @param string $type
      * @param int|BrandEntity $brand
+     * @param int|CommunityForumEntity $forum
      *
      * @return array
      */
-    private function getCategoriesForType($type, $brand = null)
+    private function getCategoriesForType($type, $brand = null, $forum = null)
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb
@@ -64,6 +87,11 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
         if ($brand) {
             $qb->andWhere('c.brand = :brand');
             $qb->setParameter('brand', $brand);
+        }
+
+        if ($forum) {
+            $qb->innerJoin(CommunityForumEntity::class, 'f', Expr\Join::WITH, 'f.id = :forum')
+                ->setParameter('forum', $forum);
         }
 
         return $qb->getQuery()->getResult();

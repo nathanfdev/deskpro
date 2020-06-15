@@ -129,14 +129,14 @@
                             <td>
                                 <article class="message is-marginless">
                                     <div class="usage-screenshot-link">
-                                        <a class="screenshot-link" href="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/context/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">Screenshot</a>
+                                        <a class="screenshot-link" href="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/context/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>" target="_blank">Screenshot</a>
                                     </div>
                                     <div class="message-body is-size-7">
                                         <?php echo $phrases[$keyId] ?? '' ?>
-                                        <a class="screenshot-img-wrap screenshot-link" href="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/context/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">
+                                        <a class="screenshot-img-wrap screenshot-link" href="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/context/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>" target="_blank">
                                             <img class="screenshot-img lazyload" data-src="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/context/<?php echo $keyId ?>.png" alt="<?php echo $keyId ?>" data-key-id="<?php echo $keyId ?>" />
                                         </a>
-                                        <a class="screenshot-img-wrap screenshot-link" href="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/fullscreen/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>">
+                                        <a class="screenshot-img-wrap screenshot-link" href="https://raw.githubusercontent.com/deskpro/localisation/master/screenshots/fullscreen/<?php echo $keyId ?>.png" data-key-id="<?php echo $keyId ?>" target="_blank">
                                             Fullscreen
                                         </a>
                                     </div>

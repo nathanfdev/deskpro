@@ -15,12 +15,14 @@ use Symfony\Component\Yaml\Yaml;
 class HealthReportCommand extends ContainerAwareCommand
 {
     public static $knownPhraseIdExceptions = [
-        'helpcenter.duration_short.days'     => ['uppercase-only'],
-        'helpcenter.duration_short.months'   => ['uppercase-only'],
-        'helpcenter.duration_short.years'    => ['uppercase-only'],
-        'helpcenter.general.cc'              => ['uppercase-only'],
-        'helpcenter.general.eula'            => ['uppercase-only'],
-        'helpcenter.tickets.view_btn_add_cc' => ['uppercase-only'],
+        'helpcenter.duration_short.days'      => ['uppercase-only'],
+        'helpcenter.duration_short.months'    => ['uppercase-only'],
+        'helpcenter.duration_short.years'     => ['uppercase-only'],
+        'helpcenter.duration_short.weeks'     => ['uppercase-only'],
+        'helpcenter.general.cc'               => ['uppercase-only'],
+        'helpcenter.approvals.list_column_id' => ['uppercase-only'],
+        'helpcenter.general.eula'             => ['uppercase-only'],
+        'helpcenter.tickets.view_btn_add_cc'  => ['uppercase-only'],
     ];
 
     /**

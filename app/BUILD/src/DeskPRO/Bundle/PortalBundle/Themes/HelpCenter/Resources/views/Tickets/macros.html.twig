@@ -59,7 +59,7 @@
     {% if ticket_attachment.blob %}
     <a href="{{ ticket_attachment.blob.downloadUrl }}">
         {% if ticket_attachment.blob.is_image %}
-            <img src="{{ ticket_attachment.blob.thumbnailUrl }}" alt="{{ ticket_attachment.blob.filename }}">
+            <img src="{{ ticket_attachment.blob.thumbnailUrl }}" alt="">
         {% else %}
             {{ file_icon(ticket_attachment.blob) }}
         {% endif %}

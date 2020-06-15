@@ -287,9 +287,9 @@ class CommunityTopicsController extends AbstractPublishController
         // SECURITY
         // a permissions check, if the user can't see one of these filtered "types" (i.e. CommunityForum)
         $permissionsBag       = $this->getPermissionBag($person);
-        $allowed_category_ids = $permissionsBag->getAllowedCommunityForumIds();
+        $allowedCategoryIds   = $permissionsBag->getAllowedCommunityForumIds();
         foreach ($filter->getTypes() as $type) {
-            if (!in_array($type, $allowed_category_ids)) {
+            if (!in_array($type, $allowedCategoryIds)) {
                 throw new AccessDeniedException(
                     'you dont have access to a category you are trying to filter for
                 ');
@@ -461,8 +461,9 @@ class CommunityTopicsController extends AbstractPublishController
         }
 
         return $this->renderThemeView('Theme:Community:create-topic.html.twig', [
-            'form'        => $form->createView(),
-            'breadcrumbs' => $this->getBreadcrumbGenerator()->buildCommunityCreate($forum),
+            'form'          => $form->createView(),
+            'current_forum' => $forum,
+            'breadcrumbs'   => $this->getBreadcrumbGenerator()->buildCommunityCreate($forum),
         ]);
     }
 
@@ -711,7 +712,7 @@ class CommunityTopicsController extends AbstractPublishController
             $this->addFlash('success', $this->phrase(['portal.flashes.community_unsubscribe', 'helpcenter.flashes.community_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToContent($topic, $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.community_subscribe', 'helpcenter.flashes.community_subscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.community_subscribe', 'helpcenter.flashes.community_subscribe'], ['topic' => $topic->getTitle()]));
         }
 
         return $this->redirectToRoute('portal_community_topic_view', ['slug' => $topic->getSlug()]);
@@ -733,10 +734,10 @@ class CommunityTopicsController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedRootCategory('community', $person)) {
             $subscriptionsHelper->unsubscribeFromRootCategory('community', $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.article_cat_unsubscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.community_root_unsubscribe']));
         } else {
             $subscriptionsHelper->subscribeToRootCategory('community', $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.article_cat_subscribe']));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.community_root_subscribe']));
         }
 
         if ($request->query->get('target')) {
@@ -792,7 +793,8 @@ class CommunityTopicsController extends AbstractPublishController
 
         $allowedTypesParsed = [];
         foreach ($communityForums as $cat) {
-            $allowedTypesParsed[$cat->getId()] = $this->objectPhrase($cat);
+            $allowedTypesParsed[$cat->getId()]['title']  = $this->objectPhrase($cat);
+            $allowedTypesParsed[$cat->getId()]['plural'] = $this->objectPhrase($cat, 'plural');
         }
 
         $statusCategories       = [];

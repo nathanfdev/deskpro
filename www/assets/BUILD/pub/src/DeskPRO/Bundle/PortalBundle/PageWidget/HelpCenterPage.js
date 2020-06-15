@@ -8,10 +8,8 @@ import { DownloadPopupWidget } from './DownloadPopupWidget';
 import { HcCommunityTopicPage } from './HcCommunityTopicPage';
 import { CommunityVoteWidget } from './CommunityVoteWidget';
 import { ClickAwayDropdownWidget } from './ClickAwayDropdownWidget';
-import { LoginPage } from './LoginPage';
 import { HtmlLinkToPostWidget } from './HtmlLinkToPostWidget';
 import { HcOmniSearchWidget } from './HcOmniSearchWidget';
-import { HelpcenterLanguageChangerWidget } from './HelpcenterLanguageChangerWidget';
 import { HelpcenterLoginDropdownWidget } from './HelpcenterLoginDropdownWidget';
 import { HelpcenterSidebarFilters } from './HelpcenterSidebarFilters';
 import { LogoutButtonWidget } from './LogoutButtonWidget';
@@ -29,6 +27,8 @@ import { TitleAnchorWidget } from './TitleAnchorWidget';
 import { RemoveCCTicketReply } from './RemoveCCTicketReply';
 import { MobileCategories } from './MobileCategories';
 import { DpxFormClearDraft } from './Common/Form/Draft/DpxFormClearDraft';
+import { HelpcenterCCForm } from './HelpcenterCCForm';
+import { HelpcenterCCDelete } from './HelpcenterCCDelete';
 
 class HelpCenterPage extends PageWidget {
 
@@ -37,7 +37,6 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(HcOmniSearchWidget, '#helpcenter-omnisearch');
     this.addWidgetDef(HelpcenterLoginDropdownWidget, '#hc-top-login-btn');
     this.addWidgetDef(LogoutButtonWidget, '#top-logout-btn');
-    this.addWidgetDef(HelpcenterLanguageChangerWidget, '#hc-language-changer');
     this.addWidgetDef(TicketForm, '#new_ticket_page');
     this.addWidgetDef(TicketForm, '#edit_ticket_form');
     this.addWidgetDef(HcTicketList, '#hc_ticket_list_page');
@@ -52,7 +51,6 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(ClickAwayDropdownWidget, '.clickaway-dropdown');
     this.addWidgetDef(HcArticleHighlighter, '.dpx-hc-kb-article-content');
     this.addWidgetDef(MobileMenuWidget, '.dpx-toggle-big-buttons');
-    this.addWidgetDef(LoginPage, '#login-page');
     this.addWidgetDef(Attachment, '.dpx-attachment');
     this.addWidgetDef(DpxTabs, '.dpx-tabs');
     this.addWidgetDef(SocialShare, '#social-share');
@@ -66,6 +64,8 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(MobileCategories, '.dp-po-category-title-expand');
     this.addWidgetDef(HelpcenterSidebarFilters, '.dpx-sidebar-filters');
     this.addWidgetDef(DpxFormClearDraft, '.dpx-clear-draft');
+    this.addWidgetDef(HelpcenterCCForm, '#add-cc-user-popover form');
+    this.addWidgetDef(HelpcenterCCDelete, '.dp-po-ticket-meta-cc-remove');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

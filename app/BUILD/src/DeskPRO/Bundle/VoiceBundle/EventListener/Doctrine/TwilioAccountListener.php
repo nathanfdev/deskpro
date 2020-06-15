@@ -3,80 +3,70 @@
 namespace DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine;
 
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
-use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
+use Doctrine\Common\EventSubscriber;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twilio\Exceptions\TwilioException;
 
 /**
  * Class TwilioAccountListener.
  */
-class TwilioAccountListener
+class TwilioAccountListener implements EventSubscriber
 {
     /**
-     * @var TwilioAdapter
+     * @var ContainerInterface
      */
-    private $twilioAdapter;
+    private $container;
 
     /**
-     * @var EntityManager
+     * @var TwilioVoiceAccount[]
      */
-    private $em;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private $updateQueue = [];
 
     /**
      * Constructor.
      *
-     * @param TwilioAdapter   $twilioAdapter
-     * @param EntityManager   $em
-     * @param RouterInterface $router
+     * @param ContainerInterface $container
      */
-    public function __construct(TwilioAdapter $twilioAdapter, EntityManager $em, RouterInterface $router)
+    public function __construct(ContainerInterface $container)
     {
-        $this->twilioAdapter = $twilioAdapter;
-        $this->em            = $em;
-        $this->router        = $router;
+        $this->container = $container;
     }
 
     /**
-     * @ORM\PostPersist()
-     *
+     * {@inheritdoc}
+     */
+    public function getSubscribedEvents()
+    {
+        return [
+            'postFlush',
+            'onClear',
+        ];
+    }
+
+    /**
      * @param TwilioVoiceAccount $account
      *
      * @throws TwilioException
      */
-    public function createTwimlApp(TwilioVoiceAccount $account)
+    public function postPersist(TwilioVoiceAccount $account)
     {
-        // create twiml app
-        $requestUrl = $this->router->generate('twilio_phone_number_callback', [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->updateQueue[] = $account;
+    }
 
-        $statusUrl = $this->router->generate('twilio_phone_number_status_callback', [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    public function postFlush()
+    {
+        if ($this->updateQueue) {
+            $configurator = $this->container->get('dp.voice.twiml_app_configurator');
 
-        $twimlApp = $this->twilioAdapter->createTwimlApp($account, $requestUrl, 'GET', $statusUrl, 'POST');
-        if (!$twimlApp) {
-            throw new TwilioException('Unable to create Twiml app');
+            foreach ($this->updateQueue as $num => $account) {
+                unset($this->updateQueue[$num]);
+                $configurator->createOrUpdateTwimlApp($account);
+            }
         }
+    }
 
-        $this->em->getConnection()->update(
-            'voice_accounts',
-            [
-                'twiml_app_sid' => $twimlApp->sid,
-            ],
-            [
-                'id' => $account->getId(),
-            ]
-        );
+    public function onClear()
+    {
+        $this->updateQueue = [];
     }
 }

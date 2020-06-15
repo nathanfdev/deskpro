@@ -1,0 +1,54 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import $ from 'jquery';
+import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import HelpcenterRte from '../../../../React/Form/HelpcenterRte';
+
+/**
+ * A HcRte takes three fields:
+ *
+ *  textarea -- the main form element
+ *  format   -- a hidden form element containing the edit mode we're in (text/html)
+ *
+ *  If this browser is able to use the RTE, then we hide the txt field,
+ *  show the html field, and set the format to html
+ */
+export default class HcRte extends PageWidget {
+
+  renderWidget() {
+    const $el = this.$element;
+    const $textarea          = $el.find('textarea');
+
+    let addClass = '';
+    if ($textarea.hasClass('form-control')) {
+      addClass = 'form-control';
+    }
+
+    const $inlineAttachProto = $el.find('[id$=\'ticket_message_inline_attachments\']');
+    const $rElement          = $(`<div class="dp-medium-rte-wrapper as-dpui${addClass ? ` ${addClass}` : ''}"></div>`).appendTo(this.$element);
+
+    const onFocus = () => {
+      $rElement.addClass('focused');
+    };
+    const onBlur = () => {
+      $rElement.removeClass('focused');
+    };
+
+    $textarea.hide();
+    const widget = this.options.isWidget;
+
+    const component = React.createElement(HelpcenterRte, {
+      $textarea,
+
+      className:          `dp-medium-rte medium-editor-placeholder${widget ? ' widget' : ''}`,
+      $inlineAttachProto: $inlineAttachProto[0] ? $inlineAttachProto : null,
+      widgetOptions:      this.options,
+      $toolbarContainer:  $rElement,
+      ctrlEnterSubmit:    !!$el.data('ctrl-enter-submit'),
+      onFocus,
+      onBlur,
+    });
+
+    ReactDOM.render(component, $rElement.get(0));
+  }
+}

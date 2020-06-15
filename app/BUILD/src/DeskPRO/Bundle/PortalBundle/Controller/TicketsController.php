@@ -432,9 +432,15 @@ class TicketsController extends AbstractController
             $email = $form->get('email')->getData();
             $maxCc = (int) $this->getBrandSetting('core_tickets.email_cc_max_count');
             if ($maxCc && $ticket->getCcs()->count() >= $maxCc) {
-                $this->addFlash('error', $this->phrase(['portal.flashes.ticket_participant_cc_limit_reached', 'helpcenter.flashes.ticket_participant_cc_limit_reached'], ['max' => $maxCc]));
+                if ($request->isXmlHttpRequest()) {
+                    return $this->makeJsonResponse([
+                        'error' => $this->phrase('helpcenter.flashes.ticket_participant_cc_limit_reached', ['max' => $maxCc]),
+                    ]);
+                } else {
+                    $this->addFlash('error', $this->phrase(['portal.flashes.ticket_participant_cc_limit_reached', 'helpcenter.flashes.ticket_participant_cc_limit_reached'], ['max' => $maxCc]));
 
-                return $redirectResponse;
+                    return $redirectResponse;
+                }
             }
 
             $personFactory = $this->get('person_factory');
@@ -449,9 +455,15 @@ class TicketsController extends AbstractController
                 }
 
                 if ($ticket->hasParticipantPerson($person)) {
-                    $this->addFlash('success', $this->phrase(['portal.flashes.ticket_participant_already_error', 'helpcenter.flashes.ticket_participant_already_error']));
+                    if ($request->isXmlHttpRequest()) {
+                        return $this->makeJsonResponse([
+                            'error' => $this->phrase('helpcenter.flashes.ticket_participant_already_error'),
+                        ]);
+                    } else {
+                        $this->addFlash('success', $this->phrase(['portal.flashes.ticket_participant_already_error', 'helpcenter.flashes.ticket_participant_already_error']));
 
-                    return $redirectResponse;
+                        return $redirectResponse;
+                    }
                 }
 
                 $participant = new TicketParticipant();
@@ -461,19 +473,40 @@ class TicketsController extends AbstractController
                 $this->getEm()->persist($participant);
                 $this->getEm()->flush();
 
-                // return success
-                $this->addFlash('success', $this->phrase(['portal.flashes.ticket_participant_add', 'helpcenter.flashes.ticket_participant_add'], [
-                    'name'  => $person->getDisplayNameUser(),
-                    'email' => $person->getPrimaryEmailAddress(),
-                ]));
+                if ($request->isXmlHttpRequest()) {
+                    return $this->makeJsonResponse([
+                        'success' => true,
+                        'html'    => $this->renderThemeView('Theme:Tickets:embeds/ticket_cc_sidebar.html.twig', [
+                            'person'      => $participant->getPerson(),
+                            'avatar_link' => $this->generateUrl('portal_tickets_cc_remove', ['ticket_ref' => $ticket->getPublicId(), 'cc_id' => $participant->getId()]),
+                            'cc_id'       => $participant->getId(),
+                        ])->getContent(),
+                    ]);
+                } else {
+                    // return success
+                    $this->addFlash('success', $this->phrase(['portal.flashes.ticket_participant_add', 'helpcenter.flashes.ticket_participant_add'], [
+                        'name'  => $person->getDisplayNameUser(),
+                        'email' => $person->getPrimaryEmailAddress(),
+                    ]));
 
-                return $redirectResponse;
+                    return $redirectResponse;
+                }
             }
         }
 
         if (count($form->get('email')->getErrors()) > 0) {
-            // return error with email
-            $this->addFlash('error', $this->phrase(['portal.flashes.ticket_participant_email_error', 'helpcenter.flashes.ticket_participant_email_error']));
+            if ($request->isXmlHttpRequest()) {
+                return $this->makeJsonResponse(
+                    [
+                        'errors' => [
+                            'email' => $this->phrase('helpcenter.flashes.ticket_participant_email_error'),
+                        ],
+                    ]
+                );
+            } else {
+                // return error with email
+                $this->addFlash('error', $this->phrase(['portal.flashes.ticket_participant_email_error', 'helpcenter.flashes.ticket_participant_email_error']));
+            }
         } else {
             // return general error
             return $this->createNotFoundException();
@@ -513,16 +546,37 @@ class TicketsController extends AbstractController
 
             $ticket->removeParticipantPerson($ccPerson);
             $this->getEm()->flush();
-            $this->addFlash('success', $this->phrase(['portal.flashes.ticket_participant_remove', 'helpcenter.flashes.ticket_participant_remove'], [
-                'name'  => $ccPerson->getDisplayNameUser(),
-                'email' => $ccPerson->getPrimaryEmailAddress(),
-            ]));
 
-            return $redirectResponse;
+            if ($request->isXmlHttpRequest()) {
+                return $this->makeJsonResponse([
+                    'success' => true,
+                ]);
+            } else {
+                $this->addFlash('success', $this->phrase(['portal.flashes.ticket_participant_remove', 'helpcenter.flashes.ticket_participant_remove'], [
+                    'name'  => $ccPerson->getDisplayNameUser(),
+                    'email' => $ccPerson->getPrimaryEmailAddress(),
+                ]));
+
+                return $redirectResponse;
+            }
         }
 
-        // return general error, likely the participant id and ticket id are not the same, which would be bad!
-        $this->addFlash('error', $this->phrase(['portal.flashes.ticket_participant_remove_unknown_error', 'helpcenter.flashes.ticket_participant_remove_unknown_error']));
+        if ($request->isXmlHttpRequest()) {
+            return $this->makeJsonResponse([
+                'error' => true,
+            ]);
+        } else {
+            // return general error, likely the participant id and ticket id are not the same, which would be bad!
+            $this->addFlash(
+                'error',
+                $this->phrase(
+                    [
+                        'portal.flashes.ticket_participant_remove_unknown_error',
+                        'helpcenter.flashes.ticket_participant_remove_unknown_error',
+                    ]
+                )
+            );
+        }
 
         return $redirectResponse;
     }
@@ -757,7 +811,7 @@ class TicketsController extends AbstractController
         $response = new Response();
 
         $response->setContent($pdf);
-        $response->headers->set('Content-Disposition', 'attachment; filename=Ticket_'.$ticket->id.'.pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename=Ticket_'.$ticket->getRef().'.pdf');
         $response->headers->set('Content-Type', 'application/pdf');
 
         return $response;

@@ -268,8 +268,16 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
           const all = this.$q.all(promises);
           return all.then(
             () => this.$http.get(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/commit`).then(
-              () => { this.success('Changes were applied to the portal'); return this.commiting = false; },
-              () => { this.serverError(); return this.commiting = false; }),
+              () => {
+                this.success('Changes were applied to the portal');
+                this.loadThemeSets();
+                this.commiting = false;
+              },
+              () => {
+                this.serverError();
+                this.commiting = false;
+              }
+            ),
             () => this.commiting = false);
         });
     }
@@ -307,7 +315,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
           this.loadSplashImage(),
           this.loadThemeOptions(),
           this.loadTemplateOptions(),
-          this.loadCustomThemeSets(),
+          this.loadThemeSets(),
           this.loadThemeSet(),
           this.loadWelcomeBox()
         ]).then(() => d.resolve());
@@ -506,7 +514,11 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       );
     }
 
-    loadCustomThemeSets() {
+    loadThemeSets() {
+      this.available_themes = [
+        { id: 'helpcenter', title: 'HelpCenter' }
+      ];
+
       return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/custom-theme-sets`).success((data) => {
         data.forEach((themeSet) => {
           // Original themes re-added need some changes

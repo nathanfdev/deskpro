@@ -222,7 +222,7 @@ helpcenter.general.tags: Отметки
 helpcenter.general.updated: ОБНОВЛЕНО
 helpcenter.general.user: Пользователь
 helpcenter.general.you: Вы
-helpcenter.guides.download_pdf: 'Загрузить PDF'
+helpcenter.general.download_pdf: 'Загрузить PDF'
 helpcenter.members.language: Язык
 helpcenter.members.timezone: Часовой пояс
 helpcenter.messenger.blocks_continue_chat_link: Продолжить
@@ -241,7 +241,7 @@ helpcenter.messenger.chat_end_block_buttons_yes: 'Да'
 helpcenter.messenger.chat_end_block_question_header: 'Закончить чат?'
 helpcenter.messenger.chat_ended: 'Разговор завершен'
 helpcenter.messenger.chat_header_title: 'Беседа с {department}'
-helpcenter.messenger.chat_no_agent_online: 'Мы сожалеем, но нет в данный момент никто не может ответить вам.'
+helpcenter.messenger.chat_no_agent_online: 'Мы сожалеем, но в данный момент никто не может ответить вам.'
 helpcenter.messenger.chat_rating_block_buttons_helpful: Полезно
 helpcenter.messenger.chat_rating_block_buttons_unhelpful: Бесползено
 helpcenter.messenger.chat_rating_block_question_header: 'Оцените Вашу беседу с {name}'

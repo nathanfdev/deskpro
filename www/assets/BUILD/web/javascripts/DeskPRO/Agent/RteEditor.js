@@ -360,7 +360,7 @@ DeskPRO.Agent.RteEditor = {
             img.remove();
             api.opts.imageUploadError && api.opts.imageUploadError(pasteId);
           } else {
-						img.data('paste-id', '').attr('src', json.filelink);
+						img.removeAttr('data-paste-id').attr('src', json.filelink);
 						if (typeof api.opts.imageUploadCallback === 'function') {
 							api.opts.imageUploadCallback(api, json, pasteId);
 						}

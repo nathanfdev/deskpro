@@ -1246,6 +1246,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
   handleReplySave: function (ev, formData, handler, meta) {
 
+    if (this.getReplyTextArea().getEditor().find('img[data-paste-id]').length) {
+      DeskPRO_Window.showAlert('Image is still uploading. Please try again.');
+
+      return;
+    }
+
     function onSuccess(response)
     {
       if (response.canceled) {
@@ -3916,8 +3922,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           hourVal = parseInt(hourVal);
           minVal = parseInt(minVal) || 0;
 
-          setTime = hourVal + ':' + minVal;
-          setTimeDisplay = (hourVal < 10 ? '0'+hourVal : hourVal) + ':' + (minVal < 10 ? '0'+minVal : minVal);
+          setTime = (hourVal < 10 ? '0'+hourVal : hourVal) + ':' + (minVal < 10 ? '0'+minVal : minVal);
+          setTimeDisplay = setTime;
         }
 
         field.val(setTime);

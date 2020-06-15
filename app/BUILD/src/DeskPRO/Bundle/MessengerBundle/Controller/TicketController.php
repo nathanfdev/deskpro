@@ -19,6 +19,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Class ChatController.
@@ -54,6 +55,16 @@ class TicketController extends AbstractMessengerController
      */
     public function createTicketAction(Request $request)
     {
+        $permissionsManager = $this->get('portal_permissions_manager');
+        $person             = $this->getUser();
+        $permissionsBag     = $person && $person->getId() > 0
+            ? $permissionsManager->getPermissionsBagForPerson($person)
+            : $permissionsManager->getPermissionsBagForGuest()
+        ;
+        if (!$permissionsBag->get('tickets.use')) {
+            throw new AccessDeniedHttpException("You're not allowed to submit a ticket");
+        }
+
         $newTicketService = $this->get('tickets.messenger_new_ticket');
 
         $settingsResolver = $this->get('messenger.service.settings_resolver');

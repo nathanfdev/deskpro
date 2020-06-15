@@ -22,7 +22,7 @@ services:
 
   form.captcha:
       class: DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType
-      arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
+      arguments: ["@language_manager", "%gregwar_captcha.config%", "@brand_stack"]
       tags:
         - { name: form.type }
 

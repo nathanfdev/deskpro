@@ -41,13 +41,13 @@
 					<li class="noval opt-trigger time_due" style="{% if not task.date_due %}display: none;"{% endif %}"><label>{% if not task.hasDueTime() %}{{ phrase('agent.tasks.no_due_time') }}{% else %}{{ task.date_due|date('H:i') }}{% endif %}</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger visibility" style="overflow:hidden; height: 18px; position: relative;">
 						<label>
-							{% if task.assigned_department %}{{ task.assigned_department.title }}
-							{% elseif task.visibility and task.assigned_agent.id == app.user.id %}{{ phrase('agent.general.public') }}
-							{% else %} {{ phrase('agent.general.private') }} {% endif %}
+							{% if task.assigned_department %}{{ task.assigned_department.title }}{% set _visibility = 'dep' %}
+							{% elseif task.visibility and task.assigned_agent.id == app.user.id %}{{ phrase('agent.general.public') }}{% set _visibility = 'public' %}
+							{% else %} {{ phrase('agent.general.private') }}{% set _visibility = 'private' %} {% endif %}
 						</label><span class="drop-icon"></span>
 						<select class="visibility_sel dpe_select" data-invisible-trigger="1">
-							<option value="0">{{ phrase('agent.general.private') }}</option>
-							<option value="1">{{ phrase('agent.general.public') }}</option>
+							<option value="0" {% if _visibility == 'private' %}selected="selected"{% endif %}>{{ phrase('agent.general.private') }}</option>
+							<option value="1" {% if _visibility == 'public' %}selected="selected"{% endif %}>{{ phrase('agent.general.public') }}</option>
 							<optgroup label="{{ phrase('agent.general.department') }}">
 								{% for department in app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign') %}
 									{% if department.children %}
@@ -70,7 +70,12 @@
 							{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
 							{% else %} Unassigned {% endif %}
 						</label><span class="drop-icon"></span>
-						<select class="agents_sel dpe_select"  style="min-width: 170px;" data-invisible-trigger="1">
+						<select class="agents_sel dpe_select"
+                                style="min-width: 170px;"
+                                data-invisible-trigger="1"
+                                data-style-type="icons"
+                                data-select-icon-size="22"
+                        >
 							<optgroup label="{{ phrase('agent.general.agents') }}">
 								{% for agent in app.agents.getAgents() %}
 									<option {% if task.assigned_agent and agent.id == task.assigned_agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>

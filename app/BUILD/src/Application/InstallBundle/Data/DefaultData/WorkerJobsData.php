@@ -77,6 +77,15 @@ class WorkerJobsData extends AbstractDefaultData
         ];
 
         $jobs[] = [
+            'id'           => 'process_cloud_email_retry',
+            'worker_group' => 'process_email_gateways',
+            'title'        => 'Process Cloud Email Retries',
+            'description'  => 'Processes email retries only for cloud',
+            'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\ProcessCloudEmailRetry',
+            'run_interval' => Job\ProcessCloudEmailRetry::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
             'id'           => 'archive_tickets',
             'worker_group' => 'archive_tickets',
             'title'        => 'Archive Tickets',

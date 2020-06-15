@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
@@ -17,12 +15,12 @@ class ErrorCodeFactory
     /**
      * @var ExceptionErrorCodeFactory
      */
-    private $exception_error_code_factory;
+    private $exceptionErrorCodeFactory;
 
     /**
      * @var ValidatorErrorCodeFactory
      */
-    private $validator_error_code_factory;
+    private $validatorErrorCodeFactory;
 
     /**
      * Constructor.
@@ -34,8 +32,8 @@ class ErrorCodeFactory
         ExceptionErrorCodeFactory $exception_error_code_factory,
         ValidatorErrorCodeFactory $validator_error_code_factory
     ) {
-        $this->exception_error_code_factory = $exception_error_code_factory;
-        $this->validator_error_code_factory = $validator_error_code_factory;
+        $this->exceptionErrorCodeFactory = $exception_error_code_factory;
+        $this->validatorErrorCodeFactory = $validator_error_code_factory;
     }
 
     /**
@@ -45,7 +43,7 @@ class ErrorCodeFactory
      */
     public function getErrorCodeForException(\Exception $e)
     {
-        return $this->exception_error_code_factory->getExceptionErrorCode($e);
+        return $this->exceptionErrorCodeFactory->getExceptionErrorCode($e);
     }
 
     /**
@@ -55,7 +53,7 @@ class ErrorCodeFactory
      */
     public function getErrorCodeForConstraintViolation(ConstraintViolation $violation)
     {
-        return $this->validator_error_code_factory->getConstraintErrorCode($violation);
+        return $this->validatorErrorCodeFactory->getConstraintErrorCode($violation);
     }
 
     /**
@@ -65,6 +63,6 @@ class ErrorCodeFactory
      */
     public function getErrorCodeForFormError(FormError $form_error)
     {
-        return $this->validator_error_code_factory->getFormErrorCode($form_error);
+        return $this->validatorErrorCodeFactory->getFormErrorCode($form_error);
     }
 }

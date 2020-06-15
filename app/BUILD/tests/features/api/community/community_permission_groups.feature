@@ -10,11 +10,11 @@ Feature: /community_topics endpoint
       | #    | status_type | title     | display_order |
       | csc1 | active      | Collected | 0             |
     And only the following "CommunityForum" records exist:
-      | #   | title   | slug    |
-      | cc1 | Feature | feature |
+      | #   | title      | slug       | noun       | plural      | verb_action |
+      | cc1 | Feature    | feature    | Feature    | Features    | New Feature |
     And only the following "CommunityTopic" records exist:
       | #   | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
-      | ct1 | {csc1}          | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
+      | ct1 | {csc1}          | {cc1} | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
     And only the following "CommunityTopicComment" records exist:
       | #       | topic | person  | content  | is_reviewed |
       | comment | {ct1} | {admin} | comment1 | 0           |

@@ -8,7 +8,7 @@ import forEach from 'lodash/forEach';
 import map from 'lodash/map';
 import TimeAgo from 'react-timeago';
 import moment from 'moment';
-import { timeAgoFormatter } from '../../../WidgetBundle/Services/timeago';
+import { shortTimeAgoFormatter } from '../../../WidgetBundle/Services/timeago';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
 
 class SearchResultCollection {
@@ -158,13 +158,13 @@ export class HcOmniSearchResultSection extends React.Component {
         <a href={item.url} className="dp-po-search-link">
           {item.name}
           <div className="dp-po-time">
+            <i className="dp-po-icon far fa-clock" />
             <TimeAgo
               className="dpdesignportal-event-time"
-              formatter={timeAgoFormatter}
+              formatter={shortTimeAgoFormatter}
               minPeriod={60000}
               date={moment(item.date)}
             />
-            <i className="dp-po-icon far fa-clock" />
           </div>
         </a>
       );
@@ -235,13 +235,13 @@ export class HcOmniSearchResultTickets extends React.Component {
         <a href={item.url} className="dp-po-search-link">
           {item.name}
           <div className="dp-po-time">
+            <i className="dp-po-icon far fa-clock" />
             <TimeAgo
               className="dpdesignportal-event-time"
-              formatter={timeAgoFormatter}
+              formatter={shortTimeAgoFormatter}
               minPeriod={60000}
               date={moment(item.date)}
             />
-            <i className="dp-po-icon far fa-clock" />
           </div>
         </a>
       </li>

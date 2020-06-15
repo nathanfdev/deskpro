@@ -25,11 +25,12 @@ define([
     Module.service('Cloud', [() => new Admin_Cloud_App_CloudService()
     ]);
 
-    Module.service('LangSyncApi', ['$http', 'Growl', ($http, Growl) =>
+    Module.service('LangSyncApi', ['$http', 'Growl', 'Api2', ($http, Growl, Api2) =>
       new Admin_Main_Service_LangSyncApi(
         $http,
         window.DP_LANGUAGE_SYNC_API,
-        Growl
+        Growl,
+        Api2
       )
 
     ]);

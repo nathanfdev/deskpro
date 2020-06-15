@@ -70,10 +70,10 @@ class TwilioAdapter implements VoiceProviderInterface
      * @param LoggerInterface       $logger
      */
     public function __construct(
-        EntityManager         $em,
+        EntityManager $em,
         VoiceSettingsResolver $voiceSettingsResolver,
         UrlGeneratorInterface $router,
-        LoggerInterface       $logger
+        LoggerInterface $logger
     ) {
         $this->em                    = $em;
         $this->voiceSettingsResolver = $voiceSettingsResolver;
@@ -251,7 +251,7 @@ class TwilioAdapter implements VoiceProviderInterface
      *
      * @return \Twilio\Rest\Api\V2010\Account\ApplicationInstance
      */
-    public function createTwimlApp(TwilioVoiceAccount $account, $requestUrl, $voiceMethod, $statusUrl, $statusMethod)
+    public function createOrUpdateTwimlApp(TwilioVoiceAccount $account, $requestUrl, $voiceMethod, $statusUrl, $statusMethod)
     {
         $client  = $this->getClient($account);
         $appName = 'Deskpro Agent App';
@@ -264,14 +264,12 @@ class TwilioAdapter implements VoiceProviderInterface
         }
 
         // create twiml app
-        $application = $client->applications->create($appName, [
+        return $client->applications->create($appName, [
             'voiceUrl'             => $requestUrl,
             'voiceMethod'          => $voiceMethod,
             'statusCallback'       => $statusUrl,
             'statusCallbackMethod' => $statusMethod,
         ]);
-
-        return $application;
     }
 
     /**

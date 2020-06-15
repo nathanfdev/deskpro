@@ -83,12 +83,12 @@
                             <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
                             <div class="form-group">
                                 <input type="email" class="form-control" id="comments_login_form_email_input" aria-describedby="comments_login_form_email"
-                                       name="username" placeholder="{{ phrase('helpcenter.account.login_email_placeholder') }}" tabindex="1"
+                                       name="username" placeholder="{{ phrase('helpcenter.account.login_email_placeholder') }}"
                                        value="{{ last_username | default('') }}" />
                             </div>
                             <div class="form-group">
                                 <input type="password" class="form-control" id="comments_login_form_password_input"
-                                       placeholder="{{ phrase('helpcenter.general.password') }}" name="password" tabindex="2" />
+                                       placeholder="{{ phrase('helpcenter.general.password') }}" name="password" />
                             </div>
                             <div class="form-group dp-po-form-check">
                                 <input type="checkbox" class="form-check-input" id="comments_login_form_rememberme">
@@ -101,7 +101,7 @@
 
                             <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.general.log_in') }}</button>
                             {% if auth_manager is defined and auth_manager.isForgotPasswordVisible %}
-                                <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5" class="dp-po-form-btntext">
+                                <a href="{{ path('portal_reset_password', {'email': last_username}) }}" class="dp-po-form-btntext">
                                     {{ phrase('helpcenter.account.login_reset_password_link') }}
                                 </a>
                             {% endif %}

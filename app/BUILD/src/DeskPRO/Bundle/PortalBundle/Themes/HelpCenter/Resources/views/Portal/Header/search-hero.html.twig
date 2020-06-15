@@ -4,7 +4,7 @@
             <input type="search" id="omnisearch_input" class="omnisearch"  name="q" autocomplete="off" placeholder="{{ phrase('helpcenter.general.search') }}" />
             {% if search_log_id is defined %}<input type="hidden" name="search_log_id"  value="{{search_log_id}}"/>{% endif %}
             <label for="omnisearch_input" aria-label="{{ phrase('helpcenter.label.search') }}"> <i class="dp-po-icon far fa-search"></i><span aria-hidden>{{ phrase('helpcenter.label.search') }}</span></label>
-            <input type="submit" value="{{ phrase('helpcenter.label.search') }}" class="aria-hide">
+            <input type="submit" value="{{ phrase('helpcenter.general.go_action') }}">
         </form>
     </section>
 </aside>

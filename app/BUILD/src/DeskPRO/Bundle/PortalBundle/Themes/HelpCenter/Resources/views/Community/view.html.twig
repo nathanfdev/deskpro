@@ -36,10 +36,14 @@
                     <div class="dp-po-post-extra">
                         <ul class="dp-po-post-extra-list">
                             <li class="dp-po-post-extra-item">
-                                <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}"><i class="dp-po-icon fal fa-print" title="{{ phrase('helpcenter.general.print') }}"></i></a>
+                                <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}">
+                                    <i class="dp-po-icon fal fa-print" title="{{ phrase('helpcenter.general.print') }}"></i>
+                                </a>
                             </li>
                             <li class="dp-po-post-extra-item">
-                                <a href="{{ path('portal_community_topic_pdf', {slug: topic.slug}) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.guides.download_pdf') }}"><i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i></a>
+                                <a href="{{ path('portal_community_topic_pdf', {slug: topic.slug}) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.download_pdf') }} - {{ topic.translated_title }}.pdf">
+                                    <i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i>
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -51,7 +55,7 @@
                 {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
                     current_forum: topic.forum,
                     is_sidebar: true,
-                    button_label: phrase('helpcenter.community.create_topic_full'),
+                    button_label: phrase('helpcenter.community.create_topic_full', {forum: topic.forum.noun}),
                 } %}
 
                 {% if brand_setting('user.community_subscriptions') %}
@@ -80,7 +84,6 @@
         {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
             current_forum: topic.forum,
             is_sidebar: true,
-            button_label: phrase('helpcenter.community.create_topic_full'),
         } %}
 
         {% if brand_setting('user.community_subscriptions') %}
@@ -178,21 +181,23 @@
         </div>
     {% endif %}
 
-    <div class="dp-po-post-meta">
-        <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.created_by') }}</h3>
-        <p>{{ topic.person.display_name_user }}</p>
-        <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.published') }}</h3>
-        <p>{{ phrase('helpcenter.general.date_medium', { date:topic.date_published }) }}</p>
+    <dl class="dp-po-post-meta">
+        <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.created_by') }}</dt>
+        <dd>{{ topic.person.display_name_user }}</dd>
+        {% if topic.date_published %}
+            <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.published') }}</dt>
+            <dd>{{ phrase('helpcenter.general.date_medium', { date:topic.date_published }) }}</dd>
+        {% endif %}
 
         {% if topic.getCustomDataSelection() %}
-            <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.category') }}</h3>
-            <p>{{ topic.getCustomDataSelection().title }}</p>
+            <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.category') }}</dt>
+            <dd>{{ topic.getCustomDataSelection().title }}</dd>
         {% endif %}
         {% if topic.isClosed() %}
-            <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }}</h3>
-            <p>{{ phrase('helpcenter.general.date_medium', { date:topic.date_updated }) }} {{ topic.status }}</p>
+            <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }}</dt>
+            <dd>{{ phrase('helpcenter.general.date_medium', { date:topic.date_updated }) }} {{ topic.status }}</dd>
         {% endif %}
-    </div>
+    </dl>
 {% endblock page_sidebar %}
 
 {% block topic_attachment %}

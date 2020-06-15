@@ -21,7 +21,7 @@
 								☺
 							</div>
 							<div class="rate-text">
-								<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': 0, 'rating': 1}) }}">
+								<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': 0, 'setrating': 1}) }}">
 									{{ phrase('helpcenter.tickets.rate_positive') }}
 								</a>
 							</div>
@@ -35,7 +35,7 @@
 								&mdash;
 							</div>
 							<div class="rate-text">
-								<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': 0, 'rating': 0}) }}">
+								<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': 0, 'setrating': 0}) }}">
 									{{ phrase('helpcenter.tickets.rate_neutral') }}
 								</a>
 							</div>
@@ -49,7 +49,7 @@
 								☹
 							</div>
 							<div class="rate-text">
-								<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': 0, 'rating': -1}) }}">
+								<a href="{{ url_full('user_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': 0, 'setrating': -1}) }}">
 									{{ phrase('helpcenter.tickets.rate_negative') }}
 								</a>
 							</div>

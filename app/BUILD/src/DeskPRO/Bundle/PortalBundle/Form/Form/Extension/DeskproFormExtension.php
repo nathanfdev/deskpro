@@ -52,11 +52,27 @@ class DeskproFormExtension extends AbstractTypeExtension
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
+        $parentForm    = $form->getParent();
+        $hasRootParent = false;
+
+        if ($parentForm) {
+            if ($parentForm->isRoot()) {
+                $hasRootParent = true;
+            } else {
+                $parentOptions = $parentForm->getConfig()->getOptions();
+                if ($parentOptions['compound'] && isset($parentOptions['fields_group']) && $parentOptions['fields_group']) {
+                    $hasRootParent = true;
+                }
+            }
+        }
+
         $view->vars['help']            = $options['help'];
         $view->vars['is_root']         = $form->isRoot();
-        $view->vars['has_root_parent'] = $form->getParent() ? $form->getParent()->isRoot() : false;
+        $view->vars['has_root_parent'] = $hasRootParent;
         $view->vars['has_children']    = $view->children;
         $view->vars['fully_hidden']    = $options['fully_hidden'];
+        $view->vars['field_set']       = false;
+        $view->vars['toggle_checkbox'] = false;
     }
 
     /**

@@ -66,6 +66,11 @@ class PortalPermissionLoaderTest extends PortalTestCase
         /** @var CommunityForum|NewsCategory|ArticleCategory|DownloadCategory $communityForum1 */
         $communityForum1 = new $entityClass();
         $communityForum1->setTitle('communityForum 1');
+        if (property_exists($communityForum1, 'noun')) {
+            $communityForum1->setNoun('communityForum 1');
+            $communityForum1->setPlural('communityForums 1');
+            $communityForum1->setVerbAction('New Forum');
+        }
         $communityForum1->addUsergroup($everyone);
         if (property_exists($communityForum1, 'brand')) {
             $communityForum1->setBrand($this->getBrand());
@@ -75,6 +80,11 @@ class PortalPermissionLoaderTest extends PortalTestCase
         /** @var CommunityForum|NewsCategory|ArticleCategory|DownloadCategory $communityForum2 */
         $communityForum2 = new $entityClass();
         $communityForum2->setTitle('communityForum 2');
+        if (property_exists($communityForum2, 'noun')) {
+            $communityForum2->setNoun('communityForum 2');
+            $communityForum2->setPlural('communityForums 2');
+            $communityForum2->setVerbAction('New Forum');
+        }
         $communityForum2->addUsergroup($registered);
         if (property_exists($communityForum2, 'brand')) {
             $communityForum2->setBrand($this->getBrand());
@@ -84,6 +94,11 @@ class PortalPermissionLoaderTest extends PortalTestCase
         /** @var CommunityForum|NewsCategory|ArticleCategory|DownloadCategory $communityForum3 */
         $communityForum3 = new $entityClass();
         $communityForum3->setTitle('communityForum 3');
+        if (property_exists($communityForum3, 'noun')) {
+            $communityForum3->setNoun('communityForum 3');
+            $communityForum3->setPlural('communityForums 3');
+            $communityForum3->setVerbAction('New Forum');
+        }
         $communityForum3->addUsergroup($everyone);
         if (property_exists($communityForum3, 'brand')) {
             $communityForum3->setBrand($this->getBrand());

@@ -2088,6 +2088,12 @@ $collection->create('agent_community_ajax_get_statuses', [
     'requirements' => ['brand_id' => '\\d+'],
 ]);
 
+$collection->create('agent_community_ajax_get_statuses_by_forum', [
+    'path'         => '/community/statuses/forum/{forum_id}',
+    'controller'   => 'AgentBundle:CommunityTopics:ajaxGetStatusesByForum',
+    'requirements' => ['forum_id' => '\\d+'],
+]);
+
 $collection->create('agent_community_forums', [
     'path'       => '/community/forums/{forumId}',
     'controller' => 'AgentBundle:CommunityTopics:forumsList',

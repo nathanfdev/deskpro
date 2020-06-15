@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
@@ -13,8 +14,6 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Community\CommunityTopicAttachmentCollect
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -54,39 +53,23 @@ class NewCommunityTopicType extends AbstractType
     private $hierarchyGenerator;
 
     /**
-     * @var PortalBrandThemeLoader
-     */
-    private $portalBrandThemeLoader;
-
-    /**
-     * @var BrandStack
-     */
-    private $brandStack;
-
-    /**
      * Constructor.
      *
      * @param CaptchaDecider $captchaDecider
      * @param LanguageManager $languageManager
      * @param CustomFieldManager $fieldManager
      * @param HierarchyGenerator $hierarchyGenerator
-     * @param PortalBrandThemeLoader|null $portalBrandThemeLoader
-     * @param BrandStack|null $brandStack
      */
     public function __construct(
         CaptchaDecider $captchaDecider,
         LanguageManager $languageManager,
         CustomFieldManager $fieldManager,
-        HierarchyGenerator $hierarchyGenerator,
-        PortalBrandThemeLoader $portalBrandThemeLoader = null,
-        BrandStack $brandStack = null
+        HierarchyGenerator $hierarchyGenerator
     ) {
         $this->captchaDecider          = $captchaDecider;
         $this->languageManager         = $languageManager;
         $this->fieldManager            = $fieldManager;
         $this->hierarchyGenerator      = $hierarchyGenerator;
-        $this->portalBrandThemeLoader  = $portalBrandThemeLoader;
-        $this->brandStack              = $brandStack;
     }
 
     /**
@@ -121,9 +104,15 @@ class NewCommunityTopicType extends AbstractType
             }
         }
 
+        $forum = null;
+        if ($options['data']) {
+            $forum = $options['data']->getForum();
+        }
+
         $builder
             ->add('custom_data', CombinedType::class, [
-                'forms' => $this->getCustomDataForms(),
+                'forms'        => $this->getCustomDataForms($forum),
+                'fields_group' => true,
             ])
             ->add('attachments', CommunityTopicAttachmentCollectionType::class, [
                 'person' => $options['person'],
@@ -202,18 +191,34 @@ class NewCommunityTopicType extends AbstractType
     }
 
     /**
+     * @param null|CommunityForum $forum
+     *
+     * @throws \Exception
+     *
      * @return array
      */
-    protected function getCustomDataForms()
+    protected function getCustomDataForms($forum = null)
     {
         $forms = [];
         $defs  = $this->fieldManager->getAvailableCommunityDefs();
 
         foreach ($defs as $def) {
+            if ($forum && count($def->getForums()) > 0) {
+                $forumPresent = false;
+                foreach ($def->getForums() as $defForum) {
+                    if ($defForum->getForum()->getId() === $forum->getId()) {
+                        $forumPresent = true;
+                    }
+                }
+                if (!$forumPresent) {
+                    continue;
+                }
+            }
             if (!$def->getTitle()) {
                 switch ($def->sys_name) {
                     case 'chan':
-                        $def->setTitle($this->phrase(["portal.community.form_custom_cat", "helpcenter.community.channel"]));
+                    case 'cat':
+                        $def->setTitle($this->phrase(["portal.community.form_custom_cat", "helpcenter.community.category"]));
 
                         break;
                     default:
@@ -236,14 +241,6 @@ class NewCommunityTopicType extends AbstractType
     }
 
     /**
-     * @return bool
-     */
-    public function isHelpCenterTheme()
-    {
-        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
-    }
-
-    /**
      * @param string|array $name
      * @param array  $vars
      *
@@ -251,20 +248,6 @@ class NewCommunityTopicType extends AbstractType
      */
     protected function phrase($name, array $vars = [])
     {
-        if (is_array($name)) {
-            if ($this->isHelpCenterTheme()) {
-                $name = array_filter($name, function ($p) {
-                    return strpos($p, 'helpcenter.') === 0;
-                });
-            } else {
-                $name = array_filter($name, function ($p) {
-                    return strpos($p, 'helpcenter.') !== 0;
-                });
-            }
-
-            $name = array_pop($name);
-        }
-
         return $this->languageManager->phrase($name, $vars);
     }
 }

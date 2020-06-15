@@ -10,8 +10,8 @@ Feature: /tickets/{id}/community_topic_links endpoint
       | #  | Subject  | Status         | Person  |
       | t1 | Ticket 1 | awaiting_agent | {admin} |
     And only the following "CommunityForum" records exist:
-      | #   | title   | slug    |
-      | cc1 | Feature | feature |
+      | #   | title   | slug    | noun    | plural   | verb_action |
+      | cc1 | Feature | feature | Feature | Features | New Feature |
     And only the following CommunityTopic records exist:
       | #   | Title   | forum |
       | ct1 | Topic 1 | {cc1} |

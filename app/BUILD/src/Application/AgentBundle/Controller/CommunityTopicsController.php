@@ -335,6 +335,26 @@ class CommunityTopicsController extends AbstractController
         ]);
     }
 
+    public function ajaxGetStatusesByForumAction($forum_id)
+    {
+        $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
+
+        $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategoriesByForum($forum_id);
+        $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategoriesByForum($forum_id);
+
+        return $this->render('AgentBundle:Common:select-community-topic-status.html.twig', [
+            'name'               => 'newcommunitytopic[status_code]',
+            'id'                 => '_cat',
+            'add_classname'      => 'status_id',
+            'add_attr'           => '',
+            'with_blank'         => 0,
+            'blank_title'        => '',
+            'active_status_cats' => $activeStatusCategories,
+            'closed_status_cats' => $closedStatusCategories,
+            'allow_parent_sel'   => true,
+        ]);
+    }
+
     /**
      * @param $communityTopicId
      *

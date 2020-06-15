@@ -25,7 +25,7 @@ class NewSearchFeature extends AbstractBetaFeature
      */
     public function getShortDescription()
     {
-        return 'Improved searching in the agent interface';
+        return 'Improved searching in the agent interface.';
     }
 
     /**

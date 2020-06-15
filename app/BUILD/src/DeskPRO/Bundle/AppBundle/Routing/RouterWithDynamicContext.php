@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Routing;
 
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
@@ -26,6 +27,11 @@ use Symfony\Component\Routing\RouterInterface;
 class RouterWithDynamicContext implements RouterInterface, RouterDecorator, RequestMatcherInterface, WarmableInterface
 {
     /**
+     * @var AppEnvInterface
+     */
+    private $appEnv;
+
+    /**
      * @var RouterInterface
      */
     private $router;
@@ -38,11 +44,13 @@ class RouterWithDynamicContext implements RouterInterface, RouterDecorator, Requ
     /**
      * RouterWithDynamicContext constructor.
      *
+     * @param AppEnvInterface          $appEnv
      * @param RouterInterface          $router
      * @param UrlRequestContextFactory $contextFactory
      */
-    public function __construct(RouterInterface $router, UrlRequestContextFactory $contextFactory = null)
+    public function __construct(AppEnvInterface $appEnv, RouterInterface $router, UrlRequestContextFactory $contextFactory = null)
     {
+        $this->appEnv         = $appEnv;
         $this->router         = $router;
         $this->contextFactory = $contextFactory;
     }
@@ -141,7 +149,16 @@ class RouterWithDynamicContext implements RouterInterface, RouterDecorator, Requ
                 unset($parameters['size-fit']);
             }
 
-            $url = $this->getBaseRouter()->generate($name, $parameters, $referenceType);
+            try {
+                $url = $this->getBaseRouter()->generate($name, $parameters, $referenceType);
+            } catch (\Exception $e) {
+                if (!$this->appEnv->isDebug() && $this->appEnv->getEnvId() === 'prod') {
+                    $url = $this->getBaseRouter()->generate('portal_home', $parameters, $referenceType);
+                } else {
+                    throw $e;
+                }
+            }
+
             if ($cfParams) {
                 $url = $this->contextFactory->getCfResizeUrl(
                     $url,

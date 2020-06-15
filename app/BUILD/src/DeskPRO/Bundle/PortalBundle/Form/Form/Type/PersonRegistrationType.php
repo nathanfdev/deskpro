@@ -64,24 +64,25 @@ class PersonRegistrationType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label'       => $this->languageManager->phrase('portal.forms.label_name'),
+                'label'       => $this->languageManager->phrase(['portal.forms.label_name', 'helpcenter.general.name']),
                 'required'    => true,
                 'constraints' => [
                     new NotBlank(),
                 ],
             ])
             ->add('primary_email', PersonEmailType::class, [
-                'label'       => $this->languageManager->phrase('portal.forms.label_email'),
+                'label'       => $this->languageManager->phrase(['portal.forms.label_email', 'helpcenter.forms.label_email']),
                 'required'    => true,
             ])
             ->add('password', RepeatedType::class, [
                 'first_name'    => 'password',
                 'first_options' => [
-                    'label' => $this->languageManager->phrase('portal.forms.label_password'),
+                    'label' => $this->languageManager->phrase(['portal.forms.label_password', 'helpcenter.forms.label_password']),
+                    'help'  => $this->languageManager->phrase(['portal.forms.password_description', 'helpcenter.forms.password_description']),
                 ],
                 'second_name'    => 'confirm',
                 'second_options' => [
-                    'label' => $this->languageManager->phrase('portal.forms.label_password_confirm'),
+                    'label' => $this->languageManager->phrase(['portal.forms.label_password_confirm', 'helpcenter.forms.label_password_confirm']),
                 ],
                 'type'        => PasswordType::class,
                 'mapped'      => false,
@@ -92,7 +93,7 @@ class PersonRegistrationType extends AbstractType
                 ],
             ])
             ->add('timezone', TimezoneType::class, [
-                'label' => $this->languageManager->phrase('portal.forms.label_timezone'),
+                'label' => $this->languageManager->phrase(['portal.forms.label_timezone', 'helpcenter.forms.label_timezone']),
             ])
         ;
 

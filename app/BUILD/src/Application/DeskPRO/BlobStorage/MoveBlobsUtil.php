@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\BlobStorage;
 
@@ -140,7 +138,11 @@ class MoveBlobsUtil implements Loggable
             $blob = $this->em->createQuery("
                 SELECT b
                 FROM DeskPRO:Blob b
-                WHERE b.storage_loc_pref IS NOT NULL AND b.storage_loc_pref IN ({$this->aids_where})
+                WHERE
+                    b.storage_loc_pref IS NOT NULL
+                    AND b.storage_loc_pref IN ({$this->aids_where})
+                    AND b.storage_loc != ''
+                    AND b.storage_loc IS NOT NULL
                 ORDER BY b.id ASC
             ")->setMaxResults(1)->getOneOrNullResult();
 
@@ -155,6 +157,7 @@ class MoveBlobsUtil implements Loggable
             $this->logger->logDebug("{$x}. Processing blob #{$blob['id']}");
             if (empty($blob->storage_loc)) {
                 $this->logger->logInfo('Still inserting');
+
                 continue;
             }
             if ($blob->storage_loc == $blob->storage_loc_pref) {
@@ -162,6 +165,7 @@ class MoveBlobsUtil implements Loggable
                 $blob->storage_loc_pref = null;
                 $this->em->persist($blob);
                 $this->em->flush();
+
                 continue;
             }
 
@@ -173,6 +177,7 @@ class MoveBlobsUtil implements Loggable
                 $this->logger->logError('Error: '.$e->getMessage());
                 if (!$this->ignore_error) {
                     $this->logger->logDebug('Aborting');
+
                     break;
                 }
             }
@@ -187,6 +192,7 @@ class MoveBlobsUtil implements Loggable
             if ($this->limit) {
                 if ($x >= $this->limit) {
                     $this->logger->logInfo('Limit reached, breaking');
+
                     break;
                 }
             }
@@ -195,6 +201,7 @@ class MoveBlobsUtil implements Loggable
                 $time = time() - intval($start_t);
                 if ($time > $this->limit_time) {
                     $this->logger->logInfo('Time limit reached, breaking');
+
                     break;
                 }
             }

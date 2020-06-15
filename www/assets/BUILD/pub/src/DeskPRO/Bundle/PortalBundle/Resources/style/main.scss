@@ -3975,10 +3975,17 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     color: $text-color-lighter;
     text-decoration: none;
 
+    span {
+      padding: 0;
+    }
+
     @media screen and (max-width: 760px) {
       @include padding-left(7px);
       @include padding-right(7px);
     }
+  }
+  span.sr-only {
+    padding: 0;
   }
 
   span {

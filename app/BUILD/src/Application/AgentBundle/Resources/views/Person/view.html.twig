@@ -143,7 +143,7 @@
                             data-flip="{{ phrase('agent.people.enable_account') }}">{{ phrase('agent.people.disable_account') }}</li>
                     {% endif %}
                 {% endif %}
-                {% if perms.reset_password and app.authenticationManager.isDeskPROEnabled('user') %}
+                {% if perms.reset_password and app.authenticationManager.isDeskPROEnabled('user') and allow_reset_password %}
                     <li data-action="set-password"
                         class="set-password">{{ phrase('agent.general.set_password') }}</li>{% endif %}
 

@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\LegacyApiBundle\Controller;
 
@@ -17,6 +15,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
@@ -113,6 +112,7 @@ class LanguagesController extends AbstractController
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
                     $lang = $l;
+
                     break;
                 }
             }
@@ -153,6 +153,7 @@ class LanguagesController extends AbstractController
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
                     $lang = $l;
+
                     break;
                 }
             }
@@ -237,6 +238,7 @@ class LanguagesController extends AbstractController
         $lang = $langpacks->newLanguageEntity($id);
 
         $this->db->beginTransaction();
+
         try {
             $this->em->persist($lang);
             $this->em->flush();
@@ -289,6 +291,7 @@ class LanguagesController extends AbstractController
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
                     $lang = $l;
+
                     break;
                 }
             }
@@ -340,6 +343,7 @@ class LanguagesController extends AbstractController
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
                     $lang = $l;
+
                     break;
                 }
             }
@@ -436,6 +440,7 @@ class LanguagesController extends AbstractController
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
                     $lang = $l;
+
                     break;
                 }
             }
@@ -510,6 +515,7 @@ class LanguagesController extends AbstractController
         foreach ($this->container->getLanguageData()->getAll() as $l) {
             if ($l->sys_name == $lang_info['id']) {
                 $lang = $l;
+
                 break;
             }
         }
@@ -648,11 +654,21 @@ class LanguagesController extends AbstractController
             }
         }
 
+        $themeSets = $this->em->getRepository(ThemeSet::class)->findAll();
+
+        $helpcenterThemeSets = array_filter($themeSets, function (ThemeSet $themeSet) {
+            return $themeSet->getThemeId() === 'helpcenter';
+        });
+        $legacyThemeSets = array_filter($themeSets, function (ThemeSet $themeSet) {
+            return in_array($themeSet->getThemeId(), ['standard', 'sidebar']);
+        });
+
         return $this->createJsonResponse([
             'phrase_groups' => [
-                'object' => $object_groups,
-                'user'   => $phrase_groups['user'],
-                'agent'  => $phrase_groups['backend'],
+                'object'     => $object_groups,
+                'user'       => $legacyThemeSets ? $phrase_groups['user'] : [],
+                'helpcenter' => $helpcenterThemeSets ? $phrase_groups['helpcenter'] : [],
+                'agent'      => $phrase_groups['backend'],
             ],
         ]);
     }
@@ -680,6 +696,7 @@ class LanguagesController extends AbstractController
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
                     $lang = $l;
+
                     break;
                 }
             }
@@ -700,6 +717,7 @@ class LanguagesController extends AbstractController
                     $this->container->getSystemService('ticket_departments'),
                     $lang
                 );
+
                 break;
 
             case 'ticket_categories':
@@ -707,6 +725,7 @@ class LanguagesController extends AbstractController
                     $this->container->getSystemService('ticket_categories'),
                     $lang
                 );
+
                 break;
 
             case 'ticket_priorities':
@@ -714,6 +733,7 @@ class LanguagesController extends AbstractController
                     $this->container->getSystemService('ticket_priorities'),
                     $lang
                 );
+
                 break;
 
             case 'chat_departments':
@@ -721,6 +741,7 @@ class LanguagesController extends AbstractController
                     $this->container->getSystemService('chat_departments'),
                     $lang
                 );
+
                 break;
 
             case 'products':
@@ -728,6 +749,7 @@ class LanguagesController extends AbstractController
                     $this->container->getSystemService('products'),
                     $lang
                 );
+
                 break;
 
             case 'ticket_fields':
@@ -735,6 +757,7 @@ class LanguagesController extends AbstractController
                     $this->container->getSystemService('ticket_fields_manager'),
                     $lang
                 );
+
                 break;
 
             case 'person_fields':
@@ -742,6 +765,7 @@ class LanguagesController extends AbstractController
                     $this->container->getSystemService('person_fields_manager'),
                     $lang
                 );
+
                 break;
 
             case 'org_fields':
@@ -749,6 +773,7 @@ class LanguagesController extends AbstractController
                     $this->container->getSystemService('org_fields_manager'),
                     $lang
                 );
+
                 break;
 
             case 'chat_fields':
@@ -756,28 +781,34 @@ class LanguagesController extends AbstractController
                     $this->container->getSystemService('chat_fields_manager'),
                     $lang
                 );
+
                 break;
 
             case 'community_statuses':
                 $phrases = $phrase_data->getCommunityStatusPhrases($lang);
+
                 break;
 
             case 'community_forums':
                 $phrases = $phrase_data->getCommunityForumsPhrases($lang);
+
                 break;
 
             case 'kb_categories':
                 /** @var \Application\DeskPRO\EntityRepository\ArticleCategory $repos */
                 $repos   = $this->em->getRepository(ArticleCategory::class);
                 $phrases = $phrase_data->getKbCategoryPhrases($repos, $lang);
+
                 break;
 
             case 'custom':
                 $phrases = $phrase_data->loadCustom($lang);
+
                 break;
 
             default:
                 $phrases = $phrase_data->loadGroup($lang, $group_id);
+
                 break;
         }
 

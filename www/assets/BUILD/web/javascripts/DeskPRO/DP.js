@@ -156,7 +156,21 @@ var DP = {
 				};
 			}
       options.escapeMarkup = function(result) {
-        return result.replace(/&amp;/, '&').replace(/&quot;/, '"');
+        result = result.replace(/&amp;/, '&').replace(/&quot;/, '"');
+
+        var replace_map = {
+          '\\': '&#92;',
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          "/": '&#47;'
+        };
+
+        return String(result).replace(/[&<>"'\/\\]/g, function (match) {
+          return replace_map[match];
+        });
       };
 		}
 

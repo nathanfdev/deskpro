@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Notifications;
 
 use Application\DeskPRO\App;
@@ -50,7 +46,11 @@ class NewCommunityTopicNotification extends AbstractAgentNotification
     {
         $this->sendBrowserNotifications(
             'AgentBundle:Community:alert-new-community-topic.html.twig',
-            ['topic' => $this->communityTopic, 'notify_data' => ['notify_type' => 'new_topic']]
+            [
+                'topic'       => $this->communityTopic,
+                'performer'   => App::getCurrentPerson(),
+                'notify_data' => ['notify_type' => 'new_community_topic'],
+            ]
         );
         if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = App::$container->get('email.agent_viewmodel_factory')

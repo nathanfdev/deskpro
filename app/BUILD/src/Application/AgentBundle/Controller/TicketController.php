@@ -4501,9 +4501,13 @@ class TicketController extends AbstractController
             return str_replace($accessCodes, '', $body);
         });
 
-        $message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
-        $message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
-        $message->getHeaders()->addIdHeader('In-Reply-To', $ticket->getEmailReferencesHeader());
+        // Often Forwarding is used to create a separate email chain with a 3rd party
+        // Replies to a forwarded ticket should not be merging into the original ticket
+        // so, don't include any TAC/PTAC in header to prevent detecting original ticket during `email gateway` processing
+        //
+        // $message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+        // $message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
+        // $message->getHeaders()->addIdHeader('In-Reply-To', $ticket->getEmailReferencesHeader());
 
         foreach ($tos as $k => $x) {
             $message->addTo($k, $x);
@@ -4609,6 +4613,7 @@ class TicketController extends AbstractController
                     'messages'      => $messages,
                     'person'        => $this->getPerson(),
                     'agent_message' => $customMessage,
+                    'attachments'   => $attachments,
                 ]
             );
         }
@@ -4836,11 +4841,13 @@ class TicketController extends AbstractController
         $ticketEmail = $emailBuilder->buildTicketEmail();
 
         $vars = [
-            'ticket'        => $ticket,
-            'subject'       => $this->in->getString('subject'),
-            'messages'      => $messages,
-            'person'        => $this->getPerson(),
-            'agent_message' => $customMessage,
+            'ticket'         => $ticket,
+            'subject'        => $this->in->getString('subject'),
+            'messages'       => $messages,
+            'person'         => $this->getPerson(),
+            'agent_message'  => $customMessage,
+            'attachments'    => $attachments,
+            'attached_blobs' => $ticketMessage->getAttachments(),
         ];
 
         if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {

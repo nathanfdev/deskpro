@@ -58,6 +58,15 @@ class Department
     protected $userTitle = '';
 
     /**
+     * Department`s full title.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $fullTitle = '';
+
+    /**
      * Are tickets enabled for this Department?
      *
      *
@@ -116,6 +125,7 @@ class Department
         $this->children         = $department->getChildrenOrdered();
         $this->title            = $department->getTitle();
         $this->userTitle        = $department->getUserTitle();
+        $this->fullTitle        = $department->getFullTitle();
         $this->isChatEnabled    = $department->isChatEnabled();
         $this->isTicketsEnabled = $department->isTicketsEnabled();
         $this->displayOrder     = $department->getDisplayOrder();

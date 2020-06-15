@@ -63,7 +63,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<h4>{{ phrase('agent.general.forum') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
 				'name': 'newcommunitytopic[forum_id]',
-				'id': baseId ~ '_chan',
+				'id': baseId ~ '_forum',
 				'add_classname': 'forum_id',
 				'add_attr': '',
 				'categories': community_forums,
@@ -73,7 +73,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
-			{% include 'AgentBundle:Common:select-community-topic-status.html.twig' with {'name': 'newcommunitytopic[status_code]', 'add_classname': 'status_id'} %}
+			{% include 'AgentBundle:Common:select-community-topic-status.html.twig' with {'name': 'newcommunitytopic[status_code]', 'add_classname': 'status_id', 'baseId': baseId} %}
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.labels') }}</h4>

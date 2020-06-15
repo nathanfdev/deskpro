@@ -21,7 +21,7 @@ class DpCaptchaType extends AbstractType
     /**
      * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
      * @var BrandStack
@@ -41,18 +41,18 @@ class DpCaptchaType extends AbstractType
     /**
      * Constructor.
      *
-     * @param BrandStack $brandStack
+     * @param LanguageManager        $languageManager
+     * @param array                  $captchaConfig
+     * @param BrandStack             $brandStack
      * @param PortalBrandThemeLoader $portalBrandThemeLoader
-     * @param LanguageManager $language_manager
-     * @param array $captchaConfig
      */
     public function __construct(
-        LanguageManager $language_manager,
+        LanguageManager $languageManager,
         array $captchaConfig,
         BrandStack $brandStack,
-        PortalBrandThemeLoader $portalBrandThemeLoader
+        PortalBrandThemeLoader $portalBrandThemeLoader = null
     ) {
-        $this->language_manager       = $language_manager;
+        $this->languageManager        = $languageManager;
         $this->brandStack             = $brandStack;
         $this->portalBrandThemeLoader = $portalBrandThemeLoader;
         $this->captchaConfig          = $captchaConfig;
@@ -111,7 +111,7 @@ class DpCaptchaType extends AbstractType
                     return false;
                 }
 
-                return $this->language_manager->phrase('portal.forms.label_captcha');
+                return $this->languageManager->phrase('portal.forms.label_captcha');
             },
             'allow_extra_fields' => function (Options $options) {
                 // if its a saved form subrequest, allow extra fields
@@ -123,7 +123,7 @@ class DpCaptchaType extends AbstractType
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     protected function isRecaptchaEnabled()
     {
@@ -131,8 +131,18 @@ class DpCaptchaType extends AbstractType
             || ReCaptchaType::isCloudRecapchaEnabled();
     }
 
+    /**
+     * @return bool
+     */
     private function isHelpcenter()
     {
-        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
+        if (!$this->portalBrandThemeLoader) {
+            return false;
+        }
+
+        $brand    = $this->brandStack->getActive()->getBrand();
+        $themeSet = $this->portalBrandThemeLoader->getPortalBrandTheme($brand)->getActiveThemeSet();
+
+        return $themeSet && $themeSet->getThemeId() === 'helpcenter';
     }
 }
