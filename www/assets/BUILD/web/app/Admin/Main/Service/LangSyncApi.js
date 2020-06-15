@@ -1,10 +1,11 @@
 define(['DeskPRO/Util/Util'], function(Util) {
   class LangSyncApi {
-    constructor($http, api_url, Growl) {
+    constructor($http, api_url, Growl, Api2) {
       this.handleError = this.handleError.bind(this);
-      this.Growl = Growl;
-      this.$http     = $http;
-      this.api_url   = api_url.replace(/\/$/, '');
+      this.Growl   = Growl;
+      this.Api2    = Api2;
+      this.$http   = $http;
+      this.api_url = api_url.replace(/\/$/, '');
     }
 
     /*
@@ -22,32 +23,38 @@ define(['DeskPRO/Util/Util'], function(Util) {
       return url;
     }
 
-    getManifest() {
+    getDeskproManifest() {
       const url = this.formatUrl('/locales/manifest.json');
-
-      const http_params = {
+      const httpParams = {
         method:        'GET',
         url,
         isCorsRequest: true
       };
 
-      return this.sendRequest(http_params);
+      return this.sendRequest(httpParams);
+    }
+
+    getCrowdinLocales() {
+      return this.Api2.sendGet('/languages/crowdin/locales');
     }
 
     getPhrases(locale, type) {
-      const url = this.formatUrl(`/locales/${locale}/${type}.json`);
+      if (type === 'helpcenter') {
+        return this.Api2.sendGet(`/languages/crowdin/${locale}/${type}/phrases`);
+      }
 
-      const http_params = {
+      const url = this.formatUrl(`/locales/${locale}/${type}.json`);
+      const httpParams = {
         method:        'GET',
         url,
         isCorsRequest: true
       };
 
-      return this.sendRequest(http_params);
+      return this.sendRequest(httpParams);
     }
 
-    sendRequest(http_params) {
-      const result = this.$http(http_params);
+    sendRequest(httpParams) {
+      const result = this.$http(httpParams);
       result.error(this.handleError);
 
       return result;
