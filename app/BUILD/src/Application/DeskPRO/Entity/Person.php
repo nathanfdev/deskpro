@@ -2441,6 +2441,24 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getEmailsUpdatedDate()
+    {
+        if (empty($this->emails)) {
+            return $this->date_created;
+        }
+
+        $maxDate = null;
+        foreach ($this->emails as $eml) {
+            if (!$maxDate || $maxDate < $eml->date_created) {
+                $maxDate = $eml->date_created;
+            }
+        }
+        return $maxDate ?: $this->date_created;
+    }
+
+    /**
      * @param PersonEmail $email
      *
      * @return $this
