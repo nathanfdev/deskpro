@@ -1672,6 +1672,8 @@ class Person extends DomainObject implements
             $this->setModelField('date_password_set', new \DateTime());
         }
 
+        $this->setModelField('secret_string', Strings::random(40));
+
         return $this->password;
     }
 
@@ -2436,6 +2438,24 @@ class Person extends DomainObject implements
     public function getEmails()
     {
         return $this->emails;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getEmailsUpdatedDate()
+    {
+        if (empty($this->emails)) {
+            return $this->date_created;
+        }
+
+        $maxDate = null;
+        foreach ($this->emails as $eml) {
+            if (!$maxDate || $maxDate < $eml->date_created) {
+                $maxDate = $eml->date_created;
+            }
+        }
+        return $maxDate ?: $this->date_created;
     }
 
     /**
@@ -3647,7 +3667,11 @@ class Person extends DomainObject implements
      */
     public function getRememberMeCookieCode()
     {
-        return \Orb\Util\Util::generateStaticSecurityToken(sha1(App::getAppSecret().$this->secret_string));
+        return \Orb\Util\Util::generateStaticSecurityToken(sha1(
+            App::getAppSecret()
+            .$this->secret_string
+            .($this->date_password_set ? $this->date_password_set->getTimestamp() : '')
+        ));
     }
 
     /**
@@ -3657,7 +3681,11 @@ class Person extends DomainObject implements
      */
     public function validateRememberMeCookieCode($code)
     {
-        return \Orb\Util\Util::checkStaticSecurityToken($code, sha1(App::getAppSecret().$this->secret_string));
+        return \Orb\Util\Util::checkStaticSecurityToken($code, sha1(
+            App::getAppSecret()
+            .$this->secret_string
+            .($this->date_password_set ? $this->date_password_set->getTimestamp() : '')
+        ));
     }
 
     public function _postPersist()
