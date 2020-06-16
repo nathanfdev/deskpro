@@ -170,7 +170,7 @@ abstract class AbstractFieldResolver
     {
         return new FormField('timezone', [
             'property_path' => 'person.timezone',
-            'label'         => $this->phrase('portal.forms.label_timezone'),
+            'label'         => $this->phrase(['portal.forms.label_timezone', 'helpcenter.form.label_timezone']),
         ]);
     }
 
@@ -301,7 +301,7 @@ abstract class AbstractFieldResolver
         }
 
         return new FormField(TicketCategoryType::class, [
-            'label'       => $this->phrase('portal.forms.label_category'),
+            'label'       => $this->phrase(['portal.forms.label_category', 'helpcenter.general.category']),
             'placeholder' => '',
             'required'    => $isRequired,
             'constraints' => $constraints,
@@ -333,7 +333,7 @@ abstract class AbstractFieldResolver
         }
 
         return new FormField(TicketPriorityType::class, [
-            'label'       => $this->phrase('portal.forms.label_priority'),
+            'label'       => $this->phrase(['portal.forms.label_priority', 'helpcenter.general.priority']),
             'placeholder' => '',
             'required'    => $isRequired,
             'constraints' => $constraints,
@@ -369,7 +369,7 @@ abstract class AbstractFieldResolver
         }
 
         return new FormField(TicketWorkflowType::class, [
-            'label'       => $this->phrase('portal.forms.label_workflow'),
+            'label'       => $this->phrase(['portal.forms.label_workflow', 'helpcenter.general.workflow']),
             'required'    => $isRequired,
             'constraints' => $constraints,
             'data'        => $defaultData,
@@ -400,7 +400,7 @@ abstract class AbstractFieldResolver
         }
 
         return new FormField(TicketProductType::class, [
-            'label'       => $this->phrase('portal.forms.label_product'),
+            'label'       => $this->phrase(['portal.forms.label_product', 'helpcenter.general.product']),
             'placeholder' => '',
             'required'    => $isRequired,
             'constraints' => $constraints,
@@ -469,7 +469,7 @@ abstract class AbstractFieldResolver
     abstract protected function createContextualCustomPerField(TicketWithLayoutsContext $context, CustomFieldDefinition $def, $owner);
 
     /**
-     * @param string $name
+     * @param string|array $name
      * @param array  $vars
      *
      * @return string
@@ -568,8 +568,8 @@ abstract class AbstractFieldResolver
         $options = [
             'property_path' => 'person.name',
             'label'         => $context->isWidgetType()
-                ? $this->phrase('portal.widget.label_name')
-                : $this->phrase('portal.forms.label_name'),
+                ? $this->phrase(['portal.widget.label_name', 'helpcenter.general.name'])
+                : $this->phrase(['portal.forms.label_name', 'helpcenter.general.name']),
             'empty_data'  => $context->getPerson()->getDisplayName(false),
             'constraints' => [
                 new Assert\NotBlank(),
@@ -607,8 +607,8 @@ abstract class AbstractFieldResolver
                 'person'        => $person,
                 'property_path' => 'ticket_person_email',
                 'label'         => $context->isWidgetType()
-                    ? $this->phrase('portal.widget.label_email')
-                    : $this->phrase('portal.forms.label_email'),
+                    ? $this->phrase(['portal.widget.label_email', 'helpcenter.forms.label_email'])
+                    : $this->phrase(['portal.forms.label_email', 'helpcenter.forms.label_email']),
             ];
 
             if ($context->isFullLayout()) {
@@ -624,8 +624,8 @@ abstract class AbstractFieldResolver
             $options = [
                 'property_path' => 'person.primary_email',
                 'label'         => $context->isWidgetType()
-                    ? $this->phrase('portal.widget.label_email')
-                    : $this->phrase('portal.forms.label_email'),
+                    ? $this->phrase(['portal.widget.label_email', 'helpcenter.forms.label_email'])
+                    : $this->phrase(['portal.forms.label_email', 'helpcenter.forms.label_email']),
 
                 // ignore the "unique entity" constraint here
                 'constraints' => [
