@@ -82,6 +82,12 @@ class PasswordPolicyValidator
      */
     public function checkPassword($password, Person $person = null, &$error = null)
     {
+        // hard-code maxlength
+        if (strlen($password) > 200) {
+            $error = 'reset_required';
+            return false;
+        }
+
         $policy = $this->getPolicy($person);
 
         if ($policy->min_length && Strings::utf8_strlen($password) < $policy->min_length) {
