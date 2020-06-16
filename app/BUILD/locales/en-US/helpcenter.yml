@@ -342,10 +342,10 @@ helpcenter.flashes.user_resend_email_verify: 'The validation email has been sent
 helpcenter.flashes.user_updated_profile: 'Your profile has been updated.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Thank you for verifying your email address. Your account is now active.'
 helpcenter.flashes.usersource_new_add_email_verify: 'We need to verify your email before we create your account. Please check your inbox for a verification link.'
-helpcenter.form.delete_question: 'Delete?'
 helpcenter.forms.date_picker_next_month: 'Next Month'
 helpcenter.forms.date_picker_previous_month: 'Previous Month'
 helpcenter.forms.date_picker_time: Time
+helpcenter.forms.delete_question: 'Delete?'
 helpcenter.forms.error_captcha: 'The CAPTCHA value was incorrect'
 helpcenter.forms.error_dupe_email: 'This email address is already in use.'
 helpcenter.forms.error_email_required: 'You must provide your email address'
@@ -364,6 +364,7 @@ helpcenter.forms.label_password: Password
 helpcenter.forms.label_password_confirm: Confirm
 helpcenter.forms.label_reset: Reset
 helpcenter.forms.label_save: Save
+helpcenter.forms.label_submit: Submit
 helpcenter.forms.label_timezone: Timezone
 helpcenter.forms.message_description: ''
 helpcenter.forms.password_description: ''
@@ -446,6 +447,7 @@ helpcenter.general.last_week: 'Last week'
 helpcenter.general.last_year: 'Last year'
 helpcenter.general.latest_status_changes: 'Latest status changes'
 helpcenter.general.log_in: 'Log in'
+helpcenter.general.message: Message
 helpcenter.general.more_than_1_year: 'More than 1 year'
 helpcenter.general.name: Name
 helpcenter.general.nav_chat: Chats
@@ -523,6 +525,7 @@ helpcenter.general.view_all_status_changes: 'View all status changes'
 helpcenter.general.view_all_topics: 'View all topics'
 helpcenter.general.view_profile: 'View my profile'
 helpcenter.general.viewed_by_agents_only: 'This field is only visible to agents'
+helpcenter.general.workflow: 'Workflow'
 helpcenter.general.x_search_results: '{num} search results for "{query}"'
 helpcenter.general.you: You
 helpcenter.general.your_comment_label: 'Your comment'

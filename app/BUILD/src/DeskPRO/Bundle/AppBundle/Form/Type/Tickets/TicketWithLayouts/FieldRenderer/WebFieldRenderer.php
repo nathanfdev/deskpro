@@ -64,9 +64,9 @@ class WebFieldRenderer implements FieldRendererInterface
         }
 
         if ($context->getVisibility() !== TicketWithLayoutsContext::VISIBILITY_NEW) {
-            $label = $this->languageManager->phrase('portal.forms.label_save');
+            $label = $this->languageManager->phrase(['portal.forms.label_save', 'helpcenter.forms.label_save']);
         } else {
-            $label = $this->languageManager->phrase('portal.forms.label_submit');
+            $label = $this->languageManager->phrase(['portal.forms.label_submit', 'helpcenter.forms.label_submit']);
         }
 
         $form->add('submit', SubmitType::class, [

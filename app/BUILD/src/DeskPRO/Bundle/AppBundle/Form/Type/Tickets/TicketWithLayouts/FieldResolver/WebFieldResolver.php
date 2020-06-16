@@ -44,7 +44,7 @@ class WebFieldResolver extends AbstractFieldResolver
         }
 
         return new FormField(TicketDepartmentChoiceType::class, [
-            'label'       => $this->phrase('portal.forms.label_department'),
+            'label'       => $this->phrase(['portal.forms.label_department', 'helpcenter.general.department']),
             'person'      => $context->getPerson(),
             'ticket'      => $context->getTicket(),
             'placeholder' => '',
@@ -152,8 +152,8 @@ class WebFieldResolver extends AbstractFieldResolver
             'format'         => 'html',
             'required'       => true,
             'message_label'  => $context->isWidgetType()
-                ? $this->phrase('portal.widget.label_message')
-                : $this->phrase('portal.forms.label_message'),
+                ? $this->phrase(['portal.widget.label_message', 'helpcenter.general.message'])
+                : $this->phrase(['portal.forms.label_message', 'helpcenter.general.message']),
         ]);
     }
 
