@@ -7,7 +7,9 @@ services:
 
   usersources_view_helper:
     class: DeskPRO\Bundle\PortalBundle\View\UsersourcesHelper
-    arguments: ["@dp_authentication_manager.user", "@language_manager"]
+    arguments:
+       - "@dp_authentication_manager.user"
+       - "@language_manager"
 
   ratings_helper:
     class: DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper

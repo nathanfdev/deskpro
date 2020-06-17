@@ -69,6 +69,7 @@ helpcenter.account.tickets_lockout: 'You have submitted too many tickets so you 
 helpcenter.account.usersource_set_email_desc: 'Before you can login we need your email address. Please enter your email address below so we can send you a verification email.'
 helpcenter.account.validation_email_sent: 'We’ve sent you an email to {email}<br />Please validate your email address to access your support centre.'
 helpcenter.account.your_pending_email_addresses: 'Your Pending Email Addresses'
+helpcenter.account.login-btn-usersource: 'Login with {usersource}'
 helpcenter.alerts.tickets_to_respond: '{count, plural, one {You have one ticket to respond to.} other {You have # tickets to respond to.}}'
 helpcenter.approvals.approve_action: Approve
 helpcenter.approvals.approved_by: 'Approved by'
