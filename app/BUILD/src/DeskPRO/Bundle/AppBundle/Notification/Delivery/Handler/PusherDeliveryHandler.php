@@ -170,7 +170,7 @@ class PusherDeliveryHandler extends MultiplexDeliverHandler
         do {
             $response = $this->pusher->triggerBatch($chunk, true, true);
 
-            if ($response['status'] !== 200) {
+            if (empty($response) || $response['status'] !== 200) {
                 if (!$exception) {
                     $exception = new \RuntimeException('Failed to send Pusher events: '.print_r($response, true));
                 }
