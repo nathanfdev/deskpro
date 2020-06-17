@@ -131,7 +131,7 @@ class Facebook extends BaseFacebook
         // auto-correct redirect url based on the helpdesk url
         $container   = \Application\DeskPRO\App::$container;
         $brand       = $container->get('brand_stack')->getActive()->getBrand();
-        $helpdeskUrl = $container->get('settings_resolver')->getSetting('core.deskpro_url', $brand);
+        $helpdeskUrl = $container->get('settings_resolver')->getBrandSettings($brand)->get('core.deskpro_url');
 
         if (strpos($helpdeskUrl, 'https://') !== false) {
             return 'https';
