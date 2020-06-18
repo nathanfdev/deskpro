@@ -251,6 +251,10 @@ class LanguageManager
      */
     private function isHelpCenterTheme()
     {
-        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
+        if ($this->portalBrandThemeLoader) {
+            return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
+        }
+
+        return false;
     }
 }

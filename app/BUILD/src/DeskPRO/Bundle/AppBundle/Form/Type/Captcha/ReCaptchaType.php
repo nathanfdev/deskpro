@@ -173,6 +173,10 @@ class ReCaptchaType extends AbstractType
 
     private function isHelpcenter()
     {
-        return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
+        if ($this->portalBrandThemeLoader) {
+            return $this->portalBrandThemeLoader->getPortalBrandTheme($this->brandStack->getActive()->getBrand())->getActiveThemeSet()->getThemeId() === 'helpcenter';
+        }
+
+        return false;
     }
 }
