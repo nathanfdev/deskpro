@@ -8,6 +8,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Usersource;
@@ -118,6 +119,8 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             new \Twig_SimpleFunction('render_custom_field_text', [$this, 'renderCustomFieldText']),
             new \Twig_SimpleFunction('render_custom_field_form', [$this, 'renderCustomFieldForm'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('render_ticket_custom_field', [$this, 'renderTicketCustomField'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('render_person_custom_field', [$this, 'renderPersonCustomField'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('render_organization_custom_field', [$this, 'renderOrganizationCustomField'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('get_full_recording_url', [$this, 'getFullRecordingUrl']),
             new \Twig_SimpleFunction('get_full_recording_transcription', [$this, 'getFullRecordingTranscription']),
             new \Twig_SimpleFunction('get_voicemail_recording_url', [$this, 'getVoicemailRecordingUrl']),
@@ -1609,7 +1612,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      *
      * @return string
      */
-    public function renderTicketCustomField($ticket, $fieldId, $context)
+    public function renderTicketCustomField($ticket, $fieldId, $context = 'html')
     {
         $ticket = $this->getTicket($ticket);
         if (!$ticket) {
@@ -1617,6 +1620,76 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         }
 
         return $ticket->renderCustomField($fieldId, $context);
+    }
+
+    /**
+     * @param $person
+     *
+     * @return Person|null
+     */
+    private function getPerson($person)
+    {
+        if (is_numeric($person)) {
+            $personId = $person;
+        } elseif (is_array($person)) {
+            $personId = $person['id'];
+        } else {
+            return;
+        }
+
+        return $this->container->getEm()->getRepository(Person::class)->find($personId);
+    }
+
+    /**
+     * @param int|array $person
+     * @param int       $fieldId
+     * @param string    $context
+     *
+     * @return string
+     */
+    public function renderPersonCustomField($person, $fieldId, $context = 'html')
+    {
+        $person = $this->getPerson($person);
+        if (!$person) {
+            return '';
+        }
+
+        return $person->renderCustomField($fieldId, $context);
+    }
+
+    /**
+     * @param $organization
+     *
+     * @return Organization|null
+     */
+    private function getOrganization($organization)
+    {
+        if (is_numeric($organization)) {
+            $orgId = $organization;
+        } elseif (is_array($organization)) {
+            $orgId = $organization['id'];
+        } else {
+            return;
+        }
+
+        return $this->container->getEm()->getRepository(Organization::class)->find($orgId);
+    }
+
+    /**
+     * @param int|array $organization
+     * @param int       $fieldId
+     * @param string    $context
+     *
+     * @return string
+     */
+    public function renderOrganizationCustomField($organization, $fieldId, $context = 'html')
+    {
+        $organization = $this->getOrganization($organization);
+        if (!$organization) {
+            return '';
+        }
+
+        return $organization->renderCustomField($fieldId, $context);
     }
 
     /**
