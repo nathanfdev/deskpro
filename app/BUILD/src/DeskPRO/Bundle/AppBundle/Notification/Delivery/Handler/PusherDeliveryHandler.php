@@ -133,6 +133,7 @@ class PusherDeliveryHandler extends MultiplexDeliverHandler
 
         foreach ($this->messages as $index => &$message) {
             if (!array_key_exists('data', $message) ||
+                empty($message['data']) ||
                 empty($encData = json_encode($message['data']))
             ) {
                 array_splice($this->messages, $index, 1);
