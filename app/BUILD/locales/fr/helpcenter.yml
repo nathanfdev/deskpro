@@ -19,6 +19,7 @@ helpcenter.account.login_reset_password_link: 'Mot de passe oublié ?'
 helpcenter.account.logout_action: Se déconnecter
 helpcenter.account.new_ticket_no_login: 'Le portail CRM est désactivé. Impossible de soumettre un ticket.'
 helpcenter.account.profile_delete_picture: 'Modifier ou supprimer la photo de profil ?'
+helpcenter.account.register_action: S'inscrire
 helpcenter.account.registration_set_password: 'Un compte avec cette adresse email existe déjà. Nous vous avons envoyé un email pour vous permettre de définir un mot de passe et un nom d''utilisateur.'
 helpcenter.account.reset_password_click_here: 'Cliquez ici pour demander un code de réinitialisation du mot de passe'
 helpcenter.account.reset_password_invalid_desc: 'Le code de réinitialisation du mot de passe est invalide ou il est périmé. Pour réinitialiser votre mot de passe, veuillez demander un nouveau code.'
