@@ -101,7 +101,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @return PasswordChangedByAgent
      */
-    public function createAgentChangedPasswordModel($newPassword)
+    public function createPasswordChangedByAgentModel($newPassword)
     {
         $userLink = $this->router->generate('user', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
