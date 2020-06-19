@@ -538,7 +538,7 @@ export const emailBlocks = {
                   typeId:     'user',
                   groupId:    'account',
                   subGroupId: 'primary',
-                  name:       'DeskPRO:emails_user:password_changed_by_agent.html.twig',
+                  name:       'DeskPRO:emails_user:agent-changed-password.html.twig',
                   showName:   'emails_user/agent-changed-password.html',
                   title:      'Agent Reset Password',
                   desc:       'Email sent to a user when an agent has reset their account password.'

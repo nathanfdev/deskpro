@@ -159,13 +159,10 @@ class EmailSender
                     // - TO DO: Can implement custom swiftmailer classes to allow cancelling of messages so the blank
                     // email isn't sent.
 
+                    $contact = "{$recipient->getName()} <{$recipient->getPrimaryEmailAddress()}>";
+
                     $errorMessage = 'Agent email being sent to a non-agent. ';
-                    if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-                        $contact = "{$recipient->getName()} <{$recipient->getPrimaryEmailAddress()}>";
-                        $errorMessage .= "New Email Template: {$model->getTemplate()}, Person: {$contact}";
-                    } else {
-                        $errorMessage .= "Template: {$message->getTemplate()}, Person: {$message->getTemplateVar('to_contact')}";
-                    }
+                    $errorMessage .= "New Email Template: {$model->getTemplate()}, Person: {$contact}";
 
                     $e = new \InvalidArgumentException($errorMessage);
                     SystemErrorHandler::logException($e, true);
