@@ -25,7 +25,11 @@ if [ "$1" = "sequential-build" ] ; then
     git submodule update
 
     cd $ROOT_DIR/app/BUILD
-    composer install --ignore-platform-reqs -o
+    rm composer-stable.phar
+    wget https://getcomposer.org/composer-stable.phar
+    php composer-stable.phar clearcache
+    php composer-stable.phar install --ignore-platform-reqs -o --prefer-dist
+    ls vendor
 
     cd $ROOT_DIR/www/assets/BUILD/pub
     npm install

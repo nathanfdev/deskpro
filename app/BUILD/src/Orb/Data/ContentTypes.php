@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Orb.
- */
-
 namespace Orb\Data;
 
 use Orb\Util\Strings;
@@ -369,13 +365,23 @@ class ContentTypes
     /**
      * Check to see if a content type is an image type.
      *
-     * @param $content_type
+     * @param $contentType
      *
      * @return bool
      */
-    public static function isImageContentType($content_type)
+    public static function isImageContentType($contentType)
     {
-        return in_array($content_type, self::getImageContentTypes());
+        return in_array($contentType, self::getImageContentTypes());
+    }
+
+    /**
+     * @param $contentType
+     *
+     * @return bool
+     */
+    public static function isTiffContentType($contentType)
+    {
+        return $contentType === 'image/tiff';
     }
 
     /**
@@ -437,6 +443,8 @@ class ContentTypes
 
     /**
      * Checks a filename to see if its a file that hsould be displaeyd inline (images, mostly).
+     *
+     * @param mixed $filename
      *
      * @return bool
      */

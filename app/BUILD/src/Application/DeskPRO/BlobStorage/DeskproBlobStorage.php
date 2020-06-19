@@ -1,11 +1,8 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\BlobStorage;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter;
 use Application\DeskPRO\Entity\Blob as BlobEntity;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
@@ -206,6 +203,7 @@ class DeskproBlobStorage implements Loggable
     {
         if (!isset($this->adapters[$id])) {
             $this->logger->logError("[DeskproBlobStorage] (getAdapter) No adapter by id: $id");
+
             throw new BlobStorageException("No adapter by id `$id`", BlobStorageException::INVALID_ADAPTER_ID);
         }
 
@@ -326,24 +324,41 @@ class DeskproBlobStorage implements Loggable
     }
 
     /**
-     * @param string $source_path
+     * @param string $sourcePath
      * @param string $filename
-     * @param string $content_type
+     * @param string $contentType
      * @param array  $props
      *
+     *@throws \Doctrine\DBAL\Exception\InvalidArgumentException
      * @throws BlobStorageException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      *
      * @return int The blob ID that was created
      */
-    public function createBlobRowFromFile($source_path, $filename, $content_type, array $props = null)
+    public function createBlobRowFromFile($sourcePath, $filename, $contentType, array $props = null)
     {
-        $this->logger->logDebug("[DeskproBlobStorage] BEGIN (saveBlobRecordFromFile) From path: $source_path");
+        $this->logger->logDebug("[DeskproBlobStorage] BEGIN (saveBlobRecordFromFile) From path: $sourcePath");
 
-        $blob_entity_tmp = $this->_createBlobEntity($filename, $content_type, $props);
-        $blob_entity_tmp->setFilesize(filesize($source_path))->setBlobHash(md5_file($source_path));
+        // remove the source data before any manipulations
+        // to ensure the content length is correct
+        if ((ContentTypes::isImageContentType($contentType) || ContentTypes::isTiffContentType($contentType))
+            && (!isset($props['tag']) || $props['tag'] !== DeskproBlobStorage::TAG_TICKET_ATTACHMENT)
+        ) {
+            $sourceData    = @file_get_contents($sourcePath);
+            $newSourceData = App::$container->get('dp.image.image_cleaner')->stripImage($sourceData);
 
-        if (ContentTypes::isImageContentType($content_type) && $imageinfo = @getimagesize($source_path)) {
+            if ($sourceData !== $newSourceData && @file_put_contents($sourcePath, $newSourceData)) {
+                // https://www.php.net/manual/en/function.filesize.php#refsect1-function.filesize-notes
+                // reset stat cache to get proper filesize()
+                clearstatcache();
+            }
+
+            $this->logger->logDebug('[DeskproBlobStorage] EXIF metadata has been removed '.Numbers::filesizeDisplay(strlen($sourceData)));
+        }
+
+        $blob_entity_tmp = $this->_createBlobEntity($filename, $contentType, $props);
+        $blob_entity_tmp->setFilesize(filesize($sourcePath))->setBlobHash(md5_file($sourcePath));
+
+        if (ContentTypes::isImageContentType($contentType) && $imageinfo = @getimagesize($sourcePath)) {
             $blob_entity_tmp->setDimensions($imageinfo);
         }
 
@@ -391,6 +406,7 @@ class DeskproBlobStorage implements Loggable
                 && $adapter->getFailLimitPerRequest() >= $this->failed_adapters_counts[$adapter_id]
             ) {
                 $this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromFile) Skipping $adapter_id because fail count of {$this->failed_adapters_counts[$adapter_id]} has met the limit of {$adapter->getFailLimitPerRequest()}");
+
                 continue;
             }
             $this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Attempting adapter: $adapter_id");
@@ -401,13 +417,13 @@ class DeskproBlobStorage implements Loggable
                 $blob->setMeta('authcode', $authcode);
                 $path = $adapter->makePathForBlob($blob);
                 $blob->setPath($path);
-                $adapter->writeBlobFromFile($blob, $source_path);
+                $adapter->writeBlobFromFile($blob, $sourcePath);
 
                 $blob_entity_tmp->save_path   = $path;
                 $blob_entity_tmp->storage_loc = $adapter_id;
 
                 if ($adapter->requiresTempCache() && $blob_entity_tmp->getFilesize()) {
-                    $this->createCache($blob_entity_tmp, file_get_contents($source_path));
+                    $this->createCache($blob_entity_tmp, file_get_contents($sourcePath));
                 }
 
                 // Success, dont try others
@@ -485,19 +501,28 @@ class DeskproBlobStorage implements Loggable
     }
 
     /**
-     * @param string $source_data
+     * @param string $sourceData
      * @param string $filename
-     * @param string $content_type
+     * @param string $contentType
      * @param array  $props
      *
-     * @throws BlobStorageException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws BlobStorageException
      *
      * @return mixed
      */
-    public function createBlobRowFromString($source_data, $filename, $content_type, array $props = null)
+    public function createBlobRowFromString($sourceData, $filename, $contentType, array $props = null)
     {
-        $this->logger->logDebug('[DeskproBlobStorage] BEGIN (saveBlobRecordFromString) From data string '.Numbers::filesizeDisplay(strlen($source_data)));
+        $this->logger->logDebug('[DeskproBlobStorage] BEGIN (saveBlobRecordFromString) From data string '.Numbers::filesizeDisplay(strlen($sourceData)));
+
+        // remove the source data before any manipulations
+        // to ensure the content length is correct
+        if ((ContentTypes::isImageContentType($contentType) || ContentTypes::isTiffContentType($contentType))
+            && (!isset($props['tag']) || $props['tag'] !== DeskproBlobStorage::TAG_TICKET_ATTACHMENT)
+        ) {
+            $sourceData = App::$container->get('dp.image.image_cleaner')->stripImage($sourceData);
+            $this->logger->logDebug('[DeskproBlobStorage] EXIF metadata has been removed '.Numbers::filesizeDisplay(strlen($sourceData)));
+        }
 
         // TODO blobs need to have a separate field ot store "content encoding", so we can retain the original
         // filename/content type. right now we are essentially re-writing the file that is stored which
@@ -506,17 +531,17 @@ class DeskproBlobStorage implements Loggable
             $this->logger->logDebug('Rewriting file to gzipped file');
 
             $filename     = $filename.'.gz';
-            $content_type = 'application/gzip';
-            $source_data  = gzencode($source_data);
+            $contentType  = 'application/gzip';
+            $sourceData   = gzencode($sourceData);
         }
 
-        $blob_entity_tmp = $this->_createBlobEntity($filename, $content_type, $props);
-        $blob_entity_tmp->setFilesize(strlen($source_data));
-        $blob_entity_tmp->setBlobHash(md5($source_data));
+        $blob_entity_tmp = $this->_createBlobEntity($filename, $contentType, $props);
+        $blob_entity_tmp->setFilesize(strlen($sourceData));
+        $blob_entity_tmp->setBlobHash(md5($sourceData));
 
-        if (ContentTypes::isImageContentType($content_type)) {
+        if (ContentTypes::isImageContentType($contentType)) {
             $tmpfname = @tempnam(sys_get_temp_dir(), 'dpblob_');
-            if ($tmpfname && @file_put_contents($tmpfname, $source_data)) {
+            if ($tmpfname && @file_put_contents($tmpfname, $sourceData)) {
                 $imageinfo = @getimagesize($tmpfname);
                 if ($imageinfo) {
                     $blob_entity_tmp->dim_w = $imageinfo[0];
@@ -575,6 +600,7 @@ class DeskproBlobStorage implements Loggable
                 && $adapter->getFailLimitPerRequest() >= $this->failed_adapters_counts[$adapter_id]
             ) {
                 $this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromFile) Skipping $adapter_id because fail count of {$this->failed_adapters_counts[$adapter_id]} has met the limit of {$adapter->getFailLimitPerRequest()}");
+
                 continue;
             }
             $this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Attempting adapter: $adapter_id");
@@ -585,13 +611,13 @@ class DeskproBlobStorage implements Loggable
                 $blob->setMeta('authcode', $authcode);
                 $path = $adapter->makePathForBlob($blob);
                 $blob->setPath($path);
-                $adapter->writeBlobString($blob, $source_data);
+                $adapter->writeBlobString($blob, $sourceData);
 
                 $blob_entity_tmp->setSavePath($path);
                 $blob_entity_tmp->setStorageLoc($adapter_id);
 
                 if ($adapter->requiresTempCache() && $blob_entity_tmp->getFilesize()) {
-                    $this->createCache($blob_entity_tmp, $source_data);
+                    $this->createCache($blob_entity_tmp, $sourceData);
                 }
 
                 // Success, dont try others
@@ -693,6 +719,7 @@ class DeskproBlobStorage implements Loggable
             }
         } catch (\Exception $e) {
             $this->logger->logDebug("[DeskproBlobStorage] (getBlobString) Read failed: {$e->getCode()} {$e->getMessage()}");
+
             throw $e;
         }
 
@@ -726,6 +753,7 @@ class DeskproBlobStorage implements Loggable
             }
         } catch (\Exception $e) {
             $this->logger->logDebug("[DeskproBlobStorage] (saveBlobToFile) Save failed: {$e->getCode()} {$e->getMessage()}");
+
             throw $e;
         }
 
@@ -1155,9 +1183,11 @@ class DeskproBlobStorage implements Loggable
             switch ($props['tag']) {
                 case self::TAG_TICKET_ATTACHMENT:
                     $authCode .= BlobEntity::SUFFIX_TICKET_ATTACHMENT;
+
                     break;
                 case self::TAG_DOWNLOAD_ATTACHMENT:
                     $authCode .= BlobEntity::SUFFIX_DOWNLOAD_ATTACHMENT;
+
                     break;
             }
         }
