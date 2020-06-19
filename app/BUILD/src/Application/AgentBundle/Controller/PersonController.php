@@ -737,7 +737,7 @@ class PersonController extends AbstractController
                         } else {
                             $message = $this->container->getMailer()->createMessage();
                             $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-                            $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', [
+                            $message->setTemplate('DeskPRO:emails_user:password_changed_by_agent.html.twig', [
                                 'person' => $person,
                             ]);
 

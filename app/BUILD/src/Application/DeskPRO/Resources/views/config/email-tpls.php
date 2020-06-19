@@ -519,9 +519,9 @@ return [
         'typeId'      => 'user',
         'groupId'     => 'account',
         'subGroupId'  => 'primary',
-        'name'        => 'DeskPRO:emails_user:agent-changed-password.html.twig',
-        'newTemplate' => 'SendmailBundle:emails_user:agent_changed_password.html.twig',
-        'viewModel'   => 'AgentChangedPassword',
+        'name'        => 'DeskPRO:emails_user:password_changed_by_agent.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:password_changed_by_agent.html.twig',
+        'viewModel'   => 'PasswordChangedByAgent',
     ],
     [
         'typeId'      => 'user',

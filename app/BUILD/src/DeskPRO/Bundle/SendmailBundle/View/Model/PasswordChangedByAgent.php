@@ -4,7 +4,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use JMS\Serializer\Annotation as JMS;
 
-class AgentChangedPassword extends EmailBaseType
+class PasswordChangedByAgent extends EmailBaseType
 {
     /**
      * Link to user profile.
@@ -24,7 +24,10 @@ class AgentChangedPassword extends EmailBaseType
      */
     protected $newPassword;
 
-    protected $templateFile = 'emails_user:agent_changed_password.html.twig';
+    /**
+     * @var string
+     */
+    protected $templateFile = 'emails_user:password_changed_by_agent.html.twig';
 
     public function __construct($userLink, $newPassword)
     {
