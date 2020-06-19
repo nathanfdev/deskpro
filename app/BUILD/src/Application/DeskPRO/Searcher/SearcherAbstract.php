@@ -137,6 +137,8 @@ abstract class SearcherAbstract implements PersonContextInterface
 
     /**
      * @deprecated Use setPersonContext
+     *
+     * @param null|mixed $person
      */
     public function setPerson($person = null)
     {
@@ -406,7 +408,8 @@ abstract class SearcherAbstract implements PersonContextInterface
         if (!empty($choice['date1'])) {
             $date1 = $choice['date1'];
         } elseif (!empty($choice['date1_relative']) and !empty($choice['date1_relative_type'])) {
-            $date1 = date_create('-'.(int) $choice['date1_relative']." {$choice['date1_relative_type']}", $timezone_context);
+            $op    = isset($choice['date1_relative_tense']) && $choice['date1_relative_tense'] === 'future' ? '' : '-';
+            $date1 = date_create($op.(int) $choice['date1_relative']." {$choice['date1_relative_type']}", $timezone_context);
         } elseif (!empty($choice[0])) {
             $date1 = $choice[0];
         }
@@ -415,7 +418,8 @@ abstract class SearcherAbstract implements PersonContextInterface
         if (!empty($choice['date2'])) {
             $date2 = $choice['date2'];
         } elseif (!empty($choice['date2_relative']) and !empty($choice['date2_relative_type'])) {
-            $date2 = date_create('-'.(int) $choice['date2_relative']." {$choice['date2_relative_type']}", $timezone_context);
+            $op    = isset($choice['date2_relative_tense']) && $choice['date2_relative_tense'] === 'future' ? '' : '-';
+            $date2 = date_create($op.(int) $choice['date2_relative']." {$choice['date2_relative_type']}", $timezone_context);
         } elseif (!empty($choice[1])) {
             $date2 = $choice[1];
         }
@@ -497,6 +501,8 @@ abstract class SearcherAbstract implements PersonContextInterface
      * @param  $field
      * @param  $op
      * @param  $choice
+     * @param mixed $suffix_only
+     * @param mixed $force_like
      *
      * @return string
      */
@@ -516,6 +522,7 @@ abstract class SearcherAbstract implements PersonContextInterface
         foreach ($choice as $c) {
             if (trim($c) === '') {
                 $has_empty = true;
+
                 break;
             }
         }
@@ -896,6 +903,7 @@ abstract class SearcherAbstract implements PersonContextInterface
      * @param  $field
      * @param  $op
      * @param  $choice
+     * @param mixed $is_id
      *
      * @return string
      */
@@ -1033,15 +1041,19 @@ abstract class SearcherAbstract implements PersonContextInterface
         switch ($op) {
             case self::OP_IS:
                 $summary = App::getTranslator()->phrase('agent.general.x_is_y', ['field' => $field, 'value' => $title]);
+
                 break;
             case self::OP_NOT:
                 $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', ['field' => $field, 'value' => $title]);
+
                 break;
             case self::OP_CONTAINS:
                 $summary = App::getTranslator()->phrase('agent.general.x_is_y', ['field' => $field, 'value' => $title]);
+
                 break;
             case self::OP_NOTCONTAINS:
                 $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', ['field' => $field, 'value' => $title]);
+
                 break;
         }
 
@@ -1279,6 +1291,7 @@ abstract class SearcherAbstract implements PersonContextInterface
             foreach ($choices_in as $c) {
                 if (strpos($value, $c) === 0) {
                     $found = true;
+
                     break;
                 }
             }
@@ -1296,11 +1309,13 @@ abstract class SearcherAbstract implements PersonContextInterface
                 if ($suffix_only) {
                     if (\Orb\Util\Strings::endsWith($c, $value)) {
                         $found = true;
+
                         break;
                     }
                 } else {
                     if (strpos($value, $c) !== false) {
                         $found = true;
+
                         break;
                     }
                 }

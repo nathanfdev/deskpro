@@ -868,12 +868,14 @@ class TicketSearchController extends AbstractController
                     $date = null;
                     if ($date_op = $this->in->getString("search_message_when_op.$k")) {
                         $date = [
-                            'date1'               => $this->in->getString("search_message_when.date1.$k"),
-                            'date2'               => $this->in->getString("search_message_when.date2.$k"),
-                            'date1_relative'      => $this->in->getString("search_message_when.date1_relative.$k"),
-                            'date2_relative'      => $this->in->getString("search_message_when.date2_relative.$k"),
-                            'date1_relative_type' => $this->in->getString("search_message_when.date1_relative_type.$k"),
-                            'date2_relative_type' => $this->in->getString("search_message_when.date2_relative_type.$k"),
+                            'date1'                => $this->in->getString("search_message_when.date1.$k"),
+                            'date2'                => $this->in->getString("search_message_when.date2.$k"),
+                            'date1_relative'       => $this->in->getString("search_message_when.date1_relative.$k"),
+                            'date2_relative'       => $this->in->getString("search_message_when.date2_relative.$k"),
+                            'date1_relative_type'  => $this->in->getString("search_message_when.date1_relative_type.$k"),
+                            'date1_relative_tense' => $this->in->getString("search_message_when.date1_relative_tense.$k"),
+                            'date2_relative_type'  => $this->in->getString("search_message_when.date2_relative_type.$k"),
+                            'date2_relative_tense' => $this->in->getString("search_message_when.date2_relative_tense.$k"),
                         ];
                     }
 

@@ -32,6 +32,7 @@ define(function() {
 <div class="dp-time-unit">
   <input type="text" ng-model="time_num" class="form-control time_num" style="vertical-align: middle;" />
   <select
+    class="time_unit"
     ng-model="time_unit"
     ui-select2
     style="min-width: 100px;"
@@ -43,6 +44,16 @@ define(function() {
     <option ng-if="has_months" value="months">{{phrases.months}}</option>
     <option ng-if="has_years" value="years">{{phrases.years}}</option>
   </select>
+  <select
+    ng-show="withTense"
+    class="time_tense"
+    ng-model="time_tense"
+    ui-select2
+    style="min-width: 50px;"
+  >
+    <option value="past">ago</option>
+    <option value="future">from now</option>
+  </select>
 </div>\
 `,
       scope:   {},
@@ -51,6 +62,8 @@ define(function() {
       link(scope, iElement, iAttrs, ngModel) {
         scope.time_num = '';
         scope.time_unit = 'minutes';
+        scope.time_tense = 'past';
+        scope.withTense = !!iAttrs.withTense;
 
         let availableUnits = null;
         if (iAttrs.availableUnits) {
@@ -91,7 +104,7 @@ define(function() {
             if (iAttrs.modelType.indexOf(':') !== -1) {
               objModelKeys = iAttrs.modelType.split(':');
             } else {
-              objModelKeys = ['time', 'unit'];
+              objModelKeys = ['time', 'unit', 'tense'];
             }
           } else if (iAttrs.modelType === 'array') {
             modelType = 'array';
@@ -125,25 +138,26 @@ define(function() {
         ngModel.$parsers.push((viewValue) => {
           const unit = viewValue.unit || 'minutes';
           const num  = viewValue.num || 1;
+          const tense = viewValue.tense || 'past';
 
           switch (modelType) {
             case 'object':
-              var obj = {};
+              const obj = {};
               obj[objModelKeys[0]] = num;
               obj[objModelKeys[1]] = unit;
+              obj[objModelKeys[2]] = tense;
               return obj;
             case 'array':
-              var arr = [num, unit];
-              return arr;
+              return [num, unit, tense];
             default:
-              var secs = multiplierMap[unit] * num;
-              return secs;
+              return multiplierMap[unit] * num;
           }
         });
 
         ngModel.$formatters.push((modelValue) => {
-          let unit = 'minutes';
-          let num  = '';
+          let unit  = 'minutes';
+          let num   = '';
+          let tense = 'past';
 
           switch (modelType) {
             case 'object':
@@ -153,8 +167,14 @@ define(function() {
               if ((modelValue != null ? modelValue[objModelKeys[1]] : undefined) != null) {
                 num = modelValue[objModelKeys[1]];
               }
+              if ((modelValue != null ? modelValue[objModelKeys[2]] : undefined) != null) {
+                tense = modelValue[objModelKeys[2]];
+              }
               break;
             case 'array':
+              if ((modelValue != null ? modelValue[2] : undefined) != null) {
+                tense = modelValue[2];
+              }
               if ((modelValue != null ? modelValue[1] : undefined) != null) {
                 unit = modelValue[1];
               }
@@ -163,7 +183,7 @@ define(function() {
               }
               break;
             default:
-              modelValue = parseInt(modelValue || 0);
+              modelValue = parseInt(modelValue || 0, 10);
 
               for (const unitName of Array.from(multiplierTypes)) {
                 if ((modelValue % multiplierMap[unitName]) === 0) {
@@ -174,6 +194,9 @@ define(function() {
 
               if (!unit) {
                 unit = 'minutes';
+              }
+              if (!tense) {
+                tense = 'past';
               }
 
               if (modelValue) {
@@ -200,15 +223,17 @@ define(function() {
 
           return {
             unit,
-            num
+            num,
+            tense
           };
         });
 
-        scope.$watch('time_unit + time_num', () => {
+        scope.$watch('time_unit + time_num + time_tense', () => {
           if (scope.time_unit && scope.time_num) {
             return ngModel.$setViewValue({
-              unit: scope.time_unit,
-              num:  parseInt(scope.time_num)
+              unit:  scope.time_unit,
+              num:   parseInt(scope.time_num, 10),
+              tense: scope.time_tense
             });
           }
         });
@@ -218,7 +243,10 @@ define(function() {
           if (viewValue) {
             scope.time_num  = viewValue.num;
             scope.time_unit = viewValue.unit;
-            return iElement.find('select').first().select2('val', viewValue.unit);
+            scope.time_tense = viewValue.tense;
+
+            iElement.find('.time_unit').select2('val', viewValue.unit);
+            iElement.find('.time_tense').select2('val', viewValue.tense);
           }
         };
 

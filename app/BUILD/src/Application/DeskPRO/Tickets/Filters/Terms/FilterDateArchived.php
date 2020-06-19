@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
@@ -32,7 +28,9 @@ class FilterDateArchived extends AbstractFilterTerm
             'date1_relative',
             'date2_relative',
             'date1_relative_type',
+            'date1_relative_tense',
             'date2_relative_type',
+            'date2_relative_tense',
             'value'
         );
 
