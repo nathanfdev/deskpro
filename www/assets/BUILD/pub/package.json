@@ -8,7 +8,7 @@
     "@deskpro/apps-components-style": "0.12.5",
     "@deskpro/fa-picker": "0.2.0",
     "@deskpro/js-utils": "^1.0.4",
-    "@deskpro/messenger": "0.2.24",
+    "@deskpro/messenger": "0.2.25",
     "@deskpro/messenger-loader": "0.2.23",
     "@deskpro/messenger-setup": "0.2.22",
     "@deskpro/portal-components": "0.4.45",
