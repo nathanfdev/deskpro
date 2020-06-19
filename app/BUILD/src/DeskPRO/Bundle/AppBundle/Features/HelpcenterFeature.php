@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Features;
 
 use Application\DeskPRO\Entity\Blob;
-use DeskPRO\Bundle\AppBundle\Templating\LegacyThemeBackup;
+use DeskPRO\Bundle\AppBundle\Templating\LegacyThemeHandler;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -41,7 +41,7 @@ class HelpcenterFeature extends AbstractBetaFeature
         /** @var EntityManager $em */
         $em   = $container->get('doctrine.orm.default_entity_manager');
         $blob = $em->getRepository(Blob::class)->findOneBy([
-            'sys_name' => LegacyThemeBackup::BACKUP_SYS_NAME,
+            'sys_name' => LegacyThemeHandler::BACKUP_SYS_NAME,
         ]);
 
         if (!$blob) {
@@ -138,6 +138,7 @@ HTML;
      */
     public function beforeEnable(ContainerInterface $container, $newInstall = false)
     {
-        $container->get('legacy_template_backup')->refreshLegacyTemplatesBackup();
+        $container->get('legacy_template_handler')->refreshLegacyTemplatesBackup();
+        $container->get('legacy_template_handler')->copyCustomTemplates();
     }
 }

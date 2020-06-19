@@ -125,6 +125,13 @@ class ThemeSetController extends AbstractApiController
         }
 
         $brand->setEditThemeSet($themeSet);
+        if ($brand->getThemeSet()->getThemeId() !== 'helpcenter'
+            && $brand->getEditThemeSet()->getThemeId() === 'helpcenter'
+        ) {
+            $this->container->get('legacy_template_handler')->refreshLegacyTemplatesBackup();
+            $this->container->get('legacy_template_handler')->copyCustomTemplates();
+        }
+
         $em->flush();
 
         return new View($themeSet);
@@ -140,7 +147,8 @@ class ThemeSetController extends AbstractApiController
         if ($brand->getThemeSet()->getThemeId() !== 'helpcenter'
             && $brand->getEditThemeSet()->getThemeId() === 'helpcenter'
         ) {
-            $this->container->get('legacy_template_backup')->refreshLegacyTemplatesBackup();
+            $this->container->get('legacy_template_handler')->refreshLegacyTemplatesBackup();
+            $this->container->get('legacy_template_handler')->copyCustomTemplates();
         }
 
         $this->getStylesManager()->commitEditThemeSet();
