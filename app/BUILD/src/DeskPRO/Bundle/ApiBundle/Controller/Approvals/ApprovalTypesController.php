@@ -52,7 +52,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  *         200="OK"
  *     }
  * )
- * @RequireAgentPermissions()
+ * @RequireAgentPermissions(excludeAdmin=true)
  */
 class ApprovalTypesController extends CrudController
 {

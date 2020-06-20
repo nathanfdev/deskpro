@@ -9,4 +9,8 @@ namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation;
  */
 class RequireAgentPermissions
 {
+    /**
+     * @var bool
+     */
+    public $excludeAdmin = false;
 }

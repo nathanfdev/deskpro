@@ -34,7 +34,7 @@ use Symfony\Component\HttpFoundation\Request;
  *      }
  *     }
  * )
- * @RequireAgentPermissions()
+ * @RequireAgentPermissions(excludeAdmin=true)
  */
 class ApprovalTemplatesController extends CrudController
 {
