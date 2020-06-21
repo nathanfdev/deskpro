@@ -482,6 +482,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $worst_sla_status = null;
 
     /**
+     * Used to track ticket status changes and how much time ticket was in status
+     * Add new item every time status changed
+     * This is optimisation over TicketLog
+     *
      * @var array
      */
     protected $waiting_times = [];
@@ -3209,11 +3213,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             return $this->setTicketStatus(App::getContainer()->getTicketStatuses()->findStatusOrException($status));
         }
 
-        $this['date_status'] = new \DateTime();
-
         $old_status        = $this->status;
         $old_status_code   = $this->getStatusCode();
         $oldTicketStatus   = $this->getTicketStatus();
+        $oldDateStatus     = $this->getDateStatus();
 
         $statusCode = $status;
         if ($ticketStatus) {
@@ -3233,12 +3236,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $this['date_status'] = new \DateTime();
 
+        $this->addStatusTimeRecord($oldTicketStatus->getStatusCode(), $oldDateStatus);
+
         if (!$ticketStatus->isCountUserWaitingTime() && $oldTicketStatus->isCountUserWaitingTime() && $this->date_user_waiting) {
             $this->setModelField(
                 'total_user_waiting',
                 $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp()
             );
-            $this->addWaitingTimeRecord('user', $this->date_user_waiting, null, $oldTicketStatus->getStatusCode());
         }
         if ($ticketStatus->isCountUserWaitingTime() && !$this->date_user_waiting) {
             $this->setModelField('date_user_waiting', new \DateTime());
@@ -3247,9 +3251,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $this->setModelField('date_user_waiting', null);
         }
 
-        if (!$ticketStatus->isCountAgentWaitingTime() && $oldTicketStatus->isCountAgentWaitingTime() && $this->date_agent_waiting) {
-            $this->addWaitingTimeRecord('agent', $this->date_agent_waiting, null, $oldTicketStatus->getStatusCode());
-        }
         if ($ticketStatus->isCountAgentWaitingTime() && !$this->date_agent_waiting) {
             $this->setModelField('date_agent_waiting', new \DateTime());
         }
@@ -3661,7 +3662,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $status;
     }
 
-    public function addWaitingTimeRecord($type, $start_ts, $end_ts = null, $ticketStatusCode = null)
+    /**
+     * Check doc for `waiting_times` prop
+     *
+     * @param string $ticketStatusCode
+     * @param \DateTime|string $start_ts
+     * @param \DateTime|string|null $end_ts
+     */
+    private function addStatusTimeRecord($ticketStatusCode, $start_ts, $end_ts = null)
     {
         $start_ts = ($start_ts instanceof \DateTime ? $start_ts->getTimestamp() : intval($start_ts));
         $end_ts   = ($end_ts instanceof \DateTime ? $end_ts->getTimestamp() : intval($end_ts));
@@ -3680,7 +3688,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $old                   = $this->waiting_times;
         $this->waiting_times[] = [
-            'type'          => $type,
             'start'         => $start_ts,
             'end'           => $end_ts,
             'length'        => ($end_ts - $start_ts),

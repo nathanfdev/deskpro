@@ -164,7 +164,7 @@ class TicketSla extends DomainObject
             if ($date) {
                 $this->setModelField(
                     'completed_time_taken',
-                    $this->sla->getCalculator()->calculateTimeUntil($this->ticket, $date)
+                    $this->sla->getCalculator()->calculateTimeUntil($this->ticket, $date, $this->sla)
                 );
             } else {
                 $this->setModelField('completed_time_taken', null);
