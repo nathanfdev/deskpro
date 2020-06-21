@@ -77,41 +77,28 @@ class TicketTest extends PortalTestCase
         $this->getEntityManager()->flush();
     }
 
-    /**
-     * @return array
-     */
-    public function isDeleteDataProvider()
+    public function testIsDeleted()
     {
-        $data = [];
-
         $ticket1 = new Ticket();
         $status1 = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
         $status1->setSysId('deleted');
         $ticket1->setTicketStatus($status1);
-        $data[] = [$ticket1, true];
+        $this->assertEquals(true, $ticket1->isDeleted());
 
         $ticket2 = new Ticket();
         $status2 = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
         $status2->setSysId('spam');
         $ticket2->setTicketStatus($status2);
-        $data[] = [$ticket2, false];
+        $this->assertEquals(false, $ticket2->isDeleted());
+
+        App::$container = ContainerMock::create()
+            ->withNullEm()
+            ->withBaseTicketStatusesMock()
+            ->get();
 
         $ticket3 = new Ticket();
         $ticket3->setStatus(TicketStatus::STATUS_TYPE_HIDDEN);
-        $data[] = [$ticket3, false];
-
-        return $data;
-    }
-
-    /**
-     * @dataProvider isDeleteDataProvider
-     *
-     * @param Ticket $ticket
-     * @param bool   $expectedIsDeleted
-     */
-    public function testIsDeleted(Ticket $ticket, $expectedIsDeleted)
-    {
-        $this->assertEquals($expectedIsDeleted, $ticket->isDeleted());
+        $this->assertEquals(false, $ticket3->isDeleted());
     }
 
     public function testSetTicketStatus()
@@ -338,6 +325,19 @@ class TicketTest extends PortalTestCase
     public function testSetIsHold()
     {
         // GIVEN
+        $pendingStatus = new TicketStatus(TicketStatus::STATUS_TYPE_PENDING);
+        $pendingStatus->setPendingWaitingTimeMode(TicketStatus::PENDING_WAITING_TIME_MODE_USER);
+
+        $statusesMock = m::mock(TicketStatusDataService::class);
+        $statusesMock->shouldReceive('findStatusOrException')->with('pending')->andReturn($pendingStatus);
+        $statusesMock->shouldReceive('findStatusOrException')->with('awaiting_agent')->andReturn(
+            new TicketStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT)
+        );
+        App::$container = ContainerMock::create()
+            ->withNullEm()
+            ->withTicketStatusesMock($statusesMock)->get();
+
+
         $ticket = new Ticket();
 
         // WHEN/THEN

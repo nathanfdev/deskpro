@@ -15,6 +15,7 @@ use Application\DeskPRO\Tickets\TicketManager;
 use Application\DeskPRO\Tickets\TicketPriorities;
 use Application\DeskPRO\Tickets\TicketWorkflows;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Mockery as m;
 
 class ContainerMock
@@ -152,6 +153,27 @@ class ContainerMock
     public function withTicketStatusesMock(TicketStatusDataService $mock)
     {
         $this->mock->shouldReceive('getTicketStatuses')->andReturn($mock);
+
+        return $this;
+    }
+
+    /**
+     *
+     * @return $this
+     */
+    public function withBaseTicketStatusesMock()
+    {
+        $statusesMock = m::mock(TicketStatusDataService::class);
+        foreach (TicketStatus::getStatusTypes() as $status) {
+            $statusesMock
+                ->shouldReceive('findStatusOrException')
+                ->zeroOrMoreTimes()
+                ->with($status)->andReturn(
+                new TicketStatus($status)
+            );
+        }
+
+        $this->mock->shouldReceive('getTicketStatuses')->andReturn($statusesMock);
 
         return $this;
     }

@@ -5,6 +5,7 @@ namespace DpUnitTests\DeskPRO\Tickets\Triggers\Terms;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUrgency;
+use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use DpTest\DeskProTestCase;
 
 require_once 'AbstractTicketEntityCheckTest.php';
@@ -16,7 +17,8 @@ class CheckUrgencyTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $ticket->status  = 'awaiting_agent';
+        $ticket->setTicketStatus(VirtualTicketStatus::getById('awaiting_agent'));
+
         $ticket->urgency = 5;
 
         $check = new CheckUrgency('gt', ['urgency1' => 4]);
@@ -34,7 +36,7 @@ class CheckUrgencyTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $ticket->status  = 'awaiting_agent';
+        $ticket->setTicketStatus(VirtualTicketStatus::getById('awaiting_agent'));
         $ticket->urgency = 5;
 
         $check = new CheckUrgency('between', ['urgency1' => 4, 'urgency2' => 10]);

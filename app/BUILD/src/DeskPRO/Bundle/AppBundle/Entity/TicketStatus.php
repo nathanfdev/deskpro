@@ -370,7 +370,7 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
             self::PENDING_WAITING_TIME_MODE_USER,
             self::PENDING_WAITING_TIME_MODE_NONE,
         ])) {
-            throw new InvalidArgumentException("Wrong pending time mode");
+            throw new \InvalidArgumentException("Wrong pending time mode");
         }
 
         $options = $this->options ?: [];
