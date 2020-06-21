@@ -471,7 +471,8 @@ class Sla extends DomainObject
             $this->sla_type,
             $this->getWorkHoursSet(),
             new TimeUnit($this->warn_time, $this->warn_time_unit),
-            new TimeUnit($this->fail_time, $this->fail_time_unit)
+            new TimeUnit($this->fail_time, $this->fail_time_unit),
+            $this->getExcludeTicketStatuses()
         );
 
         return $this->_calc;
