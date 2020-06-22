@@ -5,7 +5,7 @@ import clone from 'lodash/clone';
 import find from 'lodash/find';
 import uniqueId from 'lodash/uniqueId';
 import $ from 'jquery';
-import { DropDownInput } from '@deskpro/portal-components';
+import { CascadingDropDownInput } from '@deskpro/portal-components';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
 
@@ -130,12 +130,11 @@ export class HcSelectBox extends React.Component {
   renderSelect(group) {
     return (
       <div>
-        <DropDownInput
+        <CascadingDropDownInput
           dataSource={{ getOptions: group }}
           value={this.state.value}
           onChange={this.onClickOption}
           i18n={{
-            back:   portalPhrases.get('helpcenter.general.back'),
             select: portalPhrases.get('helpcenter.general.select'),
           }}
           aria-label="Pick a value"
