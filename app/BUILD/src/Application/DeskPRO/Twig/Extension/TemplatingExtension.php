@@ -856,7 +856,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function securityToken($name = '', $timeout = 43200)
     {
-        if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
+        if (defined('DP_INTERFACE') && DP_INTERFACE != 'cli') {
             $session = $this->container->getSession();
             if ($session instanceof Session) {
                 return $session->getEntity()->generateSecurityToken($name, $timeout);
