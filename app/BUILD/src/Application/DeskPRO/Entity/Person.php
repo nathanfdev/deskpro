@@ -3149,7 +3149,7 @@ class Person extends DomainObject implements
     public function getRawGravatarUrl()
     {
         if ($this->primary_email) {
-            return rtrim($this->primary_email->getGravatarUrl(true), '?');
+            return rtrim($this->primary_email->getGravatarUrl(), '?');
         }
 
         return;
@@ -3168,7 +3168,7 @@ class Person extends DomainObject implements
         } catch (\Exception $e) {
         }
 
-        $url = $this->primary_email ? $this->primary_email->getGravatarUrl($secure) : '';
+        $url = $this->primary_email ? $this->primary_email->getGravatarUrl() : '';
         if ($size != 80) {
             $url .= '&s='.urlencode($size);
         }
