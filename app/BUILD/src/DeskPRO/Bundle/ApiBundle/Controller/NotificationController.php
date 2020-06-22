@@ -82,7 +82,7 @@ class NotificationController extends BaseController
         /** @var \Pusher $pusher */
         $pusher = $this->get('deskpro.notification.pusher');
         $user   = $this->getUser();
-        if ($user->getId() === (int) $submitted['user_id']) {
+        if ($user->getId() === (int) $submitted['user_id'] && preg_match('/\A[-a-zA-Z0-9_=@,.;]+\z/', $submitted['channel_name'])) {
             $status = Response::HTTP_OK;
             $data   = json_decode($pusher->socket_auth($submitted['channel_name'], $submitted['socket_id']), true);
         } else {
@@ -208,6 +208,7 @@ class NotificationController extends BaseController
                 } else {
                     throw new InvalidFormException($form);
                 }
+
                 break;
             case 'deskpro':
                 $form = $this->createForm(DeskproClientType::class);
@@ -223,6 +224,7 @@ class NotificationController extends BaseController
                 } else {
                     throw new InvalidFormException($form);
                 }
+
                 break;
             default:
                 $mode = 'db';
@@ -319,6 +321,7 @@ class NotificationController extends BaseController
         );
 
         $testData = ['test' => true];
+
         try {
             $response = $client->post(
                 '/test',
