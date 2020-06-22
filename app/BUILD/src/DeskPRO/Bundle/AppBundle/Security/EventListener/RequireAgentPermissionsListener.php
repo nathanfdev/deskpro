@@ -59,20 +59,6 @@ class RequireAgentPermissionsListener implements EventSubscriberInterface
 
         if ($classAnnotation || $methodAnnotation) {
             $event->getRequest()->attributes->set('require_agent_permissions', true);
-
-            if ($classAnnotation) {
-                $event->getRequest()->attributes->set(
-                    'admin_excluded_from_agent_permissions',
-                    $classAnnotation->excludeAdmin
-                );
-            }
-
-            if ($methodAnnotation) {
-                $event->getRequest()->attributes->set(
-                    'admin_excluded_from_agent_permissions',
-                    $methodAnnotation->excludeAdmin
-                );
-            }
         }
     }
 }

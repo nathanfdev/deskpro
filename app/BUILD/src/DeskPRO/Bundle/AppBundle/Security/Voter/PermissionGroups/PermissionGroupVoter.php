@@ -77,15 +77,7 @@ class PermissionGroupVoter extends Voter
         }
 
         if ($user->isAdmin()) {
-            $request = $this->container->get('request_stack')->getCurrentRequest();
-            if (!$request ||
-                (
-                    !$request->attributes->get('require_agent_permissions') ||
-                    $request->attributes->get('admin_excluded_from_agent_permissions')
-                )
-            ) {
-                return true; // admin is allmighty, right?
-            }
+            return true; // admin is allmighty, right?
         }
 
         foreach ($user->getPublicAgentgroups() as $usergroup) {
