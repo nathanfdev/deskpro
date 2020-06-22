@@ -138,7 +138,10 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
           controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) => {
             $scope.available_themes = this.available_themes;
             $scope.selected_theme = this.selected_theme;
-            $scope.selectTheme = (theme) => { $modalInstance.close(theme); };
+            $scope.selectTheme = (theme) => {
+              this.save();
+              $modalInstance.close(theme);
+            };
             $scope.cancel = () => $modalInstance.dismiss('cancel');
           }]
         });
