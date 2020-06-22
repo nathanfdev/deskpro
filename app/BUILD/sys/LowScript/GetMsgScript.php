@@ -431,7 +431,14 @@ class GetMsgScript extends LowScriptAbstract
         $custom_filters = $filter_info['custom_filters'];
 
         if (!empty($_REQUEST['get-custom-filters-data-ignore'])) {
-            $ignore         = explode(',', $_REQUEST['get-custom-filters-data-ignore']);
+            if (is_string($_REQUEST['get-custom-filters-data-ignore'])) {
+                $ignore = explode(',', $_REQUEST['get-custom-filters-data-ignore']);
+            } elseif (is_array($_REQUEST['get-custom-filters-data-ignore'])) {
+                $ignore = $_REQUEST['get-custom-filters-data-ignore'];
+            } else {
+                $ignore = [];
+            }
+
             $custom_filters = array_filter($custom_filters, function ($f) use ($ignore) {
                 return !in_array($f['id'], $ignore);
             });
