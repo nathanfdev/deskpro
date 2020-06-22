@@ -65,6 +65,13 @@ class GetMsgScript extends LowScriptAbstract
 
             $dos = (isset($_REQUEST['do']) ? (array) $_REQUEST['do'] : []);
 
+            // clear values in wrong format
+            foreach ($dos as $num => $do) {
+                if (!is_string($do)) {
+                    unset($dos[$num]);
+                }
+            }
+
             // Every second poll, update online agents list
             $count = isset($_REQUEST['count']) ? intval($_REQUEST['count']) : 0;
             if ($count < 0) {
