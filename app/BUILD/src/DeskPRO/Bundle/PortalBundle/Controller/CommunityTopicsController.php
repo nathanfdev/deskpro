@@ -439,6 +439,8 @@ class CommunityTopicsController extends AbstractPublishController
         $newCommunityTopic->setPerson($person);
         $newCommunityTopic->setForum($forum);
 
+        $check = $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp(), false);
+
         $form = $this->createForm(NewCommunityTopicType::class, $newCommunityTopic, [
             'person'              => $person,
             'has_forum_selection' => false,
@@ -463,6 +465,8 @@ class CommunityTopicsController extends AbstractPublishController
         return $this->renderThemeView('Theme:Community:create-topic.html.twig', [
             'form'          => $form->createView(),
             'current_forum' => $forum,
+            'lockout'       => $check->isLockoutRecommended(),
+            'lockout_time'  => $check->getLockoutTime(true),
             'breadcrumbs'   => $this->getBreadcrumbGenerator()->buildCommunityCreate($forum),
         ]);
     }
