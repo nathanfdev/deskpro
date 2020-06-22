@@ -2455,6 +2455,7 @@ class Person extends DomainObject implements
                 $maxDate = $eml->date_created;
             }
         }
+
         return $maxDate ?: $this->date_created;
     }
 
@@ -3096,11 +3097,14 @@ class Person extends DomainObject implements
     public function getPictureUrl($size = 80, $secure = null, $default = false)
     {
         // Null means detect
-        if ($secure === null and App::isWebRequest()) {
-            $request = App::getRequest();
-            if ($request->isSecure()) {
-                $secure = true;
+        try {
+            if ($secure === null and App::isWebRequest()) {
+                $request = App::getRequest();
+                if ($request->isSecure()) {
+                    $secure = true;
+                }
             }
+        } catch (\Exception $e) {
         }
 
         $url = false;
@@ -3154,11 +3158,14 @@ class Person extends DomainObject implements
     public function getGravatarUrl($size = 80, $secure = null)
     {
         // Null means detect
-        if ($secure === null and App::isWebRequest()) {
-            $request = App::getRequest();
-            if ($request->isSecure()) {
-                $secure = true;
+        try {
+            if ($secure === null and App::isWebRequest()) {
+                $request = App::getRequest();
+                if ($request->isSecure()) {
+                    $secure = true;
+                }
             }
+        } catch (\Exception $e) {
         }
 
         $url = $this->primary_email ? $this->primary_email->getGravatarUrl($secure) : '';

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -166,24 +162,11 @@ class PersonEmail extends DomainObject
      *
      * @return string
      */
-    public function getGravatarUrl($secure = null)
+    public function getGravatarUrl()
     {
-        // Null means detect
-        if ($secure === null and App::isWebRequest()) {
-            $request = App::getRequest();
-            if ($request->isSecure()) {
-                $secure = true;
-            }
-        }
-
         $hash = strtolower(md5($this->email));
-        if ($secure) {
-            $url = 'https://secure.gravatar.com/avatar/'.$hash.'?';
-        } else {
-            $url = 'http://www.gravatar.com/avatar/'.$hash.'?';
-        }
 
-        return $url;
+        return 'https://secure.gravatar.com/avatar/'.$hash.'?';
     }
 
     /**
