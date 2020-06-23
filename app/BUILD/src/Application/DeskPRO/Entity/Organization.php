@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -447,6 +443,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
 
     /**
      * Render a custom field.
+     *
+     * @param mixed $field_id
+     * @param mixed $context
      */
     public function renderCustomField($field_id, $context = 'html')
     {
@@ -581,16 +580,22 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      *
      * @deprecated Use AvatarResolver
      *
+     * @param mixed $size
+     * @param null|mixed $secure
+     *
      * @return null|string
      */
     public function getPictureUrl($size = 80, $secure = null)
     {
         // Null means detect
-        if ($secure === null and App::isWebRequest()) {
-            $request = App::getRequest();
-            if ($request->isSecure()) {
-                $secure = true;
+        try {
+            if ($secure === null and App::isWebRequest()) {
+                $request = App::getRequest();
+                if ($request->isSecure()) {
+                    $secure = true;
+                }
             }
+        } catch (\Exception $e) {
         }
 
         $url = false;
