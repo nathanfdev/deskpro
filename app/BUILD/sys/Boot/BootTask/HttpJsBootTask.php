@@ -409,7 +409,8 @@ CODE;
         $baseUrl   = $this->request->getUriForPath('');
         $loaderSrc = $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/messenger/loader.js');
 
-        $assetRoot = $this->env->getConfig('paths.asset_paths.messenger_assets.value') ?: '/assets/'.$this->env->getAppName().'/pub/build/messenger/';
+        $assetRoot = $this->env->getConfig('paths.asset_paths.messenger_assets.value')
+            ?: $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/messenger/');
 
         $options = [
             'helpdeskURL' => $baseUrl,
