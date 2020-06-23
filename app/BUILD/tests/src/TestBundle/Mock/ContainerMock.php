@@ -163,6 +163,10 @@ class ContainerMock
      */
     public function withBaseTicketStatusesMock($config = [])
     {
+        $config = array_merge([
+            'statuses' => []
+        ], $config);
+
         $statusesMock = m::mock(TicketStatusDataService::class);
 
         // Pending status should have waiting time mode
@@ -178,6 +182,13 @@ class ContainerMock
                 ->with($status)->andReturn(
                     $status == TicketStatus::STATUS_TYPE_PENDING ? $pendingStatus : new TicketStatus($status)
                 );
+        }
+
+        foreach ($config['statuses'] as $name => $status) {
+            $statusesMock
+                ->shouldReceive('findStatusOrException')
+                ->zeroOrMoreTimes()
+                ->with($name)->andReturn($status);
         }
 
         $this->mock->shouldReceive('getTicketStatuses')->andReturn($statusesMock);

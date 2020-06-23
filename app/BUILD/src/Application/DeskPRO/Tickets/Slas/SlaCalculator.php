@@ -124,22 +124,20 @@ class SlaCalculator
                 }
 
                 $wait_time = 0;
-                if ($ticket->waiting_times) {
-                    foreach ($ticket->waiting_times as $waiting) {
-                        if (
-                            (
-                                // old `waiting_times`  format
-                                array_key_exists('type', $waiting)
-                                && $waiting['type'] == 'user'
-                            )
-                            || (
-                                // new `waiting_times`  format
-                                array_key_exists('ticket_status', $waiting)
-                                && $this->isWaitingTimeTicketStatus($waiting['ticket_status'])
-                            )
-                        ) {
-                            $wait_time += $this->work_hours->getWorkTimeBetween($waiting['start'], $waiting['end']);
-                        }
+                foreach ($ticket->waiting_times as $waiting) {
+                    if (
+                        (
+                            // old `waiting_times`  format
+                            array_key_exists('type', $waiting)
+                            && $waiting['type'] == 'user'
+                        )
+                        || (
+                            // new `waiting_times`  format
+                            array_key_exists('ticket_status', $waiting)
+                            && $this->isWaitingTimeTicketStatus($waiting['ticket_status'])
+                        )
+                    ) {
+                        $wait_time += $this->work_hours->getWorkTimeBetween($waiting['start'], $waiting['end']);
                     }
                 }
 
@@ -404,7 +402,9 @@ class SlaCalculator
      */
     private function isWaitingTimeTicketStatus($ticketStatus)
     {
-        return in_array($ticketStatus, [TicketStatus::STATUS_TYPE_AWAITING_AGENT, TicketStatus::STATUS_TYPE_PENDING])
+        list($status) = explode('.', $ticketStatus, 2);
+
+        return in_array($status, [TicketStatus::STATUS_TYPE_AWAITING_AGENT, TicketStatus::STATUS_TYPE_PENDING])
                 && !$this->isExcludedTicketStatus($ticketStatus);
     }
 

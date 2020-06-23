@@ -5,6 +5,7 @@ namespace DpTest\DeskPRO\Application\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Tickets\Slas\SlaCalculator;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Orb\Util\WorkHoursSet;
 use Orb\Util\WorkHoursSetAll;
 use Orb\Util\TimeUnit;
@@ -85,6 +86,68 @@ class SlaCalculatorTest extends PortalTestCase
                         'start' => strtotime('2020-06-23 12:00:00'),
                         'end' => strtotime('2020-06-23 15:00:00'),
                         'ticket_status' => 'awaiting_user'
+                    ]
+                ],
+            ],
+            'time_until_date' => '2020-06-23 16:00:00',
+            'expected' => [
+                'warn_date' => '2020-06-25 11:00:00',
+                'fail_date' => '2020-06-25 16:00:00',
+                'complete_date' => null,
+                'time_until' => 12 * 60 * 60
+            ]
+        ]];
+
+        // FIRST_RESPONSE and has excluded statuses and + Substatuses
+        //
+        // - WH: standard
+        // - Sla: FIRST_RESPONSE, warn: 25h, fail: 30h
+        // - ticket status: 'awaiting_agent.1'
+        // - excluded statuses: `pending.1`
+        // - now: 2020-06-24 17:00
+        //
+        // Expected calcs:
+        // -------------------------------------------------------------------------------------------------------
+        //  Day     Status                  Status              Work    Counted Warn    Fail    Time
+        //          Work Time period                            time    time    point   point   until
+        //                                                      spent   sum
+        // -------------------------------------------------------------------------------------------------------
+        //  22      09:00:00 - 17:00:00     awaiting_agent.1    8h      8h
+        //  22      17:00:00 - 18:00:00     pending.1           1h      8h
+        //  23      09:00:00 - 12:00:00     pending.1           3h      8h
+        //  23      12:00:00 - 15:00:00     awaiting_user.1     3h      11h
+        //  23      15:00:00 - 18:00:00     awaiting_agent.1    3h      14h                     16:00
+        //  24      09:00:00 - 17:00:00     awaiting_agent.1    8h      22h
+        //  25                                                                  11:00   16:00
+        //
+        $data[] = [[
+            'now' => '2020-06-24 17:00:00',
+            'sla' => [
+                'wh' => $this->getStandardWorkHoursSet(),
+                'type' => SlaCalculator::TYPE_FIRST_RESPONSE,
+                'warn_time' => new TimeUnit(25, TimeUnit::HOURS),
+                'fail_time' => new TimeUnit(30, TimeUnit::HOURS),
+                'excluded_statuses' => ['pending.1'],
+            ],
+            'ticket' => [
+                'date_created' => '2020-06-22 09:00:00',
+                'status' => 'awaiting_agent.1',
+                'date_status' => '2020-06-23 15:00:00',
+                'waiting_times' => [
+                    [
+                        'start' => strtotime('2020-06-22 09:00:00'),
+                        'end' => strtotime('2020-06-22 17:00:00'),
+                        'ticket_status' => 'awaiting_agent.1'
+                    ],
+                    [
+                        'start' => strtotime('2020-06-22 17:00:00'),
+                        'end' => strtotime('2020-06-23 12:00:00'),
+                        'ticket_status' => 'pending.1'
+                    ],
+                    [
+                        'start' => strtotime('2020-06-23 12:00:00'),
+                        'end' => strtotime('2020-06-23 15:00:00'),
+                        'ticket_status' => 'awaiting_user.1'
                     ]
                 ],
             ],
@@ -574,6 +637,69 @@ class SlaCalculatorTest extends PortalTestCase
             ]
         ]];
 
+        // WAITING_TIME and has excluded statuses + substatuses
+        //
+        // - WH: standard
+        // - Sla: WAITING_TIME, warn: 25h, fail: 30h
+        // - ticket status: 'awaiting_agent.1'
+        // - excluded statuses: `pending.1`
+        // - now: 2020-06-24 17:00
+        //
+        // Expected calcs:
+        // -------------------------------------------------------------------------------------------------------
+        //  Day     Status                  Status              Work    Counted Warn    Fail    Time
+        //          Work Time period                            time    time    point   point   until
+        //                                                      spent   sum
+        // -------------------------------------------------------------------------------------------------------
+        //  22      09:00:00 - 17:00:00     awaiting_agent.1    8h      8h
+        //  22      17:00:00 - 18:00:00     pending.1           1h      8h
+        //  23      09:00:00 - 12:00:00     pending.1           3h      8h
+        //  23      12:00:00 - 15:00:00     awaiting_user.1     3h      8h
+        //  23      15:00:00 - 18:00:00     awaiting_agent.1    3h      11h                     16:00
+        //  24      09:00:00 - 17:00:00     awaiting_agent.1    8h      19h
+        //  25                                                                  14:00
+        //  26                                                                          10:00
+        //
+        $data[] = [[
+            'now' => '2020-06-24 17:00:00',
+            'sla' => [
+                'wh' => $this->getStandardWorkHoursSet(),
+                'type' => SlaCalculator::TYPE_WAITING_TIME,
+                'warn_time' => new TimeUnit(25, TimeUnit::HOURS),
+                'fail_time' => new TimeUnit(30, TimeUnit::HOURS),
+                'excluded_statuses' => ['pending.1'],
+            ],
+            'ticket' => [
+                'date_created' => '2020-06-22 09:00:00',
+                'status' => 'awaiting_agent.1',
+                'date_status' => '2020-06-23 15:00:00',
+                'waiting_times' => [
+                    [
+                        'start' => strtotime('2020-06-22 09:00:00'),
+                        'end' => strtotime('2020-06-22 17:00:00'),
+                        'ticket_status' => 'awaiting_agent.1'
+                    ],
+                    [
+                        'start' => strtotime('2020-06-22 17:00:00'),
+                        'end' => strtotime('2020-06-23 12:00:00'),
+                        'ticket_status' => 'pending.1'
+                    ],
+                    [
+                        'start' => strtotime('2020-06-23 12:00:00'),
+                        'end' => strtotime('2020-06-23 15:00:00'),
+                        'ticket_status' => 'awaiting_user.1'
+                    ]
+                ],
+            ],
+            'time_until_date' => '2020-06-23 16:00:00',
+            'expected' => [
+                'warn_date' => '2020-06-25 14:00:00',
+                'fail_date' => '2020-06-26 10:00:00',
+                'complete_date' => null,
+                'time_until' => 8 * 60 * 60
+            ]
+        ]];
+
         // WAITING_TIME and doesn't have excluded statuses
         //
         // - WH: standard
@@ -816,7 +942,15 @@ class SlaCalculatorTest extends PortalTestCase
         // GIVEN
         App::$container = ContainerMock::create()
             ->withNullEm()
-            ->withBaseTicketStatusesMock()
+            ->withBaseTicketStatusesMock([
+                'statuses' => [
+                    'awaiting_agent.1' => (new TicketStatus('awaiting_agent'))->setId(1),
+                    'awaiting_user.1' => (new TicketStatus('awaiting_user'))->setId(1),
+                    'pending.1' => (new TicketStatus('pending'))
+                                    ->setId(1)
+                                    ->setPendingWaitingTimeMode(TicketStatus::PENDING_WAITING_TIME_MODE_USER)
+                ]
+            ])
             ->get();
 
         $sla = new SlaCalculator(
@@ -824,7 +958,7 @@ class SlaCalculatorTest extends PortalTestCase
             $data['sla']['wh'],
             $data['sla']['warn_time'],
             $data['sla']['fail_time'],
-            $data['sla']['excluded_statuses'],
+            $data['sla']['excluded_statuses']
         );
 
         $ticket = new Ticket();
