@@ -82,12 +82,14 @@ class NotificationController extends BaseController
         /** @var \Pusher $pusher */
         $pusher = $this->get('deskpro.notification.pusher');
         $user   = $this->getUser();
-        if ($user->getId() === (int) $submitted['user_id']
-            && preg_match('/\A[-a-zA-Z0-9_=@,.;]+\z/', $submitted['channel_name'])
-            && $submitted['socket_id'] && preg_match('/\A\d+\.\d+\z/', $submitted['socket_id'])
-        ) {
-            $status = Response::HTTP_OK;
-            $data   = json_decode($pusher->socket_auth($submitted['channel_name'], $submitted['socket_id']), true);
+        if ($user->getId() === (int) $submitted['user_id'] && $submitted['channel_name'] && $submitted['socket_id']) {
+            try {
+                $status = Response::HTTP_OK;
+                $data   = json_decode($pusher->socket_auth($submitted['channel_name'], $submitted['socket_id']), true);
+            } catch (\Exception $e) {
+                $data   = [];
+                $status = Response::HTTP_FORBIDDEN;
+            }
         } else {
             $data   = [];
             $status = Response::HTTP_FORBIDDEN;
