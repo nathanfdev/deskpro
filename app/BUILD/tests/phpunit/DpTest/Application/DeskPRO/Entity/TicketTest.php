@@ -11,6 +11,7 @@ use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
+use Orb\Util\Testable\DateTime;
 use DpTest\PortalTestCase;
 use DpTestSrc\TestBundle\Mock\ContainerMock;
 use Mockery as m;
@@ -25,11 +26,13 @@ class TicketTest extends PortalTestCase
     public function setUp()
     {
         $this->containerBefore = App::$container;
+        DateTime::unsetTimestampState();
     }
 
     public function tearDown()
     {
         App::$container = $this->containerBefore;
+        DateTime::unsetTimestampState();
     }
 
     /**
@@ -372,5 +375,45 @@ class TicketTest extends PortalTestCase
         $this->assertEquals(TicketStatus::SYS_ID_SPAM, $ticketS->getHiddenStatus());
         $this->assertNull($ticketA->getHiddenStatus());
         $this->assertNull($ticket->getHiddenStatus());
+    }
+
+    public function testChangeStatusShouldPopulateWaitingTimes()
+    {
+        // GIVEN
+        App::$container = ContainerMock::create()
+            ->withNullEm()
+            ->withBaseTicketStatusesMock()->get();
+        
+        $pending = new TicketStatus(TicketStatus::STATUS_TYPE_PENDING);
+        $pending->setPendingWaitingTimeMode(TicketStatus::PENDING_WAITING_TIME_MODE_USER);
+
+        $ticket = new Ticket();
+
+        // WHEN
+        DateTime::setTimestampState((new \DateTime('2020-06-22 12:00:00'))->getTimestamp());
+        $ticket->setTicketStatus(new TicketStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
+
+        DateTime::setTimestampState((new \DateTime('2020-06-22 13:00:00'))->getTimestamp());
+        $ticket->setTicketStatus(new TicketStatus(TicketStatus::STATUS_TYPE_AWAITING_USER));
+
+        DateTime::setTimestampState((new \DateTime('2020-06-22 14:00:00'))->getTimestamp());
+        $ticket->setTicketStatus($pending);
+
+        DateTime::setTimestampState((new \DateTime('2020-06-22 15:00:00'))->getTimestamp());
+        $ticket->setTicketStatus(new TicketStatus(TicketStatus::STATUS_TYPE_RESOLVED));
+
+        // THEN
+        $waitings = $ticket->getWaitingTimes();
+
+        $this->assertCount(3, $waitings);
+
+        $this->assertEquals(TicketStatus::STATUS_TYPE_AWAITING_AGENT, $waitings[0]['ticket_status']);
+        $this->assertEquals(TicketStatus::STATUS_TYPE_AWAITING_USER, $waitings[1]['ticket_status']);
+        $this->assertEquals(TicketStatus::STATUS_TYPE_PENDING, $waitings[2]['ticket_status']);
+
+        foreach ($waitings as $waiting) {
+            $this->assertArrayHasKey('start', $waiting);
+            $this->assertArrayHasKey('end', $waiting);
+        }
     }
 }

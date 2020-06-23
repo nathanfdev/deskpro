@@ -239,7 +239,8 @@ END)
                     $sql = '`'.$sqlTable.'`.`'.$field['columnName'].'`';
 
                     if ($repository->getTableName() == 'tickets' && $field['columnName'] == 'total_user_waiting') {
-                        $sql = "($sql + IF(`$sqlTable`.date_user_waiting AND `$sqlTable`.status = 'awaiting_agent', UNIX_TIMESTAMP() - UNIX_TIMESTAMP(`$sqlTable`.date_user_waiting), 0))";
+                        // If `date_user_waiting` initialized then we count `pending` time toward to user
+                        $sql = "($sql + IF(`$sqlTable`.date_user_waiting AND `$sqlTable`.status IN ('awaiting_agent', 'pending'), UNIX_TIMESTAMP() - UNIX_TIMESTAMP(`$sqlTable`.date_user_waiting), 0))";
                     }
 
                     switch ($field['type']) {

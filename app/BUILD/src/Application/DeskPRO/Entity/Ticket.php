@@ -39,6 +39,7 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 use Orb\Util\WorkHoursSet;
 use Orb\Util\WorkHoursSetAll;
+use Orb\Util\Testable\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -661,8 +662,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         // flag used in manager to signal that we should overwrite this with a real ref generator ref
         $this->__dp_is_autogen_ref = true;
 
-        $this['date_created'] = new \DateTime();
-        $this['date_status']  = new \DateTime();
+        /* @var Orb\Util\Testable\DateTime */
+        $this['date_created'] = new DateTime();
+        $this['date_status']  = new DateTime();
 
         $this['auth'] = DpStrings::random(self::TAC_AUTHCODE_LEN, Strings::CHARS_KEY);
         $this->setModelField('status', TicketStatus::STATUS_TYPE_AWAITING_AGENT);
@@ -3234,25 +3236,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         // through all of this date_X sets on newticket. If we returned early
         // that wouldn't run because awaiting_agent==awaiting_agent
 
-        $this['date_status'] = new \DateTime();
+        /* @var \Orb\Util\Testable\DateTime $now*/
+        $now = new DateTime();
 
-        $this->addStatusTimeRecord($oldTicketStatus->getStatusCode(), $oldDateStatus);
+        $this['date_status'] = $now;
+
+        $this->addStatusTimeRecord($oldTicketStatus->getStatusCode(), $oldDateStatus, $now);
 
         if (!$ticketStatus->isCountUserWaitingTime() && $oldTicketStatus->isCountUserWaitingTime() && $this->date_user_waiting) {
             $this->setModelField(
                 'total_user_waiting',
-                $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp()
+                $this->total_user_waiting + $now->getTimestamp() - $this->date_user_waiting->getTimestamp()
             );
         }
         if ($ticketStatus->isCountUserWaitingTime() && !$this->date_user_waiting) {
-            $this->setModelField('date_user_waiting', new \DateTime());
+            /* @var \Orb\Util\Testable\DateTime */
+            $this->setModelField('date_user_waiting', new DateTime());
         }
         if (!$ticketStatus->isCountUserWaitingTime() && $this->date_user_waiting) {
             $this->setModelField('date_user_waiting', null);
         }
 
         if ($ticketStatus->isCountAgentWaitingTime() && !$this->date_agent_waiting) {
-            $this->setModelField('date_agent_waiting', new \DateTime());
+            /* @var \Orb\Util\Testable\DateTime */
+            $this->setModelField('date_agent_waiting', new DateTime());
         }
         if (!$ticketStatus->isCountAgentWaitingTime() && $this->date_agent_waiting) {
             $this->setModelField('date_agent_waiting', null);
