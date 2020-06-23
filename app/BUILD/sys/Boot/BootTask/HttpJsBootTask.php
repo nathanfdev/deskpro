@@ -407,7 +407,7 @@ CODE;
     private function getMessengerWidget()
     {
         $baseUrl   = $this->request->getUriForPath('');
-        $loaderSrc = $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/messenger/loader.js');
+        $loaderSrc = $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/messenger/loader.js?v='.$this->env->getAppName());
 
         $assetRoot = $this->env->getConfig('paths.asset_paths.messenger_assets.value')
             ?: $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/messenger/');
