@@ -4,6 +4,7 @@ helpcenter.account.change_password_action: 'Mettre à jour le mot de passe'
 helpcenter.account.comment_lockout: 'Vous avez soumis un grand nombre de commentaires. Veuillez patienter avant d''en soumettre d''autres.'
 helpcenter.account.email_btn_usersource_set: 'Ajouter une adresse email'
 helpcenter.account.email_make_primary_action: 'Rendre principale'
+helpcenter.account.email_management_from_form: 'Gérer mes adresses emails'
 helpcenter.account.email_primary_description: Principale
 helpcenter.account.email_remove_action: 'Supprimer l''adresse'
 helpcenter.account.lockout_time: 'Vous pouvez essayer à nouveau dans {minutes} minutes.'
