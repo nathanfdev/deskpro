@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -195,10 +191,12 @@ class PersonSearch extends SearcherAbstract
             case 'people.name':
             case 'person.name':
                 $order_by = "people.name $dir";
+
                 break;
 
             case 'people.date_created':
                 $order_by = "people.id $dir";
+
                 break;
 
             case 'people.email':
@@ -206,6 +204,7 @@ class PersonSearch extends SearcherAbstract
                     'LEFT JOIN people_emails AS sort_table ON (sort_table.id = people.primary_email_id)',
                     "sort_table.email $dir",
                 ];
+
                 break;
 
             case 'people.organization':
@@ -213,6 +212,7 @@ class PersonSearch extends SearcherAbstract
                     'LEFT JOIN organizations AS sort_table ON (sort_table.id = people.organization_id)',
                     "sort_table.name $dir",
                 ];
+
                 break;
 
             case 'people.num_tickets':
@@ -220,10 +220,12 @@ class PersonSearch extends SearcherAbstract
                     'LEFT JOIN tickets AS sort_table ON (sort_table.person_id = people.id)',
                     "COUNT(sort_table.id) $dir, people.id DESC",
                 ];
+
                 break;
 
             case 'people.date_last_login':
                 $order_by = "people.date_last_login $dir, people.id DESC";
+
                 break;
 
             case 'people.people_field':
@@ -241,8 +243,10 @@ class PersonSearch extends SearcherAbstract
                             "INNER JOIN custom_data_person AS sort_table ON (sort_table.person_id = people.id AND sort_table.id = $term_id)",
                             "sort_table.$search_type $dir",
                         ];
+
                         break;
                 }
+
                 break;
         }
 
@@ -301,6 +305,7 @@ class PersonSearch extends SearcherAbstract
                                 case self::OP_LT:
                                 case self::OP_LTE:
                                     $wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice['person_id'], true);
+
                                     break;
 
                                 default:
@@ -340,12 +345,15 @@ class PersonSearch extends SearcherAbstract
                         } else {
                             $wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice, true);
                         }
+
                         break;
                     case self::TERM_LANGUAGE:
                         $wheres[] = $this->_choiceMatch("$people_table.language_id", $op, $choice, true);
+
                         break;
                     case self::TERM_ORGANIZATION:
                         $wheres[] = $this->_choiceMatch("$people_table.organization_id", $op, $choice);
+
                         break;
                     case self::TERM_ORGANIZATION_NAME:
                         $joins[] = [
@@ -353,6 +361,7 @@ class PersonSearch extends SearcherAbstract
                             "LEFT JOIN organizations AS $join_name ON ($join_name.id = people.organization_id)",
                         ];
                         $wheres[] = $this->_stringMatch("$join_name.name", $op, $choice);
+
                         break;
                     case self::TERM_ORGANIZATION_MANAGER:
                         if (is_array($choice)) {
@@ -366,6 +375,7 @@ class PersonSearch extends SearcherAbstract
                         }
 
                         $wheres[] = $this->_choiceMatch("$people_table.organization_manager", $op, $choice, false);
+
                         break;
                     case self::TERM_USERGROUP:
                         if (isset($choice['usergroup_ids'])) {
@@ -485,6 +495,7 @@ class PersonSearch extends SearcherAbstract
 
                     case self::TERM_DATE_CREATED:
                         $wheres[] = $this->_dateMatch("$people_table.date_created", $op, $choice);
+
                         break;
 
                     case self::TERM_NAME:
@@ -599,6 +610,7 @@ class PersonSearch extends SearcherAbstract
                                     "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)",
                                 ];
                                 $wheres[] = "$join_name.label = ".$db->quote($choice);
+
                                 break;
                             case self::OP_NOT:
                                 $joins[] = [
@@ -606,6 +618,7 @@ class PersonSearch extends SearcherAbstract
                                     "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label = ".$db->quote($choice).')',
                                 ];
                                 $wheres[] = "$join_name.person_id IS NULL";
+
                                 break;
                             case self::OP_CONTAINS:
                                 $joins[] = [
@@ -613,6 +626,7 @@ class PersonSearch extends SearcherAbstract
                                     "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)",
                                 ];
                                 $wheres[] = "$join_name.label IN ($choices_in)";
+
                                 break;
 
                             case self::OP_NOTCONTAINS:
@@ -621,8 +635,10 @@ class PersonSearch extends SearcherAbstract
                                     "LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label IN ($choices_in))",
                                 ];
                                 $wheres[] = "$join_name.person_id IS NULL";
+
                                 break;
                         }
+
                         break;
 
                     case self::TERM_IS_CONFIRMED:
@@ -638,6 +654,7 @@ class PersonSearch extends SearcherAbstract
                         }
 
                         $wheres[] = $this->_choiceMatch("$people_table.is_confirmed", $op, $choice, false);
+
                         break;
 
                     case self::TERM_IS_DISABLED:
@@ -653,6 +670,7 @@ class PersonSearch extends SearcherAbstract
                         }
 
                         $wheres[] = $this->_choiceMatch("$people_table.is_disabled", $op, $choice, false);
+
                         break;
 
                     case self::TERM_PERSON_FIELD:
@@ -699,6 +717,7 @@ class PersonSearch extends SearcherAbstract
                                 switch ($op) {
                                     case self::OP_IS:
                                         $wheres[] = "$field = ".$db->quote($choice);
+
                                         break;
                                     case self::OP_NOT:
                                         $w = "$field != ".$db->quote($choice);
@@ -725,6 +744,7 @@ class PersonSearch extends SearcherAbstract
                                         }
 
                                         $wheres[] = $w;
+
                                         break;
                                     case self::OP_LTE:
                                     case self::OP_GTE:
@@ -733,19 +753,24 @@ class PersonSearch extends SearcherAbstract
                                             if (!empty($choice['date1'])) {
                                                 $wheres[] = "$field $op ".(int) $choice['date1'];
                                             } elseif (!empty($choice['date1_relative'])) {
-                                                $wheres[] = "$field $op ".strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
+                                                $dateOp   = isset($choice['date1_relative_tense']) && $choice['date1_relative_tense'] === 'future' ? '' : '-';
+                                                $wheres[] = "$field $op ".strtotime($dateOp.$choice['date1_relative'].' '.$choice['date1_relative_type']);
                                             }
                                         } elseif (!is_array($choice) && strlen($choice) && 'DP_NO_SELECTION' !== $choice) {
                                             $wheres[] = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
                                         }
+
                                         break;
                                     case self::OP_BETWEEN:
                                         if ($isDate) {
                                             if (!empty($choice['date1'])) {
                                                 $wheres[] = $field.' BETWEEN '.(int) $choice['date1'].' AND '.(int) @$choice['date2'];
                                             } elseif (!empty($choice['date1_relative'])) {
-                                                $d1 = strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
-                                                $d2 = strtotime('-'.@$choice['date2_relative'].' '.@$choice['date2_relative_type']);
+                                                $date1Op   = isset($choice['date1_relative_tense']) && $choice['date1_relative_tense'] === 'future' ? '' : '-';
+                                                $date2Op   = isset($choice['date2_relative_tense']) && $choice['date2_relative_tense'] === 'future' ? '' : '-';
+
+                                                $d1 = strtotime($date1Op.$choice['date1_relative'].' '.$choice['date1_relative_type']);
+                                                $d2 = strtotime($date2Op.@$choice['date2_relative'].' '.@$choice['date2_relative_type']);
                                                 if ($d1 < $d2) {
                                                     $wheres[] = "$field BETWEEN $d1 AND $d2";
                                                 } else {
@@ -753,20 +778,26 @@ class PersonSearch extends SearcherAbstract
                                                 }
                                             }
                                         }
+
                                         break;
                                     case self::OP_NOT_ISSET:
                                         $wheres[] = "$field IS NULL";
+
                                         break;
                                     case self::OP_ISSET:
                                         $wheres[] = "$field IS NOT NULL";
+
                                         break;
                                     case self::OP_EMPTY:
                                         $wheres[] = "$field IS NULL OR $field = ''";
+
                                         break;
                                     case self::OP_NOT_EMPTY:
                                         $wheres[] = "$field != ''";
+
                                         break;
                                 }
+
                                 break;
 
                             case 'id':
@@ -808,6 +839,7 @@ class PersonSearch extends SearcherAbstract
                                             ];
                                             $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
                                         }
+
                                         break;
 
                                     case self::OP_NOTCONTAINS:
@@ -825,6 +857,7 @@ class PersonSearch extends SearcherAbstract
                                             ];
                                             $wheres[] = "custom_data_person_$join_id.id IS NULL";
                                         }
+
                                         break;
                                     case self::OP_NOT_ISSET:
                                         $joins[] = [
@@ -832,6 +865,7 @@ class PersonSearch extends SearcherAbstract
                                             "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
                                         ];
                                         $wheres[] = "custom_data_person_$join_id.id IS NULL";
+
                                         break;
                                     case self::OP_ISSET:
                                         $joins[] = [
@@ -839,10 +873,13 @@ class PersonSearch extends SearcherAbstract
                                             "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
                                         ];
                                         $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
+
                                         break;
                                 }
+
                                 break;
                         }
+
                         break; // end TERM_PERSON_FIELD
 
                     case self::TERM_AGENT_TEAM:
@@ -860,14 +897,17 @@ class PersonSearch extends SearcherAbstract
 
                     case self::TERM_AGENT_MODE:
                         $this->setMode(self::MODE_AGENT);
+
                         break;
 
                     case self::TERM_USER_MODE:
                         $this->setMode(self::MODE_USER);
+
                         break;
 
                     case self::TERM_ANY_MODE:
                         $this->setMode(self::MODE_ANY);
+
                         break;
 
                     case self::TERM_IP_ADDRESS:
@@ -887,6 +927,7 @@ class PersonSearch extends SearcherAbstract
                         } else {
                             $wheres[] = $this->_stringMatch($field, $op, $choice);
                         }
+
                         break;
 
                     default:
@@ -957,6 +998,7 @@ class PersonSearch extends SearcherAbstract
                             case self::OP_LT:
                             case self::OP_LTE:
                                 $wheres[] = $this->_testRangeMatch($person->id, $op, $choice['person_id']);
+
                                 break;
 
                             default:
@@ -991,6 +1033,7 @@ class PersonSearch extends SearcherAbstract
                                 foreach ($ids as $id) {
                                     if ($person->id == $id) {
                                         $match = true;
+
                                         break;
                                     }
                                 }
@@ -1008,24 +1051,28 @@ class PersonSearch extends SearcherAbstract
                     } else {
                         $wheres[] = $this->_testRangeMatch($person->id, $op, $choice);
                     }
+
                     break;
 
                 case self::TERM_DATE_CREATED:
                     if (!$this->_testDateMatch($person['date_created'], $op, $choice)) {
                         return false;
                     }
+
                     break;
 
                 case self::TERM_ORGANIZATION:
                     if (!$this->_testChoiceMatch($person['organization_id'], $op, $choice)) {
                         return false;
                     }
+
                     break;
 
                 case self::TERM_LANGUAGE:
                     if (!$this->_testChoiceMatch($person['language_id'], $op, $choice)) {
                         return false;
                     }
+
                     break;
 
                 case self::TERM_NAME:
@@ -1039,23 +1086,28 @@ class PersonSearch extends SearcherAbstract
                             if (strtolower($person['name']) != strtolower($choice)) {
                                 return false;
                             }
+
                             break;
                         case self::OP_NOT:
                             if (strtolower($person['name']) == strtolower($choice)) {
                                 return false;
                             }
+
                             break;
                         case self::OP_CONTAINS:
                             if (strpos(strtolower($person['name']), strtolower($choice)) === false) {
                                 return false;
                             }
+
                             break;
                         case self::OP_NOTCONTAINS:
                             if (strpos(strtolower($person['name']), strtolower($choice)) !== false) {
                                 return false;
                             }
+
                             break;
                     }
+
                     break;
 
                 case self::TERM_EMAIL:
@@ -1083,6 +1135,7 @@ class PersonSearch extends SearcherAbstract
                     if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
+
                     break;
 
                 case self::TERM_EMAIL_DOMAIN:
@@ -1111,6 +1164,7 @@ class PersonSearch extends SearcherAbstract
                     if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
+
                     break;
 
                 case self::TERM_USERGROUP:
@@ -1121,6 +1175,7 @@ class PersonSearch extends SearcherAbstract
                     foreach ($person->getUsergroupIds() as $ug_id) {
                         if (in_array($ug_id, $choice)) {
                             $any = true;
+
                             break;
                         }
                     }
@@ -1131,6 +1186,7 @@ class PersonSearch extends SearcherAbstract
                     if (($op == self::OP_NOT || $op == self::OP_NOTCONTAINS) and $any) {
                         return false;
                     }
+
                     break;
 
                 case self::TERM_ORGANIZATION:
@@ -1164,6 +1220,7 @@ class PersonSearch extends SearcherAbstract
                     if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
+
                     break;
 
                 case self::TERM_CONTACT_PHONE:
@@ -1201,6 +1258,7 @@ class PersonSearch extends SearcherAbstract
                         $l = Strings::utf8_strtolower($l);
                         if (isset($choice_labels[$l])) {
                             $has = true;
+
                             break;
                         }
                     }
@@ -1230,6 +1288,7 @@ class PersonSearch extends SearcherAbstract
                     } else {
                         return false;
                     }
+
                     break;
             }
         }

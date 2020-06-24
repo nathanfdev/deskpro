@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Translate
- */
-
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
@@ -61,6 +55,7 @@ class TermSummary
         switch ($term) {
             case 'id':
                 $summary = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+
                 break;
 
             case 'text':
@@ -68,6 +63,7 @@ class TermSummary
                     $choice = array_pop($choice);
                 }
                 $summary = $tr->phrase('agent.general.content_matches_summary', ['pattern' => $choice]);
+
                 break;
 
             case 'agent_performer':
@@ -76,22 +72,27 @@ class TermSummary
 
                     return $titles;
                 });
+
                 break;
 
             case 'is_via_email':
                 return 'Update is triggered by an email';
+
                 break;
 
             case 'is_via_email_reply':
                 return 'Update is triggered by an email reply';
+
                 break;
 
             case 'is_via_interface':
                 return 'Update is triggered from the web interface';
+
                 break;
 
             case 'user_performer_email':
                 $summary = $this->_stringMatchSummary('User performer email address', $op, $choice['user_email']);
+
                 break;
 
             case 'department':
@@ -100,10 +101,12 @@ class TermSummary
 
                     return $titles;
                 });
+
                 break;
 
             case 'ticket_deleted':
                 $summary = $tr->phrase('agent.tickets.ticket_is_deleted');
+
                 break;
 
             case 'ticket_category':
@@ -112,6 +115,7 @@ class TermSummary
 
                     return $titles;
                 });
+
                 break;
 
             case 'product':
@@ -120,6 +124,7 @@ class TermSummary
 
                     return $titles;
                 });
+
                 break;
 
             case 'ticket_priority':
@@ -128,30 +133,37 @@ class TermSummary
 
                     return $titles;
                 });
+
                 break;
 
             case 'ticket_urgency':
                 $summary = $this->_rangeSummary($tr->phrase('agent.general.urgency'), $op, $choice);
+
                 break;
 
             case 'date_created':
                 $summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
+
                 break;
 
             case 'date_resolved':
                 $summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_resolved'), $op, $choice);
+
                 break;
 
             case 'date_archived':
                 $summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_archived'), $op, $choice);
+
                 break;
 
             case 'date_last_user_reply':
                 $summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_user_reply'), $op, $choice);
+
                 break;
 
             case 'date_last_agent_reply':
                 $summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_of_last_agent_reply'), $op, $choice);
+
                 break;
 
             case 'ticket_workflow':
@@ -160,6 +172,7 @@ class TermSummary
 
                     return $titles;
                 });
+
                 break;
 
             case 'language':
@@ -168,6 +181,7 @@ class TermSummary
 
                     return $titles;
                 });
+
                 break;
 
             case 'agent':
@@ -199,6 +213,7 @@ class TermSummary
                         $summary = 'Agent is not '.implode(', ', $names);
                     }
                 }
+
                 break;
 
             case 'agent_team':
@@ -238,6 +253,7 @@ class TermSummary
                         });
                     }
                 }
+
                 break;
 
             case 'ticket_status':
@@ -254,6 +270,7 @@ class TermSummary
 
                 $choice_str = implode(' '.$tr->phrase('agent.general.or_sep').' ', $choice_str);
                 $summary    = $this->_choiceSummary($tr->phrase('agent.general.status'), $op, $choice_str);
+
                 break;
 
             case 'ticket_status_hidden':
@@ -265,6 +282,7 @@ class TermSummary
 
                 $choice_str = implode(', ', $choice_str);
                 $summary    = $this->_choiceSummary($tr->phrase('agent.general.hidden_status'), $op, $choice_str);
+
                 break;
 
             case 'feedback_rating':
@@ -286,11 +304,13 @@ class TermSummary
                         $summary = "Ticket feedback $op neutral";
                     }
                 }
+
                 break;
 
             case 'sla':
                 $sla     = App::getEntityRepository('DeskPRO:Sla')->find($choice['sla_id']);
                 $summary = $this->_choiceSummary($tr->phrase('agent.general.sla'), $op, ($sla ? $sla->title : '[unknown]'));
+
                 break;
 
             case 'sla_status':
@@ -301,10 +321,12 @@ class TermSummary
                     $sla     = App::getEntityRepository('DeskPRO:Sla')->find($choice['sla_id']);
                     $summary = $this->_choiceSummary($tr->phrase('agent.general.sla_status'), $op, $choice['sla_status'].' for SLA '.($sla ? $sla->title : '[unknown]'));
                 }
+
                 break;
 
             case 'ticket_hold':
                 $summary = $tr->phrase('agent.tickets.tickets_on_hold');
+
                 break;
 
             case 'organization':
@@ -313,6 +335,7 @@ class TermSummary
 
                     return $titles;
                 });
+
                 break;
 
             case 'usergroup':
@@ -321,21 +344,25 @@ class TermSummary
 
                     return $titles;
                 });
+
                 break;
 
             case 'email':
                 $name    = array_pop($choice);
                 $summary = $this->_choiceSummary($tr->phrase('agent.general.email'), $op, $name);
+
                 break;
 
             case 'email_domain':
                 $name    = array_pop($choice);
                 $summary = $this->_choiceSummary($tr->phrase('agent.general.email_domain'), $op, $name);
+
                 break;
 
             case 'name':
                 $name    = array_pop($choice);
                 $summary = $this->_choiceSummary($tr->phrase('agent.general.name'), $op, $name);
+
                 break;
 
             case 'ticket_participant':
@@ -348,40 +375,51 @@ class TermSummary
                         return $titles;
                     }, true);
                 }
+
                 break;
 
             case 'ticket_subject':
                 switch ($op) {
                     case self::OP_IS:
                         $summary = $tr->phrase('agent.general.x_is_y', ['field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']]);
+
                         break;
                     case self::OP_CONTAINS:
                         $summary = $tr->phrase('agent.general.x_include_y', ['field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']]);
+
                         break;
                     case self::OP_NOTCONTAINS:
                         $summary = $tr->phrase('agent.general.x_not_include_y', ['field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']]);
+
                         break;
                     default:
                         $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => $tr->phrase('agent.general.subject'), 'value' => $choice['subject']]);
+
                         break;
                 }
+
                 break;
 
             case 'ticket_sent_to_address':
                 switch ($op) {
                     case self::OP_IS:
                         $summary = $tr->phrase('agent.general.x_is_y', ['field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']]);
+
                         break;
                     case self::OP_CONTAINS:
                         $summary = $tr->phrase('agent.general.x_include_y', ['field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']]);
+
                         break;
                     case self::OP_NOTCONTAINS:
                         $summary = $tr->phrase('agent.general.x_not_include_y', ['field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']]);
+
                         break;
                     default:
                         $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => 'Ticket sent to address', 'value' => $choice['sent_to_address']]);
+
                         break;
                 }
+
                 break;
 
             case 'flagged':
@@ -391,20 +429,24 @@ class TermSummary
                 } else {
                     $summary = $tr->phrase('agent.general.flagged_with_color_summary', ['color' => $color]);
                 }
+
                 break;
 
             case 'label':
                 $summary = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
+
                 break;
 
             case 'org_label':
                 $summary = $this->_choiceSummary('Organisation label', $op, $choice);
+
                 break;
 
             case 'person_field':
                 $field = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($term_id);
                 if (!$field) {
                     $summary = $term.'.'.$term_id;
+
                     break;
                 }
 
@@ -444,14 +486,17 @@ class TermSummary
                         } else {
                             $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => $field['title'], 'value' => $text]);
                         }
+
                         break;
                 }
+
                 break; // end TERM_PERSON_FIELD
 
             case 'ticket_field':
                 $field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
                 if (!$field) {
                     $summary = $term.'.'.$term_id;
+
                     break;
                 }
 
@@ -491,20 +536,25 @@ class TermSummary
                         } else {
                             $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => $field['title'], 'value' => $text]);
                         }
+
                         break;
                 }
+
                 break; // end break TERM_TICKET_FIELD
 
             case 'user_waiting':
                 $summary = $tr->phrase('agent.general.user_waiting_x', ['time' => \Orb\Util\Dates::secsToReadable($choice)]);
+
                 break;
 
             case 'agent_waiting':
                 $summary = $tr->phrase('agent.general.agent_waiting_x', ['time' => \Orb\Util\Dates::secsToReadable($choice)]);
+
                 break;
 
             case 'total_user_waiting':
                 $summary = $tr->phrase('agent.general.total_user_waiting_x', ['time' => \Orb\Util\Dates::secsToReadable($choice)]);
+
                 break;
 
             case 'ticket_creation_system':
@@ -517,6 +567,7 @@ class TermSummary
                 $vals = implode(', ', $vals);
 
                 $summary = $tr->phrase('agent.tickets.creation_system_via').' '.$vals;
+
                 break;
 
             case 'recieving_gateway':
@@ -525,10 +576,12 @@ class TermSummary
 
                     return $titles;
                 });
+
                 break;
 
             case 'robot_email':
                 $summary = $tr->phrase('agent.general.email_send_by_robot_summary');
+
                 break;
 
             case 'time_created':
@@ -551,120 +604,185 @@ class TermSummary
 
             case 'time_last_user_reply':
                 $summary = $tr->phrase('agent.general.time_user_reply_summary', ['op' => $op, 'hour' => $choice['hour1'], 'minute' => $choice['minute1']]);
+
                 break;
 
             case 'day_created':
                 foreach ($choice['days'] as &$d) {
                     switch ($d) {
-                        case 0: $d = 'Sunday'; break;
-                        case 1: $d = 'Monday'; break;
-                        case 2: $d = 'Tuesday'; break;
-                        case 3: $d = 'Wednesday'; break;
-                        case 4: $d = 'Thursday'; break;
-                        case 5: $d = 'Friday'; break;
-                        case 6: $d = 'Saturday'; break;
+                        case 0:
+                            $d = 'Sunday';
+
+                            break;
+                        case 1:
+                            $d = 'Monday';
+
+                            break;
+                        case 2:
+                            $d = 'Tuesday';
+
+                            break;
+                        case 3:
+                            $d = 'Wednesday';
+
+                            break;
+                        case 4:
+                            $d = 'Thursday';
+
+                            break;
+                        case 5:
+                            $d = 'Friday';
+
+                            break;
+                        case 6:
+                            $d = 'Saturday';
+
+                            break;
                     }
                 }
                 $summary = $tr->phrase('agent.general.day_created_summary', ['op' => $op, 'days' => implode(', ', $choice['days'])]);
+
                 break;
 
             case 'current_day':
                 foreach ($choice['days'] as &$d) {
                     switch ($d) {
-                        case 0: $d = 'Sunday'; break;
-                        case 1: $d = 'Monday'; break;
-                        case 2: $d = 'Tuesday'; break;
-                        case 3: $d = 'Wednesday'; break;
-                        case 4: $d = 'Thursday'; break;
-                        case 5: $d = 'Friday'; break;
-                        case 6: $d = 'Saturday'; break;
+                        case 0:
+                            $d = 'Sunday';
+
+                            break;
+                        case 1:
+                            $d = 'Monday';
+
+                            break;
+                        case 2:
+                            $d = 'Tuesday';
+
+                            break;
+                        case 3:
+                            $d = 'Wednesday';
+
+                            break;
+                        case 4:
+                            $d = 'Thursday';
+
+                            break;
+                        case 5:
+                            $d = 'Friday';
+
+                            break;
+                        case 6:
+                            $d = 'Saturday';
+
+                            break;
                     }
                 }
                 $summary = "Day $op ".implode(', ', $choice['days']);
+
                 break;
 
             case 'day_last_user_reply':
                 $summary = $tr->phrase('agent.general.day_user_replay_summary', ['op' => $op, 'days' => implode(', ', $choice['days'])]);
+
                 break;
 
             case 'is_new_user':
                 $summary = $tr->phrase('agent.general.new_user_summary');
+
                 break;
 
             case 'is_not_new_user':
                 $summary = $tr->phrase('agent.general.not_new_user_summary');
+
                 break;
 
             case 'action_performer':
                 $summary = 'Performed by '.$choice['action_performer'];
+
                 break;
 
             case 'creation_system_option':
                 $summary = $this->_stringMatchSummary('Submission URL', $op, $choice);
+
                 break;
 
             case 'email_from_email':
                 $summary = $this->_stringMatchSummary('From email address', $op, $choice);
+
                 break;
 
             case 'to_address':
             case 'email_to_email':
                 $summary = $this->_stringMatchSummary('To email address', $op, $choice);
+
                 break;
 
             case 'email_to_name':
                 $summary = $this->_stringMatchSummary('To name', $op, $choice);
+
                 break;
 
             case 'email_from_name':
                 $summary = $this->_stringMatchSummary('From name', $op, $choice);
+
                 break;
 
             case 'cc_address':
             case 'email_cc_email':
                 $summary = $this->_stringMatchSummary('CC email address', $op, $choice);
+
                 break;
 
             case 'email_cc_name':
                 $summary = $this->_stringMatchSummary('CC name', $op, $choice);
+
                 break;
 
             case 'email_subject':
                 $summary = $this->_stringMatchSummary('Email subject', $op, $choice);
+
                 break;
 
             case 'email_body':
                 $summary = $this->_stringMatchSummary('Email body', $op, $choice);
+
                 break;
 
             case 'email_header':
                 $c = $choice;
                 unset($c['header_name']);
                 $summary = $this->_stringMatchSummary('Email header '.$choice['header_name'], $op, $c);
+
                 break;
 
             case 'message':
                 $summary = $this->_stringMatchSummary('Message', $op, $choice);
+
                 break;
 
             case 'new_reply_agent':
                 $summary = $this->_stringMatchSummary('Is a new agent reply', $op, $choice);
+
                 break;
 
             case 'new_reply_user':
                 $summary = $this->_stringMatchSummary('Is a new user reply', $op, $choice);
+
                 break;
 
             case 'new_reply_note':
                 $summary = $this->_stringMatchSummary('Is a new agent note', $op, $choice);
+
                 break;
 
             case 'email_has_attach':
                 $summary = 'Email has an attachment';
+
                 break;
 
             case 'email_account_bcc':
                 $summary = "Helpdesk was BCC'd";
+
                 break;
 
             case 'day_created':
@@ -672,13 +790,34 @@ class TermSummary
 
                 foreach ($days as &$_) {
                     switch ($_) {
-                        case 0: $_ = 'Sunday'; break;
-                        case 1: $_ = 'Monday'; break;
-                        case 2: $_ = 'Tuesday'; break;
-                        case 3: $_ = 'Wednesday'; break;
-                        case 4: $_ = 'Thursday'; break;
-                        case 5: $_ = 'Friday'; break;
-                        case 6: $_ = 'Saturday'; break;
+                        case 0:
+                            $_ = 'Sunday';
+
+                            break;
+                        case 1:
+                            $_ = 'Monday';
+
+                            break;
+                        case 2:
+                            $_ = 'Tuesday';
+
+                            break;
+                        case 3:
+                            $_ = 'Wednesday';
+
+                            break;
+                        case 4:
+                            $_ = 'Thursday';
+
+                            break;
+                        case 5:
+                            $_ = 'Friday';
+
+                            break;
+                        case 6:
+                            $_ = 'Saturday';
+
+                            break;
                     }
                 }
 
@@ -692,6 +831,7 @@ class TermSummary
 
                     return $titles;
                 });
+
                 break;
 
             //###########################################################################################################
@@ -701,11 +841,13 @@ class TermSummary
             case OrganizationSearch::TERM_NAME:
                 $name    = array_pop($choice);
                 $summary = $this->_stringMatchSummary('Organization name', $op, $name);
+
                 break;
 
             case OrganizationSearch::TERM_EMAIL_DOMAIN:
                 $name    = array_pop($choice);
                 $summary = $this->_stringMatchSummary('Organization email domain', $op, $name);
+
                 break;
 
             case OrganizationSearch::TERM_CONTACT_ADDRESS:
@@ -723,10 +865,12 @@ class TermSummary
                 $name = array_pop($choice);
 
                 $summary = $this->_stringMatchSummary('Organization '.$field, $op, $name);
+
                 break;
 
             case OrganizationSearch::TERM_LABEL:
                 $summary = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
+
                 break;
 
             case OrganizationSearch::TERM_ORGANIZATION_FIELD:
@@ -735,27 +879,34 @@ class TermSummary
                     switch ($op) {
                         case self::OP_IS:
                             $summary = $tr->phrase('agent.general.x_is_y', ['field' => $field->title, 'value' => $choice['subject']]);
+
                             break;
                         case self::OP_CONTAINS:
                             $summary = $tr->phrase('agent.general.x_include_y', ['field' => $field->title, 'value' => $choice['subject']]);
+
                             break;
                         case self::OP_NOTCONTAINS:
                             $summary = $tr->phrase('agent.general.x_not_include_y', ['field' => $field->title, 'value' => $choice['subject']]);
+
                             break;
                         default:
                             $summary = $tr->phrase('agent.general.x_is_not_y', ['field' => $field->title, 'value' => $choice['subject']]);
+
                             break;
                     }
                 }
+
                 break;
 
             case 'org_manager':
                 switch ($op) {
                     case self::OP_IS:
                         $summary = 'Organization has a manager';
+
                         break;
                     case self::OP_NOT:
                         $summary = 'Organization does not have a manager';
+
                         break;
                 }
         }
@@ -892,9 +1043,11 @@ class TermSummary
         if (!empty($choice['date1'])) {
             $date1 = $choice['date1'];
         } elseif (!empty($choice['date1_relative']) and !empty($choice['date1_relative_type'])) {
+            $tense = isset($choice['date1_relative_tense']) && $choice['date1_relative_tense'] === 'future' ? 'from now' : 'ago';
+
             return App::getTranslator()->phrase('agent.general.x_is_y', [
                 'field' => $field,
-                'value' => (int) $choice['date1_relative']." {$choice['date1_relative_type']} ago",
+                'value' => (int) $choice['date1_relative']." {$choice['date1_relative_type']} $tense",
             ]);
         } elseif (!empty($choice[0])) {
             $date1 = $choice[0];
@@ -904,9 +1057,11 @@ class TermSummary
         if (!empty($choice['date2'])) {
             $date2 = $choice['date2'];
         } elseif (!empty($choice['date2_relative']) and !empty($choice['date2_relative_type'])) {
+            $tense = isset($choice['date2_relative_tense']) && $choice['date2_relative_tense'] === 'future' ? 'from now' : 'ago';
+
             return App::getTranslator()->phrase('agent.general.x_is_y', [
                 'field' => $field,
-                'value' => (int) $choice['date2_relative']." {$choice['date2_relative_type']} ago",
+                'value' => (int) $choice['date2_relative']." {$choice['date2_relative_type']} $tense",
             ]);
         } elseif (!empty($choice[1])) {
             $date2 = $choice[1];
@@ -974,6 +1129,8 @@ class TermSummary
      * @param  $op
      * @param  $choice
      * @param bool $is_id
+     * @param null|mixed $title_callback
+     * @param mixed $always_choice
      *
      * @return string
      */
@@ -1043,24 +1200,31 @@ class TermSummary
         switch ($op) {
             case self::OP_IS:
                 $summary = App::getTranslator()->phrase('agent.general.x_is_y', ['field' => $field, 'value' => $title]);
+
                 break;
             case self::OP_NOT:
                 $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', ['field' => $field, 'value' => $title]);
+
                 break;
             case self::OP_CONTAINS:
                 $summary = App::getTranslator()->phrase('agent.general.x_is_y', ['field' => $field, 'value' => $title]);
+
                 break;
             case self::OP_NOTCONTAINS:
                 $summary = App::getTranslator()->phrase('agent.general.x_is_not_y', ['field' => $field, 'value' => $title]);
+
                 break;
             case self::OP_CHANGED:
                 $summary = "$field changed";
+
                 break;
             case self::OP_CHANGED_TO:
                 $summary = "$field changed to $title";
+
                 break;
             case self::OP_CHANGED_FROM:
                 $summary = "$field changed from $title";
+
                 break;
         }
 
@@ -1106,6 +1270,7 @@ class TermSummary
             $c = (int) $c;
             if ($c === 0) {
                 $unassigned = true;
+
                 break;
             } elseif ($c == -1) {
                 $agent_ids[] = -1;
@@ -1137,6 +1302,7 @@ class TermSummary
             $c = (int) $c;
             if ($c === 0) {
                 $no_team = true;
+
                 break;
             } elseif ($c == -1) {
                 if ($agent) {
