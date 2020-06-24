@@ -6,10 +6,10 @@
       <li class="dp-po-article-item">
         <div class="row">
           <div class="col-sm-9">
-            <a href="{{ portal_path(article) }}" class="dp-po-article-linktitle">
+            <h2><a href="{{ portal_path(article) }}" class="dp-po-article-linktitle">
               {{ article.translated_title }}
               {% if article.status != 'published' %}{% include 'Theme:Articles:ArticleList/article_status.html.twig' %}{% endif %}
-            </a>
+            </a></h2>
             <div class="dp-po-article-extras">
               <div class="dp-po-article-author">
                 <a href="" class="dp-po-article-linkauthor">
