@@ -132,6 +132,7 @@ class QueueProc
         } catch (\Exception $e) {
             $this->logger->error(sprintf('Unexpected exception raised: %s [%s]: %s', get_class($e), $e->getCode(), $e->getMessage()));
             $this->source_mapper->markSourceError($r, 'failed');
+            throw $e;
         }
     }
 
