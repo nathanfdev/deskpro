@@ -668,7 +668,7 @@ class TicketsController extends AbstractController
                     }
                 }
                 $use->setRating($feedback->getRating());
-                switch ($feedback) {
+                switch ($feedback->getRating()) {
                     case TicketFeedback::RATE_POSITIVE:
                         $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() + 1);
 
