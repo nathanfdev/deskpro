@@ -290,6 +290,8 @@ class JsonTableRenderer extends AbstractJsonRenderer
             }
 
             foreach ($selectColumns as $column) {
+                $cells[] = $column['title'];
+
                 if (isset($columnTotals[$column['resultId']])) {
                     $cells[] = $this->renderCellValue($fakeRow, $column, $metadata);
                 } else {
