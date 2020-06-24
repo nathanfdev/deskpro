@@ -615,23 +615,26 @@ class Strings
      */
     public static function dashToCamelCase($str)
     {
-        $new_str = '';
-        $str     = strtolower($str);
+        $newStr = '';
 
-        // Convert some-string to someController
-        $do_upper = false;
-        for ($i = 0; $i < strlen($str); ++$i) {
-            if ($str[$i] == '-') {
-                $do_upper = true;
-            } elseif ($do_upper) {
-                $new_str .= strtoupper($str[$i]);
-                $do_upper = false;
-            } else {
-                $new_str .= $str[$i];
+        if (is_string($str)) {
+            $str = strtolower($str);
+
+            // Convert some-string to someController
+            $do_upper = false;
+            for ($i = 0; $i < strlen($str); ++$i) {
+                if ($str[$i] == '-') {
+                    $do_upper = true;
+                } elseif ($do_upper) {
+                    $newStr .= strtoupper($str[$i]);
+                    $do_upper = false;
+                } else {
+                    $newStr .= $str[$i];
+                }
             }
         }
 
-        return $new_str;
+        return $newStr;
     }
 
     /**
