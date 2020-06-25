@@ -144,7 +144,7 @@ class MiscController extends AbstractController
             );
             /** @var Snippet $snippet */
             foreach ($ticketSnippets as $snippet) {
-                if ($snippet->getShortcutCode()) {
+                if ($snippet->getShortcutCode() && count($snippet->getTranslations())) {
                     if (!isset($snippetShortCodes[$snippet->getShortcutCode()])) {
                         $snippetShortCodes[$snippet->getShortcutCode()] = [];
                     }
@@ -160,7 +160,7 @@ class MiscController extends AbstractController
                 if ($snippetCat['snippets']) {
                     /** @var TextSnippet $snippet */
                     foreach ($snippetCat['snippets'] as $snippet) {
-                        if ($snippet->getShortcutCode()) {
+                        if ($snippet->getShortcutCode() && count($snippet->getSnippetTranslations())) {
                             if (!isset($snippetShortCodes[$snippet->getShortcutCode()])) {
                                 $snippetShortCodes[$snippet->getShortcutCode()] = [];
                             }
