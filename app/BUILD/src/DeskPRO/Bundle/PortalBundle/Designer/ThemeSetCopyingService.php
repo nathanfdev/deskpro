@@ -116,7 +116,7 @@ class ThemeSetCopyingService
 
         // copy new assets
         foreach ($uniqueAssets as $newAsset) {
-            if ($onlyIcons && count(array_intersect(['custom_logo', 'custom_favicon', 'custom_favicon_fallback'], $newAsset->getTags())) === 0) {
+            if ($onlyIcons && count(array_intersect(['custom_logo', 'custom_favicon', 'custom_favicon_fallback', 'custom_style'], $newAsset->getTags())) === 0) {
                 continue;
             }
             /* @var ThemeSetAsset $oldAsset */
