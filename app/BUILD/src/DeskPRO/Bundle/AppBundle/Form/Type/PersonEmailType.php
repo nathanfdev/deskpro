@@ -42,6 +42,7 @@ class PersonEmailType extends AbstractType
             'mapped_email' => true,
             'constraints'  => [
                 new FreeEmailConstraint(),
+                new AppAssert\Person\Email\NotBannedEmail(),
             ],
             'email_constraints' => [
                 new Assert\NotBlank(),
