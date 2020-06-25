@@ -185,13 +185,9 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.recompiling = true;
       return request.then(
         () => {
-          setTimeout(() => {
             this.loadGroups();
-            return this.save().then(() => {
-              this.refreshPreviewUrl();
-              return this.recompiling = false;
-            });
-          }, 500);
+            this.refreshPreviewUrl();
+            return this.recompiling = false;
         },
         () => {
           this.serverError();

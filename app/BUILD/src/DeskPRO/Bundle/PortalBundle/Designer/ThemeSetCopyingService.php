@@ -69,6 +69,11 @@ class ThemeSetCopyingService
         $this->em->flush();
     }
 
+    public function copyIcons(ThemeSet $source, ThemeSet $destination)
+    {
+        $this->cloneThemeSetAssets($source, $destination, true);
+    }
+
     /**
      * @param ThemeSet $theme_set
      *
@@ -86,10 +91,11 @@ class ThemeSetCopyingService
     /**
      * @param ThemeSet $fromThemeSet
      * @param ThemeSet $toThemeSet
+     * @param mixed $onlyIcons
      *
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    private function cloneThemeSetAssets(ThemeSet $fromThemeSet, ThemeSet $toThemeSet)
+    private function cloneThemeSetAssets(ThemeSet $fromThemeSet, ThemeSet $toThemeSet, $onlyIcons = false)
     {
         $newAssets = $this->em->getRepository(ThemeSetAsset::class)->findBy(['theme_set' => $fromThemeSet]);
         $oldAssets = $this->em->getRepository(ThemeSetAsset::class)->findBy(['theme_set' => $toThemeSet]);
@@ -110,6 +116,9 @@ class ThemeSetCopyingService
 
         // copy new assets
         foreach ($uniqueAssets as $newAsset) {
+            if ($onlyIcons && count(array_intersect(['custom_logo', 'custom_favicon', 'custom_favicon_fallback'], $newAsset->getTags())) === 0) {
+                continue;
+            }
             /* @var ThemeSetAsset $oldAsset */
             $oldAsset = current(array_filter($oldAssets, function ($a) use ($newAsset) {
                 /* @var ThemeSetAsset $a */
