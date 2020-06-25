@@ -185,10 +185,9 @@ class OutgoingEmailController extends BaseController
 
         /** @var \Application\EmailBundle\Queue\QueueProc $proc */
         $proc = $this->get('email.queue_processor');
+        $proc->process($source->toRecordArray());
 
-        try {
-            $proc->process($source->toRecordArray());
-        } catch (\Exception $e) {
+        if ($proc->getLastException()) {
             return Response::HTTP_UNPROCESSABLE_ENTITY;
         }
 

@@ -39,6 +39,11 @@ class QueueProc
     private $source_sender;
 
     /**
+     * @var \Exception|null
+     */
+    private $last_exception = null;
+
+    /**
      * Used by the logger context to mark which log lines are for which messages.
      *
      * @var array
@@ -132,8 +137,18 @@ class QueueProc
         } catch (\Exception $e) {
             $this->logger->error(sprintf('Unexpected exception raised: %s [%s]: %s', get_class($e), $e->getCode(), $e->getMessage()));
             $this->source_mapper->markSourceError($r, 'failed');
-            throw $e;
+            $this->last_exception = $e;
         }
+    }
+
+    /**
+     * Returns the last processing exception if one was thrown, otherwise returns null
+     *
+     * @return \Exception|null
+     */
+    public function getLastException()
+    {
+        return $this->last_exception;
     }
 
     /**
