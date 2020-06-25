@@ -12,7 +12,7 @@ export class HelpcenterCCForm extends PageWidget {
       $alert.hide();
       $form.find('.form-group small').hide();
 
-      const list = $form.parents('.dp-po-ticket-meta-cc').children('ul.dp-po-ticket-meta-cc-list');
+      const list = $form.parents('.dp-po-ticket-meta-cc').find('ul.dp-po-ticket-meta-cc-list');
 
       $.ajax({
         type:    'POST',
