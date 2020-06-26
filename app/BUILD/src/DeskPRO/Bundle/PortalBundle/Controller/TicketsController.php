@@ -212,24 +212,24 @@ class TicketsController extends AbstractController
             }
         }
 
-        $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
+        $ticketView = $this->getTicketsViewService()->getUserTicketView($ticket, $this->getUser());
 
         // create timeline with pagination
-        $page     = $request->get('page', 'last');
-        $per_page = 10;
+        $page    = $request->get('page', 'last');
+        $perPage = 10;
         if ($this->isHelpCenterTheme()) {
-            $timeline = $this->get('data.ticket_timeline')->getHcUserTimeline($ticket, $page, $per_page, $this->getUser());
+            $timeline = $this->get('data.ticket_timeline')->getHcUserTimeline($ticket, $page, $perPage, $this->getUser());
         } else {
-            $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket, $page, $per_page, $this->getUser());
+            $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket, $page, $perPage, $this->getUser());
         }
         $pager    = new Pagerfanta(new TicketTimelinePagerfantaAdapter($timeline));
-        $pager->setMaxPerPage($per_page);
+        $pager->setMaxPerPage($perPage);
         $pager->setCurrentPage($page === 'last' ? $pager->getNbPages() : $page);
 
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
-        list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
+        list($lastUserReplyInSeconds, $createdInSeconds) = $this->getRecentTimes($ticket);
 
         $canReply = $ticket->isOwner($this->getUser())
             || (!$this->getUser()->isAgent() && $ticket->isParticipant($this->getUser()))
@@ -240,7 +240,7 @@ class TicketsController extends AbstractController
 
         return $this->renderThemeView('Theme:Tickets:view.html.twig', [
             'ticket'                     => $ticket,
-            'ticket_view'                => $ticket_view,
+            'ticket_view'                => $ticketView,
             'timeline_pager'             => $pager,
             'timeline'                   => $timeline,
             'can_edit'                   => $this->isGranted(TicketsVoter::TICKET_EDIT, $ticket),
@@ -248,8 +248,8 @@ class TicketsController extends AbstractController
             'form'                       => $form->createView(),
             'breadcrumbs'                => $breadcrumbs,
             'page_title'                 => $this->createPageTitle()->tickets($ticket),
-            'last_user_reply_in_seconds' => $last_user_reply_in_seconds,
-            'created_in_seconds'         => $created_in_seconds,
+            'last_user_reply_in_seconds' => $lastUserReplyInSeconds,
+            'created_in_seconds'         => $createdInSeconds,
             'edit_page'                  => false,
             'form_errors'                => $form->isSubmitted() ? $form->getErrors() : [],
             'csrf_form'                  => $csrfForm->createView(),
@@ -299,7 +299,7 @@ class TicketsController extends AbstractController
 
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketEdit($ticket);
-        $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
+        $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket, $person);
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
@@ -775,7 +775,7 @@ class TicketsController extends AbstractController
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
-        $ticketView = $this->getTicketsViewService()->getUserTicketView($ticket);
+        $ticketView = $this->getTicketsViewService()->getUserTicketView($ticket, $this->getUser());
 
         $ticketMessagesBlock = $this->renderView(
             'DeskPRO:pdf_agent:ticket-messages-batch.html.twig',

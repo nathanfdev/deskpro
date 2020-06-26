@@ -245,14 +245,10 @@
             {% endif %}
         {% endfor %}
     </div>
-    {% endif %}
-
-    {% if not ticket_view.hasAnyVisibleProperties() %}
+    {% else %}
         {% if can_edit and ticket.isOpen() and not edit_page %}
             <div class="dp-po-ticket-meta">
-                <p>
-                    <a href="{{ portal_path(ticket, 'edit') }}" class="ticket-sidebar-button ">{{ phrase('helpcenter.tickets.view_btn_edit_full') }}</a>
-                </p>
+                <a href="{{ portal_path(ticket, 'edit') }}" class="ticket-sidebar-button dp-po-ticket-meta-edit-big"><i class="fas fa-pen"></i> {{ phrase('helpcenter.tickets.view_btn_edit_full') }}</a>
             </div>
         {% endif %}
     {% endif %}
