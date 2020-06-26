@@ -83,7 +83,7 @@ class LanguageExtension extends \Twig_Extension
      */
     public function getObjectPhrase($object, $property = false)
     {
-        return nl2br(htmlspecialchars($this->languageManager->objectPhrase($object, $property)));
+        return nl2br($this->languageManager->objectPhrase($object, $property));
     }
 
     /**
