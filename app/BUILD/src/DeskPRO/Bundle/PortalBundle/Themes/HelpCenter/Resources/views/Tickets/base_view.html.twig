@@ -245,9 +245,7 @@
             {% endif %}
         {% endfor %}
     </div>
-    {% endif %}
-
-    {% if not ticket_view.hasAnyVisibleProperties() %}
+    {% else %}
         {% if can_edit and ticket.isOpen() and not edit_page %}
             <div class="dp-po-ticket-meta">
                 <p>

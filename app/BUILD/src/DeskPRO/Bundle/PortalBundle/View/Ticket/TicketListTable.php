@@ -22,6 +22,7 @@ class TicketListTable
     protected $sortName;
     protected $sortDirectionName;
     protected $title;
+    protected $withDepartment;
     /**
      * @var TicketColumns
      */
@@ -29,7 +30,7 @@ class TicketListTable
     protected $activeColumns;
     protected $activeColumnsName;
 
-    public function __construct($ticketCategory, $ticketType, $title, TicketColumns $columns, Request $request, $perPage)
+    public function __construct($ticketCategory, $ticketType, $title, TicketColumns $columns, Request $request, $perPage, $withDepartment = true)
     {
         $this->ticketCategory    = $ticketCategory;
         $this->ticketType        = $ticketType;
@@ -41,6 +42,7 @@ class TicketListTable
         $this->ticketFilter      = null;
         $this->pager             = null;
         $this->activeColumns     = [];
+        $this->withDepartment    = $withDepartment;
         $this->columns           = $columns;
         $this->perPage           = $perPage;
         $this->makeFilterWithRequest($request, $perPage);
@@ -129,21 +131,33 @@ class TicketListTable
         // get the initial columns to show by default
 
         if ($this->ticketType === TicketFilter::TYPE_ORGANIZATION) {
-            return [
+            $columns = [
                 TicketColumn::TYPE_SUBJECT,
-                TicketColumn::TYPE_DEPARTMENT,
+            ];
+            if ($this->withDepartment) {
+                array_push($columns, TicketColumn::TYPE_DEPARTMENT);
+            }
+            $columns = array_merge($columns, [
                 TicketColumn::TYPE_USER,
                 TicketColumn::TYPE_DATE_CREATED,
                 TicketColumn::TYPE_DATE_ACTIVITY,
-            ];
+            ]);
+
+            return $columns;
         }
 
-        return [
+        $columns = [
             TicketColumn::TYPE_SUBJECT,
-            TicketColumn::TYPE_DEPARTMENT,
+        ];
+        if ($this->withDepartment) {
+            array_push($columns, TicketColumn::TYPE_DEPARTMENT);
+        }
+        $columns = array_merge($columns, [
             TicketColumn::TYPE_DATE_CREATED,
             TicketColumn::TYPE_DATE_ACTIVITY,
-        ];
+        ]);
+
+        return $columns;
     }
 
     /**
