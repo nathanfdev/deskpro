@@ -1,5 +1,6 @@
 <div class="dp-po-community-header">
 
+    {% if current_forum %}
     <div class="dp-po-community-tabs">
         <ul class="dp-po-community-tabs-list">
             <li class="dp-po-community-tabs-item {{ 'list' == view ? 'active' }}">
@@ -30,5 +31,6 @@
             </a>
         </div>
     </div>
+    {% endif %}
 
 </div>

@@ -28,7 +28,7 @@
 
 {% else %}
     <div class="dp-po-community-title-button">
-        {% if current_forum is defined and button_label is not defined %}
+        {% if current_forum is defined and current_forum and button_label is not defined %}
             <a href="{{ path('portal_community_topic_create', {id: current_forum.id}) }}" class="dp-po-community-title-button-link">
                 <i class="dp-po-icon fad fa-money-check-edit"></i>
                 {{ phrase('helpcenter.community.create_topic_in_forum', {forum: current_forum.noun}) }}
