@@ -12,6 +12,7 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPro\TicketLayout\LayoutField;
 use Application\DeskPRO\Translate\Translate;
@@ -55,6 +56,11 @@ class TicketViewDataService extends AbstractDataService
     private $customFieldUtil;
 
     /**
+     * @var DepartmentDataService
+     */
+    private $departmentDataService;
+
+    /**
      * @var PortalBrandThemeLoader
      */
     private $portalBrandThemeLoader;
@@ -73,6 +79,7 @@ class TicketViewDataService extends AbstractDataService
      * @param Translate $translate
      * @param BrandAwareSettingsResolver $brandAwareSettings
      * @param CustomFieldUtil $customFieldUtil
+     * @param DepartmentDataService $departmentDataService
      * @param PortalBrandThemeLoader|null $portalBrandThemeLoader
      * @param BrandStack|null $brandStack
      */
@@ -83,6 +90,7 @@ class TicketViewDataService extends AbstractDataService
         Translate $translate,
         BrandAwareSettingsResolver $brandAwareSettings,
         CustomFieldUtil $customFieldUtil,
+        DepartmentDataService $departmentDataService,
         PortalBrandThemeLoader $portalBrandThemeLoader = null,
         BrandStack $brandStack = null
     ) {
@@ -93,16 +101,18 @@ class TicketViewDataService extends AbstractDataService
         $this->translate              = $translate;
         $this->brandAwareSettings     = $brandAwareSettings;
         $this->customFieldUtil        = $customFieldUtil;
+        $this->departmentDataService  = $departmentDataService;
         $this->portalBrandThemeLoader = $portalBrandThemeLoader;
         $this->brandStack             = $brandStack;
     }
 
     /**
      * @param Ticket $ticket
+     * @param Person|null $person
      *
      * @return TicketView
      */
-    public function getUserTicketView(Ticket $ticket)
+    public function getUserTicketView(Ticket $ticket, Person $person = null)
     {
         // no cache here because it's unlikely to be called more than once per request.
         // if it is, it's probably better to make sure it's an up to date view.
@@ -135,13 +145,16 @@ class TicketViewDataService extends AbstractDataService
                         }
                     }
 
-                    $view->addProperty(
-                        $fieldId,
-                        CustomDefAbstract::TYPE_CHOICE,
-                        $this->phrase(['user.tickets.fields_department', 'helpcenter.general.department']),
-                        $title,
-                        $layoutField->isVisibleOnViewAlways()
-                    );
+                    $departments = $this->departmentDataService->getTicketDepartmentsForPerson($person);
+                    if (count($departments) > 1) {
+                        $view->addProperty(
+                            $fieldId,
+                            CustomDefAbstract::TYPE_CHOICE,
+                            $this->phrase(['user.tickets.fields_department', 'helpcenter.general.department']),
+                            $title,
+                            $layoutField->isVisibleOnViewAlways()
+                        );
+                    }
 
                     break;
                 case FormFields::CATEGORY:

@@ -13,6 +13,7 @@ services:
       - "@deskpro.core.translate"
       - "@brand_aware_settings_resolver"
       - "@data.custom_field_util"
+      - "@data.departments"
       - "@?portal_brand_theme_loader"
       - "@brand_stack"
 
