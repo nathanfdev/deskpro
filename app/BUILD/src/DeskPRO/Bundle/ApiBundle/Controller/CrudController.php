@@ -618,11 +618,10 @@ abstract class CrudController extends BaseController
         $count = (int) $request->query->getInt('count', static::$listPerPage);
 
         if ($count > static::$listMaxResults) {
-            throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
+            $count = static::$listMaxResults;
         }
-
         if ($count <= 0) {
-            throw $this->createBadRequestException('You must select at least 1 entity');
+            $count = 0;
         }
 
         return $count;
