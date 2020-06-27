@@ -170,6 +170,18 @@ class TechInfo implements MessengerModelInterface
     }
 
     /**
+     * @param array $ticketCategories
+     *
+     * @return $this
+     */
+    public function setTicketCategories(array $ticketCategories)
+    {
+        $this->ticketCategories = $ticketCategories;
+
+        return $this;
+    }
+
+    /**
      * @param NotificationConfiguration $clientsSetup
      */
     public function setClientsSetup(NotificationConfiguration $clientsSetup)

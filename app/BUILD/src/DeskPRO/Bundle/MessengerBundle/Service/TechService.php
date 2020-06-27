@@ -91,6 +91,16 @@ class TechService
         return $this->getDepartments('tickets', $allowedDepartmentIds);
     }
 
+    public function getTicketCategories()
+    {
+        return $this->container->getSystemService('ticket_categories')->getAll();
+    }
+
+    public function getTicketProducts()
+    {
+        return $this->container->getSystemService('products')->getAll();
+    }
+
     public function getUsergroups()
     {
         $user = $this->getUser();

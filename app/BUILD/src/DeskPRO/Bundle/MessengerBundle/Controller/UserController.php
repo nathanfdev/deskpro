@@ -137,6 +137,7 @@ class UserController extends AbstractMessengerController
             ->setCanUseTickets($techService->canUseTickets())
             ->setChatDepartments($techService->getChatDepartments())
             ->setTicketDepartments($techService->getTicketDepartments())
+            ->setTicketCategories($techService->getTicketCategories())
             ->setAgentsOnline($techService->getAgentsOnline())
             ->setClientsSetup($notificationService->getClientsSetup(null, $this->getVisitorId($request)))
         ;
