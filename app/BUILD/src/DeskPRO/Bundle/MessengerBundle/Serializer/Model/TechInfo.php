@@ -26,6 +26,11 @@ class TechInfo implements MessengerModelInterface
     /**
      * @var array
      */
+    private $ticketPriorities;
+
+    /**
+     * @var array
+     */
     private $agentsOnline;
 
     /**
@@ -96,6 +101,7 @@ class TechInfo implements MessengerModelInterface
             'canUseTickets'      => $this->canUseTickets,
             'chat_departments'   => array_values($chatDepartments),
             'ticket_departments' => array_values($ticketDepartments),
+            'ticket_priorities'  => $this->ticketPriorities,
             'agents_online'      => $agentsOnline,
             'client'             => $this->clientsSetup->getClients()[0],
         ];
@@ -170,13 +176,13 @@ class TechInfo implements MessengerModelInterface
     }
 
     /**
-     * @param array $ticketCategories
+     * @param array $ticketPriorities
      *
      * @return $this
      */
-    public function setTicketCategories(array $ticketCategories)
+    public function setTicketPriorities(array $ticketPriorities)
     {
-        $this->ticketCategories = $ticketCategories;
+        $this->ticketPriorities = $ticketPriorities;
 
         return $this;
     }
