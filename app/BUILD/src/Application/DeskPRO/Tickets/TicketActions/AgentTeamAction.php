@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -148,7 +144,7 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
 
             return '<span class="with-agent-team" data-agent-team-id="'.$this->agent_team_id.'">'.$tr->phrase('agent.tickets.assign_current_team_action').'</span>';
         } elseif ($this->agent_team_id == 0) {
-            return $tr->phrase('agent.tickets.unassign_team');
+            return '<span class="with-agent-team" data-agent-team-id="0">'.$tr->phrase('agent.tickets.unassign_team').'</span>';
         } else {
             $name = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamName($this->agent_team_id);
             if ($name !== null && $as_html) {

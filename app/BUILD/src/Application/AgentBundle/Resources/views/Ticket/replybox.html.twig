@@ -476,6 +476,15 @@
 											<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if (not app.getSetting(assign_opt) and team.id == ticket.agent_team.id) %}selected="selected"{% endif %}>{{ team.name }}</option>
 										{% endif %}
 									{% endfor %}
+									{% if ticket_perms.modify_assign_team %}
+										<option
+												value="0"
+												data-icon="{{ asset('images/agent/icons/bullet_red.png') }}"
+												{% if (0 == ticket.agent_team.id) %}selected="selected"{% endif %}
+										>
+											{{ phrase('agent.tickets.unassign_team') }}
+										</option>
+									{% endif %}
 								</select>
 							</div>
 						{% endif %}

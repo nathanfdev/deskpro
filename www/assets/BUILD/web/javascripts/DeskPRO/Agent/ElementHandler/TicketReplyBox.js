@@ -929,7 +929,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
     window.requestIdleCallback ?
       window.requestIdleCallback(setupSelects, {timeout: 1000}) :
-      window.setTimeout(setupSelects, 500);;
+      window.setTimeout(setupSelects, 500);
 
 		agentSel.on('change', function() {
 			var option = agentSel.find(':selected');
@@ -1400,30 +1400,31 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						}
 					});
 
-					var agentId = parseInt(actionsRowList.find('.with-agent').data('agent-id'));
-					if (agentId) {
-						if (agentId == -1) {
-							agentId = DESKPRO_PERSON_ID;
-						}
+          var agentId = parseInt(actionsRowList.find('.with-agent').data('agent-id'));
+          if (Number.isInteger(agentId)) {
+            if (agentId == -1) {
+              agentId = DESKPRO_PERSON_ID;
+            }
 
-						this.getElById('agent_sel').select2('val', agentId);
-						this.getElById('agent_sel').change();
-					}
-					var agentTeamId = parseInt(actionsRowList.find('.with-agent-team').data('agent-team-id'));
-					if (agentTeamId) {
-						if (agentTeamId == -1) {
-							if (!window.DESKPRO_TEAM_IDS || !window.DESKPRO_TEAM_IDS.length) {
-								agentTeamId = null;
-							} else {
-								agentTeamId = window.DESKPRO_TEAM_IDS[0];
-							}
-						}
+            this.getElById('agent_sel_check').prop('checked', true);
+            this.getElById('agent_sel').select2().val(agentId).trigger('change');
+          }
 
-						if (agentTeamId) {
-							this.getElById('agent_team_sel').select2('val', agentTeamId);
-							this.getElById('agent_team_sel').change();
-						}
-					}
+          var agentTeamId = parseInt(actionsRowList.find('.with-agent-team').data('agent-team-id'));
+          if (Number.isInteger(agentTeamId)) {
+            if (agentTeamId == -1) {
+              if (!window.DESKPRO_TEAM_IDS || !window.DESKPRO_TEAM_IDS.length) {
+                agentTeamId = null;
+              } else {
+                agentTeamId = window.DESKPRO_TEAM_IDS[0];
+              }
+            }
+
+            if (Number.isInteger(agentTeamId)) {
+              this.getElById('agent_team_sel_check').prop('checked', true);
+              this.getElById('agent_team_sel').select2().val(agentTeamId).trigger('change');
+            }
+          }
 
 					if (actionsRowList.find('.with-close-tab')) {
 						this.getElById('close_tab_opt').prop('checked', true);
