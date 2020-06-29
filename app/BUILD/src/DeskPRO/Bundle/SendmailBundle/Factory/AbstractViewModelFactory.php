@@ -217,31 +217,35 @@ abstract class AbstractViewModelFactory
     }
 
     /**
-     * @param Ticket $ticket
-     * @param bool   $forAgent
+     * @param Ticket          $ticket
+     * @param bool            $forAgent
+     * @param TicketMessage[] $ticketMessages
      *
      * @return array
      */
-    protected function getTicketArguments($ticket, $forAgent = false)
+    protected function getTicketArguments($ticket, $forAgent = false, $ticketMessages = null)
     {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
         $ticketPerson   = $ticket->getPerson();
         $ticketAgent    = $ticket->getAgent();
         if ($ticket->getId()) {
-            $ticketMessages = $this->container->getEm()->getRepository(TicketMessage::class)->getTicketMessages(
-                $ticket,
-                [
-                    'with_notes'       => $forAgent,
-                    'with_attachments' => true,
-                    'limit'            => 15,
-                    'order'            => 'DESC',
-                ]
-            );
+            if (null === $ticketMessages) {
+                $ticketMessages = $this->container->getEm()->getRepository(TicketMessage::class)->getTicketMessages(
+                    $ticket,
+                    [
+                        'with_notes'       => $forAgent,
+                        'with_attachments' => true,
+                        'limit'            => 15,
+                        'order'            => 'DESC',
+                    ]
+                );
+            }
+
             $ticketFeedback = $this->container->getEm()->getRepository(TicketFeedback::class)->getFeedbackForTicket($ticket);
         } else {
             // When ticket needs email verification we send an email before the ticket actually exists
-            $ticketMessages = $ticket->getMessages();
+            $ticketMessages = $ticketMessages !== null ? $ticketMessages : $ticket->getMessages();
             $ticketFeedback = [];
         }
 
