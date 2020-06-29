@@ -1407,7 +1407,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
             }
 
             this.getElById('agent_sel_check').prop('checked', true);
-            this.getElById('agent_sel').select2().val(agentId).trigger('change');
+            this.getElById('agent_sel')
+              .children('option[value="'+agentId+'"]')
+              .prop('selected', true)
+              .change();
           }
 
           var agentTeamId = parseInt(actionsRowList.find('.with-agent-team').data('agent-team-id'));
@@ -1422,7 +1425,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
             if (Number.isInteger(agentTeamId)) {
               this.getElById('agent_team_sel_check').prop('checked', true);
-              this.getElById('agent_team_sel').select2().val(agentTeamId).trigger('change');
+              this.getElById('agent_team_sel')
+                .children('option[value="'+agentTeamId+'"]')
+                .prop('selected', true)
+                .change();
             }
           }
 
