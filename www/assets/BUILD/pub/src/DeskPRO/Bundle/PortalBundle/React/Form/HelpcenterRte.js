@@ -188,7 +188,7 @@ export default class HelpcenterRte extends React.Component {
           onSuccess={this.onUploadSuccess}
           onFail={this.onUploadFail}
         >
-          <DragOverlayListener context={context}>
+          <DragOverlayListener context={context} types={['image']}>
             <div className="dp-medium-rte-wrapper-overlay">
               <h1>{portalPhrases.get('helpcenter.forms.label_drag_overlay')}</h1>
             </div>
