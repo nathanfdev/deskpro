@@ -1,27 +1,34 @@
 <div class="dp-po-ticket-block dp-po-ticket-block-mine dp-po-ticket-block-rate">
     <div class="dp-po-ticket-block-header">
-        <i class="dp-po-icon fad fa-comments-alt"></i> {{ phrase('helpcenter.tickets.rate_support') }}
+        <img class="dp-po-icon icon-svg" src="{{ asset('img/page-icons/ticket-rate.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.rate_support') }}
     </div>
     <div class="dp-po-avatar dp-po-avatar-round">
         {{ hc_avatar(feedback.person) }}
         {% if feedback.person.id == app.user.id %}
-            {{ phrase('helpcenter.general.you') }} ({{ app.user.email }})
+            {{ phrase('helpcenter.tickets.you_rated_support', { email: app.user.email}) }}
         {% else %}
-            {{ feedback.person }} ({{ feedback.person.email }})
+            {{ phrase('helpcenter.tickets.user_rated_support', { person: feedback.person, email: feedback.person.email }) }}
         {% endif %}
     </div>
 
     <div class="dp-po-ticket-block-feedback">
-        {{ phrase('helpcenter.tickets.rated_your_support') }}
         <div class="dp-po-avatar dp-po-avatar-round">
             {{ hc_avatar(feedback.ticket_message.person) }}
             {{ feedback.ticket_message.person }}
         </div>
-        {{ phrase('helpcenter.tickets.rate_' ~ feedback.rating_type) }}
-        <div class="dp-po-ticket-block-rating {% if feedback.rating == -1 %}dp-po-ticket-modal-rating-one{% elseif feedback.rating == 0%}dp-po-ticket-modal-rating-two{% endif %}">
-            <i class="dp-po-icon fad fa-star"></i>
-            <i class="dp-po-icon fad fa-star"></i>
-            <i class="dp-po-icon fad fa-star"></i>
+        <div class="dp-po-ticket-block-rating-label">
+            {% if feedback.rating_type == 'negative' %}
+                {{ phrase('helpcenter.tickets.rate_short_negative') }}
+            {% elseif feedback.rating_type == 'neutral' %}
+                {{ phrase('helpcenter.tickets.rate_short_neutral') }}
+            {% elseif feedback.rating_type == 'positive' %}
+                {{ phrase('helpcenter.tickets.rate_short_positive') }}
+            {% endif %}
+            <div class="dp-po-ticket-block-rating {% if feedback.rating == -1 %}dp-po-ticket-modal-rating-one{% elseif feedback.rating == 0%}dp-po-ticket-modal-rating-two{% endif %}">
+                <i class="dp-po-icon fad fa-star"></i>
+                <i class="dp-po-icon fad fa-star"></i>
+                <i class="dp-po-icon fad fa-star"></i>
+            </div>
         </div>
     </div>
     <div class="dp-po-ticket-block-content">
