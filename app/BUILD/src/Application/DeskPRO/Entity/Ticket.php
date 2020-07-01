@@ -91,6 +91,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property \DateTime                            $date_status
  * @property int                                  $total_user_waiting
  * @property int                                  $total_to_first_reply
+ * @property \DateTime                            $total_user_waiting_wh_start
+ * @property int                                  $total_user_waiting_wh
+ * @property int                                  $total_to_first_reply_wh
  * @property Person                               $locked_by_agent
  * @property \DateTime                            $date_locked
  * @property bool                                 $has_attachments
@@ -433,6 +436,21 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var int
      */
     protected $total_to_first_reply = 0;
+
+    /**
+     * @var \DateTime
+     */
+    protected $total_user_waiting_wh_start = null;
+
+    /**
+     * @var int
+     */
+    protected $total_user_waiting_wh = 0;
+
+    /**
+     * @var int
+     */
+    protected $total_to_first_reply_wh = 0;
 
     /**
      * @var \Application\DeskPRO\Entity\Person
@@ -1813,6 +1831,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 if (!$this->date_first_agent_reply && !$message->isAgentNote()) {
                     $this['date_first_agent_reply'] = $now;
                     $this['total_to_first_reply']   = $this->date_first_agent_reply->getTimestamp() - $this->date_created->getTimestamp();
+
+                    // Update total to first reply in working hours (total_to_first_reply_wh)
+                    $wh = $this->getWorkHoursSet();
+                    $this->setModelField(
+                        'total_to_first_reply_wh',
+                        $wh->getWorkTimeBetween(
+                            $this->date_created,
+                            $this->date_first_agent_reply
+                        )
+                    );
                 }
             }
         } else {
@@ -1832,7 +1860,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->sms_messages->add($message);
         $message->ticket = $this;
 
-        $now = new \DateTime();
+        $now = new DateTime();
         if ($message->person['is_agent'] && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
             if ((bool) $this->_is_new) {
                 if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
@@ -1842,6 +1870,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 if (!$this->date_first_agent_reply) {
                     $this['date_first_agent_reply'] = $now;
                     $this['total_to_first_reply']   = $this->date_first_agent_reply->getTimestamp() - $this->date_created->getTimestamp();
+
+                    // Update total to first reply in working hours (total_to_first_reply_wh)
+                    $wh = $this->getWorkHoursSet();
+                    $this->setModelField(
+                        'total_to_first_reply_wh',
+                        $wh->getWorkTimeBetween(
+                            $this->date_created,
+                            $this->date_first_agent_reply
+                        )
+                    );
                 }
             }
         } else {
@@ -3243,18 +3281,59 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $this->addStatusTimeRecord($oldTicketStatus->getStatusCode(), $oldDateStatus, $now);
 
-        if (!$ticketStatus->isCountUserWaitingTime() && $oldTicketStatus->isCountUserWaitingTime() && $this->date_user_waiting) {
-            $this->setModelField(
-                'total_user_waiting',
-                $this->total_user_waiting + $now->getTimestamp() - $this->date_user_waiting->getTimestamp()
-            );
+        if (!$ticketStatus->isCountUserWaitingTime() && $oldTicketStatus->isCountUserWaitingTime()) {
+
+            if ($this->date_user_waiting) {
+                $this->setModelField(
+                    'total_user_waiting',
+                    $this->total_user_waiting + $now->getTimestamp() - $this->date_user_waiting->getTimestamp()
+                );
+            }
+
+            // Update user waiting time in working hours (total_user_waiting_wh)
+            if ($this->total_user_waiting_wh_start) {
+                // need the condition; its possible the wh_start was in future if the last change was out of hours
+                if ($this->total_user_waiting_wh_start < $now) {
+                    $wh = $this->getWorkHoursSet();
+
+                    // get how much time has passed since the last period
+                    $addTime = $wh->getWorkTimeBetween(
+                        $this->total_user_waiting_wh_start,
+                        $now
+                    );
+
+                    $this->setModelField(
+                        'total_user_waiting_wh',
+                        $this->total_user_waiting_wh + $addTime
+                    );
+                }
+            }
         }
-        if ($ticketStatus->isCountUserWaitingTime() && !$this->date_user_waiting) {
-            /* @var \Orb\Util\Testable\DateTime */
-            $this->setModelField('date_user_waiting', new DateTime());
+
+        if ($ticketStatus->isCountUserWaitingTime()) {
+
+            if (!$this->date_user_waiting) {
+                /* @var \Orb\Util\Testable\DateTime */
+                $this->setModelField('date_user_waiting', new DateTime());
+            }
+
+            if (!$this->total_user_waiting_wh_start) {
+                $this->setModelField(
+                    'total_user_waiting_wh_start',
+                    $this->getWorkHoursSet()->getNextWorkTimeStart(new DateTime())
+                );
+            }
         }
-        if (!$ticketStatus->isCountUserWaitingTime() && $this->date_user_waiting) {
-            $this->setModelField('date_user_waiting', null);
+        
+        if (!$ticketStatus->isCountUserWaitingTime()) {
+
+            if ($this->date_user_waiting) {
+                $this->setModelField('date_user_waiting', null);
+            }
+
+            if ($this->total_user_waiting_wh_start) {
+                $this->setModelField('total_user_waiting_wh_start', null);
+            }
         }
 
         if ($ticketStatus->isCountAgentWaitingTime() && !$this->date_agent_waiting) {
@@ -4972,6 +5051,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return int
+     */
+    public function getTotalUserWaitingWh()
+    {
+        return $this->total_user_waiting_wh;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalToFirstReplyWh()
+    {
+        return $this->total_to_first_reply_wh;
+    }
+
+    /**
      * @return Person
      */
     public function getLockedByAgent()
@@ -5512,6 +5607,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             [
                 'fieldName'  => 'total_to_first_reply',
                 'columnName' => 'total_to_first_reply',
+                'type'       => 'integer',
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'total_user_waiting_wh_start',
+                'columnName' => 'total_user_waiting_wh_start',
+                'type'       => 'datetime',
+                'nullable'   => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'total_user_waiting_wh',
+                'columnName' => 'total_user_waiting_wh',
+                'type'       => 'integer',
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'total_to_first_reply_wh',
+                'columnName' => 'total_to_first_reply_wh',
                 'type'       => 'integer',
                 'nullable'   => false,
             ]

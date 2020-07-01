@@ -202,6 +202,10 @@ services:
       - "@ticketfilters.env_loader"
       - "@ticketfilters.matcher_factory"
 
+  work_hours_set_factory:
+    class: DeskPRO\Bundle\AppBundle\Ticket\WorkHoursSetFactory
+    arguments: ["@brand_aware_settings_resolver"]
+
   content.collab_manager:
     class: DeskPRO\Bundle\AppBundle\Content\CollabManager
     arguments:

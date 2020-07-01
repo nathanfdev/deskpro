@@ -35,6 +35,15 @@ interface WorkHoursInterface
     public function getNextWorkDayStart(\DateTime $date, $backwards = false);
 
     /**
+     * e.g. if wh are 9am-6pm and it's currently 10am, then return 10am + 1sec
+     *      if it's midnight, then the next time would be tomorrow at 9am
+     *
+     * @param \DateTime $date
+     * @return \DateTime
+     */
+    public function getNextWorkTimeStart(\DateTime $date);
+
+    /**
      * @param int|\DateTime      $start
      * @param int|\DateTime|null $end
      *

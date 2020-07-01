@@ -112,6 +112,8 @@ class TicketTest extends PortalTestCase
 
         $ticket = new Ticket();
 
+        App::$container = ContainerMock::create()->withSettings()->get();
+
         // WHEN
         $ticket->setTicketStatus($status);
 
@@ -131,6 +133,8 @@ class TicketTest extends PortalTestCase
 
         $ticket = new Ticket();
         $this->assertNull($ticket->getDateOnHold());
+
+        App::$container = ContainerMock::create()->withSettings()->get();
 
         // WHEN set pending
         $ticket->setTicketStatus($statusPending);
@@ -169,7 +173,10 @@ class TicketTest extends PortalTestCase
 
         $statusesMock = m::mock(TicketStatusDataService::class);
         $statusesMock->shouldReceive('getDeletedStatus')->andReturn($deletedStatus);
-        App::$container = ContainerMock::create()->withTicketStatusesMock($statusesMock)->get();
+        App::$container = ContainerMock::create()
+            ->withSettings()
+            ->withTicketStatusesMock($statusesMock)
+            ->get();
 
         //WHEN/THEN
         $ticketMock->setTicketStatus(VirtualTicketStatus::getById(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
@@ -177,6 +184,8 @@ class TicketTest extends PortalTestCase
 
     public function getStatusCodeDataProvider()
     {
+        App::$container = ContainerMock::create()->withSettings()->get();
+        
         $data = [];
 
         $ticket1 = new Ticket();
@@ -218,6 +227,7 @@ class TicketTest extends PortalTestCase
         $ticketManagerMock->shouldIgnoreMissing();
         App::$container = ContainerMock::create()
             ->withNullEm()
+            ->withSettings()
             ->withTicketStatusesMock($statusesMock)
             ->withTicketManagerMock($ticketManagerMock)
             ->get();
@@ -241,6 +251,7 @@ class TicketTest extends PortalTestCase
         $deletedStatus->setId(2);
 
         App::$container = ContainerMock::create()
+            ->withSettings()
             ->withNullEm()
             ->get();
 
@@ -269,7 +280,10 @@ class TicketTest extends PortalTestCase
         $statusesMock->shouldReceive('getDeletedStatus')->andReturn($deletedStatus);
         $statusesMock->shouldReceive('getSpamStatus')->andReturn($spamStatus);
 
-        App::$container = ContainerMock::create()->withTicketStatusesMock($statusesMock)->get();
+        App::$container = ContainerMock::create()
+            ->withSettings()
+            ->withTicketStatusesMock($statusesMock)
+            ->get();
 
         // WHEN/THEN
         $this->assertEquals(100, Ticket::getStatusInt(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
@@ -284,6 +298,8 @@ class TicketTest extends PortalTestCase
     public function testCheckStatuses()
     {
         // GIVEN
+        App::$container = ContainerMock::create()->withSettings()->get();
+        
         $ticket1 = new Ticket();
         $ticket1->setTicketStatus(VirtualTicketStatus::getById(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
 
@@ -328,6 +344,7 @@ class TicketTest extends PortalTestCase
     public function testSetIsHold()
     {
         // GIVEN
+        App::$container = ContainerMock::create()->withSettings()->get();
         $pendingStatus = new TicketStatus(TicketStatus::STATUS_TYPE_PENDING);
         $pendingStatus->setPendingWaitingTimeMode(TicketStatus::PENDING_WAITING_TIME_MODE_USER);
 
@@ -353,6 +370,8 @@ class TicketTest extends PortalTestCase
     public function testGetHiddenStatus()
     {
         // GIVEN
+        App::$container = ContainerMock::create()->withSettings()->get();
+        
         $deletedStatus = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
         $deletedStatus->setSysId(TicketStatus::SYS_ID_DELETED);
         $deletedStatus->setId(2);

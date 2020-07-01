@@ -232,6 +232,8 @@ class WorkHoursSet implements WorkHoursInterface
     }
 
     /**
+     * Warning: $date should be in WH timezone. No timezone conversion done in this method
+     *
      * @param \DateTime $date
      * @param int|null  $time_remaining
      *
@@ -275,6 +277,9 @@ class WorkHoursSet implements WorkHoursInterface
     }
 
     /**
+     * Warning: $date should be in WH timezone. No timezone conversion done in this method
+     *          result date also returned in same timezone as $date parameter
+     *
      * @param \DateTime $date
      * @param bool      $backwards
      *
@@ -337,6 +342,32 @@ class WorkHoursSet implements WorkHoursInterface
         } while (true);
 
         return $work_date;
+    }
+
+    /**
+     * e.g. if wh are 9am-6pm and it's currently 10am, then return 10am + 1 sec
+     *      if it's midnight, then the next time would be tomorrow at 9am
+     *
+     * Return date in UTC
+     *
+     * @param \DateTime $_date
+     * @return \DateTime
+     */
+    public function getNextWorkTimeStart(\DateTime $_date)
+    {
+        $date = new \DateTime('@'.$_date->getTimestamp());
+        $date->modify('+1 seconds');
+        if ($this->work_timezone) {
+            $date->setTimezone(new \DateTimeZone($this->work_timezone));
+        }
+
+        if ($this->isInWorkDay($date)) {
+            return new \DateTime('@'.$date->getTimestamp());
+        }
+
+        $nextDayStart = $this->getNextWorkDayStart($date);
+
+        return new \DateTime('@'.$nextDayStart->getTimestamp());
     }
 
     /**

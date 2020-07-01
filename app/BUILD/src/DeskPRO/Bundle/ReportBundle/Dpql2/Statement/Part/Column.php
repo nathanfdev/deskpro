@@ -243,6 +243,10 @@ END)
                         $sql = "($sql + IF(`$sqlTable`.date_user_waiting AND `$sqlTable`.status IN ('awaiting_agent', 'pending'), UNIX_TIMESTAMP() - UNIX_TIMESTAMP(`$sqlTable`.date_user_waiting), 0))";
                     }
 
+                    if ($repository->getTableName() == 'tickets' && $field['columnName'] == 'total_user_waiting_wh') {
+                        $sql = "($sql + IF(`$sqlTable`.total_user_waiting_wh_start AND `$sqlTable`.status IN ('awaiting_agent', 'pending') AND `$sqlTable`.total_user_waiting_wh_start < NOW(), UNIX_TIMESTAMP() - UNIX_TIMESTAMP(`$sqlTable`.total_user_waiting_wh_start), 0))";
+                    }
+
                     switch ($field['type']) {
                         case 'datetime':
                             $tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
