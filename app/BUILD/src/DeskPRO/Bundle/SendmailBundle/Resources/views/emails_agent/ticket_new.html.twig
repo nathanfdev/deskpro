@@ -15,9 +15,7 @@
 	{% include 'SendmailBundle:blocks:resources.html.twig' %}
 </head>
 <body>
-	{% set message = ticket_messages|first %}
-	<span class="preheader -emogrifier-keep">{{ message.message|striptags }}</span>
-
+{% set message = ticket_messages|first %}
 {% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
 
 {% include 'SendmailBundle:blocks:header.html.twig' %}
