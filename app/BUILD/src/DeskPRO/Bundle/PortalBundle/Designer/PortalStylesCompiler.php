@@ -56,8 +56,8 @@ class PortalStylesCompiler
      * @throws \Exception
      */
     public function __construct(
-        EntityManager        $em,
-        DeskproBlobStorage   $bs,
+        EntityManager $em,
+        DeskproBlobStorage $bs,
         AdvancedEditsManager $advancedEditsManager,
         $stylesLrtFilePath,
         $stylesRtlFilePath
@@ -77,6 +77,7 @@ class PortalStylesCompiler
     /**
      * @param ThemeSet $themeSet
      * @param string   $direction Stylesheet for which direction? LTR or RTL
+     * @param mixed $themeId
      *
      * @return ThemeSetAsset|null
      */
@@ -184,6 +185,9 @@ class PortalStylesCompiler
      */
     private function compileCss($direction, array $variables)
     {
+        // Prevent error when brand-neutral is not set
+        $variables = array_merge(['brand-neutral' => '#F8AF3C'], $variables);
+
         $compiler = new StylesheetCompiler();
 
         return $compiler->compile(
