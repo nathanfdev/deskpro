@@ -55,9 +55,9 @@ class TwigExtensionsInUseCommand extends ContainerAwareCommand
             ->addOption(
                 'base-scan-dir',
                 'b',
-                InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                 'Base directory to scan from',
-                realpath(__DIR__.'/../../../../')
+                null
             )
         ;
     }
@@ -66,7 +66,18 @@ class TwigExtensionsInUseCommand extends ContainerAwareCommand
     {
         error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-        $outputDir = rtrim(getcwd().DIRECTORY_SEPARATOR.$input->getArgument('output_dir'), DIRECTORY_SEPARATOR);
+        $outputDir = $input->getArgument('output_dir');
+        $outputDir = rtrim(substr($outputDir, 0, 1) === DIRECTORY_SEPARATOR
+            ? $outputDir
+            : getcwd().DIRECTORY_SEPARATOR.$outputDir, DIRECTORY_SEPARATOR
+        );
+
+        $scanBaseDirs = $input->getOption('base-scan-dir')
+            ? array_map(function ($dir) {
+                return realpath(substr($dir, 0, 1) === DIRECTORY_SEPARATOR ? $dir : getcwd().DIRECTORY_SEPARATOR.$dir);
+            }, $input->getOption('base-scan-dir'))
+            : [realpath(__DIR__.'/../../../../')]
+        ;
 
         $output->writeln("Analysing...");
 
@@ -95,7 +106,7 @@ class TwigExtensionsInUseCommand extends ContainerAwareCommand
         $twig = $this->getContainer()->get('twig');
 
         $finder = (new Finder())
-            ->in($input->getOption('base-scan-dir'))
+            ->in($scanBaseDirs)
             ->files()
             ->name('*.twig')
         ;
