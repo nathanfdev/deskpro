@@ -134,7 +134,7 @@ class ThemeSetController extends AbstractApiController
             $this->container->get('legacy_template_handler')->copyCustomTemplates();
             $this->container->get('dp.portal.designer.theme_set_copying_service')->copyIcons($previousEditThemeSet, $themeSet);
             $themeSet->setOption('welcome_box', $previousEditThemeSet->getOption('welcome_box'));
-            $variables = $previousEditThemeSet->getOption('custom_vars');
+            $variables = $previousEditThemeSet->getOption('custom_vars') ?: [];
             $themeSet->setOption('custom_vars', $variables);
             $this->getPortalStylesCompiler()->recompile($variables, $themeSet);
             $this->container->getEm()->remove($previousEditThemeSet);
