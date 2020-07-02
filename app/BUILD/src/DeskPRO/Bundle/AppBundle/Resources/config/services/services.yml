@@ -218,3 +218,8 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@job.scheduler"
+
+  dp.image.image_cleaner:
+    class: DeskPRO\Bundle\AppBundle\Image\ImageCleaner
+    arguments:
+      - "@=service('service_container').getSystemService('imagine')"
