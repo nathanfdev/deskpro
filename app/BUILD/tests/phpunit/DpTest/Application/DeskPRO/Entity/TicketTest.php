@@ -32,10 +32,6 @@ class TicketTest extends PortalTestCase
         App::$container = $this->containerBefore;
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage is not an agent
-     */
     public function testSetNotAgentForNewTicket()
     {
         $this->installDataSet('fresh', true);
@@ -50,12 +46,10 @@ class TicketTest extends PortalTestCase
 
         $this->getEntityManager()->persist($ticket);
         $this->getEntityManager()->flush();
+
+        $this->assertNull($ticket->getAgent());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage is not an agent
-     */
     public function testSetNotAgentOnTicketUpdate()
     {
         $this->installDataSet('fresh', true);
@@ -75,6 +69,8 @@ class TicketTest extends PortalTestCase
 
         $this->getEntityManager()->persist($ticket);
         $this->getEntityManager()->flush();
+
+        $this->assertNull($ticket->getAgent());
     }
 
     /**
