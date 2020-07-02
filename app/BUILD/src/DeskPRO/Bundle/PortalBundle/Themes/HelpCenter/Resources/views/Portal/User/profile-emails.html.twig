@@ -33,19 +33,30 @@
                                                 {% else %}
                                                     <ul class="dp-po-account-email-action">
                                                         <li class="dp-po-account-email-action-item">
-                                                            <a
-                                                                    id="{{ email.email }}"
-                                                                    href="{{ path('portal_user_profile_emails', { new_primary: email.id }) }}"
-                                                                    class="dp-po-account-email-action-link">
-                                                                {{ phrase('helpcenter.account.email_make_primary_action') }}
-                                                            </a>
+                                                            <form id="{{ 'new_primary_' ~ email.id }}" action="{{ url('portal_user_profile_emails') }}" method="post">
+                                                                <input type="hidden" name="_dp_csrf_token" value="{{ csrf_token('new_primary') }}"/>
+                                                                <input type="hidden" name="new_primary" value="{{ email.id }}"/>
+                                                                <button
+                                                                        id="{{ email.email }}"
+                                                                        class="p-0 btn btn-link dp-po-account-email-action-link"
+                                                                        type="submit"
+                                                                >
+                                                                    {{ phrase('helpcenter.account.email_make_primary_action') }}
+                                                                </button>
+                                                            </form>
                                                         </li>
                                                         <li class="dp-po-account-email-action-item">
-                                                            <a
-                                                                    href="{{ path('portal_user_profile_emails', { remove_email: email.id }) }}"
-                                                                    class="dp-po-account-email-action-link">
-                                                                {{ phrase('helpcenter.account.email_remove_action') }}
-                                                            </a>
+                                                            <form id="{{ 'remove_email_' ~ email.id }}" action="{{ url('portal_user_profile_emails') }}" method="post">
+                                                                <input type="hidden" name="_dp_csrf_token" value="{{ csrf_token('remove_email') }}"/>
+                                                                <input type="hidden" name="remove_email" value="{{ email.id }}"/>
+                                                                <button
+                                                                        id="{{ email.email }}"
+                                                                        class="p-0 btn btn-link dp-po-account-email-action-link"
+                                                                        type="submit"
+                                                                >
+                                                                    {{ phrase('helpcenter.account.email_remove_action') }}
+                                                                </button>
+                                                            </form>
                                                         </li>
                                                     </ul>
                                                 {% endif %}

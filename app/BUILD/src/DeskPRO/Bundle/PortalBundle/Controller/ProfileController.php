@@ -270,7 +270,7 @@ class ProfileController extends AbstractController
             'settings' => $this->getBrandContainer()->getSettings(),
         ]);
 
-        if ('POST' === $request->getMethod()) {
+        if ('POST' === $request->getMethod() && $mode === 'password') {
             $history = null;
             if ($person->password && $person->password_scheme == 'bcrypt') {
                 $history                  = new PasswordHistory();
@@ -286,9 +286,8 @@ class ProfileController extends AbstractController
                 }
                 $this->getEm()->flush();
                 $this->addFlash('success', $this->phrase(['portal.flashes.user_changed_password', 'helpcenter.flashes.user_changed_password']));
-                $mode = 'password';
 
-                return $this->redirectToRoute('portal_user_profile');
+                return $this->redirectToRoute('portal_user_profile_mobile', ['mode' => 'password']);
             }
         }
 
@@ -299,7 +298,9 @@ class ProfileController extends AbstractController
             //////////////////////////////////////////////////////////////////////////////////////////////
             // CHANGE PRIMARY EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
-            if ($emailId = $request->query->getInt('new_primary')) {
+            if (($emailId = $request->get('new_primary')) &&
+                $this->isCsrfTokenValid('new_primary', $request->get('_dp_csrf_token'))
+            ) {
                 /** @var \Application\DeskPRO\Entity\PersonEmail $proposedNewPrimaryEmail */
                 $proposedNewPrimaryEmail = $this->getRepo('DeskPRO:PersonEmail')->find($emailId);
                 if ($proposedNewPrimaryEmail->getPerson()->getId() == $person->getId()) {
@@ -314,7 +315,9 @@ class ProfileController extends AbstractController
             //////////////////////////////////////////////////////////////////////////////////////////////
             // REMOVE EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
-            if ($emailId = $request->query->getInt('remove_email')) {
+            if (($emailId = $request->get('remove_email')) &&
+                $this->isCsrfTokenValid('remove_email', $request->get('_dp_csrf_token'))
+            ) {
                 /** @var \Application\DeskPRO\Entity\PersonEmail $proposedEmailRemoval */
                 $proposedEmailRemoval = $this->getRepo('DeskPRO:PersonEmail')->find($emailId);
                 if ($proposedEmailRemoval->getPerson()->getId() == $person->getId()) {
@@ -475,8 +478,9 @@ class ProfileController extends AbstractController
             //////////////////////////////////////////////////////////////////////////////////////////////
             // CHANGE PRIMARY EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
-            if ($emailId = $request->query->getInt('new_primary')) {
-                /** @var \Application\DeskPRO\Entity\PersonEmail $proposedNewPrimaryEmail */
+            if (($emailId = $request->get('new_primary')) &&
+                $this->isCsrfTokenValid('new_primary', $request->get('_dp_csrf_token'))
+            ) {
                 $proposedNewPrimaryEmail = $this->getRepo('DeskPRO:PersonEmail')->find($emailId);
                 if ($proposedNewPrimaryEmail->getPerson()->getId() == $person->getId()) {
                     $person->setPrimaryEmail($proposedNewPrimaryEmail);
@@ -490,7 +494,9 @@ class ProfileController extends AbstractController
             //////////////////////////////////////////////////////////////////////////////////////////////
             // REMOVE EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
-            if ($emailId = $request->query->getInt('remove_email')) {
+            if (($emailId = $request->get('remove_email')) &&
+                $this->isCsrfTokenValid('remove_email', $request->get('_dp_csrf_token'))
+            ) {
                 /** @var \Application\DeskPRO\Entity\PersonEmail $proposedEmailRemoval */
                 $proposedEmailRemoval = $this->getRepo('DeskPRO:PersonEmail')->find($emailId);
                 if ($proposedEmailRemoval->getPerson()->getId() == $person->getId()) {
