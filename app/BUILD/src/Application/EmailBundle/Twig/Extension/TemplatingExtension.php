@@ -2621,7 +2621,7 @@ HTML;
         }
 
         try {
-            $tr       = new TwigTemplateRenderer($this->getContainer()->getTwig(), $this->getContainer()->get('brand_aware_settings_resolver'));
+            $tr       = new TwigTemplateRenderer($this->getContainer()->get('deskpro.sandboxed_twig.twig'), $this->getContainer()->get('brand_aware_settings_resolver'));
             $rendered = $tr->renderStringTemplate($string, $vars);
         } catch (\Exception $e) {
             return $string;

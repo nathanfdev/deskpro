@@ -61,7 +61,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
         // Format and prepare text message
         //##########################################################################
         $action_message_template = $this->getActionOption('message');
-        $formatter               = new SnippetFormatter($this->getContainer()->getTwig());
+        $formatter               = new SnippetFormatter($this->getContainer()->get('deskpro.sandboxed_twig.twig'));
         ActionVars::configureFormatter($formatter, $context);
 
         $message = $formatter->formatText($action_message_template, $ticket);

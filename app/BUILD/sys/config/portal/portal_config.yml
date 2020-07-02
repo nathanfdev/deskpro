@@ -22,6 +22,14 @@ services:
     tags:
       - { name: twig.extension }
 
+  twig.extension.sandbox_extension:
+    class: Twig\Extension\SandboxExtension
+    arguments:
+      - "@deskpro.sandboxed_twig.security_policy"
+      - true
+    tags:
+      - { name: twig.extension }
+
 framework:
     esi:             { enabled: true }
     fragments:       { path: /_proxy }

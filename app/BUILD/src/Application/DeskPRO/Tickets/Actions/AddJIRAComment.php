@@ -58,7 +58,7 @@ class AddJIRAComment extends AbstractContainerAwareAction implements ActionInter
         $note_text = $this->getActionOption('note_text');
 
         if (!$this->getActionOption('no_formatter')) {
-            $formatter = new SnippetFormatter($this->getContainer()->getTwig());
+            $formatter = new SnippetFormatter($this->getContainer()->get('deskpro.sandboxed_twig.twig'));
             $formatter->addVar('user_vars', $context->getUserVars());
             $note_text = $formatter->formatText($note_text, $ticket);
         }
