@@ -11,7 +11,9 @@ use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
@@ -111,6 +113,10 @@ abstract class AbstractViewModelFactory
                 $handler = $this->container->get('api_serializer.handler.download');
 
                 break;
+            case DownloadComment::class:
+                $handler = $this->container->get('api_serializer.handler.download_comment');
+
+                break;
             case CommunityTopic::class:
                 $handler = $this->container->get('api_serializer.handler.community_topic');
 
@@ -125,6 +131,10 @@ abstract class AbstractViewModelFactory
                 break;
             case News::class:
                 $handler = $this->container->get('api_serializer.handler.news');
+
+                break;
+            case NewsComment::class:
+                $handler = $this->container->get('api_serializer.handler.news_comment');
 
                 break;
             case Organization::class:

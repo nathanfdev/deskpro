@@ -603,10 +603,11 @@ class ArticlesController extends AbstractPublishController
      *
      * @return bool
      */
-    private function isSubscribedCategory(ArticleCategory $category)
+    private function isSubscribedCategory(ArticleCategory $category = null)
     {
         if (
-            $this->getBrandSetting('user.kb_subscriptions', false)
+            $category
+            && $this->getBrandSetting('user.kb_subscriptions', false)
             && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORY, $category)
         ) {
             // waiting info regarding article category subscriptions

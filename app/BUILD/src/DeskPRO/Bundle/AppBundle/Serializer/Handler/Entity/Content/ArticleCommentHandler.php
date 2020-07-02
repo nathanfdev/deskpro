@@ -1,8 +1,9 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content;
 
 use Application\DeskPRO\Entity\ArticleComment;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\ArticleComment as ArticleCommentModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 

@@ -12,6 +12,7 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Templating\GlobalVariables;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
@@ -1200,7 +1201,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function securityToken($name = '', $timeout = 43200)
     {
-        return $this->container->getSession()->getEntity()->generateSecurityToken($name, $timeout);
+        if (defined('DP_INTERFACE') && DP_INTERFACE != 'cli') {
+            $session = $this->container->getSession();
+            if ($session instanceof Session) {
+                return $session->getEntity()->generateSecurityToken($name, $timeout);
+            }
+        }
+
+        return;
     }
 
     /**

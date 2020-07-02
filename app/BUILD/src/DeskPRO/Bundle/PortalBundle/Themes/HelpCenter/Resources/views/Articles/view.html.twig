@@ -50,7 +50,7 @@
                     {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
                         subscriptionInfo: [
                             { toggleUrl: portal_path(article, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.articles.article_object'), active: is_subscribed },
-                            { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category },
+                            { toggleUrl: category and portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category },
                             { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section_title'), active: is_subscribed_root },
                         ]
                     } %}
@@ -65,7 +65,7 @@
                     buttonId: 'subscribeDropdownMenuMobile',
                     subscriptionInfo: [
                         { toggleUrl: portal_path(article, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.articles.article_object'), active: is_subscribed },
-                        { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category },
+                        { toggleUrl: category and portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category },
                         { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section_title'), active: is_subscribed_root },
                     ]
                 } %}
