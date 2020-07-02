@@ -1,4 +1,5 @@
 ---
+helpcenter.account.login_invalid: 'ログインが無効です'
 helpcenter.articles.section_title: ナレッジベース
 helpcenter.community.section_title: フィードバック
 helpcenter.direct_messages.reply_message: メッセージ
