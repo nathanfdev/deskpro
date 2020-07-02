@@ -729,7 +729,7 @@ class PersonController extends AbstractController
                             $viewModel = $this->get('brand_stack')->pushTemporary(
                                 $person->getBrands()->first(),
                                 function () use ($factory, $person) {
-                                    return $factory->createAgentChangedPasswordModel($person->getPlaintextPassword());
+                                    return $factory->createPasswordChangedByAgentModel($person->getPlaintextPassword());
                                 }
                             );
                             $this->get('mailer.utils')
