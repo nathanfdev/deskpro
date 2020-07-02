@@ -1,9 +1,10 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content;
 
 use Application\DeskPRO\Entity\TopicComment;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\TopicComment as TopicCommentModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
