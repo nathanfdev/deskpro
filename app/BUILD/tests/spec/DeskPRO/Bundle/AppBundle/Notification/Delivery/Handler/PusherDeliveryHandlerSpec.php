@@ -32,6 +32,7 @@ class PusherDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getDate()->willReturn(new \DateTime());
         $actionAlert->getType()->willReturn('test.action.alert');
         $actionAlert->isBroadcast()->willReturn(false);
+        $pusher->triggerBatch(Argument::type('array'), true, true)->willReturn(['status' => 200]);
 
         $actionAlert->getTarget()->shouldBeCalled();
         $actionAlert->getDate()->shouldBeCalled();
@@ -52,6 +53,7 @@ class PusherDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getDate()->willReturn(new \DateTime());
         $actionAlert->getType()->willReturn('test.action.alert');
         $actionAlert->isBroadcast()->willReturn(false);
+        $pusher->triggerBatch(Argument::type('array'), true, true)->willReturn(['status' => 200]);
 
         $actionAlert->getTarget()->shouldBeCalled();
         $actionAlert->getDate()->shouldBeCalled();
