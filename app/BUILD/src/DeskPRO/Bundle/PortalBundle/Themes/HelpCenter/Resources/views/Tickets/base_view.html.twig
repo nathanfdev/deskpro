@@ -129,7 +129,7 @@
         {% endif %}
 
         <div class="dp-po-ticket-meta-cc">
-            <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_participants', {participants: '<span class="count">' ~ (ticket.getCcs()|length) ~ '</span>'}, true) }}</dt>
+            <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_participants', true) }} <span class="count">{{ (ticket.getCcs()|length) }}</span></dt>
             <dd>
                 <ul class="dp-po-ticket-meta-cc-list">
                     {% for participant in ticket.getCcs() %}
