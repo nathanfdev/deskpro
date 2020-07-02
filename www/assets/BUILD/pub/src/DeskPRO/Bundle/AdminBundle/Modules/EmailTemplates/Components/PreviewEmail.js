@@ -14,6 +14,13 @@ class PreviewEmail extends React.Component {
     newTemplate: PropTypes.bool,
   };
 
+  shouldComponentUpdate = (nextProps) => {
+    if (this.props.preview && nextProps.preview) {
+      return this.props.preview.get('body') !== nextProps.preview.get('body');
+    }
+    return true;
+  }
+
   getPreviewAttachments = () => {
     if (!this.props.preview || !this.props.preview.get('attachments')) {
       return null;
