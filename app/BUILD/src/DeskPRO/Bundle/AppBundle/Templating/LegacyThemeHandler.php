@@ -6,12 +6,13 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Class LegacyThemeBackup.
+ * Class LegacyThemeHandler.
  */
-class LegacyThemeBackup
+class LegacyThemeHandler
 {
     const BACKUP_SYS_NAME = 'legacy-templates-backup';
 
@@ -31,17 +32,24 @@ class LegacyThemeBackup
     private $blobStorage;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * Constructor.
      *
      * @param EntityManager      $em
      * @param AppEnvInterface    $appEnv
      * @param DeskproBlobStorage $blobStorage
+     * @param BrandStack         $brandStack
      */
-    public function __construct(EntityManager $em, AppEnvInterface $appEnv, DeskproBlobStorage $blobStorage)
+    public function __construct(EntityManager $em, AppEnvInterface $appEnv, DeskproBlobStorage $blobStorage, BrandStack $brandStack)
     {
         $this->em          = $em;
         $this->appEnv      = $appEnv;
         $this->blobStorage = $blobStorage;
+        $this->brandStack  = $brandStack;
     }
 
     /**
@@ -49,22 +57,6 @@ class LegacyThemeBackup
      */
     public function refreshLegacyTemplatesBackup()
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('t, ts')
-            ->from(Template::class, 't')
-            ->join('t.theme_set', 'ts')
-            ->where('ts.theme_id IN (:theme_ids)')
-            ->setParameter('theme_ids', ['standard', 'sidebar'])
-            ->groupBy('t.name')
-        ;
-
-        /** @var Template[] $templates */
-        $templates = $qb->getQuery()->getResult();
-        if (!$templates) {
-            return;
-        }
-
         $tmpDir = $this->appEnv->getUserTmpDir().DIRECTORY_SEPARATOR.uniqid('dpd', true);
         if (!mkdir($tmpDir, 0777, true)) {
             throw new \RuntimeException('Unable to make a tmp dir');
@@ -73,6 +65,11 @@ class LegacyThemeBackup
         $templatesDir = $tmpDir.DIRECTORY_SEPARATOR.'deskpro-templates';
         if (!is_dir($templatesDir) && !mkdir($templatesDir, 0777, true)) {
             throw new \RuntimeException('Unable to make the templates dir');
+        }
+
+        $templates = $this->getCustomTemplates();
+        if (!$templates) {
+            return;
         }
 
         $archiveName = count($templates).'-legacy-templates-backup.zip';
@@ -124,5 +121,61 @@ class LegacyThemeBackup
         $this->em->flush();
 
         return $blob;
+    }
+
+    /**
+     * When the legacy current theme is being replaced with the new helpcenter one most of the custom templates can't be re-used
+     * because the html structure has been changed a lot, but some of them still can be copied though, e.g. custom header and footer.
+     */
+    public function copyCustomTemplates()
+    {
+        $legacyTemplates = $this->getCustomTemplates();
+        if (!$legacyTemplates) {
+            return;
+        }
+
+        $copyTemplateNames = [
+            'Theme:Internal:custom-header.html.twig',
+            'Theme:Internal:custom-footer.html.twig',
+            'Theme:Internal:custom-head-include.html.twig',
+        ];
+
+        $brand        = $this->brandStack->getActive()->getBrand();
+        $editThemeSet = $brand->getEditThemeSet();
+
+        foreach ($legacyTemplates as $legacyTemplate) {
+            if ($editThemeSet === $legacyTemplate->getThemeSet()) {
+                continue;
+            }
+
+            if (in_array($legacyTemplate->getName(), $copyTemplateNames)) {
+                $newTemplate = new Template();
+                $newTemplate->setName($legacyTemplate->getName());
+                $newTemplate->setTemplate($legacyTemplate->getTemplateCode(), $legacyTemplate->getTemplateCompiled());
+                $newTemplate->setThemeSet($editThemeSet);
+
+                $this->em->persist($newTemplate);
+            }
+        }
+
+        $this->em->flush();
+    }
+
+    /**
+     * @return Template[]
+     */
+    private function getCustomTemplates()
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('t, ts')
+            ->from(Template::class, 't')
+            ->join('t.theme_set', 'ts')
+            ->where('ts.theme_id IN (:theme_ids)')
+            ->setParameter('theme_ids', ['standard', 'sidebar'])
+            ->groupBy('t.name')
+        ;
+
+        return $qb->getQuery()->getResult();
     }
 }
