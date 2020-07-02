@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
@@ -324,10 +325,11 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param Ticket $ticket
-     * @param string $agentMessage
-     * @param string $subject
-     * @param Blob[] $attachments
+     * @param Ticket          $ticket
+     * @param string          $agentMessage
+     * @param string          $subject
+     * @param TicketMessage[] $ticketMessages
+     * @param Blob[]          $attachments
      *
      * @throws \Exception
      *
@@ -337,18 +339,19 @@ class AgentViewModelFactory extends AbstractViewModelFactory
         Ticket $ticket,
         $agentMessage,
         $subject,
+        $ticketMessages,
         $attachments = []
     ) {
-        $arguments = $this->getTicketArguments($ticket, false);
+        $arguments = $this->getTicketArguments($ticket, false, $ticketMessages);
 
         array_push($arguments, $agentMessage, $subject, $attachments);
 
         return $this->convertParameters(AgentTicketForward::class, $arguments);
     }
 
-    public function getTicketArguments($ticket, $forAgent = true)
+    public function getTicketArguments($ticket, $forAgent = true, $ticketMessages = null)
     {
-        $arguments = parent::getTicketArguments($ticket, $forAgent);
+        $arguments = parent::getTicketArguments($ticket, $forAgent, $ticketMessages);
 
         $department = $ticket->getDepartment();
         $layoutId   = $department ? $department->getId() : null;
