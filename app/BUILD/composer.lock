@@ -553,12 +553,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/deskpro/deskpro-api-php.git",
-                "reference": "e3146c52c514b424acb6ffc60866d56350a8e8ea"
+                "reference": "86d19b76d8257caf88512dcb3d29d13bd18ff216"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/deskpro/deskpro-api-php/zipball/e3146c52c514b424acb6ffc60866d56350a8e8ea",
-                "reference": "e3146c52c514b424acb6ffc60866d56350a8e8ea",
+                "url": "https://api.github.com/repos/deskpro/deskpro-api-php/zipball/86d19b76d8257caf88512dcb3d29d13bd18ff216",
+                "reference": "86d19b76d8257caf88512dcb3d29d13bd18ff216",
                 "shasum": ""
             },
             "require-dev": {
@@ -572,9 +572,6 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache"
-            ],
             "authors": [
                 {
                     "name": "Christopher Nadeau",
@@ -583,7 +580,7 @@
             ],
             "description": "Library for using the DeskPRO API with PHP",
             "homepage": "http://support.deskpro.com/",
-            "time": "2017-02-02T17:47:33+00:00"
+            "time": "2020-06-04T16:27:59+00:00"
         },
         {
             "name": "doctrine/annotations",
