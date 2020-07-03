@@ -25,7 +25,7 @@ return [
         'getSetting',
         'getRequest',
     ],
-    \DeskPRO\Bundle\PortalBundle\View\HelpCenterData::class => SandboxUtils::guessGetters(
+    \DeskPRO\Bundle\PortalBundle\View\HelpCenterData::class => SandboxUtils::guessAccessors(
         \DeskPRO\Bundle\PortalBundle\View\HelpCenterData::class
     ),
     \Pagerfanta\Pagerfanta::class => [
@@ -35,33 +35,34 @@ return [
     \Doctrine\Common\Collections\ArrayCollection::class => [
         '__toString',
     ],
-    \Symfony\Component\Form\FormView::class => [
-        'isRendered',
-        'isMethodRendered',
-        'setMethodRendered',
-    ],
+    \Symfony\Component\Form\FormView::class => SandboxUtils::guessAccessors(
+        \Symfony\Component\Form\FormView::class,
+        [
+            'setMethodRendered',
+        ]
+    ),
     \Symfony\Component\Form\FormErrorIterator::class => [
         '__toString',
     ],
-    \DeskPRO\Component\Hierarchy\HierarchyNode::class => SandboxUtils::guessGetters(
+    \DeskPRO\Component\Hierarchy\HierarchyNode::class => SandboxUtils::guessAccessors(
         \DeskPRO\Component\Hierarchy\HierarchyNode::class
     ),
-    \DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable::class => SandboxUtils::guessGetters(
+    \DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable::class => SandboxUtils::guessAccessors(
         \DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable::class
     ),
-    \DeskPRO\Bundle\AppBundle\Model\TicketColumn::class => SandboxUtils::guessGetters(
+    \DeskPRO\Bundle\AppBundle\Model\TicketColumn::class => SandboxUtils::guessAccessors(
         \DeskPRO\Bundle\AppBundle\Model\TicketColumn::class
     ),
-    \DeskPRO\Bundle\PortalBundle\Model\TicketFilter::class => SandboxUtils::guessGetters(
+    \DeskPRO\Bundle\PortalBundle\Model\TicketFilter::class => SandboxUtils::guessAccessors(
         \DeskPRO\Bundle\PortalBundle\Model\TicketFilter::class
     ),
-    \DeskPRO\Bundle\AppBundle\Model\TicketView::class => SandboxUtils::guessGetters(
+    \DeskPRO\Bundle\AppBundle\Model\TicketView::class => SandboxUtils::guessAccessors(
         \DeskPRO\Bundle\AppBundle\Model\TicketView::class
     ),
-    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\UserMessageLine::class => SandboxUtils::guessGetters(
+    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\UserMessageLine::class => SandboxUtils::guessAccessors(
         \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\UserMessageLine::class
     ),
-    \DeskPRO\Bundle\AppBundle\Model\TicketViewProperty::class => SandboxUtils::guessGetters(
+    \DeskPRO\Bundle\AppBundle\Model\TicketViewProperty::class => SandboxUtils::guessAccessors(
         \DeskPRO\Bundle\AppBundle\Model\TicketViewProperty::class
     ),
 ];
