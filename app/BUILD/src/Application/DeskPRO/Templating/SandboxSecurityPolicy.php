@@ -121,7 +121,7 @@ class SandboxSecurityPolicy extends SecurityPolicy
     {
         $allowedMethods = [];
         $allowedMethods = array_merge($allowedMethods, require __DIR__.'/Sandbox/whitelists/entities.php');
-        $allowedMethods = array_merge($allowedMethods, require __DIR__ .'/Sandbox/whitelists/methods.php');
+        $allowedMethods = array_merge($allowedMethods, require __DIR__.'/Sandbox/whitelists/methods.php');
 
         return $allowedMethods;
     }
