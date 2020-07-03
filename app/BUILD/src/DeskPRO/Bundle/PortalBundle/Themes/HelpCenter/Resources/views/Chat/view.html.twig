@@ -217,7 +217,7 @@
               {% set allAgentsExceptAssigned = [] %}
               {% for a in chat.agent_participants if a != chat.agent %}
                 {% set allAgentsExceptAssigned = allAgentsExceptAssigned|merge([a]) %}
-              {% endfilter %}
+              {% endfor %}
 
               {% if allAgentsExceptAssigned|length > 0 %}
               <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.agents') }}</dt>
