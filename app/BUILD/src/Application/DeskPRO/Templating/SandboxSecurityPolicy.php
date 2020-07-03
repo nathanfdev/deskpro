@@ -104,6 +104,10 @@ class SandboxSecurityPolicy extends SecurityPolicy
             return true;
         }
 
+        if (!$this->requestStack->getMasterRequest()) {
+            return true;
+        }
+
         $currentPath = $this->requestStack->getMasterRequest()->getPathInfo();
         foreach (require __DIR__.'/Sandbox/whitelists/base_paths.php' as $path) {
             if (preg_match(sprintf('~^%s~', $path), $currentPath)) {
