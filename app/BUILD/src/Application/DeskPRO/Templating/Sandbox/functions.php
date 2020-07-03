@@ -108,7 +108,6 @@ return array (
     'asset_version',
     'assets_version',
     'path',
-    'expression',
     'render',
     'render_*',
     'controller',
@@ -235,4 +234,5 @@ return array (
     'can_use_tickets',
     'can_use_chat',
     'can_rate_news',
+    'can_rate_download',
 );
