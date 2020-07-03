@@ -67,8 +67,6 @@ return array (
     'gravatar_for_email',
     'time_group_phrase',
     'captcha_html',
-    'include_file',
-    'include_php_file',
     'include_code_plugin',
     'var_dump',
     'dp_copyright',

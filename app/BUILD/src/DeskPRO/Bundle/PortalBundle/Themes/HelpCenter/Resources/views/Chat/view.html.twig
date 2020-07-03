@@ -61,7 +61,14 @@
 
                 <div class="dp-po-post-info">
                   <ul class="dp-po-post-info-list">
-                    {% set lastMessage = chat_messages|filter(m => m.author)|last %}
+
+                    {% set chatMessagesWithAuthor = [] %}
+                    {% for m in chat_messages if m.author %}
+                      {% set chatMessagesWithAuthor = chatMessagesWithAuthor|merge([m]) %}
+                    {% endfor %}
+
+                    {% set lastMessage = chatMessagesWithAuthor|last %}
+
                     {% set lastPerson = lastMessage.author %}
                     <li class="dp-po-post-info-item">
                       {{ phrase('helpcenter.general.last_update_by', { date_updated: lastMessage.date_created, person_name: lastPerson }) }}
@@ -206,7 +213,12 @@
                   <span>{{chat.agent.display_name_user}}</span>
                 </div>
               </dd>
-              {% set allAgentsExceptAssigned = chat.agent_participants|filter(a => a != chat.agent) %}
+
+              {% set allAgentsExceptAssigned = [] %}
+              {% for a in chat.agent_participants if a != chat.agent %}
+                {% set allAgentsExceptAssigned = allAgentsExceptAssigned|merge([a]) %}
+              {% endfilter %}
+
               {% if allAgentsExceptAssigned|length > 0 %}
               <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.agents') }}</dt>
               <dd>
