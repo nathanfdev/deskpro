@@ -235,4 +235,5 @@ return array (
     'can_use_chat',
     'can_rate_news',
     'can_rate_download',
+    'can_rate_article',
 );

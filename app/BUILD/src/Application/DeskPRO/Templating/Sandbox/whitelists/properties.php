@@ -12,6 +12,9 @@ return [
         'comments',
         'categories',
         'ymCounts',
+        'view',
+        'topics_data',
+        'is_compact',
     ],
     \Symfony\Component\Form\FormView::class => [
         'children',
