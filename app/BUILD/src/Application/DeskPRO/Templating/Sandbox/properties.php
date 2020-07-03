@@ -5,6 +5,7 @@ return [
         'alerts',
         'flashes',
         'data',
+        'related_content',
     ],
     \Symfony\Component\Form\FormView::class => [
         'children',
