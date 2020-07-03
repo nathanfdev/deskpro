@@ -1,5 +1,8 @@
 <?php
 
+// List of whitelisted arbitrary objects and properties.
+// DO NOT whitelist Request::server unless you have a good reason!
+
 return [
     \DeskPRO\Component\Util\LazyPropObject::class => [
         'alerts',

@@ -1,5 +1,7 @@
 <?php
 
+// List of whitelisted arbitrary objects and methods
+
 use Application\DeskPRO\Templating\Sandbox\SandboxUtils;
 
 return [

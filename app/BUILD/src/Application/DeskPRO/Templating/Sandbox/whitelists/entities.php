@@ -1,6 +1,6 @@
 <?php
 
-// Exhaustive list of all entities and a guessed set of getter methods
+// Exhaustive whitelist of all entities and a guessed accessor methods
 
 return array (
     'DeskPRO\\Bundle\\AuditBundle\\Entity\\AuditLog' =>

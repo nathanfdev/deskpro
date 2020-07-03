@@ -1,5 +1,7 @@
 <?php
 
+// List of whitelisted twig filters
+
 return array (
     'date',
     'date_modify',

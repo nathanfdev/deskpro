@@ -1,5 +1,7 @@
 <?php
 
+// List of whitelisted twig functions
+
 return array (
     'max',
     'min',

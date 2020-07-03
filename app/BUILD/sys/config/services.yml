@@ -133,6 +133,7 @@ services:
     class: Application\DeskPRO\Templating\SandboxSecurityPolicy
     arguments:
       - "@request_stack"
+      - "@settings_resolver"
 
   deskpro.sandboxed_twig.sandbox_extension:
     class: Twig\Extension\SandboxExtension
