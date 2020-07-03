@@ -1050,7 +1050,7 @@ class PersonController extends AbstractController
         if ($send_email) {
             if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = $this->get('email.user_viewmodel_factory')
-                    ->createAgentChangedPasswordModel($person->getPlaintextPassword());
+                    ->createPasswordChangedByAgentModel($person->getPlaintextPassword());
                 $this->get('email.email_sender')
                     ->send($viewModel, ['to' => $person]);
             } else {

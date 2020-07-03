@@ -4599,6 +4599,7 @@ class TicketController extends AbstractController
                     $ticket,
                     $customMessage,
                     $this->in->getString('subject'),
+                    $messages,
                     $attachments
                 );
 
@@ -4856,6 +4857,7 @@ class TicketController extends AbstractController
                     $ticket,
                     $customMessage,
                     $this->in->getString('subject'),
+                    $messages,
                     $attachments
                 );
 

@@ -2,7 +2,6 @@
 
 namespace DpSys\LowScript;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Blob;
 use DpSys\CodePlugin\DpPlugins;

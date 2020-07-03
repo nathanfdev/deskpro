@@ -55,7 +55,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     {{ form_start(csrf_form) }}
-                                                        <button type="button" id="closeTicketBtn" data-url="{{ path('portal_tickets_resolve', { ticket_ref: ticket.ref }) }}" class="btn btn-primary">{{ phrase('helpcenter.tickets.resolve_my_ticket_action') }}</button>
+                                                        <button type="button" id="closeTicketBtn" data-url="{{ path('portal_tickets_resolve', { ticket_ref: app.getSetting('core_tickets.use_ref') ? ticket.ref : ticket.id }) }}" class="btn btn-primary">{{ phrase('helpcenter.tickets.resolve_my_ticket_action') }}</button>
                                                         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{{ phrase('helpcenter.general.cancel_action') }}</button>
                                                         {{ form_rest(csrf_form) }}
                                                     {{ form_end(csrf_form) }}
@@ -129,7 +129,7 @@
         {% endif %}
 
         <div class="dp-po-ticket-meta-cc">
-            <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_participants', {participants: '<span class="count">' ~ (ticket.getCcs()|length) ~ '</span>'}, true) }}</dt>
+            <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_participants', true) }} <span class="count">{{ (ticket.getCcs()|length) }}</span></dt>
             <dd>
                 <ul class="dp-po-ticket-meta-cc-list">
                     {% for participant in ticket.getCcs() %}

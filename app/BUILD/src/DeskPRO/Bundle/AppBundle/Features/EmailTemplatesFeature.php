@@ -100,7 +100,7 @@ HTML;
      */
     public function isEnabledOnInstall()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -108,7 +108,7 @@ HTML;
      */
     public function getDateReleased()
     {
-        return false;
+        return new \DateTime('2020-06-15');
     }
 
     /**
@@ -170,6 +170,12 @@ HTML;
         $em->flush();
     }
 
+    /**
+     * @param EntityManager      $em
+     * @param ContainerInterface $container
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     private function copyLegacyTemplates(EntityManager $em, ContainerInterface $container)
     {
         $set = $this->getTemplateSet($em, $container);
@@ -193,6 +199,9 @@ HTML;
         $language = $container->get('language_manager')->getLanguageStack()->getDefaultLanguage();
 
         foreach ($templates as $previousTemplate) {
+            $this->saveLegacyTemplate($em, $previousTemplate);
+            $em->remove($previousTemplate);
+
             /** @var Template $previousTemplate */
             if (strpos($previousTemplate->getName(), 'DeskPRO:emails_custom') === 0) {
                 $newTemplateName = str_replace('DeskPRO:emails_custom', 'SendmailBundle:emails_custom', $previousTemplate->getName());
@@ -283,8 +292,6 @@ HTML;
 
             $this->migratedCustomTemplates[$previousTemplate->getName()] = $newTemplateName;
             $set->saveTemplate($template);
-            $this->saveLegacyTemplate($em, $previousTemplate);
-            $em->remove($previousTemplate);
         }
         $em->flush();
     }
@@ -637,7 +644,8 @@ CODE
             $templateCode->setCode($code);
 
             $templateName = $template->getName();
-            $templateName = array_pop(explode(':', $templateName));
+            $nameParts    = explode(':', $templateName);
+            $templateName = array_pop($nameParts);
 
             /** @var Template $newTemplate */
             foreach ($newTemplates as $newTemplate) {
@@ -654,5 +662,7 @@ CODE
         foreach ($newTemplates as $template) {
             $em->remove($template);
         }
+
+        $em->flush();
     }
 }

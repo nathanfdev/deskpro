@@ -1416,7 +1416,7 @@ class TicketSearch extends SearcherAbstract
 
                 // The term handlers below that only accept single values
                 // will use $choice as a single value for brevity
-                if (is_array($choice) and count($choice) == 1) {
+                if (is_array($choice) && count($choice) == 1) {
                     $choice = Arrays::getFirstItem($choice);
                 }
 
@@ -1505,7 +1505,7 @@ class TicketSearch extends SearcherAbstract
                             $choice = array_unique($choice, \SORT_NUMERIC);
                         }
 
-                        if (count($choice) == 1) {
+                        if (is_array($choice) && count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_DEPARTMENT;
                         }
 
@@ -1515,7 +1515,7 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_BRAND:
                         $this->affected_fields[] = 'ticket.brand_id';
 
-                        if (count($choice) == 1) {
+                        if (is_array($choice) && count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_BRAND;
                         }
 
@@ -1532,7 +1532,7 @@ class TicketSearch extends SearcherAbstract
                             $choice = array_unique($choice, \SORT_NUMERIC);
                         }
 
-                        if (count($choice) == 1) {
+                        if (is_array($choice) && count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_EMAIL_ACCOUNT;
                         }
 
@@ -1575,7 +1575,7 @@ class TicketSearch extends SearcherAbstract
                             $choice = array_unique($choice, \SORT_NUMERIC);
                         }
 
-                        if (count($choice) == 1) {
+                        if (is_array($choice) && count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_CATEGORY;
                         }
 
@@ -1601,7 +1601,7 @@ class TicketSearch extends SearcherAbstract
                             $choice = array_unique($choice, \SORT_NUMERIC);
                         }
 
-                        if (count($choice) == 1) {
+                        if (is_array($choice) && count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_PRODUCT;
                         }
 
@@ -1611,7 +1611,7 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_PRIORITY:
                         $this->affected_fields[] = 'ticket.priority_id';
 
-                        if (count($choice) == 1) {
+                        if (is_array($choice) && count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_PRIORITY;
                         }
 
@@ -1672,7 +1672,7 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_WORKFLOW:
                         $this->affected_fields[] = 'ticket.workflow_id';
-                        if (count($choice) == 1) {
+                        if (is_array($choice) && count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_WORKFLOW;
                         }
 
@@ -1915,7 +1915,7 @@ class TicketSearch extends SearcherAbstract
 
                     case self::TERM_LANGUAGE:
                         $this->affected_fields[] = 'ticket.language_id';
-                        if (count($choice) == 1) {
+                        if (is_array($choice) && count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_LANGUAGE;
                         }
 
@@ -2142,7 +2142,7 @@ class TicketSearch extends SearcherAbstract
                         $choice = Arrays::removeNull($choice);
                         $choice = Arrays::removeEmptyString($choice);
                         if (!empty($choice)) {
-                            if (count($choice) == 1) {
+                            if (is_array($choice) && count($choice) == 1) {
                                 $this->specific_fields[] = self::TERM_ORGANIZATION;
                             }
 
@@ -2169,7 +2169,7 @@ class TicketSearch extends SearcherAbstract
 
                         break;
                     case self::TERM_PERSON:
-                        if (count($choice) == 1) {
+                        if (is_array($choice) && count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_PERSON;
                         }
 
@@ -2758,7 +2758,7 @@ class TicketSearch extends SearcherAbstract
                     case 'brand_id':
                         $this->affected_fields[] = 'ticket.brand_id';
 
-                        if (count($choice) == 1) {
+                        if (is_array($choice) && count($choice) == 1) {
                             $this->specific_fields[] = 'brand';
                         }
 
@@ -2867,7 +2867,7 @@ class TicketSearch extends SearcherAbstract
 
                 break;
             case self::TERM_DEPARTMENT:
-                if (count($choice) == 1) {
+                if (is_array($choice) && count($choice) == 1) {
                     $choice = Arrays::getFirstItem($choice);
                 }
                 if (!is_array($choice)) {
@@ -2885,7 +2885,7 @@ class TicketSearch extends SearcherAbstract
 
                 break;
             case self::TERM_BRAND:
-                if (count($choice) == 1) {
+                if (is_array($choice) && count($choice) == 1) {
                     $choice = Arrays::getFirstItem($choice);
                 }
                 if (!is_array($choice)) {
@@ -3036,7 +3036,7 @@ class TicketSearch extends SearcherAbstract
 
                 $info   = $this->_normalizeAgentChoice($choice);
                 $choice = (array) $info['agent_ids'];
-                if (count($choice) == 1) {
+                if (is_array($choice) && count($choice) == 1) {
                     $choice = array_pop($choice);
                 }
 

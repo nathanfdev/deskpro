@@ -113,8 +113,18 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.news_comment:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\NewsCommentHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.download:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\DownloadHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.download_comment:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\DownloadCommentHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -124,7 +134,7 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.article_comment:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ArticleCommentHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\ArticleCommentHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -136,7 +146,7 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.topic_comment:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TopicCommentHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\TopicCommentHandler
     arguments:
       - "@avatar_resolver"
     tags:

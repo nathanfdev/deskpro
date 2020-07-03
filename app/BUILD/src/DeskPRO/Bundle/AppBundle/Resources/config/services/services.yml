@@ -122,12 +122,13 @@ services:
       - "@security.token_storage"
       - "@language_stack"
 
-  legacy_template_backup:
-    class: DeskPRO\Bundle\AppBundle\Templating\LegacyThemeBackup
+  legacy_template_handler:
+    class: DeskPRO\Bundle\AppBundle\Templating\LegacyThemeHandler
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@deskpro.app_env"
       - "@blob.storage"
+      - "@brand_stack"
 
   app.environment:
     class: DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService
@@ -218,3 +219,8 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@job.scheduler"
+
+  dp.image.image_cleaner:
+    class: DeskPRO\Bundle\AppBundle\Image\ImageCleaner
+    arguments:
+      - "@=service('service_container').getSystemService('imagine')"

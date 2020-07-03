@@ -18,7 +18,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AccountDisabled;
-use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangedPassword;
+use DeskPRO\Bundle\SendmailBundle\View\Model\PasswordChangedByAgent;
 use DeskPRO\Bundle\SendmailBundle\View\Model\ChatTranscript;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentApproved;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentDeleted;
@@ -99,13 +99,13 @@ class UserViewModelFactory extends AbstractViewModelFactory
     /**
      * @param string $newPassword
      *
-     * @return AgentChangedPassword
+     * @return PasswordChangedByAgent
      */
-    public function createAgentChangedPasswordModel($newPassword)
+    public function createPasswordChangedByAgentModel($newPassword)
     {
         $userLink = $this->router->generate('user', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return $this->convertParameters(AgentChangedPassword::class, [$userLink, $newPassword]);
+        return $this->convertParameters(PasswordChangedByAgent::class, [$userLink, $newPassword]);
     }
 
     /**

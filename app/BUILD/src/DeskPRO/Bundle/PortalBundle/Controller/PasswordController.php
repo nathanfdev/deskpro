@@ -164,6 +164,7 @@ class PasswordController extends AbstractController
         if ($reset
             && $reset['date_requested']->getTimestamp() > (time() - $valid_seconds)
             && $reset['date_requested'] > $reset['person']->getDatePasswordSet()
+            && $reset['date_requested'] > $reset['person']->getEmailsUpdatedDate()
         ) {
             $valid = true;
         }

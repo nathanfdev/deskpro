@@ -627,11 +627,7 @@ abstract class AbstractFieldResolver
                     ? $this->phrase(['portal.widget.label_email', 'helpcenter.forms.label_email'])
                     : $this->phrase(['portal.forms.label_email', 'helpcenter.forms.label_email']),
 
-                // ignore the "unique entity" constraint here
-                'constraints' => [
-                    new AppAssert\Person\Email\NotSystemEmail(),
-                    new AppAssert\Person\Email\NotBannedEmail(),
-                ],
+                'ignore_unique_check' => true,
             ];
 
             if ($context->isFullLayout()) {

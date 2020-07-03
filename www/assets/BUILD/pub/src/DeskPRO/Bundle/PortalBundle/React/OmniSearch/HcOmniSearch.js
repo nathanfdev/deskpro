@@ -16,6 +16,7 @@ import forOwn from 'lodash/forOwn';
 import keys from 'lodash/keys';
 import throttle from 'lodash/throttle';
 import moment from 'moment';
+import { portalWindow } from '../../PortalWindow';
 
 class ResultTab extends React.PureComponent {
   static propTypes = {
@@ -243,6 +244,7 @@ export class HcOmniSearch extends React.Component {
           { data.article || data.download || data.news || data.community || data.topic || data.chat_conversation ?
             <div className="dp-po-search-tabs">
               <ul className="dp-po-search-tabs-list">
+                {portalWindow.can_use_articles &&
                 <ResultTab
                   tab="article"
                   title="helpcenter.general.nav_kb"
@@ -250,7 +252,8 @@ export class HcOmniSearch extends React.Component {
                   data={data}
                   activeTab={activeTab}
                   onClick={this.setTab}
-                />
+                />}
+                {portalWindow.can_use_guides &&
                 <ResultTab
                   tab="topic"
                   title="helpcenter.general.nav_guides"
@@ -258,7 +261,8 @@ export class HcOmniSearch extends React.Component {
                   data={data}
                   activeTab={activeTab}
                   onClick={this.setTab}
-                />
+                />}
+                {portalWindow.can_use_community &&
                 <ResultTab
                   tab="community"
                   title="helpcenter.general.nav_community"
@@ -266,7 +270,8 @@ export class HcOmniSearch extends React.Component {
                   data={data}
                   activeTab={activeTab}
                   onClick={this.setTab}
-                />
+                />}
+                {portalWindow.can_use_news &&
                 <ResultTab
                   tab="news"
                   title="helpcenter.general.nav_news"
@@ -274,7 +279,8 @@ export class HcOmniSearch extends React.Component {
                   data={data}
                   activeTab={activeTab}
                   onClick={this.setTab}
-                />
+                />}
+                {portalWindow.can_use_downloads &&
                 <ResultTab
                   tab="download"
                   title="helpcenter.general.files_type"
@@ -282,7 +288,8 @@ export class HcOmniSearch extends React.Component {
                   data={data}
                   activeTab={activeTab}
                   onClick={this.setTab}
-                />
+                />}
+                {portalWindow.can_use_chat &&
                 <ResultTab
                   tab="chat_conversation"
                   title="helpcenter.general.chats"
@@ -290,44 +297,50 @@ export class HcOmniSearch extends React.Component {
                   data={data}
                   activeTab={activeTab}
                   onClick={this.setTab}
-                />
+                />}
               </ul>
+              {portalWindow.can_use_articles &&
               <HcOmniSearchResultSection
                 nameApi="article"
                 initialResult={'article' in data ? data.article : {}}
                 q={this.state.searchQuery}
                 activeTab={activeTab}
-              />
+              />}
+              {portalWindow.can_use_guides &&
               <HcOmniSearchResultSection
                 nameApi="topic"
                 initialResult={'topic' in data ? data.topic : {}}
                 q={this.state.searchQuery}
                 activeTab={activeTab}
-              />
+              />}
+              {portalWindow.can_use_community &&
               <HcOmniSearchResultSection
                 nameApi="community"
                 initialResult={'community' in data ? data.community : {}}
                 q={this.state.searchQuery}
                 activeTab={activeTab}
-              />
+              />}
+              {portalWindow.can_use_news &&
               <HcOmniSearchResultSection
                 nameApi="news"
                 initialResult={'news' in data ? data.news : {}}
                 q={this.state.searchQuery}
                 activeTab={activeTab}
-              />
+              />}
+              {portalWindow.can_use_downloads &&
               <HcOmniSearchResultSection
                 nameApi="download"
                 initialResult={'download' in data ? data.download : {}}
                 q={this.state.searchQuery}
                 activeTab={activeTab}
-              />
+              />}
+              {portalWindow.can_use_chat &&
               <HcOmniSearchResultSection
                 nameApi="chat_conversation"
                 initialResult={'chat_conversation' in data ? data.chat_conversation : {}}
                 q={this.state.searchQuery}
                 activeTab={activeTab}
-              />
+              />}
             </div>
             : null
           }

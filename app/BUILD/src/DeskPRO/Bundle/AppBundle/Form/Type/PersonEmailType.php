@@ -8,6 +8,7 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\FreeEmail as Fre
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -36,13 +37,23 @@ class PersonEmailType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class'   => PersonEmail::class,
-            'email_label'  => false,
-            'inline'       => false,
-            'mapped_email' => true,
-            'constraints'  => [
-                new FreeEmailConstraint(),
-            ],
+            'data_class'          => PersonEmail::class,
+            'email_label'         => false,
+            'inline'              => false,
+            'mapped_email'        => true,
+            'ignore_unique_check' => false,
+            'constraints'         => function (Options $options) {
+                $constraints = [
+                    new AppAssert\Person\Email\NotBannedEmail(),
+                    new AppAssert\Person\Email\NotSystemEmail(),
+                ];
+
+                if (!$options['ignore_unique_check']) {
+                    $constraints[] = new FreeEmailConstraint();
+                }
+
+                return $constraints;
+            },
             'email_constraints' => [
                 new Assert\NotBlank(),
                 new Assert\Email(['strict' => true]),

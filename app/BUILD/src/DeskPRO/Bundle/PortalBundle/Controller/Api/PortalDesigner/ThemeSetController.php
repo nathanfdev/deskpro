@@ -85,6 +85,7 @@ class ThemeSetController extends AbstractApiController
         }
 
         $em    = $this->getManager();
+        /** @var Brand $brand */
         $brand = $this->container->get('brand_stack')->getActive()->getBrand();
 
         if (is_numeric($data['id'])) {
@@ -124,7 +125,21 @@ class ThemeSetController extends AbstractApiController
             }
         }
 
+        $previousEditThemeSet = $brand->getEditThemeSet();
         $brand->setEditThemeSet($themeSet);
+        if ($brand->getThemeSet()->getThemeId() !== 'helpcenter'
+            && $brand->getEditThemeSet()->getThemeId() === 'helpcenter'
+        ) {
+            $this->container->get('legacy_template_handler')->refreshLegacyTemplatesBackup();
+            $this->container->get('legacy_template_handler')->copyCustomTemplates();
+            $this->container->get('dp.portal.designer.theme_set_copying_service')->copyIcons($previousEditThemeSet, $themeSet);
+            $themeSet->setOption('welcome_box', $previousEditThemeSet->getOption('welcome_box'));
+            $variables = $previousEditThemeSet->getOption('custom_vars') ?: [];
+            $themeSet->setOption('custom_vars', $variables);
+            $this->getPortalStylesCompiler()->recompile($variables, $themeSet);
+            $this->container->getEm()->remove($previousEditThemeSet);
+        }
+
         $em->flush();
 
         return new View($themeSet);
@@ -140,7 +155,8 @@ class ThemeSetController extends AbstractApiController
         if ($brand->getThemeSet()->getThemeId() !== 'helpcenter'
             && $brand->getEditThemeSet()->getThemeId() === 'helpcenter'
         ) {
-            $this->container->get('legacy_template_backup')->refreshLegacyTemplatesBackup();
+            $this->container->get('legacy_template_handler')->refreshLegacyTemplatesBackup();
+            $this->container->get('legacy_template_handler')->copyCustomTemplates();
         }
 
         $this->getStylesManager()->commitEditThemeSet();

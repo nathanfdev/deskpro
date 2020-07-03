@@ -79,13 +79,13 @@ class ChatCreateType extends AbstractType
      * @param \DeskPRO\Bundle\AppBundle\Helper\WidgetJwtDecoder $jwtDecoder
      */
     public function __construct(
-        EntityManager          $em,
-        SetPersonListener      $personListener,
+        EntityManager $em,
+        SetPersonListener $personListener,
         WidgetSettingsResolver $settingsResolver,
-        CustomFieldManager     $fieldManager,
-        BrandStack             $brandStack,
-        PermissionsManager     $permissionsManager,
-        WidgetJwtDecoder       $jwtDecoder
+        CustomFieldManager $fieldManager,
+        BrandStack $brandStack,
+        PermissionsManager $permissionsManager,
+        WidgetJwtDecoder $jwtDecoder
     ) {
         $this->em                 = $em;
         $this->personListener     = $personListener;
@@ -110,7 +110,11 @@ class ChatCreateType extends AbstractType
             $nameConstraints[] = new Assert\NotBlank();
         }
 
-        $emailConstraints = [new Assert\Email(['strict' => true])];
+        $emailConstraints = [
+            new Assert\Email(['strict' => true]),
+            new AppAssert\Person\Email\NotBannedEmail(),
+            new AppAssert\Person\Email\NotSystemEmail(),
+        ];
         if ($brandOptions->getChat()->isRequiredEmail()) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmail'], 100);
             $emailConstraints[] = new Assert\NotBlank();
