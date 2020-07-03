@@ -79,4 +79,7 @@ return [
     \DateTime::class => [
         'getTimestamp',
     ],
+    \Application\DeskPRO\Auth\AuthenticationManager::class => SandboxUtils::guessAccessors(
+        \Application\DeskPRO\Auth\AuthenticationManager::class
+    ),
 ];
