@@ -12,8 +12,8 @@ class SandboxUtils
     /**
      * Try to guess a list of accessors for a given object
      *
-     * @param string   $class Object's class name
-     * @param string[] $extra Extra method names to add to the returned list
+     * @param string   $class          Object's class name
+     * @param string[] $extra          Extra method names to add to the returned list
      * @param string[] $methodPrefixes List of accessor method prefixes to look for
      * @return array
      */
