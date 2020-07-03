@@ -70,4 +70,13 @@ return [
     \DeskPRO\Bundle\AppBundle\Webhooks\WebhookInvocation::class => [
         'getData',
     ],
+    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketCreatedLine::class => SandboxUtils::guessAccessors(
+    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketCreatedLine::class
+    ),
+    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimeline::class => SandboxUtils::guessAccessors(
+        \DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimeline::class
+    ),
+    \DateTime::class => [
+        'getTimestamp',
+    ],
 ];

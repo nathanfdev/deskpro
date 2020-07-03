@@ -236,4 +236,12 @@ return array (
     'can_rate_news',
     'can_rate_download',
     'can_rate_article',
+    'has_any_news',
+    'has_any_downloads',
+    'is_page_kb',
+    'is_page_guides',
+    'is_page_news',
+    'is_page_community',
+    'is_page_downloads',
+    'is_page_tickets',
 );
