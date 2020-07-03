@@ -10,6 +10,8 @@ return [
         'data',
         'related_content',
         'comments',
+        'categories',
+        'ymCounts',
     ],
     \Symfony\Component\Form\FormView::class => [
         'children',
