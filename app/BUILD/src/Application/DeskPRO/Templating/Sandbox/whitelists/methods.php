@@ -67,4 +67,7 @@ return [
     \DeskPRO\Bundle\AppBundle\Model\TicketViewProperty::class => SandboxUtils::guessAccessors(
         \DeskPRO\Bundle\AppBundle\Model\TicketViewProperty::class
     ),
+    \DeskPRO\Bundle\AppBundle\Webhooks\WebhookInvocation::class => [
+        'getData',
+    ],
 ];

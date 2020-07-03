@@ -52,6 +52,10 @@ class SandboxSecurityPolicy extends SecurityPolicy
      */
     public function checkMethodAllowed($obj, $method)
     {
+        if (get_class($obj) === \stdClass::class) {
+            return;
+        }
+
         if ($this->isSandboxDisabled()) {
             return;
         }
@@ -86,6 +90,10 @@ class SandboxSecurityPolicy extends SecurityPolicy
      */
     public function checkPropertyAllowed($obj, $property)
     {
+        if (get_class($obj) === \stdClass::class) {
+            return;
+        }
+
         if ($this->isSandboxDisabled()) {
             return;
         }
