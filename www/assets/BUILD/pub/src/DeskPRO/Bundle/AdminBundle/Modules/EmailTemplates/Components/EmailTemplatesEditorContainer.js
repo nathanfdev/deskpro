@@ -924,6 +924,7 @@ class EmailTemplatesEditor extends React.Component {
             { this.props.emailTemplates.get('legacyTemplate') ?
               <ConfirmButton
                 type="secondary"
+                size="medium"
                 loading={this.props.asConvertedSubmit}
                 disabled={textareaDisabled}
                 onClick={this.markAsConverted}

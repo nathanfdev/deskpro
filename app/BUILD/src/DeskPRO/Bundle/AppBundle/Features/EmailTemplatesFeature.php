@@ -199,8 +199,6 @@ HTML;
         $language = $container->get('language_manager')->getLanguageStack()->getDefaultLanguage();
 
         foreach ($templates as $previousTemplate) {
-            $this->saveLegacyTemplate($em, $previousTemplate);
-            $em->remove($previousTemplate);
 
             /** @var Template $previousTemplate */
             if (strpos($previousTemplate->getName(), 'DeskPRO:emails_custom') === 0) {
@@ -292,6 +290,8 @@ HTML;
 
             $this->migratedCustomTemplates[$previousTemplate->getName()] = $newTemplateName;
             $set->saveTemplate($template);
+            $this->saveLegacyTemplate($em, $previousTemplate);
+            $em->remove($previousTemplate);
         }
         $em->flush();
     }
