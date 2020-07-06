@@ -687,6 +687,14 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
+     * @return string
+     */
+    public function getCreatedByCommunityName()
+    {
+        return $this->getCreatedBy() ? $this->getCreatedBy()->getCommunityName() : '[unknown]';
+    }
+
+    /**
      * @param Person|null $createdBy
      *
      * @return AbstractBaseApproval
