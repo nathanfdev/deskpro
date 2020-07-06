@@ -4,6 +4,7 @@ namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Twig\Sandbox\SecurityError;
 use Twig\Sandbox\SecurityNotAllowedFilterError;
 use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Sandbox\SecurityPolicy;
@@ -12,6 +13,10 @@ use Twig\Sandbox\SecurityPolicy;
  * Class SandboxSecurityPolicy
  *
  * Sandboxed Twig may be disabled via $SETTINGS['templating.disable_sandbox'] = true
+ *
+ * If you want to use "learning mode", set $SETTINGS['templating.enable_sandbox_learning'] = true;
+ * Learning mode will allow you to "collect" the security exceptions in the server logs so that they may be added as a
+ * group to the whitelist. WARNING: learning mode will effectively disable sandbox mode, making it fail silently.
  *
  * @package Application\DeskPRO\Templating
  */
@@ -30,7 +35,7 @@ class SandboxSecurityPolicy extends SecurityPolicy
     /**
      * SandboxSecurityPolicy constructor.
      *
-     * @param RequestStack $requestStack
+     * @param RequestStack     $requestStack
      * @param SettingsResolver $settings
      */
     public function __construct(RequestStack $requestStack, SettingsResolver $settings)
@@ -60,7 +65,15 @@ class SandboxSecurityPolicy extends SecurityPolicy
             return;
         }
 
-        parent::checkMethodAllowed($obj, $method);
+        try {
+            parent::checkMethodAllowed($obj, $method);
+        } catch (SecurityError $e) {
+            if (!$this->isInLearningMode()) {
+                throw $e;
+            }
+
+            $this->leaningLogEntry("METHOD", sprintf('%s::%s', get_class($obj), $method));
+        }
     }
 
     /**
@@ -74,13 +87,21 @@ class SandboxSecurityPolicy extends SecurityPolicy
 
         foreach ($filters as $filter) {
             if (!\in_array($filter, $this->allowedFilters)) {
-                throw new SecurityNotAllowedFilterError(sprintf('Filter "%s" is not allowed.', $filter), $filter);
+                if (!$this->isInLearningMode()) {
+                    throw new SecurityNotAllowedFilterError(sprintf('Filter "%s" is not allowed.', $filter), $filter);
+                }
+
+                $this->leaningLogEntry("FILTER", $filter);
             }
         }
 
         foreach ($functions as $function) {
             if (!\in_array($function, $this->allowedFunctions)) {
-                throw new SecurityNotAllowedFunctionError(sprintf('Function "%s" is not allowed.', $function), $function);
+                if (!$this->isInLearningMode()) {
+                    throw new SecurityNotAllowedFunctionError(sprintf('Function "%s" is not allowed.', $function), $function);
+                }
+
+                $this->leaningLogEntry("FUNCTION", $function);
             }
         }
     }
@@ -98,7 +119,15 @@ class SandboxSecurityPolicy extends SecurityPolicy
             return;
         }
 
-        parent::checkPropertyAllowed($obj, $property);
+        try {
+            parent::checkPropertyAllowed($obj, $property);
+        } catch (SecurityError $e) {
+            if (!$this->isInLearningMode()) {
+                throw $e;
+            }
+
+            $this->leaningLogEntry("PROPERTY", sprintf('%s::%s', get_class($obj), $property));
+        }
     }
 
     /**
@@ -160,5 +189,22 @@ class SandboxSecurityPolicy extends SecurityPolicy
     private function getAllowedProperties()
     {
         return require __DIR__.'/Sandbox/whitelists/properties.php';
+    }
+
+    /**
+     * @return bool
+     */
+    private function isInLearningMode()
+    {
+        return $this->settings->getGlobalSettings()->get('templating.enable_sandbox_learning', false);
+    }
+
+    /**
+     * @param string $type
+     * @param string $message
+     */
+    private function leaningLogEntry($type, $message)
+    {
+        error_log(sprintf('[Twig Sandbox Security Exception] %s %s', $type, $message));
     }
 }

@@ -17,6 +17,9 @@ return [
     \Application\DeskPRO\Templating\GlobalVariables::class => [
         'isPortalEnabled',
         'getSetting',
+        'getUser',
+        'isCloud',
+        'isDemo',
     ],
     \Doctrine\ORM\PersistentCollection::class => [
         'count',
