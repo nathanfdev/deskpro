@@ -120,16 +120,18 @@ class TicketApprovalsController extends AbstractController
                     $this->getApprovalManager()->createContext(ExecutorContext::METHOD_WEB, $person)
                 );
 
-                if ($approvalResponse->isApproved()) {
-                    $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.approved-by', 'helpcenter.approvals.you_approved'], [
-                        'person_name'   => $approval->getCreatedBy()->getCommunityName(),
-                        'template'      => $approval->getTemplate()->getName(),
-                    ]));
-                } else {
-                    $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.rejected-by', 'helpcenter.approvals.you_rejected'], [
-                        'person_name'   => $approval->getCreatedBy()->getCommunityName(),
-                        'template'      => $approval->getTemplate()->getName(),
-                    ]));
+                if ($approval->getCreatedBy()) {
+                    if ($approvalResponse->isApproved()) {
+                        $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.approved-by', 'helpcenter.approvals.you_approved'], [
+                            'person_name'   => $approval->getCreatedBy()->getCommunityName(),
+                            'template'      => $approval->getTemplate()->getName(),
+                        ]));
+                    } else {
+                        $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.rejected-by', 'helpcenter.approvals.you_rejected'], [
+                            'person_name'   => $approval->getCreatedBy()->getCommunityName(),
+                            'template'      => $approval->getTemplate()->getName(),
+                        ]));
+                    }
                 }
             }
         }
