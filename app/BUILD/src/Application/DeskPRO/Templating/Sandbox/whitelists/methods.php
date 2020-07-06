@@ -85,4 +85,7 @@ return [
     \Application\DeskPRO\Auth\AuthenticationManager::class => SandboxUtils::guessAccessors(
         \Application\DeskPRO\Auth\AuthenticationManager::class
     ),
+    \Application\DeskPRO\TicketLayout\LayoutField::class => SandboxUtils::guessAccessors(
+        \Application\DeskPRO\TicketLayout\LayoutField::class
+    ),
 ];
