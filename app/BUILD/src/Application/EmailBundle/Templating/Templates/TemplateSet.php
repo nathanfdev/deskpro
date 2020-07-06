@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\EmailBundle\Templating\Templates;
 
@@ -95,9 +93,9 @@ class TemplateSet
     public function createCustomTemplate($name)
     {
         $entity = new TemplateEntity();
-        $custom = TemplateCustom::createFromEntity($entity);
+        $entity->setName($name);
 
-        return $custom;
+        return TemplateCustom::createFromEntity($entity);
     }
 
     /**
@@ -175,6 +173,7 @@ class TemplateSet
 
     /**
      * @param Template $template
+     * @param mixed $replace_phrases
      *
      * @return array
      */

@@ -8,6 +8,7 @@ use Application\DeskPRO\EntityRepository\Template as TemplateRepository;
 use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
 use Application\DeskPRO\Templating\Templates\TemplateCode;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
+use Application\EmailBundle\Templating\Templates\EmailTemplateCode as LegacyEmailTemplateCode;
 use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc;
 use DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
@@ -199,7 +200,6 @@ HTML;
         $language = $container->get('language_manager')->getLanguageStack()->getDefaultLanguage();
 
         foreach ($templates as $previousTemplate) {
-
             /** @var Template $previousTemplate */
             if (strpos($previousTemplate->getName(), 'DeskPRO:emails_custom') === 0) {
                 $newTemplateName = str_replace('DeskPRO:emails_custom', 'SendmailBundle:emails_custom', $previousTemplate->getName());
@@ -615,7 +615,7 @@ CODE
         $dataStoreRepository = $em->getRepository(DataStore::class);
         $legacyTemplates     = $dataStoreRepository->getByPrefix('legacy_email_template');
 
-        $set = $this->getTemplateSet($em, $container);
+        $set = $container->get('templating.email.template_set');
 
         // Delete new templates
         $qb = $em->createQueryBuilder();
@@ -633,10 +633,8 @@ CODE
             /** @var Template $template */
             $template = $set->createCustomTemplate($legacyTemplate->getData('name'));
 
-            /** @var EmailTemplateCode $templateCode */
             $templateCode = $template->getTemplateCode();
-
-            if (get_class($templateCode) !== EmailTemplateCode::class) {
+            if (!$templateCode instanceof LegacyEmailTemplateCode) {
                 continue;
             }
 
