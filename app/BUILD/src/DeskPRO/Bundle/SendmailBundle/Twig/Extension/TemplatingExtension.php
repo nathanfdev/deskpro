@@ -2782,9 +2782,9 @@ HTML;
                return ! $attachment->isInline();
            } elseif (is_array($attachment) && isset($attachment['is_inline'])) {
                return ! $attachment['is_inline'];
+           } else {
+               return true;
            }
-
-           throw new \LogicException('Attachment must be a TicketAttachment of an array representation of TicketAttachment');
         });
     }
 }
