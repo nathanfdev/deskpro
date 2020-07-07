@@ -2773,8 +2773,18 @@ HTML;
      */
     public function excludeInlineAttachments($attachments)
     {
-        return array_filter($attachments, function (TicketAttachment $attachment) {
-            return ! $attachment->isInline();
+        if (null === $attachments) {
+            return null;
+        }
+
+        return array_filter($attachments, function ($attachment) {
+           if ($attachment instanceof TicketAttachment) {
+               return ! $attachment->isInline();
+           } elseif (is_array($attachment) && isset($attachment['is_inline'])) {
+               return ! $attachment['is_inline'];
+           }
+
+           throw new \LogicException('Attachment must be a TicketAttachment of an array representation of TicketAttachment');
         });
     }
 }
