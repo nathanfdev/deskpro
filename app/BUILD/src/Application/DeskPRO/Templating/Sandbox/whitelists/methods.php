@@ -1,6 +1,6 @@
 <?php
 
-// List of whitelisted arbitrary objects and methods
+// List of allowed objects and methods
 
 use Application\DeskPRO\Templating\Sandbox\SandboxUtils;
 
@@ -30,9 +30,6 @@ return [
         'getSetting',
         'getRequest',
     ],
-    \DeskPRO\Bundle\PortalBundle\View\HelpCenterData::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\PortalBundle\View\HelpCenterData::class
-    ),
     \Pagerfanta\Pagerfanta::class => [
         'getNbPages',
         'haveToPaginate',
@@ -52,33 +49,9 @@ return [
     \DeskPRO\Component\Hierarchy\HierarchyNode::class => SandboxUtils::guessAccessors(
         \DeskPRO\Component\Hierarchy\HierarchyNode::class
     ),
-    \DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable::class
-    ),
-    \DeskPRO\Bundle\AppBundle\Model\TicketColumn::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\AppBundle\Model\TicketColumn::class
-    ),
-    \DeskPRO\Bundle\PortalBundle\Model\TicketFilter::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\PortalBundle\Model\TicketFilter::class
-    ),
-    \DeskPRO\Bundle\AppBundle\Model\TicketView::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\AppBundle\Model\TicketView::class
-    ),
-    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\UserMessageLine::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\UserMessageLine::class
-    ),
-    \DeskPRO\Bundle\AppBundle\Model\TicketViewProperty::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\AppBundle\Model\TicketViewProperty::class
-    ),
     \DeskPRO\Bundle\AppBundle\Webhooks\WebhookInvocation::class => [
         'getData',
     ],
-    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketCreatedLine::class => SandboxUtils::guessAccessors(
-    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketCreatedLine::class
-    ),
-    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimeline::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimeline::class
-    ),
     \DateTime::class => [
         'getTimestamp',
     ],
@@ -88,19 +61,7 @@ return [
     \Application\DeskPRO\TicketLayout\LayoutField::class => SandboxUtils::guessAccessors(
         \Application\DeskPRO\TicketLayout\LayoutField::class
     ),
-    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\FeedbackRatingLine::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\FeedbackRatingLine::class
-    ),
-    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketClosedLine::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketClosedLine::class
-    ),
-    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketReOpenedLine::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketReOpenedLine::class
-    ),
     \Application\DeskPRO\TicketLayout\LayoutDisplay::class => SandboxUtils::guessAccessors(
         \Application\DeskPRO\TicketLayout\LayoutDisplay::class
-    ),
-    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\AgentMessageLine::class => SandboxUtils::guessAccessors(
-        \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\AgentMessageLine::class
     ),
 ];

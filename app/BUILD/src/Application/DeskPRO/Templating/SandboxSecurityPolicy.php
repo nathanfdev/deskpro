@@ -65,6 +65,10 @@ class SandboxSecurityPolicy extends SecurityPolicy
             return;
         }
 
+        if ($this->isNamespaceAllowed($obj)) {
+            return;
+        }
+
         try {
             parent::checkMethodAllowed($obj, $method);
         } catch (SecurityError $e) {
@@ -119,6 +123,10 @@ class SandboxSecurityPolicy extends SecurityPolicy
             return;
         }
 
+        if ($this->isNamespaceAllowed($obj)) {
+            return;
+        }
+
         try {
             parent::checkPropertyAllowed($obj, $property);
         } catch (SecurityError $e) {
@@ -148,6 +156,21 @@ class SandboxSecurityPolicy extends SecurityPolicy
         $currentPath = $this->requestStack->getMasterRequest()->getPathInfo();
         foreach (require __DIR__.'/Sandbox/whitelists/base_paths.php' as $path) {
             if (preg_match(sprintf('~^%s~', $path), $currentPath)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param object $obj
+     * @return bool
+     */
+    private function isNamespaceAllowed($obj)
+    {
+        foreach (require __DIR__.'/Sandbox/whitelists/namespaces.php' as $namespace) {
+            if (strpos(get_class($obj), $namespace) === 0) {
                 return true;
             }
         }

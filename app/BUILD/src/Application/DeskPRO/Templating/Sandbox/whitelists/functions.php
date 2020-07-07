@@ -1,6 +1,6 @@
 <?php
 
-// List of whitelisted twig functions
+// List of allowed twig functions
 
 return array (
     'max',

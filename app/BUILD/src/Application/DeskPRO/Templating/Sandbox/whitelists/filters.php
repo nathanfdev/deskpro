@@ -1,6 +1,6 @@
 <?php
 
-// List of whitelisted twig filters
+// List of allowed twig filters
 
 return array (
     'date',
