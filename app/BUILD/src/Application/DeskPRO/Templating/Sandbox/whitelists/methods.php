@@ -88,4 +88,19 @@ return [
     \Application\DeskPRO\TicketLayout\LayoutField::class => SandboxUtils::guessAccessors(
         \Application\DeskPRO\TicketLayout\LayoutField::class
     ),
+    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\FeedbackRatingLine::class => SandboxUtils::guessAccessors(
+        \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\FeedbackRatingLine::class
+    ),
+    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketClosedLine::class => SandboxUtils::guessAccessors(
+        \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketClosedLine::class
+    ),
+    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketReOpenedLine::class => SandboxUtils::guessAccessors(
+        \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\TicketReOpenedLine::class
+    ),
+    \Application\DeskPRO\TicketLayout\LayoutDisplay::class => SandboxUtils::guessAccessors(
+        \Application\DeskPRO\TicketLayout\LayoutDisplay::class
+    ),
+    \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\AgentMessageLine::class => SandboxUtils::guessAccessors(
+        \DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\AgentMessageLine::class
+    ),
 ];
