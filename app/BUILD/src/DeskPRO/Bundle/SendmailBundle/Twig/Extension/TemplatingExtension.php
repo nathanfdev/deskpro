@@ -2773,8 +2773,8 @@ HTML;
      */
     public function excludeInlineAttachments($attachments)
     {
-        if (null === $attachments) {
-            return null;
+        if (empty($attachments)) {
+            return [];
         }
 
         return array_filter($attachments, function ($attachment) {

@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\HttpFoundation\Session;
@@ -221,6 +222,7 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFilter('plain_template_filter', [$this, 'plain_template_filter']),
             new \Twig_SimpleFilter('content', [$this, 'replaceContent']),
             new \Twig_SimpleFilter('content_pdf', [$this, 'replaceContentPdf']),
+            new \Twig_SimpleFilter('exclude_inline_attachments', [$this, 'excludeInlineAttachments']),
 
             // Override for custom UTF-8 handling
             new \Twig_SimpleFilter('upper', [$this, 'strUpper']),
@@ -2132,5 +2134,26 @@ class TemplatingExtension extends \Twig_Extension
     public function showEmailAddress($email, $pattern = '%s')
     {
         return $this->canViewEmailAddresses() ? sprintf($pattern, $email) : '';
+    }
+
+    /**
+     * @param TicketAttachment[]  $attachments
+     * @return TicketAttachment[]
+     */
+    public function excludeInlineAttachments($attachments)
+    {
+        if (empty($attachments)) {
+            return [];
+        }
+
+        return array_filter($attachments, function ($attachment) {
+            if ($attachment instanceof TicketAttachment) {
+                return ! $attachment->isInline();
+            } elseif (is_array($attachment) && isset($attachment['is_inline'])) {
+                return ! $attachment['is_inline'];
+            }
+
+            throw new \LogicException('Attachment must be a TicketAttachment of an array representation of TicketAttachment');
+        });
     }
 }
