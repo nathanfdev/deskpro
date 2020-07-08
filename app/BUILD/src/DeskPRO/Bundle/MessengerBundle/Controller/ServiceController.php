@@ -20,6 +20,7 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatFormCustomField;
 use DeskPRO\Component\Util\MapUtils;
+use DeskPRO\Component\Util\RegexUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as Router;
@@ -97,11 +98,20 @@ class ServiceController extends AbstractMessengerController
             'messenger_blob_upload', [], UrlGeneratorInterface::ABSOLUTE_URL
         );
 
+        $baseUrlRegex = '#^'.$request->getBaseUrl().'#';
+
         $manifestPath = $this->container->get('templating.helper.assets')->getUrl('asset-manifest.json', 'messenger_assets');
+        $manifestPath = RegexUtils::safePregReplace($baseUrlRegex, '', $manifestPath);
+
+        $chunksPath = RegexUtils::safePregReplace(
+            $baseUrlRegex,
+            '',
+            $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets')
+        );
 
         $data['bundleUrl'] = [
             'manifest'   => $manifestPath,
-            'path'       => $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets'),
+            'path'       => $chunksPath,
             'isDev'      => $this->get('settings_resolver')->getGlobalSettings()->get('messenger.is_dev', false),
             'isAbsolute' => $this->isAbsoluteUrl($manifestPath),
         ];
