@@ -46,6 +46,16 @@ class MessengerSetupContainer extends React.Component {
     dispatch(loadChatCustomFieldsAction());
     dispatch(loadUserGroups());
 
+    this.onLoad();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.params.brandId !== this.props.params.brandId) {
+      this.onLoad();
+    }
+  }
+
+  onLoad = () => {
     this.props.dispatch(getCode(this.props.params.brandId)).then((response) => {
       this.setState({ code: response.data });
     });
@@ -120,15 +130,17 @@ class MessengerSetupContainer extends React.Component {
       chatCustomFields,
       ticketDepartments,
       usergroups,
+      params: { brandId }
     } = this.props;
+
     return (
       <div>
         <MessengerSetup
           settings={settings}
           handleChange={this.onChange}
-          chatDepartments={chatDepartments}
+          chatDepartments={chatDepartments.filter((d => d.get('brands').indexOf(parseInt(brandId, 10)) !== -1))}
           chatCustomFields={chatCustomFields}
-          ticketDepartments={ticketDepartments}
+          ticketDepartments={ticketDepartments.filter((d => d.get('brands').indexOf(parseInt(brandId, 10)) !== -1))}
           usergroups={usergroups}
           handleSubmit={this.handleSubmit}
           code={code}
