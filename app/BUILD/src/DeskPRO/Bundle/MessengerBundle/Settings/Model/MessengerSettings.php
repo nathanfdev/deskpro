@@ -72,9 +72,19 @@ class MessengerSettings extends AbstractBrandAwareSettings
      * @JMS\Type("integer")
      * @JMS\SerializedName("maxFileSize")
      *
-     * @var
+     * @var int
      */
     private $maxFileSize;
+
+    /**
+     * This is Deskpro global setting need to be serialized with all other settings.
+     *
+     * @JMS\Type("boolean")
+     * @JMS\SerializedName("kbEnabled")
+     *
+     * @var bool
+     */
+    private $kbEnabled;
 
     /**
      * @return mixed
@@ -212,6 +222,26 @@ class MessengerSettings extends AbstractBrandAwareSettings
     public function setMaxFileSize($maxFileSize)
     {
         $this->maxFileSize = $maxFileSize;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isKbEnabled()
+    {
+        return $this->kbEnabled;
+    }
+
+    /**
+     * @param bool $kbEnabled
+     *
+     * @return $this
+     */
+    public function setKbEnabled($kbEnabled)
+    {
+        $this->kbEnabled = $kbEnabled;
 
         return $this;
     }

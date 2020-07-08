@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Service;
 
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefChat;
@@ -11,6 +10,7 @@ use Application\DeskPRO\Entity\Phrase;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Settings\AbstractBrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChat;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatOptions;
@@ -85,11 +85,6 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $languageManager;
 
     /**
-     * @var DeskproBlobStorage
-     */
-    private $blobStorage;
-
-    /**
      * Constructor.
      *
      * @param BrandAwareSettingsResolver $settingsResolver
@@ -118,7 +113,8 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         return $model
             ->setBrand($brand)
             ->setTranslations($this->getTranslations())
-            ->setMaxFileSize(min(Env::getEffectiveMaxUploadSize(), $this->getSettings('core.attach_user_maxsize', null, 1024 * 1024 * 10)))
+            ->setMaxFileSize(min(Env::getEffectiveMaxUploadSize(), $this->getSettings('core.attach_user_maxsize', $brand, 1024 * 1024 * 10)))
+            ->setKbEnabled($this->getSetting(PortalSettingsResolver::APPS_KB, $brand))
             ->setWidget($this->getMessengerWidget($brand))
             ->setChat($this->getMessengerChat($brand))
             ->setEmbed($this->getMessengerEmbedSettings($brand))
