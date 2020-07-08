@@ -88,5 +88,5 @@ return array (
     'extra_markdown',
     'str_replace',
     'html_content_preview',
-    'exclude_inline_attachments',
+    'safe_filter',
 );

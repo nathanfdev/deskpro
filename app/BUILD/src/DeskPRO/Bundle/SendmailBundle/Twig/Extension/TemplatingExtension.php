@@ -235,7 +235,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             new \Twig_SimpleFilter('trans', [$this, 'dummy']),
             new \Twig_SimpleFilter('transchoice', [$this, 'dummy']),
             new \Twig_SimpleFilter('plain_template_filter', [$this, 'plain_template_filter']),
-            new \Twig_SimpleFilter('exclude_inline_attachments', [$this, 'excludeInlineAttachments']),
+            new \Twig_SimpleFilter('safe_filter', [$this, 'safeArrayFilter']),
 
             // Override for custom UTF-8 handling
             new \Twig_SimpleFilter('upper', [$this, 'strUpper']),
@@ -2786,5 +2786,27 @@ HTML;
                return true;
            }
         });
+    }
+
+    /**
+     * @param array    $array
+     * @param callable $arrow
+     * @return array|\CallbackFilterIterator
+     */
+    function safeArrayFilter($array, $arrow)
+    {
+        if (is_string($arrow)) {
+            throw new \RuntimeException("Arrow function cannot be a string");
+        }
+
+        if (\is_array($array)) {
+            if (\PHP_VERSION_ID >= 50600) {
+                return array_filter($array, $arrow, \ARRAY_FILTER_USE_BOTH);
+            }
+
+            return array_filter($array, $arrow);
+        }
+
+        return new \CallbackFilterIterator(new \IteratorIterator($array), $arrow);
     }
 }
