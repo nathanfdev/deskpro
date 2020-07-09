@@ -121,10 +121,10 @@ printf($format, str_repeat('=', 30), str_repeat('=', 4), str_repeat('=', 16), st
 foreach ($this->getCronInfo() as $j) {
     printf(
         $format,
-        $j->id,
+        $j->getId(),
         $j->getIntervalReadable(),
-        $j->last_run_date ? \Orb\Util\Dates::dateToAgo($j->last_run_date, 3, 'short') : 'Never',
-        $j->next_run_date ? \Orb\Util\Dates::dateToAgo($j->next_run_date, 3, 'short') : 'NA'
+        $j->getLastRunDate() ? \Orb\Util\Dates::dateToAgo($j->getLastRunDate(), 3, 'short') : 'Never',
+        $j->getNextRunDate() ? \Orb\Util\Dates::dateToAgo($j->getNextRunDate(), 3, 'short') : 'NA'
     );
 }
 ?>
