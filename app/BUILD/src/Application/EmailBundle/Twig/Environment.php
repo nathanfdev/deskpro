@@ -220,7 +220,11 @@ class Environment extends \Twig_Environment
     public function getTemplateClass($name, $index = null)
     {
         $key = $this->getLoader()->getCacheKey($name);
-        $key .= json_encode(array_keys($this->extensions));
+
+        $extensions = array_keys($this->extensions);
+        sort($extensions);
+
+        $key .= implode('', $extensions);
         $key .= function_exists('twig_template_get_attributes');
 
         return $this->templateClassPrefix.hash('sha256', $key).(null === $index ? '' : '_'.$index);
