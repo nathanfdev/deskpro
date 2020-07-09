@@ -8,6 +8,7 @@ namespace DeskPRO\Bundle\SendmailBundle\Twig;
 
 use DeskPRO\Bundle\SendmailBundle\Twig\PostRenderFilter\EmailPostRenderFilter;
 use DpSys\LowError\SystemErrorHandler;
+use Twig\Sandbox\SecurityError;
 
 class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
 {
@@ -36,12 +37,29 @@ class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
         } else {
             try {
                 $GLOBALS['DP_IS_RENDERING_TPL'] = true;
-                $code                           = parent::render($name, $parameters);
+                $code = parent::render($name, $parameters);
                 if (strpos($name, 'SendmailBundle:emails_') !== false) {
                     $proc = new EmailPostRenderFilter();
                     $code = $proc->process($name, $code);
                 }
                 $GLOBALS['DP_IS_RENDERING_TPL'] = false;
+
+                return $code;
+            } catch (SecurityError $e) {
+                $errinfo                  = SystemErrorHandler::getExceptionInfo($e);
+                $errinfo['no_send_error'] = true;
+                $errinfo['summary'] .= ' - Trying default template';
+                SystemErrorHandler::noDisplayNextError();
+                SystemErrorHandler::logErrorInfo($errinfo);
+
+                $this->environment->markCustomTemplateAsCrashed($name);
+
+                $code = parent::render($name, $parameters);
+
+                if (strpos($name, 'DeskPRO:emails_') !== false) {
+                    $proc = new EmailPostRenderFilter();
+                    $code = $proc->process($name, $code);
+                }
 
                 return $code;
             } catch (\Twig_Error_Syntax $e) {

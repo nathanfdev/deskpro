@@ -87,6 +87,7 @@ class Environment extends \Twig_Environment
             } catch (\Exception $e) {
                 $errinfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
                 $errinfo['no_send_error'] = true;
+                \DpSys\LowError\SystemErrorHandler::noDisplayNextError();
                 \DpSys\LowError\SystemErrorHandler::logErrorInfo($errinfo);
 
                 $this->markCustomTemplateAsCrashed($name_str);
@@ -108,6 +109,34 @@ class Environment extends \Twig_Environment
 
         if (isset($this->loadedTemplates[$cls])) {
             return $this->loadedTemplates[$cls];
+        }
+
+        if (method_exists($this->loader, 'isCrashedTemplate') && $this->loader->isCrashedTemplate($name)) {
+            $originalClass = $this->getTemplateClass($name);
+            $defaultClass  = "{$originalClass}_default";
+
+            if (isset($this->loadedTemplates[$defaultClass])) {
+                return $this->loadedTemplates[$defaultClass];
+            }
+
+            try {
+                $source = $this->compileSource($this->loader->getSourceContext($name), $name);
+                $source = str_replace($originalClass, $defaultClass, $source);
+
+                if (!class_exists($defaultClass, false)) {
+                    eval('?>'.$source);
+                }
+
+                if (!$this->runtimeInitialized) {
+                    $this->initRuntime();
+                }
+
+                return $this->loadedTemplates[$defaultClass] = new $defaultClass($this);
+            } catch (\Exception $e) {
+                $errinfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
+                $errinfo['no_send_error'] = true;
+                \DpSys\LowError\SystemErrorHandler::logErrorInfo($errinfo);
+            }
         }
 
         if (!class_exists($cls, false)) {

@@ -6,6 +6,8 @@
 
 namespace Application\EmailBundle\Twig;
 
+use Twig\Sandbox\SecurityError;
+
 abstract class Template extends \Twig_Template
 {
     public function display(array $context, array $blocks = [])
@@ -15,6 +17,8 @@ abstract class Template extends \Twig_Template
         } else {
             try {
                 parent::display($context, $blocks);
+            } catch (SecurityError $e) {
+                throw $e;
             } catch (\Exception $e) {
                 if (preg_match('#\.html\.twig$#', $this->getTemplateName())) {
                     echo "<div style='background-color: #ccc; border: 3px solid red; color: #000; padding: 10px; border-radius: 3px; margin: 10px;'>";

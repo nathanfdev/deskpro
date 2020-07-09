@@ -12,6 +12,16 @@ class HybridLoader extends FilesystemLoader
     protected $crashedCustomTemplates = [];
     protected $templateInfo           = [];
 
+    public function markCustomTemplateAsCrashed($name)
+    {
+        $this->crashedCustomTemplates[(string) $name] = true;
+    }
+
+    public function isCrashedTemplate($name)
+    {
+        return isset($this->crashedCustomTemplates[(string) $name]);
+    }
+
     public function dbHasTemplate($name)
     {
         if (isset($this->crashedCustomTemplates[(string) $name])) {
