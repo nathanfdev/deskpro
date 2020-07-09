@@ -172,6 +172,7 @@ return array (
             149 => 'get',
             150 => 'getstatechangerecorder',
             151 => 'getoriginalstateclone',
+            152 => 'rendercustomfield',
         ),
     'Application\\DeskPRO\\Entity\\UserRule' =>
         array (
@@ -706,6 +707,7 @@ return array (
             37 => 'get',
             38 => 'getstatechangerecorder',
             39 => 'getoriginalstateclone',
+            40 => 'rendercustomfield',
         ),
     'Application\\DeskPRO\\Entity\\PermissionCache' =>
         array (
@@ -2720,6 +2722,7 @@ return array (
             177 => 'get',
             178 => 'getoriginalstateclone',
             179 => 'getcustomperdata',
+            180 => 'rendercustomfield',
         ),
     'Application\\DeskPRO\\Entity\\ObjectLang' =>
         array (
@@ -3964,6 +3967,7 @@ return array (
             20 => 'get',
             21 => 'getstatechangerecorder',
             22 => 'getoriginalstateclone',
+            23 => 'rendercustomfield',
         ),
     'Application\\DeskPRO\\Entity\\CustomDefArticle' =>
         array (
