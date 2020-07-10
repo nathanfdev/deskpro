@@ -4672,7 +4672,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function _onValidateProps()
     {
         if ($this->agent && !$this->agent->isAgent()) {
-            throw new \InvalidArgumentException(sprintf('%s is not an agent', $this->agent->getId()));
+            $this->setAgent(null);
         }
     }
 

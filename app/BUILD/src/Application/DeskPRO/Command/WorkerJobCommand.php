@@ -1,13 +1,12 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\Entity\WorkerJob;
 use Application\DeskPRO\Log\Logger;
 use DeskPRO\Bundle\ImportBundle\Command\AbstractImporterCommand;
 use DeskPRO\Bundle\UpdateBundle\Logger\LogKeyEvent;
@@ -93,10 +92,11 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         }
 
         if ($input->getOption('info')) {
+            /** @var WorkerJob[] $jobs */
             $jobs = App::getOrm()->createQuery('
                 SELECT j
                 FROM DeskPRO:WorkerJob j
-                ORDER BY j.last_run_date ASC
+                ORDER BY j.last_start_date ASC
             ')->execute();
 
             $last_run = App::getSetting('core.last_cron_run');
@@ -130,10 +130,10 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             foreach ($jobs as $j) {
                 $output->writeln(sprintf(
                     '%-30s  %-4s  %-16s  %-16s',
-                    $j->id,
+                    $j->getId(),
                     $j->getIntervalReadable(),
-                    $j->last_run_date ? \Orb\Util\Dates::dateToAgo($j->last_run_date, 3, 'short') : 'Never',
-                    $j->next_run_date ? \Orb\Util\Dates::dateToAgo($j->next_run_date, 3, 'short') : 'NA'
+                    $j->getLastRunDate() ? \Orb\Util\Dates::dateToAgo($j->getLastRunDate(), 3, 'short') : 'Never',
+                    $j->getNextRunDate() ? \Orb\Util\Dates::dateToAgo($j->getNextRunDate(), 3, 'short') : 'NA'
                 ));
             }
 
@@ -167,8 +167,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         //------------------------------
 
         if (!$skipUpdater) {
-            $updaterSettings = $this->getContainer()->get('updater_settings_resolver')->getUpdaterSettings();
-            $updaterStatus   = $this->getContainer()->get('updater_settings_resolver')->getUpdaterStatus();
+            $updaterStatus = $this->getContainer()->get('updater_settings_resolver')->getUpdaterStatus();
 
             $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name LIKE ?', ['core.croncheck.updater']);
             if ($check && $check > (time() - 3600)) {
@@ -558,6 +557,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 SELECT j
                 FROM DeskPRO:WorkerJob j
                 WHERE j.worker_group = ?1
+                ORDER BY j.last_start_date ASC
             ')->setParameter(1, $input->getOption('group'))->execute();
 
             if (!count($group_jobs)) {
@@ -589,7 +589,12 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
         // All jobs
         } else {
-            $group_jobs = App::getEntityRepository('DeskPRO:WorkerJob')->findAll();
+            /** @var WorkerJob[] $group_jobs */
+            $group_jobs = App::getOrm()->createQuery('
+                SELECT j
+                FROM DeskPRO:WorkerJob j
+                ORDER BY j.last_start_date ASC
+            ')->execute();
 
             if (!$ignore_interval) {
                 $jobs = [];

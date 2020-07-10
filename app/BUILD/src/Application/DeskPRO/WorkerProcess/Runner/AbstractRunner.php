@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\WorkerProcess\Runner;
 
@@ -101,9 +99,9 @@ abstract class AbstractRunner
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\WorkerJob $worker_job
+     * @param \Application\DeskPRO\Entity\WorkerJob $workerJob
      */
-    public function runJob(Entity\WorkerJob $worker_job)
+    public function runJob(Entity\WorkerJob $workerJob)
     {
         App::setCurrentPerson(null);
         unset($GLOBALS['DP_CRON_LOGGER']);
@@ -112,19 +110,22 @@ abstract class AbstractRunner
             @set_time_limit($this->job_time_hard_limit);
         }
 
-        $job                       = $this->getJob($worker_job);
+        $job                       = $this->getJob($workerJob);
         $logger                    = $job->getLogger();
         $GLOBALS['DP_CRON_LOGGER'] = $logger;
 
-        if ($worker_job->getIsCrashed()) {
-            $logger->log('ERROR: Job appears to have crashed during the last run! The last run was started at '.$worker_job->last_start_date->format('Y-m-d H:i:s'), Logger::ERR, ['flag' => 'job_crash']);
+        if ($workerJob->getIsCrashed()) {
+            $logger->log(
+                'ERROR: Job appears to have crashed during the last run! The last run was started at '.
+                $workerJob->getLastStartDate()->format('Y-m-d H:i:s'), Logger::ERR, ['flag' => 'job_crash']
+            );
         }
 
         $mtime_start = microtime(true);
-        $logger->log("Job {$worker_job['id']} start", Logger::INFO, ['flag' => 'job_start']);
+        $logger->log("Job {$workerJob['id']} start", Logger::INFO, ['flag' => 'job_start']);
 
-        $worker_job['last_start_date'] = new \DateTime();
-        App::getDb()->update('worker_jobs', ['last_start_date' => date('Y-m-d H:i:s')], ['id' => $worker_job->getId()]);
+        $workerJob['last_start_date'] = new \DateTime();
+        App::getDb()->update('worker_jobs', ['last_start_date' => date('Y-m-d H:i:s')], ['id' => $workerJob->getId()]);
 
         $run_e = null;
 
@@ -151,11 +152,11 @@ abstract class AbstractRunner
             $logger->log(sprintf('Exception: %s[%d]: %s', get_class($run_e), $run_e->getCode(), $run_e->getMessage()), Logger::ERR);
             \DpSys\LowError\SystemErrorHandler::logException($run_e);
         } else {
-            $worker_job['last_run_date'] = new \DateTime();
-            App::getDb()->update('worker_jobs', ['last_run_date' => date('Y-m-d H:i:s')], ['id' => $worker_job->getId()]);
+            $workerJob['last_run_date'] = new \DateTime();
+            App::getDb()->update('worker_jobs', ['last_run_date' => date('Y-m-d H:i:s')], ['id' => $workerJob->getId()]);
         }
 
-        $logger->log("Job {$worker_job['id']} done in {$mtime_total}s", Logger::INFO, ['flag' => 'job_end']);
+        $logger->log("Job {$workerJob['id']} done in {$mtime_total}s", Logger::INFO, ['flag' => 'job_end']);
 
         // reset back
         if ($this->job_time_hard_limit) {
@@ -163,7 +164,7 @@ abstract class AbstractRunner
         }
 
         if ($this->post_job_callback) {
-            call_user_func($this->post_job_callback, $this, $worker_job, $logger);
+            call_user_func($this->post_job_callback, $this, $workerJob, $logger);
         }
 
         App::getContainer()->get('deskpro.notification.event_manager')->deliver();
@@ -221,6 +222,8 @@ abstract class AbstractRunner
 
     /**
      * Set a custom callback function that helps init the logger.
+     *
+     * @param mixed $fn
      */
     public function setCustomLoggerInit($fn)
     {
