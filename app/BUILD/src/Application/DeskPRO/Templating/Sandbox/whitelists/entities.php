@@ -3620,6 +3620,8 @@ return array (
             41 => 'get',
             42 => 'getstatechangerecorder',
             43 => 'getoriginalstateclone',
+            44 => 'is_inline',
+            45 => 'blob_auth',
         ),
     'Application\\DeskPRO\\Entity\\DataStore' =>
         array (
