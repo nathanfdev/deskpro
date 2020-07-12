@@ -242,7 +242,7 @@ class ReplySnippetAction extends AbstractReplyAction
                             }
 
                             $snippetText = implode("\n<br/><br/>\n", $snippetText);
-                            $formatter   = new SnippetFormatter(App::getContainer()->get('twig'));
+                            $formatter   = new SnippetFormatter(App::getContainer()->get('deskpro.sandboxed_twig.twig'));
                             $formatter->addVar('agent_signature', '');
 
                             if ($this->person_context) {
@@ -277,7 +277,7 @@ class ReplySnippetAction extends AbstractReplyAction
                             }
 
                             $snippetText = implode("\n<br/><br/>\n", $snippetText);
-                            $formatter   = new SnippetFormatter(App::getContainer()->get('twig'));
+                            $formatter   = new SnippetFormatter(App::getContainer()->get('deskpro.sandboxed_twig.twig'));
                             $formatter->addVar('agent_signature', '');
 
                             if ($this->person_context) {
@@ -401,7 +401,7 @@ class ReplySnippetAction extends AbstractReplyAction
 
         $person->loadHelper('Agent');
 
-        $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+        $formatter = new SnippetFormatter(App::getContainer()->get('deskpro.sandboxed_twig.twig'));
         $formatter->addVar('agent_signature', $person->getSignatureHtml());
 
         if ($this->person_context) {

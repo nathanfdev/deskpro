@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\HttpFoundation\Session;
@@ -221,6 +222,7 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFilter('plain_template_filter', [$this, 'plain_template_filter']),
             new \Twig_SimpleFilter('content', [$this, 'replaceContent']),
             new \Twig_SimpleFilter('content_pdf', [$this, 'replaceContentPdf']),
+            new \Twig_SimpleFilter('safe_filter', [$this, 'safeArrayFilter']),
 
             // Override for custom UTF-8 handling
             new \Twig_SimpleFilter('upper', [$this, 'strUpper']),
@@ -1864,7 +1866,7 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         try {
-            $tr       = new TwigTemplateRenderer($this->getContainer()->getTwig(), $this->getContainer()->get('brand_aware_settings_resolver'));
+            $tr       = new TwigTemplateRenderer($this->getContainer()->get('deskpro.sandboxed_twig.twig'), $this->getContainer()->get('brand_aware_settings_resolver'));
             $rendered = $tr->renderStringTemplate($string, $vars);
         } catch (\Exception $e) {
             return $string;
@@ -2132,5 +2134,27 @@ class TemplatingExtension extends \Twig_Extension
     public function showEmailAddress($email, $pattern = '%s')
     {
         return $this->canViewEmailAddresses() ? sprintf($pattern, $email) : '';
+    }
+
+    /**
+     * @param array    $array
+     * @param callable $arrow
+     * @return array|\CallbackFilterIterator
+     */
+    function safeArrayFilter($array, $arrow)
+    {
+        if (is_string($arrow)) {
+            throw new \RuntimeException("Arrow function cannot be a string");
+        }
+
+        if (\is_array($array)) {
+            if (\PHP_VERSION_ID >= 50600) {
+                return array_filter($array, $arrow, \ARRAY_FILTER_USE_BOTH);
+            }
+
+            return array_filter($array, $arrow);
+        }
+
+        return new \CallbackFilterIterator(new \IteratorIterator($array), $arrow);
     }
 }

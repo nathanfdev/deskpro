@@ -229,7 +229,7 @@ class ReplyAction extends AbstractReplyAction
      */
     public function getMessageContent(Ticket $ticket)
     {
-        $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+        $formatter = new SnippetFormatter(App::getContainer()->get('deskpro.sandboxed_twig.twig'));
         if ($this->person_context) {
             $formatter->setPersonContext($this->person_context);
         }

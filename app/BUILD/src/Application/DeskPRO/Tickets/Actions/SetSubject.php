@@ -45,7 +45,7 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
         $subject = $this->getActionOption('subject');
 
         if ($this->getActionOption('with_formatter')) {
-            $formatter = new SnippetFormatter($this->getContainer()->getTwig());
+            $formatter = new SnippetFormatter($this->getContainer()->get('deskpro.sandboxed_twig.twig'));
             ActionVars::configureFormatter($formatter, $context);
 
             $subject = $formatter->formatText('{% autoescape false %}'.$subject.'{% endautoescape %}', $ticket);

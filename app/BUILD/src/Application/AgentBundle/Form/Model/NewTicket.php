@@ -410,7 +410,7 @@ class NewTicket
         }
 
         $message_text = $this->message;
-        $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
+        $formatter    = new SnippetFormatter(App::getContainer()->get('deskpro.sandboxed_twig.twig'));
         $message_text = $formatter->formatText($message_text, $ticket);
 
         if ($this->is_html_reply) {

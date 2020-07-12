@@ -124,3 +124,24 @@ services:
   portal_validation:
     class: DeskPRO\Bundle\PortalBundle\Helper\PortalValidation
     arguments: ["@portal_email_sender", "@brand_stack", "@router", "@data.person"]
+
+  ######################################################################################################################
+  # Sandboxed Twig
+  ######################################################################################################################
+
+  deskpro.sandboxed_twig.security_policy:
+    class: Application\DeskPRO\Templating\SandboxSecurityPolicy
+    arguments:
+      - "@request_stack"
+      - "@settings_resolver"
+
+  deskpro.sandboxed_twig.sandbox_extension:
+    class: Twig\Extension\SandboxExtension
+    arguments:
+      - "@deskpro.sandboxed_twig.security_policy"
+      - true
+
+  deskpro.sandboxed_twig.twig:
+    parent: twig
+    calls:
+      - [ addExtension, ["@deskpro.sandboxed_twig.sandbox_extension"] ]

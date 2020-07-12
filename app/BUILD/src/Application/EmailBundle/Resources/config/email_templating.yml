@@ -4,6 +4,8 @@ services:
     arguments:
       - "@templating.email.twig.loader"
       - []
+    calls:
+      - [ addExtension, ["@deskpro.sandboxed_twig.sandbox_extension"] ]
 
   templating.email.template_set:
     class: Application\EmailBundle\Templating\Templates\TemplateSet

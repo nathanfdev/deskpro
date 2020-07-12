@@ -85,7 +85,15 @@ class SystemErrorHandler
         E_USER_DEPRECATED   => LogLevel::NOTICE,
     ];
 
+    /**
+     * @var bool
+     */
     private static $noShowErrors = false;
+
+    /**
+     * @var bool Set to TRUE to hide the next error. This flag will be reset to FALSE after the next error
+     */
+    private static $noDisplayNextError = false;
 
     /**
      * Max error log file size (512MB).
@@ -93,6 +101,14 @@ class SystemErrorHandler
      * @var int
      */
     public static $maxErrorLogFileSize = 536870912;
+
+    /**
+     * Don't display the next area (but continue to log it if applicable). This flag is reset after the error.
+     */
+    public static function noDisplayNextError()
+    {
+        self::$noDisplayNextError = true;
+    }
 
     //###################################################################################################################
     // Exceptions
@@ -896,6 +912,7 @@ class SystemErrorHandler
                     }
                 }
             }
+
         } catch (\Exception $e) {
         }
     }
@@ -1480,6 +1497,12 @@ class SystemErrorHandler
     private static function shouldDisplayErrors()
     {
         if (defined('DPC_IS_CLOUD') && php_sapi_name() !== 'cli') {
+            return false;
+        }
+
+        if (self::$noDisplayNextError) {
+            self::$noDisplayNextError = false;
+
             return false;
         }
 

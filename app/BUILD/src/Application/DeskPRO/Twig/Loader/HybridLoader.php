@@ -23,7 +23,12 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
     public function markCustomTemplateAsCrashed($name)
     {
-        $this->crashed_custom_templates[$name] = true;
+        $this->crashed_custom_templates[(string) $name] = true;
+    }
+
+    public function isCrashedTemplate($name)
+    {
+        return isset($this->crashed_custom_templates[(string) $name]);
     }
 
     public function dbHasTemplate($name)

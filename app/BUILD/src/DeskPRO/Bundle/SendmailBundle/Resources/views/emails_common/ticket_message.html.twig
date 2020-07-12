@@ -5,7 +5,7 @@
 </div>
 <!-- DP_MESSAGE_END -->
 <a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end dp_marker_link"></a>
-{% if app.isPortalEnabled() and message.attachments | filter(a => not a.is_inline) | length > 0 and not app.getSetting('core_tickets.disable_attachments_list') and can_login(recipient.id) %}
+{% if app.isPortalEnabled() and message.attachments | safe_filter(a => not a.is_inline) | length > 0 and not app.getSetting('core_tickets.disable_attachments_list') and can_login(recipient.id) %}
 	<div style="font-size:11px">
 		<br/>
 		<strong>{{ phrase('helpcenter.general.attachments') }}</strong>

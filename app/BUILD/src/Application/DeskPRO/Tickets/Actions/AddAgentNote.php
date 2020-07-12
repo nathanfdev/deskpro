@@ -65,7 +65,7 @@ class AddAgentNote extends AbstractContainerAwareAction implements ActionInterfa
         $note_text = $this->getActionOption('note_text');
 
         if (!$this->getActionOption('no_formatter')) {
-            $formatter = new SnippetFormatter($this->getContainer()->getTwig());
+            $formatter = new SnippetFormatter($this->getContainer()->get('deskpro.sandboxed_twig.twig'));
             ActionVars::configureFormatter($formatter, $context);
 
             $note_text = $formatter->formatTemplate($note_text, $ticket, $context);

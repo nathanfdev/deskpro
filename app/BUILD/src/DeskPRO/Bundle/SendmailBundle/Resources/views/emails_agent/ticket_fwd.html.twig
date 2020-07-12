@@ -14,7 +14,7 @@
 
     <br><br/>
 
-    {% if app.isPortalEnabled() and attachments and attachments | filter(a => not a.is_inline)  | length > 0 and not app.getSetting('core_tickets.disable_attachments_list') and can_login(recipient.id) %}
+    {% if app.isPortalEnabled() and attachments and attachments | safe_filter(a => not a.is_inline)  | length > 0 and not app.getSetting('core_tickets.disable_attachments_list') and can_login(recipient.id) %}
         <div style="font-size:11px">
             <br />
             <strong>{{ phrase('helpcenter.general.attachments') }}</strong>
