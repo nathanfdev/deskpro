@@ -59,7 +59,7 @@ class ReferrerPolicyListener implements EventSubscriberInterface
         if (in_array($route, $this->whitelistedRoutes)) {
             $referrerPolicy = 'no-referrer-when-downgrade';
         } else {
-            $referrerPolicy = 'no-referrer';
+            $referrerPolicy = 'same-origin';
         }
 
         $response->headers->add(['Referrer-Policy' => $referrerPolicy]);
