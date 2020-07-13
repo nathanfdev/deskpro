@@ -258,12 +258,6 @@ class TicketWaitingTimeWorkingHoursTest extends \PHPUnit_Framework_TestCase
     public function testGetTotalUserWaitingWorkTime($data)
     {
         // GIVEN
-        App::$container = ContainerMock::create()
-            ->withNullEm()
-            ->withBaseTicketStatusesMock()
-            ->withSettings()
-            ->get();
-
         DateTime::setTimestampState((new \DateTime($data['now']))->getTimestamp());
 
         $ticket = m::mock('Application\\DeskPRO\\Entity\\Ticket[getWorkHoursSet]')
