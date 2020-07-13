@@ -2,6 +2,7 @@
 
 namespace DpTest\DeskPRO\Application\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketSms;
@@ -9,18 +10,32 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use Orb\Util\WorkHoursSet;
 use Orb\Util\Testable\DateTime;
+use DpTestSrc\TestBundle\Mock\ContainerMock;
 use Mockery as m;
 
 class TicketWaitingTimeWorkingHoursTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var DeskproContainer
+     */
+    protected $containerBefore;
+
     public function setUp()
     {
+        $this->containerBefore = App::$container;
         DateTime::unsetTimestampState();
+
+        App::$container = ContainerMock::create()
+            ->withNullEm()
+            ->withBaseTicketStatusesMock()
+            ->withBasicSettings()
+            ->get();
     }
 
     public function tearDown()
     {
         DateTime::unsetTimestampState();
+        App::$container = $this->containerBefore;
     }
 
     /**
@@ -161,6 +176,115 @@ class TicketWaitingTimeWorkingHoursTest extends \PHPUnit_Framework_TestCase
 
         // THEN
         $this->assertEquals(43200, $ticket->getTotalToFirstReplyWh());
+    }
+
+    public function dataProviderGetTotalUserWaitingWorkTime()
+    {
+        $data = [];
+
+        // New way calculations
+
+        $data[] = [[
+            'now' => '2020-07-13 15:00:00',
+            'status' => TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+            'waiting_times' => [],
+            'date_user_waiting' => null,
+            'total_user_waiting_wh' => 1000,
+            'total_user_waiting_wh_start' => null,
+            'expected_result' => 1000
+        ]];
+
+        $data[] = [[
+            'now' => '2020-07-13 15:00:00',
+            'status' => TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+            'waiting_times' => [],
+            'date_user_waiting' => null,
+            'total_user_waiting_wh' => 1000,
+            'total_user_waiting_wh_start' => '2020-07-13 12:00:00',
+            'expected_result' => 1000 + 3 * 60 * 60
+        ]];
+
+        // tickets with old `waiting_times` format
+
+        $data[] = [[
+            'now' => '2020-07-13 15:00:00',
+            'status' => TicketStatus::STATUS_TYPE_AWAITING_USER,
+            'waiting_times' => [
+                ['type' => 'user', 'start' => strtotime('2020-07-13 09:00:00'), 'end' => strtotime('2020-07-13 10:00:00')],
+                ['type' => 'agent', 'start' => strtotime('2020-07-13 10:00:00'), 'end' => strtotime('2020-07-13 12:00:00')],
+            ],
+            'date_user_waiting' => null,
+            'total_user_waiting_wh' => null,
+            'total_user_waiting_wh_start' => null,
+            'expected_result' => 1 * 60 * 60
+        ]];
+        $data[] = [[
+            'now' => '2020-07-13 15:00:00',
+            'status' => TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+            'waiting_times' => [
+                ['type' => 'user', 'start' => strtotime('2020-07-13 09:00:00'), 'end' => strtotime('2020-07-13 10:00:00')],
+                ['type' => 'agent', 'start' => strtotime('2020-07-13 10:00:00'), 'end' => strtotime('2020-07-13 12:00:00')],
+            ],
+            'date_user_waiting' => '2020-07-13 12:00:00',
+            'total_user_waiting_wh' => null,
+            'total_user_waiting_wh_start' => null,
+            'expected_result' => 4 * 60 * 60
+        ]];
+
+        // tickets with mixed `waiting_times` format
+        $data[] = [[
+            'now' => '2020-07-13 15:00:00',
+            'status' => TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+            'waiting_times' => [
+                ['type' => 'user', 'start' => strtotime('2020-07-13 09:00:00'), 'end' => strtotime('2020-07-13 10:00:00')],
+                ['ticket_status' => 'awaiting_user', 'start' => strtotime('2020-07-13 10:00:00'), 'end' => strtotime('2020-07-13 11:00:00')],
+                ['ticket_status' => 'awaiting_agent', 'start' => strtotime('2020-07-13 11:00:00'), 'end' => strtotime('2020-07-13 12:00:00')],
+                ['ticket_status' => 'awaiting_user', 'start' => strtotime('2020-07-13 12:00:00'), 'end' => strtotime('2020-07-13 13:00:00')],
+                // unknown status
+                ['ticket_status' => 'awaiting_user_non_exist', 'start' => strtotime('2020-07-13 12:00:00'), 'end' => strtotime('2020-07-13 13:00:00')],
+            ],
+            'date_user_waiting' => null,
+            'total_user_waiting_wh' => null,
+            'total_user_waiting_wh_start' => null,
+            'expected_result' => 2 * 60 * 60
+        ]];
+
+        return $data;
+    }
+
+    /**
+     * @dataProvider dataProviderGetTotalUserWaitingWorkTime
+     */
+    public function testGetTotalUserWaitingWorkTime($data)
+    {
+        // GIVEN
+        App::$container = ContainerMock::create()
+            ->withNullEm()
+            ->withBaseTicketStatusesMock()
+            ->withSettings()
+            ->get();
+
+        DateTime::setTimestampState((new \DateTime($data['now']))->getTimestamp());
+
+        $ticket = m::mock('Application\\DeskPRO\\Entity\\Ticket[getWorkHoursSet]')
+            ->shouldAllowMockingProtectedMethods();
+        $ticket->shouldReceive('getWorkHoursSet')->andReturn($this->getStandardWorkHoursSet());
+
+        $ticket->setTicketStatus(VirtualTicketStatus::getById($data['status']));
+        $ticket->waiting_times = $data['waiting_times'];
+        $ticket->date_user_waiting = $data['date_user_waiting']
+            ? new \DateTime($data['date_user_waiting'])
+            : null;
+        $ticket->total_user_waiting_wh = $data['total_user_waiting_wh'];
+        $ticket->total_user_waiting_wh_start = $data['total_user_waiting_wh_start']
+            ? new \DateTime($data['total_user_waiting_wh_start'])
+            : null;
+
+        // WHEN
+        $time = $ticket->getTotalUserWaitingWorkTime();
+
+        // THEN
+        $this->assertEquals($data['expected_result'], $time);
     }
 
     /**

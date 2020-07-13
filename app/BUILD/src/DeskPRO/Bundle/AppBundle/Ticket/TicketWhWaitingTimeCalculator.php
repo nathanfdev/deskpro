@@ -42,7 +42,7 @@ class TicketWhWaitingTimeCalculator
     public function __construct(EntityManager $em, Logger $logger = null)
     {
         $this->em = $em;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $logger ? $logger : new NullLogger();
     }
 
     /**

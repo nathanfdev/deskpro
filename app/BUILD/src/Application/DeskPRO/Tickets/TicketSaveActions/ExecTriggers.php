@@ -61,14 +61,16 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
         $has_nonreply_actions = false;
         if ($context->getEventType() == 'newreply') {
             $exclude_types = [
-                'message'              => true,
-                'messages'             => true,
-                'waiting_times'        => true,
-                'total_user_waiting'   => true,
-                'total_to_first_reply' => true,
-                'locked_by_agent'      => true,
-                'count_agent_replies'  => true,
-                'count_user_replies'   => true,
+                'message'                 => true,
+                'messages'                => true,
+                'waiting_times'           => true,
+                'total_user_waiting'      => true,
+                'total_to_first_reply'    => true,
+                'total_user_waiting_wh'   => true,
+                'total_to_first_reply_wh' => true,
+                'locked_by_agent'         => true,
+                'count_agent_replies'     => true,
+                'count_user_replies'      => true,
             ];
             foreach ($ticket->getStateChangeRecorder()->getChangedFields() as $f) {
                 if (!isset($exclude_types[$f]) && strpos($f, 'date_') === false) {

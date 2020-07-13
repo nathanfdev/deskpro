@@ -203,10 +203,20 @@ class TicketMerge implements PersonContextInterface
         // merge waiting times
         $map = [];
         foreach ($n->waiting_times as $time) {
-            $map[implode('|', [$time['type'], $time['start'], $time['end']])] = $time;
+            $map[implode('|', [
+                isset($time['type']) ? $time['type'] : '',
+                isset($time['ticket_status']) ? $time['ticket_status'] : '',
+                $time['start'],
+                $time['end']
+            ])] = $time;
         }
         foreach ($o->waiting_times as $time) {
-            $map[implode('|', [$time['type'], $time['start'], $time['end']])] = $time;
+            $map[implode('|', [
+                isset($time['type']) ? $time['type'] : '',
+                isset($time['ticket_status']) ? $time['ticket_status'] : '',
+                $time['start'],
+                $time['end']
+            ])] = $time;
         }
         $n->waiting_times = array_values($map);
 

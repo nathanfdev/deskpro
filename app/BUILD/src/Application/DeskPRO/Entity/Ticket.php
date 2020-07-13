@@ -3114,13 +3114,64 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $secs;
     }
 
+    /**
+     * Fallback to support tickets with old `waiting_times` format
+     * and existed before waiting times in working hours db fields introduction
+     *
+     * @return int
+     */
+    protected function getTotalUserWaitingWorkTimeLegacy()
+    {
+        $time = 0;
+        $now = new DateTime();
+        $wh = $this->getWorkHoursSet();
+
+        foreach ($this->waiting_times as $waiting) {
+            if (array_key_exists('type', $waiting) && $waiting['type'] == 'user') {
+                $time += $wh->getWorkTimeBetween($waiting['start'], $waiting['end']);
+            } else if (array_key_exists('ticket_status', $waiting)) {
+                try {
+                    $status = App::getContainer()->getTicketStatuses()->findStatusOrException($waiting['ticket_status']);
+                } catch (\Exception $e) {
+                    // in case if status doesn't exist any more
+                    continue;
+                }
+                if ($status->isCountUserWaitingTime()) {
+                    $time += $wh->getWorkTimeBetween($waiting['start'], $waiting['end']);
+                }
+            }
+        }
+
+        if ($this->date_user_waiting && $this->getTicketStatus()->isCountUserWaitingTime()) {
+            $time += $wh->getWorkTimeBetween($this->date_user_waiting, $now);
+        }
+
+        return $time;
+    }
+
+    /**
+     *
+     * @return int
+     */
     public function getTotalUserWaitingWorkTime()
     {
-        $time = (int)$this->total_user_waiting_wh;
+        if (
+            $this->waiting_times
+            && count($this->waiting_times)
+            && array_key_exists('type', $this->waiting_times[0])
+        ) {
+            return $this->getTotalUserWaitingWorkTimeLegacy();
+        }
 
-        $now = new \DateTime();
+        $time = (int)$this->total_user_waiting_wh;
+        $now = new DateTime();
+        
         // need the condition; its possible the wh_start was in future if the last change was out of hours
-        if ($this->total_user_waiting_wh_start && $this->total_user_waiting_wh_start < $now) {
+        if (
+            $this->total_user_waiting_wh_start
+            && $this->total_user_waiting_wh_start < $now
+            && $this->getTicketStatus()->isCountUserWaitingTime()
+        ) {
             $wh = $this->getWorkHoursSet();
             $time += $wh->getWorkTimeBetween(
                 $this->total_user_waiting_wh_start,

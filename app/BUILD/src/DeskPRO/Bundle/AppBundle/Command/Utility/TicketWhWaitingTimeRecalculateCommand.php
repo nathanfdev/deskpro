@@ -108,8 +108,8 @@ class TicketWhWaitingTimeRecalculateCommand extends ContainerAwareCommand
         $isPreview      = $input->getOption('preview');
         $startTicketId  = $input->getOption('ticket-id');
         $isBatchMode    = $input->getOption('batch-mode');
-        $numTickets     = $input->getOption('batch-size') ?? ($isBatchMode ? 1000 : 1);
-        $minTicketId    = max($input->getOption('min-ticket-id') ?? 0, 0);
+        $numTickets     = $input->hasOption('batch-size') ? $input->getOption('batch-size') : ($isBatchMode ? 1000 : 1);
+        $minTicketId    = max($input->hasOption('min-ticket-id') ? $input->getOption('min-ticket-id') : 0, 0);
 
         if (!$startTicketId) {
             $this->logger->error("Provide `ticket-id` option");
