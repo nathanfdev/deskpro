@@ -20,7 +20,7 @@ use GuzzleHttp\Exception\ClientException;
 class CrowdinController extends BaseController
 {
     const BASE_URL      = 'https://distributions.crowdin.net/c5f41ca14ee5fe46e786b27u5ra';
-    const DPCS_BASE_URL = 'http://download-lang.deskpro-service.com/langauge/download-lang/c5f41ca14ee5fe46e786b27u5ra';
+    const DPCS_BASE_URL = 'https://language-download.deskpro-service.com/langauge/download-lang/c5f41ca14ee5fe46e786b27u5ra';
 
     /**
      * @Rest\Get("/locales")
@@ -44,7 +44,7 @@ class CrowdinController extends BaseController
      */
     public function getPhrasesAction($locale, $type)
     {
-        $url  = self::DPCS_BASE_URL."/content/develop/$locale/$type.yml";
+        $url  = self::DPCS_BASE_URL."/content/develop/$locale/$type";
         $path = rtrim($this->get('deskpro.app_env')->getUserFilesDir(), '/')."/crowdin.$locale.$type.yml";
 
         $resource = fopen($path, 'w');
