@@ -28,7 +28,7 @@ class VoiceTaskRouterLoggerFactory
         $logger->pushProcessor(new UidProcessor());
 
         $env = $container->get('deskpro.app_env');
-        if ($env->isQa() || $env->getConfig('logs.enable_voice_log')) {
+        if ($env->getConfig('logs.enable_voice_log')) {
             if (SystemErrorHandler::useSyslog()) {
                 $handler = new SyslogHandler('deskpro-task-router');
             } else {
