@@ -50,6 +50,15 @@ class TicketStatusesType extends AbstractType
                 'empty_data' => '0',
                 'required'   => false,
             ])
+            ->add('pending_waiting_time_mode', ChoiceType::class, [
+                'required' => true,
+                'choices'  => [
+                    TicketStatus::PENDING_WAITING_TIME_MODE_AGENT,
+                    TicketStatus::PENDING_WAITING_TIME_MODE_USER,
+                    TicketStatus::PENDING_WAITING_TIME_MODE_NONE
+                ],
+                'choices_as_values' => true
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
@@ -60,6 +69,8 @@ class TicketStatusesType extends AbstractType
      */
     public function onPreSubmit(FormEvent $event)
     {
+        $form  = $event->getForm();
+        
         // be able to find Parent by `statusCode`
         $data = $event->getData();
         if (
@@ -76,11 +87,24 @@ class TicketStatusesType extends AbstractType
 
         $event->setData($data);
 
+        // disable `pending_waiting_time_mode` for non pending statuses
+        if (
+            is_array($data)
+            && array_key_exists('status_type', $data)
+            && $data['status_type'] !== TicketStatus::STATUS_TYPE_PENDING
+        ) {
+            $this->disablePendingWaitingTimeMode($form);
+        }
+
         // disable `statusType` field for already existing statuses
-        $form  = $event->getForm();
         $model = $form->getData();
         if ($model && $model->getId()) {
             $this->disableStatusType($form);
+
+            // disable `pending_waiting_time_mode` for non pending statuses
+            if ($model->getStatusType() !== TicketStatus::STATUS_TYPE_PENDING) {
+                $this->disablePendingWaitingTimeMode($form);
+            }
         }
     }
 
@@ -90,6 +114,20 @@ class TicketStatusesType extends AbstractType
     protected function disableStatusType(FormInterface $form)
     {
         $form->add('status_type', ChoiceType::class, [
+            'required'          => false,
+            'choices'           => [],
+            'choices_as_values' => true,
+            'mapped'            => false,
+            'disabled'          => true,
+        ]);
+    }
+
+    /**
+     * @param FormInterface $form
+     */
+    protected function disablePendingWaitingTimeMode(FormInterface $form)
+    {
+        $form->add('pending_waiting_time_mode', ChoiceType::class, [
             'required'          => false,
             'choices'           => [],
             'choices_as_values' => true,

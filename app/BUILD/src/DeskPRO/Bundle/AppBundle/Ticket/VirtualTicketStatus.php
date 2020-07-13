@@ -58,4 +58,21 @@ class VirtualTicketStatus extends TicketStatus
     {
         return App::getTranslator()->phrase('agent.tickets.status_'.$this->getStatusType());
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPendingWaitingTimeMode()
+    {
+        // hack to load this option from settings for virtual pending status
+        if ($this->getStatusType() === self::STATUS_TYPE_PENDING 
+            && (!$this->options || !isset($this->options['pending_waiting_time_mode']))
+        ) {
+            $this->setPendingWaitingTimeMode(
+                App::getSetting('core_tickets.pending_status_waiting_time_mode', TicketStatus::PENDING_WAITING_TIME_MODE_USER)
+            );
+        }
+
+        return parent::getPendingWaitingTimeMode();
+    }
 }

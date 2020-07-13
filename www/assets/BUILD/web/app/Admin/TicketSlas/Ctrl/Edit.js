@@ -20,6 +20,8 @@ define([
       this.sla        = null;
       this.form       = this.getFormFromModel({});
 
+      this.pendingStatuses = null;
+
       this.actionsTypeDef = this.dpObTypesDefTicketActions;
       this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
 
@@ -73,6 +75,9 @@ define([
       proms.push(this.criteraTypeDef.loadDataOptions());
       proms.push(this.Api.sendDataGet({ customActions: '/ticket_triggers/get-custom-actions' }).then(result => this.customActions = result.data.customActions.action_defs)
       );
+      proms.push(this.Api2.sendGet('/ticket_statuses', { status_type: 'pending' }).then((response) => {
+        this.pendingStatuses = response.data.data;
+      }));
 
       return this.$q.all(proms).then(() => this.updateCriteriaOptionTypes());
     }

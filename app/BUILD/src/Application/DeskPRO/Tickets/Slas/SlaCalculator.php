@@ -8,9 +8,10 @@ namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketSla;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Orb\Util\TimeUnit;
 use Orb\Util\WorkHoursInterface;
-use Orb\Util\WorkHoursSetAll;
+use Orb\Util\Testable\DateTime;
 
 class SlaCalculator
 {
@@ -39,17 +40,29 @@ class SlaCalculator
     private $fail_time;
 
     /**
+     *
+     * @var array
+     */
+    private $excludeTicketStatuses = [];
+
+    /**
      * @param                    $type
      * @param WorkHoursInterface $work_hours
      * @param TimeUnit           $warn_time
      * @param TimeUnit           $fail_time
      */
-    public function __construct($type, WorkHoursInterface $work_hours, TimeUnit $warn_time, TimeUnit $fail_time)
-    {
+    public function __construct(
+        $type,
+        WorkHoursInterface $work_hours,
+        TimeUnit $warn_time,
+        TimeUnit $fail_time,
+        $excludeTicketStatuses
+    ) {
         $this->type       = $type;
         $this->work_hours = $work_hours;
         $this->warn_time  = $warn_time;
         $this->fail_time  = $fail_time;
+        $this->excludeTicketStatuses = $excludeTicketStatuses;
     }
 
     /**
@@ -65,38 +78,78 @@ class SlaCalculator
         switch ($this->type) {
             case self::TYPE_FIRST_RESPONSE:
             case self::TYPE_RESOLUTION:
-                return $this->work_hours->calculateWorkHoursDelay($ticket->date_created, $delay);
 
-            case self::TYPE_WAITING_TIME:
-                if ($ticket->status != 'awaiting_agent') {
+                if ($this->isExcludedTicketStatus($ticket->getTicketStatus()->getStatusCode())) {
                     // can't know when it will expire
                     return;
                 }
 
-                if ($this->work_hours instanceof WorkHoursSetAll) {
-                    $wait_time = $ticket->total_user_waiting;
-                    if ($ticket->date_user_waiting) {
-                        $wait_time += time() - $ticket->date_user_waiting->getTimestamp();
-                    }
+                // Check for old waiting_times format
+                // In this case return old way calculations
+                $isOldFormat = $ticket->waiting_times && !array_key_exists('ticket_status', $ticket->waiting_times[0]);
 
-                    return new \DateTime('+'.($delay - $wait_time).' seconds', new \DateTimeZone('UTC'));
-                } else {
-                    $wait_time = 0;
-                    if ($ticket->waiting_times) {
-                        foreach ($ticket->waiting_times as $waiting) {
-                            if ($waiting['type'] == 'user') {
-                                $wait_time += $this->work_hours->getWorkTimeBetween($waiting['start'], $waiting['end']);
-                            }
-                        }
-                    }
-
-                    if ($ticket->date_user_waiting && $ticket->status == 'awaiting_agent') {
-                        // ticket is waiting but we don't have an end so add that
-                        $wait_time += $this->work_hours->getWorkTimeBetween($ticket->date_user_waiting);
-                    }
-
-                    return $this->work_hours->calculateWorkHoursDelay(new \DateTime(), $delay - $wait_time);
+                // Calculation is simple if no excluded statuses or old format
+                if (!$this->excludeTicketStatuses || $isOldFormat || !$ticket->waiting_times) {
+                    return $this->work_hours->calculateWorkHoursDelay($ticket->date_created, $delay);
                 }
+
+                foreach ($ticket->waiting_times as $waiting) {
+                    if ($delay <= 0) {
+                        break;
+                    }
+                    if (
+                        array_key_exists('ticket_status', $waiting)
+                        && $this->isExcludedTicketStatus($waiting['ticket_status'])
+                    ) {
+                        continue;
+                    }
+                    $waitTime = $this->work_hours->getWorkTimeBetween($waiting['start'], $waiting['end']);
+
+                    if ($delay <= $waitTime) {
+                        return $this->work_hours->calculateWorkHoursDelay(
+                            new \DateTime('@'.$waiting['start']),
+                            $delay
+                        );
+                    } else {
+                        $delay -= $waitTime;
+                    }
+                }
+                
+                return $this->work_hours->calculateWorkHoursDelay($ticket->date_status, $delay);
+
+            case self::TYPE_WAITING_TIME:
+                if (!$this->isWaitingTimeTicketStatus($ticket->getTicketStatus()->getStatusCode())) {
+                    // can't know when it will expire
+                    return;
+                }
+
+                $wait_time = 0;
+                foreach ($ticket->waiting_times as $waiting) {
+                    if (
+                        (
+                            // old `waiting_times`  format
+                            array_key_exists('type', $waiting)
+                            && $waiting['type'] == 'user'
+                        )
+                        || (
+                            // new `waiting_times`  format
+                            array_key_exists('ticket_status', $waiting)
+                            && $this->isWaitingTimeTicketStatus($waiting['ticket_status'])
+                        )
+                    ) {
+                        $wait_time += $this->work_hours->getWorkTimeBetween($waiting['start'], $waiting['end']);
+                    }
+                }
+
+                /** @var \Orb\Util\Testable\DateTime $now */
+                $now = new DateTime();
+                
+                if ($ticket->date_status) {
+                    // ticket is waiting but we don't have an end so add that
+                    $wait_time += $this->work_hours->getWorkTimeBetween($ticket->date_status, $now);
+                }
+
+                return $this->work_hours->calculateWorkHoursDelay($now, $delay - $wait_time);
                 break;
         }
 
@@ -188,14 +241,28 @@ class SlaCalculator
         if ($this->type == self::TYPE_WAITING_TIME) {
             $time = 0;
             foreach ($ticket->waiting_times as $waiting) {
-                if ($waiting['type'] == 'user' && $waiting['start'] < $end_ts) {
+                if (
+                    $waiting['start'] < $end_ts
+                    && (
+                    (
+                        // old `waiting_times`  format
+                        array_key_exists('type', $waiting)
+                        && $waiting['type'] == 'user'
+                    )
+                    || (
+                        // new `waiting_times`  format
+                        array_key_exists('ticket_status', $waiting)
+                        && $this->isWaitingTimeTicketStatus($waiting['ticket_status'])
+                    ))
+                ) {
                     $time += $this->work_hours->getWorkTimeBetween($waiting['start'], min($end_ts, $waiting['end']));
                 }
             }
 
             return $time;
         } else {
-            return $this->work_hours->getWorkTimeBetween($ticket->date_created, $end_ts);
+            return $this->work_hours->getWorkTimeBetween($ticket->date_created, $end_ts)
+                    - $this->getTicketWorkingTimeInExcludedStatuses($ticket, $end_ts);
         }
     }
 
@@ -295,5 +362,59 @@ class SlaCalculator
         }
 
         return $hasReply;
+    }
+
+    /**
+     *
+     * @param Ticket $ticket
+     * @return int - seconds
+     */
+    private function getTicketWorkingTimeInExcludedStatuses(Ticket $ticket, int $endTs = null)
+    {
+        if (!$this->excludeTicketStatuses) {
+            return 0;
+        }
+
+        $sec = 0;
+        foreach ($ticket->getWaitingTimes() as $waiting) {
+            if (!$endTs) {
+                $endTs = (int)$waiting['end'];
+            }
+            
+            // `ticket_status` key exists only in new `waiting_times` format
+            if (
+                array_key_exists('ticket_status', $waiting)
+                && $this->isExcludedTicketStatus($waiting['ticket_status'])
+                && $waiting['start'] <= $endTs
+            ) {
+                $sec += $this->work_hours->getWorkTimeBetween($waiting['start'], min($waiting['end'], $endTs));
+            }
+        }
+
+        return $sec;
+    }
+
+    /**
+     * Is ticket status should be counted in WAITING_TIME SLA
+     *
+     * @param string $ticketStatus
+     * @return bool
+     */
+    private function isWaitingTimeTicketStatus($ticketStatus)
+    {
+        list($status) = explode('.', $ticketStatus, 2);
+
+        return in_array($status, [TicketStatus::STATUS_TYPE_AWAITING_AGENT, TicketStatus::STATUS_TYPE_PENDING])
+                && !$this->isExcludedTicketStatus($ticketStatus);
+    }
+
+    /**
+     *
+     * @param string $ticketStatus
+     * @return bool
+     */
+    private function isExcludedTicketStatus($ticketStatus)
+    {
+        return in_array($ticketStatus, $this->excludeTicketStatuses);
     }
 }

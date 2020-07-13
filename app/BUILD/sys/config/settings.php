@@ -514,6 +514,13 @@ return [
 
     'core_tickets.work_hours' => 'a:7:{s:8:"timezone";s:3:"UTC";s:10:"start_hour";i:9;s:9:"start_min";i:0;s:8:"end_hour";i:17;s:7:"end_min";i:0;s:8:"holidays";a:0:{}s:9:"work_days";a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}}',
 
+
+    /**
+     * How to count times when ticket in pending status
+     * Check TicketStatus::PENDING_WAITING_TIME_MODE_XXX
+     */
+    'core_tickets.pending_status_waiting_time_mode' => 'user',
+
     /*
      * The account to use when forwarding messages out
      */

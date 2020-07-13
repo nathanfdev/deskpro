@@ -15,6 +15,7 @@ use Application\DeskPRO\Tickets\TicketManager;
 use Application\DeskPRO\Tickets\TicketPriorities;
 use Application\DeskPRO\Tickets\TicketWorkflows;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Mockery as m;
 
 class ContainerMock
@@ -152,6 +153,45 @@ class ContainerMock
     public function withTicketStatusesMock(TicketStatusDataService $mock)
     {
         $this->mock->shouldReceive('getTicketStatuses')->andReturn($mock);
+
+        return $this;
+    }
+
+    /**
+     *
+     * @return $this
+     */
+    public function withBaseTicketStatusesMock($config = [])
+    {
+        $config = array_merge([
+            'statuses' => []
+        ], $config);
+
+        $statusesMock = m::mock(TicketStatusDataService::class);
+
+        // Pending status should have waiting time mode
+        $pendingStatus = new TicketStatus(TicketStatus::STATUS_TYPE_PENDING);
+        $pendingStatus->setPendingWaitingTimeMode(
+            $config['pending_waiting_time_mode'] ?? TicketStatus::PENDING_WAITING_TIME_MODE_USER
+        );
+
+        foreach (TicketStatus::getStatusTypes() as $status) {
+            $statusesMock
+                ->shouldReceive('findStatusOrException')
+                ->zeroOrMoreTimes()
+                ->with($status)->andReturn(
+                    $status == TicketStatus::STATUS_TYPE_PENDING ? $pendingStatus : new TicketStatus($status)
+                );
+        }
+
+        foreach ($config['statuses'] as $name => $status) {
+            $statusesMock
+                ->shouldReceive('findStatusOrException')
+                ->zeroOrMoreTimes()
+                ->with($name)->andReturn($status);
+        }
+
+        $this->mock->shouldReceive('getTicketStatuses')->andReturn($statusesMock);
 
         return $this;
     }

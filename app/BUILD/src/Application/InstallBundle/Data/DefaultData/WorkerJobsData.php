@@ -266,6 +266,15 @@ class WorkerJobsData extends AbstractDefaultData
         ];
 
         $jobs[] = [
+            'id'           => 'ticket_wh_waiting_time_update',
+            'worker_group' => 'ticket_wh_waiting_time_update',
+            'title'        => 'Ticket WH waiting time update',
+            'description'  => 'Ticket work hours waiting time update',
+            'job_class'    => Job\TicketWhWaitingTimeUpdate::class,
+            'run_interval' => Job\TicketWhWaitingTimeUpdate::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
             'id'           => 'run_queued_tasks',
             'worker_group' => 'run_queued_tasks',
             'title'        => 'Run Queued Tasks',

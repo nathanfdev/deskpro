@@ -238,6 +238,16 @@ class Sla extends DomainObject
     protected $_calc;
 
     /**
+     * This SLA will not apply while tickets are in these pending statuses
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
+     * @var array
+     */
+    protected $exclude_ticket_statuses;
+
+    /**
      * Creates a new team.
      */
     public function __construct()
@@ -428,6 +438,27 @@ class Sla extends DomainObject
     }
 
     /**
+     *
+     * @return array
+     */
+    public function getExcludeTicketStatuses()
+    {
+        return $this->exclude_ticket_statuses ?: [];
+    }
+
+    /**
+     *
+     * @param array $statusCodes
+     * @return $this
+     */
+    public function setExcludeTicketStatuses(array $statusCodes)
+    {
+        $this->setModelField('exclude_ticket_statuses', $statusCodes);
+
+        return $this;
+    }
+
+    /**
      * @return SlaCalculator
      */
     public function getCalculator()
@@ -440,7 +471,8 @@ class Sla extends DomainObject
             $this->sla_type,
             $this->getWorkHoursSet(),
             new TimeUnit($this->warn_time, $this->warn_time_unit),
-            new TimeUnit($this->fail_time, $this->fail_time_unit)
+            new TimeUnit($this->fail_time, $this->fail_time_unit),
+            $this->getExcludeTicketStatuses()
         );
 
         return $this->_calc;
@@ -628,6 +660,14 @@ class Sla extends DomainObject
                 'fieldName'  => 'fail_actions',
                 'type'       => 'dp_json_obj',
                 'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'exclude_ticket_statuses',
+                'fieldName'  => 'exclude_ticket_statuses',
+                'type'       => 'json_array',
+                'nullable'   => true,
             ]
         );
     }

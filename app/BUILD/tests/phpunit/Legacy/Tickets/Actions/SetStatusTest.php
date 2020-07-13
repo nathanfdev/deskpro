@@ -8,6 +8,7 @@ use Application\DeskPRO\Tickets\Actions\SetStatus;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
+use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use DpTest\DeskProTestCase;
 use DpTestSrc\TestBundle\Mock\ContainerMock;
 use Mockery as m;
@@ -26,9 +27,9 @@ class SetStatusTest extends DeskProTestCase
             ->withNullEm()
             ->withTicketStatusesMock($statusesMock)->get();
 
-        $ticket         = new Ticket();
-        $ticket->status = 'awaiting_agent';
-        $exec           = new ExecutorContext();
+        $ticket = new Ticket();
+        $ticket->setTicketStatus(VirtualTicketStatus::getById('awaiting_agent'));
+        $exec = new ExecutorContext();
 
         $action = new SetStatus(['status' => 'awaiting_user']);
 
@@ -53,9 +54,9 @@ class SetStatusTest extends DeskProTestCase
             ->withNullEm()
             ->withTicketStatusesMock($statusesMock)->get();
 
-        $ticket         = new Ticket();
-        $ticket->status = 'awaiting_agent';
-        $exec           = new ExecutorContext();
+        $ticket = new Ticket();
+        $ticket->setTicketStatus(VirtualTicketStatus::getById('awaiting_agent'));
+        $exec = new ExecutorContext();
 
         $action = new SetStatus(['status' => 'hidden.deleted']);
 
@@ -78,8 +79,8 @@ class SetStatusTest extends DeskProTestCase
             ->withNullEm()
             ->withTicketStatusesMock($statusesMock)->get();
 
-        $ticket         = new Ticket();
-        $ticket->status = 'awaiting_agent';
+        $ticket = new Ticket();
+        $ticket->setTicketStatus(VirtualTicketStatus::getById('awaiting_agent'));
 
         $exec = new ExecutorContext();
 
@@ -98,8 +99,8 @@ class SetStatusTest extends DeskProTestCase
             ->withNullEm()
             ->withTicketStatusesMock($statusesMock)->get();
 
-        $ticket         = new Ticket();
-        $ticket->status = 'awaiting_agent';
+        $ticket = new Ticket();
+        $ticket->setTicketStatus(VirtualTicketStatus::getById('awaiting_agent'));
 
         $exec = new ExecutorContext();
 

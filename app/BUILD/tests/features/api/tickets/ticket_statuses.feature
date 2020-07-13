@@ -82,6 +82,16 @@ Feature: /ticket_statuses endpoint
     Then the response status code should be 400
     And the JSON node "errors.errors[0].code" should be equal to "unique_entity"
 
+  Scenario: I should provide waiting time mode for pending statuses
+    When I send a POST request to "/api/v2/ticket_statuses" with body:
+    """
+{
+  "status_type": "pending",
+  "title": "Agent 3",
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.errors[0].code" should be equal to "required"
 
   Scenario: I update a status
     When I send a PUT request to "/api/v2/ticket_statuses/{s3}" with body:
@@ -145,7 +155,8 @@ Feature: /ticket_statuses endpoint
 {
   "status_type": "pending",
   "title": "Test perms",
-  "sys_id": "test_perms"
+  "sys_id": "test_perms",
+  "pending_waiting_time_mode": "user"
 }
     """
     Then the response status code should be 201

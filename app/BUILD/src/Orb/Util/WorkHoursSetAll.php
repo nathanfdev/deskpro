@@ -50,6 +50,20 @@ class WorkHoursSetAll implements WorkHoursInterface
 
         return $work_date;
     }
+    
+    /**
+     * e.g. if wh are 9am-6pm and it's currently 10am, then return 10am + 1sec
+     *      if it's midnight, then the next time would be tomorrow at 9am
+     *
+     * @param \DateTime $_date
+     * @return \DateTime
+     */
+    public function getNextWorkTimeStart(\DateTime $_date)
+    {
+        $date = new \DateTime('@'.$_date->getTimestamp());
+        $date->modify('+1 seconds');
+        return $date;
+    }
 
     /**
      * @param int|\DateTime      $start

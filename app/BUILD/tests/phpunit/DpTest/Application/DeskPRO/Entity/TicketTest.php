@@ -11,6 +11,7 @@ use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
+use Orb\Util\Testable\DateTime;
 use DpTest\PortalTestCase;
 use DpTestSrc\TestBundle\Mock\ContainerMock;
 use Mockery as m;
@@ -25,11 +26,13 @@ class TicketTest extends PortalTestCase
     public function setUp()
     {
         $this->containerBefore = App::$container;
+        DateTime::unsetTimestampState();
     }
 
     public function tearDown()
     {
         App::$container = $this->containerBefore;
+        DateTime::unsetTimestampState();
     }
 
     public function testSetNotAgentForNewTicket()
@@ -73,41 +76,28 @@ class TicketTest extends PortalTestCase
         $this->assertNull($ticket->getAgent());
     }
 
-    /**
-     * @return array
-     */
-    public function isDeleteDataProvider()
+    public function testIsDeleted()
     {
-        $data = [];
-
         $ticket1 = new Ticket();
         $status1 = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
         $status1->setSysId('deleted');
         $ticket1->setTicketStatus($status1);
-        $data[] = [$ticket1, true];
+        $this->assertEquals(true, $ticket1->isDeleted());
 
         $ticket2 = new Ticket();
         $status2 = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
         $status2->setSysId('spam');
         $ticket2->setTicketStatus($status2);
-        $data[] = [$ticket2, false];
+        $this->assertEquals(false, $ticket2->isDeleted());
+
+        App::$container = ContainerMock::create()
+            ->withNullEm()
+            ->withBaseTicketStatusesMock()
+            ->get();
 
         $ticket3 = new Ticket();
         $ticket3->setStatus(TicketStatus::STATUS_TYPE_HIDDEN);
-        $data[] = [$ticket3, false];
-
-        return $data;
-    }
-
-    /**
-     * @dataProvider isDeleteDataProvider
-     *
-     * @param Ticket $ticket
-     * @param bool   $expectedIsDeleted
-     */
-    public function testIsDeleted(Ticket $ticket, $expectedIsDeleted)
-    {
-        $this->assertEquals($expectedIsDeleted, $ticket->isDeleted());
+        $this->assertEquals(false, $ticket3->isDeleted());
     }
 
     public function testSetTicketStatus()
@@ -117,6 +107,8 @@ class TicketTest extends PortalTestCase
         $status->setSysId('some test');
 
         $ticket = new Ticket();
+
+        App::$container = ContainerMock::create()->withSettings()->get();
 
         // WHEN
         $ticket->setTicketStatus($status);
@@ -137,6 +129,8 @@ class TicketTest extends PortalTestCase
 
         $ticket = new Ticket();
         $this->assertNull($ticket->getDateOnHold());
+
+        App::$container = ContainerMock::create()->withSettings()->get();
 
         // WHEN set pending
         $ticket->setTicketStatus($statusPending);
@@ -175,7 +169,10 @@ class TicketTest extends PortalTestCase
 
         $statusesMock = m::mock(TicketStatusDataService::class);
         $statusesMock->shouldReceive('getDeletedStatus')->andReturn($deletedStatus);
-        App::$container = ContainerMock::create()->withTicketStatusesMock($statusesMock)->get();
+        App::$container = ContainerMock::create()
+            ->withSettings()
+            ->withTicketStatusesMock($statusesMock)
+            ->get();
 
         //WHEN/THEN
         $ticketMock->setTicketStatus(VirtualTicketStatus::getById(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
@@ -183,6 +180,8 @@ class TicketTest extends PortalTestCase
 
     public function getStatusCodeDataProvider()
     {
+        App::$container = ContainerMock::create()->withSettings()->get();
+        
         $data = [];
 
         $ticket1 = new Ticket();
@@ -224,6 +223,7 @@ class TicketTest extends PortalTestCase
         $ticketManagerMock->shouldIgnoreMissing();
         App::$container = ContainerMock::create()
             ->withNullEm()
+            ->withSettings()
             ->withTicketStatusesMock($statusesMock)
             ->withTicketManagerMock($ticketManagerMock)
             ->get();
@@ -247,6 +247,7 @@ class TicketTest extends PortalTestCase
         $deletedStatus->setId(2);
 
         App::$container = ContainerMock::create()
+            ->withSettings()
             ->withNullEm()
             ->get();
 
@@ -275,7 +276,10 @@ class TicketTest extends PortalTestCase
         $statusesMock->shouldReceive('getDeletedStatus')->andReturn($deletedStatus);
         $statusesMock->shouldReceive('getSpamStatus')->andReturn($spamStatus);
 
-        App::$container = ContainerMock::create()->withTicketStatusesMock($statusesMock)->get();
+        App::$container = ContainerMock::create()
+            ->withSettings()
+            ->withTicketStatusesMock($statusesMock)
+            ->get();
 
         // WHEN/THEN
         $this->assertEquals(100, Ticket::getStatusInt(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
@@ -290,6 +294,8 @@ class TicketTest extends PortalTestCase
     public function testCheckStatuses()
     {
         // GIVEN
+        App::$container = ContainerMock::create()->withSettings()->get();
+        
         $ticket1 = new Ticket();
         $ticket1->setTicketStatus(VirtualTicketStatus::getById(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
 
@@ -334,6 +340,20 @@ class TicketTest extends PortalTestCase
     public function testSetIsHold()
     {
         // GIVEN
+        App::$container = ContainerMock::create()->withSettings()->get();
+        $pendingStatus = new TicketStatus(TicketStatus::STATUS_TYPE_PENDING);
+        $pendingStatus->setPendingWaitingTimeMode(TicketStatus::PENDING_WAITING_TIME_MODE_USER);
+
+        $statusesMock = m::mock(TicketStatusDataService::class);
+        $statusesMock->shouldReceive('findStatusOrException')->with('pending')->andReturn($pendingStatus);
+        $statusesMock->shouldReceive('findStatusOrException')->with('awaiting_agent')->andReturn(
+            new TicketStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT)
+        );
+        App::$container = ContainerMock::create()
+            ->withNullEm()
+            ->withTicketStatusesMock($statusesMock)->get();
+
+
         $ticket = new Ticket();
 
         // WHEN/THEN
@@ -346,6 +366,8 @@ class TicketTest extends PortalTestCase
     public function testGetHiddenStatus()
     {
         // GIVEN
+        App::$container = ContainerMock::create()->withSettings()->get();
+        
         $deletedStatus = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
         $deletedStatus->setSysId(TicketStatus::SYS_ID_DELETED);
         $deletedStatus->setId(2);
@@ -368,5 +390,45 @@ class TicketTest extends PortalTestCase
         $this->assertEquals(TicketStatus::SYS_ID_SPAM, $ticketS->getHiddenStatus());
         $this->assertNull($ticketA->getHiddenStatus());
         $this->assertNull($ticket->getHiddenStatus());
+    }
+
+    public function testChangeStatusShouldPopulateWaitingTimes()
+    {
+        // GIVEN
+        App::$container = ContainerMock::create()
+            ->withNullEm()
+            ->withBaseTicketStatusesMock()->get();
+        
+        $pending = new TicketStatus(TicketStatus::STATUS_TYPE_PENDING);
+        $pending->setPendingWaitingTimeMode(TicketStatus::PENDING_WAITING_TIME_MODE_USER);
+
+        $ticket = new Ticket();
+
+        // WHEN
+        DateTime::setTimestampState((new \DateTime('2020-06-22 12:00:00'))->getTimestamp());
+        $ticket->setTicketStatus(new TicketStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
+
+        DateTime::setTimestampState((new \DateTime('2020-06-22 13:00:00'))->getTimestamp());
+        $ticket->setTicketStatus(new TicketStatus(TicketStatus::STATUS_TYPE_AWAITING_USER));
+
+        DateTime::setTimestampState((new \DateTime('2020-06-22 14:00:00'))->getTimestamp());
+        $ticket->setTicketStatus($pending);
+
+        DateTime::setTimestampState((new \DateTime('2020-06-22 15:00:00'))->getTimestamp());
+        $ticket->setTicketStatus(new TicketStatus(TicketStatus::STATUS_TYPE_RESOLVED));
+
+        // THEN
+        $waitings = $ticket->getWaitingTimes();
+
+        $this->assertCount(3, $waitings);
+
+        $this->assertEquals(TicketStatus::STATUS_TYPE_AWAITING_AGENT, $waitings[0]['ticket_status']);
+        $this->assertEquals(TicketStatus::STATUS_TYPE_AWAITING_USER, $waitings[1]['ticket_status']);
+        $this->assertEquals(TicketStatus::STATUS_TYPE_PENDING, $waitings[2]['ticket_status']);
+
+        foreach ($waitings as $waiting) {
+            $this->assertArrayHasKey('start', $waiting);
+            $this->assertArrayHasKey('end', $waiting);
+        }
     }
 }
