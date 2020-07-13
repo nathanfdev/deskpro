@@ -49,9 +49,6 @@ class ScssVariablesController extends AbstractApiController
         $variables    = json_decode($request->getContent(), true);
         if (!is_array($variables)) {
             $variables = [];
-        } else {
-            // Prevent error when brand-neutral is not set
-            $variables = array_merge(['brand-neutral' => '#F8AF3C'], $variables);
         }
 
         $this->getManager()->beginTransaction();
@@ -64,9 +61,11 @@ class ScssVariablesController extends AbstractApiController
             $this->getManager()->commit();
         } catch (ParserException $e) {
             $this->getManager()->rollback();
+
             throw new BadRequestHttpException(PortalStylesCompiler::parseExceptionMessage($e));
         } catch (\Exception $e) {
             $this->getManager()->rollback();
+
             throw new BadRequestHttpException($e->getMessage());
         }
 

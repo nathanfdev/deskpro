@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Community;
 
 use Application\DeskPRO\Entity\CommunityForum;
@@ -217,7 +215,7 @@ class CommunityDataService extends AbstractDataService
                 }
 
                 // Activity filters
-                if (count($filter->getActivities()) && $person) {
+                if (count($filter->getActivities() ?: []) && $person) {
                     $activitiesClauses = [];
                     foreach ($filter->getActivities() as $activity) {
                         switch ($activity) {
@@ -293,6 +291,7 @@ class CommunityDataService extends AbstractDataService
 
                 $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
                 $pager->setMaxPerPage($max_per_page);
+                $pager->setNormalizeOutOfRangePages(true);
                 $pager->setCurrentPage($page);
 
                 return $pager;

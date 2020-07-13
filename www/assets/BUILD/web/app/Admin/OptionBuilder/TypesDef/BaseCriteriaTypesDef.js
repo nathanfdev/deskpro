@@ -425,10 +425,12 @@ define([
                 if (value.options.date1_relative) {
                   date1_relative = [value.options.date1_relative];
                   date1_relative[1] = value.options.date1_relative_type || 'days';
+                  date1_relative[2] = value.options.date1_relative_tense || 'past';
                 }
                 if (value.options.date2_relative) {
                   date2_relative = [value.options.date2_relative];
                   date2_relative[1] = value.options.date2_relative_type || 'days';
+                  date2_relative[2] = value.options.date2_relative_tense || 'past';
                 }
               }
 
@@ -437,8 +439,8 @@ define([
                 use_relative,
                 date1:          date1 || null,
                 date2:          date2 || null,
-                date1_relative: date1_relative || [1, 'days'],
-                date2_relative: date2_relative || [1, 'days']
+                date1_relative: date1_relative || [1, 'days', 'past'],
+                date2_relative: date2_relative || [1, 'days', 'past']
               };
             },
             getValue(model, data) {
@@ -457,14 +459,16 @@ define([
                 }
               } else {
                 if (((model.op === 'lte') || (model.op === 'gte') || (model.op === 'between')) && model.date1_relative) {
-                  const d1 = model.date1_relative || [1, 'days'];
+                  const d1 = model.date1_relative || [1, 'days', 'past'];
                   value.options.date1_relative = d1[0];
                   value.options.date1_relative_type = d1[1];
+                  value.options.date1_relative_tense = d1[2] || 'past';
                 }
                 if ((model.op === 'between') && model.date2_relative) {
-                  const d2 = model.date2_relative || [1, 'days'];
+                  const d2 = model.date2_relative || [1, 'days', 'past'];
                   value.options.date2_relative = d2[0];
                   value.options.date2_relative_type = d2[1];
+                  value.options.date2_relative_tense = d2[2] || 'past';
                 }
               }
 

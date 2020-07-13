@@ -8,6 +8,7 @@ use Application\DeskPRO\EntityRepository\Template as TemplateRepository;
 use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
 use Application\DeskPRO\Templating\Templates\TemplateCode;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
+use Application\EmailBundle\Templating\Templates\EmailTemplateCode as LegacyEmailTemplateCode;
 use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc;
 use DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
@@ -100,7 +101,7 @@ HTML;
      */
     public function isEnabledOnInstall()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -108,7 +109,7 @@ HTML;
      */
     public function getDateReleased()
     {
-        return false;
+        return new \DateTime('2020-06-15');
     }
 
     /**
@@ -170,6 +171,12 @@ HTML;
         $em->flush();
     }
 
+    /**
+     * @param EntityManager      $em
+     * @param ContainerInterface $container
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     private function copyLegacyTemplates(EntityManager $em, ContainerInterface $container)
     {
         $set = $this->getTemplateSet($em, $container);
@@ -608,7 +615,7 @@ CODE
         $dataStoreRepository = $em->getRepository(DataStore::class);
         $legacyTemplates     = $dataStoreRepository->getByPrefix('legacy_email_template');
 
-        $set = $this->getTemplateSet($em, $container);
+        $set = $container->get('templating.email.template_set');
 
         // Delete new templates
         $qb = $em->createQueryBuilder();
@@ -626,10 +633,8 @@ CODE
             /** @var Template $template */
             $template = $set->createCustomTemplate($legacyTemplate->getData('name'));
 
-            /** @var EmailTemplateCode $templateCode */
             $templateCode = $template->getTemplateCode();
-
-            if (get_class($templateCode) !== EmailTemplateCode::class) {
+            if (!$templateCode instanceof LegacyEmailTemplateCode) {
                 continue;
             }
 
@@ -637,7 +642,8 @@ CODE
             $templateCode->setCode($code);
 
             $templateName = $template->getName();
-            $templateName = array_pop(explode(':', $templateName));
+            $nameParts    = explode(':', $templateName);
+            $templateName = array_pop($nameParts);
 
             /** @var Template $newTemplate */
             foreach ($newTemplates as $newTemplate) {
@@ -654,5 +660,7 @@ CODE
         foreach ($newTemplates as $template) {
             $em->remove($template);
         }
+
+        $em->flush();
     }
 }

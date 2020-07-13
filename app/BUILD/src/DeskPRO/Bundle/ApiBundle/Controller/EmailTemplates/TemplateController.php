@@ -452,7 +452,7 @@ class TemplateController extends BaseController
         if (!$template) {
             throw $this->createNotFoundException();
         }
-        $this->migratedCustomTemplates[$name] = str_replace('DeskPRO:', 'SendmailBundle:', $name);
+        $this->migratedCustomTemplates[$name] = str_replace('DeskPRO:', 'SendmailBundle:', str_replace('-', '_', $name));
         $this->deleteLegacyTemplateAction($template->getId(), true);
     }
 

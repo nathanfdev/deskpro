@@ -4599,6 +4599,7 @@ class TicketController extends AbstractController
                     $ticket,
                     $customMessage,
                     $this->in->getString('subject'),
+                    $messages,
                     $attachments
                 );
 
@@ -4856,6 +4857,7 @@ class TicketController extends AbstractController
                     $ticket,
                     $customMessage,
                     $this->in->getString('subject'),
+                    $messages,
                     $attachments
                 );
 
@@ -5307,9 +5309,7 @@ class TicketController extends AbstractController
                 $checkPerson = $this->em->find(Person::class, $person_id);
                 if (!$checkPerson) {
                     $errors['person_id'] = true;
-                }
-
-                if ($checkPerson->is_disabled) {
+                } elseif ($checkPerson->isDisabled()) {
                     $errors['person_disabled'] = true;
                 }
             } else {

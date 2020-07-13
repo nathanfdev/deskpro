@@ -1,12 +1,11 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\ServerReportFile;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\WorkerJob;
 use DpRun\LowUtil;
 
 class InfoTpl
@@ -93,12 +92,15 @@ class InfoTpl
     {
     }
 
+    /**
+     * @return WorkerJob[]
+     */
     public function getCronInfo()
     {
         return $jobs = App::getOrm()->createQuery('
             SELECT j
             FROM DeskPRO:WorkerJob j
-            ORDER BY j.last_run_date ASC
+            ORDER BY j.last_start_date ASC
         ')->execute();
     }
 

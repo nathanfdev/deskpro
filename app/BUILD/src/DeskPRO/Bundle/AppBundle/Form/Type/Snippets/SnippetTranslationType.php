@@ -33,15 +33,16 @@ class SnippetTranslationType extends AbstractType
         $this->em = $em;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('language', EntityType::class, [
                 'class' => Language::class,
             ])
-            ->add('content', TextType::class, [
-                'filter_clean' => false,
-            ])
+            ->add('content', TextType::class)
             ->add('blobs', EntityType::class, [
                 'class'    => Blob::class,
                 'multiple' => true,
@@ -58,6 +59,7 @@ class SnippetTranslationType extends AbstractType
                 'required' => false,
             ])
         ;
+
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
@@ -76,34 +78,23 @@ class SnippetTranslationType extends AbstractType
     }
 
     /**
-     * @param FormEvent $event
-     */
-    public function onSetRelations(FormEvent $event)
-    {
-        $form = $event->getForm();
-        $data = $form->getData();
-
-        if ($data instanceof SnippetTranslation) {
-            $data->setSnippet($form->getConfig()->getOption('snippet'));
-        }
-    }
-
-    /**
      * @internal
      *
      * @param FormEvent $event
      */
     public function onPostSubmit(FormEvent $event)
     {
-        /** @var SnippetTranslation $snippetTranslation */
-        $snippetTranslation = $event->getData();
+        $data = $event->getData();
+        $form = $event->getForm();
 
-        if (!is_object($snippetTranslation)) {
+        if (!$data instanceof SnippetTranslation) {
             return;
         }
 
+        $data->setSnippet($form->getConfig()->getOption('snippet'));
+
         $imagesAuth = [];
-        if (preg_match_all('|file\.php/([A-Z0-9]+)/|', $snippetTranslation->getContent(), $imagesAuth)) {
+        if (preg_match_all('|file\.php/([A-Z0-9]+)/|', $data->getContent(), $imagesAuth)) {
             $blobRepository = $this->em->getRepository(Blob::class);
             foreach ($imagesAuth[1] as $imageAuth) {
                 $blob = $blobRepository->getByAuthCode($imageAuth);
@@ -113,7 +104,7 @@ class SnippetTranslationType extends AbstractType
             }
         }
 
-        $blobs = $snippetTranslation->getBlobs();
+        $blobs = $data->getBlobs();
         foreach ($blobs as $blob) {
             if ($blob instanceof Blob && $blob->getId()) {
                 $blob->setIsTemp(false);

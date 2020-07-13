@@ -75,6 +75,9 @@ class LowUtil
         if (isset($config['dbname'])) {
             $info['dsn'] .= ";dbname={$config['dbname']}";
         }
+        if (isset($config['server_version'])) {
+            $info['doctrine']['serverVersion'] = $config['server_version'];
+        }
 
         return $info;
     }

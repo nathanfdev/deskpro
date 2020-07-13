@@ -52,9 +52,14 @@ class LogoutHandler implements LogoutHandlerInterface, LogoutSuccessHandlerInter
         }
 
         // duplicated for now, from UserBundle:Login:logoutAction
-        foreach (['dpsid-agent', 'dpsid-admin', 'dpreme'] as $cookie_name) {
+        foreach (['dpsid-portal', 'dpsid-agent', 'dpsid-admin', 'dpreme'] as $cookie_name) {
             if (!empty($_COOKIE[$cookie_name])) {
-                $sess2 = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($_COOKIE[$cookie_name]);
+                if ($cookie_name === 'dpsid-portal') {
+                    $sess2 = $this->em->getRepository('DeskPRO:SessData')->findOneBy(['sess_id' => $_COOKIE[$cookie_name]]);
+                } else {
+                    $sess2 = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($_COOKIE[$cookie_name]);
+                }
+
                 if ($sess2) {
                     $this->em->remove($sess2);
                     $this->em->flush();

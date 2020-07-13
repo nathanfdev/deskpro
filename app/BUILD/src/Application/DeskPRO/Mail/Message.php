@@ -361,9 +361,9 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
-     * @param EngineInterface $template_engine
+     * @param EngineInterface|null $template_engine
      */
-    public function setTemplateEngine(EngineInterface $template_engine)
+    public function setTemplateEngine($template_engine)
     {
         $this->template_engine = $template_engine;
     }
@@ -381,13 +381,45 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTemplateVars()
+    {
+        return $this->template_vars;
+    }
+
+    /**
+     * @param      $name
+     * @param null $default
+     *
+     * @return mixed|null
+     */
+    public function getTemplateVar($name, $default = null)
+    {
+        return is_array($this->template_vars) && array_key_exists($name, $this->template_vars)
+            ? $this->template_vars[$name]
+            : $default;
+    }
+
+    /**
      * A shortcut to set to and name.
      *
-     * @param Person $person
+     * @param Person|null $person
      */
-    public function setToPerson(Person $person)
+    public function setToPerson($person)
     {
-        $this->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+        if ($person instanceof Person) {
+            $this->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+        }
+
         $this->set_to_person = $person;
     }
 

@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
@@ -35,7 +29,6 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * @param Ticket                   $ticket
      * @param ExecutorContextInterface $context
@@ -49,6 +42,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
      *
      * @param \Orb\Util\OptionsArray $options
      * @param ExecutorContextInterface $context
+     *
      * @return string
      */
     protected function resolveFieldId(\Orb\Util\OptionsArray $options, ExecutorContextInterface $context)
@@ -62,7 +56,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         // let's see if we have a field alias
         $fieldId = isset($options['field']) ? $options['field'] : null;
         if (!empty($fieldId)) {
-            $fieldDef = null;
+            $fieldDef     = null;
             $fieldManager = ExecutorContextVars::getTicketFieldManagerFromContext($context);
             if ($fieldManager) {
                 $fieldDef = $fieldManager->getFieldFromId($fieldId);
@@ -71,12 +65,12 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
             if (empty($fieldDef)) {
                 return null;
             }
+
             return $fieldDef->getId();
         }
 
         return null;
     }
-
 
     /**
      * {@inheritdoc}
@@ -99,14 +93,15 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         foreach ($customDataArray as $customData) {
             $field = $customData->getField();
 
-
             if ($customData->getField()->getId() == $fieldId) {
                 $fieldData = $customData->getData();
                 $field     = $customData->getField();
+
                 break;
             } elseif ($customData->getField()->getParent() && $customData->getField()->getParent()->getId() == $fieldId) {
                 $field     = $customData->getField()->getParent();
                 $fieldData = [];
+
                 break;
             }
         }
@@ -165,6 +160,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
             foreach ($checkValue as $v) {
                 if (isset($checkIds[$v])) {
                     $has = true;
+
                     break;
                 }
             }
@@ -175,6 +171,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
                     if ($has) {
                         return true;
                     }
+
                     break;
 
                 case 'not':
@@ -209,7 +206,8 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
                 if ($opts['date1']) {
                     $date1 = new \DateTime('@'.$opts['date1']);
                 } elseif ($opts['date1_relative']) {
-                    $date1 = new \DateTime('@'.@strtotime('-'.$opts['date1_relative'].' '.$opts->get('date1_relative_type', 'days')));
+                    $op    = isset($opts['date1_relative_tense']) && $opts['date1_relative_tense'] === 'future' ? '' : '-';
+                    $date1 = new \DateTime('@'.@strtotime($op.$opts['date1_relative'].' '.$opts->get('date1_relative_type', 'days')));
                 } else {
                     $date1 = null;
                 }
@@ -221,7 +219,8 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
                 if ($opts['date2']) {
                     $date2 = new \DateTime('@'.$opts['date2']);
                 } elseif ($opts['date2_relative']) {
-                    $date2 = new \DateTime('@'.@strtotime('-'.$opts['date2_relative'].' '.$opts->get('date2_relative_type', 'days')));
+                    $op    = isset($opts['date2_relative_tense']) && $opts['date2_relative_tense'] === 'future' ? '' : '-';
+                    $date2 = new \DateTime('@'.@strtotime($op.$opts['date2_relative'].' '.$opts->get('date2_relative_type', 'days')));
                 } else {
                     $date2 = null;
                 }
@@ -259,7 +258,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
                     return false;
             }
 
-        //------------------------------
+            //------------------------------
         // Handle text check
         //------------------------------
         } else {
@@ -327,7 +326,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
                 $check_value = json_encode($check_value);
 
                 return <<<JS
-function (ticket) { 
+function (ticket) {
   var check_value = $check_value;
   var value = $value || null;
   var op = '$op';
@@ -336,12 +335,12 @@ function (ticket) {
   } else if (typeof value === 'string') {
     value = (value+'').split(',');
   }
-  
-  var has = false; 
+
+  var has = false;
   for (var i = 0; i < check_value.length; i++) {
     if ((Array.isArray(value) && value.indexOf(check_value[i] + '') !== -1) || value + '' === check_value[i] + '') has = true;
   }
-  
+
   if (op === '$op_is' && has) return true;
   if (op === '$op_not' && !has) return true;
   return false;
@@ -360,6 +359,10 @@ JS;
                     $i1   = \DateInterval::createFromDateString($options['date1_relative'].' '.$options['date1_relative_type']);
                     $date = new \DateTime('@0');
                     $i1   = $date->add($i1)->getTimestamp() * 1000;
+
+                    if (isset($options['date1_relative_tense']) && $options['date1_relative_tense'] === 'future') {
+                        $i1 = -$i1;
+                    }
                 }
                 if ($options['date2']) {
                     $date2 = $options['date2'] * 1000;
@@ -368,6 +371,10 @@ JS;
                     $i2   = \DateInterval::createFromDateString($options['date2_relative'].' '.$options['date2_relative_type']);
                     $date = new \DateTime('@0');
                     $i2   = $date->add($i2)->getTimestamp() * 1000;
+
+                    if (isset($options['date2_relative_tense']) && $options['date2_relative_tense'] === 'future') {
+                        $i2 = -$i2;
+                    }
                 }
 
                 $date1 = $date1 ?: 'null';
@@ -387,7 +394,7 @@ function (ticket) {
   if (!date2 && i2) {
     date2 = Date.now() - i2;
   }
-   
+
   var op = '$op';
   var value = $value;
   if (!value) {
@@ -410,20 +417,20 @@ function (ticket) {
       return value > (date2 || date1);
     case '$op_btw':
       if (!date1 || !date2) return false;
-      return Math.min(date1, date2) <= value && Math.max(date1, date2) >= value; 
+      return Math.min(date1, date2) <= value && Math.max(date1, date2) >= value;
   }
-  
+
   return false;
 }
 JS;
             default:
                 return <<<JS
-function (ticket) { 
+function (ticket) {
   var check_value = '$check_value'.toLowerCase();
   var value = $value || '';
   value = value.toLowerCase();
   var op = '$op';
-  
+
   switch (op) {
     case '$op_is':
       return !value.localeCompare(check_value);
@@ -450,7 +457,7 @@ function (ticket) {
       }
       return false;
   }
- 
+
   return false;
 }
 JS;

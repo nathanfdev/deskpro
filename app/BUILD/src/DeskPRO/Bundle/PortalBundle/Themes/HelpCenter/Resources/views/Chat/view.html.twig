@@ -61,7 +61,14 @@
 
                 <div class="dp-po-post-info">
                   <ul class="dp-po-post-info-list">
-                    {% set lastMessage = chat_messages|filter(m => m.author)|last %}
+
+                    {% set chatMessagesWithAuthor = [] %}
+                    {% for m in chat_messages if m.author %}
+                      {% set chatMessagesWithAuthor = chatMessagesWithAuthor|merge([m]) %}
+                    {% endfor %}
+
+                    {% set lastMessage = chatMessagesWithAuthor|last %}
+
                     {% set lastPerson = lastMessage.author %}
                     <li class="dp-po-post-info-item">
                       {{ phrase('helpcenter.general.last_update_by', { date_updated: lastMessage.date_created, person_name: lastPerson }) }}
@@ -103,11 +110,11 @@
                       {% if message.metadata.phrase_id %}
                         {% if message.is_html %}
                           {% if message.metadata.phrase_id =='message_user-joined' %}
-                            {{ phrase('helpcenter.messenger.chat_message_user_joined', message.metadata, true) }}
+                            {{ phrase('helpcenter.messenger.message_user_joined', message.metadata, true) }}
                           {% elseif message.metadata.phrase_id =='message_user-left' %}
-                            {{ phrase('helpcenter.messenger.chat_message_user_left', message.metadata, true) }}
+                            {{ phrase('helpcenter.messenger.message_user_left', message.metadata, true) }}
                           {% elseif message.metadata.phrase_id =='message_agent-timeout' %}
-                            {{ phrase('helpcenter.messenger.chat_message_agent_timeout', message.metadata, true) }}
+                            {{ phrase('helpcenter.messenger.message_agent_timeout', message.metadata, true) }}
                           {% elseif message.metadata.phrase_id =='message_assigned' %}
                             {{ phrase('helpcenter.messenger.message_assigned', message.metadata, true) }}
                           {% elseif message.metadata.phrase_id =='message_chatting-with' %}
@@ -141,11 +148,11 @@
                           {% endif %}
                         {% else %}
                           {% if message.metadata.phrase_id =='message_user-joined' %}
-                            {{ phrase('helpcenter.messenger.chat_message_user_joined', message.metadata) }}
+                            {{ phrase('helpcenter.messenger.message_user_joined', message.metadata) }}
                           {% elseif message.metadata.phrase_id =='message_user-left' %}
-                            {{ phrase('helpcenter.messenger.chat_message_user_left', message.metadata) }}
+                            {{ phrase('helpcenter.messenger.message_user_left', message.metadata) }}
                           {% elseif message.metadata.phrase_id =='message_agent-timeout' %}
-                            {{ phrase('helpcenter.messenger.chat_message_agent_timeout', message.metadata) }}
+                            {{ phrase('helpcenter.messenger.message_agent_timeout', message.metadata) }}
                           {% elseif message.metadata.phrase_id =='message_assigned' %}
                             {{ phrase('helpcenter.messenger.message_assigned', message.metadata) }}
                           {% elseif message.metadata.phrase_id =='message_chatting-with' %}
@@ -206,7 +213,12 @@
                   <span>{{chat.agent.display_name_user}}</span>
                 </div>
               </dd>
-              {% set allAgentsExceptAssigned = chat.agent_participants|filter(a => a != chat.agent) %}
+
+              {% set allAgentsExceptAssigned = [] %}
+              {% for a in chat.agent_participants if a != chat.agent %}
+                {% set allAgentsExceptAssigned = allAgentsExceptAssigned|merge([a]) %}
+              {% endfor %}
+
               {% if allAgentsExceptAssigned|length > 0 %}
               <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.agents') }}</dt>
               <dd>

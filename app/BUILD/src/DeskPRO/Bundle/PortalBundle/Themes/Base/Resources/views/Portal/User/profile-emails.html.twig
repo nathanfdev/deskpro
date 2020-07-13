@@ -57,15 +57,29 @@
                                     </td>
                                 {% else %}
                                     <td>
-                                        <a class="button button-secondary button-small"
-                                           id="{{ email.email }}"
-                                           href="{{ path('portal_user_profile_emails', { new_primary: email.id }) }}">
-                                            {{ phrase('portal.account.email-btn-make-primary') }}
-                                        </a>
-                                        <a class="button button-small cancel"
-                                           href="{{ path('portal_user_profile_emails', { remove_email: email.id }) }}">
-                                            {{ phrase('portal.account.email-btn-remove') }}
-                                        </a>
+                                        <form id="{{ 'new_primary_' ~ email.id }}" action="{{ url('portal_user_profile_emails') }}" method="post">
+                                            <input type="hidden" name="_dp_csrf_token" value="{{ csrf_token('new_primary') }}"/>
+                                            <input type="hidden" name="new_primary" value="{{ email.id }}"/>
+                                            <button
+                                                    id="{{ email.email }}"
+                                                    class="button button-secondary button-small"
+                                                    type="submit"
+                                            >
+                                                {{ phrase('portal.account.email-btn-make-primary') }}
+                                            </button>
+                                        </form>
+
+                                        <form id="{{ 'remove_email_' ~ email.id }}" action="{{ url('portal_user_profile_emails') }}" method="post">
+                                            <input type="hidden" name="_dp_csrf_token" value="{{ csrf_token('remove_email') }}"/>
+                                            <input type="hidden" name="remove_email" value="{{ email.id }}"/>
+                                            <button
+                                                    id="{{ email.email }}"
+                                                    class="button button-small cancel"
+                                                    type="submit"
+                                            >
+                                                {{ phrase('portal.account.email-btn-remove') }}
+                                            </button>
+                                        </form>
                                     </td>
                                 {% endif %}
                             {% endif %}

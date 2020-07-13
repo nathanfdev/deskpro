@@ -2,11 +2,19 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\CustomDataOrganization;
+use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPro\TicketLayout\LayoutField;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
@@ -48,6 +56,11 @@ class TicketViewDataService extends AbstractDataService
     private $customFieldUtil;
 
     /**
+     * @var DepartmentDataService
+     */
+    private $departmentDataService;
+
+    /**
      * @var PortalBrandThemeLoader
      */
     private $portalBrandThemeLoader;
@@ -66,6 +79,7 @@ class TicketViewDataService extends AbstractDataService
      * @param Translate $translate
      * @param BrandAwareSettingsResolver $brandAwareSettings
      * @param CustomFieldUtil $customFieldUtil
+     * @param DepartmentDataService $departmentDataService
      * @param PortalBrandThemeLoader|null $portalBrandThemeLoader
      * @param BrandStack|null $brandStack
      */
@@ -76,6 +90,7 @@ class TicketViewDataService extends AbstractDataService
         Translate $translate,
         BrandAwareSettingsResolver $brandAwareSettings,
         CustomFieldUtil $customFieldUtil,
+        DepartmentDataService $departmentDataService,
         PortalBrandThemeLoader $portalBrandThemeLoader = null,
         BrandStack $brandStack = null
     ) {
@@ -86,39 +101,40 @@ class TicketViewDataService extends AbstractDataService
         $this->translate              = $translate;
         $this->brandAwareSettings     = $brandAwareSettings;
         $this->customFieldUtil        = $customFieldUtil;
+        $this->departmentDataService  = $departmentDataService;
         $this->portalBrandThemeLoader = $portalBrandThemeLoader;
         $this->brandStack             = $brandStack;
     }
 
     /**
      * @param Ticket $ticket
+     * @param Person|null $person
      *
      * @return TicketView
      */
-    public function getUserTicketView(Ticket $ticket)
+    public function getUserTicketView(Ticket $ticket, Person $person = null)
     {
         // no cache here because it's unlikely to be called more than once per request.
         // if it is, it's probably better to make sure it's an up to date view.
 
         $view = new TicketView($ticket);
 
-        $full_layout = $this->ticketLayoutFactory->getLayoutForView($ticket->getDepartment());
-        $layout      = $full_layout->getUserLayout();
+        $fullLayout = $this->ticketLayoutFactory->getLayoutForView($ticket->getDepartment());
+        $layout     = $fullLayout->getUserLayout();
 
-        /** @var \Application\DeskPro\TicketLayout\LayoutField $layout_field */
-        foreach ($layout as $layout_field) {
-            if (!$layout_field->isVisibleOnView()) {
+        /** @var LayoutField $layoutField */
+        foreach ($layout as $layoutField) {
+            if (!$layoutField->isVisibleOnView()) {
                 // if the field is not visible on view, don't show it
                 continue;
             }
-            if ($layout_field->hasCriteria() && !$layout_field->getCriteria()->isTicketMatch($ticket)) {
+            if ($layoutField->hasCriteria() && !$layoutField->getCriteria()->isTicketMatch($ticket)) {
                 // field has criteria that this ticket does not match, dont add it to the view
                 continue;
             }
-            $field_id     = $layout_field->getId();
-            $defId        = $layout_field->getFieldId();
-            $isHelpcenter = true;
-            switch ($layout_field->getFieldType()) {
+            $fieldId = $layoutField->getId();
+            $defId   = $layoutField->getFieldId();
+            switch ($layoutField->getFieldType()) {
                 case FormFields::DEPARTMENT:
                     $title = '';
                     if ($department = $ticket->getDepartment()) {
@@ -129,23 +145,26 @@ class TicketViewDataService extends AbstractDataService
                         }
                     }
 
-                    $view->addProperty(
-                        $field_id,
-                        CustomDefAbstract::TYPE_CHOICE,
-                        $this->phrase(['user.tickets.fields_department', 'helpcenter.general.department']),
-                        $title,
-                        $layout_field->isVisibleOnViewAlways()
-                    );
+                    $departments = $this->departmentDataService->getTicketDepartmentsForPerson($person);
+                    if (count($departments) > 1) {
+                        $view->addProperty(
+                            $fieldId,
+                            CustomDefAbstract::TYPE_CHOICE,
+                            $this->phrase(['user.tickets.fields_department', 'helpcenter.general.department']),
+                            $title,
+                            $layoutField->isVisibleOnViewAlways()
+                        );
+                    }
 
                     break;
                 case FormFields::CATEGORY:
                     if ($this->hasSetting('core.use_ticket_category')) {
                         $view->addProperty(
-                            $field_id,
+                            $fieldId,
                             CustomDefAbstract::TYPE_CHOICE,
                             $this->phrase(['user.tickets.fields_category', 'helpcenter.general.category']),
                             $ticket->getCategory(),
-                            $layout_field->isVisibleOnViewAlways()
+                            $layoutField->isVisibleOnViewAlways()
                         );
                     }
 
@@ -153,11 +172,11 @@ class TicketViewDataService extends AbstractDataService
                 case FormFields::PRODUCT:
                     if ($this->hasSetting('core.use_product')) {
                         $view->addProperty(
-                            $field_id,
+                            $fieldId,
                             CustomDefAbstract::TYPE_CHOICE,
                             $this->phrase(['user.tickets.fields_product', 'helpcenter.general.product']),
                             $ticket->getProduct(),
-                            $layout_field->isVisibleOnViewAlways()
+                            $layoutField->isVisibleOnViewAlways()
                         );
                     }
 
@@ -165,17 +184,17 @@ class TicketViewDataService extends AbstractDataService
                 case FormFields::PRIORITY:
                     if ($this->hasSetting('core.use_ticket_priority')) {
                         $view->addProperty(
-                            $field_id,
+                            $fieldId,
                             CustomDefAbstract::TYPE_CHOICE,
                             $this->phrase(['user.tickets.fields_priority', 'helpcenter.general.priority']),
                             $ticket->getPriority(),
-                            $layout_field->isVisibleOnViewAlways()
+                            $layoutField->isVisibleOnViewAlways()
                         );
                     }
 
                     break;
                 case FormFields::TICKET_FIELD:
-                    /** @var \Application\DeskPRO\Entity\CustomDefTicket $fieldDef */
+                    /** @var CustomDefTicket $fieldDef */
                     if (!$fieldDef = $this->customFieldManager->getCustomTicketFieldById($defId)) {
                         // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                         break;
@@ -185,9 +204,9 @@ class TicketViewDataService extends AbstractDataService
                         break;
                     }
 
-                    /* @var \Application\DeskPRO\Entity\CustomDataTicket $data */
+                    /* @var CustomDataTicket $data */
                     $data = $this->customFieldUtil->getCustomDataForField($fieldDef, $ticket->getCustomData());
-                    $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
+                    $this->addCustomDataProperty($view, $fieldId, $fieldDef, $data, $layoutField->isVisibleOnViewAlways());
 
                     break;
                 case FormFields::ORG_FIELD:
@@ -195,7 +214,7 @@ class TicketViewDataService extends AbstractDataService
                     if (!$organization instanceof Organization) {
                         break;
                     }
-                    /* @var \Application\DeskPRO\Entity\CustomDefOrganization $field_def */
+                    /* @var CustomDefOrganization $field_def */
                     if (!$fieldDef = $this->customFieldManager->getCustomOrganizationFieldById($defId)) {
                         // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                         break;
@@ -205,13 +224,13 @@ class TicketViewDataService extends AbstractDataService
                         break;
                     }
 
-                    /* @var \Application\DeskPRO\Entity\CustomDataOrganization $data */
+                    /* @var CustomDataOrganization $data */
                     $data = $this->customFieldUtil->getCustomDataForField($fieldDef, $organization->getCustomData());
-                    $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
+                    $this->addCustomDataProperty($view, $fieldId, $fieldDef, $data, $layoutField->isVisibleOnViewAlways());
 
                     break;
                 case FormFields::USER_FIELD:
-                    /* @var \Application\DeskPRO\Entity\CustomDefPerson $fieldDef */
+                    /* @var CustomDefPerson $fieldDef */
                     if (!$fieldDef = $this->customFieldManager->getCustomPersonFieldById($defId)) {
                         // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                         break;
@@ -221,15 +240,15 @@ class TicketViewDataService extends AbstractDataService
                         break;
                     }
 
-                    /* @var \Application\DeskPRO\Entity\CustomDataPerson $data */
+                    /* @var CustomDataPerson $data */
                     $data = $this->customFieldUtil->getCustomDataForField($fieldDef, $ticket->person->getCustomData());
-                    $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
+                    $this->addCustomDataProperty($view, $fieldId, $fieldDef, $data, $layoutField->isVisibleOnViewAlways());
 
                     break;
                 case FormFields::CUSTOM_FIELD: // per-user custom fields
                     $value = null;
 
-                    /* @var \Application\DeskPRO\Entity\CustomFieldDefinition $fieldDef */
+                    /* @var CustomFieldDefinition $fieldDef */
                     $fieldDef = $this->em->getRepository(CustomFieldDefinition::class)->find($defId);
                     if ($fieldDef) {
                         /* @var CustomFieldData[] $data */
@@ -242,11 +261,11 @@ class TicketViewDataService extends AbstractDataService
                         }, $data));
 
                         $view->addProperty(
-                            $field_id,
+                            $fieldId,
                             CustomDefAbstract::TYPE_CHOICE,
                             $fieldDef->getTitle(),
                             $value,
-                            $layout_field->isVisibleOnViewAlways()
+                            $layoutField->isVisibleOnViewAlways()
                         );
                     }
 

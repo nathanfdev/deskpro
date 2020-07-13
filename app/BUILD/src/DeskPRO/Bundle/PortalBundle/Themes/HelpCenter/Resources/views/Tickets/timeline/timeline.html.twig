@@ -1,4 +1,5 @@
 {% import 'Theme:Tickets:macros.html.twig' as macros %}
+  {% set feedback = false %}
   {% for line in timeline_pager %}
       {% if line.type == 'ticket_reopened' %}
         <div class="dp-po-ticket-block dp-po-ticket-block-timeline">
@@ -38,6 +39,23 @@
         {% include 'Theme:Tickets:timeline/ticket_feedback.html.twig' %}
       {% endif %}
   {% endfor %}
+
+  {% if not feedback and ticket.isResolved() and ticket.person.id == app.user.id %}
+  <div class="dp-po-ticket-block dp-po-ticket-block-mine dp-po-ticket-block-rate">
+    <div class="dp-po-ticket-block-header">
+      <img class="dp-po-icon icon-svg" src="{{ asset('img/page-icons/ticket-rate.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.rate_support') }}
+    </div>
+    <div class="dp-po-ticket-block-rate-feedback">
+      <div class="dp-po-avatar dp-po-avatar-round">
+        {{ hc_avatar(ticket.person) }}
+        {{ phrase('helpcenter.tickets.you_have_not_rated_support', { email: app.user.email}) }}
+      </div>
+      <a href="{{ path('portal_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': ticket.getLastAgentReply().id}) }}" class="btn btn-outline-primary dp-po-ticket-block-rate-submit-feedback">
+        {{ phrase('helpcenter.tickets.submit_feedback') }}
+      </a>
+    </div>
+  </div>
+  {% endif %}
 
   {% if timeline_pager.haveToPaginate %}
     <div class="dp-po-section">

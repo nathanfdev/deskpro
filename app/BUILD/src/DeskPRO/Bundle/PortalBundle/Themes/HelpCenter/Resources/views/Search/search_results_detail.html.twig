@@ -39,7 +39,7 @@
                                     {% endif %}
                                     {% if app.hasBeta('guides') and can_use_guides() %}
                                         <li class="dp-po-search-sidebar-item">
-                                            <a class="dp-po-search-sidebar-link {% if not guide_results %}no-results{% endif %} {% if active == 'guide' %}active{% endif %}" href="" data-type="guide">
+                                            <a class="dp-po-search-sidebar-link {% if not guide_results %}no-results{% endif %} {% if active == 'topic' %}active{% endif %}" href="" data-type="topic">
                                                 <img class="dp-po-search-sidebar-image icon-svg"
                                                      src="{{ asset('img/page-icons/guides.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav_guides') }}
                                                 <span class="dp-po-search-sidebar-count">{{ guide_info.total_results | default(0) }}</span></a>
@@ -91,7 +91,7 @@
                                         {% endfor %}
                                     </ul>
                                 </div>
-                                <div id="guide_tab" class="dp-po-search-details" {% if active != 'guide' %}style="display: none" {% endif %}>
+                                <div id="topic_tab" class="dp-po-search-details" {% if active != 'topic' %}style="display: none" {% endif %}>
                                     <div class="dp-po-search-details-title">
                                         {{ phrase('helpcenter.search.showing_results_for', {type: phrase('helpcenter.general.nav_guides'), query: query}) }} <span class="count">({{ guide_info.total_results | default(0) }})</span>
                                     </div>

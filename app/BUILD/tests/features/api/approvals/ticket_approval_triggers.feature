@@ -10,6 +10,7 @@ Feature: Ticket approval triggers
     And no ApprovalResponse records exist
     And no ApprovalType records exist
     And agent and user exist
+    And I have only default brand
     And only the following Ticket records exist:
       | #  | Subject  | Person |
       | t1 | Ticket 1 | {user} |

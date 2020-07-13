@@ -30,7 +30,7 @@ class SubjectAction extends AbstractAction
     {
         $subject_text = $this->subject;
 
-        $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
+        $formatter    = new SnippetFormatter(App::getContainer()->get('deskpro.sandboxed_twig.twig'));
         $subject_text = $formatter->formatText($subject_text, $ticket);
 
         $ticket['subject'] = $subject_text;

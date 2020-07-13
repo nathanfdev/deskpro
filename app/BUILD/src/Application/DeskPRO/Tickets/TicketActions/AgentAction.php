@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -157,7 +153,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
                 return 'Do not assign ticket to anyone';
             }
 
-            return $tr->phrase('agent.tickets.unassign_action');
+            return '<span class="with-agent" data-agent-id="0">'.$tr->phrase('agent.tickets.unassign_action').'</span>';
         } else {
             $name = App::getEntityRepository('DeskPRO:Person')->getAgentName($this->agent_id);
             if ($name !== null && $as_html) {

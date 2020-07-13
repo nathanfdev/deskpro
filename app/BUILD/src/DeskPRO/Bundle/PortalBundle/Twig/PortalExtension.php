@@ -448,7 +448,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getTicketView(Entity\Ticket $ticket)
     {
-        return $this->container->get('tickets.view')->getUserTicketView($ticket);
+        return $this->container->get('tickets.view')->getUserTicketView($ticket, $this->getPerson());
     }
 
     /**

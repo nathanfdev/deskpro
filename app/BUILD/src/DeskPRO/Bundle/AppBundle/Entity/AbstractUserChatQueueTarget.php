@@ -11,7 +11,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class AbstractUserChatQueueTarget.
  *
  * @ORM\Entity()
- * @ORM\Table(name="user_chat_queue_targets")
+ * @ORM\Table(name="user_chat_queue_targets", uniqueConstraints={
+ *   @ORM\UniqueConstraint(name="queue_agent_idx", columns={"queue_id", "agent_id"})
+ * })
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string", length=30)
  * @ORM\DiscriminatorMap({

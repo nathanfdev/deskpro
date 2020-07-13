@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -145,6 +141,7 @@ class OrganizationSearch extends SearcherAbstract
         switch ($type) {
             case 'organization.name':
                 $order_by = "organizations.name $dir";
+
                 break;
 
             case 'organization.num_members':
@@ -152,6 +149,7 @@ class OrganizationSearch extends SearcherAbstract
                     'INNER JOIN people AS sort_table ON (sort_table.organization_id = organizations.id)',
                     "COUNT(sort_table.id) $dir, organizations.name DESC",
                 ];
+
                 break;
 
             case 'organization.organization_field':
@@ -169,8 +167,10 @@ class OrganizationSearch extends SearcherAbstract
                             "INNER JOIN custom_data_organizationss AS sort_table ON (sort_table.organization_id = organizations.id AND sort_table.id = $term_id)",
                             "sort_table.$search_type $dir",
                         ];
+
                         break;
                 }
+
                 break;
         }
 
@@ -227,14 +227,17 @@ class OrganizationSearch extends SearcherAbstract
                 switch ($term) {
                     case self::TERM_ID:
                         $wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice);
+
                         break;
 
                     case self::TERM_PARENT_ID:
                         $wheres[] = $this->_rangeMatch("$org_table.parent_id", $op, $choice);
+
                         break;
 
                     case self::TERM_NAME:
                         $wheres[] = $this->_stringMatch('organizations.name', $op, $choice);
+
                         break;
 
                     case self::TERM_CONTACT_PHONE:
@@ -305,6 +308,7 @@ class OrganizationSearch extends SearcherAbstract
                         $wheres[] = $this->_stringMatch("$join_name.domain", $op, $choice, false);
 
                         $choice = implode(' or ', (array) $choice);
+
                         break;
 
                     case self::TERM_LABEL:
@@ -328,6 +332,7 @@ class OrganizationSearch extends SearcherAbstract
                                     "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id)",
                                 ];
                                 $wheres[] = "$join_name.label = ".$db->quote($choice);
+
                                 break;
                             case self::OP_NOT:
                                 $joins[] = [
@@ -337,6 +342,7 @@ class OrganizationSearch extends SearcherAbstract
                                     ).')',
                                 ];
                                 $wheres[] = "$join_name.organization_id IS NULL";
+
                                 break;
                             case self::OP_CONTAINS:
                                 $joins[] = [
@@ -344,6 +350,7 @@ class OrganizationSearch extends SearcherAbstract
                                     "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id)",
                                 ];
                                 $wheres[] = "$join_name.label IN ($choices_in)";
+
                                 break;
 
                             case self::OP_NOTCONTAINS:
@@ -352,8 +359,10 @@ class OrganizationSearch extends SearcherAbstract
                                     "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label IN ($choices_in))",
                                 ];
                                 $wheres[] = "$join_name.organization_id IS NULL";
+
                                 break;
                         }
+
                         break;
 
                     case self::TERM_USERGROUP:
@@ -433,9 +442,11 @@ class OrganizationSearch extends SearcherAbstract
                                 switch ($op) {
                                     case self::OP_IS:
                                         $wheres[] = "$field = ".$db->quote($choice);
+
                                         break;
                                     case self::OP_NOT:
                                         $wheres[] = "$field != ".$db->quote($choice);
+
                                         break;
                                     case self::OP_CONTAINS:
                                     case self::OP_NOTCONTAINS:
@@ -452,6 +463,7 @@ class OrganizationSearch extends SearcherAbstract
                                         }
 
                                         $wheres[] = $w;
+
                                         break;
                                     case self::OP_LTE:
                                     case self::OP_GTE:
@@ -460,8 +472,9 @@ class OrganizationSearch extends SearcherAbstract
                                             if (!empty($choice['date1'])) {
                                                 $wheres[] = "$field $op ".(int) $choice['date1'];
                                             } elseif (!empty($choice['date1_relative'])) {
+                                                $dateOp   = isset($choice['date1_relative_tense']) && $choice['date1_relative_tense'] === 'future' ? '' : '-';
                                                 $wheres[] = "$field $op ".strtotime(
-                                                        '-'.$choice['date1_relative'].' '.$choice['date1_relative_type']
+                                                        $dateOp.$choice['date1_relative'].' '.$choice['date1_relative_type']
                                                     );
                                             }
                                         } elseif (!is_array($choice) && strlen(
@@ -470,17 +483,21 @@ class OrganizationSearch extends SearcherAbstract
                                         ) {
                                             $wheres[] = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
                                         }
+
                                         break;
                                     case self::OP_BETWEEN:
                                         if ($isDate) {
                                             if (!empty($choice['date1'])) {
                                                 $wheres[] = $field.' BETWEEN '.(int) $choice['date1'].' AND '.(int) @$choice['date2'];
                                             } elseif (!empty($choice['date1_relative'])) {
+                                                $date1Op   = isset($choice['date1_relative_tense']) && $choice['date1_relative_tense'] === 'future' ? '' : '-';
+                                                $date2Op   = isset($choice['date2_relative_tense']) && $choice['date2_relative_tense'] === 'future' ? '' : '-';
+
                                                 $d1 = strtotime(
-                                                    '-'.$choice['date1_relative'].' '.$choice['date1_relative_type']
+                                                    $date1Op.$choice['date1_relative'].' '.$choice['date1_relative_type']
                                                 );
                                                 $d2 = strtotime(
-                                                    '-'.@$choice['date2_relative'].' '.@$choice['date2_relative_type']
+                                                    $date2Op.@$choice['date2_relative'].' '.@$choice['date2_relative_type']
                                                 );
                                                 if ($d1 < $d2) {
                                                     $wheres[] = "$field BETWEEN $d1 AND $d2";
@@ -489,20 +506,26 @@ class OrganizationSearch extends SearcherAbstract
                                                 }
                                             }
                                         }
+
                                         break;
                                     case self::OP_NOT_ISSET:
                                         $wheres[] = "$field IS NULL";
+
                                         break;
                                     case self::OP_ISSET:
                                         $wheres[] = "$field IS NOT NULL";
+
                                         break;
                                     case self::OP_EMPTY:
                                         $wheres[] = "$field IS NULL OR $field = ''";
+
                                         break;
                                     case self::OP_NOT_EMPTY:
                                         $wheres[] = "$field != ''";
+
                                         break;
                                 }
+
                                 break;
 
                             case 'id':
@@ -544,6 +567,7 @@ class OrganizationSearch extends SearcherAbstract
                                             ];
                                             $wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
                                         }
+
                                         break;
 
                                     case self::OP_NOTCONTAINS:
@@ -561,6 +585,7 @@ class OrganizationSearch extends SearcherAbstract
                                             ];
                                             $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
                                         }
+
                                         break;
                                     case self::OP_NOT_ISSET:
                                         $joins[] = [
@@ -568,6 +593,7 @@ class OrganizationSearch extends SearcherAbstract
                                             "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
                                         ];
                                         $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
+
                                         break;
                                     case self::OP_ISSET:
                                         $joins[] = [
@@ -575,10 +601,13 @@ class OrganizationSearch extends SearcherAbstract
                                             "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
                                         ];
                                         $wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
+
                                         break;
                                 }
+
                                 break;
                         }
+
                         break; // end TERM_ORGANIZATION_FIELD
                 }
             }
@@ -607,23 +636,28 @@ class OrganizationSearch extends SearcherAbstract
                             if (strtolower($org['name']) != strtolower($choice)) {
                                 return false;
                             }
+
                             break;
                         case self::OP_NOT:
                             if (strtolower($org['name']) == strtolower($choice)) {
                                 return false;
                             }
+
                             break;
                         case self::OP_CONTAINS:
                             if (strpos(strtolower($org['name']), strtolower($choice)) === false) {
                                 return false;
                             }
+
                             break;
                         case self::OP_NOTCONTAINS:
                             if (strpos(strtolower($org['name']), strtolower($choice)) !== false) {
                                 return false;
                             }
+
                             break;
                     }
+
                     break;
 
                 case self::TERM_EMAIL_DOMAIN:
@@ -643,6 +677,7 @@ class OrganizationSearch extends SearcherAbstract
                     if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
+
                     break;
 
                 case self::TERM_CONTACT_ADDRESS:
@@ -669,6 +704,7 @@ class OrganizationSearch extends SearcherAbstract
                     if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
+
                     break;
 
                 case self::TERM_LABEL:
@@ -689,6 +725,7 @@ class OrganizationSearch extends SearcherAbstract
                     if ($op == self::OP_CONTAINS and !$any) {
                         return false;
                     }
+
                     break;
             }
         }

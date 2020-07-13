@@ -30,6 +30,11 @@ abstract class AbstractEmailValidator extends ConstraintValidator
             $this->validatePerson($value, $constraint);
         } elseif ($value instanceof PersonEmail) {
             $this->validatePersonEmail($value, $constraint);
+        } elseif (is_string($value)) {
+            $email = new PersonEmail();
+            $email->setEmail($value);
+
+            $this->validatePersonEmail($email, $constraint);
         } else {
             throw new UnexpectedTypeException($value, implode(', ', [Person::class, PersonEmail::class]));
         }

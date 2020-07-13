@@ -136,17 +136,19 @@ export class LanguageList extends React.Component {
         displayedLanguages.push(langId);
         if (Number.isInteger(langId)) {
           const lang = languages.find(l => l.get('id') === langId);
-          draggableList.push(
-            <LanguageItem
-              id={langId}
-              key={langId}
-            >
-              <Checkbox checked value={langId} onChange={this.updateLanguage}>
-                <img src={lang.get('flag_image')} alt={lang.get('title')} />
-                &nbsp;{lang.get('title')}
-              </Checkbox>
-            </LanguageItem>
-          );
+          if (lang) {
+            draggableList.push(
+              <LanguageItem
+                id={langId}
+                key={langId}
+              >
+                <Checkbox checked value={langId} onChange={this.updateLanguage}>
+                  <img src={lang.get('flag_image')} alt={lang.get('title')} />
+                  &nbsp;{lang.get('title')}
+                </Checkbox>
+              </LanguageItem>
+            );
+          }
         } else {
           const functionName = langId.charAt(0).toUpperCase() + langId.slice(1);
           const item = this[`get${functionName}Language`](true);
@@ -177,16 +179,18 @@ export class LanguageList extends React.Component {
           displayedLanguages.push(langId);
           if (Number.isInteger(langId)) {
             const lang = languages.find(l => l.get('id') === langId);
-            list.push(
-              <ListElement
-                key={lang.get('id')}
-              >
-                <Checkbox checked={false} value={lang.get('id')} onChange={this.updateLanguage}>
-                  <img src={lang.get('flag_image')} alt={lang.get('title')} />
-                  &nbsp;{lang.get('title')}
-                </Checkbox>
-              </ListElement>
-            );
+            if (lang) {
+              list.push(
+                <ListElement
+                  key={lang.get('id')}
+                >
+                  <Checkbox checked={false} value={lang.get('id')} onChange={this.updateLanguage}>
+                    <img src={lang.get('flag_image')} alt={lang.get('title')} />
+                    &nbsp;{lang.get('title')}
+                  </Checkbox>
+                </ListElement>
+              );
+            }
           } else {
             const functionName = langId.charAt(0).toUpperCase() + langId.slice(1);
             list.push(this[`get${functionName}Language`](false));

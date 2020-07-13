@@ -11,7 +11,9 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Templating\GlobalVariables;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
@@ -233,6 +235,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             new \Twig_SimpleFilter('trans', [$this, 'dummy']),
             new \Twig_SimpleFilter('transchoice', [$this, 'dummy']),
             new \Twig_SimpleFilter('plain_template_filter', [$this, 'plain_template_filter']),
+            new \Twig_SimpleFilter('safe_filter', [$this, 'safeArrayFilter']),
 
             // Override for custom UTF-8 handling
             new \Twig_SimpleFilter('upper', [$this, 'strUpper']),
@@ -1200,7 +1203,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function securityToken($name = '', $timeout = 43200)
     {
-        return $this->container->getSession()->getEntity()->generateSecurityToken($name, $timeout);
+        if (defined('DP_INTERFACE') && DP_INTERFACE != 'cli') {
+            $session = $this->container->getSession();
+            if ($session instanceof Session) {
+                return $session->getEntity()->generateSecurityToken($name, $timeout);
+            }
+        }
+
+        return;
     }
 
     /**
@@ -2755,5 +2765,48 @@ HTML;
         }
 
         return true;
+    }
+
+    /**
+     * @param TicketAttachment[]  $attachments
+     * @return TicketAttachment[]
+     */
+    public function excludeInlineAttachments($attachments)
+    {
+        if (empty($attachments)) {
+            return [];
+        }
+
+        return array_filter($attachments, function ($attachment) {
+           if ($attachment instanceof TicketAttachment) {
+               return ! $attachment->isInline();
+           } elseif (is_array($attachment) && isset($attachment['is_inline'])) {
+               return ! $attachment['is_inline'];
+           } else {
+               return true;
+           }
+        });
+    }
+
+    /**
+     * @param array    $array
+     * @param callable $arrow
+     * @return array|\CallbackFilterIterator
+     */
+    function safeArrayFilter($array, $arrow)
+    {
+        if (is_string($arrow)) {
+            throw new \RuntimeException("Arrow function cannot be a string");
+        }
+
+        if (\is_array($array)) {
+            if (\PHP_VERSION_ID >= 50600) {
+                return array_filter($array, $arrow, \ARRAY_FILTER_USE_BOTH);
+            }
+
+            return array_filter($array, $arrow);
+        }
+
+        return new \CallbackFilterIterator(new \IteratorIterator($array), $arrow);
     }
 }

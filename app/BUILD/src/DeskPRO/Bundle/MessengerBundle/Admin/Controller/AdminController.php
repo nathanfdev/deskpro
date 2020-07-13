@@ -219,6 +219,9 @@ CODE;
         if (isset($requestData['maxFileSize'])) {
             unset($requestData['maxFileSize']);
         }
+        if (isset($requestData['kbEnabled'])) {
+            unset($requestData['kbEnabled']);
+        }
         if (isset($requestData['translations'])) {
             $this->updateTranslations($requestData['translations'], $model);
             unset($requestData['translations']);

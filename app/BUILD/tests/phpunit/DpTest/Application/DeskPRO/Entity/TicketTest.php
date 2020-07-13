@@ -35,10 +35,6 @@ class TicketTest extends PortalTestCase
         DateTime::unsetTimestampState();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage is not an agent
-     */
     public function testSetNotAgentForNewTicket()
     {
         $this->installDataSet('fresh', true);
@@ -53,12 +49,10 @@ class TicketTest extends PortalTestCase
 
         $this->getEntityManager()->persist($ticket);
         $this->getEntityManager()->flush();
+
+        $this->assertNull($ticket->getAgent());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage is not an agent
-     */
     public function testSetNotAgentOnTicketUpdate()
     {
         $this->installDataSet('fresh', true);
@@ -78,6 +72,8 @@ class TicketTest extends PortalTestCase
 
         $this->getEntityManager()->persist($ticket);
         $this->getEntityManager()->flush();
+
+        $this->assertNull($ticket->getAgent());
     }
 
     public function testIsDeleted()

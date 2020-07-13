@@ -679,13 +679,13 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
         )->setParameter(1, $this)->execute();
 
         foreach ($revs as $r) {
-            if ($r->person && !isset($this->_authors[$r->person->id])) {
-                $this->_authors[$r->person->id] = $r->person;
+            if ($r->person && !isset($this->_authors['p'.$r->person->id])) {
+                $this->_authors['p'.$r->person->id] = $r->person;
             }
         }
         $this->_authors = array_reverse($this->_authors);
 
-        if ($this->person and !isset($this->_authors[$this->person['id']])) {
+        if ($this->person and !isset($this->_authors['p'.$this->person->id])) {
             array_unshift($this->_authors, $this->person);
         }
 

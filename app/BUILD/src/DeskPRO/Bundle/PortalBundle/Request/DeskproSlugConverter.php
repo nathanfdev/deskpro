@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Request;
 
@@ -115,7 +113,14 @@ class DeskproSlugConverter implements ParamConverterInterface
             );
         }
 
-        throw new NotFoundHttpException(sprintf('could not find a "%s" for the slug value found in the route variable "%s" (value: %s)', $paramClass, $slugAttributeName, $slugInput));
+        throw new NotFoundHttpException(
+            sprintf(
+                'could not find a "%s" for the slug value found in the route variable "%s" (value: %s)',
+                $paramClass,
+                filter_var($slugAttributeName, FILTER_SANITIZE_STRING),
+                filter_var($slugInput, FILTER_SANITIZE_STRING)
+            )
+        );
     }
 
     public function supports(ParamConverter $configuration)

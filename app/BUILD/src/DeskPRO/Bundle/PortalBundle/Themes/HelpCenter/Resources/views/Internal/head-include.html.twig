@@ -63,7 +63,11 @@
     window.DESKPRO_IS_FORGOT_PASSWORD_VISIBLE = {{ has_login_form() ? 'true' : 'false' }};
     window.DESKPRO_CAN_USE_TICKETS = {{ can_use_tickets() ? 'true' : 'false' }};
     window.DESKPRO_CAN_VIEW_TICKETS_LINK = {{ can_view_tickets_link() ? 'true' : 'false' }};
+    window.DESKPRO_CAN_USE_ARTICLES = {{ can_use_articles() ? 'true' : 'false' }};
+    window.DESKPRO_CAN_USE_NEWS = {{ can_use_news() ? 'true' : 'false' }};
+    window.DESKPRO_CAN_USE_DOWNLOADS = {{ can_use_downloads() ? 'true' : 'false' }};
     window.DESKPRO_CAN_USE_COMMUNITY = {{ can_use_community() ? 'true' : 'false' }};
+    window.DESKPRO_CAN_USE_GUIDES = {{ can_use_guides() ? 'true' : 'false' }};
     window.DESKPRO_CAN_USE_CHAT = {{ can_use_chat() ? 'true' : 'false' }};
     window.PORTAL_MODE = '{{ portal_mode() }}';
 

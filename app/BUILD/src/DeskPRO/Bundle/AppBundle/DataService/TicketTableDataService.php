@@ -71,9 +71,10 @@ class TicketTableDataService extends AbstractDataService
 
     public function makeTicketTable(Person $person, Request $request, $ticketType, $category, $categoryTitle)
     {
-        $columns = $this->makeColumnControl($person);
-        $perPage = $this->brand_aware_settings->getSetting('portal.per_page_tickets', null, 50);
-        $table   = new TicketListTable($category, $ticketType, $categoryTitle, $columns, $request, $perPage);
+        $columns     = $this->makeColumnControl($person);
+        $perPage     = $this->brand_aware_settings->getSetting('portal.per_page_tickets', null, 50);
+        $departments = $this->department_data_service->getTicketDepartmentsForPerson($person);
+        $table       = new TicketListTable($category, $ticketType, $categoryTitle, $columns, $request, $perPage, count($departments) > 1);
         $table->makePagerUsingDataService($this->ticket_data_service, $person);
 
         return $table;
@@ -83,7 +84,7 @@ class TicketTableDataService extends AbstractDataService
     {
         $columns = new TicketColumns();
 
-        $this->addStaticColumns($columns);
+        $this->addStaticColumns($columns, $person);
         $this->addDynamicColumns($columns, $person);
 
         return $columns;
@@ -96,8 +97,9 @@ class TicketTableDataService extends AbstractDataService
 
     /**
      * @param TicketColumns $columns
+     * @param Person $person
      */
-    public function addStaticColumns(TicketColumns $columns)
+    public function addStaticColumns(TicketColumns $columns, $person = null)
     {
         //$columns->addColumn(
         //    TicketColumn::TYPE_DEPARTMENT_SUBJECT,
@@ -112,12 +114,15 @@ class TicketTableDataService extends AbstractDataService
             CustomDefAbstract::TYPE_TEXT
         );
 
-        $columns->addColumn(
-            TicketColumn::TYPE_DEPARTMENT,
-            $this->phrase(['portal.tickets.list_department', 'helpcenter.general.department']),
-            TicketColumn::TYPE_DEPARTMENT,
-            CustomDefAbstract::TYPE_CHOICE
-        );
+        $departments = $this->department_data_service->getTicketDepartmentsForPerson($person);
+        if (count($departments) > 1) {
+            $columns->addColumn(
+                TicketColumn::TYPE_DEPARTMENT,
+                $this->phrase(['portal.tickets.list_department', 'helpcenter.general.department']),
+                TicketColumn::TYPE_DEPARTMENT,
+                CustomDefAbstract::TYPE_CHOICE
+            );
+        }
 
         $columns->addColumn(
             TicketColumn::TYPE_USER,

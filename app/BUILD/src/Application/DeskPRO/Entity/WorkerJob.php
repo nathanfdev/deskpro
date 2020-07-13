@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -129,6 +125,22 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return false;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastRunDate()
+    {
+        return $this->last_run_date;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastStartDate()
+    {
+        return $this->last_start_date;
     }
 
     /**

@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Tickets\Escalations;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -138,8 +132,14 @@ class EscalationTicketMatcher
             unset($r['result_type']);
 
             switch ($type) {
-                case 'real':   $realResults[$r['id']]   = $r; break;
-                case 'search': $searchResults[$r['id']] = $r; break;
+                case 'real':
+                    $realResults[$r['id']] = $r;
+
+                    break;
+                case 'search':
+                    $searchResults[$r['id']] = $r;
+
+                    break;
                 default: throw new \RuntimeException();
             }
         }
@@ -287,6 +287,7 @@ class EscalationTicketMatcher
                 $searcher->addTerm('status', 'is', ['awaiting_agent']);
                 $searcher->addRawWhere('tickets.date_user_waiting IS NOT NULL');
                 $searcher->addTerm('total_user_waiting', 'between', [$time_secs, $time_secs]);
+
                 break;
 
             case TicketEscalation::EVENT_TYPE_TIME_AGENT_WAITING:

@@ -76,6 +76,7 @@ class OutgoingEmailController extends BaseController
         foreach ($uuids as $uuid) {
             /** @var SendmailSource $source */
             $source = $this->getManager()->getRepository(SendmailSource::class)->findOneByUuid($uuid);
+
             if (!$source) {
                 $res[$uuid] = Response::HTTP_NOT_FOUND;
                 continue;
@@ -184,8 +185,12 @@ class OutgoingEmailController extends BaseController
 
         /** @var \Application\EmailBundle\Queue\QueueProc $proc */
         $proc = $this->get('email.queue_processor');
-
         $proc->process($source->toRecordArray());
+
+        if ($proc->getLastException()) {
+            return Response::HTTP_UNPROCESSABLE_ENTITY;
+        }
+
         $this->getManager()->refresh($source);
 
         return $source;

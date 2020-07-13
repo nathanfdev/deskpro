@@ -1672,6 +1672,8 @@ class Person extends DomainObject implements
             $this->setModelField('date_password_set', new \DateTime());
         }
 
+        $this->setModelField('secret_string', Strings::random(40));
+
         return $this->password;
     }
 
@@ -2439,6 +2441,25 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getEmailsUpdatedDate()
+    {
+        if (empty($this->emails)) {
+            return $this->date_created;
+        }
+
+        $maxDate = null;
+        foreach ($this->emails as $eml) {
+            if (!$maxDate || $maxDate < $eml->date_created) {
+                $maxDate = $eml->date_created;
+            }
+        }
+
+        return $maxDate ?: $this->date_created;
+    }
+
+    /**
      * @param PersonEmail $email
      *
      * @return $this
@@ -3076,11 +3097,14 @@ class Person extends DomainObject implements
     public function getPictureUrl($size = 80, $secure = null, $default = false)
     {
         // Null means detect
-        if ($secure === null and App::isWebRequest()) {
-            $request = App::getRequest();
-            if ($request->isSecure()) {
-                $secure = true;
+        try {
+            if ($secure === null and App::isWebRequest()) {
+                $request = App::getRequest();
+                if ($request->isSecure()) {
+                    $secure = true;
+                }
             }
+        } catch (\Exception $e) {
         }
 
         $url = false;
@@ -3125,7 +3149,7 @@ class Person extends DomainObject implements
     public function getRawGravatarUrl()
     {
         if ($this->primary_email) {
-            return rtrim($this->primary_email->getGravatarUrl(true), '?');
+            return rtrim($this->primary_email->getGravatarUrl(), '?');
         }
 
         return;
@@ -3134,14 +3158,17 @@ class Person extends DomainObject implements
     public function getGravatarUrl($size = 80, $secure = null)
     {
         // Null means detect
-        if ($secure === null and App::isWebRequest()) {
-            $request = App::getRequest();
-            if ($request->isSecure()) {
-                $secure = true;
+        try {
+            if ($secure === null and App::isWebRequest()) {
+                $request = App::getRequest();
+                if ($request->isSecure()) {
+                    $secure = true;
+                }
             }
+        } catch (\Exception $e) {
         }
 
-        $url = $this->primary_email ? $this->primary_email->getGravatarUrl($secure) : '';
+        $url = $this->primary_email ? $this->primary_email->getGravatarUrl() : '';
         if ($size != 80) {
             $url .= '&s='.urlencode($size);
         }
@@ -3647,7 +3674,11 @@ class Person extends DomainObject implements
      */
     public function getRememberMeCookieCode()
     {
-        return \Orb\Util\Util::generateStaticSecurityToken(sha1(App::getAppSecret().$this->secret_string));
+        return \Orb\Util\Util::generateStaticSecurityToken(sha1(
+            App::getAppSecret()
+            .$this->secret_string
+            .($this->date_password_set ? $this->date_password_set->getTimestamp() : '')
+        ));
     }
 
     /**
@@ -3657,7 +3688,11 @@ class Person extends DomainObject implements
      */
     public function validateRememberMeCookieCode($code)
     {
-        return \Orb\Util\Util::checkStaticSecurityToken($code, sha1(App::getAppSecret().$this->secret_string));
+        return \Orb\Util\Util::checkStaticSecurityToken($code, sha1(
+            App::getAppSecret()
+            .$this->secret_string
+            .($this->date_password_set ? $this->date_password_set->getTimestamp() : '')
+        ));
     }
 
     public function _postPersist()

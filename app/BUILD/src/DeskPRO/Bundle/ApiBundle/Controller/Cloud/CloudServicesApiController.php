@@ -30,6 +30,8 @@ class CloudServicesApiController extends BaseController
 
     /**
      * @Rest\Get("/get-settings/{ids}")
+     *
+     * @param mixed $ids
      */
     public function getSettingsAction($ids)
     {
@@ -73,7 +75,13 @@ class CloudServicesApiController extends BaseController
     public function tmpDataAction($id, $auth)
     {
         /** @var TmpData $tmpdata */
-        $tmpdata = $this->getRepository(TmpData::class)->findOneBy(['id' => $id, 'auth' => $auth]);
+        $tmpdata = $this->getRepository(TmpData::class)->findOneBy([
+            'id'   => $id,
+            'auth' => $auth,
+        ]);
+        if (!$tmpdata) {
+            return;
+        }
 
         if (isset($_REQUEST['touch'])) {
             $tmpdata->setDateExpire(new \DateTime('+15 minutes'));
@@ -81,7 +89,7 @@ class CloudServicesApiController extends BaseController
             $this->get('doctrine.orm.default_entity_manager')->flush();
         }
 
-        return $tmpdata ? $tmpdata->toApiData(true) : null;
+        return $tmpdata->toApiData(true);
     }
 
     /**
@@ -172,7 +180,7 @@ EOL
 
         return [
             'agents' => $agents,
-            'stats' => $stats,
+            'stats'  => $stats,
         ];
     }
 }

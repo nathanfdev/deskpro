@@ -6,9 +6,11 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="{{ buttonId is defined ? buttonId : 'subscribeDropdownMenu' }}">
             {% for sub in subscriptionInfo %}
-                <a class="dropdown-item post-link {{ sub.active ? 'active' : '' }}" href="{{ sub.toggleUrl }}" rel="noindex, nofollow">
-                    <i class="dp-po-icon {{ sub.icon }}"></i> {{ sub.title }} <i class="dp-po-icon far fa-check"></i>
-                </a>
+                {% if sub.toggleUrl %}
+                    <a class="dropdown-item post-link {{ sub.active ? 'active' : '' }}" href="{{ sub.toggleUrl }}" rel="noindex, nofollow">
+                        <i class="dp-po-icon {{ sub.icon }}"></i> {{ sub.title }} <i class="dp-po-icon far fa-check"></i>
+                    </a>
+                {% endif %}
             {% endfor %}
             {# we don't support it for now #}
             {#<span class="dp-po-subscribe-divider"></span>#}

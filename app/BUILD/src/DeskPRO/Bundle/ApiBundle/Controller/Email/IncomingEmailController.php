@@ -14,6 +14,7 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -36,6 +37,29 @@ class IncomingEmailController extends BaseController
     public function getAction(Request $request, $uuid)
     {
         return View::create($this->wrap($this->findEntity($uuid, $request)), Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Get("/{uuid}/exists", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
+     *
+     * @param Request $request
+     * @param string  $uuid
+     *
+     * @return View
+     */
+    public function existsAction(Request $request, $uuid)
+    {
+        try {
+            return View::create(
+                ['exists' => (bool) $this->findEntity($uuid, $request)], // in case findEntity() return type changes
+                Response::HTTP_OK
+            );
+        } catch (NotFoundHttpException $e) {
+            return View::create(
+                ['exists' => false],
+                Response::HTTP_OK
+            );
+        }
     }
 
     /**

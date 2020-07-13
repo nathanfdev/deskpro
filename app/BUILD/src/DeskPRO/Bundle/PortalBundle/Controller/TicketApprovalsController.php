@@ -122,12 +122,12 @@ class TicketApprovalsController extends AbstractController
 
                 if ($approvalResponse->isApproved()) {
                     $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.approved-by', 'helpcenter.approvals.you_approved'], [
-                        'person_name'   => $approval->getCreatedBy()->getCommunityName(),
+                        'person_name'   => $approval->getCreatedByCommunityName(),
                         'template'      => $approval->getTemplate()->getName(),
                     ]));
                 } else {
                     $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.rejected-by', 'helpcenter.approvals.you_rejected'], [
-                        'person_name'   => $approval->getCreatedBy()->getCommunityName(),
+                        'person_name'   => $approval->getCreatedByCommunityName(),
                         'template'      => $approval->getTemplate()->getName(),
                     ]));
                 }
@@ -175,7 +175,7 @@ class TicketApprovalsController extends AbstractController
                 $this->getApprovalManager()->createContext(ExecutorContext::METHOD_WEB, $this->getUser())
             );
             $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.approved-by', 'helpcenter.approvals.you_approved'], [
-                'person_name'   => $approval->getCreatedBy()->getCommunityName(),
+                'person_name'   => $approval->getCreatedByCommunityName(),
                 'template'      => $approval->getTemplate()->getName(),
             ]));
         } catch (\DomainException $e) {
@@ -209,7 +209,7 @@ class TicketApprovalsController extends AbstractController
                 $this->getApprovalManager()->createContext(ExecutorContext::METHOD_WEB, $this->getUser())
             );
             $this->addFlash('success', $this->phrase(['portal.flashes.ticket-approvals.rejected-by', 'helpcenter.approvals.you_rejected'], [
-                'person_name'   => $approval->getCreatedBy()->getCommunityName(),
+                'person_name'   => $approval->getCreatedByCommunityName(),
                 'template'      => $approval->getTemplate()->getName(),
             ]));
         } catch (\DomainException $e) {

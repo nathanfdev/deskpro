@@ -20,6 +20,7 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatFormCustomField;
 use DeskPRO\Component\Util\MapUtils;
+use DeskPRO\Component\Util\RegexUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as Router;
@@ -97,11 +98,20 @@ class ServiceController extends AbstractMessengerController
             'messenger_blob_upload', [], UrlGeneratorInterface::ABSOLUTE_URL
         );
 
+        $baseUrlRegex = '#^'.$request->getBaseUrl().'#';
+
         $manifestPath = $this->container->get('templating.helper.assets')->getUrl('asset-manifest.json', 'messenger_assets');
+        $manifestPath = RegexUtils::safePregReplace($baseUrlRegex, '', $manifestPath);
+
+        $chunksPath = RegexUtils::safePregReplace(
+            $baseUrlRegex,
+            '',
+            $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets')
+        );
 
         $data['bundleUrl'] = [
             'manifest'   => $manifestPath,
-            'path'       => $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets'),
+            'path'       => $chunksPath,
             'isDev'      => $this->get('settings_resolver')->getGlobalSettings()->get('messenger.is_dev', false),
             'isAbsolute' => $this->isAbsoluteUrl($manifestPath),
         ];
@@ -243,6 +253,8 @@ class ServiceController extends AbstractMessengerController
         $layouts = $this->container->getTicketLayoutManager()->getUserLayouts(true);
 
         $customTicketFields = $em->getRepository(CustomDefTicket::class)->getTopFields();
+        $ticketCategories   = $this->container->getSystemService('ticket_categories')->getRoots();
+        $ticketProducts     = $this->container->getSystemService('products')->getRoots();
 
         $ticketFormConfig = [];
         foreach ($layouts as $k => $layout) {
@@ -252,11 +264,15 @@ class ServiceController extends AbstractMessengerController
             foreach ($layout->all() as $f) {
                 $ar              = $f->exportToArray();
                 $ar['field_id']  = $f->getId();
-
-                $ar['required'] = in_array($f->getFieldType(), ['department', 'person', 'subject', 'message'], true);
+                $ar['required']  = in_array($f->getFieldType(), ['department', 'person', 'subject', 'message'], true);
 
                 if ($f->getFieldType() === 'department') {
-                    $ar['is_hidden'] = $ticketsSettings->getDepartmentOption() === MessengerTickets::TICKET_DEPARTMENT_OPTION_HIDDEN;
+                    $ar['is_hidden'] = $ticketsSettings->getDepartmentOption() ===
+                        MessengerTickets::TICKET_DEPARTMENT_OPTION_HIDDEN;
+                } elseif ($f->getFieldType() === 'category') {
+                    $ar['data'] = ['choices' => $this->getTicketFieldHierarchy($ticketCategories)];
+                } elseif ($f->getFieldType() === 'product') {
+                    $ar['data'] = ['choices' => $this->getTicketFieldHierarchy($ticketProducts)];
                 } elseif ($f->getId() === 'subject') {
                     $ar['is_hidden'] = $ticketsSettings->getSubjectOption() === MessengerTickets::TICKET_SUBJECT_OPTION_PRESET;
                 } elseif ($f->getFieldType() === 'ticket_field') {
@@ -272,6 +288,25 @@ class ServiceController extends AbstractMessengerController
         }
 
         return $ticketFormConfig;
+    }
+
+    private function getTicketFieldHierarchy($categories)
+    {
+        $data = [];
+        foreach ($categories as $category) {
+            $children     = $category->getChildren();
+            $categoryData = [
+                'id'            => $category->getId(),
+                'title'         => $category->getTitle(),
+                'is_selectable' => $children->count() < 1,
+            ];
+            if ($children->count() > 0) {
+                $categoryData['children'] = $this->getTicketFieldHierarchy($children);
+            }
+            $data[] = $categoryData;
+        }
+
+        return $data;
     }
 
     /**

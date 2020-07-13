@@ -230,7 +230,7 @@ class AvatarResolver
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
         } elseif ($this->settingsResolver->getGlobalSettings()->get('core.use_gravatar') && $person->getPrimaryEmail()) {
-            $url = $person->getPrimaryEmail()->getGravatarUrl(true).'&s='.$size;
+            $url = $person->getPrimaryEmail()->getGravatarUrl().'&s='.$size;
 
             if ($person->getOrganization()) {
                 $org_url = $this->getCommonAvatar($person->getOrganization(), $size);

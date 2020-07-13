@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\EmailBundle\Twig\PostRenderFilter;
 
@@ -47,6 +45,8 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
 
         $code = Strings::preDomDocument($code);
         $emog = new Emogrifier($code, $css);
+        $emog->disableInvisibleNodeRemoval();
+
         try {
             $code = $emog->emogrify();
         } catch (\Exception $e) {

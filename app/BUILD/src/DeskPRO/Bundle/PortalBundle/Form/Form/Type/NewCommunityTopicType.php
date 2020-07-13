@@ -66,10 +66,10 @@ class NewCommunityTopicType extends AbstractType
         CustomFieldManager $fieldManager,
         HierarchyGenerator $hierarchyGenerator
     ) {
-        $this->captchaDecider          = $captchaDecider;
-        $this->languageManager         = $languageManager;
-        $this->fieldManager            = $fieldManager;
-        $this->hierarchyGenerator      = $hierarchyGenerator;
+        $this->captchaDecider     = $captchaDecider;
+        $this->languageManager    = $languageManager;
+        $this->fieldManager       = $fieldManager;
+        $this->hierarchyGenerator = $hierarchyGenerator;
     }
 
     /**
@@ -132,9 +132,9 @@ class NewCommunityTopicType extends AbstractType
                     'label'         => $this->phrase('portal.forms.label_name'),
                 ])
                 ->add('email', PersonEmailType::class, [
-                    'label'         => false,
-                    'property_path' => 'person.primary_email',
-                    'constraints'   => [], // ignore the "unqiue entity" constraint here
+                    'label'               => false,
+                    'property_path'       => 'person.primary_email',
+                    'ignore_unique_check' => true,
                 ])
             ;
         }

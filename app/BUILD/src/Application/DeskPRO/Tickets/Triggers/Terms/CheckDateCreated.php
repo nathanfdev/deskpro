@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
@@ -29,7 +25,17 @@ class CheckDateCreated extends AbstractTriggerTerm
     protected function getOptionsDef()
     {
         $options = new CheckedOptionsArray();
-        $options->addValidNames('date1', 'date2', 'date1_relative', 'date2_relative', 'date1_relative_type', 'date2_relative_type', 'value');
+        $options->addValidNames(
+            'date1',
+            'date2',
+            'date1_relative',
+            'date2_relative',
+            'date1_relative_type',
+            'date1_relative_tense',
+            'date2_relative_type',
+            'date2_relative_tense',
+            'value'
+        );
         // 'value' is a UI artefact; it is not actually used
 
         return $options;
@@ -49,7 +55,8 @@ class CheckDateCreated extends AbstractTriggerTerm
             if ($opts['date1']) {
                 $date1 = new \DateTime('@'.$opts['date1']);
             } elseif ($opts['date1_relative']) {
-                $date1 = new \DateTime('@'.@strtotime('-'.$opts['date1_relative'].' '.$opts->get('date1_relative_type', 'days')));
+                $op    = isset($opts['date1_relative_tense']) && $opts['date1_relative_tense'] === 'future' ? '' : '-';
+                $date1 = new \DateTime('@'.@strtotime($op.$opts['date1_relative'].' '.$opts->get('date1_relative_type', 'days')));
             } else {
                 $date1 = null;
             }
@@ -61,7 +68,8 @@ class CheckDateCreated extends AbstractTriggerTerm
             if ($opts['date2']) {
                 $date2 = new \DateTime('@'.$opts['date2']);
             } elseif ($opts['date2_relative']) {
-                $date2 = new \DateTime('@'.@strtotime('-'.$opts['date2_relative'].' '.$opts->get('date2_relative_type', 'days')));
+                $op    = isset($opts['date2_relative_tense']) && $opts['date2_relative_tense'] === 'future' ? '' : '-';
+                $date2 = new \DateTime('@'.@strtotime($op.$opts['date2_relative'].' '.$opts->get('date2_relative_type', 'days')));
             } else {
                 $date2 = null;
             }

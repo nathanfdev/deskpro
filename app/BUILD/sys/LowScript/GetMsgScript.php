@@ -65,6 +65,13 @@ class GetMsgScript extends LowScriptAbstract
 
             $dos = (isset($_REQUEST['do']) ? (array) $_REQUEST['do'] : []);
 
+            // clear values in wrong format
+            foreach ($dos as $num => $do) {
+                if (!is_string($do)) {
+                    unset($dos[$num]);
+                }
+            }
+
             // Every second poll, update online agents list
             $count = isset($_REQUEST['count']) ? intval($_REQUEST['count']) : 0;
             if ($count < 0) {
@@ -431,7 +438,14 @@ class GetMsgScript extends LowScriptAbstract
         $custom_filters = $filter_info['custom_filters'];
 
         if (!empty($_REQUEST['get-custom-filters-data-ignore'])) {
-            $ignore         = explode(',', $_REQUEST['get-custom-filters-data-ignore']);
+            if (is_string($_REQUEST['get-custom-filters-data-ignore'])) {
+                $ignore = explode(',', $_REQUEST['get-custom-filters-data-ignore']);
+            } elseif (is_array($_REQUEST['get-custom-filters-data-ignore'])) {
+                $ignore = $_REQUEST['get-custom-filters-data-ignore'];
+            } else {
+                $ignore = [];
+            }
+
             $custom_filters = array_filter($custom_filters, function ($f) use ($ignore) {
                 return !in_array($f['id'], $ignore);
             });

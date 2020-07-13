@@ -190,7 +190,7 @@ export default class HelpcenterRte extends React.Component {
         >
           <DragOverlayListener context={context}>
             <div className="dp-medium-rte-wrapper-overlay">
-              <h1>{portalPhrases.get('portal.forms.label_drag_overlay')}</h1>
+              <h1>{portalPhrases.get('helpcenter.forms.label_drag_overlay')}</h1>
             </div>
           </DragOverlayListener>
         </DropZone>

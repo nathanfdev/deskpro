@@ -6,3 +6,11 @@ services:
 
   dpdev.language.copy_identical_phrases:
     class: DeskPRO\Bundle\DevBundle\Language\CopyIdenticalPhrases
+
+  dpdev.template.twig_extension_scanner:
+    class: DeskPRO\Bundle\DevBundle\Template\TwigExtensionScanner
+
+  dpdev.template.twig_template_parser:
+    class: DeskPRO\Bundle\DevBundle\Template\TwigTemplateParser
+    arguments:
+      - "@twig"
