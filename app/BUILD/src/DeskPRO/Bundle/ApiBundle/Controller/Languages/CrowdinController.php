@@ -58,12 +58,8 @@ class CrowdinController extends BaseController
                 ->warn("Failed to download language distribution via DPCS, defaulting to CrowdIn: {$e->getMessage()}")
             ;
 
-            try {
-                $url = self::BASE_URL."/content/develop/$locale/$type.yml";
-                $client->get($url, ['save_to' => $resource]);
-            } catch (\Exception $ee) {
-                error_log($ee->getMessage());
-            }
+            $url = self::BASE_URL."/content/develop/$locale/$type.yml";
+            $client->get($url, ['save_to' => $resource]);
         }
 
         $data    = explode("\n", file_get_contents($path));
