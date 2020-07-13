@@ -8,6 +8,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 /**
  * Class CrowdinController.
@@ -18,7 +19,8 @@ use GuzzleHttp\Client;
  */
 class CrowdinController extends BaseController
 {
-    const BASE_URL = 'https://distributions.crowdin.net/c5f41ca14ee5fe46e786b27u5ra';
+    const BASE_URL      = 'https://distributions.crowdin.net/c5f41ca14ee5fe46e786b27u5ra';
+    const DPCS_BASE_URL = 'http://download-lang.deskpro-service.com/langauge/download-lang/c5f41ca14ee5fe46e786b27u5ra';
 
     /**
      * @Rest\Get("/locales")
@@ -42,12 +44,27 @@ class CrowdinController extends BaseController
      */
     public function getPhrasesAction($locale, $type)
     {
-        $url  = self::BASE_URL."/content/develop/$locale/$type.yml";
+        $url  = self::DPCS_BASE_URL."/content/develop/$locale/$type.yml";
         $path = rtrim($this->get('deskpro.app_env')->getUserFilesDir(), '/')."/crowdin.$locale.$type.yml";
 
         $resource = fopen($path, 'w');
-        $client   = new Client();
-        $client->get($url, ['save_to' => $resource]);
+
+        try {
+            $client = new Client();
+            $client->get($url, ['save_to' => $resource]);
+        } catch (ClientException $e) {
+            $this
+                ->get('logger')
+                ->warn("Failed to download language distribution via DPCS, defaulting to CrowdIn: {$e->getMessage()}")
+            ;
+
+            try {
+                $url = self::BASE_URL."/content/develop/$locale/$type.yml";
+                $client->get($url, ['save_to' => $resource]);
+            } catch (\Exception $ee) {
+                error_log($ee->getMessage());
+            }
+        }
 
         $data    = explode("\n", file_get_contents($path));
         $phrases = [];
