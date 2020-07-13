@@ -3116,19 +3116,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     public function getTotalUserWaitingWorkTime()
     {
-        $work_hours_set = $this->getWorkHoursSet();
+        $time = (int)$this->total_user_waiting_wh;
 
-        $time = 0;
-        if ($this->waiting_times) {
-            foreach ($this->waiting_times as $waiting) {
-                if ($waiting['type'] == 'user') {
-                    $time += $work_hours_set->getWorkTimeBetween($waiting['start'], $waiting['end']);
-                }
-            }
-        }
-
-        if ($this->date_user_waiting && $this->getTicketStatus()->isCountUserWaitingTime()) {
-            $time += $work_hours_set->getWorkTimeBetween($this->date_user_waiting);
+        $now = new \DateTime();
+        // need the condition; its possible the wh_start was in future if the last change was out of hours
+        if ($this->total_user_waiting_wh_start && $this->total_user_waiting_wh_start < $now) {
+            $wh = $this->getWorkHoursSet();
+            $time += $wh->getWorkTimeBetween(
+                $this->total_user_waiting_wh_start,
+                $now
+            );
         }
 
         return $time;
