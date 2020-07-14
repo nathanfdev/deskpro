@@ -327,6 +327,19 @@ class ContainerMock
         return $this;
     }
 
+    public function withBasicSettings($globalSettings = [])
+    {
+        $globalSettings = new SettingsBag(array_merge([
+            'core.default_timezone' => 'UTC'
+        ], $globalSettings));
+        $resolver       = m::mock('Application\\DeskPRO\\NewSettings\\SettingsResolver');
+        $resolver->shouldReceive('getGlobalSettings')->andReturn($globalSettings);
+
+        $this->mock->shouldReceive('getSettingsResolver')->andReturn($resolver);
+
+        return $this;
+    }
+
     /**
      * @return m\MockInterface|\Application\DeskPRO\DependencyInjection\DeskproContainer
      */
