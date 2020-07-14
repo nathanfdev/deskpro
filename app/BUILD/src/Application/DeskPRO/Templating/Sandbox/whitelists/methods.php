@@ -46,6 +46,9 @@ return [
     \Symfony\Component\Form\FormErrorIterator::class => [
         '__toString',
     ],
+    \Symfony\Component\Form\Form::class => [
+        'createView',
+    ],
     \DeskPRO\Component\Hierarchy\HierarchyNode::class => SandboxUtils::guessAccessors(
         \DeskPRO\Component\Hierarchy\HierarchyNode::class
     ),
