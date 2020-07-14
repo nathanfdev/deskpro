@@ -64,4 +64,7 @@ return [
     \Application\DeskPRO\TicketLayout\LayoutDisplay::class => SandboxUtils::guessAccessors(
         \Application\DeskPRO\TicketLayout\LayoutDisplay::class
     ),
+    \Symfony\Component\Form\FormError::class => SandboxUtils::guessAccessors(
+        \Symfony\Component\Form\FormError::class
+    ),
 ];
