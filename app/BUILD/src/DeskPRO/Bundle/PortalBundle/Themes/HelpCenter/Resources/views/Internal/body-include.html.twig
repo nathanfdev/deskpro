@@ -26,7 +26,7 @@
 {% if portal_mode() != 'focus-window' and portal_mode() != 'fame-embed' and is_portal_widget_enabled() %}{{ portal_widget_loader() }}{% endif %}
 {% if portal_mode() != 'focus-window' and portal_mode() != 'fame-embed' and is_portal_messenger_enabled() %}
 	<script type="text/javascript">
-    window.parent.DESKPRO_MESSENGER_OPTIONS = {
+    window.DESKPRO_MESSENGER_OPTIONS = {
 			{% if app.user %}
 			{% if is_widget_jwt_enabled() %}
       jwt: "{{ create_widget_jwt_token(app.user) }}",

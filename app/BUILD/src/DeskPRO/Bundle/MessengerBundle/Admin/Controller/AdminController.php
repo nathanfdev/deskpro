@@ -171,8 +171,8 @@ class AdminController extends AbstractBrandAwareSettingsController
         $code = <<<CODE
 <!--DESKPRO_WIDGET_LOADER::BEGIN-->
 <script type="text/javascript">
-    window.parent.DESKPRO_MESSENGER_ASSET_URL = "{$assetUrl}";
-    window.parent.DESKPRO_MESSENGER_OPTIONS = {
+    window.DESKPRO_MESSENGER_ASSET_URL = "{$assetUrl}";
+    window.DESKPRO_MESSENGER_OPTIONS = {
       language: {
         id: "{$language->getId()}",
         locale: "{$language->getLocale()}"
