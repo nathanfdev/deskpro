@@ -233,6 +233,7 @@ return array (
     'has_any_community',
     'can_use_tickets',
     'can_use_chat',
+    'can_use_feedback',
     'can_rate_news',
     'can_rate_download',
     'can_rate_article',
