@@ -125,12 +125,18 @@ class TechService
             )
             ->setParameter('allowed_department_ids', $allowedDepartmentIds);
 
-        $self = $this;
+        $brand = $this->brandStack->getActive()->getBrand();
 
         return array_filter($qb->getQuery()->getResult(),
-            function ($dep) use ($self) {
+            function ($dep) use ($brand) {
                 /* @var Department $dep */
-                return !$dep->getBrands()->count() || $dep->hasBrand($self->brandStack->getActive()->getBrand());
+                return $dep->hasBrand($brand) ||
+                    (!$dep->getBrands()->count() && array_reduce(
+                        $dep->getAllChildren(),
+                        function ($res, $dep) use ($brand) {
+                            return $res || $dep->hasBrand($brand);
+                        },
+                            false));
             }
         );
     }
