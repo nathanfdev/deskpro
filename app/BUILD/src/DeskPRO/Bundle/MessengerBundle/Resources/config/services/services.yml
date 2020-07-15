@@ -43,6 +43,14 @@ services:
     tags:
       - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 200}
 
+  messenger.brandid_listener:
+    class: DeskPRO\Bundle\MessengerBundle\Security\EventListener\BrandIdListener
+    arguments:
+      - "@brand_stack"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 150}
+
   tickets.messenger_new_ticket:
     class: DeskPRO\Bundle\MessengerBundle\Service\NewTicketService
     arguments:
