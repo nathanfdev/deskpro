@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\UserChat;
 
+use DeskPRO\Bundle\AppBundle\Entity\AbstractUserChatQueueTarget;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueue;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Component\Form\AbstractType;
@@ -74,32 +75,31 @@ class UserChatQueueType extends AbstractType
     public function onPostSubmit(FormEvent $event)
     {
         $addedTargets = $event->getForm()->get('targets')->getData();
+        /** @var UserChatQueue $queue */
         $queue        = $event->getData();
         $existingKeys = [];
         $addingKeys   = [];
 
-        //note: sorting is not affected here as it not updated at all and always is 10
-
         // collect unique keys which exist
         foreach ($queue->getTargets() as $existingTarget) {
-            $key                = sprintf('%d-%d', $existingTarget->getAgent()->getId(), $existingTarget->getQueue()->getId());
-            $existingKeys[$key] = true;
+            $existingKeys[$existingTarget->getAgent()->getId()] = $existingTarget;
         }
 
         // add only those targets which don't exist and write down all keys we're trying to add
+        /** @var AbstractUserChatQueueTarget[] $addedTargets */
         foreach ($addedTargets as $target) {
-            $target->setQueue($queue);
-            $key              = sprintf('%d-%d', $target->getAgent()->getId(), $target->getQueue()->getId());
-            $addingKeys[$key] = true;
-            if (!isset($existingKeys[$key])) {
-                $queue->getTargets()->add($target);
+            $targetId              = $target->getAgent()->getId();
+            $addingKeys[$targetId] = true;
+            if (!isset($existingKeys[$targetId])) {
+                $queue->addTarget($target);
+            } else {
+                $existingKeys[$targetId]->setSort($target->getSort());
             }
         }
 
         // if existing targets are not in those we wanted to add - remove it from collection
         foreach ($queue->getTargets() as $target) {
-            $key = sprintf('%d-%d', $target->getAgent()->getId(), $target->getQueue()->getId());
-            if (!isset($addingKeys[$key])) {
+            if (!isset($addingKeys[$target->getAgent()->getId()])) {
                 $queue->getTargets()->removeElement($target);
             }
         }
