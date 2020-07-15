@@ -9,7 +9,7 @@
     "@deskpro/fa-picker": "0.2.0",
     "@deskpro/js-utils": "^1.0.4",
     "@deskpro/messenger": "0.2.35",
-    "@deskpro/messenger-loader": "0.2.32",
+    "@deskpro/messenger-loader": "0.2.36",
     "@deskpro/messenger-setup": "0.2.22",
     "@deskpro/portal-components": "0.4.62",
     "@deskpro/portal-style": "0.4.62",
