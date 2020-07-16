@@ -44,8 +44,8 @@ class UserChatQueueTargetType extends AbstractType
      */
     public function onPreSubmit(FormEvent $event)
     {
-        $form = $event->getForm();
-        $data = $event->getData();
+        $form  = $event->getForm();
+        $data  = $event->getData();
 
         // create entity instance by type
         $target     = null;
@@ -102,5 +102,7 @@ class UserChatQueueTargetType extends AbstractType
         if (!$data instanceof AbstractUserChatQueueTarget) {
             $event->setData(null);
         }
+        // set queue
+        $data->setQueue($event->getForm()->getParent()->getParent()->getData());
     }
 }
