@@ -44,6 +44,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.forms.date_picker_next_month',
             'helpcenter.forms.date_picker_previous_month',
             'helpcenter.forms.date_picker_time',
+            'helpcenter.forms.label_drag_overlay',
             'helpcenter.forms.label_reset',
             'helpcenter.forms.label_drag_overlay',
             'helpcenter.general.form_choose_file',

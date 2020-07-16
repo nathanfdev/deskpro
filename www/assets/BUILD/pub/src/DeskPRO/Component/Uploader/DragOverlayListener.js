@@ -9,7 +9,8 @@ export class DragOverlayListener extends React.Component {
       PropTypes.object,
       PropTypes.arrayOf(PropTypes.object)
     ]),
-    children: PropTypes.any
+    children: PropTypes.node,
+    types:    PropTypes.array,
   };
 
   constructor(props) {
@@ -20,28 +21,39 @@ export class DragOverlayListener extends React.Component {
   }
 
   componentDidMount() {
-    this.getContext().forEach(context => {
+    this.getContext().forEach((context) => {
       $(context).on('dragover', this.onDragStarted);
       $(context).on('dragover drop', this.onDefaultDrop);
     });
   }
 
   componentWillUnmount() {
-    this.getContext().forEach(context => {
+    this.getContext().forEach((context) => {
       $(context).off('dragover', this.onDragStarted);
       $(context).off('dragover drop', this.onDefaultDrop);
     });
   }
 
-  onDefaultDrop = event => {
+  onDefaultDrop = (event) => {
     event.preventDefault();
   };
 
-  onDragStarted = () => {
+  onDragStarted = (e) => {
+    const ev = e.originalEvent;
+    const { types } = this.props;
     if (!this.timeout) {
-      this.setState({
-        overlay: true
-      });
+      let type = null;
+      ev.preventDefault();
+      ev.dataTransfer.dropEffect = 'move';
+      if (ev.dataTransfer.items.length > 0) {
+        const file = ev.dataTransfer.items[0];
+        type = file.type.slice(0, file.type.indexOf('/'));
+      }
+      if (!type || (types.length && types.indexOf(type) !== -1)) {
+        this.setState({
+          overlay: true
+        });
+      }
     } else {
       clearTimeout(this.timeout);
     }
