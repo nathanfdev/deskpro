@@ -36,10 +36,30 @@ helpcenter.account.reset_password_action: 'Ponastavi geslo'
 helpcenter.account.reset_password_click_here: 'Klikni tukaj in zahtevaj šifro za ponastavitev gesla'
 helpcenter.account.reset_password_invalid_desc: 'Tvoja šifra za ponastavitev gesla je ali napačna ali pa je potekla. Prosimo, ponovno zahtevaj novo šifro za ponastavitev gesla.'
 helpcenter.account.reset_password_invalid_input: 'Prosimo, vnesi veljavno uporabniško ime ali e-poštni naslov'
+helpcenter.account.section_desc_register: 'Ustvari si račun in s tem stik z nami naredi preglednejši.'
+helpcenter.account.section_title_register: Ustvari račun
+helpcenter.account.section_title_reset_password: 'Ponastavi geslo'
+helpcenter.account.section_title_set_password: 'Nastavi geslo'
+helpcenter.account.section_title_usersource_email: 'Vnesi e-poštni račun'
+helpcenter.account.section_title_your_account: 'Tvoj račun'
+helpcenter.account.set_password_action: 'Nastavi geslo'
+helpcenter.account.set_password_click_here: 'Klikni tu in si nastavi geslo'
 helpcenter.account.set_password_expired: 'Veljavnost tvojega gesla je potekla.'
+helpcenter.account.set_password_for_user: 'Tvoj račun še nima gesla. Nastavi ga in si s tem omogoči kasnejše objavljanje vsebin.'
 helpcenter.account.tickets_lockout: 'Vnesel/la si preveč zahtevkov in tvoj račun je začasno onemogočen. Prosimo, poskusi kasneje.'
 helpcenter.alerts.tickets_to_respond: '{count, plural, one {Čaka te zahtevek, na katerega se moraš odzvati.} other {Čaka te # zahtevkov, na katere se moraš odzvati.}}'
+helpcenter.approvals.list_column_agent: 'Operater'
+helpcenter.approvals.list_column_approvers: 'Potrjevalci'
+helpcenter.approvals.list_column_cancelled: 'Preklicano'
+helpcenter.approvals.list_column_completed: 'Zaključeno'
+helpcenter.approvals.list_column_id: 'Številka zahtevka (ID)'
+helpcenter.approvals.list_column_subject: 'Zadeva'
+helpcenter.approvals.list_column_user: 'Uporabnik'
+helpcenter.approvals.list_column_your_vote: 'Tvoj glas'
+helpcenter.approvals.my_approvals: 'Moje odobritve'
 helpcenter.approvals.no_ticket_approvals_found: 'Nismo našli odobrenih zahtevkov'
+helpcenter.approvals.pending_status: V teku
+helpcenter.approvals.reject_action: Zavrni
 helpcenter.approvals.rejected_by: 'Zavrnil/a oseba'
 helpcenter.approvals.rejected_status: Zavrnjeno
 helpcenter.approvals.system: Sistem
@@ -60,6 +80,34 @@ helpcenter.articles.section_title: Baza znanja
 helpcenter.articles.status_archived: Arhivirano
 helpcenter.articles.status_draft: Osnutek
 helpcenter.articles.status_published: Obbjavljeno
+helpcenter.articles.view_as_agent: 'Uporabnikom ta stran ni na voljo, saj članek še ni objavljen.'
+helpcenter.articles.view_x_articles: 'Oglej si vse članke v kategoriji {category}'
+helpcenter.chats.my_chats: 'Moji klepeti'
+helpcenter.community.activity: Dejavnost
+helpcenter.community.activity_commented: 'Moj komentar'
+helpcenter.community.activity_created: 'Ustvaril/a sem'
+helpcenter.community.activity_voted: 'Glasoval/a sem'
+helpcenter.community.category: Kategorija
+helpcenter.community.create_topic: Ustvari
+helpcenter.community.create_topic_full: 'Ustvari {forum}'
+helpcenter.community.create_topic_in_forum: 'Dodaj {forum}'
+helpcenter.community.error_login: 'Prosimo vpiši se'
+helpcenter.community.featured_topics: 'Izpostavljene teme'
+helpcenter.community.filters: Filtri
+helpcenter.community.form_add_attachments: 'Dodaj priponko'
+helpcenter.community.form_create_topic: 'Ustvari temo'
+helpcenter.community.form_description: Opis
+helpcenter.community.form_topic_title: Zadeva
+helpcenter.community.forum_name: 'Ime foruma'
+helpcenter.community.like_action: Všeč mi je
+helpcenter.community.likes: Všečkov
+helpcenter.community.my_activity: 'Moja dejavnost'
+helpcenter.community.no_matching: 'Ni ujemajočih se tem v skupnosti'
+helpcenter.community.none: 'Nismo našli ujemajočih tem'
+helpcenter.community.official_response: 'Uradni odziv'
+helpcenter.downloads.file_size: 'Velikost datoteke'
+helpcenter.downloads.no_files: 'Ni priponk'
+helpcenter.downloads.total_downloads: 'Skupaj prenosov'
 helpcenter.emails.email_ticket_reminder: 'Poziv k dejanju: tvoj zahtevek še ni bil vnešen'
 helpcenter.general.log_in: 'Vpiši se'
 helpcenter.tickets.not_allowed_title: 'Takoj se vrnemo'
