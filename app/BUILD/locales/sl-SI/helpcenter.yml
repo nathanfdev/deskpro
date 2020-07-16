@@ -17,4 +17,46 @@ helpcenter.account.login_email_placeholder: ime@primer.si
 helpcenter.account.login_external: 'Vpiši se z  zunanjim servisom'
 helpcenter.account.login_invalid: 'Neveljavna prijava'
 helpcenter.account.login_lockout: 'Prevečkrat si se neuspešno poskušal/a prijaviti. Prosimo, poizkusi znova kasneje.'
+helpcenter.account.login_not_configured: 'Zunanja storitev ni nastavljena.'
+helpcenter.account.login_password: 'Tvoje geslo'
+helpcenter.account.login_register_action: Ustvari račun
+helpcenter.account.login_register_header: 'Zaprosi za račun'
+helpcenter.account.login_reset_password_link: 'Potrebuješ namig za geslo?'
+helpcenter.account.login_stay_logged_in: 'Želiš ostati prijavljen/a?'
+helpcenter.account.logout_action: Odjavi se
+helpcenter.account.logout_confirm: 'Si prepričan/a, da se želiš odjaviti?'
+helpcenter.account.new_ticket_no_login: 'CRM Portal je onemogočen. Prosimo, pošlji običajno prijavo.'
+helpcenter.account.new_to_brand: 'Si nov uporabnik {brand}?'
+helpcenter.account.profile_delete_picture: 'Spremeni ali izbriši profilno sliko?'
+helpcenter.account.profile_save_action: 'Shrani profil'
+helpcenter.account.register_action: Prijava
+helpcenter.account.registration_set_password: 'Račun s tem e-poštnim naslovom že obstaja. Poslali smo ti novo e-poštno sporočilo, s pomočjo katerega boš ponastavil geslo in se ponovno vpisal.'
+helpcenter.account.resend_registration_email: 'Ponovno pošlji prijavno e-pošto'
+helpcenter.account.reset_password_action: 'Ponastavi geslo'
+helpcenter.account.reset_password_click_here: 'Klikni tukaj in zahtevaj šifro za ponastavitev gesla'
+helpcenter.account.reset_password_invalid_desc: 'Tvoja šifra za ponastavitev gesla je ali napačna ali pa je potekla. Prosimo, ponovno zahtevaj novo šifro za ponastavitev gesla.'
+helpcenter.account.reset_password_invalid_input: 'Prosimo, vnesi veljavno uporabniško ime ali e-poštni naslov'
+helpcenter.account.set_password_expired: 'Veljavnost tvojega gesla je potekla.'
+helpcenter.approvals.rejected_by: 'Zavrnil/a oseba'
+helpcenter.approvals.rejected_status: Zavrnjeno
+helpcenter.approvals.system: Sistem
+helpcenter.approvals.view_approved: Odobreno
+helpcenter.approvals.view_awaiting_response: 'Čaka na odziv'
+helpcenter.approvals.view_criteria: 'Pravila za odobritev'
+helpcenter.approvals.view_no_response: 'Ni odziva'
+helpcenter.approvals.view_rejected: Zavrnjeno
+helpcenter.approvals.view_requesting_agent: 'Zahtevam operaterja'
+helpcenter.approvals.view_ticket: Zadeva
+helpcenter.approvals.view_to_approve: 'Čaka na odobritev'
+helpcenter.approvals.view_to_reject: 'Čaka na zavrnitev'
+helpcenter.approvals.you_approved: 'Odobril/a si zahtevek {template}, ki ga je sprožil/a oseba {person_name}'
+helpcenter.approvals.you_rejected: 'Zavrnil/a si zahtevek {template}, ki ga je sprožil/a oseba {person_name}'
+helpcenter.articles.article_object: Ta članek
+helpcenter.articles.published_label: Objavljeno
+helpcenter.articles.section_title: Baza znanja
+helpcenter.articles.status_archived: Arhivirano
+helpcenter.articles.status_draft: Osnutek
+helpcenter.articles.status_published: Obbjavljeno
 helpcenter.general.log_in: 'Vpiši se'
+helpcenter.tickets.you_have_not_rated_support: 'Ti, ({email}), še nisi ocenil naše podpore.'
+helpcenter.tickets.you_rated_support: 'Ti, ({email}), si ocenil podporo osebe'
