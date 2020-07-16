@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class UserChatQueueType.
@@ -61,10 +62,13 @@ class UserChatQueueType extends AbstractType
                 'by_reference'   => false,
                 'error_bubbling' => false,
                 'mapped'         => false,
+                'constraints'    => [
+                    new Assert\Count(['min' => 1]),
+                ],
             ])
         ;
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], 100);
     }
 
     /**

@@ -73,9 +73,6 @@ class UserChatQueue implements EntityInterface, NotifyPropertyChanged, GroupSequ
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AbstractUserChatQueueTarget", mappedBy="queue", cascade={"persist", "remove"}, fetch="EXTRA_LAZY", orphanRemoval=true)
      *
-     * @Assert\Valid()
-     * @Assert\Count(min=1, groups="SpecificTargets")
-     *
      * @var AbstractUserChatQueueTarget[]|ArrayCollection
      */
     private $targets;
