@@ -58,5 +58,7 @@ helpcenter.articles.status_archived: Arhivirano
 helpcenter.articles.status_draft: Osnutek
 helpcenter.articles.status_published: Obbjavljeno
 helpcenter.general.log_in: 'Vpiši se'
+helpcenter.tickets.not_allowed_title: 'Takoj se vrnemo'
+helpcenter.tickets.organization_tickets: 'Zahtevki organizacije {org_name}'
 helpcenter.tickets.you_have_not_rated_support: 'Ti, ({email}), še nisi ocenil naše podpore.'
 helpcenter.tickets.you_rated_support: 'Ti, ({email}), si ocenil podporo osebe'
