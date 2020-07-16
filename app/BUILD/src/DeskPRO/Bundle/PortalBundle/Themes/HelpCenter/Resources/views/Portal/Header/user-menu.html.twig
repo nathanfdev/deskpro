@@ -61,6 +61,7 @@
                aria-expanded="false">
                 <span class="dp-po-user-login-figure">
                     {{ hc_avatar(app.user) }}
+                    <span class="sr-only">{{ phrase('helpcenter.general.user_menu') }}</span>
                     {% if user_notification_count > 0 %}
                         <span class="dp-po-user-login-count">{{ user_notification_count }}</span>
                     {% endif %}

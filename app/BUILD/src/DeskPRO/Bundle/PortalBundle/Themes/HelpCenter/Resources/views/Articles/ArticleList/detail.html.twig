@@ -12,12 +12,12 @@
             </a></h2>
             <div class="dp-po-article-extras">
               <div class="dp-po-article-author">
-                <a href="" class="dp-po-article-linkauthor">
+                <span class="dp-po-article-linkauthor">
                   <div class="dp-po-avatar dp-po-avatar-round">
                     {{ hc_avatar(article.person) }}
                     <strong>{{ article.person.display_name_user }}</strong>
                   </div>
-                </a>
+                </span>
               </div>
               <div class="dp-po-article-date">
                 <p>{{ phrase('helpcenter.articles.published_label') }}: <span>{{ phrase('helpcenter.general.date_medium', {date: article.date_published}) }}</span></p>

@@ -199,7 +199,7 @@
                         {%  endif  %}
                     </div>
                     <div ng-if="brandId > 0 && brandId != 'new'">
-                        {{ nav.list_subitem('Portal', ng_href('portal.portal_editor', '{brandId: brandId}'), 'portal.portal_editor', 'fa-home', 'true', '{"is-disabled": !Ctrl.settings.iface_portal}') }}
+                        {{ nav.list_subitem('Helpcenter', ng_href('portal.portal_editor', '{brandId: brandId}'), 'portal.portal_editor', 'fa-home', 'true', '{"is-disabled": !Ctrl.settings.iface_portal}') }}
                         {% if app.hasBeta('messenger') %}
                             {{ nav.list_subitem('Messenger setup', ng_href('portal.messenger_setup', '{brandId: brandId}'), 'portal.messenger_setup', 'fa-puzzle-piece') }}
                         {% else %}
