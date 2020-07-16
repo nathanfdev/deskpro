@@ -108,6 +108,14 @@ helpcenter.community.official_response: 'Uradni odziv'
 helpcenter.downloads.file_size: 'Velikost datoteke'
 helpcenter.downloads.no_files: 'Ni priponk'
 helpcenter.downloads.total_downloads: 'Skupaj prenosov'
+helpcenter.downloads.view_x_files: '{count, plural, one {Oglej si 1 prenos} other {Oglej si # prenosov}}'
+helpcenter.duration_short.days: D
+helpcenter.duration_short.hours: h
+helpcenter.duration_short.minutes: m
+helpcenter.duration_short.months: M
+helpcenter.duration_short.seconds: s
+helpcenter.duration_short.weeks: W
+helpcenter.duration_short.years: 'Y'
 helpcenter.emails.email_ticket_reminder: 'Poziv k dejanju: tvoj zahtevek še ni bil vnešen'
 helpcenter.general.log_in: 'Vpiši se'
 helpcenter.tickets.not_allowed_title: 'Takoj se vrnemo'
