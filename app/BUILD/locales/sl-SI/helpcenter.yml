@@ -1,7 +1,20 @@
 ---
+helpcenter.account.add: Dodaj
+helpcenter.account.add_email: 'Dodaj e-poštni naslov'
+helpcenter.account.change_password_action: 'Posodobi geslo'
+helpcenter.account.comment_lockout: 'Posredoval/a si že precej dodatnih informacij. Pred nadaljevanjem za trenutek počakaj.'
 helpcenter.account.email_btn_usersource_set: 'Dodaj elektronski naslov'
+helpcenter.account.email_make_primary_action: 'Nastavi kot glavni'
+helpcenter.account.email_management_from_form: 'Upravljaj z e-poštnimi naslovi'
+helpcenter.account.email_primary_description: Glavni
+helpcenter.account.email_remove_action: 'Odstrani e-poštni naslov'
+helpcenter.account.email_resend_validation_action: 'Ponovno pošlji e-pošto za preverjanje'
+helpcenter.account.lockout_time: 'Ponovno lahko poizkusiš čez {minutes} minut.'
 helpcenter.account.login_captcha_failed: 'Vnesli ste napačno kodo. Prosimo poskusite ponovno.'
+helpcenter.account.login_disabled: 'Tvoj e-poštni naslov je bil onemogočen.'
 helpcenter.account.login_email: 'Vaš elektronski naslov'
 helpcenter.account.login_email_placeholder: ime@primer.si
 helpcenter.account.login_external: 'Vpiši se z  zunanjim servisom'
+helpcenter.account.login_invalid: 'Neveljavna prijava'
+helpcenter.account.login_lockout: 'Prevečkrat si se neuspešno poskušal/a prijaviti. Prosimo, poizkusi znova kasneje.'
 helpcenter.general.log_in: 'Vpiši se'
