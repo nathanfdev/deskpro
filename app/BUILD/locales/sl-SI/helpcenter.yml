@@ -38,6 +38,8 @@ helpcenter.account.reset_password_invalid_desc: 'Tvoja šifra za ponastavitev ge
 helpcenter.account.reset_password_invalid_input: 'Prosimo, vnesi veljavno uporabniško ime ali e-poštni naslov'
 helpcenter.account.set_password_expired: 'Veljavnost tvojega gesla je potekla.'
 helpcenter.account.tickets_lockout: 'Vnesel/la si preveč zahtevkov in tvoj račun je začasno onemogočen. Prosimo, poskusi kasneje.'
+helpcenter.alerts.tickets_to_respond: '{count, plural, one {Čaka te zahtevek, na katerega se moraš odzvati.} other {Čaka te # zahtevkov, na katere se moraš odzvati.}}'
+helpcenter.approvals.no_ticket_approvals_found: 'Nismo našli odobrenih zahtevkov'
 helpcenter.approvals.rejected_by: 'Zavrnil/a oseba'
 helpcenter.approvals.rejected_status: Zavrnjeno
 helpcenter.approvals.system: Sistem
@@ -58,6 +60,7 @@ helpcenter.articles.section_title: Baza znanja
 helpcenter.articles.status_archived: Arhivirano
 helpcenter.articles.status_draft: Osnutek
 helpcenter.articles.status_published: Obbjavljeno
+helpcenter.emails.email_ticket_reminder: 'Poziv k dejanju: tvoj zahtevek še ni bil vnešen'
 helpcenter.general.log_in: 'Vpiši se'
 helpcenter.tickets.not_allowed_title: 'Takoj se vrnemo'
 helpcenter.tickets.organization_tickets: 'Zahtevki organizacije {org_name}'
