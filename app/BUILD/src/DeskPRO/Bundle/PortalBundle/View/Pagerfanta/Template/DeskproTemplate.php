@@ -122,10 +122,11 @@ class DeskproTemplate extends Template
 
     public function current($page)
     {
+        $accessibleText = $this->languageManager->phrase('helpcenter.general.current_page');
         $text  = trim($page.' '.$this->option('active_suffix'));
         $class = $this->option('css_active_class');
 
-        return $this->spanLi($class, $text);
+        return $this->spanLi($class, $text, $accessibleText);
     }
 
     public function separator()
@@ -145,10 +146,13 @@ class DeskproTemplate extends Template
         return sprintf('<li%s><a class="page-link" href="%s">%s</a></li>', $liClass, $href, $text);
     }
 
-    private function spanLi($class, $text)
+    private function spanLi($class, $text, $accessibleText = '')
     {
         $liClass = $class ? sprintf(' class="page-item %s"', $class) : ' class="page-item"';
 
+        if ($accessibleText) {
+            return sprintf('<li%s><span aria-hidden="true">%s</span><span class="sr-only">%s</span></li>', $liClass, $text, $accessibleText);
+        }
         return sprintf('<li%s><span>%s</span></li>', $liClass, $text);
     }
 

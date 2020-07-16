@@ -409,6 +409,7 @@ helpcenter.general.comments_title: '{count, plural, one {Comment (1)} other {Com
 helpcenter.general.copied: copied
 helpcenter.general.copy_to_clipboard: 'Copy to Clipboard'
 helpcenter.general.created_by: 'Created By'
+helpcenter.general.current_page: 'Current Page'
 helpcenter.general.date_day_month: '{date, date, MMM d}'
 helpcenter.general.date_medium: '{date, date, medium}'
 helpcenter.general.date_short: '{date, date, short}'
@@ -521,6 +522,7 @@ helpcenter.general.translations: Translations
 helpcenter.general.unpublished: 'Unpublished date'
 helpcenter.general.updated: Updated
 helpcenter.general.user: User
+helpcenter.general.user_menu: 'User Menu'
 helpcenter.general.user_profile: 'User Profile'
 helpcenter.general.view_all_status_changes: 'View all status changes'
 helpcenter.general.view_all_topics: 'View all topics'
