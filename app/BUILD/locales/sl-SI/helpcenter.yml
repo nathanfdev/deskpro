@@ -71,6 +71,7 @@ helpcenter.account.usersource_set_email_desc: 'Preden se lahko prijaviš, potreb
 helpcenter.account.validation_email_sent: 'Sporočilo smo poslali na {email}<br />Prosimo, prevri tvoj e-poštni naslov in si s temo omogoči dostop do podpornega mesta.'
 helpcenter.account.your_pending_email_addresses: 'Tvoji e-poštni računi v preverjanju'
 helpcenter.alerts.tickets_to_respond: '{count, plural, one {Čaka te zahtevek, na katerega se moraš odzvati.} other {Čaka te # zahtevkov, na katere se moraš odzvati.}}'
+helpcenter.approvals.approve_action: Odobri
 helpcenter.approvals.approved_by: 'Odobrila oseba'
 helpcenter.approvals.approved_status: Odobreno
 helpcenter.approvals.cancelled_status: Preklicano
@@ -173,6 +174,13 @@ helpcenter.emails.comment_approved: 'Tvoj komentar je sedaj objavljen.'
 helpcenter.emails.comment_approved_subject: 'Tvoj komentar je odobren'
 helpcenter.emails.comment_confirmation: 'Hvala za tvoj komentar'
 helpcenter.emails.comment_deleted: 'Tvoj komentar smo uporabili za izboljšanje strani.'
+helpcenter.emails.comment_deleted_subject: 'Operaterji so prebrali tvoj komentar'
+helpcenter.emails.comment_thank_you: 'Hvala za tvoj komentar v zvezi z {link}.'
+helpcenter.emails.community_explain: 'To sporočilo si prejel/a, ker si prijavljena/a na novice v <a href="{deskpro_url}">{deskpro_url}</a>.<br />Ne želiš več tovrstnih obvestil?<a href="{unsubscribe_url}">Klikni tukaj in se osdjavi od vseh obvestil iz Skupnosti</a>'
+helpcenter.emails.community_new: 'Hvala za tvojo temo v Skupnosti'
+helpcenter.emails.community_topic_new_comment: 'Oseba {name} je objavila nov komentar:'
+helpcenter.emails.community_topic_new_comment_subject: 'V temi z naslovom "{title}" je objavljen nov komentar'
+helpcenter.emails.community_topic_new_disapproved: 'Žal nam je, toda tvoja predlagana tema v Skupnosti ni bila odobrena'
 helpcenter.emails.email_ticket_reminder: 'Poziv k dejanju: tvoj zahtevek še ni bil vnešen'
 helpcenter.emails.kb_sub_new: 'Novi članki'
 helpcenter.emails.kb_sub_new_and_updated: 'Novi in posodobljeni članki'
