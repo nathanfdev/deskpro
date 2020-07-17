@@ -21,8 +21,8 @@ class PortalTemplatesRepository extends ApiRepository {
     return this.api.sendDelete(`DP_API/${this.url}/template/${brandId}/${name}`);
   }
 
-  resetTemplate(name, brandId) {
-    return this.api.sendDelete(`DP_API/${this.url}/template/${brandId}/${name}`);
+  resetTemplate(name, brandSlug) {
+    return this.api.sendPut(`/b/${brandSlug}/portal/api/style/edit-theme-set/template-sources?template=${name}`, {revert:true});
   }
 
   loadVariables(viewModel) {
