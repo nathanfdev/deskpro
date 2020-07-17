@@ -49,7 +49,6 @@ class ImageMenu extends React.Component {
   };
 
   handleSuccess = (e, data) => {
-    console.log(data.result.link);
     if (data) {
       const match = data.result.link.match(/[^/]+\/[^/]+$/);
       if (match) {
