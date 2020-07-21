@@ -53,8 +53,17 @@ class UserChatQueueType extends AbstractType
             ->add('is_all_agents', ApiBooleanType::class, [
                 'required'      => true,
                 'property_path' => 'isAllAgents',
-            ])
-            ->add('targets', CollectionType::class, [
+            ]);
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], 100);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+    }
+
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['is_all_agents']) && !$data['is_all_agents']) {
+            $event->getForm()->add('targets', CollectionType::class, [
                 'required'       => false,
                 'entry_type'     => UserChatQueueTargetType::class,
                 'allow_add'      => true,
@@ -65,46 +74,48 @@ class UserChatQueueType extends AbstractType
                 'constraints'    => [
                     new Assert\Count(['min' => 1]),
                 ],
-            ])
-        ;
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], 100);
+            ]);
+        }
     }
 
     /**
-     * @internal
-     *
      * @param FormEvent $event
+     *
+     * @internal
      */
     public function onPostSubmit(FormEvent $event)
     {
-        $addedTargets = $event->getForm()->get('targets')->getData();
-        /** @var UserChatQueue $queue */
-        $queue        = $event->getData();
-        $existingKeys = [];
-        $addingKeys   = [];
+        if ($event->getForm()->has('targets')) {
+            $addedTargets = $event->getForm()->get('targets')->getData();
+            /** @var UserChatQueue $queue */
+            $queue        = $event->getData();
+            $existingKeys = [];
+            $addingKeys   = [];
 
-        // collect unique keys which exist
-        foreach ($queue->getTargets() as $existingTarget) {
-            $existingKeys[$existingTarget->getAgent()->getId()] = $existingTarget;
-        }
-
-        // add only those targets which don't exist and write down all keys we're trying to add
-        /** @var AbstractUserChatQueueTarget[] $addedTargets */
-        foreach ($addedTargets as $target) {
-            $targetId              = $target->getAgent()->getId();
-            $addingKeys[$targetId] = true;
-            if (!isset($existingKeys[$targetId])) {
-                $queue->addTarget($target);
-            } else {
-                $existingKeys[$targetId]->setSort($target->getSort());
+            // collect unique keys which exist
+            foreach ($queue->getTargets() as $existingTarget) {
+                $existingKeys[$existingTarget->getAgent()->getId()] = $existingTarget;
             }
-        }
 
-        // if existing targets are not in those we wanted to add - remove it from collection
-        foreach ($queue->getTargets() as $target) {
-            if (!isset($addingKeys[$target->getAgent()->getId()])) {
-                $queue->getTargets()->removeElement($target);
+            // add only those targets which don't exist and write down all keys we're trying to add
+            /** @var AbstractUserChatQueueTarget[] $addedTargets */
+            foreach ($addedTargets as $target) {
+                $targetId = $target->getAgent() ? $target->getAgent()->getId() : null;
+                if ($targetId) {
+                    $addingKeys[$targetId] = true;
+                    if (!isset($existingKeys[$targetId])) {
+                        $queue->addTarget($target);
+                    } else {
+                        $existingKeys[$targetId]->setSort($target->getSort());
+                    }
+                }
+            }
+
+            // if existing targets are not in those we wanted to add - remove it from collection
+            foreach ($queue->getTargets() as $target) {
+                if (!isset($addingKeys[$target->getAgent()->getId()])) {
+                    $queue->getTargets()->removeElement($target);
+                }
             }
         }
     }

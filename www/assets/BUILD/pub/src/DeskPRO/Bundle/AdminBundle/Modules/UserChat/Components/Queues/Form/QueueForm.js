@@ -57,7 +57,12 @@ class QueueForm extends BaseForm {
 
   transformSubmitData = (data) => {
     const submitData = { ...data };
-    submitData.targets = submitData.targets.map((target, i) => ({ ...target, sort: i * 10 }));
+    if (submitData.is_all_agents) {
+      delete submitData.targets;
+    } else {
+      submitData.targets = submitData.targets.map((target, i) => ({ ...target, sort: i * 10 }));
+    }
+
 
     return submitData;
   };
