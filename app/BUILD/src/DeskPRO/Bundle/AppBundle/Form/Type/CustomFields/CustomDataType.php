@@ -78,12 +78,17 @@ class CustomDataType extends AbstractType
             }
         }
 
-        if ($options['custom_def'] && $options['custom_def']->getOption('expanded')) {
-            $view->vars['field_set'] = true;
-        }
-        if ($options['custom_def'] && $options['custom_def']->isToggleType()) {
-            $view->vars['toggle_checkbox'] = true;
-            $view->vars['checkbox_label']  = $options['custom_def']->getOption('label_text') ?: '';
+        if ($options['custom_def']) {
+            if ($options['custom_def']->getOption('expanded')) {
+                $view->vars['field_set'] = true;
+            }
+            if ($options['custom_def']->isToggleType()) {
+                $view->vars['toggle_checkbox'] = true;
+                $view->vars['checkbox_label']  = $options['custom_def']->getOption('label_text') ?: '';
+            }
+            if ($options['custom_def']->isChoiceType()) {
+                $view->vars['hint'] = $options['custom_def']->getHint();
+            }
         }
     }
 

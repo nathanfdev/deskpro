@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -638,11 +634,22 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getCustomDataClass()
     {
         return str_replace('Def', 'Data', get_class($this));
+    }
+
+    /**
+     * @return string
+     */
+    public function getHint()
+    {
+        $reflect = new \ReflectionClass($this);
+        $type    = strtolower(str_replace('CustomDef', '', $reflect->getShortName()));
+
+        return 'custom_field_'.$type.'_'.$this->id.'_hint';
     }
 
     /**
@@ -1064,39 +1071,51 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         switch ($widgetType) {
             case self::TYPE_TEXT:
                 $this->setHandlerClass(self::HANDLER_CLASS_TEXT);
+
                 break;
             case self::TYPE_TEXTAREA:
                 $this->setHandlerClass(self::HANDLER_CLASS_TEXTAREA);
+
                 break;
             case self::TYPE_TOGGLE:
                 $this->setHandlerClass(self::HANDLER_CLASS_TOGGLE);
+
                 break;
             case self::TYPE_HIDDEN:
                 $this->setHandlerClass(self::HANDLER_CLASS_HIDDEN);
+
                 break;
             case self::TYPE_DISPLAY:
                 $this->setHandlerClass(self::HANDLER_CLASS_DISPLAY);
+
                 break;
             case self::TYPE_DATE:
                 $this->setHandlerClass(self::HANDLER_CLASS_DATE);
+
                 break;
             case self::TYPE_DATETIME:
                 $this->setHandlerClass(self::HANDLER_CLASS_DATETIME);
+
                 break;
             case self::TYPE_CHOICE:
                 $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
+
                 break;
             case self::TYPE_CURRENCY:
                 $this->setHandlerClass(self::HANDLER_CLASS_CURRENCY);
+
                 break;
             case self::TYPE_URL:
                 $this->setHandlerClass(self::HANDLER_CLASS_URL);
+
                 break;
             case self::TYPE_FILE:
                 $this->setHandlerClass(self::HANDLER_CLASS_FILE);
+
                 break;
             case self::TYPE_JAVASCRIPT:
                 $this->setHandlerClass(self::HANDLER_CLASS_JAVASCRIPT);
+
                 break;
 
             // extended choice types
@@ -1104,16 +1123,19 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
                 $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
                 $this->setOption('multiple', true);
                 $this->setOption('expanded', false);
+
                 break;
             case 'checkbox':
                 $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
                 $this->setOption('multiple', true);
                 $this->setOption('expanded', true);
+
                 break;
             case 'radio':
                 $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
                 $this->setOption('expanded', true);
                 $this->setOption('multiple', false);
+
                 break;
 
             default:

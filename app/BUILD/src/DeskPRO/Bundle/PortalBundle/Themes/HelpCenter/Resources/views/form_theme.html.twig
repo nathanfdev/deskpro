@@ -93,10 +93,10 @@
     {% if root_and_not_hidden %}<{% if field_set %}fieldset{% else %}div{% endif %} class="form-group">{% endif %}
     {% if field_set %}<legend>{% endif %}
     {{- form_label(form, null) -}}
-    {% if (root_and_not_hidden and name != 'captcha_captcha_auto_added') or id == 'person_registration_password_password' %}
-        <small class="form-text">{{ help }}</small>
-    {% endif %}
     {% if field_set %}</legend>{% endif %}
+    {% if (root_and_not_hidden and name != 'captcha_captcha_auto_added') or id == 'person_registration_password_password' %}
+        <small class="form-text" {% if hint is defined %}id="{{ hint }}"{% endif %}>{{ help }}</small>
+    {% endif %}
     {{- form_widget(form, applyClass ? {'attr': {'class': widgetClass}} : {}) -}}
     {% if root_and_not_hidden and name == 'captcha_captcha_auto_added' %}
         <small class="form-text">{{ help }}</small>

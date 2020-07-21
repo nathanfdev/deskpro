@@ -40,12 +40,12 @@ class CustomFieldChoiceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if (!$options['multiple']) {
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformSingleChoice'], 100);
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'transformSingleChoice'], 100);
 
             if ($options['expanded']) {
                 // for radio boxes ChoiceType uses PRE_SET_DATA callback,
                 // so we need to transform our choice to HierarchyNode before it called
-                $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onTransformRadioData'], 100);
+                $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'transformRadioData'], 100);
             }
         }
 
@@ -78,6 +78,11 @@ class CustomFieldChoiceType extends AbstractType
                 },
                 'placeholder' => '',
                 'help'        => '',
+                'choice_attr' => function (Options $options) {
+                    return function () use ($options) {
+                        return ['aria-describedby' => $options['custom_field']->getHint()];
+                    };
+                },
             ])
             ->setRequired('custom_field')
             ->setAllowedTypes('custom_field', CustomDefAbstract::class)
@@ -88,7 +93,7 @@ class CustomFieldChoiceType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onTransformSingleChoice(FormEvent $event)
+    public function transformSingleChoice(FormEvent $event)
     {
         $data = $event->getData();
         if (is_array($data)) {
@@ -101,7 +106,7 @@ class CustomFieldChoiceType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onTransformRadioData(FormEvent $event)
+    public function transformRadioData(FormEvent $event)
     {
         $transformer = new HierarchyNodeTransformer();
         $event->setData($transformer->transform($event->getData()));
