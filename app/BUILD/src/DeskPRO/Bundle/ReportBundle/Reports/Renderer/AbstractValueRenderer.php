@@ -107,20 +107,18 @@ abstract class AbstractValueRenderer
                     'time'     => 'core.date_time',
                 ];
 
-                $tz     = $metadata->getContext() ? $metadata->getContext()->getTimezone()->getName() : 'UTC';
-                $offset = $metadata->getContext() ? $metadata->getContext()->getTimezoneOffsetSeconds() : '0';
+                $tz = $metadata->getContext() ? $metadata->getContext()->getTimezone()->getName() : 'UTC';
+
                 try {
                     if ($value instanceof \DateTime) {
                         $date = clone $value;
                         $date->setTimezone(new \DateTimeZone($tz));
                     } elseif ($value) {
-                        $date = new \DateTime($value, new \DateTimeZone($tz));
+                        // create in UTC and then convert to needed timezone
+                        $date = new \DateTime($value);
+                        $date->setTimezone(new \DateTimeZone($tz));
                     } else {
                         $date = null;
-                    }
-
-                    if ($date) {
-                        $date->modify(($offset >= 0 ? '+'.$offset : $offset).' seconds');
                     }
 
                     return $this->escapeValue(
