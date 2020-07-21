@@ -62,19 +62,31 @@ class UserChatQueueType extends AbstractType
                 'by_reference'   => false,
                 'error_bubbling' => false,
                 'mapped'         => false,
-                'constraints'    => [
-                    new Assert\Count(['min' => 1]),
-                ],
-            ])
-        ;
+            ]);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], 100);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+    }
+
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['is_all_agents']) && !$data['is_all_agents']) {
+            $form                   = $event->getForm();
+            $targets                = $form->get('targets');
+            $options                = $targets->getConfig()->getOptions();
+            $type                   = $targets->getConfig()->getType()->getName();
+            $options['constraints'] = [
+                new Assert\Count(['min' => 1]),
+            ];
+            $form->remove('targets')->add('targets', $type, $options);
+        }
     }
 
     /**
-     * @internal
-     *
      * @param FormEvent $event
+     *
+     * @internal
      */
     public function onPostSubmit(FormEvent $event)
     {
@@ -92,12 +104,14 @@ class UserChatQueueType extends AbstractType
         // add only those targets which don't exist and write down all keys we're trying to add
         /** @var AbstractUserChatQueueTarget[] $addedTargets */
         foreach ($addedTargets as $target) {
-            $targetId              = $target->getAgent()->getId();
-            $addingKeys[$targetId] = true;
-            if (!isset($existingKeys[$targetId])) {
-                $queue->addTarget($target);
-            } else {
-                $existingKeys[$targetId]->setSort($target->getSort());
+            $targetId = $target->getAgent() ? $target->getAgent()->getId() : null;
+            if ($targetId) {
+                $addingKeys[$targetId] = true;
+                if (!isset($existingKeys[$targetId])) {
+                    $queue->addTarget($target);
+                } else {
+                    $existingKeys[$targetId]->setSort($target->getSort());
+                }
             }
         }
 
