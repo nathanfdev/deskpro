@@ -69,10 +69,7 @@ Feature: /user_chat_queues endpoint
   "name": "Edited Queue",
   "routing_model": "least_utilized",
   "answer_timeout": 200,
-  "is_all_agents": 1,
-  "targets": [
-    {"type": "agent", "target": ~agent1@deskpro.dev~, "sort": 10}
-  ]
+  "is_all_agents": 1
 }
     """
     Then the response status code should be 204
@@ -82,10 +79,6 @@ Feature: /user_chat_queues endpoint
     And the JSON node "data.routing_model" should be equal to "least_utilized"
     And the JSON node "data.answer_timeout" should be equal to 200
     And the JSON node "data.is_all_agents" should be equal to 1
-    And the JSON node "data.targets" should have 1 element
-    And the JSON node "data.targets[0].type" should be equal to "agent"
-    And the JSON node "data.targets[0].target" should be equal to "~agent1@deskpro.dev~"
-    And the JSON node "data.targets[0].sort" should be equal to 10
 
   Scenario: I delete a user chat queue
     When I send a DELETE request to "/api/v2/user_chat_queues/{q1}"
@@ -108,6 +101,7 @@ Feature: /user_chat_queues endpoint
     """
 {
   "name": "My Queue",
+  "is_all_agents": 0,
   "targets": [
     {"type": "agent", "target": ~agent1@deskpro.dev~, "sort": 10},
     {"type": "agent", "target": ~user1@deskpro.dev~, "sort": 20}
@@ -123,8 +117,7 @@ Feature: /user_chat_queues endpoint
 {
   "name": "My Queue",
   "routing_model": "least_utilized",
-  "is_all_agents": 1,
-  "targets": []
+  "is_all_agents": 1
 }
     """
     Then the response status code should be 201

@@ -53,15 +53,6 @@ class UserChatQueueType extends AbstractType
             ->add('is_all_agents', ApiBooleanType::class, [
                 'required'      => true,
                 'property_path' => 'isAllAgents',
-            ])
-            ->add('targets', CollectionType::class, [
-                'required'       => false,
-                'entry_type'     => UserChatQueueTargetType::class,
-                'allow_add'      => true,
-                'allow_delete'   => true,
-                'by_reference'   => false,
-                'error_bubbling' => false,
-                'mapped'         => false,
             ]);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], 100);
@@ -72,14 +63,18 @@ class UserChatQueueType extends AbstractType
     {
         $data = $event->getData();
         if (isset($data['is_all_agents']) && !$data['is_all_agents']) {
-            $form                   = $event->getForm();
-            $targets                = $form->get('targets');
-            $options                = $targets->getConfig()->getOptions();
-            $type                   = $targets->getConfig()->getType()->getName();
-            $options['constraints'] = [
-                new Assert\Count(['min' => 1]),
-            ];
-            $form->remove('targets')->add('targets', $type, $options);
+            $event->getForm()->add('targets', CollectionType::class, [
+                'required'       => false,
+                'entry_type'     => UserChatQueueTargetType::class,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'by_reference'   => false,
+                'error_bubbling' => false,
+                'mapped'         => false,
+                'constraints'    => [
+                    new Assert\Count(['min' => 1]),
+                ],
+            ]);
         }
     }
 
@@ -90,35 +85,37 @@ class UserChatQueueType extends AbstractType
      */
     public function onPostSubmit(FormEvent $event)
     {
-        $addedTargets = $event->getForm()->get('targets')->getData();
-        /** @var UserChatQueue $queue */
-        $queue        = $event->getData();
-        $existingKeys = [];
-        $addingKeys   = [];
+        if ($event->getForm()->has('targets')) {
+            $addedTargets = $event->getForm()->get('targets')->getData();
+            /** @var UserChatQueue $queue */
+            $queue        = $event->getData();
+            $existingKeys = [];
+            $addingKeys   = [];
 
-        // collect unique keys which exist
-        foreach ($queue->getTargets() as $existingTarget) {
-            $existingKeys[$existingTarget->getAgent()->getId()] = $existingTarget;
-        }
+            // collect unique keys which exist
+            foreach ($queue->getTargets() as $existingTarget) {
+                $existingKeys[$existingTarget->getAgent()->getId()] = $existingTarget;
+            }
 
-        // add only those targets which don't exist and write down all keys we're trying to add
-        /** @var AbstractUserChatQueueTarget[] $addedTargets */
-        foreach ($addedTargets as $target) {
-            $targetId = $target->getAgent() ? $target->getAgent()->getId() : null;
-            if ($targetId) {
-                $addingKeys[$targetId] = true;
-                if (!isset($existingKeys[$targetId])) {
-                    $queue->addTarget($target);
-                } else {
-                    $existingKeys[$targetId]->setSort($target->getSort());
+            // add only those targets which don't exist and write down all keys we're trying to add
+            /** @var AbstractUserChatQueueTarget[] $addedTargets */
+            foreach ($addedTargets as $target) {
+                $targetId = $target->getAgent() ? $target->getAgent()->getId() : null;
+                if ($targetId) {
+                    $addingKeys[$targetId] = true;
+                    if (!isset($existingKeys[$targetId])) {
+                        $queue->addTarget($target);
+                    } else {
+                        $existingKeys[$targetId]->setSort($target->getSort());
+                    }
                 }
             }
-        }
 
-        // if existing targets are not in those we wanted to add - remove it from collection
-        foreach ($queue->getTargets() as $target) {
-            if (!isset($addingKeys[$target->getAgent()->getId()])) {
-                $queue->getTargets()->removeElement($target);
+            // if existing targets are not in those we wanted to add - remove it from collection
+            foreach ($queue->getTargets() as $target) {
+                if (!isset($addingKeys[$target->getAgent()->getId()])) {
+                    $queue->getTargets()->removeElement($target);
+                }
             }
         }
     }
