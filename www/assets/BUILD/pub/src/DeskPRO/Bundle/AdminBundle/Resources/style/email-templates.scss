@@ -126,6 +126,19 @@
           padding: 0 2px;
           cursor: pointer;
         }
+        .lint-error {
+          background: #ffa;
+          color: #a00;
+          padding: 2px 5px 3px;
+          .lint-error-icon {
+            color: white;
+            background-color: red;
+            font-weight: bold;
+            border-radius: 50%;
+            padding: 0 3px;
+            margin-right: 7px;
+          }
+        }
       }
       .subject {
         height: 60px;
@@ -291,19 +304,6 @@
       border: solid 1px $dp-emerald-primary;
       padding: 0 2px;
       cursor: pointer;
-    }
-    .lint-error {
-      background: #ffa;
-      color: #a00;
-      padding: 2px 5px 3px;
-      .lint-error-icon {
-        color: white;
-        background-color: red;
-        font-weight: bold;
-        border-radius: 50%;
-        padding: 0 3px;
-        margin-right: 7px;
-      }
     }
   }
   .footer {
