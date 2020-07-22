@@ -91,8 +91,6 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         $fieldData = null;
 
         foreach ($customDataArray as $customData) {
-            $field = $customData->getField();
-
             if ($customData->getField()->getId() == $fieldId) {
                 $fieldData = $customData->getData();
                 $field     = $customData->getField();
@@ -106,11 +104,20 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
             }
         }
 
-        if ($field && $field->isChoiceType()) {
-            foreach ($customDataArray as $customData) {
-                if ($customData->getField()->getParent() && $customData->getField()->getParent()->getId() == $fieldId) {
-                    $fieldData[] = $customData->getField()->getId();
+        if (!$field) {
+            // no matched field
+            return false;
+        }
+        if ($field->isChoiceType()) {
+            if (is_array($fieldData)) {
+                foreach ($customDataArray as $customData) {
+                    if ($customData->getField()->getParent() && $customData->getField()->getParent()->getId() == $fieldId) {
+                        $fieldData[] = $customData->getField()->getId();
+                    }
                 }
+            } else {
+                // corrupted data, skipping
+                return false;
             }
         }
 
