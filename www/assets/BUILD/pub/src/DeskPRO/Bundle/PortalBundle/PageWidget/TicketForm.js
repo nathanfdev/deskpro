@@ -268,7 +268,7 @@ export default class TicketForm extends PageWidget {
       },
       onPostUpdate: () => {
         // using magic global here so as not to require importing portalApp
-        // this lib is alsoused in Widget bundle -- so requiring portalApp would
+        // this lib is also used in Widget bundle -- so requiring portalApp would
         // inflate the bundle size needlessly
         const portalPage = window.DESKPRO_PORTAL_PAGE;
         if (portalPage) {
