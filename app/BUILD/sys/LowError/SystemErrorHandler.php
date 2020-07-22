@@ -2,6 +2,7 @@
 
 namespace DpSys\LowError;
 
+use DeskPRO\Bundle\AppBundle\Limits\Exception\LimitExhaustedException;
 use DpRun\LowUtil;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -245,6 +246,7 @@ class SystemErrorHandler
             || $exception instanceof MethodNotAllowedException
             || $exception instanceof AccessDeniedException
             || $exception instanceof LogoutException
+            || $exception instanceof LimitExhaustedException
             || self::isProxyException($exception)
         ) {
             return false;
@@ -458,59 +460,70 @@ class SystemErrorHandler
             case E_ERROR:
                 $pri     = 'ERR';
                 $errname = 'E_ERROR';
+
                 break;
 
             case E_WARNING:
             case E_USER_WARNING:
                 $pri     = 'WARNING';
                 $errname = 'E_WARNING';
+
                 break;
 
             case E_NOTICE:
             case E_USER_NOTICE:
                 $pri     = 'NOTICE';
                 $errname = 'E_NOTICE';
+
                 break;
 
             case E_STRICT:
                 $pri     = 'NOTICE';
                 $errname = 'E_STRICT';
+
                 break;
 
             case E_COMPILE_WARNING:
-                $pri = 'WARNING';
+                $pri   = 'WARNING';
                 $errno = 'E_COMPILE_WARNING';
+
                 break;
 
             case E_COMPILE_ERROR:
-                $pri = 'ERR';
+                $pri   = 'ERR';
                 $errno = 'E_COMPILE_ERROR';
+
                 break;
 
             case E_CORE_WARNING:
-                $pri = 'WARNING';
+                $pri   = 'WARNING';
                 $errno = 'E_CORE_WARNING';
+
                 break;
 
             case E_CORE_ERROR:
-                $pri = 'ERR';
+                $pri   = 'ERR';
                 $errno = 'E_CORE_ERROR';
+
                 break;
 
             case E_PARSE:
                 $pri     = 'ERR';
                 $errname = 'E_PARSE';
+
                 break;
 
             case E_RECOVERABLE_ERROR:
                 $pri     = 'ERR';
                 $errname = 'E_RECOVERABLE_ERROR';
+
                 break;
 
             case E_DEPRECATED:
             case E_USER_DEPRECATED:
                 $pri     = 'NOTICE';
                 $errname = 'E_DEPRECATED';
+
                 break;
 
             default:
@@ -687,6 +700,7 @@ class SystemErrorHandler
      * True if the provided path is a Deskpro source file.
      *
      * @param string $file
+     *
      * @return boolean
      */
     private static function isSrcFile($file)
@@ -912,7 +926,6 @@ class SystemErrorHandler
                     }
                 }
             }
-
         } catch (\Exception $e) {
         }
     }
@@ -1285,6 +1298,7 @@ class SystemErrorHandler
             for ($i = 0; $i < $len; ++$i) {
                 if (!array_key_exists($i, $var)) {
                     $is_array = false;
+
                     break;
                 }
             }
@@ -1410,6 +1424,7 @@ class SystemErrorHandler
             if (isset($v['object'])) {
                 if ($v['object'] instanceof \Twig_Template && method_exists($v['object'], 'getTemplateName')) {
                     $show_vars_string = '<template_context>';
+
                     try {
                         $tpl = @$v['object']->getTemplateName();
                         if ($tpl) {
@@ -1422,6 +1437,7 @@ class SystemErrorHandler
                                     while (--$l > 0) {
                                         if (isset($debug_info[$l])) {
                                             $pre_line = ">>>>> Template: $tpl:{$debug_info[$l]}";
+
                                             break;
                                         }
                                     }
