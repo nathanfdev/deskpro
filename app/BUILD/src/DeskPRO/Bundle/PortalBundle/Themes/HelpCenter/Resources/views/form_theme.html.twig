@@ -263,7 +263,12 @@
             {% if not compound -%}
                 {% set label_attr = label_attr|merge({'for': id}) %}
             {% else %}
-                {% set label_attr = label_attr|merge({'for': id ~ '_data'}) %}
+                {% if id == 'person_registration_primary_email' or 'ticket_person_user_email' %}
+                    {% set label_attr = label_attr|merge({'for': id ~ '_email'}) %}
+                {% else %}
+                    {{ id }}
+                    {% set label_attr = label_attr|merge({'for': id ~ '_data'}) %}
+                {% endif %}
             {%- endif %}
         {% endif %}
         {% if required -%}
