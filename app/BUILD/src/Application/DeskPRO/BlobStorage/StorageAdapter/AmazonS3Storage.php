@@ -157,8 +157,12 @@ class AmazonS3Storage extends AbstractStorageAdapter
     {
         $path = $this->resolvePath($blob->getPath());
 
+        // Always pre-encode disposition filename
+        $dispositionFilename = mb_encode_mimeheader(str_replace(['\'', '"'], '-', $blob->getFilename()), 'UTF-8', 'B');
+
         $disposition = $blob->getMeta('content_disposition') ?: 'attachment';
-        $disposition .= '; filename="'.str_replace(['\'', '"'], '-', $blob->getFilename()).'"';
+        $disposition .= '; filename="'.$dispositionFilename.'"';
+
         $try = $this->attempts;
         while (--$try >= 0) {
             if ($this->cumulativeTimeout && $this->timePass > $this->cumulativeTimeout) {
