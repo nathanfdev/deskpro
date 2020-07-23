@@ -97,11 +97,11 @@
 {% for styleFile in [
     asset('DeskPRO_PortalBundle_helpcenter_vendors_style.css', 'app_assets')
 ] %}
-    <link rel="preload" href="{{ styleFile }}" as="style" />
-    <link rel="stylesheet" href="{{ styleFile }}" media="print" onload="this.media='all'" />
+    <link rel="preload" href="{{ styleFile }}?cors_fix=1" as="style" />
+    <link rel="stylesheet" href="{{ styleFile }}?cors_fix=1" media="print" onload="this.media='all'" />
 {% endfor %}
 
-<link href="{{ asset('style.css', 'help_center') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('style.css', 'help_center') }}?cors_fix=1" rel="stylesheet" type="text/css" />
 {% if helpcenter_css_url() %}
     <link href="{{ helpcenter_css_url() }}" media="all" rel="stylesheet" type="text/css" />
 {% endif %}

@@ -369,7 +369,6 @@ helpcenter.forms.label_submit: Submit
 helpcenter.forms.label_timezone: Timezone
 helpcenter.forms.message_description: ''
 helpcenter.forms.password_description: ''
-helpcenter.forms.label_drag_overlay: 'Drag your file in here.'
 helpcenter.general.add_comment: 'Add a comment'
 helpcenter.general.admin: Admin
 helpcenter.general.admin_home: 'Admin Home'
