@@ -410,6 +410,7 @@ helpcenter.general.copied: copied
 helpcenter.general.copy_to_clipboard: 'Copy to Clipboard'
 helpcenter.general.created_by: 'Created By'
 helpcenter.general.current_page: 'Current Page'
+helpcenter.general.dashboard: Dashboard
 helpcenter.general.date_day_month: '{date, date, MMM d}'
 helpcenter.general.date_medium: '{date, date, medium}'
 helpcenter.general.date_short: '{date, date, short}'

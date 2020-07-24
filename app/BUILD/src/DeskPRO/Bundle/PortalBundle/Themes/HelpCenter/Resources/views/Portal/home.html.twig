@@ -7,6 +7,7 @@
 
                 {% block content_header %}
                     {% if theme_option('theme_options') is null or theme_option('theme_options', {}).show_section_navigation %}
+                        <h2 class="sr-only">{{ phrase('helpcenter.general.dashboard') }}</h2>
                         {% include 'Theme:Portal:nav_buttons_big.html.twig' %}
                     {% endif %}
 
