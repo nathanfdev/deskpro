@@ -186,10 +186,13 @@ export const saveCustomPhrase = createAction(
 export const saveTemplate = createAction(
   'PORTAL_TEMPLATES_SAVE_TEMPLATE',
   (name, template, brandSlug) => new Promise((resolve, reject) => {
-    repository('PortalTemplates').saveTemplate(name, template, brandSlug).then(() => {
-      resolve(template);
+    repository('PortalTemplates').saveTemplate(name, template, brandSlug).then((resp) => {
+      if (resp.getData() && resp.getData().error) {
+        return resolve(resp.getData());
+      }
+      return resolve(template);
     }, (err) => {
-      reject(err.data);
+      reject(err.getData());
     });
   })
 );
