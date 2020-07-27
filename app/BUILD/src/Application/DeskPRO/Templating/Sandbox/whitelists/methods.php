@@ -9,10 +9,16 @@ return [
         'getBasePath',
         'getSchemeAndHttpHost',
         'get',
+        'getClientIp',
+        'getPathInfo',
+        'getRequestUri',
     ],
     \Symfony\Component\HttpFoundation\ParameterBag::class => [
         'get',
         'all',
+    ],
+    \Symfony\Component\HttpFoundation\HeaderBag::class => [
+        'get',
     ],
     \Application\DeskPRO\Templating\GlobalVariables::class => [
         'isPortalEnabled',
@@ -57,6 +63,11 @@ return [
     ],
     \DateTime::class => [
         'getTimestamp',
+        'format',
+    ],
+    \DateTimeImmutable::class => [
+        'getTimestamp',
+        'format',
     ],
     \Application\DeskPRO\Auth\AuthenticationManager::class => SandboxUtils::guessAccessors(
         \Application\DeskPRO\Auth\AuthenticationManager::class

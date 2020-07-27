@@ -24,6 +24,7 @@ return [
     \Symfony\Component\HttpFoundation\Request::class => [
         'query',
         'attributes',
+        'headers',
     ],
     \Symfony\Component\Form\ChoiceList\View\ChoiceView::class => [
         'data',
