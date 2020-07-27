@@ -217,6 +217,11 @@ class DbLimitAdapter implements LimitAdapterInterface
 
             $this->em->persist($dbLimit);
             $this->em->flush();
+        } elseif ($dbLimit->getLimit() !== $value) {
+            $dbLimit->setLimit($value);
+
+            $this->em->persist($dbLimit);
+            $this->em->flush();
         }
 
         return $dbLimit;
