@@ -408,8 +408,8 @@ abstract class SearcherAbstract implements PersonContextInterface
         if (!empty($choice['date1'])) {
             $date1 = $choice['date1'];
         } elseif (!empty($choice['date1_relative']) and !empty($choice['date1_relative_type'])) {
-            $op    = isset($choice['date1_relative_tense']) && $choice['date1_relative_tense'] === 'future' ? '' : '-';
-            $date1 = date_create($op.(int) $choice['date1_relative']." {$choice['date1_relative_type']}", $timezone_context);
+            $tenseOp = isset($choice['date1_relative_tense']) && $choice['date1_relative_tense'] === 'future' ? '' : '-';
+            $date1   = date_create($tenseOp.(int) $choice['date1_relative']." {$choice['date1_relative_type']}", $timezone_context);
         } elseif (!empty($choice[0])) {
             $date1 = $choice[0];
         }
@@ -418,8 +418,8 @@ abstract class SearcherAbstract implements PersonContextInterface
         if (!empty($choice['date2'])) {
             $date2 = $choice['date2'];
         } elseif (!empty($choice['date2_relative']) and !empty($choice['date2_relative_type'])) {
-            $op    = isset($choice['date2_relative_tense']) && $choice['date2_relative_tense'] === 'future' ? '' : '-';
-            $date2 = date_create($op.(int) $choice['date2_relative']." {$choice['date2_relative_type']}", $timezone_context);
+            $tenseOp = isset($choice['date2_relative_tense']) && $choice['date2_relative_tense'] === 'future' ? '' : '-';
+            $date2   = date_create($tenseOp.(int) $choice['date2_relative']." {$choice['date2_relative_type']}", $timezone_context);
         } elseif (!empty($choice[1])) {
             $date2 = $choice[1];
         }
