@@ -32,6 +32,7 @@ helpcenter.emails.ticket_reply_confirm: '返信を頂きありがとうござい
 helpcenter.emails.ticket_validate: 'ご連絡をいただきありがとうございます。<br /><br />エージェントによる対応を開始する前に、あなたのメールアドレスの認証手続きを行ってください。'
 helpcenter.error.404_title: '見つかりません。'
 helpcenter.error.permission_denied_title: 'その動作は許可されていません。'
+helpcenter.forms.error_dupe_email: 'このメールアドレスはすでに使用されています。'
 helpcenter.forms.error_required: '必須項目です。'
 helpcenter.forms.label_save: 保存
 helpcenter.general.add_comment: 'コメントを追加'
