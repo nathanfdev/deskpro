@@ -36,6 +36,7 @@ class PortalEditorContainer extends React.Component {
       editor:        null,
       brandSlug:     'default',
     };
+    this.lineWidgets = [];
   }
 
 
@@ -119,16 +120,31 @@ class PortalEditorContainer extends React.Component {
       promises.push(this.props.dispatch(actions.saveTemplate(key, { code: extraTemplates[key] }, this.state.brandSlug)));
     });
     Promise.all(promises).then(
-      () => {
-        const currTemplate = this.props.portalEditor.getIn(['currentTemplate'], fromJS({})).toObject();
-        currTemplate.custom = true;
-        this.props.dispatch(actions.setCurrentTemplate(fromJS(currTemplate)));
-        this.props.dispatch(actions.loadTemplates(this.state.brandSlug));
+      (payload) => {
+        const cm = this.editor.editor.bodyEditor.getCodeMirror();
+        this.lineWidgets.forEach((lineWidget) => {
+          cm.removeLineWidget(lineWidget);
+        });
+        this.lineWidgets = [];
+        if (payload[0].error) {
+          const msg = document.createElement('div');
+          const icon = msg.appendChild(document.createElement('span'));
+          icon.innerHTML = '!';
+          icon.className = 'lint-error-icon';
+          msg.appendChild(document.createTextNode(payload[0].error));
+          msg.className = 'lint-error';
+          this.lineWidgets.push(cm.addLineWidget(payload[0].line - 2, msg, { coverGutter: false, noHScroll: true }));
+        } else {
+          const currTemplate = this.props.portalEditor.getIn(['currentTemplate'], fromJS({})).toObject();
+          currTemplate.custom = true;
+          this.props.dispatch(actions.setCurrentTemplate(fromJS(currTemplate)));
+          this.props.dispatch(actions.loadTemplates(this.state.brandSlug));
 
+          this.props.dispatch(actions.cleanExtraTemplates());
+        }
         this.setState({
           saveSubmit: false
         });
-        this.props.dispatch(actions.cleanExtraTemplates());
 
         resolve(template);
       }

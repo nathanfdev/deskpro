@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
@@ -200,12 +198,12 @@ class TemplatesController extends AbstractApiController
             } else {
                 $template->setTemplate(
                     $data['code'],
-                    $this->get('twig')->compileSource($template->template_code, $templateName)
+                    $this->get('twig')->compileSource($data['code'], $templateName)
                 );
                 $this->getManager()->persist($template);
             }
         } catch (\Twig_Error $e) {
-            throw new BadRequestHttpException('Template compilation error: '.$e->getMessage());
+            return new JsonResponse(['error' => $e->getRawMessage(), 'line' => $e->getTemplateLine()]);
         }
 
         $this->getManager()->flush();
