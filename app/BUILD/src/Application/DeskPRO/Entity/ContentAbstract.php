@@ -1086,7 +1086,15 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
         return 0;
     }
 
-    public function getExcerptHtml($wordsLimit = 50)
+    /**
+     * **NOTE** Can cause potential xss issue, e.g. converts
+     * "<p>&lt;svg onload=alert(1) &gt;</p>" to "<svg onload=alert(1) >"
+     *
+     * @param int $wordsLimit
+     *
+     * @return string
+     */
+    public function getExcerptText($wordsLimit = 50)
     {
         $content = Strings::html2Text($this->getContent());
         if ($pos = strpos($content, '![more]')) {
@@ -1106,5 +1114,15 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
         }
 
         return $excerpt;
+    }
+
+    /**
+     * @param int $wordsLimit
+     *
+     * @return string
+     */
+    public function getExcerptHtml($wordsLimit = 50)
+    {
+        return htmlspecialchars($this->getExcerptText($wordsLimit));
     }
 }

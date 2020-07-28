@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Entity\Labels\Label;
@@ -18,7 +16,6 @@ use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
-use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -97,28 +94,6 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         $content = RegexUtils::safePregReplace('#[\r\n]+\-{3,}[\r\n]+#', "\n", $content);
 
         return $content;
-    }
-
-    public function getExcerptHtml($wordsLimit = 50)
-    {
-        $content = Strings::html2Text($this->getContent());
-        if ($pos = strpos($content, '![more]')) {
-            $excerpt = substr($content, $pos);
-        } elseif ($pos = strpos($content, "\n\n")) {
-            $excerpt = substr($content, 0, $pos);
-        } else {
-            $excerpt = $content;
-        }
-
-        if (str_word_count($excerpt) > $wordsLimit) {
-            $words   = str_word_count($excerpt, 2);
-            $pos     = Arrays::getNthKey($words, $wordsLimit);
-            $excerpt = substr($excerpt, 0, $pos);
-            $excerpt = RegexUtils::safePregReplace('#[^a-zA-Z0-9]$#', '', $excerpt);
-            $excerpt .= '...';
-        }
-
-        return $excerpt;
     }
 
     public function getCountWordsAfterExcerpt()
