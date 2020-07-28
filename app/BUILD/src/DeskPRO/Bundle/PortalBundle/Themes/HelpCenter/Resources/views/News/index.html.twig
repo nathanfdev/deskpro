@@ -37,6 +37,7 @@
             {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
                 buttonId: 'subscribeDropdownMenuMobile',
                 subscriptionInfo: [
+                    viewCategory ? { toggleUrl: portal_path(viewCategory, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category, disabled: is_subscribed } : {},
                     { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed },
                 ]
             } %}
@@ -182,6 +183,7 @@
         {% if brand_setting('user.news_subscriptions') %}
             {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
                 subscriptionInfo: [
+                    viewCategory ? { toggleUrl: portal_path(viewCategory, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category, disabled: is_subscribed } : {},
                     { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.news.section_title'), active: is_subscribed },
                 ]
             } %}

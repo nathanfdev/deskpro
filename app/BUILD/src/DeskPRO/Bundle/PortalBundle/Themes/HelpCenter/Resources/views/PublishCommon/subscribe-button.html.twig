@@ -1,15 +1,27 @@
 <div class="dp-po-subscribe dp-po-subscribe-large">
     <div class="dropdown">
-        <button class="dp-po-subscribe-btn" type="button" id="{{ buttonId is defined ? buttonId : 'subscribeDropdownMenu' }}" data-toggle="dropdown" aria-haspopup="true"
+        {% set active = false %}
+        {% for sub in subscriptionInfo %}
+            {% if sub.active is defined and sub.active %}
+                {% set active = true %}
+            {% endif %}
+        {% endfor %}
+        <button class="dp-po-subscribe-btn {{ active ? 'active' : '' }}" type="button" id="{{ buttonId is defined ? buttonId : 'subscribeDropdownMenu' }}" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false" data-offset="0,10">
-            <i class="dp-po-icon fad fa-envelope"></i> {{ phrase('helpcenter.general.subscribe_action') }} <i class="dp-po-icon far fa-check"></i>
+            <i class="dp-po-icon fad fa-envelope"></i><i class="dp-po-icon far fa-check"></i> {{ phrase('helpcenter.general.subscribe_action') }} <i class="dp-po-icon fal fa-angle-down"></i>
         </button>
         <div class="dropdown-menu" aria-labelledby="{{ buttonId is defined ? buttonId : 'subscribeDropdownMenu' }}">
             {% for sub in subscriptionInfo %}
-                {% if sub.toggleUrl %}
-                    <a class="dropdown-item post-link {{ sub.active ? 'active' : '' }}" href="{{ sub.toggleUrl }}" rel="noindex, nofollow">
-                        <i class="dp-po-icon {{ sub.icon }}"></i> {{ sub.title }} <i class="dp-po-icon far fa-check"></i>
-                    </a>
+                {% if sub.toggleUrl is defined and sub.toggleUrl %}
+                    {% if sub.disabled is defined and sub.disabled %}
+                        <span class="dropdown-item post-link disabled">
+                            <i class="dp-po-icon {{ sub.icon }}"></i> {{ sub.title }}
+                        </span>
+                    {% else %}
+                        <a class="dropdown-item post-link {{ sub.active ? 'active' : '' }}" href="{{ sub.toggleUrl }}" rel="noindex, nofollow">
+                            <i class="dp-po-icon {{ sub.icon }}"></i> {{ sub.title }} <i class="dp-po-icon far fa-check"></i>
+                        </a>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
             {# we don't support it for now #}
