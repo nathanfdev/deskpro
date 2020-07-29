@@ -1,4 +1,8 @@
 ---
+helpcenter.account.add: 追加
+helpcenter.account.add_email: 'メールアドレス追加'
+helpcenter.account.change_password_action: 'パスワード更新'
+helpcenter.account.email_btn_usersource_set: 'メールアドレスの追加'
 helpcenter.account.login_invalid: 'ログインが無効です'
 helpcenter.articles.section_title: ナレッジベース
 helpcenter.community.section_title: フィードバック
