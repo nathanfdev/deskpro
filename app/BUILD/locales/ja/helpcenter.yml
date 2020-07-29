@@ -44,6 +44,8 @@ helpcenter.general.add_comment: 'コメントを追加'
 helpcenter.general.attachments: 添付
 helpcenter.general.everything: 全て
 helpcenter.general.nav_emails: メールアドレス
+helpcenter.general.nav_profile: プロフィール
+helpcenter.general.nav_register: '登録'
 helpcenter.general.nav_your_account: 'アカウント'
 helpcenter.general.password: パスワード
 helpcenter.general.rate_page_positive: 参考になった
