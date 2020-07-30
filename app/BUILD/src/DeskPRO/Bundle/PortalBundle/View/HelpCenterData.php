@@ -131,14 +131,15 @@ class HelpCenterData
 
     /**
      * @param array $userOptions
+     * @param null $category
      *
      * @return DownloadCategory[]
      */
-    public function getDownloadsCategories(array $userOptions)
+    public function getDownloadsCategories(array $userOptions, $category = null)
     {
         $options = array_merge([
             'count'    => 5,
-            'category' => null,
+            'category' => $category,
         ], $userOptions);
 
         return $this->getDownloadsDataService()->getCategoryChildren($options['category'], $this->getUser());
