@@ -15,6 +15,7 @@ use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\Actions\AppActionInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use DeskPRO\Component\Util\IpUtils;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -67,6 +68,10 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
 
         try {
             $client = new HttpClient();
+
+            if (!IpUtils::isUrlUserCallable($app->getSetting('webhook_url'))) {
+                throw new \InvalidArgumentException("URL is not user callable");
+            }
 
             $client->request(
                 'POST',

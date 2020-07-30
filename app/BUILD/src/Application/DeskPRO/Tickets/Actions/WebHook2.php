@@ -12,6 +12,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use DeskPRO\Component\Util\IpUtils;
 use GuzzleHttp\RequestOptions;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
@@ -71,6 +72,17 @@ class WebHook2 extends AbstractContainerAwareAction implements ActionInterface, 
         }
         if ($disableCert) {
             $options[RequestOptions::VERIFY] = false;
+        }
+
+        if (!IpUtils::isUrlUserCallable($url)) {
+            $data = [
+                'url'     => $url,
+                'reason'  => "URL is not user callable",
+                'status'  => 401,
+                'content' => null,
+            ];
+            $ticket->getStateChangeRecorder()->recordData('webhook', $data);
+            return;
         }
 
         try {

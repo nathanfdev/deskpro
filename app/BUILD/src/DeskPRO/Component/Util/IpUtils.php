@@ -103,6 +103,10 @@ class IpUtils extends BaseIpUtils
      */
     public static function isUrlUserCallable($url, $expectHttp = true)
     {
+        if (empty($url)) {
+            return false;
+        }
+
         $info = @parse_url($url);
 
         if (empty($info['host'])) {
