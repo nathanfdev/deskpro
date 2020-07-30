@@ -81,4 +81,7 @@ return [
     \Symfony\Component\Form\FormError::class => SandboxUtils::guessAccessors(
         \Symfony\Component\Form\FormError::class
     ),
+    \Application\DeskPRO\Tickets\StateChangeRecorder::class => [
+        'hasChangedField',
+    ],
 ];
