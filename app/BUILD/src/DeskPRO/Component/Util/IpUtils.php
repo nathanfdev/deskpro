@@ -94,6 +94,31 @@ class IpUtils extends BaseIpUtils
         return true;
     }
 
+    /**
+     * Extracts the host from a url and runs it against isHostUserCallable
+     *
+     * @param string $url
+     * @param bool   $expectHttp True if you expect the protocol to be http/s
+     * @return bool
+     */
+    public static function isUrlUserCallable($url, $expectHttp = true)
+    {
+        $info = @parse_url($url);
+
+        if (empty($info['host'])) {
+            return false;
+        }
+
+        if ($expectHttp) {
+            $scheme = strtolower(!empty($info['scheme']) ? $info['scheme'] : '');
+            if ($scheme !== 'http' && $scheme !== 'https') {
+                return false;
+            }
+        }
+
+        return self::isHostUserCallable($info['host']);
+    }
+
     private static function resolveHostToIp($host)
     {
         static $cache = [];
