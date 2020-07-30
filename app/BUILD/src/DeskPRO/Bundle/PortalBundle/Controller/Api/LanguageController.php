@@ -32,7 +32,6 @@ class LanguageController extends AbstractApiController
             'helpcenter.community.filters',
             'helpcenter.community.my_activity',
             'helpcenter.community.reset_all_filters',
-            'helpcenter.community.search_forum',
             'helpcenter.community.status',
             'helpcenter.duration_short.days',
             'helpcenter.duration_short.hours',
