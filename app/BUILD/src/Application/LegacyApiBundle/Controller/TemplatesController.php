@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\LegacyApiBundle\Controller;
 
@@ -62,11 +60,10 @@ class TemplatesController extends AbstractController
         $tpl_desc = new EmailTemplatesDesc();
         $list     = $tpl_desc->getProcessedList($this->container->getTranslator());
 
-        $customTemplates = $this->container->getEm()->getRepository(Template::class)->findAll();
-        $customTemplates = array_filter($customTemplates, function (Template $template) {
-            return preg_match('#^DeskPRO:emails_#', $template->getName());
-        });
+        $qb = $this->container->getEm()->createQueryBuilder();
+        $qb->select('t')->from(Template::class, 't')->where("t.name LIKE 'DeskPRO:emails_%'");
 
+        $customTemplates     = $qb->getQuery()->getResult();
         $customTemplateNames = array_map(function (Template $template) {
             return $template->getName();
         }, $customTemplates);

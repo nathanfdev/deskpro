@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\AppBundle\Command\Utility;
 
 use Application\EmailBundle\Twig\PreProcessor\EmailPreProcessor as LegacyEmailPreProcessor;
-use DeskPRO\Bundle\InstallBundle\Backup\RecordBackuper;
 use DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor\EmailPreProcessor;
 use DpSys\Kernel\PortalKernel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -48,12 +47,15 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
                     } else {
                         $this->recompilePortalTemplates($input, $output);
                     }
+
                     break;
                 case 'email':
                     $this->recompileEmailTemplates($input, $output);
+
                     break;
                 case 'legacy-email':
                     $this->recompileLegacyEmailTemplates($input, $output);
+
                     break;
                 default:
                     $output->writeln("<error>Invalid type: $type</error>");
@@ -73,39 +75,53 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
      */
     private function recompileEmailTemplates(InputInterface $input, OutputInterface $output)
     {
-        $db   = $this->getContainer()->get('database_connection');
-        $twig = $this->getContainer()->get('templating.new_email.twig');
+        $db     = $this->getContainer()->get('database_connection');
+        $limit  = 100;
+        $offset = 0;
 
-        $templates = $db->fetchAll("
-            SELECT *
-            FROM templates
-            WHERE name LIKE 'SendmailBundle:%'
-            ORDER BY id ASC
-        ");
+        do {
+            $this->clearTwig();
+            $twig = $this->getContainer()->get('templating.new_email.twig');
 
-        $output->writeln(sprintf('Re-compiling %d email templates...', count($templates)));
+            $templates = $db->fetchAll("
+                SELECT *
+                FROM templates
+                WHERE name LIKE 'SendmailBundle:%'
+                ORDER BY id ASC
+                LIMIT $limit
+                OFFSET $offset
+            ");
 
-        foreach ($templates as $tpl) {
-            $output->write(sprintf('  Compiling %d: %s ... ', $tpl['id'], $tpl['name']));
+            if (count($templates) > 0) {
+                $output->writeln(sprintf('Re-compiling %d email templates...', count($templates)));
+            }
 
-            try {
-                $proc     = new EmailPreProcessor();
-                $code     = $proc->process($tpl['template_code'], $tpl['name']);
-                $compiled = $twig->compileSource($code, $tpl['name']);
+            foreach ($templates as $tpl) {
+                $output->write(sprintf('  Compiling %d: %s ... ', $tpl['id'], $tpl['name']));
 
-                $db->update('templates', ['template_compiled' => $compiled], ['id' => $tpl['id']]);
-
-                $output->writeln('OK');
-            } catch (\Exception $e) {
-                $output->writeln('ERROR: '.$e->getMessage());
                 try {
-                    $db->delete('templates', ['id' => $tpl['id']]);
+                    $proc     = new EmailPreProcessor();
+                    $code     = $proc->process($tpl['template_code'], $tpl['name']);
+                    $compiled = $twig->compileSource($code, $tpl['name']);
+
+                    $db->update('templates', ['template_compiled' => $compiled], ['id' => $tpl['id']]);
+
+                    $output->writeln('OK');
                 } catch (\Exception $e) {
-                    $output->writeln('Failed to backup template!');
-                    throw $e;
+                    $output->writeln('ERROR: '.$e->getMessage());
+
+                    try {
+                        $db->delete('templates', ['id' => $tpl['id']]);
+                    } catch (\Exception $e) {
+                        $output->writeln('Failed to backup template!');
+
+                        throw $e;
+                    }
                 }
             }
-        }
+
+            $offset += $limit;
+        } while (count($templates) > 0);
     }
 
     /**
@@ -116,39 +132,53 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
      */
     private function recompileLegacyEmailTemplates(InputInterface $input, OutputInterface $output)
     {
-        $db   = $this->getContainer()->get('database_connection');
-        $twig = $this->getContainer()->get('templating.email.twig');
+        $db     = $this->getContainer()->get('database_connection');
+        $limit  = 100;
+        $offset = 0;
 
-        $templates = $db->fetchAll("
-            SELECT *
-            FROM templates
-            WHERE name LIKE 'DeskPRO:emails%' OR name LIKE 'DeskPRO:custom_emails%'
-            ORDER BY id ASC
-        ");
+        do {
+            $this->clearTwig();
+            $twig = $this->getContainer()->get('templating.email.twig');
 
-        $output->writeln(sprintf('Re-compiling %d legacy email templates...', count($templates)));
+            $templates = $db->fetchAll("
+                SELECT *
+                FROM templates
+                WHERE name LIKE 'DeskPRO:emails%' OR name LIKE 'DeskPRO:custom_emails%'
+                ORDER BY id ASC
+                LIMIT $limit
+                OFFSET $offset
+            ");
 
-        foreach ($templates as $tpl) {
-            $output->write(sprintf('  Compiling %d: %s ... ', $tpl['id'], $tpl['name']));
+            if (count($templates) > 0) {
+                $output->writeln(sprintf('Re-compiling %d legacy email templates...', count($templates)));
+            }
 
-            try {
-                $proc     = new LegacyEmailPreProcessor();
-                $code     = $proc->process($tpl['template_code'], $tpl['name']);
-                $compiled = $twig->compileSource($code, $tpl['name']);
+            foreach ($templates as $tpl) {
+                $output->write(sprintf('  Compiling %d: %s ... ', $tpl['id'], $tpl['name']));
 
-                $db->update('templates', ['template_compiled' => $compiled], ['id' => $tpl['id']]);
-
-                $output->writeln('OK');
-            } catch (\Exception $e) {
-                $output->writeln('ERROR: '.$e->getMessage());
                 try {
-                    $db->delete('templates', ['id' => $tpl['id']]);
+                    $proc     = new LegacyEmailPreProcessor();
+                    $code     = $proc->process($tpl['template_code'], $tpl['name']);
+                    $compiled = $twig->compileSource($code, $tpl['name']);
+
+                    $db->update('templates', ['template_compiled' => $compiled], ['id' => $tpl['id']]);
+
+                    $output->writeln('OK');
                 } catch (\Exception $e) {
-                    $output->writeln('Failed to backup template!');
-                    throw $e;
+                    $output->writeln('ERROR: '.$e->getMessage());
+
+                    try {
+                        $db->delete('templates', ['id' => $tpl['id']]);
+                    } catch (\Exception $e) {
+                        $output->writeln('Failed to backup template!');
+
+                        throw $e;
+                    }
                 }
             }
-        }
+
+            $offset += $limit;
+        } while (count($templates) > 0);
     }
 
     /**
@@ -159,38 +189,55 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
      */
     private function recompilePortalTemplates(InputInterface $input, OutputInterface $output)
     {
-        $db   = $this->getContainer()->get('database_connection');
-        $twig = $this->getContainer()->get('twig');
+        $db     = $this->getContainer()->get('database_connection');
+        $limit  = 100;
+        $offset = 0;
 
-        $templates = $db->fetchAll("
-            SELECT *
-            FROM templates
-            WHERE name LIKE 'Theme:%'
-            ORDER BY id ASC
-        ");
+        do {
+            $this->clearTwig();
+            $twig = $this->getContainer()->get('twig');
 
-        $output->writeln(sprintf('Re-compiling %d portal templates...', count($templates)));
+            $templates = $db->fetchAll("
+                SELECT *
+                FROM templates
+                WHERE name LIKE 'Theme:%'
+                ORDER BY id ASC
+                LIMIT $limit
+                OFFSET $offset
+            ");
 
-        foreach ($templates as $tpl) {
-            $output->write(sprintf('  Compiling %d: %s ... ', $tpl['id'], $tpl['name']));
+            if (count($templates) > 0) {
+                $output->writeln(sprintf('Re-compiling %d portal templates...', count($templates)));
+            }
 
-            try {
-                $code     = $tpl['template_code'];
-                $compiled = $twig->compileSource($code, $tpl['name']);
+            foreach ($templates as $tpl) {
+                $output->write(sprintf('  Compiling %d: %s ... ', $tpl['id'], $tpl['name']));
 
-                $db->update('templates', ['template_compiled' => $compiled], ['id' => $tpl['id']]);
-
-                $output->writeln('OK');
-            } catch (\Exception $e) {
-                $output->writeln('ERROR: '.$e->getMessage());
                 try {
-                    $db->delete('templates', ['id' => $tpl['id']]);
+                    $code     = $tpl['template_code'];
+                    $compiled = $twig->compileSource($code, $tpl['name']);
+
+                    $db->update('templates', ['template_compiled' => $compiled], ['id' => $tpl['id']]);
+
+                    unset($code);
+                    unset($compiled);
+
+                    $output->writeln('OK');
                 } catch (\Exception $e) {
-                    $output->writeln('Failed to backup template!');
-                    throw $e;
+                    $output->writeln('ERROR: '.$e->getMessage());
+
+                    try {
+                        $db->delete('templates', ['id' => $tpl['id']]);
+                    } catch (\Exception $e) {
+                        $output->writeln('Failed to backup template!');
+
+                        throw $e;
+                    }
                 }
             }
-        }
+
+            $offset += $limit;
+        } while (count($templates) > 0);
     }
 
     /**
@@ -203,9 +250,11 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
         switch ($type) {
             case 'portal':
                 $kernel = 'portal';
+
                 break;
             case 'email':
                 $kernel = 'dp';
+
                 break;
             default:
                 throw new \InvalidArgumentException();
@@ -226,5 +275,31 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
         });
 
         return $proc->getExitCode();
+    }
+
+    /**
+     * When we compile a lot of templates it seems to be a memory leakage somewhere inside twig service.
+     * So just reload this service in container.
+     *
+     * @throws \ReflectionException
+     */
+    private function clearTwig()
+    {
+        $container = $this->getContainer();
+
+        $reflection = new \ReflectionClass($container);
+        $property   = $reflection->getProperty('services');
+        $property->setAccessible(true);
+
+        $services = $property->getValue($container);
+        foreach ($services as $name => $service) {
+            // fix twig memory leakage
+            if (strpos($name, 'twig') !== false) {
+                unset($services[$name]);
+            }
+        }
+
+        $property->setValue($container, $services);
+        unset($services);
     }
 }
