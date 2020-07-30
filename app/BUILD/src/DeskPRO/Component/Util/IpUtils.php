@@ -43,4 +43,76 @@ class IpUtils extends BaseIpUtils
 
         return false;
     }
+
+    /**
+     * Check a user-supplied host to see if it's allowed to be called upon
+     *
+     * @param string $host
+     * @return bool
+     */
+    public static function isHostUserCallable($host)
+    {
+        $host = trim(strtolower($host));
+
+        if (defined('DPC_IS_CLOUD') || !empty($GLOBALS['DPC_TESTING_IPUTILS_HOST_CALLABLE'])) {
+            if (self::guessIsLocalNetworkHost($host)) {
+                return false;
+            }
+
+            foreach ([
+                 'internal.deskpro.com',
+                 'rds.amazonaws.com',
+                 'es.amazonaws.com',
+                 'cache.amazonaws.com',
+                 'deskpro-service.com'
+            ] as $name) {
+                if (strpos($host, $name) !== false) {
+                    return false;
+                }
+            }
+
+            if ($ip = filter_var($host, FILTER_VALIDATE_IP)) {
+                // dont allow priv ips
+                if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                    return false;
+                }
+            } else {
+                $hostIp = self::resolveHostToIp($host);
+                if (!$hostIp) {
+                    return false;
+                }
+
+                $hostIp = trim(strtolower($hostIp));
+
+                // prevents inf recursion
+                if ($hostIp !== $host) {
+                    return self::isHostUserCallable($hostIp);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private static function resolveHostToIp($host)
+    {
+        static $cache = [];
+
+        if (isset($GLOBALS['DPC_TESTING_IPUTILS_HOST_RESOLVE'][$host])) {
+            return $GLOBALS['DPC_TESTING_IPUTILS_HOST_RESOLVE'][$host];
+        }
+
+        if (isset($cache[$host])) {
+            return $cache[$host];
+        }
+
+        $hostIp = @gethostbyname($host);
+        if (!$hostIp) {
+            return false;
+        }
+
+        $cache[$host] = $hostIp;
+
+        return $hostIp;
+    }
 }
