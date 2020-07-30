@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\Templating\Templates;
 
@@ -114,7 +112,10 @@ class TemplateFile extends Template
             return $this->type;
         }
 
-        if (strpos($this->getContent(), '<dp:subject') !== false) {
+        if (
+            strpos($this->getContent(), '<dp:subject') !== false
+            || strpos($this->getName(), ':emails_common:') !== false
+        ) {
             $this->type = 'email';
         } else {
             $this->type = 'normal';
