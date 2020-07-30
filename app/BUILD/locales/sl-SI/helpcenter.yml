@@ -203,6 +203,7 @@ helpcenter.emails.downloads_explain: 'To sporočilo si prejel/a, ker si prijavlj
 helpcenter.emails.email_new_confirm: 'Potrdi svoj e-poštni naslov'
 helpcenter.emails.email_primary_confirm: 'Potrdi svoj e-poštni naslov'
 helpcenter.emails.email_ticket_reminder: 'Poziv k dejanju: tvoj zahtevek še ni bil vnešen'
+helpcenter.emails.email_too_big: 'Tvojega e-poštnega sporočila z naslovom "{subject}" nismo sprejeli, saj je preveliko. Največja dovoljena velikost sporočila je {max_size}. Odstrani priloge in poskusi ponovno.'
 helpcenter.emails.kb_sub_new: 'Novi članki'
 helpcenter.emails.kb_sub_new_and_updated: 'Novi in posodobljeni članki'
 helpcenter.emails.kb_sub_updated: 'Posodobljeni članki'
