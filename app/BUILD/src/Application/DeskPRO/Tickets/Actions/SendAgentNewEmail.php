@@ -15,6 +15,7 @@ use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketEmailType;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketUpdate;
 use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\EmailWithTranscriptionProcessor;
 use Orb\Util\CheckedOptionsArray;
@@ -332,8 +333,10 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                 $viewModel->setTypeFlag($typeFlag);
             }
 
-            $viewModel->setEventCodeType($ticket, $agent, $context);
-            $viewModel->setEventCode();
+            if ($viewModel instanceof AgentTicketEmailType) {
+                $viewModel->setEventCodeType($ticket, $agent, $context);
+                $viewModel->setEventCode();
+            }
 
             $context->getLogger()->debug(
                 sprintf('[SendAgentNewEmail] Sending to <Person:%d> %s', $agent->getId(), $agent->getDisplayName())
