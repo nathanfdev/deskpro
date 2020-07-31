@@ -52,9 +52,7 @@ class TwigTemplateParser
         try {
             $stream = $this->twig->tokenize($template);
             while ($token = $stream->next()) {
-                if ($onlyTypes && in_array($token->getType(), $onlyTypes)) {
-                    $tokens[$token->getType()][] = $token->getValue();
-                } elseif (!$onlyTypes) {
+                if (($onlyTypes && in_array($token->getType(), $onlyTypes)) || !$onlyTypes) {
                     $tokens[$token->getType()][] = $token->getValue();
                 }
             }
