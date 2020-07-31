@@ -20,6 +20,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Util\IpUtils;
 use DeskPRO\Component\Util\RegexUtils;
 use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Arrays;
@@ -362,6 +363,10 @@ JS;
 
         $urlinfo = @parse_url($url);
         if (!$url or !$urlinfo or empty($urlinfo['scheme']) or !preg_match('#^https?#', $urlinfo['scheme'])) {
+            return $this->createResponse('Bad url', 400);
+        }
+
+        if (!IpUtils::isUrlUserCallable($url)) {
             return $this->createResponse('Bad url', 400);
         }
 
