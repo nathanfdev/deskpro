@@ -243,6 +243,7 @@ helpcenter.emails.reject_resolved: 'Tvojega odgovora nismo sprejeli, saj zahteve
 helpcenter.emails.reject_resolved_new: 'Če želiš odpreti popolnoma nov zahtevek, to lahko storiš tako, da pošlješ e-poštno sporočilo na naslov <a href="mailto:{email_to}">{email_to}</a> ali pa ga odpreš preko spletnega obrazca na naslovu:<br /><a href="{link}">{link}</a>'
 helpcenter.emails.reject_resolved_newemail: 'Če želiš odpreti popolnoma nov zahtevek, to lahko storiš tako, da pošlješ e-poštno sporočilo na naslov <a href="mailto:{email_to}">{email_to}</a>'
 helpcenter.emails.remind_unresolved: 'To sporočilo je opomnik, da imaš v podpornem spletšču {helpdesk_name} še vedno odprt zahtevek.<br />Če pomoči v zvezi z zahtevkom ne potrebuješ več, prosimo, klikni na povezavo sodaj in nam to sporoči.<br /><a href="{resolve_url}">{resolve_url}</a><br />V primeru, da pomoč še vedno pričakuješ, pa enostavno odgovori na to sporočilo.'
+helpcenter.emails.remind_unresolved_final: 'Že kar nekaj časa je minilo, odkar smo prejeli tvoje zadnje sporočilo v zvezi z odprtim zahtevkom.<br />Če še vedno pričakuješ našo pomoč, enostavno odgovori na to sporočilo.<br />Če pomoči ne potrebuješ več, te prosimo, da nam to sporočiš s klikom na spodnjo povezavo.<br /><a href="{resolve_url}">{resolve_url}</a>'
 helpcenter.emails.remind_unresolved_final_subject: 'OPOMNIK: {subject}'
 helpcenter.emails.remind_unresolved_subject: 'OPOMNIK: {subject}'
 helpcenter.emails.share_article: '{author_name} želi deliti ta članek s teboj'
