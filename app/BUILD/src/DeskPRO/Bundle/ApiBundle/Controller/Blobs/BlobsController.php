@@ -108,7 +108,7 @@ class BlobsController extends CrudController
         $accept = $this->getContainer()->getAttachmentAccepter();
         $blob   = $accept->accept($file);
 
-        $return['link'] = $blob->getDownloadUrl(true);
+        $return['link'] = $blob->getDownloadUrl(true, false);
 
         return new Response(json_encode($return), Response::HTTP_CREATED);
     }
