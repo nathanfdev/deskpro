@@ -108,20 +108,21 @@ class NewsController extends AbstractPublishController
         return $this->renderThemeView(
             'Theme:News:index.html.twig',
             [
-                'page'              => $page,
-                'count'             => $this->getBrandSetting('portal.per_page_content'),
-                'main_class'        => 'dp-po-news',
-                'viewCategory'      => $category,
-                'newsData'          => $newsData,
-                'pager'             => $pager,
-                'page_title'        => $pageTitle,
-                'breadcrumbs'       => $breadcrumbs,
-                'rss_link'          => $rssLink,
-                'ics_link'          => $icsLink,
-                'download_calendar' => $downloadCalendar,
-                'is_subscribed'     => $this->isSubscribedRootCategory(),
-                'filter_date'       => $filterDate,
-                'filter_year'       => $filterYear,
+                'page'                   => $page,
+                'count'                  => $this->getBrandSetting('portal.per_page_content'),
+                'main_class'             => 'dp-po-news',
+                'viewCategory'           => $category,
+                'newsData'               => $newsData,
+                'pager'                  => $pager,
+                'page_title'             => $pageTitle,
+                'breadcrumbs'            => $breadcrumbs,
+                'rss_link'               => $rssLink,
+                'ics_link'               => $icsLink,
+                'download_calendar'      => $downloadCalendar,
+                'is_subscribed'          => $this->isSubscribedRootCategory(),
+                'is_subscribed_category' => $this->isSubscribedCategory($category),
+                'filter_date'            => $filterDate,
+                'filter_year'            => $filterYear,
             ]
         );
     }
@@ -601,10 +602,11 @@ class NewsController extends AbstractPublishController
      *
      * @return bool
      */
-    private function isSubscribedCategory(NewsCategory $category)
+    private function isSubscribedCategory(NewsCategory $category = null)
     {
         if (
-            $this->getBrandSetting('user.news_subscriptions', false)
+            $category
+            && $this->getBrandSetting('user.news_subscriptions', false)
             && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORY, $category)
         ) {
             return $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());

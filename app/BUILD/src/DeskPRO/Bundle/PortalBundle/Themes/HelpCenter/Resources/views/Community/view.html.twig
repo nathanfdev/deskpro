@@ -62,16 +62,17 @@
                 {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
                     subscriptionInfo: [
                         {
+                            toggleUrl: portal_path(topic, 'toggle_subscription'),
+                            icon: 'fal fa-file-alt',
+                            title: topic.title | truncate(20),
+                            active: is_subscribed,
+                            disabled: is_subscribed_root
+                        },
+                        {
                             toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
                             icon: 'fal fa-file-spreadsheet',
                             title: phrase('helpcenter.community.section_title'),
                             active: is_subscribed_root
-                        },
-                        {
-                            toggleUrl: portal_path(topic, 'toggle_subscription'),
-                            active: is_subscribed,
-                            icon: 'fal fa-file-alt',
-                            title: topic.title | truncate(20)
                         }
                     ]
                 } %}
@@ -91,16 +92,17 @@
             buttonId: 'subscribeDropdownMenuMobile',
             subscriptionInfo: [
                 {
+                    toggleUrl: portal_path(topic, 'toggle_subscription'),
+                    icon: 'fal fa-file-alt',
+                    title: topic.title | truncate(20),
+                    active: is_subscribed,
+                    disabled: is_subscribed_root
+                },
+                {
                     toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
                     icon: 'fal fa-file-spreadsheet',
                     title: phrase('helpcenter.community.section_title'),
                     active: is_subscribed_root
-                },
-                {
-                    toggleUrl: portal_path(topic, 'toggle_subscription'),
-                    active: is_subscribed,
-                    icon: 'fal fa-file-alt',
-                    title: topic.title | truncate(20)
                 }
             ]
         } %}
