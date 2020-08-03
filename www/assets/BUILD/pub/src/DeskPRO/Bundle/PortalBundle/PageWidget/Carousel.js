@@ -4,7 +4,7 @@ import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 export class Carousel extends PageWidget {
 
   renderWidget() {
-    import('slick-carousel').then(() => {
+    import('@deskpro/slick-carousel').then(() => {
       this.$element.removeClass('unloaded');
       $(this.$element).slick({
         dots:           true,

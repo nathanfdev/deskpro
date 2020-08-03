@@ -1,6 +1,6 @@
 {% macro user_notice(type, title, subtitle = null) %}
 
-<div class="alert alert-icon alert-{{ type }}">
+<div class="alert alert-icon alert-{{ type }}" {% if type == 'danger' %} aria-live="assertive" {% endif %}>
     <i class="dp-po-icon fas fa-lock"></i>
     {{ title }}
     <p>{{ subtitle }}</p>

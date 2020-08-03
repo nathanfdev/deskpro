@@ -27,7 +27,7 @@ class GuideSelector extends React.Component {
   }
 
   componentDidMount() {
-    import('slick-carousel').then(() => {
+    import('@deskpro/slick-carousel').then(() => {
       $('.dp-po-guides-carousel-list').slick({
         dots:           false,
         infinite:       false,

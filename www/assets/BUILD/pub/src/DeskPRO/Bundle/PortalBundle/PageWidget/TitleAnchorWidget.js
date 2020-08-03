@@ -56,6 +56,7 @@ export class TitleAnchorWidget extends PageWidget {
     a.addEventListener('click', copyToClipbard);
     const i = window.document.createElement('i');
     i.classList.add('fa', 'fa-anchor', 'title-anchor-icon');
+    i.setAttribute('title', `Copy link to ${text} to clipboard`);
     a.append(i);
     $element.append(a);
 

@@ -75,7 +75,12 @@
         <small class="form-text">{{ phrase('helpcenter.forms.message_description') }}</small>
     {% endif %}
     {% if field_set %}</legend>{% endif %}
-    {{- form_widget(form, applyClass ? {'attr': {'class': widgetClass}} : {}) -}}
+    {% if errors|length > 0 %}
+        {% set ariaDescribed = id ~ '_errors' %}
+    {% else %}
+        {% set ariaDescribed = '' %}
+    {% endif %}
+    {{- form_widget(form, applyClass ? {'attr': {'class': widgetClass, 'aria-describedby' : ariaDescribed}} : {}) -}}
     {{- form_errors(form) -}}
 
     {# /containers #}
@@ -97,7 +102,12 @@
     {% if (root_and_not_hidden and name != 'captcha_captcha_auto_added') or id == 'person_registration_password_password' %}
         <small class="form-text" {% if hint is defined %}id="{{ hint }}"{% endif %}>{{ help }}</small>
     {% endif %}
-    {{- form_widget(form, applyClass ? {'attr': {'class': widgetClass}} : {}) -}}
+    {% if errors|length > 0 %}
+        {% set ariaDescribed = id ~ '_errors' %}
+    {% else %}
+        {% set ariaDescribed = '' %}
+    {% endif %}
+    {{- form_widget(form, applyClass ? {'attr': {'class': widgetClass, 'aria-describedby' : ariaDescribed}} : {}) -}}
     {% if root_and_not_hidden and name == 'captcha_captcha_auto_added' %}
         <small class="form-text">{{ help }}</small>
     {% endif %}
@@ -176,9 +186,11 @@
 
 {% block form_errors -%}
     {% if errors|length > 0 -%}
+        <span id="{{ id }}_errors">
         {%- for error in errors -%}
             <small class="form-text text-danger">{{ phrase_form_error(error) }}</small>
         {%- endfor -%}
+        </span>
     {%- endif %}
 {%- endblock form_errors %}
 
@@ -263,7 +275,12 @@
             {% if not compound -%}
                 {% set label_attr = label_attr|merge({'for': id}) %}
             {% else %}
-                {% set label_attr = label_attr|merge({'for': id ~ '_data'}) %}
+                {% if id == 'person_registration_primary_email' or 'ticket_person_user_email' %}
+                    {% set label_attr = label_attr|merge({'for': id ~ '_email'}) %}
+                {% else %}
+                    {{ id }}
+                    {% set label_attr = label_attr|merge({'for': id ~ '_data'}) %}
+                {% endif %}
             {%- endif %}
         {% endif %}
         {% if required -%}
