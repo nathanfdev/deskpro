@@ -247,4 +247,5 @@ return array (
     'is_page_tickets',
     'has_any_feedback',
     'show_tab_feedback',
+    'is_page_feedback',
 );
