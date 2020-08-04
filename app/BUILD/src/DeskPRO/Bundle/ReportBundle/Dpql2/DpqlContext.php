@@ -107,6 +107,16 @@ class DpqlContext
     }
 
     /**
+     * WARNING: this function generates offset according to current date
+     *          and could return wrong offset if we need to convert timezone for old date
+     *          this is because some timezones have Summer/Winter offset shift  (Daylight Saving Time)
+     *
+     * Example for Europ/Berlin timezone:
+     * - offset for date 2020-07-20 - +2 hours
+     * - but offset for date 2020-02-28 - +1 hour
+     *
+     * This function doesn't take this into account
+     *
      * @return int
      */
     public function getTimezoneOffsetSeconds()
