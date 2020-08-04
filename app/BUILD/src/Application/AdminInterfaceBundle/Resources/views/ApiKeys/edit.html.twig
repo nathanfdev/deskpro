@@ -80,11 +80,11 @@
                                 </div>
                                 <div class="col-lg-10">
                                     <div class="inner-group">
-                                        {% if app.getSetting('api_limits.global.hour') or app.getSetting('api_limits.global.day') %}
-                                            {% if app.getSetting('api_limits.global.hour') %}
+                                        {% if app.getSetting('api_limits.global.hour') > 0 or app.getSetting('api_limits.global.day') > 0 %}
+                                            {% if app.getSetting('api_limits.global.hour') > 0 %}
                                                 <p>{{ app.getSetting('api_limits.global.hour')}} requests per hour.</p>
                                             {% endif %}
-                                            {% if app.getSetting('api_limits.global.day') %}
+                                            {% if app.getSetting('api_limits.global.day') > 0 %}
                                                 <p>{{ app.getSetting('api_limits.global.day')}} requests per day.</p>
                                             {% endif %}
                                             <p>This is the helpdesk global limit that is applied to all API requests.</p>
