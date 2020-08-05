@@ -1165,7 +1165,7 @@ class KbController extends AbstractController
         if (count($articleCategories) === 0) {
             $brands = $this->em->getRepository(Brand::class)->findAll();
             $brand  = array_shift($brands);
-            while (count($articleCategories) === 0 && $brand->getId()) {
+            while (count($articleCategories) === 0 && $brand && $brand->getId()) {
                 $brandId           = $brand->getId();
                 $articleCategories = $this->getFilteredCategory($brandId);
                 $brand             = array_shift($brands);
