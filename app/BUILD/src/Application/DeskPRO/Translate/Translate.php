@@ -896,7 +896,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
             }
 
             try {
-                $text       = $this->getPhraseText($phrase_name, $language, true);
+                $text = $this->getPhraseText($phrase_name, $language, true);
                 if ($text) {
                     $fmt        = $this->getMessageFormatter($locale, $phrase_name, $text);
                     $phraseText = $fmt->format($icuVars);
