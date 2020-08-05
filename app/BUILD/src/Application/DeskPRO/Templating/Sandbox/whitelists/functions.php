@@ -248,4 +248,5 @@ return array (
     'has_any_feedback',
     'show_tab_feedback',
     'is_page_feedback',
+    'core_deskpro_name',
 );

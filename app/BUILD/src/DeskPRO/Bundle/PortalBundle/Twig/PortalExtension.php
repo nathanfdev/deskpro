@@ -183,6 +183,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('agent_can_edit', [$this, 'agentCanEdit']),
             new \Twig_SimpleFunction('asset_data_url', [$this, 'getAssetDataUrl']),
             new \Twig_SimpleFunction('is_category_subscribed', [$this, 'isCategorySubscribed']),
+            new \Twig_SimpleFunction('core_deskpro_name', [$this, 'getDeskproName']),
 
             // Copied from legacy templating, used to render notification rows
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -1023,6 +1024,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function getCurrentTheme()
     {
         return $this->container->get('brand_stack')->getActive()->getBrand()->getThemeSet()->getThemeId();
+    }
+
+    public function getDeskproName()
+    {
+        return $this->getSettingsResolver()->getGlobalSettings()->get('core.deskpro_name');
     }
 
     /**
