@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Routing;
 
 use Application\DeskPRO\Entity\Brand;
+use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
@@ -52,7 +53,7 @@ class UrlRequestContextFactory
     public function createGenerateContext(RequestContext $defaultContext, $name, $parameters = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         if ($referenceType === UrlGeneratorInterface::ABSOLUTE_URL) {
-            return $this->createContextForSettingsUrl($defaultContext, $parameters);
+            return $this->createContextForSettingsUrl($defaultContext, $parameters, $name);
         }
 
         return $defaultContext;
@@ -60,11 +61,12 @@ class UrlRequestContextFactory
 
     /**
      * @param RequestContext $defaultContext
-     * @param array          $parameters
+     * @param array $parameters
+     * @param string $name
      *
      * @return RequestContext
      */
-    private function createContextForSettingsUrl(RequestContext $defaultContext, array $parameters)
+    private function createContextForSettingsUrl(RequestContext $defaultContext, array $parameters, $name)
     {
         $brandStack = $this->container->get('brand_stack');
         /** @var Brand $brand */
@@ -72,8 +74,8 @@ class UrlRequestContextFactory
             ? $parameters['brand']
             : $brandStack->getActive()->getBrand();
 
-        if (isset($this->absContextToBrand[$brand->getId()])) {
-            return $this->absContextToBrand[$brand->getId()];
+        if (isset($this->absContextToBrand[$brand->getId()][$name])) {
+            return $this->absContextToBrand[$brand->getId()][$name];
         }
 
         $settingsResolver = $this->container->get('settings_resolver');
@@ -97,7 +99,9 @@ class UrlRequestContextFactory
         $context->setScheme($urlParts['scheme']);
 
         $slugPrefix = '/b/'.$brand->getSlug();
-        if (!$brandUrl && $brand !== $brandStack->getDefaultBrand() && strpos($context->getBaseUrl(), $slugPrefix) === false) {
+        if (!$brandUrl && $brand !== $brandStack->getDefaultBrand() && strpos($context->getBaseUrl(), $slugPrefix) === false
+            && !in_array($name, PortalRouter::$nonBrandRoutes)
+        ) {
             $context->setBaseUrl(rtrim($context->getBaseUrl(), '/').$slugPrefix);
         }
 
@@ -118,7 +122,7 @@ class UrlRequestContextFactory
             $context->setHttpsPort(443);
         }
 
-        $this->absContextToBrand[$brand->getId()] = $context;
+        $this->absContextToBrand[$brand->getId()][$name] = $context;
 
         return $context;
     }
