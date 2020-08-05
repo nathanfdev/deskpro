@@ -11,12 +11,12 @@ class UsersourcesHelper
     /**
      * @var AuthenticationManager
      */
-    private $auth_manager;
+    private $authManager;
 
     /**
      * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
      * @var array we only want to actually generate this array once per request, so we just store it here if we
@@ -24,10 +24,16 @@ class UsersourcesHelper
      */
     private static $cached = false;
 
-    public function __construct(AuthenticationManager $auth_manager, LanguageManager $language_manager)
+    /**
+     * Constructor.
+     *
+     * @param AuthenticationManager $authManager
+     * @param LanguageManager       $languageManager
+     */
+    public function __construct(AuthenticationManager $authManager, LanguageManager $languageManager)
     {
-        $this->auth_manager     = $auth_manager;
-        $this->language_manager = $language_manager;
+        $this->authManager     = $authManager;
+        $this->languageManager = $languageManager;
     }
 
     /**
@@ -51,7 +57,7 @@ class UsersourcesHelper
      */
     public function hasLoginForm()
     {
-        return $this->auth_manager->hasFormLoginCapability();
+        return $this->authManager->hasFormLoginCapability();
     }
 
     /**
@@ -59,14 +65,14 @@ class UsersourcesHelper
      */
     protected function generateUsersourceViewList()
     {
-        if (!$this->auth_manager->isAuthVisible()) {
+        if (!$this->authManager->isAuthVisible()) {
             return [];
         }
 
         $usersources = [];
 
         /** @var \Application\DeskPRO\Entity\Usersource $us */
-        foreach ($this->auth_manager->getLoginIconUsersources() as $us) {
+        foreach ($this->authManager->getLoginIconUsersources() as $us) {
             $info          = $this->getUsersourceInfo($us);
             $usersources[] = [
                 'id'      => $us->getId(),
@@ -77,7 +83,7 @@ class UsersourcesHelper
         }
 
         /** @var \Application\DeskPRO\Entity\Usersource $us */
-        foreach ($this->auth_manager->getLoginTextButtonUsersources() as $us) {
+        foreach ($this->authManager->getLoginTextButtonUsersources() as $us) {
             $info          = $this->getUsersourceInfo($us);
             $usersources[] = [
                 'id'      => $us->getId(),
@@ -132,6 +138,9 @@ class UsersourcesHelper
 
     protected function usersourceBtnPhrase($name)
     {
-        return $this->language_manager->phrase('portal.account.login-btn-usersource', ['usersource' => $name]);
+        return $this->languageManager->phrase(
+            ['helpcenter.account.login-btn-usersource', 'portal.account.login-btn-usersource'],
+            ['usersource' => $name]
+        );
     }
 }
