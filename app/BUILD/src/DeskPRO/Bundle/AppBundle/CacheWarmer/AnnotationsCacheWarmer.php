@@ -50,6 +50,7 @@ class AnnotationsCacheWarmer implements CacheWarmerInterface
         ];
 
         $annotaionReader = $this->container->get('annotation_reader');
+
         $finder          = Finder::create()
             ->in($dirs)
             ->name('*.php')
@@ -64,16 +65,39 @@ class AnnotationsCacheWarmer implements CacheWarmerInterface
         }
 
         foreach (get_declared_classes() as $class) {
+
             if (0 !== strpos($class, 'DeskPRO') && 0 !== strpos($class, 'Application')) {
                 continue;
             }
 
             $reflection = new \ReflectionClass($class);
+
             try {
                 $annotaionReader->getClassAnnotations($reflection);
+
             } catch (AnnotationException $e) {
                 // todo we have lots of @option that throw AnnotationException. ignore or cleanup?
             }
+
+            foreach ($reflection->getProperties() as $propRef) {
+                try {
+                    $annotaionReader->getPropertyAnnotations($propRef);
+                } catch (AnnotationException $e) {
+                    // todo we have lots of @option that throw AnnotationException. ignore or cleanup?
+                }
+            }
+
+            foreach ($reflection->getMethods() as $methodRef) {
+                try {
+                    $annotaionReader->getMethodAnnotations($methodRef);
+                } catch (AnnotationException $e) {
+                    // todo we have lots of @option that throw AnnotationException. ignore or cleanup?
+                }
+            }
+
+
+
+
         }
     }
 }

@@ -76,6 +76,13 @@ class CacheWarmerServiceAggregate implements CacheWarmerInterface
                 continue;
             }
 
+//            [04-Aug-2020 16:08:36 UTC] Warmer run: Symfony\Bridge\Doctrine\CacheWarmer\ProxyCacheWarmer
+//            [04-Aug-2020 16:08:40 UTC] Warmer run: Doctrine\Bundle\MongoDBBundle\CacheWarmer\ProxyCacheWarmer
+//            [04-Aug-2020 16:08:40 UTC] Warmer run: Doctrine\Bundle\MongoDBBundle\CacheWarmer\HydratorCacheWarmer
+//            [04-Aug-2020 16:08:40 UTC] Warmer run: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkConfigAnnotationRepo
+
+            \error_log("Warmer run: ".get_class($warmer));
+
             $warmer->warmUp($cacheDir);
         }
     }
