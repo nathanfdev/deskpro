@@ -44,8 +44,8 @@ export const loadAssets = createAction(
 
 export const loadPhrases = createAction(
   'PORTAL_TEMPLATES_LOAD_PHRASES',
-  (templateGroup, languageId) => new Promise((resolve) => {
-    repository('Languages').loadEmailPhrases(templateGroup, languageId).then((promise) => {
+  languageId => new Promise((resolve) => {
+    repository('Languages').loadHelpcenterPhrases(languageId).then((promise) => {
       const res = promise.getData();
 
       const phrases = { all: { title: 'all', phrases: {} } };
@@ -230,4 +230,9 @@ export const setTemplate = createAction('PORTAL_TEMPLATES_SET_TEMPLATE');
 export const updateTemplateCode = createAction(
   'PORTAL_TEMPLATES_UPDATE_TEMPLATE_CODE',
   code => code
+);
+
+export const setTemplateSelectedLeft = createAction(
+  'PORTAL_TEMPLATE_SET_SELECTED_LEFT',
+  params => params
 );

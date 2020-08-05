@@ -543,6 +543,66 @@ class LanguagesController extends CrudController
     /**
      * @ApiDoc(
      *      section="Languages",
+     *      description="provide helpcenter phrases for template editor",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *     output="array"
+     * )
+     * @Rest\Get("/helpcenter_phrases/{languageId}")
+     *
+     * @param $languageId
+     *
+     * @return View
+     */
+    public function helpcenterPhrasesAction($languageId)
+    {
+        /** @var Translate $translate */
+        $translate = $this->container->get('deskpro.core.translate');
+
+        if (is_numeric($languageId)) {
+            $language = $languageId;
+        } else {
+            $language = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $languageId]);
+        }
+
+        $phrases = [
+            'helpcenter.account.*',
+            'helpcenter.alerts.*',
+            'helpcenter.approvals.*',
+            'helpcenter.articles.*',
+            'helpcenter.articles.*',
+            'helpcenter.chats.*',
+            'helpcenter.community.*',
+            'helpcenter.direct_messages.*',
+            'helpcenter.downloads.*',
+            'helpcenter.emails.*',
+            'helpcenter.error.*',
+            'helpcenter.eula.*',
+            'helpcenter.flashes.*',
+            'helpcenter.forms.*',
+            'helpcenter.general.*',
+            'helpcenter.knowledgebase.*',
+            'helpcenter.label.*',
+            'helpcenter.members.*',
+            'helpcenter.messenger.*',
+            'helpcenter.news.*',
+            'helpcenter.profile.*',
+            'helpcenter.search.*',
+            'helpcenter.sidebar.*',
+            'helpcenter.tickets.*',
+            'custom.emails.*',
+        ];
+
+        $phrases = $translate->getArrayPhraseTexts($phrases, $language);
+
+        return new View($phrases);
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="Languages",
      *      description="provide translation of a phrase",
      *      statusCodes={
      *          201="Created",

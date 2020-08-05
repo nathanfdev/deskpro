@@ -11,9 +11,7 @@
 
             <div class="row align-items-end">
                 <div class="col-sm-10">
-                    {% include 'Theme:PublishCommon:post-avatars.html.twig' with {
-                        item: article
-                    } %}
+                    {% include 'Theme:PublishCommon:post-avatars.html.twig' with { item: article } %}
 
                     <div class="dp-po-post-info">
                         <ul class="dp-po-post-info-list">
@@ -248,25 +246,16 @@
 {# ------------------------------------------ #}
 {% block page_sidebar %}
     {% if article.labels | length %}
-        {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
-            title: phrase('helpcenter.general.labels'),
-            labels: article.labels
-        } %}
+        {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with { title: phrase('helpcenter.general.labels'), labels: article.labels } %}
     {% endif %}
 
     {% if articleData.related_content %}
-        {% include 'Theme:PublishCommon:related-content.html.twig' with {
-            related_content: articleData.related_content
-        } %}
+        {% include 'Theme:PublishCommon:related-content.html.twig' with { related_content: articleData.related_content } %}
     {% endif %}
 
-    {% include 'Theme:PublishCommon:share.html.twig' with {
-        item: article
-    } %}
+    {% include 'Theme:PublishCommon:share.html.twig' with { item: article } %}
 
-    {% include'Theme:PublishCommon:meta.html.twig' with {
-        item: article
-    } %}
+    {% include'Theme:PublishCommon:meta.html.twig' with { item: article } %}
 {% endblock %}
 
 {% block doc_end %}

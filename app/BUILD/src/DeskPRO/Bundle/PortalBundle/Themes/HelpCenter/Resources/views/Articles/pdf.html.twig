@@ -61,9 +61,7 @@
     {% endif %}
 
     {% if articleData.related_content %}
-        {% include 'Theme:PublishCommon:related-content.html.twig' with {
-            related_content: articleData.related_content
-        } %}
+        {% include 'Theme:PublishCommon:related-content.html.twig' with { related_content: articleData.related_content } %}
     {% endif %}
 
     {% if brand_setting('user.publish_comments') and article.num_comments %}

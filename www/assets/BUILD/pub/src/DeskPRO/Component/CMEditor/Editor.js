@@ -79,7 +79,7 @@ class Editor extends React.Component {
         //   ));
         //   match = re.exec(content);
         // }
-        re = /{{\s*phrase\('([^)]+)'(,\s*{[^}]+})?\)\s*}}/g;
+        re = /{{\s*phrase\('([^)]+)'(,\s*{[^}]+})?(, (true|false))?\)\s*}}/g;
         match = re.exec(content);
         while (match !== null) {
           this.widgets.push(new PhraseWidget(

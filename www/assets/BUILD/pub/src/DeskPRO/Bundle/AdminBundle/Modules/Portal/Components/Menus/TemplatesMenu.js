@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import { fromJS } from 'immutable';
 import { MenuWrapper, Menu } from 'DeskPRO/Component/Semantic/Menu';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import MenuItem from 'DeskPRO/Component/Semantic/Menu/MenuItem';
 import * as actions from '../../Actions/templatesActions';
 import { replaceRoute } from '../../../../Services/history';
-import { fromJS } from 'immutable';
 
 
 @connect(state => ({
@@ -34,11 +34,17 @@ export class TemplatesMenuContainer extends React.Component {
     setTimeout(() => this.props.closeMenu(), 100);
   };
 
+  setSelectedLeft = (item) => {
+    this.props.dispatch(actions.setTemplateSelectedLeft(item));
+  }
+
   render() {
     const templates = this.props.portalEditor.getIn(['info'], null);
     return (
       <TemplatesMenu
         templates={templates}
+        selectedLeft={this.props.portalEditor.get('selectedLeft', null)}
+        setSelectedLeft={this.setSelectedLeft}
         selectTemplate={this.onChangeTemplate}
       />
     );
@@ -46,8 +52,14 @@ export class TemplatesMenuContainer extends React.Component {
 }
 class TemplatesMenu extends React.Component {
   static propTypes = {
-    templates:      PropTypes.object,
-    selectTemplate: PropTypes.func
+    templates:       PropTypes.object,
+    selectedLeft:    PropTypes.object,
+    selectTemplate:  PropTypes.func,
+    setSelectedLeft: PropTypes.func,
+  };
+
+  static defaultProps = {
+    selectLeft: null
   };
 
   static getMenuLabel = (template) => {
@@ -60,29 +72,25 @@ class TemplatesMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLeft: null,
-      filter:       '',
+      filter: '',
     };
   }
 
   componentWillMount() {
-    if (this.props.templates) {
-      this.setState({
-        selectedLeft: this.props.templates.first()
-      });
+    if (this.props.templates && !this.props.selectedLeft) {
+      this.props.setSelectedLeft(this.props.templates.first());
     }
     const button = window.document.getElementsByClassName('emails-block-button')[0];
     this.coverWidth = button.offsetWidth;
   }
 
   setActive = (item) => {
-    this.setState({
-      selectedLeft: item
-    });
+    this.props.setSelectedLeft(item);
   };
 
   getRightPanel = () => {
-    const { selectedLeft, filter } = this.state;
+    const { filter } = this.state;
+    const { selectedLeft } = this.props;
     if (!selectedLeft) {
       return null;
     }
@@ -137,21 +145,21 @@ class TemplatesMenu extends React.Component {
     this.setState({
       filter
     });
-    if (this.state.selectedLeft
-      && this.state.selectedLeft.get('templates')
-        .filter(template => !filter || template.get('name').toLowerCase().indexOf(filter.toLowerCase()) !== -1).size === 0) {
+    if (this.props.selectedLeft
+      && this.props.selectedLeft.get('templates')
+        .filter(
+          template => !filter || template.get('name').toLowerCase().indexOf(filter.toLowerCase()) !== -1
+        ).size === 0) {
       const selectedLeft = this.props.templates.toSeq()
         .filter(group =>
           !filter || group.get('templates')
             .find(template => template.get('name').toLowerCase().indexOf(filter.toLowerCase()) !== -1)
         ).first();
-      this.setState({
-        selectedLeft
-      });
+      this.props.setSelectedLeft(selectedLeft);
     }
   };
 
-  isActive = item => item === this.state.selectedLeft;
+  isActive = item => item === this.props.selectedLeft;
 
   render() {
     return (
