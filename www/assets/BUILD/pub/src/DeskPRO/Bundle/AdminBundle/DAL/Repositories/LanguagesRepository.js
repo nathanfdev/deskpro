@@ -5,6 +5,10 @@ class LanguagesRepository extends ApiRepository {
     return this.api.sendGet(`DP_API/${this.url}/email_phrases/${group}/${languageId}`);
   }
 
+  loadHelpcenterPhrases(languageId) {
+    return this.api.sendGet(`DP_API/${this.url}/helpcenter_phrases/${languageId}`);
+  }
+
   loadTranslations(phraseName) {
     return this.api.sendGet(`DP_API/${this.url}/translations/${phraseName}`);
   }

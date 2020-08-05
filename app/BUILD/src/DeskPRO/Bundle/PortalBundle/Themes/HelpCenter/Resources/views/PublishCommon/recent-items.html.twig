@@ -5,7 +5,7 @@
 			{% for item in items %}
 				<li class="dp-po-news-recent-item ">
 					<a href="{{ portal_path(item) }}" class="dp-po-news-recent-link">
-						<span class="dp-po-news-recent-link-date">{{ phrase('helpcenter.general.date_day_month', {date: item.date_published}) | upper }}</span>
+						<span class="dp-po-news-recent-link-date">{{ phrase('helpcenter.general.date_day_month', {date: item.date_published}) }}</span>
 						{{ item.title }}
 					</a>
 				</li>

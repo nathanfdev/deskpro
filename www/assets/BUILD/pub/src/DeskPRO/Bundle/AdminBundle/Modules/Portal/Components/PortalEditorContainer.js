@@ -61,9 +61,7 @@ class PortalEditorContainer extends React.Component {
       }
     });
 
-
     dispatch(actions.loadPhrases(
-      'user',
       this.props.portalEditor.get('currentLanguage')
     ));
   }

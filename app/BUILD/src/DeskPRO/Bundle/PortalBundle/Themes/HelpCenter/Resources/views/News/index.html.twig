@@ -53,7 +53,7 @@
                     <div class="dp-po-news-listing-item">
                         <a href="{{ portal_path(item) }}" class="dp-po-news-listing-link">
                             <div class="dp-po-news-listing-date">
-                                <span class="dp-po-news-listing-month">{{ phrase('helpcenter.general.date_day_month', {date: item.date_published}) | upper }}</span>
+                                <span class="dp-po-news-listing-month">{{ phrase('helpcenter.general.date_day_month', {date: item.date_published}) }}</span>
                                 <span class="dp-po-news-listing-year">{{ item.date_published | date('Y') }}</span>
                             </div>
                             {% if has_splash(item) %}
@@ -160,7 +160,7 @@
                                         <li class="dp-po-news-filter-date-month-item">
                                             <a href="{{ _self.news_date_filter_path({date: date}) }}"
                                             class="dp-po-news-filter-date-month-link {{ filter_date matches "/#{date}.*/" ? 'active' }}" style="{{ filter_date and 0 == m.count ? 'color: #DDD;' }}">
-                                                {{ m.formatted | upper }}
+                                                {{ m.formatted }}
                                             </a>
                                         </li>
                                     {% endfor %}
@@ -249,7 +249,7 @@
                                 <li class="dp-po-news-filter-date-month-item">
                                     <a href="{{ _self.news_date_filter_path({date: date}) }}"
                                     class="dp-po-news-filter-date-month-link {{ filter_date matches "/#{date}.*/" ? 'active' }}" style="{{ filter_date and 0 == m.count ? 'color: #DDD;' }}">
-                                        {{ m.formatted | upper }}
+                                        {{ m.formatted }}
                                     </a>
                                 </li>
                             {% endfor %}

@@ -40,5 +40,6 @@ export default createReducer(initialState, {
   [actions.updateTemplateCode]:      (state, payload) => state.setIn(['template', 'template_code', 'code'], payload),
   [actions.saveTemplate]:            (state, payload) => state.setIn(['template', 'original_code', 'code'], payload),
   [actions.cleanState]:              state => state.delete('template').delete('currentTemplate'),
-  [actions.cleanExtraTemplates]:     state => state.deleteIn(['template', 'extra_templates'])
+  [actions.cleanExtraTemplates]:     state => state.deleteIn(['template', 'extra_templates']),
+  [actions.setTemplateSelectedLeft]: (state, payload) => state.set('selectedLeft', payload),
 });
