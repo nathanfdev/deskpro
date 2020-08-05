@@ -84,4 +84,10 @@ return [
     \Application\DeskPRO\Tickets\StateChangeRecorder::class => [
         'hasChangedField',
     ],
+    \Application\DeskPRO\NewSettings\SettingsBag::class => [
+        'get',
+    ],
+    \Symfony\Component\Validator\ConstraintViolation::class => SandboxUtils::guessAccessors(
+        \Symfony\Component\Validator\ConstraintViolation::class
+    ),
 ];
