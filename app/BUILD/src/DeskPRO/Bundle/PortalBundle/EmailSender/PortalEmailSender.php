@@ -1,13 +1,12 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessage;
@@ -151,17 +150,19 @@ class PortalEmailSender
     public function sendNewTicketValidationEmail(EmailTo $emailTo, $verifyUrl, Ticket $ticket)
     {
         if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-            $viewModel = $this->container->get('email.user_viewmodel_factory')
-                ->createTicketNewValidateEmailModel($ticket, $verifyUrl);
-            $this->container->get('email.email_sender')
-                ->send($viewModel, ['to' => $emailTo]);
+            $viewModel = $this->container->get('email.user_viewmodel_factory')->createTicketNewValidateEmailModel($ticket, $verifyUrl);
+            $this->container->get('email.email_sender')->send($viewModel, [
+                'to'           => $emailTo,
+                'from_account' => $ticket->getEmailAccount(),
+            ]);
         } else {
             $this->sendTo(
                 $emailTo,
                 'DeskPRO:emails_user:ticket-new-validate-email.html.twig',
                 [
-                    'verify_url' => $verifyUrl,
-                    'ticket'     => $ticket,
+                    'verify_url'   => $verifyUrl,
+                    'ticket'       => $ticket,
+                    'from_account' => $ticket->getEmailAccount(),
                 ]
             );
         }
@@ -307,7 +308,13 @@ class PortalEmailSender
             $message->setTo($emailTo->getEmailAddress(), $emailTo->getName());
         }
         $message->setTemplate($template, $vars);
-        $message->addFrom($this->getDefaultOutgoingEmailAddress());
+
+        if (isset($vars['from_account']) && $vars['from_account'] instanceof EmailAccount) {
+            $message->addFrom($vars['from_account']->getAddress());
+        } else {
+            $message->addFrom($this->getDefaultOutgoingEmailAddress());
+        }
+
         $message->prepare();
         $this->container->get('mailer')->send($message);
     }

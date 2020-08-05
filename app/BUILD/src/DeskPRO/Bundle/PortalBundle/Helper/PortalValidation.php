@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\DataService\PersonDataService;
@@ -69,7 +70,7 @@ class PortalValidation
         $ticket->forceSetAccessCode($saved_form->getAuthCode());
         $verifyUrl = $this->makeValidationUrl(self::NEW_TICKET, $saved_form);
 
-         // find out who we are emailing to
+        // find out who we are emailing to
         if ($person = $saved_form->getPerson()) {
             $emailTo = new EmailTo($person);
         } else {
@@ -88,12 +89,16 @@ class PortalValidation
 
     public function sendTicketByEmailVerificationEmail(Person $person, AbstractReader $reader, $authCode)
     {
-        $ticket          = new Ticket();
-        $ticket->subject = $reader->getSubject()->getSubjectUtf8();
-        $ticket->person  = $person;
+        $ticket = new Ticket();
+        $ticket->setSubject($reader->getSubject()->getSubjectUtf8());
+        $ticket->setPerson($person);
 
-        $emailTo = new EmailTo($person);
+        $source = $reader->getProperty('email_source');
+        if ($source instanceof EmailSource) {
+            $ticket->setEmailAccount($source->getEmailAccount());
+        }
 
+        $emailTo   = new EmailTo($person);
         $verifyUrl = $this->urlGenerator->generate('user_validate_ticketemail', ['auth_code' => $authCode], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $this->mailer->sendNewTicketValidationEmail($emailTo, $verifyUrl, $ticket);
@@ -125,12 +130,15 @@ class PortalValidation
             case self::COMMENT:
             case self::NEW_COMMUNITY_TOPIC:
                 $this->mailer->sendEmailValidation($emailTo, $verifyUrl);
+
                 break;
             case self::ADD_EMAIL:
                 $this->mailer->sendNewEmailValidate($emailTo, $verifyUrl, $savedForm->getPerson());
+
                 break;
             case self::NEW_TICKET:
                 throw new \Exception('use sendTicketVerificationEmail instead of sendVerificationEmail for a ticket.');
+
                 break;
         }
     }
