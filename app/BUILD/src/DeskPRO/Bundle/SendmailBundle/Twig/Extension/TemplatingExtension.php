@@ -2799,6 +2799,10 @@ HTML;
             throw new \RuntimeException("Arrow function cannot be a string");
         }
 
+        if (empty($array)) {
+            return [];
+        }
+
         if (\is_array($array)) {
             if (\PHP_VERSION_ID >= 50600) {
                 return array_filter($array, $arrow, \ARRAY_FILTER_USE_BOTH);
