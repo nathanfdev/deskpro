@@ -123,13 +123,14 @@ class EmailRenderer
             ->setInlineSideloads(true)
             ->setContainer($this->serviceContainer);
 
-        $vars = $this->serviceContainer->getBrandStack()->pushTemporary(
+        $code = $this->serviceContainer->getBrandStack()->pushTemporary(
             $model instanceof TicketEmailType ? $model->getTicket()->getBrand() : null,
-            function () use ($model, $context) {
-                return $this->getSerializer()->toArray(new ApiWrapper($model), $context)['data'];
+            function () use ($model, $context, $templateName) {
+                $vars = $this->getSerializer()->toArray(new ApiWrapper($model), $context)['data'];
+
+                return $this->getTemplateEngine()->render($templateName, $vars);
             }
         );
-        $code = $this->getTemplateEngine()->render($templateName, $vars);
 
         $blobAuthIds  = [];
         $blobSysNames = [];
@@ -157,12 +158,12 @@ class EmailRenderer
 
         // We look for <attachment id='{id}'> and remove it from the template
         $parseBlobIds  = $parseBlobs('#<attachment[^>]*id=("([^"]+)"|\'([^\']+)\')[^>]*>#', $blobAuthIds);
-        $code = $parseBlobIds($code);
+        $code          = $parseBlobIds($code);
         $parseBlobIds($firstMessageCode, true);
 
         // We look for <attachment sys='{id}'> and remove it from the template
         $parseSysNames = $parseBlobs('#<attachment[^>]*sys=("([^"]+)"|\'([^\']+)\')[^>]*>#', $blobSysNames);
-        $code = $parseSysNames($code);
+        $code          = $parseSysNames($code);
         $parseSysNames($firstMessageCode, true);
 
         $templateCode = new EmailTemplateCode($code);
