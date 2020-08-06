@@ -173,7 +173,7 @@ class PusherDeliveryHandler extends MultiplexDeliverHandler
 
             if (empty($response) || $response['status'] !== 200) {
                 if (!$exception) {
-                    $exception = new \RuntimeException('Failed to send Pusher events: '.print_r($response, true));
+                    $exception = new \RuntimeException('Failed to send Pusher events: '.print_r($response, true).', request data: '.print_r($chunk, true));
                 }
             } else {
                 $exception = null;
