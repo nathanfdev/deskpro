@@ -60,6 +60,7 @@ class BlobAuthType extends AbstractType
     {
         $resolver->setDefaults([
             'error_bubbling' => false,
+            'data_class'     => null,
         ]);
     }
 
