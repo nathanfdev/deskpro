@@ -492,4 +492,12 @@ class BlobsController extends CrudController
 
         return $archive;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getLocationUrl($entity, Request $request, array $params = [])
+    {
+        return parent::getLocationUrl($entity, $request, array_merge($params, ['authId' => $entity->getAuthId()]));
+    }
 }
