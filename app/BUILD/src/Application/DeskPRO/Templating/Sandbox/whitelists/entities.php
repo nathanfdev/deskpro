@@ -2724,6 +2724,7 @@ return array (
             178 => 'getoriginalstateclone',
             179 => 'getcustomperdata',
             180 => 'rendercustomfield',
+            181 => 'findlabelbystring',
         ),
     'Application\\DeskPRO\\Entity\\ObjectLang' =>
         array (
