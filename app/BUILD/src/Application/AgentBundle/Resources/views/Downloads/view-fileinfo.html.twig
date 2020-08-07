@@ -1,7 +1,7 @@
 {% if download.blob %}
 	{% if download.blob.is_image %}
 		<div class="thumb" style="float: right;">
-			<a href="{{ download.blob.download_url }}" target="_blank"><img src="{{ download.blob.getThumbnailUrl(50)  }}" /></a>
+			<a href="{{ download.blob.download_url }}" target="_blank"><img style="max-width: 50px; max-height: 50px" src="{{ download.blob.getThumbnailUrl(50)  }}" /></a>
 		</div>
 	{% endif %}
 	<dl class="info-list">

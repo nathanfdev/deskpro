@@ -111,7 +111,7 @@ class ChatMessageType extends AbstractType
             );
 
             if ($blob->isImage()) {
-                $content .= sprintf('<div class="file-thumb"><img src="%s" /></div>', $blob->getThumbnailUrl(50, true));
+                $content .= sprintf('<div class="file-thumb"><img style="max-width: 50px; max-height: 50px" src="%s" /></div>', $blob->getThumbnailUrl(50, true));
             }
 
             $data->setContent($content);

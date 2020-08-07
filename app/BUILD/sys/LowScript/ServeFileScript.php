@@ -905,24 +905,29 @@ class ServeFileScript extends LowScriptAbstract
                 $sth->execute(['original_blob_id' => $blobId, 'sys_name' => $this->getSizedBlobSysName($blobId, '%', false)]);
                 $count = $sth->fetch(\PDO::FETCH_COLUMN);
 
-                if ($count > 25) {
-                    $file = $this->createSizedImage($blob, $size, $isFit, false);
+                // skip image resizing if the image is too large to avoid memory issues
+                $maxDimSize  = 4000;
+                $maxFilesize = 8 * 1024 * 1024; // 8mb
+                if (($blob['dim_w'] > $maxDimSize || $blob['dim_h'] > $maxDimSize || $blob['filesize'] > $maxFilesize) === false) {
+                    if ($count > 25) {
+                        $file = $this->createSizedImage($blob, $size, $isFit, false);
 
-                    $blob['filesize'] = strlen($file);
-                    $headers          = $this->getHeaders($blob);
-                    $response         = new Response($file, 200, $headers);
+                        $blob['filesize'] = strlen($file);
+                        $headers          = $this->getHeaders($blob);
+                        $response         = new Response($file, 200, $headers);
 
-                    $response->send();
+                        $response->send();
 
-                    return;
-                }
+                        return;
+                    }
 
-                $newBlob = $this->createSizedBlob($blob, $size, $isFit, false);
+                    $newBlob = $this->createSizedBlob($blob, $size, $isFit, false);
 
-                if ($newBlob) {
-                    // Possible the resize failed, in which case we'd fall back on showing the orig
-                    // So only reassign blob if we know $new_blob was actually made
-                    $blob = $newBlob;
+                    if ($newBlob) {
+                        // Possible the resize failed, in which case we'd fall back on showing the orig
+                        // So only reassign blob if we know $new_blob was actually made
+                        $blob = $newBlob;
+                    }
                 }
             }
         }

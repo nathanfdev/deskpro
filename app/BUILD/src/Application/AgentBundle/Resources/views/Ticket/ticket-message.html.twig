@@ -310,7 +310,8 @@
 							    data-is-image="{{ blob.isImage() }}"
 								target="_blank"
                             >
-								<img src="{{ blob.getThumbnailUrl(50, 1, true) }}"
+								<img style="max-width: 50px; max-height: 50px"
+									 src="{{ blob.getThumbnailUrl(50, 1, true) }}"
 									 alt=""
 									 class="preview" />
 							</a>

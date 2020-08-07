@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -667,7 +665,7 @@ class UserChatController extends AbstractController
 
         $msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">".htmlspecialchars($blob->filename).'</a> ('.$blob->getReadableFilesize().')';
         if ($blob->isImage()) {
-            $msg .= '<div class="file-thumb"><img src="'.$blob->getThumbnailUrl(50, true).'" /></div>';
+            $msg .= '<div class="file-thumb"><img style="max-width: 50px; max-height: 50px" src="'.$blob->getThumbnailUrl(50, true).'" /></div>';
         }
 
         /** @var $chatManager \Application\DeskPRO\Chat\UserChat\UserChatManager */
