@@ -65,7 +65,6 @@ class AnnotationsCacheWarmer implements CacheWarmerInterface
         }
 
         foreach (get_declared_classes() as $class) {
-
             if (0 !== strpos($class, 'DeskPRO') && 0 !== strpos($class, 'Application')) {
                 continue;
             }
@@ -94,10 +93,6 @@ class AnnotationsCacheWarmer implements CacheWarmerInterface
                     // todo we have lots of @option that throw AnnotationException. ignore or cleanup?
                 }
             }
-
-
-
-
         }
     }
 }

@@ -75,6 +75,15 @@ class CliKernelBootTask implements BootTaskInterface
                 break;
         }
 
+        $apiKernel = new Kernel\ApiKernel($env->getEnvId(), $env->isDebug(), $env);
+        $apiKernel->boot();
+
+        $portalKernel = new Kernel\PortalKernel($env->getEnvId(), $env->isDebug(), $env);
+        $portalKernel->boot();
+
+        $messengerKernel = new Kernel\MessengerKernel($env->getEnvId(), $env->isDebug(), $env);
+        $messengerKernel->boot();
+
         return [
             'cli_input'  => new ArgvInput($argv),
             'cli_kernel' => $kernel,

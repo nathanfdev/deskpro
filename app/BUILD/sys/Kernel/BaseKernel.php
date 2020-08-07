@@ -258,7 +258,7 @@ abstract class BaseKernel extends Kernel
 
         return $this->dpBuildId = basename(realpath(__DIR__.'/../'));
     }
-    
+
     private function getDpAppDir()
     {
         return $this->targetDirs[4].'/app/' . $this->getDpBuildId();
