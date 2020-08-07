@@ -237,8 +237,8 @@ CODE;
     private function updateTranslations($translations, AbstractBrandAwareSettings $model)
     {
         /** @var Translate $translate */
-        $translate = $this->container->get('deskpro.core.translate');
-
+        $translate     = $this->container->get('deskpro.core.translate');
+        $updateVersion = false;
         foreach ($translations as $phraseName => $translationStack) {
             $phraseName = str_replace('helpcenter_messenger_', 'helpcenter.messenger.', $phraseName);
             foreach ($translationStack as $translation) {
