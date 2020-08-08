@@ -650,6 +650,7 @@ helpcenter.messenger.tickets_form_back: Back
 helpcenter.messenger.tickets_form_header: 'New ticket'
 helpcenter.messenger.tickets_form_message: Message
 helpcenter.messenger.tickets_form_name: Name
+helpcenter.messenger.tickets_form_email: Email
 helpcenter.messenger.tickets_form_or: or
 helpcenter.messenger.tickets_form_priority: Priority
 helpcenter.messenger.tickets_form_product: Product
