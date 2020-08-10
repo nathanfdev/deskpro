@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Cloud\LegacyApiBundle\Controller;
 
@@ -64,7 +62,7 @@ class CloudCallController extends AbstractController
                 $interface = 'billing';
             }
 
-            $codeData = TmpData::create('reset-password', ['person_id' => $person['id'], 'interface' => $interface], '+3 days');
+            $codeData = TmpData::create('reset-password', ['person_id' => $person->getId(), 'email' => $person->getPrimaryEmailAddress(), 'interface' => $interface], '+3 days');
             $this->em->persist($codeData);
             $this->em->flush();
 

@@ -117,6 +117,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
 
             if ($codeData && $person
+                && $codeData->getData('email') === $person->getPrimaryEmailAddress()
                 && $codeData->getDateCreated()->getTimestamp() > (time() - $validSeconds)
                 && $codeData->getDateCreated() > $person->getDatePasswordSet()
                 && $codeData->getDateCreated() > $person->getEmailsUpdatedDate()
