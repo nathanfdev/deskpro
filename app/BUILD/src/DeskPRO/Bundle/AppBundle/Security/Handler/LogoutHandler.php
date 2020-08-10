@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
+use Application\DeskPRO\Entity\SessData;
+use Application\DeskPRO\Entity\Session;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,9 +57,9 @@ class LogoutHandler implements LogoutHandlerInterface, LogoutSuccessHandlerInter
         foreach (['dpsid-portal', 'dpsid-agent', 'dpsid-admin', 'dpreme'] as $cookie_name) {
             if (!empty($_COOKIE[$cookie_name])) {
                 if ($cookie_name === 'dpsid-portal') {
-                    $sess2 = $this->em->getRepository('DeskPRO:SessData')->findOneBy(['sess_id' => $_COOKIE[$cookie_name]]);
+                    $sess2 = $this->em->getRepository(SessData::class)->findOneBy(['sess_id' => $_COOKIE[$cookie_name]]);
                 } else {
-                    $sess2 = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($_COOKIE[$cookie_name]);
+                    $sess2 = $this->em->getRepository(Session::class)->getSessionFromCode($_COOKIE[$cookie_name]);
                 }
 
                 if ($sess2) {

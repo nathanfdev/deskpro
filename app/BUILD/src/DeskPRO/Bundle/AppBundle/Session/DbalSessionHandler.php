@@ -248,7 +248,7 @@ class DbalSessionHandler implements \SessionHandlerInterface
         switch ($platform) {
             case 'mysql':
                 return "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->timeCol, visitor_id, person_id) VALUES (:id, :data, :time, :visitor_id, :person_id) ".
-                "ON DUPLICATE KEY UPDATE $this->dataCol = VALUES($this->dataCol), $this->timeCol = VALUES($this->timeCol)";
+                "ON DUPLICATE KEY UPDATE $this->dataCol = VALUES($this->dataCol), $this->timeCol = VALUES($this->timeCol), person_id = :person_id";
             case 'oracle':
                 // DUAL is Oracle specific dummy table
                 return "MERGE INTO $this->table USING DUAL ON ($this->idCol = :id) ".
