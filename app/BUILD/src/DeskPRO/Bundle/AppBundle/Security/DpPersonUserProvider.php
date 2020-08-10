@@ -72,8 +72,14 @@ class DpPersonUserProvider implements UserProviderInterface
         }
 
         $person = $this->fetchPerson($user->getId());
+        if ($person && $person->getPassword() === $user->getPassword()) {
+            return $person;
+        }
 
-        return $person ?: new PersonGuest();
+        $guest = new PersonGuest();
+        $guest->setEmail($person ? $person->getEmail() : '');
+
+        return $guest;
     }
 
     /**
