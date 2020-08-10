@@ -17,7 +17,6 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use Orb\Auth\DPOAuth2Proxy;
-use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -110,12 +109,18 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             /** @var TmpDataRepository $tmpDataRepository */
             $tmpDataRepository = $this->em->getRepository(TmpData::class);
             $codeData          = $tmpDataRepository->getByCode($code, 'reset-password');
-            $person            = null;
+            $validSeconds      = $this->get('settings_resolver')->getGlobalSettings()->get('user.password_reset_code_time_limit', 18000);
+
+            $person = null;
             if ($codeData) {
                 $person = $this->em->find(Person::class, $codeData->getData('person', 0));
             }
 
-            if ($codeData and $person) {
+            if ($codeData && $person
+                && $codeData->getDateCreated()->getTimestamp() > (time() - $validSeconds)
+                && $codeData->getDateCreated() > $person->getDatePasswordSet()
+                && $codeData->getDateCreated() > $person->getEmailsUpdatedDate()
+            ) {
                 if ($newPassword = $this->in->getString('new_password')) {
                     $violations = $this->container->getValidator()
                         ->validateValue($newPassword, new DpPassword(['person' => $person]));
