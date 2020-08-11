@@ -103,9 +103,24 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
         }
 
-        $hasDoneReset = false;
+        $failedLoginName = $this->session->get('failed_login_name', false);
+        if (!$failedLoginName) {
+            //we are going to guess they want to login with last username
+            $failedLoginName = $this->session->get('last_username', false);
+        }
 
-        if ($code = $this->in->getString('reset_code')) {
+        $hasDoneReset = false;
+        $captchaView  = null;
+
+        $check = new LoginAbuseCheck($failedLoginName, $request->getClientIp());
+        $check->markAsCheckOnly();
+        $this->container->get('anti_abuse')->check($check);
+        if ($check->isCaptchaRecommended()) {
+            $captcha     = $this->createForm(DpCaptchaType::class);
+            $captchaView = $captcha->createView();
+        }
+
+        if (!$check->isLockoutRecommended() && $code = $this->in->getString('reset_code')) {
             /** @var TmpDataRepository $tmpDataRepository */
             $tmpDataRepository = $this->em->getRepository(TmpData::class);
             $codeData          = $tmpDataRepository->getByCode($code, 'reset-password');
@@ -190,11 +205,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
         }
 
-        $failedLoginName = $this->session->get('failed_login_name', false);
-        if (!$failedLoginName) {
-            //we are going to guess they want to login with last username
-            $failedLoginName = $this->session->get('last_username', false);
-        }
         $failedToLogin = false;
         if ($this->session->has('failed_to_login')) {
             $failedToLogin = $this->session->get('failed_to_login');
@@ -205,16 +215,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $logoBlob = null;
         if ($logoBlobId = $this->settings->get('agent.login_logo_blob_id')) {
             $logoBlob = $this->em->find(Blob::class, $logoBlobId);
-        }
-
-        $captchaView = null;
-
-        $check = new LoginAbuseCheck($failedLoginName, $request->getClientIp());
-        $check->markAsCheckOnly();
-        $this->container->get('anti_abuse')->check($check);
-        if ($check->isCaptchaRecommended()) {
-            $captcha     = $this->createForm(DpCaptchaType::class);
-            $captchaView = $captcha->createView();
         }
 
         $urlCorrections = $request->attributes->get('deskpro.url_corrector.corrections', []);
