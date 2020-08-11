@@ -13,6 +13,8 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Application\DeskPRO\Routing\Generator\UrlGenerator;
 use Composer\CaBundle\CaBundle;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
@@ -1024,11 +1026,17 @@ JS;
         return $this->createNotFoundException();
     }
 
-    public function getPasswordConfirmCodeAction()
+    public function getPasswordConfirmCodeAction(Request $request)
     {
-        $password = $this->in->getString('password');
+        $password   = $this->in->getString('password');
+        $invalidRes = $this->createJsonResponse(['invalid' => true]);
 
-        $invalid_res = $this->createJsonResponse(['invalid' => true]);
+        try {
+            $check = new LoginAbuseCheck($this->person->getEmail(), $request->getClientIp());
+            $this->container->get('anti_abuse')->check($check);
+        } catch (AntiAbuseException $e) {
+            return $invalidRes;
+        }
 
         $code      = $this->session->getEntity()->generateSecurityToken('password_confirm'.$this->person->secret_string);
         $valid_res = $this->createJsonResponse(['code' => $code]);
@@ -1071,7 +1079,9 @@ JS;
             }
         }
 
-        return $invalid_res;
+        $this->container->get('anti_abuse')->saveRateLimit($check);
+
+        return $invalidRes;
     }
 
     protected function _initUserSourceAdapter($usersource, $context = null)
