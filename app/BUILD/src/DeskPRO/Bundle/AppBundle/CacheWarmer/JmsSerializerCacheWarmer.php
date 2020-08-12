@@ -32,6 +32,7 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
         $dirs = [
             DP_ROOT.'/src/Application/DeskPRO/Domain',
             DP_ROOT.'/src/Application/DeskPRO/Entity',
+            DP_ROOT.'/src/Application/DeskPRO/Tickets/Triggers',
             DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Entity',
             DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Serializer/Model',
             DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Model',
@@ -42,6 +43,8 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
             DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Ticket',
             DP_ROOT.'/src/DeskPRO/Bundle/MessengerBundle/Settings',
             DP_ROOT.'/src/DeskPRO/Bundle/ReportBundle/Serializer/Model',
+            DP_ROOT.'/src/DeskPRO/Bundle/SendmailBundle/View/Model',
+            DP_ROOT.'/src/Orb/Util',
         ];
 
         $finder = Finder::create()
@@ -61,9 +64,11 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
                 $this->cacheMetadata($class);
             } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\AppBundle\\Entity')) {
                 $this->cacheMetadata($class);
+            } elseif (0 === strpos($class, 'Application\\DeskPRO\\Domain')) {
+                $this->cacheMetadata($class);
             } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\AppBundle\\Serializer\\Model')) {
                 $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'Application\\DeskPRO\\Domain')) {
+            } elseif (0 === strpos($class, 'Application\\DeskPRO\\Tickets\\Triggers')) {
                 $this->cacheMetadata($class);
             } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\ApiBundle\\Model')) {
                 $this->cacheMetadata($class);
@@ -82,6 +87,10 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
             } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\ReportBundle\\Serializer\\Model')) {
                 $this->cacheMetadata($class);
             } elseif (0 === strpos($class, 'ArrayObject')) {
+                $this->cacheMetadata($class);
+            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\SendmailBundle\\View\\Model')) {
+                $this->cacheMetadata($class);
+            } elseif (0 === strpos($class, 'Orb\\Util')) {
                 $this->cacheMetadata($class);
             }
         }

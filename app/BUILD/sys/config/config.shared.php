@@ -199,9 +199,7 @@ $container->setDefinition('assets.packages', $definition);
 
 // doctrine.orm.default_query_cache
 $definition = new Definition();
-$definition->setClass('Orb\\Doctrine\\Common\\Cache\\ArrayFileCache');
-$definition->setFactory('Application\\DeskPRO\\DependencyInjection\\SystemServices\\ArrayFileCacheFactory::create');
-$definition->setArguments(['dql']);
+$definition->setClass('Doctrine\\Common\\Cache\\ArrayCache');
 $container->setDefinition('doctrine.orm.default_query_cache', $definition);
 
 // entity listeners

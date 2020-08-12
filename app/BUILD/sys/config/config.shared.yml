@@ -38,6 +38,15 @@ services:
     tags:
       - { name: twig.extension }
 
+  fos_rest.allowed_methods_loader:
+    class: DeskPRO\Bundle\ApiBundle\Rest\Response\AllowedMethodsRouterLoader
+    arguments:
+      - "@router"
+      - "%kernel.cache_dir%/fos_rest"
+      - "%kernel.debug%"
+    tags:
+      - { name: kernel.cache_warmer }
+
 monolog:
   channels: # you MUST also update portal_config.yml if you change these
     - "dp.tickets.filters.tengine.dbal.engine"

@@ -22,3 +22,8 @@ services:
       - "@settings_resolver"
     tags:
       - {name: kernel.event_subscriber }
+
+  kernels_cache_warmer:
+    class: DeskPRO\Bundle\AppBundle\CacheWarmer\KernelsCacheWarmer
+    tags:
+      - { name: 'kernel.cache_warmer', priority: 4096 }
