@@ -533,7 +533,7 @@ class DownloadsController extends AbstractController
         if (count($rootCategories) === 0) {
             $brands = $this->em->getRepository(Brand::class)->findAll();
             $brand  = array_shift($brands);
-            while (count($rootCategories) === 0 && $brand->getId()) {
+            while (count($rootCategories) === 0 && $brand && $brand->getId()) {
                 $brandId        = $brand->getId();
                 $rootCategories = $this->getFilteredCategory($brandId);
                 $brand          = array_shift($brands);
