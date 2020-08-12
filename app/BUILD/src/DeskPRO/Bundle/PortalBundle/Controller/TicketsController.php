@@ -313,7 +313,7 @@ class TicketsController extends AbstractController
         if ($person && !$person instanceof PersonGuest) {
             $fullFormOptions['person'] = $person;
         }
-        $form_full         = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, $fullFormOptions);
+        $form_full         = $this->createForm(TicketWithLayoutsWebFullType::class, null, $fullFormOptions);
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
