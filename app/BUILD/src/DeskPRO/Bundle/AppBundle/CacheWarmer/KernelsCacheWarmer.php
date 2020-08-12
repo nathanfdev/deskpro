@@ -8,6 +8,7 @@ use DpSys\Kernel\BaseKernel;
 use DpSys\Kernel\DpKernel;
 use DpSys\Kernel\MessengerKernel;
 use DpSys\Kernel\PortalKernel;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 /**
@@ -46,6 +47,10 @@ class KernelsCacheWarmer implements CacheWarmerInterface
             /** @var BaseKernel $kernel */
             $kernel = new $kernelClass($env->getEnvId(), $env->isDebug(), $env);
             $kernel->boot();
+
+            /** @var Router $router */
+            $router = $kernel->getContainer()->get('router');
+            $router->warmUp($cacheDir);
         }
     }
 
