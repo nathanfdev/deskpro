@@ -109,6 +109,20 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             $failedLoginName = $this->session->get('last_username', false);
         }
 
+        $code = $this->in->getString('reset_code');
+        if ($code) {
+            /** @var TmpDataRepository $tmpDataRepository */
+            $tmpDataRepository = $this->em->getRepository(TmpData::class);
+            $codeData          = $tmpDataRepository->getByCode($code, 'reset-password');
+            $validSeconds      = $this->get('settings_resolver')->getGlobalSettings()->get('user.password_reset_code_time_limit', 18000);
+
+            $person = null;
+            if ($codeData) {
+                $person          = $this->em->find(Person::class, $codeData->getData('person', 0));
+                $failedLoginName = $person->getEmail();
+            }
+        }
+
         $hasDoneReset = false;
         $captchaView  = null;
 
@@ -120,17 +134,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             $captchaView = $captcha->createView();
         }
 
-        if (!$check->isLockoutRecommended() && $code = $this->in->getString('reset_code')) {
-            /** @var TmpDataRepository $tmpDataRepository */
-            $tmpDataRepository = $this->em->getRepository(TmpData::class);
-            $codeData          = $tmpDataRepository->getByCode($code, 'reset-password');
-            $validSeconds      = $this->get('settings_resolver')->getGlobalSettings()->get('user.password_reset_code_time_limit', 18000);
-
-            $person = null;
-            if ($codeData) {
-                $person = $this->em->find(Person::class, $codeData->getData('person', 0));
-            }
-
+        if (!$check->isLockoutRecommended() && $code) {
             if ($codeData && $person
                 && $codeData->getData('email') === $person->getPrimaryEmailAddress()
                 && $codeData->getDateCreated()->getTimestamp() > (time() - $validSeconds)
