@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -183,7 +181,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
                 if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                     $dateLockEnd = new \DateTime();
-                    $dateLockEnd->add(new \DateInterval('P'.$rateLocktime.'S'));
+                    $dateLockEnd->add(new \DateInterval('PT'.$rateLocktime.'S'));
                     $viewModel = $this->container->get('email.user_viewmodel_factory')
                         ->createRateLimitNoticeModel(
                             $ticket,
