@@ -1,12 +1,9 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
@@ -20,21 +17,26 @@ class TicketReminders extends AbstractJob
 {
     const DEFAULT_INTERVAL = 60;
 
-    /** @var int */
-    protected $count_reminders_sent;
+    /**
+     * @var int
+     */
+    protected $countRemindersSent;
 
+    /**
+     * {@inheritDoc}
+     */
     public function run()
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\Repository\SavedFormRepository $saved_form_repo */
-        $saved_form_repo = App::$container->getEm()->getRepository(SavedForm::class);
+        /** @var \DeskPRO\Bundle\AppBundle\Entity\Repository\SavedFormRepository $savedFormRepo */
+        $savedFormRepo = App::$container->getEm()->getRepository(SavedForm::class);
 
-        $first_reminders  = $saved_form_repo->getForTicketReminders(0, new \DateTime('now - 3 hours'));
-        $second_reminders = $saved_form_repo->getForTicketReminders(1, new \DateTime('now - 24 hours'));
-        $third_reminders  = $saved_form_repo->getForTicketReminders(2, new \DateTime('now - 48 hours'));
+        $firstReminders  = $savedFormRepo->getForTicketReminders(0, new \DateTime('now - 3 hours'));
+        $secondReminders = $savedFormRepo->getForTicketReminders(1, new \DateTime('now - 24 hours'));
+        $thirdReminders  = $savedFormRepo->getForTicketReminders(2, new \DateTime('now - 48 hours'));
 
-        $this->sendReminders($first_reminders);
-        $this->sendReminders($second_reminders);
-        $this->sendReminders($third_reminders);
+        $this->sendReminders($firstReminders);
+        $this->sendReminders($secondReminders);
+        $this->sendReminders($thirdReminders);
     }
 
     /**
@@ -47,55 +49,86 @@ class TicketReminders extends AbstractJob
         }
     }
 
-    protected function sendReminder(SavedForm $saved_form)
+    /**
+     * @param SavedForm $savedForm
+     */
+    protected function sendReminder(SavedForm $savedForm)
     {
         try {
-            $this->sendTicketReminder($saved_form);
-            $saved_form->incrementSentReminders();
+            $this->sendTicketReminder($savedForm);
+            $savedForm->incrementSentReminders();
             App::$container->getEm()->flush();
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e, false);
         }
     }
 
-    protected function sendTicketReminder(SavedForm $saved_form)
+    /**
+     * @param SavedForm $savedForm
+     *
+     * @throws \Exception
+     */
+    protected function sendTicketReminder(SavedForm $savedForm)
     {
-        $validate_url = App::$container->getRouter()->generate('portal_validation',
-            ['type' => PortalValidation::NEW_TICKET, 'auth_code' => $saved_form->getAuthCode()],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        $validateUrlParams = [
+            'type'      => PortalValidation::NEW_TICKET,
+            'auth_code' => $savedForm->getAuthCode(),
+        ];
 
-        if ($person = $saved_form->getPerson()) {
-            $email_to = new EmailTo($person);
+        if ($brandId = $savedForm->getMetaDataValue('brand')) {
+            $brand = $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository(Brand::class)->find($brandId);
         } else {
-            if (!$email = $saved_form->getMetaDataValue('email')) {
-                throw new \InvalidArgumentException(
-                    'trying to send a verification email, but no email provided. saved form must have a Person, or its metadata must have an "email" key.'
-                );
-            }
-            $name     = $saved_form->getMetaDataValue('name');
-            $email_to = new EmailTo();
-            $email_to->setTo($email, $name);
+            $brand = null;
         }
 
-        if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-            $viewModel = App::$container->get('email.user_viewmodel_factory')
-                ->createTicketNewReminderModel($validate_url, $saved_form->getDateExpires());
-            App::$container->get('email.email_sender')
-                ->send($viewModel, ['to' => $email_to]);
-        } else {
-            $message = App::getMailer()->createMessage();
-            if ($person = $email_to->getPerson()) {
-                $message->setToPerson($person);
-            } else {
-                $message->setTo($email_to->getEmailAddress(), $email_to->getName());
-            }
-            $message->setTemplate('DeskPRO:emails_user:ticket-new-reminder.html.twig', [
-                'verify_url'  => $validate_url,
-                'expire_date' => $saved_form->getDateExpires(),
-            ]);
+        $brandStack = $this->getContainer()->get('brand_stack');
+        if ($brand) {
+            $brandStack->push($brand);
+        }
 
-            App::getMailer()->send($message);
+        try {
+            $validateUrl = App::$container->getRouter()->generate('portal_validation',
+                $validateUrlParams,
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            if ($person = $savedForm->getPerson()) {
+                $emailTo = new EmailTo($person);
+            } else {
+                if (!$email = $savedForm->getMetaDataValue('email')) {
+                    throw new \InvalidArgumentException(
+                        'trying to send a verification email, but no email provided. saved form must have a Person, or its metadata must have an "email" key.'
+                    );
+                }
+                $name    = $savedForm->getMetaDataValue('name');
+                $emailTo = new EmailTo();
+                $emailTo->setTo($email, $name);
+            }
+
+            if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                $viewModel = App::$container->get('email.user_viewmodel_factory')->createTicketNewReminderModel($validateUrl, $savedForm->getDateExpires());
+                App::$container->get('email.email_sender')->send($viewModel, ['to' => $emailTo]);
+            } else {
+                $message = App::getMailer()->createMessage();
+                if ($person = $emailTo->getPerson()) {
+                    $message->setToPerson($person);
+                } else {
+                    $message->setTo($emailTo->getEmailAddress(), $emailTo->getName());
+                }
+                $message->setTemplate('DeskPRO:emails_user:ticket-new-reminder.html.twig', [
+                    'verify_url'  => $validateUrl,
+                    'expire_date' => $savedForm->getDateExpires(),
+                ]);
+
+                App::getMailer()->send($message);
+            }
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e, false);
+        } catch (\Throwable $e) {
+        }
+
+        if ($brand) {
+            $brandStack->pop();
         }
     }
 }

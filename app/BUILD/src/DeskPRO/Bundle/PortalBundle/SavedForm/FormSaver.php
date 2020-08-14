@@ -1,14 +1,11 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\SavedForm;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\SavedFormRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -34,19 +31,33 @@ class FormSaver
     /**
      * @var SavedFormRepository
      */
-    private $saved_form_repo;
+    private $savedFormRepo;
 
     /**
      * @var Session
      */
     private $session;
 
-    public function __construct(UrlGeneratorInterface $generator, EntityManager $em, Session $session)
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
+     * Constructor.
+     *
+     * @param UrlGeneratorInterface $generator
+     * @param EntityManager         $em
+     * @param Session               $session
+     * @param BrandStack            $brandStack
+     */
+    public function __construct(UrlGeneratorInterface $generator, EntityManager $em, Session $session, BrandStack $brandStack)
     {
-        $this->generator       = $generator;
-        $this->em              = $em;
-        $this->saved_form_repo = $em->getRepository('DeskPRO\Bundle\AppBundle\Entity\SavedForm');
-        $this->session         = $session;
+        $this->generator     = $generator;
+        $this->em            = $em;
+        $this->savedFormRepo = $em->getRepository('DeskPRO\Bundle\AppBundle\Entity\SavedForm');
+        $this->session       = $session;
+        $this->brandStack    = $brandStack;
     }
 
     /**
@@ -57,7 +68,7 @@ class FormSaver
     public function getAutoSubmitSavedForm()
     {
         if ($external_code = $this->session->get(static::AUTO_SUBMIT_SESSION_KEY)) {
-            return $this->saved_form_repo->getByExternalCode($external_code);
+            return $this->savedFormRepo->getByExternalCode($external_code);
         }
 
         return;
@@ -72,14 +83,12 @@ class FormSaver
      */
     public function getSavedForms(Person $person)
     {
-        $saved_forms = [];
-
         $external_codes = $this->session->get(static::SAVED_FORMS_SESSION_KEY, []);
         if (!is_array($external_codes)) {
             $external_codes = [];
         }
 
-        return $this->saved_form_repo->getForPerson($person, $external_codes);
+        return $this->savedFormRepo->getForPerson($person, $external_codes);
     }
 
     /**
@@ -91,7 +100,7 @@ class FormSaver
      */
     public function getByExternalCode($external_code)
     {
-        return $this->saved_form_repo->getByExternalCode($external_code);
+        return $this->savedFormRepo->getByExternalCode($external_code);
     }
 
     /**
@@ -119,11 +128,12 @@ class FormSaver
         $saved_form->setMetaData([
             'route'        => $route,
             'route_params' => $route_params,
+            'brand'        => $this->brandStack->getActive()->getBrand()->getId(),
         ]);
 
         // if we can, make it easier to login when prompted to login
         if ($email = $person->getEmailAddress()) {
-            $request->getSession()->set('last_username',  $email);
+            $request->getSession()->set('last_username', $email);
         }
 
         $this->em->persist($saved_form);
@@ -168,13 +178,14 @@ class FormSaver
             'route_params' => $route_params,
             'email'        => $email,
             'name'         => $name,
+            'brand'        => $this->brandStack->getActive()->getBrand()->getId(),
         ]);
 
         // if we can, make it easier to login when prompted to login
         if ($email) {
-            $request->getSession()->set('last_username',  $email);
+            $request->getSession()->set('last_username', $email);
         } elseif ($person && $person->getPrimaryEmail()) {
-            $request->getSession()->set('last_username',  $person->getEmailAddress());
+            $request->getSession()->set('last_username', $person->getEmailAddress());
         }
 
         $this->em->persist($saved_form);

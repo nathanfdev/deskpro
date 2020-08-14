@@ -6,6 +6,7 @@ services:
       - "@router"
       - "@doctrine.orm.default_entity_manager"
       - "@session"
+      - "@brand_stack"
 
   listener.response.double_submit:
     class: DeskPRO\Bundle\PortalBundle\Form\EventListener\DoubleSubmitJavascriptListener
