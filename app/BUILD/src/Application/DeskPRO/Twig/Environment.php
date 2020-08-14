@@ -214,6 +214,7 @@ class Environment extends \Twig_Environment
     public function getTemplateClass($name, $index = null)
     {
         $key = $this->getLoader()->getCacheKey($name);
+        $key = str_replace(DP_DIR.DIRECTORY_SEPARATOR, '', $key);
 
         $extensions = array_keys($this->extensions);
         sort($extensions);
@@ -221,7 +222,9 @@ class Environment extends \Twig_Environment
         $key .= implode('', $extensions);
         $key .= function_exists('twig_template_get_attributes');
 
-        return $this->templateClassPrefix.hash('sha256', $key).(null === $index ? '' : '_'.$index);
+        $class = $this->templateClassPrefix.hash('sha256', $key).(null === $index ? '' : '_'.$index);
+
+        return $class;
     }
 
     public function getCacheFilename($name)

@@ -87,9 +87,8 @@ class PortalLoader implements \Twig_LoaderInterface
         }
 
         return $this->getBrandTheme()->getActiveThemeSet()->getThemeId()
-               .$this->brandThemeLoader->getPortalModeStorage()->getMode()
-               .$persisted
-               .$name;
+            .$persisted
+            .$name;
     }
 
     /**
