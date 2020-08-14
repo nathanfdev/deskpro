@@ -36,10 +36,10 @@ use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
 use Orb\Util\OptionsArray;
 use Orb\Util\Strings;
+use Orb\Util\Testable\DateTime;
 use Orb\Util\Util;
 use Orb\Util\WorkHoursSet;
 use Orb\Util\WorkHoursSetAll;
-use Orb\Util\Testable\DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -2578,6 +2578,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param EmailAccount $email_account
+     */
+    public function setEmailAccount(EmailAccount $email_account = null)
+    {
+        $this->setModelField('email_account', $email_account);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getEmailAccountAddress()
@@ -3123,13 +3133,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected function getTotalUserWaitingWorkTimeLegacy()
     {
         $time = 0;
-        $now = new DateTime();
-        $wh = $this->getWorkHoursSet();
+        $now  = new DateTime();
+        $wh   = $this->getWorkHoursSet();
 
         foreach ($this->waiting_times as $waiting) {
             if (array_key_exists('type', $waiting) && $waiting['type'] == 'user') {
                 $time += $wh->getWorkTimeBetween($waiting['start'], $waiting['end']);
-            } else if (array_key_exists('ticket_status', $waiting)) {
+            } elseif (array_key_exists('ticket_status', $waiting)) {
                 try {
                     $status = App::getContainer()->getTicketStatuses()->findStatusOrException($waiting['ticket_status']);
                 } catch (\Exception $e) {
@@ -3150,7 +3160,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     *
      * @return int
      */
     public function getTotalUserWaitingWorkTime()
@@ -3163,9 +3172,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             return $this->getTotalUserWaitingWorkTimeLegacy();
         }
 
-        $time = (int)$this->total_user_waiting_wh;
-        $now = new DateTime();
-        
+        $time = (int) $this->total_user_waiting_wh;
+        $now  = new DateTime();
+
         // need the condition; its possible the wh_start was in future if the last change was out of hours
         if (
             $this->total_user_waiting_wh_start
@@ -3330,7 +3339,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->addStatusTimeRecord($oldTicketStatus->getStatusCode(), $oldDateStatus, $now);
 
         if (!$ticketStatus->isCountUserWaitingTime() && $oldTicketStatus->isCountUserWaitingTime()) {
-
             if ($this->date_user_waiting) {
                 $this->setModelField(
                     'total_user_waiting',
@@ -3359,7 +3367,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
 
         if ($ticketStatus->isCountUserWaitingTime()) {
-
             if (!$this->date_user_waiting) {
                 /* @var \Orb\Util\Testable\DateTime */
                 $this->setModelField('date_user_waiting', new DateTime());
@@ -3372,9 +3379,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 );
             }
         }
-        
-        if (!$ticketStatus->isCountUserWaitingTime()) {
 
+        if (!$ticketStatus->isCountUserWaitingTime()) {
             if ($this->date_user_waiting) {
                 $this->setModelField('date_user_waiting', null);
             }
@@ -3825,7 +3831,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'start'         => $start_ts,
             'end'           => $end_ts,
             'length'        => ($end_ts - $start_ts),
-            'ticket_status' => $ticketStatusCode
+            'ticket_status' => $ticketStatusCode,
         ];
         $this->_onPropertyChanged('waiting_times', $old, $this->waiting_times);
     }
