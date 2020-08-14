@@ -5014,13 +5014,11 @@ class Person extends DomainObject implements
     }
 
     /**
-     * Returns the username used to authenticate the user.
-     *
-     * @return string The username
+     * {@inheritDoc}
      */
     public function getUsername()
     {
-        return $this->getId();
+        return $this->getEmail();
     }
 
     /**
@@ -5035,54 +5033,31 @@ class Person extends DomainObject implements
     }
 
     /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * String representation of object.
-     *
-     * @link http://php.net/manual/en/serializable.serialize.php
-     *
-     * @return string the string representation of the object or null
+     * {@inheritDoc}
      */
     public function serialize()
     {
-        return serialize($this->id);
+        return serialize([$this->id, $this->password]);
     }
 
     /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Constructs the object.
-     *
-     * @link http://php.net/manual/en/serializable.unserialize.php
-     *
-     * @param string $serialized <p>
-     *                           The string representation of the object.
-     *                           </p>
+     * {@inheritDoc}
      */
     public function unserialize($serialized)
     {
         try {
-            $this->id = UnserializeUtil::unserializeInteger($serialized);
+            list($this->id, $this->password) = UnserializeUtil::safeUnserialize($serialized, [Person::class]);
         } catch (\Exception $e) {
             $this->id = null;
         }
     }
 
     /**
-     * The equality comparison should neither be done by referential equality
-     * nor by comparing identities (i.e. getId() === getId()).
-     *
-     * However, you do not need to compare every attribute, but only those that
-     * are relevant for assessing whether re-authentication is required.
-     *
-     * Also implementation should consider that $user instance may implement
-     * the extended user interface `AdvancedUserInterface`.
-     *
-     * @param UserInterface $user
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function isEqualTo(UserInterface $user)
     {
-        return $this->id == $user->id;
+        return $this->id == $user->getId() && $this->password === $user->getPassword();
     }
 
     /**

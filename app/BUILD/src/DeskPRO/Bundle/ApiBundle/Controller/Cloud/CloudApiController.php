@@ -299,7 +299,7 @@ class CloudApiController extends BaseController
             $interface = 'billing';
         }
 
-        $codeData = TmpData::create('reset-password', ['person_id' => $person['id'], 'interface' => $interface], '+3 days');
+        $codeData = TmpData::create('reset-password', ['person_id' => $person->getId(), 'email' => $person->getPrimaryEmailAddress(), 'interface' => $interface], '+3 days');
         $this->getManager()->persist($codeData);
         $this->getManager()->flush();
 
@@ -383,6 +383,7 @@ class CloudApiController extends BaseController
             return $data;
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
+
             throw $this->createNotFoundException();
         }
     }

@@ -17,7 +17,6 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use Orb\Auth\DPOAuth2Proxy;
-use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -104,18 +103,44 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
         }
 
-        $hasDoneReset = false;
+        $failedLoginName = $this->session->get('failed_login_name', false);
+        if (!$failedLoginName) {
+            //we are going to guess they want to login with last username
+            $failedLoginName = $this->session->get('last_username', false);
+        }
 
-        if ($code = $this->in->getString('reset_code')) {
+        $code = $this->in->getString('reset_code');
+        if ($code) {
             /** @var TmpDataRepository $tmpDataRepository */
             $tmpDataRepository = $this->em->getRepository(TmpData::class);
             $codeData          = $tmpDataRepository->getByCode($code, 'reset-password');
-            $person            = null;
-            if ($codeData) {
-                $person = $this->em->find(Person::class, $codeData->getData('person', 0));
-            }
+            $validSeconds      = $this->get('settings_resolver')->getGlobalSettings()->get('user.password_reset_code_time_limit', 18000);
 
-            if ($codeData and $person) {
+            $person = null;
+            if ($codeData) {
+                $person          = $this->em->find(Person::class, $codeData->getData('person', 0));
+                $failedLoginName = $person->getEmail();
+            }
+        }
+
+        $hasDoneReset = false;
+        $captchaView  = null;
+
+        $check = new LoginAbuseCheck($failedLoginName, $request->getClientIp());
+        $check->markAsCheckOnly();
+        $this->container->get('anti_abuse')->check($check);
+        if ($check->isCaptchaRecommended()) {
+            $captcha     = $this->createForm(DpCaptchaType::class);
+            $captchaView = $captcha->createView();
+        }
+
+        if (!$check->isLockoutRecommended() && $code) {
+            if ($codeData && $person
+                && $codeData->getData('email') === $person->getPrimaryEmailAddress()
+                && $codeData->getDateCreated()->getTimestamp() > (time() - $validSeconds)
+                && $codeData->getDateCreated() > $person->getDatePasswordSet()
+                && $codeData->getDateCreated() > $person->getEmailsUpdatedDate()
+            ) {
                 if ($newPassword = $this->in->getString('new_password')) {
                     $violations = $this->container->getValidator()
                         ->validateValue($newPassword, new DpPassword(['person' => $person]));
@@ -184,11 +209,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
         }
 
-        $failedLoginName = $this->session->get('failed_login_name', false);
-        if (!$failedLoginName) {
-            //we are going to guess they want to login with last username
-            $failedLoginName = $this->session->get('last_username', false);
-        }
         $failedToLogin = false;
         if ($this->session->has('failed_to_login')) {
             $failedToLogin = $this->session->get('failed_to_login');
@@ -199,16 +219,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $logoBlob = null;
         if ($logoBlobId = $this->settings->get('agent.login_logo_blob_id')) {
             $logoBlob = $this->em->find(Blob::class, $logoBlobId);
-        }
-
-        $captchaView = null;
-
-        $check = new LoginAbuseCheck($failedLoginName, $request->getClientIp());
-        $check->markAsCheckOnly();
-        $this->container->get('anti_abuse')->check($check);
-        if ($check->isCaptchaRecommended()) {
-            $captcha     = $this->createForm(DpCaptchaType::class);
-            $captchaView = $captcha->createView();
         }
 
         $urlCorrections = $request->attributes->get('deskpro.url_corrector.corrections', []);

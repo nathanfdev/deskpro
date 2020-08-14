@@ -1204,7 +1204,7 @@ class LoginController extends AbstractController
         // If they're still here, then we just send them through the normal DeskPRO reset procedure
 
         $name    = 'reset-password:'.DP_INTERFACE.':'.$person['id'];
-        $tmpdata = TmpData::create('reset-password', ['person' => $person->id], '+1 day', $name);
+        $tmpdata = TmpData::create('reset-password', ['person' => $person->getId(), 'email' => $person->getPrimaryEmailAddress()], '+1 day', $name);
         $this->em()->persist($tmpdata);
         $this->em()->flush();
 

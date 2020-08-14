@@ -161,12 +161,14 @@ class PasswordController extends AbstractController
 
         /* @var \Application\DeskPRO\Entity\Person $person */
         $reset = $this->getPersonDataService()->findPasswordReset($code);
-        if ($reset
-            && $reset['date_requested']->getTimestamp() > (time() - $valid_seconds)
-            && $reset['date_requested'] > $reset['person']->getDatePasswordSet()
-            && $reset['date_requested'] > $reset['person']->getEmailsUpdatedDate()
-        ) {
-            $valid = true;
+        if ($reset && $person = $reset['person']) {
+            if ($reset['email'] === $person->getPrimaryEmailAddress()
+                && $reset['date_requested']->getTimestamp() > (time() - $valid_seconds)
+                && $reset['date_requested'] > $person->getDatePasswordSet()
+                && $reset['date_requested'] > $person->getEmailsUpdatedDate()
+            ) {
+                $valid = true;
+            }
         }
 
         if (!$valid) {
@@ -181,8 +183,6 @@ class PasswordController extends AbstractController
                 'page_title'  => $this->createPageTitle()->passwordReset($isResetting),
             ]);
         }
-
-        $person = $reset['person'];
 
         if (!$this->get('dp_limit_email_domains_checker')->checkPerson($person)) {
             return $this->redirectToRoute('portal_login');

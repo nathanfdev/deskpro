@@ -69,7 +69,7 @@ class PersonDataService extends AbstractDataService
         // only 1 valid at a time
         $this->em->getConnection()->delete('tmp_data', ['name' => $name]);
 
-        $tmpData = TmpData::create('reset-password', ['person' => $person->getId()], $expire ?: '+1 day', $name);
+        $tmpData = TmpData::create('reset-password', ['person' => $person->getId(), 'email' => $person->getPrimaryEmailAddress()], $expire ?: '+1 day', $name);
         $this->em->persist($tmpData);
         $this->em->flush();
 
@@ -96,6 +96,7 @@ class PersonDataService extends AbstractDataService
                 if ($person) {
                     return [
                         'person'         => $person,
+                        'email'          => $tmpdata->getData('email'),
                         'tmpdata'        => $tmpdata,
                         'code'           => $tmpdata->getCode(),
                         'date_requested' => $tmpdata->getDateCreated(),
