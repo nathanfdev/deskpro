@@ -7,7 +7,6 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use DpSys\LowError\SystemErrorHandler;
 use Orb\Data\ContentTypes;
 use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
@@ -932,7 +931,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     {
         // force set auth code
         if (!$this->authcode) {
-            SystemErrorHandler::logException(new \InvalidArgumentException('Attempt to save a blob without authcode'), false, null, true);
             $this->setModelField('authcode', DpStrings::random(20, Strings::CHARS_KEY_ALPHA));
         }
     }
