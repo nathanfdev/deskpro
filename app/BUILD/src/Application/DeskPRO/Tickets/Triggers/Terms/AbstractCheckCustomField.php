@@ -104,11 +104,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
             }
         }
 
-        if (!$field) {
-            // no matched field
-            return false;
-        }
-        if ($field->isChoiceType()) {
+        if ($field && $field->isChoiceType()) {
             if (is_array($fieldData)) {
                 foreach ($customDataArray as $customData) {
                     if ($customData->getField()->getParent() && $customData->getField()->getParent()->getId() == $fieldId) {
