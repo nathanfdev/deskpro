@@ -2,19 +2,19 @@ import { ApiRepository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 class PortalTemplatesRepository extends ApiRepository {
   loadInfo(brandSlug) {
-    return this.api.sendGet(`/b/${brandSlug}/portal/api/style/edit-theme-set/templates`);
+    return this.api.sendGet(`DP_URL/b/${brandSlug}/portal/api/style/edit-theme-set/templates`);
   }
 
   loadTemplate(name, brandSlug) {
-    return this.api.sendGet(`/b/${brandSlug}/portal/api/style/edit-theme-set/template-info?template=${name}`);
+    return this.api.sendGet(`DP_URL/b/${brandSlug}/portal/api/style/edit-theme-set/template-info?template=${name}`);
   }
 
   loadTagInfo(name, brandSlug) {
-    return this.api.sendGet(`/b/${brandSlug}/portal/api/style/edit-theme-set/tag-info?tag=${name}`);
+    return this.api.sendGet(`DP_URL/b/${brandSlug}/portal/api/style/edit-theme-set/tag-info?tag=${name}`);
   }
 
   saveTemplate(name, template, brandSlug) {
-    return this.api.sendPut(`/b/${brandSlug}/portal/api/style/edit-theme-set/template-sources?template=${name}`, template);
+    return this.api.sendPut(`DP_URL/b/${brandSlug}/portal/api/style/edit-theme-set/template-sources?template=${name}`, template);
   }
 
   deleteTemplate(name, brandId) {
@@ -22,7 +22,7 @@ class PortalTemplatesRepository extends ApiRepository {
   }
 
   resetTemplate(name, brandSlug) {
-    return this.api.sendPut(`/b/${brandSlug}/portal/api/style/edit-theme-set/template-sources?template=${name}`, {revert:true});
+    return this.api.sendPut(`DP_URL/b/${brandSlug}/portal/api/style/edit-theme-set/template-sources?template=${name}`, { revert: true });
   }
 
   loadVariables(viewModel) {
@@ -30,11 +30,11 @@ class PortalTemplatesRepository extends ApiRepository {
   }
 
   loadAssets(brandSlug) {
-    return this.api.sendGet(`/b/${brandSlug}/portal/api/style/edit-theme-set/assets`);
+    return this.api.sendGet(`DP_URL/b/${brandSlug}/portal/api/style/edit-theme-set/assets`);
   }
 
   deleteAsset(themeSetAssetId, brandSlug) {
-    return this.api.sendDelete(`/b/${brandSlug}/portal/api/style/edit-theme-set/assets/${themeSetAssetId}`);
+    return this.api.sendDelete(`DP_URL/b/${brandSlug}/portal/api/style/edit-theme-set/assets/${themeSetAssetId}`);
   }
 }
 export default PortalTemplatesRepository;
