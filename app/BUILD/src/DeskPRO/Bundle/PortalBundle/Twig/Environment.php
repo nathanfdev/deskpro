@@ -8,6 +8,7 @@ use Application\DeskPRO\App;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateCompilationException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateNotFoundException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\PortalLoaderException;
+use Twig\Sandbox\SecurityError;
 
 /**
  * Class Environment.
@@ -63,6 +64,10 @@ class Environment extends \Twig_Environment
             return $this->loadTemplateFromDb($nameStr, $index);
         } catch (CustomTemplateCompilationException $e) {
             // should mark it as crashed
+            // falling back to render default template
+            $this->markCustomTemplateAsCrashed($name);
+        } catch (SecurityError $e) {
+            // twig sandbox security exception -- should mark it as crashed
             // falling back to render default template
             $this->markCustomTemplateAsCrashed($name);
         } catch (CustomTemplateNotFoundException $e) {
