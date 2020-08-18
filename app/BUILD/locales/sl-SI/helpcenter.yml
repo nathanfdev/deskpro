@@ -374,6 +374,12 @@ helpcenter.general.admin: Administrator
 helpcenter.general.admin_home: 'Administratorski vmesnik'
 helpcenter.general.agent: Operater
 helpcenter.general.agent_bar_admin_community: 'Nastavitve Skupnosti'
+helpcenter.general.agent_bar_admin_dl: 'Nastavitve v Datotekah'
+helpcenter.general.agent_bar_admin_guides: 'Nastavitve v Vodičih'
+helpcenter.general.agent_bar_admin_kb: 'Nastavitve v Bazi znanja'
+helpcenter.general.agent_bar_admin_lang: 'Jezikovne nastavitve'
+helpcenter.general.agent_bar_admin_news: 'Nastavitve v Novicah'
+helpcenter.general.agent_bar_admin_portal: 'Grafična podoba Centra za pomoč'
 helpcenter.general.agent_bar_agent_community: 'Upravljanje Skupnosti'
 helpcenter.general.agent_bar_agent_dl: 'Upravljanje Datotek'
 helpcenter.general.agent_bar_agent_guides: 'Upravljanje Navodil'
@@ -382,6 +388,42 @@ helpcenter.general.agent_bar_agent_kb: 'Upravljaj Bazo znanja'
 helpcenter.general.agent_bar_agent_news: 'Upravljaj novice'
 helpcenter.general.agent_interface: 'Operaterjev vmesnik'
 helpcenter.general.agents: Operaterji
+helpcenter.general.apply: Uporabi
+helpcenter.general.attachments: Priponke
+helpcenter.general.authors_list: Seznam avtorjev
+helpcenter.general.back: Nazaj
+helpcenter.general.btn_manage_subscriptions: 'Upravljaj s svojimi naročninami'
+helpcenter.general.cancel_action: Prekliči
+helpcenter.general.categories: Sklopi
+helpcenter.general.category: Sklop
+helpcenter.general.cc: CC
+helpcenter.general.chat: Klepet
+helpcenter.general.chats: Klepeti
+helpcenter.general.clear_all: 'Počisti vse'
+helpcenter.general.close: Zapri
+helpcenter.general.comment_btn_save: 'Dodaj komentar'
+helpcenter.general.comment_login_first: 'Pred objavo komentarja se moraš prijaviti.'
+helpcenter.general.comments: Komentarji
+helpcenter.general.comments_pending_validation: 'Ta komentar čaka na pregled.'
+helpcenter.general.comments_title: '{count, plural, one {Komentar (1)} other {Komentarjev (#)}}'
+helpcenter.general.copied: kopirano
+helpcenter.general.copy_to_clipboard: 'Kopiraj v Odložišče'
+helpcenter.general.created_by: 'Ustvarila oseba'
+helpcenter.general.current_page: 'Trenutna stran'
+helpcenter.general.dashboard: Nadzorna plošča
+helpcenter.general.date_day_month: '{date, date, MMM d}'
+helpcenter.general.date_medium: '{date, date, medium}'
+helpcenter.general.date_short: '{date, date, short}'
+helpcenter.general.date_short_month: '{date, date, MMM}'
+helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
+helpcenter.general.department: Oddelek
+helpcenter.general.drag_and_drop: 'Povleci in spusti'
+helpcenter.general.edit_this_page: 'Uredi to stran'
+helpcenter.general.email_address: 'E-poštni naslov'
+helpcenter.general.eula: EULA (Pogodba s končnim uporabnikom)
+helpcenter.general.everything: Vse
+helpcenter.general.expand: Razširi
+helpcenter.general.file_type: Datoteka
 helpcenter.general.files_type: Datoteke
 helpcenter.general.filter: Filter
 helpcenter.general.first_published: 'Prvič objavljeno'
@@ -483,6 +525,11 @@ helpcenter.messenger.blocks_start_chat_description: 'Prični klepet z enim izmed
 helpcenter.messenger.blocks_start_chat_title: 'Prični s pogovorom'
 helpcenter.messenger.blocks_ticket_button: 'Oddaj nov zahtevek'
 helpcenter.messenger.blocks_ticket_description: 'Vnesi zahtevek s pomočjo obrazca'
+helpcenter.messenger.blocks_ticket_title: 'Oddaj zahtevek'
+helpcenter.messenger.blocks_tickets_title: 'Tvoji zahtevki'
+helpcenter.messenger.blocks_tickets_view_all_link: 'prikaži vse'
+helpcenter.messenger.chat_agent_assigned_message: 'Oseba {name} joined the conversation.'
+helpcenter.messenger.chat_attach_file: 'Pripni datoteko'
 helpcenter.messenger.message_set_department: '{name} je vnesel oddelek kot {department}'
 helpcenter.messenger.message_started: 'Klepet v teku'
 helpcenter.tickets.not_allowed_title: 'Takoj se vrnemo'
