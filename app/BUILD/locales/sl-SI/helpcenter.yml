@@ -326,6 +326,8 @@ helpcenter.flashes.ticket_participant_already_error: 'Osebao, ki si jo poskušal
 helpcenter.flashes.ticket_participant_cc_limit_reached: 'Dosegel/la si največje dovoljeno število oseb: ({max}) v vednost (CC: / KP:).'
 helpcenter.flashes.ticket_participant_email_error: 'Prosimo, vnesi veljaven e-poštni naslov in poskusi znova.'
 helpcenter.flashes.ticket_participant_remove: 'S tega zahtevka smo umaknili {email} kot prejemnika v vednost (CC: / KP:).'
+helpcenter.flashes.ticket_participant_remove_unknown_error: 'Pri umikanju osebe kot prejemnika v vednost je prišlo do težav. Prosimo, poskusi znova.'
+helpcenter.flashes.ticket_re_opened: 'Ponovno si odprl/a ta zahtevek.'
 helpcenter.flashes.ticket_replied: 'Tvoj odgovor je oddan.'
 helpcenter.flashes.ticket_resolved: 'Tvoj zahtevek je sedaj označen kot rešen.'
 helpcenter.flashes.ticket_updated: 'Tvoj zahtevek je posodobljen.'
@@ -342,6 +344,28 @@ helpcenter.flashes.user_resend_email_verify: 'E-pošto za preverjanje smo ti pos
 helpcenter.flashes.user_updated_profile: 'Profil je posodobljen.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Hvala za preverjanje e-poštnega naslova. Tvoj račun je sedaj aktiven.'
 helpcenter.flashes.usersource_new_add_email_verify: 'Preden ustvarimo tvoj račun, bi želeli preveriti tvoj e-poštni naslov. Prosimo, preglej svoj e-poštni predal, kamor smo ti poslali povezavo za preverjanje.'
+helpcenter.forms.date_picker_next_month: 'Naslednji mesec'
+helpcenter.forms.date_picker_previous_month: 'Predhodni mesec'
+helpcenter.forms.date_picker_time: Ura
+helpcenter.forms.delete_question: 'Izbrišem?'
+helpcenter.forms.error_captcha: 'Rezultat računalniškega testa CAPTCHA ni pravilen'
+helpcenter.forms.error_dupe_email: 'Ta e-poštni naslov je že v uporabi.'
+helpcenter.forms.error_email_required: 'Prosimo, obvezno vnesi svoj e-poštni naslov'
+helpcenter.forms.error_password_current: 'To naj bi bilo tvoje trenutno geslo'
+helpcenter.forms.error_password_forbid_reuse: 'Žal ne moreš uporabiti gesla, ki si ga že uporabil v preteklosti'
+helpcenter.forms.error_password_min_length: '{count, plural, one {Najmanjše število znakov # } other {Najmanjše število znakov # }}'
+helpcenter.forms.error_password_require_num_lowercase: '{count, plural, one {Najmanj # mala tiskana črka } other {Najmanj # malih tiskanih črk }}'
+helpcenter.forms.error_password_require_num_number: '{count, plural, one {Najmanj # številko} other {Najmanj # številk}}'
+helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {Najmanj # posebni znak -!?*: ipd.} other {Najmanj # posebnih znakov -!?*: ipd.}}'
+helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {Najmanj # velika tiskana črka } other {Najmanj # velikih tiskanih črk }}'
+helpcenter.forms.error_password_reset_required: 'Ponastaviti moraš svoje geslo'
+helpcenter.forms.error_required: 'To polje moraš izpolniti'
+helpcenter.forms.error_banned_email: 'E-poštni naslov je blokiran.'
+helpcenter.forms.label_drag_overlay: 'Vstavi to sliko v svoje sporočilo.'
+helpcenter.forms.label_email: E-pošta
+helpcenter.forms.label_password: Geslo
+helpcenter.forms.label_password_confirm: Potrdi
+helpcenter.forms.label_reset: Ponastavi
 helpcenter.general.agent_bar_agent_community: 'Upravljanje Skupnosti'
 helpcenter.general.agent_bar_agent_dl: 'Upravljanje Datotek'
 helpcenter.general.agent_bar_agent_guides: 'Upravljanje Navodil'
@@ -350,7 +374,85 @@ helpcenter.general.agent_bar_agent_kb: 'Upravljaj Bazo znanja'
 helpcenter.general.agent_bar_agent_news: 'Upravljaj novice'
 helpcenter.general.agent_interface: 'Operaterjev vmesnik'
 helpcenter.general.agents: Operaterji
+helpcenter.general.files_type: Datoteke
+helpcenter.general.filter: Filter
+helpcenter.general.first_published: 'Prvič objavljeno'
+helpcenter.general.form_choose_file: 'Izberi datoteko'
+helpcenter.general.form_choose_files: 'Izberi datoteke'
+helpcenter.general.go_action: Pojdi na
+helpcenter.general.go_to_page: 'Pojdi na stran'
+helpcenter.general.helpcenter_disabled_click_below: 'Ta portal je onemogočen. Če si operater, lahko s klikom na spodnji gumb obiščeš svoj običajni operaterski vmesnik.'
+helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'Ta portal je onemogočen. Ponovno ga lahko omogočiš preko <a href="{setup_link}">Admin > Portal > Setup</a>'
+helpcenter.general.helpdesk_system: 'Helpdesk robot'
+helpcenter.general.ics_subscribe: iCalendar
+helpcenter.general.impersonation_mode: 'Način poosebitve'
+helpcenter.general.label_search_enter_label: 'Prosimo, vnesi iskano menijsko oznako'
+helpcenter.general.labels: Oznake
+helpcenter.general.lang_change_to_current: 'Nastavi <em>{lang}</em> kot moj privzeti jezik'
+helpcenter.general.lang_diff: 'Jezik te strani je <em>{active_lang}</em>, medtem ko je jezik tvojega računa <em>{person_lang}</em>.'
+helpcenter.general.lang_switch: 'Prestavi na jezik <em>{lang}</em>'
+helpcenter.general.last_24_hours: 'Zadnjih 24 ur'
+helpcenter.general.last_6_month: 'Zadnjih 6 mesecev'
+helpcenter.general.last_activity: 'Zadnja dejavnost'
+helpcenter.general.last_month: 'Pretekli mesec'
+helpcenter.general.last_update_by: 'Zadnjič posodobljeno: <strong>{date_updated, date, medium}</strong>, avtor <strong>{person_name}</strong>'
+helpcenter.general.last_week: 'Pretekli teden'
+helpcenter.general.last_year: 'Preteklo leto'
+helpcenter.general.latest_status_changes: 'Zadnje spremembe statusov'
 helpcenter.general.log_in: 'Vpiši se'
+helpcenter.general.message: Sporočilo
+helpcenter.general.more_than_1_year: 'Več kot 1 leto'
+helpcenter.general.name: Ime
+helpcenter.general.nav_chat: Klepeti
+helpcenter.general.nav_community: Skupnost
+helpcenter.general.nav_community_desc: 'Preglej vse teme'
+helpcenter.general.nav_contact: 'Stopi v stik z nami'
+helpcenter.general.nav_contact_desc: 'Za pomoč stopite v stik z nami'
+helpcenter.general.nav_direct_messages: Sporočila
+helpcenter.general.nav_downloads: Datoteke
+helpcenter.general.nav_downloads_desc: 'Preglej vse datoteke'
+helpcenter.general.nav_emails: E-poštna sporočila
+helpcenter.general.nav_guides: Vodiči
+helpcenter.general.nav_guides_desc: 'Preglej vse vodiče'
+helpcenter.general.nav_kb: Baza znanja
+helpcenter.general.nav_kb_desc: 'Oglej si celotni center za pomoč'
+helpcenter.general.nav_login: 'Prijavi se'
+helpcenter.general.nav_members: 'Imenik članov'
+helpcenter.general.nav_news: Novice
+helpcenter.general.nav_news_desc: 'Oglej si vse objave v Novicah'
+helpcenter.general.nav_news_desc_short: 'Oglej si vse novice'
+helpcenter.general.nav_newticket: 'Stopi v stik z nami'
+helpcenter.general.nav_profile: Nastavitve računa
+helpcenter.general.nav_register: 'Prijavi se prvič'
+helpcenter.general.nav_support_center: 'Center za pomoč'
+helpcenter.general.view_all_status_changes: 'Preglej vse spremembe statusov'
+helpcenter.general.view_all_topics: 'Preglej vse teme'
+helpcenter.general.view_profile: 'Oglej si nastavitve tvojega računa'
+helpcenter.general.viewed_by_agents_only: 'To polje je vidno samo operaterjem'
+helpcenter.general.workflow: 'Delotek'
+helpcenter.general.x_search_results: '{num} rezultati iskanja za "{query}"'
+helpcenter.general.you: Ti
+helpcenter.general.your_comment_label: 'Tvoj komentar'
+helpcenter.general.your_comment_optional_label: 'Tvoj komentar (opcijsko)'
+helpcenter.general.download_pdf: 'Prenesi PDF datoteko'
+helpcenter.knowledgebase.featured_articles: 'Izbrani članki'
+helpcenter.label.search: Išči
+helpcenter.members.activity_commented_on: 'Komentirano dne'
+helpcenter.members.activity_created_topic: 'Je objavil/a temo'
+helpcenter.members.activity_down_voted: 'Označeno kot neuporabno'
+helpcenter.members.activity_down_voted_comment_on: 'Razočarano glasoval v temi'
+helpcenter.members.activity_group_everything_else: 'Vse ostalo'
+helpcenter.members.activity_group_last_month: 'Pretekli mesec'
+helpcenter.members.activity_group_last_week: 'Pretekli teden'
+helpcenter.members.activity_group_last_year: 'Preteklo leto'
+helpcenter.members.activity_group_this_month: 'Mesec'
+helpcenter.members.activity_group_this_week: 'Ta teden'
+helpcenter.members.activity_group_this_year: 'To leto'
+helpcenter.members.activity_group_today: 'Danes'
+helpcenter.members.activity_up_voted: 'Označeno kot uporabno'
+helpcenter.members.activity_up_voted_comment_on: 'Označil kot dober odgovor v temi'
+helpcenter.members.company: 'Organizacija'
+helpcenter.members.date_joined: 'Datum pridružitve'
 helpcenter.tickets.not_allowed_title: 'Takoj se vrnemo'
 helpcenter.tickets.organization_tickets: 'Zahtevki organizacije {org_name}'
 helpcenter.tickets.please_login_to_reply: 'Za odgovor je potrebna prijava.'
