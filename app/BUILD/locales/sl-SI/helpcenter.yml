@@ -506,6 +506,13 @@ helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} od skupaj {vote_count
 helpcenter.general.related_content: 'Povezane vsebine'
 helpcenter.general.rerender_form: 'Prosimo pred oddajo preglej obrazec.'
 helpcenter.general.search: 'Kako ti lahko pomagamo danes?'
+helpcenter.general.search_labels: 'Preišči oznake'
+helpcenter.general.select: Izberi
+helpcenter.general.send_user_direct_message: 'Pošlji uporabniku neposredno sporočilo'
+helpcenter.general.share: Skupna raba
+helpcenter.general.show: Prikaži
+helpcenter.general.skip_link: 'Preskoči in pojdi v glavno vsebino'
+helpcenter.general.software_power_by: 'Deluje na osnovi'
 helpcenter.general.view_all_status_changes: 'Preglej vse spremembe statusov'
 helpcenter.general.view_all_topics: 'Preglej vse teme'
 helpcenter.general.view_profile: 'Oglej si nastavitve tvojega računa'
