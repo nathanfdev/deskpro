@@ -475,6 +475,37 @@ helpcenter.general.nav_newticket: 'Stopi v stik z nami'
 helpcenter.general.nav_profile: Nastavitve računa
 helpcenter.general.nav_register: 'Prijavi se prvič'
 helpcenter.general.nav_support_center: 'Center za pomoč'
+helpcenter.general.nav_your_account: 'Tvoj račun'
+helpcenter.general.next: Naslednji
+helpcenter.general.no_search_query: 'V spodnje okence vnesi iskalni niz.'
+helpcenter.general.no_search_results_general: 'Za iskalni niz ni rezultatov'
+helpcenter.general.or: ali
+helpcenter.general.pagination_page: 'Stran {page}'
+helpcenter.general.pagination_next_page: 'Naslednja stran'
+helpcenter.general.pagination_previous_page: 'Predhodna stran'
+helpcenter.general.password: Geslo
+helpcenter.general.previous: Predhodnji
+helpcenter.general.print: Natisni
+helpcenter.general.priority: Prednost
+helpcenter.general.product: Izdelek
+helpcenter.general.prop_comments_asc: 'Zadnji komentarji pri vrhu'
+helpcenter.general.prop_comments_desc: 'Največ komentarjev pri vrhu'
+helpcenter.general.prop_date_asc: 'Najstarejši pri vrhu'
+helpcenter.general.prop_date_desc: 'Najnovejši pri vrhu'
+helpcenter.general.prop_popularity_asc: 'Najmanj popularni na vrhu'
+helpcenter.general.prop_popularity_desc: 'Najbolj popularni na vrhu'
+helpcenter.general.prop_rating_asc: 'Najnižje ocenjeni pri vrhu'
+helpcenter.general.prop_rating_desc: 'Najvišje ocenjeni pri vrhu'
+helpcenter.general.prop_views_asc: 'Najmanj ogledani pri vrhu'
+helpcenter.general.prop_views_desc: 'Najbolj gledani pri vrhu'
+helpcenter.general.published: 'Prvič objavljeno'
+helpcenter.general.published_by: 'Objavila oseba <strong>{person_name}</strong>'
+helpcenter.general.rate_page_negative: Neuporabno
+helpcenter.general.rate_page_positive: Uporabno
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} od skupaj {vote_count} oseb je ocenilo to stran kot uporabno'
+helpcenter.general.related_content: 'Povezane vsebine'
+helpcenter.general.rerender_form: 'Prosimo pred oddajo preglej obrazec.'
+helpcenter.general.search: 'Kako ti lahko pomagamo danes?'
 helpcenter.general.view_all_status_changes: 'Preglej vse spremembe statusov'
 helpcenter.general.view_all_topics: 'Preglej vse teme'
 helpcenter.general.view_profile: 'Oglej si nastavitve tvojega računa'
