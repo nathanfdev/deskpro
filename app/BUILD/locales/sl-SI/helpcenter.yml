@@ -366,6 +366,14 @@ helpcenter.forms.label_email: E-pošta
 helpcenter.forms.label_password: Geslo
 helpcenter.forms.label_password_confirm: Potrdi
 helpcenter.forms.label_reset: Ponastavi
+helpcenter.forms.label_save: Shrani
+helpcenter.forms.label_submit: Oddaj
+helpcenter.forms.label_timezone: Časovni pas
+helpcenter.general.add_comment: 'Dodaj komentar'
+helpcenter.general.admin: Administrator
+helpcenter.general.admin_home: 'Administratorski vmesnik'
+helpcenter.general.agent: Operater
+helpcenter.general.agent_bar_admin_community: 'Nastavitve Skupnosti'
 helpcenter.general.agent_bar_agent_community: 'Upravljanje Skupnosti'
 helpcenter.general.agent_bar_agent_dl: 'Upravljanje Datotek'
 helpcenter.general.agent_bar_agent_guides: 'Upravljanje Navodil'
@@ -453,6 +461,30 @@ helpcenter.members.activity_up_voted: 'Označeno kot uporabno'
 helpcenter.members.activity_up_voted_comment_on: 'Označil kot dober odgovor v temi'
 helpcenter.members.company: 'Organizacija'
 helpcenter.members.date_joined: 'Datum pridružitve'
+helpcenter.members.language: Jezik
+helpcenter.members.name: Ime
+helpcenter.members.no_activities: 'Brez dejavnosti'
+helpcenter.members.not_set: 'Ni nastavljeno'
+helpcenter.members.phone: 'Telefonska številka'
+helpcenter.members.phone_number_none: Brez
+helpcenter.members.recent_activity: 'Zadnje dejavnosti'
+helpcenter.members.send_message: 'Pošlji neposredno sporočilo'
+helpcenter.members.timezone: Časovni pas
+helpcenter.members.title: 'Imenik članov'
+helpcenter.messenger.assigned_agent: 'Dodeljen operater'
+helpcenter.messenger.blocks_continue_chat_link: Nadaljuj
+helpcenter.messenger.blocks_continue_chat_title: 'Nadaljuj obstoječ klepet'
+helpcenter.messenger.blocks_knowledgebase_title: Baza znanja
+helpcenter.messenger.blocks_search_block_no_results: 'Za iskalni niz {query} ni rezultatov'
+helpcenter.messenger.blocks_search_block_search_label: Išči
+helpcenter.messenger.blocks_search_block_see_more_results: 'Prikaži več rezultatov'
+helpcenter.messenger.blocks_start_chat_button: 'Prični z novim pogovorom'
+helpcenter.messenger.blocks_start_chat_description: 'Prični klepet z enim izmed naših operaterjev'
+helpcenter.messenger.blocks_start_chat_title: 'Prični s pogovorom'
+helpcenter.messenger.blocks_ticket_button: 'Oddaj nov zahtevek'
+helpcenter.messenger.blocks_ticket_description: 'Vnesi zahtevek s pomočjo obrazca'
+helpcenter.messenger.message_set_department: '{name} je vnesel oddelek kot {department}'
+helpcenter.messenger.message_started: 'Klepet v teku'
 helpcenter.tickets.not_allowed_title: 'Takoj se vrnemo'
 helpcenter.tickets.organization_tickets: 'Zahtevki organizacije {org_name}'
 helpcenter.tickets.please_login_to_reply: 'Za odgovor je potrebna prijava.'
