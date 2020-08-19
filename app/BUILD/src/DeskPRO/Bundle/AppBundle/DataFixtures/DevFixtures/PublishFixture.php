@@ -156,16 +156,18 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
         $files = iterator_to_array($iter, false);
         foreach ($files as $file) {
             /** @var $file \SplFileInfo */
-            $splashBlob = $this->container->get('deskpro.blob_storage')->createBlobRecordFromFile(
-                $file->getRealPath(),
-                $file->getFilename(),
-                ContentTypes::getContentTypeFromFilename($file->getFilename())
-            );
-            $splashImageProperty = new SplashImageProperty();
-            $splashImageProperty->setBlob($splashBlob)->setUrn(SplashImageProperty::$blobNs.':'.$splashBlob->getAuthId());
-            $this->manager->persist($splashImageProperty);
-            $this->manager->flush();
-            $this->splashImages[] = $splashImageProperty->getId();
+            if (is_file($file->getRealPath())) {
+                $splashBlob          = $this->container->get('deskpro.blob_storage')->createBlobRecordFromFile(
+                    $file->getRealPath(),
+                    $file->getFilename(),
+                    ContentTypes::getContentTypeFromFilename($file->getFilename())
+                );
+                $splashImageProperty = new SplashImageProperty();
+                $splashImageProperty->setBlob($splashBlob)->setUrn(SplashImageProperty::$blobNs . ':' . $splashBlob->getAuthId());
+                $this->manager->persist($splashImageProperty);
+                $this->manager->flush();
+                $this->splashImages[] = $splashImageProperty->getId();
+            }
         }
     }
 

@@ -112,8 +112,9 @@ class SchemaGenerator implements SchemaInterface
             return;
         }
 
-        $this->creates = [];
-        $this->alters  = [];
+        $this->creates  = [];
+        $this->alters   = [];
+        $this->triggers = [];
 
         //------------------------------
         // Load SQL
