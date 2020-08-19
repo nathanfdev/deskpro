@@ -15,6 +15,16 @@
                             {% endif %}
                         </div>
                         <div class="dp-po-block">
+                            {% set subcategories = helpcenter.getDownloadsCategories({}, category) %}
+                            {% if subcategories | length > 0 %}
+                                <ul>
+                                    {% for subcategory in subcategories %}
+                                        <li>
+                                            <a href="{{ portal_path(subcategory) }}">{{ object_phrase(subcategory) }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
                             {% include 'Theme:Downloads:DownloadList/simple.html.twig' with {
                                 pager: pager,
                                 category: category,

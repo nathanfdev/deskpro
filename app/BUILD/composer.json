@@ -115,7 +115,7 @@
     "symfony/polyfill-intl-icu": "^1.17",
     "symfony/polyfill-intl-messageformatter": "^1.17",
     "abraham/twitteroauth": "1.0.0",
-    "lsolesen/pel": "^0.9.8"
+    "lsolesen/pel": "dev-master#c746898c3b183b654f2088f94dceb5286776a4ae"
   },
   "require-dev": {
     "behat/behat": "3.1.*",

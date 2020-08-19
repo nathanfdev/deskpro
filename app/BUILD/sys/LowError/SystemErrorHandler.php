@@ -2,6 +2,7 @@
 
 namespace DpSys\LowError;
 
+use Application\DeskPRO\RefGenerator\RefGeneratorException;
 use DeskPRO\Bundle\AppBundle\Limits\Exception\LimitExhaustedException;
 use DpRun\LowUtil;
 use Psr\Log\LoggerInterface;
@@ -247,6 +248,7 @@ class SystemErrorHandler
             || $exception instanceof AccessDeniedException
             || $exception instanceof LogoutException
             || $exception instanceof LimitExhaustedException
+            || $exception instanceof RefGeneratorException
             || self::isProxyException($exception)
         ) {
             return false;

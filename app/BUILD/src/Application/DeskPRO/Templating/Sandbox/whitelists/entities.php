@@ -173,6 +173,7 @@ return array (
             150 => 'getstatechangerecorder',
             151 => 'getoriginalstateclone',
             152 => 'rendercustomfield',
+            153 => 'is_agent_confirmed',
         ),
     'Application\\DeskPRO\\Entity\\UserRule' =>
         array (
@@ -2723,6 +2724,7 @@ return array (
             178 => 'getoriginalstateclone',
             179 => 'getcustomperdata',
             180 => 'rendercustomfield',
+            181 => 'findlabelbystring',
         ),
     'Application\\DeskPRO\\Entity\\ObjectLang' =>
         array (

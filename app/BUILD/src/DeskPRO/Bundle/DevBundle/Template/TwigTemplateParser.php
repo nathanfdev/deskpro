@@ -37,17 +37,28 @@ class TwigTemplateParser
     {
         /** @var \SplFileInfo $file */
         foreach ($finder as $filepath => $file) {
-            $tokens = [];
+            $onParsed($this->parseFromString(file_get_contents($filepath)), $file, $filepath);
+        }
+    }
 
-            try {
-                $stream = $this->twig->tokenize(file_get_contents($filepath));
-                while ($token = $stream->next()) {
+    /**
+     * @param string $template
+     * @return array List of Twig template token types and values
+     */
+    public function parseFromString($template, array $onlyTypes = null)
+    {
+        $tokens = [];
+
+        try {
+            $stream = $this->twig->tokenize($template);
+            while ($token = $stream->next()) {
+                if (($onlyTypes && in_array($token->getType(), $onlyTypes)) || !$onlyTypes) {
                     $tokens[$token->getType()][] = $token->getValue();
                 }
-            } catch (SyntaxError $e) {
             }
-
-            $onParsed($tokens, $file, $filepath);
+        } catch (SyntaxError $e) {
         }
+
+        return $tokens;
     }
 }

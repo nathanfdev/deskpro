@@ -141,7 +141,14 @@ define([
           this.form.flags = this.form.flags || [];
           this.form.isSuperUser = this.form.flags.indexOf('super') > -1;
           this.form.isAdminManage = this.form.flags.indexOf('admin_manage') > -1;
-          
+
+          if (!this.form.daily_limit) {
+            this.form.daily_limit = -1;
+          }
+          if (!this.form.hourly_limit) {
+            this.form.hourly_limit = -1;
+          }
+
           const apiVersions = [];
           if (this.form.flags.indexOf('api_v1') > -1) {
             apiVersions.push('api_v1');
