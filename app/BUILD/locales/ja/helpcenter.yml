@@ -17,6 +17,11 @@ helpcenter.account.login_lockout: '何度もログインに失敗しているた
 helpcenter.account.login_not_configured: '外部サービスが設定されていません。'
 helpcenter.account.login_password: 'パスワード'
 helpcenter.account.login_register_action: 登録
+helpcenter.account.login_register_header: 'アカウント登録'
+helpcenter.account.login_reset_password_link: 'パスワードをお忘れですか？'
+helpcenter.account.login_stay_logged_in: 'ログイン状態を維持'
+helpcenter.account.logout_action: ログアウト
+helpcenter.account.logout_confirm: '本当にログアウトしますか？'
 helpcenter.account.section_title_your_account: 'アカウント'
 helpcenter.articles.section_title: ナレッジベース
 helpcenter.community.section_title: フィードバック
