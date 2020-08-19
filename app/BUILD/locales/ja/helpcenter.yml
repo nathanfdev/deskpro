@@ -7,7 +7,16 @@ helpcenter.account.email_management_from_form: 'メールアドレスの管理'
 helpcenter.account.email_remove_action: 'メールアドレスの削除'
 helpcenter.account.email_resend_validation_action: '認証メールを再送する'
 helpcenter.account.lockout_time: '{minutes} 分後に再度お試しください。'
+helpcenter.account.login_captcha_failed: 'CAPTCHAコードが無効です。もう一度お試しください。'
+helpcenter.account.login_disabled: 'あなたのメールアドレスは禁止されています。'
+helpcenter.account.login_email: 'あなたのメールアドレス'
+helpcenter.account.login_email_placeholder: email@example.com
+helpcenter.account.login_external: '外部サービスでのログイン'
 helpcenter.account.login_invalid: 'ログインが無効です'
+helpcenter.account.login_lockout: '何度もログインに失敗しているため、ロックされています。後でもう一度お試しください。'
+helpcenter.account.login_not_configured: '外部サービスが設定されていません。'
+helpcenter.account.login_password: 'パスワード'
+helpcenter.account.login_register_action: 登録
 helpcenter.account.section_title_your_account: 'アカウント'
 helpcenter.articles.section_title: ナレッジベース
 helpcenter.community.section_title: フィードバック
