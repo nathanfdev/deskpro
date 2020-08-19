@@ -451,8 +451,9 @@
                                     </span>
                                     <i ng-show="feature.processing" class="spinner-flat"></i>
                                     <div ng-show="feature.extra_info_content" ng-bind-html="feature.extra_info_content"></div>
-                                    <div ng-show="!feature.enabled && !feature.processing && feature.due_date" style="color: red;">
-                                        This feature will be automatically enabled after {{ ng_var('feature.due_date | date : "longDate"') }}
+                                    <div ng-show="featureId == 'helpcenter'">
+                                        The new helpcenter will be enabled automatically in the next major update.
+										<a href="https://support.deskpro.com/kb/articles/775">Learn more here</a>.
                                     </div>
                                 </div>
 							</div>
