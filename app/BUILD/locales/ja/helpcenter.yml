@@ -1,5 +1,28 @@
 ---
+helpcenter.account.add: 追加
+helpcenter.account.add_email: 'メールアドレス追加'
+helpcenter.account.change_password_action: 'パスワード更新'
+helpcenter.account.email_btn_usersource_set: 'メールアドレスの追加'
+helpcenter.account.email_management_from_form: 'メールアドレスの管理'
+helpcenter.account.email_remove_action: 'メールアドレスの削除'
+helpcenter.account.email_resend_validation_action: '認証メールを再送する'
+helpcenter.account.lockout_time: '{minutes} 分後に再度お試しください。'
+helpcenter.account.login_captcha_failed: 'CAPTCHAコードが無効です。もう一度お試しください。'
+helpcenter.account.login_disabled: 'あなたのメールアドレスは禁止されています。'
+helpcenter.account.login_email: 'あなたのメールアドレス'
+helpcenter.account.login_email_placeholder: email@example.com
+helpcenter.account.login_external: '外部サービスでのログイン'
 helpcenter.account.login_invalid: 'ログインが無効です'
+helpcenter.account.login_lockout: '何度もログインに失敗しているため、ロックされています。後でもう一度お試しください。'
+helpcenter.account.login_not_configured: '外部サービスが設定されていません。'
+helpcenter.account.login_password: 'パスワード'
+helpcenter.account.login_register_action: 登録
+helpcenter.account.login_register_header: 'アカウント登録'
+helpcenter.account.login_reset_password_link: 'パスワードをお忘れですか？'
+helpcenter.account.login_stay_logged_in: 'ログイン状態を維持'
+helpcenter.account.logout_action: ログアウト
+helpcenter.account.logout_confirm: '本当にログアウトしますか？'
+helpcenter.account.section_title_your_account: 'アカウント'
 helpcenter.articles.section_title: ナレッジベース
 helpcenter.community.section_title: フィードバック
 helpcenter.direct_messages.reply_message: メッセージ
@@ -32,15 +55,22 @@ helpcenter.emails.ticket_reply_confirm: '返信を頂きありがとうござい
 helpcenter.emails.ticket_validate: 'ご連絡をいただきありがとうございます。<br /><br />エージェントによる対応を開始する前に、あなたのメールアドレスの認証手続きを行ってください。'
 helpcenter.error.404_title: '見つかりません。'
 helpcenter.error.permission_denied_title: 'その動作は許可されていません。'
+helpcenter.forms.error_dupe_email: 'このメールアドレスはすでに使用されています。'
+helpcenter.forms.error_required: '必須項目です。'
 helpcenter.forms.label_save: 保存
 helpcenter.general.add_comment: 'コメントを追加'
 helpcenter.general.attachments: 添付
 helpcenter.general.everything: 全て
+helpcenter.general.nav_emails: メールアドレス
+helpcenter.general.nav_profile: プロフィール
+helpcenter.general.nav_register: '登録'
+helpcenter.general.nav_your_account: 'アカウント'
 helpcenter.general.password: パスワード
 helpcenter.general.rate_page_positive: 参考になった
 helpcenter.general.you: あなた
 helpcenter.members.language: 言語
 helpcenter.members.timezone: タイムゾーン
+helpcenter.profile.your_account: 'アカウント情報'
 helpcenter.tickets.guest_thank_you_title: 'ありがとうございました。'
 helpcenter.tickets.list_agent: '担当エージェント'
 helpcenter.tickets.list_status_resolved: 解決
