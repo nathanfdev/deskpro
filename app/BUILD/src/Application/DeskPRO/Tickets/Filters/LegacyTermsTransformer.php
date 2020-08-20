@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
+
 
 namespace Application\DeskPRO\Tickets\Filters;
 
@@ -292,6 +288,13 @@ class LegacyTermsTransformer
                     'type'    => 'person_range_id',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
+                ];
+
+            case 'FilterUserLanguage':
+                return [
+                    'type'    => 'person_language',
+                    'op'      => $term->getTermOperator(),
+                    'options' => ['language' => $options['language_ids']],
                 ];
 
             case 'FilterUserContactPhone':
