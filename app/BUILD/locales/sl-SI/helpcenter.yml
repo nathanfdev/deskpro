@@ -618,8 +618,58 @@ helpcenter.messenger.invalid_validation_code: 'Neustrezna šifra za preverjanje'
 helpcenter.messenger.linked_ticket_label: 'Dodeljen zahtevku'
 helpcenter.messenger.loading: Nalagam
 helpcenter.messenger.message_agent_timeout: 'Opravičujemo se; {name} je kot kaže odsoten. Prosimo počakaj, medtem ko zate iščemo drugega operaterja.'
+helpcenter.messenger.message_assigned: 'K pogovoru je dodeljen/a: {name}.'
+helpcenter.messenger.message_chatting_with: 'Klepetaš z'
+helpcenter.messenger.message_ended: 'Zaključil si s pogovorom.'
+helpcenter.messenger.message_ended_by: 'Oseba {name} je zaključila s pogovorom.'
+helpcenter.messenger.message_ended_by_user: 'Uporabnik je zaključil s pogovorom'
+helpcenter.messenger.message_finding_agent: 'Dodeljujemo operaterja'
+helpcenter.messenger.message_long_wait: 'Še vedno iščemo prostega operaterja; običajno traja manj kot minuto.'
 helpcenter.messenger.message_set_department: '{name} je vnesel oddelek kot {department}'
 helpcenter.messenger.message_started: 'Klepet v teku'
+helpcenter.messenger.message_unassigned: 'S pogovora je umaknjen/a: {name}.'
+helpcenter.messenger.message_uploading: 'Prenašam ...'
+helpcenter.messenger.message_user_joined: '{name} se je pridružil/a pogovoru.'
+helpcenter.messenger.message_user_left: '{name} je zapustil/a pogovor.'
+helpcenter.messenger.message_user_returned: 'Uporabnik se je vrnil'
+helpcenter.messenger.message_user_timeout: 'Čas za uporabnikov odgovor se je iztekel'
+helpcenter.messenger.message_wait: 'Iščemo prostega operaterja'
+helpcenter.messenger.message_wait_timeout: 'Žal nam je, toda trenutno ni na voljo operaterjev.'
+helpcenter.messenger.powered_by: 'Deluje na osnovi'
+helpcenter.messenger.proactive_button: 'Prični z novim pogovorom'
+helpcenter.messenger.proactive_description: 'Prični klepet z enim izmed naših operaterjev'
+helpcenter.messenger.proactive_greeting: 'Stopi v stik'
+helpcenter.messenger.proactive_placeholder: 'Tukaj vnesi tvoje sporočilo'
+helpcenter.messenger.proactive_title: 'Prični s pogovorom'
+helpcenter.messenger.tickets_form_add_attachment: 'Dodaj priponko'
+helpcenter.messenger.tickets_form_back: Nazaj
+helpcenter.messenger.tickets_form_header: 'Nov zahtevek'
+helpcenter.messenger.tickets_form_message: Sporočilo
+helpcenter.messenger.tickets_form_name: Ime
+helpcenter.messenger.tickets_form_or: ali
+helpcenter.messenger.tickets_form_priority: Prednost
+helpcenter.messenger.tickets_form_product: Izdelek
+helpcenter.messenger.tickets_form_required: Zahtevano
+helpcenter.messenger.tickets_form_saving: 'Zahtevek shranjujemo. Prosimo, počakaj'
+helpcenter.messenger.tickets_form_select: Izberi
+helpcenter.messenger.tickets_form_submit: Oddaj
+helpcenter.messenger.tickets_form_thanks: 'Hvala, ker si stopil/a v stik z nami. Eden naših sodelavcev bo stopil v stik s teboj preko e-pošte.'
+helpcenter.messenger.tickets_form_thanks_header: 'Tvoj zahtevek je na poti'
+helpcenter.messenger.total_chat_time_label: 'Skupno trajanje klepeta'
+helpcenter.messenger.view_action: Poglej
+helpcenter.messenger.view_linked_ticket_action: 'Preglej zahtevek'
+helpcenter.messenger.you: Ti
+helpcenter.messenger.your_chat_with: 'Tvoj klepet z {person_name}'
+helpcenter.news.all_news: 'Vse Novice'
+helpcenter.news.any_date: Katerikoli
+helpcenter.news.download_calendar_action: 'Prenesi iCal datoteko'
+helpcenter.news.download_calendar_desc: 'Koledarski vnos naj bi se samodejno prenesel, če ne, klikni na spodnji gumb'
+helpcenter.news.filter_cat: 'Izberi razdelek'
+helpcenter.news.filter_date: 'Izberi datum'
+helpcenter.news.news_post_object: 'Objava v Novicah'
+helpcenter.news.news_type: 'Razdelek'
+helpcenter.news.none: 'Ni novic'
+helpcenter.news.recent_title: 'Zadnje novice'
 helpcenter.news.section_title: Novice
 helpcenter.news.see_all_news: 'Oglej si vse novice'
 helpcenter.news.view_as_agent: 'To stran lahko vidiš, ker ti je bila dodeljena vloga operaterja. Običajni uporabniki te strani ne vidijo.'
