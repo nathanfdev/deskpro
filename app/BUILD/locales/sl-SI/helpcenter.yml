@@ -513,6 +513,18 @@ helpcenter.general.share: Skupna raba
 helpcenter.general.show: Prikaži
 helpcenter.general.skip_link: 'Preskoči in pojdi v glavno vsebino'
 helpcenter.general.software_power_by: 'Deluje na osnovi'
+helpcenter.general.sort: Razvrsti
+helpcenter.general.status: Status
+helpcenter.general.subscribe_action: Naroči me
+helpcenter.general.tagged_with: 'označeno z'
+helpcenter.general.tags: Oznake
+helpcenter.general.time_of_completion: 'Datum zaključka'
+helpcenter.general.translations: Prevodi
+helpcenter.general.unpublished: 'Umaknjeno z interneta dne'
+helpcenter.general.updated: Posodobljeno
+helpcenter.general.user: Uporabnik
+helpcenter.general.user_menu: 'Uporabniški menu'
+helpcenter.general.user_profile: 'Podatki o uporabniku'
 helpcenter.general.view_all_status_changes: 'Preglej vse spremembe statusov'
 helpcenter.general.view_all_topics: 'Preglej vse teme'
 helpcenter.general.view_profile: 'Oglej si nastavitve tvojega računa'
@@ -568,6 +580,11 @@ helpcenter.messenger.blocks_tickets_title: 'Tvoji zahtevki'
 helpcenter.messenger.blocks_tickets_view_all_link: 'prikaži vse'
 helpcenter.messenger.chat_agent_assigned_message: 'Oseba {name} joined the conversation.'
 helpcenter.messenger.chat_attach_file: 'Pripni datoteko'
+helpcenter.messenger.chat_busy: 'Kot kaže, so vsi naši operaterji trenutno zasedeni. Kljub temu pa nam še vedno lahko spodaj pošlješ zahtevek in nanj ti bomo odgovorili takoj, ko bo to mogoče'
+helpcenter.messenger.chat_create_ticket_button: 'Ustvari zahtevek'
+helpcenter.messenger.chat_create_ticket_header: 'Pošlji zahtevek'
+helpcenter.messenger.chat_create_ticket_intro: 'Namesto tega nam lahko pošlješ zahtevek in eden izmed naših operaterjev ti bo odgovoril nanj takoj, ko bo to mogoče.'
+helpcenter.messenger.chat_dragdrop_drag_and_drop: 'Semkaj lahko povlečeš in spustiš datoteke'
 helpcenter.messenger.message_set_department: '{name} je vnesel oddelek kot {department}'
 helpcenter.messenger.message_started: 'Klepet v teku'
 helpcenter.tickets.not_allowed_title: 'Takoj se vrnemo'
