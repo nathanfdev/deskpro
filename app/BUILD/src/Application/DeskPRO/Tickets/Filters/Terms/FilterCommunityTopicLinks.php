@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
@@ -17,7 +13,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option string name
  */
-class FilterCommunityTopicsLinks extends AbstractFilterTerm
+class FilterCommunityTopicLinks extends AbstractFilterTerm
 {
     /**
      * {@inheritdoc}

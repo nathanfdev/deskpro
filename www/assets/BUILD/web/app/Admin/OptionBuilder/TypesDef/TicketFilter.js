@@ -554,11 +554,6 @@ define([
       };
     }
 
-
-
-
-
-
     getFilterHoldStatus(options) {
       if (options == null) { options = {}; }
       const me = this;
@@ -846,7 +841,7 @@ define([
       return def;
     }
 
-    getFilterFeedbackLinks(options) {
+    getFilterCommunityTopicLinks(options) {
       if (options == null) { options = {}; }
       options.propName = 'topic_links';
       options.operators = ['isset', 'not_isset', 'is'];
