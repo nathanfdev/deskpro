@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -462,7 +460,7 @@ class LegacyTermsTransformer
                     ],
                 ];
 
-            case 'FilterCommunityTopicsLinks':
+            case 'FilterCommunityTopicLinks':
                 return [
                     'type'    => 'community_topic_links',
                     'op'      => $term->getTermOperator(),
@@ -839,7 +837,7 @@ class LegacyTermsTransformer
                 return new Terms\FilterUserIsDisabled($op, $options);
 
             case 'community_topic_links':
-                return new Terms\FilterCommunityTopicsLinks($op, $options);
+                return new Terms\FilterCommunityTopicLinks($op, $options);
 
             case 'person_organization_manager':
                 return new Terms\FilterUserIsManager($op, $options);
