@@ -5,6 +5,7 @@ helpcenter.account.login_captcha_failed: 'U heeft een ongeldige CAPTCHA-code ing
 helpcenter.account.login_email: 'Uw e-mailadres'
 helpcenter.account.login_external: 'Inloggen met een externe service'
 helpcenter.account.login_lockout: 'U heeft te veel mislukte inlogpogingen, dus u bent uitgesloten. Probeer het later nogmaals.'
+helpcenter.account.login_register_action: Registreren
 helpcenter.account.new_ticket_no_login: 'Portal CRM is uitgeschakeld. Kon geen ticket plaatsen.'
 helpcenter.account.profile_delete_picture: 'Profielfoto wijzigen of verwijderen?'
 helpcenter.account.registration_set_password: 'Een account met dit e-mailadres bestaat al. We hebben u een e-mail gestuurd waarmee u uw wachtwoord in kunt stellen en loggen.'
