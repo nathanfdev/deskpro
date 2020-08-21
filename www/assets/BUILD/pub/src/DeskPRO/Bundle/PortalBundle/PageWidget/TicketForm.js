@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { IntlProvider } from 'react-intl';
 import map from 'lodash/map';
 import flatten from 'lodash/flatten';
 import throttle from 'lodash/throttle';
@@ -7,8 +8,9 @@ import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import { NewTicketSuggestions } from '../React/NewTicketSuggestions';
-import { HelpcenterNewTicketSuggestions } from '../React/HelpcenterNewTicketSuggestions';
+import HelpcenterNewTicketSuggestions from '../React/HelpcenterNewTicketSuggestions';
 import { DynamicForm } from '../../AppBundle/Form/DynamicForm';
+import { portalPhrases } from '../PortalPhrases';
 
 class TicketValueReader {
 
@@ -197,6 +199,8 @@ export default class TicketForm extends PageWidget {
       .add($formEl.find('select, input, textarea'))
       .add($tplEl.find('select, input, textarea'));
 
+    this.locale = window.DESKPRO_LOCALE.replace(/_/, '-');
+
     $('#ticket_message_message_html', this.$formEl).attr('data-blob-path', 'ticket[attachments]');
 
     this.dynamicForm = new DynamicForm({
@@ -210,7 +214,13 @@ export default class TicketForm extends PageWidget {
           const $rElement = $('<div class="dp-react-widget"></div>').insertAfter($subject);
 
           if ($formEl.hasClass('helpcenter-form')) {
-            ReactDOM.render(React.createElement(HelpcenterNewTicketSuggestions, { input: $subject }), $rElement.get(0));
+            ReactDOM.render(
+              <IntlProvider
+                locale={this.locale}
+                messages={portalPhrases.getPhrases()}
+              >
+                {React.createElement(HelpcenterNewTicketSuggestions, { input: $subject })}
+              </IntlProvider>, $rElement.get(0));
           } else {
             ReactDOM.render(React.createElement(NewTicketSuggestions, { input: $subject }), $rElement.get(0));
           }

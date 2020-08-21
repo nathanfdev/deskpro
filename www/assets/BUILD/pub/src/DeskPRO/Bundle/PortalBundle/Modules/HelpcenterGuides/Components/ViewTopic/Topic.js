@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import $ from 'jquery';
 import { copyTextToClipboard } from 'DeskPRO/Component/Util/ClipBoard';
@@ -124,8 +124,8 @@ class Topic extends React.PureComponent {
             <div className="dp-po-guides-block-article-right" style={style}>
               <TopicSummary content={data.content} fixed={fixed} agentBarHeight={agentBarHeight} />
               <div className="dp-po-guides-meta">
-                {data.date_published && <p>Published: <strong>{moment(data.date_published).format('DD/MM/YYYY')}</strong></p>}
-                <p>Last updated: <strong>{moment(data.date_updated).format('DD/MM/YYYY')}</strong></p>
+                {data.date_published && <p><FormattedMessage id="helpcenter.general.published" />: <strong>{moment(data.date_published).format('DD/MM/YYYY')}</strong></p>}
+                <p><FormattedMessage id="helpcenter.general.last_updated" />: <strong>{moment(data.date_updated).format('DD/MM/YYYY')}</strong></p>
               </div>
             </div>
           </div>
