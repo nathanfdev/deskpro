@@ -164,7 +164,7 @@ class PermsProcessor extends Base
                 ($ugid, NULL, '1', 'agent_snippets.create_self_snippet'),
                 ($ugid, NULL, '1', 'agent_snippets.create_team_snippet'),
                 ($ugid, NULL, '1', 'agent_snippets.create_global_snippet'),
-                ($ugid, NULL, '1', 'agent_snippets.edit_by_others'),
+                ($ugid, NULL, '1', 'agent_snippets.edit_by_others')
         ");
 
         $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
