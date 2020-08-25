@@ -15,7 +15,7 @@
     "@deskpro/portal-style": "0.4.68",
     "@deskpro/product-content-editor": "0.1.15",
     "@deskpro/react-components": "1.4.7",
-    "@deskpro/react-datepicker-hijri": "1.5.0",
+    "@deskpro/react-datepicker-hijri": "1.5.1",
     "@deskpro/react-forms": "^2.0.0-beta41",
     "@deskpro/react-loader": "^2.4.2",
     "@deskpro/redux-components": "1.4.5",

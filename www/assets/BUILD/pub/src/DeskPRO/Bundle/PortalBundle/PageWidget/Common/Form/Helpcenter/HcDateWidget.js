@@ -46,6 +46,7 @@ class HcDateInput extends React.Component {
         onChange={newDate => this.setDate(newDate)}
         onChangeRaw={event => this.handleChangeRaw(event.target.value)}
         selected={date}
+        adjustDateOnChange
         {...props}
       />
     );
