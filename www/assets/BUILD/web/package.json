@@ -19,7 +19,8 @@
     "jquery-ui": "^1.12.0",
     "ng-table": "^3.0.1",
     "scriptjs": "^2.5.8",
-    "semantic-ui-less": "^2.2.3"
+    "semantic-ui-less": "^2.2.3",
+    "less": "^2.7.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
@@ -61,7 +62,6 @@
     "gulp-util": "3.0.8",
     "jshint": "^2.9.2",
     "kss": "^3.0.0-beta.14",
-    "less": "^3.9.0",
     "license-checker": "^16.0.0",
     "node-sass": "^4.12.0",
     "postcss-discard-comments": "^4.0.2",
