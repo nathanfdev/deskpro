@@ -60,6 +60,8 @@ class EmailDeliveryHandler extends AbstractDeliveryHandler
                 }
             }
         }
+
+        $this->messages = [];
     }
 
     /**

@@ -31,7 +31,7 @@ abstract class AbstractMessageEvent extends AbstractSystemEvent
     /**
      * @param int $message_id
      *
-     * @return NewMessageEvent
+     * @return AbstractMessageEvent
      */
     public function setMessageId($message_id)
     {
