@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
+use DeskPRO\Component\Util\IpUtils;
 use DpSys\LowError\SystemErrorHandler;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -60,6 +61,11 @@ class LinkedImages
                 // Check if it is even an inline image
                 $src = Strings::extractRegexMatch('#src=("|\')((https?:)?//.*?)(\1)#iu', $match[0], 2);
                 $src = str_replace(['__DP_AMP_AMP__'], ['&'], $src);
+
+                if (!IpUtils::isUrlUserCallable($src)) {
+                    continue;
+                }
+
                 if ($src) {
                     if (isset($cache[$src])) {
                         $body = str_replace($match[0], $cache[$src], $body);

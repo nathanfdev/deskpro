@@ -12,6 +12,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use DeskPRO\Component\Util\IpUtils;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Exception\ClientException;
 use JMS\Serializer\Serializer;
@@ -73,6 +74,9 @@ class ZapierWebHook implements TicketSaveActionInterface
                                     continue;
                                 }
                             }
+                        }
+                        if (!IpUtils::isUrlUserCallable($zapierHook->getTargetUrl())) {
+                            throw new \InvalidArgumentException("URL is not user callable");
                         }
                         $httpClient->request('POST', $zapierHook->getTargetUrl(), $options);
                     } catch (ClientException $e) {

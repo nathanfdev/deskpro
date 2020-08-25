@@ -302,18 +302,9 @@ class EditEmailAccount
         switch ($this->outgoing_type) {
             case 'smtp':
                 if (defined('DPC_IS_CLOUD')) {
-                    if (IpUtils::guessIsLocalNetworkHost($this->out_smtp_account->host)) {
+                    if (!IpUtils::isHostUserCallable($this->out_smtp_account->host)) {
                         return new PhpMailConfig();
                     }
-
-                    // try to resolve a hostname
-                    /* TODO: We should use a dns lib for resolving hostname so we can specify nameserver
-                    because this tends to fail
-                    $host = @gethostbyaddr($this->out_smtp_account->host);
-                    if (!$host || IpUtils::guessIsLocalNetworkHost($host)) {
-                        return new PhpMailConfig();
-                    }
-                    */
                 }
 
                 return $this->out_smtp_account;

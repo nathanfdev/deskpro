@@ -9,6 +9,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
+use DeskPRO\Component\Util\IpUtils;
 use GuzzleHttp\Client;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -88,6 +89,11 @@ class LogoController extends AbstractApiController
         // Trigger Download on unsplash api to register photo usage
         $accessKey = $this->get('settings_resolver')->getGlobalSettings()->get('services.unsplash_access_key', null);
         $client    = new Client();
+
+        if (!IpUtils::isUrlUserCallable($image->links->download_location)) {
+            throw new \InvalidArgumentException("URL is not user callable");
+        }
+
         $client->requestAsync('GET', $image->links->download_location, [
             'headers' => [
                 'Authorization' => 'Client-ID '.$accessKey,

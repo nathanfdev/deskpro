@@ -14,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Model\PusherModel;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherLogger;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use DeskPRO\Component\Util\IpUtils;
 use Firebase\JWT\JWT;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -316,12 +317,18 @@ class NotificationController extends BaseController
         /** @var DeskproClientModel $deskproClientModel */
         $deskproClientModel = $form->getData();
 
+        $url = sprintf('http%s://%s:%d',
+            $deskproClientModel->isSecure() ? 's' : '',
+            $deskproClientModel->getHost(),
+            $deskproClientModel->getPort());
+
+        if (!IpUtils::isUrlUserCallable($url)) {
+            throw new \InvalidArgumentException("URL is not user callable");
+        }
+
         $client = new HttpClient(
             [
-                'base_uri' => sprintf('http%s://%s:%d',
-                    $deskproClientModel->isSecure() ? 's' : '',
-                    $deskproClientModel->getHost(),
-                    $deskproClientModel->getPort()),
+                'base_uri' => $url,
             ]
         );
 

@@ -4,6 +4,7 @@ namespace Application\DeskPRO\JIRA;
 
 use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Component\Util\GuzzleOauthSubscriber;
+use DeskPRO\Component\Util\IpUtils;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
@@ -165,6 +166,10 @@ class OAuthWrapper
             'private_key_passphrase' => '',
         ]);
         $stack->push($middleware);
+
+        if (!IpUtils::isUrlUserCallable($this->base_url)) {
+            throw new \InvalidArgumentException("URL is not user callable");
+        }
 
         $this->client = new Client([
             'base_uri' => $this->base_url,
