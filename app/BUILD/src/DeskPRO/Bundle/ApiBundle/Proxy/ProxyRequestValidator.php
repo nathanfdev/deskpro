@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Proxy;
 
+use DeskPRO\Component\Util\IpUtils;
 use DeskPRO\Component\Util\RegexUtils;
 use DeskPRO\Component\Util\StringUtils;
 use League\Url\Url;
@@ -47,7 +48,7 @@ class ProxyRequestValidator
         }
 
         $errors = $this->validator->validate($request->getProxyUrl(), [new Assert\Url()]);
-        if (count($errors)) {
+        if (count($errors) || !IpUtils::isUrlUserCallable($request->getProxyUrl())) {
             throw new \RuntimeException('The proxy url is not valid.');
         }
 

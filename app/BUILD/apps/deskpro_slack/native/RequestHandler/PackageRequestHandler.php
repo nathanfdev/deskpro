@@ -11,6 +11,7 @@ namespace deskpro_slack\RequestHandler;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use DeskPRO\Component\Util\IpUtils;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -47,6 +48,10 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     public function testSettingsAction(ApiPackageRequestContext $context)
     {
         $webhook_url = $context->getIn()->getString('webhook_url');
+
+        if (!IpUtils::isUrlUserCallable($webhook_url)) {
+            throw new \InvalidArgumentException("URL is not user callable");
+        }
 
         $error  = false;
         $client = null;

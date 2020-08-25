@@ -264,7 +264,7 @@ class EmailAccount extends DomainObject
 
         // On cloud, should never be a local host so re-write these as using the mailer
         if (defined('DPC_IS_CLOUD')) {
-            if ($account instanceof SmtpConfig && IpUtils::guessIsLocalNetworkHost($account->host)) {
+            if ($account instanceof SmtpConfig && !IpUtils::isHostUserCallable($account->host)) {
                 $account = new PhpMailConfig();
             }
         }

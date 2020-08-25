@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\BlobAuthTransformer;
+use DeskPRO\Component\Util\IpUtils;
 use Doctrine\ORM\EntityManager;
 use Guzzle\Http\Mimetypes;
 use GuzzleHttp\Client;
@@ -87,6 +88,10 @@ class BlobAuthType extends AbstractType
                 try {
                     $client  = new Client();
                     $request = new Request('GET', $data['url']);
+
+                    if (!IpUtils::isUrlUserCallable($data['url'])) {
+                        throw new \InvalidArgumentException("URL is not user callable");
+                    }
 
                     $content     = $client->send($request)->getBody()->getContents();
                     $filename    = preg_replace('#(^(.*)/(.*?)(\?.*)?$)#', '${3}', $data['url']);

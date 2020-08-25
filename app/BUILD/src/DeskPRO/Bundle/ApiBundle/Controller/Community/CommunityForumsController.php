@@ -8,6 +8,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
+use DeskPRO\Component\Util\IpUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use GuzzleHttp\Client;
@@ -75,6 +76,11 @@ class CommunityForumsController extends CrudController
         // Trigger Download on unsplash api to register photo usage
         $accessKey = $this->get('settings_resolver')->getGlobalSettings()->get('services.unsplash_access_key', null);
         $client    = new Client();
+
+        if (!IpUtils::isUrlUserCallable($image->links->download_location)) {
+            throw new \InvalidArgumentException("URL is not user callable");
+        }
+
         $client->requestAsync('GET', $image->links->download_location, [
             'headers' => [
                 'Authorization' => 'Client-ID '.$accessKey,
