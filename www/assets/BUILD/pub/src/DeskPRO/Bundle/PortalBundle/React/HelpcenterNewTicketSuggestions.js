@@ -8,6 +8,7 @@ import $ from 'jquery';
 import SuggestionsSvg from '@deskpro/portal-style/dist/img/page-icons/ticket-suggestions.svg';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 class SuggestionRow extends React.Component {
 
@@ -50,7 +51,7 @@ class SuggestionMore extends React.Component {
           onClick={showAll}
           style={{ textDecoration: 'underline', cursor: 'pointer', fontWeight: 700 }}
         >
-          {portalPhrases.get('portal.general.show_x_more', { num: count })}
+          <FormattedMessage id="helpcenter.general.show_x_more" values={{ num: count }} />
         </a>
       </span>
     );
@@ -141,7 +142,7 @@ class Suggestions extends React.Component {
   }
 }
 
-export class HelpcenterNewTicketSuggestions extends React.Component {
+class HelpcenterNewTicketSuggestions extends React.Component {
 
   static propTypes = {
     input: PropTypes.object
@@ -207,17 +208,19 @@ export class HelpcenterNewTicketSuggestions extends React.Component {
     }
 
     return (
-      <p>
+      <div>
         <div className="dp-po-block dp-po-ticket-create-suggestions" style={{ marginTop: '10px' }}>
           <header>
             <div className="dp-po-ticket-create-suggestions-title">
               <Isvg src={SuggestionsSvg} className="dp-po-ticket-create-suggestions-image" />
-              {portalPhrases.get('portal.tickets.related_articles_desc')}
+              <FormattedMessage id="helpcenter.tickets.related_articles_desc" />
             </div>
           </header>
           <Suggestions results={results} />
         </div>
-      </p>
+      </div>
     );
   }
 }
+
+export default injectIntl(HelpcenterNewTicketSuggestions);
