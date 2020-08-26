@@ -115,7 +115,9 @@
     "symfony/polyfill-intl-icu": "^1.17",
     "symfony/polyfill-intl-messageformatter": "^1.17",
     "abraham/twitteroauth": "1.0.0",
-    "lsolesen/pel": "dev-master#c746898c3b183b654f2088f94dceb5286776a4ae"
+    "lsolesen/pel": "dev-master#c746898c3b183b654f2088f94dceb5286776a4ae",
+    "ocramius/proxy-manager": "2.4.0",
+    "doctrine/annotations": "1.4.0"
   },
   "require-dev": {
     "behat/behat": "3.1.*",

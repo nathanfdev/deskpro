@@ -169,7 +169,7 @@ if (!defined('DPC_IS_CLOUD') && !$DP_ENV->getConfig('database.host')) {
 
 // Init error reporting
 // This is reset again in LibBootTask to something higher
-error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING & E_COMPILE_WARNING);
+error_reporting(E_ALL & ~(E_DEPRECATED | E_NOTICE | E_WARNING | E_STRICT));
 
 #------------------------------
 # Memory Limits
