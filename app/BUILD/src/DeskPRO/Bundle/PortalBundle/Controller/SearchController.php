@@ -154,7 +154,7 @@ class SearchController extends AbstractController
         } else {
             $results = $this->fetchSearchResults($request, $types, $person, $q, $curPage, $perPage, $type);
         }
-        $searchLogId = $results['meta'][self::SEARCH_LOG_ID_VAR];
+        $searchLogId = isset($results['meta'][self::SEARCH_LOG_ID_VAR]) ? $results['meta'][self::SEARCH_LOG_ID_VAR] : null;
         // we don't need meta here
         unset($results['meta']);
 

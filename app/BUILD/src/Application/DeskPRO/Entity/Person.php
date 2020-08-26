@@ -5018,7 +5018,7 @@ class Person extends DomainObject implements
      */
     public function getUsername()
     {
-        return $this->getEmail();
+        return $this->getId();
     }
 
     /**
