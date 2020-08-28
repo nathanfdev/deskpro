@@ -26,7 +26,7 @@
                                     <div>
                                         <div class="radios">
                                             <label class="title">
-                                                <input type="radio" id="feedback_rating_p" name="ticket_feedback[rating]" value="-1" {% if feedback.rating == -1 %}checked="checked" />
+                                                <input type="radio" id="feedback_rating_p" name="ticket_feedback[rating]" value="-1" {% if feedback.rating == -1 %}checked="checked"{% endif %} />
                                                 <i></i>
                                                 <span class="label">
                                                     <div class="dp-po-ticket-modal-rating dp-po-ticket-modal-rating-one">
@@ -38,7 +38,7 @@
                                                 </span>
                                             </label>
                                             <label class="title">
-                                                <input id="feedback_rating_0" type="radio" name="ticket_feedback[rating]" value="0" {% if feedback.rating == 0 %}checked="checked" />
+                                                <input id="feedback_rating_0" type="radio" name="ticket_feedback[rating]" value="0" {% if feedback.rating == 0 %}checked="checked"{% endif %} />
                                                 <i></i>
                                                 <span class="label">
                                                     <div class="dp-po-ticket-modal-rating dp-po-ticket-modal-rating-two">
@@ -50,7 +50,7 @@
                                                 </span>
                                             </label>
                                             <label class=" title">
-                                                <input type="radio" id="feedback_rating_n" name="ticket_feedback[rating]" value="1" {% if feedback.rating == 1 %}checked="checked" />
+                                                <input type="radio" id="feedback_rating_n" name="ticket_feedback[rating]" value="1" {% if feedback.rating == 1 %}checked="checked"{% endif %} />
                                                 <i></i>
                                                 <span class="label">
                                                     <div class="dp-po-ticket-modal-rating dp-po-ticket-modal-rating-three">
