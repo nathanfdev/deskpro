@@ -193,7 +193,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                             Dates::secsToReadable($rateLocktime),
                             $dateLockEnd
                         );
-                    $this->getContainer()->get('email.email_sender')
+                    $this->container->get('email.email_sender')
                         ->send($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
                 } else {
                     $message = $this->container->getMailer()->createMessage();
