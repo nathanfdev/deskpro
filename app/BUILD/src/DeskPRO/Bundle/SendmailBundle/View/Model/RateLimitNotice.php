@@ -72,7 +72,7 @@ class RateLimitNotice extends EmailBaseType
      */
     protected $dateLockEnd;
 
-    public function __construct(Ticket $ticket, $subject, $name, $numMessages, $timeLimit, $timeLock, $dateLockEnd)
+    public function __construct(Ticket $ticket = null, $subject, $name, $numMessages, $timeLimit, $timeLock, $dateLockEnd)
     {
         $this->ticket      = $ticket;
         $this->subject     = $subject;
