@@ -125,6 +125,51 @@ helpcenter.community.forum_name: 'Numele forumului'
 helpcenter.community.like_action: Apreciere
 helpcenter.community.likes: Aprecieri
 helpcenter.community.my_activity: 'Activitatea mea'
+helpcenter.community.official_response: 'Răspuns oficial'
+helpcenter.community.rate_forbidden: 'Nu aveți permisiunea de a vota'
+helpcenter.community.recent_activity: 'Activitate recentă'
+helpcenter.community.reset_all_filters: 'Resetați toate filtrele'
+helpcenter.community.section_title: Comunitate
+helpcenter.community.status: Stare
+helpcenter.community.status_change: 'Modificare de stare'
+helpcenter.community.title: Titlu
+helpcenter.community.title_author: 'Titlu/autor'
+helpcenter.community.view_all_topics: 'Vedeți toate {plural}'
+helpcenter.community.view_list: 'Vizualizare listă'
+helpcenter.community.view_status_change: 'Modificare de stare'
+helpcenter.direct_messages.back_to_messages: 'Înapoi la mesajele mele'
+helpcenter.direct_messages.block_user: 'blocare utilizator'
+helpcenter.direct_messages.new_message: 'Mesaj nou'
+helpcenter.direct_messages.none: 'Niciun mesaj'
+helpcenter.direct_messages.recipient: Destinatar
+helpcenter.direct_messages.reply_cancel: Anulare
+helpcenter.direct_messages.reply_message: Mesaj
+helpcenter.direct_messages.reply_send_message: 'Trimitere mesaj'
+helpcenter.direct_messages.title: 'Mesajele mele'
+helpcenter.direct_messages.unblock_user_action: 'deblocare utilizator'
+helpcenter.downloads.download_action: Descărcare
+helpcenter.downloads.file_name: 'Numele fișierului'
+helpcenter.downloads.file_size: 'Mărimea fișierului'
+helpcenter.downloads.no_files: 'Niciun fișier'
+helpcenter.downloads.total_downloads: 'Descărcări totale'
+helpcenter.downloads.view_x_files: '{count, plural, one {Vedeți 1 descărcare} few {Vedeți # descărcări} other {Vedeți # de descărcări}}'
+helpcenter.duration_short.days: Z
+helpcenter.duration_short.hours: h
+helpcenter.duration_short.minutes: m
+helpcenter.duration_short.months: L
+helpcenter.duration_short.seconds: s
+helpcenter.duration_short.weeks: S
+helpcenter.duration_short.years: 'A'
+helpcenter.emails.account_disabled_message: 'Contul dvs. este momentan dezactivat. Nu vă puteți autentifica, interacționa cu tichetele sau discuta.'
+helpcenter.emails.auto_close: 'Tichetul dvs. „{subject}” va fi închis în scurtă vreme, deoarece nu ne-ați mai răspuns. Dacă aveți nevoie de asistență suplimentară, este suficient să răspundeți, iar unul dintre agenții noștri vă va ajuta.'
+helpcenter.emails.chat_transcript: 'Vă mulțumim pentru că ați discutat cu noi. Aici este transcrierea discuției.'
+helpcenter.emails.chat_transcript_subject: 'Transcrierea discuției'
+helpcenter.emails.comment_approved: 'Comentariul dvs. a fost publicat.'
+helpcenter.emails.comment_approved_subject: 'Comentariul dvs. a fost aprobat'
+helpcenter.emails.comment_confirmation: 'Vă mulțumim pentru comentariu'
+helpcenter.emails.comment_deleted: 'Comentariul dvs. a fost utilizat pentru îmbunătățirea paginii.'
+helpcenter.emails.comment_deleted_subject: 'Comentariul dvs. a fost citit de agenții noștri'
+helpcenter.emails.comment_thank_you: 'Vă mulțumim pentru comentariul lăsat pentru {link}.'
 helpcenter.emails.profile_email_new_confirm: 'Am primit o solicitare de la {orig_email} de a adăuga această adresă {new_email} în contul dvs. din biroul de asistență al {site_name}.<br /><br />Dacă dvs. ați inițiat această solicitare, dați clic pe legătura de mai jos. În caz contrar, vă rugăm să ștergeți acest mesaj.'
 helpcenter.emails.register_welcome: 'Vă mulțumim pentru înregistrare. Acum vă puteți autentifica folosind adresa {to_email} în biroul nostru de asistență:'
 helpcenter.emails.register_welcome_byagent: 'A fost creat un cont nou pentru dvs. Acum vă puteți autentifica folosind adresa {to_email} în biroul nostru de asistență:'
