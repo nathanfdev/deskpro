@@ -143,6 +143,9 @@ helpcenter.direct_messages.reply_message: Message
 helpcenter.direct_messages.reply_send_message: 'Envoyer Message'
 helpcenter.direct_messages.title: 'Mes Messages'
 helpcenter.direct_messages.unblock_user_action: 'déploquer utilisateur'
+helpcenter.downloads.download_action: Télécharger
+helpcenter.downloads.file_name: 'Nom du fichier'
+helpcenter.downloads.file_size: 'Taille du fichier'
 helpcenter.duration_short.days: J
 helpcenter.duration_short.hours: h
 helpcenter.duration_short.minutes: m
