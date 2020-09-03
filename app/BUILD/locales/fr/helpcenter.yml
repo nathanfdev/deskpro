@@ -111,23 +111,38 @@ helpcenter.articles.status_published: Publié
 helpcenter.articles.view_as_agent: 'Les utilisateurs ne peuvent pas voir cet article, car il n''a pas été publié.'
 helpcenter.articles.view_x_articles: 'Voir tous les articles dans {category}'
 helpcenter.chats.my_chats: 'Mes chats'
+helpcenter.community.activity: Activité
 helpcenter.community.activity_commented: 'J''ai commenté'
 helpcenter.community.activity_created: 'J''ai créé'
 helpcenter.community.activity_voted: 'J''ai voté'
+helpcenter.community.category: Catégorie
+helpcenter.community.create_topic: Créer
 helpcenter.community.create_topic_full: 'Créer {forum}'
+helpcenter.community.create_topic_in_forum: 'Envoyer {forum}'
 helpcenter.community.error_login: 'Veuillez vous connecter'
+helpcenter.community.featured_topics: 'Sujets abordés'
 helpcenter.community.filters: Filtres
 helpcenter.community.form_add_attachments: 'Ajouter des fichiers'
 helpcenter.community.form_description: Description
 helpcenter.community.form_topic_title: Titre
+helpcenter.community.like_action: J'aime
+helpcenter.community.my_activity: 'Mon activité'
 helpcenter.community.no_matching: 'Aucun commentaire correspondant'
 helpcenter.community.rate_forbidden: 'Vous n''êtes pas autorisé à voter'
+helpcenter.community.recent_activity: 'Activité récente'
 helpcenter.community.section_title: Remarques
+helpcenter.community.status: Statut
 helpcenter.community.title: Titre
 helpcenter.direct_messages.back_to_messages: 'Retour à mes messages'
+helpcenter.direct_messages.block_user: 'bloquer utilisateur'
+helpcenter.direct_messages.new_message: 'Nouveau message'
+helpcenter.direct_messages.none: 'Pas de message'
+helpcenter.direct_messages.recipient: Destinataire
+helpcenter.direct_messages.reply_cancel: Annuler
 helpcenter.direct_messages.reply_message: Message
 helpcenter.direct_messages.reply_send_message: 'Envoyer Message'
 helpcenter.direct_messages.title: 'Mes Messages'
+helpcenter.direct_messages.unblock_user_action: 'déploquer utilisateur'
 helpcenter.duration_short.days: J
 helpcenter.duration_short.hours: h
 helpcenter.duration_short.minutes: m
@@ -135,6 +150,7 @@ helpcenter.duration_short.months: M
 helpcenter.duration_short.seconds: s
 helpcenter.duration_short.weeks: S
 helpcenter.duration_short.years: 'A'
+helpcenter.emails.account_disabled_message: 'Votre compte est actuellement désactivé. Vous ne pouvez pas vous connecter ou intéragir avec des tickets ou des chats.'
 helpcenter.emails.chat_transcript: 'Nous vous remercions pour cet échange. Voici une transcription du Chat.'
 helpcenter.emails.chat_transcript_subject: 'Relevé du Chat'
 helpcenter.emails.comment_approved: 'Votre commentaire a été publié.'
