@@ -407,5 +407,64 @@ helpcenter.general.filter: Filtrare
 helpcenter.general.first_published: 'Prima publicare'
 helpcenter.general.form_choose_file: 'Alegeți un fișier'
 helpcenter.general.form_choose_files: 'Alegeți fișiere'
+helpcenter.general.go_action: Mergeți
+helpcenter.general.go_to_page: 'Mergeți la pagina'
+helpcenter.general.helpcenter_disabled_click_below: 'Portalul a fost dezactivat. Dacă sunteți agent, dați clic pe butonul de mai jos pentru a merge la interfața agentului.'
+helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'Portalul a fost dezactivat. Puteți să reactivați portalul din <a href="{setup_link}">Administrator > Portal > Configurare</a>'
 helpcenter.general.helpdesk_system: 'Robotul biroului de asistență'
+helpcenter.general.ics_subscribe: iCalendar
+helpcenter.general.impersonation_mode: 'Modul de impersonare'
+helpcenter.general.labels: Etichete
+helpcenter.general.lang_change_to_current: 'Setați <em>{lang}</em> ca limba implicită'
+helpcenter.general.lang_diff: 'Această pagină este în limba <em>{active_lang}</em>, însă contul dvs. este în limba <em>{person_lang}</em>.'
+helpcenter.general.lang_switch: 'Comutați la limba <em>{lang}</em>'
+helpcenter.general.last_24_hours: 'Ultimele 24 de ore'
+helpcenter.general.last_6_month: 'Ultimele 6 luni'
+helpcenter.general.last_activity: 'Ultima activitate'
+helpcenter.general.last_month: 'Ultima lună'
+helpcenter.general.last_updated: 'Ultima actualizare'
+helpcenter.general.last_update_by: 'Ultima actualizare: <strong>{date_updated, date, medium}</strong> de <strong>{person_name}</strong>'
+helpcenter.general.last_week: 'Ultima săptămână'
+helpcenter.general.last_year: 'Ultimul an'
+helpcenter.general.latest_status_changes: 'Cele mai noi modificări de stare'
+helpcenter.general.log_in: 'Autentificare'
+helpcenter.general.message: Mesaj
+helpcenter.general.more_than_1_year: 'Mai mult de 1 an'
+helpcenter.general.name: Nume
+helpcenter.general.nav_chat: Discuții
+helpcenter.general.nav_community: Comunitate
+helpcenter.general.nav_community_desc: 'Vedeți toate subiectele'
+helpcenter.general.nav_contact: 'Contactați-ne'
+helpcenter.general.nav_contact_desc: 'Intrați în legătură cu noi pentru ajutor'
+helpcenter.general.nav_direct_messages: Mesaje
+helpcenter.general.nav_downloads: Fișiere
+helpcenter.general.nav_downloads_desc: 'Navigați prin fișierele noastre'
+helpcenter.general.nav_emails: E-mailuri
+helpcenter.general.nav_guides: Ghiduri
+helpcenter.general.nav_guides_desc: 'Vedeți toate ghidurile'
+helpcenter.general.nav_kb: Bază de cunoștințe
+helpcenter.general.nav_kb_desc: 'Accesați întregul centru de ajutor'
+helpcenter.general.nav_login: 'Autentificare'
+helpcenter.general.nav_members: 'Directorul cu membri'
+helpcenter.general.nav_news: Știri
+helpcenter.general.nav_news_desc: 'Vedeți toate articolele de știri'
+helpcenter.general.nav_news_desc_short: 'Vedeți toate știrile'
+helpcenter.general.nav_newticket: 'Contactați-ne'
+helpcenter.general.nav_profile: Profil
+helpcenter.general.nav_register: 'Înregistrare'
+helpcenter.general.nav_support_center: 'Centru de ajutor'
+helpcenter.general.nav_your_account: 'Contul dvs.'
+helpcenter.general.next: Următorul
+helpcenter.general.no_search_query: 'Introduceți o interogare de căutare în caseta de căutare.'
+helpcenter.general.no_search_results_general: 'Lipsă rezultate'
+helpcenter.general.or: sau
+helpcenter.general.pagination_page: 'Pagina {page}'
+helpcenter.general.pagination_next_page: 'Pagina următoare'
+helpcenter.general.pagination_previous_page: 'Pagina anterioară'
+helpcenter.general.password: Parolă
+helpcenter.general.previous: Anterior
+helpcenter.general.print: Imprimare
+helpcenter.general.priority: Prioritate
+helpcenter.general.product: Produs
 helpcenter.tickets.thank_you_desc: 'Vă mulțumim pentru că ne-ați contactat. Un membru al echipei noastre va intra în curând în legătură cu dvs.'
+helpcenter.tickets.timeline_marked: 'a marcat acest tichet:'
