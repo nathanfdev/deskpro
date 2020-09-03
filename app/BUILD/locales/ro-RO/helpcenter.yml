@@ -47,7 +47,7 @@ helpcenter.account.section_desc_register: 'Înregistrați-vă un cont pentru a v
 helpcenter.account.section_title_register: Înregistrare
 helpcenter.account.section_title_reset_password: 'Resetare parolă'
 helpcenter.account.section_title_set_password: 'Setare parolă'
-helpcenter.account.section_title_usersource_email: 'Introduceți-vă e-mailul'
+helpcenter.account.section_title_usersource_email: 'Introduceți-vă adresa de e-mail'
 helpcenter.account.section_title_your_account: 'Contul dvs.'
 helpcenter.account.set_password_action: 'Setare parolă'
 helpcenter.account.set_password_click_here: 'Dați clic aici pentru a vă seta parola'
@@ -93,6 +93,7 @@ helpcenter.approvals.view_awaiting_response: 'Se așteaptă răspunsul'
 helpcenter.approvals.view_criteria: 'Criterii de aprobare'
 helpcenter.approvals.view_no_response: 'Lipsă răspuns'
 helpcenter.approvals.view_rejected: Respins
+helpcenter.approvals.view_requesting_agent: 'Agent solicitant'
 helpcenter.approvals.view_ticket: Tichet
 helpcenter.approvals.view_to_approve: 'De aprobat'
 helpcenter.approvals.view_to_reject: 'De respins'
