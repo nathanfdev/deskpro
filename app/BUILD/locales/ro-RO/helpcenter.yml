@@ -333,5 +333,32 @@ helpcenter.forms.error_captcha: 'Valoarea CAPTCHA a fost incorectă'
 helpcenter.forms.error_dupe_email: 'Această adresă este deja utilizată.'
 helpcenter.forms.error_password_current: 'Aceasta trebuie să fie parola dvs. actuală'
 helpcenter.forms.error_password_forbid_reuse: 'Nu puteți utiliza o parolă folosită anterior'
+helpcenter.forms.error_password_min_length: '{count, plural, one {Minimum din # caracter} few {Minimum din # caractere} other {Minimum din # de caractere}}'
+helpcenter.forms.error_password_require_num_lowercase: '{count, plural, one {Cel puțin # caracter cu literă mică} few {Cel puțin # caractere cu litere mici} other {Cel puțin # de caractere cu litere mici}}'
+helpcenter.forms.error_password_require_num_number: '{count, plural, one {Cel puțin # număr} few {Cel puțin # numere} other {Cel puțin # de numere}}'
+helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {Cel puțin # simbol} few {Cel puțin # simboluri} other {Cel puțin # de simboluri}}'
+helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {Cel puțin # caracter cu literă mare} few {Cel puțin # caractere cu litere mari} other {Cel puțin # de caractere cu litere mari}}'
+helpcenter.forms.error_password_reset_required: 'Trebuie să vă resetați parola'
+helpcenter.forms.error_required: 'Această valoare este obligatorie'
+helpcenter.forms.error_banned_email: 'Această adresă este interzisă.'
+helpcenter.forms.label_drag_overlay: 'Introduceți această imagine în mesajul dvs.'
+helpcenter.forms.label_email: E-mail
+helpcenter.forms.label_password: Parolă
+helpcenter.forms.label_password_confirm: Confirmare
+helpcenter.forms.label_reset: Resetare
+helpcenter.forms.label_save: Salvare
+helpcenter.forms.label_submit: Trimitere
+helpcenter.forms.label_timezone: Fus orar
+helpcenter.general.add_comment: 'Adăugați un comentariu'
+helpcenter.general.admin: Administrator
+helpcenter.general.agent: Agent
+helpcenter.general.agent_bar_admin_community: 'Setări pentru comunitate'
+helpcenter.general.agent_bar_admin_dl: 'Setări pentru fișiere'
+helpcenter.general.agent_bar_admin_guides: 'Setări pentru ghiduri'
+helpcenter.general.agent_bar_admin_kb: 'Setări pentru baza de cunoștințe'
+helpcenter.general.agent_bar_admin_lang: 'Setări pentru limbă'
+helpcenter.general.agent_bar_admin_news: 'Setări pentru știri'
+helpcenter.general.agent_bar_admin_portal: 'Aspectul centrului de ajutor'
+helpcenter.general.agent_bar_agent_community: 'Gestionare comunitate'
 helpcenter.general.helpdesk_system: 'Robotul biroului de asistență'
 helpcenter.tickets.thank_you_desc: 'Vă mulțumim pentru că ne-ați contactat. Un membru al echipei noastre va intra în curând în legătură cu dvs.'
