@@ -248,6 +248,7 @@ helpcenter.emails.ticket_added_cc: 'Ați fost adăugat la tichetul „{subject}�
 helpcenter.emails.ticket_cc_added: '{author_name}, {author_email}, v-a adăugat la tichetul intitulat {subject}.'
 helpcenter.emails.ticket_cc_new: 'Ați fost inclus într-un tichet creat de {name}.'
 helpcenter.emails.ticket_flood: 'Ați trimis recent un mesaj către biroul nostru de asistență. Am observat că ați trimis multe mesaje unul după celălalt, care, cel mai probabil, erau automate.<br /><br /> Ca măsură de protecție împotriva unei serii de răspunsuri automate, biroul nostru de asistență nu vă va mai trimite alte mesaje automate de notificare.'
+helpcenter.emails.ticket_message_title: 'Pe {created_date, date, medium}, la {created_date, time, short}, {author} a scris:'
 helpcenter.emails.ticket_new_participant: 'O nouă persoană a fost adăugată la tichetul dvs.'
 helpcenter.emails.ticket_no_autoresponse: 'Avertisment: mesajele de confirmare sunt oprite'
 helpcenter.emails.ticket_rate: 'Evaluați asistența acordată pentru tichetul „{subject}”'
