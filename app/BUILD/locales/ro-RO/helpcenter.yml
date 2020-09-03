@@ -1,1 +1,4 @@
 ---
+helpcenter.emails.profile_email_new_confirm: 'Am primit o solicitare de la {orig_email} de a adăuga această adresă {new_email} în contul dvs. din biroul de asistență al {site_name}.<br /><br />Dacă dvs. ați inițiat această solicitare, dați clic pe legătura de mai jos. În caz contrar, vă rugăm să ștergeți această corespondență electronică.'
+helpcenter.emails.register_welcome_byagent: 'A fost creat un cont nou pentru dvs. Acum vă puteți autentifica folosind adresa {to_email} în biroul nostru de asistență:'
+helpcenter.emails.register_welcome_byagent_subject: 'Noul dvs. cont de birou de asistență'
