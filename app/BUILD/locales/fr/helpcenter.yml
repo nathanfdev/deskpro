@@ -241,6 +241,8 @@ helpcenter.flashes.article_unsubscribe: 'Vous vous êtes désabonné de cet arti
 helpcenter.flashes.article_unsubscribe_everything: 'Vous vous êtes désabonné de toutes les notifications de la base de connaissances.'
 helpcenter.flashes.comment_thank_you: 'Merci pour votre commentaire.'
 helpcenter.flashes.comment_thank_you_review: 'Merci pour votre commentaire. Il sera visible une fois qu''il aura été validé.'
+helpcenter.flashes.community_root_subscribe: 'Vous avez souscrit avec succès aux Communautés. Vous serez averti lorsque de nouveaux sujets sont publiés.'
+helpcenter.flashes.community_root_unsubscribe: 'Vous vous êtes désabonné des Communautés.'
 helpcenter.flashes.guest_content_must_verify: 'Avant que nous puissions publier votre contenu, vous devez vérifier votre courrier électronique. Veuillez vérifier votre boîte mail Nous vous avons envoyé un lien de vérification.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Avant que nous puissions accepter votre billet, nous devons vérifier votre adresse e-mail. Veuillez vérifier votre boîte mail Nous vous avons envoyé un lien de vérification.'
 helpcenter.flashes.ticket_participant_already_error: 'La personne que vous avez essayé d''ajouter en tant que participant est déjà un participant sur ce ticket.'
@@ -256,17 +258,30 @@ helpcenter.flashes.user_updated_profile: 'Votre profil a été mis a jour.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Merci de vérifier votre adresse email. Votre compte est maintenant actif.'
 helpcenter.flashes.usersource_new_add_email_verify: 'Nous devons vérifier votre courrier électronique avant de créer votre compte. Veuillez vérifier votre boîte de réception pour un lien de vérification.'
 helpcenter.forms.error_email_required: 'Veuillez indiquer votre adresse email'
+helpcenter.forms.error_password_reset_required: 'Vous devez réinitialiser le mot de passe'
+helpcenter.forms.error_required: 'Cette valeur est obligatoire'
+helpcenter.forms.error_banned_email: 'L''adresse e-mail est bannie.'
+helpcenter.forms.label_drag_overlay: 'Insérer cette image dans votre message.'
+helpcenter.forms.label_email: E-mail
+helpcenter.forms.label_password: Mot de passe
+helpcenter.forms.label_password_confirm: Confirmer
+helpcenter.forms.label_reset: Réinitialiser
 helpcenter.forms.label_save: Enregistrer
+helpcenter.forms.label_submit: Soumettre
+helpcenter.forms.label_timezone: Fuseau horaire
 helpcenter.general.add_comment: 'Ajouter un commentaire'
 helpcenter.general.admin: Administration
 helpcenter.general.admin_home: 'Interface d''administration'
 helpcenter.general.agent: Agent
 helpcenter.general.agent_bar_admin_community: 'Remarques'
+helpcenter.general.agent_bar_admin_dl: 'Réglages fichiers'
 helpcenter.general.agent_bar_admin_guides: 'Guides'
 helpcenter.general.agent_bar_admin_kb: 'Base de connaissances'
 helpcenter.general.agent_bar_admin_lang: 'Langue'
 helpcenter.general.agent_bar_admin_news: 'Actualités'
+helpcenter.general.agent_bar_admin_portal: 'Helpcenter Design'
 helpcenter.general.agent_bar_agent_community: 'Remarques'
+helpcenter.general.agent_bar_agent_dl: 'Gérer fichiers'
 helpcenter.general.agent_bar_agent_guides: 'Guides'
 helpcenter.general.agent_bar_agent_home: 'Interface agent'
 helpcenter.general.agent_bar_agent_kb: 'Base de connaissances'
@@ -276,33 +291,70 @@ helpcenter.general.agents: Agents
 helpcenter.general.apply: Appliquer
 helpcenter.general.attachments: Pièce jointes
 helpcenter.general.authors_list: Liste des auteurs
+helpcenter.general.back: Retour
+helpcenter.general.btn_manage_subscriptions: 'Gérer vos souscription'
 helpcenter.general.cancel_action: Annuler
 helpcenter.general.categories: Catégories
 helpcenter.general.category: Catégorie
+helpcenter.general.cc: CC
+helpcenter.general.chat: Chat
+helpcenter.general.chats: Chats
+helpcenter.general.clear_all: 'Tout désélectionner'
 helpcenter.general.close: Fermer
 helpcenter.general.comment_btn_save: 'Ajouter le commentaire'
+helpcenter.general.comment_login_first: 'Veuillez vous connecter ou vous enregistrer pour soumettre un commentaire.'
 helpcenter.general.comments: Commentaires
+helpcenter.general.comments_pending_validation: 'Ce commentaire est en attente de validation.'
+helpcenter.general.comments_title: '{count, plural, one {Commentaire (1)} other {Commentaires (#)}}'
 helpcenter.general.copied: copié
 helpcenter.general.copy_to_clipboard: 'Copier dans le presse-papier'
 helpcenter.general.created_by: 'Créé par'
+helpcenter.general.current_page: 'Page actuelle'
+helpcenter.general.dashboard: Tableau de bord
 helpcenter.general.date_day_month: '{date, date, d MMM}'
 helpcenter.general.date_medium: '{date, date, medium}'
 helpcenter.general.date_short: '{date, date, short}'
 helpcenter.general.date_short_month: '{date, date, MMM}'
+helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
+helpcenter.general.department: Département
+helpcenter.general.drag_and_drop: 'Glisser-déposer'
+helpcenter.general.edit_this_page: 'Editer cette page'
+helpcenter.general.email_address: 'Adresse e-mail'
+helpcenter.general.eula: EULA
 helpcenter.general.everything: Tout
+helpcenter.general.expand: Etendre
+helpcenter.general.file_type: Fichier
+helpcenter.general.files_type: Fichiers
+helpcenter.general.filter: Filtre
+helpcenter.general.first_published: 'Première publication'
+helpcenter.general.form_choose_file: 'Choisir un fichier'
+helpcenter.general.form_choose_files: 'Choisir fichiers'
+helpcenter.general.go_action: Aller
+helpcenter.general.go_to_page: 'Aller à la page'
+helpcenter.general.helpcenter_disabled_click_below: 'Le portail a été désactivé. Si vous êtes un agent, cliquez le bouton ci-dessous pour aller dans l''interface agent.'
+helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'Le portail a été désactivé. Vous pouvez réactiver le portail depuis <a href="{setup_link}">Admin > Portal > Setup</a>'
+helpcenter.general.helpdesk_system: 'Robot Helpdesk'
+helpcenter.general.ics_subscribe: iCalendar
 helpcenter.general.impersonation_mode: 'Connexion en tant que'
 helpcenter.general.label_search_enter_label: 'Veuillez fournir une étiquette à rechercher'
+helpcenter.general.labels: Labels
+helpcenter.general.lang_change_to_current: 'Faire de <em>{lang}</em> ma langue par défaut'
+helpcenter.general.lang_diff: 'Cette page est en <em>{active_lang}</em> mais votre compte est en <em>{person_lang}</em>.'
+helpcenter.general.lang_switch: 'Changer vers <em>{lang}</em>'
 helpcenter.general.last_24_hours: 'Dernières 24 heures'
 helpcenter.general.last_6_month: 'Derniers 6 mois'
 helpcenter.general.last_activity: 'Dernière activité'
 helpcenter.general.last_month: 'Mois dernier'
+helpcenter.general.last_updated: 'Dernière mise à jour'
 helpcenter.general.last_update_by: 'Dernière mise à jour : le <strong>{date_updated, date, medium}</strong> par <strong>{person_name}</strong>'
 helpcenter.general.last_week: 'Semaine dernière'
 helpcenter.general.last_year: 'Année dernière'
 helpcenter.general.latest_status_changes: 'Derniers changements de statuts'
 helpcenter.general.log_in: 'Connexion'
+helpcenter.general.message: Message
 helpcenter.general.more_than_1_year: 'Plus d''un an'
 helpcenter.general.name: Nom
+helpcenter.general.nav_chat: Chats
 helpcenter.general.nav_contact: 'Nous contacter'
 helpcenter.general.nav_direct_messages: Messages
 helpcenter.general.nav_downloads: Fichiers
@@ -355,22 +407,88 @@ helpcenter.members.activity_group_today: 'Aujourd''hui'
 helpcenter.members.company: 'Entreprise'
 helpcenter.members.language: Langue
 helpcenter.members.name: Nom
+helpcenter.members.no_activities: 'Pas d''activités'
+helpcenter.members.not_set: 'Non défini'
 helpcenter.members.phone: 'Numéro de téléphone'
+helpcenter.members.phone_number_none: Aucun
+helpcenter.members.recent_activity: 'Activité récente'
 helpcenter.members.send_message: 'Envoyer un message direct'
 helpcenter.members.timezone: Fuseau horaire
 helpcenter.members.title: 'Annuaire des Membres'
 helpcenter.messenger.assigned_agent: 'Agent assigné'
 helpcenter.messenger.blocks_continue_chat_link: Continuer
+helpcenter.messenger.blocks_continue_chat_title: 'Continuer le chat existant'
 helpcenter.messenger.blocks_knowledgebase_title: Base de connaissances
+helpcenter.messenger.blocks_search_block_no_results: 'Pas de résultat pour {query}'
+helpcenter.messenger.blocks_search_block_search_label: Recherche
 helpcenter.messenger.blocks_search_block_see_more_results: 'Plus de résultats'
+helpcenter.messenger.blocks_start_chat_button: 'Démarrer une nouvelle conversation'
+helpcenter.messenger.blocks_start_chat_description: 'Démarrer un chat avec un de nos agents'
+helpcenter.messenger.blocks_start_chat_title: 'Démarrer une conversation'
+helpcenter.messenger.blocks_ticket_button: 'Soumettre un nouveau ticket'
+helpcenter.messenger.blocks_ticket_description: 'Soumettre une demande via notre formulaire de contact'
+helpcenter.messenger.blocks_ticket_title: 'Soumettre un ticket'
 helpcenter.messenger.blocks_tickets_title: 'Vos tickets'
+helpcenter.messenger.blocks_tickets_view_all_link: 'voir tous'
+helpcenter.messenger.chat_agent_assigned_message: '{name} a rejoint la conversation.'
+helpcenter.messenger.chat_attach_file: 'Joindre Fichier'
+helpcenter.messenger.chat_busy: 'Il semblerait que tous nos agents soient occupés en ce moment. Vous pouvez cependant nous envoyer un ticket ci-dessous et nous vous contacteront dès que possible'
+helpcenter.messenger.chat_create_ticket_button: 'Créer Ticket'
+helpcenter.messenger.chat_create_ticket_header: 'Soumettre un ticket'
+helpcenter.messenger.chat_create_ticket_intro: 'Vous pouvez soumettre un ticket à la place et l''un de nos agents vous répondra dès que possible.'
+helpcenter.messenger.chat_dragdrop_drag_and_drop: 'Glisser-déposer un fichier ici'
+helpcenter.messenger.chat_dragdrop_uploading: En cours de téléchargement
+helpcenter.messenger.chat_end_block_buttons_no: 'Non'
+helpcenter.messenger.chat_end_block_buttons_yes: 'Oui'
+helpcenter.messenger.chat_end_block_question_header: 'Terminer votre chat ?'
+helpcenter.messenger.chat_end_chat: 'Terminer chat'
+helpcenter.messenger.chat_ended: 'Chat terminé'
+helpcenter.messenger.chat_header_title: 'Cconversation {department}'
+helpcenter.messenger.chat_no_agent_online: 'Désolé, personne n''est en ligne pour accepter votre chat.'
+helpcenter.messenger.chat_pre_chat_form_form_message: 'Bienvenue dans le HelpDesk. Veuillez remplir les détails ci-dessous et nous vous redirigerons vers un agent aussi vite que possible.'
+helpcenter.messenger.chat_prompt: 'Comment pouvons-nous vous aider aujourd''hui ?'
+helpcenter.messenger.chat_rating_block_buttons_helpful: Utile
+helpcenter.messenger.chat_rating_block_buttons_unhelpful: Inutile
+helpcenter.messenger.chat_rating_block_question_header: 'Notez votre conversation avec {name}'
+helpcenter.messenger.chat_rating_block_thank_you_header: 'Merci pour votre retour'
+helpcenter.messenger.chat_save_ticket_button_no: 'Non'
+helpcenter.messenger.chat_save_ticket_button_yes: 'Oui'
+helpcenter.messenger.chat_save_ticket_intro: 'Veuillez entrer votre nom et votre e-mail et l''un de nos agents vous contactera dès que possible.'
+helpcenter.messenger.chat_save_ticket_question: 'Souhaitez-vous qu''un agent vous contacte ?'
+helpcenter.messenger.chat_save_ticket_thanks: 'Un agent vous contactera dès que possible'
+helpcenter.messenger.chat_send_message: 'Envoyer message'
+helpcenter.messenger.chat_transcript_block_answer_header: 'Votre transcription est en route vers :'
+helpcenter.messenger.chat_transcript_block_no_button: 'Non'
+helpcenter.messenger.chat_transcript_block_question_header: 'Souhaitez-vous recevoir une transcription par e-mail ?'
+helpcenter.messenger.chat_transcript_block_send_button: "	\nEnvoyer Message"
+helpcenter.messenger.chat_transcript_block_yes_button: 'Oui'
+helpcenter.messenger.date_label: Date
+helpcenter.messenger.email_validated_sucessfully: 'E-mail validé avec succès'
+helpcenter.messenger.files_on_this_chat: 'Fichiers dans ce chat'
+helpcenter.messenger.greeting: 'Contactez-nous'
 helpcenter.messenger.tickets_form_thanks: 'Merci de nous avoir contacté. Un membre de notre équipe vous contactera.'
+helpcenter.news.filter_date: 'Sélectionner Date'
+helpcenter.news.news_post_object: 'Message d''actualité'
+helpcenter.news.news_type: 'Catégorie'
 helpcenter.news.none: 'Pas encore de nouvelles'
 helpcenter.news.recent_title: 'Nouvelles récentes'
+helpcenter.news.section_title: Actualités
+helpcenter.news.see_all_news: 'Voir toutes les actualités'
 helpcenter.news.view_as_agent: 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs normaux ne peuvent pas voir cette page.'
 helpcenter.profile.account_disabled_message: 'Votre compte est actuellement désactivé. Vous ne pouvez ni vous connecter, ni interagir sur des tickets ou la messagerie instantanée.'
+helpcenter.profile.your_account: 'Votre compte'
+helpcenter.profile.your_email_addresses: 'Vos adresses e-mail'
 helpcenter.profile.your_password: 'Votre mot de passe'
+helpcenter.search.search_results: 'Résultats de recherche'
+helpcenter.search.showing_results_for: 'Affichage des résultats {type} pour : <span>“{query}”</span>'
 helpcenter.search.view_all_results: '{count, plural,one {Voir le résultat} other {Voir les # résultats}}'
+helpcenter.search.your_tickets: 'Vos tickets'
+helpcenter.sidebar.article_posted_by: 'Auteur'
+helpcenter.tickets.agent_reply: 'Réponse de l''agent'
+helpcenter.tickets.close_ticket: 'Résoudre le ticket'
+helpcenter.tickets.feedback_message_leave_comment: 'Ou laisser un comentaire'
+helpcenter.tickets.feedback_message_your_comment: 'Votre commentaire'
+helpcenter.tickets.filter_by: 'Filtrer par'
 helpcenter.tickets.form_changed_notice: 'De nouveaux champs ont été ajoutés au formulaire. Veuillez examiner ces champs, puis soumettre à nouveau le formulaire.'
 helpcenter.tickets.guest_thank_you_desc: 'Merci de nous contacter. Nous vous avons envoyé un courrier électronique avec des instructions sur la gestion de votre billet avec nous.'
 helpcenter.tickets.guest_thank_you_title: 'Merci'
@@ -379,10 +497,17 @@ helpcenter.tickets.list_date_created: 'Date de création'
 helpcenter.tickets.list_date_last_agent: 'Dernière réponse Agent'
 helpcenter.tickets.list_date_last_user: 'Dernière réponse utilisateur'
 helpcenter.tickets.list_last_action: 'Dernière action'
+helpcenter.tickets.list_no_tickets: 'Vous n''avez pas de ticket'
+helpcenter.tickets.list_no_tickets_filter: 'Pas de ticket correspondant'
+helpcenter.tickets.list_status_agent: 'Nous répondrons'
 helpcenter.tickets.list_status_resolved: Clôturé
 helpcenter.tickets.list_status_user: 'Vous devez répondre'
 helpcenter.tickets.list_subject: Sujet
 helpcenter.tickets.list_ticket_ref: Référence
+helpcenter.tickets.mark_unresolved: 'Rouvrir le ticket'
+helpcenter.tickets.my_messages: 'Mes messages'
+helpcenter.tickets.my_tickets: 'Mes tickets'
+helpcenter.tickets.need_login_desc: 'Veuiller allez sur <a href="{login_url}" target="_blank">la page de connexion</a> pour nous envoyer un message'
 helpcenter.tickets.need_login_title: 'Vous devez vous connecter pour ouvrir un ticket'
 helpcenter.tickets.new_intro: 'Merci de compléter ce formulaire, un de nos agents vous répondra par email dès que possible.'
 helpcenter.tickets.new_section_title: 'Nous contacter'
@@ -390,10 +515,13 @@ helpcenter.tickets.new_ticket_button: 'Créer un nouveau ticket'
 helpcenter.tickets.no_participants: 'Aucun participant'
 helpcenter.tickets.not_allowed_desc: 'Désolé, nos agents ne peuvent pas discuter avec vous pour le moment'
 helpcenter.tickets.not_allowed_title: 'Nous serons de retour'
+helpcenter.tickets.organization_tickets: '{org_name} tickets'
 helpcenter.tickets.please_login_to_reply: 'Connectez-vous pour répondre.'
+helpcenter.tickets.rate_intro: '{name} vous a aidé sur le ticket "{subject}"'
 helpcenter.tickets.rate_negative: 'C''était médiocre'
 helpcenter.tickets.rate_neutral: 'C''était moyen'
 helpcenter.tickets.rate_positive: 'C''était bien'
+helpcenter.tickets.rate_short_negative: 'C''était insuffisant'
 helpcenter.tickets.rate_question: 'Comment évaluez-vous l''aide reçue ?'
 helpcenter.tickets.rate_support: 'Évaluez l''aide reçue'
 helpcenter.tickets.switched_department_rerender: 'La structure de cette forme peut avoir changé. S''il vous plaît examiner le formulaire et soumettre à nouveau.'
