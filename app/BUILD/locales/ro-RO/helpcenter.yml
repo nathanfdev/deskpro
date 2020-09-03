@@ -65,6 +65,66 @@ helpcenter.account.submit_saved_form_go: 'Dați clic aici pentru a retrimite for
 helpcenter.account.thank_you_for_registering: 'Vă mulțumim pentru înregistrare'
 helpcenter.account.tickets_lockout: 'Ați trimis prea multe tichete, astfel că accesul vă este blocat. Reîncercați mai târziu.'
 helpcenter.account.usersource_set_email_desc: 'Înainte să vă puteți autentifica, avem nevoie de adresa dvs. de corespondență electronică. Introduceți-vă adresa mai jos pentru a vă putea trimite un mesaj de verificare.'
+helpcenter.account.validation_email_sent: 'V-am trimis un mesaj la {email}<br />Validați-vă adresa pentru a putea accesa centrul de asistență.'
+helpcenter.account.your_pending_email_addresses: 'Adresele dvs. în așteptare'
+helpcenter.account.login-btn-usersource: 'Autentificare cu {usersource}'
+helpcenter.alerts.tickets_to_respond: '{count, plural, one {Aveți de răspuns la un tichet.} few {Aveți de răspuns la # tichete.} other {Aveți de răspuns la # de tichete.}}'
+helpcenter.approvals.approve_action: Aprobare
+helpcenter.approvals.approved_by: 'Aprobat de'
+helpcenter.approvals.approved_status: Aprobat
+helpcenter.approvals.cancelled_status: Anulat
+helpcenter.approvals.list_column_agent: 'Agent'
+helpcenter.approvals.list_column_approvers: 'Aprobatori'
+helpcenter.approvals.list_column_cancelled: 'Anulat'
+helpcenter.approvals.list_column_completed: 'Completat'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: 'Subiect'
+helpcenter.approvals.list_column_user: 'Utilizator'
+helpcenter.approvals.list_column_your_vote: 'Votul dvs.'
+helpcenter.approvals.my_approvals: 'Aprobările mele'
+helpcenter.approvals.pending_status: În așteptare
+helpcenter.approvals.reject_action: Respingere
+helpcenter.approvals.rejected_by: 'Respins de'
+helpcenter.approvals.rejected_status: Respins
+helpcenter.approvals.system: Sistem
+helpcenter.approvals.view_approved: Aprobat
+helpcenter.approvals.view_awaiting_response: 'Se așteaptă răspunsul'
+helpcenter.approvals.view_criteria: 'Criterii de aprobare'
+helpcenter.approvals.view_no_response: 'Lipsă răspuns'
+helpcenter.approvals.view_rejected: Respins
+helpcenter.approvals.view_ticket: Tichet
+helpcenter.approvals.view_to_approve: 'De aprobat'
+helpcenter.approvals.view_to_reject: 'De respins'
+helpcenter.approvals.you_approved: 'Ai aprobat solicitarea {template} efectuată de {person_name}'
+helpcenter.approvals.you_rejected: 'Ai respins solicitarea {template} efectuată de {person_name}'
+helpcenter.articles.article_object: Acest articol
+helpcenter.articles.published_label: Publicat
+helpcenter.articles.section_title: Bază de cunoștințe
+helpcenter.articles.status_archived: Arhivat
+helpcenter.articles.status_draft: Schiță
+helpcenter.articles.status_published: Publicat
+helpcenter.articles.view_as_agent: 'Utilizatorii nu pot vedea această pagină, deoarece articolul nu a fost publicat.'
+helpcenter.articles.view_x_articles: 'Vedeți toate articolele din {category}'
+helpcenter.chats.my_chats: 'Discuțiile mele'
+helpcenter.community.activity: Activitate
+helpcenter.community.activity_commented: 'Am comentat'
+helpcenter.community.activity_created: 'Am creat'
+helpcenter.community.activity_voted: 'Am votat'
+helpcenter.community.category: Categorie
+helpcenter.community.create_topic: Creare
+helpcenter.community.create_topic_full: 'Creare {forum}'
+helpcenter.community.create_topic_in_forum: 'Trimitere {forum}'
+helpcenter.community.error_login: 'Autentificați-vă'
+helpcenter.community.featured_topics: 'Subiecte recomandate'
+helpcenter.community.filters: Filtre
+helpcenter.community.form_add_attachments: 'Adăugare anexe'
+helpcenter.community.form_create_topic: 'Creare subiect'
+helpcenter.community.form_description: Descriere
+helpcenter.community.form_topic_title: Titlu
+helpcenter.community.forum_name: 'Numele forumului'
+helpcenter.community.like_action: Apreciere
+helpcenter.community.likes: Aprecieri
+helpcenter.community.my_activity: 'Activitatea mea'
 helpcenter.emails.profile_email_new_confirm: 'Am primit o solicitare de la {orig_email} de a adăuga această adresă {new_email} în contul dvs. din biroul de asistență al {site_name}.<br /><br />Dacă dvs. ați inițiat această solicitare, dați clic pe legătura de mai jos. În caz contrar, vă rugăm să ștergeți acest mesaj.'
 helpcenter.emails.register_welcome: 'Vă mulțumim pentru înregistrare. Acum vă puteți autentifica folosind adresa {to_email} în biroul nostru de asistență:'
 helpcenter.emails.register_welcome_byagent: 'A fost creat un cont nou pentru dvs. Acum vă puteți autentifica folosind adresa {to_email} în biroul nostru de asistență:'
