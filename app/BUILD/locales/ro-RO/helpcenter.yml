@@ -1,8 +1,35 @@
 ---
+helpcenter.account.add: Adăugare
+helpcenter.account.add_email: 'Adăugare e-mail'
+helpcenter.account.change_password_action: 'Actualizare parolă'
+helpcenter.account.comment_lockout: 'Ați lăsat un număr mare de comentarii. Vă rugăm să așteptați până să puteți lăsa mai multe.'
+helpcenter.account.email_btn_usersource_set: 'Adăugare adresă de e-mail'
+helpcenter.account.email_make_primary_action: 'Setare ca principală'
+helpcenter.account.email_management_from_form: 'Gestionare adrese de e-mail'
+helpcenter.account.email_primary_description: Principală
+helpcenter.account.email_remove_action: 'Eliminare adresă'
+helpcenter.account.email_resend_validation_action: 'Retrimitere corespondență de validare'
+helpcenter.account.login_captcha_failed: 'Ați introdus un cod CAPTCHA invalid. Încercați din nou.'
+helpcenter.account.login_disabled: 'Adresa dvs. de e-mail a fost interzisă.'
+helpcenter.account.login_email: 'Adresa de e-mail'
+helpcenter.account.login_email_placeholder: adresă@exemplu.com
+helpcenter.account.login_external: 'Autentificare cu un serviciu extern'
+helpcenter.account.login_invalid: 'Autentificare invalidă'
+helpcenter.account.login_lockout: 'Ați efectuat prea multe tentative nereușite de autentificare, astfel că accesul vă este blocat. Reîncercați mai târziu.'
+helpcenter.account.login_not_configured: 'Serviciul extern nu este configurat.'
+helpcenter.account.login_password: 'Parolă'
+helpcenter.account.login_register_action: Înregistrare
+helpcenter.account.login_register_header: 'Înregistrați un cont'
+helpcenter.account.login_reset_password_link: 'Aveți nevoie de un memento pentru parolă?'
+helpcenter.account.login_stay_logged_in: 'Rămâneți autentificat?'
+helpcenter.account.logout_action: Deconectare
+helpcenter.account.logout_confirm: 'Sunteți sigur că doriți să vă deconectați?'
 helpcenter.emails.profile_email_new_confirm: 'Am primit o solicitare de la {orig_email} de a adăuga această adresă {new_email} în contul dvs. din biroul de asistență al {site_name}.<br /><br />Dacă dvs. ați inițiat această solicitare, dați clic pe legătura de mai jos. În caz contrar, vă rugăm să ștergeți această corespondență electronică.'
 helpcenter.emails.register_welcome: 'Vă mulțumim pentru înregistrare. Acum vă puteți autentifica folosind adresa {to_email} în biroul nostru de asistență:'
 helpcenter.emails.register_welcome_byagent: 'A fost creat un cont nou pentru dvs. Acum vă puteți autentifica folosind adresa {to_email} în biroul nostru de asistență:'
 helpcenter.emails.register_welcome_byagent_subject: 'Noul dvs. cont de birou de asistență'
 helpcenter.emails.registration_closed: 'Salut {name},<br /><br />Sunt acceptate tichetele noi doar din partea membrilor existenți ai biroului de asistență. Dacă aveți deja un cont, contactați-ne de pe adresa asociată contului.'
 helpcenter.emails.remind_unresolved: 'Acesta este un mesaj de continuare pentru a vă reaminti că încă aveți un tichet deschis la {helpdesk_name}.<br />Dacă nu mai aveți nevoie de ajutor cu această problemă, vă rugăm să dați clic pe legătura de mai jos pentru a ne informa:<br /><a href="{resolve_url}">{resolve_url}</a><br />Dacă încă aveți nevoie de ajutor, este suficient să răspundeți la această corespondență.'
+helpcenter.emails.ticket_flood: 'Ați contact recent biroul nostru de asistență prin corespondență electronică. Am observat că ați trimis multe mesaje unul după celălalt, care, cel mai probabil, erau automate.<br /><br /> Ca măsură de protecție împotriva unei serii de răspunsuri automate, biroul nostru de asistență nu vă va mai trimite alte corespondențe automate de notificare.'
 helpcenter.error.helpdesk: Birou de asistență
+helpcenter.general.helpdesk_system: 'Robotul biroului de asistență'
