@@ -687,3 +687,17 @@ helpcenter.tickets.ticket_closed: 'Tichet soluționat'
 helpcenter.tickets.ticket_properties: 'Proprietățile tichetului'
 helpcenter.tickets.ticket_status: 'Starea tichetului'
 helpcenter.tickets.timeline_marked: 'a marcat acest tichet:'
+helpcenter.tickets.view_assigned_agent: 'Agent alocat'
+helpcenter.tickets.view_btn_add_cc: 'CC +'
+helpcenter.tickets.view_btn_add_to_ticket: 'Adăugați la tichet'
+helpcenter.tickets.view_btn_edit: Editare
+helpcenter.tickets.view_btn_edit_full: 'Editați acest tichet'
+helpcenter.tickets.view_label_your_email_placeholder: 'E-mail (obligatoriu)'
+helpcenter.tickets.view_label_your_name_placeholder: 'Nume (obligatoriu)'
+helpcenter.tickets.view_last_message: 'Ultimul mesaj'
+helpcenter.tickets.view_reply_or_close: 'Răspundeți sau <a href="{close_url}">închideți tichetul</a>'
+helpcenter.tickets.view_requester: Solicitant
+helpcenter.tickets.view_scroll_reply: 'Dați clic aici pentru a derula în jos la formular.'
+helpcenter.tickets.view_unassigned: Nealocat
+helpcenter.tickets.view_unassigned_more: 'Un agent va fi alocat'
+helpcenter.tickets.view_you_created: 'Creat'
