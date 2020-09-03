@@ -316,9 +316,11 @@ helpcenter.flashes.news_unsubscribe_everything: 'V-ați dezabonat de la toate no
 helpcenter.flashes.ticket_created: 'Tichetul dvs. a fost trimis.'
 helpcenter.flashes.ticket_feedback_thank_you: 'Vă mulțumim pentru opinie.'
 helpcenter.flashes.ticket_feedback_unknown_error: 'A apărut o problemă la trimiterea opiniei. Încercați din nou.'
+helpcenter.flashes.ticket_participant_add: 'Utilizatorul {email} a fost adăugat la acest tichet ca destinatar.'
 helpcenter.flashes.ticket_participant_already_error: 'Persoana pe care ați încercat să o adăugați ca participantă este deja parte la acest tichet.'
 helpcenter.flashes.ticket_participant_cc_limit_reached: 'Limita maximă pentru CC ({max}) a fost atinsă.'
 helpcenter.flashes.ticket_participant_email_error: 'Introduceți o adresă validă și reîncercați.'
+helpcenter.flashes.ticket_participant_remove: 'Utilizatorul {email} a fost eliminat ca destinatar de la acest tichet.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'A apărut o problemă la eliminarea participantului. Încercați din nou.'
 helpcenter.flashes.ticket_re_opened: 'Ați redeschis acest tichet.'
 helpcenter.flashes.ticket_replied: 'Răspunsul dvs. a fost trimis.'
@@ -429,6 +431,7 @@ helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'Portalul a fost de
 helpcenter.general.helpdesk_system: 'Robotul biroului de asistență'
 helpcenter.general.ics_subscribe: iCalendar
 helpcenter.general.impersonation_mode: 'Modul de impersonare'
+helpcenter.general.label_search_enter_label: 'Introduceți eticheta de căutat'
 helpcenter.general.labels: Etichete
 helpcenter.general.lang_change_to_current: 'Setați <em>{lang}</em> ca limba implicită'
 helpcenter.general.lang_diff: 'Această pagină este în limba <em>{active_lang}</em>, însă contul dvs. este în limba <em>{person_lang}</em>.'
@@ -511,8 +514,10 @@ helpcenter.general.tagged_with: 'etichetat cu'
 helpcenter.general.tags: Etichete
 helpcenter.general.time_of_completion: 'Data completării'
 helpcenter.general.translations: Traduceri
+helpcenter.general.unpublished: 'Data retragerii de la publicare'
 helpcenter.general.updated: Actualizat
 helpcenter.general.user: Utilizator
+helpcenter.general.user_menu: 'Meniul utilizatorului'
 helpcenter.general.user_profile: 'Profilul utilizatorului'
 helpcenter.general.view_all_status_changes: 'Vedeți toate modificările de stare'
 helpcenter.general.view_all_topics: 'Vedeți toate subiectele'
@@ -525,12 +530,19 @@ helpcenter.general.your_comment_optional_label: 'Comentariul dvs. (opțional)'
 helpcenter.general.download_pdf: 'Descărcare PDF'
 helpcenter.knowledgebase.featured_articles: 'Articole recomandate'
 helpcenter.label.search: Căutare
+helpcenter.members.activity_commented_on: 'A comentat la'
+helpcenter.members.activity_created_topic: 'A creat subiectul'
+helpcenter.members.activity_down_voted: 'A marcat ca nefolositor'
+helpcenter.members.activity_down_voted_comment_on: 'A oferit un vot negativ unui comentariu la'
+helpcenter.members.activity_group_everything_else: 'Toate celelalte'
 helpcenter.members.activity_group_last_month: 'Ultima lună'
 helpcenter.members.activity_group_last_week: 'Ultima săptămână'
 helpcenter.members.activity_group_last_year: 'Ultimul an'
 helpcenter.members.activity_group_this_week: 'Săptămâna aceasta'
 helpcenter.members.activity_group_this_year: 'Anul acesta'
 helpcenter.members.activity_group_today: 'Astăzi'
+helpcenter.members.activity_up_voted: 'A marcat ca util'
+helpcenter.members.activity_up_voted_comment_on: 'A oferit un vot pozitiv unui comentariu la'
 helpcenter.members.company: 'Companiei'
 helpcenter.members.date_joined: 'Data înscrierii'
 helpcenter.members.language: Limbă
@@ -713,6 +725,7 @@ helpcenter.tickets.thank_you_desc: 'Vă mulțumim pentru că ne-ați contactat. 
 helpcenter.tickets.ticket_closed: 'Tichet soluționat'
 helpcenter.tickets.ticket_properties: 'Proprietățile tichetului'
 helpcenter.tickets.ticket_status: 'Starea tichetului'
+helpcenter.tickets.tickets_i_m_cc_on: 'Tichete la care sunt destinatar'
 helpcenter.tickets.timeline_marked: 'a marcat acest tichet:'
 helpcenter.tickets.user_rated_support: 'Ați ({email}) evaluat asistența acordată de'
 helpcenter.tickets.view_assigned_agent: 'Agent alocat'
