@@ -466,5 +466,79 @@ helpcenter.general.previous: Anterior
 helpcenter.general.print: Imprimare
 helpcenter.general.priority: Prioritate
 helpcenter.general.product: Produs
+helpcenter.general.prop_comments_asc: 'Cele mai puține comentarii întâi'
+helpcenter.general.prop_comments_desc: 'Cele mai multe comentarii întâi'
+helpcenter.general.prop_date_asc: 'Rezultatele mai vechi întâi'
+helpcenter.general.prop_date_desc: 'Rezultatele mai noi întâi'
+helpcenter.general.prop_views_asc: 'Cele mai puține vizualizări întâi'
+helpcenter.general.prop_views_desc: 'Cele mai multe vizualizări întâi'
+helpcenter.general.published: 'Prima publicare'
+helpcenter.general.published_by: 'Publicat de <strong>{person_name}</strong>'
+helpcenter.general.rate_page_negative: Nefolositor
+helpcenter.general.rate_page_positive: Util
+helpcenter.general.related_content: 'Conținut asociat'
+helpcenter.general.rerender_form: 'Revizuiți acest formular înainte să îl trimiteți.'
+helpcenter.general.search: 'Cum vă putem ajuta astăzi?'
+helpcenter.general.select: Selectare
+helpcenter.general.send_user_direct_message: 'Trimiteți utilizatorului un mesaj direct'
+helpcenter.general.share: Distribuire
+helpcenter.general.show: Afișare
+helpcenter.general.skip_link: 'Săriți la conținutul principal'
+helpcenter.general.software_power_by: 'Susținut de'
+helpcenter.general.sort: Sortare
+helpcenter.general.status: Stare
+helpcenter.general.subscribe_action: Abonare
+helpcenter.general.tagged_with: 'etichetat cu'
+helpcenter.general.tags: Etichete
+helpcenter.general.time_of_completion: 'Data completării'
+helpcenter.general.translations: Traduceri
+helpcenter.general.updated: Actualizat
+helpcenter.general.user: Utilizator
+helpcenter.general.user_profile: 'Profilul utilizatorului'
+helpcenter.general.view_all_status_changes: 'Vedeți toate modificările de stare'
+helpcenter.general.view_all_topics: 'Vedeți toate subiectele'
+helpcenter.general.view_profile: 'Vizualizare profil'
+helpcenter.general.viewed_by_agents_only: 'Acest câmp este vizibil doar agenților'
+helpcenter.general.workflow: 'Flux de lucru'
+helpcenter.general.you: Dvs.
+helpcenter.general.your_comment_label: 'Comentariul dvs.'
+helpcenter.general.your_comment_optional_label: 'Comentariul dvs. (opțional)'
+helpcenter.general.download_pdf: 'Descărcare PDF'
+helpcenter.knowledgebase.featured_articles: 'Articole recomandate'
+helpcenter.label.search: Căutare
+helpcenter.members.activity_group_last_month: 'Ultima lună'
+helpcenter.members.activity_group_last_week: 'Ultima săptămână'
+helpcenter.members.activity_group_last_year: 'Ultimul an'
+helpcenter.members.activity_group_this_week: 'Săptămâna aceasta'
+helpcenter.members.activity_group_this_year: 'Anul acesta'
+helpcenter.members.activity_group_today: 'Astăzi'
+helpcenter.members.company: 'Companiei'
+helpcenter.members.date_joined: 'Data înscrierii'
+helpcenter.members.language: Limbă
+helpcenter.members.name: Nume
+helpcenter.members.no_activities: 'Lipsă activități'
+helpcenter.members.phone: 'Număr de telefon'
+helpcenter.members.phone_number_none: Niciunul
+helpcenter.members.recent_activity: 'Activitate recentă'
+helpcenter.members.send_message: 'Trimiteți mesaj direct'
+helpcenter.members.timezone: Fus orar
+helpcenter.members.title: 'Directorul cu membri'
+helpcenter.messenger.assigned_agent: 'Agent alocat'
+helpcenter.messenger.blocks_continue_chat_link: Continuare
+helpcenter.messenger.blocks_continue_chat_title: 'Continuați discuția existentă'
+helpcenter.messenger.blocks_knowledgebase_title: Bază de cunoștințe
+helpcenter.messenger.blocks_search_block_no_results: 'Lipsă rezultate pentru {query}'
+helpcenter.messenger.blocks_search_block_search_label: Căutare
+helpcenter.messenger.blocks_search_block_see_more_results: 'Vedeți mai multe rezultate'
+helpcenter.messenger.blocks_start_chat_button: 'Începeți o conversație nouă'
+helpcenter.messenger.blocks_start_chat_description: 'Începeți o discuție cu unul dintre agenții noștri'
+helpcenter.messenger.blocks_start_chat_title: 'Începeți o conversație'
+helpcenter.messenger.blocks_ticket_button: 'Trimiteți un tichet nou'
+helpcenter.messenger.blocks_ticket_description: 'Trimiteți o solicitare prin formularul nostru de contact'
+helpcenter.messenger.blocks_ticket_title: 'Trimiteți un tichet'
+helpcenter.messenger.blocks_tickets_title: 'Tichetele dvs.'
+helpcenter.messenger.chat_agent_assigned_message: '{name} s-a alăturat conversației.'
+helpcenter.messenger.chat_attach_file: 'Anexare fișier'
+helpcenter.messenger.chat_create_ticket_button: 'Creare tichet'
 helpcenter.tickets.thank_you_desc: 'Vă mulțumim pentru că ne-ați contactat. Un membru al echipei noastre va intra în curând în legătură cu dvs.'
 helpcenter.tickets.timeline_marked: 'a marcat acest tichet:'
