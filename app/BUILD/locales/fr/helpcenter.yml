@@ -271,6 +271,7 @@ helpcenter.messenger.blocks_continue_chat_link: Continuer
 helpcenter.messenger.blocks_knowledgebase_title: Base de connaissances
 helpcenter.messenger.blocks_search_block_see_more_results: 'Plus de résultats'
 helpcenter.messenger.blocks_tickets_title: 'Vos tickets'
+helpcenter.messenger.tickets_form_thanks: 'Merci de nous avoir contacté. Un membre de notre équipe vous contactera.'
 helpcenter.news.none: 'Pas encore de nouvelles'
 helpcenter.news.recent_title: 'Nouvelles récentes'
 helpcenter.news.view_as_agent: 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs normaux ne peuvent pas voir cette page.'
