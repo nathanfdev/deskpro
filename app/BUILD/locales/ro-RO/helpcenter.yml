@@ -360,5 +360,52 @@ helpcenter.general.agent_bar_admin_lang: 'Setări pentru limbă'
 helpcenter.general.agent_bar_admin_news: 'Setări pentru știri'
 helpcenter.general.agent_bar_admin_portal: 'Aspectul centrului de ajutor'
 helpcenter.general.agent_bar_agent_community: 'Gestionare comunitate'
+helpcenter.general.agent_bar_agent_dl: 'Gestionare fișiere'
+helpcenter.general.agent_bar_agent_guides: 'Gestionare ghiduri'
+helpcenter.general.agent_bar_agent_kb: 'Gestionare bază de date'
+helpcenter.general.agent_bar_agent_news: 'Gestionare știri'
+helpcenter.general.agent_interface: 'Interfața agentului'
+helpcenter.general.agents: Agenți
+helpcenter.general.apply: Aplicare
+helpcenter.general.attachments: Anexe
+helpcenter.general.authors_list: Lista cu autori
+helpcenter.general.back: Înapoi
+helpcenter.general.btn_manage_subscriptions: 'Gestionați-vă abonamentele'
+helpcenter.general.cancel_action: Anulare
+helpcenter.general.categories: Categorii
+helpcenter.general.category: Categorie
+helpcenter.general.cc: CC
+helpcenter.general.chat: Discuție
+helpcenter.general.chats: Discuții
+helpcenter.general.clear_all: 'Ștergeți toate'
+helpcenter.general.close: Închidere
+helpcenter.general.comment_btn_save: 'Adăugare comentariu'
+helpcenter.general.comment_login_first: 'Autentificați-vă sau înregistrați-vă pentru a lăsa un comentariu.'
+helpcenter.general.comments: Comentarii
+helpcenter.general.comments_pending_validation: 'Acest comentariu trebuie să fie revizuit.'
+helpcenter.general.comments_title: '{count, plural, one {Comentariu (1)} few {Comentarii (#)} other {Comentarii (#)}}'
+helpcenter.general.copied: copiat
+helpcenter.general.copy_to_clipboard: 'Copiere în memoria temporară'
+helpcenter.general.created_by: 'Creat de'
+helpcenter.general.current_page: 'Pagina actuală'
+helpcenter.general.dashboard: Tablou de bord
+helpcenter.general.date_day_month: '{date, date, d MMM}'
+helpcenter.general.date_medium: '{date, date, medium}'
+helpcenter.general.date_short: '{date, date, short}'
+helpcenter.general.date_short_month: '{date, date, MMM}'
+helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
+helpcenter.general.department: Departamente
+helpcenter.general.drag_and_drop: 'Glisare și fixare'
+helpcenter.general.edit_this_page: 'Editați această pagină'
+helpcenter.general.email_address: 'Adresă de e-mail'
+helpcenter.general.eula: EULA
+helpcenter.general.everything: Totul
+helpcenter.general.expand: Extindere
+helpcenter.general.file_type: Fișier
+helpcenter.general.files_type: Fișiere
+helpcenter.general.filter: Filtrare
+helpcenter.general.first_published: 'Prima publicare'
+helpcenter.general.form_choose_file: 'Alegeți un fișier'
+helpcenter.general.form_choose_files: 'Alegeți fișiere'
 helpcenter.general.helpdesk_system: 'Robotul biroului de asistență'
 helpcenter.tickets.thank_you_desc: 'Vă mulțumim pentru că ne-ați contactat. Un membru al echipei noastre va intra în curând în legătură cu dvs.'
