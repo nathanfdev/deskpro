@@ -23,7 +23,9 @@ services:
     tags:
       - {name: kernel.event_subscriber }
 
-  kernels_cache_warmer:
-    class: DeskPRO\Bundle\AppBundle\CacheWarmer\KernelsCacheWarmer
+  router_cache_warmer:
+    class: DeskPRO\Bundle\AppBundle\CacheWarmer\RouterCacheWarmer
+    arguments:
+      - "@router"
     tags:
-      - { name: 'kernel.cache_warmer', priority: 4096 }
+      - { name: 'kernel.cache_warmer', priority: 255 }
