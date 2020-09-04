@@ -658,7 +658,7 @@ helpcenter.tickets.list_last_action: 'Dernière action'
 helpcenter.tickets.list_no_tickets: 'Vous n''avez pas de ticket'
 helpcenter.tickets.list_no_tickets_filter: 'Pas de ticket correspondant'
 helpcenter.tickets.list_status_agent: 'Nous répondrons'
-helpcenter.tickets.list_status_resolved: Clôturé
+helpcenter.tickets.list_status_resolved: Résolu
 helpcenter.tickets.list_status_user: 'Vous devez répondre'
 helpcenter.tickets.list_subject: Sujet
 helpcenter.tickets.list_ticket_ref: Référence
