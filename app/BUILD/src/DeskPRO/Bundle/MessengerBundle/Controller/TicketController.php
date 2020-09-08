@@ -9,6 +9,8 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
@@ -100,6 +102,15 @@ class TicketController extends AbstractMessengerController
             $ticket,
             $formOptions
         );
+
+        try {
+            $abuseCheck = new SubmitTicketAbuseCheck($person, $request->getClientIp());
+            $this->get('anti_abuse')->check($abuseCheck);
+        } catch (AntiAbuseException $e) {
+            $form->addError(new FormError('You\'re trying to submit a ticket too frequently.'));
+
+            throw new InvalidFormException($form);
+        }
 
         $form->submit($requestData, true);
         if (!$form->isValid()) {

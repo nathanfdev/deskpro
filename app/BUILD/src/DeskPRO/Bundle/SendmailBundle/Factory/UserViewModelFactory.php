@@ -681,7 +681,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      *
      * @return RateLimitNotice
      */
-    public function createRateLimitNoticeModel(Ticket $ticket, $subject, $name, $numMessages, $timeLimit, $timeLock, $dateLockEnd)
+    public function createRateLimitNoticeModel(Ticket $ticket = null, $subject, $name, $numMessages, $timeLimit, $timeLock, $dateLockEnd)
     {
         return $this->convertParameters(
             RateLimitNotice::class,
