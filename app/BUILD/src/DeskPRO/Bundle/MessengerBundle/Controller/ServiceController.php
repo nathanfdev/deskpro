@@ -197,6 +197,7 @@ class ServiceController extends AbstractMessengerController
             'helpcenter.general.department',
             'helpcenter.general.drag_and_drop',
             'helpcenter.general.email_address',
+            'helpcenter.general.remove',
             'helpcenter.messenger.tickets_form_header',
             'helpcenter.messenger.tickets_form_message',
             'helpcenter.messenger.tickets_form_name',
