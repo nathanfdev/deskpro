@@ -63,6 +63,7 @@ export default class HcFileUpload extends PageWidget {
         or:          portalPhrases.get('helpcenter.general.or'),
         chooseAFile: portalPhrases.get('helpcenter.general.form_choose_file'),
         chooseFiles: portalPhrases.get('helpcenter.general.form_choose_files'),
+        remove:      portalPhrases.get('helpcenter.general.remove'),
       }
     });
 

@@ -506,6 +506,7 @@ helpcenter.general.rate_page_negative: Unhelpful
 helpcenter.general.rate_page_positive: Helpful
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} of {vote_count} people found this page helpful'
 helpcenter.general.related_content: 'Related Content'
+helpcenter.general.remove: remove
 helpcenter.general.rerender_form: 'Please review this form before you submit it.'
 helpcenter.general.search: 'How can we help you today?'
 helpcenter.general.search_labels: 'Search Labels'
