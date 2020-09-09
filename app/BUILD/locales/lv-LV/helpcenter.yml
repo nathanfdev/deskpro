@@ -1,1 +1,5 @@
 ---
+helpcenter.account.add: Pievienot
+helpcenter.account.add_email: 'Pievienot e-pastu'
+helpcenter.account.change_password_action: 'Atjaunināt paroli'
+helpcenter.account.comment_lockout: 'Jūs iesniedzāt daudz komentāru. Lūdzu, uzgaidiet, lai iesniegtu vairāk.'
