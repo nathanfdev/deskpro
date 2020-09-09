@@ -69,6 +69,7 @@ helpcenter.general.nav_newticket: 'Ota yhteyttä'
 helpcenter.general.password: Salasana
 helpcenter.general.rate_page_positive: Hyödyllinen
 helpcenter.general.show: Näytä
+helpcenter.general.show_x_more: 'Näytä {num} lisää'
 helpcenter.general.you: Sinä
 helpcenter.members.language: Kieli
 helpcenter.members.timezone: Aikavyöhyke
@@ -86,6 +87,7 @@ helpcenter.tickets.rate_positive: 'Se oli loistava'
 helpcenter.tickets.rate_question: 'Miten arvioisit tuen jota sait?'
 helpcenter.tickets.rate_support: 'Arvioi tuki'
 helpcenter.tickets.reference_number: 'Viitenumero: {ref}'
+helpcenter.tickets.related_articles_desc: 'Seuraavista artikkeleista voi löytyä ratkaisu ongelmaan.'
 helpcenter.tickets.thank_you: 'Kiitos, olemme vastaanottaneet pyyntösi.'
 helpcenter.tickets.thank_you_desc: 'Kiitos yhteydenotostasi. Tiimistämme otetaan sinuun pian yhteyttä.'
 helpcenter.tickets.view_btn_edit: Muokkaa
