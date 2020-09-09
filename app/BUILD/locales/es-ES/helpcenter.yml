@@ -1,4 +1,5 @@
 ---
+helpcenter.account.add: Añadir
 helpcenter.account.comment_lockout: 'Has enviado muchos comentarios. Por favor, espere para enviar más.'
 helpcenter.account.email_btn_usersource_set: 'Administrar correos electrónicos'
 helpcenter.account.login_captcha_failed: 'Ha introducido un código CAPTCHA no válido. Inténtalo de nuevo.'
