@@ -8,6 +8,8 @@ helpcenter.account.email_make_primary_action: 'Primair maken'
 helpcenter.account.email_management_from_form: 'Mijn e-mailadressen beheren'
 helpcenter.account.email_primary_description: Primair
 helpcenter.account.email_remove_action: 'E-mail verwijderen'
+helpcenter.account.email_resend_validation_action: 'Validatiemail opnieuw verzenden'
+helpcenter.account.lockout_time: 'Probeer het binnen {minuten} opnieuw'
 helpcenter.account.login_captcha_failed: 'U heeft een ongeldige CAPTCHA-code ingevuld. Probeer het nogmaals.'
 helpcenter.account.login_email: 'Uw e-mailadres'
 helpcenter.account.login_external: 'Inloggen met een externe service'
