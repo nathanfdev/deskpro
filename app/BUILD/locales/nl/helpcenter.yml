@@ -1,6 +1,13 @@
 ---
+helpcenter.account.add: Toevoegen
+helpcenter.account.add_email: 'E-mail toevoegen'
+helpcenter.account.change_password_action: 'Wachtwoord updaten'
 helpcenter.account.comment_lockout: 'U heeft veel reacties verstuurd. Wacht om er meer te versturen.'
 helpcenter.account.email_btn_usersource_set: 'E-mailadres toevoegen'
+helpcenter.account.email_make_primary_action: 'Primair maken'
+helpcenter.account.email_management_from_form: 'Mijn e-mailadressen beheren'
+helpcenter.account.email_primary_description: Primair
+helpcenter.account.email_remove_action: 'E-mail verwijderen'
 helpcenter.account.login_captcha_failed: 'U heeft een ongeldige CAPTCHA-code ingevuld. Probeer het nogmaals.'
 helpcenter.account.login_email: 'Uw e-mailadres'
 helpcenter.account.login_external: 'Inloggen met een externe service'
