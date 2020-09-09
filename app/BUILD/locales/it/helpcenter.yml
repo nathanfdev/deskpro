@@ -1,9 +1,21 @@
 ---
+helpcenter.account.add: Aggiungi
+helpcenter.account.add_email: 'Aggiungi email'
+helpcenter.account.change_password_action: 'Aggiorna password'
 helpcenter.account.comment_lockout: 'Hai inviato troppi commenti. Aspetta prima di poterne inviare ulteriori'
 helpcenter.account.email_btn_usersource_set: 'Aggiungi Indirizzo Email'
+helpcenter.account.email_make_primary_action: 'Imposta come Principale'
+helpcenter.account.email_management_from_form: 'Gestisci i miei indirizzi email'
+helpcenter.account.email_primary_description: Primario
+helpcenter.account.email_remove_action: 'Rimuovi email'
+helpcenter.account.email_resend_validation_action: 'Invia nuovamente l''email di convalida'
+helpcenter.account.lockout_time: 'Puoi riprovare fra {minutes} minuti.'
 helpcenter.account.login_captcha_failed: 'Hai inserito un codice CAPTCHA invalido. Per favore riprova di nuovo.'
+helpcenter.account.login_disabled: 'Il tuo indirizzo email è stato bloccato.'
 helpcenter.account.login_email: 'La tua email'
+helpcenter.account.login_email_placeholder: email@example.com
 helpcenter.account.login_external: 'Esegui il Login tramite servizio esterno'
+helpcenter.account.login_invalid: 'Login non valida'
 helpcenter.account.login_lockout: 'Hai sbagliato il login per troppe volte. Per un breve periodo di tempo il tuo account è bloccato. Riprova più tardi'
 helpcenter.account.new_ticket_no_login: 'Il CRM del portale è disabilitato. Impossibile inviare un ticket.'
 helpcenter.account.profile_delete_picture: 'Elimina o sostituisci l''immagine profilo?'
