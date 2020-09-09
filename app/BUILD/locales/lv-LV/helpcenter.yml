@@ -129,3 +129,6 @@ helpcenter.emails.password_reset: 'Jūs pieprasījāt paroles maiņu. Lai mainī
 helpcenter.emails.password_reset_subject: 'Paroles maiņa'
 helpcenter.emails.password_set: 'Lai izveidotu paroli, klikšķiniet uz šīs saites:'
 helpcenter.emails.password_set_subject: 'Izveidojiet paroli'
+helpcenter.emails.profile_email_link_validate: 'Vienkārši noklikšķiniet uz šīs saites, lai apstiprinātu savu e-pasta adresi'
+helpcenter.emails.profile_email_new_confirm: 'Mēs no {orig_email} saņēmām pieprasījumu pievienot e-pastu {new_email} jūsu kontam vietnes {site_name} palīdzības dienestā.<br /><br />Ja pieprasījumu iesniedzāt jūs, lūdzu, klikšķiniet uz zemāk norādītās saites. Ja to nedarījāt jūs, lūdzu, izdzēsiet šo e-pastu.'
+helpcenter.emails.profile_email_primary_confirm: 'Lai apstiprinātu savu galveno e-pasta adresi, vienkārši noklikšķiniet uz šīs saites'
