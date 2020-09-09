@@ -53,10 +53,14 @@ helpcenter.forms.delete_question: 'Poista?'
 helpcenter.forms.error_captcha: 'CAPTCHA-arvo oli virheellinen'
 helpcenter.forms.error_required: 'Tämä arvo on pakollinen'
 helpcenter.forms.error_banned_email: 'Sähköpostiosoite on estetty.'
+helpcenter.forms.label_drag_overlay: 'Lisää tämä kuva viestiisi.'
+helpcenter.forms.label_email: Sähköposti
 helpcenter.forms.label_save: Tallenna
+helpcenter.forms.label_submit: Lähetä
 helpcenter.general.add_comment: 'Lisää kommentti'
 helpcenter.general.agent: Asiantuntija
 helpcenter.general.attachments: Liitetiedostot
+helpcenter.general.drag_and_drop: 'Vedä ja pudota'
 helpcenter.general.everything: Kaikki
 helpcenter.general.log_in: 'Kirjaudu'
 helpcenter.general.name: Nimi
