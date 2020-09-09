@@ -11,6 +11,7 @@ helpcenter.account.reset_password_sent_to: 'Lähetimme sähköpostin seuraavaan 
 helpcenter.account.section_desc_login: 'Onko teillä jo tili? Kirjautukaa alta.'
 helpcenter.account.set_password_success: 'Salasanasi on päivitetty'
 helpcenter.articles.section_title: Ohjeet
+helpcenter.articles.view_x_articles: 'Katso kaikki artikkelit osiossa {category}'
 helpcenter.community.form_topic_title: Aihe
 helpcenter.community.section_title: Palaute
 helpcenter.direct_messages.reply_message: Viesti
@@ -64,6 +65,7 @@ helpcenter.general.agent: Asiantuntija
 helpcenter.general.attachments: Liitetiedostot
 helpcenter.general.drag_and_drop: 'Vedä ja pudota'
 helpcenter.general.everything: Kaikki
+helpcenter.general.last_update_by: 'Viimeksi päivitetty: <strong>{date_updated, date, medium}</strong>, <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Kirjaudu'
 helpcenter.general.name: Nimi
 helpcenter.general.nav_contact: 'Ota yhteyttä'
@@ -72,6 +74,7 @@ helpcenter.general.nav_newticket: 'Ota yhteyttä'
 helpcenter.general.no_search_query: 'Kirjoita hakusana hakukenttään.'
 helpcenter.general.no_search_results_general: 'Tuloksia ei löytynyt'
 helpcenter.general.password: Salasana
+helpcenter.general.rate_page_negative: Hyödytön
 helpcenter.general.rate_page_positive: Hyödyllinen
 helpcenter.general.search: 'Miten voimme auttaa sinua tänään?'
 helpcenter.general.show: Näytä
@@ -94,6 +97,7 @@ helpcenter.messenger.tickets_form_header: 'Uusi tukipyyntö'
 helpcenter.messenger.tickets_form_or: tai
 helpcenter.messenger.tickets_form_saving: 'Tukipyyntöäsi tallennetaan. Odota hetki'
 helpcenter.messenger.tickets_form_thanks: 'Kiitos yhteydenotostasi. Tiimistämme otetaan sinuun yhteyttä sähköpostitse.'
+helpcenter.messenger.tickets_form_thanks_header: 'Pyyntösi on matkalla'
 helpcenter.news.view_as_agent: 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.'
 helpcenter.profile.account_disabled_message: 'Käyttäjätilisi on väliaikaisesti suljettu. '
 helpcenter.profile.your_password: 'Salasanasi'
