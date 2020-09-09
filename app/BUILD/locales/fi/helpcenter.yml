@@ -51,6 +51,8 @@ helpcenter.error.404_title: 'Ei löytynyt.'
 helpcenter.error.permission_denied_title: 'Toimenpide ei ole sallittu'
 helpcenter.forms.delete_question: 'Poista?'
 helpcenter.forms.error_captcha: 'CAPTCHA-arvo oli virheellinen'
+helpcenter.forms.error_required: 'Tämä arvo on pakollinen'
+helpcenter.forms.error_banned_email: 'Sähköpostiosoite on estetty.'
 helpcenter.forms.label_save: Tallenna
 helpcenter.general.add_comment: 'Lisää kommentti'
 helpcenter.general.agent: Asiantuntija
