@@ -34,3 +34,64 @@ helpcenter.account.registration_set_password: 'Konts ar šādu e-pasta adresi ja
 helpcenter.account.resend_registration_email: 'Atkārtoti nosūtīt reģistrācijas e-pastu'
 helpcenter.account.reset_password_action: 'Mainīt paroli'
 helpcenter.account.reset_password_click_here: 'Klikšķiniet šeit, lai pieprasītu kodu paroles maiņai'
+helpcenter.account.reset_password_invalid_desc: 'Paroles maiņas kods ir nederīgs vai nav izmantots noteiktajā termiņā. Lai mainītu paroli, lūdzu, pieprasiet jaunu kodu.'
+helpcenter.account.reset_password_invalid_input: 'Lūdzu, ievadiet derīgu e-pasta adresi vai lietotājvārdu'
+helpcenter.account.reset_password_lockout: 'Jūs mēģinājāt mainīt paroli pārāk daudz reižu, tāpēc jūsu konts uz laiku ir bloķēts. Lūdzu, mēģiniet atkal vēlāk.'
+helpcenter.account.reset_password_request_desc: 'Norādiet šeit prasīto informāciju, lai saņemtu saiti paroles maiņai.'
+helpcenter.account.reset_password_request_title: 'Neatceraties paroli?'
+helpcenter.account.reset_password_sent_desc: 'Mēs saņēmām jūsu paroles maiņas pieprasījumu par zemāk norādīto e-pastu. Ja minētā e-pasta adrese ir piesaistīta reģistrētam kontam, mēs nosūtījām e-pastu ar paroles atjaunošanas saiti uz konta galveno e-pasta adresi. Lūdzu, pārbaudiet e-pastu, lai uzzinātu vairāk.'
+helpcenter.account.reset_password_sent_title: 'Paroles pieprasījums ir saņemts'
+helpcenter.account.reset_password_sent_to: 'Mēs nosūtījām e-pastu uz'
+helpcenter.account.reset_password_success: 'Jūsu parole ir mainīta.'
+helpcenter.account.section_desc_login: 'Jums jau ir konts? Piesakieties tajā zemāk.'
+helpcenter.account.section_desc_login_external: 'Ja jums ir konts pie cita pakalpojumu sniedzēja, izmantojiet zemāk esošās saites.'
+helpcenter.account.section_desc_register: 'Izveidojiet kontu, lai varētu viegli pārvaldīt savus ziņojumus.'
+helpcenter.account.section_title_register: Reģistrēties
+helpcenter.account.section_title_reset_password: 'Paroles maiņa'
+helpcenter.account.section_title_set_password: 'Izveidot paroli'
+helpcenter.approvals.view_to_reject: 'Noraidīt'
+helpcenter.approvals.you_approved: 'Jūs apstiprinājāt šādu pieprasījumu: {template}, ko pieprasīja {person_name}'
+helpcenter.approvals.you_rejected: 'Jūs noraidījāt šādu pieprasījumu: {template}, ko pieprasīja {person_name}'
+helpcenter.articles.article_object: Šis raksts
+helpcenter.articles.published_label: Publicēts
+helpcenter.articles.section_title: Datubāze
+helpcenter.articles.status_archived: Arhivēts
+helpcenter.articles.status_draft: Uzmetums
+helpcenter.articles.status_published: Publicēts
+helpcenter.articles.view_as_agent: 'Lietotājiem šī lapa nav pieejama, jo raksts nav publicēts.'
+helpcenter.articles.view_x_articles: 'Skatīt visus rakstus kategorijā {category}'
+helpcenter.chats.my_chats: 'Mana saziņa'
+helpcenter.community.activity: Aktivitāte
+helpcenter.community.activity_commented: 'Es komentēju'
+helpcenter.community.activity_created: 'Es izveidoju'
+helpcenter.community.activity_voted: 'Es balsoju'
+helpcenter.community.category: Kategorija
+helpcenter.community.create_topic: Izveidot
+helpcenter.community.create_topic_full: 'Jauns {forum}'
+helpcenter.community.create_topic_in_forum: 'Iesniegt {forum}'
+helpcenter.community.error_login: 'Lūdzu, piesakieties'
+helpcenter.community.featured_topics: 'Populārākās tēmas'
+helpcenter.community.filters: Filtri
+helpcenter.community.form_add_attachments: 'Pievienot pielikumus'
+helpcenter.community.form_create_topic: 'Izveidot tēmu'
+helpcenter.community.form_description: Apraksts
+helpcenter.community.form_topic_title: Nosaukums
+helpcenter.community.forum_name: 'Foruma nosaukums'
+helpcenter.community.like_action: Patīk
+helpcenter.community.likes: Patīk
+helpcenter.community.my_activity: 'Manas darbības'
+helpcenter.community.no_matching: 'Nav atbilstošu tēmu kopienā'
+helpcenter.community.none: 'Neizdevās atrast nevienu kopienas tēmu'
+helpcenter.community.official_response: 'Oficiālā atbilde'
+helpcenter.community.rate_forbidden: 'Jūs nedrīkstat balsot'
+helpcenter.community.recent_activity: 'Nesenā aktivitāte'
+helpcenter.community.reset_all_filters: 'Noņemt visus filtrus'
+helpcenter.community.section_title: Kopiena
+helpcenter.community.status: Statuss
+helpcenter.community.status_change: 'Statusa izmaiņas'
+helpcenter.community.title: Nosaukums
+helpcenter.community.title_author: 'Nosaukums / autors'
+helpcenter.community.view_all_topics: 'Skatīt visus {plural}'
+helpcenter.community.view_list: 'Saraksts'
+helpcenter.community.view_status_change: 'Statusa izmaiņas'
+helpcenter.direct_messages.back_to_messages: 'Atpakaļ uz ziņojumiem'
