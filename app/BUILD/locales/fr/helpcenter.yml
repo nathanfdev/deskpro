@@ -123,9 +123,12 @@ helpcenter.community.error_login: 'Veuillez vous connecter'
 helpcenter.community.featured_topics: 'Sujets abordés'
 helpcenter.community.filters: Filtres
 helpcenter.community.form_add_attachments: 'Ajouter des fichiers'
+helpcenter.community.form_create_topic: 'Créer un sujet'
 helpcenter.community.form_description: Description
 helpcenter.community.form_topic_title: Titre
+helpcenter.community.forum_name: 'Nom du forum'
 helpcenter.community.like_action: J'aime
+helpcenter.community.likes: J'aime
 helpcenter.community.my_activity: 'Mon activité'
 helpcenter.community.no_matching: 'Aucun commentaire correspondant'
 helpcenter.community.rate_forbidden: 'Vous n''êtes pas autorisé à voter'
