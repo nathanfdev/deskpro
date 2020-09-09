@@ -55,6 +55,8 @@ helpcenter.general.agent: Asiantuntija
 helpcenter.general.attachments: Liitetiedostot
 helpcenter.general.everything: Kaikki
 helpcenter.general.log_in: 'Kirjaudu'
+helpcenter.general.nav_contact: 'Ota yhteyttä'
+helpcenter.general.nav_newticket: 'Ota yhteyttä'
 helpcenter.general.password: Salasana
 helpcenter.general.rate_page_positive: Hyödyllinen
 helpcenter.general.show: Näytä
