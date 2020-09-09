@@ -49,12 +49,15 @@ helpcenter.emails.ticket_reply_confirm: 'Kiitos vastauksestasi. Edustajamme otta
 helpcenter.emails.ticket_validate: 'Kiitos yhteydenotosta.<br /><br />ennen kuin edustajamme lukee tai vastaa viestiisi, pitää sähköpostiosoitteesi vahvistaa.'
 helpcenter.error.404_title: 'Ei löytynyt.'
 helpcenter.error.permission_denied_title: 'Toimenpide ei ole sallittu'
+helpcenter.forms.delete_question: 'Poista?'
+helpcenter.forms.error_captcha: 'CAPTCHA-arvo oli virheellinen'
 helpcenter.forms.label_save: Tallenna
 helpcenter.general.add_comment: 'Lisää kommentti'
 helpcenter.general.agent: Asiantuntija
 helpcenter.general.attachments: Liitetiedostot
 helpcenter.general.everything: Kaikki
 helpcenter.general.log_in: 'Kirjaudu'
+helpcenter.general.name: Nimi
 helpcenter.general.nav_contact: 'Ota yhteyttä'
 helpcenter.general.nav_newticket: 'Ota yhteyttä'
 helpcenter.general.password: Salasana
@@ -78,4 +81,5 @@ helpcenter.tickets.rate_question: 'Miten arvioisit tuen jota sait?'
 helpcenter.tickets.rate_support: 'Arvioi tuki'
 helpcenter.tickets.reference_number: 'Viitenumero: {ref}'
 helpcenter.tickets.thank_you: 'Kiitos, olemme vastaanottaneet pyyntösi.'
+helpcenter.tickets.thank_you_desc: 'Kiitos yhteydenotostasi. Tiimistämme otetaan sinuun pian yhteyttä.'
 helpcenter.tickets.view_btn_edit: Muokkaa
