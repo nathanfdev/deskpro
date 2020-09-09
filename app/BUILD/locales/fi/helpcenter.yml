@@ -67,6 +67,7 @@ helpcenter.general.everything: Kaikki
 helpcenter.general.log_in: 'Kirjaudu'
 helpcenter.general.name: Nimi
 helpcenter.general.nav_contact: 'Ota yhteyttä'
+helpcenter.general.nav_kb: Ohjeet
 helpcenter.general.nav_newticket: 'Ota yhteyttä'
 helpcenter.general.no_search_query: 'Kirjoita hakusana hakukenttään.'
 helpcenter.general.no_search_results_general: 'Tuloksia ei löytynyt'
@@ -81,8 +82,17 @@ helpcenter.label.search: Haku
 helpcenter.members.language: Kieli
 helpcenter.members.timezone: Aikavyöhyke
 helpcenter.messenger.blocks_continue_chat_title: 'Jatka aloitettua keskustelua'
+helpcenter.messenger.blocks_knowledgebase_title: Ohjeet
+helpcenter.messenger.blocks_search_block_no_results: 'Ei tuloksi haulle {query}'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Lisää hakutuloksia'
+helpcenter.messenger.blocks_ticket_button: 'Lähetä uusi tukipyyntö'
+helpcenter.messenger.blocks_ticket_description: 'Lähetä kysely lomakkeellamme'
 helpcenter.messenger.blocks_ticket_title: 'Lähetä tukipyyntö'
 helpcenter.messenger.greeting: 'Ota yhteyttä'
+helpcenter.messenger.tickets_form_add_attachment: 'Lisää liite'
+helpcenter.messenger.tickets_form_header: 'Uusi tukipyyntö'
+helpcenter.messenger.tickets_form_or: tai
+helpcenter.messenger.tickets_form_saving: 'Tukipyyntöäsi tallennetaan. Odota hetki.'
 helpcenter.news.view_as_agent: 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.'
 helpcenter.profile.account_disabled_message: 'Käyttäjätilisi on väliaikaisesti suljettu. '
 helpcenter.profile.your_password: 'Salasanasi'
