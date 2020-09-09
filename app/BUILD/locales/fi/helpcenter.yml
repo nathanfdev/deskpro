@@ -75,11 +75,13 @@ helpcenter.general.show: Näytä
 helpcenter.general.show_x_more: 'Näytä {num} lisää'
 helpcenter.general.x_search_results: '{num} tulosta haulle "{query}"'
 helpcenter.general.you: Sinä
+helpcenter.label.search: Haku
 helpcenter.members.language: Kieli
 helpcenter.members.timezone: Aikavyöhyke
 helpcenter.news.view_as_agent: 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.'
 helpcenter.profile.account_disabled_message: 'Käyttäjätilisi on väliaikaisesti suljettu. '
 helpcenter.profile.your_password: 'Salasanasi'
+helpcenter.search.showing_results_for: 'Näytetään {type}-osion tulokset haulle <span>“{query}”</span>'
 helpcenter.tickets.guest_thank_you_title: 'Kiitos'
 helpcenter.tickets.list_agent: 'Liitetty tukihenkilö'
 helpcenter.tickets.list_date_created: 'Luotu'
