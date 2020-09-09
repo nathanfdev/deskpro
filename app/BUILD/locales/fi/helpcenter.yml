@@ -66,10 +66,14 @@ helpcenter.general.log_in: 'Kirjaudu'
 helpcenter.general.name: Nimi
 helpcenter.general.nav_contact: 'Ota yhteyttä'
 helpcenter.general.nav_newticket: 'Ota yhteyttä'
+helpcenter.general.no_search_query: 'Kirjoita hakusana hakukenttään.'
+helpcenter.general.no_search_results_general: 'Tuloksia ei löytynyt'
 helpcenter.general.password: Salasana
 helpcenter.general.rate_page_positive: Hyödyllinen
+helpcenter.general.search: 'Miten voimme auttaa sinua tänään?'
 helpcenter.general.show: Näytä
 helpcenter.general.show_x_more: 'Näytä {num} lisää'
+helpcenter.general.x_search_results: '{num} tulosta haulle "{query}"'
 helpcenter.general.you: Sinä
 helpcenter.members.language: Kieli
 helpcenter.members.timezone: Aikavyöhyke
