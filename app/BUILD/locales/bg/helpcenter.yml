@@ -132,8 +132,12 @@ helpcenter.emails.community_new: 'Благодаря ви, че изпратих
 helpcenter.emails.community_sub_updated: 'Обновена общностна тема'
 helpcenter.emails.community_topic_agent_validation: 'Моля обърнете внимание, че вашата общностна тема няма да бъде показана публично докато някой от агентите ни не я прегледа.'
 helpcenter.emails.community_topic_approved: 'Искахме да ви информираме, че вашата общностна тема беше одобрена и вече е публично видима на нашия сайт.'
+helpcenter.emails.community_topic_closed: 'Изпратената от Вас тема "{title}" беше затворена: {status}'
 helpcenter.emails.community_topic_disapproved: 'Искаме да ви информираме, че за съжаление вашата общностна тема е отхвърлена и няма да бъде показана публично на нашия сайт.'
+helpcenter.emails.community_topic_disapproved_reason: 'Бихме искали да Ви информираме, че за съжаление вашата тема е отказана и няма да се появи публично на нашият сайт. {name} подаде следната причина:'
 helpcenter.emails.community_topic_new_approved: 'Вашата общностна тема беше одобрена'
+helpcenter.emails.community_topic_new_comment: '{name} направи нов коментар:'
+helpcenter.emails.community_topic_new_comment_subject: 'Има нов коментар на "{title}"'
 helpcenter.emails.community_topic_new_disapproved: 'Съжаляваме, но вашата общностна тема беше отхвърлена'
 helpcenter.emails.download_sub_new: 'Нови сваляния'
 helpcenter.emails.download_sub_new_and_updated: 'Нови и обновени сваляния'
@@ -242,8 +246,48 @@ helpcenter.general.tags: Маркери
 helpcenter.general.updated: Обновен
 helpcenter.general.user: Потребител
 helpcenter.general.you: Вие
+helpcenter.members.activity_group_this_week: 'Тази седмица'
+helpcenter.members.activity_group_this_year: 'Тази година'
+helpcenter.members.activity_group_today: 'Днес'
+helpcenter.members.activity_up_voted: 'Маркирано като полезно'
+helpcenter.members.activity_up_voted_comment_on: 'Гласувахте за коментар'
+helpcenter.members.company: 'Компания'
+helpcenter.members.date_joined: 'Дата на присъединяване'
 helpcenter.members.language: Език
+helpcenter.members.name: Име
+helpcenter.members.no_activities: 'Няма активност'
+helpcenter.members.not_set: 'Не е зададена'
+helpcenter.members.phone: 'Телефонен номер'
+helpcenter.members.phone_number_none: Няма
+helpcenter.members.recent_activity: 'Последни активности'
+helpcenter.members.send_message: 'Изпрати съобщение'
 helpcenter.members.timezone: Часова зона
+helpcenter.members.title: 'Директория на членовете'
+helpcenter.messenger.assigned_agent: 'Назначен агент'
+helpcenter.messenger.blocks_continue_chat_link: Продължи
+helpcenter.messenger.blocks_continue_chat_title: 'Продължете съществуващ чат'
+helpcenter.messenger.blocks_knowledgebase_title: Knowledgebase
+helpcenter.messenger.blocks_search_block_no_results: 'Няма резултати за {query}'
+helpcenter.messenger.blocks_search_block_search_label: Търсене
+helpcenter.messenger.blocks_search_block_see_more_results: 'Виж още резултати'
+helpcenter.messenger.blocks_start_chat_button: 'Започни нов разговор'
+helpcenter.messenger.blocks_start_chat_description: 'Започни чат с нас'
+helpcenter.messenger.blocks_start_chat_title: 'Започни разговор'
+helpcenter.messenger.blocks_ticket_button: 'Изпрати нов тикет'
+helpcenter.messenger.blocks_ticket_description: 'Изпрати запитване през нашата форма за контакт'
+helpcenter.messenger.blocks_ticket_title: 'Изпрати тикет'
+helpcenter.messenger.blocks_tickets_title: 'Вашите тикети'
+helpcenter.messenger.blocks_tickets_view_all_link: 'виж всички'
+helpcenter.messenger.chat_agent_assigned_message: '{name} се присъедини към разговора.'
+helpcenter.messenger.chat_attach_file: 'Прикачи файл'
+helpcenter.messenger.chat_busy: 'Изглежда, че всички наши агенти са заети в момента. Можете да ни изпратите тикет и ние ще се свържем с Вас при първа възможност'
+helpcenter.messenger.chat_create_ticket_button: 'Създай тикет'
+helpcenter.messenger.chat_create_ticket_header: 'Изпрати тикет'
+helpcenter.messenger.chat_create_ticket_intro: 'Можете да изпратите тикет и при първа възможност един от нашите агенти ще Ви отговори по имейл.'
+helpcenter.messenger.chat_dragdrop_drag_and_drop: 'Влачи и пусни файл тук'
+helpcenter.messenger.chat_dragdrop_uploading: Качване
+helpcenter.messenger.chat_end_block_buttons_no: 'Не'
+helpcenter.messenger.chat_end_block_buttons_yes: 'Да'
 helpcenter.news.none: 'Все още няма отговори'
 helpcenter.news.recent_title: 'Скорошни новини'
 helpcenter.news.view_as_agent: 'Виждате рази страница защото сте агент. Нормалните потребители няма да могат да виждат тази страница.'
@@ -285,3 +329,5 @@ helpcenter.tickets.view_reply_errors: 'Има някои грешки с ваш�
 helpcenter.tickets.view_scroll_reply: 'Кликни тук за да отидеш надолу във формата,'
 helpcenter.tickets.view_unassigned: Неназначен
 helpcenter.tickets.view_unassigned_more: 'Ще бъде назначен агент'
+helpcenter.tickets.you_have_not_rated_support: 'Вие ({email}) все още не сте оценили Вашия съпорт.'
+helpcenter.tickets.you_rated_support: 'Вие ({email}) оценихте Вашия съпорт от'
