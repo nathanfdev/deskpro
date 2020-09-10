@@ -54,7 +54,7 @@ helpcenter.emails.ticket_received: 'Tukipyyntösi on vastaanotettu. Edustajamme 
 helpcenter.emails.ticket_reply_confirm: 'Kiitos vastauksestasi. Edustajamme ottaa sinuun pian yhteyttä.'
 helpcenter.emails.ticket_validate: 'Kiitos yhteydenotosta.<br /><br />ennen kuin edustajamme lukee tai vastaa viestiisi, pitää sähköpostiosoitteesi vahvistaa.'
 helpcenter.error.404_desc: 'Tätä sivua ei valitettavasti löytynyt.'
-helpcenter.error.404_title: 'Ei löytynyt.'
+helpcenter.error.404_title: 'Ei löytynyt'
 helpcenter.error.contact_us: 'Ota yhteyttä'
 helpcenter.error.general_title: 'Tapahtui virhe'
 helpcenter.error.permission_denied_title: 'Toimenpide ei ole sallittu'
@@ -72,6 +72,7 @@ helpcenter.general.attachments: Liitetiedostot
 helpcenter.general.drag_and_drop: 'Vedä ja pudota'
 helpcenter.general.everything: Kaikki
 helpcenter.general.labels: Tunnisteet
+helpcenter.general.last_updated: 'Viimeksi päivitetty'
 helpcenter.general.last_update_by: 'Viimeksi päivitetty: <strong>{date_updated, date, medium}</strong>, <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Kirjaudu'
 helpcenter.general.name: Nimi
