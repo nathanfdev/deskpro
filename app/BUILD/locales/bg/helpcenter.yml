@@ -1,4 +1,6 @@
 ---
+helpcenter.account.add: Добави
+helpcenter.account.add_email: 'Добави имейл'
 helpcenter.account.comment_lockout: 'Подали сте много коментари. Моля изчакайте за да можете да подадете още.'
 helpcenter.account.email_btn_usersource_set: 'Добави имейл адрес'
 helpcenter.account.login_captcha_failed: 'Въвели сте невалиден CAPTCHA код. Моля опитайте отново.'
