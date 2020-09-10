@@ -51,18 +51,52 @@ helpcenter.account.section_title_reset_password: 'Ripristina Password'
 helpcenter.account.section_title_set_password: 'Imposta password'
 helpcenter.account.section_title_usersource_email: 'Inserisci la tua email'
 helpcenter.account.section_title_your_account: 'Il tuo account'
+helpcenter.account.set_password_action: 'Imposta password'
 helpcenter.account.set_password_click_here: 'Fai click qui per impostare la tua password'
+helpcenter.account.set_password_expired: 'La tua password è scaduta.'
 helpcenter.account.set_password_for_user: 'Il tuo account non ha ancora una password. Impostala ora così da poter accedere e pubblicare contenuti in futuro.'
 helpcenter.account.set_password_invalid_desc: 'Il tuo codice password è invalido o scaduto. Per motivi di sicurezza, per impostare la password, richiedi un nuovo codice'
+helpcenter.account.set_password_invalid_input: 'Per favore inserisci un indirizzo email o un nome utente valido'
 helpcenter.account.set_password_request_desc: 'Compila questo modulo e ti sarà mandata una email con il link per impostare la tua password'
+helpcenter.account.set_password_request_title: 'Imposta la tua Password'
 helpcenter.account.set_password_sent_desc: 'Ti abbiamo inviato una email con le istruzioni su come impostare la tua password.'
 helpcenter.account.set_password_sent_title: 'Imposta la tua Password'
+helpcenter.account.set_password_sent_to: 'Abbiamo mandato una mail a'
 helpcenter.account.set_password_success: 'La tua password è stata aggiornata'
 helpcenter.account.submit_saved_form: 'Il tuo {{type}} non è stato ancora inviato, ma l''abbiamo salvato.'
 helpcenter.account.submit_saved_form_go: 'Clicca qui per re- inviare automaticamente il modulo .'
+helpcenter.account.thank_you_for_registering: 'Grazie per la registrazione'
 helpcenter.account.tickets_lockout: 'Hai inviato troppi ticket e sei stato bloccato. Per favore prova di nuovo più tardi.'
 helpcenter.account.usersource_set_email_desc: 'Prima che tu possa accedere, abbiamo bisogno del tuo indirizzo email. Per favore inserisci l''indirizzo email sotto, così possiamo inviarti un''email di verifica.'
+helpcenter.account.validation_email_sent: 'Abbiamo inviato un’email a {email}<br />Per favore, convalida il tuo indirizzo di posta elettronica per accedere al centro di supporto.'
 helpcenter.account.your_pending_email_addresses: 'I tuoi Indirizzi Email in attesa'
+helpcenter.account.login-btn-usersource: 'Accedi con {usersource}'
+helpcenter.alerts.tickets_to_respond: '{count, plural, one {Hai un ticket a cui rispondere.} other {Hai # ticket a cui rispondere.}}'
+helpcenter.approvals.approve_action: Approva
+helpcenter.approvals.approved_by: 'Approvato da'
+helpcenter.approvals.approved_status: Approvato
+helpcenter.approvals.cancelled_status: Cancellato
+helpcenter.approvals.list_column_agent: 'Agente'
+helpcenter.approvals.list_column_approvers: 'Approvatori'
+helpcenter.approvals.list_column_cancelled: 'Cancellati'
+helpcenter.approvals.list_column_completed: 'Completati'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: 'Oggetto'
+helpcenter.approvals.list_column_user: 'Utente'
+helpcenter.approvals.list_column_your_vote: 'La tua valutazione'
+helpcenter.approvals.my_approvals: 'Le mie approvazioni'
+helpcenter.approvals.no_ticket_approvals_found: 'Nessuna approvazione di ticket trovata'
+helpcenter.approvals.pending_status: In sospeso
+helpcenter.approvals.reject_action: Rifiuta
+helpcenter.approvals.rejected_by: 'Rifiutato da'
+helpcenter.approvals.rejected_status: Rifiutato
+helpcenter.approvals.system: Sistema
+helpcenter.approvals.view_approved: Approvato
+helpcenter.approvals.view_awaiting_response: 'In attesa di risposta'
+helpcenter.approvals.view_criteria: 'Criteri di approvazione'
+helpcenter.approvals.view_no_response: 'Nessuna risposta'
+helpcenter.approvals.view_rejected: Rifiutato
+helpcenter.approvals.view_requesting_agent: 'Agente richiedente'
 helpcenter.community.error_login: 'Per favore effettua l''accesso'
 helpcenter.community.form_topic_title: Titolo
 helpcenter.community.no_matching: 'Non ci sono tema corrispondenti'
