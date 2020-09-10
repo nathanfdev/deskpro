@@ -280,19 +280,92 @@ helpcenter.general.agent_bar_agent_kb: 'Управлявай база знани
 helpcenter.general.agent_bar_agent_news: 'Управлявай новини'
 helpcenter.general.agent_interface: 'Интерфейс на агента'
 helpcenter.general.agents: Агенти
+helpcenter.general.apply: Приложи
 helpcenter.general.attachments: Прикачвания
+helpcenter.general.authors_list: Списък с автори
+helpcenter.general.back: Назад
+helpcenter.general.btn_manage_subscriptions: 'Управление на Вашите абонаменти'
+helpcenter.general.cancel_action: Отмени
+helpcenter.general.categories: Категории
+helpcenter.general.category: Категория
+helpcenter.general.cc: CC
 helpcenter.general.chat: Чат
+helpcenter.general.chats: Чатове
+helpcenter.general.clear_all: 'Изчисти всички'
+helpcenter.general.close: Затвори
+helpcenter.general.comment_btn_save: 'Добави коментар'
+helpcenter.general.comment_login_first: 'Моля, логнете се или се регистрирайте, за да оставите коментар.'
 helpcenter.general.comments: Коментари
+helpcenter.general.comments_pending_validation: 'Този коментар очаква да бъде прегледан.'
+helpcenter.general.comments_title: '{count, plural,one {Коментар (1)} other {Коментари (#)}}'
+helpcenter.general.copied: копирано
+helpcenter.general.copy_to_clipboard: 'Копирай на Clipboard-а'
+helpcenter.general.created_by: 'Създадено от'
+helpcenter.general.current_page: 'Текуща страница'
+helpcenter.general.dashboard: Табло
+helpcenter.general.date_day_month: '{date, date, MMM d}'
+helpcenter.general.date_medium: '{date, date, medium}'
+helpcenter.general.date_short: '{date, date, short}'
+helpcenter.general.date_short_month: '{date, date, MMM}'
+helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
+helpcenter.general.department: Отдел
+helpcenter.general.drag_and_drop: 'Влачи и пусни'
+helpcenter.general.edit_this_page: 'Редактирай тази страница'
 helpcenter.general.email_address: 'Имейл'
+helpcenter.general.eula: EULA
 helpcenter.general.everything: Всичко
+helpcenter.general.expand: Разшири
+helpcenter.general.file_type: Файл
+helpcenter.general.files_type: Файлове
+helpcenter.general.filter: Филтър
+helpcenter.general.first_published: 'Публикувано на'
+helpcenter.general.form_choose_file: 'Избери файл'
+helpcenter.general.form_choose_files: 'Избери файлове'
+helpcenter.general.go_action: Напред
+helpcenter.general.go_to_page: 'Отиди на страница'
+helpcenter.general.helpcenter_disabled_click_below: 'Порталът е деактивиран. Ако сте агент, кликнете върху бутона по-долу за да отидете в агентския интерфейс.'
+helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'Порталът е деактивиран. Можете да ре-активирате портала от <a href="{setup_link}">Админ > Портал > Настройки</a>'
+helpcenter.general.helpdesk_system: 'Робот на помощния център'
+helpcenter.general.ics_subscribe: iCalendar
 helpcenter.general.impersonation_mode: 'Режим на представяне'
 helpcenter.general.label_search_enter_label: 'Моля въведете етикет за който да търсите'
+helpcenter.general.labels: Етикети
+helpcenter.general.lang_change_to_current: 'Направи<em>{lang}</em> моят език по подразбиране'
+helpcenter.general.lang_diff: 'Тази страница е на <em>{active_lang}</em> но Вашият акаунт е на <em>{person_lang}</em>.'
+helpcenter.general.lang_switch: 'Превключи на <em>{lang}</em>'
+helpcenter.general.last_24_hours: 'В последните 24 часа'
+helpcenter.general.last_6_month: 'В последните 6 месеца'
 helpcenter.general.last_activity: 'Последна активност'
+helpcenter.general.last_month: 'В последния месец'
+helpcenter.general.last_updated: 'Последно обновено'
+helpcenter.general.last_update_by: 'Последно обновено: <strong>{date_updated, date, medium}</strong>от <strong>{person_name}</strong>'
+helpcenter.general.last_week: 'В последната седмица'
+helpcenter.general.last_year: 'В последната година'
 helpcenter.general.log_in: 'Влез'
 helpcenter.general.nav_guides: Упътвания
+helpcenter.general.nav_kb_desc: 'Виж всички в помощния център'
+helpcenter.general.nav_login: 'Логин'
+helpcenter.general.nav_members: 'Директория на членовете'
+helpcenter.general.nav_news: Новини
+helpcenter.general.nav_news_desc: 'Виж всички публикации в новини'
+helpcenter.general.nav_news_desc_short: 'Виж всички новини'
+helpcenter.general.nav_newticket: 'Контакти'
+helpcenter.general.nav_profile: Профил
+helpcenter.general.nav_register: 'Регистрация'
+helpcenter.general.nav_support_center: 'Помощен Център'
+helpcenter.general.nav_your_account: 'Вашият Акаунт'
+helpcenter.general.next: Следващ
 helpcenter.general.no_search_query: 'Моля въведете запитване в полето за търсене.'
+helpcenter.general.no_search_results_general: 'Няма намерени резултати'
+helpcenter.general.or: или
+helpcenter.general.pagination_page: 'Страница {page}'
+helpcenter.general.pagination_next_page: 'Следваща страница'
+helpcenter.general.pagination_previous_page: 'Предишна страница'
 helpcenter.general.password: Парола
+helpcenter.general.previous: Предишен
 helpcenter.general.print: Принт
+helpcenter.general.priority: Приоритет
+helpcenter.general.product: Продукт
 helpcenter.general.prop_comments_asc: 'Най-малко коментари първо'
 helpcenter.general.prop_comments_desc: 'Най-ммного коментари първо'
 helpcenter.general.prop_date_asc: 'Първо най-старите'
@@ -303,16 +376,46 @@ helpcenter.general.prop_rating_asc: 'Първи тези с най-нисък р
 helpcenter.general.prop_rating_desc: 'Първи тези с най-висок рейтинг'
 helpcenter.general.prop_views_asc: 'Първо тези с най-малко прегледи'
 helpcenter.general.prop_views_desc: 'Първо тези с най-много прегледи'
+helpcenter.general.published: 'Публикувано на'
+helpcenter.general.published_by: 'Публикувано от <strong>{person_name}</strong>'
+helpcenter.general.rate_page_negative: Безполезно
 helpcenter.general.rate_page_positive: Полезен
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} от {vote_count} души смятат тази страница за полезна'
+helpcenter.general.related_content: 'Свързани статии'
+helpcenter.general.remove: премахни
 helpcenter.general.rerender_form: 'Моля прегледайте тази форма преди да я изпратите.'
+helpcenter.general.search: 'С какво да съдействаме?'
+helpcenter.general.search_labels: 'Търси Етикети'
+helpcenter.general.select: Избери
+helpcenter.general.send_user_direct_message: 'Изпрати съобщение на този потребител'
 helpcenter.general.share: Сподели
 helpcenter.general.show: Покажи
+helpcenter.general.show_x_more: 'Покажи още {num}'
+helpcenter.general.skip_link: 'Прескочи към главното съдържание'
+helpcenter.general.software_power_by: 'Powered by'
 helpcenter.general.sort: Сортирай
+helpcenter.general.status: Статус
+helpcenter.general.subscribe_action: Подпиши се
 helpcenter.general.tagged_with: 'маркиран с'
 helpcenter.general.tags: Маркери
+helpcenter.general.time_of_completion: 'Дата на приключване'
+helpcenter.general.translations: Преводи
+helpcenter.general.unpublished: 'Дата на премахване'
 helpcenter.general.updated: Обновен
 helpcenter.general.user: Потребител
+helpcenter.general.user_menu: 'Потребителско меню'
+helpcenter.general.user_profile: 'Потребителски профил'
+helpcenter.general.view_all_status_changes: 'Виж всички промени на статуса'
+helpcenter.general.view_all_topics: 'Виж всички теми'
+helpcenter.general.view_profile: 'Моят профил'
+helpcenter.general.viewed_by_agents_only: 'Това поле се вижда само от агент'
+helpcenter.general.workflow: 'Работен процес'
+helpcenter.general.x_search_results: '{num} търси резултати за "{query}"'
 helpcenter.general.you: Вие
+helpcenter.general.your_comment_label: 'Вашият коментар'
+helpcenter.general.your_comment_optional_label: 'Вашият коментар (незадължително)'
+helpcenter.general.download_pdf: 'Свали PDF'
+helpcenter.knowledgebase.featured_articles: 'Главни теми'
 helpcenter.members.activity_group_this_week: 'Тази седмица'
 helpcenter.members.activity_group_this_year: 'Тази година'
 helpcenter.members.activity_group_today: 'Днес'
@@ -362,6 +465,13 @@ helpcenter.messenger.chat_header_title: '{department} разговор'
 helpcenter.messenger.chat_no_agent_online: 'За съжаление няма никой на линия да приеме Вашия чат.'
 helpcenter.messenger.chat_pre_chat_form_form_message: 'Добре дошли в DeskPro. Моля, попълнете информацията по-долу, за да Ви пренасочим към правилния агент възможно най-скоро.'
 helpcenter.messenger.chat_prompt: 'С какво да съдействаме?'
+helpcenter.messenger.powered_by: 'Powered by'
+helpcenter.messenger.proactive_button: 'Започни нов разговор'
+helpcenter.messenger.proactive_description: 'Започни чат с нас'
+helpcenter.messenger.proactive_greeting: 'Свържи се с нас'
+helpcenter.messenger.proactive_placeholder: 'Напишете Вашето съобщение тук'
+helpcenter.messenger.proactive_title: 'Започни разговор'
+helpcenter.messenger.tickets_form_add_attachment: 'Добави прикачен файл'
 helpcenter.messenger.tickets_form_back: Назад
 helpcenter.messenger.tickets_form_header: 'Нов тикет'
 helpcenter.messenger.tickets_form_message: Съобщение
