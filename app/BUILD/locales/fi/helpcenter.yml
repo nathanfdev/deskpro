@@ -55,6 +55,7 @@ helpcenter.emails.ticket_reply_confirm: 'Kiitos vastauksestasi. Edustajamme otta
 helpcenter.emails.ticket_validate: 'Kiitos yhteydenotosta.<br /><br />ennen kuin edustajamme lukee tai vastaa viestiisi, pitää sähköpostiosoitteesi vahvistaa.'
 helpcenter.error.404_desc: 'Tätä sivua ei valitettavasti löytynyt.'
 helpcenter.error.404_title: 'Ei löytynyt.'
+helpcenter.error.contact_us: 'Ota yhteyttä'
 helpcenter.error.general_title: 'Tapahtui virhe'
 helpcenter.error.permission_denied_title: 'Toimenpide ei ole sallittu'
 helpcenter.forms.delete_question: 'Poista?'
