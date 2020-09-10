@@ -46,21 +46,45 @@ helpcenter.account.reset_password_success: 'Паролата Ви беше об�
 helpcenter.account.section_desc_login: 'Вече имате акаунт? Влезте отдолу.'
 helpcenter.account.section_desc_login_external: 'Моля използвайте линковете отдолу ако имате акаунт с друг доставчик.'
 helpcenter.account.section_desc_register: 'Регистрирайте акаунт за да можете лесно да управлявате комуникациите си.'
+helpcenter.account.section_title_register: Регистрация
+helpcenter.account.section_title_reset_password: 'Нулирай парола'
 helpcenter.account.section_title_set_password: 'Задай парола'
 helpcenter.account.section_title_usersource_email: 'Въведи твоя имейл'
 helpcenter.account.section_title_your_account: 'Вашият акаунт'
+helpcenter.account.set_password_action: 'Задай парола'
 helpcenter.account.set_password_click_here: 'Кликни тук за да зададеш паролата си'
+helpcenter.account.set_password_expired: 'Паролата Ви изтече давност.'
 helpcenter.account.set_password_for_user: 'Акаунтът ви все още няма парола. Моля задайте такава сега за да можете да влизате и да поствате съдържание за в бъдеще.'
 helpcenter.account.set_password_invalid_desc: 'Кодът ви за парола е невалиден или изтекъл. За да зададете парола, моля изискайте нов код.'
+helpcenter.account.set_password_invalid_input: 'Моля въведете валиден имейл адрес или потребителско име'
 helpcenter.account.set_password_request_desc: 'Попълнете тази форма и ние ще ви изпратим линк за нулиране на паролата.'
+helpcenter.account.set_password_request_title: 'Задай своята парола'
 helpcenter.account.set_password_sent_desc: 'Изпратихме ви имейл с инструкции как да си изберете парола.'
 helpcenter.account.set_password_sent_title: 'Задай своята парола'
+helpcenter.account.set_password_sent_to: 'Изпратихме имейл на'
 helpcenter.account.set_password_success: 'Паролата ви беше обновен'
 helpcenter.account.submit_saved_form: 'Вашата форма не е изпратена все още, но ние я запазихме за вас.'
 helpcenter.account.submit_saved_form_go: 'Кликни тук за да изпратиш автоматично отново формата.'
+helpcenter.account.thank_you_for_registering: 'Благодарим Ви, че се регистрирахте'
 helpcenter.account.tickets_lockout: 'Изпратихте прекалено много тикети и поради това сте заключени. Моля опитайте отново по-късно.'
 helpcenter.account.usersource_set_email_desc: 'Преди да можете да влезете се нуждаем от вашия имейл адрес. Моля въведете имейл адреса си отдолу за да можем да ви изпратим имейл за потвърждение.'
+helpcenter.account.validation_email_sent: 'Изпратихме Ви имейл на {email}<br />Моля, валидирайте си имейла за да достъпите съпорт центъра.'
 helpcenter.account.your_pending_email_addresses: 'Вашите чакащи имейл адреси'
+helpcenter.account.login-btn-usersource: 'Логин с {usersource}'
+helpcenter.alerts.tickets_to_respond: '{count, plural, one {Имате да отговорите на един тикет.}other {Имате да отговорите на # тикета.}}'
+helpcenter.approvals.approve_action: Одобри
+helpcenter.approvals.approved_by: 'Одобрено от'
+helpcenter.approvals.approved_status: Одобрено
+helpcenter.approvals.cancelled_status: Отменено
+helpcenter.approvals.list_column_agent: 'Агент'
+helpcenter.approvals.list_column_approvers: 'Одобряващи'
+helpcenter.approvals.list_column_cancelled: 'Отменено'
+helpcenter.approvals.list_column_completed: 'Приключено'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: 'Заглавие'
+helpcenter.approvals.list_column_user: 'Потребител'
+helpcenter.approvals.list_column_your_vote: 'Вашият глас'
+helpcenter.approvals.my_approvals: 'Моите одобрения'
 helpcenter.articles.section_title: База знание
 helpcenter.community.create_topic: Създай
 helpcenter.community.error_login: 'Моля влезте'
@@ -68,10 +92,31 @@ helpcenter.community.form_topic_title: Заглавие
 helpcenter.community.no_matching: 'Няма съвпадащи общностни теми'
 helpcenter.community.rate_forbidden: 'Не ви е разрешено да гласувате'
 helpcenter.community.section_title: Общност
+helpcenter.community.view_list: 'Изглед на списък'
+helpcenter.community.view_status_change: 'Смяна на статуса'
+helpcenter.direct_messages.back_to_messages: 'Обратно в моите съобщения'
+helpcenter.direct_messages.block_user: 'блокирай потребител'
 helpcenter.direct_messages.new_message: 'Ново съобщение'
 helpcenter.direct_messages.none: 'Няма съобщения'
+helpcenter.direct_messages.recipient: Получател
+helpcenter.direct_messages.reply_cancel: Отмени
 helpcenter.direct_messages.reply_message: Съобщение
+helpcenter.direct_messages.reply_send_message: 'Изпрати съобщение'
 helpcenter.direct_messages.title: 'Съобщения'
+helpcenter.direct_messages.unblock_user_action: 'отблокирай потребител'
+helpcenter.downloads.download_action: Свали
+helpcenter.downloads.file_name: 'Име на файл'
+helpcenter.downloads.file_size: 'Размер на файл'
+helpcenter.downloads.no_files: 'Няма файлове'
+helpcenter.downloads.total_downloads: 'Общо сваляния'
+helpcenter.downloads.view_x_files: '{count, plural,one {Виж 1 сваляне}other {Виж # сваляния}}'
+helpcenter.duration_short.days: Д
+helpcenter.duration_short.hours: ч
+helpcenter.duration_short.minutes: м
+helpcenter.duration_short.months: М
+helpcenter.duration_short.seconds: с
+helpcenter.duration_short.weeks: С
+helpcenter.duration_short.years: 'Г'
 helpcenter.emails.chat_transcript: 'Благодарим ви за чата. Ето го вашия препис от чата.'
 helpcenter.emails.chat_transcript_subject: 'Чат препис'
 helpcenter.emails.comment_approved: 'Вашият отговор беше публикуван.'
