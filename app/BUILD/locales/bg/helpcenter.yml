@@ -390,6 +390,7 @@ helpcenter.tickets.switched_department_rerender: 'Структурата на т
 helpcenter.tickets.thank_you: 'Благодарим Ви, получихме Вашата заявка.'
 helpcenter.tickets.thank_you_check_email: 'Моля потвърдете имейл адреса си'
 helpcenter.tickets.thank_you_check_email_desc: 'За да довършите изпращането на тикета си, трябва да проверите входната кутия на имейла си. Моля кликнете на линка за потвърждение, който сме ви изпратили.'
+helpcenter.tickets.thank_you_create_pw_link: 'Искате да следите Вашия тикет? Можете да<a href="{create_pw_link}">зададете парола за Вашият акаунт</a>.'
 helpcenter.tickets.timeline_marked: 'маркиран този тикет:'
 helpcenter.tickets.view_btn_add_to_ticket: 'Добави към тикет'
 helpcenter.tickets.view_btn_edit: Редактирай
