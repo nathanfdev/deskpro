@@ -228,7 +228,11 @@ helpcenter.emails.register_welcome: 'Grazie per aver effettuato la registrazione
 helpcenter.emails.register_welcome_byagent_subject: 'Il tuo nuovo account helpdesk'
 helpcenter.emails.register_welcome_subject: 'Grazie per la registrazione'
 helpcenter.emails.reject_resolved: 'La tua risposta non è stata accettata perchè il tuo ticket è già stato segnato come risolto. I nostri agenti non visualizzeranno e non risponderanno a questo messaggio'
+helpcenter.emails.share_article: '{author_name} vuole condividere questo articolo con te'
 helpcenter.emails.ticket_access_ticket_online: 'Guarda e gestisci questo ticket online:'
+helpcenter.emails.ticket_added_cc: 'Sei stato aggiunto al ticket "{subject}"'
+helpcenter.emails.ticket_cc_added: '{author_name}, {author_email}, ti ha aggiunto al ticket {subject}.'
+helpcenter.emails.ticket_cc_new: 'Sei stato incluso in un ticket iniziato da {name}.'
 helpcenter.emails.ticket_flood: 'Hai recentemente inviato una e-mail al nostro helpdesk. Possiamo vedere che hai inviato molti messaggi in rapida successione che sono stati molto probabilmente automatizzati. <br /> <br /> Per evitare un loop continuo di auto-risposta, il nostro helpdesk non vi invierà più alcuna e-mail di notifica automatica.'
 helpcenter.emails.ticket_message_title: 'Il {created_date, date, medium} alle {created_date, time, short}, {author} ha scritto:'
 helpcenter.emails.ticket_new_participant: 'Una nuova persona è stata aggiunta al tuo ticket'
@@ -238,6 +242,7 @@ helpcenter.emails.ticket_rate_negative: 'No'
 helpcenter.emails.ticket_rate_neutral: 'Era OK'
 helpcenter.emails.ticket_rate_positive: 'Sì'
 helpcenter.emails.ticket_rate_question: 'Questo messaggio ti è stato utile?'
+helpcenter.emails.ticket_rate_request: 'Come valuti il supporto che hai ricevuto per il tuo ticket "{subject}"?'
 helpcenter.emails.ticket_received: 'Il tuo ticket è stato ricevuto. Uno dei nostri agenti ti risponderà a breve.'
 helpcenter.emails.ticket_reply_confirm: 'Grazie per la tua risposta. Uno dei membri dello staff ti risponderà a breve.'
 helpcenter.emails.ticket_validate: 'Grazie per averci<br /><br />contattato. Prima che i nostri agenti ti rispondano, devi convalidare il tuo indirizzo e-mail.'
@@ -269,6 +274,7 @@ helpcenter.flashes.community_unsubscribe_everything: 'Hai annullato l’iscrizio
 helpcenter.flashes.content_rating_thanks: 'Grazie per il tuo feedback.'
 helpcenter.flashes.guest_content_must_verify: 'Prima che noi possiamo pubblicare il tuo contenuto, devi verificare la tua posta in arrivo. TI abbiamo mandato un link di convalida.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Prima di poter accettare il tuo ticket, dobbiamo verificare il tuo indirizzo email. Per favore controlla la tua casella di posta in arrivo. TI abbiamo mandato un link di convalida.'
+helpcenter.flashes.ticket_created: 'Il tuo ticket è stato inviato.'
 helpcenter.flashes.ticket_feedback_thank_you: 'Grazie per il tuo feedback.'
 helpcenter.flashes.ticket_feedback_unknown_error: 'Si è verificato un problema durante il tentativo di inviare il feedback. Per favore riprova.'
 helpcenter.flashes.ticket_participant_already_error: 'La persona che hai provato ad aggiungere come partecipante è già partecipante a questo ticket.'
@@ -359,6 +365,11 @@ helpcenter.general.everything: Tutto
 helpcenter.general.file_type: File
 helpcenter.general.files_type: File
 helpcenter.general.filter: Filtra
+helpcenter.general.form_choose_file: 'Scegli un file'
+helpcenter.general.form_choose_files: 'Scegli file'
+helpcenter.general.go_action: Vai
+helpcenter.general.go_to_page: 'Vai alla pagina'
+helpcenter.general.helpcenter_disabled_click_below: 'Il portale è stato disabilitato. Se sei un agente, clicca sul tasto sottostante per andare all’interfaccia agenti.'
 helpcenter.general.ics_subscribe: iCalendar
 helpcenter.general.impersonation_mode: 'Modalità di rappresentazione'
 helpcenter.general.label_search_enter_label: 'Per favore fornisci un etichetta da ricercare'
@@ -429,25 +440,62 @@ helpcenter.general.share: Condividi
 helpcenter.general.show: Mostra
 helpcenter.general.tagged_with: 'taggato con'
 helpcenter.general.tags: Tag
+helpcenter.general.translations: Traduzioni
 helpcenter.general.updated: Aggiornato
 helpcenter.general.user: Utente
 helpcenter.general.user_menu: 'Menu utente'
 helpcenter.general.user_profile: 'Profilo utente'
+helpcenter.general.view_profile: 'Vedi il mio profilo'
+helpcenter.general.viewed_by_agents_only: 'Questo campo è visibile solo agli agenti'
+helpcenter.general.workflow: 'Flusso di lavoro'
 helpcenter.general.x_search_results: '{num} risultati della ricerca per "{query}"'
 helpcenter.general.you: Tu
+helpcenter.general.your_comment_label: 'Il tuo commento'
 helpcenter.general.download_pdf: 'Scarica PDF'
 helpcenter.knowledgebase.featured_articles: 'Articoli in evidenza'
 helpcenter.label.search: Cerca
+helpcenter.members.activity_group_this_week: 'Questa settimana'
+helpcenter.members.activity_group_this_year: 'Quest’anno'
+helpcenter.members.activity_group_today: 'Oggi'
 helpcenter.members.language: Lingua
+helpcenter.members.name: Nome
+helpcenter.members.no_activities: 'Nessuna attività'
+helpcenter.members.phone: 'Numero di telefono'
+helpcenter.members.phone_number_none: Nessuno
+helpcenter.members.recent_activity: 'Attività recente'
+helpcenter.members.send_message: 'Invia un messaggio diretto'
 helpcenter.members.timezone: Fuso orario
+helpcenter.members.title: 'Elenco dei membri'
+helpcenter.messenger.assigned_agent: 'Agente assegnato'
+helpcenter.messenger.blocks_continue_chat_link: Continua
+helpcenter.messenger.blocks_continue_chat_title: 'Continua la chat esistente'
+helpcenter.messenger.blocks_knowledgebase_title: Knowledge base
+helpcenter.messenger.blocks_search_block_no_results: 'Nessun risultato per {query}'
+helpcenter.messenger.blocks_search_block_search_label: Cerca
+helpcenter.messenger.blocks_search_block_see_more_results: 'Vedi altri risultati'
+helpcenter.messenger.blocks_start_chat_button: 'Inizia una nuova conversazione'
+helpcenter.messenger.blocks_start_chat_description: 'Inizia una chat con uno dei nostri agenti'
+helpcenter.messenger.blocks_start_chat_title: 'Inizia una conversazione'
+helpcenter.messenger.blocks_ticket_button: 'Invia un nuovo ticket'
+helpcenter.messenger.blocks_ticket_title: 'Invia un ticket'
+helpcenter.messenger.blocks_tickets_title: 'I tuoi ticket'
+helpcenter.messenger.chat_attach_file: 'Allega file'
 helpcenter.messenger.chat_create_ticket_button: 'Crea ticket'
 helpcenter.messenger.chat_create_ticket_header: 'Invia un ticket'
+helpcenter.messenger.chat_dragdrop_drag_and_drop: 'Trascina il file qui'
+helpcenter.messenger.chat_dragdrop_uploading: Caricando
+helpcenter.messenger.chat_end_block_buttons_no: 'No'
+helpcenter.messenger.chat_end_block_buttons_yes: 'Sì'
+helpcenter.messenger.chat_end_block_question_header: 'Vuoi terminare la chat?'
+helpcenter.messenger.chat_end_chat: 'Termina la chat'
+helpcenter.messenger.chat_ended: 'Chat terminata'
 helpcenter.messenger.chat_rating_block_buttons_helpful: Utile
 helpcenter.messenger.chat_rating_block_buttons_unhelpful: Inutile
 helpcenter.messenger.chat_rating_block_question_header: 'Valuta la tua conversazione con {name}'
 helpcenter.messenger.chat_rating_block_thank_you_header: 'Grazie per il tuo feedback'
 helpcenter.messenger.chat_save_ticket_button_no: 'No'
 helpcenter.messenger.chat_save_ticket_button_yes: 'Sì'
+helpcenter.messenger.chat_send_message: 'Invia messaggio'
 helpcenter.messenger.chat_transcript_block_no_button: 'No'
 helpcenter.messenger.chat_transcript_block_yes_button: 'Sì'
 helpcenter.messenger.date_label: Data
@@ -465,6 +513,13 @@ helpcenter.messenger.message_user_returned: 'L’utente è rientrato'
 helpcenter.messenger.proactive_button: 'Inizia una nuova conversazione'
 helpcenter.messenger.proactive_description: 'Inizia una chat con uno dei nostri agenti'
 helpcenter.messenger.proactive_greeting: 'Mettiti in contatto'
+helpcenter.messenger.total_chat_time_label: 'Tempo di chat totale'
+helpcenter.messenger.view_action: Vedi
+helpcenter.messenger.view_linked_ticket_action: 'Visualizza il ticket'
+helpcenter.messenger.you: Tu
+helpcenter.messenger.your_chat_with: 'La tua chat con {person_name}'
+helpcenter.news.all_news: 'Tutte le news'
+helpcenter.news.any_date: Qualunque
 helpcenter.news.download_calendar_action: 'Scarica file iCal'
 helpcenter.news.download_calendar_desc: 'Il calendario dovrebbe scaricarsi automaticamente; se questo non dovesse avvenire, usa il tasto sottostante'
 helpcenter.news.filter_cat: 'Seleziona categoria'
@@ -547,7 +602,12 @@ helpcenter.tickets.view_btn_edit: Modifica
 helpcenter.tickets.view_btn_edit_full: 'Modifica questo Ticket'
 helpcenter.tickets.view_label_your_email_placeholder: 'Indirizzo Email (richiesto)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Nome (richiesto)'
+helpcenter.tickets.view_last_message: 'Ultimo messaggio'
+helpcenter.tickets.view_participants: 'CC'
 helpcenter.tickets.view_reply_errors: 'Ci sono degli errori con il tuo invio'
+helpcenter.tickets.view_reply_or_close: 'Rispondi o <a href="{close_url}">chiudi il ticket</a>'
+helpcenter.tickets.view_requester: Richiedente
 helpcenter.tickets.view_scroll_reply: 'Fai click qui per scorrere in basso fino al modulo.'
 helpcenter.tickets.view_unassigned: Non assegnato
 helpcenter.tickets.view_unassigned_more: 'Un agente sarà assegnato'
+helpcenter.tickets.view_you_created: 'Creato'
