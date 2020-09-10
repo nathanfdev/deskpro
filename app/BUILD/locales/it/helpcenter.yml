@@ -302,6 +302,8 @@ helpcenter.forms.error_password_current: 'Questa deve essere la tua password att
 helpcenter.forms.error_password_forbid_reuse: 'Non puoi usare una password che hai utilizzato in precedenza'
 helpcenter.forms.error_password_min_length: '{count, plural, one {Minimo # caratteri} other {Minimo # caratteri}}'
 helpcenter.forms.error_password_reset_required: 'Devi reimpostare la password'
+helpcenter.forms.error_required: 'Questo valore è necessario'
+helpcenter.forms.label_drag_overlay: 'Inserisci questa immagine nel tuo messaggio.'
 helpcenter.forms.label_email: email
 helpcenter.forms.label_password: Password
 helpcenter.forms.label_password_confirm: Conferma
@@ -346,10 +348,26 @@ helpcenter.general.comment_login_first: 'Accedi o registrati per inviare un comm
 helpcenter.general.comments: Commenti
 helpcenter.general.comments_pending_validation: 'Questo commento è in attesa di approvazione.'
 helpcenter.general.comments_title: '{count, plural, one {Commento (1)} other {Commenti (#)}}'
+helpcenter.general.copied: copiato
+helpcenter.general.copy_to_clipboard: 'Copia negli Appunti'
+helpcenter.general.created_by: 'Creato da'
+helpcenter.general.current_page: 'Pagina corrente'
+helpcenter.general.edit_this_page: 'Modifica questa pagina'
+helpcenter.general.email_address: 'Indirizzo email'
+helpcenter.general.eula: EULA
 helpcenter.general.everything: Tutto
+helpcenter.general.file_type: File
+helpcenter.general.files_type: File
+helpcenter.general.filter: Filtra
+helpcenter.general.ics_subscribe: iCalendar
 helpcenter.general.impersonation_mode: 'Modalità di rappresentazione'
 helpcenter.general.label_search_enter_label: 'Per favore fornisci un etichetta da ricercare'
+helpcenter.general.last_24_hours: 'Ultime 24 ore'
+helpcenter.general.last_6_month: 'Ultimi 6 mesi'
 helpcenter.general.last_activity: 'Ultima Attività'
+helpcenter.general.last_month: 'Ultimo mese'
+helpcenter.general.last_week: 'Ultima settimana'
+helpcenter.general.last_year: 'Ultimo anno'
 helpcenter.general.log_in: 'Accedi'
 helpcenter.general.message: Messaggio
 helpcenter.general.more_than_1_year: 'Più di un anno'
@@ -401,17 +419,38 @@ helpcenter.general.prop_views_asc: 'Prima i meno visualizzati'
 helpcenter.general.prop_views_desc: 'I più visualizzati'
 helpcenter.general.published: 'Data della prima pubblicazione'
 helpcenter.general.published_by: 'Pubblicato da <strong>{person_name}</strong>'
+helpcenter.general.rate_page_negative: Inutile
 helpcenter.general.rate_page_positive: Utile
+helpcenter.general.related_content: 'Contenuti correlati'
+helpcenter.general.remove: rimuovi
 helpcenter.general.rerender_form: 'Per favore controlla questo modulo prima di inviarlo.'
+helpcenter.general.search: 'Come possiamo aiutarti oggi?'
 helpcenter.general.share: Condividi
 helpcenter.general.show: Mostra
 helpcenter.general.tagged_with: 'taggato con'
 helpcenter.general.tags: Tag
 helpcenter.general.updated: Aggiornato
 helpcenter.general.user: Utente
+helpcenter.general.user_menu: 'Menu utente'
+helpcenter.general.user_profile: 'Profilo utente'
+helpcenter.general.x_search_results: '{num} risultati della ricerca per "{query}"'
 helpcenter.general.you: Tu
+helpcenter.general.download_pdf: 'Scarica PDF'
+helpcenter.knowledgebase.featured_articles: 'Articoli in evidenza'
+helpcenter.label.search: Cerca
 helpcenter.members.language: Lingua
 helpcenter.members.timezone: Fuso orario
+helpcenter.messenger.chat_create_ticket_button: 'Crea ticket'
+helpcenter.messenger.chat_create_ticket_header: 'Invia un ticket'
+helpcenter.messenger.chat_rating_block_buttons_helpful: Utile
+helpcenter.messenger.chat_rating_block_buttons_unhelpful: Inutile
+helpcenter.messenger.chat_rating_block_question_header: 'Valuta la tua conversazione con {name}'
+helpcenter.messenger.chat_rating_block_thank_you_header: 'Grazie per il tuo feedback'
+helpcenter.messenger.chat_save_ticket_button_no: 'No'
+helpcenter.messenger.chat_save_ticket_button_yes: 'Sì'
+helpcenter.messenger.chat_transcript_block_no_button: 'No'
+helpcenter.messenger.chat_transcript_block_yes_button: 'Sì'
+helpcenter.messenger.date_label: Data
 helpcenter.news.none: 'Non ci sono ancora novità'
 helpcenter.news.recent_title: 'Notizie Recenti'
 helpcenter.news.view_as_agent: 'Puoi vedere questa pagina perchè sei un agente. Gli utenti normali non saranno in grado di vedere questa pagina.'
