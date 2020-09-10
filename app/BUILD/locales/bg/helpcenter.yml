@@ -341,8 +341,23 @@ helpcenter.general.last_updated: 'Последно обновено'
 helpcenter.general.last_update_by: 'Последно обновено: <strong>{date_updated, date, medium}</strong>от <strong>{person_name}</strong>'
 helpcenter.general.last_week: 'В последната седмица'
 helpcenter.general.last_year: 'В последната година'
+helpcenter.general.latest_status_changes: 'Последни промени на статуса'
 helpcenter.general.log_in: 'Влез'
+helpcenter.general.message: Съобщения
+helpcenter.general.more_than_1_year: 'Повече от 1 година'
+helpcenter.general.name: Име
+helpcenter.general.nav_chat: Чатове
+helpcenter.general.nav_community: Общност
+helpcenter.general.nav_community_desc: 'Виж всички теми'
+helpcenter.general.nav_contact: 'Контакти'
+helpcenter.general.nav_contact_desc: 'Свържи се с нас'
+helpcenter.general.nav_direct_messages: Съобщения
+helpcenter.general.nav_downloads: Файлове
+helpcenter.general.nav_downloads_desc: 'Разгледай нашите файлове'
+helpcenter.general.nav_emails: Имейли
 helpcenter.general.nav_guides: Упътвания
+helpcenter.general.nav_guides_desc: 'Виж всички ръководства'
+helpcenter.general.nav_kb: База знания
 helpcenter.general.nav_kb_desc: 'Виж всички в помощния център'
 helpcenter.general.nav_login: 'Логин'
 helpcenter.general.nav_members: 'Директория на членовете'
@@ -465,6 +480,14 @@ helpcenter.messenger.chat_header_title: '{department} разговор'
 helpcenter.messenger.chat_no_agent_online: 'За съжаление няма никой на линия да приеме Вашия чат.'
 helpcenter.messenger.chat_pre_chat_form_form_message: 'Добре дошли в DeskPro. Моля, попълнете информацията по-долу, за да Ви пренасочим към правилния агент възможно най-скоро.'
 helpcenter.messenger.chat_prompt: 'С какво да съдействаме?'
+helpcenter.messenger.message_unassigned: '{name} е отписан от чата.'
+helpcenter.messenger.message_uploading: 'Качване ...'
+helpcenter.messenger.message_user_joined: '{name} се присъедини към разговора.'
+helpcenter.messenger.message_user_left: '{name} напусна разговора.'
+helpcenter.messenger.message_user_returned: 'Потребителят се завърна'
+helpcenter.messenger.message_user_timeout: 'Потребителят е в изчакване'
+helpcenter.messenger.message_wait: 'Намираме Ви агент'
+helpcenter.messenger.message_wait_timeout: 'Съжаляваме; в момента няма свободни агенти.'
 helpcenter.messenger.powered_by: 'Powered by'
 helpcenter.messenger.proactive_button: 'Започни нов разговор'
 helpcenter.messenger.proactive_description: 'Започни чат с нас'
