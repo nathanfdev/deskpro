@@ -461,8 +461,13 @@ helpcenter.general.related_content: 'Contenuti correlati'
 helpcenter.general.remove: rimuovi
 helpcenter.general.rerender_form: 'Per favore controlla questo modulo prima di inviarlo.'
 helpcenter.general.search: 'Come possiamo aiutarti oggi?'
+helpcenter.general.select: Seleziona
+helpcenter.general.send_user_direct_message: 'Invia un messaggio diretto all’utente'
 helpcenter.general.share: Condividi
 helpcenter.general.show: Mostra
+helpcenter.general.skip_link: 'Passa al contenuto principale'
+helpcenter.general.software_power_by: 'Powered by'
+helpcenter.general.sort: Ordina
 helpcenter.general.status: Stato
 helpcenter.general.subscribe_action: Iscriviti
 helpcenter.general.tagged_with: 'taggato con'
@@ -516,8 +521,10 @@ helpcenter.messenger.blocks_start_chat_button: 'Inizia una nuova conversazione'
 helpcenter.messenger.blocks_start_chat_description: 'Inizia una chat con uno dei nostri agenti'
 helpcenter.messenger.blocks_start_chat_title: 'Inizia una conversazione'
 helpcenter.messenger.blocks_ticket_button: 'Invia un nuovo ticket'
+helpcenter.messenger.blocks_ticket_description: 'Invia una domanda attraverso il nostro modulo di contatto'
 helpcenter.messenger.blocks_ticket_title: 'Invia un ticket'
 helpcenter.messenger.blocks_tickets_title: 'I tuoi ticket'
+helpcenter.messenger.chat_agent_assigned_message: '{name} ora partecipa alla conversazione.'
 helpcenter.messenger.chat_attach_file: 'Allega file'
 helpcenter.messenger.chat_create_ticket_button: 'Crea ticket'
 helpcenter.messenger.chat_create_ticket_header: 'Invia un ticket'
@@ -528,30 +535,65 @@ helpcenter.messenger.chat_end_block_buttons_yes: 'Sì'
 helpcenter.messenger.chat_end_block_question_header: 'Vuoi terminare la chat?'
 helpcenter.messenger.chat_end_chat: 'Termina la chat'
 helpcenter.messenger.chat_ended: 'Chat terminata'
+helpcenter.messenger.chat_no_agent_online: 'Siamo spiacenti, ma nessuno è online per accettare la tua chat.'
+helpcenter.messenger.chat_pre_chat_form_form_message: 'Ti diamo il benvenuto su Deskpro. Per permetterci di indirizzarti il più presto possibile verso la persona giusta, compila i campi richiesti qui sotto.'
+helpcenter.messenger.chat_prompt: 'Su cosa possiamo aiutarti oggi?'
 helpcenter.messenger.chat_rating_block_buttons_helpful: Utile
 helpcenter.messenger.chat_rating_block_buttons_unhelpful: Inutile
 helpcenter.messenger.chat_rating_block_question_header: 'Valuta la tua conversazione con {name}'
 helpcenter.messenger.chat_rating_block_thank_you_header: 'Grazie per il tuo feedback'
 helpcenter.messenger.chat_save_ticket_button_no: 'No'
 helpcenter.messenger.chat_save_ticket_button_yes: 'Sì'
+helpcenter.messenger.chat_save_ticket_intro: 'Inserisci il tuo nome e la tua email, e uno dei nostri agenti ti contatterà appena possibile.'
+helpcenter.messenger.chat_save_ticket_question: 'Vuoi che un agente si metta in contatto con te?'
+helpcenter.messenger.chat_save_ticket_thanks: 'Un agente ti contatterà appena possibile'
 helpcenter.messenger.chat_send_message: 'Invia messaggio'
+helpcenter.messenger.chat_transcript_block_answer_header: 'Ti stiamo inviando la trascrizione a:'
 helpcenter.messenger.chat_transcript_block_no_button: 'No'
+helpcenter.messenger.chat_transcript_block_question_header: 'Desideri ricevere una trascrizione della chat via email?'
+helpcenter.messenger.chat_transcript_block_send_button: 'Invia messaggio'
 helpcenter.messenger.chat_transcript_block_yes_button: 'Sì'
 helpcenter.messenger.date_label: Data
 helpcenter.messenger.email_validated_sucessfully: 'email convalidata con successo'
 helpcenter.messenger.files_on_this_chat: 'File in questa chat'
 helpcenter.messenger.greeting: 'Mettiti in contatto'
+helpcenter.messenger.invalid_validation_code: 'Il codice di validazione è errato'
+helpcenter.messenger.linked_ticket_label: 'Assegnato al ticket'
+helpcenter.messenger.loading: Caricando
+helpcenter.messenger.message_agent_timeout: 'Ci scusiamo, ma a quanto pare {name} non è più in linea. Attendi mentre cerchiamo un altro agente.'
+helpcenter.messenger.message_assigned: '{name} assegnato alla chat.'
+helpcenter.messenger.message_chatting_with: 'Stai chattando con'
 helpcenter.messenger.message_ended: 'Hai terminato la conversazione.'
 helpcenter.messenger.message_ended_by: '{name} ha terminato la conversazione.'
 helpcenter.messenger.message_ended_by_user: 'Chat terminata dall’utente'
+helpcenter.messenger.message_finding_agent: 'Il sistema sta cercando un agente'
 helpcenter.messenger.message_long_wait: 'Stiamo cercando un agente disponibile per la chat: questo normalmente richiede meno di un minuto.'
 helpcenter.messenger.message_started: 'Chat iniziata'
 helpcenter.messenger.message_uploading: 'Caricando ...'
+helpcenter.messenger.message_user_joined: '{name} ora partecipa alla conversazione.'
 helpcenter.messenger.message_user_left: '{name} ha lasciato la conversazione.'
 helpcenter.messenger.message_user_returned: 'L’utente è rientrato'
+helpcenter.messenger.message_wait: 'Stiamo trovando un agente per te'
+helpcenter.messenger.message_wait_timeout: 'Ci scusiamo, ma in questo momento non ci sono agenti disponibili.'
+helpcenter.messenger.powered_by: 'Powered by'
 helpcenter.messenger.proactive_button: 'Inizia una nuova conversazione'
 helpcenter.messenger.proactive_description: 'Inizia una chat con uno dei nostri agenti'
 helpcenter.messenger.proactive_greeting: 'Mettiti in contatto'
+helpcenter.messenger.proactive_placeholder: 'Scrivi il tuo messaggio qui'
+helpcenter.messenger.proactive_title: 'Inizia una conversazione'
+helpcenter.messenger.tickets_form_add_attachment: 'Aggiungi allegato'
+helpcenter.messenger.tickets_form_back: Indietro
+helpcenter.messenger.tickets_form_header: 'Nuovo ticket'
+helpcenter.messenger.tickets_form_message: Messaggio
+helpcenter.messenger.tickets_form_name: Nome
+helpcenter.messenger.tickets_form_or: o
+helpcenter.messenger.tickets_form_priority: Priorità
+helpcenter.messenger.tickets_form_product: Prodotto
+helpcenter.messenger.tickets_form_required: Obbligatorio
+helpcenter.messenger.tickets_form_saving: 'Stiamo salvando il tuo ticket. Per favore, attendi'
+helpcenter.messenger.tickets_form_select: Seleziona
+helpcenter.messenger.tickets_form_submit: Invia
+helpcenter.messenger.tickets_form_thanks: 'Grazie per averci contattati. Un membro del nostro team si metterà in contatto con te via email.'
 helpcenter.messenger.total_chat_time_label: 'Tempo di chat totale'
 helpcenter.messenger.view_action: Vedi
 helpcenter.messenger.view_linked_ticket_action: 'Visualizza il ticket'
@@ -635,7 +677,10 @@ helpcenter.tickets.thank_you_check_email_desc: 'Per finire di inviare il tuo tic
 helpcenter.tickets.ticket_closed: 'Ticket risolto'
 helpcenter.tickets.ticket_properties: 'Proprietà del ticket'
 helpcenter.tickets.ticket_status: 'Stato del ticket'
+helpcenter.tickets.tickets_i_m_cc_on: 'Ticket in cui sono in CC'
 helpcenter.tickets.timeline_marked: 'segnato questo ticket:'
+helpcenter.tickets.view_assigned_agent: 'Agente assegnato'
+helpcenter.tickets.view_btn_add_cc: 'CC +'
 helpcenter.tickets.view_btn_add_to_ticket: 'Aggiungi al Ticket'
 helpcenter.tickets.view_btn_edit: Modifica
 helpcenter.tickets.view_btn_edit_full: 'Modifica questo Ticket'
