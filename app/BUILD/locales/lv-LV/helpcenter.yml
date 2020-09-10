@@ -25,7 +25,7 @@ helpcenter.account.login_reset_password_link: 'Vēlaties atgādinājumu par paro
 helpcenter.account.login_stay_logged_in: 'Turpmāk pieteikties automātiski'
 helpcenter.account.logout_action: Iziet
 helpcenter.account.logout_confirm: 'Vai tiešām vēlaties iziet?'
-helpcenter.account.new_ticket_no_login: 'Portāla Portāla CRM ir atspējot. Nevar iesniegt pieprasījumu.'
+helpcenter.account.new_ticket_no_login: 'Portāla Portāla CRM ir atspējota. Nevar iesniegt pieprasījumu.'
 helpcenter.account.new_to_brand: 'Vēl neizmantojat {brand}?'
 helpcenter.account.profile_delete_picture: 'Mainīt vai dzēst profila bildi?'
 helpcenter.account.profile_save_action: 'Saglabāt profilu'
