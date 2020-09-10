@@ -117,6 +117,8 @@ helpcenter.duration_short.months: М
 helpcenter.duration_short.seconds: с
 helpcenter.duration_short.weeks: С
 helpcenter.duration_short.years: 'Г'
+helpcenter.emails.account_disabled_message: 'В момента Вашият акаунт е деактивиран. Не можете да се логнете или да работите с тикети или с чат.'
+helpcenter.emails.auto_close: 'Вашият тикет "{subject}" скоро ще бъде затворен, понеже няма активност от Ваша страна. Ако имате нужда от допълнително съдействие, просто отговорете и един от нашите агенти ще Ви съдейства.'
 helpcenter.emails.chat_transcript: 'Благодарим ви за чата. Ето го вашия препис от чата.'
 helpcenter.emails.chat_transcript_subject: 'Чат препис'
 helpcenter.emails.comment_approved: 'Вашият отговор беше публикуван.'
@@ -124,6 +126,8 @@ helpcenter.emails.comment_approved_subject: 'Вашият коментар бе�
 helpcenter.emails.comment_confirmation: 'Благодарим ви за коментара'
 helpcenter.emails.comment_deleted: 'Вашият коментар беше използван за да подобри тази страница.'
 helpcenter.emails.comment_deleted_subject: 'Вашият коментар беше прочетен от агентите ни'
+helpcenter.emails.comment_thank_you: 'Благодарим Ви за коментара {link}.'
+helpcenter.emails.community_explain: 'Получихте този имейл, понеже сте абониран за нашите новини на <a href="{deskpro_url}">{deskpro_url}</a>.<br />Не желаете повече да получавате такива имейли?<a href="{unsubscribe_url}">Натиснете тук за да се отпишете от нотификации по всички теми.</a>'
 helpcenter.emails.community_new: 'Благодаря ви, че изпратихте вашата общностна тема'
 helpcenter.emails.community_sub_updated: 'Обновена общностна тема'
 helpcenter.emails.community_topic_agent_validation: 'Моля обърнете внимание, че вашата общностна тема няма да бъде показана публично докато някой от агентите ни не я прегледа.'
