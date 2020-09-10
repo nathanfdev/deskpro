@@ -85,13 +85,63 @@ helpcenter.approvals.list_column_subject: 'Заглавие'
 helpcenter.approvals.list_column_user: 'Потребител'
 helpcenter.approvals.list_column_your_vote: 'Вашият глас'
 helpcenter.approvals.my_approvals: 'Моите одобрения'
+helpcenter.approvals.no_ticket_approvals_found: 'Няма намерени заявки за тикет'
+helpcenter.approvals.pending_status: В очакване
+helpcenter.approvals.reject_action: Откажи
+helpcenter.approvals.rejected_by: 'Отказано от'
+helpcenter.approvals.rejected_status: Отказано
+helpcenter.approvals.system: Система
+helpcenter.approvals.view_approved: Одобрено
+helpcenter.approvals.view_awaiting_response: 'В изчакване на отговор'
+helpcenter.approvals.view_criteria: 'Критерий за одобрение'
+helpcenter.approvals.view_no_response: 'Няма отговор'
+helpcenter.approvals.view_rejected: Отказано
+helpcenter.approvals.view_requesting_agent: 'Заявка на агент'
+helpcenter.approvals.view_ticket: Тикет
+helpcenter.approvals.view_to_approve: 'Да одобри'
+helpcenter.approvals.view_to_reject: 'Да откаже'
+helpcenter.approvals.you_approved: 'Вие одобрихте заявката {template} заявена от {person_name}'
+helpcenter.approvals.you_rejected: 'Вие отказахте заявката {template} заявена от {person_name}'
+helpcenter.articles.article_object: Тази тема
+helpcenter.articles.published_label: Публикувано
 helpcenter.articles.section_title: База знание
+helpcenter.articles.status_archived: Архивирано
+helpcenter.articles.status_draft: Чернова
+helpcenter.articles.status_published: Публикувано
+helpcenter.articles.view_as_agent: 'Потребителите не могат да видят тази страница, защото все още не е публикувана.'
+helpcenter.articles.view_x_articles: 'Виж всички теми в {category}'
+helpcenter.chats.my_chats: 'Моите чатове'
+helpcenter.community.activity: Активност
+helpcenter.community.activity_commented: 'Аз коментирах'
+helpcenter.community.activity_created: 'Аз създадох'
+helpcenter.community.activity_voted: 'Аз гласувах'
+helpcenter.community.category: Категория
 helpcenter.community.create_topic: Създай
+helpcenter.community.create_topic_full: 'Създай {forum}'
+helpcenter.community.create_topic_in_forum: 'Изпрати {forum}'
 helpcenter.community.error_login: 'Моля влезте'
+helpcenter.community.featured_topics: 'Главни теми'
+helpcenter.community.filters: Филтри
+helpcenter.community.form_add_attachments: 'Добави прикачени файлове'
+helpcenter.community.form_create_topic: 'Създай тема'
+helpcenter.community.form_description: Описание
 helpcenter.community.form_topic_title: Заглавие
+helpcenter.community.forum_name: 'Име на форума'
+helpcenter.community.like_action: Харесай
+helpcenter.community.likes: Харесвания
+helpcenter.community.my_activity: 'Моята активност'
 helpcenter.community.no_matching: 'Няма съвпадащи общностни теми'
+helpcenter.community.none: 'Не са намерени теми във форума'
+helpcenter.community.official_response: 'Официален отговор'
 helpcenter.community.rate_forbidden: 'Не ви е разрешено да гласувате'
+helpcenter.community.recent_activity: 'Последна активност'
+helpcenter.community.reset_all_filters: 'Нулирай всички филтри'
 helpcenter.community.section_title: Общност
+helpcenter.community.status: Статус
+helpcenter.community.status_change: 'Промяна на статуса'
+helpcenter.community.title: Заглавие
+helpcenter.community.title_author: 'Заглавие / Автор'
+helpcenter.community.view_all_topics: 'Виж всички {plural}'
 helpcenter.community.view_list: 'Изглед на списък'
 helpcenter.community.view_status_change: 'Смяна на статуса'
 helpcenter.direct_messages.back_to_messages: 'Обратно в моите съобщения'
@@ -183,6 +233,7 @@ helpcenter.error.404_desc: 'Съжаляваме, но не можем да от
 helpcenter.error.404_title: 'Не е намерен'
 helpcenter.error.general_title: 'Възникна грешка'
 helpcenter.error.permission_denied_title: 'Нямате право да правите това'
+helpcenter.eula.agree: Съгласен съм
 helpcenter.flashes.article_unsubscribe: 'Успешно прекратихте абонамента си към тази статия.'
 helpcenter.flashes.guest_content_must_verify: 'Преди да качим съдържанието ви трябва да потвърдите имейл адреса си. Моля провереде входящата си кутия. Изпратили сме ви линк за потвъждение.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Преди да можем да приемем тикета ви трябва да потвърдите имейл адреса си. Моля провереде входящата си кутия. Изпратили сме ви линк за потвъждение.'
@@ -199,19 +250,35 @@ helpcenter.flashes.user_updated_profile: 'Вашият профил беше о�
 helpcenter.flashes.usersource_new_add_email_verified: 'Благодарим ви, че потвърдихте имейл адреса си. Алаунтът ви вече е активен.'
 helpcenter.flashes.usersource_new_add_email_verify: 'Трябва да потвърдим вашият имейл адрес преди да създадем акаунта ви. Моля проверете входящата си кутия за линк с потвърждение'
 helpcenter.forms.error_email_required: 'Трябва да предоставите имейл адреса си'
+helpcenter.forms.error_password_reset_required: 'Необходимо е да си смените паролата'
+helpcenter.forms.error_required: 'Тази стойност е необходима'
+helpcenter.forms.error_banned_email: 'Имейлът е баннат.'
+helpcenter.forms.label_drag_overlay: 'Вмъкни изображение във Вашето съобщение.'
+helpcenter.forms.label_email: Имейл
+helpcenter.forms.label_password: Парола
+helpcenter.forms.label_password_confirm: Потвърди
+helpcenter.forms.label_reset: Нулирай
 helpcenter.forms.label_save: Запази
+helpcenter.forms.label_submit: Изпрати
+helpcenter.forms.label_timezone: Часова зона
 helpcenter.general.add_comment: 'Добави коментар'
 helpcenter.general.admin: Админ
 helpcenter.general.admin_home: 'Начало на админ'
 helpcenter.general.agent: Агент
 helpcenter.general.agent_bar_admin_community: 'Общностни настройки'
+helpcenter.general.agent_bar_admin_dl: 'Настройки на файловете'
+helpcenter.general.agent_bar_admin_guides: 'Настройки на ръководствата'
 helpcenter.general.agent_bar_admin_kb: 'Настройки на базата знания'
 helpcenter.general.agent_bar_admin_lang: 'Настройки на език'
 helpcenter.general.agent_bar_admin_news: 'Нови настройки'
+helpcenter.general.agent_bar_admin_portal: 'Дизайн на помощния център'
 helpcenter.general.agent_bar_agent_community: 'Управлявай общност'
+helpcenter.general.agent_bar_agent_dl: 'Управление на файлове'
+helpcenter.general.agent_bar_agent_guides: 'Управление на ръководствата'
 helpcenter.general.agent_bar_agent_home: 'Начало на агент'
 helpcenter.general.agent_bar_agent_kb: 'Управлявай база знания'
 helpcenter.general.agent_bar_agent_news: 'Управлявай новини'
+helpcenter.general.agent_interface: 'Интерфейс на агента'
 helpcenter.general.agents: Агенти
 helpcenter.general.attachments: Прикачвания
 helpcenter.general.chat: Чат
@@ -391,15 +458,30 @@ helpcenter.tickets.thank_you: 'Благодарим Ви, получихме В�
 helpcenter.tickets.thank_you_check_email: 'Моля потвърдете имейл адреса си'
 helpcenter.tickets.thank_you_check_email_desc: 'За да довършите изпращането на тикета си, трябва да проверите входната кутия на имейла си. Моля кликнете на линка за потвърждение, който сме ви изпратили.'
 helpcenter.tickets.thank_you_create_pw_link: 'Искате да следите Вашия тикет? Можете да<a href="{create_pw_link}">зададете парола за Вашият акаунт</a>.'
+helpcenter.tickets.thank_you_desc: 'Благодарим Ви, че се свързахте с нас. Съвсем скоро ще се свържем с Вас.'
+helpcenter.tickets.ticket_closed: 'Тикетът е затворен'
+helpcenter.tickets.ticket_properties: 'Свойства на тикета'
+helpcenter.tickets.ticket_status: 'Статус на тикета'
+helpcenter.tickets.tickets_i_m_cc_on: 'Тикети на които съм копиран'
 helpcenter.tickets.timeline_marked: 'маркиран този тикет:'
+helpcenter.tickets.timeline_marked_resolved: 'Затвори този тикет'
+helpcenter.tickets.timeline_re_opened: 'Отново отвори този тикет'
+helpcenter.tickets.user_rated_support: 'Вие ({email}) оценихте Вашият съпорт от'
+helpcenter.tickets.view_assigned_agent: 'Назначен агент'
+helpcenter.tickets.view_btn_add_cc: 'CC +'
 helpcenter.tickets.view_btn_add_to_ticket: 'Добави към тикет'
 helpcenter.tickets.view_btn_edit: Редактирай
 helpcenter.tickets.view_btn_edit_full: 'Редактирай този тикет'
 helpcenter.tickets.view_label_your_email_placeholder: 'Имейл адрес (изисква се)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Име (изисква се)'
+helpcenter.tickets.view_last_message: 'Последно съобщение'
+helpcenter.tickets.view_participants: 'CCs'
 helpcenter.tickets.view_reply_errors: 'Има някои грешки с вашето изпращане.'
+helpcenter.tickets.view_reply_or_close: 'Отговори или<a href="{close_url}">затвори тикета</a>'
+helpcenter.tickets.view_requester: Заявител
 helpcenter.tickets.view_scroll_reply: 'Кликни тук за да отидеш надолу във формата,'
 helpcenter.tickets.view_unassigned: Неназначен
 helpcenter.tickets.view_unassigned_more: 'Ще бъде назначен агент'
+helpcenter.tickets.view_you_created: 'Създаден'
 helpcenter.tickets.you_have_not_rated_support: 'Вие ({email}) все още не сте оценили Вашия съпорт.'
 helpcenter.tickets.you_rated_support: 'Вие ({email}) оценихте Вашия съпорт от'
