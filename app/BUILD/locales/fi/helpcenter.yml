@@ -15,6 +15,10 @@ helpcenter.articles.view_x_articles: 'Katso kaikki artikkelit osiossa {category}
 helpcenter.community.form_topic_title: Aihe
 helpcenter.community.section_title: Palaute
 helpcenter.direct_messages.reply_message: Viesti
+helpcenter.downloads.file_name: 'Tiedoston nimi'
+helpcenter.downloads.file_size: 'Tiedoston koko'
+helpcenter.downloads.no_files: 'Ei tiedostoja'
+helpcenter.downloads.total_downloads: 'Latauksia yhteensä'
 helpcenter.emails.chat_transcript: 'Kiitos keskustelusta kanssamme. Tässä kopio keskustelustamme.'
 helpcenter.emails.chat_transcript_subject: 'Keskustelu kopio'
 helpcenter.emails.comment_approved: 'Kommenttisi on julkaistu.'
