@@ -224,6 +224,7 @@ helpcenter.emails.profile_email_link_validate: 'Clicca sul link seguente per con
 helpcenter.emails.profile_email_primary_confirm: 'Per verificare il tuo indirizzo email primario, semplicemente fai click sul seguente link di convalida'
 helpcenter.emails.ratelimit_submit_online: 'Se questo è in errore e hai bisogno di contattarci immediatamente, puoi bypassare questo filtro email e inviare un ticket online'
 helpcenter.emails.register_password: 'La tua password è: {password}'
+helpcenter.emails.register_welcome: 'Grazie per aver effettuato la registrazione. Adesso puoi accedere usando il tuo indirizzo email {to_email} sul nostro helpdesk:'
 helpcenter.emails.register_welcome_byagent_subject: 'Il tuo nuovo account helpdesk'
 helpcenter.emails.register_welcome_subject: 'Grazie per la registrazione'
 helpcenter.emails.reject_resolved: 'La tua risposta non è stata accettata perchè il tuo ticket è già stato segnato come risolto. I nostri agenti non visualizzeranno e non risponderanno a questo messaggio'
@@ -268,8 +269,17 @@ helpcenter.flashes.community_unsubscribe_everything: 'Hai annullato l’iscrizio
 helpcenter.flashes.content_rating_thanks: 'Grazie per il tuo feedback.'
 helpcenter.flashes.guest_content_must_verify: 'Prima che noi possiamo pubblicare il tuo contenuto, devi verificare la tua posta in arrivo. TI abbiamo mandato un link di convalida.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Prima di poter accettare il tuo ticket, dobbiamo verificare il tuo indirizzo email. Per favore controlla la tua casella di posta in arrivo. TI abbiamo mandato un link di convalida.'
+helpcenter.flashes.ticket_feedback_thank_you: 'Grazie per il tuo feedback.'
+helpcenter.flashes.ticket_feedback_unknown_error: 'Si è verificato un problema durante il tentativo di inviare il feedback. Per favore riprova.'
 helpcenter.flashes.ticket_participant_already_error: 'La persona che hai provato ad aggiungere come partecipante è già partecipante a questo ticket.'
+helpcenter.flashes.ticket_participant_email_error: 'Per favore, inserisci un’email valida e riprova.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Si è verificato un problema durante il tentativo di rimuovere il partecipante. Per favore riprova.'
+helpcenter.flashes.ticket_re_opened: 'Hai riaperto questo ticket.'
+helpcenter.flashes.ticket_replied: 'La tua risposta è stata inviata.'
+helpcenter.flashes.ticket_resolved: 'Il tuo ticket è ora contrassegnato come risolto.'
+helpcenter.flashes.ticket_updated: 'Il tuo ticket è stato aggiornato.'
+helpcenter.flashes.update_user_profile: 'Per favore, correggi i campi richiesti.'
+helpcenter.flashes.user_add_email_verified: 'Il tuo indirizzo email è stato aggiunto al tuo account.'
 helpcenter.flashes.user_add_email_verify: 'Dobbiamo verificare la tua email prima di poterla aggiungere al tuo account. Per favore controlla la tua casella di posta per il link di convalida.'
 helpcenter.flashes.user_changed_password: 'La tua password è stata aggiornata.'
 helpcenter.flashes.user_changed_primary_email: 'L''indirizzo della tua email primaria è stato cambiato.'
@@ -291,28 +301,94 @@ helpcenter.forms.error_email_required: 'Devi fornire il tuo indirizzo email'
 helpcenter.forms.error_password_current: 'Questa deve essere la tua password attualmente in uso'
 helpcenter.forms.error_password_forbid_reuse: 'Non puoi usare una password che hai utilizzato in precedenza'
 helpcenter.forms.error_password_min_length: '{count, plural, one {Minimo # caratteri} other {Minimo # caratteri}}'
+helpcenter.forms.error_password_reset_required: 'Devi reimpostare la password'
+helpcenter.forms.label_email: email
+helpcenter.forms.label_password: Password
+helpcenter.forms.label_password_confirm: Conferma
+helpcenter.forms.label_reset: Reimposta
 helpcenter.forms.label_save: Salva
+helpcenter.forms.label_submit: Invia
+helpcenter.forms.label_timezone: Fuso orario
 helpcenter.general.add_comment: 'Aggiungi un commento'
+helpcenter.general.admin: Admin
+helpcenter.general.admin_home: 'Home Admin'
 helpcenter.general.agent: Agente
 helpcenter.general.agent_bar_admin_community: 'Impostazioni Tema Della Comunità'
+helpcenter.general.agent_bar_admin_dl: 'Impostazioni dei file'
+helpcenter.general.agent_bar_admin_guides: 'Impostazioni delle guide'
 helpcenter.general.agent_bar_admin_kb: 'Impostazioni di Knowladgebase'
 helpcenter.general.agent_bar_admin_lang: 'Impostazioni delle Lingue'
 helpcenter.general.agent_bar_admin_news: 'Impostazioni sulle Novità'
+helpcenter.general.agent_bar_admin_portal: 'Configurazione dell’helpcenter'
 helpcenter.general.agent_bar_agent_community: 'Gestisci Tema Della Comunità'
+helpcenter.general.agent_bar_agent_dl: 'Gestisci i file'
+helpcenter.general.agent_bar_agent_guides: 'Gestisci le guide'
 helpcenter.general.agent_bar_agent_home: 'Agente Home'
 helpcenter.general.agent_bar_agent_kb: 'Gestisci la Knowledgebase'
 helpcenter.general.agent_bar_agent_news: 'Gestisci le Novità'
+helpcenter.general.agent_interface: 'Interfaccia agente'
 helpcenter.general.agents: Agenti
+helpcenter.general.apply: Applica
 helpcenter.general.attachments: Allegati
+helpcenter.general.authors_list: Elenco degli autori
+helpcenter.general.back: Indietro
+helpcenter.general.btn_manage_subscriptions: 'Gestisci le tue iscrizioni'
+helpcenter.general.cancel_action: Annulla
+helpcenter.general.categories: Categorie
+helpcenter.general.category: Categoria
+helpcenter.general.cc: CC
+helpcenter.general.chat: Chat
+helpcenter.general.chats: Chat
+helpcenter.general.clear_all: 'Elimina tutti i filtri'
+helpcenter.general.close: Chiudi
+helpcenter.general.comment_btn_save: 'Aggiungi un commento'
+helpcenter.general.comment_login_first: 'Accedi o registrati per inviare un commento.'
 helpcenter.general.comments: Commenti
+helpcenter.general.comments_pending_validation: 'Questo commento è in attesa di approvazione.'
+helpcenter.general.comments_title: '{count, plural, one {Commento (1)} other {Commenti (#)}}'
 helpcenter.general.everything: Tutto
 helpcenter.general.impersonation_mode: 'Modalità di rappresentazione'
 helpcenter.general.label_search_enter_label: 'Per favore fornisci un etichetta da ricercare'
 helpcenter.general.last_activity: 'Ultima Attività'
 helpcenter.general.log_in: 'Accedi'
+helpcenter.general.message: Messaggio
+helpcenter.general.more_than_1_year: 'Più di un anno'
+helpcenter.general.name: Nome
+helpcenter.general.nav_chat: Chat
+helpcenter.general.nav_community: Community
+helpcenter.general.nav_community_desc: 'Vedi tutti i temi'
+helpcenter.general.nav_contact: 'Contattaci'
+helpcenter.general.nav_contact_desc: 'Resta in contatto per ricevere aiuto'
+helpcenter.general.nav_direct_messages: Messaggi
+helpcenter.general.nav_downloads: File
+helpcenter.general.nav_downloads_desc: 'Sfoglia i nostri file'
+helpcenter.general.nav_emails: email
 helpcenter.general.nav_guides: il manuale
+helpcenter.general.nav_guides_desc: 'Vedi tutte le guide'
+helpcenter.general.nav_kb: Knowledge base
+helpcenter.general.nav_kb_desc: 'Vedi tutto l’help center'
+helpcenter.general.nav_login: 'Accedi'
+helpcenter.general.nav_members: 'Elenco dei membri'
+helpcenter.general.nav_news: News
+helpcenter.general.nav_news_desc: 'Vedi tutti i post di news'
+helpcenter.general.nav_news_desc_short: 'Vedi tutte le news'
+helpcenter.general.nav_newticket: 'Contattaci'
+helpcenter.general.nav_profile: Profilo
+helpcenter.general.nav_register: 'Registrati'
+helpcenter.general.nav_support_center: 'Help Center'
+helpcenter.general.nav_your_account: 'Il tuo account'
+helpcenter.general.next: Avanti
 helpcenter.general.no_search_query: 'Per favore digita una query di ricerca nella casella di ricerca.'
+helpcenter.general.no_search_results_general: 'Nessun risultato'
+helpcenter.general.or: o
+helpcenter.general.pagination_page: 'Pagina {page}'
+helpcenter.general.pagination_next_page: 'Pagina successiva'
+helpcenter.general.pagination_previous_page: 'Pagina precedente'
+helpcenter.general.password: Password
+helpcenter.general.previous: Indietro
 helpcenter.general.print: Stampa
+helpcenter.general.priority: Priorità
+helpcenter.general.product: Prodotto
 helpcenter.general.prop_comments_asc: 'Prima il minor numero di commenti '
 helpcenter.general.prop_comments_desc: 'Prima il maggior numero di commenti'
 helpcenter.general.prop_date_asc: 'Prima i più vecchi'
@@ -323,6 +399,8 @@ helpcenter.general.prop_rating_asc: 'Prima i meno votati'
 helpcenter.general.prop_rating_desc: 'Prima i più votati'
 helpcenter.general.prop_views_asc: 'Prima i meno visualizzati'
 helpcenter.general.prop_views_desc: 'I più visualizzati'
+helpcenter.general.published: 'Data della prima pubblicazione'
+helpcenter.general.published_by: 'Pubblicato da <strong>{person_name}</strong>'
 helpcenter.general.rate_page_positive: Utile
 helpcenter.general.rerender_form: 'Per favore controlla questo modulo prima di inviarlo.'
 helpcenter.general.share: Condividi
