@@ -97,9 +97,42 @@ helpcenter.approvals.view_criteria: 'Criteri di approvazione'
 helpcenter.approvals.view_no_response: 'Nessuna risposta'
 helpcenter.approvals.view_rejected: Rifiutato
 helpcenter.approvals.view_requesting_agent: 'Agente richiedente'
+helpcenter.approvals.view_ticket: Ticket
+helpcenter.approvals.view_to_approve: 'Da approvare'
+helpcenter.approvals.view_to_reject: 'Da rifiutare'
+helpcenter.approvals.you_approved: 'Hai approvato la richiesta {template} di {person_name}'
+helpcenter.approvals.you_rejected: 'Hai rifiutato la richiesta {template} di {person_name}'
+helpcenter.articles.article_object: Questo articolo
+helpcenter.articles.published_label: Pubblicato
+helpcenter.articles.section_title: Knowledge base
+helpcenter.articles.status_archived: Archiviato
+helpcenter.articles.status_draft: Bozza
+helpcenter.articles.status_published: Pubblicato
+helpcenter.articles.view_as_agent: 'Gli utenti non possono vedere questa pagina, perché l’articolo non è stato pubblicato.'
+helpcenter.articles.view_x_articles: 'Vedi tutti gli articoli in {category}'
+helpcenter.chats.my_chats: 'Le mie chat'
+helpcenter.community.activity: Attività
+helpcenter.community.activity_commented: 'Ho commentato'
+helpcenter.community.activity_created: 'Ho creato'
+helpcenter.community.activity_voted: 'Ho votato'
+helpcenter.community.category: Categoria
+helpcenter.community.create_topic: Crea
+helpcenter.community.create_topic_full: 'Crea {forum}'
+helpcenter.community.create_topic_in_forum: 'Invia {forum}'
 helpcenter.community.error_login: 'Per favore effettua l''accesso'
+helpcenter.community.featured_topics: 'Temi in evidenza'
+helpcenter.community.filters: Filtri
+helpcenter.community.form_add_attachments: 'Aggiungi allegati'
+helpcenter.community.form_create_topic: 'Crea tema'
+helpcenter.community.form_description: Descrizione
 helpcenter.community.form_topic_title: Titolo
+helpcenter.community.forum_name: 'Nome del forum'
+helpcenter.community.like_action: Mi piace
+helpcenter.community.likes: Mi piace
+helpcenter.community.my_activity: 'La mia attività'
 helpcenter.community.no_matching: 'Non ci sono tema corrispondenti'
+helpcenter.community.none: 'Non è stato possibile trovare alcun tema'
+helpcenter.community.official_response: 'Risposte ufficiali'
 helpcenter.community.rate_forbidden: 'Non hai il permesso di votare'
 helpcenter.direct_messages.reply_message: Messaggio
 helpcenter.direct_messages.title: 'I miei messaggi'
@@ -141,9 +174,15 @@ helpcenter.emails.community_topic_new_comment_subject: 'C’è un nuovo commento
 helpcenter.emails.community_topic_new_disapproved: 'Scusate ma il tema è stato rifiutato'
 helpcenter.emails.community_topic_published: 'Il tema "{title}" che hai presentato alla community è stato convalidato e da adesso apparirà sul nostro sito.'
 helpcenter.emails.community_topic_thank_you: 'Grazie per aver inviato il tuo tema "{title}"'
+helpcenter.emails.community_topic_updated: 'Il tema che hai inviato "{title}" è stato aggiornato. Adesso il suo stato è: nuovo stato "{status}"'
+helpcenter.emails.community_topic_updated_subject: 'La tua community è stata aggiornata: {title}'
+helpcenter.emails.community_topic_votes: 'Al momento, il tuo tema ha <strong>{count, plural, one {1 voto} other {# voti}}</strong>. Guarda il tuo tema online su:'
+helpcenter.emails.community_updated_items: '{count, plural, one {1 tema aggiornato} other {# temi aggiornati}}'
+helpcenter.emails.download_new_downloads: '{count, plural, one {1 nuovo download} other {# nuovi download}}'
 helpcenter.emails.download_sub_new: 'Download nuovi'
 helpcenter.emails.download_sub_new_and_updated: 'Download nuovi e aggiornati'
 helpcenter.emails.download_sub_updated: 'Download aggiornati'
+helpcenter.emails.download_updated_downloads: '{count, plural, one {1 download aggiornato} other {# download aggiornati}}'
 helpcenter.emails.email_new_confirm: 'Convalida il tuo indirizzo email'
 helpcenter.emails.email_ticket_reminder: 'Azione richiesta: Il tuo ticket non è ancora stato inviato'
 helpcenter.emails.kb_sub_new: 'Articoli nuovi'
