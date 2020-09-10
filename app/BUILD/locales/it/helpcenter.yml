@@ -444,6 +444,8 @@ helpcenter.general.rerender_form: 'Per favore controlla questo modulo prima di i
 helpcenter.general.search: 'Come possiamo aiutarti oggi?'
 helpcenter.general.share: Condividi
 helpcenter.general.show: Mostra
+helpcenter.general.status: Stato
+helpcenter.general.subscribe_action: Iscriviti
 helpcenter.general.tagged_with: 'taggato con'
 helpcenter.general.tags: Tag
 helpcenter.general.translations: Traduzioni
@@ -451,6 +453,7 @@ helpcenter.general.updated: Aggiornato
 helpcenter.general.user: Utente
 helpcenter.general.user_menu: 'Menu utente'
 helpcenter.general.user_profile: 'Profilo utente'
+helpcenter.general.view_all_topics: 'Vedi tutti i temi'
 helpcenter.general.view_profile: 'Vedi il mio profilo'
 helpcenter.general.viewed_by_agents_only: 'Questo campo è visibile solo agli agenti'
 helpcenter.general.workflow: 'Flusso di lavoro'
@@ -471,6 +474,7 @@ helpcenter.members.activity_group_last_year: 'Ultimo anno'
 helpcenter.members.activity_group_this_week: 'Questa settimana'
 helpcenter.members.activity_group_this_year: 'Quest’anno'
 helpcenter.members.activity_group_today: 'Oggi'
+helpcenter.members.company: 'Azienda'
 helpcenter.members.language: Lingua
 helpcenter.members.name: Nome
 helpcenter.members.no_activities: 'Nessuna attività'
