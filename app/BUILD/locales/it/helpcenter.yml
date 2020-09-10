@@ -362,9 +362,11 @@ helpcenter.general.edit_this_page: 'Modifica questa pagina'
 helpcenter.general.email_address: 'Indirizzo email'
 helpcenter.general.eula: EULA
 helpcenter.general.everything: Tutto
+helpcenter.general.expand: Espandi
 helpcenter.general.file_type: File
 helpcenter.general.files_type: File
 helpcenter.general.filter: Filtra
+helpcenter.general.first_published: 'Data della prima pubblicazione'
 helpcenter.general.form_choose_file: 'Scegli un file'
 helpcenter.general.form_choose_files: 'Scegli file'
 helpcenter.general.go_action: Vai
@@ -373,6 +375,10 @@ helpcenter.general.helpcenter_disabled_click_below: 'Il portale è stato disabil
 helpcenter.general.ics_subscribe: iCalendar
 helpcenter.general.impersonation_mode: 'Modalità di rappresentazione'
 helpcenter.general.label_search_enter_label: 'Per favore fornisci un etichetta da ricercare'
+helpcenter.general.labels: Tag
+helpcenter.general.lang_change_to_current: 'Rendi <em>{lang}</em> la mia lingua di default'
+helpcenter.general.lang_diff: 'Questa pagina è in <em>{active_lang}</em> ma il tuo account è in <em>{person_lang}</em>.'
+helpcenter.general.lang_switch: 'Passa a <em>{lang}</em>'
 helpcenter.general.last_24_hours: 'Ultime 24 ore'
 helpcenter.general.last_6_month: 'Ultimi 6 mesi'
 helpcenter.general.last_activity: 'Ultima Attività'
@@ -451,9 +457,17 @@ helpcenter.general.workflow: 'Flusso di lavoro'
 helpcenter.general.x_search_results: '{num} risultati della ricerca per "{query}"'
 helpcenter.general.you: Tu
 helpcenter.general.your_comment_label: 'Il tuo commento'
+helpcenter.general.your_comment_optional_label: 'Il tuo commento (opzionale)'
 helpcenter.general.download_pdf: 'Scarica PDF'
 helpcenter.knowledgebase.featured_articles: 'Articoli in evidenza'
 helpcenter.label.search: Cerca
+helpcenter.members.activity_commented_on: 'Ha commentato su'
+helpcenter.members.activity_created_topic: 'Ha creato un tema'
+helpcenter.members.activity_down_voted: 'Ha contrassegnato come inutile'
+helpcenter.members.activity_group_everything_else: 'Tutto il resto'
+helpcenter.members.activity_group_last_month: 'Ultimo mese'
+helpcenter.members.activity_group_last_week: 'Ultima settimana'
+helpcenter.members.activity_group_last_year: 'Ultimo anno'
 helpcenter.members.activity_group_this_week: 'Questa settimana'
 helpcenter.members.activity_group_this_year: 'Quest’anno'
 helpcenter.members.activity_group_today: 'Oggi'
