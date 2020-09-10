@@ -1,15 +1,38 @@
 ---
 helpcenter.account.add: Добави
 helpcenter.account.add_email: 'Добави имейл'
+helpcenter.account.change_password_action: 'Обнови паролата'
 helpcenter.account.comment_lockout: 'Подали сте много коментари. Моля изчакайте за да можете да подадете още.'
 helpcenter.account.email_btn_usersource_set: 'Добави имейл адрес'
+helpcenter.account.email_make_primary_action: 'Направи по подразбиране'
+helpcenter.account.email_management_from_form: 'Управление на моите имейли'
+helpcenter.account.email_primary_description: По подразбиране
+helpcenter.account.email_remove_action: 'Премахни имейл'
+helpcenter.account.email_resend_validation_action: 'Отново изпрати имейл за верификация'
+helpcenter.account.lockout_time: 'Можете да опитате отново след {minutes} минути.'
 helpcenter.account.login_captcha_failed: 'Въвели сте невалиден CAPTCHA код. Моля опитайте отново.'
+helpcenter.account.login_disabled: 'Основният Ви имейл адрес е баннат.'
 helpcenter.account.login_email: 'Вашият имейл'
+helpcenter.account.login_email_placeholder: email@example.com
 helpcenter.account.login_external: 'Влезте с външна услуга'
+helpcenter.account.login_invalid: 'Невалиден логин'
 helpcenter.account.login_lockout: 'Не успяхте да влезете прекалено много пъти и поради това сте заключени. Моля опитайте отново по-късно.'
+helpcenter.account.login_not_configured: 'Външният сървиз не е конфигуриран.'
+helpcenter.account.login_password: 'Вашата парола'
+helpcenter.account.login_register_action: Регистрация
+helpcenter.account.login_register_header: 'Регистрация на акаунт'
+helpcenter.account.login_reset_password_link: 'Подсещане за парола?'
+helpcenter.account.login_stay_logged_in: 'Останете логнат?'
+helpcenter.account.logout_action: Излез от профила
+helpcenter.account.logout_confirm: 'Сигурен ли сте, че искате да излезете от профила си?'
 helpcenter.account.new_ticket_no_login: 'Порталната CRM е забранена. Невъзможно е подаване на тикет.'
+helpcenter.account.new_to_brand: 'Нов сте за {brand}?'
 helpcenter.account.profile_delete_picture: 'Промени или изтрий профилна снимка?'
+helpcenter.account.profile_save_action: 'Запази профил'
+helpcenter.account.register_action: Регистрирай
 helpcenter.account.registration_set_password: 'Вече съществува акаунт с този имейл адрес. Изпратихме ви имейл който ще ви позволи да си изберете парола и да влезете.'
+helpcenter.account.resend_registration_email: 'Отново изпрати имейл за регистрация'
+helpcenter.account.reset_password_action: 'Нулирай парола'
 helpcenter.account.reset_password_click_here: 'Кликни тук за да изискаш код за нулиране на парола'
 helpcenter.account.reset_password_invalid_desc: 'Кодът за нулиране на парола е невалиден или е изтекъл. За да нулирате паролата си моля изискайте нов код.'
 helpcenter.account.reset_password_invalid_input: 'Моля въведете валиден имейл адрес или потребителско име'
@@ -19,6 +42,7 @@ helpcenter.account.reset_password_request_title: 'Забравена парол�
 helpcenter.account.reset_password_sent_desc: 'Получихме вашето искане за нулиране на парола за имейл адреса отдолу. Ако този имейл принадлежи на регистриран акаунт сме изпратили имейл с линк за нулиране на паролата на основния имейл адрес на акаунта. Моля проверете входящата си кутия за последващи инструкции.'
 helpcenter.account.reset_password_sent_title: 'Искане за нулиране на парола получено'
 helpcenter.account.reset_password_sent_to: 'Изпратихме имейл на'
+helpcenter.account.reset_password_success: 'Паролата Ви беше обновена.'
 helpcenter.account.section_desc_login: 'Вече имате акаунт? Влезте отдолу.'
 helpcenter.account.section_desc_login_external: 'Моля използвайте линковете отдолу ако имате акаунт с друг доставчик.'
 helpcenter.account.section_desc_register: 'Регистрирайте акаунт за да можете лесно да управлявате комуникациите си.'
