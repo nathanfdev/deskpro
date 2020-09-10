@@ -300,8 +300,17 @@ helpcenter.flashes.community_subscribe: 'Vous avez souscrit avec succès à {top
 helpcenter.flashes.community_unsubscribe: 'Vous êtes désabonné de ce commentaire.'
 helpcenter.flashes.community_unsubscribe_everything: 'Vous êtes désabonné de toutes les notifications de commentaire.'
 helpcenter.flashes.content_rating_thanks: 'Merci pour votre retour.'
+helpcenter.flashes.download_cat_subscribe: 'Vous êtes abonné à {category} et serez informé de l''arrivée de nouveaux fichiers à télécharger.'
+helpcenter.flashes.download_cat_unsubscribe: 'Vous êtes désabonné de cette catégorie.'
+helpcenter.flashes.download_root_subscribe: 'Vous êtes abonné aux fichiers. Vous serez informé de la publication des nouveaux fichiers.'
+helpcenter.flashes.download_root_unsubscribe: 'Vous êtes désabonné des fichiers.'
+helpcenter.flashes.download_subscribe: 'Vous êtes abonné à ce fichier et serez informé de sa mise à jour ou de la publication d''un nouveau commentaire.'
+helpcenter.flashes.download_unsubscribe: 'Vous êtes désabonné de ce fichier.'
+helpcenter.flashes.download_unsubscribe_everything: 'Vous êtes désabonné de toutes les notifications de fichier.'
 helpcenter.flashes.guest_content_must_verify: 'Avant que nous puissions publier votre contenu, vous devez vérifier votre courrier électronique. Veuillez vérifier votre boîte mail Nous vous avons envoyé un lien de vérification.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Avant que nous puissions accepter votre billet, nous devons vérifier votre adresse e-mail. Veuillez vérifier votre boîte mail Nous vous avons envoyé un lien de vérification.'
+helpcenter.flashes.new_community_topic_awaiting_review: 'Merci pour votre message. Il sera publié après vérification par l''un de nos agents.'
+helpcenter.flashes.new_community_topic_posted: 'Merci pour votre message.'
 helpcenter.flashes.news_cat_subscribe: 'Vous avez souscrit à {category} avec succès et vous serez notifiés des nouveaux messages.'
 helpcenter.flashes.news_cat_unsubscribe: 'Vous vous êtes désinscrits de {category} avec succès.'
 helpcenter.flashes.news_root_subscribe: 'Vous vous êtes inscrit avec succès aux nouvelles. Vous serez notifié lorsque de nouveaux articles seront publiés.'
@@ -446,6 +455,8 @@ helpcenter.general.message: Message
 helpcenter.general.more_than_1_year: 'Plus d''un an'
 helpcenter.general.name: Nom
 helpcenter.general.nav_chat: Chats
+helpcenter.general.nav_community: Communauté
+helpcenter.general.nav_community_desc: 'Afficher tous les sujets'
 helpcenter.general.nav_contact: 'Nous contacter'
 helpcenter.general.nav_contact_desc: 'Nous contacter pour de l''aide'
 helpcenter.general.nav_direct_messages: Messages
@@ -494,6 +505,7 @@ helpcenter.general.rate_page_negative: Peu Utile
 helpcenter.general.rate_page_positive: Utile
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} personnes sur {vote_count} ont trouvé cette page utile'
 helpcenter.general.related_content: 'Contenu lié'
+helpcenter.general.remove: supprimer
 helpcenter.general.rerender_form: 'Veuillez examiner ce formulaire avant de le soumettre.'
 helpcenter.general.search: 'Comment pouvons nous vous aider aujourd''hui ?'
 helpcenter.general.search_labels: 'Rechercher Labels'
@@ -529,6 +541,7 @@ helpcenter.general.download_pdf: 'Télécharger PDF'
 helpcenter.knowledgebase.featured_articles: 'Article en vedette'
 helpcenter.label.search: Recherche
 helpcenter.members.activity_commented_on: 'Commenté le'
+helpcenter.members.activity_created_topic: 'Sujet créé'
 helpcenter.members.activity_down_voted: 'Marké peu utile'
 helpcenter.members.activity_down_voted_comment_on: 'Vote négatif le'
 helpcenter.members.activity_group_everything_else: 'Tout le reste'
