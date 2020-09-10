@@ -65,6 +65,7 @@ helpcenter.general.agent: Asiantuntija
 helpcenter.general.attachments: Liitetiedostot
 helpcenter.general.drag_and_drop: 'Vedä ja pudota'
 helpcenter.general.everything: Kaikki
+helpcenter.general.labels: Tunnisteet
 helpcenter.general.last_update_by: 'Viimeksi päivitetty: <strong>{date_updated, date, medium}</strong>, <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Kirjaudu'
 helpcenter.general.name: Nimi
@@ -76,6 +77,8 @@ helpcenter.general.no_search_results_general: 'Tuloksia ei löytynyt'
 helpcenter.general.password: Salasana
 helpcenter.general.rate_page_negative: Hyödytön
 helpcenter.general.rate_page_positive: Hyödyllinen
+helpcenter.general.rating_x_of_y_found_helpful: 'Tätä sivua hyödyllisenä pitäneet: {vote_up} / {vote_count}'
+helpcenter.general.related_content: 'Aiheeseen liittyvä sisältö'
 helpcenter.general.search: 'Miten voimme auttaa sinua tänään?'
 helpcenter.general.show: Näytä
 helpcenter.general.show_x_more: 'Näytä {num} lisää'
