@@ -1,10 +1,24 @@
 ---
+helpcenter.account.add: Προσθήκη
+helpcenter.account.add_email: 'Προσθήκη email'
+helpcenter.account.change_password_action: 'Ενημέρωση κωδικού πρόσβασης'
 helpcenter.account.comment_lockout: 'Έχετε προσθέσει πολλά σχόλια. Θα χρειαστεί να περιμένετε πριν προσθέσετε περισσότερα.'
 helpcenter.account.email_btn_usersource_set: 'Προσθήκη Email'
+helpcenter.account.email_make_primary_action: 'Να γίνει κύριο'
+helpcenter.account.email_management_from_form: 'Διαχείριση των email μου'
+helpcenter.account.email_primary_description: Κύριο
+helpcenter.account.email_remove_action: 'Αφαίρεση email'
+helpcenter.account.email_resend_validation_action: 'Επαναποστολή email επιβεβαίωσης'
+helpcenter.account.lockout_time: 'Μπορείτε να δοκιμάσετε ξανά σε {minutes} λεπτά.'
 helpcenter.account.login_captcha_failed: 'Έχετε εισάγει λανθασμένο κωδικό CAPTCHA. Παρακαλούμε δοκιμάστε ξανά.'
+helpcenter.account.login_disabled: 'Το email σας έχει αποκλειστεί.'
 helpcenter.account.login_email: 'Email'
+helpcenter.account.login_email_placeholder: email@example.com
 helpcenter.account.login_external: 'Είσοδος με εξωτερική υπηρεσία'
+helpcenter.account.login_invalid: 'Μη έγκυρα στοιχεία σύνδεσης'
 helpcenter.account.login_lockout: 'Έχετε αποτύχει να συνδεθείτε πολλές φορές, με αποτέλεσμα να έχετε μπλοκαριστεί. Παρακαλούμε δοκιμάστε ξανά αργότερα.'
+helpcenter.account.login_not_configured: 'Η εξωτερική υπηρεσία δεν έχει ρυθμιστεί.'
+helpcenter.account.login_password: 'Ο κωδικός πρόσβασής σας'
 helpcenter.account.new_ticket_no_login: 'Το portal CRM είναι ανενεργό. Δεν μπορείτε να καταχωρήσετε αίτημα.'
 helpcenter.account.profile_delete_picture: 'Αλλαγή ή διαγραφή φωτογραφίας προφίλ;'
 helpcenter.account.registration_set_password: 'Υπάρχει ήδη ένας λογαριασμός με αυτό το email. Σας στείλαμε ένα email ώστε να δημιουργήσετε νέο κωδικό πρόσβασης και να συνδεθείτε.'
