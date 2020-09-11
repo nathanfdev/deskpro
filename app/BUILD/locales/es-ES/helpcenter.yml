@@ -286,7 +286,12 @@ helpcenter.error.permission_denied_title: 'No está permitido realizar la acció
 helpcenter.eula.agree: De acuerdo
 helpcenter.flashes.article_cat_subscribe: 'Te has suscrito correctamente a {category} y se te notificará cuando se publiquen nuevos artículos.'
 helpcenter.flashes.article_cat_unsubscribe: 'Has cancelado la suscripción a {category}.'
+helpcenter.flashes.article_root_subscribe: 'Te has suscrito correctamente a la Base de conocimiento. Se te notificará cuando se publiquen nuevos artículos.'
+helpcenter.flashes.article_root_unsubscribe: 'Has cancelado la suscripción a la Base de conocimiento.'
+helpcenter.flashes.article_subscribe: 'Te has suscrito correctamente a este artículo y se te notificará cuando se actualice o cuando haya un nuevo comentario.'
+helpcenter.flashes.article_unpublish: 'Este artículo dejará de estar publicado el {unpublish_date, date, medium}.'
 helpcenter.flashes.article_unsubscribe: 'Has cancelado la suscripción a este artículo.'
+helpcenter.flashes.article_unsubscribe_everything: 'Has cancelado tu suscripción a todas las notificaciones de la Base de conocimiento.'
 helpcenter.flashes.download_root_unsubscribe: 'Has cancelado la suscripción a Archivos.'
 helpcenter.flashes.download_subscribe: 'Te has suscrito correctamente a este archivo y se te notificará cuando se actualice o cuando haya un nuevo comentario.'
 helpcenter.flashes.download_unsubscribe: 'Has cancelado la suscripción a este archivo.'
