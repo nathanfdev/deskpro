@@ -157,6 +157,7 @@ helpcenter.emails.email_ticket_reminder: 'Acción requerida: Su boleto aún no h
 helpcenter.emails.email_too_big: 'Tu correo "{subject}" no se ha aceptado porque es demasiado grande. El tamaño máximo para el correo es {max_size}. Elimina los adjuntos e inténtalo de nuevo.'
 helpcenter.emails.email_too_big_subject: 'Tu correo "{subject}" no se ha aceptado'
 helpcenter.emails.end_greeting: 'Atentamente,<br /><br />{site_name}'
+helpcenter.emails.greeting: 'Estimado/a {to_name},'
 helpcenter.emails.kb_sub_new: 'Articulos Nuevos'
 helpcenter.emails.kb_sub_new_and_updated: 'Articulos nuevos y actualizados'
 helpcenter.emails.kb_sub_updated: 'Articulos actualizados'
