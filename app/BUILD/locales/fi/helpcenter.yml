@@ -99,7 +99,7 @@ helpcenter.members.language: Kieli
 helpcenter.members.timezone: Aikavyöhyke
 helpcenter.messenger.blocks_continue_chat_title: 'Jatka aloitettua keskustelua'
 helpcenter.messenger.blocks_knowledgebase_title: Ohjeet
-helpcenter.messenger.blocks_search_block_no_results: 'Ei tuloksi haulle {query}'
+helpcenter.messenger.blocks_search_block_no_results: 'Ei tuloksia haulle {query}'
 helpcenter.messenger.blocks_search_block_see_more_results: 'Lisää hakutuloksia'
 helpcenter.messenger.blocks_ticket_button: 'Lähetä uusi tukipyyntö'
 helpcenter.messenger.blocks_ticket_description: 'Lähetä kysely lomakkeellamme'
