@@ -141,6 +141,7 @@ helpcenter.general.agent_bar_agent_news: 'Nieuws beheren'
 helpcenter.general.agents: Medewerkers
 helpcenter.general.attachments: Bijlagen
 helpcenter.general.comments: Reacties
+helpcenter.general.date_day_month: '{date, date, d MMM}'
 helpcenter.general.email_address: 'E-mailadres'
 helpcenter.general.everything: Alles
 helpcenter.general.impersonation_mode: 'Verpersoonlijking modus'
