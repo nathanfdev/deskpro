@@ -82,6 +82,7 @@ helpcenter.general.comments: Komentáře
 helpcenter.general.drag_and_drop: 'Přetáhnout'
 helpcenter.general.everything: Vše
 helpcenter.general.label_search_enter_label: 'Prosíme, uveďte štítek, který se má vyhledat'
+helpcenter.general.last_update_by: 'Naposledy aktualizoval/a: <strong>{date_updated, date, medium}</strong> <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Přihlásit'
 helpcenter.general.name: Jméno
 helpcenter.general.nav_contact: 'Kontaktujte nás'
