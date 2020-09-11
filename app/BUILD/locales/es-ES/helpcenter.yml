@@ -455,8 +455,19 @@ helpcenter.members.activity_group_today: 'Hoy'
 helpcenter.members.activity_up_voted: 'Marcado como útil'
 helpcenter.members.activity_up_voted_comment_on: 'Votar en positivo el comentario'
 helpcenter.members.company: 'Entidad'
+helpcenter.members.date_joined: 'Fecha de registro'
 helpcenter.members.language: Idioma
+helpcenter.members.name: Nombre
+helpcenter.members.no_activities: 'Sin actividad'
+helpcenter.members.not_set: 'Sin definir'
+helpcenter.members.phone: 'Número de teléfono'
+helpcenter.members.phone_number_none: Ninguno
+helpcenter.members.recent_activity: 'Actividad reciente'
+helpcenter.members.send_message: 'Enviar un mensaje directo'
 helpcenter.members.timezone: Zona horaria
+helpcenter.members.title: 'Directorio de miembros'
+helpcenter.messenger.assigned_agent: 'Agente asignado'
+helpcenter.messenger.blocks_continue_chat_link: Continuar
 helpcenter.news.none: 'No hay noticias aún'
 helpcenter.news.recent_title: 'Noticias recientes'
 helpcenter.news.view_as_agent: 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.'
