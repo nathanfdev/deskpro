@@ -584,6 +584,7 @@ helpcenter.messenger.message_unassigned: '{name} ya no está asignado al chat.'
 helpcenter.messenger.message_uploading: 'Cargando...'
 helpcenter.messenger.message_user_joined: '{name} se ha unido a la conversación.'
 helpcenter.messenger.message_user_left: '{name} ha abandonado la conversación.'
+helpcenter.messenger.message_user_returned: 'El usuario ha regresado'
 helpcenter.messenger.tickets_form_back: Volver
 helpcenter.messenger.tickets_form_header: 'Nueva solicitud'
 helpcenter.messenger.tickets_form_message: Mensaje
