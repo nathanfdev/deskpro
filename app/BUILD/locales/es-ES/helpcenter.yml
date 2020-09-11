@@ -92,12 +92,57 @@ helpcenter.approvals.rejected_by: 'Rechazada por'
 helpcenter.approvals.rejected_status: Rechazada
 helpcenter.approvals.system: Sistema
 helpcenter.approvals.view_approved: Aprobada
+helpcenter.approvals.view_awaiting_response: 'En espera de respuesta'
+helpcenter.approvals.view_criteria: 'Criterios de aprobación'
+helpcenter.approvals.view_no_response: 'Sin respuesta'
+helpcenter.approvals.view_rejected: Rechazadas
+helpcenter.approvals.view_requesting_agent: 'Agente solicitante'
+helpcenter.approvals.view_ticket: Solicitud
+helpcenter.approvals.view_to_approve: 'Para aprobar'
+helpcenter.approvals.view_to_reject: 'Para rechazar'
+helpcenter.approvals.you_approved: 'Has aprobado la solicitud {template} presentada por {person_name}'
+helpcenter.approvals.you_rejected: 'Has rechazado la solicitud {template} presentada por {person_name}'
+helpcenter.articles.article_object: Este artículo
+helpcenter.articles.published_label: Publicado
 helpcenter.articles.section_title: Base de conocimiento
+helpcenter.articles.status_archived: Archivado
+helpcenter.articles.status_draft: Borrador
+helpcenter.articles.status_published: Publicado
+helpcenter.articles.view_as_agent: 'El usuario no puede ver esta página porque el artículo no se ha publicado.'
+helpcenter.articles.view_x_articles: 'Ver todos los artículos de {category}'
+helpcenter.chats.my_chats: 'Mis chats'
+helpcenter.community.activity: Actividad
+helpcenter.community.activity_commented: 'He comentado'
+helpcenter.community.activity_created: 'He creado'
+helpcenter.community.activity_voted: 'He votado'
+helpcenter.community.category: Categoría
+helpcenter.community.create_topic: Crear
+helpcenter.community.create_topic_full: 'Crear {forum}'
+helpcenter.community.create_topic_in_forum: 'Enviar {forum}'
 helpcenter.community.error_login: 'Por favor Iniciar sesión'
+helpcenter.community.featured_topics: 'Temas destacados'
+helpcenter.community.filters: Filtros
+helpcenter.community.form_add_attachments: 'Adjuntar archivos'
+helpcenter.community.form_create_topic: 'Crear un tema'
+helpcenter.community.form_description: Descripción
 helpcenter.community.form_topic_title: Título
+helpcenter.community.forum_name: 'Nombre del foro'
+helpcenter.community.like_action: Me gusta
+helpcenter.community.likes: Me gusta
+helpcenter.community.my_activity: 'Mi actividad'
 helpcenter.community.no_matching: 'No hay comentarios coincidentes'
+helpcenter.community.none: 'No se ha encontrado ningún comentario'
+helpcenter.community.official_response: 'Respuesta oficial'
 helpcenter.community.rate_forbidden: 'No tienes permitido votar'
+helpcenter.community.recent_activity: 'Actividad reciente'
+helpcenter.community.reset_all_filters: 'Restablecer todos los filtros'
 helpcenter.community.section_title: Comentarios
+helpcenter.community.status: Estado
+helpcenter.community.status_change: 'Cambio de estado'
+helpcenter.community.title: Título
+helpcenter.community.title_author: 'Título / Autor'
+helpcenter.community.view_all_topics: 'Ver todos los {plural}'
+helpcenter.community.view_list: 'Vista de la lista'
 helpcenter.community.view_status_change: 'Cambio de estado'
 helpcenter.direct_messages.back_to_messages: 'Volver a mis mensajes'
 helpcenter.direct_messages.block_user: 'bloquear usuario'
@@ -177,11 +222,13 @@ helpcenter.emails.news_new_news: '{count, plural, one {1 nuevo artículo de nove
 helpcenter.emails.news_sub_new: 'Nuevas noticias'
 helpcenter.emails.news_sub_new_and_updated: 'Noticias nuevas y actualizadas'
 helpcenter.emails.news_sub_updated: 'Noticias actualizadas'
+helpcenter.emails.news_updated_news: '{count, plural, one {1 artículo de novedades actualizado} other {# artículos de novedades actualizados}}'
 helpcenter.emails.password_agent_reset: 'Un agente ha reinicializado su contraseña. Puede acceder con estas credenciales'
 helpcenter.emails.password_agent_reset_subject: 'Un agente ha reiniciado su contraseña'
 helpcenter.emails.password_reset: 'Ha solicitado la reinicialización de su contraseña. Para reinicializarla haga clic en el enlace:'
 helpcenter.emails.password_reset_subject: 'Reinicializar contraseña'
 helpcenter.emails.password_set: 'Para establecer su contraseña, haga clic en el siguiente enlace:'
+helpcenter.emails.password_set_subject: 'Establece tu contraseña'
 helpcenter.emails.profile_email_link_validate: 'Haga clic en el siguiente enlace para validar su dirección de correo electrónico'
 helpcenter.emails.profile_email_primary_confirm: 'Para verificar su dirección de correo electrónico principal, simplemente haga clic en el siguiente enlace'
 helpcenter.emails.ratelimit_submit_online: 'Si esto es un error y necesita comunicarse con nosotros de inmediato, puede omitir este filtro de correo electrónico y enviar un boleto en línea:'
