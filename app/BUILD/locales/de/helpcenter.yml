@@ -127,10 +127,39 @@ helpcenter.community.form_create_topic: 'Thema anlegen'
 helpcenter.community.form_description: Beschreibung
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.forum_name: 'Forenname'
-helpcenter.community.like_action: Liken
+helpcenter.community.like_action: Gefällt mir
+helpcenter.community.likes: Likes
+helpcenter.community.my_activity: 'Meine Aktivität'
 helpcenter.community.no_matching: 'Kein passendes Community Topic'
+helpcenter.community.none: 'Keine Community-Themen gefunden'
+helpcenter.community.official_response: 'Offizielle Antwort'
 helpcenter.community.rate_forbidden: 'Sie dürfen nicht abstimmen'
+helpcenter.community.recent_activity: 'Neueste Aktivität'
+helpcenter.community.reset_all_filters: 'Alle Filter zurücksetzen'
+helpcenter.community.section_title: Community
+helpcenter.community.status: Status
+helpcenter.community.status_change: 'Statusänderung'
+helpcenter.community.title: Titel
+helpcenter.community.title_author: 'Titel/Autor'
+helpcenter.community.view_all_topics: 'Alle {plural} ansehen'
+helpcenter.community.view_list: 'Listenansicht'
+helpcenter.community.view_status_change: 'Statusänderung'
+helpcenter.direct_messages.back_to_messages: 'Zurück zu meinen Nachrichten'
+helpcenter.direct_messages.block_user: 'Benutzer blockieren'
+helpcenter.direct_messages.new_message: 'Neue Nachricht'
+helpcenter.direct_messages.none: 'Keine Nachrichten'
+helpcenter.direct_messages.recipient: Empfänger
+helpcenter.direct_messages.reply_cancel: Abbrechen
 helpcenter.direct_messages.reply_message: Nachricht
+helpcenter.direct_messages.reply_send_message: 'Nachricht senden'
+helpcenter.direct_messages.title: 'Meine Nachrichten'
+helpcenter.direct_messages.unblock_user_action: 'Benutzer nicht mehr blockieren'
+helpcenter.downloads.download_action: Herunterladen
+helpcenter.downloads.file_name: 'Dateiname'
+helpcenter.downloads.file_size: 'Dateigröße'
+helpcenter.downloads.no_files: 'Keine Dateien'
+helpcenter.downloads.total_downloads: 'Downloads gesamt'
+helpcenter.downloads.view_x_files: '{count, plural, one {1 Download anzeigen} other {# Downloads anzeigen}}'
 helpcenter.emails.chat_transcript: 'Vielen Dank für den Chat mit uns. Hier ist Ihre Chat-Abschrift.'
 helpcenter.emails.chat_transcript_subject: 'Chat-Abschrift'
 helpcenter.emails.comment_approved: 'Ihr Kommentar wurde veröffentlicht.'
