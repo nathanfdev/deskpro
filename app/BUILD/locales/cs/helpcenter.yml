@@ -59,6 +59,7 @@ helpcenter.forms.error_captcha: 'Hodnota CAPTCHA není správná'
 helpcenter.forms.error_email_required: 'Musíte zadat svou e-mailovou adresu'
 helpcenter.forms.error_required: 'Tato hodnota je povinná'
 helpcenter.forms.error_banned_email: 'Tento e-mail byl zakázán.'
+helpcenter.forms.label_drag_overlay: 'Do své zprávy vložte tento obrázek.'
 helpcenter.forms.label_save: Uložit
 helpcenter.general.add_comment: 'Přidat komentář'
 helpcenter.general.admin_home: 'Admin domov. stránka'
