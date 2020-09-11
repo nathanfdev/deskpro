@@ -1,5 +1,14 @@
 ---
 helpcenter.error.contact_us: 'Contacte-nos'
+helpcenter.forms.delete_question: 'Eliminar?'
+helpcenter.forms.error_captcha: 'O valor CAPTCHA era incorreto'
+helpcenter.forms.error_required: 'Este valor é obrigatório'
+helpcenter.forms.error_banned_email: 'O e-mail está proibido.'
+helpcenter.forms.label_drag_overlay: 'Insira esta imagem na sua mensagem.'
+helpcenter.general.name: Nome
 helpcenter.general.nav_contact: 'Contacte-nos'
+helpcenter.messenger.tickets_form_thanks: 'Agradecemos o seu contacto. Um elemento da nossa equipa entrará em contacto consigo por e-mail.'
 helpcenter.tickets.new_intro: 'Preencha este formulário e um dos nossos agentes responderá ao seu e-mail o mais brevemente possível.'
+helpcenter.tickets.reference_number: 'Número de referência: {ref}'
 helpcenter.tickets.thank_you: 'Obrigado, recebemos o seu pedido.'
+helpcenter.tickets.thank_you_desc: 'Agradecemos o seu contacto. Um elemento da nossa equipa entrará brevemente em contacto consigo.'
