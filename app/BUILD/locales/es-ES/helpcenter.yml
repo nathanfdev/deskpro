@@ -287,7 +287,15 @@ helpcenter.general.comments: Comentarios
 helpcenter.general.everything: Todo
 helpcenter.general.impersonation_mode: 'Modo de suplantación'
 helpcenter.general.label_search_enter_label: 'Por favor, proporcione una etiqueta para buscar'
+helpcenter.general.labels: Etiquetas
+helpcenter.general.lang_change_to_current: 'Establecer <em>{lang}</em> como idioma predefinido'
+helpcenter.general.lang_diff: 'Esta página está en <em>{active_lang}</em>, pero tu cuenta está en <em>{person_lang}</em>.'
+helpcenter.general.lang_switch: 'Cambiar a <em>{lang}</em>'
+helpcenter.general.last_24_hours: 'Últimas 24 horas'
+helpcenter.general.last_6_month: 'Últimos 6 meses'
 helpcenter.general.last_activity: 'Última actividad'
+helpcenter.general.last_month: 'Último mes'
+helpcenter.general.last_updated: 'Últimas actualizaciones'
 helpcenter.general.log_in: 'Iniciar sesión'
 helpcenter.general.nav_guides: Guías
 helpcenter.general.no_search_query: 'Por favor, escriba una consulta de búsqueda en el cuadro de búsqueda.'
