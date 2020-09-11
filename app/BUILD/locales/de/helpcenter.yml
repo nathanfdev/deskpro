@@ -68,6 +68,7 @@ helpcenter.account.submit_saved_form_go: 'Klicken Sie hier, um das Formular auto
 helpcenter.account.thank_you_for_registering: 'Danke für Ihre Registrierung'
 helpcenter.account.tickets_lockout: 'Sie haben zu viele Tickets übermittelt, deshalb wurden Sie gesperrt. Bitte versuchen Sie es später noch einmal.'
 helpcenter.account.usersource_set_email_desc: 'Bevor Sie sich anmelden können, benötigen wir Ihre E-Mail-Adresse. Bitte geben Sie diese ein, damit wir Ihnen eine Bestätigungs-E-Mail senden können.'
+helpcenter.account.validation_email_sent: 'Wir haben Ihnen eine E-Mail an {email} geschickt.<br />Bitte bestätigen Sie Ihre E-Mail-Adresse, um auf Ihr Support Centre zugreifen zu können.'
 helpcenter.account.your_pending_email_addresses: 'Ihre unbestätigten E-Mail-Adressen'
 helpcenter.account.login-btn-usersource: 'Anmelden mit {usersource}'
 helpcenter.alerts.tickets_to_respond: '{count, plural,one {Sie haben ein offenes Ticket.} other {Sie haben # offene Tickets.}}'
@@ -77,9 +78,56 @@ helpcenter.approvals.approved_status: Bestätigt
 helpcenter.approvals.cancelled_status: Abgebrochen
 helpcenter.approvals.list_column_agent: 'Mitarbeiter'
 helpcenter.approvals.list_column_approvers: 'Freigeschaltet von'
+helpcenter.approvals.list_column_cancelled: 'Abgebrochen'
+helpcenter.approvals.list_column_completed: 'Abgeschlossen'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: 'Betreff'
+helpcenter.approvals.list_column_user: 'Benutzer'
+helpcenter.approvals.list_column_your_vote: 'Ihre Wahl'
+helpcenter.approvals.my_approvals: 'Meine Freischaltungen'
+helpcenter.approvals.no_ticket_approvals_found: 'Keine freigeschalteten Tickets gefunden'
+helpcenter.approvals.pending_status: Ausstehend
+helpcenter.approvals.reject_action: Ablehnen
+helpcenter.approvals.rejected_by: 'Abgelehnt von'
+helpcenter.approvals.rejected_status: Abgelehnt
+helpcenter.approvals.system: System
+helpcenter.approvals.view_approved: Bestätigt
+helpcenter.approvals.view_awaiting_response: 'Antwort ausstehend'
+helpcenter.approvals.view_criteria: 'Bestätigungskriterien'
+helpcenter.approvals.view_no_response: 'Keine Antwort'
+helpcenter.approvals.view_rejected: Abgelehnt
+helpcenter.approvals.view_requesting_agent: 'Anfragender Mitarbeiter'
+helpcenter.approvals.view_ticket: Ticket
+helpcenter.approvals.view_to_approve: 'Zu bestätigen'
+helpcenter.approvals.view_to_reject: 'Abzulehnen'
+helpcenter.approvals.you_approved: 'Sie haben die von {person_name} gestellte Anfrage {template} bestätigt'
+helpcenter.approvals.you_rejected: 'Sie haben die von {person_name} gestellte Anfrage {template} abgelehnt'
+helpcenter.articles.article_object: Dieser Artikel
+helpcenter.articles.published_label: Veröffentlicht
 helpcenter.articles.section_title: Wissensdatenbank
+helpcenter.articles.status_archived: Archiviert
+helpcenter.articles.status_draft: Entwurf
+helpcenter.articles.status_published: Veröffentlicht
+helpcenter.articles.view_as_agent: 'Benutzer können diese Seite nicht sehen, weil der Artikel noch nicht veröffentlicht wurde.'
+helpcenter.articles.view_x_articles: 'Alle Artikel in {category} ansehen'
+helpcenter.chats.my_chats: 'Meine Chats'
+helpcenter.community.activity: Aktivität
+helpcenter.community.activity_commented: 'Kommentiert'
+helpcenter.community.activity_created: 'Erstellt'
+helpcenter.community.activity_voted: 'Abgestimmt'
+helpcenter.community.category: Kategorie
+helpcenter.community.create_topic: Anlegen
+helpcenter.community.create_topic_full: '{forum} anlegen'
+helpcenter.community.create_topic_in_forum: '{forum} einreichen'
 helpcenter.community.error_login: 'Bitte anmelden'
+helpcenter.community.featured_topics: 'Interessante Themen'
+helpcenter.community.filters: Filter
+helpcenter.community.form_add_attachments: 'Anhänge hinzufügen'
+helpcenter.community.form_create_topic: 'Thema anlegen'
+helpcenter.community.form_description: Beschreibung
 helpcenter.community.form_topic_title: Titel
+helpcenter.community.forum_name: 'Forenname'
+helpcenter.community.like_action: Liken
 helpcenter.community.no_matching: 'Kein passendes Community Topic'
 helpcenter.community.rate_forbidden: 'Sie dürfen nicht abstimmen'
 helpcenter.direct_messages.reply_message: Nachricht
