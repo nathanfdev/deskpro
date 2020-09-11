@@ -1,1 +1,5 @@
 ---
+helpcenter.error.contact_us: 'Contacte-nos'
+helpcenter.general.nav_contact: 'Contacte-nos'
+helpcenter.tickets.new_intro: 'Preencha este formulário e um dos nossos agentes responderá ao seu e-mail o mais brevemente possível.'
+helpcenter.tickets.thank_you: 'Obrigado, recebemos o seu pedido.'
