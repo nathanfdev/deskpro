@@ -60,7 +60,9 @@ helpcenter.forms.error_email_required: 'Musíte zadat svou e-mailovou adresu'
 helpcenter.forms.error_required: 'Tato hodnota je povinná'
 helpcenter.forms.error_banned_email: 'Tento e-mail byl zakázán.'
 helpcenter.forms.label_drag_overlay: 'Do své zprávy vložte tento obrázek.'
+helpcenter.forms.label_email: E-mail
 helpcenter.forms.label_save: Uložit
+helpcenter.forms.label_submit: Odeslat
 helpcenter.general.add_comment: 'Přidat komentář'
 helpcenter.general.admin_home: 'Admin domov. stránka'
 helpcenter.general.agent_bar_admin_community: 'Nastavení připomínek'
@@ -73,6 +75,7 @@ helpcenter.general.agent_bar_agent_kb: 'Spravovat znalostní bázi'
 helpcenter.general.agent_bar_agent_news: 'Spravovat novinky'
 helpcenter.general.attachments: Přílohy
 helpcenter.general.comments: Komentáře
+helpcenter.general.drag_and_drop: 'Přetáhnout'
 helpcenter.general.everything: Vše
 helpcenter.general.label_search_enter_label: 'Prosíme, uveďte štítek, který se má vyhledat'
 helpcenter.general.log_in: 'Přihlásit'
