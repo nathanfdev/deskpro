@@ -8,6 +8,7 @@ helpcenter.account.login_lockout: 'Příliš mnoho neplatných pokusů o přihl�
 helpcenter.account.profile_delete_picture: 'Změnit nebo vymazat fotku?'
 helpcenter.account.reset_password_click_here: 'Klikněte zde pro vyžádání kódu pro reset hesla'
 helpcenter.account.reset_password_invalid_desc: 'Váš kód pro reset hesla je neplatný. Vyžádejte si nový.'
+helpcenter.articles.section_title: Znalostní báze
 helpcenter.community.error_login: 'Prosíme, přihlašte se'
 helpcenter.community.form_topic_title: Název
 helpcenter.community.no_matching: 'Žádná související připomínka'
@@ -84,6 +85,7 @@ helpcenter.general.log_in: 'Přihlásit'
 helpcenter.general.name: Jméno
 helpcenter.general.nav_contact: 'Kontaktujte nás'
 helpcenter.general.nav_guides: Návody
+helpcenter.general.nav_kb: Znalostní báze
 helpcenter.general.no_search_query: 'Napište, co chcete vyhledat, do vyhledávacího okna.'
 helpcenter.general.no_search_results_general: 'Nebyly nalezeny žádné výsledky'
 helpcenter.general.password: Heslo
@@ -111,6 +113,8 @@ helpcenter.general.x_search_results: '{num} výsledků vyhledávání pro "{quer
 helpcenter.label.search: Vyhledávání
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
+helpcenter.messenger.blocks_knowledgebase_title: Znalostní báze
+helpcenter.messenger.blocks_search_block_no_results: 'Pro {query} nebyly nalezeny žádné výsledky'
 helpcenter.messenger.chat_create_ticket_header: 'Odeslat tiket'
 helpcenter.messenger.greeting: 'Kontaktujte nás'
 helpcenter.messenger.tickets_form_thanks: 'Děkujeme za zájem. Jeden ze členů našeho týmu vás bude brzy kontaktovat e-mailem.'
