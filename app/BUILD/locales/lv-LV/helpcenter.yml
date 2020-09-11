@@ -132,19 +132,38 @@ helpcenter.emails.password_set_subject: 'Izveidojiet paroli'
 helpcenter.emails.profile_email_link_validate: 'Vienkārši noklikšķiniet uz šīs saites, lai apstiprinātu savu e-pasta adresi'
 helpcenter.emails.profile_email_new_confirm: 'Mēs no {orig_email} saņēmām pieprasījumu pievienot e-pastu {new_email} jūsu kontam vietnes {site_name} palīdzības dienestā.<br /><br />Ja pieprasījumu iesniedzāt jūs, lūdzu, klikšķiniet uz zemāk norādītās saites. Ja to nedarījāt jūs, lūdzu, izdzēsiet šo e-pastu.'
 helpcenter.emails.profile_email_primary_confirm: 'Lai apstiprinātu savu galveno e-pasta adresi, vienkārši noklikšķiniet uz šīs saites'
+helpcenter.error.an_error_occured: 'Radās kļūda'
 helpcenter.error.contact_us: 'Sazinieties ar mums'
+helpcenter.error.general_title: 'Radās kļūda'
 helpcenter.forms.delete_question: 'Dzēst?'
 helpcenter.forms.error_captcha: 'CAPTCHA vērtība nav pareiza'
 helpcenter.forms.error_required: 'Šī vērtība ir jānorāda'
 helpcenter.forms.error_banned_email: 'E-pasts ir bloķēts.'
 helpcenter.forms.label_drag_overlay: 'Iekļaujiet šo attēlu savā ziņojumā.'
+helpcenter.forms.label_email: E-pasts
+helpcenter.forms.label_submit: Iesniegt
+helpcenter.general.drag_and_drop: 'Ievilkt un atstāt'
 helpcenter.general.name: Vārds, uzvārds
 helpcenter.general.nav_contact: 'Sazinieties ar mums'
 helpcenter.general.nav_newticket: 'Sazinieties ar mums'
+helpcenter.general.no_search_query: 'Lūdzu, ievadiet meklēšanas vaicājumu meklēšanas lauciņā.'
+helpcenter.general.no_search_results_general: 'Nekas netika atrasts'
+helpcenter.general.remove: noņemt
+helpcenter.general.search: 'Kā varam jums palīdzēt?'
+helpcenter.general.show_x_more: 'Rādīt vēl {num}'
+helpcenter.general.x_search_results: '{num} meklēšanas rezultāti vaicājumam "{query}"'
+helpcenter.label.search: Meklēt
 helpcenter.members.name: Vārds, uzvārds
+helpcenter.messenger.blocks_search_block_search_label: Meklēt
+helpcenter.messenger.chat_create_ticket_header: 'Iesniegt pieprasījumu'
 helpcenter.messenger.tickets_form_name: Vārds
+helpcenter.messenger.tickets_form_submit: Iesniegt
+helpcenter.search.search_results: 'Meklēšanas rezultāti'
+helpcenter.search.showing_results_for: 'Rāda kategorijas {type} rezultātus meklējumam: <span>“{query}”</span>'
 helpcenter.tickets.new_intro: 'Lūdzu, aizpildiet šos lauciņus, un kāds no mūsu darbiniekiem, tiklīdz iespējams, atbildēs jums e-pastā.'
 helpcenter.tickets.new_section_title: 'Sazinieties ar mums'
 helpcenter.tickets.reference_number: 'Atsauces numurs: {ref}'
+helpcenter.tickets.related_articles_desc: 'Mēs atradām šādus rakstus, kas varētu atrisināt jūsu problēmu.'
+helpcenter.tickets.submit_a_ticket: 'Iesniegt pieprasījumu'
 helpcenter.tickets.thank_you: 'Paldies, jūsu pieprasījums ir saņemts.'
 helpcenter.tickets.thank_you_desc: 'Paldies, ka sazinājāties ar mums. Kāds no mūsu komandas drīzumā jums atbildēs.'
