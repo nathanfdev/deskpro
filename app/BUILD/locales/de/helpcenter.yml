@@ -160,6 +160,13 @@ helpcenter.downloads.file_size: 'Dateigröße'
 helpcenter.downloads.no_files: 'Keine Dateien'
 helpcenter.downloads.total_downloads: 'Downloads gesamt'
 helpcenter.downloads.view_x_files: '{count, plural, one {1 Download anzeigen} other {# Downloads anzeigen}}'
+helpcenter.duration_short.days: T
+helpcenter.duration_short.hours: h
+helpcenter.duration_short.minutes: m
+helpcenter.duration_short.months: M
+helpcenter.duration_short.seconds: s
+helpcenter.duration_short.weeks: W
+helpcenter.duration_short.years: 'J'
 helpcenter.emails.chat_transcript: 'Vielen Dank für den Chat mit uns. Hier ist Ihre Chat-Abschrift.'
 helpcenter.emails.chat_transcript_subject: 'Chat-Abschrift'
 helpcenter.emails.comment_approved: 'Ihr Kommentar wurde veröffentlicht.'
