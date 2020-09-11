@@ -87,6 +87,11 @@ helpcenter.approvals.list_column_your_vote: 'Tu valoración'
 helpcenter.approvals.my_approvals: 'Mis aprobaciones'
 helpcenter.approvals.no_ticket_approvals_found: 'No se ha encontrado ninguna solicitud de aprobación'
 helpcenter.approvals.pending_status: Pendiente
+helpcenter.approvals.reject_action: Rechazar
+helpcenter.approvals.rejected_by: 'Rechazada por'
+helpcenter.approvals.rejected_status: Rechazada
+helpcenter.approvals.system: Sistema
+helpcenter.approvals.view_approved: Aprobada
 helpcenter.articles.section_title: Base de conocimiento
 helpcenter.community.error_login: 'Por favor Iniciar sesión'
 helpcenter.community.form_topic_title: Título
