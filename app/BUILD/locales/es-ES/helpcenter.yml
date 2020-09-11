@@ -468,6 +468,21 @@ helpcenter.members.timezone: Zona horaria
 helpcenter.members.title: 'Directorio de miembros'
 helpcenter.messenger.assigned_agent: 'Agente asignado'
 helpcenter.messenger.blocks_continue_chat_link: Continuar
+helpcenter.messenger.blocks_continue_chat_title: 'Continuar con un chat existente'
+helpcenter.messenger.blocks_knowledgebase_title: Base de conocimiento
+helpcenter.messenger.blocks_search_block_no_results: 'No hay resultados para {query}'
+helpcenter.messenger.blocks_search_block_search_label: Buscar
+helpcenter.messenger.blocks_search_block_see_more_results: 'Ver más resultados'
+helpcenter.messenger.blocks_start_chat_button: 'Empezar una nueva conversación'
+helpcenter.messenger.blocks_start_chat_description: 'Empezar un chat con uno de nuestros agentes'
+helpcenter.messenger.blocks_start_chat_title: 'Empezar una conversación'
+helpcenter.messenger.blocks_ticket_button: 'Enviar una nueva solicitud'
+helpcenter.messenger.blocks_ticket_description: 'Enviar una consulta a través de nuestro formulario de contacto'
+helpcenter.messenger.blocks_ticket_title: 'Enviar una solicitud'
+helpcenter.messenger.blocks_tickets_title: 'Tus solicitudes'
+helpcenter.messenger.blocks_tickets_view_all_link: 'ver todas'
+helpcenter.messenger.chat_agent_assigned_message: '{name} se ha unido a la conversación.'
+helpcenter.messenger.chat_attach_file: 'Adjuntar archivo'
 helpcenter.news.none: 'No hay noticias aún'
 helpcenter.news.recent_title: 'Noticias recientes'
 helpcenter.news.view_as_agent: 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.'
