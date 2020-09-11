@@ -252,6 +252,10 @@ helpcenter.forms.error_captcha: 'El CAPTCHA es incorrecto'
 helpcenter.forms.error_dupe_email: 'Este correo electrónico ya está en uso.'
 helpcenter.forms.error_email_required: 'Debe proporcionar su dirección de correo electrónico'
 helpcenter.forms.error_password_current: 'Esta tiene que ser tu contraseña actual'
+helpcenter.forms.error_password_forbid_reuse: 'No puedes utilizar una contraseña que hayas utilizado con anterioridad'
+helpcenter.forms.error_password_min_length: '{count, plural, one {Mínimo # carácter} other {Mínimo # caracteres}}'
+helpcenter.forms.error_password_require_num_lowercase: '{count, plural, one {Al menos # carácter en minúscula} other {Al menos # caracteres en minúscula}}'
+helpcenter.forms.error_password_require_num_number: '{count, plural, one {Al menos # número} other {Al menos # números}}'
 helpcenter.forms.label_save: Guardar
 helpcenter.general.add_comment: 'Nuevo comentario'
 helpcenter.general.admin: Administración
