@@ -63,7 +63,7 @@ helpcenter.forms.error_captcha: 'Hodnota CAPTCHA není správná'
 helpcenter.forms.error_email_required: 'Musíte zadat svou e-mailovou adresu'
 helpcenter.forms.error_required: 'Tato hodnota je povinná'
 helpcenter.forms.error_banned_email: 'Tento e-mail byl zakázán.'
-helpcenter.forms.label_drag_overlay: 'Do své zprávy vložte tento obrázek.'
+helpcenter.forms.label_drag_overlay: 'Tento obrázek vložte do své zprávy.'
 helpcenter.forms.label_email: E-mail
 helpcenter.forms.label_save: Uložit
 helpcenter.forms.label_submit: Odeslat
@@ -102,6 +102,8 @@ helpcenter.general.prop_rating_asc: 'Nejhůř hodnocené nejdřív'
 helpcenter.general.prop_rating_desc: 'Nejlíp hodnocené nejdřív'
 helpcenter.general.prop_views_asc: 'Nejmíň shlédnutí nejdřív'
 helpcenter.general.prop_views_desc: 'Nejvíc shlédnutí nejdřív'
+helpcenter.general.rate_page_negative: Nepomohla
+helpcenter.general.rate_page_positive: Pomohla
 helpcenter.general.remove: odstranit
 helpcenter.general.rerender_form: 'Prosíme, překontrolujte formulář před jeho odesláním.'
 helpcenter.general.search: 'Jak vám dnes můžeme pomoci?'
@@ -121,6 +123,7 @@ helpcenter.messenger.blocks_search_block_see_more_results: 'Zobrazit další vý
 helpcenter.messenger.blocks_ticket_button: 'Odeslat nový tiket'
 helpcenter.messenger.blocks_ticket_description: 'Odeslat dotaz prostřednictvím našeho kontaktního formuláře'
 helpcenter.messenger.chat_create_ticket_header: 'Odeslat tiket'
+helpcenter.messenger.chat_rating_block_buttons_unhelpful: Nepomohla
 helpcenter.messenger.greeting: 'Kontaktujte nás'
 helpcenter.messenger.tickets_form_add_attachment: 'Přidat přílohu'
 helpcenter.messenger.tickets_form_header: 'Nový tiket'
@@ -130,6 +133,7 @@ helpcenter.messenger.tickets_form_thanks_header: 'Vaše žádost je na cestě'
 helpcenter.profile.account_disabled_message: 'Váš účet je v tuto chvíli pozastaven. Nemůžete se přihlásit ani spravovat své tikety.'
 helpcenter.profile.your_password: 'Vaše heslo'
 helpcenter.search.showing_results_for: 'Zobrazují se výsledky v {type} pro: <span>“{query}”</span>'
+helpcenter.tickets.list_date_created: 'Datum vytvoření'
 helpcenter.tickets.list_subject: Předmět
 helpcenter.tickets.new_intro: 'Prosím vyplňte tento formulář a jedna z našich odpovědných osob vám, co nejdříve to bude možné, e-mailem odpoví.'
 helpcenter.tickets.new_section_title: 'Kontaktujte nás'
