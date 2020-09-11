@@ -95,9 +95,11 @@ helpcenter.general.prop_rating_asc: 'Nejhůř hodnocené nejdřív'
 helpcenter.general.prop_rating_desc: 'Nejlíp hodnocené nejdřív'
 helpcenter.general.prop_views_asc: 'Nejmíň shlédnutí nejdřív'
 helpcenter.general.prop_views_desc: 'Nejvíc shlédnutí nejdřív'
+helpcenter.general.remove: odstranit
 helpcenter.general.rerender_form: 'Prosíme, překontrolujte formulář před jeho odesláním.'
 helpcenter.general.share: Sdílet
 helpcenter.general.show: Zobraz
+helpcenter.general.show_x_more: 'Zobrazit {num} další'
 helpcenter.general.tagged_with: 'označen'
 helpcenter.general.tags: Označení
 helpcenter.general.updated: Aktualizováno
@@ -110,5 +112,6 @@ helpcenter.tickets.list_subject: Předmět
 helpcenter.tickets.new_intro: 'Prosím vyplňte tento formulář a jedna z našich odpovědných osob vám, co nejdříve to bude možné, e-mailem odpoví.'
 helpcenter.tickets.new_section_title: 'Kontaktujte nás'
 helpcenter.tickets.reference_number: 'Referenční číslo: {ref}'
+helpcenter.tickets.related_articles_desc: 'Našli jsme následující články, které mohou řešit váš problém.'
 helpcenter.tickets.thank_you: 'Děkujeme, vaši žádost jsme obdrželi.'
 helpcenter.tickets.thank_you_desc: 'Děkujeme za zájem. Jeden z členů našeho týmu se s vámi brzy spojí.'
