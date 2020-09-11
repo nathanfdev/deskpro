@@ -72,6 +72,13 @@ helpcenter.account.validation_email_sent: 'Te hemos enviado un correo a {email}<
 helpcenter.account.your_pending_email_addresses: 'Sus direcciones de correo electrónico pendientes'
 helpcenter.account.login-btn-usersource: 'Iniciar sesión con {usersource}'
 helpcenter.alerts.tickets_to_respond: '{count, plural, one {Tienes una solicitud para responder.} other {Tienes # solicitudes para responder.}}'
+helpcenter.approvals.approve_action: Aprobar
+helpcenter.approvals.approved_by: 'Aprobada por'
+helpcenter.approvals.approved_status: Aprobada
+helpcenter.approvals.cancelled_status: Cancelada
+helpcenter.approvals.list_column_agent: 'Agente'
+helpcenter.approvals.list_column_approvers: 'Responsables de aprobación'
+helpcenter.approvals.list_column_cancelled: 'Cancelada'
 helpcenter.articles.section_title: Base de conocimiento
 helpcenter.community.error_login: 'Por favor Iniciar sesión'
 helpcenter.community.form_topic_title: Título
