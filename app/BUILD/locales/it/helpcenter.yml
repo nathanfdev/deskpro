@@ -504,6 +504,7 @@ helpcenter.general.select: Seleziona
 helpcenter.general.send_user_direct_message: 'Invia un messaggio diretto all’utente'
 helpcenter.general.share: Condividi
 helpcenter.general.show: Mostra
+helpcenter.general.show_x_more: 'Mostra {num} in più'
 helpcenter.general.skip_link: 'Passa al contenuto principale'
 helpcenter.general.software_power_by: 'Powered by'
 helpcenter.general.sort: Ordina
@@ -532,10 +533,12 @@ helpcenter.label.search: Cerca
 helpcenter.members.activity_commented_on: 'Ha commentato su'
 helpcenter.members.activity_created_topic: 'Ha creato un tema'
 helpcenter.members.activity_down_voted: 'Ha contrassegnato come inutile'
+helpcenter.members.activity_down_voted_comment_on: 'Ha valutato negativamente un commento su'
 helpcenter.members.activity_group_everything_else: 'Tutto il resto'
 helpcenter.members.activity_group_last_month: 'Ultimo mese'
 helpcenter.members.activity_group_last_week: 'Ultima settimana'
 helpcenter.members.activity_group_last_year: 'Ultimo anno'
+helpcenter.members.activity_group_this_month: 'Questo mese'
 helpcenter.members.activity_group_this_week: 'Questa settimana'
 helpcenter.members.activity_group_this_year: 'Quest’anno'
 helpcenter.members.activity_group_today: 'Oggi'
@@ -564,6 +567,7 @@ helpcenter.messenger.blocks_ticket_button: 'Invia un nuovo ticket'
 helpcenter.messenger.blocks_ticket_description: 'Invia una domanda attraverso il nostro modulo di contatto'
 helpcenter.messenger.blocks_ticket_title: 'Invia un ticket'
 helpcenter.messenger.blocks_tickets_title: 'I tuoi ticket'
+helpcenter.messenger.blocks_tickets_view_all_link: 'vedi tutti'
 helpcenter.messenger.chat_agent_assigned_message: '{name} ora partecipa alla conversazione.'
 helpcenter.messenger.chat_attach_file: 'Allega file'
 helpcenter.messenger.chat_busy: 'A quanto pare, tutti i nostri agenti al momento sono occupati. Puoi comunque inviarci un ticket qui di seguito e ti risponderemo al più presto'
