@@ -365,6 +365,7 @@ helpcenter.general.date_day_month: '{date, date, MMM d}'
 helpcenter.general.date_medium: '{date, date, medium}'
 helpcenter.general.date_short: '{date, date, short}'
 helpcenter.general.date_short_month: '{date, date, MMM}'
+helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.everything: Todo
 helpcenter.general.impersonation_mode: 'Modo de suplantación'
 helpcenter.general.label_search_enter_label: 'Por favor, proporcione una etiqueta para buscar'
