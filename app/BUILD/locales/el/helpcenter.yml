@@ -79,7 +79,10 @@ helpcenter.approvals.cancelled_status: Ακυρώθηκε
 helpcenter.approvals.list_column_agent: 'Εκπρόσωπος'
 helpcenter.approvals.list_column_cancelled: 'Ακυρώθηκε'
 helpcenter.approvals.list_column_completed: 'Ολοκληρώθηκε'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: 'Θέμα'
 helpcenter.approvals.list_column_user: 'Χρήστης'
+helpcenter.approvals.my_approvals: 'Οι εγκρίσεις μου'
 helpcenter.approvals.reject_action: Απόρριψη
 helpcenter.articles.section_title: Γνωσιακή βάση
 helpcenter.community.error_login: 'Παρακαλούμε συνδεθείτε'
