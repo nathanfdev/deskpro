@@ -355,8 +355,10 @@ helpcenter.forms.error_password_min_length: '{count, plural, one {Minimo # carat
 helpcenter.forms.error_password_require_num_lowercase: '{count, plural, one {Almeno # caratteri minuscoli} other {Almeno # caratteri minuscoli}}'
 helpcenter.forms.error_password_require_num_number: '{count, plural, one {Almeno # numero} other {Almeno # numeri}}'
 helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {Almeno # simbolo} other {Almeno # simboli}}'
+helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {Almeno # carattere maiuscolo} other {Almeno # caratteri maiuscoli}}'
 helpcenter.forms.error_password_reset_required: 'Devi reimpostare la password'
 helpcenter.forms.error_required: 'Questo valore è necessario'
+helpcenter.forms.error_banned_email: 'Questa email è bloccata.'
 helpcenter.forms.label_drag_overlay: 'Inserisci questa immagine nel tuo messaggio.'
 helpcenter.forms.label_email: email
 helpcenter.forms.label_password: Password
@@ -406,6 +408,8 @@ helpcenter.general.copied: copiato
 helpcenter.general.copy_to_clipboard: 'Copia negli Appunti'
 helpcenter.general.created_by: 'Creato da'
 helpcenter.general.current_page: 'Pagina corrente'
+helpcenter.general.department: Settore
+helpcenter.general.drag_and_drop: 'Trascina e rilascia'
 helpcenter.general.edit_this_page: 'Modifica questa pagina'
 helpcenter.general.email_address: 'Indirizzo email'
 helpcenter.general.eula: EULA
@@ -431,6 +435,8 @@ helpcenter.general.last_24_hours: 'Ultime 24 ore'
 helpcenter.general.last_6_month: 'Ultimi 6 mesi'
 helpcenter.general.last_activity: 'Ultima Attività'
 helpcenter.general.last_month: 'Ultimo mese'
+helpcenter.general.last_updated: 'Ultimo aggiornamento'
+helpcenter.general.last_update_by: 'Ultimo aggiornamento: <strong>{date_updated, date, medium}</strong> di <strong>{person_name}</strong>'
 helpcenter.general.last_week: 'Ultima settimana'
 helpcenter.general.last_year: 'Ultimo anno'
 helpcenter.general.latest_status_changes: 'Ultimi cambiamenti di stato'
@@ -492,6 +498,7 @@ helpcenter.general.related_content: 'Contenuti correlati'
 helpcenter.general.remove: rimuovi
 helpcenter.general.rerender_form: 'Per favore controlla questo modulo prima di inviarlo.'
 helpcenter.general.search: 'Come possiamo aiutarti oggi?'
+helpcenter.general.search_labels: 'Cerca tag'
 helpcenter.general.select: Seleziona
 helpcenter.general.send_user_direct_message: 'Invia un messaggio diretto all’utente'
 helpcenter.general.share: Condividi
