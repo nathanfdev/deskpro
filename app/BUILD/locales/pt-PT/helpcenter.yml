@@ -4,6 +4,7 @@ helpcenter.downloads.file_name: 'Nome do ficheiro'
 helpcenter.downloads.file_size: 'Tamanho do ficheiro'
 helpcenter.downloads.no_files: 'Não há ficheiros'
 helpcenter.downloads.total_downloads: 'Total de transferências'
+helpcenter.downloads.view_x_files: '{count, plural, one {Ver 1 transferência} other {Ver # transferências}}'
 helpcenter.error.404_desc: 'Lamentamos, mas não foi possível encontrar esta página.'
 helpcenter.error.contact_us: 'Contacte-nos'
 helpcenter.error.general_title: 'Ocorreu um erro'
@@ -19,6 +20,8 @@ helpcenter.general.last_update_by: 'Última atualização: <strong>{date_updated
 helpcenter.general.name: Nome
 helpcenter.general.nav_contact: 'Contacte-nos'
 helpcenter.general.nav_downloads_desc: 'Consulte os nossos ficheiros'
+helpcenter.general.nav_guides: Guias
+helpcenter.general.nav_guides_desc: 'Ver todos os guias'
 helpcenter.general.nav_kb: Base de conhecimentos
 helpcenter.general.no_search_query: 'Digite uma consulta de pesquisa na caixa de pesquisa.'
 helpcenter.general.no_search_results_general: 'Não foram encontrados resultados.'
