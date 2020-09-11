@@ -167,6 +167,8 @@ helpcenter.duration_short.months: M
 helpcenter.duration_short.seconds: s
 helpcenter.duration_short.weeks: W
 helpcenter.duration_short.years: 'J'
+helpcenter.emails.account_disabled_message: 'Ihr Account ist derzeit deaktiviert. Sie können Sich weder anmelden noch mit Tickets interagieren oder chatten.'
+helpcenter.emails.auto_close: 'Ihr Ticket „{subject}“ wird in Kürze geschlossen, da wir in letzter Zeit nichts mehr von Ihnen gehört haben. Wenn Sie weitere Unterstützung benötigen, antworten Sie einfach auf diese Nachricht. Einer unserer Mitarbeiter wird sich darum kümmern.'
 helpcenter.emails.chat_transcript: 'Vielen Dank für den Chat mit uns. Hier ist Ihre Chat-Abschrift.'
 helpcenter.emails.chat_transcript_subject: 'Chat-Abschrift'
 helpcenter.emails.comment_approved: 'Ihr Kommentar wurde veröffentlicht.'
@@ -174,6 +176,8 @@ helpcenter.emails.comment_approved_subject: 'Ihr Kommentar wurde freigeschaltet'
 helpcenter.emails.comment_confirmation: 'Vielen Dank für Ihren Kommentar'
 helpcenter.emails.comment_deleted: 'Ihr Kommentar wurde verwendet, um die Seite zu verbessern.'
 helpcenter.emails.comment_deleted_subject: 'Ihr Kommentar wurde von unseren Mitarbeitern gelesen'
+helpcenter.emails.comment_thank_you: 'Vielen Dank für Ihren Kommentar zu {link}.'
+helpcenter.emails.community_explain: 'Sie erhalten diese E-Mail, weil Sie sich unter <a href="{deskpro_url}">{deskpro_url}</a> für unsere Neuigkeiten angemeldet haben.<br />Sie möchten diese E-Mails nicht mehr erhalten? <a href="{unsubscribe_url}">Klicken Sie hier, um sich von allen Community-Topic-Benachrichtigungen abzumelden.</a>'
 helpcenter.emails.community_new: 'Vielen Dank für Ihr Community Topic'
 helpcenter.emails.community_sub_updated: 'Community Topic aktualisiert'
 helpcenter.emails.community_topic_agent_validation: 'Beachten Sie bitte, dass Ihr Community Topic nicht öffentlich auf unserer Website erscheint, bevor es einer unserer Mitarbeiter überprüft hat'
