@@ -424,6 +424,7 @@ helpcenter.general.form_choose_files: 'Scegli file'
 helpcenter.general.go_action: Vai
 helpcenter.general.go_to_page: 'Vai alla pagina'
 helpcenter.general.helpcenter_disabled_click_below: 'Il portale è stato disabilitato. Se sei un agente, clicca sul tasto sottostante per andare all’interfaccia agenti.'
+helpcenter.general.helpdesk_system: 'Robot Help desk'
 helpcenter.general.ics_subscribe: iCalendar
 helpcenter.general.impersonation_mode: 'Modalità di rappresentazione'
 helpcenter.general.label_search_enter_label: 'Per favore fornisci un etichetta da ricercare'
