@@ -115,6 +115,8 @@ helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
 helpcenter.messenger.blocks_knowledgebase_title: Znalostní báze
 helpcenter.messenger.blocks_search_block_no_results: 'Pro {query} nebyly nalezeny žádné výsledky'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Zobrazit další výsledky'
+helpcenter.messenger.blocks_ticket_button: 'Odeslat nový tiket'
 helpcenter.messenger.chat_create_ticket_header: 'Odeslat tiket'
 helpcenter.messenger.greeting: 'Kontaktujte nás'
 helpcenter.messenger.tickets_form_thanks: 'Děkujeme za zájem. Jeden ze členů našeho týmu vás bude brzy kontaktovat e-mailem.'
