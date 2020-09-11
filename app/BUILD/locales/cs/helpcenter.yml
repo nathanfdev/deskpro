@@ -55,7 +55,10 @@ helpcenter.emails.ticket_reply_confirm: 'Vaše odpoveď byla přijata. Jeden z n
 helpcenter.emails.too_many_emails: 'Pozor: Odeslali jste příliš mnoho e-mailů'
 helpcenter.emails.validate_email: 'Prosíme, ověřte, že tato e-mailova dresa je opravdu vaše, kliknutím na následující odkaz:'
 helpcenter.error.contact_us: 'Kontaktujte nás'
+helpcenter.forms.error_captcha: 'Hodnota CAPTCHA není správná'
 helpcenter.forms.error_email_required: 'Musíte zadat svou e-mailovou adresu'
+helpcenter.forms.error_required: 'Tato hodnota je povinná'
+helpcenter.forms.error_banned_email: 'Tento e-mail byl zakázán.'
 helpcenter.forms.label_save: Uložit
 helpcenter.general.add_comment: 'Přidat komentář'
 helpcenter.general.admin_home: 'Admin domov. stránka'
@@ -72,6 +75,7 @@ helpcenter.general.comments: Komentáře
 helpcenter.general.everything: Vše
 helpcenter.general.label_search_enter_label: 'Prosíme, uveďte štítek, který se má vyhledat'
 helpcenter.general.log_in: 'Přihlásit'
+helpcenter.general.name: Jméno
 helpcenter.general.nav_contact: 'Kontaktujte nás'
 helpcenter.general.nav_guides: Návody
 helpcenter.general.no_search_query: 'Napište, co chcete vyhledat, do vyhledávacího okna.'
@@ -95,6 +99,7 @@ helpcenter.general.tags: Označení
 helpcenter.general.updated: Aktualizováno
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
+helpcenter.messenger.tickets_form_thanks: 'Děkujeme za zájem. Jeden ze členů našeho týmu vás bude brzy kontaktovat e-mailem.'
 helpcenter.profile.account_disabled_message: 'Váš účet je v tuto chvíli pozastaven. Nemůžete se přihlásit ani spravovat své tikety.'
 helpcenter.profile.your_password: 'Vaše heslo'
 helpcenter.tickets.list_subject: Předmět
