@@ -234,6 +234,7 @@ helpcenter.emails.profile_email_new_confirm: '{orig_email} nos ha solicitado que
 helpcenter.emails.profile_email_primary_confirm: 'Para verificar su dirección de correo electrónico principal, simplemente haga clic en el siguiente enlace'
 helpcenter.emails.ratelimit_explain: 'Has enviado {num_messages} mensajes en {time_limit}. Para evitar un mal uso, hemos inhabilitado momentáneamente tu dirección de correo durante {time_lock}. A las {date_lock_end, time, short}, esta inhabilitación temporal se eliminará y podrás volver a enviar correos electrónicos.'
 helpcenter.emails.ratelimit_submit_online: 'Si esto es un error y necesita comunicarse con nosotros de inmediato, puede omitir este filtro de correo electrónico y enviar un boleto en línea:'
+helpcenter.emails.register_password: 'Tu contraseña inicial es: {password}'
 helpcenter.emails.register_welcome_byagent_subject: 'Tu nueva cuenta de servicio de asistencia.'
 helpcenter.emails.register_welcome_subject: 'Gracias por Registrarse'
 helpcenter.emails.reject_resolved: 'Tu respuesta no fue aceptada porque tu ticket ha sido marcado como resuelto. Nuestros agentes no han leido o respuesto este mensaje.'
@@ -335,9 +336,30 @@ helpcenter.general.agent_bar_agent_community: 'Gestionar Comentarios'
 helpcenter.general.agent_bar_agent_home: 'Agente de casa'
 helpcenter.general.agent_bar_agent_kb: 'Gestionar Knowledgebase'
 helpcenter.general.agent_bar_agent_news: 'Gestionar Noticias'
+helpcenter.general.agent_interface: 'Interfaz del agente'
 helpcenter.general.agents: Agentes
+helpcenter.general.apply: Establecer
 helpcenter.general.attachments: Adjuntos
+helpcenter.general.authors_list: Lista de autores
+helpcenter.general.back: Volver
+helpcenter.general.btn_manage_subscriptions: 'Gestionar tus suscripciones'
+helpcenter.general.cancel_action: Cancelar
+helpcenter.general.categories: Categorías
+helpcenter.general.category: Categoría
+helpcenter.general.cc: Copia (CC)
+helpcenter.general.chat: Chat
+helpcenter.general.chats: Chats
+helpcenter.general.clear_all: 'Eliminar todos'
+helpcenter.general.close: Cerrar
+helpcenter.general.comment_btn_save: 'Añadir comentario'
+helpcenter.general.comment_login_first: 'Por favor, inicia sesión o regístrate para enviar un comentario.'
 helpcenter.general.comments: Comentarios
+helpcenter.general.comments_pending_validation: 'Este comentario todavía no se ha revisado.'
+helpcenter.general.comments_title: '{count, plural, one {Comentario (1)} other {Comentarios (#)}}'
+helpcenter.general.copied: copiado
+helpcenter.general.copy_to_clipboard: 'Copiar en el portapapeles'
+helpcenter.general.created_by: 'Creado por'
+helpcenter.general.current_page: 'Página actual'
 helpcenter.general.everything: Todo
 helpcenter.general.impersonation_mode: 'Modo de suplantación'
 helpcenter.general.label_search_enter_label: 'Por favor, proporcione una etiqueta para buscar'
