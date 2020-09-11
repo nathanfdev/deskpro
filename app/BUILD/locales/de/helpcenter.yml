@@ -376,8 +376,19 @@ helpcenter.general.expand: Vergrößern
 helpcenter.general.file_type: Datei
 helpcenter.general.files_type: Dateien
 helpcenter.general.filter: Filter
+helpcenter.general.first_published: 'Erstveröffentlichung'
+helpcenter.general.form_choose_file: 'Datei wählen'
+helpcenter.general.form_choose_files: 'Dateien wählen'
+helpcenter.general.go_action: Los
+helpcenter.general.go_to_page: 'Zu dieser Seite springen'
+helpcenter.general.helpcenter_disabled_click_below: 'Das Portal wurde deaktiviert. Wenn Sie ein Mitarbeiter sind, klicken Sie auf die Schaltfläche unten, um zur Mitarbeiteroberfläche zu gelangen.'
+helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'Das Portal wurde deaktiviert. Sie können das Portal über <a href="{setup_link}">Admin > Portal > Setup</a> wieder aktivieren'
+helpcenter.general.helpdesk_system: 'Helpdesk-Roboter'
+helpcenter.general.ics_subscribe: iCalendar
 helpcenter.general.impersonation_mode: 'Identitätswechsel -Modus'
 helpcenter.general.label_search_enter_label: 'Bitte geben Sie eine Bezeichnung für die Suche ein'
+helpcenter.general.labels: Tags
+helpcenter.general.lang_change_to_current: '<em>{lang}</em> zu meiner Standardsprache machen'
 helpcenter.general.last_activity: 'Letzte Aktivität'
 helpcenter.general.log_in: 'Anmelden'
 helpcenter.general.nav_guides: das Handbuch
