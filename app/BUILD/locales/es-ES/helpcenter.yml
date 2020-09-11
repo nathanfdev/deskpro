@@ -366,7 +366,23 @@ helpcenter.general.date_medium: '{date, date, medium}'
 helpcenter.general.date_short: '{date, date, short}'
 helpcenter.general.date_short_month: '{date, date, MMM}'
 helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
+helpcenter.general.department: Sección
+helpcenter.general.drag_and_drop: 'Arrastra y suelta'
+helpcenter.general.edit_this_page: 'Editar esta página'
+helpcenter.general.email_address: 'Dirección de correo electrónico'
+helpcenter.general.eula: EULA
 helpcenter.general.everything: Todo
+helpcenter.general.expand: Ampliar
+helpcenter.general.file_type: Archivo
+helpcenter.general.files_type: Archivos
+helpcenter.general.filter: Filtro
+helpcenter.general.first_published: 'Primera publicación'
+helpcenter.general.form_choose_file: 'Selecciona un archivo'
+helpcenter.general.form_choose_files: 'Selecciona archivos'
+helpcenter.general.go_action: Ir
+helpcenter.general.go_to_page: 'Ir a la página'
+helpcenter.general.helpcenter_disabled_click_below: 'La página no está disponible. Si eres un agente, pincha en el siguiente recuadro para pasar a la interfaz de agente.'
+helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'La página no está disponible. Puedes volver a habilitar la página desde <a href="{setup_link}">Admin > Página > Configuración</a>'
 helpcenter.general.impersonation_mode: 'Modo de suplantación'
 helpcenter.general.label_search_enter_label: 'Por favor, proporcione una etiqueta para buscar'
 helpcenter.general.labels: Etiquetas
