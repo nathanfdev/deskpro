@@ -441,8 +441,42 @@ helpcenter.general.download_pdf: 'PDF herunterladen'
 helpcenter.knowledgebase.featured_articles: 'Interessante Artikel'
 helpcenter.label.search: Suche
 helpcenter.members.activity_commented_on: 'Kommentar zu'
+helpcenter.members.activity_created_topic: 'Erstelltes Thema'
+helpcenter.members.activity_down_voted: 'Als nicht hilfreich markiert'
+helpcenter.members.activity_down_voted_comment_on: 'Negative Bewertung am'
+helpcenter.members.activity_group_everything_else: 'Alles Andere'
+helpcenter.members.activity_group_last_month: 'Letzter Monat'
+helpcenter.members.activity_group_last_week: 'Letzte Woche'
+helpcenter.members.activity_group_last_year: 'Letztes Jahr'
+helpcenter.members.activity_group_this_month: 'Laufender Monat'
+helpcenter.members.activity_group_this_week: 'Laufende Woche'
+helpcenter.members.activity_group_this_year: 'Laufendes Jahr'
+helpcenter.members.activity_group_today: 'Heute'
+helpcenter.members.activity_up_voted: 'Als hilfreich markiert'
+helpcenter.members.activity_up_voted_comment_on: 'Positive Bewertung am'
+helpcenter.members.company: 'Firma'
+helpcenter.members.date_joined: 'Beitritt'
 helpcenter.members.language: Sprache
+helpcenter.members.name: Name
+helpcenter.members.no_activities: 'Keine Aktivitäten'
+helpcenter.members.not_set: 'Nicht angegeben'
+helpcenter.members.phone: 'Telefonnummer'
+helpcenter.members.phone_number_none: Keine
+helpcenter.members.recent_activity: 'Neueste Aktivität'
+helpcenter.members.send_message: 'Privatnachricht senden'
 helpcenter.members.timezone: Zeitzone
+helpcenter.members.title: 'Mitgliederverzeichnis'
+helpcenter.messenger.assigned_agent: 'Zugewiesener Mitarbeiter'
+helpcenter.messenger.blocks_continue_chat_link: Fortsetzen
+helpcenter.messenger.blocks_continue_chat_title: 'Aktuellen Chat fortsetzen'
+helpcenter.messenger.blocks_knowledgebase_title: Wissensdatenbank
+helpcenter.messenger.blocks_search_block_no_results: 'Keine Ergebnisse für {query}'
+helpcenter.messenger.blocks_search_block_search_label: Suche
+helpcenter.messenger.blocks_search_block_see_more_results: 'Mehr Ergebnisse anzeigen'
+helpcenter.messenger.blocks_start_chat_button: 'Neues Gespräch beginnen'
+helpcenter.messenger.blocks_start_chat_description: 'Mit einem unserer Mitarbeiter chatten'
+helpcenter.messenger.blocks_start_chat_title: 'Gespräch beginnen'
+helpcenter.messenger.blocks_ticket_button: 'Ein neues Ticket einreichen'
 helpcenter.messenger.chat_end_block_buttons_no: 'Nein'
 helpcenter.messenger.chat_save_ticket_button_no: 'Nein'
 helpcenter.messenger.chat_transcript_block_no_button: 'Nein'
