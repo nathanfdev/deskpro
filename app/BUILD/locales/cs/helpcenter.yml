@@ -82,6 +82,7 @@ helpcenter.general.comments: Komentáře
 helpcenter.general.drag_and_drop: 'Přetáhnout'
 helpcenter.general.everything: Vše
 helpcenter.general.label_search_enter_label: 'Prosíme, uveďte štítek, který se má vyhledat'
+helpcenter.general.labels: Štítky
 helpcenter.general.last_update_by: 'Naposledy aktualizoval/a: <strong>{date_updated, date, medium}</strong> <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Přihlásit'
 helpcenter.general.name: Jméno
@@ -102,8 +103,10 @@ helpcenter.general.prop_rating_asc: 'Nejhůř hodnocené nejdřív'
 helpcenter.general.prop_rating_desc: 'Nejlíp hodnocené nejdřív'
 helpcenter.general.prop_views_asc: 'Nejmíň shlédnutí nejdřív'
 helpcenter.general.prop_views_desc: 'Nejvíc shlédnutí nejdřív'
-helpcenter.general.rate_page_negative: Nepomohla
-helpcenter.general.rate_page_positive: Pomohla
+helpcenter.general.rate_page_negative: Neužitečná
+helpcenter.general.rate_page_positive: Užitečná
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} z {vote_count} lidem přišla tato stránka užitečná'
+helpcenter.general.related_content: 'Související obsah'
 helpcenter.general.remove: odstranit
 helpcenter.general.rerender_form: 'Prosíme, překontrolujte formulář před jeho odesláním.'
 helpcenter.general.search: 'Jak vám dnes můžeme pomoci?'
@@ -123,7 +126,6 @@ helpcenter.messenger.blocks_search_block_see_more_results: 'Zobrazit další vý
 helpcenter.messenger.blocks_ticket_button: 'Odeslat nový tiket'
 helpcenter.messenger.blocks_ticket_description: 'Odeslat dotaz prostřednictvím našeho kontaktního formuláře'
 helpcenter.messenger.chat_create_ticket_header: 'Odeslat tiket'
-helpcenter.messenger.chat_rating_block_buttons_unhelpful: Nepomohla
 helpcenter.messenger.greeting: 'Kontaktujte nás'
 helpcenter.messenger.tickets_form_add_attachment: 'Přidat přílohu'
 helpcenter.messenger.tickets_form_header: 'Nový tiket'
