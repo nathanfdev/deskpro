@@ -360,6 +360,11 @@ helpcenter.general.copied: copiado
 helpcenter.general.copy_to_clipboard: 'Copiar en el portapapeles'
 helpcenter.general.created_by: 'Creado por'
 helpcenter.general.current_page: 'Página actual'
+helpcenter.general.dashboard: Pantalla principal
+helpcenter.general.date_day_month: '{date, date, MMM d}'
+helpcenter.general.date_medium: '{date, date, medium}'
+helpcenter.general.date_short: '{date, date, short}'
+helpcenter.general.date_short_month: '{date, date, MMM}'
 helpcenter.general.everything: Todo
 helpcenter.general.impersonation_mode: 'Modo de suplantación'
 helpcenter.general.label_search_enter_label: 'Por favor, proporcione una etiqueta para buscar'
