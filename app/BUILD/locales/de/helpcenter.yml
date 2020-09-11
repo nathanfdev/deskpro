@@ -1,10 +1,21 @@
 ---
+helpcenter.account.add: Hinzufügen
+helpcenter.account.add_email: 'E-Mail-Adresse hinzufügen'
+helpcenter.account.change_password_action: 'Passwort aktualisieren'
 helpcenter.account.comment_lockout: 'Sie haben in kurzer Zeit sehr viele Kommentare gesendet. Bitte warten Sie einige Zeit, bevor Sie weitere senden.'
 helpcenter.account.email_btn_usersource_set: 'E-Mail-Adresse hinzufügen'
+helpcenter.account.email_make_primary_action: 'Als primäre Adresse verwenden'
+helpcenter.account.email_management_from_form: 'Meine E-Mail-Adressen verwalten'
+helpcenter.account.email_primary_description: Primäre Adresse
+helpcenter.account.email_remove_action: 'E-Mail-Adresse löschen'
+helpcenter.account.email_resend_validation_action: 'Validierungs-E-Mail erneut zusenden'
+helpcenter.account.lockout_time: 'Sie können es in {minutes} Minuten erneut versuchen.'
 helpcenter.account.login_captcha_failed: 'Sie haben einen falschen CAPTCHA-Code eingegeben. Bitte versuchen Sie es noch einmal.'
+helpcenter.account.login_disabled: 'Ihre E-Mail-Adresse wurde gesperrt.'
 helpcenter.account.login_email: 'Ihre E-Mail-Adresse'
 helpcenter.account.login_email_placeholder: email@beispiel.de
 helpcenter.account.login_external: 'Anmelden über einen externen Dienst'
+helpcenter.account.login_invalid: 'Ungültiger Login'
 helpcenter.account.login_lockout: 'Der Zugang wurde wegen zu vieler ungültiger Versuche gesperrt. Bitte versuchen Sie es später noch einmal.'
 helpcenter.account.new_ticket_no_login: 'Portal CRM ist deaktiviert. Es konnte kein Ticket gesendet werden.'
 helpcenter.account.profile_delete_picture: 'Profilbild ändern oder löschen?'
