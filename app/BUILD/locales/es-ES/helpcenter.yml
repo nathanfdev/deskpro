@@ -487,6 +487,25 @@ helpcenter.messenger.chat_busy: 'Parece que todos nuestros agentes están ocupad
 helpcenter.messenger.chat_create_ticket_button: 'Crear una solicitud'
 helpcenter.messenger.chat_create_ticket_header: 'Enviar una solicitud'
 helpcenter.messenger.chat_create_ticket_intro: 'En su lugar, puedes enviar una solicitud y uno de nuestros agentes te responderá al correo electrónico lo antes posible.'
+helpcenter.messenger.chat_dragdrop_drag_and_drop: 'Arrastra y suelta aquí el archivo'
+helpcenter.messenger.chat_dragdrop_uploading: Cargando
+helpcenter.messenger.chat_end_block_buttons_no: 'No'
+helpcenter.messenger.chat_end_block_buttons_yes: 'Sí'
+helpcenter.messenger.chat_end_block_question_header: '¿Finalizar el chat?'
+helpcenter.messenger.chat_end_chat: 'Finalizar el chat'
+helpcenter.messenger.chat_ended: 'Chat finalizado'
+helpcenter.messenger.chat_header_title: 'Conversación con {department}'
+helpcenter.messenger.tickets_form_back: Volver
+helpcenter.messenger.tickets_form_header: 'Nueva solicitud'
+helpcenter.messenger.tickets_form_message: Mensaje
+helpcenter.messenger.tickets_form_name: Nombre
+helpcenter.messenger.tickets_form_or: o
+helpcenter.messenger.tickets_form_priority: Prioridad
+helpcenter.messenger.tickets_form_product: Producto
+helpcenter.messenger.tickets_form_required: Obligatorio
+helpcenter.messenger.tickets_form_saving: 'Estamos guardando tu solicitud. Espera, por favor'
+helpcenter.messenger.tickets_form_select: Seleccionar
+helpcenter.messenger.tickets_form_submit: Enviar
 helpcenter.news.none: 'No hay noticias aún'
 helpcenter.news.recent_title: 'Noticias recientes'
 helpcenter.news.view_as_agent: 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.'
