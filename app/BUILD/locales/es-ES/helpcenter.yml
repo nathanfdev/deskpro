@@ -97,7 +97,28 @@ helpcenter.community.view_status_change: 'Cambio de estado'
 helpcenter.direct_messages.back_to_messages: 'Volver a mis mensajes'
 helpcenter.direct_messages.block_user: 'bloquear usuario'
 helpcenter.direct_messages.new_message: 'Nuevo mensaje'
+helpcenter.direct_messages.none: 'No hay mensajes'
+helpcenter.direct_messages.recipient: Destinatario
+helpcenter.direct_messages.reply_cancel: Cancelar
 helpcenter.direct_messages.reply_message: Mensaje
+helpcenter.direct_messages.reply_send_message: 'Enviar mensaje'
+helpcenter.direct_messages.title: 'Mis mensajes'
+helpcenter.direct_messages.unblock_user_action: 'desbloquear usuario'
+helpcenter.downloads.download_action: Descarga
+helpcenter.downloads.file_name: 'Nombre del archivo'
+helpcenter.downloads.file_size: 'Tamaño del archivo'
+helpcenter.downloads.no_files: 'No hay archivos'
+helpcenter.downloads.total_downloads: 'Descargas totales'
+helpcenter.downloads.view_x_files: '{count, plural, one {Ver 1 descarga} other {Ver # descargas}}'
+helpcenter.duration_short.days: D
+helpcenter.duration_short.hours: h
+helpcenter.duration_short.minutes: m
+helpcenter.duration_short.months: M
+helpcenter.duration_short.seconds: s
+helpcenter.duration_short.weeks: S
+helpcenter.duration_short.years: 'A'
+helpcenter.emails.account_disabled_message: 'En estos momentos tu cuenta está inhabilitada. No podrás iniciar sesión o responder a solicitudes ni al chat.'
+helpcenter.emails.auto_close: 'Tu solicitud "{subject}" se cerrará pronto ya que últimamente no hemos recibido noticias tuyas. Si sigues necesitando ayuda solo tienes que responder y uno de nuestros agentes te ayudará.'
 helpcenter.emails.chat_transcript: 'Gracias por conversar con nosotros. Aquí tiene su transcripción'
 helpcenter.emails.chat_transcript_subject: 'Transcripción de conversación'
 helpcenter.emails.comment_approved: 'Su comentario ha sido publicado.'
