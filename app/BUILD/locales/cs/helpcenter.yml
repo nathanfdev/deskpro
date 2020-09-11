@@ -83,6 +83,7 @@ helpcenter.general.name: Jméno
 helpcenter.general.nav_contact: 'Kontaktujte nás'
 helpcenter.general.nav_guides: Návody
 helpcenter.general.no_search_query: 'Napište, co chcete vyhledat, do vyhledávacího okna.'
+helpcenter.general.no_search_results_general: 'Nebyly nalezeny žádné výsledky'
 helpcenter.general.password: Heslo
 helpcenter.general.print: Tisk
 helpcenter.general.prop_comments_asc: 'Nejmíň komentářů nejdřív'
@@ -97,6 +98,7 @@ helpcenter.general.prop_views_asc: 'Nejmíň shlédnutí nejdřív'
 helpcenter.general.prop_views_desc: 'Nejvíc shlédnutí nejdřív'
 helpcenter.general.remove: odstranit
 helpcenter.general.rerender_form: 'Prosíme, překontrolujte formulář před jeho odesláním.'
+helpcenter.general.search: 'Jak vám dnes můžeme pomoci?'
 helpcenter.general.share: Sdílet
 helpcenter.general.show: Zobraz
 helpcenter.general.show_x_more: 'Zobrazit {num} další'
