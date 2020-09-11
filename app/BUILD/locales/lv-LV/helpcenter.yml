@@ -145,6 +145,7 @@ helpcenter.forms.label_submit: Iesniegt
 helpcenter.general.drag_and_drop: 'Ievilkt un atstāt'
 helpcenter.general.name: Vārds, uzvārds
 helpcenter.general.nav_contact: 'Sazinieties ar mums'
+helpcenter.general.nav_kb: Datubāze
 helpcenter.general.nav_newticket: 'Sazinieties ar mums'
 helpcenter.general.no_search_query: 'Lūdzu, ievadiet meklēšanas vaicājumu meklēšanas lauciņā.'
 helpcenter.general.no_search_results_general: 'Nekas netika atrasts'
@@ -154,9 +155,20 @@ helpcenter.general.show_x_more: 'Rādīt vēl {num}'
 helpcenter.general.x_search_results: '{num} meklēšanas rezultāti vaicājumam "{query}"'
 helpcenter.label.search: Meklēt
 helpcenter.members.name: Vārds, uzvārds
+helpcenter.messenger.blocks_continue_chat_title: 'Turpināt šo sarunu'
+helpcenter.messenger.blocks_knowledgebase_title: Datubāze
+helpcenter.messenger.blocks_search_block_no_results: 'Vaicājumam {query} nav rezultātu'
 helpcenter.messenger.blocks_search_block_search_label: Meklēt
+helpcenter.messenger.blocks_search_block_see_more_results: 'Skatīt vairāk rezultātu'
+helpcenter.messenger.blocks_ticket_button: 'Iesniegt jaunu pieprasījumu'
+helpcenter.messenger.blocks_ticket_description: 'Iesniegt pieprasījumu, izmantojot mūsu saziņas lapu'
 helpcenter.messenger.chat_create_ticket_header: 'Iesniegt pieprasījumu'
+helpcenter.messenger.greeting: 'Sazināties'
+helpcenter.messenger.proactive_greeting: 'Sazināties'
+helpcenter.messenger.tickets_form_add_attachment: 'Pievienot pielikumu'
+helpcenter.messenger.tickets_form_header: 'Jauns pieprasījums'
 helpcenter.messenger.tickets_form_name: Vārds
+helpcenter.messenger.tickets_form_or: vai
 helpcenter.messenger.tickets_form_submit: Iesniegt
 helpcenter.search.search_results: 'Meklēšanas rezultāti'
 helpcenter.search.showing_results_for: 'Rāda kategorijas {type} rezultātus meklējumam: <span>“{query}”</span>'
