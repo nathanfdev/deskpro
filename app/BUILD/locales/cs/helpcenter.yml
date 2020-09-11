@@ -16,6 +16,7 @@ helpcenter.community.no_matching: 'Žádná související připomínka'
 helpcenter.community.rate_forbidden: 'Nemůžete hlasovat'
 helpcenter.community.section_title: Připomínka
 helpcenter.direct_messages.reply_message: Zpráva
+helpcenter.downloads.file_name: 'Název souboru'
 helpcenter.emails.comment_approved: 'Váš komentář byl zveřejněn'
 helpcenter.emails.comment_approved_subject: 'Váš komentář byl schválen'
 helpcenter.emails.comment_confirmation: 'Děkujeme za váš komentář'
@@ -87,6 +88,7 @@ helpcenter.general.last_update_by: 'Naposledy aktualizoval/a: <strong>{date_upda
 helpcenter.general.log_in: 'Přihlásit'
 helpcenter.general.name: Jméno
 helpcenter.general.nav_contact: 'Kontaktujte nás'
+helpcenter.general.nav_downloads_desc: 'Listujte našimi soubory'
 helpcenter.general.nav_guides: Návody
 helpcenter.general.nav_kb: Znalostní báze
 helpcenter.general.no_search_query: 'Napište, co chcete vyhledat, do vyhledávacího okna.'
