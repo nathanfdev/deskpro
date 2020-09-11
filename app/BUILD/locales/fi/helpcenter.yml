@@ -88,6 +88,7 @@ helpcenter.general.rate_page_negative: Hyödytön
 helpcenter.general.rate_page_positive: Hyödyllinen
 helpcenter.general.rating_x_of_y_found_helpful: 'Tätä sivua hyödyllisenä pitäneet: {vote_up} / {vote_count}'
 helpcenter.general.related_content: 'Aiheeseen liittyvä sisältö'
+helpcenter.general.remove: poista
 helpcenter.general.search: 'Miten voimme auttaa sinua tänään?'
 helpcenter.general.show: Näytä
 helpcenter.general.show_x_more: 'Näytä {num} lisää'
