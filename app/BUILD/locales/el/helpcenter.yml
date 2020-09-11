@@ -19,9 +19,20 @@ helpcenter.account.login_invalid: 'Μη έγκυρα στοιχεία σύνδε
 helpcenter.account.login_lockout: 'Έχετε αποτύχει να συνδεθείτε πολλές φορές, με αποτέλεσμα να έχετε μπλοκαριστεί. Παρακαλούμε δοκιμάστε ξανά αργότερα.'
 helpcenter.account.login_not_configured: 'Η εξωτερική υπηρεσία δεν έχει ρυθμιστεί.'
 helpcenter.account.login_password: 'Ο κωδικός πρόσβασής σας'
+helpcenter.account.login_register_action: Εγγραφή
+helpcenter.account.login_register_header: 'Δημιουργήστε λογαριασμό'
+helpcenter.account.login_reset_password_link: 'Ξεχάσατε τον κωδικό πρόσβασης;'
+helpcenter.account.login_stay_logged_in: 'Θέλετε να παραμείνετε σε σύνδεση;'
+helpcenter.account.logout_action: Αποσύνδεση
+helpcenter.account.logout_confirm: 'Θέλετε σίγουρα να αποσυνδεθείτε;'
 helpcenter.account.new_ticket_no_login: 'Το portal CRM είναι ανενεργό. Δεν μπορείτε να καταχωρήσετε αίτημα.'
+helpcenter.account.new_to_brand: 'Χρησιμοποιείτε πρώτη φορά το {brand};'
 helpcenter.account.profile_delete_picture: 'Αλλαγή ή διαγραφή φωτογραφίας προφίλ;'
+helpcenter.account.profile_save_action: 'Αποθήκευση προφίλ'
+helpcenter.account.register_action: Εγγραφή
 helpcenter.account.registration_set_password: 'Υπάρχει ήδη ένας λογαριασμός με αυτό το email. Σας στείλαμε ένα email ώστε να δημιουργήσετε νέο κωδικό πρόσβασης και να συνδεθείτε.'
+helpcenter.account.resend_registration_email: 'Επαναποστολή email εγγραφής'
+helpcenter.account.reset_password_action: 'Επαναφορά κωδικού πρόσβασης'
 helpcenter.account.reset_password_click_here: 'Πατήστε εδώ για να ζητήσετε έναν κωδικό επαναφοράς κωδικού πρόσβασης.'
 helpcenter.account.reset_password_invalid_desc: 'Ο κωδικός επαναφοράς κωδικού πρόσβασης δεν είναι έγκυρος ή έχει λήξει. Για να επαναφέρετε τον κωδικό πρόσβασης, ζητήστε νέο κωδικό.'
 helpcenter.account.reset_password_invalid_input: 'Παρακαλούμε εισάγετε ένα έγκυρο email ή username'
