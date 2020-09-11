@@ -54,7 +54,9 @@ helpcenter.emails.ticket_received: 'Váš tiket byl přijat. Jeden z našich ope
 helpcenter.emails.ticket_reply_confirm: 'Vaše odpoveď byla přijata. Jeden z našich operátorů vám co nejdříve odpoví.'
 helpcenter.emails.too_many_emails: 'Pozor: Odeslali jste příliš mnoho e-mailů'
 helpcenter.emails.validate_email: 'Prosíme, ověřte, že tato e-mailova dresa je opravdu vaše, kliknutím na následující odkaz:'
+helpcenter.error.404_desc: 'Omlouváme se, ale tuto stránku se nám nepodařilo najít.'
 helpcenter.error.contact_us: 'Kontaktujte nás'
+helpcenter.error.general_title: 'Došlo k chybě'
 helpcenter.forms.error_captcha: 'Hodnota CAPTCHA není správná'
 helpcenter.forms.error_email_required: 'Musíte zadat svou e-mailovou adresu'
 helpcenter.forms.error_required: 'Tato hodnota je povinná'
@@ -105,15 +107,21 @@ helpcenter.general.show_x_more: 'Zobrazit {num} další'
 helpcenter.general.tagged_with: 'označen'
 helpcenter.general.tags: Označení
 helpcenter.general.updated: Aktualizováno
+helpcenter.general.x_search_results: '{num} výsledků vyhledávání pro "{query}"'
+helpcenter.label.search: Vyhledávání
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
+helpcenter.messenger.chat_create_ticket_header: 'Odeslat tiket'
+helpcenter.messenger.greeting: 'Kontaktujte nás'
 helpcenter.messenger.tickets_form_thanks: 'Děkujeme za zájem. Jeden ze členů našeho týmu vás bude brzy kontaktovat e-mailem.'
 helpcenter.profile.account_disabled_message: 'Váš účet je v tuto chvíli pozastaven. Nemůžete se přihlásit ani spravovat své tikety.'
 helpcenter.profile.your_password: 'Vaše heslo'
+helpcenter.search.showing_results_for: 'Zobrazují se výsledky v {type} pro: <span>“{query}”</span>'
 helpcenter.tickets.list_subject: Předmět
 helpcenter.tickets.new_intro: 'Prosím vyplňte tento formulář a jedna z našich odpovědných osob vám, co nejdříve to bude možné, e-mailem odpoví.'
 helpcenter.tickets.new_section_title: 'Kontaktujte nás'
 helpcenter.tickets.reference_number: 'Referenční číslo: {ref}'
 helpcenter.tickets.related_articles_desc: 'Našli jsme následující články, které mohou řešit váš problém.'
+helpcenter.tickets.submit_a_ticket: 'Odeslat tiket'
 helpcenter.tickets.thank_you: 'Děkujeme, vaši žádost jsme obdrželi.'
 helpcenter.tickets.thank_you_desc: 'Děkujeme za zájem. Jeden z členů našeho týmu se s vámi brzy spojí.'
