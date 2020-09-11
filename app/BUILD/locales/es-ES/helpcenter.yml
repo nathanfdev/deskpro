@@ -158,7 +158,7 @@ helpcenter.emails.email_too_big: 'Tu correo "{subject}" no se ha aceptado porque
 helpcenter.emails.email_too_big_subject: 'Tu correo "{subject}" no se ha aceptado'
 helpcenter.emails.end_greeting: 'Atentamente,<br /><br />{site_name}'
 helpcenter.emails.greeting: 'Estimado/a {to_name},'
-helpcenter.emails.kb_explain: 'Has recibido este correo electrónico porque estás suscrito a nuestra base de datos en <a href="{deskpro_url}">{deskpro_url}</a>.<br />¿Quieres dejar de recibir estos correos? <a href="{unsubscribe_url}">Pincha aquí para darte de baja de nuestras notificaciones de base de datos.</a>'
+helpcenter.emails.kb_explain: 'Has recibido este correo electrónico porque estás suscrito a nuestra base de conocimientos en <a href="{deskpro_url}">{deskpro_url}</a>.<br />¿Quieres dejar de recibir estos correos? <a href="{unsubscribe_url}">Pincha aquí para darte de baja de nuestras notificaciones de base de conocimientos.</a>'
 helpcenter.emails.kb_new_articles: '{count, plural, one {1 nuevo artículo} other {# artículos nuevos}}'
 helpcenter.emails.kb_sub_new: 'Articulos Nuevos'
 helpcenter.emails.kb_sub_new_and_updated: 'Articulos nuevos y actualizados'
