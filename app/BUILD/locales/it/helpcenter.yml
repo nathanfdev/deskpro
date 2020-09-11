@@ -432,7 +432,7 @@ helpcenter.general.form_choose_files: 'Scegli file'
 helpcenter.general.go_action: Vai
 helpcenter.general.go_to_page: 'Vai alla pagina'
 helpcenter.general.helpcenter_disabled_click_below: 'Il portale è stato disabilitato. Se sei un agente, clicca sul tasto sottostante per andare all’interfaccia agenti.'
-helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'Il portale è stato disabilitato. Puoi riabilitarlo da <a href="{setup_link}">Admin > Portale > Impostazioni</a>'
+helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'Il portale è stato disabilitato. Puoi riabilitarlo da <a href="{setup_link}">Admin > Portale > Configurazione</a>'
 helpcenter.general.helpdesk_system: 'Robot Help desk'
 helpcenter.general.ics_subscribe: iCalendar
 helpcenter.general.impersonation_mode: 'Modalità di rappresentazione'
