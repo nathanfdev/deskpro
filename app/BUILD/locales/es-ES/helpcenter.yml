@@ -383,6 +383,8 @@ helpcenter.general.go_action: Ir
 helpcenter.general.go_to_page: 'Ir a la página'
 helpcenter.general.helpcenter_disabled_click_below: 'La página no está disponible. Si eres un agente, pincha en el siguiente recuadro para pasar a la interfaz de agente.'
 helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'La página no está disponible. Puedes volver a habilitar la página desde <a href="{setup_link}">Admin > Página > Configuración</a>'
+helpcenter.general.helpdesk_system: 'Robot de servicio de asistencia'
+helpcenter.general.ics_subscribe: iCalendario
 helpcenter.general.impersonation_mode: 'Modo de suplantación'
 helpcenter.general.label_search_enter_label: 'Por favor, proporcione una etiqueta para buscar'
 helpcenter.general.labels: Etiquetas
@@ -414,6 +416,11 @@ helpcenter.general.nav_emails: Correos electrónicos
 helpcenter.general.nav_guides: Guías
 helpcenter.general.nav_guides_desc: 'Ver todos los manuales'
 helpcenter.general.nav_kb: Base de conocimiento
+helpcenter.general.nav_kb_desc: 'Ver todo el centro de ayuda'
+helpcenter.general.nav_login: 'Iniciar sesión'
+helpcenter.general.nav_members: 'Directorio de miembros'
+helpcenter.general.nav_news: Novedades
+helpcenter.general.nav_news_desc: 'Ver todas las publicaciones de novedades'
 helpcenter.general.no_search_query: 'Por favor, escriba una consulta de búsqueda en el cuadro de búsqueda.'
 helpcenter.general.password: Contraseña
 helpcenter.general.print: Impresión
@@ -436,6 +443,18 @@ helpcenter.general.tags: Etiquetas
 helpcenter.general.updated: Actualizado
 helpcenter.general.user: Usuario
 helpcenter.general.you: Usted
+helpcenter.members.activity_down_voted_comment_on: 'Votar en negativo el comentario'
+helpcenter.members.activity_group_everything_else: 'Todo lo demás'
+helpcenter.members.activity_group_last_month: 'Último mes'
+helpcenter.members.activity_group_last_week: 'Última semana'
+helpcenter.members.activity_group_last_year: 'Último año'
+helpcenter.members.activity_group_this_month: 'Este mes'
+helpcenter.members.activity_group_this_week: 'Esta semana'
+helpcenter.members.activity_group_this_year: 'Este año'
+helpcenter.members.activity_group_today: 'Hoy'
+helpcenter.members.activity_up_voted: 'Marcado como útil'
+helpcenter.members.activity_up_voted_comment_on: 'Votar en positivo el comentario'
+helpcenter.members.company: 'Entidad'
 helpcenter.members.language: Idioma
 helpcenter.members.timezone: Zona horaria
 helpcenter.news.none: 'No hay noticias aún'
