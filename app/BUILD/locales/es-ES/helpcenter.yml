@@ -79,12 +79,24 @@ helpcenter.approvals.cancelled_status: Cancelada
 helpcenter.approvals.list_column_agent: 'Agente'
 helpcenter.approvals.list_column_approvers: 'Responsables de aprobación'
 helpcenter.approvals.list_column_cancelled: 'Cancelada'
+helpcenter.approvals.list_column_completed: 'Completada'
+helpcenter.approvals.list_column_id: 'Identificación'
+helpcenter.approvals.list_column_subject: 'Asunto'
+helpcenter.approvals.list_column_user: 'Usuario'
+helpcenter.approvals.list_column_your_vote: 'Tu valoración'
+helpcenter.approvals.my_approvals: 'Mis aprobaciones'
+helpcenter.approvals.no_ticket_approvals_found: 'No se ha encontrado ninguna solicitud de aprobación'
+helpcenter.approvals.pending_status: Pendiente
 helpcenter.articles.section_title: Base de conocimiento
 helpcenter.community.error_login: 'Por favor Iniciar sesión'
 helpcenter.community.form_topic_title: Título
 helpcenter.community.no_matching: 'No hay comentarios coincidentes'
 helpcenter.community.rate_forbidden: 'No tienes permitido votar'
 helpcenter.community.section_title: Comentarios
+helpcenter.community.view_status_change: 'Cambio de estado'
+helpcenter.direct_messages.back_to_messages: 'Volver a mis mensajes'
+helpcenter.direct_messages.block_user: 'bloquear usuario'
+helpcenter.direct_messages.new_message: 'Nuevo mensaje'
 helpcenter.direct_messages.reply_message: Mensaje
 helpcenter.emails.chat_transcript: 'Gracias por conversar con nosotros. Aquí tiene su transcripción'
 helpcenter.emails.chat_transcript_subject: 'Transcripción de conversación'
