@@ -310,8 +310,26 @@ helpcenter.flashes.download_unsubscribe_everything: 'Sie haben sich von allen Da
 helpcenter.flashes.guest_content_must_verify: 'Bevor wir Ihre Inhalte veröffentlichen können, müssen Sie Ihre E-Mail bestätigen. Bitte überprüfen Sie Ihren E-Mail-Posteingang. Wir haben Ihnen einen Bestätigungslink gesendet.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Bevor wir Ihr Ticket akzeptieren können, müssen Sie Ihre E-Mail-Adresse bestätigen. Bitte überprüfen Sie Ihre E-Mail-Posteingang. Wir haben Ihnen einen Bestätigungslink geschickt.'
 helpcenter.flashes.new_community_topic_awaiting_review: 'Vielen Dank für Ihren Beitrag. Er wird von einem Mitarbeiter geprüft und dann veröffentlicht.'
+helpcenter.flashes.new_community_topic_posted: 'Vielen Dank für Ihren Beitrag.'
+helpcenter.flashes.news_cat_subscribe: 'Sie haben {category} erfolgreich abonniert und werden über neue Einträge informiert.'
+helpcenter.flashes.news_cat_unsubscribe: 'Sie haben sich erfolgreich von {category} abgemeldet.'
+helpcenter.flashes.news_root_subscribe: 'Sie haben Neuigkeiten erfolgreich abonniert. Sie werden benachrichtigt, wenn neue Artikel veröffentlicht werden.'
+helpcenter.flashes.news_root_unsubscribe: 'Sie haben sich erfolgreich von Neuigkeiten abgemeldet.'
+helpcenter.flashes.news_subscribe: 'Sie haben diesen Neuigkeiten-Eintrag erfolgreich abonniert und werden benachrichtigt, wenn es neue Kommentare gibt.'
+helpcenter.flashes.news_unsubscribe: 'Sie haben sich erfolgreich von diesem News-Eintrag abgemeldet.'
+helpcenter.flashes.news_unsubscribe_everything: 'Sie haben sich von allen Neuigkeiten-Benachrichtigungen abgemeldet.'
+helpcenter.flashes.ticket_created: 'Ihr Ticket wurde übertragen.'
+helpcenter.flashes.ticket_feedback_thank_you: 'Vielen Dank für Ihre Rückmeldung.'
+helpcenter.flashes.ticket_feedback_unknown_error: 'Beim Senden Ihrer Rückmeldung ist ein Problem aufgetreten. Bitte versuche es erneut.'
+helpcenter.flashes.ticket_participant_add: 'Wir haben {email} in Kopie zu diesem Ticket hinzugefügt.'
 helpcenter.flashes.ticket_participant_already_error: 'Die Person, die Sie als Teilnehmer hinzufügen wollten, ist bereits Teilnehmer dieses Tickets.'
+helpcenter.flashes.ticket_participant_cc_limit_reached: 'Maximale Anzahl an Empfängern in CC ({max}) erreicht.'
+helpcenter.flashes.ticket_participant_email_error: 'Bitte geben Sie eine gültige E-Mail-Adesse ein und versuchen Sie es noch einmal.'
+helpcenter.flashes.ticket_participant_remove: 'Wir haben {email} aus der Liste der Empfänger in CC dieses Tickets entfernt.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'Beim Versuch, den Teilnehmer zu entfernen, ist ein Problem aufgetreten. Bitte versuche es erneut.'
+helpcenter.flashes.ticket_re_opened: 'Sie haben das Ticket wieder geöffnet.'
+helpcenter.flashes.ticket_replied: 'Ihre Antwort wurde übertragen.'
+helpcenter.flashes.ticket_resolved: 'Ihr Ticket ist nun als „erledigt“ markiert.'
 helpcenter.flashes.user_add_email_verified: 'Ihre Email-Adresse wurde Ihrem Konto hinzugefügt.'
 helpcenter.flashes.user_add_email_verify: 'Wir müssen Ihre E-Mail-Adresse verifizieren, bevor wir sie zu Ihrem Konto hinzufügen können. Bitte prüfen Sie Ihren Posteingang auf die E-Mail mit dem Validierungs-Link.'
 helpcenter.flashes.user_changed_primary_email: 'Ihre primäre E-Mail-Adresse wurde geändert.'
@@ -338,8 +356,26 @@ helpcenter.general.agent_bar_agent_news: 'Neuigkeiten verwalten'
 helpcenter.general.agents: Mitarbeiter
 helpcenter.general.attachments: Anhänge
 helpcenter.general.comments: Kommentare
+helpcenter.general.copied: kopiert
+helpcenter.general.copy_to_clipboard: 'In die Zwischenablage kopieren'
+helpcenter.general.created_by: 'Erstellt von'
+helpcenter.general.current_page: 'Aktuelle Seite'
+helpcenter.general.dashboard: Dashboard
+helpcenter.general.date_day_month: '{date, date, MMM d}'
+helpcenter.general.date_medium: '{date, date, medium}'
+helpcenter.general.date_short: '{date, date, short}'
+helpcenter.general.date_short_month: '{date, date, MMM}'
+helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
+helpcenter.general.department: Abteilung
+helpcenter.general.drag_and_drop: 'Ziehen und ablegen'
+helpcenter.general.edit_this_page: 'Diese Seite bearbeiten'
 helpcenter.general.email_address: 'E-Mail'
+helpcenter.general.eula: EULA
 helpcenter.general.everything: Alles
+helpcenter.general.expand: Vergrößern
+helpcenter.general.file_type: Datei
+helpcenter.general.files_type: Dateien
+helpcenter.general.filter: Filter
 helpcenter.general.impersonation_mode: 'Identitätswechsel -Modus'
 helpcenter.general.label_search_enter_label: 'Bitte geben Sie eine Bezeichnung für die Suche ein'
 helpcenter.general.last_activity: 'Letzte Aktivität'
