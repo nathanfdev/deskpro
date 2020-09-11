@@ -133,6 +133,18 @@ helpcenter.emails.profile_email_link_validate: 'Vienkārši noklikšķiniet uz �
 helpcenter.emails.profile_email_new_confirm: 'Mēs no {orig_email} saņēmām pieprasījumu pievienot e-pastu {new_email} jūsu kontam vietnes {site_name} palīdzības dienestā.<br /><br />Ja pieprasījumu iesniedzāt jūs, lūdzu, klikšķiniet uz zemāk norādītās saites. Ja to nedarījāt jūs, lūdzu, izdzēsiet šo e-pastu.'
 helpcenter.emails.profile_email_primary_confirm: 'Lai apstiprinātu savu galveno e-pasta adresi, vienkārši noklikšķiniet uz šīs saites'
 helpcenter.error.contact_us: 'Sazinieties ar mums'
+helpcenter.forms.delete_question: 'Dzēst?'
+helpcenter.forms.error_captcha: 'CAPTCHA vērtība nav pareiza'
+helpcenter.forms.error_required: 'Šī vērtība ir jānorāda'
+helpcenter.forms.error_banned_email: 'E-pasts ir bloķēts.'
+helpcenter.forms.label_drag_overlay: 'Iekļaujiet šo attēlu savā ziņojumā.'
+helpcenter.general.name: Vārds, uzvārds
 helpcenter.general.nav_contact: 'Sazinieties ar mums'
 helpcenter.general.nav_newticket: 'Sazinieties ar mums'
+helpcenter.members.name: Vārds, uzvārds
+helpcenter.messenger.tickets_form_name: Vārds
+helpcenter.tickets.new_intro: 'Lūdzu, aizpildiet šos lauciņus, un kāds no mūsu darbiniekiem, tiklīdz iespējams, atbildēs jums e-pastā.'
 helpcenter.tickets.new_section_title: 'Sazinieties ar mums'
+helpcenter.tickets.reference_number: 'Atsauces numurs: {ref}'
+helpcenter.tickets.thank_you: 'Paldies, jūsu pieprasījums ir saņemts.'
+helpcenter.tickets.thank_you_desc: 'Paldies, ka sazinājāties ar mums. Kāds no mūsu komandas drīzumā jums atbildēs.'
