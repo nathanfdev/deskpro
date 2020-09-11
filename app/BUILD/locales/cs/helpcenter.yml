@@ -54,6 +54,7 @@ helpcenter.emails.ticket_received: 'Váš tiket byl přijat. Jeden z našich ope
 helpcenter.emails.ticket_reply_confirm: 'Vaše odpoveď byla přijata. Jeden z našich operátorů vám co nejdříve odpoví.'
 helpcenter.emails.too_many_emails: 'Pozor: Odeslali jste příliš mnoho e-mailů'
 helpcenter.emails.validate_email: 'Prosíme, ověřte, že tato e-mailova dresa je opravdu vaše, kliknutím na následující odkaz:'
+helpcenter.error.contact_us: 'Kontaktujte nás'
 helpcenter.forms.error_email_required: 'Musíte zadat svou e-mailovou adresu'
 helpcenter.forms.label_save: Uložit
 helpcenter.general.add_comment: 'Přidat komentář'
@@ -71,6 +72,7 @@ helpcenter.general.comments: Komentáře
 helpcenter.general.everything: Vše
 helpcenter.general.label_search_enter_label: 'Prosíme, uveďte štítek, který se má vyhledat'
 helpcenter.general.log_in: 'Přihlásit'
+helpcenter.general.nav_contact: 'Kontaktujte nás'
 helpcenter.general.nav_guides: Návody
 helpcenter.general.no_search_query: 'Napište, co chcete vyhledat, do vyhledávacího okna.'
 helpcenter.general.password: Heslo
