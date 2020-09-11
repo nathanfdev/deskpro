@@ -477,9 +477,42 @@ helpcenter.messenger.blocks_start_chat_button: 'Neues Gespräch beginnen'
 helpcenter.messenger.blocks_start_chat_description: 'Mit einem unserer Mitarbeiter chatten'
 helpcenter.messenger.blocks_start_chat_title: 'Gespräch beginnen'
 helpcenter.messenger.blocks_ticket_button: 'Ein neues Ticket einreichen'
+helpcenter.messenger.blocks_ticket_description: 'Anfrage über unser Kontaktformular senden'
+helpcenter.messenger.blocks_ticket_title: 'Ein Ticket einreichen'
+helpcenter.messenger.blocks_tickets_title: 'Ihre Tickets'
+helpcenter.messenger.blocks_tickets_view_all_link: 'alle anzeigen'
+helpcenter.messenger.chat_agent_assigned_message: '{name} ist dem Chat beigetreten.'
+helpcenter.messenger.chat_attach_file: 'Datei anhängen'
+helpcenter.messenger.chat_busy: 'Offensichtlich sind alle unsere Mitarbeiter gerade beschäftigt. Sie können trotzdem ein Ticket einreichen. Wir melden uns dann so bald wie möglich bei Ihnen'
+helpcenter.messenger.chat_create_ticket_button: 'Ticket anlegen'
+helpcenter.messenger.chat_create_ticket_header: 'Ein Ticket einreichen'
 helpcenter.messenger.chat_end_block_buttons_no: 'Nein'
 helpcenter.messenger.chat_save_ticket_button_no: 'Nein'
 helpcenter.messenger.chat_transcript_block_no_button: 'Nein'
+helpcenter.messenger.proactive_button: 'Neues Gespräch beginnen'
+helpcenter.messenger.proactive_description: 'Mit einem unserer Mitarbeiter chatten'
+helpcenter.messenger.proactive_greeting: 'Kontaktieren'
+helpcenter.messenger.proactive_placeholder: 'Tippen Sie hier Ihre Nachricht'
+helpcenter.messenger.proactive_title: 'Gespräch beginnen'
+helpcenter.messenger.tickets_form_add_attachment: 'Anhang hinzufügen'
+helpcenter.messenger.tickets_form_back: Zurück
+helpcenter.messenger.tickets_form_header: 'Neues Ticket'
+helpcenter.messenger.tickets_form_message: Nachricht
+helpcenter.messenger.tickets_form_name: Name
+helpcenter.messenger.tickets_form_or: oder
+helpcenter.messenger.tickets_form_priority: Priorität
+helpcenter.messenger.tickets_form_product: Produkt
+helpcenter.messenger.tickets_form_required: Pflichtfeld
+helpcenter.messenger.tickets_form_saving: 'Ihr Ticket wird gespeichert. Bitte warten Sie'
+helpcenter.messenger.tickets_form_select: Auswählen
+helpcenter.messenger.tickets_form_submit: Senden
+helpcenter.messenger.tickets_form_thanks: 'Vielen Dank für Ihre Kontaktaufnahme. Einer unserer Mitarbeiter wird sich per E-Mail bei Ihnen melden.'
+helpcenter.messenger.tickets_form_thanks_header: 'Ihre Anfrage ist unterwegs'
+helpcenter.messenger.total_chat_time_label: 'Gesamte Chat-Zeit'
+helpcenter.messenger.view_action: Ansehen
+helpcenter.messenger.view_linked_ticket_action: 'Ticket anzeigen'
+helpcenter.messenger.you: Sie
+helpcenter.messenger.your_chat_with: 'Ihr Chat mit {person_name}'
 helpcenter.news.none: 'Noch keine Neuigkeiten'
 helpcenter.news.recent_title: 'Letzte Neuigkeiten'
 helpcenter.news.view_as_agent: 'Sie können diese Seite sehen weil Sie ein Mitarbeiter sind. Normale Benutzer können diese Seite nicht sehen.'
