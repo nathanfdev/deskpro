@@ -296,8 +296,26 @@ helpcenter.general.last_6_month: 'Últimos 6 meses'
 helpcenter.general.last_activity: 'Última actividad'
 helpcenter.general.last_month: 'Último mes'
 helpcenter.general.last_updated: 'Últimas actualizaciones'
+helpcenter.general.last_update_by: 'Última actualización: <strong>{date_updated, date, medium}</strong> por <strong>{person_name}</strong>'
+helpcenter.general.last_week: 'Última semana'
+helpcenter.general.last_year: 'Último año'
+helpcenter.general.latest_status_changes: 'Últimos cambios de estado'
 helpcenter.general.log_in: 'Iniciar sesión'
+helpcenter.general.message: Mensaje
+helpcenter.general.more_than_1_year: 'Hace más de 1 año'
+helpcenter.general.name: Nombre
+helpcenter.general.nav_chat: Chats
+helpcenter.general.nav_community: Comunidad
+helpcenter.general.nav_community_desc: 'Ver todos los temas'
+helpcenter.general.nav_contact: 'Contacta con nosotros'
+helpcenter.general.nav_contact_desc: 'Ponte en contacto para recibir ayuda'
+helpcenter.general.nav_direct_messages: Mensajes
+helpcenter.general.nav_downloads: Archivos
+helpcenter.general.nav_downloads_desc: 'Explora nuestros archivos'
+helpcenter.general.nav_emails: Correos electrónicos
 helpcenter.general.nav_guides: Guías
+helpcenter.general.nav_guides_desc: 'Ver todos los manuales'
+helpcenter.general.nav_kb: Base de conocimiento
 helpcenter.general.no_search_query: 'Por favor, escriba una consulta de búsqueda en el cuadro de búsqueda.'
 helpcenter.general.password: Contraseña
 helpcenter.general.print: Impresión
