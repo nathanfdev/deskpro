@@ -506,6 +506,16 @@ helpcenter.messenger.tickets_form_required: Obligatorio
 helpcenter.messenger.tickets_form_saving: 'Estamos guardando tu solicitud. Espera, por favor'
 helpcenter.messenger.tickets_form_select: Seleccionar
 helpcenter.messenger.tickets_form_submit: Enviar
+helpcenter.messenger.tickets_form_thanks: 'Gracias por ponerte en contacto con nosotros. Uno de nuestros agentes se pondrá en contacto contigo en el correo electrónico.'
+helpcenter.messenger.tickets_form_thanks_header: 'Tu solicitud está de camino'
+helpcenter.messenger.total_chat_time_label: 'Tiempo total del chat'
+helpcenter.messenger.view_action: Ver
+helpcenter.messenger.view_linked_ticket_action: 'Ver solicitud'
+helpcenter.messenger.you: Tú
+helpcenter.messenger.your_chat_with: 'Tu chat con {person_name}'
+helpcenter.news.all_news: 'Todas las novedades'
+helpcenter.news.any_date: Cualquiera
+helpcenter.news.download_calendar_action: 'Descargar archivo iCal'
 helpcenter.news.none: 'No hay noticias aún'
 helpcenter.news.recent_title: 'Noticias recientes'
 helpcenter.news.view_as_agent: 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.'
