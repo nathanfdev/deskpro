@@ -70,6 +70,12 @@ helpcenter.account.tickets_lockout: 'Έχετε καταχωρήσει πάρα 
 helpcenter.account.usersource_set_email_desc: 'Πριν συνδεθείτε, χρειαζόμαστε το email σας. Είναι απαραίτητο να το εισάγετε παρακάτω, ώστε να σας στείλουμε ένα email επιβεβαίωσης.'
 helpcenter.account.validation_email_sent: 'Σας έχουμε στείλει ένα email στο {email}<br />Επαληθεύστε τη διεύθυνση email σας για να έχετε πρόσβαση στο κέντρο υποστήριξης.'
 helpcenter.account.your_pending_email_addresses: 'Email διευθύνσεις σε αναμονή'
+helpcenter.account.login-btn-usersource: 'Συνδεθείτε με {usersource}'
+helpcenter.approvals.cancelled_status: Ακυρώθηκε
+helpcenter.approvals.list_column_cancelled: 'Ακυρώθηκε'
+helpcenter.approvals.list_column_completed: 'Ολοκληρώθηκε'
+helpcenter.approvals.list_column_user: 'Χρήστης'
+helpcenter.approvals.reject_action: Απόρριψη
 helpcenter.articles.section_title: Γνωσιακή βάση
 helpcenter.community.error_login: 'Παρακαλούμε συνδεθείτε'
 helpcenter.community.form_topic_title: Τίτλος
