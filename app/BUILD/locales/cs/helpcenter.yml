@@ -98,4 +98,5 @@ helpcenter.members.timezone: Časové pásmo
 helpcenter.profile.account_disabled_message: 'Váš účet je v tuto chvíli pozastaven. Nemůžete se přihlásit ani spravovat své tikety.'
 helpcenter.profile.your_password: 'Vaše heslo'
 helpcenter.tickets.list_subject: Předmět
+helpcenter.tickets.new_intro: 'Prosím vyplňte tento formulář a jedna z našich odpovědných osob vám, co nejdříve to bude možné, e-mailem odpoví.'
 helpcenter.tickets.new_section_title: 'Kontaktujte nás'
