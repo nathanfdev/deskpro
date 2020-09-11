@@ -77,6 +77,8 @@ helpcenter.general.last_update_by: 'Viimeksi päivitetty: <strong>{date_updated,
 helpcenter.general.log_in: 'Kirjaudu'
 helpcenter.general.name: Nimi
 helpcenter.general.nav_contact: 'Ota yhteyttä'
+helpcenter.general.nav_downloads: Tiedostot
+helpcenter.general.nav_downloads_desc: 'Selaa tiedostojamme'
 helpcenter.general.nav_guides: Oppaat
 helpcenter.general.nav_guides_desc: 'Näytä kaikki oppaat'
 helpcenter.general.nav_kb: Ohjeet
