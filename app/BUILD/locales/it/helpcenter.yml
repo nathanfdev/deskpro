@@ -309,6 +309,8 @@ helpcenter.flashes.download_unsubscribe: 'Hai annullato l''iscrizione da questo 
 helpcenter.flashes.download_unsubscribe_everything: 'Hai annullato l’iscrizione da tutte le notifiche dei file.'
 helpcenter.flashes.guest_content_must_verify: 'Prima che noi possiamo pubblicare il tuo contenuto, devi verificare la tua posta in arrivo. TI abbiamo mandato un link di convalida.'
 helpcenter.flashes.guest_new_ticket_must_verify: 'Prima di poter accettare il tuo ticket, dobbiamo verificare il tuo indirizzo email. Per favore controlla la tua casella di posta in arrivo. TI abbiamo mandato un link di convalida.'
+helpcenter.flashes.new_community_topic_awaiting_review: 'Grazie per il tuo contributo. Sarà pubblicato dopo la revisione da parte un agente.'
+helpcenter.flashes.new_community_topic_posted: 'Grazie per il tuo contributo.'
 helpcenter.flashes.news_cat_subscribe: 'Ti sei iscritto con successo a {category}. Quando ci saranno nuovi post, riceverai una notifica.'
 helpcenter.flashes.news_cat_unsubscribe: 'Hai annullato con successo l’iscrizione a {category}.'
 helpcenter.flashes.news_root_subscribe: 'Ti sei iscritto a News con successo. Quando ci saranno nuovi articoli di news, riceverai una notifica.'
@@ -408,6 +410,8 @@ helpcenter.general.copied: copiato
 helpcenter.general.copy_to_clipboard: 'Copia negli Appunti'
 helpcenter.general.created_by: 'Creato da'
 helpcenter.general.current_page: 'Pagina corrente'
+helpcenter.general.dashboard: Interfaccia
+helpcenter.general.date_day_month: '{date, date, d MMM}'
 helpcenter.general.department: Settore
 helpcenter.general.drag_and_drop: 'Trascina e rilascia'
 helpcenter.general.edit_this_page: 'Modifica questa pagina'
@@ -514,6 +518,7 @@ helpcenter.general.tagged_with: 'taggato con'
 helpcenter.general.tags: Tag
 helpcenter.general.time_of_completion: 'Data di completamento'
 helpcenter.general.translations: Traduzioni
+helpcenter.general.unpublished: 'Messo offline'
 helpcenter.general.updated: Aggiornato
 helpcenter.general.user: Utente
 helpcenter.general.user_menu: 'Menu utente'
@@ -542,11 +547,13 @@ helpcenter.members.activity_group_this_month: 'Questo mese'
 helpcenter.members.activity_group_this_week: 'Questa settimana'
 helpcenter.members.activity_group_this_year: 'Quest’anno'
 helpcenter.members.activity_group_today: 'Oggi'
+helpcenter.members.activity_up_voted_comment_on: 'Ha valutato positivamente un commento su'
 helpcenter.members.company: 'Azienda'
 helpcenter.members.date_joined: 'Data di iscrizione'
 helpcenter.members.language: Lingua
 helpcenter.members.name: Nome
 helpcenter.members.no_activities: 'Nessuna attività'
+helpcenter.members.not_set: 'Non impostato'
 helpcenter.members.phone: 'Numero di telefono'
 helpcenter.members.phone_number_none: Nessuno
 helpcenter.members.recent_activity: 'Attività recente'
@@ -622,6 +629,7 @@ helpcenter.messenger.message_uploading: 'Caricando ...'
 helpcenter.messenger.message_user_joined: '{name} ora partecipa alla conversazione.'
 helpcenter.messenger.message_user_left: '{name} ha lasciato la conversazione.'
 helpcenter.messenger.message_user_returned: 'L’utente è rientrato'
+helpcenter.messenger.message_user_timeout: 'Sessione utente scaduta'
 helpcenter.messenger.message_wait: 'Stiamo trovando un agente per te'
 helpcenter.messenger.message_wait_timeout: 'Ci scusiamo, ma in questo momento non ci sono agenti disponibili.'
 helpcenter.messenger.powered_by: 'Powered by'
@@ -733,6 +741,9 @@ helpcenter.tickets.ticket_properties: 'Proprietà del ticket'
 helpcenter.tickets.ticket_status: 'Stato del ticket'
 helpcenter.tickets.tickets_i_m_cc_on: 'Ticket in cui sono in CC'
 helpcenter.tickets.timeline_marked: 'segnato questo ticket:'
+helpcenter.tickets.timeline_marked_resolved: 'Ha risolto questo ticket'
+helpcenter.tickets.timeline_re_opened: 'Ha riaperto questo ticket'
+helpcenter.tickets.user_rated_support: '{email}, hai valutato il supporto ricevuto da'
 helpcenter.tickets.view_assigned_agent: 'Agente assegnato'
 helpcenter.tickets.view_btn_add_cc: 'CC +'
 helpcenter.tickets.view_btn_add_to_ticket: 'Aggiungi al Ticket'
@@ -749,3 +760,5 @@ helpcenter.tickets.view_scroll_reply: 'Fai click qui per scorrere in basso fino 
 helpcenter.tickets.view_unassigned: Non assegnato
 helpcenter.tickets.view_unassigned_more: 'Un agente sarà assegnato'
 helpcenter.tickets.view_you_created: 'Creato'
+helpcenter.tickets.you_have_not_rated_support: '{email}, non hai ancora valutato il supporto ricevuto.'
+helpcenter.tickets.you_rated_support: '{email}, hai valutato il supporto ricevuto da'
