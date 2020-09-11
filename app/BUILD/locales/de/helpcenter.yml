@@ -389,8 +389,29 @@ helpcenter.general.impersonation_mode: 'Identitätswechsel -Modus'
 helpcenter.general.label_search_enter_label: 'Bitte geben Sie eine Bezeichnung für die Suche ein'
 helpcenter.general.labels: Tags
 helpcenter.general.lang_change_to_current: '<em>{lang}</em> zu meiner Standardsprache machen'
+helpcenter.general.lang_diff: 'Diese Sprache ist in <em>{active_lang}</em>, Ihr Account aber in <em>{person_lang}</em>.'
+helpcenter.general.lang_switch: 'Zu <em>{lang}</em> wechseln'
+helpcenter.general.last_24_hours: 'In den letzten 24 Stunden'
+helpcenter.general.last_6_month: 'In den letzten 6 Monaten'
 helpcenter.general.last_activity: 'Letzte Aktivität'
+helpcenter.general.last_month: 'Im letzten Monat'
+helpcenter.general.last_updated: 'Letzte Aktualisierung'
+helpcenter.general.last_update_by: 'Letzte Aktualisierung: <strong>{date_updated, date, medium}</strong> durch <strong>{person_name}</strong>'
+helpcenter.general.last_week: 'In der letzten Woche'
+helpcenter.general.last_year: 'Im letzten Jahr'
+helpcenter.general.latest_status_changes: 'Letzte Statusänderungen'
 helpcenter.general.log_in: 'Anmelden'
+helpcenter.general.message: Nachricht
+helpcenter.general.more_than_1_year: 'Vor mehr als 1 Jahr'
+helpcenter.general.name: Name
+helpcenter.general.nav_chat: Chats
+helpcenter.general.nav_community: Community
+helpcenter.general.nav_community_desc: 'Alle Themen anzeigen'
+helpcenter.general.nav_contact: 'Kontaktieren Sie uns'
+helpcenter.general.nav_contact_desc: 'Wir helfen Ihnen gerne weiter'
+helpcenter.general.nav_direct_messages: Nachrichten
+helpcenter.general.nav_downloads: Dateien
+helpcenter.general.nav_downloads_desc: 'Unsere Dateien durchsuchen'
 helpcenter.general.nav_guides: das Handbuch
 helpcenter.general.no_search_query: 'Bitte geben Sie einen Suchbegriff in das Suchfeld ein.'
 helpcenter.general.password: Passwort
@@ -412,7 +433,14 @@ helpcenter.general.show: Anzeigen
 helpcenter.general.tagged_with: 'getaggt mit'
 helpcenter.general.updated: Aktualisierte
 helpcenter.general.user: Benutzer
+helpcenter.general.x_search_results: '{num} Suchergebnisse für „{query}“'
 helpcenter.general.you: Sie
+helpcenter.general.your_comment_label: 'Ihr Kommentar'
+helpcenter.general.your_comment_optional_label: 'Ihr Kommentar (freiwillig)'
+helpcenter.general.download_pdf: 'PDF herunterladen'
+helpcenter.knowledgebase.featured_articles: 'Interessante Artikel'
+helpcenter.label.search: Suche
+helpcenter.members.activity_commented_on: 'Kommentar zu'
 helpcenter.members.language: Sprache
 helpcenter.members.timezone: Zeitzone
 helpcenter.messenger.chat_end_block_buttons_no: 'Nein'
