@@ -549,6 +549,7 @@ helpcenter.tickets.list_date_last_agent: 'Última respuesta de agente'
 helpcenter.tickets.list_date_last_user: 'Última respuesta de usuario'
 helpcenter.tickets.list_last_action: 'Última acción'
 helpcenter.tickets.list_no_tickets: 'No tienes ninguna solicitud'
+helpcenter.tickets.list_no_tickets_filter: 'No hay ninguna solicitud que se ajuste'
 helpcenter.tickets.list_status_resolved: Resuelto
 helpcenter.tickets.list_status_user: 'Necesitas responder'
 helpcenter.tickets.list_subject: Asunto
