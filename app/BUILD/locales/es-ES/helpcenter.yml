@@ -256,7 +256,19 @@ helpcenter.forms.error_password_forbid_reuse: 'No puedes utilizar una contraseñ
 helpcenter.forms.error_password_min_length: '{count, plural, one {Mínimo # carácter} other {Mínimo # caracteres}}'
 helpcenter.forms.error_password_require_num_lowercase: '{count, plural, one {Al menos # carácter en minúscula} other {Al menos # caracteres en minúscula}}'
 helpcenter.forms.error_password_require_num_number: '{count, plural, one {Al menos # número} other {Al menos # números}}'
+helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {Al menos # símbolo} other {Al menos # símbolos}}'
+helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {Al menos # carácter en mayúscula} other {Al menos # caracteres en mayúscula}}'
+helpcenter.forms.error_password_reset_required: 'Tienes que restablecer la contraseña'
+helpcenter.forms.error_required: 'Este valor es obligatorio'
+helpcenter.forms.error_banned_email: 'El correo electrónico está inhabilitado.'
+helpcenter.forms.label_drag_overlay: 'Añade esta imagen en tu mensaje.'
+helpcenter.forms.label_email: Correo electrónico
+helpcenter.forms.label_password: Contraseña
+helpcenter.forms.label_password_confirm: Confirmar
+helpcenter.forms.label_reset: Restablecer
 helpcenter.forms.label_save: Guardar
+helpcenter.forms.label_submit: Enviar
+helpcenter.forms.label_timezone: Zona horaria
 helpcenter.general.add_comment: 'Nuevo comentario'
 helpcenter.general.admin: Administración
 helpcenter.general.admin_home: 'Administración Casa'
