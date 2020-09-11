@@ -17,6 +17,9 @@ helpcenter.community.rate_forbidden: 'Nemůžete hlasovat'
 helpcenter.community.section_title: Připomínka
 helpcenter.direct_messages.reply_message: Zpráva
 helpcenter.downloads.file_name: 'Název souboru'
+helpcenter.downloads.file_size: 'Velikost souboru'
+helpcenter.downloads.no_files: 'Žádné soubory'
+helpcenter.downloads.total_downloads: 'Počet stažení'
 helpcenter.emails.comment_approved: 'Váš komentář byl zveřejněn'
 helpcenter.emails.comment_approved_subject: 'Váš komentář byl schválen'
 helpcenter.emails.comment_confirmation: 'Děkujeme za váš komentář'
