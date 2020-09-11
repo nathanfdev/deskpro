@@ -11,7 +11,7 @@ helpcenter.account.reset_password_sent_to: 'Lähetimme sähköpostin seuraavaan 
 helpcenter.account.section_desc_login: 'Onko teillä jo tili? Kirjautukaa alta.'
 helpcenter.account.set_password_success: 'Salasanasi on päivitetty'
 helpcenter.articles.section_title: Ohjeet
-helpcenter.articles.view_x_articles: 'Katso kaikki artikkelit osiossa {category}'
+helpcenter.articles.view_x_articles: 'Näytä kaikki artikkelit osiossa {category}'
 helpcenter.community.form_topic_title: Aihe
 helpcenter.community.section_title: Palaute
 helpcenter.direct_messages.reply_message: Viesti
