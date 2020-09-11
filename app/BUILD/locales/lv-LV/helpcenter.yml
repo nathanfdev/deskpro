@@ -99,6 +99,11 @@ helpcenter.direct_messages.block_user: 'bloķēt lietotāju'
 helpcenter.direct_messages.new_message: 'Jauns ziņojums'
 helpcenter.direct_messages.none: 'Ziņojumu nav'
 helpcenter.direct_messages.recipient: Saņēmējs
+helpcenter.downloads.file_name: 'Datnes nosaukums'
+helpcenter.downloads.file_size: 'Datnes izmērs'
+helpcenter.downloads.no_files: 'Nav datņu'
+helpcenter.downloads.total_downloads: 'Kopējais lejupielāžu skaits'
+helpcenter.downloads.view_x_files: '{count, plural, zero {} one {Skatīt 1 lejupielādi} other {Skatīt # lejupielādes}}'
 helpcenter.emails.download_updated_downloads: '{count, plural, zero {} one {1 atjaunināta lejupielāde} other {# atjauninātas lejupielādes}}'
 helpcenter.emails.downloads_explain: 'Jūs saņēmāt šo e-pastu, jo abonējat mūsu lejupielādes vietnē <a href="{deskpro_url}">{deskpro_url}</a>.<br />Vairs nevēlaties saņemt šos e-pastus? <a href="{unsubscribe_url}">Klikšķiniet šeit, lai atteiktos no visiem lejupielāžu paziņojumiem.</a>'
 helpcenter.emails.email_new_confirm: 'Apstipriniet savu e-pasta adresi'
@@ -143,12 +148,21 @@ helpcenter.forms.label_drag_overlay: 'Iekļaujiet šo attēlu savā ziņojumā.'
 helpcenter.forms.label_email: E-pasts
 helpcenter.forms.label_submit: Iesniegt
 helpcenter.general.drag_and_drop: 'Ievilkt un atstāt'
+helpcenter.general.labels: Marķējumi
+helpcenter.general.last_update_by: 'Nesenākais atjauninājums: <strong>{date_updated, date, medium}</strong>, to veica <strong>{person_name}</strong>'
 helpcenter.general.name: Vārds, uzvārds
 helpcenter.general.nav_contact: 'Sazinieties ar mums'
+helpcenter.general.nav_downloads_desc: 'Pārlūkot mūsu datnes'
+helpcenter.general.nav_guides: Rokasgrāmatas
+helpcenter.general.nav_guides_desc: 'Skatīt visas rokasgrāmatas'
 helpcenter.general.nav_kb: Datubāze
 helpcenter.general.nav_newticket: 'Sazinieties ar mums'
 helpcenter.general.no_search_query: 'Lūdzu, ievadiet meklēšanas vaicājumu meklēšanas lauciņā.'
 helpcenter.general.no_search_results_general: 'Nekas netika atrasts'
+helpcenter.general.rate_page_negative: Nav noderīgs
+helpcenter.general.rate_page_positive: Noderīgs
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} no {vote_count} cilvēkiem šo lapu atzina par noderīgu'
+helpcenter.general.related_content: 'Saistītais saturs'
 helpcenter.general.remove: noņemt
 helpcenter.general.search: 'Kā varam jums palīdzēt?'
 helpcenter.general.show_x_more: 'Rādīt vēl {num}'
@@ -163,15 +177,21 @@ helpcenter.messenger.blocks_search_block_see_more_results: 'Skatīt vairāk rezu
 helpcenter.messenger.blocks_ticket_button: 'Iesniegt jaunu pieprasījumu'
 helpcenter.messenger.blocks_ticket_description: 'Iesniegt pieprasījumu, izmantojot mūsu saziņas lapu'
 helpcenter.messenger.chat_create_ticket_header: 'Iesniegt pieprasījumu'
+helpcenter.messenger.chat_rating_block_buttons_helpful: Noderīga
+helpcenter.messenger.chat_rating_block_buttons_unhelpful: Nebija noderīga
 helpcenter.messenger.greeting: 'Sazināties'
 helpcenter.messenger.proactive_greeting: 'Sazināties'
 helpcenter.messenger.tickets_form_add_attachment: 'Pievienot pielikumu'
 helpcenter.messenger.tickets_form_header: 'Jauns pieprasījums'
 helpcenter.messenger.tickets_form_name: Vārds
 helpcenter.messenger.tickets_form_or: vai
+helpcenter.messenger.tickets_form_saving: 'Jūsu pieprasījums tiek saglabāts. Lūdzu, uzgaidiet'
 helpcenter.messenger.tickets_form_submit: Iesniegt
+helpcenter.messenger.tickets_form_thanks: 'Paldies, ka sazinājāties ar mums. Kāds no mūsu komandas jums drīzumā atbildēs e-pastā.'
+helpcenter.messenger.tickets_form_thanks_header: 'Jūsu pieprasījums ir nosūtīts'
 helpcenter.search.search_results: 'Meklēšanas rezultāti'
 helpcenter.search.showing_results_for: 'Rāda kategorijas {type} rezultātus meklējumam: <span>“{query}”</span>'
+helpcenter.tickets.list_date_created: 'Izveidošanas datums'
 helpcenter.tickets.new_intro: 'Lūdzu, aizpildiet šos lauciņus, un kāds no mūsu darbiniekiem, tiklīdz iespējams, atbildēs jums e-pastā.'
 helpcenter.tickets.new_section_title: 'Sazinieties ar mums'
 helpcenter.tickets.reference_number: 'Atsauces numurs: {ref}'
