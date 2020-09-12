@@ -476,9 +476,19 @@ helpcenter.general.nav_newticket: 'Contacta con nosotros'
 helpcenter.general.nav_profile: Perfil
 helpcenter.general.nav_register: 'Registro'
 helpcenter.general.nav_support_center: 'Centro de asistencia'
+helpcenter.general.nav_your_account: 'Tu cuenta'
+helpcenter.general.next: Siguiente
 helpcenter.general.no_search_query: 'Por favor, escriba una consulta de búsqueda en el cuadro de búsqueda.'
+helpcenter.general.no_search_results_general: 'Sin resultados'
+helpcenter.general.or: o
+helpcenter.general.pagination_page: 'Página {page}'
+helpcenter.general.pagination_next_page: 'Página siguiente'
+helpcenter.general.pagination_previous_page: 'Página anterior'
 helpcenter.general.password: Contraseña
+helpcenter.general.previous: Anterior
 helpcenter.general.print: Impresión
+helpcenter.general.priority: Prioridad
+helpcenter.general.product: Producto
 helpcenter.general.prop_comments_asc: 'Menos comentarios primero'
 helpcenter.general.prop_comments_desc: 'La mayoría de los comentarios primero'
 helpcenter.general.prop_date_asc: 'El más antiguo primero'
@@ -489,8 +499,18 @@ helpcenter.general.prop_rating_asc: 'Más bajo primero'
 helpcenter.general.prop_rating_desc: 'Mejor valorados primero'
 helpcenter.general.prop_views_asc: 'Menos vistas primero'
 helpcenter.general.prop_views_desc: 'La mayoría de las vistas primero'
+helpcenter.general.published: 'Primera publicación'
+helpcenter.general.published_by: 'Publicado por <strong>{person_name}</strong>'
+helpcenter.general.rate_page_negative: Poco útil
 helpcenter.general.rate_page_positive: De ayuda
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} de {vote_count} personas considera que esta página es útil'
+helpcenter.general.related_content: 'Contenido relacionado'
+helpcenter.general.remove: eliminar
 helpcenter.general.rerender_form: 'Por favor revise este formulario antes de enviarlo.'
+helpcenter.general.search: '¿Cómo podemos ayudarte?'
+helpcenter.general.search_labels: 'Buscar etiquetas'
+helpcenter.general.select: Seleccionar
+helpcenter.general.send_user_direct_message: 'Enviar un mensaje directo al usuario'
 helpcenter.general.share: Compartir
 helpcenter.general.show: Mostrar
 helpcenter.general.tagged_with: 'etiquetado con'
