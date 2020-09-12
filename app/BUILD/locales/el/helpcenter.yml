@@ -184,8 +184,13 @@ helpcenter.emails.community_topic_agent_validation: 'To community topic δεν �
 helpcenter.emails.community_topic_approved: 'Το community topic σας έχει εγκριθεί και εμφανίζεται πλέον δημόσια στο site μας.'
 helpcenter.emails.community_topic_closed: 'Το θέμα κοινότητας "{title}" που είχατε υποβάλει έκλεισε: {status}'
 helpcenter.emails.community_topic_disapproved: 'Το community topic σας δυστυχώς δεν έγινε αποδεκτό και δεν θα εμφανιστεί δημόσια στο site μας.'
+helpcenter.emails.community_topic_disapproved_reason: 'Θα θέλαμε να σας ενημερώσουμε ότι το θέμα κοινότητάς σας δυστυχώς δεν έγινε αποδεκτό και δεν θα εμφανιστεί δημόσια στον ιστότοπό μας. Ο/Η {name} το αιτιολόγησε ως εξής:'
 helpcenter.emails.community_topic_new_approved: 'To community topic σας εγκρίθηκε'
+helpcenter.emails.community_topic_new_comment: "\nΟ/Η {name} πρόσθεσε ένα νέο σχόλιο:"
+helpcenter.emails.community_topic_new_comment_subject: 'Υπάρχει ένα νέο σχόλιο στο "{title}"'
 helpcenter.emails.community_topic_new_disapproved: 'Συγγνώμη, το community topic σας δεν έγινε αποδεκτό'
+helpcenter.emails.community_topic_published: 'Το θέμα κοινότητας "{title}" που υποβάλατε επικυρώθηκε και θα εμφανίζεται πλέον στον ιστότοπό μας.'
+helpcenter.emails.community_topic_thank_you: 'Σας ευχαριστούμε που υποβάλατε το θέμα κοινότητας "{title}"'
 helpcenter.emails.download_sub_new: 'Νέες Λήψεις'
 helpcenter.emails.download_sub_new_and_updated: 'Νέες και Ενημερωμένες Λήψεις'
 helpcenter.emails.download_sub_updated: 'Ενημερωμένες Λήψεις'
