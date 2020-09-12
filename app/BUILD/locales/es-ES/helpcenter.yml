@@ -513,8 +513,16 @@ helpcenter.general.select: Seleccionar
 helpcenter.general.send_user_direct_message: 'Enviar un mensaje directo al usuario'
 helpcenter.general.share: Compartir
 helpcenter.general.show: Mostrar
+helpcenter.general.show_x_more: 'Mostrar {num} más'
+helpcenter.general.skip_link: 'Pasar al contenido principal'
+helpcenter.general.software_power_by: 'Desarrollado por'
+helpcenter.general.sort: Ordenar
+helpcenter.general.status: Estado
+helpcenter.general.subscribe_action: Suscríbete
 helpcenter.general.tagged_with: 'etiquetado con'
 helpcenter.general.tags: Etiquetas
+helpcenter.general.time_of_completion: 'Fecha de finalización'
+helpcenter.general.translations: Traducciones
 helpcenter.general.updated: Actualizado
 helpcenter.general.user: Usuario
 helpcenter.general.you: Usted
