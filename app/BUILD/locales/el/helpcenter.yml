@@ -77,14 +77,36 @@ helpcenter.approvals.approved_by: 'Εγκρίθηκε από'
 helpcenter.approvals.approved_status: Εγκρίθηκε
 helpcenter.approvals.cancelled_status: Ακυρώθηκε
 helpcenter.approvals.list_column_agent: 'Εκπρόσωπος'
+helpcenter.approvals.list_column_approvers: 'Υπεύθυνοι έγκρισης'
 helpcenter.approvals.list_column_cancelled: 'Ακυρώθηκε'
 helpcenter.approvals.list_column_completed: 'Ολοκληρώθηκε'
 helpcenter.approvals.list_column_id: 'ID'
 helpcenter.approvals.list_column_subject: 'Θέμα'
 helpcenter.approvals.list_column_user: 'Χρήστης'
+helpcenter.approvals.list_column_your_vote: 'Η ψήφος σας'
 helpcenter.approvals.my_approvals: 'Οι εγκρίσεις μου'
+helpcenter.approvals.no_ticket_approvals_found: 'Δεν βρέθηκαν εγκρίσεις ticket'
+helpcenter.approvals.pending_status: Εκκρεμεί
 helpcenter.approvals.reject_action: Απόρριψη
+helpcenter.approvals.rejected_by: 'Απορρίφθηκε από'
+helpcenter.approvals.rejected_status: Απορρίφθηκε
+helpcenter.approvals.system: Σύστημα
+helpcenter.approvals.view_approved: Εγκρίθηκε(-αν)
+helpcenter.approvals.view_awaiting_response: 'Αναμονή για απάντηση'
+helpcenter.approvals.view_criteria: 'Κριτήρια έγκρισης'
+helpcenter.approvals.view_no_response: 'Καμία απάντηση'
+helpcenter.approvals.view_rejected: Απορρίφθηκε(-αν)
+helpcenter.approvals.view_requesting_agent: 'Αιτών εκπρόσωπος'
+helpcenter.approvals.view_ticket: Ticket
+helpcenter.approvals.view_to_approve: 'Προς έγκριση'
+helpcenter.approvals.view_to_reject: 'Προς απόρριψη'
+helpcenter.approvals.you_approved: 'Εγκρίνατε την αίτηση {template} που έγινε από τον/την {person_name}'
+helpcenter.approvals.you_rejected: 'Απορρίψατε την αίτηση {template} που έγινε από τον/την {person_name}'
+helpcenter.articles.article_object: Αυτό το άρθρο
+helpcenter.articles.published_label: Δημοσιεύθηκε
 helpcenter.articles.section_title: Γνωσιακή βάση
+helpcenter.articles.status_archived: Αρχειοθετημένο
+helpcenter.articles.status_draft: Πρόχειρο
 helpcenter.community.error_login: 'Παρακαλούμε συνδεθείτε'
 helpcenter.community.form_topic_title: Τίτλος
 helpcenter.community.no_matching: 'Δεν υπάρχει community topic που να ταιριάζει'
