@@ -139,6 +139,8 @@ helpcenter.community.reset_all_filters: 'Επαναφορά όλων των φί
 helpcenter.community.section_title: Κοινότητα
 helpcenter.community.status: Κατάσταση
 helpcenter.community.status_change: 'Αλλαγή κατάστασης'
+helpcenter.community.title: Τίτλος
+helpcenter.community.title_author: 'Τίτλος / Συντάκτης'
 helpcenter.direct_messages.reply_message: Μήνυμα
 helpcenter.emails.chat_transcript: 'Σας ευχαριστούμε που επικοινωνήσατε μαζί μας! Εδώ θα βρείτε ένα αντίγραφο της συνομιλίας μας.'
 helpcenter.emails.chat_transcript_subject: 'Αντίγραφο Chat'
@@ -167,14 +169,18 @@ helpcenter.emails.kb_updated_articles: '{count, plural, one {1 ενημερωμ�
 helpcenter.emails.label_view_online: 'Προβολή online'
 helpcenter.emails.new_ticket_guest: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας'
 helpcenter.emails.new_ticket_guest_link: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας! Μπορείτε να δείτε την κατάσταση του ticket σας εδώ:'
+helpcenter.emails.news_explain: 'Λαμβάνετε αυτό το email επειδή έχετε εγγραφεί ως συνδρομητής στα νέα μας στο <a href="{deskpro_url}">{deskpro_url}</a>.<br />Δεν θέλετε να λαμβάνετε πλέον αυτά τα email; <a href="{unsubscribe_url}">Πατήστε εδώ για να καταργήσετε την εγγραφή σας από όλες τις ειδοποιήσεις νέων.</a>'
+helpcenter.emails.news_new_news: '{count, plural, one {1 νέο άρθρο νέων} other {# νέα άρθρα νέων}}'
 helpcenter.emails.news_sub_new: 'Νέα'
 helpcenter.emails.news_sub_new_and_updated: 'Νέα και Ενημερωμένα Νέα'
 helpcenter.emails.news_sub_updated: 'Ενημερωμένα Νέα'
+helpcenter.emails.news_updated_news: '{count, plural, one {1 ενημερωμένο άρθρο νέων} other {# ενημερωμένα άρθρα νέων}}'
 helpcenter.emails.password_agent_reset: 'Έχουμε επαναφέρει τον κωδικό πρόσβασης του λογαριασμού σας. Μπορείτε να συνδεθείτε με αυτά τα στοιχεία'
 helpcenter.emails.password_agent_reset_subject: 'Ένας εκπρόσωπος του Support μας έχει επαναφέρει τον κωδικό πρόσβασής σας'
 helpcenter.emails.password_reset: 'Ζητήσατε επαναφορά κωδικού πρόσβασης. Για να επαναφέρετε τον κωδικό πρόσβασής σας, κάντε click στο παρακάτω link:'
 helpcenter.emails.password_reset_subject: 'Επαναφορά κωδικού πρόσβασης'
 helpcenter.emails.password_set: 'Για να ορίσετε κωδικό πρόσβασης, κάντε click στο παρακάτω link:'
+helpcenter.emails.password_set_subject: 'Ορίστε τον κωδικό πρόσβασής σας'
 helpcenter.emails.profile_email_link_validate: 'Απλά κάντε click στο παρακάτω link για να επιβεβαιώσετε το email σας'
 helpcenter.emails.profile_email_primary_confirm: 'Για να επιβεβαιώσετε το κύριο email σας, απλά κάντε click στο παρακάτω link'
 helpcenter.emails.ratelimit_submit_online: 'Αν πρόκειται για λάθος και είναι απαραίτητο να επικοινωνήσετε αμέσως μαζί μας, μπορείτε να παρακάμψετε το φίλτρο email και να υποβάλετε ένα ticket online:'
