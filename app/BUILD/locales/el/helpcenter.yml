@@ -191,6 +191,8 @@ helpcenter.emails.community_topic_new_comment_subject: 'Υπάρχει ένα ν
 helpcenter.emails.community_topic_new_disapproved: 'Συγγνώμη, το community topic σας δεν έγινε αποδεκτό'
 helpcenter.emails.community_topic_published: 'Το θέμα κοινότητας "{title}" που υποβάλατε επικυρώθηκε και θα εμφανίζεται πλέον στον ιστότοπό μας.'
 helpcenter.emails.community_topic_thank_you: 'Σας ευχαριστούμε που υποβάλατε το θέμα κοινότητας "{title}"'
+helpcenter.emails.community_topic_updated: 'Το θέμα κοινότητας "{title}" που υποβάλατε ενημερώθηκε. Η κατάστασή του είναι τώρα: νέα κατάσταση "{status}"'
+helpcenter.emails.community_topic_updated_subject: 'Η κοινότητά σας ενημερώθηκε: {title}'
 helpcenter.emails.download_sub_new: 'Νέες Λήψεις'
 helpcenter.emails.download_sub_new_and_updated: 'Νέες και Ενημερωμένες Λήψεις'
 helpcenter.emails.download_sub_updated: 'Ενημερωμένες Λήψεις'
