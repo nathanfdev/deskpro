@@ -523,9 +523,22 @@ helpcenter.general.tagged_with: 'etiquetado con'
 helpcenter.general.tags: Etiquetas
 helpcenter.general.time_of_completion: 'Fecha de finalización'
 helpcenter.general.translations: Traducciones
+helpcenter.general.unpublished: 'Fecha de retiro'
 helpcenter.general.updated: Actualizado
 helpcenter.general.user: Usuario
+helpcenter.general.user_menu: 'Menú de usuario'
+helpcenter.general.user_profile: 'Perfil del usuario'
+helpcenter.general.view_all_status_changes: 'Ver todos los cambios de estado'
+helpcenter.general.view_all_topics: 'Ver todos los temas'
+helpcenter.general.view_profile: 'Ver mi perfil'
+helpcenter.general.viewed_by_agents_only: 'Esta campo solo es visible para los agentes'
+helpcenter.general.workflow: 'Flujo de trabajo'
+helpcenter.general.x_search_results: '{num} resultados sobre "{query}"'
 helpcenter.general.you: Usted
+helpcenter.general.your_comment_label: 'Tu comentario'
+helpcenter.general.your_comment_optional_label: 'Tu comentario (opcional)'
+helpcenter.general.download_pdf: 'Descargar PDF'
+helpcenter.knowledgebase.featured_articles: 'Artículos destacados'
 helpcenter.members.activity_down_voted_comment_on: 'Votar en negativo el comentario'
 helpcenter.members.activity_group_everything_else: 'Todo lo demás'
 helpcenter.members.activity_group_last_month: 'Último mes'
