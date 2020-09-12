@@ -471,6 +471,11 @@ helpcenter.general.nav_login: 'Iniciar sesión'
 helpcenter.general.nav_members: 'Directorio de miembros'
 helpcenter.general.nav_news: Novedades
 helpcenter.general.nav_news_desc: 'Ver todas las publicaciones de novedades'
+helpcenter.general.nav_news_desc_short: 'Ver todas las novedades'
+helpcenter.general.nav_newticket: 'Contacta con nosotros'
+helpcenter.general.nav_profile: Perfil
+helpcenter.general.nav_register: 'Registro'
+helpcenter.general.nav_support_center: 'Centro de asistencia'
 helpcenter.general.no_search_query: 'Por favor, escriba una consulta de búsqueda en el cuadro de búsqueda.'
 helpcenter.general.password: Contraseña
 helpcenter.general.print: Impresión
