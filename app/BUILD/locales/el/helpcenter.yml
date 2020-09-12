@@ -107,10 +107,38 @@ helpcenter.articles.published_label: Δημοσιεύθηκε
 helpcenter.articles.section_title: Γνωσιακή βάση
 helpcenter.articles.status_archived: Αρχειοθετημένο
 helpcenter.articles.status_draft: Πρόχειρο
+helpcenter.articles.status_published: Δημοσιευμένο
+helpcenter.articles.view_as_agent: 'Οι χρήστες δεν μπορούν να δουν αυτήν τη σελίδα, επειδή το άρθρο δεν έχει δημοσιευθεί.'
+helpcenter.articles.view_x_articles: 'Δείτε όλα τα άρθρα σε {category}'
+helpcenter.chats.my_chats: 'Οι συνομιλίες μου'
+helpcenter.community.activity: Δραστηριότητα
+helpcenter.community.activity_commented: 'Σχολίασα'
+helpcenter.community.activity_created: 'Δημιούργησα'
+helpcenter.community.activity_voted: 'Ψήφισα'
+helpcenter.community.category: Κατηγορία
+helpcenter.community.create_topic: Δημιουργία
+helpcenter.community.create_topic_full: 'Δημιουργία {forum}'
+helpcenter.community.create_topic_in_forum: 'Υποβολή {forum}'
 helpcenter.community.error_login: 'Παρακαλούμε συνδεθείτε'
+helpcenter.community.featured_topics: 'Επιλεγμένα θέματα'
+helpcenter.community.filters: Φίλτρα
+helpcenter.community.form_add_attachments: 'Προσθήκη συνημμένων'
+helpcenter.community.form_create_topic: 'Δημιουργία θέματος'
+helpcenter.community.form_description: Περιγραφή
 helpcenter.community.form_topic_title: Τίτλος
+helpcenter.community.forum_name: 'Όνομα φόρουμ'
+helpcenter.community.like_action: Μου αρέσει
+helpcenter.community.likes: Μου αρέσει
+helpcenter.community.my_activity: 'Η δραστηριότητά μου'
 helpcenter.community.no_matching: 'Δεν υπάρχει community topic που να ταιριάζει'
+helpcenter.community.none: 'Δεν βρέθηκαν θέματα κοινότητας'
+helpcenter.community.official_response: 'Επίσημη απάντηση'
 helpcenter.community.rate_forbidden: 'Δεν έχετε δικαίωμα να ψηφίσετε'
+helpcenter.community.recent_activity: 'Πρόσφατη δραστηριότητα'
+helpcenter.community.reset_all_filters: 'Επαναφορά όλων των φίλτρων'
+helpcenter.community.section_title: Κοινότητα
+helpcenter.community.status: Κατάσταση
+helpcenter.community.status_change: 'Αλλαγή κατάστασης'
 helpcenter.direct_messages.reply_message: Μήνυμα
 helpcenter.emails.chat_transcript: 'Σας ευχαριστούμε που επικοινωνήσατε μαζί μας! Εδώ θα βρείτε ένα αντίγραφο της συνομιλίας μας.'
 helpcenter.emails.chat_transcript_subject: 'Αντίγραφο Chat'
@@ -131,9 +159,11 @@ helpcenter.emails.download_sub_new_and_updated: 'Νέες και Ενημερω�
 helpcenter.emails.download_sub_updated: 'Ενημερωμένες Λήψεις'
 helpcenter.emails.email_new_confirm: 'Επιβεβαιώστε το email σας'
 helpcenter.emails.email_ticket_reminder: 'Απαιτείται ενέργεια: το αίτημά σας δεν έχει καταχωρηθεί'
+helpcenter.emails.kb_new_articles: '{count, plural, one {1 νέο άρθρο} other {# νέα άρθρα}}'
 helpcenter.emails.kb_sub_new: 'Νέα άρθρα'
 helpcenter.emails.kb_sub_new_and_updated: 'Νέα και Ενημερωμένα άρθρα'
 helpcenter.emails.kb_sub_updated: 'Ενημερωμένα άρθρα'
+helpcenter.emails.kb_updated_articles: '{count, plural, one {1 ενημερωμένο άρθρο} other {# ενημερωμένα άρθρα}}'
 helpcenter.emails.label_view_online: 'Προβολή online'
 helpcenter.emails.new_ticket_guest: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας'
 helpcenter.emails.new_ticket_guest_link: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας! Μπορείτε να δείτε την κατάσταση του ticket σας εδώ:'
