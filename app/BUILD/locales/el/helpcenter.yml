@@ -141,7 +141,26 @@ helpcenter.community.status: Κατάσταση
 helpcenter.community.status_change: 'Αλλαγή κατάστασης'
 helpcenter.community.title: Τίτλος
 helpcenter.community.title_author: 'Τίτλος / Συντάκτης'
+helpcenter.community.view_all_topics: 'Προβολή όλων {plural}'
+helpcenter.community.view_list: 'Προβολή λίστας'
+helpcenter.community.view_status_change: 'Αλλαγή κατάστασης'
+helpcenter.direct_messages.back_to_messages: 'Πίσω στα μηνύματά μου'
+helpcenter.direct_messages.block_user: 'αποκλεισμός χρήστη'
+helpcenter.direct_messages.new_message: 'Νέο μήνυμα'
+helpcenter.direct_messages.none: 'Κανένα μήνυμα'
+helpcenter.direct_messages.recipient: Παραλήπτης
+helpcenter.direct_messages.reply_cancel: Άκυρο
 helpcenter.direct_messages.reply_message: Μήνυμα
+helpcenter.direct_messages.reply_send_message: 'Αποστολή μηνύματος'
+helpcenter.direct_messages.title: 'Τα μηνύματά μου'
+helpcenter.direct_messages.unblock_user_action: 'άρση αποκλεισμού χρήστη'
+helpcenter.downloads.download_action: Λήψη
+helpcenter.downloads.file_name: 'Όνομα αρχείου'
+helpcenter.downloads.file_size: 'Μέγεθος αρχείου'
+helpcenter.downloads.no_files: 'Κανένα αρχείο'
+helpcenter.downloads.total_downloads: 'Σύνολο λήψεων'
+helpcenter.downloads.view_x_files: '{count, plural, one {Δείτε 1 λήψη} other {Δείτε # λήψεις}}'
+helpcenter.duration_short.days: Η
 helpcenter.emails.chat_transcript: 'Σας ευχαριστούμε που επικοινωνήσατε μαζί μας! Εδώ θα βρείτε ένα αντίγραφο της συνομιλίας μας.'
 helpcenter.emails.chat_transcript_subject: 'Αντίγραφο Chat'
 helpcenter.emails.comment_approved: 'Το σχόλιό σας έχει δημοσιευθεί.'
