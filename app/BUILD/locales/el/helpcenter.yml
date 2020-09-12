@@ -161,6 +161,14 @@ helpcenter.downloads.no_files: 'Κανένα αρχείο'
 helpcenter.downloads.total_downloads: 'Σύνολο λήψεων'
 helpcenter.downloads.view_x_files: '{count, plural, one {Δείτε 1 λήψη} other {Δείτε # λήψεις}}'
 helpcenter.duration_short.days: Η
+helpcenter.duration_short.hours: ώ
+helpcenter.duration_short.minutes: λ
+helpcenter.duration_short.months: Μ
+helpcenter.duration_short.seconds: δ
+helpcenter.duration_short.weeks: Ε
+helpcenter.duration_short.years: 'Χ'
+helpcenter.emails.account_disabled_message: 'Ο λογαριασμός σας είναι προσωρινά απενεργοποιημένος. Δεν μπορείτε να συνδεθείτε ή να χρησιμοποιήσετε τα ticket και το chat.'
+helpcenter.emails.auto_close: 'Το ticket σας "{subject}" θα κλείσει σύντομα, επειδή δεν έχετε επικοινωνήσει τελευταία. Αν χρειάζεστε περαιτέρω υποστήριξη, απλώς απαντήστε και ένας από τους εκπροσώπους μας θα σας βοηθήσει.'
 helpcenter.emails.chat_transcript: 'Σας ευχαριστούμε που επικοινωνήσατε μαζί μας! Εδώ θα βρείτε ένα αντίγραφο της συνομιλίας μας.'
 helpcenter.emails.chat_transcript_subject: 'Αντίγραφο Chat'
 helpcenter.emails.comment_approved: 'Το σχόλιό σας έχει δημοσιευθεί.'
@@ -168,10 +176,13 @@ helpcenter.emails.comment_approved_subject: 'Το σχόλιό σας εγκρί
 helpcenter.emails.comment_confirmation: 'Ευχαριστούμε για το σχόλιό σας'
 helpcenter.emails.comment_deleted: 'Το σχόλιο σας χρησιμοποιήθηκε για να βελτιώσουμε αυτήν τη σελίδα.'
 helpcenter.emails.comment_deleted_subject: 'Το σχόλιό σας έχει διαβαστεί από τους εκπροσώπους του Support μας'
+helpcenter.emails.comment_thank_you: 'Σας ευχαριστούμε για το σχόλιό σας στο {link}.'
+helpcenter.emails.community_explain: 'Λαμβάνετε αυτό το email επειδή έχετε εγγραφεί ως συνδρομητής στα νέα μας στο <a href="{deskpro_url}">{deskpro_url}</a>.<br />Δεν θέλετε να λαμβάνετε πλέον αυτά τα email; <a href="{unsubscribe_url}">Πατήστε εδώ για να καταργήσετε την εγγραφή σας από όλες τις ειδοποιήσεις θεμάτων κοινότητας.</a>'
 helpcenter.emails.community_new: 'Ευχαριστούμε για το community topic'
 helpcenter.emails.community_sub_updated: 'Ενημερωμένο Community Topic'
 helpcenter.emails.community_topic_agent_validation: 'To community topic δεν θα εμφανιστεί δημοσίως άμεσα, χρειάζεται να το ελέγξει πρώτα κάποιος εκπρόσωπος του Support μας.'
 helpcenter.emails.community_topic_approved: 'Το community topic σας έχει εγκριθεί και εμφανίζεται πλέον δημόσια στο site μας.'
+helpcenter.emails.community_topic_closed: 'Το θέμα κοινότητας "{title}" που είχατε υποβάλει έκλεισε: {status}'
 helpcenter.emails.community_topic_disapproved: 'Το community topic σας δυστυχώς δεν έγινε αποδεκτό και δεν θα εμφανιστεί δημόσια στο site μας.'
 helpcenter.emails.community_topic_new_approved: 'To community topic σας εγκρίθηκε'
 helpcenter.emails.community_topic_new_disapproved: 'Συγγνώμη, το community topic σας δεν έγινε αποδεκτό'
