@@ -1,1 +1,15 @@
 ---
+helpcenter.account.add: Lisa
+helpcenter.account.add_email: 'Lisa e-posti aadress'
+helpcenter.account.change_password_action: 'Uuenda salasõna'
+helpcenter.account.comment_lockout: 'Olete lisanud palju kommentaare. Palun oodake, kui soovite uusi lisada.'
+helpcenter.account.email_btn_usersource_set: 'Lisa e-posti aadress'
+helpcenter.account.email_make_primary_action: 'Muuda peamiseks'
+helpcenter.account.email_management_from_form: 'Halda minu e-posti aadresse'
+helpcenter.account.email_primary_description: Peamine
+helpcenter.account.email_remove_action: 'Eemalda e-posti aadress'
+helpcenter.account.email_resend_validation_action: 'Saada kinnituskiri uuesti'
+helpcenter.account.lockout_time: 'Saate uuesti proovida {minutes} minuti pärast.'
+helpcenter.account.login_captcha_failed: 'Olete sisestanud väära CAPTCHA-koodi. Palun proovige uuesti.'
+helpcenter.account.login_disabled: 'Teie e-posti aadress on blokeeritud.'
+helpcenter.account.login_email: 'Teie e-posti aadress'
