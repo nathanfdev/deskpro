@@ -240,6 +240,7 @@ helpcenter.error.403_desc: 'Μας συγχωρείτε, αλλά δεν έχε�
 helpcenter.error.403_title: 'Χωρίς Πρόσβαση'
 helpcenter.error.404_desc: 'Μας συγχωρείτε, αλλά δεν μπορέσαμε να βρούμε αυτήν τη σελίδα.'
 helpcenter.error.404_title: 'Δεν βρέθηκε'
+helpcenter.error.contact_us: 'Επικοινωνήστε μαζί μας'
 helpcenter.error.general_title: 'Παρουσιάστηκε Σφάλμα'
 helpcenter.error.permission_denied_title: 'Δεν επιτρέπεται αυτή η ενέργεια'
 helpcenter.flashes.article_unsubscribe: 'Έχετε απεγγραφεί επιτυχώς από αυτό το άρθρο.'
@@ -257,8 +258,15 @@ helpcenter.flashes.user_resend_email_verify: 'Το email επιβεβαίωση�
 helpcenter.flashes.user_updated_profile: 'Το προφίλ σας έχει ενημερωθεί.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Ευχαριστούμε για την επιβεβαίωση του email σας. Ο λογαριασμός σας είναι τώρα ενεργός.'
 helpcenter.flashes.usersource_new_add_email_verify: 'Θα χρειαστεί να επιβεβαιώσουμε το email σας πριν τη δημιουργία του λογαριασμού σας. Παρακαλούμε ελέγξτε τα εισερχόμενά email σας για το email επιβεβαίωσης.'
+helpcenter.forms.delete_question: 'Διαγραφή;'
+helpcenter.forms.error_captcha: 'Η τιμή CAPTCHA ήταν λανθασμένη'
 helpcenter.forms.error_email_required: 'Πρέπει να δώσετε το email σας'
+helpcenter.forms.error_required: 'Αυτή η τιμή απαιτείται'
+helpcenter.forms.error_banned_email: 'Το email έχει αποκλειστεί.'
+helpcenter.forms.label_drag_overlay: 'Εισαγάγετε αυτήν την εικόνα στο μήνυμά σας.'
+helpcenter.forms.label_email: Email
 helpcenter.forms.label_save: Αποθήκευση
+helpcenter.forms.label_submit: Υποβολή
 helpcenter.general.add_comment: 'Προσθήκη σχολίου'
 helpcenter.general.admin: Διαχειριστής
 helpcenter.general.admin_home: 'Αρχική σελίδα διαχειριστή'
@@ -274,12 +282,16 @@ helpcenter.general.agent_bar_agent_news: 'Διαχείριση Ενημερώσ�
 helpcenter.general.agents: Εκπρόσωπος Support
 helpcenter.general.attachments: Επισυνάψεις
 helpcenter.general.comments: Σχόλια
+helpcenter.general.drag_and_drop: 'Μεταφορά και απόθεση'
 helpcenter.general.everything: Όλα
 helpcenter.general.impersonation_mode: 'Λειτουργία πλαστοπροσωπίας'
 helpcenter.general.label_search_enter_label: 'Παρακαλούμε υποβάλετε μια ετικέτα για αναζήτηση'
 helpcenter.general.last_activity: 'Τελευταία δραστηριότητα'
 helpcenter.general.log_in: 'Σύνδεση'
+helpcenter.general.name: Όνομα
+helpcenter.general.nav_contact: 'Επικοινωνήστε μαζί μας'
 helpcenter.general.nav_guides: Οδηγίες
+helpcenter.general.nav_newticket: 'Επικοινωνήστε μαζί μας'
 helpcenter.general.no_search_query: 'Παρακαλούμε πληκτρολογήστε τι θέλετε να αναζητήσετε στο πεδίο αναζήτησης.'
 helpcenter.general.password: Κωδικός πρόσβασης
 helpcenter.general.print: Εκτύπωση
@@ -297,6 +309,7 @@ helpcenter.general.rate_page_positive: Βοηθητικό
 helpcenter.general.rerender_form: 'Παρακαλούμε ελέγξτε τη φόρμα πριν την υποβάλετε.'
 helpcenter.general.share: Κοινή χρήση
 helpcenter.general.show: Προβολή
+helpcenter.general.show_x_more: 'Προβολή άλλων {num}'
 helpcenter.general.tagged_with: 'με ετικέτα'
 helpcenter.general.tags: Ετικέτες
 helpcenter.general.updated: Επικαιροποιημένο
@@ -322,7 +335,7 @@ helpcenter.tickets.list_status_user: 'Χρειάζεται να απαντήσε
 helpcenter.tickets.list_subject: Θέμα
 helpcenter.tickets.list_ticket_ref: Αναφορά
 helpcenter.tickets.need_login_title: 'Χρειάζεται να συνδεθείτε για να δημιουργήσετε ένα νέο ticket'
-helpcenter.tickets.new_intro: 'Παρακαλούμε συμπληρώστε αυτήν τη φόρμα και ένας εκπρόσωπος του Support μας θα επικοινωνήσει μαζί σας μέσω email το συντομότερο.'
+helpcenter.tickets.new_intro: 'Συμπληρώστε αυτήν τη φόρμα και ένας εκπρόσωπός μας θα σας απαντήσει μέσω email το συντομότερο.'
 helpcenter.tickets.new_section_title: 'Επικοινωνήστε μαζί μας'
 helpcenter.tickets.new_ticket_button: 'Δημιουργήστε ένα νέο ticket'
 helpcenter.tickets.no_participants: 'Κανένας συμμετέχοντας'
@@ -332,9 +345,13 @@ helpcenter.tickets.please_login_to_reply: 'Συνδεθείτε για να απ
 helpcenter.tickets.rate_positive: 'Ήταν εξαιρετική'
 helpcenter.tickets.rate_question: 'Πώς θα βαθμολογούσατε την εξυπηρέτηση που λάβατε;'
 helpcenter.tickets.rate_support: 'Αξιολογήστε την υποστήριξη που λάβατε'
+helpcenter.tickets.reference_number: 'Αριθμος αναφοράς: {ref}'
+helpcenter.tickets.related_articles_desc: 'Βρήκαμε τα παρακάτω άρθρα που ίσως λύσουν το πρόβλημά σας.'
 helpcenter.tickets.switched_department_rerender: 'Η δομή αυτής της φόρμας ίσως έχει αλλάξει. Παρακαλούμε ελέξτε τη φόρμα και υποβάλετε την ξανά.'
+helpcenter.tickets.thank_you: 'Σας ευχαριστούμε. Λάβαμε το αίτημά σας.'
 helpcenter.tickets.thank_you_check_email: 'Παρακαλούμε επιβεβαιώστε το email σας'
 helpcenter.tickets.thank_you_check_email_desc: 'Για να ολοκληρώσετε την υποβολή του ticket σας, πρέπει να ελέγξετε τα email σας. Παρακαλούμε, κάντε click στο link επιβεβαίωσης που σας έχουμε στείλει.'
+helpcenter.tickets.thank_you_desc: 'Σας ευχαριστούμε που επικοινωνήσατε μαζί μας. Κάποιος από την ομάδα μας θα επικοινωνήσει μαζί σας σύντομα.'
 helpcenter.tickets.timeline_marked: 'σημείωσε αυτό το ticket:'
 helpcenter.tickets.view_btn_add_to_ticket: 'Προσθήκη σε ticket'
 helpcenter.tickets.view_btn_edit: Επεξεργασία
