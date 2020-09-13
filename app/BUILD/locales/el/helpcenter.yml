@@ -286,12 +286,15 @@ helpcenter.general.drag_and_drop: 'Μεταφορά και απόθεση'
 helpcenter.general.everything: Όλα
 helpcenter.general.impersonation_mode: 'Λειτουργία πλαστοπροσωπίας'
 helpcenter.general.label_search_enter_label: 'Παρακαλούμε υποβάλετε μια ετικέτα για αναζήτηση'
+helpcenter.general.labels: Ετικέτες
 helpcenter.general.last_activity: 'Τελευταία δραστηριότητα'
 helpcenter.general.last_update_by: 'Τελευταία ενημέρωση: <strong>{date_updated, date, medium}</strong> από <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Σύνδεση'
 helpcenter.general.name: Όνομα
 helpcenter.general.nav_contact: 'Επικοινωνήστε μαζί μας'
-helpcenter.general.nav_guides: Οδηγίες
+helpcenter.general.nav_downloads_desc: 'Αναζήτηση στα αρχεία μας'
+helpcenter.general.nav_guides: Οδηγοί
+helpcenter.general.nav_guides_desc: 'Δείτε όλους τους οδηγούς'
 helpcenter.general.nav_kb: Γνωσιακή βάση
 helpcenter.general.nav_newticket: 'Επικοινωνήστε μαζί μας'
 helpcenter.general.no_search_query: 'Πληκτρολογήστε ένα ερώτημα αναζήτησης στο πλαίσιο αναζήτησης.'
@@ -310,9 +313,12 @@ helpcenter.general.prop_views_asc: 'Λιγότερες προβολές πρώτ
 helpcenter.general.prop_views_desc: 'Περισσότερες προβολές πρώτα'
 helpcenter.general.rate_page_negative: Δεν βοηθάει
 helpcenter.general.rate_page_positive: Βοηθάει
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} από {vote_count} χρήστες πιστεύουν ότι αυτή η σελίδα βοηθάει'
+helpcenter.general.related_content: 'Σχετικό περιεχόμενο'
 helpcenter.general.remove: αφαίρεση
 helpcenter.general.rerender_form: 'Παρακαλούμε ελέγξτε τη φόρμα πριν την υποβάλετε.'
 helpcenter.general.search: 'Πώς μπορούμε να σας βοηθήσουμε σήμερα;'
+helpcenter.general.search_labels: 'Ετικέτες αναζήτησης'
 helpcenter.general.share: Κοινή χρήση
 helpcenter.general.show: Προβολή
 helpcenter.general.show_x_more: 'Προβολή άλλων {num}'
