@@ -13,3 +13,16 @@ helpcenter.account.lockout_time: 'Saate uuesti proovida {minutes} minuti pärast
 helpcenter.account.login_captcha_failed: 'Olete sisestanud väära CAPTCHA-koodi. Palun proovige uuesti.'
 helpcenter.account.login_disabled: 'Teie e-posti aadress on blokeeritud.'
 helpcenter.account.login_email: 'Teie e-posti aadress'
+helpcenter.account.login_email_placeholder: email@näidis.com
+helpcenter.account.login_external: 'Logi sisse teise teenusepakkujaga'
+helpcenter.account.login_invalid: 'Sisselogimine ei õnnestunud'
+helpcenter.account.login_lockout: 'Sisselogimine on liiga palju kordi ebaõnnestunud ning see on lukus. Palun proovige hiljem uuesti.'
+helpcenter.account.login_not_configured: 'Teine teenus pole seadistatud.'
+helpcenter.account.login_password: 'Teie salasõna'
+helpcenter.account.login_register_action: Registreeru
+helpcenter.account.login_register_header: 'Registreeru konto loomiseks'
+helpcenter.account.login_reset_password_link: 'Kas soovite salasõna meeldetuletust?'
+helpcenter.account.login_stay_logged_in: 'Kas soovite jääda sisselogituks?'
+helpcenter.account.logout_action: Logi välja
+helpcenter.account.logout_confirm: 'Kas olete kindel, et soovite välja logida?'
+helpcenter.account.new_to_brand: 'Kas {brand} on teile uus?'
