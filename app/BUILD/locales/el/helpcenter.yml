@@ -238,10 +238,10 @@ helpcenter.emails.validate_email: 'Παρακαλούμε επιβεβαιώστ
 helpcenter.error.400_desc: 'Μας συγχωρείτε, αλλά το αίτημά σας ήταν αλλοιωμένο.'
 helpcenter.error.403_desc: 'Μας συγχωρείτε, αλλά δεν έχετε πρόσβαση για να δείτε αυτή τη σελίδα.'
 helpcenter.error.403_title: 'Χωρίς Πρόσβαση'
-helpcenter.error.404_desc: 'Μας συγχωρείτε, αλλά δεν μπορέσαμε να βρούμε αυτήν τη σελίδα.'
+helpcenter.error.404_desc: 'Λυπούμαστε. Δεν μπορέσαμε να βρούμε αυτήν τη σελίδα.'
 helpcenter.error.404_title: 'Δεν βρέθηκε'
 helpcenter.error.contact_us: 'Επικοινωνήστε μαζί μας'
-helpcenter.error.general_title: 'Παρουσιάστηκε Σφάλμα'
+helpcenter.error.general_title: 'Παρουσιάστηκε σφάλμα'
 helpcenter.error.permission_denied_title: 'Δεν επιτρέπεται αυτή η ενέργεια'
 helpcenter.flashes.article_unsubscribe: 'Έχετε απεγγραφεί επιτυχώς από αυτό το άρθρο.'
 helpcenter.flashes.guest_content_must_verify: 'Προτού μπορέσουμε να δημοσιεύσουμε το περιεχόμενό σας, πρέπει να επιβεβαιώσετε το email σας. Ελέγξτε τα εισερχόμενα email σας. Σας έχουμε στείλει ένα link επιβεβαίωσης.'
@@ -292,7 +292,8 @@ helpcenter.general.name: Όνομα
 helpcenter.general.nav_contact: 'Επικοινωνήστε μαζί μας'
 helpcenter.general.nav_guides: Οδηγίες
 helpcenter.general.nav_newticket: 'Επικοινωνήστε μαζί μας'
-helpcenter.general.no_search_query: 'Παρακαλούμε πληκτρολογήστε τι θέλετε να αναζητήσετε στο πεδίο αναζήτησης.'
+helpcenter.general.no_search_query: 'Πληκτρολογήστε ένα ερώτημα αναζήτησης στο πλαίσιο αναζήτησης.'
+helpcenter.general.no_search_results_general: 'Δεν βρέθηκαν αποτελέσματα'
 helpcenter.general.password: Κωδικός πρόσβασης
 helpcenter.general.print: Εκτύπωση
 helpcenter.general.prop_comments_asc: 'Λιγότερα σχόλια πρώτα'
@@ -306,7 +307,9 @@ helpcenter.general.prop_rating_desc: 'Υψηλότερη βαθμολογία π
 helpcenter.general.prop_views_asc: 'Λιγότερες προβολές πρώτα'
 helpcenter.general.prop_views_desc: 'Περισσότερες προβολές πρώτα'
 helpcenter.general.rate_page_positive: Βοηθητικό
+helpcenter.general.remove: αφαίρεση
 helpcenter.general.rerender_form: 'Παρακαλούμε ελέγξτε τη φόρμα πριν την υποβάλετε.'
+helpcenter.general.search: 'Πώς μπορούμε να σας βοηθήσουμε σήμερα;'
 helpcenter.general.share: Κοινή χρήση
 helpcenter.general.show: Προβολή
 helpcenter.general.show_x_more: 'Προβολή άλλων {num}'
@@ -314,14 +317,21 @@ helpcenter.general.tagged_with: 'με ετικέτα'
 helpcenter.general.tags: Ετικέτες
 helpcenter.general.updated: Επικαιροποιημένο
 helpcenter.general.user: Χρήστης
+helpcenter.general.x_search_results: '{num} αποτελέσματα αναζήτησης για το "{query}"'
 helpcenter.general.you: Εσείς
+helpcenter.label.search: Αναζήτηση
 helpcenter.members.language: Γλώσσα
 helpcenter.members.timezone: Ζώνη ώρας
+helpcenter.messenger.blocks_continue_chat_title: 'Συνέχεια υπάρχουσας συνομιλίας'
+helpcenter.messenger.blocks_ticket_title: 'Υποβάλετε ένα ticket'
+helpcenter.messenger.greeting: 'Επικοινωνήστε μαζί μας'
 helpcenter.news.none: 'Δεν υπάρχουν νέα'
 helpcenter.news.recent_title: 'Πρόσφατα νέα'
 helpcenter.news.view_as_agent: 'Μπορείτε να δείτε αυτήν τη σελίδα επειδή είστε διαχειριστής. Οι απλοί χρήστες δεν μπορούν να δουν αυτήν τη σελίδα.'
 helpcenter.profile.account_disabled_message: 'Ο λογαριασμός σας είναι προσωρινά απενεργοποιημένος. Δεν μπορείτε να συνδεθείτε ή να χρησιμοποιήσετε τα tickets και το chat.'
 helpcenter.profile.your_password: 'Κωδικός πρόσβασης'
+helpcenter.search.search_results: 'Αποτελέσματα αναζήτησης'
+helpcenter.search.showing_results_for: 'Εμφάνιση αποτελεσμάτων σε {type} για: <span>“{query}”</span>'
 helpcenter.tickets.form_changed_notice: 'Έχουν προστεθεί νέα πεδία στη φόρμα. Παρακαλούμε ελέγξτε τα και υποβάλετε ξανά τη φόρμα.'
 helpcenter.tickets.guest_thank_you_desc: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας! Σας έχουμε στείλει ένα email με οδηγίες σχετικά με την διαχείριση του ticket σας.'
 helpcenter.tickets.guest_thank_you_title: 'Ευχαριστούμε!'
@@ -347,6 +357,7 @@ helpcenter.tickets.rate_question: 'Πώς θα βαθμολογούσατε τη
 helpcenter.tickets.rate_support: 'Αξιολογήστε την υποστήριξη που λάβατε'
 helpcenter.tickets.reference_number: 'Αριθμος αναφοράς: {ref}'
 helpcenter.tickets.related_articles_desc: 'Βρήκαμε τα παρακάτω άρθρα που ίσως λύσουν το πρόβλημά σας.'
+helpcenter.tickets.submit_a_ticket: 'Υποβάλετε ένα ticket'
 helpcenter.tickets.switched_department_rerender: 'Η δομή αυτής της φόρμας ίσως έχει αλλάξει. Παρακαλούμε ελέξτε τη φόρμα και υποβάλετε την ξανά.'
 helpcenter.tickets.thank_you: 'Σας ευχαριστούμε. Λάβαμε το αίτημά σας.'
 helpcenter.tickets.thank_you_check_email: 'Παρακαλούμε επιβεβαιώστε το email σας'
