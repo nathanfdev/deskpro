@@ -48,6 +48,8 @@ helpcenter.account.section_desc_register: 'Looge konto, et saaksite enda infovah
 helpcenter.account.section_title_register: Registreeru
 helpcenter.account.section_title_reset_password: 'Taastage salasõna'
 helpcenter.account.section_title_set_password: 'Määrake salasõna'
+helpcenter.error.404_desc: 'Kahjuks ei leidnud me seda lehekülge.'
+helpcenter.error.an_error_occured: 'Ilmnes viga'
 helpcenter.error.contact_us: 'Võtke meiega ühendust'
 helpcenter.forms.delete_question: 'Kas kustutada?'
 helpcenter.forms.error_captcha: 'CAPTCHA oli väär'
@@ -65,8 +67,13 @@ helpcenter.general.no_search_results_general: 'Tulemusi ei leitud'
 helpcenter.general.remove: eemalda
 helpcenter.general.search: 'Kuidas saame teid täna aidata?'
 helpcenter.general.show_x_more: 'Näita {num} rohkem'
+helpcenter.general.x_search_results: '{num} otsingutulemust päringule "{query}"'
+helpcenter.label.search: Otsi
 helpcenter.messenger.tickets_form_thanks: 'Aitäh, et meiega ühendust võtsite. Meie meeskonna liige kirjutab teile e-kirja teel.'
+helpcenter.search.search_results: 'Otsingutulemused'
+helpcenter.search.showing_results_for: 'Näitab tulemusi kategoorias {type} päringule: <span>“{query}”</span>'
 helpcenter.tickets.new_intro: 'Palun täitke see vorm ning üks meie esindajatest vastab teile e-posti teel niipea kui võimalik.'
 helpcenter.tickets.reference_number: 'Viitenumber: {ref}'
 helpcenter.tickets.related_articles_desc: 'Leidsime järgmised artiklid, mis võivad teie probleemi lahendada.'
+helpcenter.tickets.submit_a_ticket: 'Esita pilet'
 helpcenter.tickets.thank_you: 'Aitäh, oleme teie kirja kätte saanud.'
