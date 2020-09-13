@@ -50,10 +50,23 @@ helpcenter.account.section_title_reset_password: 'Taastage salasõna'
 helpcenter.account.section_title_set_password: 'Määrake salasõna'
 helpcenter.error.contact_us: 'Võtke meiega ühendust'
 helpcenter.forms.delete_question: 'Kas kustutada?'
+helpcenter.forms.error_captcha: 'CAPTCHA oli väär'
+helpcenter.forms.error_required: 'See väli tuleb täita'
+helpcenter.forms.error_banned_email: 'E-post on blokeeritud.'
+helpcenter.forms.label_drag_overlay: 'Sisesta see pilt enda kirja.'
+helpcenter.forms.label_email: E-post
+helpcenter.forms.label_submit: Saada
+helpcenter.general.drag_and_drop: 'Tiri ja kukuta'
 helpcenter.general.name: Nimi
 helpcenter.general.nav_contact: 'Võtke meiega ühendust'
 helpcenter.general.nav_newticket: 'Võtke meiega ühendust'
+helpcenter.general.no_search_query: 'Palun trükkige otsingu märksõna otsingukasti.'
+helpcenter.general.no_search_results_general: 'Tulemusi ei leitud'
+helpcenter.general.remove: eemalda
+helpcenter.general.search: 'Kuidas saame teid täna aidata?'
+helpcenter.general.show_x_more: 'Näita {num} rohkem'
 helpcenter.messenger.tickets_form_thanks: 'Aitäh, et meiega ühendust võtsite. Meie meeskonna liige kirjutab teile e-kirja teel.'
 helpcenter.tickets.new_intro: 'Palun täitke see vorm ning üks meie esindajatest vastab teile e-posti teel niipea kui võimalik.'
 helpcenter.tickets.reference_number: 'Viitenumber: {ref}'
+helpcenter.tickets.related_articles_desc: 'Leidsime järgmised artiklid, mis võivad teie probleemi lahendada.'
 helpcenter.tickets.thank_you: 'Aitäh, oleme teie kirja kätte saanud.'
