@@ -287,10 +287,12 @@ helpcenter.general.everything: Όλα
 helpcenter.general.impersonation_mode: 'Λειτουργία πλαστοπροσωπίας'
 helpcenter.general.label_search_enter_label: 'Παρακαλούμε υποβάλετε μια ετικέτα για αναζήτηση'
 helpcenter.general.last_activity: 'Τελευταία δραστηριότητα'
+helpcenter.general.last_update_by: 'Τελευταία ενημέρωση: <strong>{date_updated, date, medium}</strong> από <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Σύνδεση'
 helpcenter.general.name: Όνομα
 helpcenter.general.nav_contact: 'Επικοινωνήστε μαζί μας'
 helpcenter.general.nav_guides: Οδηγίες
+helpcenter.general.nav_kb: Γνωσιακή βάση
 helpcenter.general.nav_newticket: 'Επικοινωνήστε μαζί μας'
 helpcenter.general.no_search_query: 'Πληκτρολογήστε ένα ερώτημα αναζήτησης στο πλαίσιο αναζήτησης.'
 helpcenter.general.no_search_results_general: 'Δεν βρέθηκαν αποτελέσματα'
@@ -306,7 +308,8 @@ helpcenter.general.prop_rating_asc: 'Χαμηλότερη βαθμολογία �
 helpcenter.general.prop_rating_desc: 'Υψηλότερη βαθμολογία πρώτα'
 helpcenter.general.prop_views_asc: 'Λιγότερες προβολές πρώτα'
 helpcenter.general.prop_views_desc: 'Περισσότερες προβολές πρώτα'
-helpcenter.general.rate_page_positive: Βοηθητικό
+helpcenter.general.rate_page_negative: Δεν βοηθάει
+helpcenter.general.rate_page_positive: Βοηθάει
 helpcenter.general.remove: αφαίρεση
 helpcenter.general.rerender_form: 'Παρακαλούμε ελέγξτε τη φόρμα πριν την υποβάλετε.'
 helpcenter.general.search: 'Πώς μπορούμε να σας βοηθήσουμε σήμερα;'
@@ -323,8 +326,19 @@ helpcenter.label.search: Αναζήτηση
 helpcenter.members.language: Γλώσσα
 helpcenter.members.timezone: Ζώνη ώρας
 helpcenter.messenger.blocks_continue_chat_title: 'Συνέχεια υπάρχουσας συνομιλίας'
+helpcenter.messenger.blocks_knowledgebase_title: Γνωσιακή βάση
+helpcenter.messenger.blocks_search_block_no_results: 'Κανένα αποτέλεσμα για το {query}'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Δείτε περισσότερα αποτελέσματα'
+helpcenter.messenger.blocks_ticket_button: 'Υποβάλετε νέο ticket'
+helpcenter.messenger.blocks_ticket_description: 'Υποβάλετε ένα ερώτημα μέσω της φόρμας επικοινωνίας μας'
 helpcenter.messenger.blocks_ticket_title: 'Υποβάλετε ένα ticket'
 helpcenter.messenger.greeting: 'Επικοινωνήστε μαζί μας'
+helpcenter.messenger.tickets_form_add_attachment: 'Προσθήκη συνημμένου'
+helpcenter.messenger.tickets_form_header: 'Νέο ticket'
+helpcenter.messenger.tickets_form_or: ή
+helpcenter.messenger.tickets_form_saving: 'Γίνεται αποθήκευση του ticket σας. Περιμένετε'
+helpcenter.messenger.tickets_form_thanks: 'Σας ευχαριστούμε που επικοινωνήσατε μαζί μας. Κάποιος από την ομάδα μας θα επικοινωνήσει μαζί σας μέσω email.'
+helpcenter.messenger.tickets_form_thanks_header: 'Το αίτημά σας είναι σε εξέλιξη'
 helpcenter.news.none: 'Δεν υπάρχουν νέα'
 helpcenter.news.recent_title: 'Πρόσφατα νέα'
 helpcenter.news.view_as_agent: 'Μπορείτε να δείτε αυτήν τη σελίδα επειδή είστε διαχειριστής. Οι απλοί χρήστες δεν μπορούν να δουν αυτήν τη σελίδα.'
