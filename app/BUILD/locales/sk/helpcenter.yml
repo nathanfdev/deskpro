@@ -37,7 +37,9 @@ helpcenter.emails.ticket_rate_question: 'Pomohla Vámtáto správa?'
 helpcenter.emails.ticket_received: 'Váš tiket bol prijatý. Jeden z našich operátorov Vám čoskoro odpovie.'
 helpcenter.emails.ticket_reply_confirm: 'Ďakujeme za Vašu odpoveď. Jeden z našich operátorov Vám čoskoro odpovie.'
 helpcenter.emails.ticket_validate: 'Ďakujeme, že ste nás kontaktovali.<br /><br />Prv, než Vašu správu naši operátori spracujú si musíte overiť Vašu e-mailovú adresu.'
+helpcenter.error.404_desc: 'Ľutujeme, ale túto stránku sa nepodarilo nájsť.'
 helpcenter.error.404_title: 'Nenájdené'
+helpcenter.error.general_title: 'Došlo k chybe'
 helpcenter.error.permission_denied_title: 'Na danú akciu nemáte oprávnenie'
 helpcenter.forms.delete_question: 'Vymazať?'
 helpcenter.forms.error_captcha: 'Hodnota CAPTCHA nie je správna'
@@ -67,8 +69,10 @@ helpcenter.general.you: Vy
 helpcenter.label.search: Vyhľadať
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
+helpcenter.messenger.blocks_ticket_title: 'Odoslať tiket'
 helpcenter.news.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
 helpcenter.profile.account_disabled_message: 'Váš účet je momentálne deaktivovaný. Nebudete schopný komunikovať s tiketmi alebo v konverzáciách.'
+helpcenter.search.search_results: 'Výsledky vyhľadávania'
 helpcenter.tickets.guest_thank_you_title: 'Ďakujeme'
 helpcenter.tickets.list_agent: 'Pridelený agent'
 helpcenter.tickets.list_date_created: 'Dátum vytvorený'
@@ -80,6 +84,7 @@ helpcenter.tickets.rate_positive: 'Bolo to dobré'
 helpcenter.tickets.rate_question: 'Ako by ste hodnotili pomoc, ktorú ste obdržal?'
 helpcenter.tickets.rate_support: 'Ohodnoťte Vašu pomoc'
 helpcenter.tickets.reference_number: 'Referenčné číslo: {ref}'
+helpcenter.tickets.submit_a_ticket: 'Odoslať tiket'
 helpcenter.tickets.thank_you: 'Ďakujeme, vašu žiadosť sme dostali.'
 helpcenter.tickets.thank_you_desc: 'Ďakujeme za správu. Jeden z členov nášho tímu sa s vami čoskoro spojí.'
 helpcenter.tickets.view_btn_edit: Upraviť
