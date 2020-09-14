@@ -348,7 +348,7 @@ helpcenter.forms.date_picker_next_month: 'Naslednji mesec'
 helpcenter.forms.date_picker_previous_month: 'Predhodni mesec'
 helpcenter.forms.date_picker_time: Ura
 helpcenter.forms.delete_question: 'Izbrišem?'
-helpcenter.forms.error_captcha: 'Rezultat računalniškega testa CAPTCHA ni pravilen'
+helpcenter.forms.error_captcha: 'Rezultat računalniškega testa CAPTCHA ni pravilen.'
 helpcenter.forms.error_dupe_email: 'Ta e-poštni naslov je že v uporabi.'
 helpcenter.forms.error_email_required: 'Prosimo, obvezno vnesi svoj e-poštni naslov'
 helpcenter.forms.error_password_current: 'To naj bi bilo tvoje trenutno geslo'
@@ -359,15 +359,15 @@ helpcenter.forms.error_password_require_num_number: '{count, plural, one {Najman
 helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {Najmanj # posebni znak -!?*: ipd.} other {Najmanj # posebnih znakov -!?*: ipd.}}'
 helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {Najmanj # velika tiskana črka } other {Najmanj # velikih tiskanih črk }}'
 helpcenter.forms.error_password_reset_required: 'Ponastaviti moraš svoje geslo'
-helpcenter.forms.error_required: 'To polje moraš izpolniti'
+helpcenter.forms.error_required: 'To polje morate izpolniti.'
 helpcenter.forms.error_banned_email: 'E-poštni naslov je blokiran.'
-helpcenter.forms.label_drag_overlay: 'Vstavi to sliko v svoje sporočilo.'
+helpcenter.forms.label_drag_overlay: 'To sliko vstavite v svoje sporočilo.'
 helpcenter.forms.label_email: E-pošta
 helpcenter.forms.label_password: Geslo
 helpcenter.forms.label_password_confirm: Potrdi
 helpcenter.forms.label_reset: Ponastavi
 helpcenter.forms.label_save: Shrani
-helpcenter.forms.label_submit: Oddaj
+helpcenter.forms.label_submit: Oddajte
 helpcenter.forms.label_timezone: Časovni pas
 helpcenter.general.add_comment: 'Dodaj komentar'
 helpcenter.general.admin: Administrator
@@ -417,7 +417,7 @@ helpcenter.general.date_short: '{date, date, short}'
 helpcenter.general.date_short_month: '{date, date, MMM}'
 helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.department: Oddelek
-helpcenter.general.drag_and_drop: 'Povleci in spusti'
+helpcenter.general.drag_and_drop: 'Povlecite in spustite'
 helpcenter.general.edit_this_page: 'Uredi to stran'
 helpcenter.general.email_address: 'E-poštni naslov'
 helpcenter.general.eula: EULA (Pogodba s končnim uporabnikom)
@@ -445,6 +445,7 @@ helpcenter.general.last_24_hours: 'Zadnjih 24 ur'
 helpcenter.general.last_6_month: 'Zadnjih 6 mesecev'
 helpcenter.general.last_activity: 'Zadnja dejavnost'
 helpcenter.general.last_month: 'Pretekli mesec'
+helpcenter.general.last_updated: 'Zadnja posodobitev'
 helpcenter.general.last_update_by: 'Zadnjič posodobljeno: <strong>{date_updated, date, medium}</strong>, avtor <strong>{person_name}</strong>'
 helpcenter.general.last_week: 'Pretekli teden'
 helpcenter.general.last_year: 'Preteklo leto'
@@ -504,6 +505,7 @@ helpcenter.general.rate_page_negative: Neuporabno
 helpcenter.general.rate_page_positive: Uporabno
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} od skupaj {vote_count} oseb je ocenilo to stran kot uporabno'
 helpcenter.general.related_content: 'Povezane vsebine'
+helpcenter.general.remove: odstrani
 helpcenter.general.rerender_form: 'Prosimo pred oddajo preglej obrazec.'
 helpcenter.general.search: 'Kako ti lahko pomagamo danes?'
 helpcenter.general.search_labels: 'Preišči oznake'
@@ -511,6 +513,7 @@ helpcenter.general.select: Izberi
 helpcenter.general.send_user_direct_message: 'Pošlji uporabniku neposredno sporočilo'
 helpcenter.general.share: Skupna raba
 helpcenter.general.show: Prikaži
+helpcenter.general.show_x_more: 'Prikaži še {num}'
 helpcenter.general.skip_link: 'Preskoči in pojdi v glavno vsebino'
 helpcenter.general.software_power_by: 'Deluje na osnovi'
 helpcenter.general.sort: Razvrsti
@@ -725,6 +728,7 @@ helpcenter.tickets.rate_short_positive: 'Odlično'
 helpcenter.tickets.rate_question: 'Kako bi ocenili podporo, ki ste jo prejeli z naše strani?'
 helpcenter.tickets.rate_support: 'Oceni prejeto podporo'
 helpcenter.tickets.reference_number: 'Številka zahtevka: {ref}'
+helpcenter.tickets.related_articles_desc: 'Našli smo spodnje članke, ki vam lahko pomagajo rešiti problem.'
 helpcenter.tickets.resolve_my_ticket_action: 'Označi moj zahtevek kot rešen'
 helpcenter.tickets.resolve_ticket_explain: 'Ko je zahtevek označen kot rešen, ne boš več prejemal/a novih obvestil'
 helpcenter.tickets.resolve_ticket_title: 'Si prepričan, da želiš razrešiti zahtevek?'
@@ -737,7 +741,7 @@ helpcenter.tickets.thank_you: 'Hvala, prejeli smo vaš zahtevek.'
 helpcenter.tickets.thank_you_check_email: 'Potrdite svoj elektronski naslov.'
 helpcenter.tickets.thank_you_check_email_desc: 'Da bi zaključili oddajo zahtevka, odprite svoj elektronski predal, poiščite naše sporočilo in izberite povezavo za potrditev elektronskega naslova.'
 helpcenter.tickets.thank_you_create_pw_link: 'Želite spremljati potek obravnave zahtevka? Nastavite <a href="{create_pw_link}">geslo za svoj uporabniški račun</a>.'
-helpcenter.tickets.thank_you_desc: 'Hvala, ker si stopil/a v stik z nami. Eden naših sodelavcev bo stopil v stik s teboj.'
+helpcenter.tickets.thank_you_desc: 'Hvala za sporočilo. Eden od naših sodelavcev bo v kratkem stopil v stik z vami.'
 helpcenter.tickets.ticket_closed: 'Zahtevek razrešen'
 helpcenter.tickets.ticket_properties: 'Podatki o zahtevku'
 helpcenter.tickets.ticket_status: 'Status zahtevka'
