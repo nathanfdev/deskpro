@@ -48,6 +48,8 @@ helpcenter.account.section_desc_register: 'Looge konto, et saaksite enda infovah
 helpcenter.account.section_title_register: Registreeru
 helpcenter.account.section_title_reset_password: 'Taastage salasõna'
 helpcenter.account.section_title_set_password: 'Määrake salasõna'
+helpcenter.articles.section_title: Teadmusbaas
+helpcenter.articles.view_x_articles: 'Vaata kõiki artikleid kategooriast {category}'
 helpcenter.error.404_desc: 'Kahjuks ei leidnud me seda lehekülge.'
 helpcenter.error.an_error_occured: 'Ilmnes viga'
 helpcenter.error.contact_us: 'Võtke meiega ühendust'
@@ -59,21 +61,45 @@ helpcenter.forms.label_drag_overlay: 'Sisesta see pilt enda kirja.'
 helpcenter.forms.label_email: E-post
 helpcenter.forms.label_submit: Saada
 helpcenter.general.drag_and_drop: 'Tiri ja kukuta'
+helpcenter.general.labels: Sildid
+helpcenter.general.last_update_by: 'Viimati uuendatud: <strong>{date_updated, date, medium}</strong>; uuendaja: <strong>{person_name}</strong>'
 helpcenter.general.name: Nimi
 helpcenter.general.nav_contact: 'Võtke meiega ühendust'
+helpcenter.general.nav_kb: Teadmusbaas
 helpcenter.general.nav_newticket: 'Võtke meiega ühendust'
 helpcenter.general.no_search_query: 'Palun trükkige otsingu märksõna otsingukasti.'
 helpcenter.general.no_search_results_general: 'Tulemusi ei leitud'
+helpcenter.general.or: või
+helpcenter.general.rate_page_negative: Ei saanud abi
+helpcenter.general.rate_page_positive: Sain abi
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} inimest {vote_count}-st sai sellelt lehelt abi'
+helpcenter.general.related_content: 'Seotud sisu'
 helpcenter.general.remove: eemalda
 helpcenter.general.search: 'Kuidas saame teid täna aidata?'
 helpcenter.general.show_x_more: 'Näita {num} rohkem'
 helpcenter.general.x_search_results: '{num} otsingutulemust päringule "{query}"'
 helpcenter.label.search: Otsi
-helpcenter.messenger.tickets_form_thanks: 'Aitäh, et meiega ühendust võtsite. Meie meeskonna liige kirjutab teile e-kirja teel.'
+helpcenter.messenger.blocks_continue_chat_title: 'Jätka olemasolevat vestlust'
+helpcenter.messenger.blocks_knowledgebase_title: Teadmusbaas
+helpcenter.messenger.blocks_search_block_no_results: 'Puuduvad tulemused päringule {query}'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Näita rohkem tulemusi'
+helpcenter.messenger.blocks_ticket_button: 'Saada uus päring'
+helpcenter.messenger.blocks_ticket_description: 'Saada päring meie kontaktvormi kaudu'
+helpcenter.messenger.blocks_ticket_title: 'Saada päring'
+helpcenter.messenger.chat_create_ticket_header: 'Saada päring'
+helpcenter.messenger.chat_rating_block_buttons_helpful: Sain abi
+helpcenter.messenger.greeting: 'Võtke ühendust'
+helpcenter.messenger.tickets_form_add_attachment: 'Lisa manus'
+helpcenter.messenger.tickets_form_header: 'Uus päring'
+helpcenter.messenger.tickets_form_saving: 'Teie päring on salvestamisel. Palun oodake'
+helpcenter.messenger.tickets_form_thanks: 'Aitäh, et meiega ühendust võtsite. Meie meeskonna liige kirjutab teile e-posti teel.'
+helpcenter.messenger.tickets_form_thanks_header: 'Teie päring on teel'
 helpcenter.search.search_results: 'Otsingutulemused'
 helpcenter.search.showing_results_for: 'Näitab tulemusi kategoorias {type} päringule: <span>“{query}”</span>'
+helpcenter.tickets.guest_thank_you_desc: 'Aitäh, et meiega ühendust võtsite. Saatsime teile e-kirja koos juhistega, kuidas enda päringut meie juures hallata.'
+helpcenter.tickets.list_date_created: 'Loomise kuupäev'
 helpcenter.tickets.new_intro: 'Palun täitke see vorm ning üks meie esindajatest vastab teile e-posti teel niipea kui võimalik.'
 helpcenter.tickets.reference_number: 'Viitenumber: {ref}'
 helpcenter.tickets.related_articles_desc: 'Leidsime järgmised artiklid, mis võivad teie probleemi lahendada.'
-helpcenter.tickets.submit_a_ticket: 'Esita pilet'
+helpcenter.tickets.submit_a_ticket: 'Saada päring'
 helpcenter.tickets.thank_you: 'Aitäh, oleme teie kirja kätte saanud.'
