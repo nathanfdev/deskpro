@@ -8,7 +8,7 @@
 	{{ bottom_extra }}
 {% endset %}
 {% if top_extra|trim|length or bottom_extra|trim|length or contact_data.website or contact_data.twitter or contact_data.linked_in or contact_data.facebook or contact_data.mobile or contact_data.phone or contact_data.fax or contact_data.instant_message %}
-<ul class="contact-data-list">
+<ul class="contact-data-list" ng-non-bindable>
 	{{ top_extra|raw }}
 
 	{% if not show_only or show_only.website %}
