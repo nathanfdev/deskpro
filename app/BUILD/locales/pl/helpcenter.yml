@@ -489,24 +489,24 @@ helpcenter.general.previous: Wróć
 helpcenter.general.print: Drukuj
 helpcenter.general.priority: Priorytet
 helpcenter.general.product: Produkt
-helpcenter.general.prop_comments_asc: 'Najmniej komentarzy pierwsze'
-helpcenter.general.prop_comments_desc: 'Najwięcej komentarzy pierwsze'
-helpcenter.general.prop_date_asc: 'Najstarsze piewrsze'
-helpcenter.general.prop_date_desc: 'Najnowsze pierwsze'
-helpcenter.general.prop_popularity_asc: 'Najmniej popularne pierwsze'
-helpcenter.general.prop_popularity_desc: 'Najbardziej popularne pierwsze'
-helpcenter.general.prop_rating_asc: 'Najniżej oceniane pierwsze'
-helpcenter.general.prop_rating_desc: 'Najwyżej oceniane pierwsze'
-helpcenter.general.prop_views_asc: 'Najmniej oględzin pierwsze'
-helpcenter.general.prop_views_desc: 'Najwięcej oględzin pierwsze'
+helpcenter.general.prop_comments_asc: 'Liczba komentarzy - rosnąco'
+helpcenter.general.prop_comments_desc: 'Liczba komentarzy - malejąco'
+helpcenter.general.prop_date_asc: 'Od najstarszego'
+helpcenter.general.prop_date_desc: 'Od najnowszego'
+helpcenter.general.prop_popularity_asc: 'Od najmniej popularnego'
+helpcenter.general.prop_popularity_desc: 'Od najbardziej popularnego'
+helpcenter.general.prop_rating_asc: 'Od najgorzej ocenianego'
+helpcenter.general.prop_rating_desc: 'Od najlepiej ocenianego'
+helpcenter.general.prop_views_asc: 'Od najmniejszej liczby wyświetleń'
+helpcenter.general.prop_views_desc: 'Od największej liczby wyświetleń'
 helpcenter.general.published: 'Opublikowano'
 helpcenter.general.published_by: 'Opublikowane przez <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Nieprzydatny
-helpcenter.general.rate_page_positive: Przydatna
+helpcenter.general.rate_page_positive: Przydatne
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} na {vote_count} osób uznała tę stronę za przydatną'
 helpcenter.general.related_content: 'Powiązane'
 helpcenter.general.remove: usuń
-helpcenter.general.rerender_form: 'Proszę ocenić ten formularz przed wysłaniem.'
+helpcenter.general.rerender_form: 'Sprawdź formularz przed wysłaniem.'
 helpcenter.general.search: 'W czym możemy ci dzisiaj pomóc?'
 helpcenter.general.search_labels: 'Tagi wyszukiwania'
 helpcenter.general.select: Wybierz
@@ -519,8 +519,8 @@ helpcenter.general.software_power_by: 'Stworzone w technologii'
 helpcenter.general.sort: Porządkuj
 helpcenter.general.status: Status
 helpcenter.general.subscribe_action: Subskrypcja
-helpcenter.general.tagged_with: 'oznaczone z'
-helpcenter.general.tags: Tagi
+helpcenter.general.tagged_with: 'oznaczone'
+helpcenter.general.tags: Etykiety
 helpcenter.general.time_of_completion: 'Data ukończenia'
 helpcenter.general.translations: Tłumaczenia
 helpcenter.general.unpublished: 'Data wycofania'
@@ -671,12 +671,12 @@ helpcenter.news.filter_cat: 'Wybierz kategorię'
 helpcenter.news.filter_date: 'Wybierz datę'
 helpcenter.news.news_post_object: 'Wpis aktualności'
 helpcenter.news.news_type: 'Kategoria'
-helpcenter.news.none: 'Na razie brak aktualizacji'
-helpcenter.news.recent_title: 'Ostatnie Aktualizacje'
+helpcenter.news.none: 'Brak aktualności'
+helpcenter.news.recent_title: 'Ostatnie Aktualności'
 helpcenter.news.section_title: Aktualności
 helpcenter.news.see_all_news: 'Zobacz wszystkie aktualności'
-helpcenter.news.view_as_agent: 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
-helpcenter.profile.account_disabled_message: 'Twoje konto jest czasowo zablokowane. Nie możesz się zalogować, pracować z petycjami i korzystać z czatu.'
+helpcenter.news.view_as_agent: 'Masz dostęp do tej strony jako pracownik. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
+helpcenter.profile.account_disabled_message: 'Twoje konto zostało zablokowane. Nie możesz się zalogować ani korzystać ze zgłoszeń i czatu.'
 helpcenter.profile.your_account: 'Twoje konto'
 helpcenter.profile.your_email_addresses: 'Twoje adresy e-mail'
 helpcenter.profile.your_password: 'Twoje hasło'
