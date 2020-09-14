@@ -76,7 +76,7 @@ helpcenter.approvals.approve_action: Zatwierdź
 helpcenter.approvals.approved_by: 'Zatwierdzone przez'
 helpcenter.approvals.approved_status: Zatwierdzone
 helpcenter.approvals.cancelled_status: Usunięte
-helpcenter.approvals.list_column_agent: 'Autor'
+helpcenter.approvals.list_column_agent: 'Agent'
 helpcenter.approvals.list_column_approvers: 'Zatwierdzone przez'
 helpcenter.approvals.list_column_cancelled: 'Usunięto'
 helpcenter.approvals.list_column_completed: 'Zakończono'
@@ -88,13 +88,71 @@ helpcenter.approvals.my_approvals: 'Zatwierdzone przeze mnie'
 helpcenter.approvals.no_ticket_approvals_found: 'Nie znaleziono żadnych zatwierdzeń'
 helpcenter.approvals.pending_status: Oczekujące
 helpcenter.approvals.reject_action: Odrzuć
+helpcenter.approvals.rejected_by: 'Odrzucone przez'
+helpcenter.approvals.rejected_status: Odrzucone
+helpcenter.approvals.system: System
+helpcenter.approvals.view_approved: Zatwierdzone
+helpcenter.approvals.view_awaiting_response: 'Oczekuje na odpowiedź'
+helpcenter.approvals.view_criteria: 'Kryteria zatwierdzenia'
+helpcenter.approvals.view_no_response: 'Brak odpowiedzi'
+helpcenter.approvals.view_rejected: Odrzucone
+helpcenter.approvals.view_requesting_agent: 'Agent zgłaszający'
+helpcenter.approvals.view_ticket: Zgłoszenie
+helpcenter.approvals.view_to_approve: 'Do zatwierdzenia'
+helpcenter.approvals.view_to_reject: 'Do odrzucenia'
+helpcenter.approvals.you_approved: 'Zatwierdziłeś zgłoszenie {template} autorstwa {person_name}'
+helpcenter.approvals.you_rejected: 'Odrzuciłeś zgłoszenie {template} autorstwa {person_name}'
+helpcenter.articles.article_object: Artykuł
+helpcenter.articles.published_label: Opublikowany
 helpcenter.articles.section_title: Baza Wiedzy
+helpcenter.articles.status_archived: Zarchiwizowany
+helpcenter.articles.status_draft: Brulion
+helpcenter.articles.status_published: Opublikowany
+helpcenter.articles.view_as_agent: 'Użytkownicy nie widzą tej strony, ponieważ artykuł nie został jeszcze opublikowany.'
+helpcenter.articles.view_x_articles: 'Zobacz wszystkie artykuły w sekcji {category}'
+helpcenter.chats.my_chats: 'Moje czaty'
+helpcenter.community.activity: Działanie
+helpcenter.community.activity_commented: 'Skomentowane'
+helpcenter.community.activity_created: 'Stworzone'
+helpcenter.community.activity_voted: 'Zagłosowane'
+helpcenter.community.category: Kategoria
+helpcenter.community.create_topic: Stwórz
+helpcenter.community.create_topic_full: 'Stwórz {forum}'
+helpcenter.community.create_topic_in_forum: 'Zgoś {forum}'
 helpcenter.community.error_login: 'Proszę się zalogować'
+helpcenter.community.featured_topics: 'Omawiane tematy'
+helpcenter.community.filters: Filtry
+helpcenter.community.form_add_attachments: 'Dodaj załączniki'
+helpcenter.community.form_create_topic: 'Stwórz temat'
+helpcenter.community.form_description: Opis
 helpcenter.community.form_topic_title: Tytuł
+helpcenter.community.forum_name: 'Nazwa forum'
+helpcenter.community.like_action: Polub
+helpcenter.community.likes: Polubienia
+helpcenter.community.my_activity: 'Moje działania'
 helpcenter.community.no_matching: 'Brak pasującej opinii'
+helpcenter.community.none: 'W grupie nie znaleziono żadnych tematów'
+helpcenter.community.official_response: 'Oficjalna odpowiedź'
 helpcenter.community.rate_forbidden: 'Nie masz pozwolenia na głosowanie'
+helpcenter.community.recent_activity: 'Ostatnie działania'
+helpcenter.community.reset_all_filters: 'Zresetuj wszystkie filtry'
 helpcenter.community.section_title: Opinie
+helpcenter.community.status: Status
+helpcenter.community.status_change: 'Zmiana statusu'
+helpcenter.community.title: Tytuł
+helpcenter.community.title_author: 'Tytuł / Autor'
+helpcenter.community.view_all_topics: 'Zobacz wszystkie {plural}'
+helpcenter.community.view_list: 'Widok listy'
+helpcenter.community.view_status_change: 'Zmiana statusu'
+helpcenter.direct_messages.back_to_messages: 'Wróć do wiadomości'
+helpcenter.direct_messages.block_user: 'zablokuj użytkownika'
+helpcenter.direct_messages.new_message: 'Nowa wiadomość'
+helpcenter.direct_messages.none: 'Brak wiadomości'
+helpcenter.direct_messages.recipient: Odbiorca
+helpcenter.direct_messages.reply_cancel: Usuń
 helpcenter.direct_messages.reply_message: Treść zgłoszenia
+helpcenter.direct_messages.reply_send_message: 'Wyślij wiadomość'
+helpcenter.direct_messages.title: 'Moje wiadomości'
 helpcenter.emails.chat_transcript: 'Dziękujemy za czatowanie z nami. Oto log Twojego czatu:'
 helpcenter.emails.chat_transcript_subject: 'Log czatu'
 helpcenter.emails.comment_approved: 'Twój komentarz został opublikowany.'
@@ -134,8 +192,18 @@ helpcenter.emails.ratelimit_submit_online: 'Jeżeli to pomyłka i musisz się z 
 helpcenter.emails.register_welcome_byagent_subject: 'Twoje nowe konto wsparcia'
 helpcenter.emails.register_welcome_subject: 'Dziękujemy za rejestrację'
 helpcenter.emails.reject_resolved: 'Twoja wiadomość nie została zaakceptowana ponieważ twoje zgłoszenie jest oznaczone jako rozwiązane. Agent nie przeczyta ani nie odpisze na tą wiadomość.'
+helpcenter.emails.reject_resolved_newemail: 'Jeżeli chcesz stworzyćnowe zgłoszenie, możesz wysłać nową wiadomość e-mail do <a href="mailto:{email_to}">{email_to}</a>'
+helpcenter.emails.remind_unresolved: 'Niniejsza wiadomość służy jako przypomnienie, że Twoje zgłoszenie pozostaje otwarte w {helpdesk_name}.<br />Jeżeli nie potrzebujesz już pomocy w tej kwestii, kliknij w poniższy link, aby nas o tym powiadomić: <br /><a href="{resolve_url}">{resolve_url}</a><br />Jeżeli nasza pomoc jest w dalszym ciągu potrzebna, odpowiedz na tę wiadomość.'
+helpcenter.emails.remind_unresolved_final: 'Nie kontaktowałeś się z nami ostatnio w sprawie tego zgłoszenia.<br />Jeżeli dalej potrzebujesz pomocy, odpowiedz na tę wiadomość.<br />Jeżeli nie potrzebujesz już pomocy, kliknij w poniższy link, aby nas o tym powiadomić:<br /><a href="{resolve_url}">{resolve_url}</a>'
+helpcenter.emails.remind_unresolved_final_subject: 'PRZYPOMNIENIE: {subject}'
+helpcenter.emails.remind_unresolved_subject: 'PRZYPOMNIENIE: {subject}'
+helpcenter.emails.share_article: '{author_name} chce udostępnić Ci ten artykuł'
 helpcenter.emails.ticket_access_ticket_online: 'Zobacz i kieruj zgłoszeniem online:'
+helpcenter.emails.ticket_added_cc: 'Dodano Cię do zgłoszenia "{subject}"'
+helpcenter.emails.ticket_cc_added: '{author_name}, {author_email}, dodał Cię do zgłoszenia {subject}.'
+helpcenter.emails.ticket_cc_new: 'Dodano Cię do zgłoszenia stworzonego przez {name}.'
 helpcenter.emails.ticket_flood: 'Niedawno wysłałeś(aś) email do naszego Helpdesku. Nasz system automatyczny wykrył, że wysłałeś(aś) wiele wiadomości w krótkim czasie, jak by były automatycznie wygenerowane.<br /><br />Żeby się zabezpieczyć przed pętlą automatycznych odpowiedzi, nasz Helpdesk nie będzie więcej wysyłał do Ciebie automatycznych powiadomień.'
+helpcenter.emails.ticket_message_title: 'W dniu {created_date, date, medium} o {created_date, time, short}, {author} napisał:'
 helpcenter.emails.ticket_new_participant: 'Nowa osoba została dodana do Twojej petycji'
 helpcenter.emails.ticket_no_autoresponse: 'Ostrzeżenie: emaile potwierdzające zostały wyłączone'
 helpcenter.emails.ticket_rate_neutral: 'Zgodnie z oczekiwaniami'
