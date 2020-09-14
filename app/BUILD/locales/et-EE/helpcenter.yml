@@ -50,7 +50,7 @@ helpcenter.account.section_title_reset_password: 'Taastage salasõna'
 helpcenter.account.section_title_set_password: 'Määrake salasõna'
 helpcenter.articles.section_title: Teadmusbaas
 helpcenter.articles.view_x_articles: 'Vaata kõiki artikleid kategooriast {category}'
-helpcenter.downloads.file_name: 'Faili nimi'
+helpcenter.downloads.file_name: 'Failinimi'
 helpcenter.downloads.file_size: 'Faili suurus'
 helpcenter.downloads.no_files: 'Failid puuduvad'
 helpcenter.downloads.total_downloads: 'Kokku allalaadimisi'
@@ -100,6 +100,7 @@ helpcenter.messenger.chat_rating_block_buttons_helpful: Sain abi
 helpcenter.messenger.greeting: 'Võtke ühendust'
 helpcenter.messenger.tickets_form_add_attachment: 'Lisa manus'
 helpcenter.messenger.tickets_form_header: 'Uus päring'
+helpcenter.messenger.tickets_form_or: või
 helpcenter.messenger.tickets_form_saving: 'Teie päring on salvestamisel. Palun oodake'
 helpcenter.messenger.tickets_form_thanks: 'Aitäh, et meiega ühendust võtsite. Meie meeskonna liige kirjutab teile e-posti teel.'
 helpcenter.messenger.tickets_form_thanks_header: 'Teie päring on teel'
