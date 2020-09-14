@@ -57,10 +57,14 @@ helpcenter.general.name: Meno
 helpcenter.general.nav_contact: 'Kontaktujte nás'
 helpcenter.general.nav_newticket: 'Kontaktujte nás'
 helpcenter.general.no_search_query: 'Napíšte, čo chcete vyhľadať, do vyhľadávacieho okna.'
+helpcenter.general.no_search_results_general: 'Nenašli sa žiadne výsledky'
 helpcenter.general.password: Heslo
 helpcenter.general.rate_page_positive: Pomocné
+helpcenter.general.search: 'Ako vám dnes môžeme pomôcť?'
 helpcenter.general.show: Ukáž
+helpcenter.general.x_search_results: '{num} výsledkov vyhľadávania pre "{query}"'
 helpcenter.general.you: Vy
+helpcenter.label.search: Vyhľadať
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
 helpcenter.news.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
