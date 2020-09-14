@@ -177,7 +177,7 @@ helpcenter.emails.comment_confirmation: 'Dziękujemy za Twój komentarz'
 helpcenter.emails.comment_deleted: 'Twój komentarz został użyty, żeby udoskonalić stronę.'
 helpcenter.emails.comment_deleted_subject: 'Twój komentarz został przeczytany przez naszych pracowników'
 helpcenter.emails.comment_thank_you: 'Dziękujemy za twój komentarz dotyczący {link}.'
-helpcenter.emails.community_explain: 'Dostajesz tę wiadomość, ponieważ jesteś zapisany do naszego biuletynu informacyjnego <a href="{deskpro_url}">{deskpro_url}</a>.<br />Nie chcesz dostawać tego rodzaju wiadomości? <a href="{unsubscribe_url}">Kliknij tutaj i wypisz się z powiadomień dotyczących dyskusji.</a>'
+helpcenter.emails.community_explain: 'Dostajesz tę wiadomość, ponieważ jesteś zapisany do naszych aktualności<a href="{deskpro_url}">{deskpro_url}</a>.<br />Nie chcesz dostawać tego rodzaju wiadomości? <a href="{unsubscribe_url}">Kliknij tutaj i wypisz się z powiadomień dotyczących dyskusji.</a>'
 helpcenter.emails.community_new: 'Dziękujemy za wysłaną opinię'
 helpcenter.emails.community_sub_updated: 'Zaktualizowana ocena'
 helpcenter.emails.community_topic_agent_validation: 'Uwaga! Twoja opinia nie pojawi się publicznie na naszej stronie, dopóki jeden z naszych pracowników jej nie przejrzy.'
@@ -313,11 +313,11 @@ helpcenter.flashes.new_community_topic_awaiting_review: 'Dziękujemy za zgłosze
 helpcenter.flashes.new_community_topic_posted: 'Dziękujemy za zgłoszenie dyskusji.'
 helpcenter.flashes.news_cat_subscribe: 'Udana subskrypcja {category} - będziesz dostawać powiadomienia o nowych wpisach.'
 helpcenter.flashes.news_cat_unsubscribe: 'Udana anulacja subskrypcji {category}.'
-helpcenter.flashes.news_root_subscribe: 'Udana subskrypcja Wiadomości. Będziesz dostawać powiadomienia o zamieszczeniu nowych artykułów.'
-helpcenter.flashes.news_root_unsubscribe: 'Udana anulacja subskrypcji Wiadomości.'
-helpcenter.flashes.news_subscribe: 'Udana subskrypcja wiadomości - będziesz dostawać powiadomienia o nowych komentarzach.'
-helpcenter.flashes.news_unsubscribe: 'Udana anulacja subskrypcji wiadomości.'
-helpcenter.flashes.news_unsubscribe_everything: 'Udana anulacja subskrypcji wszystkich powiadomień o wiadomościach.'
+helpcenter.flashes.news_root_subscribe: 'Udana subskrypcja Aktualności. Będziesz dostawać powiadomienia o zamieszczeniu nowych artykułów.'
+helpcenter.flashes.news_root_unsubscribe: 'Udana anulacja subskrypcji Aktualności.'
+helpcenter.flashes.news_subscribe: 'Udana subskrypcja aktualności - będziesz dostawać powiadomienia o nowych komentarzach.'
+helpcenter.flashes.news_unsubscribe: 'Udana anulacja subskrypcji aktualności.'
+helpcenter.flashes.news_unsubscribe_everything: 'Udana anulacja subskrypcji wszystkich powiadomień o aktualnościach.'
 helpcenter.flashes.ticket_created: 'Twoje zgłoszenie zostało przesłane.'
 helpcenter.flashes.ticket_feedback_thank_you: 'Dziękujemy za podzielenie się opinią.'
 helpcenter.flashes.ticket_feedback_unknown_error: 'Podczas próby przesłania opinii wystąpił problem. Spróbuj ponownie.'
@@ -345,7 +345,17 @@ helpcenter.flashes.user_updated_profile: 'Twój profil został zaktualizowany.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Dziękujemy za weryfikacje twojego adresu email. Twoje konto jest teraz aktywne.'
 helpcenter.flashes.usersource_new_add_email_verify: 'Musimy zweryfikować twój adres email zanim utworzymy twoje konto. Sprawdź swoją skrzynkę odbiorczą email, wysłaliśmy tam link weryfikujący.'
 helpcenter.forms.date_picker_next_month: 'Następny miesiąc'
+helpcenter.forms.date_picker_previous_month: 'Poprzedni miesiąc'
+helpcenter.forms.date_picker_time: Godzina
+helpcenter.forms.delete_question: 'Usunąć?'
+helpcenter.forms.error_captcha: 'Nieprawidłowo wpisana CAPTCHA'
+helpcenter.forms.error_dupe_email: 'Ten adres e-mail jest już przypisany do innego konta.'
 helpcenter.forms.error_email_required: 'Musisz podać swój adres email'
+helpcenter.forms.error_password_current: 'To jest twoje obecne hasło'
+helpcenter.forms.error_password_forbid_reuse: 'Nie możesz ponownie skorzystać z hasła, którego już użyłeś'
+helpcenter.forms.error_password_min_length: '{count, plural, one {Minimum # znak} few {Minimum # znaki} many {Minimum # znaki} other {Minimum # znaków}}'
+helpcenter.forms.error_password_require_num_lowercase: '{count, plural, one {Przynajmniej # mała litera} few {Przynajmniej # małe litery} many {Przynajmniej # małe litery} other {Przynajmniej # małych liter}}'
+helpcenter.forms.error_password_require_num_number: '{count, plural, one {Przynajmniej # liczba} few {Przynajmniej # liczby} many {Przynajmniej # liczby} other {Przynajmniej # liczb}}'
 helpcenter.forms.label_save: Zapisz
 helpcenter.general.add_comment: 'Dodaj komentarz'
 helpcenter.general.admin: Administrator
@@ -415,9 +425,9 @@ helpcenter.general.nav_kb: Baza wiedzy
 helpcenter.general.nav_kb_desc: 'Przejrzyj całe centrum pomocy'
 helpcenter.general.nav_login: 'Zaloguj się'
 helpcenter.general.nav_members: 'Rada członków'
-helpcenter.general.nav_news: Wiadomości
-helpcenter.general.nav_news_desc: 'Zobacz wszystkie najnowsze wiadomości'
-helpcenter.general.nav_news_desc_short: 'Zobacz wszystkie wiadomości'
+helpcenter.general.nav_news: Aktualności
+helpcenter.general.nav_news_desc: 'Zobacz wszystkie najnowsze aktualności'
+helpcenter.general.nav_news_desc_short: 'Zobacz wszystkie aktualności'
 helpcenter.general.no_search_query: 'Proszę podać wyszukiwany tekst w okienku wyszukiwania.'
 helpcenter.general.password: Hasło
 helpcenter.general.print: Drukuj
@@ -440,6 +450,7 @@ helpcenter.general.tags: Tagi
 helpcenter.general.updated: Zaktualizowano
 helpcenter.general.user: Użytkownik
 helpcenter.general.you: Ty
+helpcenter.members.activity_down_voted_comment_on: 'Komentarz oznaczono jako nieprzydatny'
 helpcenter.members.activity_group_everything_else: 'Pozostałe'
 helpcenter.members.activity_group_last_month: 'Ostatni miesiąc'
 helpcenter.members.activity_group_last_week: 'Ostatni tydzień'
@@ -509,17 +520,18 @@ helpcenter.messenger.view_action: Zobacz
 helpcenter.messenger.view_linked_ticket_action: 'Zobacz zgłoszenie'
 helpcenter.messenger.you: Ty
 helpcenter.messenger.your_chat_with: 'Twój czat z {person_name}'
-helpcenter.news.all_news: 'Wszystkie wiadomości'
+helpcenter.news.all_news: 'Wszystkie aktualności'
 helpcenter.news.any_date: Dowolna
 helpcenter.news.download_calendar_action: 'Ściągnij plik iCal'
 helpcenter.news.download_calendar_desc: 'Pobieranie kalendarza powinno uruchomić się automatycznie, w przyciwnym wypadku skorzystaj z poniżego przycisku'
 helpcenter.news.filter_cat: 'Wybierz kategorię'
 helpcenter.news.filter_date: 'Wybierz datę'
-helpcenter.news.news_post_object: 'Wiadomości'
+helpcenter.news.news_post_object: 'Wpis aktualności'
 helpcenter.news.news_type: 'Kategoria'
 helpcenter.news.none: 'Na razie brak aktualizacji'
 helpcenter.news.recent_title: 'Ostatnie Aktualizacje'
-helpcenter.news.section_title: Wiadomości
+helpcenter.news.section_title: Aktualności
+helpcenter.news.see_all_news: 'Zobacz wszystkie aktualności'
 helpcenter.news.view_as_agent: 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
 helpcenter.profile.account_disabled_message: 'Twoje konto jest czasowo zablokowane. Nie możesz się zalogować, pracować z petycjami i korzystać z czatu.'
 helpcenter.profile.your_password: 'Twoje hasło'
