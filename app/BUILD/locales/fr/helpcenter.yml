@@ -138,12 +138,12 @@ helpcenter.community.recent_activity: 'Activité récente'
 helpcenter.community.reset_all_filters: 'Réinitialiser tous les filtres'
 helpcenter.community.section_title: Remarques
 helpcenter.community.status: Statut
-helpcenter.community.status_change: 'Changement de statut'
+helpcenter.community.status_change: 'Modification de statut'
 helpcenter.community.title: Titre
 helpcenter.community.title_author: 'Titre/Auteur'
 helpcenter.community.view_all_topics: 'Voir toutes les {plural}'
 helpcenter.community.view_list: 'Vue Liste'
-helpcenter.community.view_status_change: 'Changement de statut'
+helpcenter.community.view_status_change: 'Modification de statut'
 helpcenter.direct_messages.back_to_messages: 'Retour à mes messages'
 helpcenter.direct_messages.block_user: 'bloquer utilisateur'
 helpcenter.direct_messages.new_message: 'Nouveau message'
