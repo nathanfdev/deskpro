@@ -1,7 +1,7 @@
 ---
-helpcenter.account.add: Dodaj
+helpcenter.account.add: Dodajte
 helpcenter.account.add_email: 'Dodaj e-poštni naslov'
-helpcenter.account.change_password_action: 'Posodobi geslo'
+helpcenter.account.change_password_action: 'Posodobite geslo'
 helpcenter.account.comment_lockout: 'Posredoval/a si že precej dodatnih informacij. Pred nadaljevanjem za trenutek počakaj.'
 helpcenter.account.email_btn_usersource_set: 'Dodaj elektronski naslov'
 helpcenter.account.email_make_primary_action: 'Nastavi kot glavni'
@@ -274,7 +274,7 @@ helpcenter.error.400_desc: 'Oprosti, toda tvojega zahtevka nismo prejeli v prič
 helpcenter.error.400_title: 'Dejanja nismo uspeli izvesti'
 helpcenter.error.403_desc: 'Oprosti, toda do vsebine te strani nimaš dodeljenih dostopnih pravic.'
 helpcenter.error.403_title: 'Ni dostopno'
-helpcenter.error.404_desc: 'Oprosti, toda te strani nismo našli.'
+helpcenter.error.404_desc: 'Žal nismo našli te strani.'
 helpcenter.error.404_title: 'Ni rezultatov'
 helpcenter.error.an_error_occured: 'Prišlo je do sistemske napake'
 helpcenter.error.an_error_occured_desc: 'Oprosti, toda med nalaganjem strani je prišlo do napake. Prosim, ponovno poskusi kasneje ali preko <a href="{contact_link}">stopi v stik z nami</a>.'
@@ -466,7 +466,7 @@ helpcenter.general.nav_emails: E-poštna sporočila
 helpcenter.general.nav_guides: Vodiči
 helpcenter.general.nav_guides_desc: 'Preglej vse vodiče'
 helpcenter.general.nav_kb: Baza znanja
-helpcenter.general.nav_kb_desc: 'Oglej si celotni center za pomoč'
+helpcenter.general.nav_kb_desc: 'Celostni pregled centra za pomoč'
 helpcenter.general.nav_login: 'Prijavi se'
 helpcenter.general.nav_members: 'Imenik članov'
 helpcenter.general.nav_news: Novice
@@ -533,7 +533,7 @@ helpcenter.general.view_all_topics: 'Preglej vse teme'
 helpcenter.general.view_profile: 'Oglej si nastavitve tvojega računa'
 helpcenter.general.viewed_by_agents_only: 'To polje je vidno samo operaterjem'
 helpcenter.general.workflow: 'Delotek'
-helpcenter.general.x_search_results: '{num} rezultati iskanja za "{query}"'
+helpcenter.general.x_search_results: '{num} rezultatov iskanja za "{query}"'
 helpcenter.general.you: Ti
 helpcenter.general.your_comment_label: 'Tvoj komentar'
 helpcenter.general.your_comment_optional_label: 'Tvoj komentar (opcijsko)'
@@ -568,17 +568,17 @@ helpcenter.members.timezone: Časovni pas
 helpcenter.members.title: 'Imenik članov'
 helpcenter.messenger.assigned_agent: 'Dodeljen operater'
 helpcenter.messenger.blocks_continue_chat_link: Nadaljuj
-helpcenter.messenger.blocks_continue_chat_title: 'Nadaljuj obstoječ klepet'
+helpcenter.messenger.blocks_continue_chat_title: 'Nadaljujte obstoječ klepet'
 helpcenter.messenger.blocks_knowledgebase_title: Baza znanja
-helpcenter.messenger.blocks_search_block_no_results: 'Za iskalni niz {query} ni rezultatov'
+helpcenter.messenger.blocks_search_block_no_results: 'Ni rezultatov za iskalni niz {query}'
 helpcenter.messenger.blocks_search_block_search_label: Išči
 helpcenter.messenger.blocks_search_block_see_more_results: 'Prikaži več rezultatov'
 helpcenter.messenger.blocks_start_chat_button: 'Prični z novim pogovorom'
 helpcenter.messenger.blocks_start_chat_description: 'Prični klepet z enim izmed naših operaterjev'
 helpcenter.messenger.blocks_start_chat_title: 'Prični s pogovorom'
-helpcenter.messenger.blocks_ticket_button: 'Oddaj nov zahtevek'
-helpcenter.messenger.blocks_ticket_description: 'Vnesi zahtevek s pomočjo obrazca'
-helpcenter.messenger.blocks_ticket_title: 'Oddaj zahtevek'
+helpcenter.messenger.blocks_ticket_button: 'Oddajte nov zahtevek'
+helpcenter.messenger.blocks_ticket_description: 'Oddajte nov zahtevek s pomočjo našega obrazca.'
+helpcenter.messenger.blocks_ticket_title: 'Oddajte zahtevek'
 helpcenter.messenger.blocks_tickets_title: 'Tvoji zahtevki'
 helpcenter.messenger.blocks_tickets_view_all_link: 'prikaži vse'
 helpcenter.messenger.chat_agent_assigned_message: 'Oseba {name} joined the conversation.'
@@ -616,7 +616,7 @@ helpcenter.messenger.chat_transcript_block_yes_button: 'Da'
 helpcenter.messenger.date_label: Datum
 helpcenter.messenger.email_validated_sucessfully: 'E-poštni naslov uspešno preverjen'
 helpcenter.messenger.files_on_this_chat: 'Datoteke v tem Pogovoru'
-helpcenter.messenger.greeting: 'Stopi v stik'
+helpcenter.messenger.greeting: 'Povežite se z nami'
 helpcenter.messenger.invalid_validation_code: 'Neustrezna šifra za preverjanje'
 helpcenter.messenger.linked_ticket_label: 'Dodeljen zahtevku'
 helpcenter.messenger.loading: Nalagam
@@ -644,7 +644,7 @@ helpcenter.messenger.proactive_description: 'Prični klepet z enim izmed naših 
 helpcenter.messenger.proactive_greeting: 'Stopi v stik'
 helpcenter.messenger.proactive_placeholder: 'Tukaj vnesi tvoje sporočilo'
 helpcenter.messenger.proactive_title: 'Prični s pogovorom'
-helpcenter.messenger.tickets_form_add_attachment: 'Dodaj priponko'
+helpcenter.messenger.tickets_form_add_attachment: 'Dodajte priponko'
 helpcenter.messenger.tickets_form_back: Nazaj
 helpcenter.messenger.tickets_form_header: 'Nov zahtevek'
 helpcenter.messenger.tickets_form_message: Sporočilo
@@ -653,7 +653,7 @@ helpcenter.messenger.tickets_form_or: ali
 helpcenter.messenger.tickets_form_priority: Prednost
 helpcenter.messenger.tickets_form_product: Izdelek
 helpcenter.messenger.tickets_form_required: Zahtevano
-helpcenter.messenger.tickets_form_saving: 'Zahtevek shranjujemo. Prosimo, počakaj'
+helpcenter.messenger.tickets_form_saving: 'Shranjujemo vaš zahtevek. Prosimo, počakajte!'
 helpcenter.messenger.tickets_form_select: Izberi
 helpcenter.messenger.tickets_form_submit: Oddaj
 helpcenter.messenger.tickets_form_thanks: 'Hvala, ker si stopil/a v stik z nami. Eden naših sodelavcev bo stopil v stik s teboj preko e-pošte.'
@@ -680,7 +680,7 @@ helpcenter.profile.account_disabled_message: 'Tvoj račun je trenutno onemogoče
 helpcenter.profile.your_account: 'Tvoj račun'
 helpcenter.profile.your_email_addresses: 'Tvoj e-poštni naslov'
 helpcenter.profile.your_password: 'Tvoje geslo'
-helpcenter.search.search_results: 'Zadetki iskanja'
+helpcenter.search.search_results: 'Rezultati iskanja'
 helpcenter.search.showing_results_for: 'Prikazani so zadetki v {type} za: <span>“{query}”</span>'
 helpcenter.search.view_all_results: '{count, plural, one {Oglej si zadetek} other {Oglej si vse zadetke: #}}'
 helpcenter.search.your_tickets: 'Tvoji zahtevki'
@@ -734,7 +734,7 @@ helpcenter.tickets.resolve_ticket_explain: 'Ko je zahtevek označen kot rešen, 
 helpcenter.tickets.resolve_ticket_title: 'Si prepričan, da želiš razrešiti zahtevek?'
 helpcenter.tickets.search_approvals: 'Preišči odobritve'
 helpcenter.tickets.search_tickets: 'Preišči zahtevke'
-helpcenter.tickets.submit_a_ticket: 'Oddaj zahtevek'
+helpcenter.tickets.submit_a_ticket: 'Oddajte zahtevek'
 helpcenter.tickets.submit_feedback: 'Pošlji povratno informacijo'
 helpcenter.tickets.switched_department_rerender: 'Sestava tega obrazca se je spremenila. Prosimo, preglej obrazec in ga oddaj poovno.'
 helpcenter.tickets.thank_you: 'Hvala, prejeli smo vaš zahtevek.'
