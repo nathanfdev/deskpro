@@ -161,6 +161,14 @@ helpcenter.downloads.no_files: 'Brak plików'
 helpcenter.downloads.total_downloads: 'Łącznie pobrań'
 helpcenter.downloads.view_x_files: '{count, plural, one {Zobacz 1 pobrany dokument} few {Zobacz # pobrane dokumenty} many {Zobacz # pobrane dokumenty} other {Zobacz # pobranych dokumentów}}'
 helpcenter.duration_short.days: D
+helpcenter.duration_short.hours: g.
+helpcenter.duration_short.minutes: min.
+helpcenter.duration_short.months: M
+helpcenter.duration_short.seconds: sek.
+helpcenter.duration_short.weeks: T
+helpcenter.duration_short.years: 'R'
+helpcenter.emails.account_disabled_message: 'Twoje konto zostało zablokowane. Nie możesz się zalogować ani korzystać ze zgłoszeń i czatu.'
+helpcenter.emails.auto_close: 'Twoje zgłoszenie "{subject}" zostanie niedługo zamknięte, ponieważ nie pisałeś ostatnio w jego sprawie. Jeżeli potrzebujesz dalszej pomocy, odpowiedz na tę wiadomość.'
 helpcenter.emails.chat_transcript: 'Dziękujemy za czatowanie z nami. Oto log Twojego czatu:'
 helpcenter.emails.chat_transcript_subject: 'Log czatu'
 helpcenter.emails.comment_approved: 'Twój komentarz został opublikowany.'
@@ -168,6 +176,7 @@ helpcenter.emails.comment_approved_subject: 'Twój komentarz został zaakceptowa
 helpcenter.emails.comment_confirmation: 'Dziękujemy za Twój komentarz'
 helpcenter.emails.comment_deleted: 'Twój komentarz został użyty, żeby udoskonalić stronę.'
 helpcenter.emails.comment_deleted_subject: 'Twój komentarz został przeczytany przez naszych pracowników'
+helpcenter.emails.comment_thank_you: 'Dziękujemy za twój komentarz dotyczący {link}.'
 helpcenter.emails.community_new: 'Dziękujemy za wysłaną opinię'
 helpcenter.emails.community_sub_updated: 'Zaktualizowana ocena'
 helpcenter.emails.community_topic_agent_validation: 'Uwaga! Twoja opinia nie pojawi się publicznie na naszej stronie, dopóki jeden z naszych pracowników jej nie przejrzy.'
