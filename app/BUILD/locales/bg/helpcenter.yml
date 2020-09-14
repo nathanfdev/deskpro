@@ -104,7 +104,7 @@ helpcenter.approvals.you_approved: 'Вие одобрихте заявката {
 helpcenter.approvals.you_rejected: 'Вие отказахте заявката {template} заявена от {person_name}'
 helpcenter.articles.article_object: Тази тема
 helpcenter.articles.published_label: Публикувано
-helpcenter.articles.section_title: База знание
+helpcenter.articles.section_title: База знания
 helpcenter.articles.status_archived: Архивирано
 helpcenter.articles.status_draft: Чернова
 helpcenter.articles.status_published: Публикувано
@@ -367,7 +367,7 @@ helpcenter.forms.label_password: Парола
 helpcenter.forms.label_password_confirm: Потвърди
 helpcenter.forms.label_reset: Нулирай
 helpcenter.forms.label_save: Запази
-helpcenter.forms.label_submit: Изпрати
+helpcenter.forms.label_submit: Изпратете
 helpcenter.forms.label_timezone: Часова зона
 helpcenter.general.add_comment: 'Добави коментар'
 helpcenter.general.admin: Админ
@@ -569,7 +569,7 @@ helpcenter.members.title: 'Директория на членовете'
 helpcenter.messenger.assigned_agent: 'Назначен агент'
 helpcenter.messenger.blocks_continue_chat_link: Продължи
 helpcenter.messenger.blocks_continue_chat_title: 'Продължете съществуващ чат'
-helpcenter.messenger.blocks_knowledgebase_title: Knowledgebase
+helpcenter.messenger.blocks_knowledgebase_title: База знания
 helpcenter.messenger.blocks_search_block_no_results: 'Няма резултати за {query}'
 helpcenter.messenger.blocks_search_block_search_label: Търсене
 helpcenter.messenger.blocks_search_block_see_more_results: 'Вижте още резултати'
@@ -655,7 +655,7 @@ helpcenter.messenger.tickets_form_product: Продукт
 helpcenter.messenger.tickets_form_required: Задължително поле
 helpcenter.messenger.tickets_form_saving: 'Вашият тикет се запазва. Моля изчакайте'
 helpcenter.messenger.tickets_form_select: Избери
-helpcenter.messenger.tickets_form_submit: Изпрати
+helpcenter.messenger.tickets_form_submit: Изпратете
 helpcenter.messenger.tickets_form_thanks: 'Благодарим ви, че се свързахте с нас. Някой от нашите сътрудници ще се свърже с вас по имейл.'
 helpcenter.messenger.tickets_form_thanks_header: 'Заявката Ви се изпраща'
 helpcenter.messenger.total_chat_time_label: 'Общо време за чат'
@@ -737,9 +737,9 @@ helpcenter.tickets.search_tickets: 'Търси тикети'
 helpcenter.tickets.submit_a_ticket: 'Изпрати тикет'
 helpcenter.tickets.submit_feedback: 'Изпрати обратна връзка'
 helpcenter.tickets.switched_department_rerender: 'Структурата на тази форма може да се е променила. Моля прегледайте формата и изпратете отново.'
-helpcenter.tickets.thank_you: 'Благодарим Ви, получихме Вашата заявка.'
-helpcenter.tickets.thank_you_check_email: 'Моля потвърдете имейл адреса си'
-helpcenter.tickets.thank_you_check_email_desc: 'За да довършите изпращането на тикета си, трябва да проверите входната кутия на имейла си. Моля кликнете на линка за потвърждение, който сме ви изпратили.'
+helpcenter.tickets.thank_you: 'Благодарим ви, получихме вашата заявка.'
+helpcenter.tickets.thank_you_check_email: 'Моля, потвърдете имейл адреса си'
+helpcenter.tickets.thank_you_check_email_desc: 'За да довършите изпращането на вашия тикет, трябва да проверите входящата си поща. Моля, кликнете на линка за потвърждение, който сме ви изпратили.'
 helpcenter.tickets.thank_you_create_pw_link: 'Искате да следите Вашия тикет? Можете да<a href="{create_pw_link}">зададете парола за Вашият акаунт</a>.'
 helpcenter.tickets.thank_you_desc: 'Благодарим Ви, че се свързахте с нас. Съвсем скоро ще се свържем с Вас.'
 helpcenter.tickets.ticket_closed: 'Тикетът е затворен'
