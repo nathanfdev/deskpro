@@ -22,8 +22,20 @@ helpcenter.account.login_reset_password_link: 'パスワードをお忘れです
 helpcenter.account.login_stay_logged_in: 'ログイン状態を維持'
 helpcenter.account.logout_action: ログアウト
 helpcenter.account.logout_confirm: '本当にログアウトしますか？'
+helpcenter.account.profile_delete_picture: 'プロフィール写真の変更・削除'
 helpcenter.account.profile_save_action: 'プロフィールの保存'
 helpcenter.account.register_action: 登録
+helpcenter.account.registration_set_password: 'このメールアカウントは既に存在しています。パスワードを設定してログインできるようにメールを送信しました。'
+helpcenter.account.resend_registration_email: '登録メールの再送'
+helpcenter.account.reset_password_action: 'パスワードのリセット'
+helpcenter.account.reset_password_click_here: 'パスワードリセットコードのリクエストはこちら'
+helpcenter.account.reset_password_invalid_desc: 'パスワードのリセットコードが無効か、有効期限が切れています。パスワードをリセットするには、新しいコードをリクエストしてください。'
+helpcenter.account.reset_password_invalid_input: '有効なメールアドレスまたはユーザー名を入力してください。'
+helpcenter.account.reset_password_lockout: 'パスワードリセットを何度も試みたため、ロックされました。時間を空けてもう一度お試しください。'
+helpcenter.account.reset_password_request_desc: 'このフォームに必要事項を入力して、パスワードリセットリンクを送信してください。'
+helpcenter.account.reset_password_request_title: 'パスワードをお忘れですか？'
+helpcenter.account.reset_password_sent_desc: "以下に記載されているメールアドレスに、パスワードリセットのリクエストを送信しました。\nこのメールアドレスが登録済みアカウントの場合は、そのアカウントのプライマリメールアドレスにパスワードリセットリンクを記載したメールを送信しています。\n詳細については、メールのをご確認ください。"
+helpcenter.account.reset_password_sent_title: 'パスワードリセットを受け付けました'
 helpcenter.account.section_title_your_account: 'アカウント'
 helpcenter.articles.section_title: ナレッジベース
 helpcenter.community.section_title: フィードバック
@@ -132,3 +144,6 @@ helpcenter.tickets.new_intro: 'フォームへの記入を完了してくださ�
 helpcenter.tickets.new_section_title: 'お問合せ'
 helpcenter.tickets.view_btn_edit: 編集
 helpcenter.tickets.view_unassigned: アサイン前
+helpcenter.tickets.view_you_created: '作成'
+helpcenter.tickets.you_have_not_rated_support: 'あなた ({email}) は、まだサポートを評価していません。'
+helpcenter.tickets.you_rated_support: 'あなた({email}) は、サポートを次のように評価しました'
