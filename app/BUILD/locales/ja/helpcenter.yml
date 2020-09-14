@@ -84,7 +84,14 @@ helpcenter.general.copy_to_clipboard: 'クリップボードにコピー'
 helpcenter.general.created_by: '作成者'
 helpcenter.general.current_page: '現在のページ'
 helpcenter.general.dashboard: ダッシュボード
+helpcenter.general.drag_and_drop: 'ドラッグ＆ドロップ'
+helpcenter.general.email_address: 'メールアドレス'
+helpcenter.general.eula: ソフトウェア利用許諾契約
 helpcenter.general.everything: 全て
+helpcenter.general.expand: 展開
+helpcenter.general.file_type: ファイル
+helpcenter.general.files_type: ファイル
+helpcenter.general.filter: フィルター
 helpcenter.general.nav_contact: 'お問合せ'
 helpcenter.general.nav_emails: メールアドレス
 helpcenter.general.nav_newticket: 'お問合せ'
