@@ -56,6 +56,7 @@ helpcenter.downloads.file_name: 'Bestandsnaam'
 helpcenter.downloads.file_size: 'Bestandsgrootte'
 helpcenter.downloads.no_files: 'Geen bestanden'
 helpcenter.downloads.total_downloads: 'Totaal aantal downloads'
+helpcenter.downloads.view_x_files: '{count, plural, one {View 1 download} other {View # downloads}}'
 helpcenter.emails.chat_transcript: 'Bedankt voor het chatten met ons. Hierbij ontvangt u de kopie van het gesprek.'
 helpcenter.emails.chat_transcript_subject: 'Kopie van chatgeschiedenis'
 helpcenter.emails.comment_approved: 'Uw reactie is gepubliceerd.'
@@ -167,7 +168,8 @@ helpcenter.general.log_in: 'Inloggen'
 helpcenter.general.name: Naam
 helpcenter.general.nav_contact: 'Neem contact met ons op'
 helpcenter.general.nav_downloads_desc: 'Door onze bestanden bladeren'
-helpcenter.general.nav_guides: Gidsen
+helpcenter.general.nav_guides: Handleidingen
+helpcenter.general.nav_guides_desc: 'Alle handleidingen weergeven'
 helpcenter.general.nav_kb: Kennisbank
 helpcenter.general.nav_newticket: 'Neem contact met ons op'
 helpcenter.general.no_search_query: 'Typ een zoekopdracht in het zoekvenster.'
