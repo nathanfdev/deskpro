@@ -464,8 +464,62 @@ helpcenter.members.timezone: Strefa czasowa
 helpcenter.members.title: 'Rada członków'
 helpcenter.messenger.assigned_agent: 'Przypisany agent'
 helpcenter.messenger.blocks_continue_chat_link: Kontynuuj
+helpcenter.messenger.blocks_continue_chat_title: 'Kontynuuj istniejący czat'
+helpcenter.messenger.blocks_knowledgebase_title: Baza wiedzy
+helpcenter.messenger.blocks_search_block_no_results: 'Brak wyników dla {query}'
+helpcenter.messenger.blocks_search_block_search_label: Wyszukaj
+helpcenter.messenger.blocks_search_block_see_more_results: 'Zobacz więcej wyników'
+helpcenter.messenger.blocks_start_chat_button: 'Rozpocznij nową rozmowę'
+helpcenter.messenger.blocks_start_chat_description: 'Uruchom czat z jednym z naszych agentów'
+helpcenter.messenger.blocks_start_chat_title: 'Rozpocznij rozmowę'
+helpcenter.messenger.blocks_ticket_button: 'Wyślij nowe zgłoszenie'
+helpcenter.messenger.blocks_ticket_description: 'Wyślij zapytanie przez nasz formularz kontaktowy'
+helpcenter.messenger.blocks_ticket_title: 'Wyślij zgłoszenie'
+helpcenter.messenger.blocks_tickets_title: 'Twoje zgłoszenia'
+helpcenter.messenger.blocks_tickets_view_all_link: 'zobacz wszystko'
+helpcenter.messenger.chat_agent_assigned_message: '{name} dołączył(a) do rozmowy.'
+helpcenter.messenger.chat_attach_file: 'Załącz plik'
+helpcenter.messenger.chat_busy: 'Wszyscy nasi agenci są obecnie zajęci. Możesz wysłać nam zgłoszenie w poniższym okienku, odezwiemy się do ciebie tak szybko, jak to możliwe'
+helpcenter.messenger.chat_create_ticket_button: 'Stwórz zgłoszenie'
+helpcenter.messenger.chat_create_ticket_header: 'Wyślij zgłoszenie'
+helpcenter.messenger.chat_create_ticket_intro: 'Zamiast tego możesz wysłać zgłoszenie, a jeden z naszych pracowników odpowie na nie w wiadomości e-mail tak szybko, jak to możliwe.'
+helpcenter.messenger.chat_dragdrop_drag_and_drop: 'Przeciągnij i upuść plik tutaj'
+helpcenter.messenger.chat_dragdrop_uploading: Przesyłanie
+helpcenter.messenger.chat_end_block_buttons_no: 'Nie'
+helpcenter.messenger.chat_end_block_buttons_yes: 'Tak'
+helpcenter.messenger.chat_end_block_question_header: 'Zakończyć czat?'
+helpcenter.messenger.chat_end_chat: 'Zakończ czat'
+helpcenter.messenger.chat_ended: 'Czat zakończony'
+helpcenter.messenger.chat_header_title: 'rozmowa z {department}'
+helpcenter.messenger.chat_no_agent_online: 'Przpraszamy, brak zalogowanych agentów mogących przyjąć czat.'
+helpcenter.messenger.tickets_form_header: 'Nowe zgłoszenie'
+helpcenter.messenger.tickets_form_message: Wiadomość
+helpcenter.messenger.tickets_form_name: Imię i nazwisko
+helpcenter.messenger.tickets_form_or: lub
+helpcenter.messenger.tickets_form_priority: Priorytet
+helpcenter.messenger.tickets_form_product: Produkt
+helpcenter.messenger.tickets_form_required: Wymagane
+helpcenter.messenger.tickets_form_saving: 'Zapisujemy twoje zgłoszenie. Prosimy o chwilę cierpliwości'
+helpcenter.messenger.tickets_form_select: Wybierz
+helpcenter.messenger.tickets_form_submit: Wyślij
+helpcenter.messenger.tickets_form_thanks: 'Dziękujemy za wiadomość. Członek naszego zespołu skontaktuje się z tobą przez e-mail.'
+helpcenter.messenger.tickets_form_thanks_header: 'Twoje zgłoszenie jest w drodze'
+helpcenter.messenger.total_chat_time_label: 'Łączny czas trwania czatu'
+helpcenter.messenger.view_action: Zobacz
+helpcenter.messenger.view_linked_ticket_action: 'Zobacz zgłoszenie'
+helpcenter.messenger.you: Ty
+helpcenter.messenger.your_chat_with: 'Twój czat z {person_name}'
+helpcenter.news.all_news: 'Wszystkie wiadomości'
+helpcenter.news.any_date: Dowolna
+helpcenter.news.download_calendar_action: 'Ściągnij plik iCal'
+helpcenter.news.download_calendar_desc: 'Pobieranie kalendarza powinno uruchomić się automatycznie, w przyciwnym wypadku skorzystaj z poniżego przycisku'
+helpcenter.news.filter_cat: 'Wybierz kategorię'
+helpcenter.news.filter_date: 'Wybierz datę'
+helpcenter.news.news_post_object: 'Wiadomości'
+helpcenter.news.news_type: 'Kategoria'
 helpcenter.news.none: 'Na razie brak aktualizacji'
 helpcenter.news.recent_title: 'Ostatnie Aktualizacje'
+helpcenter.news.section_title: Wiadomości
 helpcenter.news.view_as_agent: 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
 helpcenter.profile.account_disabled_message: 'Twoje konto jest czasowo zablokowane. Nie możesz się zalogować, pracować z petycjami i korzystać z czatu.'
 helpcenter.profile.your_password: 'Twoje hasło'
