@@ -1,1 +1,14 @@
 ---
+helpcenter.account.add: Żid
+helpcenter.account.add_email: 'Żid indirizz elettroniku'
+helpcenter.account.change_password_action: 'Aġġorna l-Password'
+helpcenter.account.comment_lockout: 'Issottomettejt ħafna kummenti, Stenna ftit biex tissottometti aktar.'
+helpcenter.account.email_btn_usersource_set: 'Żid Indirizz Eletroniku'
+helpcenter.account.email_make_primary_action: 'Agħmlu Ewlieni'
+helpcenter.account.email_management_from_form: 'Immaniġġja l-indirizzi elettroniċi tiegħi'
+helpcenter.account.email_primary_description: Ewlieni
+helpcenter.account.email_remove_action: 'Neħħi l-indirizz elettroniku'
+helpcenter.account.email_resend_validation_action: 'Erġa'' ibgħat l-ittra elettronika ta'' validazzjoni'
+helpcenter.account.lockout_time: 'Tista'' terġa'' tipprova fi {minutes} minuti.'
+helpcenter.account.login_captcha_failed: 'Daħħalt kodiċi CAPTCHA invalidu. Jekk jogħġbok erġa'' pprova.'
+helpcenter.account.login_disabled: 'L-indirizz elettroniku tiegħek ġie pprojbit.'
