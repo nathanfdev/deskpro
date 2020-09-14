@@ -109,7 +109,7 @@ helpcenter.articles.status_archived: Архивирано
 helpcenter.articles.status_draft: Чернова
 helpcenter.articles.status_published: Публикувано
 helpcenter.articles.view_as_agent: 'Потребителите не могат да видят тази страница, защото все още не е публикувана.'
-helpcenter.articles.view_x_articles: 'Вижте всички теми в {category}'
+helpcenter.articles.view_x_articles: 'Виж всички статии в {category}'
 helpcenter.chats.my_chats: 'Моите чатове'
 helpcenter.community.activity: Активност
 helpcenter.community.activity_commented: 'Аз коментирах'
@@ -572,7 +572,7 @@ helpcenter.messenger.blocks_continue_chat_title: 'Продължете съще�
 helpcenter.messenger.blocks_knowledgebase_title: Knowledgebase
 helpcenter.messenger.blocks_search_block_no_results: 'Няма резултати за {query}'
 helpcenter.messenger.blocks_search_block_search_label: Търсене
-helpcenter.messenger.blocks_search_block_see_more_results: 'Виж още резултати'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Вижте още резултати'
 helpcenter.messenger.blocks_start_chat_button: 'Започни нов разговор'
 helpcenter.messenger.blocks_start_chat_description: 'Започни чат с нас'
 helpcenter.messenger.blocks_start_chat_title: 'Започни разговор'
