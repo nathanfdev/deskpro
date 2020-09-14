@@ -54,14 +54,18 @@ helpcenter.emails.ticket_received: 'リクエストを受け付けました。�
 helpcenter.emails.ticket_reply_confirm: '返信を頂きありがとうございます。エージェントが折り返しいたしますのでしばらくお待ちください。'
 helpcenter.emails.ticket_validate: 'ご連絡をいただきありがとうございます。<br /><br />エージェントによる対応を開始する前に、あなたのメールアドレスの認証手続きを行ってください。'
 helpcenter.error.404_title: '見つかりません。'
+helpcenter.error.contact_us: 'お問合せ'
 helpcenter.error.permission_denied_title: 'その動作は許可されていません。'
 helpcenter.forms.error_dupe_email: 'このメールアドレスはすでに使用されています。'
 helpcenter.forms.error_required: '必須項目です。'
 helpcenter.forms.label_save: 保存
+helpcenter.forms.label_submit: 送信
 helpcenter.general.add_comment: 'コメントを追加'
 helpcenter.general.attachments: 添付
 helpcenter.general.everything: 全て
+helpcenter.general.nav_contact: 'お問合せ'
 helpcenter.general.nav_emails: メールアドレス
+helpcenter.general.nav_newticket: 'お問合せ'
 helpcenter.general.nav_profile: プロフィール
 helpcenter.general.nav_register: '登録'
 helpcenter.general.nav_your_account: 'アカウント'
@@ -76,6 +80,6 @@ helpcenter.tickets.list_agent: '担当エージェント'
 helpcenter.tickets.list_status_resolved: 解決
 helpcenter.tickets.list_subject: 件名
 helpcenter.tickets.new_intro: 'フォームへの記入を完了してください。担当エージェントが折り返し電子メールにてご連絡します。'
-helpcenter.tickets.new_section_title: '連絡先'
+helpcenter.tickets.new_section_title: 'お問合せ'
 helpcenter.tickets.view_btn_edit: 編集
 helpcenter.tickets.view_unassigned: アサイン前
