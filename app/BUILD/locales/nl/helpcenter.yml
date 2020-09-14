@@ -124,8 +124,15 @@ helpcenter.flashes.user_resend_email_verify: 'De validatie e-mail is nogmaals na
 helpcenter.flashes.user_updated_profile: 'Uw profiel is bijgewerkt.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Bedankt voor het verifiëren van uw e-mailadres. Uw account is nu actief.'
 helpcenter.flashes.usersource_new_add_email_verify: 'We moeten uw e-mailadres verifiëren voordat we uw account aan kunnen maken. Controleer uw inbox voor een verificatielink.'
+helpcenter.forms.delete_question: 'Verwijderen?'
+helpcenter.forms.error_captcha: 'De CAPTCHA-waarde is incorrect'
 helpcenter.forms.error_email_required: 'U moet een e-mailadres opgeven'
+helpcenter.forms.error_required: 'Deze waarde is vereist'
+helpcenter.forms.error_banned_email: 'Uw e-mail is geweigerd.'
+helpcenter.forms.label_drag_overlay: 'Voeg deze afbeelding aan uw bericht toe.'
+helpcenter.forms.label_email: E-mail
 helpcenter.forms.label_save: Opslaan
+helpcenter.forms.label_submit: Verzenden
 helpcenter.general.add_comment: 'Reactie toevoegen'
 helpcenter.general.admin: Beheerder
 helpcenter.general.admin_home: 'Home beheerder'
@@ -142,14 +149,19 @@ helpcenter.general.agents: Medewerkers
 helpcenter.general.attachments: Bijlagen
 helpcenter.general.comments: Reacties
 helpcenter.general.date_day_month: '{date, date, d MMM}'
+helpcenter.general.drag_and_drop: 'Drag and drop'
 helpcenter.general.email_address: 'E-mailadres'
 helpcenter.general.everything: Alles
 helpcenter.general.impersonation_mode: 'Verpersoonlijking modus'
 helpcenter.general.label_search_enter_label: 'Geef een label om naar te zoek op'
 helpcenter.general.last_activity: 'Laatste activiteit'
 helpcenter.general.log_in: 'Inloggen'
+helpcenter.general.name: Naam
+helpcenter.general.nav_contact: 'Neem contact met ons op'
 helpcenter.general.nav_guides: Gidsen
-helpcenter.general.no_search_query: 'Typ een zoekterm in het zoekveld.'
+helpcenter.general.nav_newticket: 'Neem contact met ons op'
+helpcenter.general.no_search_query: 'Typ een zoekopdracht in het zoekvenster.'
+helpcenter.general.no_search_results_general: 'Geen resultaten gevonden'
 helpcenter.general.password: Wachtwoord
 helpcenter.general.print: Printen
 helpcenter.general.prop_comments_asc: 'Minste reacties eerst'
@@ -163,12 +175,16 @@ helpcenter.general.prop_rating_desc: 'Hoogst beoordeeld eerst'
 helpcenter.general.prop_views_asc: 'Minste weergaven eerst'
 helpcenter.general.prop_views_desc: 'Meeste weergaven eerst'
 helpcenter.general.rate_page_positive: Behulpzaam
+helpcenter.general.remove: verwijderen
 helpcenter.general.rerender_form: 'Controleer dit formulier voordat u het verstuurd.'
+helpcenter.general.search: 'Waar kunnen wij u vandaag mee van dienst zijn?'
 helpcenter.general.share: Delen
 helpcenter.general.show: Tonen
+helpcenter.general.show_x_more: 'Meer weergeven {num}'
 helpcenter.general.tagged_with: 'getagd met'
 helpcenter.general.updated: Bijgewerkt
 helpcenter.general.user: Gebruiker
+helpcenter.general.x_search_results: '{num} zoekresultaten voor “{query}”'
 helpcenter.general.you: U
 helpcenter.members.language: Taal
 helpcenter.members.timezone: Tijdzone
@@ -200,9 +216,12 @@ helpcenter.tickets.please_login_to_reply: 'Log in om te antwoorden.'
 helpcenter.tickets.rate_positive: 'Het was geweldig'
 helpcenter.tickets.rate_question: 'Hoe zou u de ondersteuning die u heeft ontvangen beoordelen?'
 helpcenter.tickets.rate_support: 'Beoordeel uw ondersteuning'
+helpcenter.tickets.reference_number: 'Referentienummer: {ref}'
 helpcenter.tickets.switched_department_rerender: 'De structuur van dit formulier kan gewijzigd zijn. Controleer het formulier en verstuur het nogmaals.'
+helpcenter.tickets.thank_you: 'Dank u, wij hebben uw aanvraag ontvangen.'
 helpcenter.tickets.thank_you_check_email: 'Verifieer uw e-mailadres'
 helpcenter.tickets.thank_you_check_email_desc: 'Om verzending van uw ticket te voltooien, moet u uw inbox van uw e-mail controleren. Klik op de verificatielink die we u hebben gestuurd.'
+helpcenter.tickets.thank_you_desc: 'Dank u voor uw mail. Een van onze teamleden zal zo spoedig mogelijk contact met u opnemen.'
 helpcenter.tickets.timeline_marked: 'heeft dit ticket gemarkeerd:'
 helpcenter.tickets.view_btn_add_to_ticket: 'Aan ticket toevoegen'
 helpcenter.tickets.view_btn_edit: Bewerken
