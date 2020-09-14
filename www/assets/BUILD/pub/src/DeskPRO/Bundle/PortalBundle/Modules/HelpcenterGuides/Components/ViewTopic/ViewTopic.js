@@ -6,7 +6,7 @@ import moment from 'moment';
 import $ from 'jquery';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import browserHistory from 'react-router/lib/browserHistory';
-import { Link, Element, Events, scroller } from 'react-scroll';
+import Link from 'react-router/lib/Link';
 import { TopicList, Topic, GuideSelector, CodeBlock } from '../index';
 
 class ViewTopic extends React.Component {
@@ -17,8 +17,10 @@ class ViewTopic extends React.Component {
   constructor(props) {
     super(props);
     let topic = {};
+    let loaded = false;
     if (window.topic) {
       topic = JSON.parse(window.topic);
+      loaded = true;
     }
     topic.content = this.addIdToh1(topic.content, topic.slug);
     const topicList = JSON.parse(window.topicList);
@@ -26,8 +28,9 @@ class ViewTopic extends React.Component {
       fixed:     false,
       doSpin:    false,
       flashes:   [],
-      topics:    { [topic.id]: topic },
       guideSlug: this.getGuideSlug(this.props.params.splat),
+      loaded,
+      topic,
       topicList,
     };
     let guides = [];
@@ -58,15 +61,8 @@ class ViewTopic extends React.Component {
       }
       this.ticking = true;
     });
-    this.grabAllTopicsFromApi();
     window.addEventListener('resize', this.defineSizes);
     this.defineSizes();
-    Events.scrollEvent.register('begin', () => {
-      this.scrolling = true;
-    });
-    Events.scrollEvent.register('end', () => {
-      this.scrolling = false;
-    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -130,11 +126,11 @@ class ViewTopic extends React.Component {
     const links = document.querySelectorAll('a.internal_link.topic');
     Array.prototype.forEach.call(links, (internalLink) => {
       let target = internalLink.pathname;
-
+      console.log(target);
       const guideSlug = target.replace(/^(\/[^/]+)?\/guides\//, '').replace(/\/.*/, '');
-      let newLink;
-      if (guideSlug !== this.state.guideSlug) {
-        newLink = document.createElement('a');
+      if (true || guideSlug !== this.state.guideSlug) {
+        console.log('link to another guide');
+        const newLink = document.createElement('a');
         newLink.className = 'internal_link topic';
         newLink.onclick = e => this.internalLink(e, target);
         newLink.href = '#';
@@ -144,14 +140,14 @@ class ViewTopic extends React.Component {
         newLink.innerText = internalLink.text;
         internalLink.parentNode.replaceChild(newLink, internalLink);
       } else {
-        newLink = document.createElement('span');
-        const topicSlug = target.replace(/^.+\/([^/]+)$/, '$1');
+        const newLink = document.createElement('span');
+        console.log(internalLink);
+        console.log(internalLink.href);
         const link = (
           <Link
-            to={`topic_${topicSlug}`}
-            href={target}
-            offset={this.withSplash ? -255 : -129}
-            isDynamic
+            to={internalLink.pathname}
+            className="internal_link topic"
+            onClick={this.handleClick}
           >
             {internalLink.text}
           </Link>
@@ -269,6 +265,10 @@ class ViewTopic extends React.Component {
           topicList,
         });
       });
+    } else {
+      const topicSlug = path.replace(/^(\/[^/]+)?\/guides\/.*\//, '');
+      console.log(topicSlug);
+      this.grabTopicFromApi(topicSlug);
     }
     browserHistory.push(path);
     return false;
@@ -278,65 +278,27 @@ class ViewTopic extends React.Component {
     if (this.scrolling) {
       return;
     }
-    const { topics, topicList } = this.state;
-    const item = topicList.find(t => t.slug === slug);
-    if (item) {
-      if (typeof topics[item.id] !== 'undefined') {
-        return;
-      }
-    }
-
-    topics[item.id] = {};
+    this.setState({
+      loaded: false
+    });
 
     portalHttp.sendGet(`DP_URL/portal/api/guides/topic/${slug}`).then((response) => {
       if (response.isError()) {
         return;
       }
 
+
       const topic = response.data.data;
       topic.content = this.addIdToh1(topic.content, topic.slug);
-      topics[topic.id] = topic;
       this.setState({
-        topics,
+        loaded:  true,
+        topic,
         flashes: [],
       });
       this.changeInternalLinks();
       this.addCodeBlocksCopy();
       this.addGuideBlocks();
       this.addReactImageLazyload();
-    });
-  };
-
-  grabAllTopicsFromApi = () => {
-    portalHttp.sendGet(`DP_URL/portal/api/guides/all/${this.state.guideSlug}`).then((response) => {
-      if (response.isError()) {
-        return;
-      }
-
-      const topics = {};
-      const res = response.data.data;
-      res.forEach((topic) => {
-        topic.content = this.addIdToh1(topic.content, topic.slug);
-        topics[topic.id] = topic;
-      });
-      this.setState({
-        topics,
-        flashes: []
-      });
-      this.changeInternalLinks();
-      this.addCodeBlocksCopy();
-      this.addGuideBlocks();
-      this.addReactImageLazyload();
-      setTimeout(() => {
-        this.setState({
-          loaded: true,
-        });
-        const offset = this.withSplash ? -255 : -129;
-        scroller.scrollTo(`topic_${this.targetSlug}`, {
-          isDynamic: true,
-          offset,
-        });
-      }, 500);
     });
   };
 
@@ -355,7 +317,6 @@ class ViewTopic extends React.Component {
         (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
       ).shift();
 
-      this.grabAllTopicsFromApi();
       let baseUrl = window.DESKPRO_BASE_URL;
       if (baseUrl) {
         baseUrl = baseUrl.replace(/\/+$/, '');
@@ -373,33 +334,18 @@ class ViewTopic extends React.Component {
     });
   };
 
-  renderTopics() {
-    const { topicList, topics, guideSlug, topicSlug, loaded } = this.state;
-    const result = [];
-
-    topicList
-      .forEach((topic) => {
-        if (parseInt(topic.no_content, 10) === 1 || topic.depth === 0) {
-          result.push(<Element name={`topic_${topic.slug}`} key={topic.id} />);
-        } else {
-          result.push(
-            <Element
-              key={topic.id}
-              name={`topic_${topic.slug}`}
-            >
-              <Topic
-                topic={topic}
-                guideSlug={guideSlug}
-                topicSlug={topicSlug}
-                data={topics[topic.id]}
-                sizes={this.sizes}
-                loaded={loaded}
-              />
-            </Element>
-          );
-        }
-      });
-    return result;
+  renderTopic() {
+    const { topic, guideSlug, topicSlug, loaded } = this.state;
+    return (
+      <Topic
+        topic={topic}
+        guideSlug={guideSlug}
+        topicSlug={topicSlug}
+        data={topic}
+        sizes={this.sizes}
+        loaded={loaded}
+      />
+    );
   }
 
   render() {
@@ -435,7 +381,7 @@ class ViewTopic extends React.Component {
                     </div>
                   }
                   <div className="dp-po-guides-block">
-                    {this.renderTopics()}
+                    {this.renderTopic()}
                   </div>
                 </div>
               </div>

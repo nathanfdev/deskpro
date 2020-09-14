@@ -10,7 +10,6 @@ class Topic extends React.PureComponent {
   static propTypes = {
     intl:      PropTypes.object,
     topic:     PropTypes.object,
-    data:      PropTypes.object,
     guideSlug: PropTypes.string,
     topicSlug: PropTypes.string,
     sizes:     PropTypes.object,
@@ -18,7 +17,7 @@ class Topic extends React.PureComponent {
   };
 
   static defaultProps = {
-    data: {}
+    topic: {}
   };
 
   constructor(props) {
@@ -44,7 +43,7 @@ class Topic extends React.PureComponent {
   };
 
   render() {
-    const { data, topic, guideSlug, topicSlug, intl, sizes, loaded } = this.props;
+    const { topic, guideSlug, topicSlug, intl, sizes, loaded } = this.props;
 
     const fixed = false;
     const agentBarHeight = 0;
@@ -92,12 +91,6 @@ class Topic extends React.PureComponent {
                       <span className="dp-po-icon far fa-anchor" />
                     </a>
                   </h2>
-                  { topic.parent &&
-                  <a href="" className="dp-po-guides-block-chapter"><i
-                    className="dp-po-icon fal fa-angle-right"
-                  />
-                    {topic.parent.title}</a>
-                  }
                 </div>
                 <div className="dp-po-guides-block-extra">
                   <ul className="dp-po-guides-block-extra-list">
@@ -116,16 +109,16 @@ class Topic extends React.PureComponent {
               </div>
               <div
                 className="dp-po-post-content dp-po-guides-block-content"
-                dangerouslySetInnerHTML={{ __html: data.content }}
+                dangerouslySetInnerHTML={{ __html: topic.content }}
               />
             </div>
           </div>
           <div className="col-sm-3">
             <div className="dp-po-guides-block-article-right" style={style}>
-              <TopicSummary content={data.content} fixed={fixed} agentBarHeight={agentBarHeight} />
+              <TopicSummary content={topic.content} fixed={fixed} agentBarHeight={agentBarHeight} />
               <div className="dp-po-guides-meta">
-                {data.date_published && <p><FormattedMessage id="helpcenter.general.published" />: <strong>{moment(data.date_published).format('DD/MM/YYYY')}</strong></p>}
-                <p><FormattedMessage id="helpcenter.general.last_updated" />: <strong>{moment(data.date_updated).format('DD/MM/YYYY')}</strong></p>
+                {topic.date_published && <p><FormattedMessage id="helpcenter.general.published" />: <strong>{moment(topic.date_published).format('DD/MM/YYYY')}</strong></p>}
+                <p><FormattedMessage id="helpcenter.general.last_updated" />: <strong>{moment(topic.date_updated).format('DD/MM/YYYY')}</strong></p>
               </div>
             </div>
           </div>

@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Link } from 'react-scroll';
+import Link from 'react-router/lib/Link';
 import classNames from 'classnames';
-import browserHistory from 'react-router/lib/browserHistory';
 
 class TopicListItem extends React.Component {
   static propTypes = {
@@ -38,21 +37,9 @@ class TopicListItem extends React.Component {
     }
   };
 
-  handleClick = (e) => {
-    e.preventDefault();
+  handleClick = () => {
     const { topic } = this.props;
     this.props.grabTopicFromApi(topic.slug);
-  };
-
-  handleSetActive = () => {
-    const { topic, guideSlug } = this.props;
-    this.props.grabTopicFromApi(topic.slug);
-
-    let baseUrl = window.DESKPRO_BASE_URL;
-    if (baseUrl) {
-      baseUrl = baseUrl.replace(/\/+$/, '');
-    }
-    browserHistory.push(`${baseUrl}/guides/${guideSlug}/${topic.slug}`);
   };
 
   renderChildren = () => {
@@ -94,7 +81,7 @@ class TopicListItem extends React.Component {
   };
 
   render() {
-    const { topic, guideSlug, topicSlug, withSplash } = this.props;
+    const { topic, guideSlug } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -105,15 +92,10 @@ class TopicListItem extends React.Component {
     return (
       <li className={`dp-po-guides-search-content-${prefix}item`} key={topic.slug}>
         <Link
-          className={classNames(`dp-po-guides-search-content-${prefix}link`, { active: topic.slug === topicSlug })}
-          activeClass="active"
-          href={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`}
-          to={`topic_${topic.slug}`}
-          offset={withSplash ? -255 : -129}
-          spy
-          isDynamic
+          className={classNames(`dp-po-guides-search-content-${prefix}link`)}
+          to={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`}
+          activeClassName="active"
           onClick={this.handleClick}
-          onSetActive={this.handleSetActive}
         >
           {topic.title}
         </Link>

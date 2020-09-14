@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { Link } from 'react-scroll';
+import Link from 'react-router/lib/Link';
 import TopicListItem from './TopicListItem';
 
 class TopicList extends React.Component {
@@ -94,7 +94,7 @@ class TopicList extends React.Component {
   }
 
   renderList() {
-    const { guideSlug, topics, withSplash } = this.props;
+    const { guideSlug, topics } = this.props;
     if (window.twoLevelSection) {
       let baseUrl = window.DESKPRO_BASE_URL;
       if (baseUrl) {
@@ -113,14 +113,9 @@ class TopicList extends React.Component {
                 <div className="dp-po-guides-search-content-accordion" key={topic.slug}>
                   <Link
                     className={classNames('dp-po-guides-search-content-title', { collapsed })}
-                    activeClass="active"
                     href={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
-                    to={`topic_${topic.slug}`}
-                    offset={withSplash ? -255 : -129}
-                    spy
-                    isDynamic
-                    onClick={this.handleClick}
-                    onSetActive={this.handleSetActive}
+                    to={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
+                    activeClassName="active"
                   >
                     {topic.title} <i className="dp-po-icon far fa-angle-down" />
                   </Link>
