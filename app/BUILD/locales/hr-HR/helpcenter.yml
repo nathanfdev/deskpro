@@ -1,6 +1,10 @@
 ---
 helpcenter.articles.section_title: Baza znanja
 helpcenter.articles.view_x_articles: 'Pogledaj sve članke u {category}'
+helpcenter.downloads.file_name: 'Ime datoteke'
+helpcenter.downloads.file_size: 'Veličina datoteke'
+helpcenter.downloads.no_files: 'Nema datoteka'
+helpcenter.downloads.total_downloads: 'Ukupno preuzimanja'
 helpcenter.error.404_desc: 'Žao nam je, no nismo mogli pronaći tu stranicu.'
 helpcenter.error.general_title: 'Dogodila se pogreška'
 helpcenter.forms.delete_question: 'Izbrisati?'
@@ -11,12 +15,19 @@ helpcenter.forms.label_drag_overlay: 'Umetnite ovu sliku u svoju poruku.'
 helpcenter.forms.label_email: E-pošta
 helpcenter.forms.label_submit: Pošalji
 helpcenter.general.drag_and_drop: 'Povuci i ispusti'
+helpcenter.general.labels: Oznake
+helpcenter.general.last_update_by: 'Zadnje ažurirao: <strong>{date_updated, date, medium}</strong> <strong>{person_name}</strong>'
 helpcenter.general.name: Ime
 helpcenter.general.nav_contact: 'Kontaktirajte nas'
+helpcenter.general.nav_downloads_desc: 'Pregledaj naše datoteke'
 helpcenter.general.nav_kb: Baza znanja
 helpcenter.general.nav_newticket: 'Kontaktirajte nas'
 helpcenter.general.no_search_query: 'Upišite upit za pretragu u okvir za pretragu.'
 helpcenter.general.no_search_results_general: 'Rezultati nisu pronađeni'
+helpcenter.general.rate_page_negative: Beskoristan
+helpcenter.general.rate_page_positive: Koristan
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} od {vote_count} ljudi smatralo je ovu stranicu korisnom'
+helpcenter.general.related_content: 'Srodni sadržaj'
 helpcenter.general.remove: ukloni
 helpcenter.general.search: 'Kako vam danas možemo pomoći?'
 helpcenter.general.show_x_more: 'Prikaži {num} više'
