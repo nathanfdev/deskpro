@@ -64,7 +64,7 @@ helpcenter.emails.validate_email: 'Prosíme, ověřte, že tato e-mailova dresa 
 helpcenter.error.404_desc: 'Omlouváme se, ale tuto stránku se nám nepodařilo najít.'
 helpcenter.error.contact_us: 'Kontaktujte nás'
 helpcenter.error.general_title: 'Došlo k chybě'
-helpcenter.forms.error_captcha: 'Hodnota CAPTCHA není správná'
+helpcenter.forms.error_captcha: 'Hodnota CAPTCHA byla nesprávná'
 helpcenter.forms.error_email_required: 'Musíte zadat svou e-mailovou adresu'
 helpcenter.forms.error_required: 'Tato hodnota je povinná'
 helpcenter.forms.error_banned_email: 'Tento e-mail byl zakázán.'
@@ -127,6 +127,7 @@ helpcenter.general.x_search_results: '{num} výsledků vyhledávání pro "{quer
 helpcenter.label.search: Vyhledávání
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
+helpcenter.messenger.blocks_continue_chat_title: 'Pokračovat v již existujícím chatu'
 helpcenter.messenger.blocks_knowledgebase_title: Znalostní báze
 helpcenter.messenger.blocks_search_block_no_results: 'Pro {query} nebyly nalezeny žádné výsledky'
 helpcenter.messenger.blocks_search_block_see_more_results: 'Zobrazit další výsledky'
@@ -137,14 +138,15 @@ helpcenter.messenger.greeting: 'Kontaktujte nás'
 helpcenter.messenger.tickets_form_add_attachment: 'Přidat přílohu'
 helpcenter.messenger.tickets_form_header: 'Nový tiket'
 helpcenter.messenger.tickets_form_saving: 'Ukládáme váš tiket. Prosím počkejte'
-helpcenter.messenger.tickets_form_thanks: 'Děkujeme, že se na nás obracíte. Jeden ze členů našeho týmu vás bude brzy kontaktovat e-mailem.'
+helpcenter.messenger.tickets_form_thanks: 'Děkujeme, že se na nás obracíte. Jeden ze členů našeho týmu vás bude kontaktovat e-mailem.'
 helpcenter.messenger.tickets_form_thanks_header: 'Vaše žádost je na cestě'
 helpcenter.profile.account_disabled_message: 'Váš účet je v tuto chvíli pozastaven. Nemůžete se přihlásit ani spravovat své tikety.'
 helpcenter.profile.your_password: 'Vaše heslo'
+helpcenter.search.search_results: 'Výsledky vyhledávání'
 helpcenter.search.showing_results_for: 'Zobrazují se výsledky v {type} pro: <span>“{query}”</span>'
 helpcenter.tickets.list_date_created: 'Datum vytvoření'
 helpcenter.tickets.list_subject: Předmět
-helpcenter.tickets.new_intro: 'Prosím vyplňte tento formulář a jedna z našich odpovědných osob vám, co nejdříve to bude možné, e-mailem odpoví.'
+helpcenter.tickets.new_intro: 'Prosím vyplňte tento formulář a jeden z našich operátorů vám, co nejdříve to bude možné, e-mailem odpoví.'
 helpcenter.tickets.new_section_title: 'Kontaktujte nás'
 helpcenter.tickets.reference_number: 'Referenční číslo: {ref}'
 helpcenter.tickets.related_articles_desc: 'Našli jsme následující články, které mohou řešit váš problém.'
