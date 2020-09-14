@@ -54,6 +54,7 @@ helpcenter.downloads.file_name: 'Faili nimi'
 helpcenter.downloads.file_size: 'Faili suurus'
 helpcenter.downloads.no_files: 'Failid puuduvad'
 helpcenter.downloads.total_downloads: 'Kokku allalaadimisi'
+helpcenter.downloads.view_x_files: '{count, plural, one {Vaata 1 allalaadimist} other {Vaata # allalaadimist}}'
 helpcenter.error.404_desc: 'Kahjuks ei leidnud me seda lehekülge.'
 helpcenter.error.an_error_occured: 'Ilmnes viga'
 helpcenter.error.contact_us: 'Võtke meiega ühendust'
@@ -70,6 +71,8 @@ helpcenter.general.last_update_by: 'Viimati uuendatud: <strong>{date_updated, da
 helpcenter.general.name: Nimi
 helpcenter.general.nav_contact: 'Võtke meiega ühendust'
 helpcenter.general.nav_downloads_desc: 'Sirvi meie faile'
+helpcenter.general.nav_guides: Juhised
+helpcenter.general.nav_guides_desc: 'Vaata kõiki juhiseid'
 helpcenter.general.nav_kb: Teadmusbaas
 helpcenter.general.nav_newticket: 'Võtke meiega ühendust'
 helpcenter.general.no_search_query: 'Palun trükkige otsingu märksõna otsingukasti.'
