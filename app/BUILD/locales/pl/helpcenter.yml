@@ -1,4 +1,7 @@
 ---
+helpcenter.account.add: Dodaj
+helpcenter.account.add_email: 'Dodaj e-mail'
+helpcenter.account.change_password_action: 'Zaktualizuj hasło'
 helpcenter.account.comment_lockout: 'Umieściłeś dużo komentarzy. Poczekaj chwilę, zanim będziesz mógł umieszczać kolejne.'
 helpcenter.account.email_btn_usersource_set: 'Dodaj adres email'
 helpcenter.account.login_captcha_failed: 'Podałeś niepoprawny kod CAPTCHA. Spróbuj ponownie.'
