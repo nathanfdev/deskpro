@@ -331,16 +331,20 @@ helpcenter.flashes.ticket_re_opened: 'Zgłoszenie ponownie otwarte.'
 helpcenter.flashes.ticket_replied: 'Twoja odpowiedź została przesłana.'
 helpcenter.flashes.ticket_resolved: 'Twoje zgłoszenie zostało oznaczone jako rozwiązane.'
 helpcenter.flashes.ticket_updated: 'Twoje zgłoszenie zostało zaktualizowana.'
+helpcenter.flashes.update_user_profile: 'Wypełnij prawidłowo wymagane pola.'
 helpcenter.flashes.user_add_email_verified: 'Twój adres email został dodany do twojego konta.'
 helpcenter.flashes.user_add_email_verify: 'Musimy zweryfikować twój adres email zanim dodamy go do twojego konta. Sprawdź swoją skrzynkę odbiorczą email, wysłaliśmy tam link weryfikujący.'
+helpcenter.flashes.user_changed_password: 'Twoje hasło zostało zaktualizowane.'
 helpcenter.flashes.user_changed_primary_email: 'Twój główny adres email został zmieniony.'
 helpcenter.flashes.user_registered_must_verify: 'Dziękujemy za rejestracje. Sprawdź swoją skrzynkę odbiorczą email, wysłaliśmy ci link weryfikujący.'
 helpcenter.flashes.user_registered_verified: 'Dziękuję Ci. Twój adres e-mail został zweryfikowany.'
 helpcenter.flashes.user_registered_verified_authenticated: 'Dziękujemy. Twój adres email został zweryfikowany i zostałeś zalogowany.'
+helpcenter.flashes.user_removed_an_email: 'Usunięto adres e-mail {email}.'
 helpcenter.flashes.user_resend_email_verify: 'Wiadomość z potwierdzeniem została ponownie wysłana na twój adres email.'
 helpcenter.flashes.user_updated_profile: 'Twój profil został zaktualizowany.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Dziękujemy za weryfikacje twojego adresu email. Twoje konto jest teraz aktywne.'
 helpcenter.flashes.usersource_new_add_email_verify: 'Musimy zweryfikować twój adres email zanim utworzymy twoje konto. Sprawdź swoją skrzynkę odbiorczą email, wysłaliśmy tam link weryfikujący.'
+helpcenter.forms.date_picker_next_month: 'Następny miesiąc'
 helpcenter.forms.error_email_required: 'Musisz podać swój adres email'
 helpcenter.forms.label_save: Zapisz
 helpcenter.general.add_comment: 'Dodaj komentarz'
@@ -358,12 +362,62 @@ helpcenter.general.agents: Agenci
 helpcenter.general.attachments: Załączniki
 helpcenter.general.chat: Czat
 helpcenter.general.comments: Komentarze
+helpcenter.general.department: Dział
+helpcenter.general.drag_and_drop: 'Przeciągnij i upuść'
+helpcenter.general.edit_this_page: 'Edytuj stronę'
+helpcenter.general.email_address: 'Adresy e-mail'
+helpcenter.general.eula: EULA
 helpcenter.general.everything: Wszystkie
+helpcenter.general.expand: Rozwiń
+helpcenter.general.file_type: Plik
+helpcenter.general.files_type: Pliki
+helpcenter.general.filter: Filtruj
+helpcenter.general.first_published: 'Opublikowano'
+helpcenter.general.form_choose_file: 'Wybierz plik'
+helpcenter.general.form_choose_files: 'Wybierz pliki'
+helpcenter.general.go_action: Przejdź
+helpcenter.general.go_to_page: 'Przejdź do strony'
+helpcenter.general.helpcenter_disabled_click_below: 'Portal został zablokowany. Jeżeli jesteś agentem, kliknij w poniższy przycisk, aby przejść do pulpitu agenta.'
+helpcenter.general.helpcenter_disabled_re_enable_from_setup: 'Portal został zablokowany. Możesz odblokować go, wchodząc w menu <a href="{setup_link}">Admin > Portal > Ustawienia</a>'
+helpcenter.general.helpdesk_system: 'Robot Helpdesku'
+helpcenter.general.ics_subscribe: iCalendar
 helpcenter.general.impersonation_mode: 'Tryb innego użytkownika'
 helpcenter.general.label_search_enter_label: 'Podaj etykietę, aby ją wyszukać'
+helpcenter.general.labels: Tagi
+helpcenter.general.lang_change_to_current: 'Ustaw <em>{lang}</em> jako język domyślny'
+helpcenter.general.lang_diff: 'Strona jest w <em>{active_lang}</em>, ale twoje konto jest w <em>{person_lang}</em>.'
+helpcenter.general.lang_switch: 'Przełącz na <em>{lang}</em>'
+helpcenter.general.last_24_hours: 'Ostatnie 24 godziny'
+helpcenter.general.last_6_month: 'Ostatnie 6 miesięcy'
 helpcenter.general.last_activity: 'Ostatnia aktywność'
+helpcenter.general.last_month: 'Ostatni miesiąc'
+helpcenter.general.last_updated: 'Ostatnia aktualizacja'
+helpcenter.general.last_update_by: 'Ostatnia aktualizacja: <strong>{date_updated, date, medium}</strong> przez <strong>{person_name}</strong>'
+helpcenter.general.last_week: 'Ostatni tydzień'
+helpcenter.general.last_year: 'Ostatni rok'
+helpcenter.general.latest_status_changes: 'Ostatnie zmiany statusu'
 helpcenter.general.log_in: 'Zaloguj'
+helpcenter.general.message: Wiadomość
+helpcenter.general.more_than_1_year: 'Ponad rok temu'
+helpcenter.general.name: Imię i nazwisko
+helpcenter.general.nav_chat: Czaty
+helpcenter.general.nav_community: Grupa
+helpcenter.general.nav_community_desc: 'Zobacz wszystkie tematy'
+helpcenter.general.nav_contact: 'Skontaktuj się z nami'
+helpcenter.general.nav_contact_desc: 'Skontaktuj się z nami, by uzyskać pomoc'
+helpcenter.general.nav_direct_messages: Wiadomości
+helpcenter.general.nav_downloads: Pliki
+helpcenter.general.nav_downloads_desc: 'Wyszukaj w plikach'
+helpcenter.general.nav_emails: Adresy e-mail
 helpcenter.general.nav_guides: Przewodniki
+helpcenter.general.nav_guides_desc: 'Zobacz wszystkie przewodniki'
+helpcenter.general.nav_kb: Baza wiedzy
+helpcenter.general.nav_kb_desc: 'Przejrzyj całe centrum pomocy'
+helpcenter.general.nav_login: 'Zaloguj się'
+helpcenter.general.nav_members: 'Rada członków'
+helpcenter.general.nav_news: Wiadomości
+helpcenter.general.nav_news_desc: 'Zobacz wszystkie najnowsze wiadomości'
+helpcenter.general.nav_news_desc_short: 'Zobacz wszystkie wiadomości'
 helpcenter.general.no_search_query: 'Proszę podać wyszukiwany tekst w okienku wyszukiwania.'
 helpcenter.general.password: Hasło
 helpcenter.general.print: Drukuj
@@ -386,8 +440,30 @@ helpcenter.general.tags: Tagi
 helpcenter.general.updated: Zaktualizowano
 helpcenter.general.user: Użytkownik
 helpcenter.general.you: Ty
+helpcenter.members.activity_group_everything_else: 'Pozostałe'
+helpcenter.members.activity_group_last_month: 'Ostatni miesiąc'
+helpcenter.members.activity_group_last_week: 'Ostatni tydzień'
+helpcenter.members.activity_group_last_year: 'Ostatni rok'
+helpcenter.members.activity_group_this_month: 'W tym miesiącu'
+helpcenter.members.activity_group_this_week: 'W tym tygodniu'
+helpcenter.members.activity_group_this_year: 'W tym roku'
+helpcenter.members.activity_group_today: 'Dzisiaj'
+helpcenter.members.activity_up_voted: 'Oznaczone jako przydatne'
+helpcenter.members.activity_up_voted_comment_on: 'Komentarz oznaczono jako przydatny'
+helpcenter.members.company: 'Firma'
+helpcenter.members.date_joined: 'Dołączyła'
 helpcenter.members.language: Język
+helpcenter.members.name: Imię i nazwisko
+helpcenter.members.no_activities: 'Brak działań'
+helpcenter.members.not_set: 'Nie ustawiono'
+helpcenter.members.phone: 'Numer telefonu'
+helpcenter.members.phone_number_none: Brak
+helpcenter.members.recent_activity: 'Ostatnie działania'
+helpcenter.members.send_message: 'Wyślij wiadomość prywatną'
 helpcenter.members.timezone: Strefa czasowa
+helpcenter.members.title: 'Rada członków'
+helpcenter.messenger.assigned_agent: 'Przypisany agent'
+helpcenter.messenger.blocks_continue_chat_link: Kontynuuj
 helpcenter.news.none: 'Na razie brak aktualizacji'
 helpcenter.news.recent_title: 'Ostatnie Aktualizacje'
 helpcenter.news.view_as_agent: 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
