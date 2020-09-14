@@ -501,8 +501,8 @@ helpcenter.general.prop_views_asc: 'Първо тези с най-малко п�
 helpcenter.general.prop_views_desc: 'Първо тези с най-много прегледи'
 helpcenter.general.published: 'Публикувано на'
 helpcenter.general.published_by: 'Публикувано от <strong>{person_name}</strong>'
-helpcenter.general.rate_page_negative: Безполезно
-helpcenter.general.rate_page_positive: Полезен
+helpcenter.general.rate_page_negative: Не беше полезно
+helpcenter.general.rate_page_positive: Беше полезно
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} от {vote_count} души смятат тази страница за полезна'
 helpcenter.general.related_content: 'Свързани статии'
 helpcenter.general.remove: премахни
