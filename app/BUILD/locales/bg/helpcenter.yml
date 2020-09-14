@@ -158,7 +158,7 @@ helpcenter.downloads.download_action: Свали
 helpcenter.downloads.file_name: 'Име на файл'
 helpcenter.downloads.file_size: 'Размер на файла'
 helpcenter.downloads.no_files: 'Няма файлове'
-helpcenter.downloads.total_downloads: 'Общо сваляния'
+helpcenter.downloads.total_downloads: 'Общо изтегляния'
 helpcenter.downloads.view_x_files: '{count, plural,one {Виж 1 сваляне}other {Виж # сваляния}}'
 helpcenter.duration_short.days: Д
 helpcenter.duration_short.hours: ч
@@ -274,7 +274,7 @@ helpcenter.error.400_desc: 'Съжаляваме, но вашата заявка
 helpcenter.error.400_title: 'Лоша заявка'
 helpcenter.error.403_desc: 'Съжаляваме, но нямате достъп до тази страница'
 helpcenter.error.403_title: 'Нямате достъп'
-helpcenter.error.404_desc: 'Съжаляваме, но не можем да открием тази страница.'
+helpcenter.error.404_desc: 'За съжаление не можахме да намерим тази страница.'
 helpcenter.error.404_title: 'Не е намерен'
 helpcenter.error.an_error_occured: 'Възникна грешка'
 helpcenter.error.an_error_occured_desc: 'Съжаляваме, но възникна грешка при зареждането на страницата. Моля, опитайте отново малко по-късно или<a href="{contact_link}">се свържете с нас</a>.'
@@ -361,7 +361,7 @@ helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {П�
 helpcenter.forms.error_password_reset_required: 'Необходимо е да си смените паролата'
 helpcenter.forms.error_required: 'Тази стойност е необходима'
 helpcenter.forms.error_banned_email: 'Имейлът е баннат.'
-helpcenter.forms.label_drag_overlay: 'Вмъкни изображение във Вашето съобщение.'
+helpcenter.forms.label_drag_overlay: 'Вмъкнете това изображение във вашето съобщение.'
 helpcenter.forms.label_email: Имейл
 helpcenter.forms.label_password: Парола
 helpcenter.forms.label_password_confirm: Потвърди
@@ -461,7 +461,7 @@ helpcenter.general.nav_contact: 'Свържете се с нас'
 helpcenter.general.nav_contact_desc: 'Свържи се с нас'
 helpcenter.general.nav_direct_messages: Съобщения
 helpcenter.general.nav_downloads: Файлове
-helpcenter.general.nav_downloads_desc: 'Разгледай нашите файлове'
+helpcenter.general.nav_downloads_desc: 'Разгледайте нашите файлове'
 helpcenter.general.nav_emails: Имейли
 helpcenter.general.nav_guides: Упътвания
 helpcenter.general.nav_guides_desc: 'Виж всички ръководства'
@@ -478,7 +478,7 @@ helpcenter.general.nav_register: 'Регистрация'
 helpcenter.general.nav_support_center: 'Помощен Център'
 helpcenter.general.nav_your_account: 'Вашият Акаунт'
 helpcenter.general.next: Следващ
-helpcenter.general.no_search_query: 'Моля въведете запитване в полето за търсене.'
+helpcenter.general.no_search_query: 'Моля, въведете заявка в полето за търсене.'
 helpcenter.general.no_search_results_general: 'Няма намерени резултати'
 helpcenter.general.or: или
 helpcenter.general.pagination_page: 'Страница {page}'
@@ -576,9 +576,9 @@ helpcenter.messenger.blocks_search_block_see_more_results: 'Вижте още р
 helpcenter.messenger.blocks_start_chat_button: 'Започни нов разговор'
 helpcenter.messenger.blocks_start_chat_description: 'Започни чат с нас'
 helpcenter.messenger.blocks_start_chat_title: 'Започни разговор'
-helpcenter.messenger.blocks_ticket_button: 'Изпрати нов тикет'
+helpcenter.messenger.blocks_ticket_button: 'Изпратете нов тикет'
 helpcenter.messenger.blocks_ticket_description: 'Изпратете запитване чрез нашата форма за контакт'
-helpcenter.messenger.blocks_ticket_title: 'Изпрати тикет'
+helpcenter.messenger.blocks_ticket_title: 'Изпратете тикет'
 helpcenter.messenger.blocks_tickets_title: 'Вашите тикети'
 helpcenter.messenger.blocks_tickets_view_all_link: 'виж всички'
 helpcenter.messenger.chat_agent_assigned_message: '{name} се присъедини към разговора.'
@@ -734,14 +734,14 @@ helpcenter.tickets.resolve_ticket_explain: 'След като тикета се 
 helpcenter.tickets.resolve_ticket_title: 'Сигурен ли сте, че искате да да затворите тикета?'
 helpcenter.tickets.search_approvals: 'Търси одобрения'
 helpcenter.tickets.search_tickets: 'Търси тикети'
-helpcenter.tickets.submit_a_ticket: 'Изпрати тикет'
+helpcenter.tickets.submit_a_ticket: 'Изпратете тикет'
 helpcenter.tickets.submit_feedback: 'Изпрати обратна връзка'
 helpcenter.tickets.switched_department_rerender: 'Структурата на тази форма може да се е променила. Моля прегледайте формата и изпратете отново.'
 helpcenter.tickets.thank_you: 'Благодарим ви, получихме вашата заявка.'
 helpcenter.tickets.thank_you_check_email: 'Моля, потвърдете имейл адреса си'
 helpcenter.tickets.thank_you_check_email_desc: 'За да довършите изпращането на вашия тикет, трябва да проверите входящата си поща. Моля, кликнете на линка за потвърждение, който сме ви изпратили.'
 helpcenter.tickets.thank_you_create_pw_link: 'Искате да следите Вашия тикет? Можете да<a href="{create_pw_link}">зададете парола за Вашият акаунт</a>.'
-helpcenter.tickets.thank_you_desc: 'Благодарим Ви, че се свързахте с нас. Съвсем скоро ще се свържем с Вас.'
+helpcenter.tickets.thank_you_desc: 'Благодарим ви, че се свързахте с нас. Съвсем скоро някой от нашите сътрудници ще се свърже с вас по имейл.'
 helpcenter.tickets.ticket_closed: 'Тикетът е затворен'
 helpcenter.tickets.ticket_properties: 'Свойства на тикета'
 helpcenter.tickets.ticket_status: 'Статус на тикета'
