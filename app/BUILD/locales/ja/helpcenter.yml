@@ -76,6 +76,14 @@ helpcenter.general.chats: チャット
 helpcenter.general.clear_all: '全てクリア'
 helpcenter.general.close: クローズ
 helpcenter.general.comment_btn_save: 'コメント追加'
+helpcenter.general.comment_login_first: 'コメントを投稿するには、ログインまたは登録が必要です。'
+helpcenter.general.comments: コメント
+helpcenter.general.comments_pending_validation: 'このコメントはレビュー待ちです。'
+helpcenter.general.copied: コピー
+helpcenter.general.copy_to_clipboard: 'クリップボードにコピー'
+helpcenter.general.created_by: '作成者'
+helpcenter.general.current_page: '現在のページ'
+helpcenter.general.dashboard: ダッシュボード
 helpcenter.general.everything: 全て
 helpcenter.general.nav_contact: 'お問合せ'
 helpcenter.general.nav_emails: メールアドレス
