@@ -109,7 +109,7 @@ helpcenter.articles.status_archived: Arhivirano
 helpcenter.articles.status_draft: Osnutek
 helpcenter.articles.status_published: Obbjavljeno
 helpcenter.articles.view_as_agent: 'Uporabnikom ta stran ni na voljo, saj članek še ni objavljen.'
-helpcenter.articles.view_x_articles: 'Oglej si vse članke v kategoriji {category}'
+helpcenter.articles.view_x_articles: 'Oglejte si vse članke v kategoriji {category}'
 helpcenter.chats.my_chats: 'Moji klepeti'
 helpcenter.community.activity: Dejavnost
 helpcenter.community.activity_commented: 'Moj komentar'
@@ -503,7 +503,7 @@ helpcenter.general.published: 'Prvič objavljeno'
 helpcenter.general.published_by: 'Objavila oseba <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Neuporabno
 helpcenter.general.rate_page_positive: Uporabno
-helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} od skupaj {vote_count} oseb je ocenilo to stran kot uporabno'
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} od skupaj {vote_count} oseb je ocenilo to stran kot uporabno.'
 helpcenter.general.related_content: 'Povezane vsebine'
 helpcenter.general.remove: odstrani
 helpcenter.general.rerender_form: 'Prosimo pred oddajo preglej obrazec.'
@@ -656,8 +656,8 @@ helpcenter.messenger.tickets_form_required: Zahtevano
 helpcenter.messenger.tickets_form_saving: 'Shranjujemo vaš zahtevek. Prosimo, počakajte!'
 helpcenter.messenger.tickets_form_select: Izberi
 helpcenter.messenger.tickets_form_submit: Oddaj
-helpcenter.messenger.tickets_form_thanks: 'Hvala, ker si stopil/a v stik z nami. Eden naših sodelavcev bo stopil v stik s teboj preko e-pošte.'
-helpcenter.messenger.tickets_form_thanks_header: 'Tvoj zahtevek je na poti'
+helpcenter.messenger.tickets_form_thanks: 'Hvala za vaše sporočilo. Eden od naših sodelavcev vam bo odgovoril po elektronski pošti.'
+helpcenter.messenger.tickets_form_thanks_header: 'Vaš zahtevek je poslan!'
 helpcenter.messenger.total_chat_time_label: 'Skupno trajanje klepeta'
 helpcenter.messenger.view_action: Poglej
 helpcenter.messenger.view_linked_ticket_action: 'Preglej zahtevek'
