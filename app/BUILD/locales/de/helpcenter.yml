@@ -351,21 +351,61 @@ helpcenter.forms.delete_question: 'Löschen?'
 helpcenter.forms.error_captcha: 'Der CAPTCHA-Wert ist nicht korrekt'
 helpcenter.forms.error_dupe_email: 'Diese E-Mail-Adresse wird bereits verwendet.'
 helpcenter.forms.error_email_required: 'Sie müssen Ihre E-Mail-Adresse angeben'
+helpcenter.forms.error_password_current: 'Dies muss Ihr aktuelles Passwort sein'
+helpcenter.forms.error_password_forbid_reuse: 'Sie dürfen kein Passwort verwenden, dass Sie in der Vergangenheit schon benutzt haben'
+helpcenter.forms.error_password_min_length: '{count, plural, one {Mindestens # Zeichen} other {Mindestens # Zeichen}}'
+helpcenter.forms.error_password_require_num_lowercase: '{count, plural, one {Mindestens # Kleinbuchstabe} other {Mindestens # Kleinbuchstaben}}'
+helpcenter.forms.error_password_require_num_number: '{count, plural, one {Mindestens # Zahl} other {Mindestens # Zahlen}}'
+helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {Mindestens # Sonderzeichen} other {Mindestens # Sonderzeichen}}'
+helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {Mindestens # Großbuchstabe} other {Mindestens # Großbuchstaben}}'
+helpcenter.forms.error_password_reset_required: 'Sie müssen Ihr Passwort zurücksetzen'
+helpcenter.forms.error_required: 'Dies ist eine Pflichtangabe'
+helpcenter.forms.error_banned_email: 'E-Mail-Adresse gesperrt.'
+helpcenter.forms.label_drag_overlay: 'Dieses Bild in Ihre Nachricht einfügen.'
+helpcenter.forms.label_email: E-Mail-Adresse
+helpcenter.forms.label_password: Passwort
+helpcenter.forms.label_password_confirm: Bestätigen
+helpcenter.forms.label_reset: Zurücksetzen
 helpcenter.forms.label_save: Sichern
+helpcenter.forms.label_submit: Senden
+helpcenter.forms.label_timezone: Zeitzone
 helpcenter.general.add_comment: 'Fügen Sie einen Kommentar hinzu'
+helpcenter.general.admin: Admin
 helpcenter.general.admin_home: 'Admin Startseite'
 helpcenter.general.agent: Mitarbeiter
 helpcenter.general.agent_bar_admin_community: 'Community Topic Einstellungen'
+helpcenter.general.agent_bar_admin_dl: 'Dateieinstellungen'
+helpcenter.general.agent_bar_admin_guides: 'Handbucheinstellungen'
 helpcenter.general.agent_bar_admin_kb: 'Wissensdatenbank Einstellungen'
 helpcenter.general.agent_bar_admin_lang: 'Sprache Einstellungen'
 helpcenter.general.agent_bar_admin_news: 'Neuigkeiten-Einstellungen'
+helpcenter.general.agent_bar_admin_portal: 'Helpcenter-Design'
 helpcenter.general.agent_bar_agent_community: 'Community Topic verwalten'
+helpcenter.general.agent_bar_agent_dl: 'Dateien verwalten'
+helpcenter.general.agent_bar_agent_guides: 'Handbücher verwalten'
 helpcenter.general.agent_bar_agent_home: 'Mitarbeiter-Startseite'
 helpcenter.general.agent_bar_agent_kb: 'Wissensdatenbank verwalten'
 helpcenter.general.agent_bar_agent_news: 'Neuigkeiten verwalten'
+helpcenter.general.agent_interface: 'Mitarbeiteroberfläche'
 helpcenter.general.agents: Mitarbeiter
+helpcenter.general.apply: Anwenden
 helpcenter.general.attachments: Anhänge
+helpcenter.general.authors_list: Autorenliste
+helpcenter.general.back: Zurück
+helpcenter.general.btn_manage_subscriptions: 'Ihre Abonnements verwalten'
+helpcenter.general.cancel_action: Abbrechen
+helpcenter.general.categories: Kategorien
+helpcenter.general.category: Kategorie
+helpcenter.general.cc: CC
+helpcenter.general.chat: Chat
+helpcenter.general.chats: Chats
+helpcenter.general.clear_all: 'Alle entfernen'
+helpcenter.general.close: Schließen
+helpcenter.general.comment_btn_save: 'Kommentar hinzufügen'
+helpcenter.general.comment_login_first: 'Bitte loggen Sie sich ein oder melden Sie sich an, um einen Kommentar zu hinterlassen.'
 helpcenter.general.comments: Kommentare
+helpcenter.general.comments_pending_validation: 'Dieser Kommentar muss noch geprüft werden.'
+helpcenter.general.comments_title: '{count, plural, one {Kommentar (1)} other {Kommentare (#)}}'
 helpcenter.general.copied: kopiert
 helpcenter.general.copy_to_clipboard: 'In die Zwischenablage kopieren'
 helpcenter.general.created_by: 'Erstellt von'
@@ -496,9 +536,40 @@ helpcenter.messenger.chat_attach_file: 'Datei anhängen'
 helpcenter.messenger.chat_busy: 'Offensichtlich sind alle unsere Mitarbeiter gerade beschäftigt. Sie können trotzdem ein Ticket einreichen. Wir melden uns dann so bald wie möglich bei Ihnen'
 helpcenter.messenger.chat_create_ticket_button: 'Ticket anlegen'
 helpcenter.messenger.chat_create_ticket_header: 'Ein Ticket einreichen'
+helpcenter.messenger.chat_create_ticket_intro: 'Sie können stattdessen ein Ticket einreichen. Einer unserer Mitarbeiter wird sich dann so bald wie möglich per E-Mail bei Ihnen melden.'
+helpcenter.messenger.chat_dragdrop_drag_and_drop: 'Datei hierher ziehen und ablegen'
+helpcenter.messenger.chat_dragdrop_uploading: Wird hochgeladen
 helpcenter.messenger.chat_end_block_buttons_no: 'Nein'
+helpcenter.messenger.chat_end_block_buttons_yes: 'Ja'
+helpcenter.messenger.chat_end_block_question_header: 'Chat beenden?'
+helpcenter.messenger.chat_end_chat: 'Chat beenden'
+helpcenter.messenger.chat_ended: 'Chat beendet'
+helpcenter.messenger.chat_no_agent_online: 'Entschuldigung. Derzeit ist niemand online, um Ihren Chat entgegenzunehmen.'
+helpcenter.messenger.chat_pre_chat_form_form_message: 'Willkommen bei Deskpro. Bitte füllen Sie die Felder unten aus, damit wir Sie so schnell wie möglich an den richtigen Ansprechpartner weiterleiten können.'
+helpcenter.messenger.chat_prompt: 'Womit können wir Ihnen heute helfen?'
+helpcenter.messenger.chat_rating_block_buttons_helpful: Hilfreich
+helpcenter.messenger.chat_rating_block_buttons_unhelpful: Nicht hilfreich
+helpcenter.messenger.chat_rating_block_question_header: 'Bewerten Sie Ihr Gespräch mit {name}'
+helpcenter.messenger.chat_rating_block_thank_you_header: 'Vielen Dank für Ihre Rückmeldung'
 helpcenter.messenger.chat_save_ticket_button_no: 'Nein'
+helpcenter.messenger.chat_save_ticket_button_yes: 'Ja'
+helpcenter.messenger.chat_save_ticket_intro: 'Geben Sie Ihren Namen und Ihre E-Mail-Adresse an. Ein Mitarbeiter wird sich dann so schnell wie möglich bei Ihnen melden.'
+helpcenter.messenger.chat_save_ticket_question: 'Möchten Sie von einem Mitarbeiter kontaktiert werden?'
+helpcenter.messenger.chat_save_ticket_thanks: 'Ein Mitarbeiter wird sich so schnell wie möglich bei Ihnen melden'
+helpcenter.messenger.chat_send_message: 'Nachricht absenden'
+helpcenter.messenger.chat_transcript_block_answer_header: 'Ihr Transkript wurde versendet an:'
 helpcenter.messenger.chat_transcript_block_no_button: 'Nein'
+helpcenter.messenger.chat_transcript_block_question_header: 'Möchten Sie ein Transkript per E-Mail erhalten?'
+helpcenter.messenger.chat_transcript_block_send_button: 'Nachricht senden'
+helpcenter.messenger.chat_transcript_block_yes_button: 'Ja'
+helpcenter.messenger.date_label: Datum
+helpcenter.messenger.email_validated_sucessfully: 'E-Mail-Adresse erfolgreich bestätigt'
+helpcenter.messenger.files_on_this_chat: 'Dateien in diesem Chat'
+helpcenter.messenger.greeting: 'Kontakt'
+helpcenter.messenger.invalid_validation_code: 'Ungültiger Bestätigungscode'
+helpcenter.messenger.linked_ticket_label: 'Zugeordnet zum Ticket'
+helpcenter.messenger.loading: Wird geladen
+helpcenter.messenger.message_agent_timeout: 'Entschuldigung; bei {name} wurde offensichtlich die Verbindung unterbrochen. Bitte warten Sie, wir versuchen, einen anderen Mitarbeiter zu finden.'
 helpcenter.messenger.proactive_button: 'Neues Gespräch beginnen'
 helpcenter.messenger.proactive_description: 'Mit einem unserer Mitarbeiter chatten'
 helpcenter.messenger.proactive_greeting: 'Kontaktieren'
