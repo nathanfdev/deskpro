@@ -518,7 +518,10 @@ helpcenter.general.skip_link: 'Zum Hauptinhalt springen'
 helpcenter.general.software_power_by: 'Powered by'
 helpcenter.general.sort: Sortieren
 helpcenter.general.status: Status
+helpcenter.general.subscribe_action: Abonnieren
 helpcenter.general.tagged_with: 'getaggt mit'
+helpcenter.general.tags: Tags
+helpcenter.general.time_of_completion: 'Fertigstellungsdatum'
 helpcenter.general.updated: Aktualisierte
 helpcenter.general.user: Benutzer
 helpcenter.general.x_search_results: '{num} Suchergebnisse für „{query}“'
