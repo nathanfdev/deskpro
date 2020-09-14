@@ -69,7 +69,9 @@ helpcenter.general.you: Vy
 helpcenter.label.search: Vyhľadať
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
+helpcenter.messenger.blocks_continue_chat_title: 'Pokračovať v existujúcom chate'
 helpcenter.messenger.blocks_ticket_title: 'Odoslať tiket'
+helpcenter.messenger.greeting: 'Kontaktujte nás'
 helpcenter.news.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
 helpcenter.profile.account_disabled_message: 'Váš účet je momentálne deaktivovaný. Nebudete schopný komunikovať s tiketmi alebo v konverzáciách.'
 helpcenter.search.search_results: 'Výsledky vyhľadávania'
