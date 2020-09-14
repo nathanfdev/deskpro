@@ -586,7 +586,9 @@ class PersonController extends AbstractController
                         $add = 1;
                     }
 
-                    $person->setOrganization($org, $this->in->getString('position'), $this->in->getBool('manager'));
+                    $person->setOrganization($org);
+                    $person->setOrganizationPosition($this->in->getString('position'));
+                    $person->setOrganizationManager($this->in->getBool('manager'));
 
                     // Org stuff
                     $org_members_count = null;
