@@ -1,3 +1,29 @@
 ---
+helpcenter.error.404_desc: 'Žao nam je, no nismo mogli pronaći tu stranicu.'
+helpcenter.error.general_title: 'Dogodila se pogreška'
+helpcenter.forms.delete_question: 'Izbrisati?'
+helpcenter.forms.error_captcha: 'Vrijednost CAPTCHA bila je netočna'
+helpcenter.forms.error_required: 'Ova je vrijednost potrebna'
+helpcenter.forms.error_banned_email: 'Adresa e-pošte je zabranjena.'
+helpcenter.forms.label_drag_overlay: 'Umetnite ovu sliku u svoju poruku.'
+helpcenter.forms.label_email: E-pošta
+helpcenter.forms.label_submit: Pošalji
+helpcenter.general.drag_and_drop: 'Povuci i ispusti'
+helpcenter.general.name: Ime
 helpcenter.general.nav_contact: 'Kontaktirajte nas'
 helpcenter.general.nav_newticket: 'Kontaktirajte nas'
+helpcenter.general.no_search_query: 'Upišite upit za pretragu u okvir za pretragu.'
+helpcenter.general.no_search_results_general: 'Rezultati nisu pronađeni'
+helpcenter.general.remove: ukloni
+helpcenter.general.search: 'Kako vam danas možemo pomoći?'
+helpcenter.general.show_x_more: 'Prikaži {num} više'
+helpcenter.general.x_search_results: '{num} rezultata za upit "{query}"'
+helpcenter.label.search: Pretraga
+helpcenter.search.search_results: 'Rezultati pretraživanja'
+helpcenter.search.showing_results_for: 'Prikazivanje rezultata u {type} za: <span>“{query}”</span>'
+helpcenter.tickets.new_intro: 'Ispunite ovaj obrazac i jedan od naših zastupnika javit će vam se e-poštom što je prije moguće.'
+helpcenter.tickets.new_section_title: 'Kontaktirajte nas'
+helpcenter.tickets.reference_number: 'Referentni broj: {ref}'
+helpcenter.tickets.related_articles_desc: 'Pronašli smo sljedeće članke kojima možete riješiti svoj problem.'
+helpcenter.tickets.thank_you: 'Hvala vam, primili smo vaš zahtjev.'
+helpcenter.tickets.thank_you_desc: 'Zahvaljujemo vam što ste nas kontaktirali. Jedan od naših timova uskoro će vam se javiti.'
