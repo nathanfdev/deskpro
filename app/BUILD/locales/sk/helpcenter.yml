@@ -1,5 +1,6 @@
 ---
 helpcenter.articles.section_title: Databáza znalostí
+helpcenter.articles.view_x_articles: 'Zobraziť všetky články v {category}'
 helpcenter.community.form_topic_title: Nadpis
 helpcenter.community.section_title: Spätná väzba
 helpcenter.direct_messages.reply_message: Správa
@@ -55,6 +56,7 @@ helpcenter.general.attachments: Pripojenia
 helpcenter.general.comments: Komentáre?
 helpcenter.general.drag_and_drop: 'Presunúť'
 helpcenter.general.everything: Všetko
+helpcenter.general.last_update_by: 'Naposledy aktualizoval/a: <strong>{date_updated, date, medium}</strong> <strong>{person_name}</strong>'
 helpcenter.general.name: Meno
 helpcenter.general.nav_contact: 'Kontaktujte nás'
 helpcenter.general.nav_kb: Databáza znalostí
@@ -82,6 +84,8 @@ helpcenter.messenger.tickets_form_add_attachment: 'Pridať prílohu'
 helpcenter.messenger.tickets_form_header: 'Nový tiket'
 helpcenter.messenger.tickets_form_or: alebo
 helpcenter.messenger.tickets_form_saving: 'Ukladáme váš tiket. Prosím, počkajte'
+helpcenter.messenger.tickets_form_thanks: 'Ďakujeme za správu. Jeden z členov nášho tímu sa s vami spojí emailom.'
+helpcenter.messenger.tickets_form_thanks_header: 'Vaša žiadosť je na ceste'
 helpcenter.news.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
 helpcenter.profile.account_disabled_message: 'Váš účet je momentálne deaktivovaný. Nebudete schopný komunikovať s tiketmi alebo v konverzáciách.'
 helpcenter.search.search_results: 'Výsledky vyhľadávania'
