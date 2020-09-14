@@ -1,4 +1,6 @@
 ---
+helpcenter.articles.section_title: Baza znanja
+helpcenter.articles.view_x_articles: 'Pogledaj sve članke u {category}'
 helpcenter.error.404_desc: 'Žao nam je, no nismo mogli pronaći tu stranicu.'
 helpcenter.error.general_title: 'Dogodila se pogreška'
 helpcenter.forms.delete_question: 'Izbrisati?'
@@ -11,6 +13,7 @@ helpcenter.forms.label_submit: Pošalji
 helpcenter.general.drag_and_drop: 'Povuci i ispusti'
 helpcenter.general.name: Ime
 helpcenter.general.nav_contact: 'Kontaktirajte nas'
+helpcenter.general.nav_kb: Baza znanja
 helpcenter.general.nav_newticket: 'Kontaktirajte nas'
 helpcenter.general.no_search_query: 'Upišite upit za pretragu u okvir za pretragu.'
 helpcenter.general.no_search_results_general: 'Rezultati nisu pronađeni'
@@ -19,11 +22,26 @@ helpcenter.general.search: 'Kako vam danas možemo pomoći?'
 helpcenter.general.show_x_more: 'Prikaži {num} više'
 helpcenter.general.x_search_results: '{num} rezultata za upit "{query}"'
 helpcenter.label.search: Pretraga
+helpcenter.messenger.blocks_continue_chat_title: 'Nastavi postojeći razgovor'
+helpcenter.messenger.blocks_knowledgebase_title: Baza znanja
+helpcenter.messenger.blocks_search_block_no_results: 'Nema rezultata za {query}'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Pogledaj više rezultata'
+helpcenter.messenger.blocks_ticket_button: 'Prijavi novi problem'
+helpcenter.messenger.blocks_ticket_description: 'Pošalji upit putem našeg obrasca za kontakt'
+helpcenter.messenger.blocks_ticket_title: 'Prijavi problem'
+helpcenter.messenger.greeting: 'Stupi u kontakt'
+helpcenter.messenger.tickets_form_add_attachment: 'Dodaj prilog'
+helpcenter.messenger.tickets_form_header: 'Nova prijava'
+helpcenter.messenger.tickets_form_or: ili
+helpcenter.messenger.tickets_form_saving: 'Pohranjujemo vaš zahtjev. Molimo pričekajte'
+helpcenter.messenger.tickets_form_thanks: 'Zahvaljujemo vam što ste nas kontaktirali. Jedan od naših timova kontaktirat će vas putem e-pošte.'
+helpcenter.messenger.tickets_form_thanks_header: 'Vaš zahtjev je na putu'
 helpcenter.search.search_results: 'Rezultati pretraživanja'
 helpcenter.search.showing_results_for: 'Prikazivanje rezultata u {type} za: <span>“{query}”</span>'
 helpcenter.tickets.new_intro: 'Ispunite ovaj obrazac i jedan od naših zastupnika javit će vam se e-poštom što je prije moguće.'
 helpcenter.tickets.new_section_title: 'Kontaktirajte nas'
 helpcenter.tickets.reference_number: 'Referentni broj: {ref}'
 helpcenter.tickets.related_articles_desc: 'Pronašli smo sljedeće članke kojima možete riješiti svoj problem.'
+helpcenter.tickets.submit_a_ticket: 'Prijavi problem'
 helpcenter.tickets.thank_you: 'Hvala vam, primili smo vaš zahtjev.'
 helpcenter.tickets.thank_you_desc: 'Zahvaljujemo vam što ste nas kontaktirali. Jedan od naših timova uskoro će vam se javiti.'
