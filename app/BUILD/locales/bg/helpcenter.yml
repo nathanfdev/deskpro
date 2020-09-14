@@ -109,7 +109,7 @@ helpcenter.articles.status_archived: Архивирано
 helpcenter.articles.status_draft: Чернова
 helpcenter.articles.status_published: Публикувано
 helpcenter.articles.view_as_agent: 'Потребителите не могат да видят тази страница, защото все още не е публикувана.'
-helpcenter.articles.view_x_articles: 'Виж всички теми в {category}'
+helpcenter.articles.view_x_articles: 'Вижте всички теми в {category}'
 helpcenter.chats.my_chats: 'Моите чатове'
 helpcenter.community.activity: Активност
 helpcenter.community.activity_commented: 'Аз коментирах'
@@ -457,7 +457,7 @@ helpcenter.general.name: Име
 helpcenter.general.nav_chat: Чатове
 helpcenter.general.nav_community: Общност
 helpcenter.general.nav_community_desc: 'Виж всички теми'
-helpcenter.general.nav_contact: 'Контакти'
+helpcenter.general.nav_contact: 'Свържете се с нас'
 helpcenter.general.nav_contact_desc: 'Свържи се с нас'
 helpcenter.general.nav_direct_messages: Съобщения
 helpcenter.general.nav_downloads: Файлове
@@ -472,7 +472,7 @@ helpcenter.general.nav_members: 'Директория на членовете'
 helpcenter.general.nav_news: Новини
 helpcenter.general.nav_news_desc: 'Виж всички публикации в новини'
 helpcenter.general.nav_news_desc_short: 'Виж всички новини'
-helpcenter.general.nav_newticket: 'Контакти'
+helpcenter.general.nav_newticket: 'Свържете се с нас'
 helpcenter.general.nav_profile: Профил
 helpcenter.general.nav_register: 'Регистрация'
 helpcenter.general.nav_support_center: 'Помощен Център'
@@ -616,7 +616,7 @@ helpcenter.messenger.chat_transcript_block_yes_button: 'Да'
 helpcenter.messenger.date_label: Дата
 helpcenter.messenger.email_validated_sucessfully: 'Имейлът е успешно верифициран'
 helpcenter.messenger.files_on_this_chat: 'Файлове в този чат'
-helpcenter.messenger.greeting: 'Свържи се с нас'
+helpcenter.messenger.greeting: 'Свържете се с нас'
 helpcenter.messenger.invalid_validation_code: 'Невалиден код за валидация'
 helpcenter.messenger.linked_ticket_label: 'Възложен към тикет'
 helpcenter.messenger.loading: Зарежда се ...
@@ -656,7 +656,7 @@ helpcenter.messenger.tickets_form_required: Задължително поле
 helpcenter.messenger.tickets_form_saving: 'Вашият тикет се запазва. Моля изчакайте'
 helpcenter.messenger.tickets_form_select: Избери
 helpcenter.messenger.tickets_form_submit: Изпрати
-helpcenter.messenger.tickets_form_thanks: 'Благодарим Ви, че се свързахте с нас. Ще Ви върнем съобщение по имейл.'
+helpcenter.messenger.tickets_form_thanks: 'Благодарим ви, че се свързахте с нас. Някой от нашите сътрудници ще се свърже с вас по имейл.'
 helpcenter.messenger.tickets_form_thanks_header: 'Заявката Ви се изпраща'
 helpcenter.messenger.total_chat_time_label: 'Общо време за чат'
 helpcenter.messenger.view_action: Покажи
@@ -710,7 +710,7 @@ helpcenter.tickets.my_messages: 'Моите събощения'
 helpcenter.tickets.my_tickets: 'Моите тикети'
 helpcenter.tickets.need_login_desc: 'Моля, посетете <a href="{login_url}" target="_blank">страницата за логин</a> за да ни изпратите съобщение'
 helpcenter.tickets.need_login_title: 'Трябва да влезете за да отворите тикет'
-helpcenter.tickets.new_intro: 'Моля попълнете тази форма и един от нашите агенти ще ви отговори по имейл възможно най-скоро.'
+helpcenter.tickets.new_intro: 'Моля, попълнете тази форма и някой от нашите сътрудници ще ви отговори по имейл възможно най-скоро.'
 helpcenter.tickets.new_section_title: 'Свържете се с нас'
 helpcenter.tickets.new_ticket_button: 'Създай нов тикет'
 helpcenter.tickets.no_participants: 'Няма участници'
