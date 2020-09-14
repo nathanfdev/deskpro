@@ -156,7 +156,7 @@ helpcenter.direct_messages.title: 'Съобщения'
 helpcenter.direct_messages.unblock_user_action: 'отблокирай потребител'
 helpcenter.downloads.download_action: Свали
 helpcenter.downloads.file_name: 'Име на файл'
-helpcenter.downloads.file_size: 'Размер на файл'
+helpcenter.downloads.file_size: 'Размер на файла'
 helpcenter.downloads.no_files: 'Няма файлове'
 helpcenter.downloads.total_downloads: 'Общо сваляния'
 helpcenter.downloads.view_x_files: '{count, plural,one {Виж 1 сваляне}other {Виж # сваляния}}'
