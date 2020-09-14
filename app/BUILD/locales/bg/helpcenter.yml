@@ -347,7 +347,7 @@ helpcenter.flashes.usersource_new_add_email_verify: 'Трябва да потв�
 helpcenter.forms.date_picker_next_month: 'Следващ месец'
 helpcenter.forms.date_picker_previous_month: 'Предишен месец'
 helpcenter.forms.date_picker_time: Час
-helpcenter.forms.delete_question: 'Изтрий?'
+helpcenter.forms.delete_question: 'Изтрийте?'
 helpcenter.forms.error_captcha: 'Грешна CAPTCHA стойност'
 helpcenter.forms.error_dupe_email: 'Този имейл е вече използван.'
 helpcenter.forms.error_email_required: 'Трябва да предоставите имейл адреса си'
@@ -366,7 +366,7 @@ helpcenter.forms.label_email: Имейл
 helpcenter.forms.label_password: Парола
 helpcenter.forms.label_password_confirm: Потвърди
 helpcenter.forms.label_reset: Нулирай
-helpcenter.forms.label_save: Запази
+helpcenter.forms.label_save: Запазете
 helpcenter.forms.label_submit: Изпратете
 helpcenter.forms.label_timezone: Часова зона
 helpcenter.general.add_comment: 'Добави коментар'
@@ -619,7 +619,7 @@ helpcenter.messenger.files_on_this_chat: 'Файлове в този чат'
 helpcenter.messenger.greeting: 'Свържете се с нас'
 helpcenter.messenger.invalid_validation_code: 'Невалиден код за валидация'
 helpcenter.messenger.linked_ticket_label: 'Възложен към тикет'
-helpcenter.messenger.loading: Зарежда се ...
+helpcenter.messenger.loading: Зарежда се
 helpcenter.messenger.message_agent_timeout: 'Извиняваме се; {name} изглежда, че е изгубил свързаност. Моля, изчакайте докато се намери друг агент.'
 helpcenter.messenger.message_assigned: '{name} е назначен към чата.'
 helpcenter.messenger.message_chatting_with: 'Чатите с'
