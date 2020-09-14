@@ -71,6 +71,23 @@ helpcenter.account.usersource_set_email_desc: 'Zanim będziesz mógł się zalog
 helpcenter.account.validation_email_sent: 'Wysłaliśmy e-mail na adres {email}<br />Zatwierdź swój adres e-mail, aby uzyskać dostęp do centrum wsparcia.'
 helpcenter.account.your_pending_email_addresses: 'Twoje oczekujące adresy email'
 helpcenter.account.login-btn-usersource: 'Zaloguj się na konto {usersource}'
+helpcenter.alerts.tickets_to_respond: '{count, plural, one {Masz jedno zgłoszenie oczekujące odpowiedzi.} few {Masz # zgłoszenia oczekujące odpowiedzi.} many {Masz # zgłoszenia oczekujące odpowiedzi.} other {Masz # zgłoszeń oczekujących odpowiedzi.}}'
+helpcenter.approvals.approve_action: Zatwierdź
+helpcenter.approvals.approved_by: 'Zatwierdzone przez'
+helpcenter.approvals.approved_status: Zatwierdzone
+helpcenter.approvals.cancelled_status: Usunięte
+helpcenter.approvals.list_column_agent: 'Autor'
+helpcenter.approvals.list_column_approvers: 'Zatwierdzone przez'
+helpcenter.approvals.list_column_cancelled: 'Usunięto'
+helpcenter.approvals.list_column_completed: 'Zakończono'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: 'Temat'
+helpcenter.approvals.list_column_user: 'Użytkownik'
+helpcenter.approvals.list_column_your_vote: 'Twój głos'
+helpcenter.approvals.my_approvals: 'Zatwierdzone przeze mnie'
+helpcenter.approvals.no_ticket_approvals_found: 'Nie znaleziono żadnych zatwierdzeń'
+helpcenter.approvals.pending_status: Oczekujące
+helpcenter.approvals.reject_action: Odrzuć
 helpcenter.articles.section_title: Baza Wiedzy
 helpcenter.community.error_login: 'Proszę się zalogować'
 helpcenter.community.form_topic_title: Tytuł
