@@ -157,8 +157,8 @@ helpcenter.direct_messages.unblock_user_action: 'ponovno omogoči uporabnika'
 helpcenter.downloads.download_action: Prenesi datoteko
 helpcenter.downloads.file_name: 'Ime datoteke'
 helpcenter.downloads.file_size: 'Velikost datoteke'
-helpcenter.downloads.no_files: 'Ni priponk'
-helpcenter.downloads.total_downloads: 'Skupaj prenosov'
+helpcenter.downloads.no_files: 'Ni datotek'
+helpcenter.downloads.total_downloads: 'Skupno število prenosov'
 helpcenter.downloads.view_x_files: '{count, plural, one {Oglej si 1 prenos} other {Oglej si # prenosov}}'
 helpcenter.duration_short.days: D
 helpcenter.duration_short.hours: h
@@ -461,10 +461,10 @@ helpcenter.general.nav_contact: 'Stopite v stik z nami'
 helpcenter.general.nav_contact_desc: 'Za pomoč stopite v stik z nami'
 helpcenter.general.nav_direct_messages: Sporočila
 helpcenter.general.nav_downloads: Datoteke
-helpcenter.general.nav_downloads_desc: 'Preglej vse datoteke'
+helpcenter.general.nav_downloads_desc: 'Preglejte vse naše datoteke.'
 helpcenter.general.nav_emails: E-poštna sporočila
-helpcenter.general.nav_guides: Vodiči
-helpcenter.general.nav_guides_desc: 'Preglej vse vodiče'
+helpcenter.general.nav_guides: Priročniki
+helpcenter.general.nav_guides_desc: 'Prikaži vse priročnike.'
 helpcenter.general.nav_kb: Baza znanja
 helpcenter.general.nav_kb_desc: 'Celostni pregled centra za pomoč'
 helpcenter.general.nav_login: 'Prijavi se'
