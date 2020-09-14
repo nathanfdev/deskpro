@@ -750,13 +750,18 @@ helpcenter.tickets.timeline_marked: 'oznaczył to zgłoszenie:'
 helpcenter.tickets.timeline_marked_resolved: 'Rozwiązała zgłoszenie'
 helpcenter.tickets.timeline_re_opened: 'Ponownie otworzyła to zgłoszenie'
 helpcenter.tickets.user_rated_support: '({email}) oceniłeś wsparcie udzielone przez'
+helpcenter.tickets.view_assigned_agent: 'Przypisany agent'
 helpcenter.tickets.view_btn_add_cc: 'CC +'
 helpcenter.tickets.view_btn_add_to_ticket: 'Dodaj do zgłoszenia'
 helpcenter.tickets.view_btn_edit: Edytuj
 helpcenter.tickets.view_btn_edit_full: 'Edytuj to zgłoszenie'
 helpcenter.tickets.view_label_your_email_placeholder: 'Twój adres email (wymagany)'
 helpcenter.tickets.view_label_your_name_placeholder: 'Imię (wymagane)'
+helpcenter.tickets.view_last_message: 'Ostatnia wiadomość'
+helpcenter.tickets.view_participants: 'CC'
 helpcenter.tickets.view_reply_errors: 'Występują błędy w twoim zgłoszeniu.'
+helpcenter.tickets.view_reply_or_close: 'Odpowiedz lub <a href="{close_url}">zamknij zgłoszenie</a>'
+helpcenter.tickets.view_requester: Zgłaszający
 helpcenter.tickets.view_scroll_reply: 'Kliknij tutaj, aby przewinąć formularz.'
 helpcenter.tickets.view_unassigned: Nieprzypisane
 helpcenter.tickets.view_unassigned_more: 'Pracownik zostanie przydzielony'
