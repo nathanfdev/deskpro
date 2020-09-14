@@ -466,7 +466,7 @@ helpcenter.general.nav_emails: Adresy e-mail
 helpcenter.general.nav_guides: Przewodniki
 helpcenter.general.nav_guides_desc: 'Zobacz wszystkie przewodniki'
 helpcenter.general.nav_kb: Baza wiedzy
-helpcenter.general.nav_kb_desc: 'Przejrzyj całe centrum pomocy'
+helpcenter.general.nav_kb_desc: 'Przejrzyj całe centrum wsparcia'
 helpcenter.general.nav_login: 'Zaloguj się'
 helpcenter.general.nav_members: 'Rada członków'
 helpcenter.general.nav_news: Aktualności
@@ -477,9 +477,18 @@ helpcenter.general.nav_profile: Profil
 helpcenter.general.nav_register: 'Zarejestruj się'
 helpcenter.general.nav_support_center: 'Centrum wsparcia'
 helpcenter.general.nav_your_account: 'Twoje konto'
+helpcenter.general.next: Dalej
 helpcenter.general.no_search_query: 'Proszę podać wyszukiwany tekst w okienku wyszukiwania.'
+helpcenter.general.no_search_results_general: 'Brak wyników'
+helpcenter.general.or: lub
+helpcenter.general.pagination_page: 'Strona {page}'
+helpcenter.general.pagination_next_page: 'Następna strona'
+helpcenter.general.pagination_previous_page: 'Poprzednia strona'
 helpcenter.general.password: Hasło
+helpcenter.general.previous: Wróć
 helpcenter.general.print: Drukuj
+helpcenter.general.priority: Priorytet
+helpcenter.general.product: Produkt
 helpcenter.general.prop_comments_asc: 'Najmniej komentarzy pierwsze'
 helpcenter.general.prop_comments_desc: 'Najwięcej komentarzy pierwsze'
 helpcenter.general.prop_date_asc: 'Najstarsze piewrsze'
@@ -490,15 +499,49 @@ helpcenter.general.prop_rating_asc: 'Najniżej oceniane pierwsze'
 helpcenter.general.prop_rating_desc: 'Najwyżej oceniane pierwsze'
 helpcenter.general.prop_views_asc: 'Najmniej oględzin pierwsze'
 helpcenter.general.prop_views_desc: 'Najwięcej oględzin pierwsze'
+helpcenter.general.published: 'Opublikowano'
+helpcenter.general.published_by: 'Opublikowane przez <strong>{person_name}</strong>'
+helpcenter.general.rate_page_negative: Nieprzydatny
 helpcenter.general.rate_page_positive: Przydatna
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} na {vote_count} osób uznała tę stronę za przydatną'
+helpcenter.general.related_content: 'Powiązane'
+helpcenter.general.remove: usuń
 helpcenter.general.rerender_form: 'Proszę ocenić ten formularz przed wysłaniem.'
+helpcenter.general.search: 'W czym możemy ci dzisiaj pomóc?'
+helpcenter.general.search_labels: 'Tagi wyszukiwania'
+helpcenter.general.select: Wybierz
+helpcenter.general.send_user_direct_message: 'Wyślij użytkownikowi wiadomość prywatną'
 helpcenter.general.share: Udostępnij
 helpcenter.general.show: Pokaż
+helpcenter.general.show_x_more: 'Pokaż {num} więcej'
+helpcenter.general.skip_link: 'Przejdź do głównej treści'
+helpcenter.general.software_power_by: 'Stworzone w technologii'
+helpcenter.general.sort: Porządkuj
+helpcenter.general.status: Status
+helpcenter.general.subscribe_action: Subskrypcja
 helpcenter.general.tagged_with: 'oznaczone z'
 helpcenter.general.tags: Tagi
+helpcenter.general.time_of_completion: 'Data ukończenia'
+helpcenter.general.translations: Tłumaczenia
+helpcenter.general.unpublished: 'Data wycofania'
 helpcenter.general.updated: Zaktualizowano
 helpcenter.general.user: Użytkownik
+helpcenter.general.user_menu: 'Menu użytkownika'
+helpcenter.general.user_profile: 'Profil użytkownika'
+helpcenter.general.view_all_status_changes: 'Zobacz wszystkie zmiany statusu'
+helpcenter.general.view_all_topics: 'Zobacz wszystkie tematy'
+helpcenter.general.view_profile: 'Zobacz mój profil'
+helpcenter.general.viewed_by_agents_only: 'To pole jest widoczne jedynie dla agentów'
+helpcenter.general.workflow: 'Workflow'
+helpcenter.general.x_search_results: '{num} wyników wyszukiwania dla "{query}"'
 helpcenter.general.you: Ty
+helpcenter.general.your_comment_label: 'Twój komentarz'
+helpcenter.general.your_comment_optional_label: 'Twój komentarz (opcjonalny)'
+helpcenter.general.download_pdf: 'Ściągnij PDF'
+helpcenter.knowledgebase.featured_articles: 'Omawiane artykuły'
+helpcenter.label.search: Wyszukiwanie
+helpcenter.members.activity_commented_on: 'Skomentowała'
+helpcenter.members.activity_created_topic: 'Stworzyła dyskusję'
 helpcenter.members.activity_down_voted_comment_on: 'Komentarz oznaczono jako nieprzydatny'
 helpcenter.members.activity_group_everything_else: 'Pozostałe'
 helpcenter.members.activity_group_last_month: 'Ostatni miesiąc'
