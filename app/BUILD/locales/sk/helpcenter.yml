@@ -1,5 +1,5 @@
 ---
-helpcenter.articles.section_title: Databáza znalostí
+helpcenter.articles.section_title: Znalostná databáza
 helpcenter.articles.view_x_articles: 'Zobraziť všetky články v {category}'
 helpcenter.community.form_topic_title: Nadpis
 helpcenter.community.section_title: Spätná väzba
@@ -68,7 +68,7 @@ helpcenter.general.nav_contact: 'Kontaktujte nás'
 helpcenter.general.nav_downloads_desc: 'Prehľadať naše súbory'
 helpcenter.general.nav_guides: Návody
 helpcenter.general.nav_guides_desc: 'Zobraziť všetky návody'
-helpcenter.general.nav_kb: Databáza znalostí
+helpcenter.general.nav_kb: Znalostná databáza
 helpcenter.general.nav_newticket: 'Kontaktujte nás'
 helpcenter.general.no_search_query: 'Napíšte, čo chcete vyhľadať, do vyhľadávacieho okna.'
 helpcenter.general.no_search_results_general: 'Nenašli sa žiadne výsledky'
@@ -85,7 +85,7 @@ helpcenter.label.search: Vyhľadať
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
 helpcenter.messenger.blocks_continue_chat_title: 'Pokračovať v existujúcom chate'
-helpcenter.messenger.blocks_knowledgebase_title: Databáza znalostí
+helpcenter.messenger.blocks_knowledgebase_title: Znalostná databáza
 helpcenter.messenger.blocks_search_block_no_results: 'Nenašli sa žiadne výsledky pre {query}'
 helpcenter.messenger.blocks_search_block_see_more_results: 'Zobraziť ďalšie výsledky'
 helpcenter.messenger.blocks_ticket_button: 'Odoslať nový tiket'
