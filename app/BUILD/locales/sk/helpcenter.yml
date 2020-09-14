@@ -39,12 +39,16 @@ helpcenter.emails.ticket_reply_confirm: 'Ďakujeme za Vašu odpoveď. Jeden z na
 helpcenter.emails.ticket_validate: 'Ďakujeme, že ste nás kontaktovali.<br /><br />Prv, než Vašu správu naši operátori spracujú si musíte overiť Vašu e-mailovú adresu.'
 helpcenter.error.404_title: 'Nenájdené'
 helpcenter.error.permission_denied_title: 'Na danú akciu nemáte oprávnenie'
+helpcenter.forms.delete_question: 'Vymazať?'
+helpcenter.forms.error_captcha: 'Hodnota CAPTCHA nie je správna'
+helpcenter.forms.error_required: 'Tento údaj je povinný'
 helpcenter.forms.label_save: Uložiť
 helpcenter.general.add_comment: 'Pridať komentár'
 helpcenter.general.agent: Operátor
 helpcenter.general.attachments: Pripojenia
 helpcenter.general.comments: Komentáre?
 helpcenter.general.everything: Všetko
+helpcenter.general.name: Meno
 helpcenter.general.nav_contact: 'Kontaktujte nás'
 helpcenter.general.nav_newticket: 'Kontaktujte nás'
 helpcenter.general.password: Heslo
@@ -60,10 +64,13 @@ helpcenter.tickets.list_agent: 'Pridelený agent'
 helpcenter.tickets.list_date_created: 'Dátum vytvorený'
 helpcenter.tickets.list_status_resolved: Vyriešené
 helpcenter.tickets.list_subject: Predmet
-helpcenter.tickets.new_intro: 'Prosím vyplňte tento formulár a jeden z našich opertátorov vás bude kontaktovať e-mailom akonáhle bude vedieť.'
+helpcenter.tickets.new_intro: 'Prosím, vyplňte tento formulár a jeden z našich operátorov vám odpovie e-mailom akonáhle to bude možné.'
 helpcenter.tickets.new_section_title: 'Kontaktujte nás'
 helpcenter.tickets.rate_positive: 'Bolo to dobré'
 helpcenter.tickets.rate_question: 'Ako by ste hodnotili pomoc, ktorú ste obdržal?'
 helpcenter.tickets.rate_support: 'Ohodnoťte Vašu pomoc'
+helpcenter.tickets.reference_number: 'Referenčné číslo: {ref}'
+helpcenter.tickets.thank_you: 'Ďakujeme, vašu žiadosť sme dostali.'
+helpcenter.tickets.thank_you_desc: 'Ďakujeme za správu. Jeden z členov nášho tímu sa s vami čoskoro spojí.'
 helpcenter.tickets.view_btn_edit: Upraviť
 helpcenter.tickets.view_unassigned: Nepridelené
