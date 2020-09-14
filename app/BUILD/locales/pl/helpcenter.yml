@@ -45,31 +45,31 @@ helpcenter.account.reset_password_sent_to: 'Wysłaliśmy e-mail na adres'
 helpcenter.account.reset_password_success: 'Twoje hasło zostało zaktualizowane.'
 helpcenter.account.section_desc_login: 'Masz już konto? Zaloguj się poniżej.'
 helpcenter.account.section_desc_login_external: 'Użyj linków poniżej, jeśli masz już konto u innego dostawcy.'
-helpcenter.account.section_desc_register: 'Zarejestruj konto, aby zarządzać swoją komunikacją.'
+helpcenter.account.section_desc_register: 'Zarejestruj konto, aby zarządzać wiadomościami.'
 helpcenter.account.section_title_register: Zarejestruj się
 helpcenter.account.section_title_reset_password: 'Zmień hasło'
 helpcenter.account.section_title_set_password: 'Ustaw hasło'
-helpcenter.account.section_title_usersource_email: 'Podaj swój email'
+helpcenter.account.section_title_usersource_email: 'Podaj swój e-mail'
 helpcenter.account.section_title_your_account: 'Twoje konto'
 helpcenter.account.set_password_action: 'Ustaw hasło'
-helpcenter.account.set_password_click_here: 'Kliknij tutaj aby ustawić swoje hasło'
+helpcenter.account.set_password_click_here: 'Kliknij tutaj, aby ustawić swoje hasło'
 helpcenter.account.set_password_expired: 'Twoje hasło wygasło.'
 helpcenter.account.set_password_for_user: 'Twoje konto nie ma jeszcze hasła. Ustaw je teraz, aby się zalogować i mieć możliwość zamieszczania zawartości w przyszłości.'
 helpcenter.account.set_password_invalid_desc: 'Twój kod resetu hasła jest niepoprawny lub wygasł. Aby ustawić hasło, poproś o nowy kod.'
 helpcenter.account.set_password_invalid_input: 'Podaj prawidłowy adres e-mail lub nazwę użytkownika'
-helpcenter.account.set_password_request_desc: 'Wypełnij ten formularz i wyślemy ci link do ustawienia swojego hasła.'
+helpcenter.account.set_password_request_desc: 'Wypełnij formularz, a następnie wyślemy ci link do ustawienia hasła.'
 helpcenter.account.set_password_request_title: 'Ustaw hasło'
-helpcenter.account.set_password_sent_desc: 'Wysłaliśmy ci wiadomość email z instrukcjami jak ustawić hasło.'
-helpcenter.account.set_password_sent_title: 'Ustaw swoje hasło'
+helpcenter.account.set_password_sent_desc: 'Wysłaliśmy ci wiadomość e-mail z instrukcjami ustawiania hasła.'
+helpcenter.account.set_password_sent_title: 'Ustaw hasło'
 helpcenter.account.set_password_sent_to: 'Wysłaliśmy e-mail na adres'
 helpcenter.account.set_password_success: 'Twoje hasło zostało zaktualizowane'
-helpcenter.account.submit_saved_form: 'Twój {{type}} jeszcze nie został udostępniony ale zachowaliśmy go dla ciebie.'
-helpcenter.account.submit_saved_form_go: 'Kliknij tutaj, aby automatycznie wysłać formularz ponownie.'
+helpcenter.account.submit_saved_form: 'Twój {{type}} jeszcze nie został udostępniony, ale został zapisany.'
+helpcenter.account.submit_saved_form_go: 'Kliknij tutaj, by automatycznie ponownie wysłać formularz.'
 helpcenter.account.thank_you_for_registering: 'Dziękujemy za rejestrację'
 helpcenter.account.tickets_lockout: 'Wysłałeś za dużo zgłoszeń więc zostałeś zablokowany. Spróbuj ponownie później.'
-helpcenter.account.usersource_set_email_desc: 'Zanim będziesz mógł się zalogować, potrzebujemy twojego adresu email. Podaj swój adres email, abyśmy mogli wysłać ci weryfikującą wiadomość email.'
+helpcenter.account.usersource_set_email_desc: 'Zanim będziesz mógł się zalogować, potrzebujemy twojego adresu e-mail. Podaj swój adres e-mail, abyśmy mogli wysłać ci wiadomość weryfikacyjną.'
 helpcenter.account.validation_email_sent: 'Wysłaliśmy e-mail na adres {email}<br />Zatwierdź swój adres e-mail, aby uzyskać dostęp do centrum wsparcia.'
-helpcenter.account.your_pending_email_addresses: 'Twoje oczekujące adresy email'
+helpcenter.account.your_pending_email_addresses: 'Adresy e-mail oczekujące na zatwierdzenie'
 helpcenter.account.login-btn-usersource: 'Zaloguj się na konto {usersource}'
 helpcenter.alerts.tickets_to_respond: '{count, plural, one {Masz jedno zgłoszenie oczekujące odpowiedzi.} few {Masz # zgłoszenia oczekujące odpowiedzi.} many {Masz # zgłoszenia oczekujące odpowiedzi.} other {Masz # zgłoszeń oczekujących odpowiedzi.}}'
 helpcenter.approvals.approve_action: Zatwierdź
@@ -104,7 +104,7 @@ helpcenter.approvals.you_approved: 'Zatwierdziłeś zgłoszenie {template} autor
 helpcenter.approvals.you_rejected: 'Odrzuciłeś zgłoszenie {template} autorstwa {person_name}'
 helpcenter.articles.article_object: Artykuł
 helpcenter.articles.published_label: Opublikowany
-helpcenter.articles.section_title: Baza Wiedzy
+helpcenter.articles.section_title: Baza wiedzy
 helpcenter.articles.status_archived: Zarchiwizowany
 helpcenter.articles.status_draft: Brulion
 helpcenter.articles.status_published: Opublikowany
@@ -130,13 +130,13 @@ helpcenter.community.forum_name: 'Nazwa forum'
 helpcenter.community.like_action: Polub
 helpcenter.community.likes: Polubienia
 helpcenter.community.my_activity: 'Moje działania'
-helpcenter.community.no_matching: 'Brak pasującej opinii'
+helpcenter.community.no_matching: 'Brak dyskusji odpowiadającej kryteriom'
 helpcenter.community.none: 'Nie znaleziono dyskusji'
 helpcenter.community.official_response: 'Oficjalna odpowiedź'
 helpcenter.community.rate_forbidden: 'Nie masz pozwolenia na głosowanie'
 helpcenter.community.recent_activity: 'Ostatnie działania'
 helpcenter.community.reset_all_filters: 'Zresetuj wszystkie filtry'
-helpcenter.community.section_title: Opinie
+helpcenter.community.section_title: Grupa
 helpcenter.community.status: Status
 helpcenter.community.status_change: 'Zmiana statusu'
 helpcenter.community.title: Tytuł
@@ -150,7 +150,7 @@ helpcenter.direct_messages.new_message: 'Nowa wiadomość'
 helpcenter.direct_messages.none: 'Brak wiadomości'
 helpcenter.direct_messages.recipient: Odbiorca
 helpcenter.direct_messages.reply_cancel: Usuń
-helpcenter.direct_messages.reply_message: Treść zgłoszenia
+helpcenter.direct_messages.reply_message: Wiadomość
 helpcenter.direct_messages.reply_send_message: 'Wyślij wiadomość'
 helpcenter.direct_messages.title: 'Moje wiadomości'
 helpcenter.direct_messages.unblock_user_action: 'odblokuj użytkownika'
@@ -169,14 +169,14 @@ helpcenter.duration_short.weeks: T
 helpcenter.duration_short.years: 'R'
 helpcenter.emails.account_disabled_message: 'Twoje konto zostało zablokowane. Nie możesz się zalogować ani korzystać ze zgłoszeń i czatu.'
 helpcenter.emails.auto_close: 'Twoje zgłoszenie "{subject}" zostanie niedługo zamknięte, ponieważ nie pisałeś ostatnio w jego sprawie. Jeżeli potrzebujesz dalszej pomocy, odpowiedz na tę wiadomość.'
-helpcenter.emails.chat_transcript: 'Dziękujemy za czatowanie z nami. Oto log Twojego czatu:'
-helpcenter.emails.chat_transcript_subject: 'Log czatu'
+helpcenter.emails.chat_transcript: 'Dziękujemy z wspólny czat. Oto zapis twojego czatu.'
+helpcenter.emails.chat_transcript_subject: 'Zapis czatu'
 helpcenter.emails.comment_approved: 'Twój komentarz został opublikowany.'
 helpcenter.emails.comment_approved_subject: 'Twój komentarz został zaakceptowany'
-helpcenter.emails.comment_confirmation: 'Dziękujemy za Twój komentarz'
-helpcenter.emails.comment_deleted: 'Twój komentarz został użyty, żeby udoskonalić stronę.'
+helpcenter.emails.comment_confirmation: 'Dziękujemy za komentarz'
+helpcenter.emails.comment_deleted: 'Twój komentarz został użyty do udoskonalenia strony.'
 helpcenter.emails.comment_deleted_subject: 'Twój komentarz został przeczytany przez naszych pracowników'
-helpcenter.emails.comment_thank_you: 'Dziękujemy za twój komentarz dotyczący {link}.'
+helpcenter.emails.comment_thank_you: 'Dziękujemy za komentarz dotyczący {link}.'
 helpcenter.emails.community_explain: 'Dostajesz tę wiadomość, ponieważ jesteś zapisany do naszych aktualności<a href="{deskpro_url}">{deskpro_url}</a>.<br />Nie chcesz dostawać tego rodzaju wiadomości? <a href="{unsubscribe_url}">Kliknij tutaj i wypisz się z powiadomień dotyczących dyskusji.</a>'
 helpcenter.emails.community_new: 'Dziękujemy za wysłaną opinię'
 helpcenter.emails.community_sub_updated: 'Zaktualizowana ocena'
