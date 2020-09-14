@@ -456,7 +456,7 @@ helpcenter.general.name: Ime
 helpcenter.general.nav_chat: Klepeti
 helpcenter.general.nav_community: Skupnost
 helpcenter.general.nav_community_desc: 'Preglej vse teme'
-helpcenter.general.nav_contact: 'Stopi v stik z nami'
+helpcenter.general.nav_contact: 'Stopite v stik z nami'
 helpcenter.general.nav_contact_desc: 'Za pomoč stopite v stik z nami'
 helpcenter.general.nav_direct_messages: Sporočila
 helpcenter.general.nav_downloads: Datoteke
@@ -471,7 +471,7 @@ helpcenter.general.nav_members: 'Imenik članov'
 helpcenter.general.nav_news: Novice
 helpcenter.general.nav_news_desc: 'Oglej si vse objave v Novicah'
 helpcenter.general.nav_news_desc_short: 'Oglej si vse novice'
-helpcenter.general.nav_newticket: 'Stopi v stik z nami'
+helpcenter.general.nav_newticket: 'Stopite v stik z nami'
 helpcenter.general.nav_profile: Nastavitve računa
 helpcenter.general.nav_register: 'Prijavi se prvič'
 helpcenter.general.nav_support_center: 'Center za pomoč'
@@ -708,7 +708,7 @@ helpcenter.tickets.my_tickets: 'Moji zahtevki'
 helpcenter.tickets.need_login_desc: 'Prosimo obišči <a href="{login_url}" target="_blank">prijavno stran</a> in nam pošlji sporočilo'
 helpcenter.tickets.need_login_title: 'Za pošiljanje zahtevka se moraš prijaviti'
 helpcenter.tickets.new_intro: 'Namesto tega lahko izpolniš obrazec in eden izmed naših operaterjev ti bo preko e-pošte odgovoril nanj takoj, ko bo to mogoče.'
-helpcenter.tickets.new_section_title: 'Stopi v stik z nami'
+helpcenter.tickets.new_section_title: 'Stopite v stik z nami'
 helpcenter.tickets.new_ticket_button: 'Ustvari nov zahtevek'
 helpcenter.tickets.no_participants: 'Ni sodelujočih'
 helpcenter.tickets.not_allowed_desc: 'Žal nam je, toda za klepet trenutno ni na voljo operaterjev'
