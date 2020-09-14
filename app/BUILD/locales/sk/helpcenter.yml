@@ -57,6 +57,7 @@ helpcenter.general.drag_and_drop: 'Presunúť'
 helpcenter.general.everything: Všetko
 helpcenter.general.name: Meno
 helpcenter.general.nav_contact: 'Kontaktujte nás'
+helpcenter.general.nav_kb: Databáza znalostí
 helpcenter.general.nav_newticket: 'Kontaktujte nás'
 helpcenter.general.no_search_query: 'Napíšte, čo chcete vyhľadať, do vyhľadávacieho okna.'
 helpcenter.general.no_search_results_general: 'Nenašli sa žiadne výsledky'
@@ -70,8 +71,17 @@ helpcenter.label.search: Vyhľadať
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
 helpcenter.messenger.blocks_continue_chat_title: 'Pokračovať v existujúcom chate'
+helpcenter.messenger.blocks_knowledgebase_title: Databáza znalostí
+helpcenter.messenger.blocks_search_block_no_results: 'Nenašli sa žiadne výsledky pre {query}'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Zobraziť ďalšie výsledky'
+helpcenter.messenger.blocks_ticket_button: 'Odoslať nový tiket'
+helpcenter.messenger.blocks_ticket_description: 'Odoslať otázku prostredníctvom nášho kontaktného formulára'
 helpcenter.messenger.blocks_ticket_title: 'Odoslať tiket'
 helpcenter.messenger.greeting: 'Kontaktujte nás'
+helpcenter.messenger.tickets_form_add_attachment: 'Pridať prílohu'
+helpcenter.messenger.tickets_form_header: 'Nový tiket'
+helpcenter.messenger.tickets_form_or: alebo
+helpcenter.messenger.tickets_form_saving: 'Ukladáme váš tiket. Prosím, počkajte'
 helpcenter.news.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
 helpcenter.profile.account_disabled_message: 'Váš účet je momentálne deaktivovaný. Nebudete schopný komunikovať s tiketmi alebo v konverzáciách.'
 helpcenter.search.search_results: 'Výsledky vyhľadávania'
