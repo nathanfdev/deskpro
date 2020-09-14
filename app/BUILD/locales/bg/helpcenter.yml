@@ -417,7 +417,7 @@ helpcenter.general.date_short: '{date, date, short}'
 helpcenter.general.date_short_month: '{date, date, MMM}'
 helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.department: Отдел
-helpcenter.general.drag_and_drop: 'Влачи и пусни'
+helpcenter.general.drag_and_drop: 'Плъзнете и пуснете'
 helpcenter.general.edit_this_page: 'Редактирай тази страница'
 helpcenter.general.email_address: 'Имейл'
 helpcenter.general.eula: EULA
@@ -644,7 +644,7 @@ helpcenter.messenger.proactive_description: 'Започни чат с нас'
 helpcenter.messenger.proactive_greeting: 'Свържи се с нас'
 helpcenter.messenger.proactive_placeholder: 'Напишете Вашето съобщение тук'
 helpcenter.messenger.proactive_title: 'Започни разговор'
-helpcenter.messenger.tickets_form_add_attachment: 'Добави прикачен файл'
+helpcenter.messenger.tickets_form_add_attachment: 'Прикачете файл'
 helpcenter.messenger.tickets_form_back: Назад
 helpcenter.messenger.tickets_form_header: 'Нов тикет'
 helpcenter.messenger.tickets_form_message: Съобщение
