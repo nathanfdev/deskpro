@@ -58,10 +58,12 @@ helpcenter.error.contact_us: 'お問合せ'
 helpcenter.error.permission_denied_title: 'その動作は許可されていません。'
 helpcenter.forms.error_dupe_email: 'このメールアドレスはすでに使用されています。'
 helpcenter.forms.error_required: '必須項目です。'
+helpcenter.forms.label_reset: リセット
 helpcenter.forms.label_save: 保存
 helpcenter.forms.label_submit: 送信
 helpcenter.general.add_comment: 'コメントを追加'
 helpcenter.general.attachments: 添付
+helpcenter.general.cancel_action: キャンセル
 helpcenter.general.everything: 全て
 helpcenter.general.nav_contact: 'お問合せ'
 helpcenter.general.nav_emails: メールアドレス
