@@ -412,6 +412,10 @@ helpcenter.general.created_by: 'Autor(ka)'
 helpcenter.general.current_page: 'Bieżąca strona'
 helpcenter.general.dashboard: Pulpit
 helpcenter.general.date_day_month: '{date, date, d MMM}'
+helpcenter.general.date_medium: '{date, date, medium}'
+helpcenter.general.date_short: '{date, date, short}'
+helpcenter.general.date_short_month: '{date, date, MMM}'
+helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.department: Dział
 helpcenter.general.drag_and_drop: 'Przeciągnij i upuść'
 helpcenter.general.edit_this_page: 'Edytuj stronę'
@@ -468,6 +472,11 @@ helpcenter.general.nav_members: 'Rada członków'
 helpcenter.general.nav_news: Aktualności
 helpcenter.general.nav_news_desc: 'Zobacz wszystkie najnowsze aktualności'
 helpcenter.general.nav_news_desc_short: 'Zobacz wszystkie aktualności'
+helpcenter.general.nav_newticket: 'Skontaktuj się z nami'
+helpcenter.general.nav_profile: Profil
+helpcenter.general.nav_register: 'Zarejestruj się'
+helpcenter.general.nav_support_center: 'Centrum wsparcia'
+helpcenter.general.nav_your_account: 'Twoje konto'
 helpcenter.general.no_search_query: 'Proszę podać wyszukiwany tekst w okienku wyszukiwania.'
 helpcenter.general.password: Hasło
 helpcenter.general.print: Drukuj
@@ -556,7 +565,7 @@ helpcenter.messenger.chat_save_ticket_thanks: 'Agent skontaktuje się z tobą ni
 helpcenter.messenger.chat_send_message: 'Wyślij wiadomość'
 helpcenter.messenger.chat_transcript_block_answer_header: 'Kopię twojego czatu wysłano do:'
 helpcenter.messenger.chat_transcript_block_no_button: 'Nie'
-helpcenter.messenger.chat_transcript_block_question_header: 'Czy chcesz dostać kopię wiadomości na e-maila?'
+helpcenter.messenger.chat_transcript_block_question_header: 'Czy chcesz dostać kopię czatu na e-maila?'
 helpcenter.messenger.chat_transcript_block_send_button: 'Wyślij wiadomość'
 helpcenter.messenger.chat_transcript_block_yes_button: 'Tak'
 helpcenter.messenger.date_label: Data
@@ -581,6 +590,17 @@ helpcenter.messenger.message_uploading: 'Przesyłanie ...'
 helpcenter.messenger.message_user_joined: '{name} dołączył do romowy.'
 helpcenter.messenger.message_user_left: '{name} opuścił rozmowę.'
 helpcenter.messenger.message_user_returned: 'Użytkownik powrócił'
+helpcenter.messenger.message_user_timeout: 'Sesja użytkownika wygasła'
+helpcenter.messenger.message_wait: 'Wyszukujemy dla ciebie agenta'
+helpcenter.messenger.message_wait_timeout: 'Niestety żaden z naszych agentów nie jest obecnie dostępny.'
+helpcenter.messenger.powered_by: 'Stworzone w technologii'
+helpcenter.messenger.proactive_button: 'Rozpocznij nową rozmowę'
+helpcenter.messenger.proactive_description: 'Rozpocznij czat z jednym z naszych agentów'
+helpcenter.messenger.proactive_greeting: 'Skontaktuj się'
+helpcenter.messenger.proactive_placeholder: 'Tutaj wpisz swoją wiadomość'
+helpcenter.messenger.proactive_title: 'Rozpocznij rozmowę'
+helpcenter.messenger.tickets_form_add_attachment: 'Dodaj załącznik'
+helpcenter.messenger.tickets_form_back: Wróć
 helpcenter.messenger.tickets_form_header: 'Nowe zgłoszenie'
 helpcenter.messenger.tickets_form_message: Wiadomość
 helpcenter.messenger.tickets_form_name: Imię i nazwisko
@@ -612,6 +632,7 @@ helpcenter.news.section_title: Aktualności
 helpcenter.news.see_all_news: 'Zobacz wszystkie aktualności'
 helpcenter.news.view_as_agent: 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
 helpcenter.profile.account_disabled_message: 'Twoje konto jest czasowo zablokowane. Nie możesz się zalogować, pracować z petycjami i korzystać z czatu.'
+helpcenter.profile.your_account: 'Twoje konto'
 helpcenter.profile.your_password: 'Twoje hasło'
 helpcenter.tickets.form_changed_notice: 'Nowe pola zostały dodane do formularza. Zwróć uwagę na te pola i wyślij formularz ponownie.'
 helpcenter.tickets.guest_thank_you_desc: 'Dziękujemy za kontakt z nami. Wysłaliśmy ci wiadomość email z informacjami jak zarządzać swoimi zgłoszeniami.'
@@ -649,3 +670,6 @@ helpcenter.tickets.view_reply_errors: 'Występują błędy w twoim zgłoszeniu.'
 helpcenter.tickets.view_scroll_reply: 'Kliknij tutaj, aby przewinąć formularz.'
 helpcenter.tickets.view_unassigned: Nieprzypisane
 helpcenter.tickets.view_unassigned_more: 'Pracownik zostanie przydzielony'
+helpcenter.tickets.view_you_created: 'Stworzone'
+helpcenter.tickets.you_have_not_rated_support: '({email}) nie oceniłaś jeszcze udzielonego wsparcia.'
+helpcenter.tickets.you_rated_support: '({email}) oceniłaś wsparcie udzielone przez'
