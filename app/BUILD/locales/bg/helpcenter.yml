@@ -504,7 +504,7 @@ helpcenter.general.published_by: 'Публикувано от <strong>{person_na
 helpcenter.general.rate_page_negative: Не беше полезно
 helpcenter.general.rate_page_positive: Беше полезно
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} от {vote_count} души смятат тази страница за полезна'
-helpcenter.general.related_content: 'Свързани статии'
+helpcenter.general.related_content: 'Сходно съдържание'
 helpcenter.general.remove: премахни
 helpcenter.general.rerender_form: 'Моля прегледайте тази форма преди да я изпратите.'
 helpcenter.general.search: 'С какво да съдействаме?'
@@ -653,11 +653,11 @@ helpcenter.messenger.tickets_form_or: или
 helpcenter.messenger.tickets_form_priority: Приоритет
 helpcenter.messenger.tickets_form_product: Продукт
 helpcenter.messenger.tickets_form_required: Задължително поле
-helpcenter.messenger.tickets_form_saving: 'Вашият тикет се запазва. Моля изчакайте'
+helpcenter.messenger.tickets_form_saving: 'Запазваме вашия тикет. Моля, изчакайте'
 helpcenter.messenger.tickets_form_select: Избери
 helpcenter.messenger.tickets_form_submit: Изпратете
 helpcenter.messenger.tickets_form_thanks: 'Благодарим ви, че се свързахте с нас. Някой от нашите сътрудници ще се свърже с вас по имейл.'
-helpcenter.messenger.tickets_form_thanks_header: 'Заявката Ви се изпраща'
+helpcenter.messenger.tickets_form_thanks_header: 'Заявката ви е изпратена'
 helpcenter.messenger.total_chat_time_label: 'Общо време за чат'
 helpcenter.messenger.view_action: Покажи
 helpcenter.messenger.view_linked_ticket_action: 'Покажи тикет'
