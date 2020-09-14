@@ -51,10 +51,12 @@ helpcenter.general.add_comment: 'Pridať komentár'
 helpcenter.general.agent: Operátor
 helpcenter.general.attachments: Pripojenia
 helpcenter.general.comments: Komentáre?
+helpcenter.general.drag_and_drop: 'Presunúť'
 helpcenter.general.everything: Všetko
 helpcenter.general.name: Meno
 helpcenter.general.nav_contact: 'Kontaktujte nás'
 helpcenter.general.nav_newticket: 'Kontaktujte nás'
+helpcenter.general.no_search_query: 'Napíšte, čo chcete vyhľadať, do vyhľadávacieho okna.'
 helpcenter.general.password: Heslo
 helpcenter.general.rate_page_positive: Pomocné
 helpcenter.general.show: Ukáž
