@@ -170,6 +170,18 @@ class TicketSearch extends SearcherAbstract
      */
     public $_last_sql = null;
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        /** @var $DP_ENV \DpRun\DpEnv */
+        global $DP_ENV;
+
+        if ($DP_ENV && $DP_ENV->getConfig('settings.ticketsearch_override_result_limit')) {
+            $this->limit = (int)$DP_ENV->getConfig('settings.ticketsearch_override_result_limit');
+        }
+    }
+
     /**
      * Set a set of person search terms.
      *
@@ -874,8 +886,8 @@ class TicketSearch extends SearcherAbstract
             $sql2 .= " AND part_perm.person_id = {$this->person->getId()} ";
         }
 
-        $sql .= ' LIMIT 10000 ';
-        $sql2 .= ' LIMIT 10000 ';
+        $sql .= ' LIMIT ' . $this->limit . ' ';
+        $sql2 .= ' LIMIT ' . $this->limit . ' ';
 
         if ($with_part_union) {
             $count_sql = "
