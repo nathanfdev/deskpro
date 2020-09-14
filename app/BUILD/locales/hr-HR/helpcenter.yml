@@ -5,6 +5,7 @@ helpcenter.downloads.file_name: 'Ime datoteke'
 helpcenter.downloads.file_size: 'Veličina datoteke'
 helpcenter.downloads.no_files: 'Nema datoteka'
 helpcenter.downloads.total_downloads: 'Ukupno preuzimanja'
+helpcenter.downloads.view_x_files: '{count, plural, one {Pogledaj 1 preuzimanje} few {Pogledaj # preuzimanja} other {Pogledaj # preuzimanja}}'
 helpcenter.error.404_desc: 'Žao nam je, no nismo mogli pronaći tu stranicu.'
 helpcenter.error.general_title: 'Dogodila se pogreška'
 helpcenter.forms.delete_question: 'Izbrisati?'
@@ -20,6 +21,8 @@ helpcenter.general.last_update_by: 'Zadnje ažurirao: <strong>{date_updated, dat
 helpcenter.general.name: Ime
 helpcenter.general.nav_contact: 'Kontaktirajte nas'
 helpcenter.general.nav_downloads_desc: 'Pregledaj naše datoteke'
+helpcenter.general.nav_guides: Priručnici
+helpcenter.general.nav_guides_desc: 'Pogledaj sve priručnike'
 helpcenter.general.nav_kb: Baza znanja
 helpcenter.general.nav_newticket: 'Kontaktirajte nas'
 helpcenter.general.no_search_query: 'Upišite upit za pretragu u okvir za pretragu.'
