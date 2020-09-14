@@ -154,12 +154,12 @@ helpcenter.direct_messages.reply_message: Съобщение
 helpcenter.direct_messages.reply_send_message: 'Изпрати съобщение'
 helpcenter.direct_messages.title: 'Съобщения'
 helpcenter.direct_messages.unblock_user_action: 'отблокирай потребител'
-helpcenter.downloads.download_action: Свали
+helpcenter.downloads.download_action: Изтеглете
 helpcenter.downloads.file_name: 'Име на файл'
 helpcenter.downloads.file_size: 'Размер на файла'
 helpcenter.downloads.no_files: 'Няма файлове'
 helpcenter.downloads.total_downloads: 'Общо изтегляния'
-helpcenter.downloads.view_x_files: '{count, plural,one {Виж 1 сваляне}other {Виж # сваляния}}'
+helpcenter.downloads.view_x_files: '{count, plural,one {Вижте 1 изтеглен файл}other {Вижте # изтеглени файла}}'
 helpcenter.duration_short.days: Д
 helpcenter.duration_short.hours: ч
 helpcenter.duration_short.minutes: м
@@ -567,7 +567,7 @@ helpcenter.members.send_message: 'Изпрати съобщение'
 helpcenter.members.timezone: Часова зона
 helpcenter.members.title: 'Директория на членовете'
 helpcenter.messenger.assigned_agent: 'Назначен агент'
-helpcenter.messenger.blocks_continue_chat_link: Продължи
+helpcenter.messenger.blocks_continue_chat_link: Продължете
 helpcenter.messenger.blocks_continue_chat_title: 'Продължете съществуващ чат'
 helpcenter.messenger.blocks_knowledgebase_title: База знания
 helpcenter.messenger.blocks_search_block_no_results: 'Няма резултати за {query}'
