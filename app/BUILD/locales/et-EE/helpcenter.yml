@@ -50,6 +50,10 @@ helpcenter.account.section_title_reset_password: 'Taastage salasõna'
 helpcenter.account.section_title_set_password: 'Määrake salasõna'
 helpcenter.articles.section_title: Teadmusbaas
 helpcenter.articles.view_x_articles: 'Vaata kõiki artikleid kategooriast {category}'
+helpcenter.downloads.file_name: 'Faili nimi'
+helpcenter.downloads.file_size: 'Faili suurus'
+helpcenter.downloads.no_files: 'Failid puuduvad'
+helpcenter.downloads.total_downloads: 'Kokku allalaadimisi'
 helpcenter.error.404_desc: 'Kahjuks ei leidnud me seda lehekülge.'
 helpcenter.error.an_error_occured: 'Ilmnes viga'
 helpcenter.error.contact_us: 'Võtke meiega ühendust'
@@ -65,6 +69,7 @@ helpcenter.general.labels: Sildid
 helpcenter.general.last_update_by: 'Viimati uuendatud: <strong>{date_updated, date, medium}</strong>; uuendaja: <strong>{person_name}</strong>'
 helpcenter.general.name: Nimi
 helpcenter.general.nav_contact: 'Võtke meiega ühendust'
+helpcenter.general.nav_downloads_desc: 'Sirvi meie faile'
 helpcenter.general.nav_kb: Teadmusbaas
 helpcenter.general.nav_newticket: 'Võtke meiega ühendust'
 helpcenter.general.no_search_query: 'Palun trükkige otsingu märksõna otsingukasti.'
