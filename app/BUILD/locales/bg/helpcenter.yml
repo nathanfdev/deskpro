@@ -694,7 +694,7 @@ helpcenter.tickets.form_changed_notice: 'Добавени са нови поле
 helpcenter.tickets.guest_thank_you_desc: 'Благодарим ви, че се свързахте с нас. Изпратихме ви имейл с инструкции как да управлявате тикета си при нас.'
 helpcenter.tickets.guest_thank_you_title: 'Благодарим ви'
 helpcenter.tickets.list_agent: 'Назначи агент'
-helpcenter.tickets.list_date_created: 'Изтрий създаденото'
+helpcenter.tickets.list_date_created: 'Дата на създаване'
 helpcenter.tickets.list_date_last_agent: 'Последен агентски отговор'
 helpcenter.tickets.list_date_last_user: 'Последен потребителски отговор'
 helpcenter.tickets.list_last_action: 'Последно действие'
