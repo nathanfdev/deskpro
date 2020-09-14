@@ -348,7 +348,7 @@ helpcenter.forms.date_picker_next_month: 'Следващ месец'
 helpcenter.forms.date_picker_previous_month: 'Предишен месец'
 helpcenter.forms.date_picker_time: Час
 helpcenter.forms.delete_question: 'Изтрийте?'
-helpcenter.forms.error_captcha: 'Грешна CAPTCHA стойност'
+helpcenter.forms.error_captcha: 'Не е въведен правилен код'
 helpcenter.forms.error_dupe_email: 'Този имейл е вече използван.'
 helpcenter.forms.error_email_required: 'Трябва да предоставите имейл адреса си'
 helpcenter.forms.error_password_current: 'Това трябва да Ви е настоящата парола'
@@ -359,7 +359,7 @@ helpcenter.forms.error_password_require_num_number: '{count, plural, one {Пон
 helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {Поне # символ} other {Поне # символа}}'
 helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {Поне # голям символ} other {Поне # големи символа}}'
 helpcenter.forms.error_password_reset_required: 'Необходимо е да си смените паролата'
-helpcenter.forms.error_required: 'Тази стойност е необходима'
+helpcenter.forms.error_required: 'Този код е задължителен'
 helpcenter.forms.error_banned_email: 'Имейлът е баннат.'
 helpcenter.forms.label_drag_overlay: 'Вмъкнете това изображение във вашето съобщение.'
 helpcenter.forms.label_email: Имейл
@@ -505,7 +505,7 @@ helpcenter.general.rate_page_negative: Не беше полезно
 helpcenter.general.rate_page_positive: Беше полезно
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} от {vote_count} души смятат тази страница за полезна'
 helpcenter.general.related_content: 'Сходно съдържание'
-helpcenter.general.remove: премахни
+helpcenter.general.remove: премахнете
 helpcenter.general.rerender_form: 'Моля прегледайте тази форма преди да я изпратите.'
 helpcenter.general.search: 'С какво да съдействаме?'
 helpcenter.general.search_labels: 'Търси Етикети'
