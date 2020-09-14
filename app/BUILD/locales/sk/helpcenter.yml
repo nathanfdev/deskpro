@@ -42,7 +42,11 @@ helpcenter.error.permission_denied_title: 'Na danú akciu nemáte oprávnenie'
 helpcenter.forms.delete_question: 'Vymazať?'
 helpcenter.forms.error_captcha: 'Hodnota CAPTCHA nie je správna'
 helpcenter.forms.error_required: 'Tento údaj je povinný'
+helpcenter.forms.error_banned_email: 'Táto emailová adresa bola zablokovaná.'
+helpcenter.forms.label_drag_overlay: 'Vložte tento obrázok do vašej správy.'
+helpcenter.forms.label_email: Email
 helpcenter.forms.label_save: Uložiť
+helpcenter.forms.label_submit: Odoslať
 helpcenter.general.add_comment: 'Pridať komentár'
 helpcenter.general.agent: Operátor
 helpcenter.general.attachments: Pripojenia
