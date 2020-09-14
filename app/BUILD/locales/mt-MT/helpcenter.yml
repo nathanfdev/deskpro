@@ -14,6 +14,11 @@ helpcenter.account.login_captcha_failed: 'Daħħalt kodiċi CAPTCHA invalidu. Je
 helpcenter.account.login_disabled: 'L-indirizz elettroniku tiegħek ġie pprojbit.'
 helpcenter.articles.section_title: Bażi tal-għarfien
 helpcenter.articles.view_x_articles: 'Ara l-artikli kollha fi {category}'
+helpcenter.downloads.file_name: 'Isem il-Fajl'
+helpcenter.downloads.file_size: 'Daqs tal-Fajl'
+helpcenter.downloads.no_files: 'Ebda fajls'
+helpcenter.downloads.total_downloads: 'Dawnlowds totali'
+helpcenter.downloads.view_x_files: '{count, plural, one {View 1 download} other {View # downloads}}'
 helpcenter.error.404_desc: 'Jiddispjaċina, ma stajniex insibu din il-paġna.'
 helpcenter.error.an_error_occured: 'Seħħ Żball'
 helpcenter.error.contact_us: 'Ikkuntattjana'
@@ -30,6 +35,9 @@ helpcenter.general.labels: Tikketti
 helpcenter.general.last_update_by: 'L-aħħar aġġornat: <strong>{date_updated, date, medium}</strong> minn <strong>{person_name}</strong>'
 helpcenter.general.name: Isem
 helpcenter.general.nav_contact: 'Ikkuntattjana'
+helpcenter.general.nav_downloads_desc: 'Ibbrawżja l-fajls tagħna'
+helpcenter.general.nav_guides: Gwidi
+helpcenter.general.nav_guides_desc: 'Ara l-gwidi kollja'
 helpcenter.general.nav_kb: Bażi tal-għarfien
 helpcenter.general.nav_newticket: 'Ikkuntattjana'
 helpcenter.general.no_search_query: 'Jekk jogħġbok ittajpja query ta'' tiftix fil-kaxx tat-tiftix.'
