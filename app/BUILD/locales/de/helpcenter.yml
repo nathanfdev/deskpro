@@ -515,6 +515,9 @@ helpcenter.general.share: Teilen
 helpcenter.general.show: Anzeigen
 helpcenter.general.show_x_more: '{num} weitere anzeigen'
 helpcenter.general.skip_link: 'Zum Hauptinhalt springen'
+helpcenter.general.software_power_by: 'Powered by'
+helpcenter.general.sort: Sortieren
+helpcenter.general.status: Status
 helpcenter.general.tagged_with: 'getaggt mit'
 helpcenter.general.updated: Aktualisierte
 helpcenter.general.user: Benutzer
