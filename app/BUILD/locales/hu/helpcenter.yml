@@ -3,6 +3,11 @@ helpcenter.articles.section_title: Tudásbázis
 helpcenter.articles.view_x_articles: 'A {category} kategória összes cikkének megjelenítése'
 helpcenter.community.section_title: Ötlettár
 helpcenter.direct_messages.reply_message: Üzenet
+helpcenter.downloads.file_name: 'Fájlnév'
+helpcenter.downloads.file_size: 'Fájlméret'
+helpcenter.downloads.no_files: 'Nincsenek megjeleníthető fájlok'
+helpcenter.downloads.total_downloads: 'Letöltések száma'
+helpcenter.downloads.view_x_files: '{count, plural, one {A fájl megjelenítése} other {# fájl megjelenítése}}'
 helpcenter.emails.chat_transcript: 'Reméljük, hogy elégedett munkatársunk munkájával. Mellékeljük legutóbbi beszélgetésük kivonatát.'
 helpcenter.emails.chat_transcript_subject: 'Beszélgetés összefoglaló'
 helpcenter.emails.comment_approved: 'Hozzászólása publikálásra került.'
@@ -55,6 +60,9 @@ helpcenter.general.log_in: 'Bejelentkezés'
 helpcenter.general.name: Keresztnév
 helpcenter.general.nav_contact: 'Kapcsolat'
 helpcenter.general.nav_contact_desc: 'Ha segítségre van szüksége, vegye fel velünk a kapcsolatot!'
+helpcenter.general.nav_downloads_desc: 'Böngészés a fájlok között'
+helpcenter.general.nav_guides: Útmutatók
+helpcenter.general.nav_guides_desc: 'Az útmutatók megjelenítése'
 helpcenter.general.nav_kb: Tudásbázis
 helpcenter.general.nav_newticket: 'Kapcsolat'
 helpcenter.general.no_search_query: 'Írjon be valamilyen keresési lekérdezést a keresőmezőbe!'
@@ -63,6 +71,7 @@ helpcenter.general.password: Jelszó
 helpcenter.general.rate_page_negative: Nem hasznos
 helpcenter.general.rate_page_positive: Hasznos
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_count} felhasználóból {vote_up} hasznosnak találta ezt a cikket.'
+helpcenter.general.related_content: 'Kapcsolódó tartalom'
 helpcenter.general.remove: eltávolítás
 helpcenter.general.search: 'Miben segíthetünk?'
 helpcenter.general.show_x_more: 'További {num} megjelenítése'
