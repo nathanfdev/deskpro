@@ -33,12 +33,21 @@ helpcenter.emails.ticket_reply_confirm: 'Válaszüzenetét megkaptuk. Munkatárs
 helpcenter.emails.ticket_validate: 'Mielőtt munkatársaink feldolgozhatnák üzenetét,<br /><br />meg kell erősítenie e-mail címét.'
 helpcenter.error.404_title: 'Nincs találat'
 helpcenter.error.permission_denied_title: 'Önnek nincs megfelelő engedélye'
+helpcenter.forms.delete_question: 'Biztosan törölni kívánja?'
+helpcenter.forms.error_captcha: 'Helytelen CAPTCHA-bevitel.'
+helpcenter.forms.error_required: 'Az érték megadása kötelező.'
+helpcenter.forms.error_banned_email: 'Tiltott e-mail-cím.'
+helpcenter.forms.label_drag_overlay: 'Kép beillesztése az üzenetbe'
+helpcenter.forms.label_email: E-mail-cím
 helpcenter.forms.label_save: Mentés
+helpcenter.forms.label_submit: Beküldés
 helpcenter.general.add_comment: 'Kérjük ebbe a mezőbe írja hozzászólását, majd kattintson a ''Hozzászólás beküldése'' gombra...'
 helpcenter.general.attachments: Mellékletek
 helpcenter.general.comments: Hozzászólás?
+helpcenter.general.drag_and_drop: 'Fájl behúzása'
 helpcenter.general.everything: Minden
 helpcenter.general.log_in: 'Bejelentkezés'
+helpcenter.general.name: Név
 helpcenter.general.nav_contact: 'Kapcsolat'
 helpcenter.general.nav_contact_desc: 'Ha segítségre van szüksége, vegye fel velünk a kapcsolatot!'
 helpcenter.general.nav_newticket: 'Kapcsolat'
@@ -47,6 +56,7 @@ helpcenter.general.rate_page_positive: Hasznos
 helpcenter.general.you: Ön
 helpcenter.members.language: Nyelv
 helpcenter.members.timezone: Időzóna
+helpcenter.messenger.tickets_form_name: Név
 helpcenter.news.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
 helpcenter.profile.account_disabled_message: 'Ügyfélfiókja jelenleg ki van kapcsolva, ezért nem tud sem bejelentkezni, sem ügyet vagy beszélgetést indítani nálunk.'
 helpcenter.tickets.guest_thank_you_title: 'Köszönjük'
@@ -54,10 +64,16 @@ helpcenter.tickets.list_agent: 'Hozzárendelt munkatárs'
 helpcenter.tickets.list_date_created: 'Készítés dátuma'
 helpcenter.tickets.list_status_resolved: Megoldott
 helpcenter.tickets.list_subject: Tárgy
-helpcenter.tickets.new_intro: 'Kérjük töltse ki ezt az űrlapot. Munkatársunk hamarosan e-mailben válaszol Önnek.'
+helpcenter.tickets.new_intro: 'Kérjük, töltse ki ezt az űrlapot. Munkatársunk hamarosan e-mailben válaszol Önnek.'
 helpcenter.tickets.new_section_title: 'Kapcsolat'
 helpcenter.tickets.rate_positive: 'Jó'
 helpcenter.tickets.rate_question: 'Hogyan értékelné munkánkat?'
 helpcenter.tickets.rate_support: 'Értékelje munkánkat'
+helpcenter.tickets.reference_number: 'Ügyszám: {ref}'
+helpcenter.tickets.thank_you: 'Kérelmét megkaptuk. Köszönjük, hogy hozzánk fordult!'
+helpcenter.tickets.thank_you_check_email: 'Erősítse meg az e-mail-címét!'
+helpcenter.tickets.thank_you_check_email_desc: 'A hibajegy benyújtásához lépjen be a postafiókjába, majd kattintson az általunk küldött igazoló linkre!'
+helpcenter.tickets.thank_you_create_pw_link: 'Ha szeretné nyomon követni, hogy mi történik a benyújtott hibajeggyel, <a href="{create_pw_link}">állítson be jeszót a fiókjához</a>!'
+helpcenter.tickets.thank_you_desc: 'Köszönjük, hogy felvette velünk a kapcsolatot! Munkatársunk hamarosan jelentkezni fog.'
 helpcenter.tickets.view_btn_edit: Szerkesztés
 helpcenter.tickets.view_unassigned: Gazdátlan
