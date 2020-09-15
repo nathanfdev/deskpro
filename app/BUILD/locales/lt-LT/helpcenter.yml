@@ -1,1 +1,16 @@
 ---
+helpcenter.account.add: Pridėti
+helpcenter.account.add_email: 'Pridėti el. paštą'
+helpcenter.account.change_password_action: 'Atnaujinti slaptažodį'
+helpcenter.account.comment_lockout: 'Jau pateikėte daug dokumentų. Norėdami pateikti daugiau, palaukite.'
+helpcenter.account.email_btn_usersource_set: 'Pridėti el. pašto adresą'
+helpcenter.account.email_make_primary_action: 'Padaryti pagrindiniu'
+helpcenter.account.email_management_from_form: 'Tvarkyti mano el. pašto adresus'
+helpcenter.account.email_primary_description: Pagrindinis
+helpcenter.account.email_remove_action: 'Pašalinti el. pašto adresą'
+helpcenter.account.email_resend_validation_action: 'Pakartoti patvirtinimo el. laišką'
+helpcenter.account.lockout_time: 'Galėsite bandyti dar kartą po {minutes} min.'
+helpcenter.account.login_captcha_failed: 'Jūsų įvestas CAPTCHA kodas netinka. Bandykite dar kartą.'
+helpcenter.account.login_disabled: 'Jūsų el. pašto adresas užblokuotas.'
+helpcenter.account.login_email: 'Jūsų el. pašto adresas'
+helpcenter.account.login_email_placeholder: email@example.com
