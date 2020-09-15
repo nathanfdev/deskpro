@@ -114,8 +114,15 @@ helpcenter.flashes.user_resend_email_verify: 'Valideringsmailet har skickats til
 helpcenter.flashes.user_updated_profile: 'Din profil har uppdaterats.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Tack för att du verifierar din e-postadress. Ditt konto är nu aktiverat.'
 helpcenter.flashes.usersource_new_add_email_verify: 'Du måste verifiera din e-postadress innan du kan skapa ett konto. Kontrollera din inkorg efter en verifieringslänk.'
+helpcenter.forms.delete_question: 'Ta bort?'
+helpcenter.forms.error_captcha: 'CAPTCHA-värdet är felaktigt'
 helpcenter.forms.error_email_required: 'Du måste ange din e-postadress'
+helpcenter.forms.error_required: 'Värdet måste anges'
+helpcenter.forms.error_banned_email: 'E-post är förbjudet.'
+helpcenter.forms.label_drag_overlay: 'Infoga bilden i ditt meddelande.'
+helpcenter.forms.label_email: E-post
 helpcenter.forms.label_save: Spara
+helpcenter.forms.label_submit: Skicka
 helpcenter.general.add_comment: 'Posta en kommentar'
 helpcenter.general.admin_home: 'Admin hem'
 helpcenter.general.agent_bar_admin_community: 'Feedbackinställningar'
@@ -130,12 +137,14 @@ helpcenter.general.agents: Agenter
 helpcenter.general.attachments: Bifogade filer
 helpcenter.general.chat: Chatt
 helpcenter.general.comments: Kommentarer
+helpcenter.general.drag_and_drop: 'Dra och släpp'
 helpcenter.general.email_address: 'E-post'
 helpcenter.general.everything: Allt
 helpcenter.general.impersonation_mode: 'Personifieringsläge'
 helpcenter.general.label_search_enter_label: 'Vänligen ange en etikett att söka efter'
 helpcenter.general.last_activity: 'Senaste aktiviteten'
 helpcenter.general.log_in: 'Logga in'
+helpcenter.general.name: Namn
 helpcenter.general.nav_contact: 'Kontakta oss'
 helpcenter.general.nav_guides: Guider
 helpcenter.general.nav_newticket: 'Kontakta oss'
@@ -156,6 +165,7 @@ helpcenter.general.rate_page_positive: Hjälpfull
 helpcenter.general.rerender_form: 'Vänligen läs igenom det här formuläret innan du skickar det.'
 helpcenter.general.share: Dela
 helpcenter.general.show: Visa
+helpcenter.general.show_x_more: 'Visa {num} fler'
 helpcenter.general.tagged_with: 'taggade med'
 helpcenter.general.tags: Taggar
 helpcenter.general.updated: Uppdaterad
@@ -163,6 +173,7 @@ helpcenter.general.user: Användare
 helpcenter.general.you: Du
 helpcenter.members.language: Språk
 helpcenter.members.timezone: Tidszon
+helpcenter.messenger.tickets_form_thanks: 'Tack för att du kontaktar oss. Någon från teamet kommer att kontakta dig via e-post.'
 helpcenter.news.none: 'Det finns inga nyheter ännu'
 helpcenter.news.recent_title: 'Senaste nyheterna'
 helpcenter.news.view_as_agent: 'Du kan se denna sida för att du är en agent. Normala användare kommer inte att kunna visa denna sida.'
@@ -192,10 +203,12 @@ helpcenter.tickets.rate_positive: 'Den var bra'
 helpcenter.tickets.rate_question: 'Hur skulle du betygsätta den support du fick?'
 helpcenter.tickets.rate_support: 'Betygsätt din support'
 helpcenter.tickets.reference_number: 'Referensnummer: {ref}'
+helpcenter.tickets.related_articles_desc: 'Följande artiklar hittades som kan lösa ditt problem.'
 helpcenter.tickets.switched_department_rerender: 'Strukturen för det här formuläret har ändrats. Läs igenom formuläret igen.'
 helpcenter.tickets.thank_you: 'Tack, vi har tagit emot din förfrågan.'
 helpcenter.tickets.thank_you_check_email: 'Vänligen bekräfta din e-postadress'
 helpcenter.tickets.thank_you_check_email_desc: 'För att registrera ditt ärende måste du först klicka på länken i det mail som vi har skickat till dig.'
+helpcenter.tickets.thank_you_desc: 'Tack för att du kontaktar oss. Någon från teamet kommer snart att kontakta dig via e-post.'
 helpcenter.tickets.timeline_marked: 'markerade ärendet som:'
 helpcenter.tickets.view_btn_add_to_ticket: 'Lägg till i ärendet'
 helpcenter.tickets.view_btn_edit: Redigera
