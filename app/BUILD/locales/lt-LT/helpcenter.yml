@@ -81,3 +81,22 @@ helpcenter.community.like_action: Patinka
 helpcenter.community.likes: Patiktukai (-ų)
 helpcenter.community.my_activity: 'Mano veikla'
 helpcenter.community.no_matching: 'Atitinkančių bendruomenės temų nėra'
+helpcenter.community.none: 'Nepavyksta rasti bendruomenės temų'
+helpcenter.community.official_response: 'Oficialus atsakymas'
+helpcenter.community.rate_forbidden: 'Jums neleidžiama balsuoti'
+helpcenter.community.recent_activity: 'Naujausia veikla'
+helpcenter.community.reset_all_filters: 'Nustatyti iš naujo visus filtrus'
+helpcenter.community.section_title: Bendruomenė
+helpcenter.community.status: Būsena
+helpcenter.community.status_change: 'Būsenos pakeitimas'
+helpcenter.community.title: Pavadinimas
+helpcenter.community.title_author: 'Pavadinimas / autorius'
+helpcenter.community.view_all_topics: 'Peržiūrėti visus {plural}'
+helpcenter.community.view_list: 'Sąrašo rodinys'
+helpcenter.community.view_status_change: 'Būsenos pakeitimas'
+helpcenter.direct_messages.back_to_messages: 'Grįžti į mano žinutes'
+helpcenter.direct_messages.block_user: 'blokuoti naudotoją'
+helpcenter.direct_messages.new_message: 'Nauja žinutė'
+helpcenter.direct_messages.none: 'Žinučių nėra'
+helpcenter.direct_messages.recipient: Gavėjas
+helpcenter.emails.download_updated_downloads: '{count, plural, one {1 atnaujintas atsisiuntimas} other {# atnaujinti atsisiuntimai}}'
