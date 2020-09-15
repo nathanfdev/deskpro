@@ -76,7 +76,7 @@ helpcenter.approvals.approve_action: Godkend
 helpcenter.approvals.approved_by: 'Godkendt af'
 helpcenter.approvals.approved_status: Godkendt
 helpcenter.approvals.cancelled_status: Annulleret
-helpcenter.approvals.list_column_agent: 'Agent'
+helpcenter.approvals.list_column_agent: 'Medarbejder'
 helpcenter.approvals.list_column_approvers: 'Godkendere'
 helpcenter.approvals.list_column_cancelled: 'Annulleret'
 helpcenter.approvals.list_column_completed: 'Afsluttet'
@@ -86,6 +86,7 @@ helpcenter.approvals.list_column_user: 'Bruger'
 helpcenter.approvals.list_column_your_vote: 'Din stemme'
 helpcenter.approvals.my_approvals: 'Mine godkendelser'
 helpcenter.articles.section_title: Vidensbase
+helpcenter.articles.view_x_articles: 'Se alle artikler i {category}'
 helpcenter.community.error_login: 'Venligst login'
 helpcenter.community.form_add_attachments: 'Indsæt vedhæftelser'
 helpcenter.community.form_topic_title: Titel
@@ -164,7 +165,7 @@ helpcenter.emails.ticket_flood: 'Du har for nylig indsendt en e-mail til vores h
 helpcenter.emails.ticket_new_participant: 'En ny person er blevet tilføjet til din sag'
 helpcenter.emails.ticket_no_autoresponse: 'Advarsel: Mail bekræftelse er slået fra.'
 helpcenter.emails.ticket_rate_neutral: 'Det var OK'
-helpcenter.emails.ticket_rate_question: 'Var denne besked hjælpsom?'
+helpcenter.emails.ticket_rate_question: 'Var denne besked nyttig?'
 helpcenter.emails.ticket_received: 'Din sag er modtaget. En af vore medarbejdere vil svare snarest.'
 helpcenter.emails.ticket_reply_confirm: 'Tak for dit svar. En af vore medarbejdere svare snarest.'
 helpcenter.emails.ticket_validate: 'Tak for din henvendelse. <br /> <br /> Inden vores agenter svarer, skal du validere din e-mailadresse.'
@@ -204,7 +205,7 @@ helpcenter.forms.label_save: Gem
 helpcenter.forms.label_submit: Indsend
 helpcenter.general.add_comment: 'Tilføj en kommentar'
 helpcenter.general.admin_home: 'Admin Hjem'
-helpcenter.general.agent: Sagsbehandler
+helpcenter.general.agent: Medarbejder
 helpcenter.general.agent_bar_admin_community: 'Community Topic indstillinger'
 helpcenter.general.agent_bar_admin_kb: 'Vidensbase-indstillinger'
 helpcenter.general.agent_bar_admin_lang: 'Sprog indstillinger'
@@ -213,17 +214,21 @@ helpcenter.general.agent_bar_agent_community: 'Administrer community topic'
 helpcenter.general.agent_bar_agent_home: 'Agent hjem'
 helpcenter.general.agent_bar_agent_kb: 'Administrer vidensbase'
 helpcenter.general.agent_bar_agent_news: 'Administrer nyheder'
-helpcenter.general.agents: Sagsbehandler
+helpcenter.general.agents: Medarbejdere
 helpcenter.general.attachments: Vedhæftelser
 helpcenter.general.comments: Kommentarer
 helpcenter.general.drag_and_drop: 'Træk og slip'
 helpcenter.general.everything: Alt
 helpcenter.general.impersonation_mode: 'Personefterlignings tilstand'
 helpcenter.general.label_search_enter_label: 'Angiv venligst en etiket at søge efter'
+helpcenter.general.labels: Labels
 helpcenter.general.last_activity: 'Seneste aktivitet'
+helpcenter.general.last_update_by: 'Senest opdateret: <strong>{date_updated, date, medium}</strong> af <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Log ind'
 helpcenter.general.name: Navn
-helpcenter.general.nav_guides: Omviser
+helpcenter.general.nav_downloads_desc: 'Gennemse vores filer'
+helpcenter.general.nav_guides: Guides
+helpcenter.general.nav_guides_desc: 'Se alle guides'
 helpcenter.general.nav_kb: Vidensbase
 helpcenter.general.no_search_query: 'Indtast en søgestreng i søgefeltet.'
 helpcenter.general.no_search_results_general: 'Ingen resultater fundet'
@@ -239,10 +244,14 @@ helpcenter.general.prop_rating_asc: 'Lavest bedømte først'
 helpcenter.general.prop_rating_desc: 'Højest bedømte først'
 helpcenter.general.prop_views_asc: 'Mindst visninger først'
 helpcenter.general.prop_views_desc: 'Flest visninger først'
-helpcenter.general.rate_page_positive: Hjælpsom
+helpcenter.general.rate_page_negative: Unyttig information
+helpcenter.general.rate_page_positive: Nyttig information
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} af {vote_count} personer fandt denne side nyttig'
+helpcenter.general.related_content: 'Relateret indhold'
 helpcenter.general.remove: fjern
 helpcenter.general.rerender_form: 'Læs venligst denne formular, inden du sender den.'
 helpcenter.general.search: 'Hvordan kan vi hjælpe dig i dag?'
+helpcenter.general.search_labels: 'Søg labels'
 helpcenter.general.share: Del
 helpcenter.general.show: Vis
 helpcenter.general.show_x_more: 'Vis {num} flere'
@@ -264,12 +273,17 @@ helpcenter.messenger.blocks_search_block_see_more_results: 'Se flere resultater'
 helpcenter.messenger.blocks_ticket_button: 'Indsend en ny ticket'
 helpcenter.messenger.blocks_ticket_description: 'Indsend en forespørgsel via vores kontaktformular'
 helpcenter.messenger.blocks_ticket_title: 'Indsend en ticket'
+helpcenter.messenger.chat_rating_block_buttons_helpful: Nyttig information
+helpcenter.messenger.chat_rating_block_buttons_unhelpful: Unyttig information
 helpcenter.messenger.greeting: 'Tag kontakt'
 helpcenter.messenger.proactive_greeting: 'Tag kontakt'
 helpcenter.messenger.tickets_form_add_attachment: 'Indsæt vedhæftelse'
 helpcenter.messenger.tickets_form_header: 'Ny ticket'
 helpcenter.messenger.tickets_form_name: Navn
+helpcenter.messenger.tickets_form_or: eller
 helpcenter.messenger.tickets_form_submit: Indsend
+helpcenter.messenger.tickets_form_thanks: 'Tak for at du har kontaktet os. Et medlem fra vores team vil kontakte via email.'
+helpcenter.messenger.tickets_form_thanks_header: 'Din anmodning er undervejs'
 helpcenter.news.none: 'Ingen nyheder endnu'
 helpcenter.news.recent_title: 'Seneste nyheder'
 helpcenter.news.view_as_agent: 'Du kan se denne side, fordi du er en agent. Normale brugere vil ikke være i stand til at se denne side.'
@@ -316,4 +330,4 @@ helpcenter.tickets.view_label_your_name_placeholder: 'Navn (påkrævet)'
 helpcenter.tickets.view_reply_errors: 'Der er nogle fejl med din indsendelse.'
 helpcenter.tickets.view_scroll_reply: 'Klik her for at scrolle ned til formularen.'
 helpcenter.tickets.view_unassigned: Ikke tildelt
-helpcenter.tickets.view_unassigned_more: 'En agent vil blive tildelt'
+helpcenter.tickets.view_unassigned_more: 'En medarbejder vil blive tildelt'
