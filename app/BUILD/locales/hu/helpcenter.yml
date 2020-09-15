@@ -68,11 +68,20 @@ helpcenter.members.language: Nyelv
 helpcenter.members.timezone: Időzóna
 helpcenter.messenger.blocks_continue_chat_title: 'Vissza a csevegésbe'
 helpcenter.messenger.blocks_knowledgebase_title: Tudásbázis
+helpcenter.messenger.blocks_search_block_no_results: 'Nincs találat a következőre: {query}'
 helpcenter.messenger.blocks_search_block_search_label: Keresés
+helpcenter.messenger.blocks_search_block_see_more_results: 'További találatok megjelenítése'
+helpcenter.messenger.blocks_ticket_button: 'Új hibajegy benyújtása'
+helpcenter.messenger.blocks_ticket_description: 'Kérdés vagy kérelem beküldése a kapcsolatfelvételi űrlap segítségével'
 helpcenter.messenger.blocks_ticket_title: 'Hibajegy beküldése'
 helpcenter.messenger.greeting: 'Kapcsolatfelvétel'
+helpcenter.messenger.tickets_form_add_attachment: 'Csatolmány hozzáadása'
+helpcenter.messenger.tickets_form_header: 'Új hibajegy'
 helpcenter.messenger.tickets_form_name: Keresztnév
+helpcenter.messenger.tickets_form_or: vagy
+helpcenter.messenger.tickets_form_saving: 'A hibajegy mentése folyamatban. Kis türelmet kérünk.'
 helpcenter.messenger.tickets_form_submit: Küldés
+helpcenter.messenger.tickets_form_thanks: 'Köszönjük, hogy felvette velünk a kapcsolatot! Munkatársunk hamarosan jelentkezni fog.'
 helpcenter.news.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
 helpcenter.profile.account_disabled_message: 'Ügyfélfiókja jelenleg ki van kapcsolva, ezért nem tud sem bejelentkezni, sem ügyet vagy beszélgetést indítani nálunk.'
 helpcenter.search.search_results: 'Találatok'
