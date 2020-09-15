@@ -97,6 +97,7 @@ helpcenter.error.403_desc: 'Tyvärr, du har inte behörighet att se denna sida.'
 helpcenter.error.403_title: 'Ingen behörighet'
 helpcenter.error.404_desc: 'Tyvärr, sidan kan inte hittas.'
 helpcenter.error.404_title: 'Hittades Inte'
+helpcenter.error.an_error_occured: 'Ett fel inträffade'
 helpcenter.error.general_title: 'Ett fel inträffade'
 helpcenter.error.permission_denied_title: 'Du är inte tillåten att göra detta'
 helpcenter.flashes.article_unsubscribe: 'Du har sagt upp prenumerationen på denna artikel.'
@@ -147,8 +148,10 @@ helpcenter.general.log_in: 'Logga in'
 helpcenter.general.name: Namn
 helpcenter.general.nav_contact: 'Kontakta oss'
 helpcenter.general.nav_guides: Guider
+helpcenter.general.nav_kb: Kunskapsbas
 helpcenter.general.nav_newticket: 'Kontakta oss'
-helpcenter.general.no_search_query: 'Vänligen skriv en söksträng i sökrutan'
+helpcenter.general.no_search_query: 'Vänligen skriv en söksträng i sökrutan.'
+helpcenter.general.no_search_results_general: 'Inga resultat hittades'
 helpcenter.general.password: Lösenord
 helpcenter.general.print: Skriv ut
 helpcenter.general.prop_comments_asc: 'Minst kommentarer först'
@@ -162,7 +165,9 @@ helpcenter.general.prop_rating_desc: 'Högst rankade först'
 helpcenter.general.prop_views_asc: 'Minst visade först'
 helpcenter.general.prop_views_desc: 'Mest visade först'
 helpcenter.general.rate_page_positive: Hjälpfull
+helpcenter.general.remove: ta bort
 helpcenter.general.rerender_form: 'Vänligen läs igenom det här formuläret innan du skickar det.'
+helpcenter.general.search: 'Vad kan vi hjälpa till med idag?'
 helpcenter.general.share: Dela
 helpcenter.general.show: Visa
 helpcenter.general.show_x_more: 'Visa {num} fler'
@@ -170,15 +175,24 @@ helpcenter.general.tagged_with: 'taggade med'
 helpcenter.general.tags: Taggar
 helpcenter.general.updated: Uppdaterad
 helpcenter.general.user: Användare
+helpcenter.general.x_search_results: '{num} sökresultat på "{query}"'
 helpcenter.general.you: Du
+helpcenter.label.search: Sök
 helpcenter.members.language: Språk
 helpcenter.members.timezone: Tidszon
+helpcenter.messenger.blocks_continue_chat_title: 'Fortsätt med befintlig chatt'
+helpcenter.messenger.blocks_knowledgebase_title: Kunskapsbas
+helpcenter.messenger.blocks_search_block_no_results: 'Inga resultat för {query}'
+helpcenter.messenger.blocks_ticket_title: 'Skicka ett ärende'
+helpcenter.messenger.greeting: 'Kontakta oss'
 helpcenter.messenger.tickets_form_thanks: 'Tack för att du kontaktar oss. Någon från teamet kommer att kontakta dig via e-post.'
 helpcenter.news.none: 'Det finns inga nyheter ännu'
 helpcenter.news.recent_title: 'Senaste nyheterna'
 helpcenter.news.view_as_agent: 'Du kan se denna sida för att du är en agent. Normala användare kommer inte att kunna visa denna sida.'
 helpcenter.profile.account_disabled_message: 'Ditt konto är för närvarande inaktiverat. Du får inte logga in eller interagera via ärenden eller chatt.'
 helpcenter.profile.your_password: 'Ditt lösenord'
+helpcenter.search.search_results: 'Sökresultat'
+helpcenter.search.showing_results_for: 'Visar resultat från {type} för <span>"{query}"</span>'
 helpcenter.tickets.form_changed_notice: 'Nya fält har lagts till i formuläret. Vänligen kontrollera dessa och skicka sedan formuläret igen.'
 helpcenter.tickets.guest_thank_you_desc: 'Tack för att du kontaktar oss! Vi har skickat dig ett e-postmeddelande med instruktioner om hur du kan hantera ditt ärende.'
 helpcenter.tickets.guest_thank_you_title: 'Tack'
@@ -204,6 +218,7 @@ helpcenter.tickets.rate_question: 'Hur skulle du betygsätta den support du fick
 helpcenter.tickets.rate_support: 'Betygsätt din support'
 helpcenter.tickets.reference_number: 'Referensnummer: {ref}'
 helpcenter.tickets.related_articles_desc: 'Följande artiklar hittades som kan lösa ditt problem.'
+helpcenter.tickets.submit_a_ticket: 'Skicka ett ärende'
 helpcenter.tickets.switched_department_rerender: 'Strukturen för det här formuläret har ändrats. Läs igenom formuläret igen.'
 helpcenter.tickets.thank_you: 'Tack, vi har tagit emot din förfrågan.'
 helpcenter.tickets.thank_you_check_email: 'Vänligen bekräfta din e-postadress'
