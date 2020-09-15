@@ -75,3 +75,9 @@ helpcenter.community.filters: Filtrai
 helpcenter.community.form_add_attachments: 'Įtraukti priedų'
 helpcenter.community.form_create_topic: 'Sukurti temą'
 helpcenter.community.form_description: Aprašymas
+helpcenter.community.form_topic_title: Pavadinimas
+helpcenter.community.forum_name: 'Forumo pavadinimas'
+helpcenter.community.like_action: Patinka
+helpcenter.community.likes: Patiktukai (-ų)
+helpcenter.community.my_activity: 'Mano veikla'
+helpcenter.community.no_matching: 'Atitinkančių bendruomenės temų nėra'
