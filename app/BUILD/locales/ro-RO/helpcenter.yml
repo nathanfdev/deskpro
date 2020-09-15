@@ -499,12 +499,14 @@ helpcenter.general.published_by: 'Publicat de <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Nefolositor
 helpcenter.general.rate_page_positive: Util
 helpcenter.general.related_content: 'Conținut asociat'
+helpcenter.general.remove: eliminare
 helpcenter.general.rerender_form: 'Revizuiți acest formular înainte să îl trimiteți.'
 helpcenter.general.search: 'Cum vă putem ajuta astăzi?'
 helpcenter.general.select: Selectare
 helpcenter.general.send_user_direct_message: 'Trimiteți utilizatorului un mesaj direct'
 helpcenter.general.share: Distribuire
 helpcenter.general.show: Afișare
+helpcenter.general.show_x_more: 'Afișați încă {num}'
 helpcenter.general.skip_link: 'Săriți la conținutul principal'
 helpcenter.general.software_power_by: 'Susținut de'
 helpcenter.general.sort: Sortare
@@ -524,6 +526,7 @@ helpcenter.general.view_all_topics: 'Vedeți toate subiectele'
 helpcenter.general.view_profile: 'Vizualizare profil'
 helpcenter.general.viewed_by_agents_only: 'Acest câmp este vizibil doar agenților'
 helpcenter.general.workflow: 'Flux de lucru'
+helpcenter.general.x_search_results: '{num} rezultate pentru "{query}"'
 helpcenter.general.you: Dvs.
 helpcenter.general.your_comment_label: 'Comentariul dvs.'
 helpcenter.general.your_comment_optional_label: 'Comentariul dvs. (opțional)'
