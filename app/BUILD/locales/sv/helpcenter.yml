@@ -36,6 +36,7 @@ helpcenter.account.tickets_lockout: 'Du har registrerat för många ärenden. Di
 helpcenter.account.usersource_set_email_desc: 'Innan du kan logga in så behöver vi din e-postadress. Ange din e-postadress här nedan så skickar vi dig ett aktiveringsmail.'
 helpcenter.account.your_pending_email_addresses: 'Dina väntande e-postadresser'
 helpcenter.articles.section_title: Kunskapsbas
+helpcenter.articles.view_x_articles: 'Visa alla artiklar i {category}'
 helpcenter.community.error_login: 'Vänligen logga in.'
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Ingen matchande community topic'
@@ -143,7 +144,9 @@ helpcenter.general.email_address: 'E-post'
 helpcenter.general.everything: Allt
 helpcenter.general.impersonation_mode: 'Personifieringsläge'
 helpcenter.general.label_search_enter_label: 'Vänligen ange en etikett att söka efter'
+helpcenter.general.labels: Taggar
 helpcenter.general.last_activity: 'Senaste aktiviteten'
+helpcenter.general.last_update_by: 'Senast uppdaterat: <strong>{date_updated, date, medium}</strong>av <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Logga in'
 helpcenter.general.name: Namn
 helpcenter.general.nav_contact: 'Kontakta oss'
@@ -164,7 +167,9 @@ helpcenter.general.prop_rating_asc: 'Lägst rankade först'
 helpcenter.general.prop_rating_desc: 'Högst rankade först'
 helpcenter.general.prop_views_asc: 'Minst visade först'
 helpcenter.general.prop_views_desc: 'Mest visade först'
-helpcenter.general.rate_page_positive: Hjälpfull
+helpcenter.general.rate_page_negative: Oanvändbar
+helpcenter.general.rate_page_positive: Användbar
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} av {vote_count} personer tyckte att sidan var användbar'
 helpcenter.general.remove: ta bort
 helpcenter.general.rerender_form: 'Vänligen läs igenom det här formuläret innan du skickar det.'
 helpcenter.general.search: 'Vad kan vi hjälpa till med idag?'
@@ -183,9 +188,17 @@ helpcenter.members.timezone: Tidszon
 helpcenter.messenger.blocks_continue_chat_title: 'Fortsätt med befintlig chatt'
 helpcenter.messenger.blocks_knowledgebase_title: Kunskapsbas
 helpcenter.messenger.blocks_search_block_no_results: 'Inga resultat för {query}'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Visa fler resultat'
+helpcenter.messenger.blocks_ticket_button: 'Skicka ett nytt ärende'
+helpcenter.messenger.blocks_ticket_description: 'Skicka en förfrågan via kontaktformuläret'
 helpcenter.messenger.blocks_ticket_title: 'Skicka ett ärende'
 helpcenter.messenger.greeting: 'Kontakta oss'
+helpcenter.messenger.tickets_form_add_attachment: 'Bifoga bilaga'
+helpcenter.messenger.tickets_form_header: 'Nytt ärende'
+helpcenter.messenger.tickets_form_or: eller
+helpcenter.messenger.tickets_form_saving: 'Vänta. Vi sparar ditt ärende'
 helpcenter.messenger.tickets_form_thanks: 'Tack för att du kontaktar oss. Någon från teamet kommer att kontakta dig via e-post.'
+helpcenter.messenger.tickets_form_thanks_header: 'Din förfrågan på väg'
 helpcenter.news.none: 'Det finns inga nyheter ännu'
 helpcenter.news.recent_title: 'Senaste nyheterna'
 helpcenter.news.view_as_agent: 'Du kan se denna sida för att du är en agent. Normala användare kommer inte att kunna visa denna sida.'
