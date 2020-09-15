@@ -42,6 +42,11 @@ helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Ingen matchande community topic'
 helpcenter.community.rate_forbidden: 'Du har inte behörighet att rösta'
 helpcenter.direct_messages.reply_message: Meddelande
+helpcenter.downloads.file_name: 'Filnamn'
+helpcenter.downloads.file_size: 'Filstorlek'
+helpcenter.downloads.no_files: 'Inga filer'
+helpcenter.downloads.total_downloads: 'Totalt antal nedladdningar'
+helpcenter.downloads.view_x_files: '{count, plural, one {visa 1 nedladdning} other {visa # nedladdningar}}'
 helpcenter.emails.chat_transcript: 'Tack för att du chattade med oss. Här är en utskrift av chatten.'
 helpcenter.emails.chat_transcript_subject: 'Chatlogg'
 helpcenter.emails.comment_approved: 'Din kommentar har blivit publicerad.'
@@ -150,7 +155,9 @@ helpcenter.general.last_update_by: 'Senast uppdaterat: <strong>{date_updated, da
 helpcenter.general.log_in: 'Logga in'
 helpcenter.general.name: Namn
 helpcenter.general.nav_contact: 'Kontakta oss'
+helpcenter.general.nav_downloads_desc: 'Bläddra bland filerna'
 helpcenter.general.nav_guides: Guider
+helpcenter.general.nav_guides_desc: 'Visa alla guider'
 helpcenter.general.nav_kb: Kunskapsbas
 helpcenter.general.nav_newticket: 'Kontakta oss'
 helpcenter.general.no_search_query: 'Vänligen skriv en söksträng i sökrutan.'
@@ -170,6 +177,7 @@ helpcenter.general.prop_views_desc: 'Mest visade först'
 helpcenter.general.rate_page_negative: Oanvändbar
 helpcenter.general.rate_page_positive: Användbar
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} av {vote_count} personer tyckte att sidan var användbar'
+helpcenter.general.related_content: 'Liknande innehåll'
 helpcenter.general.remove: ta bort
 helpcenter.general.rerender_form: 'Vänligen läs igenom det här formuläret innan du skickar det.'
 helpcenter.general.search: 'Vad kan vi hjälpa till med idag?'
