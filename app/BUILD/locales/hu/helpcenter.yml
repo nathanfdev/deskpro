@@ -39,6 +39,9 @@ helpcenter.general.attachments: Mellékletek
 helpcenter.general.comments: Hozzászólás?
 helpcenter.general.everything: Minden
 helpcenter.general.log_in: 'Bejelentkezés'
+helpcenter.general.nav_contact: 'Kapcsolat'
+helpcenter.general.nav_contact_desc: 'Ha segítségre van szüksége, vegye fel velünk a kapcsolatot!'
+helpcenter.general.nav_newticket: 'Kapcsolat'
 helpcenter.general.password: Jelszó
 helpcenter.general.rate_page_positive: Hasznos
 helpcenter.general.you: Ön
@@ -52,7 +55,7 @@ helpcenter.tickets.list_date_created: 'Készítés dátuma'
 helpcenter.tickets.list_status_resolved: Megoldott
 helpcenter.tickets.list_subject: Tárgy
 helpcenter.tickets.new_intro: 'Kérjük töltse ki ezt az űrlapot. Munkatársunk hamarosan e-mailben válaszol Önnek.'
-helpcenter.tickets.new_section_title: 'Írjon nekünk'
+helpcenter.tickets.new_section_title: 'Kapcsolat'
 helpcenter.tickets.rate_positive: 'Jó'
 helpcenter.tickets.rate_question: 'Hogyan értékelné munkánkat?'
 helpcenter.tickets.rate_support: 'Értékelje munkánkat'
