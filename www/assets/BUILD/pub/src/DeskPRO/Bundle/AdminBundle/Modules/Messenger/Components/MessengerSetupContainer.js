@@ -143,6 +143,7 @@ class MessengerSetupContainer extends React.Component {
           ticketDepartments={ticketDepartments.filter((d => d.get('brands').indexOf(parseInt(brandId, 10)) !== -1))}
           usergroups={usergroups}
           handleSubmit={this.handleSubmit}
+          apiBaseUrl={window.DP_BASE_API_URL}
           code={code}
         >
           <Button loading={saving} onClick={this.handleSubmit} type="cta" size="large">Save</Button>
