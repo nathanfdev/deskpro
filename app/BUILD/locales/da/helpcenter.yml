@@ -58,21 +58,53 @@ helpcenter.account.set_password_for_user: 'Din konto har endnu ikke et password.
 helpcenter.account.set_password_invalid_desc: 'Din adgangskode er ugyldig eller udløbet. For at indstille din adgangskode, skal du anmode om en ny kode.'
 helpcenter.account.set_password_invalid_input: 'Angiv venligst en gyldig e-mailadresse eller brugernavn'
 helpcenter.account.set_password_request_desc: 'Udfyld denne formular og vi vil sende dig et link til at skifte din adgangskode.'
+helpcenter.account.set_password_request_title: 'Angiv dit password'
 helpcenter.account.set_password_sent_desc: 'Vi har sendt dig en e-mail med instruktioner om, hvordan du skifter din adgangskode.'
 helpcenter.account.set_password_sent_title: 'Angiv dit password'
+helpcenter.account.set_password_sent_to: 'Vi har sendt en e-mail til'
 helpcenter.account.set_password_success: 'Dit password er opdateret.'
 helpcenter.account.submit_saved_form: 'Din {{type}} er ikke blevet offentliggjort endnu, men vi har gemt det for dig.'
 helpcenter.account.submit_saved_form_go: 'Klik her hvis du automatisk ønsker at gensende indholdet fra formularen.'
+helpcenter.account.thank_you_for_registering: 'Tak for din registrering'
 helpcenter.account.tickets_lockout: 'Du har oprettet for mange sager, så din konto er blevet låst. Prøv venligst senere.'
 helpcenter.account.usersource_set_email_desc: 'Før du kan logge ind skal du angive din e-mailadresse. Angiv venligst din e-mailadresse så vi kan sende dig en e-mail hvori du kan verificere din e-mailadresse.'
+helpcenter.account.validation_email_sent: 'Vi har sendt en email til {email}<br />Validér din email-adresse for at komme til dit supportcenter.'
 helpcenter.account.your_pending_email_addresses: 'Dine afventende og endnu ikke verificerede e-mailadresser'
+helpcenter.account.login-btn-usersource: 'Login med {usersource}'
+helpcenter.alerts.tickets_to_respond: '{count, plural, one {Du har en ticket der skal besvares.} other {Du har # tickets at besvare.}}'
+helpcenter.approvals.approve_action: Godkend
+helpcenter.approvals.approved_by: 'Godkendt af'
+helpcenter.approvals.approved_status: Godkendt
+helpcenter.approvals.cancelled_status: Annulleret
+helpcenter.approvals.list_column_agent: 'Agent'
+helpcenter.approvals.list_column_approvers: 'Godkendere'
+helpcenter.approvals.list_column_cancelled: 'Annulleret'
+helpcenter.approvals.list_column_completed: 'Afsluttet'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: 'Emne'
+helpcenter.approvals.list_column_user: 'Bruger'
+helpcenter.approvals.list_column_your_vote: 'Din stemme'
+helpcenter.approvals.my_approvals: 'Mine godkendelser'
 helpcenter.articles.section_title: Videnbase
 helpcenter.community.error_login: 'Venligst login'
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Ingen matchende tilbagemeldinger'
 helpcenter.community.rate_forbidden: 'Du har ikke tilladelse til at stemme'
 helpcenter.community.section_title: Indlæg
+helpcenter.community.view_all_topics: 'Se alle {plural}'
+helpcenter.community.view_list: 'Listevisning'
+helpcenter.community.view_status_change: 'Statusændring'
+helpcenter.direct_messages.back_to_messages: 'Tilbage til mine meddelelser'
+helpcenter.direct_messages.block_user: 'blokér bruger'
+helpcenter.direct_messages.new_message: 'Ny meddelelse'
+helpcenter.direct_messages.none: 'Ingen meddelelser'
+helpcenter.direct_messages.recipient: Modtager
+helpcenter.direct_messages.reply_cancel: Annullér
 helpcenter.direct_messages.reply_message: Besked
+helpcenter.direct_messages.reply_send_message: 'Send meddelelse'
+helpcenter.direct_messages.title: 'Mine meddelelser'
+helpcenter.direct_messages.unblock_user_action: 'ophæv brugerblokering'
+helpcenter.downloads.download_action: Download
 helpcenter.emails.chat_transcript: 'Tak fordi du chattede med os. Her udskriften af fra din chat.'
 helpcenter.emails.chat_transcript_subject: 'Chat samtaleudskrift'
 helpcenter.emails.comment_approved: 'Din kommentar er blevet publiceret'
