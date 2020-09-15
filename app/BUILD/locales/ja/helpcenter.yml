@@ -4,7 +4,9 @@ helpcenter.account.add_email: 'メールアドレス追加'
 helpcenter.account.change_password_action: 'パスワード更新'
 helpcenter.account.comment_lockout: 'コメントを投稿するには時間を空けて送信してください。'
 helpcenter.account.email_btn_usersource_set: 'メールアドレスの追加'
+helpcenter.account.email_make_primary_action: 'プライマリにする'
 helpcenter.account.email_management_from_form: 'メールアドレスの管理'
+helpcenter.account.email_primary_description: プライマリ
 helpcenter.account.email_remove_action: 'メールアドレスの削除'
 helpcenter.account.email_resend_validation_action: '認証メールを再送する'
 helpcenter.account.lockout_time: '{minutes} 分後に再度お試しください。'
@@ -23,6 +25,7 @@ helpcenter.account.login_reset_password_link: 'パスワードをお忘れです
 helpcenter.account.login_stay_logged_in: 'ログイン状態を維持'
 helpcenter.account.logout_action: ログアウト
 helpcenter.account.logout_confirm: '本当にログアウトしますか？'
+helpcenter.account.new_ticket_no_login: 'ポータル CRM が無効になっています。チケットを送信できません。'
 helpcenter.account.profile_delete_picture: 'プロフィール写真の変更・削除'
 helpcenter.account.profile_save_action: 'プロフィールの保存'
 helpcenter.account.register_action: 登録
@@ -59,6 +62,9 @@ helpcenter.account.set_password_sent_desc: 'パスワードの設定方法をご
 helpcenter.account.set_password_sent_title: 'パスワード設定'
 helpcenter.account.set_password_sent_to: '送付先メールアドレス'
 helpcenter.account.set_password_success: 'パスワードが更新されました。'
+helpcenter.account.submit_saved_form: 'フォームの内容は送信されていませんが、保持しています。'
+helpcenter.account.submit_saved_form_go: 'こちらをクリックすると自動的に再送信されます。'
+helpcenter.account.thank_you_for_registering: 'ご登録ありがとうございます'
 helpcenter.articles.section_title: ナレッジベース
 helpcenter.community.section_title: フィードバック
 helpcenter.direct_messages.reply_message: メッセージ
