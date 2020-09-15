@@ -14,3 +14,19 @@ helpcenter.account.login_captcha_failed: 'Jūsų įvestas CAPTCHA kodas netinka.
 helpcenter.account.login_disabled: 'Jūsų el. pašto adresas užblokuotas.'
 helpcenter.account.login_email: 'Jūsų el. pašto adresas'
 helpcenter.account.login_email_placeholder: email@example.com
+helpcenter.account.login_external: 'Prisijungti naudojantis išorine paslauga'
+helpcenter.account.login_invalid: 'Prisijungimo duomenys netinka'
+helpcenter.account.login_lockout: 'Nesėkmingai bandėte prisijungti pernelyg daug kartų, todėl buvote užblokuoti. Bandykite dar kartą vėliau.'
+helpcenter.account.login_not_configured: 'Išorinė paslauga nesukonfigūruota.'
+helpcenter.account.login_password: 'Jūsų slaptažodis'
+helpcenter.account.login_register_action: Registruotis
+helpcenter.account.login_register_header: 'Registruoti paskyrą'
+helpcenter.account.login_reset_password_link: 'Ar reikia priminti slaptažodį?'
+helpcenter.account.login_stay_logged_in: 'Norite likti prisijungę?'
+helpcenter.account.logout_action: Atsijungti
+helpcenter.account.logout_confirm: 'Ar tikrai norite atsijungti?'
+helpcenter.account.new_ticket_no_login: 'CRM portalas išjungtas. Kvito pateikti negalima.'
+helpcenter.account.new_to_brand: 'Dar nesinaudojote {brand}?'
+helpcenter.account.profile_delete_picture: 'Norite pakeisti arba panaikinti profilio nuotrauką?'
+helpcenter.account.profile_save_action: 'Įrašyti profilį'
+helpcenter.account.register_action: Registruotis
