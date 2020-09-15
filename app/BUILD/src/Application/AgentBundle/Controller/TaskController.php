@@ -36,7 +36,7 @@ class TaskController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        parent::preActionHandler($request, $action, $arguments);
+        return parent::preActionHandler($request, $action, $arguments);
     }
 
     public function getSectionDataAction()
