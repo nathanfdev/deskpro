@@ -2,6 +2,7 @@
 helpcenter.account.add: 追加
 helpcenter.account.add_email: 'メールアドレス追加'
 helpcenter.account.change_password_action: 'パスワード更新'
+helpcenter.account.comment_lockout: 'コメントを投稿するには時間を空けて送信してください。'
 helpcenter.account.email_btn_usersource_set: 'メールアドレスの追加'
 helpcenter.account.email_management_from_form: 'メールアドレスの管理'
 helpcenter.account.email_remove_action: 'メールアドレスの削除'
