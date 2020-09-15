@@ -191,8 +191,15 @@ helpcenter.flashes.user_resend_email_verify: 'Validerings e-mailen er blevet sen
 helpcenter.flashes.user_updated_profile: 'Din profil er blevet opdateret.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Tak for at verificere din e-mailadresse. Din konto er nu aktiv.'
 helpcenter.flashes.usersource_new_add_email_verify: 'Vi er nødt til at bekræfte din e-mail inden vi opretter din konto. Tjek din indbakke for et bekræftelseslink.'
+helpcenter.forms.delete_question: 'Slet?'
+helpcenter.forms.error_captcha: 'CAPTCHA-værdien var ikke korrekt'
 helpcenter.forms.error_email_required: 'Du skal oplyse din e-mailadresse'
+helpcenter.forms.error_required: 'Denne værdi skal angives'
+helpcenter.forms.error_banned_email: 'Email-adressen er blevet lukket ude.'
+helpcenter.forms.label_drag_overlay: 'Indsæt dette billede i din meddelelse.'
+helpcenter.forms.label_email: Email
 helpcenter.forms.label_save: Gem
+helpcenter.forms.label_submit: Indsend
 helpcenter.general.add_comment: 'Tilføj en kommentar'
 helpcenter.general.admin_home: 'Admin Hjem'
 helpcenter.general.agent: Sagsbehandler
@@ -207,11 +214,13 @@ helpcenter.general.agent_bar_agent_news: 'Administrer nyheder'
 helpcenter.general.agents: Sagsbehandler
 helpcenter.general.attachments: Vedhæftelser
 helpcenter.general.comments: Kommentarer
+helpcenter.general.drag_and_drop: 'Træk og slip'
 helpcenter.general.everything: Alt
 helpcenter.general.impersonation_mode: 'Personefterlignings tilstand'
 helpcenter.general.label_search_enter_label: 'Angiv venligst en etiket at søge efter'
 helpcenter.general.last_activity: 'Seneste aktivitet'
 helpcenter.general.log_in: 'Log ind'
+helpcenter.general.name: Navn
 helpcenter.general.nav_guides: Omviser
 helpcenter.general.no_search_query: 'Indtast en søgestreng, ind i søgefeltet.'
 helpcenter.general.password: Adgangskode
@@ -235,7 +244,10 @@ helpcenter.general.updated: Opdateret
 helpcenter.general.user: Bruger
 helpcenter.general.you: Du
 helpcenter.members.language: Sprog
+helpcenter.members.name: Navn
 helpcenter.members.timezone: Tidszone
+helpcenter.messenger.tickets_form_name: Navn
+helpcenter.messenger.tickets_form_submit: Indsend
 helpcenter.news.none: 'Ingen nyheder endnu'
 helpcenter.news.recent_title: 'Seneste nyheder'
 helpcenter.news.view_as_agent: 'Du kan se denne side, fordi du er en agent. Normale brugere vil ikke være i stand til at se denne side.'
@@ -263,9 +275,13 @@ helpcenter.tickets.please_login_to_reply: 'Log ind for at svare.'
 helpcenter.tickets.rate_positive: 'Det var godt'
 helpcenter.tickets.rate_question: 'Hvordan vil du bedømme den hjælp, du har modtaget?'
 helpcenter.tickets.rate_support: 'Bedøm din hjælp'
+helpcenter.tickets.reference_number: 'Referencenummer: {ref}'
+helpcenter.tickets.related_articles_desc: 'Vi fandt følgende artikler, der evt. kan hjælpe dig med dit problem.'
 helpcenter.tickets.switched_department_rerender: 'Opbygningen af denne formular kan have ændret sig. Gennemse venligst formularen og indsend den igen.'
+helpcenter.tickets.thank_you: 'Tak, vi har modtaget din anmodning.'
 helpcenter.tickets.thank_you_check_email: 'Kontroller din e-mailadresse'
 helpcenter.tickets.thank_you_check_email_desc: 'For at indsende din sag, skal du tjekke din e-mail indbakke. Klik på bekræftelseslinket vi har sendt dig.'
+helpcenter.tickets.thank_you_desc: 'Tak for at du har kontaktet os. Et medlem fra vores team vil kontakte dig hurtigst muligt.'
 helpcenter.tickets.timeline_marked: 'markeret denne sag:'
 helpcenter.tickets.view_btn_add_to_ticket: 'Tilføj til sagen'
 helpcenter.tickets.view_btn_edit: Rediger
