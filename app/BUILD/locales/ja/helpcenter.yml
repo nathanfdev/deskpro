@@ -14,7 +14,7 @@ helpcenter.account.login_captcha_failed: 'CAPTCHAコードが無効です。も�
 helpcenter.account.login_disabled: 'あなたのメールアドレスは禁止されています。'
 helpcenter.account.login_email: 'あなたのメールアドレス'
 helpcenter.account.login_email_placeholder: email@example.com
-helpcenter.account.login_external: '外部サービスでのログイン'
+helpcenter.account.login_external: '外部サービスでログイン'
 helpcenter.account.login_invalid: 'ログインが無効です'
 helpcenter.account.login_lockout: '何度もログインに失敗しているため、ロックされています。後でもう一度お試しください。'
 helpcenter.account.login_not_configured: '外部サービスが設定されていません。'
