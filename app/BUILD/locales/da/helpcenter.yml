@@ -85,8 +85,9 @@ helpcenter.approvals.list_column_subject: 'Emne'
 helpcenter.approvals.list_column_user: 'Bruger'
 helpcenter.approvals.list_column_your_vote: 'Din stemme'
 helpcenter.approvals.my_approvals: 'Mine godkendelser'
-helpcenter.articles.section_title: Videnbase
+helpcenter.articles.section_title: Vidensbase
 helpcenter.community.error_login: 'Venligst login'
+helpcenter.community.form_add_attachments: 'Indsæt vedhæftelser'
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Ingen matchende tilbagemeldinger'
 helpcenter.community.rate_forbidden: 'Du har ikke tilladelse til at stemme'
@@ -205,7 +206,7 @@ helpcenter.general.add_comment: 'Tilføj en kommentar'
 helpcenter.general.admin_home: 'Admin Hjem'
 helpcenter.general.agent: Sagsbehandler
 helpcenter.general.agent_bar_admin_community: 'Community Topic indstillinger'
-helpcenter.general.agent_bar_admin_kb: 'Vidensbase indstillinger'
+helpcenter.general.agent_bar_admin_kb: 'Vidensbase-indstillinger'
 helpcenter.general.agent_bar_admin_lang: 'Sprog indstillinger'
 helpcenter.general.agent_bar_admin_news: 'Nyheds indstillinger'
 helpcenter.general.agent_bar_agent_community: 'Administrer community topic'
@@ -223,8 +224,10 @@ helpcenter.general.last_activity: 'Seneste aktivitet'
 helpcenter.general.log_in: 'Log ind'
 helpcenter.general.name: Navn
 helpcenter.general.nav_guides: Omviser
+helpcenter.general.nav_kb: Vidensbase
 helpcenter.general.no_search_query: 'Indtast en søgestreng i søgefeltet.'
 helpcenter.general.no_search_results_general: 'Ingen resultater fundet'
+helpcenter.general.or: eller
 helpcenter.general.password: Adgangskode
 helpcenter.general.prop_comments_asc: 'Mindst kommentarer først'
 helpcenter.general.prop_comments_desc: 'Flest kommentarer først'
@@ -253,7 +256,18 @@ helpcenter.label.search: Søg
 helpcenter.members.language: Sprog
 helpcenter.members.name: Navn
 helpcenter.members.timezone: Tidszone
+helpcenter.messenger.blocks_continue_chat_title: 'Fortsæt eksisterende chat'
+helpcenter.messenger.blocks_knowledgebase_title: Vidensbase
+helpcenter.messenger.blocks_search_block_no_results: 'Ingen resultater for {query}'
 helpcenter.messenger.blocks_search_block_search_label: Søg
+helpcenter.messenger.blocks_search_block_see_more_results: 'Se flere resultater'
+helpcenter.messenger.blocks_ticket_button: 'Indsend en ny ticket'
+helpcenter.messenger.blocks_ticket_description: 'Indsend en forespørgsel via vores kontaktformular'
+helpcenter.messenger.blocks_ticket_title: 'Indsend en ticket'
+helpcenter.messenger.greeting: 'Tag kontakt'
+helpcenter.messenger.proactive_greeting: 'Tag kontakt'
+helpcenter.messenger.tickets_form_add_attachment: 'Indsæt vedhæftelse'
+helpcenter.messenger.tickets_form_header: 'Ny ticket'
 helpcenter.messenger.tickets_form_name: Navn
 helpcenter.messenger.tickets_form_submit: Indsend
 helpcenter.news.none: 'Ingen nyheder endnu'
@@ -287,6 +301,7 @@ helpcenter.tickets.rate_question: 'Hvordan vil du bedømme den hjælp, du har mo
 helpcenter.tickets.rate_support: 'Bedøm din hjælp'
 helpcenter.tickets.reference_number: 'Referencenummer: {ref}'
 helpcenter.tickets.related_articles_desc: 'Vi fandt følgende artikler, der evt. kan hjælpe dig med dit problem.'
+helpcenter.tickets.submit_a_ticket: 'Indsend en ticket'
 helpcenter.tickets.switched_department_rerender: 'Opbygningen af denne formular kan have ændret sig. Gennemse venligst formularen og indsend den igen.'
 helpcenter.tickets.thank_you: 'Tak, vi har modtaget din anmodning.'
 helpcenter.tickets.thank_you_check_email: 'Kontroller din e-mailadresse'
