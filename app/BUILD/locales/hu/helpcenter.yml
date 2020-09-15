@@ -1,5 +1,6 @@
 ---
 helpcenter.articles.section_title: Tudásbázis
+helpcenter.articles.view_x_articles: 'A {category} kategória összes cikkének megjelenítése'
 helpcenter.community.section_title: Ötlettár
 helpcenter.direct_messages.reply_message: Üzenet
 helpcenter.emails.chat_transcript: 'Reméljük, hogy elégedett munkatársunk munkájával. Mellékeljük legutóbbi beszélgetésük kivonatát.'
@@ -48,6 +49,8 @@ helpcenter.general.attachments: Mellékletek
 helpcenter.general.comments: Hozzászólás?
 helpcenter.general.drag_and_drop: 'Fájl behúzása'
 helpcenter.general.everything: Minden
+helpcenter.general.labels: Címkék
+helpcenter.general.last_update_by: 'Az utolsó módosítás dátuma: <strong>{date_updated, date, medium}</strong>. A módosítást végezte: <strong>{person_name}</strong>.'
 helpcenter.general.log_in: 'Bejelentkezés'
 helpcenter.general.name: Keresztnév
 helpcenter.general.nav_contact: 'Kapcsolat'
@@ -57,7 +60,9 @@ helpcenter.general.nav_newticket: 'Kapcsolat'
 helpcenter.general.no_search_query: 'Írjon be valamilyen keresési lekérdezést a keresőmezőbe!'
 helpcenter.general.no_search_results_general: 'Nincs találat.'
 helpcenter.general.password: Jelszó
+helpcenter.general.rate_page_negative: Nem hasznos
 helpcenter.general.rate_page_positive: Hasznos
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_count} felhasználóból {vote_up} hasznosnak találta ezt a cikket.'
 helpcenter.general.remove: eltávolítás
 helpcenter.general.search: 'Miben segíthetünk?'
 helpcenter.general.show_x_more: 'További {num} megjelenítése'
@@ -82,13 +87,14 @@ helpcenter.messenger.tickets_form_or: vagy
 helpcenter.messenger.tickets_form_saving: 'A hibajegy mentése folyamatban. Kis türelmet kérünk.'
 helpcenter.messenger.tickets_form_submit: Küldés
 helpcenter.messenger.tickets_form_thanks: 'Köszönjük, hogy felvette velünk a kapcsolatot! Munkatársunk hamarosan jelentkezni fog.'
+helpcenter.messenger.tickets_form_thanks_header: 'Kérelme beérkezett hozzánk.'
 helpcenter.news.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
 helpcenter.profile.account_disabled_message: 'Ügyfélfiókja jelenleg ki van kapcsolva, ezért nem tud sem bejelentkezni, sem ügyet vagy beszélgetést indítani nálunk.'
 helpcenter.search.search_results: 'Találatok'
 helpcenter.search.showing_results_for: 'Találatok megjelenítése az alábbi helyen: {type}. Keresési lekérdezés: <span> „{query}”. </span>'
 helpcenter.tickets.guest_thank_you_title: 'Köszönjük'
 helpcenter.tickets.list_agent: 'Hozzárendelt munkatárs'
-helpcenter.tickets.list_date_created: 'Készítés dátuma'
+helpcenter.tickets.list_date_created: 'Létrehozás dátuma'
 helpcenter.tickets.list_status_resolved: Megoldott
 helpcenter.tickets.list_subject: Tárgy
 helpcenter.tickets.new_intro: 'Kérjük, töltse ki ezt az űrlapot. Munkatársunk hamarosan e-mailben válaszol Önnek.'
