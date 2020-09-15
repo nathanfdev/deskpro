@@ -173,9 +173,10 @@ helpcenter.error.400_desc: 'Beklager, men din anmodning var misdannet.'
 helpcenter.error.400_title: 'Dårlig anmodning'
 helpcenter.error.403_desc: 'Du har desværre ikke adgang til at se denne side.'
 helpcenter.error.403_title: 'Ingen adgang'
-helpcenter.error.404_desc: 'Vi kan desværre ikke finde den side.'
+helpcenter.error.404_desc: 'Vi kunne desværre ikke finde den side.'
 helpcenter.error.404_title: 'Ikke fundet'
-helpcenter.error.general_title: 'En fejl opstod'
+helpcenter.error.an_error_occured: 'Der opstod en fejl'
+helpcenter.error.general_title: 'Der opstod en fejl'
 helpcenter.error.permission_denied_title: 'Det er ikke tilladt, at gøre som du gør'
 helpcenter.flashes.article_unsubscribe: 'Du er nu afmeldt fra denne artikel.'
 helpcenter.flashes.guest_content_must_verify: 'Før vi kan indsende dit indhold skal du bekræfte din e-mail. Tjek din e-mail indbakke. Vi har sendt dig et bekræftelses link.'
@@ -222,7 +223,8 @@ helpcenter.general.last_activity: 'Seneste aktivitet'
 helpcenter.general.log_in: 'Log ind'
 helpcenter.general.name: Navn
 helpcenter.general.nav_guides: Omviser
-helpcenter.general.no_search_query: 'Indtast en søgestreng, ind i søgefeltet.'
+helpcenter.general.no_search_query: 'Indtast en søgestreng i søgefeltet.'
+helpcenter.general.no_search_results_general: 'Ingen resultater fundet'
 helpcenter.general.password: Adgangskode
 helpcenter.general.prop_comments_asc: 'Mindst kommentarer først'
 helpcenter.general.prop_comments_desc: 'Flest kommentarer først'
@@ -235,17 +237,23 @@ helpcenter.general.prop_rating_desc: 'Højest bedømte først'
 helpcenter.general.prop_views_asc: 'Mindst visninger først'
 helpcenter.general.prop_views_desc: 'Flest visninger først'
 helpcenter.general.rate_page_positive: Hjælpsom
+helpcenter.general.remove: fjern
 helpcenter.general.rerender_form: 'Læs venligst denne formular, inden du sender den.'
+helpcenter.general.search: 'Hvordan kan vi hjælpe dig i dag?'
 helpcenter.general.share: Del
 helpcenter.general.show: Vis
+helpcenter.general.show_x_more: 'Vis {num} flere'
 helpcenter.general.tagged_with: 'mærket med'
 helpcenter.general.tags: Mærkater
 helpcenter.general.updated: Opdateret
 helpcenter.general.user: Bruger
+helpcenter.general.x_search_results: '{num} søgeresultater for "{query}"'
 helpcenter.general.you: Du
+helpcenter.label.search: Søg
 helpcenter.members.language: Sprog
 helpcenter.members.name: Navn
 helpcenter.members.timezone: Tidszone
+helpcenter.messenger.blocks_search_block_search_label: Søg
 helpcenter.messenger.tickets_form_name: Navn
 helpcenter.messenger.tickets_form_submit: Indsend
 helpcenter.news.none: 'Ingen nyheder endnu'
@@ -253,6 +261,8 @@ helpcenter.news.recent_title: 'Seneste nyheder'
 helpcenter.news.view_as_agent: 'Du kan se denne side, fordi du er en agent. Normale brugere vil ikke være i stand til at se denne side.'
 helpcenter.profile.account_disabled_message: 'Din konto er i øjeblikket deaktiveret. Du må ikke logge ind eller interagere med sager eller chat.'
 helpcenter.profile.your_password: 'Dit password'
+helpcenter.search.search_results: 'Søgeresultater'
+helpcenter.search.showing_results_for: 'Søgeresultater i {type} for: <span>“{query}”</span>'
 helpcenter.tickets.form_changed_notice: 'Nye felter er blevet tilføjet til formularen. Gennemse venligst disse felter, og gensend derefter formularen.'
 helpcenter.tickets.guest_thank_you_desc: 'Tak for din henvendelse. Vi har sendt dig en e-mail med instruktioner om, hvordan du håndterer din sag hos os.'
 helpcenter.tickets.guest_thank_you_title: 'Tak'
