@@ -33,6 +33,7 @@ helpcenter.emails.ticket_reply_confirm: 'Válaszüzenetét megkaptuk. Munkatárs
 helpcenter.emails.ticket_validate: 'Mielőtt munkatársaink feldolgozhatnák üzenetét,<br /><br />meg kell erősítenie e-mail címét.'
 helpcenter.error.404_desc: 'A keresett oldal sajnos nem található.'
 helpcenter.error.404_title: 'Nincs találat'
+helpcenter.error.general_title: 'Hiba történt.'
 helpcenter.error.permission_denied_title: 'Önnek nincs megfelelő engedélye'
 helpcenter.forms.delete_question: 'Biztosan törölni kívánja?'
 helpcenter.forms.error_captcha: 'Helytelen CAPTCHA-bevitel.'
@@ -41,16 +42,17 @@ helpcenter.forms.error_banned_email: 'Tiltott e-mail-cím.'
 helpcenter.forms.label_drag_overlay: 'Kép beillesztése az üzenetbe'
 helpcenter.forms.label_email: E-mail-cím
 helpcenter.forms.label_save: Mentés
-helpcenter.forms.label_submit: Beküldés
+helpcenter.forms.label_submit: Küldés
 helpcenter.general.add_comment: 'Kérjük ebbe a mezőbe írja hozzászólását, majd kattintson a ''Hozzászólás beküldése'' gombra...'
 helpcenter.general.attachments: Mellékletek
 helpcenter.general.comments: Hozzászólás?
 helpcenter.general.drag_and_drop: 'Fájl behúzása'
 helpcenter.general.everything: Minden
 helpcenter.general.log_in: 'Bejelentkezés'
-helpcenter.general.name: Név
+helpcenter.general.name: Keresztnév
 helpcenter.general.nav_contact: 'Kapcsolat'
 helpcenter.general.nav_contact_desc: 'Ha segítségre van szüksége, vegye fel velünk a kapcsolatot!'
+helpcenter.general.nav_kb: Tudásbázis
 helpcenter.general.nav_newticket: 'Kapcsolat'
 helpcenter.general.no_search_query: 'Írjon be valamilyen keresési lekérdezést a keresőmezőbe!'
 helpcenter.general.no_search_results_general: 'Nincs találat.'
@@ -64,9 +66,13 @@ helpcenter.general.you: Ön
 helpcenter.label.search: Keresés
 helpcenter.members.language: Nyelv
 helpcenter.members.timezone: Időzóna
+helpcenter.messenger.blocks_continue_chat_title: 'Vissza a csevegésbe'
+helpcenter.messenger.blocks_knowledgebase_title: Tudásbázis
 helpcenter.messenger.blocks_search_block_search_label: Keresés
-helpcenter.messenger.tickets_form_name: Név
-helpcenter.messenger.tickets_form_submit: Beküldés
+helpcenter.messenger.blocks_ticket_title: 'Hibajegy beküldése'
+helpcenter.messenger.greeting: 'Kapcsolatfelvétel'
+helpcenter.messenger.tickets_form_name: Keresztnév
+helpcenter.messenger.tickets_form_submit: Küldés
 helpcenter.news.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
 helpcenter.profile.account_disabled_message: 'Ügyfélfiókja jelenleg ki van kapcsolva, ezért nem tud sem bejelentkezni, sem ügyet vagy beszélgetést indítani nálunk.'
 helpcenter.search.search_results: 'Találatok'
@@ -83,6 +89,7 @@ helpcenter.tickets.rate_question: 'Hogyan értékelné munkánkat?'
 helpcenter.tickets.rate_support: 'Értékelje munkánkat'
 helpcenter.tickets.reference_number: 'Ügyszám: {ref}'
 helpcenter.tickets.related_articles_desc: 'Az alábbi súgócikkek segíthetnek a probléma megoldásában.'
+helpcenter.tickets.submit_a_ticket: 'Hibajegy beküldése'
 helpcenter.tickets.thank_you: 'Kérelmét megkaptuk. Köszönjük, hogy hozzánk fordult!'
 helpcenter.tickets.thank_you_check_email: 'Erősítse meg az e-mail-címét!'
 helpcenter.tickets.thank_you_check_email_desc: 'A hibajegy benyújtásához lépjen be a postafiókjába, majd kattintson az általunk küldött igazoló linkre!'
