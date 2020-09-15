@@ -501,7 +501,7 @@ helpcenter.general.prop_views_asc: 'Od najmniejszej liczby wyświetleń'
 helpcenter.general.prop_views_desc: 'Od największej liczby wyświetleń'
 helpcenter.general.published: 'Opublikowano'
 helpcenter.general.published_by: 'Opublikowane przez <strong>{person_name}</strong>'
-helpcenter.general.rate_page_negative: Nieprzydatny
+helpcenter.general.rate_page_negative: Nieprzydatne
 helpcenter.general.rate_page_positive: Przydatne
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} na {vote_count} osób uznała tę stronę za przydatną'
 helpcenter.general.related_content: 'Powiązane'
@@ -604,7 +604,7 @@ helpcenter.messenger.chat_rating_block_question_header: 'Oceń swoją rozmowę z
 helpcenter.messenger.chat_rating_block_thank_you_header: 'Dziękujemy za podzielenie się opinią'
 helpcenter.messenger.chat_save_ticket_button_no: 'Nie'
 helpcenter.messenger.chat_save_ticket_button_yes: 'Tak'
-helpcenter.messenger.chat_save_ticket_intro: 'Wpisz swoje imie i nazwisko oraz adres e-mail, a jeden z naszych agentów niedługo się z tobą skontaktuje.'
+helpcenter.messenger.chat_save_ticket_intro: 'Wpisz swoje imię i nazwisko oraz adres e-mail, a jeden z naszych agentów niedługo się z tobą skontaktuje.'
 helpcenter.messenger.chat_save_ticket_question: 'Czy chcesz, by skontaktował się z tobą agent?'
 helpcenter.messenger.chat_save_ticket_thanks: 'Agent skontaktuje się z tobą niedługo'
 helpcenter.messenger.chat_send_message: 'Wyślij wiadomość'
