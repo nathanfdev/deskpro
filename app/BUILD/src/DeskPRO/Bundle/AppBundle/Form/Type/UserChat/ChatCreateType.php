@@ -13,9 +13,12 @@ use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\AutoSetShouldSentTranscriptListener;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use DpSys\Features;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -45,7 +48,12 @@ class ChatCreateType extends AbstractType
     /**
      * @var WidgetSettingsResolver
      */
-    private $settingsResolver;
+    private $widgetSettingsResolver;
+
+    /**
+     * @var MessengerSettingsResolver
+     */
+    private $messengerSettingsResolver;
 
     /**
      * @var CustomFieldManager
@@ -68,32 +76,116 @@ class ChatCreateType extends AbstractType
     private $jwtDecoder;
 
     /**
+     * @var Features
+     */
+    private $features;
+
+    /** @var MessengerSettings */
+    private $messengerSettings;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager                                     $em
-     * @param SetPersonListener                                 $personListener
-     * @param WidgetSettingsResolver                            $settingsResolver
-     * @param CustomFieldManager                                $fieldManager
-     * @param BrandStack                                        $brandStack
-     * @param PermissionsManager                                $permissionsManager
-     * @param \DeskPRO\Bundle\AppBundle\Helper\WidgetJwtDecoder $jwtDecoder
+     * @param EntityManager             $em
+     * @param SetPersonListener         $personListener
+     * @param WidgetSettingsResolver    $widgetSettingsResolver
+     * @param MessengerSettingsResolver $messengerSettingsResolver
+     * @param CustomFieldManager        $fieldManager
+     * @param BrandStack                $brandStack
+     * @param PermissionsManager        $permissionsManager
+     * @param WidgetJwtDecoder          $jwtDecoder
+     * @param Features                  $features
      */
     public function __construct(
         EntityManager $em,
         SetPersonListener $personListener,
-        WidgetSettingsResolver $settingsResolver,
+        WidgetSettingsResolver $widgetSettingsResolver,
+        MessengerSettingsResolver $messengerSettingsResolver,
         CustomFieldManager $fieldManager,
         BrandStack $brandStack,
         PermissionsManager $permissionsManager,
-        WidgetJwtDecoder $jwtDecoder
+        WidgetJwtDecoder $jwtDecoder,
+        Features $features
     ) {
-        $this->em                 = $em;
-        $this->personListener     = $personListener;
-        $this->settingsResolver   = $settingsResolver;
-        $this->fieldManager       = $fieldManager;
-        $this->brandStack         = $brandStack;
-        $this->permissionsManager = $permissionsManager;
-        $this->jwtDecoder         = $jwtDecoder;
+        $this->em                        = $em;
+        $this->personListener            = $personListener;
+        $this->widgetSettingsResolver    = $widgetSettingsResolver;
+        $this->messengerSettingsResolver = $messengerSettingsResolver;
+        $this->fieldManager              = $fieldManager;
+        $this->brandStack                = $brandStack;
+        $this->permissionsManager        = $permissionsManager;
+        $this->jwtDecoder                = $jwtDecoder;
+        $this->features                  = $features;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isMessengerEnabled()
+    {
+        return $this->features->hasBeta('messenger');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings
+     */
+    private function getBrandOptions()
+    {
+        return $this->widgetSettingsResolver->getWidgetBrandOptions($this->getBrand());
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings
+     */
+    private function getMessengerSettings()
+    {
+        if (!$this->messengerSettings) {
+            $this->messengerSettings = $this->messengerSettingsResolver->getMessengerSettings($this->getBrand());
+        }
+
+        return $this->messengerSettings;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\Brand
+     */
+    private function getBrand()
+    {
+        return $this->brandStack->getActive()->getBrand();
+    }
+
+    /**
+     * @return mixed
+     */
+    private function isNameRequired()
+    {
+        if ($this->isMessengerEnabled()) {
+            return $this->getMessengerSettings()->getChat()->getPreChatForm()->isEnabled() &&
+            $this->getMessengerSettings()->getChat()->getPreChatForm()->isNameRequired();
+        } else {
+            return $this->getBrandOptions()->getChat()->isRequiredName();
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    private function isEmailRequired()
+    {
+        if ($this->isMessengerEnabled()) {
+            return $this->getMessengerSettings()->getChat()->getPreChatForm()->isEnabled() &&
+                $this->getMessengerSettings()->getChat()->getPreChatForm()->isEmailRequired();
+        } else {
+            return $this->getBrandOptions()->getChat()->isRequiredEmail();
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    private function isJwtRequired()
+    {
+        return $this->isMessengerEnabled() ? false : $this->widgetSettingsResolver->isJwtRequired($this->getBrand());
     }
 
     /**
@@ -101,11 +193,10 @@ class ChatCreateType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $brand        = $this->brandStack->getActive()->getBrand();
-        $brandOptions = $this->settingsResolver->getWidgetBrandOptions($brand);
+        $brand = $this->getBrand();
 
         $nameConstraints = [];
-        if ($brandOptions->getChat()->isRequiredName()) {
+        if ($this->isNameRequired()) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceName'], 100);
             $nameConstraints[] = new Assert\NotBlank();
         }
@@ -115,7 +206,7 @@ class ChatCreateType extends AbstractType
             new AppAssert\Person\Email\NotBannedEmail(),
             new AppAssert\Person\Email\NotSystemEmail(),
         ];
-        if ($brandOptions->getChat()->isRequiredEmail()) {
+        if ($this->isEmailRequired()) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmail'], 100);
             $emailConstraints[] = new Assert\NotBlank();
         }
@@ -140,12 +231,11 @@ class ChatCreateType extends AbstractType
                 'error_bubbling' => true,
                 'constraints'    => [
                     new AppAssert\JwtToken([
-                        'required' => $this->settingsResolver->isJwtRequired($brand),
-                        'secret'   => $this->settingsResolver->getJwtSecret($brand),
+                        'required' => $this->isJwtRequired(),
+                        'secret'   => $this->widgetSettingsResolver->getJwtSecret($brand),
                     ]),
                 ],
-            ])
-        ;
+            ]);
 
         $permissionsBag       = $this->permissionsManager->getPortalPermissionsBag($options['person']);
         $allowedDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
@@ -163,12 +253,11 @@ class ChatCreateType extends AbstractType
                         'b.id IN(:brand)'
                     )
                     ->setParameter('allowed_department_ids', $allowedDepartmentIds)
-                    ->setParameter('brand', $brand)
-                ;
+                    ->setParameter('brand', $brand);
 
                 return $qb;
             },
-            'constraints' => [
+            'constraints'   => [
                 new Assert\NotNull(),
                 new AppAssert\LeafDepartment(),
             ],
@@ -194,16 +283,15 @@ class ChatCreateType extends AbstractType
             ])
             ->setRequired(['person', 'visitor_id'])
             ->setAllowedTypes('person', ['null', Person::class])
-            ->setAllowedTypes('visitor_id', ['null', 'string'])
-        ;
+            ->setAllowedTypes('visitor_id', ['null', 'string']);
     }
 
     /**
      * Force name field if it's required.
      *
-     * @internal
-     *
      * @param FormEvent $event
+     *
+     * @internal
      */
     public function onForceName(FormEvent $event)
     {
@@ -218,9 +306,9 @@ class ChatCreateType extends AbstractType
     /**
      * Form fields are optional but we need to handle email field anyway if chat email validation is enabled.
      *
-     * @internal
-     *
      * @param FormEvent $event
+     *
+     * @internal
      */
     public function onForceEmail(FormEvent $event)
     {
@@ -233,9 +321,9 @@ class ChatCreateType extends AbstractType
     }
 
     /**
-     * @internal
-     *
      * @param FormEvent $event
+     *
+     * @internal
      */
     public function onPreSubmit(FormEvent $event)
     {
@@ -290,9 +378,9 @@ class ChatCreateType extends AbstractType
     }
 
     /**
-     * @internal
-     *
      * @param FormEvent $event
+     *
+     * @internal
      */
     public function onPostSubmit(FormEvent $event)
     {
