@@ -31,6 +31,7 @@ helpcenter.emails.ticket_rate_question: 'Hasznos volt Önnek ez az üzenet?'
 helpcenter.emails.ticket_received: 'Megkaptuk üzenetét. Munkatársunk hamarosan felveszi Önnel a kapcsolatot.'
 helpcenter.emails.ticket_reply_confirm: 'Válaszüzenetét megkaptuk. Munkatársunk hamarosan válaszol Önnek.'
 helpcenter.emails.ticket_validate: 'Mielőtt munkatársaink feldolgozhatnák üzenetét,<br /><br />meg kell erősítenie e-mail címét.'
+helpcenter.error.404_desc: 'A keresett oldal sajnos nem található.'
 helpcenter.error.404_title: 'Nincs találat'
 helpcenter.error.permission_denied_title: 'Önnek nincs megfelelő engedélye'
 helpcenter.forms.delete_question: 'Biztosan törölni kívánja?'
@@ -51,14 +52,25 @@ helpcenter.general.name: Név
 helpcenter.general.nav_contact: 'Kapcsolat'
 helpcenter.general.nav_contact_desc: 'Ha segítségre van szüksége, vegye fel velünk a kapcsolatot!'
 helpcenter.general.nav_newticket: 'Kapcsolat'
+helpcenter.general.no_search_query: 'Írjon be valamilyen keresési lekérdezést a keresőmezőbe!'
+helpcenter.general.no_search_results_general: 'Nincs találat.'
 helpcenter.general.password: Jelszó
 helpcenter.general.rate_page_positive: Hasznos
+helpcenter.general.remove: eltávolítás
+helpcenter.general.search: 'Miben segíthetünk?'
+helpcenter.general.show_x_more: 'További {num} megjelenítése'
+helpcenter.general.x_search_results: '{num} találat a következő lekérdezésre: {query}'
 helpcenter.general.you: Ön
+helpcenter.label.search: Keresés
 helpcenter.members.language: Nyelv
 helpcenter.members.timezone: Időzóna
+helpcenter.messenger.blocks_search_block_search_label: Keresés
 helpcenter.messenger.tickets_form_name: Név
+helpcenter.messenger.tickets_form_submit: Beküldés
 helpcenter.news.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
 helpcenter.profile.account_disabled_message: 'Ügyfélfiókja jelenleg ki van kapcsolva, ezért nem tud sem bejelentkezni, sem ügyet vagy beszélgetést indítani nálunk.'
+helpcenter.search.search_results: 'Találatok'
+helpcenter.search.showing_results_for: 'Találatok megjelenítése az alábbi helyen: {type}. Keresési lekérdezés: <span> „{query}”. </span>'
 helpcenter.tickets.guest_thank_you_title: 'Köszönjük'
 helpcenter.tickets.list_agent: 'Hozzárendelt munkatárs'
 helpcenter.tickets.list_date_created: 'Készítés dátuma'
@@ -70,6 +82,7 @@ helpcenter.tickets.rate_positive: 'Jó'
 helpcenter.tickets.rate_question: 'Hogyan értékelné munkánkat?'
 helpcenter.tickets.rate_support: 'Értékelje munkánkat'
 helpcenter.tickets.reference_number: 'Ügyszám: {ref}'
+helpcenter.tickets.related_articles_desc: 'Az alábbi súgócikkek segíthetnek a probléma megoldásában.'
 helpcenter.tickets.thank_you: 'Kérelmét megkaptuk. Köszönjük, hogy hozzánk fordult!'
 helpcenter.tickets.thank_you_check_email: 'Erősítse meg az e-mail-címét!'
 helpcenter.tickets.thank_you_check_email_desc: 'A hibajegy benyújtásához lépjen be a postafiókjába, majd kattintson az általunk küldött igazoló linkre!'
