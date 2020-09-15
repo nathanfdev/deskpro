@@ -498,6 +498,7 @@ helpcenter.general.published: 'Prima publicare'
 helpcenter.general.published_by: 'Publicat de <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Nefolositor
 helpcenter.general.rate_page_positive: Util
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} din {vote_count} persoane au considerat această pagină folositoare'
 helpcenter.general.related_content: 'Conținut asociat'
 helpcenter.general.remove: eliminare
 helpcenter.general.rerender_form: 'Revizuiți acest formular înainte să îl trimiteți.'
