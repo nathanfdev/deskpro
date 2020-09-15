@@ -335,10 +335,11 @@ class ViewTopic extends React.Component {
   };
 
   renderTopic() {
-    const { topic, guideSlug, topicSlug, loaded } = this.state;
+    const { topic, guideSlug, topicSlug, loaded, topicList } = this.state;
     return (
       <Topic
         topic={topic}
+        topicList={topicList}
         guideSlug={guideSlug}
         topicSlug={topicSlug}
         data={topic}

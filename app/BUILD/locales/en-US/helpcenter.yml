@@ -539,6 +539,7 @@ helpcenter.general.you: You
 helpcenter.general.your_comment_label: 'Your comment'
 helpcenter.general.your_comment_optional_label: 'Your comment (optional)'
 helpcenter.general.download_pdf: 'Download PDF'
+helpcenter.guides.in_section: 'in {section}'
 helpcenter.knowledgebase.featured_articles: 'Featured Articles'
 helpcenter.label.search: Search
 helpcenter.members.activity_commented_on: 'Commented on'
