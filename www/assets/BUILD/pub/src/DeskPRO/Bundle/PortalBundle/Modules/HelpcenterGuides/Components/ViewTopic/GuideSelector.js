@@ -20,11 +20,23 @@ class GuideSelector extends React.Component {
     if (!Array.isArray(guides)) {
       guides = Object.values(guides);
     }
+    let mode = 'tabs';
+    if (guides.length > 5 || (guides.length === 5 && window.innerWidth < 1190) || (guides.length === 4 && window.innerWidth < 976) || window.innerWidth < 765) {
+      mode = 'dropdown';
+    }
     this.state = {
       guides,
-      mode: 'tabs'
+      mode,
     };
-    window.addEventListener('resize', this.defineSizes);
+    window.addEventListener('resize', () => {
+      if (!this.ticking) {
+        window.requestAnimationFrame(() => {
+          this.switchMode();
+          this.ticking = false;
+        });
+      }
+      this.ticking = true;
+    });
   }
 
   onClickGuide = (e, guide) => {
@@ -32,10 +44,23 @@ class GuideSelector extends React.Component {
     this.props.selectGuide(guide);
   };
 
+  switchMode = () => {
+    const { guides } = this.state;
+    if (guides.length > 5 || (guides.length === 5 && window.innerWidth < 1190) || (guides.length === 4 && window.innerWidth < 976) || window.innerWidth < 765) {
+      this.setState({
+        mode: 'dropdown'
+      });
+    } else {
+      this.setState({
+        mode: 'tabs'
+      });
+    }
+  }
+
   renderGuide = (guide, activeGuide, baseUrl) => (
     <div className={classNames('dp-po-guides-tabs-item', { active: guide.id === activeGuide.id })} key={guide.id} style={{ color: guide.color ? `#${guide.color}` : 'var(--warning)' }}>
       <div className="dp-po-guides-tabs-content">
-        <a href={`${baseUrl}/guides/${guide.slug}`} className="dp-po-guides-tabs-link" onClick={e => this.onClickGuide(e, guide)}>
+        <a href={`${baseUrl}/guides/${guide.slug}`} className="dp-po-guides-tabs-link" onClick={e => this.onClickGuide(e, guide)} title={guide.title}>
           <figure className="dp-po-icon" style={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }}><IconRenderer object={guide} className="" default={<i className="fal fa-user-headset" />} /></figure> {guide.title}
         </a>
       </div>
@@ -51,13 +76,15 @@ class GuideSelector extends React.Component {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
 
+    const reverseGuides = [...guides].reverse();
+
     const activeGuide = guides.filter(g => g.slug === this.props.guideSlug)[0];
 
     return (
       <Fragment>
-        <div className={classNames('dp-po-guides-tabs', { fixed })} style={{ display: mode === 'tabs' ? 'flex' : 'none' }}>
+        <div className={classNames('dp-po-guides-tabs', { fixed })} style={{ display: mode === 'tabs' ? 'block' : 'none' }}>
           <div className="dp-po-guides-tabs-list">
-            {guides.map(guide => this.renderGuide(guide, activeGuide, baseUrl))}
+            {reverseGuides.map(guide => this.renderGuide(guide, activeGuide, baseUrl))}
           </div>
           <div className="dp-po-tabs-shadow" />
         </div>
