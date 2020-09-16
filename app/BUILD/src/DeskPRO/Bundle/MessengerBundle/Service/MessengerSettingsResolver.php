@@ -22,6 +22,7 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTranslation;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Env;
 
@@ -271,6 +272,13 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         $fields     = unserialize($this->getSettings(self::PRE_CHAT_FORM_FIELDS, $brand, serialize($mPreChatForm->getFields())));
         $customDefs = $this->em->getRepository(CustomDefChat::class)->getFields();
+
+        if ($fields instanceof Collection) {
+            $fields = $fields->filter(function ($field) use ($customDefs) {
+                return array_key_exists($field->getId(), $customDefs);
+            });
+        }
+
         foreach ($fields as $field) {
             $options = $customDefs[$field->getId()]->getOptions();
             $field->setRequired(isset($options['required']) ? $options['required'] : false);

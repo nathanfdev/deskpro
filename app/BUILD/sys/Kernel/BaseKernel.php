@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\AppBundle;
 use DeskPRO\Bundle\PortalBundle\PortalBundle;
 use DpRun\DpEnv;
 use DpSys\LowError\SystemErrorHandler;
+use GuzzleHttp\Psr7\StreamWrapper;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -256,7 +257,12 @@ abstract class BaseKernel extends Kernel
             return $this->dpBuildId;
         }
 
-        return $this->dpBuildId = basename(realpath(__DIR__.'/../'));
+        $path = class_exists('DpRun\DpFsProxyStreamWrapper')
+            ? \DpRun\DpFsProxyStreamWrapper::realpath(__DIR__.'/../')
+            : realpath(__DIR__.'/../')
+        ;
+
+        return $this->dpBuildId = basename($path);
     }
 
     private function getDpAppDir()
@@ -324,6 +330,11 @@ CODE;
      */
     public function getCacheDir()
     {
+        // fixme: can't warm up the cache using the new stream wrapper -- quick and dirty way of doing this for now
+        if (php_sapi_name() !== 'cli' && in_array('dpfsproxy', stream_get_wrappers())) {
+            return 'dpfsproxy://kernel_cache'.$this->dpEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$this->getEnvironment();
+        }
+
         return $this->dpEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$this->getEnvironment();
     }
 
@@ -332,6 +343,11 @@ CODE;
      */
     public function getLogDir()
     {
+        // fixme: can't warm up the cache using the new stream wrapper -- quick and dirty way of doing this for now
+        if (php_sapi_name() !== 'cli' && in_array('dpfsproxy', stream_get_wrappers())) {
+            return 'dpfsproxy://log'.$this->dpEnv->getUserLogsDir();
+        }
+
         return $this->dpEnv->getUserLogsDir();
     }
 
