@@ -649,6 +649,7 @@ helpcenter.messenger.tickets_form_back: Wróć
 helpcenter.messenger.tickets_form_header: 'Nowe zgłoszenie'
 helpcenter.messenger.tickets_form_message: Wiadomość
 helpcenter.messenger.tickets_form_name: Imię i nazwisko
+helpcenter.messenger.tickets_form_email: Adres e-mail
 helpcenter.messenger.tickets_form_or: lub
 helpcenter.messenger.tickets_form_priority: Priorytet
 helpcenter.messenger.tickets_form_product: Produkt
@@ -747,8 +748,8 @@ helpcenter.tickets.ticket_properties: 'Właściwości Zgłoszenia'
 helpcenter.tickets.ticket_status: 'Status Zgłoszenia'
 helpcenter.tickets.tickets_i_m_cc_on: 'Zgłoszenia, w których kopii się znajduję'
 helpcenter.tickets.timeline_marked: 'oznaczył to zgłoszenie:'
-helpcenter.tickets.timeline_marked_resolved: 'Rozwiązała zgłoszenie'
-helpcenter.tickets.timeline_re_opened: 'Ponownie otworzyła to zgłoszenie'
+helpcenter.tickets.timeline_marked_resolved: 'Rozwiązał zgłoszenie'
+helpcenter.tickets.timeline_re_opened: 'Ponownie otworzył to zgłoszenie'
 helpcenter.tickets.user_rated_support: '({email}) oceniłeś wsparcie udzielone przez'
 helpcenter.tickets.view_assigned_agent: 'Przypisany agent'
 helpcenter.tickets.view_btn_add_cc: 'CC +'
@@ -766,5 +767,5 @@ helpcenter.tickets.view_scroll_reply: 'Kliknij tutaj, aby przewinąć formularz.
 helpcenter.tickets.view_unassigned: Nieprzypisane
 helpcenter.tickets.view_unassigned_more: 'Pracownik zostanie przydzielony'
 helpcenter.tickets.view_you_created: 'Stworzone'
-helpcenter.tickets.you_have_not_rated_support: '({email}) nie oceniłaś jeszcze udzielonego wsparcia.'
-helpcenter.tickets.you_rated_support: '({email}) oceniłaś wsparcie udzielone przez'
+helpcenter.tickets.you_have_not_rated_support: '({email}) nie oceniłeś jeszcze udzielonego wsparcia.'
+helpcenter.tickets.you_rated_support: '({email}) oceniłeś wsparcie udzielone przez'
