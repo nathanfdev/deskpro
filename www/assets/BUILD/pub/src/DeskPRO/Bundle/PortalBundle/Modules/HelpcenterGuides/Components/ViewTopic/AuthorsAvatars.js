@@ -8,7 +8,7 @@ class AuthorsAvatars extends React.PureComponent {
   };
 
   static getInitials(author) {
-    return author.first_name[0].agent.last_name[0];
+    return author.first_name[0] + author.last_name[0];
   }
 
   renderAvatar = (author) => {

@@ -44,8 +44,22 @@ class Topic extends React.PureComponent {
     return false;
   };
 
+  renderInSection() {
+    const { topic, topicList } = this.props;
+
+    const parent = topicList.find(t => t.id === topic.parent);
+    if (parent) {
+      return (
+        <div className="dp-po-guides-block-title-section">
+          <FormattedMessage id="helpcenter.guides.in_section" values={{ section: parent.title }} />
+        </div>
+      );
+    }
+    return null;
+  }
+
   render() {
-    const { topic, guideSlug, topicSlug, intl, sizes, loaded, topicList } = this.props;
+    const { topic, guideSlug, topicSlug, intl, sizes, loaded } = this.props;
 
     const fixed = false;
     const agentBarHeight = 0;
@@ -63,8 +77,6 @@ class Topic extends React.PureComponent {
     if (!loaded) {
       topicStyle.display = 'none';
     }
-
-    const parent = topicList.find(t => t.id === topic.parent);
 
     return (
       <div className="dp-po-guides-block-article" id={`topic_${topic.slug}`} style={topicStyle}>
@@ -94,9 +106,7 @@ class Topic extends React.PureComponent {
                     <span className="dp-po-icon far fa-anchor" />
                   </a>
                 </h2>
-                <div className="dp-po-guides-block-title-section">
-                  <FormattedMessage id="helpcenter.guides.in_section" values={{ section: parent.title }} />
-                </div>
+                {this.renderInSection()}
                 <AuthorsAvatars authors={topic.authors} />
                 <div className="dp-po-guides-meta">
                   {topic.date_published && <Fragment><FormattedMessage id="helpcenter.general.published" />: <strong><FormattedDate value={topic.date_published} day="numeric" month="short" year="numeric" /></strong><span className="separator">|</span></Fragment>}

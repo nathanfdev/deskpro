@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Fragment } from 'react';
 import classNames from 'classnames';
 import { IconRenderer } from 'DeskPRO/Component/IconRenderer';
-import { SplashImageRenderer } from 'DeskPRO/Component/SplashImageRenderer';
-import $ from 'jquery';
+import GuideDropDown from './GuideDropDown';
 
 class GuideSelector extends React.Component {
   static propTypes = {
@@ -22,33 +21,10 @@ class GuideSelector extends React.Component {
       guides = Object.values(guides);
     }
     this.state = {
-      guides
+      guides,
+      mode: 'tabs'
     };
-  }
-
-  componentDidMount() {
-    import('@deskpro/slick-carousel').then(() => {
-      $('.dp-po-guides-carousel-list').slick({
-        dots:           false,
-        infinite:       false,
-        speed:          300,
-        slidesToShow:   5,
-        slidesToScroll: 5,
-        rows:           0,
-        nextArrow:      '<button class="dp-po-guides-carousel-arrow dp-po-guides-carousel-arrow-right"><i class="dp-po-icon far fa-angle-right"></i></button>',
-        prevArrow:      '<button class="dp-po-guides-carousel-arrow dp-po-guides-carousel-arrow-left"><i class="dp-po-icon far fa-angle-left"></i></button>',
-        responsive:     [{
-          breakpoint: 768,
-          settings:   {
-            slidesToShow:   1,
-            slidesToScroll: 1,
-            infinite:       true,
-            dots:           true,
-            arrows:         false,
-          }
-        }]
-      });
-    })
+    window.addEventListener('resize', this.defineSizes);
   }
 
   onClickGuide = (e, guide) => {
@@ -56,20 +32,19 @@ class GuideSelector extends React.Component {
     this.props.selectGuide(guide);
   };
 
-  renderGuide = (guide, activeGuide, baseUrl, withSplash) => (
-    <div className={classNames('dp-po-guides-carousel-item', { active: guide.id === activeGuide.id })} key={guide.id}>
-      {withSplash && guide.splash_image_property ? <SplashImageRenderer className="dp-po-guides-carousel-image" object={guide} />: null}
-      <div className="dp-po-guides-carousel-content">
-        <a href={`${baseUrl}/guides/${guide.slug}`} className="dp-po-guides-carousel-link" onClick={e => this.onClickGuide(e, guide)}>
-          <figure className="dp-po-icon"><IconRenderer object={guide} default={<i className="fal fa-user-headset" />} /></figure> {guide.title}
+  renderGuide = (guide, activeGuide, baseUrl) => (
+    <div className={classNames('dp-po-guides-tabs-item', { active: guide.id === activeGuide.id })} key={guide.id} style={{ color: guide.color ? `#${guide.color}` : 'var(--warning)' }}>
+      <div className="dp-po-guides-tabs-content">
+        <a href={`${baseUrl}/guides/${guide.slug}`} className="dp-po-guides-tabs-link" onClick={e => this.onClickGuide(e, guide)}>
+          <figure className="dp-po-icon" style={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }}><IconRenderer object={guide} className="" default={<i className="fal fa-user-headset" />} /></figure> {guide.title}
         </a>
       </div>
     </div>
     );
 
   render() {
-    const { guides } = this.state;
-    const { fixed } = this.props;
+    const { guides, mode } = this.state;
+    const { fixed, selectGuide } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -78,15 +53,16 @@ class GuideSelector extends React.Component {
 
     const activeGuide = guides.filter(g => g.slug === this.props.guideSlug)[0];
 
-    const withSplash = guides.length > 2;
-
     return (
-      <div className={classNames('dp-po-guides-carousel', { fixed })}>
-        <div className="dp-po-guides-carousel-list">
-          {guides.map(guide => this.renderGuide(guide, activeGuide, baseUrl, withSplash))}
+      <Fragment>
+        <div className={classNames('dp-po-guides-tabs', { fixed })} style={{ display: mode === 'tabs' ? 'flex' : 'none' }}>
+          <div className="dp-po-guides-tabs-list">
+            {guides.map(guide => this.renderGuide(guide, activeGuide, baseUrl))}
+          </div>
+          <div className="dp-po-tabs-shadow" />
         </div>
-        <div className="dp-po-carousel-shadow" />
-      </div>
+        <GuideDropDown activeGuide={activeGuide} guides={guides} selectGuide={selectGuide} style={{ display: mode === 'dropdown' ? 'block' : 'none' }} />
+      </Fragment>
     );
   }
 }

@@ -3,12 +3,17 @@ import PropTypes from 'prop-types';
 
 export class IconRenderer extends React.PureComponent {
   static propTypes = {
-    object:  PropTypes.object,
-    default: PropTypes.node,
+    object:    PropTypes.object,
+    default:   PropTypes.node,
+    className: PropTypes.string,
   };
 
+  static defaultProps = {
+    className: 'dp-po-icon'
+  }
+
   render() {
-    const { object } = this.props;
+    const { object, className } = this.props;
 
     const iconProperty = object.icon_property;
 
@@ -18,7 +23,7 @@ export class IconRenderer extends React.PureComponent {
 
     if (iconProperty.urn_ns === 'urn:deskpro:local:blobs') {
       return (
-        <span className="dp-po-icon">
+        <span className={className}>
           <img src={iconProperty.url} alt="icon" />
         </span>
       );
@@ -34,7 +39,7 @@ export class IconRenderer extends React.PureComponent {
 
       if (iconStyle) {
         return (
-          <i className={`dp-po-icon ${iconStyle} ${iconProperty.urn_path}`} style={style} />
+          <i className={`${className} ${iconStyle} ${iconProperty.urn_path}`} style={style} />
         );
       }
     }

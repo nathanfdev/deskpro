@@ -355,7 +355,7 @@ class ViewTopic extends React.Component {
     const guideSlug = this.getGuideSlug(splat);
 
     return (
-      <div className={classNames({ fixed })}>
+      <div className={classNames('container', { fixed })}>
         <GuideSelector
           guideSlug={this.state.guideSlug}
           selectGuide={this.selectGuide}

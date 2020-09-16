@@ -3,57 +3,59 @@
 {% block page_content %}
     <div class="dp-po">
         <main id="main" tabindex="-1" class="dp-po-main dp-po-guides">
-            {% if guides | length > 1 %}
-                {% include 'Theme:Guides:embeds/guides_carousel.html.twig' %}
-            {% endif %}
-            <div class="dp-po-guides-section">
-                <div class="dp-po-guides-wrap">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <div class="dp-po-guides-search">
-{#                                    <form class="dp-po-guides-search-form">#}
-{#                                        <input type="text" name="" placeholder="Search table of contents"></input>#}
-{#                                        <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>#}
-{#                                    </form>#}
-                                    <div class="dp-po-guides-search-block">
-                                        <ul class="dp-po-guides-search-content-list">
-                                            {% for section in guide.active_topics %}
-                                                <li class="dp-po-guides-search-content-item">
-                                                    <a href="{{ portal_url(section) }}" class="dp-po-guides-search-content-link"> {{ section.title }}</a>
-                                                    <ul class="dp-po-guides-search-content-suplist">
-                                                        {% for topic in section.children %}
-                                                            <li class="dp-po-guides-search-content-supitem">
-                                                                <a href="{{ portal_url(topic) }}" class="dp-po-guides-search-content-suplink">{{ topic.title }}</a>
-                                                                <ul class="dp-po-guides-search-content-sublist">
-                                                                    {% for subtopic in topic.children %}
-                                                                        <li class="dp-po-guides-search-content-subitem">
-                                                                            <a href="{{ portal_url(subtopic) }}" class="dp-po-guides-search-content-sublink">{{ subtopic.title }}</a>
-                                                                            <ul class="dp-po-guides-search-content-underlist">
-                                                                                {% for undertopic in subtopic.children %}
-                                                                                    <li class="dp-po-guides-search-content-underitem">
-                                                                                        <a href="{{ portal_url(undertopic) }}" class="dp-po-guides-search-content-underlink">{{ undertopic.title }}</a>
-                                                                                    </li>
-                                                                                {% endfor %}
-                                                                            </ul>
-                                                                        </li>
-                                                                    {% endfor %}
-                                                                </ul>
-                                                            </li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
+            <div class="container">
+                {% if guides | length > 1 %}
+                    {% include 'Theme:Guides:embeds/guides_carousel.html.twig' %}
+                {% endif %}
+                <div class="dp-po-guides-section">
+                    <div class="dp-po-guides-wrap">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="dp-po-guides-search">
+    {#                                    <form class="dp-po-guides-search-form">#}
+    {#                                        <input type="text" name="" placeholder="Search table of contents"></input>#}
+    {#                                        <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>#}
+    {#                                    </form>#}
+                                        <div class="dp-po-guides-search-block">
+                                            <ul class="dp-po-guides-search-content-list">
+                                                {% for section in guide.active_topics %}
+                                                    <li class="dp-po-guides-search-content-item">
+                                                        <a href="{{ portal_url(section) }}" class="dp-po-guides-search-content-link"> {{ section.title }}</a>
+                                                        <ul class="dp-po-guides-search-content-suplist">
+                                                            {% for topic in section.children %}
+                                                                <li class="dp-po-guides-search-content-supitem">
+                                                                    <a href="{{ portal_url(topic) }}" class="dp-po-guides-search-content-suplink">{{ topic.title }}</a>
+                                                                    <ul class="dp-po-guides-search-content-sublist">
+                                                                        {% for subtopic in topic.children %}
+                                                                            <li class="dp-po-guides-search-content-subitem">
+                                                                                <a href="{{ portal_url(subtopic) }}" class="dp-po-guides-search-content-sublink">{{ subtopic.title }}</a>
+                                                                                <ul class="dp-po-guides-search-content-underlist">
+                                                                                    {% for undertopic in subtopic.children %}
+                                                                                        <li class="dp-po-guides-search-content-underitem">
+                                                                                            <a href="{{ portal_url(undertopic) }}" class="dp-po-guides-search-content-underlink">{{ undertopic.title }}</a>
+                                                                                        </li>
+                                                                                    {% endfor %}
+                                                                                </ul>
+                                                                            </li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-9">
-                                <div class="dp-po-guides-loading" style="display: none">
-                                    <i class="dp-icon fa-3x far fa-spinner fa-pulse"></i>
-                                </div>
-                                <div class="dp-po-guides-block">
-                                    {% include 'Theme:Guides:embeds/topic.html.twig' %}
+                                <div class="col-sm-9">
+                                    <div class="dp-po-guides-loading" style="display: none">
+                                        <i class="dp-icon fa-3x far fa-spinner fa-pulse"></i>
+                                    </div>
+                                    <div class="dp-po-guides-block">
+                                        {% include 'Theme:Guides:embeds/topic.html.twig' %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
