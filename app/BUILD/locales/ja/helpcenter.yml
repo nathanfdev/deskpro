@@ -74,6 +74,14 @@ helpcenter.alerts.tickets_to_respond: '{count, plural, one {あなたの応答�
 helpcenter.approvals.approve_action: 承認
 helpcenter.approvals.approved_by: '承認者'
 helpcenter.approvals.approved_status: 承認
+helpcenter.approvals.cancelled_status: キャンセル
+helpcenter.approvals.list_column_agent: '担当者'
+helpcenter.approvals.list_column_approvers: '承認者'
+helpcenter.approvals.list_column_cancelled: 'キャンセル'
+helpcenter.approvals.list_column_completed: '完了日'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: '件名'
+helpcenter.approvals.list_column_user: '依頼者'
 helpcenter.articles.section_title: ナレッジベース
 helpcenter.community.section_title: フィードバック
 helpcenter.direct_messages.reply_message: メッセージ
