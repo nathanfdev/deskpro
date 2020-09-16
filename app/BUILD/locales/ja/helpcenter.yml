@@ -65,6 +65,15 @@ helpcenter.account.set_password_success: 'パスワードが更新されまし�
 helpcenter.account.submit_saved_form: 'フォームの内容は送信されていませんが、保持しています。'
 helpcenter.account.submit_saved_form_go: 'こちらをクリックすると自動的に再送信されます。'
 helpcenter.account.thank_you_for_registering: 'ご登録ありがとうございます'
+helpcenter.account.tickets_lockout: 'チケットの送信数が多すぎるため、ロックされています。後でもう一度お試しください。'
+helpcenter.account.usersource_set_email_desc: 'ログインする前にメールアドレスが必要です。確認のためのメールをお送りしますので、以下にメールアドレスを入力してください。'
+helpcenter.account.validation_email_sent: 'メールアドレス{email} にメールを送信しました。<br />サポートサイトにアクセスするには、メールをご確認ください。'
+helpcenter.account.your_pending_email_addresses: '保留中のメールアドレス'
+helpcenter.account.login-btn-usersource: '{usersource} でログイン'
+helpcenter.alerts.tickets_to_respond: '{count, plural, one {あなたの応答を待っているチケットが 1 件あります。} other {あなたの応答を待っているチケットが # 件あります。}}'
+helpcenter.approvals.approve_action: 承認
+helpcenter.approvals.approved_by: '承認者'
+helpcenter.approvals.approved_status: 承認
 helpcenter.articles.section_title: ナレッジベース
 helpcenter.community.section_title: フィードバック
 helpcenter.direct_messages.reply_message: メッセージ
