@@ -1292,6 +1292,18 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param bool $organization_manager
+     *
+     * @return $this
+     */
+    public function setOrganizationManager($organization_manager)
+    {
+        $this->setModelField('organization_manager', $organization_manager);
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isOrganizationManager()
