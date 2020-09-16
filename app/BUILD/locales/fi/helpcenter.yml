@@ -11,9 +11,15 @@ helpcenter.account.reset_password_sent_to: 'Lähetimme sähköpostin seuraavaan 
 helpcenter.account.section_desc_login: 'Onko teillä jo tili? Kirjautukaa alta.'
 helpcenter.account.set_password_success: 'Salasanasi on päivitetty'
 helpcenter.articles.section_title: Ohjeet
+helpcenter.articles.view_x_articles: 'Näytä kaikki artikkelit osiossa {category}'
 helpcenter.community.form_topic_title: Aihe
 helpcenter.community.section_title: Palaute
 helpcenter.direct_messages.reply_message: Viesti
+helpcenter.downloads.file_name: 'Tiedoston nimi'
+helpcenter.downloads.file_size: 'Tiedoston koko'
+helpcenter.downloads.no_files: 'Ei tiedostoja'
+helpcenter.downloads.total_downloads: 'Latauksia yhteensä'
+helpcenter.downloads.view_x_files: '{count, plural, one {Näytä 1 lataus} other {Näytä # latausta}}'
 helpcenter.emails.chat_transcript: 'Kiitos keskustelusta kanssamme. Tässä kopio keskustelustamme.'
 helpcenter.emails.chat_transcript_subject: 'Keskustelu kopio'
 helpcenter.emails.comment_approved: 'Kommenttisi on julkaistu.'
@@ -47,23 +53,71 @@ helpcenter.emails.ticket_rate_question: 'Oliko tämä viesti avuksi?'
 helpcenter.emails.ticket_received: 'Tukipyyntösi on vastaanotettu. Edustajamme ottaa sinuun pian yhteyttä.'
 helpcenter.emails.ticket_reply_confirm: 'Kiitos vastauksestasi. Edustajamme ottaa sinuun pian yhteyttä.'
 helpcenter.emails.ticket_validate: 'Kiitos yhteydenotosta.<br /><br />ennen kuin edustajamme lukee tai vastaa viestiisi, pitää sähköpostiosoitteesi vahvistaa.'
-helpcenter.error.404_title: 'Ei löytynyt.'
+helpcenter.error.404_desc: 'Tätä sivua ei valitettavasti löytynyt.'
+helpcenter.error.404_title: 'Ei löytynyt'
+helpcenter.error.contact_us: 'Ota yhteyttä'
+helpcenter.error.general_title: 'Tapahtui virhe'
 helpcenter.error.permission_denied_title: 'Toimenpide ei ole sallittu'
+helpcenter.forms.delete_question: 'Poista?'
+helpcenter.forms.error_captcha: 'CAPTCHA-arvo oli virheellinen'
+helpcenter.forms.error_required: 'Tämä arvo on pakollinen'
+helpcenter.forms.error_banned_email: 'Sähköpostiosoite on estetty.'
+helpcenter.forms.label_drag_overlay: 'Lisää tämä kuva viestiisi.'
+helpcenter.forms.label_email: Sähköposti
 helpcenter.forms.label_save: Tallenna
+helpcenter.forms.label_submit: Lähetä
 helpcenter.general.add_comment: 'Lisää kommentti'
 helpcenter.general.agent: Asiantuntija
 helpcenter.general.attachments: Liitetiedostot
+helpcenter.general.drag_and_drop: 'Vedä ja pudota'
 helpcenter.general.everything: Kaikki
+helpcenter.general.labels: Tunnisteet
+helpcenter.general.last_updated: 'Viimeksi päivitetty'
+helpcenter.general.last_update_by: 'Viimeksi päivitetty: <strong>{date_updated, date, medium}</strong>, <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Kirjaudu'
+helpcenter.general.name: Nimi
+helpcenter.general.nav_contact: 'Ota yhteyttä'
+helpcenter.general.nav_downloads: Tiedostot
+helpcenter.general.nav_downloads_desc: 'Selaa tiedostojamme'
+helpcenter.general.nav_guides: Oppaat
+helpcenter.general.nav_guides_desc: 'Näytä kaikki oppaat'
+helpcenter.general.nav_kb: Ohjeet
+helpcenter.general.nav_newticket: 'Ota yhteyttä'
+helpcenter.general.no_search_query: 'Kirjoita hakusana hakukenttään.'
+helpcenter.general.no_search_results_general: 'Tuloksia ei löytynyt'
 helpcenter.general.password: Salasana
+helpcenter.general.rate_page_negative: Hyödytön
 helpcenter.general.rate_page_positive: Hyödyllinen
+helpcenter.general.rating_x_of_y_found_helpful: 'Henkilöt, jotka pitivät tätä sivua hyödyllisenä: {vote_up} / {vote_count}'
+helpcenter.general.related_content: 'Aiheeseen liittyvä sisältö'
+helpcenter.general.remove: poista
+helpcenter.general.search: 'Miten voimme auttaa sinua tänään?'
 helpcenter.general.show: Näytä
+helpcenter.general.show_x_more: 'Näytä {num} lisää'
+helpcenter.general.x_search_results: '{num} tulosta haulle "{query}"'
 helpcenter.general.you: Sinä
+helpcenter.label.search: Haku
 helpcenter.members.language: Kieli
 helpcenter.members.timezone: Aikavyöhyke
+helpcenter.messenger.blocks_continue_chat_title: 'Jatka aloitettua keskustelua'
+helpcenter.messenger.blocks_knowledgebase_title: Ohjeet
+helpcenter.messenger.blocks_search_block_no_results: 'Ei tuloksia haulle {query}'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Lisää hakutuloksia'
+helpcenter.messenger.blocks_ticket_button: 'Lähetä uusi tukipyyntö'
+helpcenter.messenger.blocks_ticket_description: 'Lähetä kysely lomakkeellamme'
+helpcenter.messenger.blocks_ticket_title: 'Lähetä tukipyyntö'
+helpcenter.messenger.greeting: 'Ota yhteyttä'
+helpcenter.messenger.tickets_form_add_attachment: 'Lisää liite'
+helpcenter.messenger.tickets_form_header: 'Uusi tukipyyntö'
+helpcenter.messenger.tickets_form_or: tai
+helpcenter.messenger.tickets_form_saving: 'Tukipyyntöäsi tallennetaan. Odota hetki'
+helpcenter.messenger.tickets_form_thanks: 'Kiitos yhteydenotostasi. Tiimistämme otetaan sinuun yhteyttä sähköpostitse.'
+helpcenter.messenger.tickets_form_thanks_header: 'Pyyntösi on matkalla'
 helpcenter.news.view_as_agent: 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.'
 helpcenter.profile.account_disabled_message: 'Käyttäjätilisi on väliaikaisesti suljettu. '
 helpcenter.profile.your_password: 'Salasanasi'
+helpcenter.search.search_results: 'Hakutulokset'
+helpcenter.search.showing_results_for: 'Näytetään {type}-osion tulokset haulle <span>“{query}”</span>'
 helpcenter.tickets.guest_thank_you_title: 'Kiitos'
 helpcenter.tickets.list_agent: 'Liitetty tukihenkilö'
 helpcenter.tickets.list_date_created: 'Luotu'
@@ -74,4 +128,9 @@ helpcenter.tickets.new_section_title: 'Ota yhteyttä'
 helpcenter.tickets.rate_positive: 'Se oli loistava'
 helpcenter.tickets.rate_question: 'Miten arvioisit tuen jota sait?'
 helpcenter.tickets.rate_support: 'Arvioi tuki'
+helpcenter.tickets.reference_number: 'Viitenumero: {ref}'
+helpcenter.tickets.related_articles_desc: 'Seuraavista artikkeleista voi löytyä ratkaisu ongelmaan.'
+helpcenter.tickets.submit_a_ticket: 'Lähetä tukipyyntö'
+helpcenter.tickets.thank_you: 'Kiitos, olemme vastaanottaneet pyyntösi.'
+helpcenter.tickets.thank_you_desc: 'Kiitos yhteydenotostasi. Tiimistämme otetaan sinuun pian yhteyttä.'
 helpcenter.tickets.view_btn_edit: Muokkaa

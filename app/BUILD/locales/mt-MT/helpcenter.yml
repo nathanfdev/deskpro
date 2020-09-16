@@ -1,0 +1,79 @@
+---
+helpcenter.account.add: Żid
+helpcenter.account.add_email: 'Żid indirizz elettroniku'
+helpcenter.account.change_password_action: 'Aġġorna l-Password'
+helpcenter.account.comment_lockout: 'Issottomettejt ħafna kummenti, Stenna ftit biex tissottometti aktar.'
+helpcenter.account.email_btn_usersource_set: 'Żid Indirizz Eletroniku'
+helpcenter.account.email_make_primary_action: 'Agħmlu Ewlieni'
+helpcenter.account.email_management_from_form: 'Immaniġġja l-indirizzi elettroniċi tiegħi'
+helpcenter.account.email_primary_description: Ewlieni
+helpcenter.account.email_remove_action: 'Neħħi l-indirizz elettroniku'
+helpcenter.account.email_resend_validation_action: 'Erġa'' ibgħat l-ittra elettronika ta'' validazzjoni'
+helpcenter.account.lockout_time: 'Tista'' terġa'' tipprova fi {minutes} minuti.'
+helpcenter.account.login_captcha_failed: 'Daħħalt kodiċi CAPTCHA invalidu. Jekk jogħġbok erġa'' pprova.'
+helpcenter.account.login_disabled: 'L-indirizz elettroniku tiegħek ġie pprojbit.'
+helpcenter.articles.section_title: Bażi tal-għarfien
+helpcenter.articles.view_x_articles: 'Ara l-artikli kollha fi {category}'
+helpcenter.downloads.file_name: 'Isem il-Fajl'
+helpcenter.downloads.file_size: 'Daqs tal-Fajl'
+helpcenter.downloads.no_files: 'Ebda fajls'
+helpcenter.downloads.total_downloads: 'Dawnlowds totali'
+helpcenter.downloads.view_x_files: '{count, plural, one {View 1 download} other {View # downloads}}'
+helpcenter.error.404_desc: 'Jiddispjaċina, ma stajniex insibu din il-paġna.'
+helpcenter.error.an_error_occured: 'Seħħ Żball'
+helpcenter.error.contact_us: 'Ikkuntattjana'
+helpcenter.error.general_title: 'Seħħ Żball'
+helpcenter.forms.delete_question: 'Tħassar?'
+helpcenter.forms.error_captcha: 'Il-valur tal-CAPTCHA kien ħażin'
+helpcenter.forms.error_required: 'Dan il-valur huwa meħtieġ'
+helpcenter.forms.error_banned_email: 'L-indirizz elettroniku pprojbit.'
+helpcenter.forms.label_drag_overlay: 'Daħħal din l-immaġni fil-messaġġ tiegħek.'
+helpcenter.forms.label_email: Indirizz elettroniku
+helpcenter.forms.label_submit: Issottometti
+helpcenter.general.drag_and_drop: 'Iddreggja u qiegħed'
+helpcenter.general.labels: Tikketti
+helpcenter.general.last_update_by: 'L-aħħar aġġornat: <strong>{date_updated, date, medium}</strong> minn <strong>{person_name}</strong>'
+helpcenter.general.name: Isem
+helpcenter.general.nav_contact: 'Ikkuntattjana'
+helpcenter.general.nav_downloads_desc: 'Ibbrawżja l-fajls tagħna'
+helpcenter.general.nav_guides: Gwidi
+helpcenter.general.nav_guides_desc: 'Ara l-gwidi kollja'
+helpcenter.general.nav_kb: Bażi tal-għarfien
+helpcenter.general.nav_newticket: 'Ikkuntattjana'
+helpcenter.general.no_search_query: 'Jekk jogħġbok ittajpja query ta'' tiftix fil-kaxx tat-tiftix.'
+helpcenter.general.no_search_results_general: 'Ma nstabu ebda riżultati'
+helpcenter.general.rate_page_negative: Mhux utli
+helpcenter.general.rate_page_positive: Utli
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} ta'' {vote_count} nies li sabu din il-paġna utli'
+helpcenter.general.related_content: 'Kontenut Relatat'
+helpcenter.general.remove: neħħi
+helpcenter.general.search: 'Kif nistgħu ngħinu llum?'
+helpcenter.general.show_x_more: 'Uri {num} aktar'
+helpcenter.general.x_search_results: '{num} riżultti tat-tiftix għal “{query}”'
+helpcenter.label.search: Fittex
+helpcenter.messenger.blocks_continue_chat_title: 'Kompli ċ-ċett eżistenti'
+helpcenter.messenger.blocks_knowledgebase_title: Bażi tal-għarfien
+helpcenter.messenger.blocks_search_block_no_results: 'Ebda riżultati għal {query}'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Ara aktar riżultati'
+helpcenter.messenger.blocks_ticket_button: 'Issottometti biljett ġdid'
+helpcenter.messenger.blocks_ticket_description: 'Issottometti mistoqsija permezz tal-formola tal-kuntatt tagħna'
+helpcenter.messenger.blocks_ticket_title: 'Issottometti biljett'
+helpcenter.messenger.chat_create_ticket_header: 'Issottometti biljett'
+helpcenter.messenger.greeting: 'Ikkuntattjana'
+helpcenter.messenger.proactive_greeting: 'Ikkuntattjana'
+helpcenter.messenger.tickets_form_add_attachment: 'Żid hemża'
+helpcenter.messenger.tickets_form_header: 'Biljett ġdid'
+helpcenter.messenger.tickets_form_or: jew
+helpcenter.messenger.tickets_form_saving: 'Qed nissejvjaw il-biljett tiegħek. Stenna ftit'
+helpcenter.messenger.tickets_form_thanks: 'Grazzi li kkuntattjajtna. Xi ħadd mit-tim tagħna se jikkuntattjak permezz ta'' ittra elettronika.'
+helpcenter.messenger.tickets_form_thanks_header: 'It-talba tiegħek intbagħtet'
+helpcenter.search.search_results: 'Riżultati tat-tiftix'
+helpcenter.search.showing_results_for: 'Uri r-riżultati fi {type} għal: <span>“{query}”</span>'
+helpcenter.tickets.list_date_created: 'Data li Nħolqot'
+helpcenter.tickets.new_intro: 'Jekk jogħġbok imla din il-formola u wieħed mill-aġenti tagħna se jwieġbek b''ttra elettronika malajr kemm jista'' jkun.'
+helpcenter.tickets.new_section_title: 'Ikkuntattjana'
+helpcenter.tickets.reference_number: 'Numru ta'' referenza: {ref}'
+helpcenter.tickets.related_articles_desc: 'Sibna dawn l-artikli li ġejjin li jistgħu jsolvu l-problema tiegħek.'
+helpcenter.tickets.submit_a_ticket: 'Issottometti biljett'
+helpcenter.tickets.thank_you: 'Grazzi, irċevejna t-talba tiegħek.'
+helpcenter.tickets.thank_you_desc: 'Grazzi li kkuntattjajtna. Xi ħadd mit-tim tagħna se jikkuntattjak dalwaqt.'

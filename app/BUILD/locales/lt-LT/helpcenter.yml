@@ -1,0 +1,102 @@
+---
+helpcenter.account.add: Pridėti
+helpcenter.account.add_email: 'Pridėti el. paštą'
+helpcenter.account.change_password_action: 'Atnaujinti slaptažodį'
+helpcenter.account.comment_lockout: 'Jau pateikėte daug dokumentų. Norėdami pateikti daugiau, palaukite.'
+helpcenter.account.email_btn_usersource_set: 'Pridėti el. pašto adresą'
+helpcenter.account.email_make_primary_action: 'Padaryti pagrindiniu'
+helpcenter.account.email_management_from_form: 'Tvarkyti mano el. pašto adresus'
+helpcenter.account.email_primary_description: Pagrindinis
+helpcenter.account.email_remove_action: 'Pašalinti el. pašto adresą'
+helpcenter.account.email_resend_validation_action: 'Pakartoti patvirtinimo el. laišką'
+helpcenter.account.lockout_time: 'Galėsite bandyti dar kartą po {minutes} min.'
+helpcenter.account.login_captcha_failed: 'Jūsų įvestas CAPTCHA kodas netinka. Bandykite dar kartą.'
+helpcenter.account.login_disabled: 'Jūsų el. pašto adresas užblokuotas.'
+helpcenter.account.login_email: 'Jūsų el. pašto adresas'
+helpcenter.account.login_email_placeholder: email@example.com
+helpcenter.account.login_external: 'Prisijungti naudojantis išorine paslauga'
+helpcenter.account.login_invalid: 'Prisijungimo duomenys netinka'
+helpcenter.account.login_lockout: 'Nesėkmingai bandėte prisijungti pernelyg daug kartų, todėl buvote užblokuoti. Bandykite dar kartą vėliau.'
+helpcenter.account.login_not_configured: 'Išorinė paslauga nesukonfigūruota.'
+helpcenter.account.login_password: 'Jūsų slaptažodis'
+helpcenter.account.login_register_action: Registruotis
+helpcenter.account.login_register_header: 'Registruoti paskyrą'
+helpcenter.account.login_reset_password_link: 'Ar reikia priminti slaptažodį?'
+helpcenter.account.login_stay_logged_in: 'Norite likti prisijungę?'
+helpcenter.account.logout_action: Atsijungti
+helpcenter.account.logout_confirm: 'Ar tikrai norite atsijungti?'
+helpcenter.account.new_ticket_no_login: 'CRM portalas išjungtas. Kvito pateikti negalima.'
+helpcenter.account.new_to_brand: 'Dar nesinaudojote {brand}?'
+helpcenter.account.profile_delete_picture: 'Norite pakeisti arba panaikinti profilio nuotrauką?'
+helpcenter.account.profile_save_action: 'Įrašyti profilį'
+helpcenter.account.register_action: Registruotis
+helpcenter.account.registration_set_password: 'Paskyra, susieta su šiuo el. pašto adresu, jau yra. Mes išsiuntėme jums el. laišką, kuris padės nustatyti slaptažodį ir prisijungimo vardą.'
+helpcenter.account.resend_registration_email: 'Pakartoti registracijos el. laišką'
+helpcenter.account.reset_password_action: 'Nustatyti slaptažodį iš naujo'
+helpcenter.account.reset_password_click_here: 'Jei norite paprašyti slaptažodžio nustatymo iš naujo kodo, spustelėkite čia'
+helpcenter.account.reset_password_invalid_desc: 'Slaptažodžio nustatymo iš naujo kodas neteisingas arba jo galiojimo laikas baigėsi. Norėdami iš naujo nustatyti slaptažodį, paprašykite naujo kodo.'
+helpcenter.account.reset_password_invalid_input: 'Įveskite tinkamą el. pašto adresą arba naudotojo vardą'
+helpcenter.account.reset_password_lockout: 'Per daug kartų bandėte nustatyti slaptažodį iš naujo, todėl trumpam laikui būsite užrakinti. Bandykite dar kartą vėliau.'
+helpcenter.account.reset_password_request_desc: 'Užpildykite šią formą, kad jums būtų išsiųsta slaptažodžio nustatymo iš naujo nuoroda.'
+helpcenter.account.reset_password_request_title: 'Pamiršote slaptažodį?'
+helpcenter.account.reset_password_sent_desc: 'Gavome jūsų užklausą dėl toliau nurodyto el. pašto slaptažodžio nustatymo iš naujo. Jei šis el. pašto adresas priklauso registruotai paskyrai, išsiuntėme el. laišką su slaptažodžio nustatymo iš naujo nuoroda į pagrindinį tos paskyros el. pašto adresą. Daugiau nurodymų rasite patikrinę el. pašto dėžutę.'
+helpcenter.account.reset_password_sent_title: 'Gauta slaptažodžio užklausa'
+helpcenter.account.reset_password_sent_to: 'Išsiuntėme el. laišką į'
+helpcenter.account.reset_password_success: 'Jūsų slaptažodis buvo atnaujintas.'
+helpcenter.account.section_desc_login: 'Jau turite paskyrą? Prisijunkite žemiau.'
+helpcenter.account.section_desc_login_external: 'Naudokite toliau pateiktas nuorodas, jei naudojate kito paslaugų teikėjo paskyrą.'
+helpcenter.account.section_desc_register: 'Užregistruokite paskyrą, kad galėtumėte lengviau bendrauti.'
+helpcenter.account.section_title_register: Registracija
+helpcenter.account.section_title_reset_password: 'Nustatyti slaptažodį iš naujo'
+helpcenter.account.section_title_set_password: 'Nustatyti slaptažodį'
+helpcenter.approvals.view_to_reject: 'Atmesti'
+helpcenter.approvals.you_approved: 'Patvirtinote {template} užklausą, kurios paprašė {person_name}'
+helpcenter.approvals.you_rejected: 'Atmetėte {template} užklausą, kurios paprašė {person_name}'
+helpcenter.articles.article_object: Šis straipsnis
+helpcenter.articles.published_label: Paskelbta
+helpcenter.articles.section_title: Žinių bankas
+helpcenter.articles.status_archived: Archyvuota
+helpcenter.articles.status_draft: Juodraštis
+helpcenter.articles.status_published: Paskelbta
+helpcenter.articles.view_as_agent: 'Naudotojai negali peržiūrėti šio puslapio, nes straipsnis nebuvo paskelbtas.'
+helpcenter.articles.view_x_articles: 'Peržiūrėti visus straipsnius kategorijoje „{category}“'
+helpcenter.chats.my_chats: 'Mano pokalbiai'
+helpcenter.community.activity: Veikla
+helpcenter.community.activity_commented: 'Komentavau'
+helpcenter.community.activity_created: 'Sukūriau'
+helpcenter.community.activity_voted: 'Balsavau'
+helpcenter.community.category: Kategorija
+helpcenter.community.create_topic: Sukurti
+helpcenter.community.create_topic_full: 'Sukurti {forum}'
+helpcenter.community.create_topic_in_forum: 'Pateikti {forum}'
+helpcenter.community.error_login: 'Prisijunkite'
+helpcenter.community.featured_topics: 'Atrinktos temos'
+helpcenter.community.filters: Filtrai
+helpcenter.community.form_add_attachments: 'Įtraukti priedų'
+helpcenter.community.form_create_topic: 'Sukurti temą'
+helpcenter.community.form_description: Aprašymas
+helpcenter.community.form_topic_title: Pavadinimas
+helpcenter.community.forum_name: 'Forumo pavadinimas'
+helpcenter.community.like_action: Patinka
+helpcenter.community.likes: Patiktukai (-ų)
+helpcenter.community.my_activity: 'Mano veikla'
+helpcenter.community.no_matching: 'Atitinkančių bendruomenės temų nėra'
+helpcenter.community.none: 'Nepavyksta rasti bendruomenės temų'
+helpcenter.community.official_response: 'Oficialus atsakymas'
+helpcenter.community.rate_forbidden: 'Jums neleidžiama balsuoti'
+helpcenter.community.recent_activity: 'Naujausia veikla'
+helpcenter.community.reset_all_filters: 'Nustatyti iš naujo visus filtrus'
+helpcenter.community.section_title: Bendruomenė
+helpcenter.community.status: Būsena
+helpcenter.community.status_change: 'Būsenos pakeitimas'
+helpcenter.community.title: Pavadinimas
+helpcenter.community.title_author: 'Pavadinimas / autorius'
+helpcenter.community.view_all_topics: 'Peržiūrėti visus {plural}'
+helpcenter.community.view_list: 'Sąrašo rodinys'
+helpcenter.community.view_status_change: 'Būsenos pakeitimas'
+helpcenter.direct_messages.back_to_messages: 'Grįžti į mano žinutes'
+helpcenter.direct_messages.block_user: 'blokuoti naudotoją'
+helpcenter.direct_messages.new_message: 'Nauja žinutė'
+helpcenter.direct_messages.none: 'Žinučių nėra'
+helpcenter.direct_messages.recipient: Gavėjas
+helpcenter.emails.download_updated_downloads: '{count, plural, one {1 atnaujintas atsisiuntimas} other {# atnaujinti atsisiuntimai}}'

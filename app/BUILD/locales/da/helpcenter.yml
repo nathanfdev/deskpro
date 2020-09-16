@@ -1,13 +1,38 @@
 ---
+helpcenter.account.add: Tilføj
+helpcenter.account.add_email: 'Tilføj email'
+helpcenter.account.change_password_action: 'Opdater adgangskode'
 helpcenter.account.comment_lockout: 'Du har tilføjet for mange kommentarer. Vent med at tilføje flere kommentarer.'
 helpcenter.account.email_btn_usersource_set: 'Tilføj e-mailadresse'
+helpcenter.account.email_make_primary_action: 'Gør til primær'
+helpcenter.account.email_management_from_form: 'Administrer min email-adresse'
+helpcenter.account.email_primary_description: Primær
+helpcenter.account.email_remove_action: 'Fjern email'
+helpcenter.account.email_resend_validation_action: 'Gensend email til validering'
+helpcenter.account.lockout_time: 'Du kan prøve igen om {minutes} minutter.'
 helpcenter.account.login_captcha_failed: 'Du har indtastet en forkert CAPTCHA kode fra billedet. Prøv venligst igen.'
+helpcenter.account.login_disabled: 'Din email-adresse er blevet blokeret.'
 helpcenter.account.login_email: 'Din e-mailadresse'
+helpcenter.account.login_email_placeholder: email@eksempel.com
 helpcenter.account.login_external: 'Log ind med en ekstern service'
+helpcenter.account.login_invalid: 'Ugyldigt login'
 helpcenter.account.login_lockout: 'Du har prøvet at logge ind for mange gange uden held, så din konto er blevet lukket. Prøv venligst senere.'
+helpcenter.account.login_not_configured: 'Ekstern service er ikke konfigureret.'
+helpcenter.account.login_password: 'Din adgangskode'
+helpcenter.account.login_register_action: Registrering
+helpcenter.account.login_register_header: 'Registrering til en konto'
+helpcenter.account.login_reset_password_link: 'Er der brug for en adgangskodepåmindelse?'
+helpcenter.account.login_stay_logged_in: 'Forblive logget ind?'
+helpcenter.account.logout_action: Logout
+helpcenter.account.logout_confirm: 'Er du sikker på, at du vil logge ud?'
 helpcenter.account.new_ticket_no_login: 'Portal CRM er deaktiveret. Kunne ikke indsende en billet.'
+helpcenter.account.new_to_brand: 'Ukendt med {brand}?'
 helpcenter.account.profile_delete_picture: 'Skift eller slet profilbillede?'
+helpcenter.account.profile_save_action: 'Gem profil'
+helpcenter.account.register_action: Registrering
 helpcenter.account.registration_set_password: 'En konto med denne e-mailadresse findes allerede. Vi har sendt dig en e-mail som beskriver hvad du skal gøre for at angive et nyt password og logge ind.'
+helpcenter.account.resend_registration_email: 'Send registrerings-email igen'
+helpcenter.account.reset_password_action: 'Nulstil adgangskode'
 helpcenter.account.reset_password_click_here: 'Klik her for at modtage en kode til nulstilling af dit password'
 helpcenter.account.reset_password_invalid_desc: 'Din kode til nulstilling af password er ugyldig eller udløbet. For at nulstille password rekvirer venligst en ny kode.'
 helpcenter.account.reset_password_invalid_input: 'Angiv venligst en gyldig e-mailadresse eller brugernavn'
@@ -17,31 +42,85 @@ helpcenter.account.reset_password_request_title: 'Glemt password?'
 helpcenter.account.reset_password_sent_desc: 'Vi har modtaget din anmodning om nulstilling af adgangskode. Hvis den nedenstående e-mail-adresse tilhører en registreret konto, har vi sendt en e-mail med et link til nulstilling af adgangskode, til denne kontos primære e-mail-adresse. Tjek din indbakke for yderligere instruktioner.'
 helpcenter.account.reset_password_sent_title: 'Henvendelse vedrørende nulstilling af password er modtaget'
 helpcenter.account.reset_password_sent_to: 'Vi har sendt en e-mail til'
+helpcenter.account.reset_password_success: 'Din adgangskode er blevet opdateret.'
 helpcenter.account.section_desc_login: 'Har du allerede en konto? Log ind nedenfor.'
 helpcenter.account.section_desc_login_external: 'Brug linksene nedenfor hvis du bruger din konto med et anden log ind tjeneste.'
 helpcenter.account.section_desc_register: 'Opret en konto så du kan håndtere dine henvendelser.'
+helpcenter.account.section_title_register: Registrering
+helpcenter.account.section_title_reset_password: 'Nulstil adgangskode'
 helpcenter.account.section_title_set_password: 'Angiv password'
 helpcenter.account.section_title_usersource_email: 'Angiv din e-mailadresse'
 helpcenter.account.section_title_your_account: 'Din konto'
+helpcenter.account.set_password_action: 'Indstil adgangskode'
 helpcenter.account.set_password_click_here: 'Klik her for at angive dit password'
+helpcenter.account.set_password_expired: 'Din adgangskode er udløbet.'
 helpcenter.account.set_password_for_user: 'Din konto har endnu ikke et password. Angiv venligst et password, så du kan logge ind og tilføre indhold i fremtiden.'
 helpcenter.account.set_password_invalid_desc: 'Din adgangskode er ugyldig eller udløbet. For at indstille din adgangskode, skal du anmode om en ny kode.'
+helpcenter.account.set_password_invalid_input: 'Angiv venligst en gyldig e-mailadresse eller brugernavn'
 helpcenter.account.set_password_request_desc: 'Udfyld denne formular og vi vil sende dig et link til at skifte din adgangskode.'
+helpcenter.account.set_password_request_title: 'Angiv dit password'
 helpcenter.account.set_password_sent_desc: 'Vi har sendt dig en e-mail med instruktioner om, hvordan du skifter din adgangskode.'
 helpcenter.account.set_password_sent_title: 'Angiv dit password'
+helpcenter.account.set_password_sent_to: 'Vi har sendt en e-mail til'
 helpcenter.account.set_password_success: 'Dit password er opdateret.'
 helpcenter.account.submit_saved_form: 'Din {{type}} er ikke blevet offentliggjort endnu, men vi har gemt det for dig.'
 helpcenter.account.submit_saved_form_go: 'Klik her hvis du automatisk ønsker at gensende indholdet fra formularen.'
+helpcenter.account.thank_you_for_registering: 'Tak for din registrering'
 helpcenter.account.tickets_lockout: 'Du har oprettet for mange sager, så din konto er blevet låst. Prøv venligst senere.'
 helpcenter.account.usersource_set_email_desc: 'Før du kan logge ind skal du angive din e-mailadresse. Angiv venligst din e-mailadresse så vi kan sende dig en e-mail hvori du kan verificere din e-mailadresse.'
+helpcenter.account.validation_email_sent: 'Vi har sendt en email til {email}<br />Validér din email-adresse for at komme til dit supportcenter.'
 helpcenter.account.your_pending_email_addresses: 'Dine afventende og endnu ikke verificerede e-mailadresser'
-helpcenter.articles.section_title: Videnbase
+helpcenter.account.login-btn-usersource: 'Login med {usersource}'
+helpcenter.alerts.tickets_to_respond: '{count, plural, one {Du har en ticket der skal besvares.} other {Du har # tickets at besvare.}}'
+helpcenter.approvals.approve_action: Godkend
+helpcenter.approvals.approved_by: 'Godkendt af'
+helpcenter.approvals.approved_status: Godkendt
+helpcenter.approvals.cancelled_status: Annulleret
+helpcenter.approvals.list_column_agent: 'Medarbejder'
+helpcenter.approvals.list_column_approvers: 'Godkendere'
+helpcenter.approvals.list_column_cancelled: 'Annulleret'
+helpcenter.approvals.list_column_completed: 'Afsluttet'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: 'Emne'
+helpcenter.approvals.list_column_user: 'Bruger'
+helpcenter.approvals.list_column_your_vote: 'Din stemme'
+helpcenter.approvals.my_approvals: 'Mine godkendelser'
+helpcenter.articles.section_title: Vidensbase
+helpcenter.articles.view_x_articles: 'Se alle artikler i {category}'
 helpcenter.community.error_login: 'Venligst login'
+helpcenter.community.form_add_attachments: 'Indsæt vedhæftelser'
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Ingen matchende tilbagemeldinger'
 helpcenter.community.rate_forbidden: 'Du har ikke tilladelse til at stemme'
 helpcenter.community.section_title: Indlæg
+helpcenter.community.view_all_topics: 'Se alle {plural}'
+helpcenter.community.view_list: 'Listevisning'
+helpcenter.community.view_status_change: 'Statusændring'
+helpcenter.direct_messages.back_to_messages: 'Tilbage til mine meddelelser'
+helpcenter.direct_messages.block_user: 'blokér bruger'
+helpcenter.direct_messages.new_message: 'Ny meddelelse'
+helpcenter.direct_messages.none: 'Ingen meddelelser'
+helpcenter.direct_messages.recipient: Modtager
+helpcenter.direct_messages.reply_cancel: Annullér
 helpcenter.direct_messages.reply_message: Besked
+helpcenter.direct_messages.reply_send_message: 'Send meddelelse'
+helpcenter.direct_messages.title: 'Mine meddelelser'
+helpcenter.direct_messages.unblock_user_action: 'ophæv brugerblokering'
+helpcenter.downloads.download_action: Download
+helpcenter.downloads.file_name: 'Filnavn'
+helpcenter.downloads.file_size: 'Filstørrelse'
+helpcenter.downloads.no_files: 'Ingen filer'
+helpcenter.downloads.total_downloads: 'Samlede antal downloads'
+helpcenter.downloads.view_x_files: '{count, plural, one {Billede 1 download} other {Billed # downloads}}'
+helpcenter.duration_short.days: D
+helpcenter.duration_short.hours: h
+helpcenter.duration_short.minutes: m
+helpcenter.duration_short.months: M
+helpcenter.duration_short.seconds: s
+helpcenter.duration_short.weeks: W
+helpcenter.duration_short.years: 'Y'
+helpcenter.emails.account_disabled_message: 'Din konto er i øjeblikket deaktiveret. Du må ikke logge ind eller interagere med tickets eller chat.'
+helpcenter.emails.auto_close: 'Din ticket "{subject}" bliver lukket inden længe da vi ikke har hørt fra dig i nogen tid. Hvis du har brug for yderligere assistance, skal du blot svare og så vil en af vore agenter hjælpe dig.'
 helpcenter.emails.chat_transcript: 'Tak fordi du chattede med os. Her udskriften af fra din chat.'
 helpcenter.emails.chat_transcript_subject: 'Chat samtaleudskrift'
 helpcenter.emails.comment_approved: 'Din kommentar er blevet publiceret'
@@ -86,7 +165,7 @@ helpcenter.emails.ticket_flood: 'Du har for nylig indsendt en e-mail til vores h
 helpcenter.emails.ticket_new_participant: 'En ny person er blevet tilføjet til din sag'
 helpcenter.emails.ticket_no_autoresponse: 'Advarsel: Mail bekræftelse er slået fra.'
 helpcenter.emails.ticket_rate_neutral: 'Det var OK'
-helpcenter.emails.ticket_rate_question: 'Var denne besked hjælpsom?'
+helpcenter.emails.ticket_rate_question: 'Var denne besked nyttig?'
 helpcenter.emails.ticket_received: 'Din sag er modtaget. En af vore medarbejdere vil svare snarest.'
 helpcenter.emails.ticket_reply_confirm: 'Tak for dit svar. En af vore medarbejdere svare snarest.'
 helpcenter.emails.ticket_validate: 'Tak for din henvendelse. <br /> <br /> Inden vores agenter svarer, skal du validere din e-mailadresse.'
@@ -96,9 +175,10 @@ helpcenter.error.400_desc: 'Beklager, men din anmodning var misdannet.'
 helpcenter.error.400_title: 'Dårlig anmodning'
 helpcenter.error.403_desc: 'Du har desværre ikke adgang til at se denne side.'
 helpcenter.error.403_title: 'Ingen adgang'
-helpcenter.error.404_desc: 'Vi kan desværre ikke finde den side.'
+helpcenter.error.404_desc: 'Vi kunne desværre ikke finde den side.'
 helpcenter.error.404_title: 'Ikke fundet'
-helpcenter.error.general_title: 'En fejl opstod'
+helpcenter.error.an_error_occured: 'Der opstod en fejl'
+helpcenter.error.general_title: 'Der opstod en fejl'
 helpcenter.error.permission_denied_title: 'Det er ikke tilladt, at gøre som du gør'
 helpcenter.flashes.article_unsubscribe: 'Du er nu afmeldt fra denne artikel.'
 helpcenter.flashes.guest_content_must_verify: 'Før vi kan indsende dit indhold skal du bekræfte din e-mail. Tjek din e-mail indbakke. Vi har sendt dig et bekræftelses link.'
@@ -114,29 +194,45 @@ helpcenter.flashes.user_resend_email_verify: 'Validerings e-mailen er blevet sen
 helpcenter.flashes.user_updated_profile: 'Din profil er blevet opdateret.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Tak for at verificere din e-mailadresse. Din konto er nu aktiv.'
 helpcenter.flashes.usersource_new_add_email_verify: 'Vi er nødt til at bekræfte din e-mail inden vi opretter din konto. Tjek din indbakke for et bekræftelseslink.'
+helpcenter.forms.delete_question: 'Slet?'
+helpcenter.forms.error_captcha: 'CAPTCHA-værdien var ikke korrekt'
 helpcenter.forms.error_email_required: 'Du skal oplyse din e-mailadresse'
+helpcenter.forms.error_required: 'Denne værdi skal angives'
+helpcenter.forms.error_banned_email: 'Email-adressen er blevet lukket ude.'
+helpcenter.forms.label_drag_overlay: 'Indsæt dette billede i din meddelelse.'
+helpcenter.forms.label_email: Email
 helpcenter.forms.label_save: Gem
+helpcenter.forms.label_submit: Indsend
 helpcenter.general.add_comment: 'Tilføj en kommentar'
 helpcenter.general.admin_home: 'Admin Hjem'
-helpcenter.general.agent: Sagsbehandler
+helpcenter.general.agent: Medarbejder
 helpcenter.general.agent_bar_admin_community: 'Community Topic indstillinger'
-helpcenter.general.agent_bar_admin_kb: 'Vidensbase indstillinger'
+helpcenter.general.agent_bar_admin_kb: 'Vidensbase-indstillinger'
 helpcenter.general.agent_bar_admin_lang: 'Sprog indstillinger'
 helpcenter.general.agent_bar_admin_news: 'Nyheds indstillinger'
 helpcenter.general.agent_bar_agent_community: 'Administrer community topic'
 helpcenter.general.agent_bar_agent_home: 'Agent hjem'
 helpcenter.general.agent_bar_agent_kb: 'Administrer vidensbase'
 helpcenter.general.agent_bar_agent_news: 'Administrer nyheder'
-helpcenter.general.agents: Sagsbehandler
+helpcenter.general.agents: Medarbejdere
 helpcenter.general.attachments: Vedhæftelser
 helpcenter.general.comments: Kommentarer
+helpcenter.general.drag_and_drop: 'Træk og slip'
 helpcenter.general.everything: Alt
 helpcenter.general.impersonation_mode: 'Personefterlignings tilstand'
 helpcenter.general.label_search_enter_label: 'Angiv venligst en etiket at søge efter'
+helpcenter.general.labels: Labels
 helpcenter.general.last_activity: 'Seneste aktivitet'
+helpcenter.general.last_update_by: 'Senest opdateret: <strong>{date_updated, date, medium}</strong> af <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Log ind'
-helpcenter.general.nav_guides: Omviser
-helpcenter.general.no_search_query: 'Indtast en søgestreng, ind i søgefeltet.'
+helpcenter.general.name: Navn
+helpcenter.general.nav_downloads_desc: 'Gennemse vores filer'
+helpcenter.general.nav_guides: Guides
+helpcenter.general.nav_guides_desc: 'Se alle guides'
+helpcenter.general.nav_kb: Vidensbase
+helpcenter.general.no_search_query: 'Indtast en søgestreng i søgefeltet.'
+helpcenter.general.no_search_results_general: 'Ingen resultater fundet'
+helpcenter.general.or: eller
 helpcenter.general.password: Adgangskode
 helpcenter.general.prop_comments_asc: 'Mindst kommentarer først'
 helpcenter.general.prop_comments_desc: 'Flest kommentarer først'
@@ -148,22 +244,53 @@ helpcenter.general.prop_rating_asc: 'Lavest bedømte først'
 helpcenter.general.prop_rating_desc: 'Højest bedømte først'
 helpcenter.general.prop_views_asc: 'Mindst visninger først'
 helpcenter.general.prop_views_desc: 'Flest visninger først'
-helpcenter.general.rate_page_positive: Hjælpsom
+helpcenter.general.rate_page_negative: Unyttig information
+helpcenter.general.rate_page_positive: Nyttig information
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} af {vote_count} personer fandt denne side nyttig'
+helpcenter.general.related_content: 'Relateret indhold'
+helpcenter.general.remove: fjern
 helpcenter.general.rerender_form: 'Læs venligst denne formular, inden du sender den.'
+helpcenter.general.search: 'Hvordan kan vi hjælpe dig i dag?'
+helpcenter.general.search_labels: 'Søg labels'
 helpcenter.general.share: Del
 helpcenter.general.show: Vis
+helpcenter.general.show_x_more: 'Vis {num} flere'
 helpcenter.general.tagged_with: 'mærket med'
 helpcenter.general.tags: Mærkater
 helpcenter.general.updated: Opdateret
 helpcenter.general.user: Bruger
+helpcenter.general.x_search_results: '{num} søgeresultater for "{query}"'
 helpcenter.general.you: Du
+helpcenter.label.search: Søg
 helpcenter.members.language: Sprog
+helpcenter.members.name: Navn
 helpcenter.members.timezone: Tidszone
+helpcenter.messenger.blocks_continue_chat_title: 'Fortsæt eksisterende chat'
+helpcenter.messenger.blocks_knowledgebase_title: Vidensbase
+helpcenter.messenger.blocks_search_block_no_results: 'Ingen resultater for {query}'
+helpcenter.messenger.blocks_search_block_search_label: Søg
+helpcenter.messenger.blocks_search_block_see_more_results: 'Se flere resultater'
+helpcenter.messenger.blocks_ticket_button: 'Indsend en ny ticket'
+helpcenter.messenger.blocks_ticket_description: 'Indsend en forespørgsel via vores kontaktformular'
+helpcenter.messenger.blocks_ticket_title: 'Indsend en ticket'
+helpcenter.messenger.chat_rating_block_buttons_helpful: Nyttig information
+helpcenter.messenger.chat_rating_block_buttons_unhelpful: Unyttig information
+helpcenter.messenger.greeting: 'Tag kontakt'
+helpcenter.messenger.proactive_greeting: 'Tag kontakt'
+helpcenter.messenger.tickets_form_add_attachment: 'Indsæt vedhæftelse'
+helpcenter.messenger.tickets_form_header: 'Ny ticket'
+helpcenter.messenger.tickets_form_name: Navn
+helpcenter.messenger.tickets_form_or: eller
+helpcenter.messenger.tickets_form_submit: Indsend
+helpcenter.messenger.tickets_form_thanks: 'Tak for at du har kontaktet os. Et medlem fra vores team vil kontakte via email.'
+helpcenter.messenger.tickets_form_thanks_header: 'Din anmodning er undervejs'
 helpcenter.news.none: 'Ingen nyheder endnu'
 helpcenter.news.recent_title: 'Seneste nyheder'
 helpcenter.news.view_as_agent: 'Du kan se denne side, fordi du er en agent. Normale brugere vil ikke være i stand til at se denne side.'
 helpcenter.profile.account_disabled_message: 'Din konto er i øjeblikket deaktiveret. Du må ikke logge ind eller interagere med sager eller chat.'
 helpcenter.profile.your_password: 'Dit password'
+helpcenter.search.search_results: 'Søgeresultater'
+helpcenter.search.showing_results_for: 'Søgeresultater i {type} for: <span>“{query}”</span>'
 helpcenter.tickets.form_changed_notice: 'Nye felter er blevet tilføjet til formularen. Gennemse venligst disse felter, og gensend derefter formularen.'
 helpcenter.tickets.guest_thank_you_desc: 'Tak for din henvendelse. Vi har sendt dig en e-mail med instruktioner om, hvordan du håndterer din sag hos os.'
 helpcenter.tickets.guest_thank_you_title: 'Tak'
@@ -186,9 +313,14 @@ helpcenter.tickets.please_login_to_reply: 'Log ind for at svare.'
 helpcenter.tickets.rate_positive: 'Det var godt'
 helpcenter.tickets.rate_question: 'Hvordan vil du bedømme den hjælp, du har modtaget?'
 helpcenter.tickets.rate_support: 'Bedøm din hjælp'
+helpcenter.tickets.reference_number: 'Referencenummer: {ref}'
+helpcenter.tickets.related_articles_desc: 'Vi fandt følgende artikler, der evt. kan hjælpe dig med dit problem.'
+helpcenter.tickets.submit_a_ticket: 'Indsend en ticket'
 helpcenter.tickets.switched_department_rerender: 'Opbygningen af denne formular kan have ændret sig. Gennemse venligst formularen og indsend den igen.'
+helpcenter.tickets.thank_you: 'Tak, vi har modtaget din anmodning.'
 helpcenter.tickets.thank_you_check_email: 'Kontroller din e-mailadresse'
 helpcenter.tickets.thank_you_check_email_desc: 'For at indsende din sag, skal du tjekke din e-mail indbakke. Klik på bekræftelseslinket vi har sendt dig.'
+helpcenter.tickets.thank_you_desc: 'Tak for at du har kontaktet os. Et medlem fra vores team vil kontakte dig hurtigst muligt.'
 helpcenter.tickets.timeline_marked: 'markeret denne sag:'
 helpcenter.tickets.view_btn_add_to_ticket: 'Tilføj til sagen'
 helpcenter.tickets.view_btn_edit: Rediger
@@ -198,4 +330,4 @@ helpcenter.tickets.view_label_your_name_placeholder: 'Navn (påkrævet)'
 helpcenter.tickets.view_reply_errors: 'Der er nogle fejl med din indsendelse.'
 helpcenter.tickets.view_scroll_reply: 'Klik her for at scrolle ned til formularen.'
 helpcenter.tickets.view_unassigned: Ikke tildelt
-helpcenter.tickets.view_unassigned_more: 'En agent vil blive tildelt'
+helpcenter.tickets.view_unassigned_more: 'En medarbejder vil blive tildelt'

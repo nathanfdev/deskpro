@@ -1,0 +1,117 @@
+---
+helpcenter.account.add: Lisa
+helpcenter.account.add_email: 'Lisa e-posti aadress'
+helpcenter.account.change_password_action: 'Uuenda salasõna'
+helpcenter.account.comment_lockout: 'Olete lisanud palju kommentaare. Palun oodake, kui soovite uusi lisada.'
+helpcenter.account.email_btn_usersource_set: 'Lisa e-posti aadress'
+helpcenter.account.email_make_primary_action: 'Muuda peamiseks'
+helpcenter.account.email_management_from_form: 'Halda minu e-posti aadresse'
+helpcenter.account.email_primary_description: Peamine
+helpcenter.account.email_remove_action: 'Eemalda e-posti aadress'
+helpcenter.account.email_resend_validation_action: 'Saada kinnituskiri uuesti'
+helpcenter.account.lockout_time: 'Saate uuesti proovida {minutes} minuti pärast.'
+helpcenter.account.login_captcha_failed: 'Olete sisestanud väära CAPTCHA-koodi. Palun proovige uuesti.'
+helpcenter.account.login_disabled: 'Teie e-posti aadress on blokeeritud.'
+helpcenter.account.login_email: 'Teie e-posti aadress'
+helpcenter.account.login_email_placeholder: email@näidis.com
+helpcenter.account.login_external: 'Logi sisse teise teenusepakkujaga'
+helpcenter.account.login_invalid: 'Sisselogimine ei õnnestunud'
+helpcenter.account.login_lockout: 'Sisselogimine on liiga palju kordi ebaõnnestunud ning see on lukus. Palun proovige hiljem uuesti.'
+helpcenter.account.login_not_configured: 'Teine teenus pole seadistatud.'
+helpcenter.account.login_password: 'Teie salasõna'
+helpcenter.account.login_register_action: Registreeru
+helpcenter.account.login_register_header: 'Registreeru konto loomiseks'
+helpcenter.account.login_reset_password_link: 'Kas soovite salasõna meeldetuletust?'
+helpcenter.account.login_stay_logged_in: 'Kas soovite jääda sisselogituks?'
+helpcenter.account.logout_action: Logi välja
+helpcenter.account.logout_confirm: 'Kas olete kindel, et soovite välja logida?'
+helpcenter.account.new_to_brand: 'Kas {brand} on teile uus?'
+helpcenter.account.profile_delete_picture: 'Soovite profiilipilti muuta või kustutada?'
+helpcenter.account.profile_save_action: 'Salvesta profiil'
+helpcenter.account.register_action: Registreeru
+helpcenter.account.registration_set_password: 'Sellise e-posti aadressiga konto on juba olemas. Oleme teile saatnud e-kirja, mille abil saate enda salasõna määrata ja sisse logida.'
+helpcenter.account.resend_registration_email: 'Saada registreerimise e-kiri uuesti'
+helpcenter.account.reset_password_action: 'Taasta salasõna'
+helpcenter.account.reset_password_click_here: 'Klõpsa siia, et saada salasõna taastamise kood'
+helpcenter.account.reset_password_invalid_desc: 'Teie salasõna taastamise kood on kehtetu või aegunud. Salasõna taastamiseks küsige palun uus kood.'
+helpcenter.account.reset_password_invalid_input: 'Palun sisestage kehtiv e-posti aadress või kasutajanimi'
+helpcenter.account.reset_password_lockout: 'Olete proovinud salasõna liiga palju kordi taastada. Teie võimalus tegutseda lukustatakse lühikeseks ajaks. Palun proovige hiljem uuesti.'
+helpcenter.account.reset_password_request_desc: 'Täitke see vorm, kui soovite saada salasõna taastamise linki.'
+helpcenter.account.reset_password_request_title: 'Kas unustasite oma salasõna?'
+helpcenter.account.reset_password_sent_desc: 'Oleme saanud salasõna taastamise taotluse allnäidatud e-posti aadressile. Kui see e-posti aadress kuulub registreeritud konto juurde, oleme saatnud salasõna taastamise linki sisaldava e-kirja selle konto peamisele e-posti aadressile. Edasisteks juhisteks kontrollige palun sissetulevate kirjade kausta.'
+helpcenter.account.reset_password_sent_title: 'Salasõna taotlus on kätte saadud'
+helpcenter.account.reset_password_sent_to: 'Saatsime e-kirja aadressile'
+helpcenter.account.reset_password_success: 'Teie salasõna on uuendatud.'
+helpcenter.account.section_desc_login: 'Teil on juba konto? Logige sisse.'
+helpcenter.account.section_desc_login_external: 'Kasutage allolevaid linke, kui teil on konto teise teenusepakkuja juures.'
+helpcenter.account.section_desc_register: 'Looge konto, et saaksite enda infovahetust hõlpsalt hallata.'
+helpcenter.account.section_title_register: Registreeru
+helpcenter.account.section_title_reset_password: 'Taastage salasõna'
+helpcenter.account.section_title_set_password: 'Määrake salasõna'
+helpcenter.articles.section_title: Teadmusbaas
+helpcenter.articles.view_x_articles: 'Vaata kõiki artikleid kategooriast {category}'
+helpcenter.downloads.file_name: 'Failinimi'
+helpcenter.downloads.file_size: 'Faili suurus'
+helpcenter.downloads.no_files: 'Failid puuduvad'
+helpcenter.downloads.total_downloads: 'Kokku allalaadimisi'
+helpcenter.downloads.view_x_files: '{count, plural, one {Vaata 1 allalaadimist} other {Vaata # allalaadimist}}'
+helpcenter.error.404_desc: 'Kahjuks ei leidnud me seda lehekülge.'
+helpcenter.error.an_error_occured: 'Ilmnes viga'
+helpcenter.error.contact_us: 'Võtke meiega ühendust'
+helpcenter.error.general_title: 'Ilmnes viga'
+helpcenter.forms.delete_question: 'Kas kustutada?'
+helpcenter.forms.error_captcha: 'CAPTCHA oli väär'
+helpcenter.forms.error_required: 'See väli tuleb täita'
+helpcenter.forms.error_banned_email: 'E-post on blokeeritud.'
+helpcenter.forms.label_drag_overlay: 'Lisa see pilt enda kirja.'
+helpcenter.forms.label_email: E-post
+helpcenter.forms.label_submit: Saada
+helpcenter.general.drag_and_drop: 'Tiri ja kukuta'
+helpcenter.general.labels: Sildid
+helpcenter.general.last_update_by: 'Viimati uuendatud: <strong>{date_updated, date, medium}</strong>; uuendaja: <strong>{person_name}</strong>'
+helpcenter.general.name: Nimi
+helpcenter.general.nav_contact: 'Võtke meiega ühendust'
+helpcenter.general.nav_downloads_desc: 'Sirvi meie faile'
+helpcenter.general.nav_guides: Juhised
+helpcenter.general.nav_guides_desc: 'Vaata kõiki juhiseid'
+helpcenter.general.nav_kb: Teadmusbaas
+helpcenter.general.nav_newticket: 'Võtke meiega ühendust'
+helpcenter.general.no_search_query: 'Palun trükkige otsingu märksõna otsingukasti.'
+helpcenter.general.no_search_results_general: 'Tulemusi ei leitud'
+helpcenter.general.or: või
+helpcenter.general.rate_page_negative: Ei saanud abi
+helpcenter.general.rate_page_positive: Sain abi
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} inimest {vote_count}-st sai sellelt lehelt abi'
+helpcenter.general.related_content: 'Seotud sisu'
+helpcenter.general.remove: eemalda
+helpcenter.general.search: 'Kuidas saame teid täna aidata?'
+helpcenter.general.show_x_more: 'Näita {num} rohkem'
+helpcenter.general.x_search_results: '{num} otsingutulemust päringule "{query}"'
+helpcenter.label.search: Otsi
+helpcenter.messenger.blocks_continue_chat_title: 'Jätka olemasolevat vestlust'
+helpcenter.messenger.blocks_knowledgebase_title: Teadmusbaas
+helpcenter.messenger.blocks_search_block_no_results: 'Puuduvad tulemused päringule {query}'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Näita rohkem tulemusi'
+helpcenter.messenger.blocks_ticket_button: 'Saada uus päring'
+helpcenter.messenger.blocks_ticket_description: 'Saada päring meie kontaktvormi kaudu'
+helpcenter.messenger.blocks_ticket_title: 'Saada päring'
+helpcenter.messenger.chat_create_ticket_header: 'Saada päring'
+helpcenter.messenger.chat_rating_block_buttons_helpful: Sain abi
+helpcenter.messenger.greeting: 'Võtke ühendust'
+helpcenter.messenger.tickets_form_add_attachment: 'Lisa manus'
+helpcenter.messenger.tickets_form_header: 'Uus päring'
+helpcenter.messenger.tickets_form_or: või
+helpcenter.messenger.tickets_form_saving: 'Teie päring on salvestamisel. Palun oodake'
+helpcenter.messenger.tickets_form_thanks: 'Aitäh, et meiega ühendust võtsite. Meie meeskonna liige kirjutab teile e-posti teel.'
+helpcenter.messenger.tickets_form_thanks_header: 'Teie päring on teel'
+helpcenter.search.search_results: 'Otsingu tulemused'
+helpcenter.search.showing_results_for: 'Näitab tulemusi jaotises {type} päringule: <span>“{query}”</span>'
+helpcenter.tickets.guest_thank_you_desc: 'Aitäh, et meiega ühendust võtsite. Saatsime teile e-kirja koos juhistega, kuidas enda päringut meie juures hallata.'
+helpcenter.tickets.list_date_created: 'Loomise kuupäev'
+helpcenter.tickets.new_intro: 'Palun täitke see vorm ning üks meie esindajatest vastab teile e-posti teel niipea kui võimalik.'
+helpcenter.tickets.new_section_title: 'Võtke meiega ühendust'
+helpcenter.tickets.reference_number: 'Viitenumber: {ref}'
+helpcenter.tickets.related_articles_desc: 'Leidsime järgmised artiklid, mis võivad teie probleemi lahendada.'
+helpcenter.tickets.submit_a_ticket: 'Saada päring'
+helpcenter.tickets.thank_you: 'Aitäh, oleme teie päringu kätte saanud.'
+helpcenter.tickets.thank_you_desc: 'Aitäh, et meie poole pöördusite. Meie meeskonna liige võtab teiega peatselt ühendust.'

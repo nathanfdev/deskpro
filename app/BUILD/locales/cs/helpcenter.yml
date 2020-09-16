@@ -8,12 +8,19 @@ helpcenter.account.login_lockout: 'Příliš mnoho neplatných pokusů o přihl�
 helpcenter.account.profile_delete_picture: 'Změnit nebo vymazat fotku?'
 helpcenter.account.reset_password_click_here: 'Klikněte zde pro vyžádání kódu pro reset hesla'
 helpcenter.account.reset_password_invalid_desc: 'Váš kód pro reset hesla je neplatný. Vyžádejte si nový.'
+helpcenter.articles.section_title: Znalostní báze
+helpcenter.articles.view_x_articles: 'Zobrazit všechny články v {category}'
 helpcenter.community.error_login: 'Prosíme, přihlašte se'
 helpcenter.community.form_topic_title: Název
 helpcenter.community.no_matching: 'Žádná související připomínka'
 helpcenter.community.rate_forbidden: 'Nemůžete hlasovat'
 helpcenter.community.section_title: Připomínka
 helpcenter.direct_messages.reply_message: Zpráva
+helpcenter.downloads.file_name: 'Název souboru'
+helpcenter.downloads.file_size: 'Velikost souboru'
+helpcenter.downloads.no_files: 'Žádné soubory'
+helpcenter.downloads.total_downloads: 'Počet stažení'
+helpcenter.downloads.view_x_files: '{count, plural, one {Zobrazit 1 stažení} few {Zobrazit # stažení} many {Zobrazit # stažení} other {Zobrazit # stažení}}'
 helpcenter.emails.comment_approved: 'Váš komentář byl zveřejněn'
 helpcenter.emails.comment_approved_subject: 'Váš komentář byl schválen'
 helpcenter.emails.comment_confirmation: 'Děkujeme za váš komentář'
@@ -54,8 +61,17 @@ helpcenter.emails.ticket_received: 'Váš tiket byl přijat. Jeden z našich ope
 helpcenter.emails.ticket_reply_confirm: 'Vaše odpoveď byla přijata. Jeden z našich operátorů vám co nejdříve odpoví.'
 helpcenter.emails.too_many_emails: 'Pozor: Odeslali jste příliš mnoho e-mailů'
 helpcenter.emails.validate_email: 'Prosíme, ověřte, že tato e-mailova dresa je opravdu vaše, kliknutím na následující odkaz:'
+helpcenter.error.404_desc: 'Omlouváme se, ale tuto stránku se nám nepodařilo najít.'
+helpcenter.error.contact_us: 'Kontaktujte nás'
+helpcenter.error.general_title: 'Došlo k chybě'
+helpcenter.forms.error_captcha: 'Hodnota CAPTCHA byla nesprávná'
 helpcenter.forms.error_email_required: 'Musíte zadat svou e-mailovou adresu'
+helpcenter.forms.error_required: 'Tato hodnota je povinná'
+helpcenter.forms.error_banned_email: 'Tento e-mail byl zakázán.'
+helpcenter.forms.label_drag_overlay: 'Tento obrázek vložte do své zprávy.'
+helpcenter.forms.label_email: E-mail
 helpcenter.forms.label_save: Uložit
+helpcenter.forms.label_submit: Odeslat
 helpcenter.general.add_comment: 'Přidat komentář'
 helpcenter.general.admin_home: 'Admin domov. stránka'
 helpcenter.general.agent_bar_admin_community: 'Nastavení připomínek'
@@ -68,11 +84,20 @@ helpcenter.general.agent_bar_agent_kb: 'Spravovat znalostní bázi'
 helpcenter.general.agent_bar_agent_news: 'Spravovat novinky'
 helpcenter.general.attachments: Přílohy
 helpcenter.general.comments: Komentáře
+helpcenter.general.drag_and_drop: 'Přetáhnout'
 helpcenter.general.everything: Vše
 helpcenter.general.label_search_enter_label: 'Prosíme, uveďte štítek, který se má vyhledat'
+helpcenter.general.labels: Štítky
+helpcenter.general.last_update_by: 'Naposledy aktualizoval/a: <strong>{date_updated, date, medium}</strong> <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Přihlásit'
+helpcenter.general.name: Jméno
+helpcenter.general.nav_contact: 'Kontaktujte nás'
+helpcenter.general.nav_downloads_desc: 'Listujte našimi soubory'
 helpcenter.general.nav_guides: Návody
+helpcenter.general.nav_kb: Znalostní báze
+helpcenter.general.nav_newticket: 'Kontaktujte nás'
 helpcenter.general.no_search_query: 'Napište, co chcete vyhledat, do vyhledávacího okna.'
+helpcenter.general.no_search_results_general: 'Nebyly nalezeny žádné výsledky'
 helpcenter.general.password: Heslo
 helpcenter.general.print: Tisk
 helpcenter.general.prop_comments_asc: 'Nejmíň komentářů nejdřív'
@@ -85,15 +110,46 @@ helpcenter.general.prop_rating_asc: 'Nejhůř hodnocené nejdřív'
 helpcenter.general.prop_rating_desc: 'Nejlíp hodnocené nejdřív'
 helpcenter.general.prop_views_asc: 'Nejmíň shlédnutí nejdřív'
 helpcenter.general.prop_views_desc: 'Nejvíc shlédnutí nejdřív'
+helpcenter.general.rate_page_negative: Neužitečná
+helpcenter.general.rate_page_positive: Užitečná
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} z {vote_count} lidem přišla tato stránka užitečná'
+helpcenter.general.related_content: 'Související obsah'
+helpcenter.general.remove: odstranit
 helpcenter.general.rerender_form: 'Prosíme, překontrolujte formulář před jeho odesláním.'
+helpcenter.general.search: 'Jak vám dnes můžeme pomoci?'
 helpcenter.general.share: Sdílet
 helpcenter.general.show: Zobraz
+helpcenter.general.show_x_more: 'Zobrazit {num} další'
 helpcenter.general.tagged_with: 'označen'
 helpcenter.general.tags: Označení
 helpcenter.general.updated: Aktualizováno
+helpcenter.general.x_search_results: '{num} výsledků vyhledávání pro "{query}"'
+helpcenter.label.search: Vyhledávání
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
+helpcenter.messenger.blocks_continue_chat_title: 'Pokračovat v již existujícím chatu'
+helpcenter.messenger.blocks_knowledgebase_title: Znalostní báze
+helpcenter.messenger.blocks_search_block_no_results: 'Pro {query} nebyly nalezeny žádné výsledky'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Zobrazit další výsledky'
+helpcenter.messenger.blocks_ticket_button: 'Odeslat nový tiket'
+helpcenter.messenger.blocks_ticket_description: 'Odeslat dotaz prostřednictvím našeho kontaktního formuláře'
+helpcenter.messenger.chat_create_ticket_header: 'Odeslat tiket'
+helpcenter.messenger.greeting: 'Kontaktujte nás'
+helpcenter.messenger.tickets_form_add_attachment: 'Přidat přílohu'
+helpcenter.messenger.tickets_form_header: 'Nový tiket'
+helpcenter.messenger.tickets_form_saving: 'Ukládáme váš tiket. Prosím počkejte'
+helpcenter.messenger.tickets_form_thanks: 'Děkujeme, že se na nás obracíte. Jeden ze členů našeho týmu vás bude kontaktovat e-mailem.'
+helpcenter.messenger.tickets_form_thanks_header: 'Vaše žádost je na cestě'
 helpcenter.profile.account_disabled_message: 'Váš účet je v tuto chvíli pozastaven. Nemůžete se přihlásit ani spravovat své tikety.'
 helpcenter.profile.your_password: 'Vaše heslo'
+helpcenter.search.search_results: 'Výsledky vyhledávání'
+helpcenter.search.showing_results_for: 'Zobrazují se výsledky v {type} pro: <span>“{query}”</span>'
+helpcenter.tickets.list_date_created: 'Datum vytvoření'
 helpcenter.tickets.list_subject: Předmět
+helpcenter.tickets.new_intro: 'Prosím vyplňte tento formulář a jeden z našich operátorů vám, co nejdříve to bude možné, e-mailem odpoví.'
 helpcenter.tickets.new_section_title: 'Kontaktujte nás'
+helpcenter.tickets.reference_number: 'Referenční číslo: {ref}'
+helpcenter.tickets.related_articles_desc: 'Našli jsme následující články, které mohou řešit váš problém.'
+helpcenter.tickets.submit_a_ticket: 'Odeslat tiket'
+helpcenter.tickets.thank_you: 'Děkujeme, vaši žádost jsme obdrželi.'
+helpcenter.tickets.thank_you_desc: 'Děkujeme za zájem. Jeden z členů našeho týmu se s vámi brzy spojí.'

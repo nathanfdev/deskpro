@@ -1,6 +1,15 @@
 ---
+helpcenter.account.add: Toevoegen
+helpcenter.account.add_email: 'E-mail toevoegen'
+helpcenter.account.change_password_action: 'Wachtwoord updaten'
 helpcenter.account.comment_lockout: 'U heeft veel reacties verstuurd. Wacht om er meer te versturen.'
 helpcenter.account.email_btn_usersource_set: 'E-mailadres toevoegen'
+helpcenter.account.email_make_primary_action: 'Primair maken'
+helpcenter.account.email_management_from_form: 'Mijn e-mailadressen beheren'
+helpcenter.account.email_primary_description: Primair
+helpcenter.account.email_remove_action: 'E-mail verwijderen'
+helpcenter.account.email_resend_validation_action: 'Validatiemail opnieuw verzenden'
+helpcenter.account.lockout_time: 'Probeer het binnen {minuten} opnieuw'
 helpcenter.account.login_captcha_failed: 'U heeft een ongeldige CAPTCHA-code ingevuld. Probeer het nogmaals.'
 helpcenter.account.login_email: 'Uw e-mailadres'
 helpcenter.account.login_external: 'Inloggen met een externe service'
@@ -37,11 +46,17 @@ helpcenter.account.tickets_lockout: 'U heeft te vaak tickets verstuurd, dus u be
 helpcenter.account.usersource_set_email_desc: 'Voordat u kunt inloggen hebben we uw e-mailadres nodig. Vul uw e-mailadres hieronder in, zodat we u een verificatiemail kunnen sturen.'
 helpcenter.account.your_pending_email_addresses: 'Uw e-mailadressen in afwachting'
 helpcenter.articles.section_title: Kennisbank
+helpcenter.articles.view_x_articles: 'Alle artikelen {category} weergeven in'
 helpcenter.community.error_login: 'Inloggen'
 helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Geen overeenkomstige gemeenschapsonderwerpen'
 helpcenter.community.rate_forbidden: 'U mag niet stemmen'
 helpcenter.direct_messages.reply_message: Bericht
+helpcenter.downloads.file_name: 'Bestandsnaam'
+helpcenter.downloads.file_size: 'Bestandsgrootte'
+helpcenter.downloads.no_files: 'Geen bestanden'
+helpcenter.downloads.total_downloads: 'Totaal aantal downloads'
+helpcenter.downloads.view_x_files: '{count, plural, one {View 1 download} other {View # downloads}}'
 helpcenter.emails.chat_transcript: 'Bedankt voor het chatten met ons. Hierbij ontvangt u de kopie van het gesprek.'
 helpcenter.emails.chat_transcript_subject: 'Kopie van chatgeschiedenis'
 helpcenter.emails.comment_approved: 'Uw reactie is gepubliceerd.'
@@ -96,9 +111,10 @@ helpcenter.error.400_desc: 'Sorry, maar uw verzoek was misvormd.'
 helpcenter.error.400_title: 'Foutief verzoek'
 helpcenter.error.403_desc: 'Sorry, maar u heeft geen toestemming op deze pagina te bekijken.'
 helpcenter.error.403_title: 'Geen toegang'
-helpcenter.error.404_desc: 'Sorry, maar we konden deze pagina niet vinden.'
+helpcenter.error.404_desc: 'Sorry, we konden deze pagina niet vinden.'
 helpcenter.error.404_title: 'Niet gevonden'
-helpcenter.error.general_title: 'Een fout deed zich voor'
+helpcenter.error.an_error_occured: 'Er is een fout opgetreden'
+helpcenter.error.general_title: 'Er is een fout opgetreden'
 helpcenter.error.permission_denied_title: 'Dit is niet toegestaan'
 helpcenter.flashes.article_unsubscribe: 'U heeft zich succesvol afgemeld voor dit artikel.'
 helpcenter.flashes.guest_content_must_verify: 'Voordat we uw inhoud kunnen plaatsen, moet u uw e-mailadres verifiëren. Controleer uw inbox van uw e-mail. We hebben u een verificatielink gestuurd.'
@@ -115,8 +131,15 @@ helpcenter.flashes.user_resend_email_verify: 'De validatie e-mail is nogmaals na
 helpcenter.flashes.user_updated_profile: 'Uw profiel is bijgewerkt.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Bedankt voor het verifiëren van uw e-mailadres. Uw account is nu actief.'
 helpcenter.flashes.usersource_new_add_email_verify: 'We moeten uw e-mailadres verifiëren voordat we uw account aan kunnen maken. Controleer uw inbox voor een verificatielink.'
+helpcenter.forms.delete_question: 'Verwijderen?'
+helpcenter.forms.error_captcha: 'De CAPTCHA-waarde is incorrect'
 helpcenter.forms.error_email_required: 'U moet een e-mailadres opgeven'
+helpcenter.forms.error_required: 'Deze waarde is vereist'
+helpcenter.forms.error_banned_email: 'Uw e-mail is geweigerd.'
+helpcenter.forms.label_drag_overlay: 'Voeg deze afbeelding aan uw bericht toe.'
+helpcenter.forms.label_email: E-mail
 helpcenter.forms.label_save: Opslaan
+helpcenter.forms.label_submit: Verzenden
 helpcenter.general.add_comment: 'Reactie toevoegen'
 helpcenter.general.admin: Beheerder
 helpcenter.general.admin_home: 'Home beheerder'
@@ -132,14 +155,25 @@ helpcenter.general.agent_bar_agent_news: 'Nieuws beheren'
 helpcenter.general.agents: Medewerkers
 helpcenter.general.attachments: Bijlagen
 helpcenter.general.comments: Reacties
+helpcenter.general.date_day_month: '{date, date, d MMM}'
+helpcenter.general.drag_and_drop: 'Drag and drop'
 helpcenter.general.email_address: 'E-mailadres'
 helpcenter.general.everything: Alles
 helpcenter.general.impersonation_mode: 'Verpersoonlijking modus'
 helpcenter.general.label_search_enter_label: 'Geef een label om naar te zoek op'
+helpcenter.general.labels: Labels
 helpcenter.general.last_activity: 'Laatste activiteit'
+helpcenter.general.last_update_by: 'Voor het laatst bijgewerkt door: <strong>{date_updated, date, medium}</strong> door <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Inloggen'
-helpcenter.general.nav_guides: Gidsen
-helpcenter.general.no_search_query: 'Typ een zoekterm in het zoekveld.'
+helpcenter.general.name: Naam
+helpcenter.general.nav_contact: 'Neem contact met ons op'
+helpcenter.general.nav_downloads_desc: 'Door onze bestanden bladeren'
+helpcenter.general.nav_guides: Handleidingen
+helpcenter.general.nav_guides_desc: 'Alle handleidingen weergeven'
+helpcenter.general.nav_kb: Kennisbank
+helpcenter.general.nav_newticket: 'Neem contact met ons op'
+helpcenter.general.no_search_query: 'Typ een zoekopdracht in het zoekvenster.'
+helpcenter.general.no_search_results_general: 'Geen resultaten gevonden'
 helpcenter.general.password: Wachtwoord
 helpcenter.general.print: Printen
 helpcenter.general.prop_comments_asc: 'Minste reacties eerst'
@@ -152,21 +186,49 @@ helpcenter.general.prop_rating_asc: 'Laagst beoordeeld eerst'
 helpcenter.general.prop_rating_desc: 'Hoogst beoordeeld eerst'
 helpcenter.general.prop_views_asc: 'Minste weergaven eerst'
 helpcenter.general.prop_views_desc: 'Meeste weergaven eerst'
-helpcenter.general.rate_page_positive: Behulpzaam
+helpcenter.general.rate_page_negative: Niet nuttig
+helpcenter.general.rate_page_positive: Nuttig
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} van {vote_count} mensen vonden deze pagina nuttig'
+helpcenter.general.related_content: 'Gerelateerde inhoud'
+helpcenter.general.remove: verwijderen
 helpcenter.general.rerender_form: 'Controleer dit formulier voordat u het verstuurd.'
+helpcenter.general.search: 'Waar kunnen wij u vandaag mee van dienst zijn?'
 helpcenter.general.share: Delen
 helpcenter.general.show: Tonen
+helpcenter.general.show_x_more: 'Meer weergeven {num}'
 helpcenter.general.tagged_with: 'getagd met'
 helpcenter.general.updated: Bijgewerkt
 helpcenter.general.user: Gebruiker
+helpcenter.general.x_search_results: '{num} zoekresultaten voor “{query}”'
 helpcenter.general.you: U
+helpcenter.label.search: Zoeken
 helpcenter.members.language: Taal
 helpcenter.members.timezone: Tijdzone
+helpcenter.messenger.blocks_continue_chat_title: 'Bestaande chat voortzetten'
+helpcenter.messenger.blocks_knowledgebase_title: Kennisbank
+helpcenter.messenger.blocks_search_block_no_results: 'Geen resultaten voor {query}'
+helpcenter.messenger.blocks_search_block_search_label: Zoeken
+helpcenter.messenger.blocks_search_block_see_more_results: 'Meer resultaten weergeven'
+helpcenter.messenger.blocks_ticket_button: 'Dien een nieuw ticket in'
+helpcenter.messenger.blocks_ticket_description: 'Dien een verzoek in via ons contactformulier'
+helpcenter.messenger.blocks_ticket_title: 'Dien een ticket in'
+helpcenter.messenger.chat_rating_block_buttons_helpful: Nuttig
+helpcenter.messenger.chat_rating_block_buttons_unhelpful: Niet nuttig
+helpcenter.messenger.greeting: 'Neem contact op'
+helpcenter.messenger.proactive_greeting: 'Neem contact op'
+helpcenter.messenger.tickets_form_add_attachment: 'Bijlage toevoegen'
+helpcenter.messenger.tickets_form_header: 'Nieuw ticket'
+helpcenter.messenger.tickets_form_or: of
+helpcenter.messenger.tickets_form_saving: 'Uw ticket wordt opgeslagen. Moment geduld a.u.b.'
+helpcenter.messenger.tickets_form_thanks: 'Dank u voor uw mail. Een van onze teamleden zal zo spoedig mogelijk contact met u opnemen.'
+helpcenter.messenger.tickets_form_thanks_header: 'Uw aanvraag is in behandeling'
 helpcenter.news.none: 'Nog geen nieuws'
 helpcenter.news.recent_title: 'Recent nieuws'
 helpcenter.news.view_as_agent: 'U kunt deze pagina zien, omdat u een medewerker bent. Normale gebruikers zullen deze pagina niet kunnen zien.'
 helpcenter.profile.account_disabled_message: 'Uw account is tijdelijk geblokkeerd. U kunt daarom niet inloggen, reageren op tickets of een chatconversatie starten.'
 helpcenter.profile.your_password: 'Uw wachtwoord'
+helpcenter.search.search_results: 'Zoekresultaten'
+helpcenter.search.showing_results_for: 'Resultaten weergeven in {type} voor: <span>“{query}”</span>'
 helpcenter.tickets.form_changed_notice: 'Nieuwe velden zijn aan het formulier toegevoegd. Controleer deze velden en verstuur het formulier dan nogmaals.'
 helpcenter.tickets.guest_thank_you_desc: 'Bedankt dat u contact met ons opneemt. We hebben u een e-mail met instructies gestuurd over hoe u uw ticket beheert bij ons.'
 helpcenter.tickets.guest_thank_you_title: 'Bedankt'
@@ -190,9 +252,13 @@ helpcenter.tickets.please_login_to_reply: 'Log in om te antwoorden.'
 helpcenter.tickets.rate_positive: 'Het was geweldig'
 helpcenter.tickets.rate_question: 'Hoe zou u de ondersteuning die u heeft ontvangen beoordelen?'
 helpcenter.tickets.rate_support: 'Beoordeel uw ondersteuning'
+helpcenter.tickets.reference_number: 'Referentienummer: {ref}'
+helpcenter.tickets.submit_a_ticket: 'Dien een ticket in'
 helpcenter.tickets.switched_department_rerender: 'De structuur van dit formulier kan gewijzigd zijn. Controleer het formulier en verstuur het nogmaals.'
+helpcenter.tickets.thank_you: 'Dank u, wij hebben uw aanvraag ontvangen.'
 helpcenter.tickets.thank_you_check_email: 'Verifieer uw e-mailadres'
 helpcenter.tickets.thank_you_check_email_desc: 'Om verzending van uw ticket te voltooien, moet u uw inbox van uw e-mail controleren. Klik op de verificatielink die we u hebben gestuurd.'
+helpcenter.tickets.thank_you_desc: 'Dank u voor uw mail. Een van onze teamleden zal zo spoedig mogelijk contact met u opnemen.'
 helpcenter.tickets.timeline_marked: 'heeft dit ticket gemarkeerd:'
 helpcenter.tickets.view_btn_add_to_ticket: 'Aan ticket toevoegen'
 helpcenter.tickets.view_btn_edit: Bewerken

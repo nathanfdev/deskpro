@@ -1,13 +1,38 @@
 ---
+helpcenter.account.add: Προσθήκη
+helpcenter.account.add_email: 'Προσθήκη email'
+helpcenter.account.change_password_action: 'Ενημέρωση κωδικού πρόσβασης'
 helpcenter.account.comment_lockout: 'Έχετε προσθέσει πολλά σχόλια. Θα χρειαστεί να περιμένετε πριν προσθέσετε περισσότερα.'
-helpcenter.account.email_btn_usersource_set: 'Προσθήκη Email'
+helpcenter.account.email_btn_usersource_set: 'Προσθήκη email'
+helpcenter.account.email_make_primary_action: 'Να γίνει κύριο'
+helpcenter.account.email_management_from_form: 'Διαχείριση των email μου'
+helpcenter.account.email_primary_description: Κύριο
+helpcenter.account.email_remove_action: 'Αφαίρεση email'
+helpcenter.account.email_resend_validation_action: 'Επαναποστολή email επιβεβαίωσης'
+helpcenter.account.lockout_time: 'Μπορείτε να δοκιμάσετε ξανά σε {minutes} λεπτά.'
 helpcenter.account.login_captcha_failed: 'Έχετε εισάγει λανθασμένο κωδικό CAPTCHA. Παρακαλούμε δοκιμάστε ξανά.'
+helpcenter.account.login_disabled: 'Το email σας έχει αποκλειστεί.'
 helpcenter.account.login_email: 'Email'
+helpcenter.account.login_email_placeholder: email@example.com
 helpcenter.account.login_external: 'Είσοδος με εξωτερική υπηρεσία'
+helpcenter.account.login_invalid: 'Μη έγκυρα στοιχεία σύνδεσης'
 helpcenter.account.login_lockout: 'Έχετε αποτύχει να συνδεθείτε πολλές φορές, με αποτέλεσμα να έχετε μπλοκαριστεί. Παρακαλούμε δοκιμάστε ξανά αργότερα.'
+helpcenter.account.login_not_configured: 'Η εξωτερική υπηρεσία δεν έχει ρυθμιστεί.'
+helpcenter.account.login_password: 'Ο κωδικός πρόσβασής σας'
+helpcenter.account.login_register_action: Εγγραφή
+helpcenter.account.login_register_header: 'Δημιουργήστε λογαριασμό'
+helpcenter.account.login_reset_password_link: 'Ξεχάσατε τον κωδικό πρόσβασης;'
+helpcenter.account.login_stay_logged_in: 'Θέλετε να παραμείνετε σε σύνδεση;'
+helpcenter.account.logout_action: Αποσύνδεση
+helpcenter.account.logout_confirm: 'Θέλετε σίγουρα να αποσυνδεθείτε;'
 helpcenter.account.new_ticket_no_login: 'Το portal CRM είναι ανενεργό. Δεν μπορείτε να καταχωρήσετε αίτημα.'
+helpcenter.account.new_to_brand: 'Χρησιμοποιείτε πρώτη φορά το {brand};'
 helpcenter.account.profile_delete_picture: 'Αλλαγή ή διαγραφή φωτογραφίας προφίλ;'
+helpcenter.account.profile_save_action: 'Αποθήκευση προφίλ'
+helpcenter.account.register_action: Εγγραφή
 helpcenter.account.registration_set_password: 'Υπάρχει ήδη ένας λογαριασμός με αυτό το email. Σας στείλαμε ένα email ώστε να δημιουργήσετε νέο κωδικό πρόσβασης και να συνδεθείτε.'
+helpcenter.account.resend_registration_email: 'Επαναποστολή email εγγραφής'
+helpcenter.account.reset_password_action: 'Επαναφορά κωδικού πρόσβασης'
 helpcenter.account.reset_password_click_here: 'Πατήστε εδώ για να ζητήσετε έναν κωδικό επαναφοράς κωδικού πρόσβασης.'
 helpcenter.account.reset_password_invalid_desc: 'Ο κωδικός επαναφοράς κωδικού πρόσβασης δεν είναι έγκυρος ή έχει λήξει. Για να επαναφέρετε τον κωδικό πρόσβασης, ζητήστε νέο κωδικό.'
 helpcenter.account.reset_password_invalid_input: 'Παρακαλούμε εισάγετε ένα έγκυρο email ή username'
@@ -17,30 +42,133 @@ helpcenter.account.reset_password_request_title: 'Ξεχάσατε τον κωδ
 helpcenter.account.reset_password_sent_desc: 'Λάβαμε το αίτημα επαναφοράς κωδικού πρόσβασης για το παρακάτω email. Εάν αυτό το email ανήκει σε καταχωρισμένο λογαριασμό, έχουμε στείλει ένα μήνυμα με ένα link επαναφοράς κωδικού πρόσβασης στο κύριο email του λογαριασμού. Ελέγξτε τα εισερχόμενά σας για περισσότερες οδηγίες.'
 helpcenter.account.reset_password_sent_title: 'H αίτηση για επαναφορά κωδικού πρόσβασης έχει ληφθεί'
 helpcenter.account.reset_password_sent_to: 'Στείλαμε ένα email στο'
+helpcenter.account.reset_password_success: 'Έγινε ενημέρωση το κωδικού πρόσβασής σας.'
 helpcenter.account.section_desc_login: 'Έχετε ήδη λογαριασμό; Συνδεθείτε παρακάτω.'
 helpcenter.account.section_desc_login_external: 'Χρησιμοποιήστε τα παρακάτω links αν έχετε λογαριασμό σε άλλον πάροχο.'
 helpcenter.account.section_desc_register: 'Εγγραφείτε για να διαχειρίζεστε εύκολα τις επικοινωνίες σας.'
+helpcenter.account.section_title_register: Εγγραφή
+helpcenter.account.section_title_reset_password: 'Επαναφορά κωδικού πρόσβασης'
 helpcenter.account.section_title_set_password: 'Ορισμός κωδικού πρόσβασης'
 helpcenter.account.section_title_usersource_email: 'Εισάγετε το email σας'
 helpcenter.account.section_title_your_account: 'Ο λογαριασμός σας'
+helpcenter.account.set_password_action: 'Ορισμός κωδικού πρόσβασης'
 helpcenter.account.set_password_click_here: 'Πατήστε εδώ για να ορίσετε κωδικό πρόσβασης'
+helpcenter.account.set_password_expired: 'Ο κωδικός πρόσβασής σας έχει λήξει.'
 helpcenter.account.set_password_for_user: 'Ο λογαριασμός σας δεν έχει ακόμα κωδικό πρόσβασης. Ορίστε έναν κωδικό τώρα, ώστε να μπορείτε να συνδεθείτε για να δημοσιεύσετε περιεχόμενο στο μέλλον.'
 helpcenter.account.set_password_invalid_desc: 'Ο κωδικός πρόσβασής σας δεν είναι έγκυρος ή έχει λήξει. Για να ορίσετε κωδικό πρόσβασης, ζητήστε ένα νέο κωδικό.'
+helpcenter.account.set_password_invalid_input: 'Εισαγάγετε ένα έγκυρο email ή όνομα χρήστη'
 helpcenter.account.set_password_request_desc: 'Συμπληρώστε αυτήν τη φόρμα και θα σας στείλουμε με email ένα link για να ορίσετε κωδικό πρόσβασης.'
+helpcenter.account.set_password_request_title: 'Ορίστε τον κωδικό πρόσβασής σας'
 helpcenter.account.set_password_sent_desc: 'Σας έχουμε στείλει ένα email με οδηγίες για να ορίσετε τον κωδικό πρόσβασής σας.'
 helpcenter.account.set_password_sent_title: 'Ορίστε τον κωδικό πρόσβασής σας'
+helpcenter.account.set_password_sent_to: 'Στείλαμε ένα email στο'
 helpcenter.account.set_password_success: 'Ο κωδικός πρόσβασης έχει αλλάξει.'
 helpcenter.account.submit_saved_form: 'Η φόρμα σας δεν έχει ακόμα καταχωρηθεί αλλά την έχουμε αποθηκεύσει για εσάς.'
 helpcenter.account.submit_saved_form_go: 'Πατήστε εδώ για να επανακαταχωρήσετε την φόρμα αυτόματα.'
+helpcenter.account.thank_you_for_registering: 'Ευχαριστούμε που εγγραφήκατε'
 helpcenter.account.tickets_lockout: 'Έχετε καταχωρήσει πάρα πολλά tickets, με αποτέλεσμα να μπλοκαριστείτε. Παρακαλούμε δοκιμάστε ξανά αργότερα.'
 helpcenter.account.usersource_set_email_desc: 'Πριν συνδεθείτε, χρειαζόμαστε το email σας. Είναι απαραίτητο να το εισάγετε παρακάτω, ώστε να σας στείλουμε ένα email επιβεβαίωσης.'
+helpcenter.account.validation_email_sent: 'Σας έχουμε στείλει ένα email στο {email}<br />Επαληθεύστε τη διεύθυνση email σας για να έχετε πρόσβαση στο κέντρο υποστήριξης.'
 helpcenter.account.your_pending_email_addresses: 'Email διευθύνσεις σε αναμονή'
+helpcenter.account.login-btn-usersource: 'Συνδεθείτε με {usersource}'
+helpcenter.alerts.tickets_to_respond: '{count, plural, one {Έχετε να απαντήσετε σε ένα ticket.} other {Έχετε να απαντήσετε σε # ticket.}}'
+helpcenter.approvals.approve_action: Έγκριση
+helpcenter.approvals.approved_by: 'Εγκρίθηκε από'
+helpcenter.approvals.approved_status: Εγκρίθηκε
+helpcenter.approvals.cancelled_status: Ακυρώθηκε
+helpcenter.approvals.list_column_agent: 'Εκπρόσωπος'
+helpcenter.approvals.list_column_approvers: 'Υπεύθυνοι έγκρισης'
+helpcenter.approvals.list_column_cancelled: 'Ακυρώθηκε'
+helpcenter.approvals.list_column_completed: 'Ολοκληρώθηκε'
+helpcenter.approvals.list_column_id: 'ID'
+helpcenter.approvals.list_column_subject: 'Θέμα'
+helpcenter.approvals.list_column_user: 'Χρήστης'
+helpcenter.approvals.list_column_your_vote: 'Η ψήφος σας'
+helpcenter.approvals.my_approvals: 'Οι εγκρίσεις μου'
+helpcenter.approvals.no_ticket_approvals_found: 'Δεν βρέθηκαν εγκρίσεις ticket'
+helpcenter.approvals.pending_status: Εκκρεμεί
+helpcenter.approvals.reject_action: Απόρριψη
+helpcenter.approvals.rejected_by: 'Απορρίφθηκε από'
+helpcenter.approvals.rejected_status: Απορρίφθηκε
+helpcenter.approvals.system: Σύστημα
+helpcenter.approvals.view_approved: Εγκρίθηκε(-αν)
+helpcenter.approvals.view_awaiting_response: 'Αναμονή για απάντηση'
+helpcenter.approvals.view_criteria: 'Κριτήρια έγκρισης'
+helpcenter.approvals.view_no_response: 'Καμία απάντηση'
+helpcenter.approvals.view_rejected: Απορρίφθηκε(-αν)
+helpcenter.approvals.view_requesting_agent: 'Αιτών εκπρόσωπος'
+helpcenter.approvals.view_ticket: Ticket
+helpcenter.approvals.view_to_approve: 'Προς έγκριση'
+helpcenter.approvals.view_to_reject: 'Προς απόρριψη'
+helpcenter.approvals.you_approved: 'Εγκρίνατε την αίτηση {template} που έγινε από τον/την {person_name}'
+helpcenter.approvals.you_rejected: 'Απορρίψατε την αίτηση {template} που έγινε από τον/την {person_name}'
+helpcenter.articles.article_object: Αυτό το άρθρο
+helpcenter.articles.published_label: Δημοσιεύθηκε
 helpcenter.articles.section_title: Γνωσιακή βάση
+helpcenter.articles.status_archived: Αρχειοθετημένο
+helpcenter.articles.status_draft: Πρόχειρο
+helpcenter.articles.status_published: Δημοσιευμένο
+helpcenter.articles.view_as_agent: 'Οι χρήστες δεν μπορούν να δουν αυτήν τη σελίδα, επειδή το άρθρο δεν έχει δημοσιευθεί.'
+helpcenter.articles.view_x_articles: 'Δείτε όλα τα άρθρα σε {category}'
+helpcenter.chats.my_chats: 'Οι συνομιλίες μου'
+helpcenter.community.activity: Δραστηριότητα
+helpcenter.community.activity_commented: 'Σχολίασα'
+helpcenter.community.activity_created: 'Δημιούργησα'
+helpcenter.community.activity_voted: 'Ψήφισα'
+helpcenter.community.category: Κατηγορία
+helpcenter.community.create_topic: Δημιουργία
+helpcenter.community.create_topic_full: 'Δημιουργία {forum}'
+helpcenter.community.create_topic_in_forum: 'Υποβολή {forum}'
 helpcenter.community.error_login: 'Παρακαλούμε συνδεθείτε'
+helpcenter.community.featured_topics: 'Επιλεγμένα θέματα'
+helpcenter.community.filters: Φίλτρα
+helpcenter.community.form_add_attachments: 'Προσθήκη συνημμένων'
+helpcenter.community.form_create_topic: 'Δημιουργία θέματος'
+helpcenter.community.form_description: Περιγραφή
 helpcenter.community.form_topic_title: Τίτλος
+helpcenter.community.forum_name: 'Όνομα φόρουμ'
+helpcenter.community.like_action: Μου αρέσει
+helpcenter.community.likes: Μου αρέσει
+helpcenter.community.my_activity: 'Η δραστηριότητά μου'
 helpcenter.community.no_matching: 'Δεν υπάρχει community topic που να ταιριάζει'
+helpcenter.community.none: 'Δεν βρέθηκαν θέματα κοινότητας'
+helpcenter.community.official_response: 'Επίσημη απάντηση'
 helpcenter.community.rate_forbidden: 'Δεν έχετε δικαίωμα να ψηφίσετε'
+helpcenter.community.recent_activity: 'Πρόσφατη δραστηριότητα'
+helpcenter.community.reset_all_filters: 'Επαναφορά όλων των φίλτρων'
+helpcenter.community.section_title: Κοινότητα
+helpcenter.community.status: Κατάσταση
+helpcenter.community.status_change: 'Αλλαγή κατάστασης'
+helpcenter.community.title: Τίτλος
+helpcenter.community.title_author: 'Τίτλος / Συντάκτης'
+helpcenter.community.view_all_topics: 'Προβολή όλων {plural}'
+helpcenter.community.view_list: 'Προβολή λίστας'
+helpcenter.community.view_status_change: 'Αλλαγή κατάστασης'
+helpcenter.direct_messages.back_to_messages: 'Πίσω στα μηνύματά μου'
+helpcenter.direct_messages.block_user: 'αποκλεισμός χρήστη'
+helpcenter.direct_messages.new_message: 'Νέο μήνυμα'
+helpcenter.direct_messages.none: 'Κανένα μήνυμα'
+helpcenter.direct_messages.recipient: Παραλήπτης
+helpcenter.direct_messages.reply_cancel: Άκυρο
 helpcenter.direct_messages.reply_message: Μήνυμα
+helpcenter.direct_messages.reply_send_message: 'Αποστολή μηνύματος'
+helpcenter.direct_messages.title: 'Τα μηνύματά μου'
+helpcenter.direct_messages.unblock_user_action: 'άρση αποκλεισμού χρήστη'
+helpcenter.downloads.download_action: Λήψη
+helpcenter.downloads.file_name: 'Όνομα αρχείου'
+helpcenter.downloads.file_size: 'Μέγεθος αρχείου'
+helpcenter.downloads.no_files: 'Κανένα αρχείο'
+helpcenter.downloads.total_downloads: 'Σύνολο λήψεων'
+helpcenter.downloads.view_x_files: '{count, plural, one {Δείτε 1 λήψη} other {Δείτε # λήψεις}}'
+helpcenter.duration_short.days: Η
+helpcenter.duration_short.hours: ώ
+helpcenter.duration_short.minutes: λ
+helpcenter.duration_short.months: Μ
+helpcenter.duration_short.seconds: δ
+helpcenter.duration_short.weeks: Ε
+helpcenter.duration_short.years: 'Χ'
+helpcenter.emails.account_disabled_message: 'Ο λογαριασμός σας είναι προσωρινά απενεργοποιημένος. Δεν μπορείτε να συνδεθείτε ή να χρησιμοποιήσετε τα ticket και το chat.'
+helpcenter.emails.auto_close: 'Το ticket σας "{subject}" θα κλείσει σύντομα, επειδή δεν έχετε επικοινωνήσει τελευταία. Αν χρειάζεστε περαιτέρω υποστήριξη, απλώς απαντήστε και ένας από τους εκπροσώπους μας θα σας βοηθήσει.'
 helpcenter.emails.chat_transcript: 'Σας ευχαριστούμε που επικοινωνήσατε μαζί μας! Εδώ θα βρείτε ένα αντίγραφο της συνομιλίας μας.'
 helpcenter.emails.chat_transcript_subject: 'Αντίγραφο Chat'
 helpcenter.emails.comment_approved: 'Το σχόλιό σας έχει δημοσιευθεί.'
@@ -48,32 +176,48 @@ helpcenter.emails.comment_approved_subject: 'Το σχόλιό σας εγκρί
 helpcenter.emails.comment_confirmation: 'Ευχαριστούμε για το σχόλιό σας'
 helpcenter.emails.comment_deleted: 'Το σχόλιο σας χρησιμοποιήθηκε για να βελτιώσουμε αυτήν τη σελίδα.'
 helpcenter.emails.comment_deleted_subject: 'Το σχόλιό σας έχει διαβαστεί από τους εκπροσώπους του Support μας'
+helpcenter.emails.comment_thank_you: 'Σας ευχαριστούμε για το σχόλιό σας στο {link}.'
+helpcenter.emails.community_explain: 'Λαμβάνετε αυτό το email επειδή έχετε εγγραφεί ως συνδρομητής στα νέα μας στο <a href="{deskpro_url}">{deskpro_url}</a>.<br />Δεν θέλετε να λαμβάνετε πλέον αυτά τα email; <a href="{unsubscribe_url}">Πατήστε εδώ για να καταργήσετε την εγγραφή σας από όλες τις ειδοποιήσεις θεμάτων κοινότητας.</a>'
 helpcenter.emails.community_new: 'Ευχαριστούμε για το community topic'
 helpcenter.emails.community_sub_updated: 'Ενημερωμένο Community Topic'
 helpcenter.emails.community_topic_agent_validation: 'To community topic δεν θα εμφανιστεί δημοσίως άμεσα, χρειάζεται να το ελέγξει πρώτα κάποιος εκπρόσωπος του Support μας.'
 helpcenter.emails.community_topic_approved: 'Το community topic σας έχει εγκριθεί και εμφανίζεται πλέον δημόσια στο site μας.'
+helpcenter.emails.community_topic_closed: 'Το θέμα κοινότητας "{title}" που είχατε υποβάλει έκλεισε: {status}'
 helpcenter.emails.community_topic_disapproved: 'Το community topic σας δυστυχώς δεν έγινε αποδεκτό και δεν θα εμφανιστεί δημόσια στο site μας.'
+helpcenter.emails.community_topic_disapproved_reason: 'Θα θέλαμε να σας ενημερώσουμε ότι το θέμα κοινότητάς σας δυστυχώς δεν έγινε αποδεκτό και δεν θα εμφανιστεί δημόσια στον ιστότοπό μας. Ο/Η {name} το αιτιολόγησε ως εξής:'
 helpcenter.emails.community_topic_new_approved: 'To community topic σας εγκρίθηκε'
+helpcenter.emails.community_topic_new_comment: "\nΟ/Η {name} πρόσθεσε ένα νέο σχόλιο:"
+helpcenter.emails.community_topic_new_comment_subject: 'Υπάρχει ένα νέο σχόλιο στο "{title}"'
 helpcenter.emails.community_topic_new_disapproved: 'Συγγνώμη, το community topic σας δεν έγινε αποδεκτό'
+helpcenter.emails.community_topic_published: 'Το θέμα κοινότητας "{title}" που υποβάλατε επικυρώθηκε και θα εμφανίζεται πλέον στον ιστότοπό μας.'
+helpcenter.emails.community_topic_thank_you: 'Σας ευχαριστούμε που υποβάλατε το θέμα κοινότητας "{title}"'
+helpcenter.emails.community_topic_updated: 'Το θέμα κοινότητας "{title}" που υποβάλατε ενημερώθηκε. Η κατάστασή του είναι τώρα: νέα κατάσταση "{status}"'
+helpcenter.emails.community_topic_updated_subject: 'Η κοινότητά σας ενημερώθηκε: {title}'
 helpcenter.emails.download_sub_new: 'Νέες Λήψεις'
 helpcenter.emails.download_sub_new_and_updated: 'Νέες και Ενημερωμένες Λήψεις'
 helpcenter.emails.download_sub_updated: 'Ενημερωμένες Λήψεις'
 helpcenter.emails.email_new_confirm: 'Επιβεβαιώστε το email σας'
 helpcenter.emails.email_ticket_reminder: 'Απαιτείται ενέργεια: το αίτημά σας δεν έχει καταχωρηθεί'
+helpcenter.emails.kb_new_articles: '{count, plural, one {1 νέο άρθρο} other {# νέα άρθρα}}'
 helpcenter.emails.kb_sub_new: 'Νέα άρθρα'
 helpcenter.emails.kb_sub_new_and_updated: 'Νέα και Ενημερωμένα άρθρα'
 helpcenter.emails.kb_sub_updated: 'Ενημερωμένα άρθρα'
+helpcenter.emails.kb_updated_articles: '{count, plural, one {1 ενημερωμένο άρθρο} other {# ενημερωμένα άρθρα}}'
 helpcenter.emails.label_view_online: 'Προβολή online'
 helpcenter.emails.new_ticket_guest: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας'
 helpcenter.emails.new_ticket_guest_link: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας! Μπορείτε να δείτε την κατάσταση του ticket σας εδώ:'
+helpcenter.emails.news_explain: 'Λαμβάνετε αυτό το email επειδή έχετε εγγραφεί ως συνδρομητής στα νέα μας στο <a href="{deskpro_url}">{deskpro_url}</a>.<br />Δεν θέλετε να λαμβάνετε πλέον αυτά τα email; <a href="{unsubscribe_url}">Πατήστε εδώ για να καταργήσετε την εγγραφή σας από όλες τις ειδοποιήσεις νέων.</a>'
+helpcenter.emails.news_new_news: '{count, plural, one {1 νέο άρθρο νέων} other {# νέα άρθρα νέων}}'
 helpcenter.emails.news_sub_new: 'Νέα'
 helpcenter.emails.news_sub_new_and_updated: 'Νέα και Ενημερωμένα Νέα'
 helpcenter.emails.news_sub_updated: 'Ενημερωμένα Νέα'
+helpcenter.emails.news_updated_news: '{count, plural, one {1 ενημερωμένο άρθρο νέων} other {# ενημερωμένα άρθρα νέων}}'
 helpcenter.emails.password_agent_reset: 'Έχουμε επαναφέρει τον κωδικό πρόσβασης του λογαριασμού σας. Μπορείτε να συνδεθείτε με αυτά τα στοιχεία'
 helpcenter.emails.password_agent_reset_subject: 'Ένας εκπρόσωπος του Support μας έχει επαναφέρει τον κωδικό πρόσβασής σας'
 helpcenter.emails.password_reset: 'Ζητήσατε επαναφορά κωδικού πρόσβασης. Για να επαναφέρετε τον κωδικό πρόσβασής σας, κάντε click στο παρακάτω link:'
 helpcenter.emails.password_reset_subject: 'Επαναφορά κωδικού πρόσβασης'
 helpcenter.emails.password_set: 'Για να ορίσετε κωδικό πρόσβασης, κάντε click στο παρακάτω link:'
+helpcenter.emails.password_set_subject: 'Ορίστε τον κωδικό πρόσβασής σας'
 helpcenter.emails.profile_email_link_validate: 'Απλά κάντε click στο παρακάτω link για να επιβεβαιώσετε το email σας'
 helpcenter.emails.profile_email_primary_confirm: 'Για να επιβεβαιώσετε το κύριο email σας, απλά κάντε click στο παρακάτω link'
 helpcenter.emails.ratelimit_submit_online: 'Αν πρόκειται για λάθος και είναι απαραίτητο να επικοινωνήσετε αμέσως μαζί μας, μπορείτε να παρακάμψετε το φίλτρο email και να υποβάλετε ένα ticket online:'
@@ -94,9 +238,10 @@ helpcenter.emails.validate_email: 'Παρακαλούμε επιβεβαιώστ
 helpcenter.error.400_desc: 'Μας συγχωρείτε, αλλά το αίτημά σας ήταν αλλοιωμένο.'
 helpcenter.error.403_desc: 'Μας συγχωρείτε, αλλά δεν έχετε πρόσβαση για να δείτε αυτή τη σελίδα.'
 helpcenter.error.403_title: 'Χωρίς Πρόσβαση'
-helpcenter.error.404_desc: 'Μας συγχωρείτε, αλλά δεν μπορέσαμε να βρούμε αυτήν τη σελίδα.'
+helpcenter.error.404_desc: 'Λυπούμαστε. Δεν μπορέσαμε να βρούμε αυτήν τη σελίδα.'
 helpcenter.error.404_title: 'Δεν βρέθηκε'
-helpcenter.error.general_title: 'Παρουσιάστηκε Σφάλμα'
+helpcenter.error.contact_us: 'Επικοινωνήστε μαζί μας'
+helpcenter.error.general_title: 'Παρουσιάστηκε σφάλμα'
 helpcenter.error.permission_denied_title: 'Δεν επιτρέπεται αυτή η ενέργεια'
 helpcenter.flashes.article_unsubscribe: 'Έχετε απεγγραφεί επιτυχώς από αυτό το άρθρο.'
 helpcenter.flashes.guest_content_must_verify: 'Προτού μπορέσουμε να δημοσιεύσουμε το περιεχόμενό σας, πρέπει να επιβεβαιώσετε το email σας. Ελέγξτε τα εισερχόμενα email σας. Σας έχουμε στείλει ένα link επιβεβαίωσης.'
@@ -113,8 +258,15 @@ helpcenter.flashes.user_resend_email_verify: 'Το email επιβεβαίωση�
 helpcenter.flashes.user_updated_profile: 'Το προφίλ σας έχει ενημερωθεί.'
 helpcenter.flashes.usersource_new_add_email_verified: 'Ευχαριστούμε για την επιβεβαίωση του email σας. Ο λογαριασμός σας είναι τώρα ενεργός.'
 helpcenter.flashes.usersource_new_add_email_verify: 'Θα χρειαστεί να επιβεβαιώσουμε το email σας πριν τη δημιουργία του λογαριασμού σας. Παρακαλούμε ελέγξτε τα εισερχόμενά email σας για το email επιβεβαίωσης.'
+helpcenter.forms.delete_question: 'Διαγραφή;'
+helpcenter.forms.error_captcha: 'Η τιμή CAPTCHA ήταν λανθασμένη'
 helpcenter.forms.error_email_required: 'Πρέπει να δώσετε το email σας'
+helpcenter.forms.error_required: 'Αυτή η τιμή απαιτείται'
+helpcenter.forms.error_banned_email: 'Το email έχει αποκλειστεί.'
+helpcenter.forms.label_drag_overlay: 'Εισαγάγετε αυτήν την εικόνα στο μήνυμά σας.'
+helpcenter.forms.label_email: Email
 helpcenter.forms.label_save: Αποθήκευση
+helpcenter.forms.label_submit: Υποβολή
 helpcenter.general.add_comment: 'Προσθήκη σχολίου'
 helpcenter.general.admin: Διαχειριστής
 helpcenter.general.admin_home: 'Αρχική σελίδα διαχειριστή'
@@ -130,13 +282,23 @@ helpcenter.general.agent_bar_agent_news: 'Διαχείριση Ενημερώσ�
 helpcenter.general.agents: Εκπρόσωπος Support
 helpcenter.general.attachments: Επισυνάψεις
 helpcenter.general.comments: Σχόλια
+helpcenter.general.drag_and_drop: 'Μεταφορά και απόθεση'
 helpcenter.general.everything: Όλα
 helpcenter.general.impersonation_mode: 'Λειτουργία πλαστοπροσωπίας'
 helpcenter.general.label_search_enter_label: 'Παρακαλούμε υποβάλετε μια ετικέτα για αναζήτηση'
+helpcenter.general.labels: Ετικέτες
 helpcenter.general.last_activity: 'Τελευταία δραστηριότητα'
+helpcenter.general.last_update_by: 'Τελευταία ενημέρωση: <strong>{date_updated, date, medium}</strong> από <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Σύνδεση'
-helpcenter.general.nav_guides: Οδηγίες
-helpcenter.general.no_search_query: 'Παρακαλούμε πληκτρολογήστε τι θέλετε να αναζητήσετε στο πεδίο αναζήτησης.'
+helpcenter.general.name: Όνομα
+helpcenter.general.nav_contact: 'Επικοινωνήστε μαζί μας'
+helpcenter.general.nav_downloads_desc: 'Αναζήτηση στα αρχεία μας'
+helpcenter.general.nav_guides: Οδηγοί
+helpcenter.general.nav_guides_desc: 'Δείτε όλους τους οδηγούς'
+helpcenter.general.nav_kb: Γνωσιακή βάση
+helpcenter.general.nav_newticket: 'Επικοινωνήστε μαζί μας'
+helpcenter.general.no_search_query: 'Πληκτρολογήστε ένα ερώτημα αναζήτησης στο πλαίσιο αναζήτησης.'
+helpcenter.general.no_search_results_general: 'Δεν βρέθηκαν αποτελέσματα'
 helpcenter.general.password: Κωδικός πρόσβασης
 helpcenter.general.print: Εκτύπωση
 helpcenter.general.prop_comments_asc: 'Λιγότερα σχόλια πρώτα'
@@ -149,22 +311,47 @@ helpcenter.general.prop_rating_asc: 'Χαμηλότερη βαθμολογία �
 helpcenter.general.prop_rating_desc: 'Υψηλότερη βαθμολογία πρώτα'
 helpcenter.general.prop_views_asc: 'Λιγότερες προβολές πρώτα'
 helpcenter.general.prop_views_desc: 'Περισσότερες προβολές πρώτα'
-helpcenter.general.rate_page_positive: Βοηθητικό
+helpcenter.general.rate_page_negative: Δεν βοηθάει
+helpcenter.general.rate_page_positive: Βοηθάει
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} από {vote_count} χρήστες πιστεύουν ότι αυτή η σελίδα βοηθάει'
+helpcenter.general.related_content: 'Σχετικό περιεχόμενο'
+helpcenter.general.remove: αφαίρεση
 helpcenter.general.rerender_form: 'Παρακαλούμε ελέγξτε τη φόρμα πριν την υποβάλετε.'
+helpcenter.general.search: 'Πώς μπορούμε να σας βοηθήσουμε σήμερα;'
+helpcenter.general.search_labels: 'Ετικέτες αναζήτησης'
 helpcenter.general.share: Κοινή χρήση
 helpcenter.general.show: Προβολή
+helpcenter.general.show_x_more: 'Προβολή άλλων {num}'
 helpcenter.general.tagged_with: 'με ετικέτα'
 helpcenter.general.tags: Ετικέτες
 helpcenter.general.updated: Επικαιροποιημένο
 helpcenter.general.user: Χρήστης
+helpcenter.general.x_search_results: '{num} αποτελέσματα αναζήτησης για το "{query}"'
 helpcenter.general.you: Εσείς
+helpcenter.label.search: Αναζήτηση
 helpcenter.members.language: Γλώσσα
 helpcenter.members.timezone: Ζώνη ώρας
+helpcenter.messenger.blocks_continue_chat_title: 'Συνέχεια υπάρχουσας συνομιλίας'
+helpcenter.messenger.blocks_knowledgebase_title: Γνωσιακή βάση
+helpcenter.messenger.blocks_search_block_no_results: 'Κανένα αποτέλεσμα για το {query}'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Δείτε περισσότερα αποτελέσματα'
+helpcenter.messenger.blocks_ticket_button: 'Υποβάλετε νέο ticket'
+helpcenter.messenger.blocks_ticket_description: 'Υποβάλετε ένα ερώτημα μέσω της φόρμας επικοινωνίας μας'
+helpcenter.messenger.blocks_ticket_title: 'Υποβάλετε ένα ticket'
+helpcenter.messenger.greeting: 'Επικοινωνήστε μαζί μας'
+helpcenter.messenger.tickets_form_add_attachment: 'Προσθήκη συνημμένου'
+helpcenter.messenger.tickets_form_header: 'Νέο ticket'
+helpcenter.messenger.tickets_form_or: ή
+helpcenter.messenger.tickets_form_saving: 'Γίνεται αποθήκευση του ticket σας. Περιμένετε'
+helpcenter.messenger.tickets_form_thanks: 'Σας ευχαριστούμε που επικοινωνήσατε μαζί μας. Κάποιος από την ομάδα μας θα επικοινωνήσει μαζί σας μέσω email.'
+helpcenter.messenger.tickets_form_thanks_header: 'Το αίτημά σας είναι σε εξέλιξη'
 helpcenter.news.none: 'Δεν υπάρχουν νέα'
 helpcenter.news.recent_title: 'Πρόσφατα νέα'
 helpcenter.news.view_as_agent: 'Μπορείτε να δείτε αυτήν τη σελίδα επειδή είστε διαχειριστής. Οι απλοί χρήστες δεν μπορούν να δουν αυτήν τη σελίδα.'
 helpcenter.profile.account_disabled_message: 'Ο λογαριασμός σας είναι προσωρινά απενεργοποιημένος. Δεν μπορείτε να συνδεθείτε ή να χρησιμοποιήσετε τα tickets και το chat.'
 helpcenter.profile.your_password: 'Κωδικός πρόσβασης'
+helpcenter.search.search_results: 'Αποτελέσματα αναζήτησης'
+helpcenter.search.showing_results_for: 'Εμφάνιση αποτελεσμάτων σε {type} για: <span>“{query}”</span>'
 helpcenter.tickets.form_changed_notice: 'Έχουν προστεθεί νέα πεδία στη φόρμα. Παρακαλούμε ελέγξτε τα και υποβάλετε ξανά τη φόρμα.'
 helpcenter.tickets.guest_thank_you_desc: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας! Σας έχουμε στείλει ένα email με οδηγίες σχετικά με την διαχείριση του ticket σας.'
 helpcenter.tickets.guest_thank_you_title: 'Ευχαριστούμε!'
@@ -178,7 +365,7 @@ helpcenter.tickets.list_status_user: 'Χρειάζεται να απαντήσε
 helpcenter.tickets.list_subject: Θέμα
 helpcenter.tickets.list_ticket_ref: Αναφορά
 helpcenter.tickets.need_login_title: 'Χρειάζεται να συνδεθείτε για να δημιουργήσετε ένα νέο ticket'
-helpcenter.tickets.new_intro: 'Παρακαλούμε συμπληρώστε αυτήν τη φόρμα και ένας εκπρόσωπος του Support μας θα επικοινωνήσει μαζί σας μέσω email το συντομότερο.'
+helpcenter.tickets.new_intro: 'Συμπληρώστε αυτήν τη φόρμα και ένας εκπρόσωπός μας θα σας απαντήσει μέσω email το συντομότερο.'
 helpcenter.tickets.new_section_title: 'Επικοινωνήστε μαζί μας'
 helpcenter.tickets.new_ticket_button: 'Δημιουργήστε ένα νέο ticket'
 helpcenter.tickets.no_participants: 'Κανένας συμμετέχοντας'
@@ -188,9 +375,14 @@ helpcenter.tickets.please_login_to_reply: 'Συνδεθείτε για να απ
 helpcenter.tickets.rate_positive: 'Ήταν εξαιρετική'
 helpcenter.tickets.rate_question: 'Πώς θα βαθμολογούσατε την εξυπηρέτηση που λάβατε;'
 helpcenter.tickets.rate_support: 'Αξιολογήστε την υποστήριξη που λάβατε'
+helpcenter.tickets.reference_number: 'Αριθμος αναφοράς: {ref}'
+helpcenter.tickets.related_articles_desc: 'Βρήκαμε τα παρακάτω άρθρα που ίσως λύσουν το πρόβλημά σας.'
+helpcenter.tickets.submit_a_ticket: 'Υποβάλετε ένα ticket'
 helpcenter.tickets.switched_department_rerender: 'Η δομή αυτής της φόρμας ίσως έχει αλλάξει. Παρακαλούμε ελέξτε τη φόρμα και υποβάλετε την ξανά.'
+helpcenter.tickets.thank_you: 'Σας ευχαριστούμε. Λάβαμε το αίτημά σας.'
 helpcenter.tickets.thank_you_check_email: 'Παρακαλούμε επιβεβαιώστε το email σας'
 helpcenter.tickets.thank_you_check_email_desc: 'Για να ολοκληρώσετε την υποβολή του ticket σας, πρέπει να ελέγξετε τα email σας. Παρακαλούμε, κάντε click στο link επιβεβαίωσης που σας έχουμε στείλει.'
+helpcenter.tickets.thank_you_desc: 'Σας ευχαριστούμε που επικοινωνήσατε μαζί μας. Κάποιος από την ομάδα μας θα επικοινωνήσει μαζί σας σύντομα.'
 helpcenter.tickets.timeline_marked: 'σημείωσε αυτό το ticket:'
 helpcenter.tickets.view_btn_add_to_ticket: 'Προσθήκη σε ticket'
 helpcenter.tickets.view_btn_edit: Επεξεργασία
