@@ -94,7 +94,7 @@
     "react/stream": "0.4.*",
     "richsage/rms-push-notifications-bundle": "^0.1.9",
     "robrichards/xmlseclibs": "3.0.4",
-    "scssphp/scssphp": "^1.0",
+    "scssphp/scssphp": "1.0.5",
     "sensio/framework-extra-bundle": "~3.0",
     "shopblocks/php-ico": "*",
     "swiftmailer/swiftmailer": "~5.4.12",
