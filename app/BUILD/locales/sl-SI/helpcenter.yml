@@ -10,6 +10,7 @@ helpcenter.account.email_primary_description: Glavni
 helpcenter.account.email_remove_action: 'Odstrani e-poštni naslov'
 helpcenter.account.email_resend_validation_action: 'Ponovno pošlji e-pošto za preverjanje'
 helpcenter.account.lockout_time: 'Ponovno lahko poizkusiš čez {minutes} minut.'
+helpcenter.account.login-btn-usersource: 'Prijavi se s pomočjo {usersource}'
 helpcenter.account.login_captcha_failed: 'Vnesli ste napačno kodo. Prosimo poskusite ponovno.'
 helpcenter.account.login_disabled: 'Tvoj e-poštni naslov je bil onemogočen.'
 helpcenter.account.login_email: 'Vaš elektronski naslov'
@@ -70,7 +71,6 @@ helpcenter.account.tickets_lockout: 'Vnesel/la si preveč zahtevkov in tvoj rač
 helpcenter.account.usersource_set_email_desc: 'Preden se lahko prijaviš, potrebujemo tvoj e-poštni naslov. Prosimo, spodaj vnesi svoj e-poštni naslov in nanj ti bomo poslali sporočilo s povezavo za preverjanje.'
 helpcenter.account.validation_email_sent: 'Sporočilo smo poslali na {email}<br />Prosimo, prevri tvoj e-poštni naslov in si s temo omogoči dostop do podpornega mesta.'
 helpcenter.account.your_pending_email_addresses: 'Tvoji e-poštni računi v preverjanju'
-helpcenter.account.login-btn-usersource: 'Prijavi se s pomočjo {usersource}'
 helpcenter.alerts.tickets_to_respond: '{count, plural, one {Čaka te zahtevek, na katerega se moraš odzvati.} other {Čaka te # zahtevkov, na katere se moraš odzvati.}}'
 helpcenter.approvals.approve_action: Odobri
 helpcenter.approvals.approved_by: 'Odobrila oseba'
@@ -154,7 +154,7 @@ helpcenter.direct_messages.reply_message: Sporočilo
 helpcenter.direct_messages.reply_send_message: 'Pošlji sporočilo'
 helpcenter.direct_messages.title: 'Moja sporočila'
 helpcenter.direct_messages.unblock_user_action: 'ponovno omogoči uporabnika'
-helpcenter.downloads.download_action: Prenesi datoteko
+helpcenter.downloads.download_action: 'Prenesi'
 helpcenter.downloads.file_name: 'Ime datoteke'
 helpcenter.downloads.file_size: 'Velikost datoteke'
 helpcenter.downloads.no_files: 'Ni datotek'
@@ -275,10 +275,10 @@ helpcenter.error.400_title: 'Dejanja nismo uspeli izvesti'
 helpcenter.error.403_desc: 'Oprosti, toda do vsebine te strani nimaš dodeljenih dostopnih pravic.'
 helpcenter.error.403_title: 'Ni dostopno'
 helpcenter.error.404_desc: 'Žal nismo našli te strani.'
-helpcenter.error.404_title: 'Ni rezultatov'
+helpcenter.error.404_title: 'Ni Mogoče Najti'
 helpcenter.error.an_error_occured: 'Prišlo je do sistemske napake'
 helpcenter.error.an_error_occured_desc: 'Oprosti, toda med nalaganjem strani je prišlo do napake. Prosim, ponovno poskusi kasneje ali preko <a href="{contact_link}">stopi v stik z nami</a>.'
-helpcenter.error.contact_us: 'Stopi v stik z nami'
+helpcenter.error.contact_us: 'Kontakt'
 helpcenter.error.create_new_account: 'Ustvari nov račun'
 helpcenter.error.general_title: 'Prišlo je do napake'
 helpcenter.error.helpdesk: Spletni center za podporo uporabnikom
@@ -348,6 +348,7 @@ helpcenter.forms.date_picker_next_month: 'Naslednji mesec'
 helpcenter.forms.date_picker_previous_month: 'Predhodni mesec'
 helpcenter.forms.date_picker_time: Ura
 helpcenter.forms.delete_question: 'Izbrišem?'
+helpcenter.forms.error_banned_email: 'E-poštni naslov je blokiran.'
 helpcenter.forms.error_captcha: 'Rezultat računalniškega testa CAPTCHA ni pravilen.'
 helpcenter.forms.error_dupe_email: 'Ta e-poštni naslov je že v uporabi.'
 helpcenter.forms.error_email_required: 'Prosimo, obvezno vnesi svoj e-poštni naslov'
@@ -360,7 +361,6 @@ helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {Najman
 helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {Najmanj # velika tiskana črka } other {Najmanj # velikih tiskanih črk }}'
 helpcenter.forms.error_password_reset_required: 'Ponastaviti moraš svoje geslo'
 helpcenter.forms.error_required: 'To polje morate izpolniti.'
-helpcenter.forms.error_banned_email: 'E-poštni naslov je blokiran.'
 helpcenter.forms.label_drag_overlay: 'To sliko vstavite v svoje sporočilo.'
 helpcenter.forms.label_email: E-pošta
 helpcenter.forms.label_password: Geslo
@@ -396,7 +396,7 @@ helpcenter.general.btn_manage_subscriptions: 'Upravljaj s svojimi naročninami'
 helpcenter.general.cancel_action: Prekliči
 helpcenter.general.categories: Sklopi
 helpcenter.general.category: Sklop
-helpcenter.general.cc: CC
+helpcenter.general.cc: 'KP'
 helpcenter.general.chat: Klepet
 helpcenter.general.chats: Klepeti
 helpcenter.general.clear_all: 'Počisti vse'
@@ -417,6 +417,7 @@ helpcenter.general.date_short: '{date, date, short}'
 helpcenter.general.date_short_month: '{date, date, MMM}'
 helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.department: Oddelek
+helpcenter.general.download_pdf: 'Prenesi PDF datoteko'
 helpcenter.general.drag_and_drop: 'Povlecite in spustite'
 helpcenter.general.edit_this_page: 'Uredi to stran'
 helpcenter.general.email_address: 'E-poštni naslov'
@@ -447,6 +448,7 @@ helpcenter.general.last_activity: 'Zadnja dejavnost'
 helpcenter.general.last_month: 'Pretekli mesec'
 helpcenter.general.last_updated: 'Zadnja posodobitev'
 helpcenter.general.last_update_by: 'Zadnjič posodobljeno: <strong>{date_updated, date, medium}</strong>, avtor <strong>{person_name}</strong>'
+helpcenter.general.last_updated: 'Nazadnje Posodobljeno'
 helpcenter.general.last_week: 'Pretekli teden'
 helpcenter.general.last_year: 'Preteklo leto'
 helpcenter.general.latest_status_changes: 'Zadnje spremembe statusov'
@@ -457,7 +459,7 @@ helpcenter.general.name: Ime
 helpcenter.general.nav_chat: Klepeti
 helpcenter.general.nav_community: Skupnost
 helpcenter.general.nav_community_desc: 'Preglej vse teme'
-helpcenter.general.nav_contact: 'Stopite v stik z nami'
+helpcenter.general.nav_contact: 'Kontakt'
 helpcenter.general.nav_contact_desc: 'Za pomoč stopite v stik z nami'
 helpcenter.general.nav_direct_messages: Sporočila
 helpcenter.general.nav_downloads: Datoteke
@@ -472,7 +474,7 @@ helpcenter.general.nav_members: 'Imenik članov'
 helpcenter.general.nav_news: Novice
 helpcenter.general.nav_news_desc: 'Oglej si vse objave v Novicah'
 helpcenter.general.nav_news_desc_short: 'Oglej si vse novice'
-helpcenter.general.nav_newticket: 'Stopite v stik z nami'
+helpcenter.general.nav_newticket: 'Kontakt'
 helpcenter.general.nav_profile: Nastavitve računa
 helpcenter.general.nav_register: 'Prijavi se prvič'
 helpcenter.general.nav_support_center: 'Center za pomoč'
@@ -481,8 +483,8 @@ helpcenter.general.next: Naslednji
 helpcenter.general.no_search_query: 'Vnesite iskalni niz v iskalno polje.'
 helpcenter.general.no_search_results_general: 'Ni rezultatov'
 helpcenter.general.or: ali
-helpcenter.general.pagination_page: 'Stran {page}'
 helpcenter.general.pagination_next_page: 'Naslednja stran'
+helpcenter.general.pagination_page: 'Stran {page}'
 helpcenter.general.pagination_previous_page: 'Predhodna stran'
 helpcenter.general.password: Geslo
 helpcenter.general.previous: Predhodnji
@@ -499,7 +501,7 @@ helpcenter.general.prop_rating_asc: 'Najnižje ocenjeni pri vrhu'
 helpcenter.general.prop_rating_desc: 'Najvišje ocenjeni pri vrhu'
 helpcenter.general.prop_views_asc: 'Najmanj ogledani pri vrhu'
 helpcenter.general.prop_views_desc: 'Najbolj gledani pri vrhu'
-helpcenter.general.published: 'Prvič objavljeno'
+helpcenter.general.published: 'Objavljeno'
 helpcenter.general.published_by: 'Objavila oseba <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Neuporabno
 helpcenter.general.rate_page_positive: Uporabno
@@ -537,7 +539,6 @@ helpcenter.general.x_search_results: '{num} rezultatov iskanja za "{query}"'
 helpcenter.general.you: Ti
 helpcenter.general.your_comment_label: 'Tvoj komentar'
 helpcenter.general.your_comment_optional_label: 'Tvoj komentar (opcijsko)'
-helpcenter.general.download_pdf: 'Prenesi PDF datoteko'
 helpcenter.knowledgebase.featured_articles: 'Izbrani članki'
 helpcenter.label.search: Išči
 helpcenter.members.activity_commented_on: 'Komentirano dne'
@@ -619,7 +620,7 @@ helpcenter.messenger.files_on_this_chat: 'Datoteke v tem Pogovoru'
 helpcenter.messenger.greeting: 'Povežite se z nami'
 helpcenter.messenger.invalid_validation_code: 'Neustrezna šifra za preverjanje'
 helpcenter.messenger.linked_ticket_label: 'Dodeljen zahtevku'
-helpcenter.messenger.loading: Nalagam
+helpcenter.messenger.loading: 'Nalaganje'
 helpcenter.messenger.message_agent_timeout: 'Opravičujemo se; {name} je kot kaže odsoten. Prosimo počakaj, medtem ko zate iščemo drugega operaterja.'
 helpcenter.messenger.message_assigned: 'K pogovoru je dodeljen/a: {name}.'
 helpcenter.messenger.message_chatting_with: 'Klepetaš z'
@@ -652,10 +653,10 @@ helpcenter.messenger.tickets_form_name: Ime
 helpcenter.messenger.tickets_form_or: ali
 helpcenter.messenger.tickets_form_priority: Prednost
 helpcenter.messenger.tickets_form_product: Izdelek
-helpcenter.messenger.tickets_form_required: Zahtevano
+helpcenter.messenger.tickets_form_required: 'Obvezno'
 helpcenter.messenger.tickets_form_saving: 'Shranjujemo vaš zahtevek. Prosimo, počakajte!'
 helpcenter.messenger.tickets_form_select: Izberi
-helpcenter.messenger.tickets_form_submit: Oddaj
+helpcenter.messenger.tickets_form_submit: 'Pošlji'
 helpcenter.messenger.tickets_form_thanks: 'Hvala za vaše sporočilo. Eden od naših sodelavcev vam bo odgovoril po elektronski pošti.'
 helpcenter.messenger.tickets_form_thanks_header: 'Vaš zahtevek je poslan!'
 helpcenter.messenger.total_chat_time_label: 'Skupno trajanje klepeta'
@@ -710,8 +711,8 @@ helpcenter.tickets.my_messages: 'Moja sporočila'
 helpcenter.tickets.my_tickets: 'Moji zahtevki'
 helpcenter.tickets.need_login_desc: 'Prosimo obišči <a href="{login_url}" target="_blank">prijavno stran</a> in nam pošlji sporočilo'
 helpcenter.tickets.need_login_title: 'Za pošiljanje zahtevka se moraš prijaviti'
-helpcenter.tickets.new_intro: 'Izpolnite obrazec in eden od naših operaterjev vam bo v najkrajšem možnem času odgovoril po elektronski pošti.'
-helpcenter.tickets.new_section_title: 'Stopite v stik z nami'
+helpcenter.tickets.new_intro: 'Namesto tega lahko izpolniš obrazec in eden izmed naših operaterjev ti bo preko e-pošte odgovoril nanj takoj, ko bo to mogoče.'
+helpcenter.tickets.new_section_title: 'Kontakt'
 helpcenter.tickets.new_ticket_button: 'Ustvari nov zahtevek'
 helpcenter.tickets.no_participants: 'Ni sodelujočih'
 helpcenter.tickets.not_allowed_desc: 'Žal nam je, toda za klepet trenutno ni na voljo operaterjev'
@@ -722,10 +723,10 @@ helpcenter.tickets.rate_intro: '{name} ti je pomagal v zvezi z zahtevkom na temo
 helpcenter.tickets.rate_negative: 'Bilo je nezadovoljivo'
 helpcenter.tickets.rate_neutral: 'Bilo je OK'
 helpcenter.tickets.rate_positive: 'Bilo je odlično'
+helpcenter.tickets.rate_question: 'Kako bi ocenili podporo, ki ste jo prejeli z naše strani?'
 helpcenter.tickets.rate_short_negative: 'Ni bilo OK'
 helpcenter.tickets.rate_short_neutral: 'OK'
 helpcenter.tickets.rate_short_positive: 'Odlično'
-helpcenter.tickets.rate_question: 'Kako bi ocenili podporo, ki ste jo prejeli z naše strani?'
 helpcenter.tickets.rate_support: 'Oceni prejeto podporo'
 helpcenter.tickets.reference_number: 'Številka zahtevka: {ref}'
 helpcenter.tickets.related_articles_desc: 'Našli smo spodnje članke, ki vam lahko pomagajo rešiti problem.'

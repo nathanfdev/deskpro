@@ -154,7 +154,7 @@ helpcenter.direct_messages.reply_message: Mensaje
 helpcenter.direct_messages.reply_send_message: 'Enviar mensaje'
 helpcenter.direct_messages.title: 'Mis mensajes'
 helpcenter.direct_messages.unblock_user_action: 'desbloquear usuario'
-helpcenter.downloads.download_action: Descarga
+helpcenter.downloads.download_action: 'Descargar'
 helpcenter.downloads.file_name: 'Nombre del archivo'
 helpcenter.downloads.file_size: 'Tamaño del archivo'
 helpcenter.downloads.no_files: 'No hay archivos'
@@ -275,7 +275,8 @@ helpcenter.error.400_title: 'Solicitud incorrecta'
 helpcenter.error.403_desc: 'Lo sentimos, pero no tienes acceso para ver esta página.'
 helpcenter.error.403_title: 'Sin acceso'
 helpcenter.error.404_desc: 'Lo sentimos, pero no pudimos encontrar esta página.'
-helpcenter.error.404_title: 'No encontrado'
+helpcenter.error.404_title: 'No Encontrado'
+helpcenter.error.contact_us: 'Contacto'
 helpcenter.error.an_error_occured: 'Ha ocurrido un error'
 helpcenter.error.an_error_occured_desc: 'Lo siento, pero ha habido un error al intentar cargar esta pagina. Por favor, inténtalo de nuevo más tarde o <a href="{contact_link}">contacta con nosotros</a>.'
 helpcenter.error.contact_us: 'Contacta con nosotros'
@@ -419,7 +420,7 @@ helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.department: Sección
 helpcenter.general.drag_and_drop: 'Arrastra y suelta'
 helpcenter.general.edit_this_page: 'Editar esta página'
-helpcenter.general.email_address: 'Dirección de correo electrónico'
+helpcenter.general.email_address: 'Dirección de correo'
 helpcenter.general.eula: EULA
 helpcenter.general.everything: Todo
 helpcenter.general.expand: Ampliar
@@ -457,10 +458,10 @@ helpcenter.general.name: Nombre
 helpcenter.general.nav_chat: Chats
 helpcenter.general.nav_community: Comunidad
 helpcenter.general.nav_community_desc: 'Ver todos los temas'
-helpcenter.general.nav_contact: 'Contacta con nosotros'
+helpcenter.general.nav_contact: 'Contacto'
 helpcenter.general.nav_contact_desc: 'Ponte en contacto para recibir ayuda'
 helpcenter.general.nav_direct_messages: Mensajes
-helpcenter.general.nav_downloads: Archivos
+helpcenter.general.nav_downloads: 'Documentos'
 helpcenter.general.nav_downloads_desc: 'Explora nuestros archivos'
 helpcenter.general.nav_emails: Correos electrónicos
 helpcenter.general.nav_guides: Guías
@@ -472,7 +473,7 @@ helpcenter.general.nav_members: 'Directorio de miembros'
 helpcenter.general.nav_news: Novedades
 helpcenter.general.nav_news_desc: 'Ver todas las publicaciones de novedades'
 helpcenter.general.nav_news_desc_short: 'Ver todas las novedades'
-helpcenter.general.nav_newticket: 'Contacta con nosotros'
+helpcenter.general.nav_newticket: 'Contacto'
 helpcenter.general.nav_profile: Perfil
 helpcenter.general.nav_register: 'Registro'
 helpcenter.general.nav_support_center: 'Centro de asistencia'
@@ -499,7 +500,7 @@ helpcenter.general.prop_rating_asc: 'Más bajo primero'
 helpcenter.general.prop_rating_desc: 'Mejor valorados primero'
 helpcenter.general.prop_views_asc: 'Menos vistas primero'
 helpcenter.general.prop_views_desc: 'La mayoría de las vistas primero'
-helpcenter.general.published: 'Primera publicación'
+helpcenter.general.published: 'Publicado'
 helpcenter.general.published_by: 'Publicado por <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Poco útil
 helpcenter.general.rate_page_positive: De ayuda
@@ -539,7 +540,7 @@ helpcenter.general.your_comment_label: 'Tu comentario'
 helpcenter.general.your_comment_optional_label: 'Tu comentario (opcional)'
 helpcenter.general.download_pdf: 'Descargar PDF'
 helpcenter.knowledgebase.featured_articles: 'Artículos destacados'
-helpcenter.label.search: Búsqueda
+helpcenter.label.search: 'Buscar'
 helpcenter.members.activity_commented_on: 'Ha comentado en'
 helpcenter.members.activity_created_topic: 'Ha creado un tema'
 helpcenter.members.activity_down_voted: 'Ha marcado como poco útil'
@@ -652,7 +653,7 @@ helpcenter.messenger.tickets_form_name: Nombre
 helpcenter.messenger.tickets_form_or: o
 helpcenter.messenger.tickets_form_priority: Prioridad
 helpcenter.messenger.tickets_form_product: Producto
-helpcenter.messenger.tickets_form_required: Obligatorio
+helpcenter.messenger.tickets_form_required: 'Requerido'
 helpcenter.messenger.tickets_form_saving: 'Estamos guardando tu solicitud. Espera, por favor'
 helpcenter.messenger.tickets_form_select: Seleccionar
 helpcenter.messenger.tickets_form_submit: Enviar
@@ -711,7 +712,7 @@ helpcenter.tickets.my_tickets: 'Mis solicitudes'
 helpcenter.tickets.need_login_desc: 'Por favor, dirígete a <a href="{login_url}" target="_blank">la página de inicio</a> para enviarnos un mensaje'
 helpcenter.tickets.need_login_title: 'Necesitas iniciar sesión para abrir un ticket.'
 helpcenter.tickets.new_intro: 'Por favor, complete el formulario y uno de nuestros agentes le responderá por correo electrónico lo antes posible'
-helpcenter.tickets.new_section_title: 'Contáctenos'
+helpcenter.tickets.new_section_title: 'Contacto'
 helpcenter.tickets.new_ticket_button: 'Crear un nuevo ticket'
 helpcenter.tickets.no_participants: 'No participantes'
 helpcenter.tickets.not_allowed_desc: 'Lo sentimos, nuestros agentes no pueden tomar su chat en este momento.'

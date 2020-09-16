@@ -42,6 +42,7 @@ helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Ingen matchande community topic'
 helpcenter.community.rate_forbidden: 'Du har inte behörighet att rösta'
 helpcenter.direct_messages.reply_message: Meddelande
+helpcenter.downloads.download_action: 'Ladda ned'
 helpcenter.downloads.file_name: 'Filnamn'
 helpcenter.downloads.file_size: 'Filstorlek'
 helpcenter.downloads.no_files: 'Inga filer'
@@ -104,6 +105,7 @@ helpcenter.error.403_title: 'Ingen behörighet'
 helpcenter.error.404_desc: 'Tyvärr, sidan kan inte hittas.'
 helpcenter.error.404_title: 'Hittades Inte'
 helpcenter.error.an_error_occured: 'Ett fel inträffade'
+helpcenter.error.contact_us: 'Kontakta Oss'
 helpcenter.error.general_title: 'Ett fel inträffade'
 helpcenter.error.permission_denied_title: 'Du är inte tillåten att göra detta'
 helpcenter.flashes.article_unsubscribe: 'Du har sagt upp prenumerationen på denna artikel.'
@@ -128,6 +130,7 @@ helpcenter.forms.error_required: 'Värdet måste anges'
 helpcenter.forms.error_banned_email: 'E-post är förbjudet.'
 helpcenter.forms.label_drag_overlay: 'Infoga bilden i ditt meddelande.'
 helpcenter.forms.label_email: E-post
+helpcenter.forms.label_reset: 'Nollställ'
 helpcenter.forms.label_save: Spara
 helpcenter.forms.label_submit: Skicka
 helpcenter.general.add_comment: 'Posta en kommentar'
@@ -141,25 +144,28 @@ helpcenter.general.agent_bar_agent_home: 'Agent hem'
 helpcenter.general.agent_bar_agent_kb: 'Hantera kunskapsbas'
 helpcenter.general.agent_bar_agent_news: 'Hantera nyheter'
 helpcenter.general.agents: Agenter
-helpcenter.general.attachments: Bifogade filer
+helpcenter.general.attachments: 'Bilagor'
+helpcenter.general.cc: 'CC'
 helpcenter.general.chat: Chatt
 helpcenter.general.comments: Kommentarer
 helpcenter.general.drag_and_drop: 'Dra och släpp'
-helpcenter.general.email_address: 'E-post'
+helpcenter.general.email_address: 'E-postadress'
 helpcenter.general.everything: Allt
 helpcenter.general.impersonation_mode: 'Personifieringsläge'
 helpcenter.general.label_search_enter_label: 'Vänligen ange en etikett att söka efter'
 helpcenter.general.labels: Taggar
 helpcenter.general.last_activity: 'Senaste aktiviteten'
+helpcenter.general.last_updated: 'Senast Uppdaterad'
 helpcenter.general.last_update_by: 'Senast uppdaterat: <strong>{date_updated, date, medium}</strong>av <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Logga in'
 helpcenter.general.name: Namn
-helpcenter.general.nav_contact: 'Kontakta oss'
+helpcenter.general.nav_contact: 'Kontakta Oss'
+helpcenter.general.nav_downloads: 'Filer'
 helpcenter.general.nav_downloads_desc: 'Bläddra bland filerna'
 helpcenter.general.nav_guides: Guider
 helpcenter.general.nav_guides_desc: 'Visa alla guider'
 helpcenter.general.nav_kb: Kunskapsbas
-helpcenter.general.nav_newticket: 'Kontakta oss'
+helpcenter.general.nav_newticket: 'Kontakta Oss'
 helpcenter.general.no_search_query: 'Vänligen skriv en söksträng i sökrutan.'
 helpcenter.general.no_search_results_general: 'Inga resultat hittades'
 helpcenter.general.password: Lösenord
@@ -174,8 +180,9 @@ helpcenter.general.prop_rating_asc: 'Lägst rankade först'
 helpcenter.general.prop_rating_desc: 'Högst rankade först'
 helpcenter.general.prop_views_asc: 'Minst visade först'
 helpcenter.general.prop_views_desc: 'Mest visade först'
+helpcenter.general.published: 'Publicerad'
 helpcenter.general.rate_page_negative: Oanvändbar
-helpcenter.general.rate_page_positive: Användbar
+helpcenter.general.rate_page_positive: Hjälpfull
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} av {vote_count} personer tyckte att sidan var användbar'
 helpcenter.general.related_content: 'Liknande innehåll'
 helpcenter.general.remove: ta bort
@@ -193,18 +200,26 @@ helpcenter.general.you: Du
 helpcenter.label.search: Sök
 helpcenter.members.language: Språk
 helpcenter.members.timezone: Tidszon
+helpcenter.messenger.blocks_continue_chat_link: 'Fortsätt'
 helpcenter.messenger.blocks_continue_chat_title: 'Fortsätt med befintlig chatt'
 helpcenter.messenger.blocks_knowledgebase_title: Kunskapsbas
 helpcenter.messenger.blocks_search_block_no_results: 'Inga resultat för {query}'
+helpcenter.messenger.blocks_search_block_search_label: 'Sök'
 helpcenter.messenger.blocks_search_block_see_more_results: 'Visa fler resultat'
 helpcenter.messenger.blocks_ticket_button: 'Skicka ett nytt ärende'
 helpcenter.messenger.blocks_ticket_description: 'Skicka en förfrågan via kontaktformuläret'
 helpcenter.messenger.blocks_ticket_title: 'Skicka ett ärende'
 helpcenter.messenger.greeting: 'Kontakta oss'
+helpcenter.messenger.loading: 'Laddar'
 helpcenter.messenger.tickets_form_add_attachment: 'Bifoga bilaga'
 helpcenter.messenger.tickets_form_header: 'Nytt ärende'
+helpcenter.messenger.tickets_form_message: 'Meddelande'
+helpcenter.messenger.tickets_form_name: 'Namn'
 helpcenter.messenger.tickets_form_or: eller
+helpcenter.messenger.tickets_form_required: 'Obligatorisk'
 helpcenter.messenger.tickets_form_saving: 'Vänta. Vi sparar ditt ärende'
+helpcenter.messenger.tickets_form_select: 'Välj'
+helpcenter.messenger.tickets_form_submit: 'Skicka'
 helpcenter.messenger.tickets_form_thanks: 'Tack för att du kontaktar oss. Någon från teamet kommer att kontakta dig via e-post.'
 helpcenter.messenger.tickets_form_thanks_header: 'Din förfrågan på väg'
 helpcenter.news.none: 'Det finns inga nyheter ännu'
@@ -214,6 +229,7 @@ helpcenter.profile.account_disabled_message: 'Ditt konto är för närvarande in
 helpcenter.profile.your_password: 'Ditt lösenord'
 helpcenter.search.search_results: 'Sökresultat'
 helpcenter.search.showing_results_for: 'Visar resultat från {type} för <span>"{query}"</span>'
+helpcenter.sidebar.article_posted_by: 'Författare'
 helpcenter.tickets.form_changed_notice: 'Nya fält har lagts till i formuläret. Vänligen kontrollera dessa och skicka sedan formuläret igen.'
 helpcenter.tickets.guest_thank_you_desc: 'Tack för att du kontaktar oss! Vi har skickat dig ett e-postmeddelande med instruktioner om hur du kan hantera ditt ärende.'
 helpcenter.tickets.guest_thank_you_title: 'Tack'

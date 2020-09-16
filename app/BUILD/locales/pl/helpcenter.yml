@@ -169,6 +169,7 @@ helpcenter.duration_short.weeks: T
 helpcenter.duration_short.years: 'R'
 helpcenter.emails.account_disabled_message: 'Twoje konto zostało zablokowane. Nie możesz się zalogować ani korzystać ze zgłoszeń i czatu.'
 helpcenter.emails.auto_close: 'Twoje zgłoszenie "{subject}" zostanie niedługo zamknięte, ponieważ nie pisałeś ostatnio w jego sprawie. Jeżeli potrzebujesz dalszej pomocy, odpowiedz na tę wiadomość.'
+helpcenter.downloads.download_action: 'Pobierz'
 helpcenter.emails.chat_transcript: 'Dziękujemy z wspólny czat. Oto zapis twojego czatu.'
 helpcenter.emails.chat_transcript_subject: 'Zapis czatu'
 helpcenter.emails.comment_approved: 'Twój komentarz został opublikowany.'
@@ -275,7 +276,8 @@ helpcenter.error.400_title: 'Niewłaściwe polecenie'
 helpcenter.error.403_desc: 'Przepraszamy, ale nie masz dostępu do tej strony.'
 helpcenter.error.403_title: 'Brak dostępu'
 helpcenter.error.404_desc: 'Przepraszamy, ale nie możemy znaleźć tej strony.'
-helpcenter.error.404_title: 'Nie znaleziono'
+helpcenter.error.404_title: 'Nie Znaleziono'
+helpcenter.error.contact_us: 'Kontakt'
 helpcenter.error.an_error_occured: 'Wystąpił błąd'
 helpcenter.error.an_error_occured_desc: 'Przykro nam, ale przy ładowaniu strony wystąpił błąd. Spróbuj ponownie później lub <a href="{contact_link}">skontaktuj się z nami</a>.'
 helpcenter.error.contact_us: 'Skontaktuj się z nami'
@@ -342,15 +344,15 @@ helpcenter.flashes.user_registered_verified_authenticated: 'Dziękujemy. Twój a
 helpcenter.flashes.user_removed_an_email: 'Usunięto adres e-mail {email}.'
 helpcenter.flashes.user_resend_email_verify: 'Wiadomość z potwierdzeniem została ponownie wysłana na twój adres e-mail.'
 helpcenter.flashes.user_updated_profile: 'Twój profil został zaktualizowany.'
-helpcenter.flashes.usersource_new_add_email_verified: 'Dziękujemy za weryfikację adresu e-mail. Twoje konto zostało aktywowane.'
-helpcenter.flashes.usersource_new_add_email_verify: 'Musimy zweryfikować twój adres e-mail zanim stworzymy twoje konto. Sprawdź swoją skrzynkę odbiorczą, wysłaliśmy ci link weryfikujący.'
+helpcenter.flashes.usersource_new_add_email_verified: 'Dziękujemy za weryfikacje twojego adresu email. Twoje konto jest teraz aktywne.'
+helpcenter.flashes.usersource_new_add_email_verify: 'Musimy zweryfikować twój adres email zanim utworzymy twoje konto. Sprawdź swoją skrzynkę odbiorczą email, wysłaliśmy tam link weryfikujący.'
 helpcenter.forms.date_picker_next_month: 'Następny miesiąc'
 helpcenter.forms.date_picker_previous_month: 'Poprzedni miesiąc'
 helpcenter.forms.date_picker_time: Godzina
 helpcenter.forms.delete_question: 'Usunąć?'
 helpcenter.forms.error_captcha: 'Wpisano nieprawidłowy kod CAPTCHA'
 helpcenter.forms.error_dupe_email: 'Ten adres e-mail jest już przypisany do innego konta.'
-helpcenter.forms.error_email_required: 'Musisz podać adres e-mail'
+helpcenter.forms.error_email_required: 'Musisz podać swój adres email'
 helpcenter.forms.error_password_current: 'To jest twoje obecne hasło'
 helpcenter.forms.error_password_forbid_reuse: 'Nie możesz ponownie skorzystać z hasła, którego już użyłeś'
 helpcenter.forms.error_password_min_length: '{count, plural, one {Minimum # znak} few {Minimum # znaki} many {Minimum # znaki} other {Minimum # znaków}}'
@@ -365,7 +367,7 @@ helpcenter.forms.label_drag_overlay: 'Zamieść obraz w swojej wiadomości.'
 helpcenter.forms.label_email: Adres e-mail
 helpcenter.forms.label_password: Hasło
 helpcenter.forms.label_password_confirm: Potwierdź
-helpcenter.forms.label_reset: Wyczyść
+helpcenter.forms.label_reset: 'Resetuj'
 helpcenter.forms.label_save: Zapisz
 helpcenter.forms.label_submit: Wyślij
 helpcenter.forms.label_timezone: Strefa czasowa
@@ -396,7 +398,7 @@ helpcenter.general.btn_manage_subscriptions: 'Zarządzaj subskrypcjami'
 helpcenter.general.cancel_action: Anuluj
 helpcenter.general.categories: Kategorie
 helpcenter.general.category: Kategoria
-helpcenter.general.cc: CC
+helpcenter.general.cc: 'Kopia do'
 helpcenter.general.chat: Czat
 helpcenter.general.chats: Czaty
 helpcenter.general.clear_all: 'Wyczyść wszystko'
@@ -419,9 +421,9 @@ helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.department: Dział
 helpcenter.general.drag_and_drop: 'Przeciągnij i upuść'
 helpcenter.general.edit_this_page: 'Edytuj stronę'
-helpcenter.general.email_address: 'Adresy e-mail'
+helpcenter.general.email_address: 'Adres email'
 helpcenter.general.eula: EULA
-helpcenter.general.everything: Wszystko
+helpcenter.general.everything: Wszystkie
 helpcenter.general.expand: Rozwiń
 helpcenter.general.file_type: Plik
 helpcenter.general.files_type: Pliki
@@ -445,7 +447,7 @@ helpcenter.general.last_24_hours: 'Ostatnie 24 godziny'
 helpcenter.general.last_6_month: 'Ostatnie 6 miesięcy'
 helpcenter.general.last_activity: 'Ostatnia aktywność'
 helpcenter.general.last_month: 'Ostatni miesiąc'
-helpcenter.general.last_updated: 'Ostatnia aktualizacja'
+helpcenter.general.last_updated: 'Ostatnio Aktualizowano'
 helpcenter.general.last_update_by: 'Ostatnia aktualizacja: <strong>{date_updated, date, medium}</strong> przez <strong>{person_name}</strong>'
 helpcenter.general.last_week: 'Ostatni tydzień'
 helpcenter.general.last_year: 'Ostatni rok'
@@ -453,11 +455,11 @@ helpcenter.general.latest_status_changes: 'Ostatnie zmiany statusu'
 helpcenter.general.log_in: 'Zaloguj'
 helpcenter.general.message: Wiadomość
 helpcenter.general.more_than_1_year: 'Ponad rok temu'
-helpcenter.general.name: Imię i nazwisko
+helpcenter.general.name: 'Nazwisko/Nazwa'
 helpcenter.general.nav_chat: Czaty
 helpcenter.general.nav_community: Grupa
 helpcenter.general.nav_community_desc: 'Zobacz wszystkie tematy'
-helpcenter.general.nav_contact: 'Skontaktuj się z nami'
+helpcenter.general.nav_contact: 'Kontakt'
 helpcenter.general.nav_contact_desc: 'Skontaktuj się z nami, by uzyskać pomoc'
 helpcenter.general.nav_direct_messages: Wiadomości
 helpcenter.general.nav_downloads: Pliki
@@ -472,13 +474,13 @@ helpcenter.general.nav_members: 'Rada członków'
 helpcenter.general.nav_news: Aktualności
 helpcenter.general.nav_news_desc: 'Zobacz wszystkie najnowsze aktualności'
 helpcenter.general.nav_news_desc_short: 'Zobacz wszystkie aktualności'
-helpcenter.general.nav_newticket: 'Skontaktuj się z nami'
+helpcenter.general.nav_newticket: 'Kontakt'
 helpcenter.general.nav_profile: Profil
 helpcenter.general.nav_register: 'Zarejestruj się'
 helpcenter.general.nav_support_center: 'Centrum wsparcia'
 helpcenter.general.nav_your_account: 'Twoje konto'
 helpcenter.general.next: Dalej
-helpcenter.general.no_search_query: 'Proszę wpisać wyszukiwany tekst w okienku wyszukiwania.'
+helpcenter.general.no_search_query: 'Proszę podać wyszukiwany tekst w okienku wyszukiwania.'
 helpcenter.general.no_search_results_general: 'Brak wyników'
 helpcenter.general.or: lub
 helpcenter.general.pagination_page: 'Strona {page}'
@@ -502,6 +504,7 @@ helpcenter.general.prop_views_desc: 'Od największej liczby wyświetleń'
 helpcenter.general.published: 'Opublikowano'
 helpcenter.general.published_by: 'Opublikowane przez <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Nieprzydatne
+helpcenter.general.published: 'Opublikowano'
 helpcenter.general.rate_page_positive: Przydatne
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} na {vote_count} osób uznała tę stronę za przydatną'
 helpcenter.general.related_content: 'Powiązane'
@@ -571,7 +574,7 @@ helpcenter.messenger.blocks_continue_chat_link: Kontynuuj
 helpcenter.messenger.blocks_continue_chat_title: 'Kontynuuj istniejący czat'
 helpcenter.messenger.blocks_knowledgebase_title: Baza wiedzy
 helpcenter.messenger.blocks_search_block_no_results: 'Brak wyników dla {query}'
-helpcenter.messenger.blocks_search_block_search_label: Wyszukaj
+helpcenter.messenger.blocks_search_block_search_label: 'Wyszukiwanie'
 helpcenter.messenger.blocks_search_block_see_more_results: 'Zobacz więcej wyników'
 helpcenter.messenger.blocks_start_chat_button: 'Rozpocznij nową rozmowę'
 helpcenter.messenger.blocks_start_chat_description: 'Uruchom czat z jednym z naszych agentów'
@@ -619,7 +622,7 @@ helpcenter.messenger.files_on_this_chat: 'Pliki w tym Czacie'
 helpcenter.messenger.greeting: 'Skontaktuj się'
 helpcenter.messenger.invalid_validation_code: 'Nieprawidłowy kod zatwierdzający'
 helpcenter.messenger.linked_ticket_label: 'Przypisane do zgłoszenia'
-helpcenter.messenger.loading: Ładowanie
+helpcenter.messenger.loading: 'Pobieranie'
 helpcenter.messenger.message_agent_timeout: 'Przepraszamy, {name} musiał się rozłączyć. Prosimy o chwilę cierpliwości, wyszukujemy innego agenta.'
 helpcenter.messenger.message_assigned: 'Czat przydzielono {name}.'
 helpcenter.messenger.message_chatting_with: 'Rozmawiasz na czacie z'
@@ -648,12 +651,12 @@ helpcenter.messenger.tickets_form_add_attachment: 'Dodaj załącznik'
 helpcenter.messenger.tickets_form_back: Wróć
 helpcenter.messenger.tickets_form_header: 'Nowe zgłoszenie'
 helpcenter.messenger.tickets_form_message: Wiadomość
-helpcenter.messenger.tickets_form_name: Imię i nazwisko
+helpcenter.messenger.tickets_form_name: 'Nazwisko/Nazwa'
 helpcenter.messenger.tickets_form_email: Adres e-mail
 helpcenter.messenger.tickets_form_or: lub
 helpcenter.messenger.tickets_form_priority: Priorytet
 helpcenter.messenger.tickets_form_product: Produkt
-helpcenter.messenger.tickets_form_required: Wymagane
+helpcenter.messenger.tickets_form_required: 'Wymagany'
 helpcenter.messenger.tickets_form_saving: 'Zapisujemy twoje zgłoszenie. Prosimy o chwilę cierpliwości'
 helpcenter.messenger.tickets_form_select: Wybierz
 helpcenter.messenger.tickets_form_submit: Wyślij
@@ -672,12 +675,12 @@ helpcenter.news.filter_cat: 'Wybierz kategorię'
 helpcenter.news.filter_date: 'Wybierz datę'
 helpcenter.news.news_post_object: 'Wpis aktualności'
 helpcenter.news.news_type: 'Kategoria'
-helpcenter.news.none: 'Brak aktualności'
-helpcenter.news.recent_title: 'Ostatnie Aktualności'
+helpcenter.news.none: 'Na razie brak aktualizacji'
+helpcenter.news.recent_title: 'Ostatnie Aktualizacje'
 helpcenter.news.section_title: Aktualności
 helpcenter.news.see_all_news: 'Zobacz wszystkie aktualności'
-helpcenter.news.view_as_agent: 'Masz dostęp do tej strony jako pracownik. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
-helpcenter.profile.account_disabled_message: 'Twoje konto zostało zablokowane. Nie możesz się zalogować ani korzystać ze zgłoszeń i czatu.'
+helpcenter.news.view_as_agent: 'Masz dostęp do tej strony, bo jesteś pracownikiem. Pozostali użytkownicy nie będą mogli korzystać z tej strony.'
+helpcenter.profile.account_disabled_message: 'Twoje konto jest czasowo zablokowane. Nie możesz się zalogować, pracować z petycjami i korzystać z czatu.'
 helpcenter.profile.your_account: 'Twoje konto'
 helpcenter.profile.your_email_addresses: 'Twoje adresy e-mail'
 helpcenter.profile.your_password: 'Twoje hasło'
@@ -691,8 +694,8 @@ helpcenter.tickets.close_ticket: 'Rozwiąż zgłoszenie'
 helpcenter.tickets.feedback_message_leave_comment: 'Lub napisz komentarz'
 helpcenter.tickets.feedback_message_your_comment: 'Twój komentarz'
 helpcenter.tickets.filter_by: 'Filtruj przez'
-helpcenter.tickets.form_changed_notice: 'Do formularz dodano nowe pola. Sprawdź je i ponownie wyślij formularz.'
-helpcenter.tickets.guest_thank_you_desc: 'Dziękujemy za kontakt. Wysłaliśmy ci wiadomość e-mail z informacjami jak dotyczącymi zarządzania zgłoszeniami.'
+helpcenter.tickets.form_changed_notice: 'Nowe pola zostały dodane do formularza. Zwróć uwagę na te pola i wyślij formularz ponownie.'
+helpcenter.tickets.guest_thank_you_desc: 'Dziękujemy za kontakt z nami. Wysłaliśmy ci wiadomość email z informacjami jak zarządzać swoimi zgłoszeniami.'
 helpcenter.tickets.guest_thank_you_title: 'Dziękujemy'
 helpcenter.tickets.list_agent: 'Przypisany pracownik'
 helpcenter.tickets.list_date_created: 'Data utworzenia'
@@ -705,15 +708,15 @@ helpcenter.tickets.list_status_agent: 'Odpowiemy'
 helpcenter.tickets.list_status_resolved: Rozwiązane
 helpcenter.tickets.list_status_user: 'Odpowiedź wymagana'
 helpcenter.tickets.list_subject: Temat
-helpcenter.tickets.list_ticket_ref: Numer referencyjny
+helpcenter.tickets.list_ticket_ref: Referencja
 helpcenter.tickets.mark_unresolved: 'Otwórz ponownie zgłoszenie'
 helpcenter.tickets.my_messages: 'Moje wiadomości'
 helpcenter.tickets.my_tickets: 'Moje zgłoszenia'
 helpcenter.tickets.need_login_desc: 'Przejdź do <a href="{login_url}" target="_blank">strony logowania</a>, aby wysłać nam wiadomość'
-helpcenter.tickets.need_login_title: 'Musisz się zalogować, aby stworzyć zgłoszenie'
+helpcenter.tickets.need_login_title: 'Musisz się zalogować, aby utworzyć zgłoszenie'
 helpcenter.tickets.new_intro: 'Wypełnij formularz zgłoszenia. Jeden z naszych pracowników wkrótce się z tobą skontaktuje.'
-helpcenter.tickets.new_section_title: 'Skontaktuj się z nami'
-helpcenter.tickets.new_ticket_button: 'Stwórz nowe zgłoszenie'
+helpcenter.tickets.new_section_title: 'Kontakt'
+helpcenter.tickets.new_ticket_button: 'Utwórz nowy bilet'
 helpcenter.tickets.no_participants: 'Brak uczestników'
 helpcenter.tickets.not_allowed_desc: 'Przepraszamy, nasi agenci chwilowo nie mogą przyjąć twojego czatu'
 helpcenter.tickets.not_allowed_title: 'Zaraz wracamy'

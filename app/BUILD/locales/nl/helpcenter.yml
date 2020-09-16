@@ -52,6 +52,7 @@ helpcenter.community.form_topic_title: Titel
 helpcenter.community.no_matching: 'Geen overeenkomstige gemeenschapsonderwerpen'
 helpcenter.community.rate_forbidden: 'U mag niet stemmen'
 helpcenter.direct_messages.reply_message: Bericht
+helpcenter.downloads.download_action: 'Downloaden'
 helpcenter.downloads.file_name: 'Bestandsnaam'
 helpcenter.downloads.file_size: 'Bestandsgrootte'
 helpcenter.downloads.no_files: 'Geen bestanden'
@@ -112,7 +113,8 @@ helpcenter.error.400_title: 'Foutief verzoek'
 helpcenter.error.403_desc: 'Sorry, maar u heeft geen toestemming op deze pagina te bekijken.'
 helpcenter.error.403_title: 'Geen toegang'
 helpcenter.error.404_desc: 'Sorry, we konden deze pagina niet vinden.'
-helpcenter.error.404_title: 'Niet gevonden'
+helpcenter.error.404_title: 'Niet Gevonden'
+helpcenter.error.contact_us: 'Neem Contact Met Ons Op'
 helpcenter.error.an_error_occured: 'Er is een fout opgetreden'
 helpcenter.error.general_title: 'Er is een fout opgetreden'
 helpcenter.error.permission_denied_title: 'Dit is niet toegestaan'
@@ -138,6 +140,7 @@ helpcenter.forms.error_required: 'Deze waarde is vereist'
 helpcenter.forms.error_banned_email: 'Uw e-mail is geweigerd.'
 helpcenter.forms.label_drag_overlay: 'Voeg deze afbeelding aan uw bericht toe.'
 helpcenter.forms.label_email: E-mail
+helpcenter.forms.label_reset: 'Herstellen'
 helpcenter.forms.label_save: Opslaan
 helpcenter.forms.label_submit: Verzenden
 helpcenter.general.add_comment: 'Reactie toevoegen'
@@ -154,6 +157,7 @@ helpcenter.general.agent_bar_agent_kb: 'Kennisbank beheren'
 helpcenter.general.agent_bar_agent_news: 'Nieuws beheren'
 helpcenter.general.agents: Medewerkers
 helpcenter.general.attachments: Bijlagen
+helpcenter.general.cc: 'CC'
 helpcenter.general.comments: Reacties
 helpcenter.general.date_day_month: '{date, date, d MMM}'
 helpcenter.general.drag_and_drop: 'Drag and drop'
@@ -163,16 +167,18 @@ helpcenter.general.impersonation_mode: 'Verpersoonlijking modus'
 helpcenter.general.label_search_enter_label: 'Geef een label om naar te zoek op'
 helpcenter.general.labels: Labels
 helpcenter.general.last_activity: 'Laatste activiteit'
+helpcenter.general.last_updated: 'Laatst Gewijzigd'
 helpcenter.general.last_update_by: 'Voor het laatst bijgewerkt door: <strong>{date_updated, date, medium}</strong> door <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Inloggen'
 helpcenter.general.name: Naam
-helpcenter.general.nav_contact: 'Neem contact met ons op'
+helpcenter.general.nav_contact: 'Neem Contact Met Ons Op'
+helpcenter.general.nav_downloads: 'Bestanden'
 helpcenter.general.nav_downloads_desc: 'Door onze bestanden bladeren'
-helpcenter.general.nav_guides: Handleidingen
+helpcenter.general.nav_guides: Gidsen
 helpcenter.general.nav_guides_desc: 'Alle handleidingen weergeven'
 helpcenter.general.nav_kb: Kennisbank
-helpcenter.general.nav_newticket: 'Neem contact met ons op'
-helpcenter.general.no_search_query: 'Typ een zoekopdracht in het zoekvenster.'
+helpcenter.general.nav_newticket: 'Neem Contact Met Ons Op'
+helpcenter.general.no_search_query: 'Typ een zoekterm in het zoekveld.'
 helpcenter.general.no_search_results_general: 'Geen resultaten gevonden'
 helpcenter.general.password: Wachtwoord
 helpcenter.general.print: Printen
@@ -186,8 +192,9 @@ helpcenter.general.prop_rating_asc: 'Laagst beoordeeld eerst'
 helpcenter.general.prop_rating_desc: 'Hoogst beoordeeld eerst'
 helpcenter.general.prop_views_asc: 'Minste weergaven eerst'
 helpcenter.general.prop_views_desc: 'Meeste weergaven eerst'
+helpcenter.general.published: 'Gepubliceeerd'
 helpcenter.general.rate_page_negative: Niet nuttig
-helpcenter.general.rate_page_positive: Nuttig
+helpcenter.general.rate_page_positive: Behulpzaam
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} van {vote_count} mensen vonden deze pagina nuttig'
 helpcenter.general.related_content: 'Gerelateerde inhoud'
 helpcenter.general.remove: verwijderen
@@ -204,6 +211,7 @@ helpcenter.general.you: U
 helpcenter.label.search: Zoeken
 helpcenter.members.language: Taal
 helpcenter.members.timezone: Tijdzone
+helpcenter.messenger.blocks_continue_chat_link: 'Doorgaan'
 helpcenter.messenger.blocks_continue_chat_title: 'Bestaande chat voortzetten'
 helpcenter.messenger.blocks_knowledgebase_title: Kennisbank
 helpcenter.messenger.blocks_search_block_no_results: 'Geen resultaten voor {query}'
@@ -215,11 +223,17 @@ helpcenter.messenger.blocks_ticket_title: 'Dien een ticket in'
 helpcenter.messenger.chat_rating_block_buttons_helpful: Nuttig
 helpcenter.messenger.chat_rating_block_buttons_unhelpful: Niet nuttig
 helpcenter.messenger.greeting: 'Neem contact op'
+helpcenter.messenger.loading: 'Aan het laden'
 helpcenter.messenger.proactive_greeting: 'Neem contact op'
 helpcenter.messenger.tickets_form_add_attachment: 'Bijlage toevoegen'
 helpcenter.messenger.tickets_form_header: 'Nieuw ticket'
+helpcenter.messenger.tickets_form_message: 'Bericht'
+helpcenter.messenger.tickets_form_name: 'Naam'
 helpcenter.messenger.tickets_form_or: of
+helpcenter.messenger.tickets_form_required: 'Vereist'
 helpcenter.messenger.tickets_form_saving: 'Uw ticket wordt opgeslagen. Moment geduld a.u.b.'
+helpcenter.messenger.tickets_form_select: 'Selecteren'
+helpcenter.messenger.tickets_form_submit: Inzenden
 helpcenter.messenger.tickets_form_thanks: 'Dank u voor uw mail. Een van onze teamleden zal zo spoedig mogelijk contact met u opnemen.'
 helpcenter.messenger.tickets_form_thanks_header: 'Uw aanvraag is in behandeling'
 helpcenter.news.none: 'Nog geen nieuws'
@@ -229,6 +243,7 @@ helpcenter.profile.account_disabled_message: 'Uw account is tijdelijk geblokkeer
 helpcenter.profile.your_password: 'Uw wachtwoord'
 helpcenter.search.search_results: 'Zoekresultaten'
 helpcenter.search.showing_results_for: 'Resultaten weergeven in {type} voor: <span>“{query}”</span>'
+helpcenter.sidebar.article_posted_by: 'Auteur'
 helpcenter.tickets.form_changed_notice: 'Nieuwe velden zijn aan het formulier toegevoegd. Controleer deze velden en verstuur het formulier dan nogmaals.'
 helpcenter.tickets.guest_thank_you_desc: 'Bedankt dat u contact met ons opneemt. We hebben u een e-mail met instructies gestuurd over hoe u uw ticket beheert bij ons.'
 helpcenter.tickets.guest_thank_you_title: 'Bedankt'
@@ -243,7 +258,7 @@ helpcenter.tickets.list_subject: Onderwerp
 helpcenter.tickets.list_ticket_ref: Referentie
 helpcenter.tickets.need_login_title: 'U moet inloggen op een ticket te openen'
 helpcenter.tickets.new_intro: 'Vul dit formulier in en één van onze medewerkers zal u zo spoedig mogelijk via mail antwoorden.'
-helpcenter.tickets.new_section_title: 'Neem contact met ons op'
+helpcenter.tickets.new_section_title: 'Neem Contact Met Ons Op'
 helpcenter.tickets.new_ticket_button: 'Maak een nieuw ticket'
 helpcenter.tickets.no_participants: 'Geen deelnemers'
 helpcenter.tickets.not_allowed_desc: 'Sorry, onze medewerker zijn niet in de gelegenheid om uw chat op dit moment aan te nemen'

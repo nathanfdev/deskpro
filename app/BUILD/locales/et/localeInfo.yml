@@ -1,0 +1,11 @@
+id: estonian_et
+name: Estonian
+nameLocal: Eesti keel
+locale: et
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: '(i = 1 && v = 0) ? 1 : 2'
+  categories:
+    - one
+    - other
