@@ -118,7 +118,7 @@ helpcenter.community.activity_voted: 'Zagłosowane'
 helpcenter.community.category: Kategoria
 helpcenter.community.create_topic: Stwórz
 helpcenter.community.create_topic_full: 'Stwórz {forum}'
-helpcenter.community.create_topic_in_forum: 'Zgoś {forum}'
+helpcenter.community.create_topic_in_forum: 'Zgłoś {forum}'
 helpcenter.community.error_login: 'Proszę się zalogować'
 helpcenter.community.featured_topics: 'Omawiane tematy'
 helpcenter.community.filters: Filtry
