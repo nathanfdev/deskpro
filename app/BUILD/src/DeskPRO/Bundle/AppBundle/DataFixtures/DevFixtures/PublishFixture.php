@@ -494,12 +494,12 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
 
         $topics = [
             [
-                'title'         => 'The Agent interface',
-                'content'       => '',
-                'content_input' => '',
-                'no_content'    => 1,
-                'guide_id'      => $guide->getId(),
-                'parent'        => null,
+                'title'            => 'The Agent interface',
+                'content'          => '',
+                'content_input'    => '',
+                'no_content'       => 1,
+                'guide_id'         => $guide->getId(),
+                'parent_id'        => null,
             ],
             [
                 'title'   => 'Introduction and Overview',
@@ -550,9 +550,9 @@ The apps are: [Tickets]({{ content(topic,9) }})
 *   {{ content_link(topic,265) }} - create and manage the help content on your web Portal; this can include News posts, Downloads, Guides and Knowledgebase Articles
 *   {{ content_link(topic,282) }} - keep track of any Tasks that you or your fellow Agents need to carry out.
 CONTENT,
-                'no_content' => 0,
-                'guide_id'   => $guide->getId(),
-                'parent'     => 1,
+                'no_content'    => 0,
+                'guide_id'      => $guide->getId(),
+                'parent_id'     => 1,
             ],
             [
                 'title'   => 'Header',
@@ -777,9 +777,9 @@ If your organization uses Deskpro On-Premise and your Admin's have not yet insta
 *   **Labels**
 :::
 CONTENT,
-                'no_content' => 0,
-                'guide_id'   => $guide->getId(),
-                'parent'     => 1,
+                'no_content'    => 0,
+                'guide_id'      => $guide->getId(),
+                'parent_id'     => 1,
             ],
             [
                 'title'   => 'Filter pane',
@@ -842,9 +842,9 @@ Mouse over the collapsed filter pane to temporarily expand it and select a diffe
 
 Clicking the lock keeps the filter pane expanded.
 CONTENT,
-                'no_content' => 0,
-                'guide_id'   => $guide->getId(),
-                'parent'     => 1,
+                'no_content'    => 0,
+                'guide_id'      => $guide->getId(),
+                'parent_id'     => 1,
             ],
             [
                 'title'   => 'List pane',
@@ -962,9 +962,9 @@ You can change the relative size of the list and content pane. Simply mouse over
 
 ![Resize-List-Pane.jpg]({{ img(5571KBQJCPHJTQ5570219D01470/Resize-List-Pane.jpg) }} =300x100)
 CONTENT,
-                'no_content' => 0,
-                'guide_id'   => $guide->getId(),
-                'parent'     => 1,
+                'no_content'    => 0,
+                'guide_id'      => $guide->getId(),
+                'parent_id'     => 1,
             ],
             [
                 'title'   => 'Content pane',
@@ -1097,9 +1097,9 @@ You can change the relative size of the list and content panes. Simply mouse ove
 
 ![Resize-List-Pane.jpg]({{ img(5578ZNSGTZHMPG5577849369A1A/Resize-List-Pane.jpg) }} =300x100)
 CONTENT,
-                'no_content' => 0,
-                'guide_id'   => $guide->getId(),
-                'parent'     => 1,
+                'no_content'    => 0,
+                'guide_id'      => $guide->getId(),
+                'parent_id'     => 1,
             ],
             [
                 'title'   => '2-column view',
@@ -1172,9 +1172,9 @@ Items that are already open are shown in gray on the list. Clicking them focuses
 
 ![../_images/1-col-pulldown-open.png]({{ img(883XJZXRGHCJP882395FE1BD5/1-col-pulldown-open.png) }})
 CONTENT,
-                'no_content' => 0,
-                'guide_id'   => $guide->getId(),
-                'parent'     => 1,
+                'no_content'    => 0,
+                'guide_id'      => $guide->getId(),
+                'parent_id'     => 1,
             ],
             [
                 'title'   => 'Account preferences',
@@ -1337,25 +1337,25 @@ This option lets you control which {{ content_link(topic,376) }} (_Service Level
 
 You can hide SLAs just as you can with filters. You can also choose whether to show all the tickets for a certain SLA, or just those that are assigned to you or to your one of your teams.
 CONTENT,
-                'no_content' => 0,
-                'guide_id'   => $guide->getId(),
-                'parent'     => 1,
+                'no_content'    => 0,
+                'guide_id'      => $guide->getId(),
+                'parent_id'     => 1,
             ],
             [
-                'title'         => 'Tickets',
-                'content'       => '',
-                'content_input' => '',
-                'no_content'    => 1,
-                'guide_id'      => $guide->getId(),
-                'parent'        => null,
+                'title'            => 'Tickets',
+                'content'          => '',
+                'content_input'    => '',
+                'no_content'       => 1,
+                'guide_id'         => $guide->getId(),
+                'parent_id'        => null,
             ],
             [
-                'title'         => 'Elements of a ticket',
-                'content'       => '',
-                'content_input' => '',
-                'no_content'    => 1,
-                'guide_id'      => $guide->getId(),
-                'parent'        => 9,
+                'title'            => 'Elements of a ticket',
+                'content'          => '',
+                'content_input'    => '',
+                'no_content'       => 1,
+                'guide_id'         => $guide->getId(),
+                'parent_id'        => 9,
             ],
             [
                 'title'   => 'Ticket Properties',
@@ -1423,9 +1423,9 @@ You can find a particular ticket quickly by putting its ID or ref code into the 
 
 ![Ticket-ID.png]({{ img(1245WWNNJCPDAW1244164B1A79D/Ticket-ID.png) }})
 CONTENT,
-                'no_content' => 1,
-                'guide_id'   => $guide->getId(),
-                'parent'     => 10,
+                'no_content'    => 1,
+                'guide_id'      => $guide->getId(),
+                'parent_id'     => 10,
             ],
         ];
         $this->db->batchInsert('topics', $topics, true);
