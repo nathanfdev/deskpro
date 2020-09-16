@@ -1,9 +1,9 @@
 <div class="profile-contact-editor-wrapper mass-actions-overlay" style="display: none">
 	<div class="overlay-title">
 		<span class="close close-trigger"></span>
-		<h4>{{ phrase('agent.people.contact_info_for_x', {'name': person.display_name}) }}</h4>
+		<h4>{{ phrase('agent.people.contact_info') }}</h4>
 	</div>
-	<div class="overlay-content">
+	<div class="overlay-content" ng-non-bindable>
 		{% block list_extra %}{% endblock %}
 
 		{# ###########################################
