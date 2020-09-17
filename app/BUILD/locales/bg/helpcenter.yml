@@ -275,7 +275,8 @@ helpcenter.error.400_title: 'Лоша заявка'
 helpcenter.error.403_desc: 'Съжаляваме, но нямате достъп до тази страница'
 helpcenter.error.403_title: 'Нямате достъп'
 helpcenter.error.404_desc: 'За съжаление не можахме да намерим тази страница.'
-helpcenter.error.404_title: 'Не е намерен'
+helpcenter.error.404_title: 'Не Се Открива'
+helpcenter.error.contact_us: 'Свържете Се С Нас'
 helpcenter.error.an_error_occured: 'Възникна грешка'
 helpcenter.error.an_error_occured_desc: 'Съжаляваме, но възникна грешка при зареждането на страницата. Моля, опитайте отново малко по-късно или<a href="{contact_link}">се свържете с нас</a>.'
 helpcenter.error.contact_us: 'Контакти'
@@ -396,7 +397,7 @@ helpcenter.general.btn_manage_subscriptions: 'Управление на Ваши
 helpcenter.general.cancel_action: Отмени
 helpcenter.general.categories: Категории
 helpcenter.general.category: Категория
-helpcenter.general.cc: CC
+helpcenter.general.cc: 'Копие до'
 helpcenter.general.chat: Чат
 helpcenter.general.chats: Чатове
 helpcenter.general.clear_all: 'Изчисти всички'
@@ -419,7 +420,7 @@ helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.department: Отдел
 helpcenter.general.drag_and_drop: 'Плъзнете и пуснете'
 helpcenter.general.edit_this_page: 'Редактирай тази страница'
-helpcenter.general.email_address: 'Имейл'
+helpcenter.general.email_address: 'Електронна поща'
 helpcenter.general.eula: EULA
 helpcenter.general.everything: Всичко
 helpcenter.general.expand: Разшири
@@ -457,13 +458,13 @@ helpcenter.general.name: Име
 helpcenter.general.nav_chat: Чатове
 helpcenter.general.nav_community: Общност
 helpcenter.general.nav_community_desc: 'Виж всички теми'
-helpcenter.general.nav_contact: 'Свържете се с нас'
+helpcenter.general.nav_contact: 'Свържете Се С Нас'
 helpcenter.general.nav_contact_desc: 'Свържи се с нас'
 helpcenter.general.nav_direct_messages: Съобщения
-helpcenter.general.nav_downloads: Файлове
+helpcenter.general.nav_downloads: 'Документи'
 helpcenter.general.nav_downloads_desc: 'Разгледайте нашите файлове'
 helpcenter.general.nav_emails: Имейли
-helpcenter.general.nav_guides: Ръководства
+helpcenter.general.nav_guides: Упътвания
 helpcenter.general.nav_guides_desc: 'Вижте всички ръководства'
 helpcenter.general.nav_kb: База знания
 helpcenter.general.nav_kb_desc: 'Виж всички в помощния център'
@@ -472,13 +473,13 @@ helpcenter.general.nav_members: 'Директория на членовете'
 helpcenter.general.nav_news: Новини
 helpcenter.general.nav_news_desc: 'Виж всички публикации в новини'
 helpcenter.general.nav_news_desc_short: 'Виж всички новини'
-helpcenter.general.nav_newticket: 'Свържете се с нас'
+helpcenter.general.nav_newticket: 'Свържете Се С Нас'
 helpcenter.general.nav_profile: Профил
 helpcenter.general.nav_register: 'Регистрация'
 helpcenter.general.nav_support_center: 'Помощен Център'
 helpcenter.general.nav_your_account: 'Вашият Акаунт'
 helpcenter.general.next: Следващ
-helpcenter.general.no_search_query: 'Моля, въведете заявка в полето за търсене.'
+helpcenter.general.no_search_query: 'Моля въведете запитване в полето за търсене.'
 helpcenter.general.no_search_results_general: 'Няма намерени резултати'
 helpcenter.general.or: или
 helpcenter.general.pagination_page: 'Страница {page}'
@@ -499,10 +500,10 @@ helpcenter.general.prop_rating_asc: 'Първи тези с най-нисък р
 helpcenter.general.prop_rating_desc: 'Първи тези с най-висок рейтинг'
 helpcenter.general.prop_views_asc: 'Първо тези с най-малко прегледи'
 helpcenter.general.prop_views_desc: 'Първо тези с най-много прегледи'
-helpcenter.general.published: 'Публикувано на'
+helpcenter.general.published: 'Публикувани'
 helpcenter.general.published_by: 'Публикувано от <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Не беше полезно
-helpcenter.general.rate_page_positive: Беше полезно
+helpcenter.general.rate_page_positive: Полезен
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} от {vote_count} души смятат тази страница за полезна'
 helpcenter.general.related_content: 'Сходно съдържание'
 helpcenter.general.remove: премахнете
@@ -567,7 +568,7 @@ helpcenter.members.send_message: 'Изпрати съобщение'
 helpcenter.members.timezone: Часова зона
 helpcenter.members.title: 'Директория на членовете'
 helpcenter.messenger.assigned_agent: 'Назначен агент'
-helpcenter.messenger.blocks_continue_chat_link: Продължете
+helpcenter.messenger.blocks_continue_chat_link: 'Продължаване'
 helpcenter.messenger.blocks_continue_chat_title: 'Продължете съществуващ чат'
 helpcenter.messenger.blocks_knowledgebase_title: База знания
 helpcenter.messenger.blocks_search_block_no_results: 'Няма резултати за {query}'
@@ -619,7 +620,7 @@ helpcenter.messenger.files_on_this_chat: 'Файлове в този чат'
 helpcenter.messenger.greeting: 'Свържете се с нас'
 helpcenter.messenger.invalid_validation_code: 'Невалиден код за валидация'
 helpcenter.messenger.linked_ticket_label: 'Възложен към тикет'
-helpcenter.messenger.loading: Зарежда се
+helpcenter.messenger.loading: 'Зареждане'
 helpcenter.messenger.message_agent_timeout: 'Извиняваме се; {name} изглежда, че е изгубил свързаност. Моля, изчакайте докато се намери друг агент.'
 helpcenter.messenger.message_assigned: '{name} е назначен към чата.'
 helpcenter.messenger.message_chatting_with: 'Чатите с'
@@ -652,10 +653,10 @@ helpcenter.messenger.tickets_form_name: Име
 helpcenter.messenger.tickets_form_or: или
 helpcenter.messenger.tickets_form_priority: Приоритет
 helpcenter.messenger.tickets_form_product: Продукт
-helpcenter.messenger.tickets_form_required: Задължително поле
+helpcenter.messenger.tickets_form_required: 'Изисква се'
 helpcenter.messenger.tickets_form_saving: 'Запазваме вашия тикет. Моля, изчакайте'
-helpcenter.messenger.tickets_form_select: Избери
-helpcenter.messenger.tickets_form_submit: Изпратете
+helpcenter.messenger.tickets_form_select: 'Изберете'
+helpcenter.messenger.tickets_form_submit: 'Предай'
 helpcenter.messenger.tickets_form_thanks: 'Благодарим ви, че се свързахте с нас. Някой от нашите сътрудници ще се свърже с вас по имейл.'
 helpcenter.messenger.tickets_form_thanks_header: 'Заявката ви е изпратена'
 helpcenter.messenger.total_chat_time_label: 'Общо време за чат'
@@ -711,7 +712,7 @@ helpcenter.tickets.my_tickets: 'Моите тикети'
 helpcenter.tickets.need_login_desc: 'Моля, посетете <a href="{login_url}" target="_blank">страницата за логин</a> за да ни изпратите съобщение'
 helpcenter.tickets.need_login_title: 'Трябва да влезете за да отворите тикет'
 helpcenter.tickets.new_intro: 'Моля, попълнете тази форма и някой от нашите сътрудници ще ви отговори по имейл възможно най-скоро.'
-helpcenter.tickets.new_section_title: 'Свържете се с нас'
+helpcenter.tickets.new_section_title: 'Свържете Се С Нас'
 helpcenter.tickets.new_ticket_button: 'Създай нов тикет'
 helpcenter.tickets.no_participants: 'Няма участници'
 helpcenter.tickets.not_allowed_desc: 'Съжаляваме, но агентите ни не могат да поемат чата ви в момента.'

@@ -275,7 +275,8 @@ helpcenter.error.400_title: 'Mauvaise Demande'
 helpcenter.error.403_desc: 'Désolé, vous n''êtes pas autorisé à consulter cette page.'
 helpcenter.error.403_title: 'Pas d''accès'
 helpcenter.error.404_desc: 'Désolé, nous n''avons pas pu trouver cette page.'
-helpcenter.error.404_title: 'Introuvable'
+helpcenter.error.404_title: 'Non Trouvé'
+helpcenter.error.contact_us: 'Contactez-Nous'
 helpcenter.error.an_error_occured: 'Une erreur est survenue'
 helpcenter.error.an_error_occured_desc: 'Désolé, il y a eu une erreur lors du chargement de cette page. Veuillez réessayer plus tard ou <a href="{contact_link}">nous contacter</a>.'
 helpcenter.error.contact_us: 'Nous contacter'
@@ -389,7 +390,7 @@ helpcenter.general.agent_bar_agent_news: 'Actualités'
 helpcenter.general.agent_interface: 'Interface agent'
 helpcenter.general.agents: Agents
 helpcenter.general.apply: Appliquer
-helpcenter.general.attachments: Pièce jointes
+helpcenter.general.attachments: 'Pièces jointes'
 helpcenter.general.authors_list: Liste des auteurs
 helpcenter.general.back: Retour
 helpcenter.general.btn_manage_subscriptions: 'Gérer vos souscription'
@@ -447,6 +448,7 @@ helpcenter.general.last_activity: 'Dernière activité'
 helpcenter.general.last_month: 'Mois dernier'
 helpcenter.general.last_updated: 'Dernière mise à jour'
 helpcenter.general.last_update_by: 'Dernière mise à jour : le <strong>{date_updated, date, medium}</strong> par <strong>{person_name}</strong>'
+helpcenter.general.last_updated: ''
 helpcenter.general.last_week: 'Semaine dernière'
 helpcenter.general.last_year: 'Année dernière'
 helpcenter.general.latest_status_changes: 'Derniers changements de statuts'
@@ -457,7 +459,7 @@ helpcenter.general.name: Nom
 helpcenter.general.nav_chat: Chats
 helpcenter.general.nav_community: Communauté
 helpcenter.general.nav_community_desc: 'Afficher tous les sujets'
-helpcenter.general.nav_contact: 'Nous contacter'
+helpcenter.general.nav_contact: 'Contactez-Nous'
 helpcenter.general.nav_contact_desc: 'Nous contacter pour de l''aide'
 helpcenter.general.nav_direct_messages: Messages
 helpcenter.general.nav_downloads: Fichiers
@@ -472,7 +474,7 @@ helpcenter.general.nav_members: 'Annuaire des membres'
 helpcenter.general.nav_news: Actualités
 helpcenter.general.nav_news_desc: 'Voir toutes les actualités'
 helpcenter.general.nav_news_desc_short: 'Voir toutes les actualités'
-helpcenter.general.nav_newticket: 'Nous contacter'
+helpcenter.general.nav_newticket: 'Contactez-Nous'
 helpcenter.general.nav_profile: Profil
 helpcenter.general.nav_register: 'S''enregistrer'
 helpcenter.general.nav_support_center: 'Centre d''aide'
@@ -481,8 +483,8 @@ helpcenter.general.next: Suivant
 helpcenter.general.no_search_query: 'Veuillez entrer une requête dans le champ de recherche.'
 helpcenter.general.no_search_results_general: 'Pas de résultats trouvés'
 helpcenter.general.or: ou
-helpcenter.general.pagination_page: 'Page {page}'
 helpcenter.general.pagination_next_page: 'Page suivante'
+helpcenter.general.pagination_page: 'Page {page}'
 helpcenter.general.pagination_previous_page: 'Page précédente'
 helpcenter.general.password: Mot de passe
 helpcenter.general.previous: Précédent
@@ -499,7 +501,7 @@ helpcenter.general.prop_rating_asc: 'Plus bas en premier'
 helpcenter.general.prop_rating_desc: 'Plus haut noté en premier'
 helpcenter.general.prop_views_asc: 'Les moins vues en premier'
 helpcenter.general.prop_views_desc: 'La plupart des vues en premier'
-helpcenter.general.published: 'Première publication'
+helpcenter.general.published: 'Publié'
 helpcenter.general.published_by: 'Publié par <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Peu Utile
 helpcenter.general.rate_page_positive: Utile
@@ -539,7 +541,7 @@ helpcenter.general.your_comment_label: 'Votre commentaire'
 helpcenter.general.your_comment_optional_label: 'Votre commentaire (optionnel)'
 helpcenter.general.download_pdf: 'Télécharger PDF'
 helpcenter.knowledgebase.featured_articles: 'Article en vedette'
-helpcenter.label.search: Recherche
+helpcenter.label.search: Rechercher
 helpcenter.members.activity_commented_on: 'Commenté le'
 helpcenter.members.activity_created_topic: 'Sujet créé'
 helpcenter.members.activity_down_voted: 'Marké peu utile'
@@ -571,7 +573,7 @@ helpcenter.messenger.blocks_continue_chat_link: Continuer
 helpcenter.messenger.blocks_continue_chat_title: 'Continuer le chat existant'
 helpcenter.messenger.blocks_knowledgebase_title: Base de connaissances
 helpcenter.messenger.blocks_search_block_no_results: 'Pas de résultat pour {query}'
-helpcenter.messenger.blocks_search_block_search_label: Recherche
+helpcenter.messenger.blocks_search_block_search_label: Rechercher
 helpcenter.messenger.blocks_search_block_see_more_results: 'Plus de résultats'
 helpcenter.messenger.blocks_start_chat_button: 'Démarrer une nouvelle conversation'
 helpcenter.messenger.blocks_start_chat_description: 'Démarrer un chat avec un de nos agents'
@@ -654,7 +656,7 @@ helpcenter.messenger.tickets_form_priority: Priorité
 helpcenter.messenger.tickets_form_product: Produit
 helpcenter.messenger.tickets_form_required: Requis
 helpcenter.messenger.tickets_form_saving: 'Nous sauvegardons votre ticket. Veuillez patienter'
-helpcenter.messenger.tickets_form_select: Selectionner
+helpcenter.messenger.tickets_form_select: Sélectionner
 helpcenter.messenger.tickets_form_submit: Soumettre
 helpcenter.messenger.tickets_form_thanks: 'Merci de nous avoir contacté. Un membre de notre équipe vous contactera.'
 helpcenter.messenger.tickets_form_thanks_header: 'Votre demande est en route'
@@ -711,7 +713,7 @@ helpcenter.tickets.my_tickets: 'Mes tickets'
 helpcenter.tickets.need_login_desc: 'Veuiller allez sur <a href="{login_url}" target="_blank">la page de connexion</a> pour nous envoyer un message'
 helpcenter.tickets.need_login_title: 'Vous devez vous connecter pour ouvrir un ticket'
 helpcenter.tickets.new_intro: 'Merci de compléter ce formulaire, un de nos agents vous répondra par email dès que possible.'
-helpcenter.tickets.new_section_title: 'Nous contacter'
+helpcenter.tickets.new_section_title: 'Contactez-Nous'
 helpcenter.tickets.new_ticket_button: 'Créer un nouveau ticket'
 helpcenter.tickets.no_participants: 'Aucun participant'
 helpcenter.tickets.not_allowed_desc: 'Désolé, nos agents ne peuvent pas discuter avec vous pour le moment'

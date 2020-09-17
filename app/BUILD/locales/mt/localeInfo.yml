@@ -1,0 +1,11 @@
+id: maltese_mt
+name: Maltese
+nameLocal: Malti
+locale: mt-MT
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n > 1'
+  categories:
+    - one
+    - other

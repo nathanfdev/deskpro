@@ -275,7 +275,8 @@ helpcenter.error.400_title: 'Ungültige Anforderung'
 helpcenter.error.403_desc: 'Es tut uns leid, aber Sie haben nicht die Berechtigung diese Seite anzuzeigen.'
 helpcenter.error.403_title: 'Kein Zugriff'
 helpcenter.error.404_desc: 'Es tut uns leid, aber diese Seite kann nicht gefunden werden.'
-helpcenter.error.404_title: 'Nicht gefunden'
+helpcenter.error.404_title: 'Nicht Gefunden'
+helpcenter.error.contact_us: 'Kontakt'
 helpcenter.error.an_error_occured: 'Ein Fehler ist aufgetreten'
 helpcenter.error.an_error_occured_desc: 'Entschuldigung, beim Laden dieser Seite ist ein Fehler aufgetreten. Bitte versuchen Sie es später noch einmal oder <a href="{contact_link}">kontaktieren Sie uns</a>.'
 helpcenter.error.contact_us: 'Kontaktieren Sie uns'
@@ -362,11 +363,11 @@ helpcenter.forms.error_password_reset_required: 'Sie müssen Ihr Passwort zurüc
 helpcenter.forms.error_required: 'Dies ist eine Pflichtangabe'
 helpcenter.forms.error_banned_email: 'E-Mail-Adresse gesperrt.'
 helpcenter.forms.label_drag_overlay: 'Dieses Bild in Ihre Nachricht einfügen.'
-helpcenter.forms.label_email: E-Mail-Adresse
+helpcenter.forms.label_email: 'E-Mail'
 helpcenter.forms.label_password: Passwort
 helpcenter.forms.label_password_confirm: Bestätigen
 helpcenter.forms.label_reset: Zurücksetzen
-helpcenter.forms.label_save: Sichern
+helpcenter.forms.label_save: 'Speichern'
 helpcenter.forms.label_submit: Senden
 helpcenter.forms.label_timezone: Zeitzone
 helpcenter.general.add_comment: 'Fügen Sie einen Kommentar hinzu'
@@ -419,7 +420,7 @@ helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.department: Abteilung
 helpcenter.general.drag_and_drop: 'Ziehen und ablegen'
 helpcenter.general.edit_this_page: 'Diese Seite bearbeiten'
-helpcenter.general.email_address: 'E-Mail'
+helpcenter.general.email_address: 'E-Mail Adresse'
 helpcenter.general.eula: EULA
 helpcenter.general.everything: Alles
 helpcenter.general.expand: Vergrößern
@@ -457,7 +458,7 @@ helpcenter.general.name: Name
 helpcenter.general.nav_chat: Chats
 helpcenter.general.nav_community: Community
 helpcenter.general.nav_community_desc: 'Alle Themen anzeigen'
-helpcenter.general.nav_contact: 'Kontaktieren Sie uns'
+helpcenter.general.nav_contact: 'Kontakt'
 helpcenter.general.nav_contact_desc: 'Wir helfen Ihnen gerne weiter'
 helpcenter.general.nav_direct_messages: Nachrichten
 helpcenter.general.nav_downloads: Dateien
@@ -472,7 +473,7 @@ helpcenter.general.nav_members: 'Mitgliederverzeichnis'
 helpcenter.general.nav_news: Neuigkeiten
 helpcenter.general.nav_news_desc: 'Alle neuen Beiträge anzeigen'
 helpcenter.general.nav_news_desc_short: 'Alle Neuigkeiten anzeigen'
-helpcenter.general.nav_newticket: 'Kontaktieren Sie uns'
+helpcenter.general.nav_newticket: 'Kontakt'
 helpcenter.general.nav_profile: Profil
 helpcenter.general.nav_register: 'Registrieren'
 helpcenter.general.nav_support_center: 'Helpcenter'
@@ -499,7 +500,7 @@ helpcenter.general.prop_rating_asc: 'der am niedrigsten bewertet zuerst'
 helpcenter.general.prop_rating_desc: 'der am höchsten bewertet zuerst'
 helpcenter.general.prop_views_asc: 'am wenigsten zuerst'
 helpcenter.general.prop_views_desc: 'am höchsten zuerst'
-helpcenter.general.published: 'Erstveröffentlichung'
+helpcenter.general.published: 'veröffentlicht'
 helpcenter.general.published_by: 'Veröffentlicht von <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Nicht hilfreich
 helpcenter.general.rate_page_positive: Hilfreich
@@ -539,7 +540,7 @@ helpcenter.general.your_comment_label: 'Ihr Kommentar'
 helpcenter.general.your_comment_optional_label: 'Ihr Kommentar (freiwillig)'
 helpcenter.general.download_pdf: 'PDF herunterladen'
 helpcenter.knowledgebase.featured_articles: 'Interessante Artikel'
-helpcenter.label.search: Suche
+helpcenter.label.search: Suchen
 helpcenter.members.activity_commented_on: 'Kommentar zu'
 helpcenter.members.activity_created_topic: 'Erstelltes Thema'
 helpcenter.members.activity_down_voted: 'Als nicht hilfreich markiert'
@@ -571,7 +572,7 @@ helpcenter.messenger.blocks_continue_chat_link: Fortsetzen
 helpcenter.messenger.blocks_continue_chat_title: 'Aktuellen Chat fortsetzen'
 helpcenter.messenger.blocks_knowledgebase_title: Wissensdatenbank
 helpcenter.messenger.blocks_search_block_no_results: 'Keine Ergebnisse für {query}'
-helpcenter.messenger.blocks_search_block_search_label: Suche
+helpcenter.messenger.blocks_search_block_search_label: Suchen
 helpcenter.messenger.blocks_search_block_see_more_results: 'Mehr Ergebnisse anzeigen'
 helpcenter.messenger.blocks_start_chat_button: 'Neues Gespräch beginnen'
 helpcenter.messenger.blocks_start_chat_description: 'Mit einem unserer Mitarbeiter chatten'
@@ -652,10 +653,10 @@ helpcenter.messenger.tickets_form_name: Name
 helpcenter.messenger.tickets_form_or: oder
 helpcenter.messenger.tickets_form_priority: Priorität
 helpcenter.messenger.tickets_form_product: Produkt
-helpcenter.messenger.tickets_form_required: Pflichtfeld
+helpcenter.messenger.tickets_form_required: 'Erforderlich'
 helpcenter.messenger.tickets_form_saving: 'Ihr Ticket wird gespeichert. Bitte warten Sie'
 helpcenter.messenger.tickets_form_select: Auswählen
-helpcenter.messenger.tickets_form_submit: Senden
+helpcenter.messenger.tickets_form_submit: 'Abschicken'
 helpcenter.messenger.tickets_form_thanks: 'Vielen Dank für Ihre Kontaktaufnahme. Einer unserer Mitarbeiter wird sich per E-Mail bei Ihnen melden.'
 helpcenter.messenger.tickets_form_thanks_header: 'Ihre Anfrage ist unterwegs'
 helpcenter.messenger.total_chat_time_label: 'Gesamte Chat-Zeit'
@@ -711,7 +712,7 @@ helpcenter.tickets.my_tickets: 'Meine Tickets'
 helpcenter.tickets.need_login_desc: 'Bitte gehen Sie auf <a href="{login_url}" target="_blank">die Login-Seite</a>, um uns eine Nachricht zu senden'
 helpcenter.tickets.need_login_title: 'Um ein Ticket zu schreiben loggen Sie sich bitte ein'
 helpcenter.tickets.new_intro: 'Bitte füllen Sie dieses Formular aus und einer unserer Mitarbeiter wird Ihnen per E-Mail so bald wie möglich antworten.'
-helpcenter.tickets.new_section_title: 'Kontaktieren Sie uns'
+helpcenter.tickets.new_section_title: 'Kontakt'
 helpcenter.tickets.new_ticket_button: 'Erstellen Sie ein neues Ticket'
 helpcenter.tickets.no_participants: 'Keine Teilnehmer'
 helpcenter.tickets.not_allowed_desc: 'Es tut uns leid. Momentan kann keiner unserer Mitarbeiter Ihren Chat übernehmen'

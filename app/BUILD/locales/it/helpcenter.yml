@@ -275,7 +275,8 @@ helpcenter.error.400_title: 'Brutta richiesta'
 helpcenter.error.403_desc: 'Ci dispiace, ma non hai l''accesso per visualizzare questa pagina.'
 helpcenter.error.403_title: 'Nessun accesso'
 helpcenter.error.404_desc: 'Ci dispiace, ma non abbiamo potuto trovare questa pagina.'
-helpcenter.error.404_title: 'Non trovato'
+helpcenter.error.404_title: 'Non Trovato'
+helpcenter.error.contact_us: 'Contattaci'
 helpcenter.error.an_error_occured: 'Si è verificato un errore'
 helpcenter.error.an_error_occured_desc: 'Ci scusiamo, ma si è verificato un errore durante il caricamento di questa pagina. Per favore riprova più tardi o <a href="{contact_link}">contattaci</a>.'
 helpcenter.error.contact_us: 'Contattaci'
@@ -365,7 +366,7 @@ helpcenter.forms.label_drag_overlay: 'Inserisci questa immagine nel tuo messaggi
 helpcenter.forms.label_email: email
 helpcenter.forms.label_password: Password
 helpcenter.forms.label_password_confirm: Conferma
-helpcenter.forms.label_reset: Reimposta
+helpcenter.forms.label_reset: 'Resetta'
 helpcenter.forms.label_save: Salva
 helpcenter.forms.label_submit: Invia
 helpcenter.forms.label_timezone: Fuso orario
@@ -419,7 +420,7 @@ helpcenter.general.date_time_medium: '{date, date, medium} {date, time, short}'
 helpcenter.general.department: Settore
 helpcenter.general.drag_and_drop: 'Trascina e rilascia'
 helpcenter.general.edit_this_page: 'Modifica questa pagina'
-helpcenter.general.email_address: 'Indirizzo email'
+helpcenter.general.email_address: 'Indirizzo e-mail'
 helpcenter.general.eula: EULA
 helpcenter.general.everything: Tutto
 helpcenter.general.expand: Espandi
@@ -445,7 +446,7 @@ helpcenter.general.last_24_hours: 'Ultime 24 ore'
 helpcenter.general.last_6_month: 'Ultimi 6 mesi'
 helpcenter.general.last_activity: 'Ultima Attività'
 helpcenter.general.last_month: 'Ultimo mese'
-helpcenter.general.last_updated: 'Ultimo aggiornamento'
+helpcenter.general.last_updated: 'Ultimo Aggiornamento'
 helpcenter.general.last_update_by: 'Ultimo aggiornamento: <strong>{date_updated, date, medium}</strong> di <strong>{person_name}</strong>'
 helpcenter.general.last_week: 'Ultima settimana'
 helpcenter.general.last_year: 'Ultimo anno'
@@ -460,7 +461,7 @@ helpcenter.general.nav_community_desc: 'Vedi tutti i temi'
 helpcenter.general.nav_contact: 'Contattaci'
 helpcenter.general.nav_contact_desc: 'Resta in contatto per ricevere aiuto'
 helpcenter.general.nav_direct_messages: Messaggi
-helpcenter.general.nav_downloads: File
+helpcenter.general.nav_downloads: 'Documenti'
 helpcenter.general.nav_downloads_desc: 'Sfoglia i nostri file'
 helpcenter.general.nav_emails: email
 helpcenter.general.nav_guides: il manuale
@@ -499,7 +500,7 @@ helpcenter.general.prop_rating_asc: 'Prima i meno votati'
 helpcenter.general.prop_rating_desc: 'Prima i più votati'
 helpcenter.general.prop_views_asc: 'Prima i meno visualizzati'
 helpcenter.general.prop_views_desc: 'I più visualizzati'
-helpcenter.general.published: 'Data della prima pubblicazione'
+helpcenter.general.published: 'Pubblicato'
 helpcenter.general.published_by: 'Pubblicato da <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Inutile
 helpcenter.general.rate_page_positive: Utile
@@ -652,7 +653,7 @@ helpcenter.messenger.tickets_form_name: Nome
 helpcenter.messenger.tickets_form_or: o
 helpcenter.messenger.tickets_form_priority: Priorità
 helpcenter.messenger.tickets_form_product: Prodotto
-helpcenter.messenger.tickets_form_required: Obbligatorio
+helpcenter.messenger.tickets_form_required: 'Richiesto'
 helpcenter.messenger.tickets_form_saving: 'Stiamo salvando il tuo ticket. Per favore, attendi'
 helpcenter.messenger.tickets_form_select: Seleziona
 helpcenter.messenger.tickets_form_submit: Invia

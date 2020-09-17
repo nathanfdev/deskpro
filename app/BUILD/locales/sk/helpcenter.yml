@@ -4,6 +4,7 @@ helpcenter.articles.view_x_articles: 'Zobraziť všetky články v {category}'
 helpcenter.community.form_topic_title: Nadpis
 helpcenter.community.section_title: Spätná väzba
 helpcenter.direct_messages.reply_message: Správa
+helpcenter.downloads.download_action: 'Stiahnuť'
 helpcenter.downloads.file_name: 'Názov súboru'
 helpcenter.downloads.file_size: 'Veľkosť súboru'
 helpcenter.downloads.no_files: 'Žiadne súbory'
@@ -44,7 +45,8 @@ helpcenter.emails.ticket_received: 'Váš tiket bol prijatý. Jeden z našich op
 helpcenter.emails.ticket_reply_confirm: 'Ďakujeme za Vašu odpoveď. Jeden z našich operátorov Vám čoskoro odpovie.'
 helpcenter.emails.ticket_validate: 'Ďakujeme, že ste nás kontaktovali.<br /><br />Prv, než Vašu správu naši operátori spracujú si musíte overiť Vašu e-mailovú adresu.'
 helpcenter.error.404_desc: 'Ľutujeme, ale túto stránku sa nepodarilo nájsť.'
-helpcenter.error.404_title: 'Nenájdené'
+helpcenter.error.404_title: 'Nebolo Nájdené'
+helpcenter.error.contact_us: 'Kontaktujte Nás'
 helpcenter.error.general_title: 'Došlo k chybe'
 helpcenter.error.permission_denied_title: 'Na danú akciu nemáte oprávnenie'
 helpcenter.forms.delete_question: 'Vymazať?'
@@ -52,29 +54,35 @@ helpcenter.forms.error_captcha: 'Hodnota CAPTCHA nie je správna'
 helpcenter.forms.error_required: 'Tento údaj je povinný'
 helpcenter.forms.error_banned_email: 'Táto emailová adresa bola zablokovaná.'
 helpcenter.forms.label_drag_overlay: 'Vložte tento obrázok do vašej správy.'
-helpcenter.forms.label_email: Email
+helpcenter.forms.label_email: E-mail
+helpcenter.forms.label_reset: 'Vymazať'
 helpcenter.forms.label_save: Uložiť
 helpcenter.forms.label_submit: Odoslať
 helpcenter.general.add_comment: 'Pridať komentár'
 helpcenter.general.agent: Operátor
-helpcenter.general.attachments: Pripojenia
+helpcenter.general.attachments: 'Prílohy'
+helpcenter.general.cc: 'Kópia (CC)'
 helpcenter.general.comments: Komentáre?
 helpcenter.general.drag_and_drop: 'Presunúť'
+helpcenter.general.email_address: 'E-mailová adresa'
 helpcenter.general.everything: Všetko
 helpcenter.general.labels: Tagy
+helpcenter.general.last_updated: 'Posledná Aktualizácia'
 helpcenter.general.last_update_by: 'Naposledy aktualizoval/a: <strong>{date_updated, date, medium}</strong> <strong>{person_name}</strong>'
 helpcenter.general.name: Meno
-helpcenter.general.nav_contact: 'Kontaktujte nás'
+helpcenter.general.nav_contact: 'Kontaktujte Nás'
+helpcenter.general.nav_downloads: Súbory
 helpcenter.general.nav_downloads_desc: 'Prehľadať naše súbory'
 helpcenter.general.nav_guides: Návody
 helpcenter.general.nav_guides_desc: 'Zobraziť všetky návody'
 helpcenter.general.nav_kb: Znalostná databáza
-helpcenter.general.nav_newticket: 'Kontaktujte nás'
+helpcenter.general.nav_newticket: 'Kontaktujte Nás'
 helpcenter.general.no_search_query: 'Napíšte, čo chcete vyhľadať, do vyhľadávacieho okna.'
 helpcenter.general.no_search_results_general: 'Nenašli sa žiadne výsledky'
 helpcenter.general.password: Heslo
+helpcenter.general.published: 'Zverejnené'
 helpcenter.general.rate_page_negative: Neužitočná
-helpcenter.general.rate_page_positive: Užitočná
+helpcenter.general.rate_page_positive: Pomocné
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} z {vote_count} ľudí považuje túto stránku za užitočnú'
 helpcenter.general.related_content: 'Súvisiaci obsah'
 helpcenter.general.search: 'Ako vám dnes môžeme pomôcť?'
@@ -85,31 +93,40 @@ helpcenter.general.you: Vy
 helpcenter.label.search: Vyhľadať
 helpcenter.members.language: Jazyk
 helpcenter.members.timezone: Časové pásmo
+helpcenter.messenger.blocks_continue_chat_link: 'Pokračovať'
 helpcenter.messenger.blocks_continue_chat_title: 'Pokračovať v existujúcom chate'
 helpcenter.messenger.blocks_knowledgebase_title: Znalostná databáza
 helpcenter.messenger.blocks_search_block_no_results: 'Nenašli sa žiadne výsledky pre {query}'
+helpcenter.messenger.blocks_search_block_search_label: 'Vyhľadať'
 helpcenter.messenger.blocks_search_block_see_more_results: 'Zobraziť ďalšie výsledky'
 helpcenter.messenger.blocks_ticket_button: 'Odoslať nový tiket'
 helpcenter.messenger.blocks_ticket_description: 'Odoslať otázku prostredníctvom nášho kontaktného formulára'
 helpcenter.messenger.blocks_ticket_title: 'Odoslať tiket'
 helpcenter.messenger.greeting: 'Kontaktujte nás'
+helpcenter.messenger.loading: 'Načítava sa'
 helpcenter.messenger.tickets_form_add_attachment: 'Pridať prílohu'
 helpcenter.messenger.tickets_form_header: 'Nový tiket'
+helpcenter.messenger.tickets_form_message: 'Správa'
+helpcenter.messenger.tickets_form_name: 'Meno'
 helpcenter.messenger.tickets_form_or: alebo
+helpcenter.messenger.tickets_form_required: 'Požadované'
 helpcenter.messenger.tickets_form_saving: 'Ukladáme váš tiket. Prosím, počkajte'
+helpcenter.messenger.tickets_form_select: 'Vybrať'
+helpcenter.messenger.tickets_form_submit: '"Odoslať"'
 helpcenter.messenger.tickets_form_thanks: 'Ďakujeme za správu. Jeden z členov nášho tímu sa s vami spojí emailom.'
 helpcenter.messenger.tickets_form_thanks_header: 'Vaša žiadosť je na ceste'
 helpcenter.news.view_as_agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
 helpcenter.profile.account_disabled_message: 'Váš účet je momentálne deaktivovaný. Nebudete schopný komunikovať s tiketmi alebo v konverzáciách.'
 helpcenter.search.search_results: 'Výsledky vyhľadávania'
 helpcenter.search.showing_results_for: 'Zobrazujú sa výsledky v {type} pre: <span>“{query}”</span>'
+helpcenter.sidebar.article_posted_by: 'Autor'
 helpcenter.tickets.guest_thank_you_title: 'Ďakujeme'
 helpcenter.tickets.list_agent: 'Pridelený agent'
 helpcenter.tickets.list_date_created: 'Dátum vytvorenia'
 helpcenter.tickets.list_status_resolved: Vyriešené
 helpcenter.tickets.list_subject: Predmet
 helpcenter.tickets.new_intro: 'Prosím, vyplňte tento formulár a jeden z našich operátorov vám odpovie e-mailom akonáhle to bude možné.'
-helpcenter.tickets.new_section_title: 'Kontaktujte nás'
+helpcenter.tickets.new_section_title: 'Kontaktujte Nás'
 helpcenter.tickets.rate_positive: 'Bolo to dobré'
 helpcenter.tickets.rate_question: 'Ako by ste hodnotili pomoc, ktorú ste obdržal?'
 helpcenter.tickets.rate_support: 'Ohodnoťte Vašu pomoc'

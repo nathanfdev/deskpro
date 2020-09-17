@@ -154,7 +154,7 @@ helpcenter.direct_messages.reply_message: Μήνυμα
 helpcenter.direct_messages.reply_send_message: 'Αποστολή μηνύματος'
 helpcenter.direct_messages.title: 'Τα μηνύματά μου'
 helpcenter.direct_messages.unblock_user_action: 'άρση αποκλεισμού χρήστη'
-helpcenter.downloads.download_action: Λήψη
+helpcenter.downloads.download_action: 'Τηλεφόρτωση'
 helpcenter.downloads.file_name: 'Όνομα αρχείου'
 helpcenter.downloads.file_size: 'Μέγεθος αρχείου'
 helpcenter.downloads.no_files: 'Κανένα αρχείο'
@@ -239,7 +239,8 @@ helpcenter.error.400_desc: 'Μας συγχωρείτε, αλλά το αίτη�
 helpcenter.error.403_desc: 'Μας συγχωρείτε, αλλά δεν έχετε πρόσβαση για να δείτε αυτή τη σελίδα.'
 helpcenter.error.403_title: 'Χωρίς Πρόσβαση'
 helpcenter.error.404_desc: 'Λυπούμαστε. Δεν μπορέσαμε να βρούμε αυτήν τη σελίδα.'
-helpcenter.error.404_title: 'Δεν βρέθηκε'
+helpcenter.error.404_title: 'Δεν Βρέθηκε'
+helpcenter.error.contact_us: 'Επικοινωνία'
 helpcenter.error.contact_us: 'Επικοινωνήστε μαζί μας'
 helpcenter.error.general_title: 'Παρουσιάστηκε σφάλμα'
 helpcenter.error.permission_denied_title: 'Δεν επιτρέπεται αυτή η ενέργεια'
@@ -264,7 +265,8 @@ helpcenter.forms.error_email_required: 'Πρέπει να δώσετε το emai
 helpcenter.forms.error_required: 'Αυτή η τιμή απαιτείται'
 helpcenter.forms.error_banned_email: 'Το email έχει αποκλειστεί.'
 helpcenter.forms.label_drag_overlay: 'Εισαγάγετε αυτήν την εικόνα στο μήνυμά σας.'
-helpcenter.forms.label_email: Email
+helpcenter.forms.label_email: 'E-mail'
+helpcenter.forms.label_reset: 'Επαναφορά'
 helpcenter.forms.label_save: Αποθήκευση
 helpcenter.forms.label_submit: Υποβολή
 helpcenter.general.add_comment: 'Προσθήκη σχολίου'
@@ -281,8 +283,10 @@ helpcenter.general.agent_bar_agent_kb: 'Διαχείριση γνωσιακής 
 helpcenter.general.agent_bar_agent_news: 'Διαχείριση Ενημερώσεων'
 helpcenter.general.agents: Εκπρόσωπος Support
 helpcenter.general.attachments: Επισυνάψεις
+helpcenter.general.cc: 'Κοινοποίηση'
 helpcenter.general.comments: Σχόλια
 helpcenter.general.drag_and_drop: 'Μεταφορά και απόθεση'
+helpcenter.general.email_address: 'Διεύθυνση Ηλεκ. Ταχυδρομείου'
 helpcenter.general.everything: Όλα
 helpcenter.general.impersonation_mode: 'Λειτουργία πλαστοπροσωπίας'
 helpcenter.general.label_search_enter_label: 'Παρακαλούμε υποβάλετε μια ετικέτα για αναζήτηση'
@@ -291,13 +295,14 @@ helpcenter.general.last_activity: 'Τελευταία δραστηριότητα
 helpcenter.general.last_update_by: 'Τελευταία ενημέρωση: <strong>{date_updated, date, medium}</strong> από <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Σύνδεση'
 helpcenter.general.name: Όνομα
-helpcenter.general.nav_contact: 'Επικοινωνήστε μαζί μας'
+helpcenter.general.nav_contact: 'Επικοινωνία'
+helpcenter.general.nav_downloads: 'Αρχεία'
 helpcenter.general.nav_downloads_desc: 'Αναζήτηση στα αρχεία μας'
-helpcenter.general.nav_guides: Οδηγοί
+helpcenter.general.nav_guides: Οδηγίες
 helpcenter.general.nav_guides_desc: 'Δείτε όλους τους οδηγούς'
 helpcenter.general.nav_kb: Γνωσιακή βάση
-helpcenter.general.nav_newticket: 'Επικοινωνήστε μαζί μας'
-helpcenter.general.no_search_query: 'Πληκτρολογήστε ένα ερώτημα αναζήτησης στο πλαίσιο αναζήτησης.'
+helpcenter.general.nav_newticket: 'Επικοινωνία'
+helpcenter.general.no_search_query: 'Παρακαλούμε πληκτρολογήστε τι θέλετε να αναζητήσετε στο πεδίο αναζήτησης.'
 helpcenter.general.no_search_results_general: 'Δεν βρέθηκαν αποτελέσματα'
 helpcenter.general.password: Κωδικός πρόσβασης
 helpcenter.general.print: Εκτύπωση
@@ -311,8 +316,9 @@ helpcenter.general.prop_rating_asc: 'Χαμηλότερη βαθμολογία �
 helpcenter.general.prop_rating_desc: 'Υψηλότερη βαθμολογία πρώτα'
 helpcenter.general.prop_views_asc: 'Λιγότερες προβολές πρώτα'
 helpcenter.general.prop_views_desc: 'Περισσότερες προβολές πρώτα'
+helpcenter.general.published: 'Δημοσιευμένο'
 helpcenter.general.rate_page_negative: Δεν βοηθάει
-helpcenter.general.rate_page_positive: Βοηθάει
+helpcenter.general.rate_page_positive: Βοηθητικό
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} από {vote_count} χρήστες πιστεύουν ότι αυτή η σελίδα βοηθάει'
 helpcenter.general.related_content: 'Σχετικό περιεχόμενο'
 helpcenter.general.remove: αφαίρεση
@@ -331,18 +337,26 @@ helpcenter.general.you: Εσείς
 helpcenter.label.search: Αναζήτηση
 helpcenter.members.language: Γλώσσα
 helpcenter.members.timezone: Ζώνη ώρας
+helpcenter.messenger.blocks_continue_chat_link: 'Συνέχεια'
 helpcenter.messenger.blocks_continue_chat_title: 'Συνέχεια υπάρχουσας συνομιλίας'
 helpcenter.messenger.blocks_knowledgebase_title: Γνωσιακή βάση
 helpcenter.messenger.blocks_search_block_no_results: 'Κανένα αποτέλεσμα για το {query}'
+helpcenter.messenger.blocks_search_block_search_label: 'Αναζήτηση'
 helpcenter.messenger.blocks_search_block_see_more_results: 'Δείτε περισσότερα αποτελέσματα'
 helpcenter.messenger.blocks_ticket_button: 'Υποβάλετε νέο ticket'
 helpcenter.messenger.blocks_ticket_description: 'Υποβάλετε ένα ερώτημα μέσω της φόρμας επικοινωνίας μας'
 helpcenter.messenger.blocks_ticket_title: 'Υποβάλετε ένα ticket'
 helpcenter.messenger.greeting: 'Επικοινωνήστε μαζί μας'
+helpcenter.messenger.loading: 'Φόρτωση'
 helpcenter.messenger.tickets_form_add_attachment: 'Προσθήκη συνημμένου'
 helpcenter.messenger.tickets_form_header: 'Νέο ticket'
+helpcenter.messenger.tickets_form_message: 'Μήνυμα'
+helpcenter.messenger.tickets_form_name: 'Όνομα'
 helpcenter.messenger.tickets_form_or: ή
+helpcenter.messenger.tickets_form_required: 'Υποχρεωτικό'
 helpcenter.messenger.tickets_form_saving: 'Γίνεται αποθήκευση του ticket σας. Περιμένετε'
+helpcenter.messenger.tickets_form_select: 'Επιλογή'
+helpcenter.messenger.tickets_form_submit: Υποβολή
 helpcenter.messenger.tickets_form_thanks: 'Σας ευχαριστούμε που επικοινωνήσατε μαζί μας. Κάποιος από την ομάδα μας θα επικοινωνήσει μαζί σας μέσω email.'
 helpcenter.messenger.tickets_form_thanks_header: 'Το αίτημά σας είναι σε εξέλιξη'
 helpcenter.news.none: 'Δεν υπάρχουν νέα'
@@ -352,6 +366,7 @@ helpcenter.profile.account_disabled_message: 'Ο λογαριασμός σας �
 helpcenter.profile.your_password: 'Κωδικός πρόσβασης'
 helpcenter.search.search_results: 'Αποτελέσματα αναζήτησης'
 helpcenter.search.showing_results_for: 'Εμφάνιση αποτελεσμάτων σε {type} για: <span>“{query}”</span>'
+helpcenter.sidebar.article_posted_by: 'Δημιουργός'
 helpcenter.tickets.form_changed_notice: 'Έχουν προστεθεί νέα πεδία στη φόρμα. Παρακαλούμε ελέγξτε τα και υποβάλετε ξανά τη φόρμα.'
 helpcenter.tickets.guest_thank_you_desc: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας! Σας έχουμε στείλει ένα email με οδηγίες σχετικά με την διαχείριση του ticket σας.'
 helpcenter.tickets.guest_thank_you_title: 'Ευχαριστούμε!'
@@ -366,7 +381,7 @@ helpcenter.tickets.list_subject: Θέμα
 helpcenter.tickets.list_ticket_ref: Αναφορά
 helpcenter.tickets.need_login_title: 'Χρειάζεται να συνδεθείτε για να δημιουργήσετε ένα νέο ticket'
 helpcenter.tickets.new_intro: 'Συμπληρώστε αυτήν τη φόρμα και ένας εκπρόσωπός μας θα σας απαντήσει μέσω email το συντομότερο.'
-helpcenter.tickets.new_section_title: 'Επικοινωνήστε μαζί μας'
+helpcenter.tickets.new_section_title: 'Επικοινωνία'
 helpcenter.tickets.new_ticket_button: 'Δημιουργήστε ένα νέο ticket'
 helpcenter.tickets.no_participants: 'Κανένας συμμετέχοντας'
 helpcenter.tickets.not_allowed_desc: 'Μας συγχωρείτε, οι εκπρόσωποι μας αδυνατούν να απαντήσουν σε chat αυτήν τη στιγμή'

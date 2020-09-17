@@ -176,7 +176,8 @@ helpcenter.error.400_title: 'Dårlig anmodning'
 helpcenter.error.403_desc: 'Du har desværre ikke adgang til at se denne side.'
 helpcenter.error.403_title: 'Ingen adgang'
 helpcenter.error.404_desc: 'Vi kunne desværre ikke finde den side.'
-helpcenter.error.404_title: 'Ikke fundet'
+helpcenter.error.404_title: 'Ikke Fundet'
+helpcenter.error.contact_us: 'Kontakt Os'
 helpcenter.error.an_error_occured: 'Der opstod en fejl'
 helpcenter.error.general_title: 'Der opstod en fejl'
 helpcenter.error.permission_denied_title: 'Det er ikke tilladt, at gøre som du gør'
@@ -200,7 +201,8 @@ helpcenter.forms.error_email_required: 'Du skal oplyse din e-mailadresse'
 helpcenter.forms.error_required: 'Denne værdi skal angives'
 helpcenter.forms.error_banned_email: 'Email-adressen er blevet lukket ude.'
 helpcenter.forms.label_drag_overlay: 'Indsæt dette billede i din meddelelse.'
-helpcenter.forms.label_email: Email
+helpcenter.forms.label_email: 'E-mail'
+helpcenter.forms.label_reset: 'Nulstil'
 helpcenter.forms.label_save: Gem
 helpcenter.forms.label_submit: Indsend
 helpcenter.general.add_comment: 'Tilføj en kommentar'
@@ -215,9 +217,11 @@ helpcenter.general.agent_bar_agent_home: 'Agent hjem'
 helpcenter.general.agent_bar_agent_kb: 'Administrer vidensbase'
 helpcenter.general.agent_bar_agent_news: 'Administrer nyheder'
 helpcenter.general.agents: Medarbejdere
-helpcenter.general.attachments: Vedhæftelser
+helpcenter.general.attachments: 'Bilag'
+helpcenter.general.cc: 'CC'
 helpcenter.general.comments: Kommentarer
 helpcenter.general.drag_and_drop: 'Træk og slip'
+helpcenter.general.email_address: 'E-mailadresse'
 helpcenter.general.everything: Alt
 helpcenter.general.impersonation_mode: 'Personefterlignings tilstand'
 helpcenter.general.label_search_enter_label: 'Angiv venligst en etiket at søge efter'
@@ -226,11 +230,14 @@ helpcenter.general.last_activity: 'Seneste aktivitet'
 helpcenter.general.last_update_by: 'Senest opdateret: <strong>{date_updated, date, medium}</strong> af <strong>{person_name}</strong>'
 helpcenter.general.log_in: 'Log ind'
 helpcenter.general.name: Navn
+helpcenter.general.nav_contact: 'Kontakt Os'
+helpcenter.general.nav_downloads: 'Filer'
 helpcenter.general.nav_downloads_desc: 'Gennemse vores filer'
-helpcenter.general.nav_guides: Guides
+helpcenter.general.nav_guides: Omviser
 helpcenter.general.nav_guides_desc: 'Se alle guides'
 helpcenter.general.nav_kb: Vidensbase
-helpcenter.general.no_search_query: 'Indtast en søgestreng i søgefeltet.'
+helpcenter.general.nav_newticket: 'Kontakt Os'
+helpcenter.general.no_search_query: 'Indtast en søgestreng, ind i søgefeltet.'
 helpcenter.general.no_search_results_general: 'Ingen resultater fundet'
 helpcenter.general.or: eller
 helpcenter.general.password: Adgangskode
@@ -244,8 +251,9 @@ helpcenter.general.prop_rating_asc: 'Lavest bedømte først'
 helpcenter.general.prop_rating_desc: 'Højest bedømte først'
 helpcenter.general.prop_views_asc: 'Mindst visninger først'
 helpcenter.general.prop_views_desc: 'Flest visninger først'
+helpcenter.general.published: 'Offentliggjort'
 helpcenter.general.rate_page_negative: Unyttig information
-helpcenter.general.rate_page_positive: Nyttig information
+helpcenter.general.rate_page_positive: Hjælpsom
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} af {vote_count} personer fandt denne side nyttig'
 helpcenter.general.related_content: 'Relateret indhold'
 helpcenter.general.remove: fjern
@@ -265,6 +273,7 @@ helpcenter.label.search: Søg
 helpcenter.members.language: Sprog
 helpcenter.members.name: Navn
 helpcenter.members.timezone: Tidszone
+helpcenter.messenger.blocks_continue_chat_link: 'Fortsæt'
 helpcenter.messenger.blocks_continue_chat_title: 'Fortsæt eksisterende chat'
 helpcenter.messenger.blocks_knowledgebase_title: Vidensbase
 helpcenter.messenger.blocks_search_block_no_results: 'Ingen resultater for {query}'
@@ -276,11 +285,15 @@ helpcenter.messenger.blocks_ticket_title: 'Indsend en ticket'
 helpcenter.messenger.chat_rating_block_buttons_helpful: Nyttig information
 helpcenter.messenger.chat_rating_block_buttons_unhelpful: Unyttig information
 helpcenter.messenger.greeting: 'Tag kontakt'
+helpcenter.messenger.loading: 'Indlæser'
 helpcenter.messenger.proactive_greeting: 'Tag kontakt'
 helpcenter.messenger.tickets_form_add_attachment: 'Indsæt vedhæftelse'
 helpcenter.messenger.tickets_form_header: 'Ny ticket'
+helpcenter.messenger.tickets_form_message: 'Besked'
 helpcenter.messenger.tickets_form_name: Navn
 helpcenter.messenger.tickets_form_or: eller
+helpcenter.messenger.tickets_form_required: 'Obligatorisk'
+helpcenter.messenger.tickets_form_select: 'Vælg'
 helpcenter.messenger.tickets_form_submit: Indsend
 helpcenter.messenger.tickets_form_thanks: 'Tak for at du har kontaktet os. Et medlem fra vores team vil kontakte via email.'
 helpcenter.messenger.tickets_form_thanks_header: 'Din anmodning er undervejs'
@@ -291,6 +304,7 @@ helpcenter.profile.account_disabled_message: 'Din konto er i øjeblikket deaktiv
 helpcenter.profile.your_password: 'Dit password'
 helpcenter.search.search_results: 'Søgeresultater'
 helpcenter.search.showing_results_for: 'Søgeresultater i {type} for: <span>“{query}”</span>'
+helpcenter.sidebar.article_posted_by: 'Forfatter'
 helpcenter.tickets.form_changed_notice: 'Nye felter er blevet tilføjet til formularen. Gennemse venligst disse felter, og gensend derefter formularen.'
 helpcenter.tickets.guest_thank_you_desc: 'Tak for din henvendelse. Vi har sendt dig en e-mail med instruktioner om, hvordan du håndterer din sag hos os.'
 helpcenter.tickets.guest_thank_you_title: 'Tak'
@@ -304,7 +318,7 @@ helpcenter.tickets.list_status_user: 'Du er nødt til at reagere'
 helpcenter.tickets.list_subject: Emne
 helpcenter.tickets.need_login_title: 'Du skal logge ind for at åbne en sag'
 helpcenter.tickets.new_intro: 'Udfyld venligst hele denne blanket og en af vores medarbejdere vil svare dig via email så hurtigt som muligt.'
-helpcenter.tickets.new_section_title: 'Kontakt os'
+helpcenter.tickets.new_section_title: 'Kontakt Os'
 helpcenter.tickets.new_ticket_button: 'Opret en ny billet'
 helpcenter.tickets.no_participants: 'Ingen deltagere'
 helpcenter.tickets.not_allowed_desc: 'Beklager, vores agenter er ikke i stand til at tage din chat i øjeblikket'

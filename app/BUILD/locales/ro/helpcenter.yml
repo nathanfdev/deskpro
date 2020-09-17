@@ -3,9 +3,8 @@ helpcenter.account.email_resend_validation_action: 'Retrimite email-ul de valida
 helpcenter.account.login_register_action: Inrestreaza-te
 helpcenter.articles.view_as_agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
 helpcenter.community.like_action: 'Sunt de acord'
-helpcenter.general.name: Nume
 helpcenter.direct_messages.reply_message: Mesaj
-helpcenter.downloads.download_action: Descarca
+helpcenter.downloads.download_action: 'Descărcare'
 helpcenter.emails.chat_transcript: 'Va multumim pentru conversatie. Aceasta este o copie a acesteia'
 helpcenter.emails.chat_transcript_subject: 'Inregistrare Chat'
 helpcenter.emails.comment_approved: 'Comentariul dumneavoastra a fost publicat'
@@ -37,32 +36,53 @@ helpcenter.emails.ticket_rate_question: 'A fost acest mesaj de ajutor?'
 helpcenter.emails.ticket_received: 'Tichetul dumneavoastra a fost primit. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.'
 helpcenter.emails.ticket_reply_confirm: 'Va multumim pentru raspuns. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.'
 helpcenter.emails.ticket_validate: 'Va multumim ca ne-ati contactat. <br /><br />Inainte ca agentii nostri sa citeasca si sa raspunda la mesajul dumneavostra, trebuie sa validati adresa dumneavoastra de email.'
-helpcenter.error.404_title: 'Nu a fost gasit'
+helpcenter.error.404_title: 'Nu S-A Găsit'
+helpcenter.error.contact_us: 'Contactati-Ne'
 helpcenter.error.permission_denied_title: 'Nu aveti voie sa faceti acesta actiune'
-helpcenter.forms.label_save: Salveaza
+helpcenter.forms.label_email: 'E-mail'
+helpcenter.forms.label_reset: 'Reiniţializare'
+helpcenter.forms.label_save: 'Salvare'
 helpcenter.general.add_comment: 'Adauga un comentariu'
-helpcenter.general.attachments: Atasamente
+helpcenter.general.attachments: 'Anexe'
 helpcenter.general.cancel_action: Anulare
+helpcenter.general.cc: 'CC'
 helpcenter.general.comments: Comentarii?
-helpcenter.general.files_type: Descarcari
+helpcenter.general.download_pdf: 'Downloadati PDF-ul'
+helpcenter.general.email_address: 'Adresă e-mail'
 helpcenter.general.everything: Tot
+helpcenter.general.files_type: Descarcari
 helpcenter.general.go_action: Start
+helpcenter.general.last_updated: 'Ultima Actualizare'
+helpcenter.general.name: Nume
+helpcenter.general.nav_contact: 'Contactati-Ne'
+helpcenter.general.nav_downloads: 'Fişiere'
 helpcenter.general.nav_downloads_desc: 'Rasfoiesti printre descarcarile noastre'
+helpcenter.general.nav_newticket: 'Contactati-Ne'
 helpcenter.general.password: Parola
+helpcenter.general.published: 'Publicat'
 helpcenter.general.rate_page_positive: De ajutor
 helpcenter.general.you: Dumneavoastra
-helpcenter.general.download_pdf: 'Downloadati PDF-ul'
+helpcenter.label.search: 'Căutare'
 helpcenter.members.language: Limba
 helpcenter.members.timezone: Fus orar
+helpcenter.messenger.blocks_continue_chat_link: 'Continuare'
+helpcenter.messenger.blocks_search_block_search_label: 'Căutare'
+helpcenter.messenger.loading: 'Se încarcă'
+helpcenter.messenger.tickets_form_message: 'Mesaj'
+helpcenter.messenger.tickets_form_name: 'Nume'
+helpcenter.messenger.tickets_form_required: 'Obligatoriu'
+helpcenter.messenger.tickets_form_select: 'Selectare'
+helpcenter.messenger.tickets_form_submit: '"Validare"'
 helpcenter.news.view_as_agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
 helpcenter.profile.account_disabled_message: 'Contul dumneavoastra este dezactivat. Nu va veti putea loga, intra pe Chat sau modifica tichete.'
+helpcenter.sidebar.article_posted_by: 'Autor'
 helpcenter.tickets.guest_thank_you_title: 'Va multumim'
 helpcenter.tickets.list_agent: 'Agentul asignat'
 helpcenter.tickets.list_date_created: 'Data crearii'
 helpcenter.tickets.list_status_resolved: Rezolvat
 helpcenter.tickets.list_subject: Subiect
 helpcenter.tickets.new_intro: 'Va rugam sa completati acest formular iar unul din agentii nostri va va raspunde cu un email in cel mai scurt timp posibil.'
-helpcenter.tickets.new_section_title: 'Contacteaza-ne'
+helpcenter.tickets.new_section_title: 'Contactati-Ne'
 helpcenter.tickets.rate_negative: 'Nu a fost bun'
 helpcenter.tickets.rate_positive: 'A fost exceptional'
 helpcenter.tickets.rate_question: 'Cum ai cataloga suportul oferit de departamentul nostru?'

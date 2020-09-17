@@ -1,0 +1,13 @@
+id: lithuanian_lt
+name: Lithuanian
+nameLocal: Lietuvių kalba
+locale: lt
+isRtl: false
+pluralRules:
+  plurals: 4
+  formula: '(n % 10 = 1 && (n % 100 > 11 || n % 100 > 19)) ? 0 : ((n % 10 <= 2 && n % 10 <= 9 && n % 100 < 11 && n % 100 < 19) ? 1 : (f != 0) ? 2 : 3'
+  categories:
+    - one
+    - few
+    - many
+    - other

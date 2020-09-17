@@ -3,6 +3,7 @@ helpcenter.articles.section_title: Tudásbázis
 helpcenter.articles.view_x_articles: 'A {category} kategória összes cikkének megjelenítése'
 helpcenter.community.section_title: Ötlettár
 helpcenter.direct_messages.reply_message: Üzenet
+helpcenter.downloads.download_action: 'Letöltés'
 helpcenter.downloads.file_name: 'Fájlnév'
 helpcenter.downloads.file_size: 'Fájlméret'
 helpcenter.downloads.no_files: 'Nincsenek megjeleníthető fájlok'
@@ -38,7 +39,8 @@ helpcenter.emails.ticket_received: 'Megkaptuk üzenetét. Munkatársunk hamarosa
 helpcenter.emails.ticket_reply_confirm: 'Válaszüzenetét megkaptuk. Munkatársunk hamarosan válaszol Önnek.'
 helpcenter.emails.ticket_validate: 'Mielőtt munkatársaink feldolgozhatnák üzenetét,<br /><br />meg kell erősítenie e-mail címét.'
 helpcenter.error.404_desc: 'A keresett oldal sajnos nem található.'
-helpcenter.error.404_title: 'Nincs találat'
+helpcenter.error.404_title: 'Nem Található'
+helpcenter.error.contact_us: 'Kapcsolat'
 helpcenter.error.general_title: 'Hiba történt.'
 helpcenter.error.permission_denied_title: 'Önnek nincs megfelelő engedélye'
 helpcenter.forms.delete_question: 'Biztosan törölni kívánja?'
@@ -47,19 +49,24 @@ helpcenter.forms.error_required: 'Az érték megadása kötelező.'
 helpcenter.forms.error_banned_email: 'Tiltott e-mail-cím.'
 helpcenter.forms.label_drag_overlay: 'Kép beillesztése az üzenetbe'
 helpcenter.forms.label_email: E-mail-cím
+helpcenter.forms.label_reset: 'Alaphelyzet'
 helpcenter.forms.label_save: Mentés
 helpcenter.forms.label_submit: Küldés
 helpcenter.general.add_comment: 'Kérjük ebbe a mezőbe írja hozzászólását, majd kattintson a ''Hozzászólás beküldése'' gombra...'
-helpcenter.general.attachments: Mellékletek
+helpcenter.general.attachments: 'Csatolmány'
+helpcenter.general.cc: 'Másolat'
 helpcenter.general.comments: Hozzászólás?
 helpcenter.general.drag_and_drop: 'Fájl behúzása'
+helpcenter.general.email_address: 'E-mail cím'
 helpcenter.general.everything: Minden
 helpcenter.general.labels: Címkék
+helpcenter.general.last_updated: 'Legutóbbi Frissítés Időpontja'
 helpcenter.general.last_update_by: 'Az utolsó módosítás dátuma: <strong>{date_updated, date, medium}</strong>. A módosítást végezte: <strong>{person_name}</strong>.'
 helpcenter.general.log_in: 'Bejelentkezés'
 helpcenter.general.name: Keresztnév
 helpcenter.general.nav_contact: 'Kapcsolat'
 helpcenter.general.nav_contact_desc: 'Ha segítségre van szüksége, vegye fel velünk a kapcsolatot!'
+helpcenter.general.nav_downloads: 'Fájlok'
 helpcenter.general.nav_downloads_desc: 'Böngészés a fájlok között'
 helpcenter.general.nav_guides: Útmutatók
 helpcenter.general.nav_guides_desc: 'Az útmutatók megjelenítése'
@@ -68,6 +75,7 @@ helpcenter.general.nav_newticket: 'Kapcsolat'
 helpcenter.general.no_search_query: 'Írjon be valamilyen keresési lekérdezést a keresőmezőbe!'
 helpcenter.general.no_search_results_general: 'Nincs találat.'
 helpcenter.general.password: Jelszó
+helpcenter.general.published: 'Publikálva'
 helpcenter.general.rate_page_negative: Nem hasznos
 helpcenter.general.rate_page_positive: Hasznos
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_count} felhasználóból {vote_up} hasznosnak találta ezt a cikket.'
@@ -80,6 +88,7 @@ helpcenter.general.you: Ön
 helpcenter.label.search: Keresés
 helpcenter.members.language: Nyelv
 helpcenter.members.timezone: Időzóna
+helpcenter.messenger.blocks_continue_chat_link: 'Folytatás'
 helpcenter.messenger.blocks_continue_chat_title: 'Vissza a csevegésbe'
 helpcenter.messenger.blocks_knowledgebase_title: Tudásbázis
 helpcenter.messenger.blocks_search_block_no_results: 'Nincs találat a következőre: {query}'
@@ -89,11 +98,15 @@ helpcenter.messenger.blocks_ticket_button: 'Új hibajegy benyújtása'
 helpcenter.messenger.blocks_ticket_description: 'Kérdés vagy kérelem beküldése a kapcsolatfelvételi űrlap segítségével'
 helpcenter.messenger.blocks_ticket_title: 'Hibajegy beküldése'
 helpcenter.messenger.greeting: 'Kapcsolatfelvétel'
+helpcenter.messenger.loading: 'Betöltés'
 helpcenter.messenger.tickets_form_add_attachment: 'Csatolmány hozzáadása'
 helpcenter.messenger.tickets_form_header: 'Új hibajegy'
+helpcenter.messenger.tickets_form_message: 'Üzenet'
 helpcenter.messenger.tickets_form_name: Keresztnév
 helpcenter.messenger.tickets_form_or: vagy
+helpcenter.messenger.tickets_form_required: 'Kötelező'
 helpcenter.messenger.tickets_form_saving: 'A hibajegy mentése folyamatban. Kis türelmet kérünk.'
+helpcenter.messenger.tickets_form_select: 'Kiválasztás'
 helpcenter.messenger.tickets_form_submit: Küldés
 helpcenter.messenger.tickets_form_thanks: 'Köszönjük, hogy felvette velünk a kapcsolatot! Munkatársunk hamarosan jelentkezni fog.'
 helpcenter.messenger.tickets_form_thanks_header: 'Kérelme beérkezett hozzánk.'
@@ -101,6 +114,7 @@ helpcenter.news.view_as_agent: 'Ezt az oldalt csak a munkatársak láthatják, a
 helpcenter.profile.account_disabled_message: 'Ügyfélfiókja jelenleg ki van kapcsolva, ezért nem tud sem bejelentkezni, sem ügyet vagy beszélgetést indítani nálunk.'
 helpcenter.search.search_results: 'Találatok'
 helpcenter.search.showing_results_for: 'Találatok megjelenítése az alábbi helyen: {type}. Keresési lekérdezés: <span> „{query}”. </span>'
+helpcenter.sidebar.article_posted_by: 'Szerző'
 helpcenter.tickets.guest_thank_you_title: 'Köszönjük'
 helpcenter.tickets.list_agent: 'Hozzárendelt munkatárs'
 helpcenter.tickets.list_date_created: 'Létrehozás dátuma'
