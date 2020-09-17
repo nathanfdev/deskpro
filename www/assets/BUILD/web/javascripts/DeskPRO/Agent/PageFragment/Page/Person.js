@@ -243,8 +243,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 
 			var startEditable = function() {
+        var nametxt = editName.find('input[name=name]').first();
+
 				namef.hide();
 				orgpos.hide();
+        nametxt.val(namef.text());
 				editName.show();
 				editOrgpos.show();
 				startBtn.hide();

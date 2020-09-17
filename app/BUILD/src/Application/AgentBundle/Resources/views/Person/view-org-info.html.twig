@@ -1,4 +1,4 @@
-<div class="table-content contact-list contact-list-wrapper org" data-organization-id="{{ person.organization.id }}">
+<div class="table-content contact-list contact-list-wrapper org" data-organization-id="{{ person.organization.id }}" ng-non-bindable>
 	<strong>
         {% include 'AgentBundle:Person:view-parent-org.html.twig' with { 'parent': person.organization.parent, 'with_link': true } %}
 		{% if person.organization_position %}{{ person.organization_position }}, {% endif %}

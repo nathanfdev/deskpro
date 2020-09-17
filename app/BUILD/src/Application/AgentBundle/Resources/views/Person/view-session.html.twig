@@ -40,7 +40,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<tr>
 							<td>
 								<div class="fade-container">
-									<div class="line">
+									<div class="line" ng-non-bindable>
 										<a data-route="page:{{ path('agent_userchat_view', {'conversation_id': chat.id}) }}" data-route-title="@text">{{ chat.getSubjectLine() }}</a>
 									</div>
 									<div class="bound-fade"></div>

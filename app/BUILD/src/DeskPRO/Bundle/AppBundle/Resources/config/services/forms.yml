@@ -469,10 +469,12 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@form.api.chat.set_person_listener"
       - "@widget_settings_resolver"
+      - "@messenger.service.settings_resolver"
       - "@custom_field_manager"
       - "@brand_stack"
       - "@permissions_manager"
       - "@widget_jwt_decoder"
+      - "@deskpro.feature_flags"
     tags:
       - { name: form.type }
 

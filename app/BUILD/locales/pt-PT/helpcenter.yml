@@ -1,1 +1,57 @@
 ---
+helpcenter.articles.view_x_articles: 'Ver todos os artigos em {category}'
+helpcenter.downloads.file_name: 'Nome do ficheiro'
+helpcenter.downloads.file_size: 'Tamanho do ficheiro'
+helpcenter.downloads.no_files: 'Não há ficheiros'
+helpcenter.downloads.total_downloads: 'Total de transferências'
+helpcenter.downloads.view_x_files: '{count, plural, one {Ver 1 transferência} other {Ver # transferências}}'
+helpcenter.error.404_desc: 'Lamentamos, mas não foi possível encontrar esta página.'
+helpcenter.error.contact_us: 'Contacte-nos'
+helpcenter.error.general_title: 'Ocorreu um erro'
+helpcenter.forms.delete_question: 'Eliminar?'
+helpcenter.forms.error_captcha: 'O valor CAPTCHA era incorreto'
+helpcenter.forms.error_required: 'Este valor é obrigatório'
+helpcenter.forms.error_banned_email: 'O e-mail está proibido.'
+helpcenter.forms.label_drag_overlay: 'Insira esta imagem na sua mensagem.'
+helpcenter.forms.label_submit: Enviar
+helpcenter.general.drag_and_drop: 'Arraste e largue'
+helpcenter.general.labels: Etiquetas
+helpcenter.general.last_update_by: 'Última atualização: <strong>{date_updated, date, medium}</strong> por <strong>{person_name}</strong>'
+helpcenter.general.name: Nome
+helpcenter.general.nav_contact: 'Contacte-nos'
+helpcenter.general.nav_downloads_desc: 'Consulte os nossos ficheiros'
+helpcenter.general.nav_guides: Guias
+helpcenter.general.nav_guides_desc: 'Ver todos os guias'
+helpcenter.general.nav_kb: Base de conhecimentos
+helpcenter.general.no_search_query: 'Digite uma consulta de pesquisa na caixa de pesquisa.'
+helpcenter.general.no_search_results_general: 'Não foram encontrados resultados.'
+helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} de {vote_count} pessoas acharam esta página útil'
+helpcenter.general.related_content: 'Conteúdo relacionado'
+helpcenter.general.remove: remover
+helpcenter.general.search: 'Como podemos ajudá-lo hoje?'
+helpcenter.general.show_x_more: 'Mostrar {num} mais'
+helpcenter.general.x_search_results: '{num} resultados da pesquisa para "{query}"'
+helpcenter.label.search: Pesquisar
+helpcenter.messenger.blocks_continue_chat_title: 'Continue a conversação existente'
+helpcenter.messenger.blocks_knowledgebase_title: Base de conhecimentos
+helpcenter.messenger.blocks_search_block_no_results: 'Sem resultados para {query}'
+helpcenter.messenger.blocks_search_block_see_more_results: 'Ver mais resultados'
+helpcenter.messenger.blocks_ticket_button: 'Enviar um novo pedido'
+helpcenter.messenger.blocks_ticket_description: 'Enviar uma consulta através do nosso formulário de contacto'
+helpcenter.messenger.blocks_ticket_title: 'Enviar um pedido'
+helpcenter.messenger.chat_rating_block_buttons_helpful: Útil
+helpcenter.messenger.chat_rating_block_buttons_unhelpful: Nada útil
+helpcenter.messenger.greeting: 'Entre em contacto'
+helpcenter.messenger.tickets_form_add_attachment: 'Adicionar anexo'
+helpcenter.messenger.tickets_form_header: 'Novo pedido'
+helpcenter.messenger.tickets_form_thanks: 'Agradecemos o seu contacto. Um elemento da nossa equipa entrará em contacto consigo por e-mail.'
+helpcenter.messenger.tickets_form_thanks_header: 'O seu pedido está a caminho'
+helpcenter.search.search_results: 'Resultados da pesquisa'
+helpcenter.search.showing_results_for: 'A mostrar resultados em {type} para: <span>“{query}”</span>'
+helpcenter.tickets.list_date_created: 'Data de criação'
+helpcenter.tickets.new_intro: 'Preencha este formulário e um dos nossos agentes responderá ao seu e-mail o mais brevemente possível.'
+helpcenter.tickets.reference_number: 'Número de referência: {ref}'
+helpcenter.tickets.related_articles_desc: 'Encontrámos os seguintes artigos que podem resolver o seu problema.'
+helpcenter.tickets.submit_a_ticket: 'Enviar um pedido'
+helpcenter.tickets.thank_you: 'Obrigado, recebemos o seu pedido.'
+helpcenter.tickets.thank_you_desc: 'Agradecemos o seu contacto. Um elemento da nossa equipa entrará brevemente em contacto consigo.'

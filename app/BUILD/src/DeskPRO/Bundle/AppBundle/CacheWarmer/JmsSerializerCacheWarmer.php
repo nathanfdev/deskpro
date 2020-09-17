@@ -29,23 +29,30 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
      */
     public function warmUp($cacheDir)
     {
-        $dirs = [
-            DP_ROOT.'/src/Application/DeskPRO/Domain',
-            DP_ROOT.'/src/Application/DeskPRO/Entity',
-            DP_ROOT.'/src/Application/DeskPRO/Tickets/Triggers',
-            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Entity',
-            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Serializer/Model',
-            DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Model',
-            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Content',
-            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/CountBadge',
-            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Serializer',
-            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Settings/Model',
-            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Ticket',
-            DP_ROOT.'/src/DeskPRO/Bundle/MessengerBundle/Settings',
-            DP_ROOT.'/src/DeskPRO/Bundle/ReportBundle/Serializer/Model',
-            DP_ROOT.'/src/DeskPRO/Bundle/SendmailBundle/View/Model',
-            DP_ROOT.'/src/Orb/Util',
+        $namespaces = [
+            'Application\\DeskPRO\\Entity',
+            'DeskPRO\\Bundle\\AppBundle\\Entity',
+            'Application\\DeskPRO\\Domain',
+            'DeskPRO\\Bundle\\AppBundle\\Serializer\\Model',
+            'Application\\DeskPRO\\Tickets\\Triggers',
+            'DeskPRO\\Bundle\\ApiBundle\\Model',
+            'DeskPRO\\Bundle\\AppBundle\\Content',
+            'DeskPRO\\Bundle\\AppBundle\\CountBadge',
+            'DeskPRO\\Bundle\\AppBundle\\Serializer',
+            'DeskPRO\\Bundle\\AppBundle\\Settings\\Model',
+            'DeskPRO\\Bundle\\AppBundle\\Ticket',
+            'DeskPRO\\Bundle\\MessengerBundle\\Settings',
+            'DeskPRO\\Bundle\\ReportBundle\\Serializer\\Model',
+            'ArrayObject',
+            'DeskPRO\\Bundle\\SendmailBundle\\View\\Model',
+            'Orb\\Util',
         ];
+
+        $dirs = array_map(function ($namespace) {
+            return DP_ROOT.'/src/'.str_replace('\\', '/', $namespace);
+        }, array_filter($namespaces, function ($namespace) {
+            return false !== strpos($namespace, '\\');
+        }));
 
         $finder = Finder::create()
             ->in($dirs)
@@ -60,37 +67,11 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
         }
 
         foreach (get_declared_classes() as $class) {
-            if (0 === strpos($class, 'Application\\DeskPRO\\Entity')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\AppBundle\\Entity')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'Application\\DeskPRO\\Domain')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\AppBundle\\Serializer\\Model')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'Application\\DeskPRO\\Tickets\\Triggers')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\ApiBundle\\Model')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\AppBundle\\Content')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\AppBundle\\CountBadge')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\AppBundle\\Serializer')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\AppBundle\\Settings\\Model')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\AppBundle\\Ticket')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\MessengerBundle\\Settings')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\ReportBundle\\Serializer\\Model')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'ArrayObject')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\SendmailBundle\\View\\Model')) {
-                $this->cacheMetadata($class);
-            } elseif (0 === strpos($class, 'Orb\\Util')) {
+            $canWarm = array_reduce($namespaces, function ($result, $namespace) use ($class) {
+                return $result || 0 === strpos($class, $namespace);
+            }, false);
+
+            if ($canWarm) {
                 $this->cacheMetadata($class);
             }
         }

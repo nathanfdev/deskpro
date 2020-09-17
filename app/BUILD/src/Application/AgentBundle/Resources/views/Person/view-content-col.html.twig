@@ -153,7 +153,7 @@
                                 <tr>
                                     <td>
                                         <div class="fade-container">
-                                            <div class="line">
+                                            <div class="line" ng-non-bindable>
                                                 <a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}"
                                                    data-route-title="@text"><span
                                                           class="id-number">#{{ ticket.id }}</span> {{ ticket.subject }}
@@ -208,7 +208,7 @@
                                     <tr>
                                         <td>
                                             <div class="fade-container">
-                                                <div class="line">
+                                                <div class="line" ng-non-bindable>
                                                     <a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}"
                                                        data-route-title="@text"><span
                                                               class="id-number">#{{ ticket.id }}</span> {{ ticket.subject }}
@@ -259,7 +259,7 @@
                             {% for chat in person_chats %}
                                 <tr>
                                     <td>
-                                        <div class="fade-container">
+                                        <div class="fade-container" ng-non-bindable>
                                             <div class="line">
                                                 {{ chat.date_created|date('day_short') }}
                                                 <a data-route="page:{{ path('agent_userchat_view', {'conversation_id': chat.id}) }}"
@@ -453,7 +453,7 @@
                     {% for action in activity_stream %}
                         <tr>
                             <td>
-                                <div class="fade-container">
+                                <div class="fade-container" ng-non-bindable>
                                     <div {% if action.action_type != 'agent_login_as' %}class="line"{% endif %}>
 									<span class="what">
 										{% if action.action_type == 'registered' %}

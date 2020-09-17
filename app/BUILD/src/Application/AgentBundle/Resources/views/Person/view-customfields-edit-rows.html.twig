@@ -16,9 +16,9 @@
 <table class="prop-table" cellpadding="0" cellspacing="0" width="100%">
 {% for f in custom_fields %}
 	<tr>
-		<th>{{ f.title }}</th>
+		<th ng-non-bindable>{{ f.title }}</th>
 		<td>
-			<div>{{ render_custom_field_form(f) }}</div>
+			<div ng-non-bindable>{{ render_custom_field_form(f) }}</div>
 			<div class="error-row field_{{ f.id }}" style="display: none">{{ _self.custom_field_errors(f.field_def) }}</div>
 		</td>
 	</tr>
@@ -50,8 +50,8 @@
 
     {% for f in custom_fields_2 %}
         <tr>
-            <th>{{ form_label(f) }}</th>
-            <td>
+            <th ng-non-bindable>{{ form_label(f) }}</th>
+            <td ng-non-bindable>
                 {{ form_widget(f) }}
             </td>
         </tr>
@@ -59,8 +59,8 @@
 
     {% for f in custom_fields_definitions %}
         <tr>
-            <th>{{ form_label(f) }}</th>
-            <td>
+            <th ng-non-bindable>{{ form_label(f) }}</th>
+            <td ng-non-bindable>
                 {{ form_widget(f) }}
             </td>
         </tr>

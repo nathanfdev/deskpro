@@ -200,6 +200,7 @@ class ServiceController extends AbstractMessengerController
             'helpcenter.messenger.tickets_form_header',
             'helpcenter.messenger.tickets_form_message',
             'helpcenter.messenger.tickets_form_name',
+            'helpcenter.messenger.tickets_form_email',
             'helpcenter.messenger.tickets_form_or',
             'helpcenter.messenger.tickets_form_priority',
             'helpcenter.messenger.tickets_form_product',
@@ -236,6 +237,11 @@ class ServiceController extends AbstractMessengerController
         return View::create($output, Response::HTTP_OK);
     }
 
+    /**
+     * @param $url
+     *
+     * @return bool
+     */
     protected function isAbsoluteUrl($url)
     {
         return false !== strpos($url, '://') || '//' === substr($url, 0, 2);
@@ -290,6 +296,11 @@ class ServiceController extends AbstractMessengerController
         return $ticketFormConfig;
     }
 
+    /**
+     * @param $categories
+     *
+     * @return array
+     */
     private function getTicketFieldHierarchy($categories)
     {
         $data = [];
