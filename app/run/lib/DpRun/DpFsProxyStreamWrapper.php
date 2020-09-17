@@ -172,7 +172,7 @@ class DpFsProxyStreamWrapper
                 return false;
             }
 
-            if (strpos($this->virtualPath, '.') !== false) {
+            if (self::isFile($this->virtualPath)) {
                 return self::dummyStatFile();
             }
 
@@ -282,7 +282,7 @@ class DpFsProxyStreamWrapper
         $resolvedPath = self::getPath($path);
 
         if (!self::exists($resolvedPath)) {
-            if (\strpos($resolvedPath, '.') !== false) {
+            if (self::isFile($resolvedPath)) {
                 $namespace = self::getNamespace($path);
 
                 if (isset(self::$cache[$namespace][$resolvedPath])) {
@@ -295,7 +295,7 @@ class DpFsProxyStreamWrapper
             throw new \RuntimeException("Should not return stats for virtual directories");
         }
 
-        if (\strpos($resolvedPath, '.') !== false) {
+        if (self::isFile($resolvedPath)) {
             return @\stat($resolvedPath);
         }
 
@@ -413,7 +413,7 @@ class DpFsProxyStreamWrapper
      */
     private static function isReadMode($mode)
     {
-        return strpos($mode, 'r') !== false;
+        return \strpos($mode, 'r') !== false;
     }
 
     /**
@@ -424,11 +424,22 @@ class DpFsProxyStreamWrapper
      */
     private static function isWriteMode($mode)
     {
-        return ((strpos($mode, 'w') !== false)
-            || (strpos($mode, 'a') !== false)
-            || (strpos($mode, 'c') !== false)
-            || (strpos($mode, 'x') !== false)
+        return ((\strpos($mode, 'w') !== false)
+            || (\strpos($mode, 'a') !== false)
+            || (\strpos($mode, 'c') !== false)
+            || (\strpos($mode, 'x') !== false)
         );
+    }
+
+    /**
+     * Is this a file path?
+     *
+     * @param string $path
+     * @return bool
+     */
+    private static function isFile($path)
+    {
+        return \strpos($path, '.') !== false;
     }
 
     /**
