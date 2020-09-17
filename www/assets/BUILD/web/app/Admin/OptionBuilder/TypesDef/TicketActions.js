@@ -708,7 +708,7 @@ define([
               name: template.name,
               can_choose_approvers: template.can_choose_approvers,
               description: template.description,
-              has_description: !! template.description.trim()
+              has_description: !!template.description &&!!template.description.trim()
             };
           });
 
