@@ -126,10 +126,8 @@ class ViewTopic extends React.Component {
     const links = document.querySelectorAll('a.internal_link.topic');
     Array.prototype.forEach.call(links, (internalLink) => {
       let target = internalLink.pathname;
-      console.log(target);
       const guideSlug = target.replace(/^(\/[^/]+)?\/guides\//, '').replace(/\/.*/, '');
       if (true || guideSlug !== this.state.guideSlug) {
-        console.log('link to another guide');
         const newLink = document.createElement('a');
         newLink.className = 'internal_link topic';
         newLink.onclick = e => this.internalLink(e, target);
@@ -141,8 +139,6 @@ class ViewTopic extends React.Component {
         internalLink.parentNode.replaceChild(newLink, internalLink);
       } else {
         const newLink = document.createElement('span');
-        console.log(internalLink);
-        console.log(internalLink.href);
         const link = (
           <Link
             to={internalLink.pathname}
@@ -267,7 +263,6 @@ class ViewTopic extends React.Component {
       });
     } else {
       const topicSlug = path.replace(/^(\/[^/]+)?\/guides\/.*\//, '');
-      console.log(topicSlug);
       this.grabTopicFromApi(topicSlug);
     }
     browserHistory.push(path);
@@ -302,6 +297,44 @@ class ViewTopic extends React.Component {
     });
   };
 
+  postComment = comment => new Promise(
+    (resolve, reject) => portalHttp.sendPost(
+      `DP_URL/portal/api/guides/topic/${this.state.topic.slug}/comment`,
+      comment
+    ).then((response) => {
+      if (response.data) {
+        if (response.data.data.comment) {
+          this.state.topic.calc_num_comments = this.state.topic.calc_num_comments + 1;
+          this.state.topic.comments.push(response.data.data.comment);
+          this.setState({
+            topic: this.state.topic
+          });
+        }
+        if (response.data.data.flashes) {
+          this.setState({
+            flashes: response.data.data.flashes
+          });
+        }
+        if (response.data.data.errors) {
+          if (response.data.data.errors.form.errors) {
+            Array.prototype.forEach.call(response.data.data.errors.form.errors, (error) => {
+              this.state.flashes.push({
+                type:    'error',
+                message: error
+              });
+            });
+            this.setState({
+              flashes: this.state.flashes
+            });
+          }
+          return reject(response);
+        }
+        return resolve(response);
+      }
+      return reject(response);
+    })
+  );
+
   selectGuide = (guide) => {
     portalHttp.sendGet(`DP_URL/portal/api/guides/topics/${guide.slug}`).then((response) => {
       if (response.isError()) {
@@ -335,16 +368,18 @@ class ViewTopic extends React.Component {
   };
 
   renderTopic() {
-    const { topic, guideSlug, topicSlug, loaded, topicList } = this.state;
+    const { topic, guideSlug, topicSlug, loaded, topicList, flashes } = this.state;
     return (
       <Topic
         topic={topic}
         topicList={topicList}
         guideSlug={guideSlug}
         topicSlug={topicSlug}
+        flashed={flashes}
         data={topic}
         sizes={this.sizes}
         loaded={loaded}
+        postComment={this.postComment}
       />
     );
   }

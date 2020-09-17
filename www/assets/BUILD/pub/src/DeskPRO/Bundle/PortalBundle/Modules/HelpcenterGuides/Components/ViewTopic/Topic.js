@@ -1,20 +1,23 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage, FormattedDate } from 'react-intl';
+import Link from 'react-router/lib/Link';
 import $ from 'jquery';
 import { copyTextToClipboard } from 'DeskPRO/Component/Util/ClipBoard';
-import { TopicSummary } from '../index';
+import { TopicSummary, CommentsBlock } from '../index';
 import AuthorsAvatars from './AuthorsAvatars';
 
 class Topic extends React.PureComponent {
   static propTypes = {
-    intl:      PropTypes.object,
-    topic:     PropTypes.object,
-    topicList: PropTypes.array,
-    guideSlug: PropTypes.string,
-    topicSlug: PropTypes.string,
-    sizes:     PropTypes.object,
-    loaded:    PropTypes.bool,
+    intl:        PropTypes.object,
+    topic:       PropTypes.object,
+    topicList:   PropTypes.array,
+    flashes:     PropTypes.array,
+    guideSlug:   PropTypes.string,
+    topicSlug:   PropTypes.string,
+    sizes:       PropTypes.object,
+    loaded:      PropTypes.bool,
+    postComment: PropTypes.func,
   };
 
   static defaultProps = {
@@ -43,6 +46,87 @@ class Topic extends React.PureComponent {
     }
     return false;
   };
+
+  renderSubtopics = () => null
+
+  renderPreviousNext = () => {
+    const { topicList, topic, guideSlug } = this.props;
+    const index = topicList.findIndex(t => t.id === topic.id);
+    let previous = null;
+    let previousIndex = index - 1;
+    let next = null;
+    let nextIndex = index + 1;
+    while (!previous && previousIndex >= 0) {
+      if (topicList[previousIndex].no_content === '0') {
+        previous = topicList[previousIndex];
+      }
+      previousIndex -= 1;
+    }
+    while (!next && nextIndex < topicList.length) {
+      if (topicList[nextIndex].no_content === '0') {
+        next = topicList[nextIndex];
+      }
+      nextIndex += 1;
+    }
+
+    if (!previous && !next) {
+      return null;
+    }
+
+    let baseUrl = window.DESKPRO_BASE_URL;
+    if (baseUrl) {
+      baseUrl = baseUrl.replace(/\/+$/, '');
+    }
+
+    return (
+      <Fragment>
+        {next &&
+          <Link
+            className="dp-po-guides-block-next-topic"
+            to={`${baseUrl}/guides/${guideSlug}/${next.slug}`}
+          >
+            <figure className="dp-po-icon">
+              <i className="fal fa-angle-right" />
+            </figure>
+            <span className="sup">
+              <FormattedMessage id="helpcenter.guides.next_topic" />
+            </span>
+            <span className="title">
+              {next.title}
+            </span>
+          </Link>
+        }
+        {previous &&
+          <Link
+            className="dp-po-guides-block-previous-topic"
+            to={`${baseUrl}/guides/${guideSlug}/${previous.slug}`}
+          >
+            <span className="sup">
+              <FormattedMessage id="helpcenter.guides.previous_topic" />
+            </span>
+            <span className="title">
+              {previous.title}
+            </span>
+            <figure className="dp-po-icon">
+              <i className="fal fa-angle-left" />
+            </figure>
+          </Link>
+        }
+      </Fragment>
+    );
+  }
+
+  renderComments() {
+    const { topic, flashes, postComment } = this.props;
+    return (
+      <CommentsBlock
+        count={topic.calc_num_comments}
+        postComment={postComment}
+        comments={topic.comments}
+        flashes={flashes}
+      />
+    );
+  }
 
   renderInSection() {
     const { topic, topicList } = this.props;
@@ -83,54 +167,61 @@ class Topic extends React.PureComponent {
         <div className="row">
           <div className="col-sm-9">
             <div className="dp-po-guides-block-article-left">
-              <div className="dp-po-guides-block-header">
-                <h2 className="dp-po-guides-block-title dp-po-clipboard">
-                  {topic.title}
-                  {topic.status === 'hidden' ?
-                    <span
-                      className="dp-po-icon dp-info" data-toggle="tooltip"
-                      title={intl.formatMessage({ id: 'helpcenter.general.viewed_by_agents_only' })} data-placement="top"
+              <div className="dp-po-guides-block-main">
+
+                <div className="dp-po-guides-block-header">
+                  <h2 className="dp-po-guides-block-title dp-po-clipboard">
+                    {topic.title}
+                    {topic.status === 'hidden' ?
+                      <span
+                        className="dp-po-icon dp-info" data-toggle="tooltip"
+                        title={intl.formatMessage({ id: 'helpcenter.general.viewed_by_agents_only' })} data-placement="top"
+                      >
+                        <i className="fal fa-info-circle text-primary" />
+                      </span>
+                      : null}
+                    <a
+                      className="dp-po-clipboard-link"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      href={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
+                      onClick={this.copyLinkToClipBoard}
+                      ref={this.anchor}
+                      title={intl.formatMessage({ id: 'helpcenter.general.copy_to_clipboard' })}
                     >
-                      <i className="fal fa-info-circle text-primary" />
-                    </span>
-                    : null}
-                  <a
-                    className="dp-po-clipboard-link"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    href={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
-                    onClick={this.copyLinkToClipBoard}
-                    ref={this.anchor}
-                    title={intl.formatMessage({ id: 'helpcenter.general.copy_to_clipboard' })}
-                  >
-                    <span className="dp-po-icon far fa-anchor" />
-                  </a>
-                </h2>
-                {this.renderInSection()}
-                <AuthorsAvatars authors={topic.authors} />
-                <div className="dp-po-guides-meta">
-                  {topic.date_published && <Fragment><FormattedMessage id="helpcenter.general.published" />: <strong><FormattedDate value={topic.date_published} day="numeric" month="short" year="numeric" /></strong><span className="separator">|</span></Fragment>}
-                  <FormattedMessage id="helpcenter.general.last_updated" />: <strong><FormattedDate value={topic.date_updated} day="numeric" month="short" year="numeric" /></strong>
+                      <span className="dp-po-icon far fa-anchor" />
+                    </a>
+                  </h2>
+                  {this.renderInSection()}
+                  <AuthorsAvatars authors={topic.authors} />
+                  <div className="dp-po-guides-meta">
+                    {topic.date_published && <Fragment><FormattedMessage id="helpcenter.general.published" />: <strong><FormattedDate value={topic.date_published} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+                    {topic.date_published && topic.date_updated && <span className="separator">|</span>}
+                    {topic.date_updated && <Fragment><FormattedMessage id="helpcenter.general.last_updated" />: <strong><FormattedDate value={topic.date_updated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+                  </div>
+                  <div className="dp-po-guides-block-extra">
+                    <ul className="dp-po-guides-block-extra-list">
+                      <li className="dp-po-guides-block-extra-item">
+                        <a href="" className="dp-po-guides-block-extra-link"><i
+                          className="dp-po-icon fal fa-print"
+                        /></a>
+                      </li>
+                      <li className="dp-po-guides-block-extra-item">
+                        <a href="" className="dp-po-guides-block-extra-link">
+                          <i className="dp-po-icon fal fa-file-pdf" />
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-                <div className="dp-po-guides-block-extra">
-                  <ul className="dp-po-guides-block-extra-list">
-                    <li className="dp-po-guides-block-extra-item">
-                      <a href="" className="dp-po-guides-block-extra-link"><i
-                        className="dp-po-icon fal fa-print"
-                      /></a>
-                    </li>
-                    <li className="dp-po-guides-block-extra-item">
-                      <a href="" className="dp-po-guides-block-extra-link">
-                        <i className="dp-po-icon fal fa-file-pdf" />
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                <div
+                  className="dp-po-post-content dp-po-guides-block-content"
+                  dangerouslySetInnerHTML={{ __html: topic.content }}
+                />
               </div>
-              <div
-                className="dp-po-post-content dp-po-guides-block-content"
-                dangerouslySetInnerHTML={{ __html: topic.content }}
-              />
+              {this.renderSubtopics()}
+              {this.renderPreviousNext()}
+              {this.renderComments()}
             </div>
           </div>
           <div className="col-sm-3">
