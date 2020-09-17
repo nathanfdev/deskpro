@@ -133,9 +133,6 @@ class DpFsProxyStreamWrapper
 
             return true;
         } elseif (self::isWriteMode($mode)) {
-
-
-
             $this->virtualNamespace = $namespace;
             $this->virtualPath      = $resolvedPath;
 
