@@ -257,7 +257,5 @@ if ($DP_ENV->getConfig('env.init_fn')) {
     call_user_func($DP_ENV->getConfig('env.init_fn'), $DP_ENV);
 }
 
-if (defined('DPC_IS_READ_ONLY_FS')) {
-    require_once 'lib/DpRun/DpFsProxyStreamWrapper.php';
-    \DpRun\DpFsProxyStreamWrapper::register();
-}
+require_once 'lib/DpRun/DpFsProxyStreamWrapper.php';
+\DpRun\DpFsProxyStreamWrapper::register();
