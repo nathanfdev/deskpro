@@ -32,11 +32,11 @@ class TopicList extends React.Component {
   }
 
   componentDidMount() {
-    this.context.router.listen(this.locationHasChanged);
+    this.removeListener = this.context.router.listen(this.locationHasChanged);
   }
 
   componentWillUnmount() {
-    this.context.router.unregisterTransitionHook(this.locationHasChanged);
+    this.removeListener();
   }
 
   filterTopic = (topic) => {

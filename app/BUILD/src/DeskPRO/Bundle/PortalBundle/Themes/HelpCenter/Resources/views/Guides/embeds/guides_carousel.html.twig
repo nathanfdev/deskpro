@@ -16,7 +16,10 @@
 {#</div>#}
 <div class="dp-po-guides-dropdown">
     <button class="dp-po-guides-dropdown-button">
-        {{ render_icon_from(guide, {as_download_url: true, is_rounded: true}) }} {{ guide }}
+        <figure class="dp-po-icon">
+            {{ render_icon_from(guide, {as_download_url: true, is_rounded: true}) }}
+        </figure>
+        {{ guide }}
         <i className="fal fa-angle-down" />
     </button>
 </div>

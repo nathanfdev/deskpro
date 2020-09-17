@@ -71,8 +71,8 @@ class TopicListItem extends React.Component {
               filter={filter}
               filterTopic={filterTopic}
               withSplash={withSplash}
-              expanded={(filter !== '' || child.slug === topicSlug || Object.values(child.children)
-                .find(c => c.slug === topicSlug || Object.values(c.children).find(cc => cc.slug === topicSlug)))}
+              expanded={(filter !== '' || child.slug === topicSlug || typeof Object.values(child.children)
+                .find(c => c.slug === topicSlug ||  Object.values(c.children).find(cc => cc.slug === topicSlug)) !== 'undefined')}
             />
             )
           )}
@@ -87,6 +87,8 @@ class TopicListItem extends React.Component {
     if (baseUrl) {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
+
+    console.log(this.props.expanded);
 
     const prefix = this.getLevelPrefix();
     return (

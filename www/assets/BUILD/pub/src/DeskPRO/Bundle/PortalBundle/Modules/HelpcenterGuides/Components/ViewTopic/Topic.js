@@ -233,20 +233,20 @@ class Topic extends React.PureComponent {
                     {topic.date_published && topic.date_updated && <span className="separator">|</span>}
                     {topic.date_updated && <Fragment><FormattedMessage id="helpcenter.general.last_updated" />: <strong><FormattedDate value={topic.date_updated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
                   </div>
-                  <div className="dp-po-guides-block-extra">
-                    <ul className="dp-po-guides-block-extra-list">
-                      <li className="dp-po-guides-block-extra-item">
-                        <a href="" className="dp-po-guides-block-extra-link"><i
-                          className="dp-po-icon fal fa-print"
-                        /></a>
-                      </li>
-                      <li className="dp-po-guides-block-extra-item">
-                        <a href="" className="dp-po-guides-block-extra-link">
-                          <i className="dp-po-icon fal fa-file-pdf" />
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                  {/* <div className="dp-po-guides-block-extra">*/}
+                  {/*  <ul className="dp-po-guides-block-extra-list">*/}
+                  {/*    <li className="dp-po-guides-block-extra-item">*/}
+                  {/*      <a href="" className="dp-po-guides-block-extra-link"><i*/}
+                  {/*        className="dp-po-icon fal fa-print"*/}
+                  {/*      /></a>*/}
+                  {/*    </li>*/}
+                  {/*    <li className="dp-po-guides-block-extra-item">*/}
+                  {/*      <a href="" className="dp-po-guides-block-extra-link">*/}
+                  {/*        <i className="dp-po-icon fal fa-file-pdf" />*/}
+                  {/*      </a>*/}
+                  {/*    </li>*/}
+                  {/*  </ul>*/}
+                  {/* </div>*/}
                 </div>
                 <div
                   className="dp-po-post-content dp-po-guides-block-content"

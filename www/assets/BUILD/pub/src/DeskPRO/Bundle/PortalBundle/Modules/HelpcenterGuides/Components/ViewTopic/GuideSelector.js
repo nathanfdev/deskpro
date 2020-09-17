@@ -58,10 +58,10 @@ class GuideSelector extends React.Component {
   }
 
   renderGuide = (guide, activeGuide, baseUrl) => (
-    <div className={classNames('dp-po-guides-tabs-item', { active: guide.id === activeGuide.id })} key={guide.id} style={{ color: guide.color ? `#${guide.color}` : 'var(--warning)' }}>
+    <div className={classNames('dp-po-guides-tabs-item', { active: guide.id === activeGuide.id })} key={guide.id}>
       <div className="dp-po-guides-tabs-content">
         <a href={`${baseUrl}/guides/${guide.slug}`} className="dp-po-guides-tabs-link" onClick={e => this.onClickGuide(e, guide)} title={guide.title}>
-          <figure className="dp-po-icon" style={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }}><IconRenderer object={guide} className="" default={<i className="fal fa-user-headset" />} /></figure> {guide.title}
+          <figure className="dp-po-icon" style={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }}><IconRenderer object={guide} key={guide.icon_property ? guide.icon_property.urn_path : 'fa-user-headset'} className="" default={<i className="fal fa-user-headset" />} /></figure> {guide.title}
         </a>
       </div>
     </div>
@@ -86,7 +86,6 @@ class GuideSelector extends React.Component {
           <div className="dp-po-guides-tabs-list">
             {reverseGuides.map(guide => this.renderGuide(guide, activeGuide, baseUrl))}
           </div>
-          <div className="dp-po-tabs-shadow" />
         </div>
         <GuideDropDown activeGuide={activeGuide} guides={guides} selectGuide={selectGuide} style={{ display: mode === 'dropdown' ? 'block' : 'none' }} />
       </Fragment>

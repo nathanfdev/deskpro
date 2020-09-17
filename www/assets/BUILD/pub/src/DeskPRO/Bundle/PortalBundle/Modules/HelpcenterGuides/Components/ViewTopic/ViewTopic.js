@@ -98,9 +98,10 @@ class ViewTopic extends React.Component {
   getGuideSlug = splat => splat.split('/')[0];
 
   handleScroll = () => {
-    if (this.state.fixed !== this.elements.guidesMain.getBoundingClientRect().top < 0) {
+    console.log(this.elements.guidesMain.getBoundingClientRect().top);
+    if (this.state.fixed !== this.elements.guidesMain.getBoundingClientRect().top < 28) {
       this.setState({
-        fixed: this.elements.guidesMain.getBoundingClientRect().top < 0,
+        fixed: this.elements.guidesMain.getBoundingClientRect().top < 28,
       });
     }
   };
@@ -108,7 +109,7 @@ class ViewTopic extends React.Component {
   defineSizes = () => {
     if (!this.elements) {
       this.elements = {
-        guidesMain:   window.document.getElementById('main'),
+        guidesMain:   window.document.getElementsByClassName('dp-po-guides-wrap')[0],
         search:       window.document.getElementsByClassName('dp-po-guides-search')[0],
         articleRight: window.document.getElementsByClassName('dp-po-guides-block-article-right')[0],
       };
