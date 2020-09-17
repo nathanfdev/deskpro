@@ -277,7 +277,7 @@ class ViewTopic extends React.Component {
       loaded: false
     });
 
-    portalHttp.sendGet(`DP_URL/portal/api/guides/topic/${slug}`).then((response) => {
+    portalHttp.sendGet(`DP_URL/portal/api/guides/topic/${slug}?inline_sideloads=true&include=topic`).then((response) => {
       if (response.isError()) {
         return;
       }

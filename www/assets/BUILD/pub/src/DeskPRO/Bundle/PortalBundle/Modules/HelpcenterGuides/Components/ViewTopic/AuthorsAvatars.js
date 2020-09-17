@@ -4,7 +4,12 @@ import { FormattedMessage } from 'react-intl';
 
 class AuthorsAvatars extends React.PureComponent {
   static propTypes = {
-    authors: PropTypes.array
+    authors: PropTypes.array,
+    max:     PropTypes.number
+  };
+
+  static defaultProps = {
+    max: -1
   };
 
   static getInitials(author) {
@@ -28,11 +33,15 @@ class AuthorsAvatars extends React.PureComponent {
   }
 
   render() {
+    let authors = this.props.authors;
+    if (this.props.max !== -1) {
+      authors = this.props.authors.slice(this.props.max * -1);
+    }
     return (
       <div className="dp-po-post-avatars">
         <span className="sr-only"><FormattedMessage id="helpcenter.general.authors_list" /></span>
         <ul className="dp-po-post-avatars-list">
-          {this.props.authors.map(author => (
+          {authors.map(author => (
             <li className="dp-po-post-avatars-item" key={author.id}>
               <a
                 className="dp-po-post-avatars-link" data-toggle="tooltip"

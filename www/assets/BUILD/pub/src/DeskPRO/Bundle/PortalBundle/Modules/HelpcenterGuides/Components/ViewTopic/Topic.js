@@ -47,7 +47,42 @@ class Topic extends React.PureComponent {
     return false;
   };
 
-  renderSubtopics = () => null
+  renderSubTobic = (topic) => {
+    const { guideSlug } = this.props;
+    let baseUrl = window.DESKPRO_BASE_URL;
+    if (baseUrl) {
+      baseUrl = baseUrl.replace(/\/+$/, '');
+    }
+    return (
+      <Link
+        className="dp-po-guides-subtopic"
+        key={topic.id}
+        to={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
+      >
+        <div className="dp-po-guides-subtopic-title">
+          {topic.title}
+        </div>
+        <AuthorsAvatars authors={topic.authors} max={3} />
+        <div className="dp-po-guides-subtopic-dates">
+          {topic.date_published && <Fragment><FormattedMessage className="title" id="helpcenter.general.published" />: <strong><FormattedDate value={topic.date_published} day="numeric" month="short" year="numeric" /></strong><br /></Fragment>}
+          {topic.date_updated && <Fragment><FormattedMessage className="title" id="helpcenter.general.last_updated" />: <strong><FormattedDate value={topic.date_updated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+        </div>
+      </Link>
+    );
+  }
+
+  renderSubtopics = () => {
+    const { topic } = this.props;
+    if (topic.children.length === 0) {
+      return null;
+    }
+    return (
+      <div className="dp-po-guides-subtopics">
+        <h3><FormattedMessage id="helpcenter.guides.topics_in" values={{ title: topic.title }} /></h3>
+        {topic.children.map(child => this.renderSubTobic(child))}
+      </div>
+    );
+  }
 
   renderPreviousNext = () => {
     const { topicList, topic, guideSlug } = this.props;
@@ -129,13 +164,12 @@ class Topic extends React.PureComponent {
   }
 
   renderInSection() {
-    const { topic, topicList } = this.props;
+    const { topic } = this.props;
 
-    const parent = topicList.find(t => t.id === topic.parent);
-    if (parent) {
+    if (topic.parent) {
       return (
         <div className="dp-po-guides-block-title-section">
-          <FormattedMessage id="helpcenter.guides.in_section" values={{ section: parent.title }} />
+          <FormattedMessage id="helpcenter.guides.in_section" values={{ section: topic.parent.title }} />
         </div>
       );
     }

@@ -208,7 +208,10 @@ class GuidesController extends AbstractPublishController
 
         $guides = $this->getGuidesDataService()->getGuides($person);
 
-        $topicJson = Strings::escapeForJson($serializer->serialize($topic, 'json', new SideloadSerializationContext()));
+        $topicContext = new SideloadSerializationContext(['topic']);
+        $topicContext->setIdsOnly(false);
+        $topicContext->setInlineSideloads(true);
+        $topicJson = Strings::escapeForJson(json_encode($serializer->toArray(new ApiWrapper($topic), $topicContext)['data']));
 
         $topicData = new LazyPropObject([
             'comments' => function () use ($topic) {

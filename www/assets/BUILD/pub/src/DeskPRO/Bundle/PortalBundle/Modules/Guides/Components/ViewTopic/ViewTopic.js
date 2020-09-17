@@ -19,8 +19,8 @@ class ViewTopic extends React.Component {
     let topic = null;
     if (window.topic) {
       topic = JSON.parse(window.topic);
+      topic.content = this.addIdToh1(topic.content);
     }
-    topic.content = this.addIdToh1(topic.content);
     const topics = JSON.parse(window.topicList);
     this.state = {
       fixed:     false,
