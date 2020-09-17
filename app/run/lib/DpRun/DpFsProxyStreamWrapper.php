@@ -113,6 +113,10 @@ class DpFsProxyStreamWrapper
         $resolvedPath = self::getPath($path);
         $namespace = self::getNamespace($path);
 
+//        if (self::isWriteMode($mode)) {
+//            error_log('WRITE '.$path);
+//        }
+
         if (!self::exists($resolvedPath)) {
             $this->virtualNamespace = $namespace;
             $this->virtualPath      = $resolvedPath;
@@ -133,6 +137,9 @@ class DpFsProxyStreamWrapper
 
             return true;
         } elseif (self::isWriteMode($mode)) {
+
+
+
             $this->virtualNamespace = $namespace;
             $this->virtualPath      = $resolvedPath;
 
@@ -292,7 +299,7 @@ class DpFsProxyStreamWrapper
                 return false;
             }
 
-            throw new \RuntimeException("Should not return stats for virtual directories");
+            return self::dummyStatDir();
         }
 
         if (self::isFile($resolvedPath)) {
@@ -351,6 +358,9 @@ class DpFsProxyStreamWrapper
         return \unlink(self::getPath($path));
     }
 
+    /**
+     * @param string $message
+     */
     private function log($message)
     {
         if (self::IS_LOGGING) {
