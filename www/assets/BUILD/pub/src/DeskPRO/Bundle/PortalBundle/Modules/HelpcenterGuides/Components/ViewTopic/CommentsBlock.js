@@ -10,6 +10,19 @@ class Comment extends React.Component {
     comment: PropTypes.object
   };
 
+  renderAvatar() {
+    const { comment } = this.props;
+
+    if (comment.avatar) {
+      return (
+        <img src={comment.avatar} className="dp-po-avatar-image" role="presentation" />
+      );
+    }
+    return (
+      <span className="dp-po-avatar-name" aria-hidden="true">{comment.initials}</span>
+    );
+  }
+
   render() {
     const { comment } = this.props;
 
@@ -19,12 +32,12 @@ class Comment extends React.Component {
           <div className="row">
             <div className="col-sm-9">
               <div className="dp-po-avatar">
-                <img src={comment.avatar} className="dp-po-avatar-image" role="presentation" />
-                <strong>{comment.name}</strong>
+                {this.renderAvatar()}
+                <span>{comment.name}</span>
               </div>
             </div>
             <div className="col-sm-3">
-              <div className="dp-po-comments-extra">
+              <div className="dp-po-comments-extras">
                 <div className="dp-po-comments-time">
                   <i
                     className="dp-po-icon far fa-clock"

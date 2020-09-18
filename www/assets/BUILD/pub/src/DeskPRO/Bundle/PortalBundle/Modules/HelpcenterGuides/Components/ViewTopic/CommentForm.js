@@ -148,6 +148,19 @@ class CommentForm extends React.Component {
     });
   };
 
+  sanitize = (string) => {
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      '/': '&#x2F;',
+    };
+    const reg = /[&<>"'/]/ig;
+    return string.replace(reg, match => (map[match]));
+  }
+
   render() {
     if (!window.topicCommentForm) {
       return null;
@@ -162,9 +175,19 @@ class CommentForm extends React.Component {
         </div>
       );
     }
+
     return (
       <div className="dp-po-block">
         <div className="dp-po-comments-add">
+          <div className="dp-po-avatar">
+            <div
+              dangerouslySetInnerHTML={{ __html: window.user_avatar }}
+            />
+            <strong
+              dangerouslySetInnerHTML={{ __html: this.sanitize(window.user_name) }}
+            />
+          </div>
+
           <form action="" className="dp-po-form" method="post">
             <div className="form-group">
               <label className="title title required" htmlFor="comment_content_real">

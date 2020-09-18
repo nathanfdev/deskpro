@@ -390,6 +390,7 @@ class ViewTopic extends React.Component {
         sizes={this.sizes}
         loaded={loaded}
         postComment={this.postComment}
+        grabTopicFromApi={this.grabTopicFromApi}
       />
     );
   }

@@ -9,15 +9,16 @@ import AuthorsAvatars from './AuthorsAvatars';
 
 class Topic extends React.PureComponent {
   static propTypes = {
-    intl:        PropTypes.object,
-    topic:       PropTypes.object,
-    topicList:   PropTypes.array,
-    flashes:     PropTypes.array,
-    guideSlug:   PropTypes.string,
-    topicSlug:   PropTypes.string,
-    sizes:       PropTypes.object,
-    loaded:      PropTypes.bool,
-    postComment: PropTypes.func,
+    intl:             PropTypes.object,
+    topic:            PropTypes.object,
+    topicList:        PropTypes.array,
+    flashes:          PropTypes.array,
+    guideSlug:        PropTypes.string,
+    topicSlug:        PropTypes.string,
+    sizes:            PropTypes.object,
+    loaded:           PropTypes.bool,
+    postComment:      PropTypes.func,
+    grabTopicFromApi: PropTypes.func,
   };
 
   static defaultProps = {
@@ -48,7 +49,7 @@ class Topic extends React.PureComponent {
   };
 
   renderSubTobic = (topic) => {
-    const { guideSlug } = this.props;
+    const { guideSlug, grabTopicFromApi } = this.props;
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
       baseUrl = baseUrl.replace(/\/+$/, '');
@@ -58,7 +59,11 @@ class Topic extends React.PureComponent {
         className="dp-po-guides-subtopic"
         key={topic.id}
       >
-        <Link className="dp-po-guides-subtopic-title" to={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}>
+        <Link
+          className="dp-po-guides-subtopic-title"
+          to={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
+          onClick={() => grabTopicFromApi(topic.slug)}
+        >
           {topic.title}
         </Link>
         <AuthorsAvatars authors={topic.authors} max={3} />
@@ -84,14 +89,14 @@ class Topic extends React.PureComponent {
   }
 
   renderPreviousNext = () => {
-    const { topicList, topic, guideSlug } = this.props;
+    const { topicList, topic, guideSlug, grabTopicFromApi } = this.props;
     const index = topicList.findIndex(t => t.id === topic.id);
     let previous = null;
     let previousIndex = index - 1;
     let next = null;
     let nextIndex = index + 1;
     while (!previous && previousIndex >= 0) {
-      if (topicList[previousIndex].no_content === '0') {
+      if (topicList[previousIndex].no_content === '0' && ((topicList[previousIndex].parent_id === topic.parent.id) || (topicList[previousIndex].id === topic.parent.id))) {
         previous = topicList[previousIndex];
       }
       previousIndex -= 1;
@@ -121,6 +126,7 @@ class Topic extends React.PureComponent {
           <Link
             className="dp-po-guides-block-next-topic"
             to={`${baseUrl}/guides/${guideSlug}/${next.slug}`}
+            onClick={() => grabTopicFromApi(next.slug)}
           >
             <figure className="dp-po-icon">
               <i className="fal fa-angle-right" />
@@ -137,6 +143,7 @@ class Topic extends React.PureComponent {
           <Link
             className="dp-po-guides-block-previous-topic"
             to={`${baseUrl}/guides/${guideSlug}/${previous.slug}`}
+            onClick={() => grabTopicFromApi(previous.slug)}
           >
             <span className="sup">
               <FormattedMessage id="helpcenter.guides.previous_topic" />

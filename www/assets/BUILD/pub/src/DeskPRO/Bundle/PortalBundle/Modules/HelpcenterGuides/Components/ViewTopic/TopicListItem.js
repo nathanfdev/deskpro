@@ -94,7 +94,7 @@ class TopicListItem extends React.Component {
   };
 
   render() {
-    const { topic, guideSlug, toggleTopic, expanded } = this.props;
+    const { topic, topicSlug, guideSlug, toggleTopic, expanded } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -118,7 +118,7 @@ class TopicListItem extends React.Component {
     return (
       <li className={`dp-po-guides-search-content-${prefix}item`} key={topic.slug}>
         <Link
-          className={classNames(`dp-po-guides-search-content-${prefix}link`, { expanded: this.isExpanded() })}
+          className={classNames(`dp-po-guides-search-content-${prefix}link`, { expanded: this.isExpanded(), active: topic.slug === topicSlug })}
           to={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`}
           activeClassName="active"
           onClick={this.handleClick}

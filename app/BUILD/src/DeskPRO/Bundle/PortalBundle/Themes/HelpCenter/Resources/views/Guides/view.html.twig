@@ -66,6 +66,8 @@
     </div>
     <script>
       var topic = '{{ topic_json|raw }}';
+      var user_avatar = '{{ hc_avatar(app.user, '', 60) }}';
+      var user_name = '{{ app.user.display_name }}';
       var guides = '{{ guides_json|raw }}';
       var commentsCaptcha = '{{ captcha|json_encode|raw }}';
       var topicCommentForm = {{ new_comment_form ? 'true' : 'false' }};

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { IconRenderer } from 'DeskPRO/Component/IconRenderer';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
 class GuideDropDown extends React.PureComponent {
   static propTypes = {
@@ -57,11 +58,13 @@ class GuideDropDown extends React.PureComponent {
           <span>{activeGuide.title}</span>
           <i className="fal fa-angle-down" />
         </button>
-        <div className="dp-po-guides-dropdown-menu" style={{ display: opened ? 'block' : 'none' }}>
-          <ul>
-            {guides.map(guide => this.renderDropDownGuide(guide, baseUrl))}
-          </ul>
-        </div>
+        <ClickOut onClickOut={() => this.setState({ opened: false })}>
+          <div className="dp-po-guides-dropdown-menu" style={{ display: opened ? 'block' : 'none' }}>
+            <ul>
+              {guides.map(guide => this.renderDropDownGuide(guide, baseUrl))}
+            </ul>
+          </div>
+        </ClickOut>
       </div>
     );
   }
