@@ -190,7 +190,7 @@ class CommentForm extends React.Component {
                   style={{ whiteSpace: 'nowrap' }}
                 >
                   <FormattedMessage id="helpcenter.general.comment_btn_save" />&nbsp;
-                  {this.state.loading ? <i className="fas fa-spinner fa-pulse" /> : '' }
+                  {this.state.loading ? <figure className="dp-po-icon"><i className="fas fa-spinner fa-pulse" /></figure> : '' }
                 </button>
               </div>
             </div>

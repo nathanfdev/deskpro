@@ -39,7 +39,7 @@ class TopicListItem extends React.Component {
 
   handleClick = (e) => {
     const { topic, expanded } = this.props;
-    if (e.target.tagName === 'path') {
+    if (['path', 'svg', 'FIGURE'].indexOf(e.target.tagName) !== -1) {
       this.props.toggleTopic(e, topic, expanded);
     } else {
       this.props.grabTopicFromApi(topic.slug);
@@ -106,10 +106,10 @@ class TopicListItem extends React.Component {
       return (
         <li className={`dp-po-guides-search-content-${prefix}item`} key={topic.slug}>
           <div
-            className={classNames(`dp-po-guides-search-content-${prefix}link chapter`, { expanded })}
+            className={classNames(`dp-po-guides-search-content-${prefix}link chapter`, { expanded: this.isExpanded() })}
             onClick={e => toggleTopic(e, topic, expanded)}
           >
-            {topic.title}
+            <span className="dp-po-guide-topic-list-item">{topic.title}</span>
           </div>
           {this.renderChildren()}
         </li>
@@ -118,13 +118,13 @@ class TopicListItem extends React.Component {
     return (
       <li className={`dp-po-guides-search-content-${prefix}item`} key={topic.slug}>
         <Link
-          className={classNames(`dp-po-guides-search-content-${prefix}link`, { expanded })}
+          className={classNames(`dp-po-guides-search-content-${prefix}link`, { expanded: this.isExpanded() })}
           to={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`}
           activeClassName="active"
           onClick={this.handleClick}
         >
-          {topic.title}
-          {Object.values(topic.children).length > 0 && <i className="fas fa-caret-down" onClick={e => toggleTopic(e, topic, expanded)} />}
+          <span className="dp-po-guide-topic-list-item">{topic.title}</span>
+          {Object.values(topic.children).length > 0 && <figure className="dp-po-icon"><i className="fas fa-caret-down" /></figure>}
         </Link>
         {this.renderChildren()}
       </li>

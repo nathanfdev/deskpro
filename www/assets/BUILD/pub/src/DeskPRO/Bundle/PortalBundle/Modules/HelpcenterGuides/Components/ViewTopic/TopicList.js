@@ -10,6 +10,7 @@ class TopicList extends React.Component {
     topicSlug:        PropTypes.string,
     grabTopicFromApi: PropTypes.func,
     sizes:            PropTypes.object,
+    twoLevelSection:  PropTypes.bool,
   };
 
   static contextTypes = {
@@ -106,8 +107,8 @@ class TopicList extends React.Component {
   }
 
   renderList() {
-    const { topics } = this.props;
-    if (window.twoLevelSection) {
+    const { topics, twoLevelSection } = this.props;
+    if (twoLevelSection) {
       return (
         <div className="dp-po-guides-search-content accordion" id="accordionExample">
           {topics
@@ -122,7 +123,7 @@ class TopicList extends React.Component {
                     className={classNames('dp-po-guides-search-content-title', { collapsed })}
                     onClick={e => this.toggleTopic(e, topic, this.isExpandedTopic(topic))}
                   >
-                    {topic.title} <i className="dp-po-icon far fa-angle-down" />
+                    <span className="title">{topic.title}</span> <i className="dp-po-icon far fa-angle-down" />
                   </div>
                   {this.renderTopics(Object.values(topic.children), 1, collapsed)}
                 </div>

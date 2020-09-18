@@ -25,13 +25,14 @@ class ViewTopic extends React.Component {
     topic.content = this.addIdToh1(topic.content, topic.slug);
     const topicList = JSON.parse(window.topicList);
     this.state = {
-      fixed:     false,
-      doSpin:    false,
-      flashes:   [],
-      guideSlug: this.getGuideSlug(this.props.params.splat),
+      fixed:           false,
+      doSpin:          false,
+      flashes:         [],
+      guideSlug:       this.getGuideSlug(this.props.params.splat),
       loaded,
       topic,
       topicList,
+      twoLevelSection: window.twoLevelSection,
     };
     let guides = [];
     if (window.guides) {
@@ -273,6 +274,12 @@ class ViewTopic extends React.Component {
     if (this.scrolling) {
       return;
     }
+
+    let scrollPage = false;
+    if (this.elements.guidesMain.getBoundingClientRect().top < 27) {
+      scrollPage = this.elements.guidesMain.getBoundingClientRect().top + window.document.documentElement.scrollTop;
+    }
+
     this.setState({
       loaded: false
     });
@@ -290,6 +297,9 @@ class ViewTopic extends React.Component {
         topic,
         flashes: [],
       });
+      if (scrollPage) {
+        window.scrollTo(0, scrollPage - 27);
+      }
       this.changeInternalLinks();
       this.addCodeBlocksCopy();
       this.addGuideBlocks();
@@ -344,11 +354,10 @@ class ViewTopic extends React.Component {
       const topicList = response.data.data;
       this.setState({
         topicList,
-        guideSlug: guide.slug,
+        guideSlug:       guide.slug,
+        twoLevelSection: guide.two_level_section,
       });
-      const topic = Object.values(topicList).sort(
-        (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
-      ).shift();
+      const topic = Object.values(topicList).filter(t => t.no_content === '0').shift();
 
       let baseUrl = window.DESKPRO_BASE_URL;
       if (baseUrl) {
@@ -385,7 +394,7 @@ class ViewTopic extends React.Component {
   }
 
   render() {
-    const { topicList, fixed, loaded } = this.state;
+    const { topicList, fixed, loaded, twoLevelSection } = this.state;
     const { splat, slug: topicSlug } = this.props.params;
     const guideSlug = this.getGuideSlug(splat);
 
@@ -408,6 +417,7 @@ class ViewTopic extends React.Component {
                     grabTopicFromApi={this.grabTopicFromApi}
                     sizes={this.sizes}
                     withSplash={this.withSplash}
+                    twoLevelSection={twoLevelSection}
                   />
                 </div>
                 <div className="col-sm-9">

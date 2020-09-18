@@ -397,6 +397,16 @@ class Guide extends DomainObject implements HasIconProperty, HasSplashImagePrope
     }
 
     /**
+     * @JMS\VirtualProperty()
+     *
+     * @return boolean
+     */
+    public function getTwoLevelSection()
+    {
+        return  App::getContainer()->get('data.guides')->getGuideTwoLevelSection($this);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function __toString()

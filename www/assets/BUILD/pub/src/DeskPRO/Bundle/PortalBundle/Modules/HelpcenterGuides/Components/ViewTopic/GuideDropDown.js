@@ -36,7 +36,7 @@ class GuideDropDown extends React.PureComponent {
   renderDropDownGuide = (guide, baseUrl) => (
     <li key={guide.id} title={guide.title}>
       <a href={`${baseUrl}/guides/${guide.slug}`} className="dp-po-guides-dropdown-link" onClick={e => this.onClickGuide(e, guide)}>
-        <figure className="dp-po-icon" style={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }}><IconRenderer object={guide} className="" default={<i className="fal fa-user-headset" />} /></figure> {guide.title}
+        <IconRenderer object={guide} className="" default={<i className="fal fa-user-headset" />} figureStyle={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }} /> {guide.title}
       </a>
     </li>
   )
@@ -53,7 +53,7 @@ class GuideDropDown extends React.PureComponent {
     return (
       <div className={classNames('dp-po-guides-dropdown', { opened })} style={style}>
         <button className="dp-po-guides-dropdown-button" onClick={this.toggleMenu}>
-          <figure className="dp-po-icon" style={{ backgroundColor: activeGuide.color ? `#${activeGuide.color}` : 'var(--warning)' }}><IconRenderer object={activeGuide} className="" default={<i className="fal fa-user-headset" />} /></figure>
+          <IconRenderer object={activeGuide} className="" default={<i className="fal fa-user-headset" />} figureStyle={{ backgroundColor: activeGuide.color ? `#${activeGuide.color}` : 'var(--warning)' }} />
           <span>{activeGuide.title}</span>
           <i className="fal fa-angle-down" />
         </button>

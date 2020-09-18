@@ -96,9 +96,12 @@ class Topic extends React.PureComponent {
       }
       previousIndex -= 1;
     }
+    const children = [];
     while (!next && nextIndex < topicList.length) {
-      if (topicList[nextIndex].no_content === '0') {
+      if (topicList[nextIndex].no_content === '0' && topicList[nextIndex].parent_id !== topic.id && children.indexOf(topicList[nextIndex].parent_id) === -1) {
         next = topicList[nextIndex];
+      } else if (topicList[nextIndex].parent_id === topic.id || children.indexOf(topicList[nextIndex].parent_id) !== -1) {
+        children.push(topicList[nextIndex].id);
       }
       nextIndex += 1;
     }
@@ -170,6 +173,19 @@ class Topic extends React.PureComponent {
         <div className="dp-po-guides-block-title-section">
           <FormattedMessage id="helpcenter.guides.in_section" values={{ section: topic.parent.title }} />
         </div>
+      );
+    }
+    return null;
+  }
+
+  renderContent() {
+    const { topic } = this.props;
+    if (topic.content) {
+      return (
+        <div
+          className="dp-po-post-content dp-po-guides-block-content"
+          dangerouslySetInnerHTML={{ __html: topic.content }}
+        />
       );
     }
     return null;
@@ -247,10 +263,7 @@ class Topic extends React.PureComponent {
                   {/*  </ul>*/}
                   {/* </div>*/}
                 </div>
-                <div
-                  className="dp-po-post-content dp-po-guides-block-content"
-                  dangerouslySetInnerHTML={{ __html: topic.content }}
-                />
+                {this.renderContent()}
               </div>
               {this.renderSubtopics()}
               {this.renderPreviousNext()}
