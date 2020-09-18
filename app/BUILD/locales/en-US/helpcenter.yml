@@ -500,7 +500,7 @@ helpcenter.general.prop_rating_asc: 'Lowest rated first'
 helpcenter.general.prop_rating_desc: 'Highest rated first'
 helpcenter.general.prop_views_asc: 'Least views first'
 helpcenter.general.prop_views_desc: 'Most views first'
-helpcenter.general.published: 'First published'
+helpcenter.general.published: Published
 helpcenter.general.published_by: 'Published by <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Unhelpful
 helpcenter.general.rate_page_positive: Helpful

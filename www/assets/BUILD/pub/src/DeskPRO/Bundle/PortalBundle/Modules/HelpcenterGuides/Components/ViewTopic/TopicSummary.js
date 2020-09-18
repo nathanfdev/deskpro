@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import Link from 'react-router/lib/Link';
 
 const getHeading = (html) => {
   const container = document.createElement('div');
@@ -50,11 +49,10 @@ class TopicSummary extends React.Component {
           <h3 className="dp-po-guides-contents-title">Contents</h3>
           <ul className="dp-po-guides-contents-list">
             {this.state.h1s.map((h1, index) => <li className="dp-po-guides-contents-item" key={index}>
-              <Link
+              <a
                 href={`#${h1.id}`}
                 className={classNames('dp-po-guides-contents-link')}
-                to={h1.id}
-              ><i className="dp-po-icon fal fa-angle-right" />{h1.innerText}</Link>
+              ><i className="dp-po-icon fal fa-angle-right" />{h1.innerText}</a>
             </li>)}
           </ul>
         </div>

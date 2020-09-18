@@ -98,7 +98,6 @@ class ViewTopic extends React.Component {
   getGuideSlug = splat => splat.split('/')[0];
 
   handleScroll = () => {
-    console.log(this.elements.guidesMain.getBoundingClientRect().top);
     if (this.state.fixed !== this.elements.guidesMain.getBoundingClientRect().top < 28) {
       this.setState({
         fixed: this.elements.guidesMain.getBoundingClientRect().top < 28,

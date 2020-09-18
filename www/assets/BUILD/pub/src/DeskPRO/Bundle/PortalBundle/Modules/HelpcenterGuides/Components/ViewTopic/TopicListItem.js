@@ -11,14 +11,14 @@ class TopicListItem extends React.Component {
     path:             PropTypes.string,
     filter:           PropTypes.string,
     expanded:         PropTypes.bool,
+    expandedList:     PropTypes.object,
     grabTopicFromApi: PropTypes.func,
     filterTopic:      PropTypes.func,
-    withSplash:       PropTypes.bool,
+    toggleTopic:      PropTypes.func,
   };
 
   static defaultProps = {
     expandable: true,
-    withSplash: false,
   };
 
   getLevelPrefix = (delta = 0) => {
@@ -37,19 +37,31 @@ class TopicListItem extends React.Component {
     }
   };
 
-  handleClick = () => {
-    const { topic } = this.props;
-    this.props.grabTopicFromApi(topic.slug);
+  handleClick = (e) => {
+    const { topic, expanded } = this.props;
+    if (e.target.tagName === 'path') {
+      this.props.toggleTopic(e, topic, expanded);
+    } else {
+      this.props.grabTopicFromApi(topic.slug);
+    }
   };
 
+  isExpanded = () => {
+    const { expandedList, topic, expanded } = this.props;
+    if (typeof expandedList[topic.id] !== 'undefined') {
+      return expandedList[topic.id];
+    }
+    return expanded;
+  }
+
   renderChildren = () => {
-    const { topic, guideSlug, topicSlug, expanded, filter, filterTopic, grabTopicFromApi, withSplash } = this.props;
+    const { topic, guideSlug, topicSlug, expandedList, filter, filterTopic, toggleTopic, grabTopicFromApi } = this.props;
     if (!Object.values(topic.children).length) {
       return null;
     }
     const prefix = this.getLevelPrefix(1);
     const style = {};
-    if (!expanded) {
+    if (!this.isExpanded()) {
       style.display = 'none';
     }
     return (
@@ -70,9 +82,10 @@ class TopicListItem extends React.Component {
               grabTopicFromApi={grabTopicFromApi}
               filter={filter}
               filterTopic={filterTopic}
-              withSplash={withSplash}
+              toggleTopic={toggleTopic}
               expanded={(filter !== '' || child.slug === topicSlug || typeof Object.values(child.children)
                 .find(c => c.slug === topicSlug ||  Object.values(c.children).find(cc => cc.slug === topicSlug)) !== 'undefined')}
+              expandedList={expandedList}
             />
             )
           )}
@@ -81,25 +94,37 @@ class TopicListItem extends React.Component {
   };
 
   render() {
-    const { topic, guideSlug } = this.props;
+    const { topic, guideSlug, toggleTopic, expanded } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
 
-    console.log(this.props.expanded);
-
     const prefix = this.getLevelPrefix();
+    if (topic.no_content === '1') {
+      return (
+        <li className={`dp-po-guides-search-content-${prefix}item`} key={topic.slug}>
+          <div
+            className={classNames(`dp-po-guides-search-content-${prefix}link chapter`, { expanded })}
+            onClick={e => toggleTopic(e, topic, expanded)}
+          >
+            {topic.title}
+          </div>
+          {this.renderChildren()}
+        </li>
+      );
+    }
     return (
       <li className={`dp-po-guides-search-content-${prefix}item`} key={topic.slug}>
         <Link
-          className={classNames(`dp-po-guides-search-content-${prefix}link`)}
+          className={classNames(`dp-po-guides-search-content-${prefix}link`, { expanded })}
           to={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`}
           activeClassName="active"
           onClick={this.handleClick}
         >
           {topic.title}
+          {Object.values(topic.children).length > 0 && <i className="fas fa-caret-down" onClick={e => toggleTopic(e, topic, expanded)} />}
         </Link>
         {this.renderChildren()}
       </li>

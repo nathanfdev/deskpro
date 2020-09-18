@@ -54,20 +54,19 @@ class Topic extends React.PureComponent {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
     return (
-      <Link
+      <div
         className="dp-po-guides-subtopic"
         key={topic.id}
-        to={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
       >
-        <div className="dp-po-guides-subtopic-title">
+        <Link className="dp-po-guides-subtopic-title" to={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}>
           {topic.title}
-        </div>
+        </Link>
         <AuthorsAvatars authors={topic.authors} max={3} />
         <div className="dp-po-guides-subtopic-dates">
           {topic.date_published && <Fragment><FormattedMessage className="title" id="helpcenter.general.published" />: <strong><FormattedDate value={topic.date_published} day="numeric" month="short" year="numeric" /></strong><br /></Fragment>}
           {topic.date_updated && <Fragment><FormattedMessage className="title" id="helpcenter.general.last_updated" />: <strong><FormattedDate value={topic.date_updated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
         </div>
-      </Link>
+      </div>
     );
   }
 
