@@ -47,6 +47,11 @@ class DpFsProxyStreamWrapper
     private $handle;
 
     /**
+     * @var resource
+     */
+    private $dirHandle;
+
+    /**
      * Register this stream wrapper
      *
      * @param string $protocol
@@ -69,13 +74,62 @@ class DpFsProxyStreamWrapper
             throw new \RuntimeException(__CLASS__.'::register() must be called before realpath() can be invoked');
         }
 
-        $protocolNamespace = self::$protocol.'://'.self::getNamespace($path);
-
-        if (\strpos($path, $protocolNamespace) !== false) {
-            return \realpath(str_replace($protocolNamespace, '', $path));
+        if (self::isProxyFsPath($path)) {
+            return \realpath(str_replace(self::$protocol.'://'.self::getNamespace($path), '', $path));
         }
 
         return \realpath($path);
+    }
+
+    /**
+     * @see https://www.php.net/manual/en/class.streamwrapper.php#streamwrapper.synopsis
+     */
+    public function dir_opendir($path, $options)
+    {
+        $this->log('CALL '.__METHOD__);
+
+        if (!self::isProxyFsPath($path)) {
+            return $this->dirHandle = \opendir($path);
+        }
+
+        $this->virtualPath      = self::getPath($path);
+        $this->virtualNamespace = self::getNamespace($path);
+
+        return true;
+    }
+
+    /**
+     * @see https://www.php.net/manual/en/class.streamwrapper.php#streamwrapper.synopsis
+     */
+    public function dir_readdir()
+    {
+        $this->log('CALL '.__METHOD__);
+
+        if ($this->virtualPath && $this->virtualNamespace) {
+            return ''; // do nothing, as it's likely that the directory contents are fragmented anyway
+        }
+
+        return \readdir($this->dirHandle);
+    }
+
+    /**
+     * @see https://www.php.net/manual/en/class.streamwrapper.php#streamwrapper.synopsis
+     */
+    public function dir_closedir()
+    {
+        $this->log('CALL '.__METHOD__);
+
+        if ($this->virtualPath && $this->virtualNamespace) {
+            $this->virtualPath = $this->virtualNamespace = null;
+
+            return true;
+        }
+
+        \closedir($this->dirHandle);
+
+        $this->dirHandle = null;
+
+        return true;
     }
 
     /**
@@ -101,6 +155,29 @@ class DpFsProxyStreamWrapper
         }
 
         throw new \RuntimeException("Unknown option [{$option}] during ".__METHOD__." for {$path}");
+    }
+
+    /**
+     * @see https://www.php.net/manual/en/class.streamwrapper.php#streamwrapper.synopsis
+     */
+    public function stream_set_option($option , $arg1 , $arg2)
+    {
+        $this->log('CALL '.__METHOD__);
+
+        if ($this->virtualPath && $this->virtualNamespace) {
+            return true;
+        }
+
+        switch ($option) {
+            case STREAM_OPTION_BLOCKING:
+                return \stream_set_blocking($this->handle, (bool) $arg1);
+            case STREAM_OPTION_READ_TIMEOUT:
+                return \stream_set_timeout($this->handle, $arg1, $arg2);
+            case STREAM_OPTION_WRITE_BUFFER:
+                return \stream_set_write_buffer($this->handle, $arg2);
+        }
+
+        return true;
     }
 
     /**
@@ -259,7 +336,11 @@ class DpFsProxyStreamWrapper
             return true;
         }
 
-        return \fclose($this->handle);
+        $result = \fclose($this->handle);
+
+        $this->dirHandle = null;
+
+        return $result;
     }
 
     /**
@@ -443,6 +524,21 @@ class DpFsProxyStreamWrapper
     private static function isFile($path)
     {
         return \strpos($path, '.') !== false;
+    }
+
+    /**
+     * Is this path using the proxy fs stream wrapper?
+     *
+     * @param string $path
+     * @return bool
+     */
+    private static function isProxyFsPath($path)
+    {
+        if (!self::$protocol) {
+            throw new \RuntimeException(__CLASS__.'::register() must be called before isProxyFsPath() can be invoked');
+        }
+
+        return \strpos($path, self::$protocol.'://') !== false;
     }
 
     /**

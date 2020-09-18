@@ -257,5 +257,35 @@ if ($DP_ENV->getConfig('env.init_fn')) {
     call_user_func($DP_ENV->getConfig('env.init_fn'), $DP_ENV);
 }
 
-require_once 'lib/DpRun/DpFsProxyStreamWrapper.php';
-\DpRun\DpFsProxyStreamWrapper::register();
+/*
+ * *********************************************************************************************************************
+ * FIXME: START: Temporary cloud-oriented config for testing... remove before PR is merged!
+ * *********************************************************************************************************************
+ */
+
+define('DPC_IS_CLOUD', true);
+define('DPC_SITE_IS_APPROVED', true);
+define('DPC_SITE_ID', 36);
+define('DPC_SITE_DOMAIN', 'foo.deskpro.com');
+define('DPC_ACCOUNT_ID', 6);
+define('DPC_AGENTS', 20);
+define('DPC_DEMO_EXPIRE', 0);
+define('DP_TECHNICAL_EMAIL', 'team@deskpro.com');
+define('DPC_COPYFREE', false);
+define('DPC_BILL_FAILED', false);
+define('DPC_BILL_DATE', time() + 86400);
+define('DPC_ADMIN_OFF', false);
+define('DPC_AGENT_OFF', false);
+define('DPC_USER_OFF', false);
+define('DPC_OFF_REASON', null);
+
+/*
+ * *********************************************************************************************************************
+ * FIXME: END: Temporary cloud-oriented config for testing... remove before PR is merged!
+ * *********************************************************************************************************************
+ */
+
+if (defined('DPC_IS_CLOUD')) {
+    require_once 'lib/DpRun/DpFsProxyStreamWrapper.php';
+    \DpRun\DpFsProxyStreamWrapper::register();
+}
