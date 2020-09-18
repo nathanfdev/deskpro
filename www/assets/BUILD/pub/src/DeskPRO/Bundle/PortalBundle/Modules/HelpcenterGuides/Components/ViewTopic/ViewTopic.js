@@ -41,7 +41,6 @@ class ViewTopic extends React.Component {
     if (!Array.isArray(guides)) {
       guides = Object.values(guides);
     }
-    this.withSplash = guides.filter(guide => typeof guide.splash_image_property !== 'undefined').length > 0;
     this.contentChanged = false;
     this.ticking = false;
     this.targetSlug = props.params.slug;
@@ -67,10 +66,10 @@ class ViewTopic extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.params.slug !== this.props.params.slug) {
-      this.grabTopicFromApi(nextProps.params.slug);
-      this.contentChanged = true;
-    }
+    // if (nextProps.params.slug !== this.props.params.slug) {
+    //   this.grabTopicFromApi(nextProps.params.slug);
+    //   this.contentChanged = true;
+    // }
     const nextGuideSlug = this.getGuideSlug(nextProps.params.splat);
     if (nextGuideSlug !== this.getGuideSlug(this.props.params.splat)) {
       this.setState({
@@ -359,6 +358,8 @@ class ViewTopic extends React.Component {
       });
       const topic = Object.values(topicList).filter(t => t.no_content === '0').shift();
 
+      this.grabTopicFromApi(topic.slug);
+
       let baseUrl = window.DESKPRO_BASE_URL;
       if (baseUrl) {
         baseUrl = baseUrl.replace(/\/+$/, '');
@@ -405,7 +406,7 @@ class ViewTopic extends React.Component {
           selectGuide={this.selectGuide}
           fixed={fixed}
         />
-        <div className={classNames('dp-po-guides-section', { 'with-splash': this.withSplash })}>
+        <div className={classNames('dp-po-guides-section')}>
           <div className="dp-po-guides-wrap">
             <div className="container-fluid">
               <div className="row">
@@ -416,7 +417,6 @@ class ViewTopic extends React.Component {
                     topicSlug={topicSlug}
                     grabTopicFromApi={this.grabTopicFromApi}
                     sizes={this.sizes}
-                    withSplash={this.withSplash}
                     twoLevelSection={twoLevelSection}
                   />
                 </div>
