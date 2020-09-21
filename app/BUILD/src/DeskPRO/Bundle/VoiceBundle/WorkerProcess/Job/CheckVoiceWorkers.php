@@ -134,7 +134,9 @@ class CheckVoiceWorkers extends AbstractJob
             }
 
             // auto fix stuck pending phone calls
-            if ($phoneCall->isPending() && $phoneCall->getDateCreated() < new \DateTime('-1 hour')) {
+            if (($phoneCall->isPending() && $phoneCall->getDateCreated() < new \DateTime('-1 hour'))
+                || (!in_array($phoneCall->getStatus(), $endedStatuses) && $phoneCall->getDateCreated() < new \DateTime('-2 hours'))
+            ) {
                 $endedTasks[] = $task;
 
                 $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
