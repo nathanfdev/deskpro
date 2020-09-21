@@ -44,7 +44,7 @@ class Topic extends AbstractEntityRepository
         if (is_array($reset)) {
             $topics = $reset;
         } else {
-            $select = 'id, parent_id, title, slug, display_order, no_content, status';
+            $select = 'id, parent_id, title, slug, display_order, no_content, status, length(content) as content_length';
 
             $params = [];
 

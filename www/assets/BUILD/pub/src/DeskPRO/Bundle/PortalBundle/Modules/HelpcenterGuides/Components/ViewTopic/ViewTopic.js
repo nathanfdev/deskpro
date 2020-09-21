@@ -21,8 +21,8 @@ class ViewTopic extends React.Component {
     if (window.topic) {
       topic = JSON.parse(window.topic);
       loaded = true;
+      topic.content = this.addIdToh1(topic.content, topic.slug);
     }
-    topic.content = this.addIdToh1(topic.content, topic.slug);
     const topicList = JSON.parse(window.topicList);
     this.state = {
       fixed:           false,
@@ -34,6 +34,14 @@ class ViewTopic extends React.Component {
       topicList,
       twoLevelSection: window.twoLevelSection,
     };
+    if (window.topic) {
+      setTimeout(() => {
+        this.changeInternalLinks();
+        this.addCodeBlocksCopy();
+        this.addGuideBlocks();
+        this.addReactImageLazyload();
+      }, 500);
+    }
     let guides = [];
     if (window.guides) {
       guides = JSON.parse(window.guides);
@@ -297,7 +305,9 @@ class ViewTopic extends React.Component {
         flashes: [],
       });
       if (scrollPage) {
-        window.scrollTo(0, scrollPage - 27);
+        setTimeout(() => {
+          window.scrollTo(0, scrollPage - 27);
+        }, 200);
       }
       this.changeInternalLinks();
       this.addCodeBlocksCopy();
@@ -356,7 +366,8 @@ class ViewTopic extends React.Component {
         guideSlug:       guide.slug,
         twoLevelSection: guide.two_level_section,
       });
-      const topic = Object.values(topicList).filter(t => t.no_content === '0').shift();
+      console.log(topicList);
+      const topic = Object.values(topicList).filter(t => t.no_content === '0' && t.content_length !== '0').shift();
 
       this.grabTopicFromApi(topic.slug);
 
@@ -423,8 +434,12 @@ class ViewTopic extends React.Component {
                 </div>
                 <div className="col-sm-9">
                   { loaded ||
-                    <div className={classNames({ 'dp-po-guides-loading': !loaded })}>
-                      <i className="dp-icon fa-3x far fa-spinner fa-pulse" />
+                    <div className="row">
+                      <div className="col-sm-9">
+                        <div className={classNames({ 'dp-po-guides-loading': !loaded })}>
+                          <i className="dp-icon fa-3x far fa-spinner fa-pulse" />
+                        </div>
+                      </div>
                     </div>
                   }
                   <div className="dp-po-guides-block">
