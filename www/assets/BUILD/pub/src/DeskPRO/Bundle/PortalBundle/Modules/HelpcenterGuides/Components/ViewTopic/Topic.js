@@ -223,9 +223,6 @@ class Topic extends React.PureComponent {
     const datePublished = topic.date_published ? topic.date_published.replace(/T.*/, '').replace(/-/g, '/') : null;
     const dateUpdated = topic.date_updated ? topic.date_updated.replace(/T.*/, '').replace(/-/g, '/') : null;
 
-    console.log(topic.date_published);
-    console.log(datePublished);
-
     return (
       <div className="dp-po-guides-block-article" id={`topic_${topic.slug}`} style={topicStyle}>
         <div className="row">
