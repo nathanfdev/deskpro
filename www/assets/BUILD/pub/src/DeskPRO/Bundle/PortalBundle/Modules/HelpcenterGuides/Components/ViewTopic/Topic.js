@@ -54,6 +54,9 @@ class Topic extends React.PureComponent {
     if (baseUrl) {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
+    const datePublished = topic.date_published ? topic.date_published.replace(/T.*/, '').replace(/-/g, '/') : null;
+    const dateUpdated = topic.date_updated ? topic.date_updated.replace(/T.*/, '').replace(/-/g, '/') : null;
+
     return (
       <div
         className="dp-po-guides-subtopic"
@@ -68,8 +71,8 @@ class Topic extends React.PureComponent {
         </Link>
         <AuthorsAvatars authors={topic.authors} max={3} />
         <div className="dp-po-guides-subtopic-dates">
-          {topic.date_published && <Fragment><FormattedMessage className="title" id="helpcenter.general.published" />: <strong><FormattedDate value={topic.date_published} day="numeric" month="short" year="numeric" /></strong><br /></Fragment>}
-          {topic.date_updated && <Fragment><FormattedMessage className="title" id="helpcenter.general.last_updated" />: <strong><FormattedDate value={topic.date_updated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+          {topic.date_published && <Fragment><FormattedMessage className="title" id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong><br /></Fragment>}
+          {topic.date_updated && <Fragment><FormattedMessage className="title" id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
         </div>
       </div>
     );
@@ -217,6 +220,11 @@ class Topic extends React.PureComponent {
     if (!loaded) {
       topicStyle.display = 'none';
     }
+    const datePublished = topic.date_published ? topic.date_published.replace(/T.*/, '').replace(/-/g, '/') : null;
+    const dateUpdated = topic.date_updated ? topic.date_updated.replace(/T.*/, '').replace(/-/g, '/') : null;
+
+    console.log(topic.date_published);
+    console.log(datePublished);
 
     return (
       <div className="dp-po-guides-block-article" id={`topic_${topic.slug}`} style={topicStyle}>
@@ -251,9 +259,9 @@ class Topic extends React.PureComponent {
                   {this.renderInSection()}
                   <AuthorsAvatars authors={topic.authors} />
                   <div className="dp-po-guides-meta">
-                    {topic.date_published && <Fragment><FormattedMessage id="helpcenter.general.published" />: <strong><FormattedDate value={topic.date_published} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+                    {topic.date_published && <Fragment><FormattedMessage id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong></Fragment>}
                     {topic.date_published && topic.date_updated && <span className="separator">|</span>}
-                    {topic.date_updated && <Fragment><FormattedMessage id="helpcenter.general.last_updated" />: <strong><FormattedDate value={topic.date_updated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+                    {topic.date_updated && <Fragment><FormattedMessage id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
                   </div>
                   {/* <div className="dp-po-guides-block-extra">*/}
                   {/*  <ul className="dp-po-guides-block-extra-list">*/}
