@@ -280,10 +280,6 @@ class EditEmailAccount
                 return $this->in_office365_account;
 
             case 'office365_exchange':
-                if (!$this->in_office365_exchange_account->user) {
-                    return;
-                }
-
                 return $this->in_office365_exchange_account;
 
             case 'noop':

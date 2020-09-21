@@ -10,6 +10,7 @@ namespace Application\EmailBundle\Mail\RawTransport;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
+use Application\DeskPRO\EmailGateway\Fetcher\Office365;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\EmailBundle\Mail\RawMessage\Rfc2822Decoder;
 use Application\EmailBundle\SwiftMailer\Plugins\TransportLogger;
@@ -167,10 +168,25 @@ class RawTransportFactory
     public function createOffice365Transport(OutgoingAccount\Office365Config $config)
     {
         $tr = \Swift_SmtpTransport::newInstance('smtp.office365.com', 587, 'tls');
-        $tr->setUsername($config->user);
-        $tr->setPassword($config->password);
+
         $tr->setTimeout(120);
         $tr->registerPlugin(new TransportLogger($this->logger));
+
+        if ($config->type === OutgoingAccount\Office365Config::TYPE_OAUTH) {
+            $oauthClient = Office365::createOauthClient($config->getClientId(), $config->getClientSecret());
+            $accessToken = $oauthClient->getAccessToken('refresh_token', [
+                'refresh_token' => $config->getRefreshToken(),
+            ]);
+
+            $auth = new \Swift_Transport_Esmtp_Auth_XOAuth2Authenticator();
+            $tr->setExtensionHandlers(['AUTH' => new \Swift_Transport_Esmtp_AuthHandler([$auth])]);
+            $tr->setAuthMode('XOAUTH2');
+            $tr->setUsername($config->user);
+            $tr->setPassword($accessToken->getToken());
+        } else {
+            $tr->setUsername($config->user);
+            $tr->setPassword($config->password);
+        }
 
         return new RawSmtpTransport($tr);
     }

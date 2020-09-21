@@ -121,7 +121,8 @@
     "ruflin/elastica": "3.2.3",
     "symfony/polyfill-intl-icu": "^1.17",
     "symfony/polyfill-intl-messageformatter": "^1.17",
-    "lsolesen/pel": "dev-master"
+    "lsolesen/pel": "dev-master",
+    "microsoft/microsoft-graph": "^1.12"
   },
   "require-dev": {
     "behat/behat": "3.1.*",

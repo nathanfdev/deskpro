@@ -5,6 +5,7 @@ namespace Application\EmailBundle\Mail\RawTransport;
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\ExchangeConfig;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\Office365ExchangeConfig;
+use Application\DeskPRO\EmailGateway\Fetcher\Office365;
 use Application\EmailBundle\Mail\RawMessage\RawMessageDecoderInterface;
 use Psr\Log\LoggerInterface;
 
@@ -45,9 +46,22 @@ class RawExchangeTransport implements RawTransportInterface
      */
     protected function ews()
     {
-        return $this->ews
-                ? $this->ews
-                : $this->ews = new \ExchangeWebServices($this->config->host, $this->config->user, $this->config->password);
+        if ($this->ews === null) {
+            $token = null;
+
+            if ($this->config instanceof Office365ExchangeConfig && $this->config->getRefreshToken()) {
+                $oauthClient = Office365::createOauthClient($this->config->getClientId(), $this->config->getClientSecret());
+                $accessToken = $oauthClient->getAccessToken('refresh_token', [
+                    'refresh_token' => $this->config->getRefreshToken(),
+                ]);
+
+                $token = $accessToken->getToken();
+            }
+
+            $this->ews = new \ExchangeWebServices($this->config->host, $this->config->user, $this->config->password, $token);
+        }
+
+        return $this->ews;
     }
 
     public function sendRawMessage($from, array $tos, $raw_fp, array &$failed = null)

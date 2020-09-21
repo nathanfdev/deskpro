@@ -151,6 +151,15 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                     ]
                 );
 
+                if ($protocolConfig->type === Office365Config::TYPE_OAUTH) {
+                    $oauthClient = Office365::createOauthClient($protocolConfig->getClientId(), $protocolConfig->getClientSecret());
+                    $accessToken = $oauthClient->getAccessToken('refresh_token', [
+                        'refresh_token' => $protocolConfig->getRefreshToken(),
+                    ]);
+
+                    $options['accessToken'] = $accessToken->getToken();
+                }
+
                 break;
             default:
                 throw new \InvalidArgumentException(

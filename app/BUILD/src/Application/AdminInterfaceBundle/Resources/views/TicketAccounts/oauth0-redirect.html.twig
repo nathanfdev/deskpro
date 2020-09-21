@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <title></title>
+        {% if not error %}
+        <script>
+            <!--
+                window.onload = function () {
+                    window.opener.postMessage({
+                        accessToken: '{{ access_token }}',
+                        refreshToken: '{{ refresh_token }}'
+                    });
+                    window.close();
+                };
+            //-->
+        </script>
+        {% endif %}
+    </head>
+    <body>
+        {% if error %}
+            <h4>{{ error }}</h4>
+            <p>{{ error_detail }}</p>
+        {% endif %}
+    </body>
+</html>

@@ -43,6 +43,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
         $ssl       = isset($params->ssl) ? strtoupper($params->ssl) : false;
         $logger    = isset($params->logger) ? $params->logger : null;
         $test_mode = isset($params->test_mode) && $params->test_mode;
+        $accessToken = isset($params->accessToken) ? $params->accessToken : '';
 
         $verifyCertificate = isset($params->disable_cert_validation) ? !$params->disable_cert_validation : true;
 
@@ -72,17 +73,32 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
             throw $new_e;
         }
 
-        try {
-            $this->protocol->login($user, $password);
-            if ($logger) {
-                $logger->logDebug('[protocol] login okay');
+        if ($accessToken) {
+            try {
+                $this->protocol->sendRequest('AUTH XOAUTH2');
+                $this->protocol->readResponse(false, true);
+                $this->protocol->sendRequest(base64_encode("user=$user\1auth=Bearer $accessToken\1\1"));
+                $oauthResponse = $this->protocol->readResponse(false, true);
+                if ($oauthResponse !== 'User successfully authenticated.') {
+                    throw new Exception\RuntimeException($oauthResponse);
+                }
+            } catch (Exception\RuntimeException $e) {
+                $new_e = new Exception\RuntimeException('OAuth token is invalid', self::ERR_LOGIN, $e);
+                throw $new_e;
             }
-        } catch (Exception\RuntimeException $e) {
-            if ($logger) {
-                $logger->logError("[error:protocol] ({$e->getCode()}) ".$e->getMessage().' <'.get_class($e).'>');
+        } else {
+            try {
+                $this->protocol->login($user, $password);
+                if ($logger) {
+                    $logger->logDebug('[protocol] login okay');
+                }
+            } catch (Exception\RuntimeException $e) {
+                if ($logger) {
+                    $logger->logError("[error:protocol] ({$e->getCode()}) ".$e->getMessage().' <'.get_class($e).'>');
+                }
+                $new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN, $e);
+                throw $new_e;
             }
-            $new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN, $e);
-            throw $new_e;
         }
     }
 

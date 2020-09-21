@@ -8,6 +8,8 @@ namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\Inco
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,6 +19,15 @@ class Office365AccountType extends AbstractType
     {
         $builder->add('user', 'email', ['required' => true]);
         $builder->add('password', 'dp_enc_password', ['required' => false]);
+        $builder->add('client_id', TextType::class, ['required' => true]);
+        $builder->add('client_secret', TextType::class, ['required' => true]);
+        $builder->add('token', TextType::class, ['required' => true]);
+        $builder->add('refreshToken', TextType::class, ['required' => true]);
+        $builder->add('type', ChoiceType::class, [
+            'required'          => true,
+            'choices'           => [Office365Config::TYPE_POP3, Office365Config::TYPE_OAUTH],
+            'choices_as_values' => true,
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

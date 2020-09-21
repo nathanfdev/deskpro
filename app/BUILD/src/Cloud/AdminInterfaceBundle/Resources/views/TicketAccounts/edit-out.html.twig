@@ -22,6 +22,8 @@
 				<option value="php_mail">Send mail through DeskPRO</option>
 				<option value="smtp">SMTP</option>
 				<option value="gmail">GMail or Google Apps</option>
+				<option value="office365_exchange">Office365 (Exchange)</option>
+				<option value="office365">Office365 (POP3/SMTP)</option>
 			</select>
 		</div>
 
@@ -109,11 +111,200 @@
 							<span ng-hide="form.custom_email_address">Enter your email address above</span>
 						</td>
 					</tr>
-					<tr>
+					<tr ng-show="form.out_gmail_account.type === 'password'">
 						<th>Password</th>
-						<td><input type="password" class="form-control" ng-model="form.out_gmail_account.password" style="width: 50%;" /></td>
+						<td><input type="password" class="form-control" name="title" ng-model="form.out_gmail_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr ng-show="form.out_gmail_account.type === 'oauth' && !form.out_gmail_account.token && !form.out_gmail_account.code">
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info"
+									type="button"
+									ng-click="TicketAccountsEdit.getCode('{{ path('gmail_access_code') }}', 'out')"
+							>
+								Get Access Code
+							</button>
+						</td>
+					</tr>
+					<tr ng-if="form.out_gmail_account.type === 'oauth' && !form.out_gmail_account.token">
+						<th> </th>
+						<td>
+							<input type="text" class="form-control" style="width: 50%;" ng-model="form.out_gmail_account.code" placeholder="Access Code" />
+						</td>
+					</tr>
+					<tr ng-show="form.out_gmail_account.type === 'oauth' && !form.out_gmail_account.token && form.out_gmail_account.code">
+						<th>&nbsp;</th>
+						<td>
+							<input type="hidden" ng-model="form.out_gmail_account.token" />
+							<input type="hidden" ng-model="form.out_gmail_account.refreshToken" />
+							<button class="btn btn-info"
+									type="button"
+									ng-click="TicketAccountsEdit.getAccessToken('{{ path('gmail_token') }}', 'out')"
+							>
+								Get Access Token
+							</button>
+						</td>
+					</tr>
+					<tr ng-show="form.out_gmail_account.type === 'oauth' && form.out_gmail_account.token">
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-danger" type="button" ng-click="form.out_gmail_account.token = null">
+								Reset Access Token
+							</button>
+						</td>
 					</tr>
 					<tr>
+						<th>&nbsp;</th>
+						<td ng-show="form.out_gmail_account.type === 'oauth'">
+							<button class="btn btn-warning"
+									type="button"
+									ng-click="TicketAccountsEdit.setGmailOAuthType('out', '{{ app.getSetting('core_email.google_oauth_client_id', '') }}', '{{ app.getSetting('core_email.google_oauth_secret', '') }}')">
+								Use password instead
+							</button>
+						</td>
+						<td ng-show="form.out_gmail_account.type === 'password'">
+							<button class="btn btn-warning" type="button" ng-click="form.out_gmail_account.type = 'oauth'">
+								Use OAuth instead
+							</button>
+						</td>
+					</tr>
+					<tr ng-show="form.out_gmail_account.type === 'password' || form.out_gmail_account.token">
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info" type="button" ng-click="TicketAccountsEdit.testOutgoingModal()">
+								<i class="fas fa-bolt"></i> Test Account Settings
+							</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		{#######################}
+		{# Office365 Exchange  #}
+		{#######################}
+
+		<div class="ng-hide" ng-show="form.outgoing_type == 'office365_exchange'">
+			<div class="inner-group">
+				<br/><br/>
+				<div class="alert alert-info">
+					<p>
+						This is the recommended option for connecting to Office365 accounts
+					</p>
+				</div>
+				<table width="100%" class="inner-form-table">
+					<tr>
+						<th width="75">Exchange Server</th>
+						<td>
+							https://<input type="text" class="form-control" name="host" ng-model="form.out_office365_exchange_account.host" style="display: inline-block; width: 50%;" />
+							<br/>
+							<span class="help-block">
+                  Please check <a href="https://docs.microsoft.com/en-us/office365/enterprise/urls-and-ip-address-ranges#exchange-online" target="_blank">how to find your exchange server</a>.
+									Make sure your firewall is not blocking connections.
+              </span>
+						</td>
+					</tr>
+					<tr ng-show="form.out_office365_exchange_account.type !== 'oauth'">
+						<th>Username</th>
+						<td><input type="text" class="form-control" name="title" ng-model="form.out_office365_exchange_account.user" style="width: 50%;" /></td>
+					</tr>
+					<tr ng-show="form.out_office365_exchange_account.type !== 'oauth'">
+						<th>Password</th>
+						<td><input type="password" class="form-control" name="title" ng-model="form.out_office365_exchange_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr ng-show="form.out_office365_exchange_account.type === 'oauth' && !form.out_office365_exchange_account.token">
+						<th>&nbsp;</th>
+						<td>
+							<input type="hidden" ng-model="form.out_office365_exchange_account.token" />
+							<input type="hidden" ng-model="form.out_office365_exchange_account.refreshToken" />
+							<button class="btn btn-info"
+									type="button"
+									ng-click="TicketAccountsEdit.getOffice365Code('{{ path('office365_access_code') }}', 'out', 'office365_exchange')"
+							>
+								Get Access Token
+							</button>
+						</td>
+					</tr>
+					<tr ng-show="form.out_office365_exchange_account.type === 'oauth' && form.out_office365_exchange_account.token">
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-danger" type="button" ng-click="form.out_office365_exchange_account.token = null">
+								Reset Access Token
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td ng-show="form.out_office365_exchange_account.type !== 'oauth'">
+							<button class="btn btn-warning"
+									type="button"
+									ng-click="TicketAccountsEdit.setOffice365ExchangeOAuthType('out')"
+							>
+								Use OAuth instead
+							</button>
+						</td>
+					</tr>
+					<tr ng-show="form.out_office365_exchange_account.type !== 'oauth' || form.out_office365_exchange_account.token">
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		{#########################}
+		{# Office365 (POP3/SMTP) #}
+		{#########################}
+
+		<div class="ng-hide" ng-show="form.outgoing_type == 'office365'">
+			<div class="inner-group">
+				<table width="100%" class="inner-form-table">
+					<tr>
+						<th width="100">Email Address</th>
+						<td>
+							<span ng-show="form.address">{{ ng_var('form.address') }}</span>
+							<span ng-hide="form.address">Enter your email address above</span>
+						</td>
+					</tr>
+					<tr ng-show="form.out_office365_account.type !== 'oauth'">
+						<th>Password</th>
+						<td><input type="password" class="form-control" name="title" ng-model="form.out_office365_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr ng-show="form.out_office365_account.type === 'oauth' && !form.out_office365_account.token">
+						<th>&nbsp;</th>
+						<td>
+							<input type="hidden" ng-model="form.out_office365_account.token" />
+							<input type="hidden" ng-model="form.out_office365_account.refreshToken" />
+							<button class="btn btn-info"
+									type="button"
+									ng-click="TicketAccountsEdit.getOffice365Code('{{ path('office365_access_code') }}', 'out', 'office365')"
+							>
+								Get Access Token
+							</button>
+						</td>
+					</tr>
+					<tr ng-show="form.out_office365_account.type === 'oauth' && form.out_office365_account.token">
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-danger" type="button" ng-click="form.out_office365_account.token = null">
+								Reset Access Token
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td ng-show="form.out_office365_account.type !== 'oauth'">
+							<button class="btn btn-warning"
+									type="button"
+									ng-click="TicketAccountsEdit.setOffice365OAuthType('out')"
+							>
+								Use OAuth instead
+							</button>
+						</td>
+					</tr>
+					<tr ng-show="form.out_office365_account.type !== 'oauth' || form.out_office365_account.token">
 						<th>&nbsp;</th>
 						<td>
 							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fas fa-bolt"></i> Test Account Settings</button>
@@ -122,5 +313,6 @@
 				</table>
 			</div>
 		</div>
+
 	</div>
 </div>

@@ -67,9 +67,8 @@ class Exchange
 
     public function __construct($options = [])
     {
-        if (!isset($options['host']) ||
-            !isset($options['user']) ||
-            !isset($options['password'])
+        if (!isset($options['host'])
+            || !((isset($options['user']) && isset($options['password'])) || isset($options['token']))
         ) {
             throw new \Exception('Insufficient Parameters');
         }
@@ -85,7 +84,8 @@ class Exchange
         $this->service = new \ExchangeWebServices(
             $options['host'].(!empty($options['port']) && $options['port'] != 443 ? ":{$options['port']}" : ''),
             $options['user'],
-            $options['password']
+            $options['password'],
+            $options['token']
         );
     }
 
