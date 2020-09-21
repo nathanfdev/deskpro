@@ -14,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\LazyPropObject;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -56,7 +57,8 @@ class GuidesController extends AbstractPublishController
         if ($this->isHelpCenterTheme()) {
             return $this->redirectToRoute('user_guides', ['slug' => $guide->getSlug()]);
         }
-        $topic = $guide->getActiveTopics()->first();
+        $activeTopics = Arrays::flattenHierarchy($guide->getActiveTopics());
+        $topic        = array_pop($activeTopics);
 
         if (!$topic) {
             return $this->redirectToRoute('portal_home');

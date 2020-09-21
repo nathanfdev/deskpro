@@ -283,7 +283,7 @@ class ViewTopic extends React.Component {
     }
 
     let scrollPage = false;
-    if (this.elements.guidesMain.getBoundingClientRect().top < 27) {
+    if (this.elements.guidesMain.getBoundingClientRect().top <= 70) {
       scrollPage = this.elements.guidesMain.getBoundingClientRect().top + window.document.documentElement.scrollTop;
     }
 
@@ -366,7 +366,6 @@ class ViewTopic extends React.Component {
         guideSlug:       guide.slug,
         twoLevelSection: guide.two_level_section,
       });
-      console.log(topicList);
       const topic = Object.values(topicList).filter(t => t.no_content === '0' && t.content_length !== '0').shift();
 
       this.grabTopicFromApi(topic.slug);
