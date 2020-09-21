@@ -1,10 +1,6 @@
 <?php
 
-/**
- * Orb.
- *
- * @category Util
- */
+
 
 namespace Orb\Util;
 
@@ -324,6 +320,7 @@ class Arrays
      * Goes through an array and makes sure each sub-array contains only unique items.
      *
      * @param array $array
+     * @param mixed $sort_flags
      *
      * @return array
      */
@@ -424,6 +421,10 @@ class Arrays
     /**
      * Just like unshiftAssoc() except this creates a copy of the array
      * and returns it.
+     *
+     * @param mixed $array
+     * @param mixed $key
+     * @param mixed $value
      *
      * @return array
      */
@@ -528,6 +529,7 @@ class Arrays
      * @param array           $array     The array to work on
      * @param string|string[] $keys      A key or array of keys to keep
      * @param bool            $recursive To traverse down the array
+     * @param mixed $ignore_numeric
      *
      * @return array
      */
@@ -564,6 +566,7 @@ class Arrays
      * @param string $old_key   The old key
      * @param string $new_key   The new key
      * @param int    $max_depth How deep down the array to recurse. -1 for unlimited depth
+     * @param mixed $_cur_depth
      *
      * @return array
      */
@@ -912,6 +915,7 @@ class Arrays
      *
      * @param array  $array The array to work with
      * @param string $key   The dotted key
+     * @param null|mixed $default
      *
      * @return mixed
      */
@@ -955,6 +959,7 @@ class Arrays
      *
      * @param array  $array The array to work with
      * @param string $tpl   The template to use. Variables {VAL} and {KEY} are available
+     * @param null|mixed $key_prefix
      *
      * @return string
      */
@@ -978,6 +983,7 @@ class Arrays
      * Like var_export except the result is prettier.
      *
      * @param array $array
+     * @param mixed $_level
      *
      * @return string
      */
@@ -1135,15 +1141,15 @@ class Arrays
         $child_key = 'children',
         $depth_key = 'depth'
     ) {
-        $new_array = [];
+        $newArray = [];
 
-        self::_flattenHierarcy($new_array, $array, $index_key, $child_key, $depth_key, 0);
+        self::_flattenHierarchy($newArray, $array, $index_key, $child_key, $depth_key, 0);
 
-        return $new_array;
+        return $newArray;
     }
 
-    protected static function _flattenHierarcy(
-        array &$new_array,
+    protected static function _flattenHierarchy(
+        array &$newArray,
         $array,
         $index_key,
         $child_key,
@@ -1160,17 +1166,17 @@ class Arrays
 
             ++$count;
 
-            $new_array[$index]          = $arr;
-            $new_array[$index]['depth'] = $current_depth;
+            $newArray[$index]          = $arr;
+            $newArray[$index]['depth'] = $current_depth;
 
             if (isset($arr[$child_key]) and $arr[$child_key]) {
-                $sub_array = $arr[$child_key];
-                if (!is_array($sub_array)) {
-                    $sub_array = iterator_to_array($sub_array);
+                $subArray = $arr[$child_key];
+                if (!is_array($subArray)) {
+                    $subArray = iterator_to_array($subArray);
                 }
-                self::_flattenHierarcy(
-                    $new_array,
-                    $sub_array,
+                self::_flattenHierarchy(
+                    $newArray,
+                    $subArray,
                     $index_key,
                     $child_key,
                     $depth_key,
@@ -1184,38 +1190,38 @@ class Arrays
 
     /**
      * @param $array
-     * @param string $order_key
-     * @param string $parent_key
+     * @param string $orderKey
+     * @param string $parentKey
      * @param bool   $keep_keys
      */
     public static function sortFlatHierarchyArray(
         &$array,
-        $order_key = 'display_order',
-        $parent_key = 'parent',
+        $orderKey = 'display_order',
+        $parentKey = 'parent',
         $keep_keys = false
     ) {
-        $sort_fn = $keep_keys ? 'uasort' : 'usort';
+        $sortFn = $keep_keys ? 'uasort' : 'usort';
 
-        $sort_fn(
+        $sortFn(
             $array,
-            function ($a, $b) use ($order_key, $parent_key) {
-                if ($a[$parent_key]) {
-                    $a_order = floatval($a[$parent_key][$order_key].'.'.$a[$order_key]);
+            function ($a, $b) use ($orderKey, $parentKey) {
+                if ($a[$parentKey]) {
+                    $aOrder = floatval($a[$parentKey][$orderKey].'.'.$a[$orderKey]);
                 } else {
-                    $a_order = floatval($a[$order_key]);
+                    $aOrder = floatval($a[$orderKey]);
                 }
 
-                if ($b[$parent_key]) {
-                    $b_order = floatval($b[$parent_key][$order_key].'.'.$b[$order_key]);
+                if ($b[$parentKey]) {
+                    $bOrder = floatval($b[$parentKey][$orderKey].'.'.$b[$orderKey]);
                 } else {
-                    $b_order = floatval($b[$order_key]);
+                    $bOrder = floatval($b[$orderKey]);
                 }
 
-                if ($a_order == $b_order) {
+                if ($aOrder == $bOrder) {
                     return 0;
                 }
 
-                return $a_order < $b_order ? -1 : 1;
+                return $aOrder < $bOrder ? -1 : 1;
             }
         );
     }
@@ -1313,6 +1319,7 @@ class Arrays
      *
      * @param array      $array The array to work on
      * @param string|int $index The index of the immediate sub-array to use
+     * @param mixed $ignore_keys
      *
      * @return array
      */
@@ -1412,6 +1419,7 @@ class Arrays
      * </code>
      *
      * @param int $num The nth key to get (starts from 0)
+     * @param mixed $array
      *
      * @return mixed NULL if the nth key doesn't exist
      */
@@ -1440,6 +1448,7 @@ class Arrays
      * </code>
      *
      * @param int $num The nth key to get (starts from 0)
+     * @param mixed $array
      *
      * @return mixed NULL if the nth item doesn't exist
      */
@@ -1715,7 +1724,7 @@ class Arrays
                 } else {
                     $array[$lower_key] = [$array[$lower_key], $value];
                 }
-            // We dont care if there was an existing value or not
+                // We dont care if there was an existing value or not
             } else {
                 $array[$lower_key] = $value;
             }
@@ -1756,6 +1765,7 @@ class Arrays
      * data would generate the same hash.
      *
      * @param array $array
+     * @param mixed $keys_significant
      *
      * @return string
      */
@@ -1782,6 +1792,7 @@ class Arrays
             switch (gettype($v)) {
                 case 'array':
                     $v = self::_generateHashHelper($v, false);
+
                     break;
 
                 case 'object':
@@ -1796,10 +1807,12 @@ class Arrays
                         $v = serialize($v);
                         $v = md5($v);
                     }
+
                     break;
 
                 case 'resource':
                     $v = 'resource';
+
                     break;
             }
 
@@ -1815,6 +1828,7 @@ class Arrays
      * Unset a specific deep value of an array.
      *
      * @param array $array The array to unset in
+     * @param mixed $keys
      * @paray  array $keys  The keys used to get to deep item to unset
      *
      * @return bool True if the unset was performed
@@ -2179,6 +2193,7 @@ class Arrays
         foreach ($array as $k => $v) {
             if ($start) {
                 --$start;
+
                 continue;
             }
 
@@ -2214,6 +2229,7 @@ class Arrays
      * @param array $array         The array
      * @param mixed $word_index    If items in $array is itself an array, the index that contains the word
      * @param bool  $empty_letters True to include empty letters in the array (the letters will themselves be emtpy arrays)
+     * @param mixed $maintain_keys
      *
      * @return array
      */
@@ -2281,6 +2297,7 @@ class Arrays
      *
      * @param array $array
      * @param int   $sort_flags
+     * @param mixed $k
      */
     public static function sortMulti(array &$array, $k, $sort_flags = \SORT_REGULAR)
     {
@@ -2595,6 +2612,7 @@ class Arrays
      * @param  array   $array
      * @param  string  $key
      * @param  mixed   $value
+     *
      * @return array
      */
     public static function set(&$array, $key, $value)

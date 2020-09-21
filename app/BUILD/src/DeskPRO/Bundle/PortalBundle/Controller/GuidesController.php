@@ -57,8 +57,9 @@ class GuidesController extends AbstractPublishController
         if ($this->isHelpCenterTheme()) {
             return $this->redirectToRoute('user_guides', ['slug' => $guide->getSlug()]);
         }
-        $activeTopics = Arrays::flattenHierarchy($guide->getActiveTopics());
-        $topic        = array_pop($activeTopics);
+        $activeTopics = Arrays::flattenHierarchy($guide->getActiveTopics()->toArray());
+        Arrays::sortFlatHierarchyArray($activeTopics);
+        $topic        = array_shift($activeTopics);
 
         if (!$topic) {
             return $this->redirectToRoute('portal_home');
@@ -79,7 +80,9 @@ class GuidesController extends AbstractPublishController
      */
     public function browseAction(Guide $guide)
     {
-        $topic = $guide->getActiveTopics()->first();
+        $activeTopics = Arrays::flattenHierarchy($guide->getActiveTopics()->toArray());
+        Arrays::sortFlatHierarchyArray($activeTopics);
+        $topic        = array_shift($activeTopics);
 
         if (!$topic) {
             return $this->redirectToRoute('portal_home');
