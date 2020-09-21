@@ -66,7 +66,8 @@
     </div>
     <script>
       var topic = '{{ topic_json|raw }}';
-      var user_avatar = '{{ hc_avatar(app.user, '', 60)|e('html') }}';
+      var user_avatar = '{{ avatar_url(app.user, 60, false) }}';
+      var user_initials = '{{ app.user ? app.user.initials : '' }}';
       var user_name = '{{ app.user ? app.user.display_name : '' }}';
       var guides = '{{ guides_json|raw }}';
       var commentsCaptcha = '{{ captcha|json_encode|raw }}';

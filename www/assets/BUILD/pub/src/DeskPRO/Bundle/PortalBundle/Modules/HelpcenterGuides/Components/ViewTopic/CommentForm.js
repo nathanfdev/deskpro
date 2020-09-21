@@ -176,16 +176,19 @@ class CommentForm extends React.Component {
       );
     }
 
+    let avatar;
+    if (window.user_avatar) {
+      avatar = <span className="dp-po-avatar-image" aria-hidden="true" style={{ backgroundImage: `url(${window.user_avatar})` }} />;
+    } else {
+      avatar = <span className="dp-po-avatar-name">{window.user_initials}</span>;
+    }
+
     return (
       <div className="dp-po-block">
         <div className="dp-po-comments-add">
           <div className="dp-po-avatar">
-            <div
-              dangerouslySetInnerHTML={{ __html: window.user_avatar }}
-            />
-            <strong
-              dangerouslySetInnerHTML={{ __html: this.sanitize(window.user_name) }}
-            />
+            {avatar}
+            <strong>{window.user_name}</strong>
           </div>
 
           <form action="" className="dp-po-form" method="post">
