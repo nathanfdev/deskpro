@@ -216,13 +216,13 @@ CODE;
     {
         $form        = $this->createForm($this->getType(), $model, ['brand' => $model->getBrand()]);
         $requestData = $request->request->all();
-        if (isset($requestData['maxFileSize'])) {
+        if (array_key_exists('maxFileSize', $requestData)) {
             unset($requestData['maxFileSize']);
         }
-        if (isset($requestData['kbEnabled'])) {
+        if (array_key_exists('kbEnabled', $requestData)) {
             unset($requestData['kbEnabled']);
         }
-        if (isset($requestData['translations'])) {
+        if (array_key_exists('translations', $requestData)) {
             $this->updateTranslations($requestData['translations'], $model);
             unset($requestData['translations']);
         }
