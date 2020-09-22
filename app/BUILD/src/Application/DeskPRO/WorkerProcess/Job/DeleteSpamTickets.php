@@ -67,7 +67,7 @@ class DeleteSpamTickets extends AbstractJob
         }
 
         if ($ticket_count) {
-            $this->logStatus('Removed '.count($ticket_count).' spam tickets');
+            $this->logStatus('Removed '.$ticket_count.' spam tickets');
         }
     }
 }
