@@ -24,11 +24,3 @@ if (!$deskpro_dir
 
 define('DESKPRO_WWW_PATH', __DIR__);
 require $deskpro_dir . '/app/run/targets/web.php';
-
-//error_log(
-//    print_r(array_map(function ($tuple) {
-//        return $tuple[1] ?? null;
-//    }, array_filter(\DpRun\DpFsProxyStreamWrapper::getCache()['kernel_cache'] ?? [], function ($tuple) {
-//        return strpos($tuple[1] ?? '', 'twig') !== false;
-//    })), true)
-//);

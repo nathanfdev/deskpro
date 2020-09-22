@@ -68,6 +68,16 @@ class DpFsProxyStreamWrapper
     }
 
     /**
+     * Returns the VFS for debug/logging purposes
+     *
+     * @return array
+     */
+    public static function getCache()
+    {
+        return self::$cache;
+    }
+
+    /**
      * Substitution of \realpath() that works with this stream wrapper
      *
      * @param string $path
