@@ -11,6 +11,12 @@ class FilesystemCache extends \Twig\Cache\FilesystemCache
 {
     public function write($key, $content)
     {
+        if (!defined('DPC_IS_CLOUD')) {
+            parent::write($key, $content);
+
+            return;
+        }
+
         $dir = \dirname($key);
         if (!is_dir($dir)) {
             if (false === @mkdir($dir, 0777, true)) {
@@ -28,6 +34,7 @@ class FilesystemCache extends \Twig\Cache\FilesystemCache
 
         if (false !== @file_put_contents($tmpFile, $content) && @copy($tmpFile, $key)) {
             @chmod($key, 0666 & ~umask());
+            @unlink($tmpFile);
 
             $ref = (new \ReflectionObject($this))->getParentClass();
             $optionsRef = $ref->getProperty('options');

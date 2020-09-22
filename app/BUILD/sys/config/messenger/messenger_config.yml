@@ -12,6 +12,7 @@ parameters:
   sensio_framework_extra.controller.listener.class: DeskPRO\Bundle\AppBundle\Security\EventListener\ControllerListener
   fos_rest.body_listener.throw_exception_on_unsupported_content_type: true
   fos_rest.body_listener.default_format: json
+  jms_serializer.metadata.cache.file_cache.class: Application\DeskPRO\Serializer\FileCache
 
 services:
   # legacy ext is required by some ticket functions (e.g. rendering notifications)

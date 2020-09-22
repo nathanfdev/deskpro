@@ -22,6 +22,11 @@ class DpFsProxyStreamWrapper
     const IS_LOGGING = false;
 
     /**
+     * Default dummy file size
+     */
+    const DEFAULT_DUMMY_FILE_SIZE = (4096 * 4096);
+
+    /**
      * @var string
      */
     private static $protocol;
@@ -115,6 +120,20 @@ class DpFsProxyStreamWrapper
     /**
      * @see https://www.php.net/manual/en/class.streamwrapper.php#streamwrapper.synopsis
      */
+    public function dir_rewinddir()
+    {
+        $this->log('CALL '.__METHOD__);
+
+        if ($this->virtualPath && $this->virtualNamespace) {
+            return true;
+        }
+
+        return \readdir($this->dirHandle);
+    }
+
+    /**
+     * @see https://www.php.net/manual/en/class.streamwrapper.php#streamwrapper.synopsis
+     */
     public function dir_closedir()
     {
         $this->log('CALL '.__METHOD__);
@@ -185,10 +204,10 @@ class DpFsProxyStreamWrapper
      */
     public function stream_open($path, $mode, $options, &$opened_path)
     {
-        $this->log('CALL '.__METHOD__." MODE: $mode, PATH: ".$path);
+        $this->log('CALL: '.__METHOD__." MODE: $mode, PATH: ".$path);
 
         $resolvedPath = self::getPath($path);
-        $namespace = self::getNamespace($path);
+        $namespace    = self::getNamespace($path);
 
         if (!self::exists($resolvedPath)) {
             $this->virtualNamespace = $namespace;
@@ -199,6 +218,9 @@ class DpFsProxyStreamWrapper
                 if (!isset(self::$cache[$namespace][$resolvedPath])) {
                     return false;
                 }
+
+                // Record the lat known max position
+                self::$cache[$namespace][$resolvedPath][2] = self::$cache[$namespace][$resolvedPath][0];
 
                 // Reset the pointer as this is "r|r+" mode
                 self::$cache[$namespace][$resolvedPath][0] = 0;
@@ -245,12 +267,13 @@ class DpFsProxyStreamWrapper
         $this->log('CALL '.__METHOD__);
 
         if ($this->virtualNamespace && $this->virtualPath) {
-            if (self::$cache[$this->virtualNamespace][$this->virtualPath][1] === null) {
-                return false;
-            }
-
             if (self::isFile($this->virtualPath)) {
-                return self::dummyStatFile();
+                $size = isset(self::$cache[$this->virtualNamespace][$this->virtualPath][2])
+                    ? self::$cache[$this->virtualNamespace][$this->virtualPath][2]
+                    : self::DEFAULT_DUMMY_FILE_SIZE
+                ;
+
+                return self::dummyStatFile($size);
             }
 
             return self::dummyStatDir();
@@ -270,6 +293,7 @@ class DpFsProxyStreamWrapper
             list ($position, $data) = self::$cache[$this->virtualNamespace][$this->virtualPath];
 
             $read = substr($data, $position, $count);
+            $read = $read === false ? '' : $read;
 
             self::$cache[$this->virtualNamespace][$this->virtualPath][0] = $position + strlen($read);
 
@@ -338,7 +362,7 @@ class DpFsProxyStreamWrapper
 
         $result = \fclose($this->handle);
 
-        $this->dirHandle = null;
+        $this->handle = null;
 
         return $result;
     }
@@ -419,6 +443,10 @@ class DpFsProxyStreamWrapper
     {
         $this->log('CALL '.__METHOD__);
 
+        if (self::isProxyFsPath($path)) {
+            return true;
+        }
+
         return \mkdir(self::getPath($path), $mode, $options & STREAM_MKDIR_RECURSIVE);
     }
 
@@ -428,6 +456,17 @@ class DpFsProxyStreamWrapper
     public function unlink($path)
     {
         $this->log('CALL '.__METHOD__);
+
+        if (self::isProxyFsPath($path)) {
+            $resolvedPath = self::getPath($path);
+            $namespace    = self::getNamespace($path);
+
+            if (isset(self::$cache[$namespace][$resolvedPath])) {
+                unset(self::$cache[$namespace][$resolvedPath]);
+            }
+
+            return true;
+        }
 
         return \unlink(self::getPath($path));
     }
@@ -544,24 +583,12 @@ class DpFsProxyStreamWrapper
     /**
      * Dummy stats for an archetypal file
      *
+     * @param int $size
      * @return int[]
      */
-    private static function dummyStatFile()
+    private static function dummyStatFile($size = self::DEFAULT_DUMMY_FILE_SIZE)
     {
         return [
-            0 => 771,
-            1 => 488704,
-            2 => 33188,
-            3 => 1,
-            4 => 0,
-            5 => 0,
-            6 => 0,
-            7 => 1114,
-            8 => 1061067181,
-            9 => 1056136526,
-            10 => 1056136526,
-            11 => 4096,
-            12 => 8,
             'dev' => 771,
             'ino' => 488704,
             'mode' => 33188,
@@ -569,7 +596,7 @@ class DpFsProxyStreamWrapper
             'uid' => 0,
             'gid' => 0,
             'rdev' => 0,
-            'size' => 1114,
+            'size' => (int) $size,
             'atime' => 1061067181,
             'mtime' => 1056136526,
             'ctime' => 1056136526,
@@ -586,19 +613,6 @@ class DpFsProxyStreamWrapper
     private static function dummyStatDir()
     {
         return [
-            0 => 40,
-            1 => 13153498,
-            2 => 16895,
-            3 => 2,
-            4 => 0,
-            5 => 0,
-            6 => 0,
-            7 => 4096,
-            8 => 1600189568,
-            9 => 1600189418,
-            10 => 1600189418,
-            11 => 32768,
-            12 => 8,
             'dev' => 40,
             'ino' => 13153498,
             'mode' => 16895,
