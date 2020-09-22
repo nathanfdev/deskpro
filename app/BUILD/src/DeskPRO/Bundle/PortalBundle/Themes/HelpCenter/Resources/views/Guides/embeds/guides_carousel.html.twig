@@ -1,26 +1,25 @@
-<div class="dp-po-guides-carousel">
-    <div class="dp-po-guides-carousel-list {% if guides | length > 2 %}with-cover{% endif %}">
-        {% for guide in guides %}
-            <div class="dp-po-guides-carousel-item">
-                {% if guides | length > 2 and has_splash(guide) %}
-                    <figure class="dp-po-guides-carousel-image" style="background-image: url('{{ get_splash_url(guide, 360) }}')"></figure>
-                {% endif %}
-                <div class="dp-po-guides-carousel-content">
-                    <a href="{{ portal_url(guide) }}" class="dp-po-guides-carousel-link">
-                        {{ render_icon_from(guide, {as_download_url: true, is_rounded: true}) }} {{ guide }}
-                    </a>
-{#                    <div class="dp-po-guides-carousel-extra">#}
-{#                        <ul class="dp-po-guides-carousel-extra-list">#}
-{#                            <li class="dp-po-guides-carousel-extra-item">#}
-{#                                <a href="" class="dp-po-guides-carousel-extra-link"><i class="dp-po-icon fal fa-print"></i></a>#}
-{#                            </li>#}
-{#                            <li class="dp-po-guides-carousel-extra-item">#}
-{#                                <a href="" class="dp-po-guides-carousel-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>#}
-{#                            </li>#}
-{#                        </ul>#}
-{#                    </div>#}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+{#<div class="dp-po-guides-tabs">#}
+{#    <div class="dp-po-guides-tabs-list {% if guides | length > 2 %}with-cover{% endif %}">#}
+{#        {% for guide in guides %}#}
+{#            <div class="dp-po-guides-tabs-item">#}
+{#                {% if guides | length > 2 and has_splash(guide) %}#}
+{#                    <figure class="dp-po-guides-tabs-image" style="background-image: url('{{ get_splash_url(guide, 360) }}')"></figure>#}
+{#                {% endif %}#}
+{#                <div class="dp-po-guides-tabs-content">#}
+{#                    <a href="{{ portal_url(guide) }}" class="dp-po-guides-tabs-link">#}
+{#                        {{ render_icon_from(guide, {as_download_url: true, is_rounded: true}) }} {{ guide }}#}
+{#                    </a>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    </div>#}
+{#</div>#}
+<div class="dp-po-guides-dropdown">
+    <button class="dp-po-guides-dropdown-button">
+        <figure class="dp-po-icon">
+            {{ render_icon_from(guide, {as_download_url: true, is_rounded: true}) }}
+        </figure>
+        {{ guide }}
+        <i className="fal fa-angle-down" />
+    </button>
 </div>

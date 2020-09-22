@@ -500,7 +500,7 @@ helpcenter.general.prop_rating_asc: 'Lowest rated first'
 helpcenter.general.prop_rating_desc: 'Highest rated first'
 helpcenter.general.prop_views_asc: 'Least views first'
 helpcenter.general.prop_views_desc: 'Most views first'
-helpcenter.general.published: 'First published'
+helpcenter.general.published: Published
 helpcenter.general.published_by: 'Published by <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Unhelpful
 helpcenter.general.rate_page_positive: Helpful
@@ -539,6 +539,10 @@ helpcenter.general.you: You
 helpcenter.general.your_comment_label: 'Your comment'
 helpcenter.general.your_comment_optional_label: 'Your comment (optional)'
 helpcenter.general.download_pdf: 'Download PDF'
+helpcenter.guides.in_section: 'in {section}'
+helpcenter.guides.next_topic: 'next topic'
+helpcenter.guides.previous_topic: 'previous topic'
+helpcenter.guides.topics_in: 'Topics in {title}'
 helpcenter.knowledgebase.featured_articles: 'Featured Articles'
 helpcenter.label.search: Search
 helpcenter.members.activity_commented_on: 'Commented on'

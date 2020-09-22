@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as JMS;
 class TopicComment extends CommentAbstract
 {
     /**
-     * Person`s avatar.
+     * Person's avatar.
      *
      * @JMS\Type("string")
      * @JMS\Groups("details")
@@ -16,6 +16,16 @@ class TopicComment extends CommentAbstract
      * @var string
      */
     protected $avatar = null;
+
+    /**
+     * Person's initials
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups("details")
+     *
+     * @var string
+     */
+    protected $initials = '';
 
     /**
      * Constructor.
@@ -30,7 +40,8 @@ class TopicComment extends CommentAbstract
             if (!$this->name) {
                 $this->name = $this->person->getName();
             }
-            $this->avatar = $avatar;
+            $this->initials = $this->person->getInitials();
+            $this->avatar   = $avatar;
         }
     }
 }

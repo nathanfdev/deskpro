@@ -52,7 +52,7 @@ const NodeRendererDefault = ({
   buttons,
   className,
   style = {},
-  ...otherProps,
+  ...otherProps
 }) => {
   let handle;
   if (typeof node.children === 'function' && node.expanded) {

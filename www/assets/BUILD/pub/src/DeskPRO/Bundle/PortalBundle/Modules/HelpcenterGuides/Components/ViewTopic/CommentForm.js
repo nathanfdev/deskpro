@@ -9,10 +9,6 @@ class CommentForm extends React.Component {
     onSubmit: PropTypes.func
   };
 
-  static defaultProps = {
-    onSubmit() {}
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -152,96 +148,79 @@ class CommentForm extends React.Component {
     });
   };
 
+  sanitize = (string) => {
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      '/': '&#x2F;',
+    };
+    const reg = /[&<>"'/]/ig;
+    return string.replace(reg, match => (map[match]));
+  }
+
   render() {
     if (!window.topicCommentForm) {
       return null;
     }
-    if (window.currentTheme === 'helpcenter') {
-      if (!window.loggedIn) {
-        return (
-          <div>
-            <p className="dp-po-comment-subtitle">
-              <FormattedMessage id="portal.general.comment_login_first" />
-            </p>
-
-          </div>
-        );
-      }
+    if (!window.loggedIn) {
       return (
-        <div className="dp-po-block">
-          <div className="dp-po-comments-add">
-            <form action="" className="dp-po-form" method="post">
-              <div className="form-group">
-                <label className="title title required" htmlFor="comment_content_real">
-                  <FormattedMessage id="helpcenter.general.your_comment_label" /> *
-                </label>
-                <textarea
-                  className="form-control"
-                  id="comment_content_real"
-                  name="comment[content_real]"
-                  required="required"
-                  value={this.state.comment}
-                  onChange={this.updateComment}
-                />
-                {this.getError('content_real')}
-              </div>
-              <div className="row align-items-center">
-                <div className="col-sm-2">
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    onClick={this.onSubmit}
-                    disabled={this.state.loading}
-                    style={{ whiteSpace: 'nowrap' }}
-                  >
-                    <FormattedMessage id="portal.general.comment_btn_save" />&nbsp;
-                    {this.state.loading ? <i className="fas fa-spinner fa-pulse" /> : '' }
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
+        <div>
+          <p className="dp-po-comment-subtitle">
+            <FormattedMessage id="helpcenter.general.comment_login_first" />
+          </p>
+
         </div>
       );
     }
+
+    let avatar;
+    if (window.user_avatar) {
+      avatar = <span className="dp-po-avatar-image" aria-hidden="true" style={{ backgroundImage: `url(${window.user_avatar})` }} />;
+    } else {
+      avatar = <span className="dp-po-avatar-name">{window.user_initials}</span>;
+    }
+
     return (
-      <div className="form-ticket">
-        <div className="single-comment reply">
-          <div className="comment-info">
-            <span className="avatar">
-              <span className="agent-avatar agent-avatar-tiny"><i className="fas fa-user" /></span>
-            </span>
-            <span className="author"><FormattedMessage id="portal.general.add-comment" /></span>
+      <div className="dp-po-block">
+        <div className="dp-po-comments-add">
+          <div className="dp-po-avatar">
+            {avatar}
+            <strong>{window.user_name}</strong>
           </div>
-          <div className="comment-content">
-            <div className="blurb">
-              <form name="comment" method="post" action="" noValidate="">
-                <div className="column-full">
-                  <div className={classNames('bucket', { error: this.hasError('content_real') })}>
-                    <label className="title title required" htmlFor="comment_content_real">
-                      <FormattedMessage id="portal.forms.label_comment" /> *
-                    </label>
-                    <textarea
-                      id="comment_content_real"
-                      name="comment[content_real]"
-                      required="required"
-                      value={this.state.comment}
-                      onChange={this.updateComment}
-                    />
-                    {this.getError('content_real')}
-                  </div>
-                </div>
-                {this.getPersonFields()}
-                {this.getCaptchaField()}
-                <div className="bucket form-widget">
-                  <button type="submit" onClick={this.onSubmit} disabled={this.state.loading}>
-                    <FormattedMessage id="portal.general.comment_btn_save" />&nbsp;
-                    {this.state.loading ? <i className="fas fa-spinner fa-pulse" /> : '' }
-                  </button>
-                </div>
-              </form>
+
+          <form action="" className="dp-po-form" method="post">
+            <div className="form-group">
+              <label className="title title required" htmlFor="comment_content_real">
+                <FormattedMessage id="helpcenter.general.your_comment_label" /> *
+              </label>
+              <textarea
+                className="form-control"
+                id="comment_content_real"
+                name="comment[content_real]"
+                required="required"
+                value={this.state.comment}
+                onChange={this.updateComment}
+              />
+              {this.getError('content_real')}
             </div>
-          </div>
+            <div className="row align-items-center">
+              <div className="col-sm-2">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  onClick={this.onSubmit}
+                  disabled={this.state.loading}
+                  style={{ whiteSpace: 'nowrap' }}
+                >
+                  <FormattedMessage id="helpcenter.general.comment_btn_save" />&nbsp;
+                  {this.state.loading ? <figure className="dp-po-icon"><i className="fas fa-spinner fa-pulse" /></figure> : '' }
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     );

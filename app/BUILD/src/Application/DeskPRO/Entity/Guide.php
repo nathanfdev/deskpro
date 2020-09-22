@@ -230,7 +230,7 @@ class Guide extends DomainObject implements HasIconProperty, HasSplashImagePrope
     {
         return $this->topics->filter(function ($topic) {
             /* @var Topic $topic */
-            return $topic->getStatus() !== Topic::STATUS_HIDDEN && !$topic->getParent();
+            return ($topic->getStatus() !== Topic::STATUS_HIDDEN) && $topic->isNoContent() === false;
         });
     }
 
@@ -394,6 +394,16 @@ class Guide extends DomainObject implements HasIconProperty, HasSplashImagePrope
         }
 
         return '';
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     *
+     * @return boolean
+     */
+    public function getTwoLevelSection()
+    {
+        return  App::getContainer()->get('data.guides')->getGuideTwoLevelSection($this);
     }
 
     /**

@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import $ from 'jquery';
-import { addLocaleData, IntlProvider } from 'react-intl';
+import { IntlProvider } from 'react-intl';
 import HelpCenterPage from './PageWidget/HelpCenterPage';
 import { portalPhrases } from './PortalPhrases';
 import App from './Modules/Application/Components/AppContainer';

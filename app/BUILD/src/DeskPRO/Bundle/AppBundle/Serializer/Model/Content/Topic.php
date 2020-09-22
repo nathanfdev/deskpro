@@ -60,6 +60,13 @@ class Topic extends ContentAbstract
     protected $comments;
 
     /**
+     * @var ArrayCollection
+     *
+     * @JMS\Type("collection<Application\DeskPRO\Entity\Person>")
+     */
+    protected $authors;
+
+    /**
      * Constructor.
      *
      * @param TopicEntity         $entity
@@ -75,6 +82,7 @@ class Topic extends ContentAbstract
         $this->parent          = $entity->getParent();
         $this->calcNumComments = $entity->getCalcNumComments();
         $this->comments        = $entity->getComments();
+        $this->authors         = $entity->getAuthors();
         $this->content         = $templatingExtension->replaceContent($this->content);
     }
 }

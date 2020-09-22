@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Link } from 'react-scroll';
+import Link from 'react-router/lib/Link';
 import classNames from 'classnames';
-import browserHistory from 'react-router/lib/browserHistory';
 
 class TopicListItem extends React.Component {
   static propTypes = {
@@ -12,14 +11,14 @@ class TopicListItem extends React.Component {
     path:             PropTypes.string,
     filter:           PropTypes.string,
     expanded:         PropTypes.bool,
+    expandedList:     PropTypes.object,
     grabTopicFromApi: PropTypes.func,
     filterTopic:      PropTypes.func,
-    withSplash:       PropTypes.bool,
+    toggleTopic:      PropTypes.func,
   };
 
   static defaultProps = {
     expandable: true,
-    withSplash: false,
   };
 
   getLevelPrefix = (delta = 0) => {
@@ -39,30 +38,30 @@ class TopicListItem extends React.Component {
   };
 
   handleClick = (e) => {
-    e.preventDefault();
-    const { topic } = this.props;
-    this.props.grabTopicFromApi(topic.slug);
-  };
-
-  handleSetActive = () => {
-    const { topic, guideSlug } = this.props;
-    this.props.grabTopicFromApi(topic.slug);
-
-    let baseUrl = window.DESKPRO_BASE_URL;
-    if (baseUrl) {
-      baseUrl = baseUrl.replace(/\/+$/, '');
+    const { topic, expanded } = this.props;
+    if (['path', 'svg', 'FIGURE'].indexOf(e.target.tagName) !== -1) {
+      this.props.toggleTopic(e, topic, expanded);
+    } else {
+      this.props.grabTopicFromApi(topic.slug);
     }
-    browserHistory.push(`${baseUrl}/guides/${guideSlug}/${topic.slug}`);
   };
+
+  isExpanded = () => {
+    const { expandedList, topic, expanded } = this.props;
+    if (typeof expandedList[topic.id] !== 'undefined') {
+      return expandedList[topic.id];
+    }
+    return expanded;
+  }
 
   renderChildren = () => {
-    const { topic, guideSlug, topicSlug, expanded, filter, filterTopic, grabTopicFromApi, withSplash } = this.props;
+    const { topic, guideSlug, topicSlug, expandedList, filter, filterTopic, toggleTopic, grabTopicFromApi } = this.props;
     if (!Object.values(topic.children).length) {
       return null;
     }
     const prefix = this.getLevelPrefix(1);
     const style = {};
-    if (!expanded) {
+    if (!this.isExpanded()) {
       style.display = 'none';
     }
     return (
@@ -83,9 +82,10 @@ class TopicListItem extends React.Component {
               grabTopicFromApi={grabTopicFromApi}
               filter={filter}
               filterTopic={filterTopic}
-              withSplash={withSplash}
-              expanded={(filter !== '' || child.slug === topicSlug || Object.values(child.children)
-                .find(c => c.slug === topicSlug || Object.values(c.children).find(cc => cc.slug === topicSlug)))}
+              toggleTopic={toggleTopic}
+              expanded={(filter !== '' || child.slug === topicSlug || typeof Object.values(child.children)
+                .find(c => c.slug === topicSlug ||  Object.values(c.children).find(cc => cc.slug === topicSlug)) !== 'undefined')}
+              expandedList={expandedList}
             />
             )
           )}
@@ -94,7 +94,7 @@ class TopicListItem extends React.Component {
   };
 
   render() {
-    const { topic, guideSlug, topicSlug, withSplash } = this.props;
+    const { topic, topicSlug, guideSlug, toggleTopic, expanded } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -102,20 +102,29 @@ class TopicListItem extends React.Component {
     }
 
     const prefix = this.getLevelPrefix();
+    if (topic.no_content === '1') {
+      return (
+        <li className={`dp-po-guides-search-content-${prefix}item`} key={topic.slug}>
+          <div
+            className={classNames(`dp-po-guides-search-content-${prefix}link chapter`, { expanded: this.isExpanded() })}
+            onClick={e => toggleTopic(e, topic, expanded)}
+          >
+            <span className="dp-po-guide-topic-list-item">{topic.title}</span>
+          </div>
+          {this.renderChildren()}
+        </li>
+      );
+    }
     return (
       <li className={`dp-po-guides-search-content-${prefix}item`} key={topic.slug}>
         <Link
-          className={classNames(`dp-po-guides-search-content-${prefix}link`, { active: topic.slug === topicSlug })}
-          activeClass="active"
-          href={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`}
-          to={`topic_${topic.slug}`}
-          offset={withSplash ? -255 : -129}
-          spy
-          isDynamic
+          className={classNames(`dp-po-guides-search-content-${prefix}link`, { expanded: this.isExpanded(), active: topic.slug === topicSlug })}
+          to={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`}
+          activeClassName="active"
           onClick={this.handleClick}
-          onSetActive={this.handleSetActive}
         >
-          {topic.title}
+          <span className="dp-po-guide-topic-list-item">{topic.title}</span>
+          {Object.values(topic.children).length > 0 && <figure className="dp-po-icon"><i className="fas fa-caret-down" /></figure>}
         </Link>
         {this.renderChildren()}
       </li>

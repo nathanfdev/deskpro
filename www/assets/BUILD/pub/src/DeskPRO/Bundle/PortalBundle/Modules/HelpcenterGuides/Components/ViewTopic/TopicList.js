@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { Link } from 'react-scroll';
 import TopicListItem from './TopicListItem';
 
 class TopicList extends React.Component {
@@ -11,11 +10,7 @@ class TopicList extends React.Component {
     topicSlug:        PropTypes.string,
     grabTopicFromApi: PropTypes.func,
     sizes:            PropTypes.object,
-    withSplash:       PropTypes.bool,
-  };
-
-  static defaultProps = {
-    withSplash: false
+    twoLevelSection:  PropTypes.bool,
   };
 
   static contextTypes = {
@@ -26,17 +21,18 @@ class TopicList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      path:   '',
-      filter: '',
+      path:     '',
+      filter:   '',
+      expanded: {},
     };
   }
 
   componentDidMount() {
-    this.context.router.listen(this.locationHasChanged);
+    this.removeListener = this.context.router.listen(this.locationHasChanged);
   }
 
   componentWillUnmount() {
-    this.context.router.unregisterTransitionHook(this.locationHasChanged);
+    this.removeListener();
   }
 
   filterTopic = (topic) => {
@@ -46,10 +42,28 @@ class TopicList extends React.Component {
     return filter === '' || topic.title.toLowerCase().match(filter) || Object.values(topic.children).find(c => this.filterTopic(c));
   };
 
-  isExpandedTopic = (topic) => {
+  isExpandedTopic = (topic, recursive = false) => {
     const { topicSlug } = this.props;
-    return topic.slug === topicSlug || Object.values(topic.children).find(c => this.isExpandedTopic(c));
+    const { expanded } = this.state;
+    if (!recursive && typeof expanded[topic.id] !== 'undefined') {
+      return expanded[topic.id];
+    }
+    return topic.slug === topicSlug || Object.values(topic.children).find(c => this.isExpandedTopic(c, true));
   };
+
+  toggleTopic = (e, topic, initial) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const { expanded } = this.state;
+    if (typeof expanded[topic.id] !== 'undefined') {
+      expanded[topic.id] = !expanded[topic.id];
+    } else {
+      expanded[topic.id] = !initial;
+    }
+    this.setState({
+      expanded
+    });
+  }
 
   handleFilterChange = (e) => {
     this.setState({
@@ -64,8 +78,8 @@ class TopicList extends React.Component {
   };
 
   renderTopics(topics, depth = 0, collapse = false) {
-    const { guideSlug, topicSlug, grabTopicFromApi, withSplash } = this.props;
-    const { filter } = this.state;
+    const { guideSlug, topicSlug, grabTopicFromApi } = this.props;
+    const { filter, expanded } = this.state;
     return (
       <ul className={classNames('dp-po-guides-search-content-list', { collapse })}>
         {topics
@@ -78,14 +92,13 @@ class TopicList extends React.Component {
               topic={topic}
               guideSlug={guideSlug}
               topicSlug={topicSlug}
-              expandable={false}
-              clickable={false}
               path={this.state.path}
               grabTopicFromApi={grabTopicFromApi}
               filter={filter}
               filterTopic={this.filterTopic}
-              withSplash={withSplash}
+              toggleTopic={this.toggleTopic}
               expanded={!!(filter !== '' || this.isExpandedTopic(topic))}
+              expandedList={expanded}
             />
             )
           )}
@@ -94,13 +107,8 @@ class TopicList extends React.Component {
   }
 
   renderList() {
-    const { guideSlug, topics, withSplash } = this.props;
-    if (window.twoLevelSection) {
-      let baseUrl = window.DESKPRO_BASE_URL;
-      if (baseUrl) {
-        baseUrl = baseUrl.replace(/\/+$/, '');
-      }
-
+    const { topics, twoLevelSection } = this.props;
+    if (twoLevelSection) {
       return (
         <div className="dp-po-guides-search-content accordion" id="accordionExample">
           {topics
@@ -111,19 +119,12 @@ class TopicList extends React.Component {
               const collapsed = !this.isExpandedTopic(topic);
               return (
                 <div className="dp-po-guides-search-content-accordion" key={topic.slug}>
-                  <Link
+                  <div
                     className={classNames('dp-po-guides-search-content-title', { collapsed })}
-                    activeClass="active"
-                    href={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
-                    to={`topic_${topic.slug}`}
-                    offset={withSplash ? -255 : -129}
-                    spy
-                    isDynamic
-                    onClick={this.handleClick}
-                    onSetActive={this.handleSetActive}
+                    onClick={e => this.toggleTopic(e, topic, this.isExpandedTopic(topic))}
                   >
-                    {topic.title} <i className="dp-po-icon far fa-angle-down" />
-                  </Link>
+                    <span className="title">{topic.title}</span> <i className="dp-po-icon far fa-angle-down" />
+                  </div>
                   {this.renderTopics(Object.values(topic.children), 1, collapsed)}
                 </div>
               );

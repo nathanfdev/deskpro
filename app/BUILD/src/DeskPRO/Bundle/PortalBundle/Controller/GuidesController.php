@@ -14,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\LazyPropObject;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -56,7 +57,9 @@ class GuidesController extends AbstractPublishController
         if ($this->isHelpCenterTheme()) {
             return $this->redirectToRoute('user_guides', ['slug' => $guide->getSlug()]);
         }
-        $topic = $guide->getActiveTopics()->first();
+        $activeTopics = Arrays::flattenHierarchy($guide->getActiveTopics()->toArray());
+        Arrays::sortFlatHierarchyArray($activeTopics);
+        $topic        = array_shift($activeTopics);
 
         if (!$topic) {
             return $this->redirectToRoute('portal_home');
@@ -77,7 +80,9 @@ class GuidesController extends AbstractPublishController
      */
     public function browseAction(Guide $guide)
     {
-        $topic = $guide->getActiveTopics()->first();
+        $activeTopics = Arrays::flattenHierarchy($guide->getActiveTopics()->toArray());
+        Arrays::sortFlatHierarchyArray($activeTopics);
+        $topic        = array_shift($activeTopics);
 
         if (!$topic) {
             return $this->redirectToRoute('portal_home');
@@ -208,7 +213,10 @@ class GuidesController extends AbstractPublishController
 
         $guides = $this->getGuidesDataService()->getGuides($person);
 
-        $topicJson = Strings::escapeForJson($serializer->serialize($topic, 'json', new SideloadSerializationContext()));
+        $topicContext = new SideloadSerializationContext(['topic']);
+        $topicContext->setIdsOnly(false);
+        $topicContext->setInlineSideloads(true);
+        $topicJson = Strings::escapeForJson(json_encode($serializer->toArray(new ApiWrapper($topic), $topicContext)['data']));
 
         $topicData = new LazyPropObject([
             'comments' => function () use ($topic) {

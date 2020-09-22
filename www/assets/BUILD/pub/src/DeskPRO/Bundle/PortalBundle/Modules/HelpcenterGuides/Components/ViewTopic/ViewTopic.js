@@ -6,7 +6,7 @@ import moment from 'moment';
 import $ from 'jquery';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import browserHistory from 'react-router/lib/browserHistory';
-import { Link, Element, Events, scroller } from 'react-scroll';
+import Link from 'react-router/lib/Link';
 import { TopicList, Topic, GuideSelector, CodeBlock } from '../index';
 
 class ViewTopic extends React.Component {
@@ -17,19 +17,31 @@ class ViewTopic extends React.Component {
   constructor(props) {
     super(props);
     let topic = {};
+    let loaded = false;
     if (window.topic) {
       topic = JSON.parse(window.topic);
+      loaded = true;
+      topic.content = this.addIdToh1(topic.content, topic.slug);
     }
-    topic.content = this.addIdToh1(topic.content, topic.slug);
     const topicList = JSON.parse(window.topicList);
     this.state = {
-      fixed:     false,
-      doSpin:    false,
-      flashes:   [],
-      topics:    { [topic.id]: topic },
-      guideSlug: this.getGuideSlug(this.props.params.splat),
+      fixed:           false,
+      doSpin:          false,
+      flashes:         [],
+      guideSlug:       this.getGuideSlug(this.props.params.splat),
+      loaded,
+      topic,
       topicList,
+      twoLevelSection: window.twoLevelSection,
     };
+    if (window.topic) {
+      setTimeout(() => {
+        this.changeInternalLinks();
+        this.addCodeBlocksCopy();
+        this.addGuideBlocks();
+        this.addReactImageLazyload();
+      }, 500);
+    }
     let guides = [];
     if (window.guides) {
       guides = JSON.parse(window.guides);
@@ -37,7 +49,6 @@ class ViewTopic extends React.Component {
     if (!Array.isArray(guides)) {
       guides = Object.values(guides);
     }
-    this.withSplash = guides.filter(guide => typeof guide.splash_image_property !== 'undefined').length > 0;
     this.contentChanged = false;
     this.ticking = false;
     this.targetSlug = props.params.slug;
@@ -58,22 +69,15 @@ class ViewTopic extends React.Component {
       }
       this.ticking = true;
     });
-    this.grabAllTopicsFromApi();
     window.addEventListener('resize', this.defineSizes);
     this.defineSizes();
-    Events.scrollEvent.register('begin', () => {
-      this.scrolling = true;
-    });
-    Events.scrollEvent.register('end', () => {
-      this.scrolling = false;
-    });
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.params.slug !== this.props.params.slug) {
-      this.grabTopicFromApi(nextProps.params.slug);
-      this.contentChanged = true;
-    }
+    // if (nextProps.params.slug !== this.props.params.slug) {
+    //   this.grabTopicFromApi(nextProps.params.slug);
+    //   this.contentChanged = true;
+    // }
     const nextGuideSlug = this.getGuideSlug(nextProps.params.splat);
     if (nextGuideSlug !== this.getGuideSlug(this.props.params.splat)) {
       this.setState({
@@ -102,9 +106,9 @@ class ViewTopic extends React.Component {
   getGuideSlug = splat => splat.split('/')[0];
 
   handleScroll = () => {
-    if (this.state.fixed !== this.elements.guidesMain.getBoundingClientRect().top < 0) {
+    if (this.state.fixed !== this.elements.guidesMain.getBoundingClientRect().top < 28) {
       this.setState({
-        fixed: this.elements.guidesMain.getBoundingClientRect().top < 0,
+        fixed: this.elements.guidesMain.getBoundingClientRect().top < 28,
       });
     }
   };
@@ -112,7 +116,7 @@ class ViewTopic extends React.Component {
   defineSizes = () => {
     if (!this.elements) {
       this.elements = {
-        guidesMain:   window.document.getElementById('main'),
+        guidesMain:   window.document.getElementsByClassName('dp-po-guides-wrap')[0],
         search:       window.document.getElementsByClassName('dp-po-guides-search')[0],
         articleRight: window.document.getElementsByClassName('dp-po-guides-block-article-right')[0],
       };
@@ -130,11 +134,9 @@ class ViewTopic extends React.Component {
     const links = document.querySelectorAll('a.internal_link.topic');
     Array.prototype.forEach.call(links, (internalLink) => {
       let target = internalLink.pathname;
-
       const guideSlug = target.replace(/^(\/[^/]+)?\/guides\//, '').replace(/\/.*/, '');
-      let newLink;
-      if (guideSlug !== this.state.guideSlug) {
-        newLink = document.createElement('a');
+      if (true || guideSlug !== this.state.guideSlug) {
+        const newLink = document.createElement('a');
         newLink.className = 'internal_link topic';
         newLink.onclick = e => this.internalLink(e, target);
         newLink.href = '#';
@@ -144,14 +146,12 @@ class ViewTopic extends React.Component {
         newLink.innerText = internalLink.text;
         internalLink.parentNode.replaceChild(newLink, internalLink);
       } else {
-        newLink = document.createElement('span');
-        const topicSlug = target.replace(/^.+\/([^/]+)$/, '$1');
+        const newLink = document.createElement('span');
         const link = (
           <Link
-            to={`topic_${topicSlug}`}
-            href={target}
-            offset={this.withSplash ? -255 : -129}
-            isDynamic
+            to={internalLink.pathname}
+            className="internal_link topic"
+            onClick={this.handleClick}
           >
             {internalLink.text}
           </Link>
@@ -269,6 +269,9 @@ class ViewTopic extends React.Component {
           topicList,
         });
       });
+    } else {
+      const topicSlug = path.replace(/^(\/[^/]+)?\/guides\/.*\//, '');
+      this.grabTopicFromApi(topicSlug);
     }
     browserHistory.push(path);
     return false;
@@ -278,67 +281,78 @@ class ViewTopic extends React.Component {
     if (this.scrolling) {
       return;
     }
-    const { topics, topicList } = this.state;
-    const item = topicList.find(t => t.slug === slug);
-    if (item) {
-      if (typeof topics[item.id] !== 'undefined') {
-        return;
-      }
+
+    let scrollPage = false;
+    if (this.elements.guidesMain.getBoundingClientRect().top <= 70) {
+      scrollPage = this.elements.guidesMain.getBoundingClientRect().top + window.document.documentElement.scrollTop;
     }
 
-    topics[item.id] = {};
+    this.setState({
+      loaded: false
+    });
 
-    portalHttp.sendGet(`DP_URL/portal/api/guides/topic/${slug}`).then((response) => {
+    portalHttp.sendGet(`DP_URL/portal/api/guides/topic/${slug}?inline_sideloads=true&include=topic`).then((response) => {
       if (response.isError()) {
         return;
       }
+
 
       const topic = response.data.data;
       topic.content = this.addIdToh1(topic.content, topic.slug);
-      topics[topic.id] = topic;
       this.setState({
-        topics,
+        loaded:  true,
+        topic,
         flashes: [],
       });
-      this.changeInternalLinks();
-      this.addCodeBlocksCopy();
-      this.addGuideBlocks();
-      this.addReactImageLazyload();
-    });
-  };
-
-  grabAllTopicsFromApi = () => {
-    portalHttp.sendGet(`DP_URL/portal/api/guides/all/${this.state.guideSlug}`).then((response) => {
-      if (response.isError()) {
-        return;
+      if (scrollPage) {
+        setTimeout(() => {
+          window.scrollTo(0, scrollPage - 27);
+        }, 200);
       }
-
-      const topics = {};
-      const res = response.data.data;
-      res.forEach((topic) => {
-        topic.content = this.addIdToh1(topic.content, topic.slug);
-        topics[topic.id] = topic;
-      });
-      this.setState({
-        topics,
-        flashes: []
-      });
       this.changeInternalLinks();
       this.addCodeBlocksCopy();
       this.addGuideBlocks();
       this.addReactImageLazyload();
-      setTimeout(() => {
-        this.setState({
-          loaded: true,
-        });
-        const offset = this.withSplash ? -255 : -129;
-        scroller.scrollTo(`topic_${this.targetSlug}`, {
-          isDynamic: true,
-          offset,
-        });
-      }, 500);
     });
   };
+
+  postComment = comment => new Promise(
+    (resolve, reject) => portalHttp.sendPost(
+      `DP_URL/portal/api/guides/topic/${this.state.topic.slug}/comment`,
+      comment
+    ).then((response) => {
+      if (response.data) {
+        if (response.data.data.comment) {
+          this.state.topic.calc_num_comments = this.state.topic.calc_num_comments + 1;
+          this.state.topic.comments.push(response.data.data.comment);
+          this.setState({
+            topic: this.state.topic
+          });
+        }
+        if (response.data.data.flashes) {
+          this.setState({
+            flashes: response.data.data.flashes
+          });
+        }
+        if (response.data.data.errors) {
+          if (response.data.data.errors.form.errors) {
+            Array.prototype.forEach.call(response.data.data.errors.form.errors, (error) => {
+              this.state.flashes.push({
+                type:    'error',
+                message: error
+              });
+            });
+            this.setState({
+              flashes: this.state.flashes
+            });
+          }
+          return reject(response);
+        }
+        return resolve(response);
+      }
+      return reject(response);
+    })
+  );
 
   selectGuide = (guide) => {
     portalHttp.sendGet(`DP_URL/portal/api/guides/topics/${guide.slug}`).then((response) => {
@@ -349,13 +363,13 @@ class ViewTopic extends React.Component {
       const topicList = response.data.data;
       this.setState({
         topicList,
-        guideSlug: guide.slug,
+        guideSlug:       guide.slug,
+        twoLevelSection: guide.two_level_section,
       });
-      const topic = Object.values(topicList).sort(
-        (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
-      ).shift();
+      const topic = Object.values(topicList).filter(t => t.no_content === '0' && t.content_length !== '0').shift();
 
-      this.grabAllTopicsFromApi();
+      this.grabTopicFromApi(topic.slug);
+
       let baseUrl = window.DESKPRO_BASE_URL;
       if (baseUrl) {
         baseUrl = baseUrl.replace(/\/+$/, '');
@@ -373,48 +387,37 @@ class ViewTopic extends React.Component {
     });
   };
 
-  renderTopics() {
-    const { topicList, topics, guideSlug, topicSlug, loaded } = this.state;
-    const result = [];
-
-    topicList
-      .forEach((topic) => {
-        if (parseInt(topic.no_content, 10) === 1 || topic.depth === 0) {
-          result.push(<Element name={`topic_${topic.slug}`} key={topic.id} />);
-        } else {
-          result.push(
-            <Element
-              key={topic.id}
-              name={`topic_${topic.slug}`}
-            >
-              <Topic
-                topic={topic}
-                guideSlug={guideSlug}
-                topicSlug={topicSlug}
-                data={topics[topic.id]}
-                sizes={this.sizes}
-                loaded={loaded}
-              />
-            </Element>
-          );
-        }
-      });
-    return result;
+  renderTopic() {
+    const { topic, guideSlug, topicSlug, loaded, topicList, flashes } = this.state;
+    return (
+      <Topic
+        topic={topic}
+        topicList={topicList}
+        guideSlug={guideSlug}
+        topicSlug={topicSlug}
+        flashed={flashes}
+        data={topic}
+        sizes={this.sizes}
+        loaded={loaded}
+        postComment={this.postComment}
+        grabTopicFromApi={this.grabTopicFromApi}
+      />
+    );
   }
 
   render() {
-    const { topicList, fixed, loaded } = this.state;
+    const { topicList, fixed, loaded, twoLevelSection } = this.state;
     const { splat, slug: topicSlug } = this.props.params;
     const guideSlug = this.getGuideSlug(splat);
 
     return (
-      <div className={classNames({ fixed })}>
+      <div className={classNames('container', { fixed })}>
         <GuideSelector
           guideSlug={this.state.guideSlug}
           selectGuide={this.selectGuide}
           fixed={fixed}
         />
-        <div className={classNames('dp-po-guides-section', { 'with-splash': this.withSplash })}>
+        <div className={classNames('dp-po-guides-section')}>
           <div className="dp-po-guides-wrap">
             <div className="container-fluid">
               <div className="row">
@@ -425,17 +428,21 @@ class ViewTopic extends React.Component {
                     topicSlug={topicSlug}
                     grabTopicFromApi={this.grabTopicFromApi}
                     sizes={this.sizes}
-                    withSplash={this.withSplash}
+                    twoLevelSection={twoLevelSection}
                   />
                 </div>
                 <div className="col-sm-9">
                   { loaded ||
-                    <div className={classNames({ 'dp-po-guides-loading': !loaded })}>
-                      <i className="dp-icon fa-3x far fa-spinner fa-pulse" />
+                    <div className="row">
+                      <div className="col-sm-9">
+                        <div className={classNames({ 'dp-po-guides-loading': !loaded })}>
+                          <i className="dp-icon fa-3x far fa-spinner fa-pulse" />
+                        </div>
+                      </div>
                     </div>
                   }
                   <div className="dp-po-guides-block">
-                    {this.renderTopics()}
+                    {this.renderTopic()}
                   </div>
                 </div>
               </div>
