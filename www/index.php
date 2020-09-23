@@ -23,25 +23,3 @@ if (!$deskpro_dir
 
 define('DESKPRO_WWW_PATH', __DIR__);
 require $deskpro_dir . '/app/run/targets/web.php';
-
-
-
-
-
-
-
-
-
-
-/*
- * START: VFS report, @todo remove before merge
- */
-$vfsReport = $_SERVER['REQUEST_METHOD'].' '.$_SERVER['REQUEST_URI'].' -> '.print_r(array_map(function ($item) {
-    return $item[0];
-}, \DpRun\DpFsProxyStreamWrapper::getCache()['kernel_cache'] ?? []), true);
-
-@file_put_contents(sys_get_temp_dir().'/vfs-report', $vfsReport, FILE_APPEND);
-
-/*
- * END: VFS report, @todo remove before merge
- */

@@ -46,7 +46,24 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
             'ArrayObject',
             'DeskPRO\\Bundle\\SendmailBundle\\View\\Model',
             'Orb\\Util',
+            'DeskPRO\\Bundle\\AppStoreBundle\\Domain',
+            'DeskPRO\\Bundle\\AppBundle\\Form\\Type',
+            'DeskPRO\\Bundle\\AppBundle\\Archive',
+            'DeskPRO\\Bundle\\ApiBundle\\Controller\\Crypto',
+            'DeskPRO\\Bundle\\ImportBundle\\Form\\Type',
+            'DeskPRO\\Bundle\\ImportBundle\\Serializer\\Model',
+            'DeskPRO\\Bundle\\AppBundle\\QuickSearch',
+            'Application\\DeskPRO\\Settings',
+            'DeskPRO\\Bundle\\SystemBundle\\Entity',
+            'DeskPRO\\Bundle\\SystemBundle\\Serializer\\Model',
+            'DeskPRO\\Bundle\\AppBundle\\ApiTag\\Model',
+            'Application\\DeskPRO\\Form\\Type',
+            'DeskPRO\\Bundle\\AppStoreBundle\\Domain',
+            'DeskPRO\\Bundle\\SystemBundle\\Form\\Type\\SystemAlerts',
+            'DeskPRO\\Bundle\\AppBundle\\DataService\\Tickets\\LegacyFilterSet',
         ];
+
+        $namespaces = array_unique($namespaces);
 
         $dirs = array_map(function ($namespace) {
             return DP_ROOT.'/src/'.str_replace('\\', '/', $namespace);
