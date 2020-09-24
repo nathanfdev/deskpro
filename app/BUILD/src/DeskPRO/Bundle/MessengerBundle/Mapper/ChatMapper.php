@@ -127,19 +127,21 @@ class ChatMapper
             $content = sprintf('%s<div class="file-thumb"><img src="%s?s=50" /></div>', $content, $data['blob']['download_url']);
         }
 
+        $content = $this->cleaner->clean($content, 'html');
+
         $message
             ->setMetadata([
                 'uuid'    => $this->getUuid($data),
                 'type'    => 'file',
                 'blob_id' => $data['blob']['id'],
                 'blob'    => [
-                    'blob_id'           => $data['blob']['id'],
-                    'blob_auth'         => $data['blob']['auth'],
-                    'blob_auth_id'      => $data['blob']['auth_id'],
-                    'filesize_readable' => $data['blob']['filesize_readable'],
-                    'filename'          => $data['blob']['filename'],
-                    'download_url'      => $data['blob']['download_url'],
-                    'is_image'          => $data['blob']['is_image'],
+                    'blob_id'           => $this->cleaner->clean($data['blob']['id'], 'int'),
+                    'blob_auth'         => $this->cleaner->clean($data['blob']['auth'], 'str'),
+                    'blob_auth_id'      => $this->cleaner->clean($data['blob']['auth_id'], 'str'),
+                    'filesize_readable' => $this->cleaner->clean($data['blob']['auth_id'], 'str'),
+                    'filename'          => $this->cleaner->clean($data['blob']['filename'], 'str'),
+                    'download_url'      => $this->cleaner->clean($data['blob']['download_url'], 'str'),
+                    'is_image'          => $this->cleaner->clean($data['blob']['is_image'], 'bool'),
                 ],
             ])
             ->setContent($content)
