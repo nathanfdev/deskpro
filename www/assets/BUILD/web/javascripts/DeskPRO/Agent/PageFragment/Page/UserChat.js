@@ -19,7 +19,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	initPage: function(el) {
 		var self = this;
-
+    var syncTimer = null;
 		var OBJ_ID = this.OBJ_ID;
 		this.el = el;
 
@@ -96,6 +96,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		});
 
 		this.addEvent('destroy', function() {
+		  clearTimeout(syncTimer);
 			DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID);
 			if (self.chatStatus == 'ended') {
 				return;
