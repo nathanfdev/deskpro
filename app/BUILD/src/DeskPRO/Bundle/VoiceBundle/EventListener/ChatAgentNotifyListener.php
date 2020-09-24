@@ -56,10 +56,10 @@ class ChatAgentNotifyListener implements EventSubscriberInterface
      * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(
-        EntityManager            $em,
-        ChatTaskHelper           $taskHelper,
-        Serializer               $serializer,
-        StorageAdapterInterface  $storage,
+        EntityManager $em,
+        ChatTaskHelper $taskHelper,
+        Serializer $serializer,
+        StorageAdapterInterface $storage,
         EventDispatcherInterface $dispatcher
     ) {
         $this->em         = $em;
@@ -111,7 +111,7 @@ class ChatAgentNotifyListener implements EventSubscriberInterface
 
                         $this->dispatcher->dispatch(UserChatEvent::STARTED, new UserChatEvent($chat));
                         $this->dispatcher->dispatch(UserChatEvent::ASSIGNED, new UserChatEvent($chat, [
-                            'name' => $chat->getAgent()->getDisplayName(),
+                            'name' => $chat->getAgent()->getDisplayNameUser(),
                         ]));
                     }
                 }
