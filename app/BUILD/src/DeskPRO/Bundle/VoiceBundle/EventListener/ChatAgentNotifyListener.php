@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\Helper\ChatTaskHelper;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use Doctrine\ORM\EntityManager;
@@ -98,6 +99,10 @@ class ChatAgentNotifyListener implements EventSubscriberInterface
             return;
         }
 
+        if ($chat->getAgent()) {
+            return;
+        }
+
         $chatQueue = $this->taskHelper->getChatQueue($task);
         if ($chatQueue->getRoutingModel() === UserChatQueue::ROUTING_MODEL_ROUND_ROBIN) {
             // if it's round robin then assign the chat directly to the agent
@@ -106,7 +111,9 @@ class ChatAgentNotifyListener implements EventSubscriberInterface
                 if ($worker) {
                     $agent = $this->em->getRepository(Person::class)->find($worker->getTypeId());
                     if ($agent) {
+                        $task->setStatus(Task::STATUS_ACCEPTED);
                         $chat->setAgent($agent);
+
                         $this->em->flush();
 
                         $this->dispatcher->dispatch(UserChatEvent::STARTED, new UserChatEvent($chat));
