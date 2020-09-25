@@ -19,7 +19,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	initPage: function(el) {
 		var self = this;
-
+    var syncTimer = null;
 		var OBJ_ID = this.OBJ_ID;
 		this.el = el;
 
@@ -96,6 +96,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		});
 
 		this.addEvent('destroy', function() {
+		  clearTimeout(syncTimer);
 			DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID);
 			if (self.chatStatus == 'ended') {
 				return;
@@ -681,12 +682,18 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
       box1.css('min-height', h);
     };
 
-    var syncChatSize = function() {
-      chatView.css('top', chatPositioner.outerHeight() + header.outerHeight());
+    var syncChatSize = function(chatPositioner, header, chatView) {
+      if(chatPositioner.outerHeight()) {
+        chatView.css('top', chatPositioner.outerHeight() + header.outerHeight());
+      } else {
+        // when the element is hidden because it is not visibl on the page it suddenly returns 0 outerHeight.
+        setTimeout(function() {syncChatSize(chatPositioner, header, chatView)}, 250);
+      }
+
     };
 
     syncPeopleSizes();
-    syncChatSize();
+    syncChatSize(chatPositioner, header, chatView);
   },
 
 	insertSnippet: function(snippet, blobs, langId) {
