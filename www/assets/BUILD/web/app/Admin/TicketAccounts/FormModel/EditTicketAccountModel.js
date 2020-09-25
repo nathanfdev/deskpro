@@ -186,13 +186,29 @@ define([
         }
 
         if (this.form.incoming_type === 'office365') {
-          this.form.in_office365_account.password = this.account.incoming_account.password;
+          this.form.in_office365_account.password     = this.account.incoming_account.password;
+          this.form.in_office365_account.token        = this.account.incoming_account.token;
+          this.form.in_office365_account.refreshToken = this.account.incoming_account.refreshToken;
+          this.form.in_office365_account.type         = this.account.incoming_account.type || 'pop3';
+
+          if (this.account.incoming_account.type === 'oauth') {
+            this.form.in_office365_account.client_id = this.account.incoming_account.client_id || '';
+            this.form.in_office365_account.client_secret = this.account.incoming_account.client_secret || '';
+          }
         }
 
         if (this.form.incoming_type === 'office365_exchange') {
-          this.form.in_office365_exchange_account.host     = this.account.incoming_account.host;
-          this.form.in_office365_exchange_account.user     = this.account.incoming_account.user;
-          this.form.in_office365_exchange_account.password = this.account.incoming_account.password;
+          this.form.in_office365_exchange_account.host         = this.account.incoming_account.host;
+          this.form.in_office365_exchange_account.user         = this.account.incoming_account.user;
+          this.form.in_office365_exchange_account.password     = this.account.incoming_account.password;
+          this.form.in_office365_exchange_account.token        = this.account.incoming_account.token;
+          this.form.in_office365_exchange_account.refreshToken = this.account.incoming_account.refreshToken;
+          this.form.in_office365_exchange_account.type         = this.account.incoming_account.type || 'pop3';
+
+          if (this.account.incoming_account.type === 'oauth') {
+            this.form.in_office365_exchange_account.client_id = this.account.incoming_account.client_id || '';
+            this.form.in_office365_exchange_account.client_secret = this.account.incoming_account.client_secret || '';
+          }
         }
       }
 
@@ -229,6 +245,14 @@ define([
 
         if (this.form.outgoing_type === 'office365') {
           this.form.out_office365_account.password = this.account.outgoing_account.password;
+          this.form.out_office365_account.token        = this.account.outgoing_account.token;
+          this.form.out_office365_account.refreshToken = this.account.outgoing_account.refreshToken;
+          this.form.out_office365_account.type         = this.account.outgoing_account.type || 'pop3';
+
+          if (this.account.outgoing_account.type === 'oauth') {
+            this.form.out_office365_account.client_id = this.account.outgoing_account.client_id || '';
+            this.form.out_office365_account.client_secret = this.account.outgoing_account.client_secret || '';
+          }
         }
 
         if (this.form.outgoing_type === 'exchange') {
@@ -241,6 +265,14 @@ define([
           this.form.out_office365_exchange_account.host     = this.account.outgoing_account.host;
           this.form.out_office365_exchange_account.user     = this.account.outgoing_account.user;
           this.form.out_office365_exchange_account.password = this.account.outgoing_account.password;
+          this.form.out_office365_exchange_account.token        = this.account.outgoing_account.token;
+          this.form.out_office365_exchange_account.refreshToken = this.account.outgoing_account.refreshToken;
+          this.form.out_office365_exchange_account.type         = this.account.outgoing_account.type || 'pop3';
+
+          if (this.account.outgoing_account.type === 'oauth') {
+            this.form.out_office365_exchange_account.client_id = this.account.outgoing_account.client_id || '';
+            this.form.out_office365_exchange_account.client_secret = this.account.outgoing_account.client_secret || '';
+          }
         }
       }
     }

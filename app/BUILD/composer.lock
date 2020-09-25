@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0b26d03c6a4437fae8156f62f7eb4c3e",
+    "content-hash": "72a9cf1023562a29f0492727a4047af6",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -4849,6 +4849,51 @@
                 "markdown"
             ],
             "time": "2019-12-02T02:32:27+00:00"
+        },
+        {
+            "name": "microsoft/microsoft-graph",
+            "version": "1.12.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/microsoftgraph/msgraph-sdk-php.git",
+                "reference": "8bcd1c3ebcb6dbd65713a180d85432eedb3faeed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php/zipball/8bcd1c3ebcb6dbd65713a180d85432eedb3faeed",
+                "reference": "8bcd1c3ebcb6dbd65713a180d85432eedb3faeed",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.2",
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1.2",
+                "phpdocumentor/phpdocumentor": "^2.9",
+                "phpunit/phpunit": "^5.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Microsoft\\Graph\\": "src/",
+                    "Microsoft\\Graph\\Test\\": "tests/Functional/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Mainer",
+                    "email": "mmainer@microsoft.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The Microsoft Graph SDK for PHP",
+            "homepage": "https://graph.microsoft.io/en-us/",
+            "time": "2019-10-29T21:37:52+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -12579,5 +12624,6 @@
     "platform-dev": [],
     "platform-overrides": {
         "php": "5.6"
-    }
+    },
+    "plugin-api-version": "1.1.0"
 }

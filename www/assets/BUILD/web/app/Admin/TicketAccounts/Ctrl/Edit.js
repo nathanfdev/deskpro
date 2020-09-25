@@ -404,6 +404,18 @@ define([
       }
     }
 
+    getOffice365Code(url, type, accountType) {
+      const office365Account = this.$scope.form[`${type}_${accountType}_account`];
+
+      if (office365Account.type === 'oauth') {
+        if (!office365Account.client_id || !office365Account.client_secret) {
+          this.office365CredentialsModal(url, type, accountType);
+        } else {
+          this.openOffice365OAuthWindow(url, type, accountType);
+        }
+      }
+    }
+
     getAccessToken(url, type) {
       if (!(this.$scope.form[`${type}_gmail_account`].code || '').length) { return; }
 
@@ -440,7 +452,7 @@ define([
             } else {
               Object.assign(form[`${type}_gmail_account`], $scope.form);
 
-              return $modalInstance.close(true)
+              return $modalInstance.close(true);
             }
           };
         }
@@ -454,6 +466,39 @@ define([
       });
     }
 
+    /**
+     * Show Office365 credentials modal
+     */
+    office365CredentialsModal(url, type, accountType) {
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('TicketAccounts/office365-credentials-modal.html'),
+        resolve:     {
+          form: () => this.$scope.form
+        },
+        controller: ['$scope', '$modalInstance', 'form', ($scope, $modalInstance, form) => {
+          $scope.valid = true;
+          $scope.dismiss = () => $modalInstance.dismiss();
+          $scope.form = form[`${type}_${accountType}_account`];
+          $scope.submit = () => {
+            if (!$scope.form.client_id || !$scope.form.client_secret) {
+              $scope.valid = false;
+            } else {
+              Object.assign(form[`${type}_${accountType}_account`], $scope.form);
+
+              return $modalInstance.close(true);
+            }
+          };
+        }
+        ]
+      });
+
+      inst.result.then(result => {
+        if (!result) return;
+
+        this.openOffice365OAuthWindow(url, type, accountType);
+      });
+    }
+
     openGmailOAuthWindow(url, type) {
       const gmailAccount = this.$scope.form[`${type}_gmail_account`];
       const newWindow = window.open(
@@ -462,6 +507,23 @@ define([
         'name',
         'height=600,width=450'
       );
+
+      if (window.focus) { return newWindow.focus(); }
+    }
+
+    openOffice365OAuthWindow(url, type, accountType) {
+      const office365Account = this.$scope.form[`${type}_${accountType}_account`];
+      const newWindow = window.open(
+        `${url}?client_id=${encodeURIComponent(office365Account.client_id)}` +
+        `&client_secret=${encodeURIComponent(office365Account.client_secret)}`,
+        'name',
+        'height=600,width=450'
+      );
+
+      window.addEventListener('message', () => {
+        this.$scope.form[`${type}_${accountType}_account`].token = event.data.accessToken;
+        this.$scope.form[`${type}_${accountType}_account`].refreshToken = event.data.refreshToken;
+      });
 
       if (window.focus) { return newWindow.focus(); }
     }
@@ -523,6 +585,16 @@ define([
       this.$scope.form[accountKey].client_secret = this.$scope.form[accountKey].client_secret || clientSecret;
     }
 
+    setOffice365OAuthType(accountType) {
+      const accountKey = `${accountType}_office365_account`;
+      this.$scope.form[accountKey].type = 'oauth';
+    }
+
+    setOffice365ExchangeOAuthType(accountType) {
+      const accountKey = `${accountType}_office365_exchange_account`;
+      this.$scope.form[accountKey].type = 'oauth';
+    }
+
     isGmailOAuthSettingsShown() {
       if (!this.$scope.form) return false;
 
@@ -535,7 +607,37 @@ define([
           this.$scope.form.account_type === 'outgoing' &&
           this.$scope.form.outgoing_type === 'gmail' &&
           this.$scope.form.out_gmail_account.type === 'oauth'
-        )
+        );
+    }
+
+    isOffice365OAuthSettingsShown() {
+      if (!this.$scope.form) return false;
+
+      return (
+          this.$scope.form.account_type === 'tickets' &&
+          this.$scope.form.incoming_type === 'office365' &&
+          this.$scope.form.in_office365_account.type === 'oauth'
+        ) ||
+        (
+          this.$scope.form.account_type === 'outgoing' &&
+          this.$scope.form.outgoing_type === 'office365' &&
+          this.$scope.form.out_office365_account.type === 'oauth'
+        );
+    }
+
+    isOffice365ExchangeOAuthSettingsShown() {
+      if (!this.$scope.form) return false;
+
+      return (
+          this.$scope.form.account_type === 'tickets' &&
+          this.$scope.form.incoming_type === 'office365_exchange' &&
+          this.$scope.form.in_office365_exchange_account.type === 'oauth'
+        ) ||
+        (
+          this.$scope.form.account_type === 'outgoing' &&
+          this.$scope.form.outgoing_type === 'office365_exchange' &&
+          this.$scope.form.out_office365_exchange_account.type === 'oauth'
+        );
     }
 
     deleteCertificate() {

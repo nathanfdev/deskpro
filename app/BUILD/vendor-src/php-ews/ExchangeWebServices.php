@@ -95,6 +95,11 @@ class ExchangeWebServices
     protected $impersonation;
 
     /**
+     * @var string
+     */
+    protected $accessToken;
+
+    /**
      * Miscrosoft Exchange version that we are going to connect to
      *
      * @var string
@@ -112,18 +117,21 @@ class ExchangeWebServices
      * @param string $server
      * @param string $username
      * @param string $password
+     * @param string $accessToken
      * @param string $version one of the ExchangeWebServices::VERSION_* constants
      */
     public function __construct(
         $server = null,
         $username = null,
         $password = null,
+        $accessToken = null,
         $version = self::VERSION_2007
     ) {
         // Set the object properties.
         $this->setServer($server);
         $this->setUsername($username);
         $this->setPassword($password);
+        $this->setAccessToken($accessToken);
         $this->setVersion($version);
     }
 
@@ -159,6 +167,14 @@ class ExchangeWebServices
         $this->password = $password;
 
         return true;
+    }
+
+    /**
+     * @param string $accessToken
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
     }
 
     /**
@@ -1203,6 +1219,7 @@ class ExchangeWebServices
                 'version' => $this->version,
                 'location' => 'https://'.$this->server.'/EWS/Exchange.asmx',
                 'impersonation' => $this->impersonation,
+                'access_token' => $this->accessToken,
             )
         );
 

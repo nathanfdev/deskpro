@@ -49,6 +49,11 @@ class NTLMSoapClient extends SoapClient
     private $preferred_http_auth = null;
 
     /**
+     * @var string
+     */
+    protected $accessToken = null;
+
+    /**
      * Performs a SOAP request.
      *
      * @link http://php.net/manual/en/function.soap-soapclient-dorequest.php
@@ -63,13 +68,17 @@ class NTLMSoapClient extends SoapClient
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
-        $headers = array(
+        $headers = [
             'Method: POST',
             'Connection: Keep-Alive',
             'User-Agent: PHP-SOAP-CURL',
             'Content-Type: text/xml; charset=utf-8',
             'SOAPAction: "'.$action.'"',
-        );
+        ];
+
+        if ($this->accessToken) {
+            $headers[] = 'Authorization: Bearer '.$this->accessToken;
+        }
 
         // DESKPRO EDIT : Some versions of curl fail with some
         // values of CURLOPT_HTTPAUTH, so we try multiple times
@@ -86,7 +95,9 @@ class NTLMSoapClient extends SoapClient
             curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
             curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
             curl_setopt($ch, CURLOPT_HTTPAUTH, $httpauth);
-            curl_setopt($ch, CURLOPT_USERPWD, $user.':'.$pass);
+            if ($pass) {
+                curl_setopt($ch, CURLOPT_USERPWD, $user.':'.$pass);
+            }
 
             return $ch;
         };

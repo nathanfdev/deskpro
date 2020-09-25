@@ -93,7 +93,7 @@ class Exchange extends AbstractFetcher
     protected function _initConnection()
     {
         // stubs
-        $properties = ['host', 'port', 'user', 'password', 'mode', 'read_mailbox'];
+        $properties = ['host', 'port', 'user', 'password', 'mode', 'token', 'read_mailbox'];
         $options    = [];
 
         // decrypt account config
@@ -122,6 +122,15 @@ class Exchange extends AbstractFetcher
                     "Unknown account type: {$incomingAccount->getType()}"
                 );
                 break;
+        }
+
+        if ($incomingAccount->getType() === 'office365_exchange' && $incomingAccount->getRefreshToken()) {
+            $oauthClient = Office365::createOauthClient($protocolConfig->getClientId(), $protocolConfig->getClientSecret());
+            $accessToken = $oauthClient->getAccessToken('refresh_token', [
+                'refresh_token' => $protocolConfig->getRefreshToken(),
+            ]);
+
+            $options['token'] = $accessToken->getToken();
         }
 
         // set mode

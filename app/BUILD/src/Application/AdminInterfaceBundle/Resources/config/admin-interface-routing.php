@@ -100,4 +100,18 @@ $collection->create('gmail_token', [
     'controller' => 'AdminInterfaceBundle:Gmail:requestAccessToken',
 ]);
 
+//#######################################################################################################################
+// Office365 OAuth
+//#######################################################################################################################
+
+$collection->create('office365_access_code', [
+    'path'       => '/office365/access_code',
+    'controller' => 'AdminInterfaceBundle:Office365:requestAccessCode',
+]);
+
+$collection->create('office365_token', [
+    'path'       => '/office365/token',
+    'controller' => 'AdminInterfaceBundle:Office365:requestAccessToken',
+]);
+
 return $collection;

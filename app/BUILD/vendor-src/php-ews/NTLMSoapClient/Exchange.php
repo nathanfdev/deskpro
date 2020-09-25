@@ -26,6 +26,13 @@ class NTLMSoapClient_Exchange extends NTLMSoapClient
     protected $password;
 
     /**
+     * Password for authentication on the exchnage server
+     *
+     * @var string
+     */
+    protected $accessToken;
+
+    /**
      * Constructor
      *
      * @param string $wsdl
@@ -33,14 +40,10 @@ class NTLMSoapClient_Exchange extends NTLMSoapClient
      */
     public function __construct($wsdl, $options)
     {
-        // Verify that a user name and password were entered.
-        if (empty($options['user']) || empty($options['password'])) {
-            throw new EWS_Exception('A username and password is required.');
-        }
-
         // Set the username and password properties.
         $this->user = $options['user'];
-        $this->password = $options['password'];
+        $this->password = isset($options['password']) ? $options['password'] : null;
+        $this->accessToken = isset($options['access_token']) ? $options['access_token'] : null;
 
         // If a version was set then add it to the headers.
         if (!empty($options['version'])) {

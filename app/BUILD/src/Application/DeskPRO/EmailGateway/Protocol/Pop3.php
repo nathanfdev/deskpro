@@ -190,7 +190,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      *
      * @return string
      */
-    public function readResponse($multiline = false)
+    public function readResponse($multiline = false, $oauth = false)
     {
         $result = @fgets($this->socket);
         if (!is_string($result)) {
@@ -208,7 +208,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
             $message = '';
         }
 
-        if ($status != '+OK') {
+        if (!$oauth && $status != '+OK') {
             if ($this->logger) {
                 $this->logger->logDebug("<== $status");
             }

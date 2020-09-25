@@ -1,16 +1,15 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 use Application\DeskPRO\EmailGateway\Fetcher\ImapSocket;
+use Application\DeskPRO\EmailGateway\Fetcher\Office365;
+use Application\DeskPRO\EmailGateway\Fetcher\Pop3;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use DpSys\LowError\SystemErrorHandler;
+use Microsoft\Graph\Graph;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
 use Zend\Mail\Protocol\Imap;
@@ -197,37 +196,47 @@ class IncomingAccountTester
 
     private function _testExchange()
     {
-        /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $account_config */
-        $account_config = $this->account_config;
+        /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $config */
+        $config  = $this->account_config;
+        $options = [
+            'host'       => $config->host,
+            'user'       => $config->user,
+            'password'   => $config->password,
+            'port'       => $config->port,
+            'logger'     => $this->logger,
+            'test_mode'  => true,
+            'is_verbose' => true,
+        ];
 
-        if ($account_config instanceof IncomingAccount\Office365ExchangeConfig) {
+        if ($config instanceof IncomingAccount\Office365ExchangeConfig) {
             $this->logger->logInfo('Testing Office365Account');
+
+            if ($config->getRefreshToken()) {
+                $oauthClient = Office365::createOauthClient($config->getClientId(), $config->getClientSecret());
+                $accessToken = $oauthClient->getAccessToken('refresh_token', [
+                    'refresh_token' => $config->getRefreshToken(),
+                ]);
+
+                $options['token'] = $accessToken->getToken();
+            }
         } else {
             $this->logger->logInfo('Testing ExchangeAccount');
         }
 
         try {
-            $storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange([
-                'host'       => $account_config->host,
-                'user'       => $account_config->user,
-                'password'   => $account_config->password,
-                'port'       => $account_config->port,
-                'logger'     => $this->logger,
-                'test_mode'  => true,
-                'is_verbose' => true,
-            ]);
-            if ($account_config->read_mailbox) {
-                $storage->ensureFolderExists($account_config->read_mailbox);
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange($options);
+            if ($config->read_mailbox) {
+                $storage->ensureFolderExists($config->read_mailbox);
             }
 
             $unread_only = false;
             $folder      = null;
 
-            if ($account_config->mode == 'read') {
+            if ($config->mode == 'read') {
                 $unread_only = true;
             }
-            if ($account_config->read_mailbox) {
-                $folder = $account_config->read_mailbox;
+            if ($config->read_mailbox) {
+                $folder = $config->read_mailbox;
             }
 
             $ids = $storage->searchIds(100, $unread_only, $folder);
@@ -349,18 +358,29 @@ class IncomingAccountTester
         $this->logger->logInfo('Testing Office365Account');
 
         try {
-            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3([
+            $options = [
                 'host'      => 'outlook.office365.com',
                 'user'      => $config->user,
-                'password'  => $config->password,
                 'port'      => 995,
                 'ssl'       => 'ssl',
                 'logger'    => $this->logger,
                 'test_mode' => true,
-            ]);
+            ];
+
+            if ($config->type === Office365Config::TYPE_OAUTH) {
+                $oauthClient = Office365::createOauthClient($config->getClientId(), $config->getClientSecret());
+                $accessToken = $oauthClient->getAccessToken('refresh_token', [
+                    'refresh_token' => $config->getRefreshToken(),
+                ]);
+
+                $options['accessToken'] = $accessToken->getToken();
+            } else {
+                $options['password'] = $config->password;
+            }
+
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3($options);
 
             $this->message_count = $storage->countMessages();
-
             $this->is_success = true;
         } catch (\Exception $e) {
             $this->exception = $e;
