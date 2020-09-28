@@ -491,6 +491,7 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
         /** @var Brand $brand */
         $brand = $this->getReference('brand');
         $guide->setBrand($brand);
+        $guide->addUsergroup($this->getReference('usergroup.everyone'));
         $this->manager->persist($guide);
         $this->manager->flush();
 

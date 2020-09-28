@@ -136,6 +136,11 @@ class Guide extends DomainObject implements HasIconProperty, HasSplashImagePrope
      */
     protected $splash_image_property;
 
+    public function __construct()
+    {
+        $this->usergroups = new ArrayCollection();
+    }
+
     /**
      * @return int
      */
