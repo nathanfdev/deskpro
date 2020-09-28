@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -491,16 +492,25 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
         $brand = $this->getReference('brand');
         $guide->setBrand($brand);
         $this->manager->persist($guide);
+        $this->manager->flush();
+
+        $section1 = new Topic();
+        $section1->setTitle('The Agent interface');
+        $section1->setGuide($guide);
+        $section1->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $section1->setNoContent(true);
+        $this->manager->persist($section1);
+
+        $section2 = new Topic();
+        $section2->setTitle('Tickets');
+        $section2->setGuide($guide);
+        $section2->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $section2->setNoContent(true);
+        $this->manager->persist($section2);
+
+        $this->manager->flush();
 
         $topics = [
-            [
-                'title'            => 'The Agent interface',
-                'content'          => '',
-                'content_input'    => '',
-                'no_content'       => 1,
-                'guide_id'         => $guide->getId(),
-                'parent_id'        => null,
-            ],
             [
                 'title'   => 'Introduction and Overview',
                 'content' => <<<'CONTENT'
@@ -551,8 +561,8 @@ The apps are: [Tickets]({{ content(topic,9) }})
 *   {{ content_link(topic,282) }} - keep track of any Tasks that you or your fellow Agents need to carry out.
 CONTENT,
                 'no_content'    => 0,
-                'guide_id'      => $guide->getId(),
-                'parent_id'     => 1,
+                'guide'         => $guide,
+                'parent'        => $section1,
             ],
             [
                 'title'   => 'Header',
@@ -778,8 +788,8 @@ If your organization uses Deskpro On-Premise and your Admin's have not yet insta
 :::
 CONTENT,
                 'no_content'    => 0,
-                'guide_id'      => $guide->getId(),
-                'parent_id'     => 1,
+                'guide'         => $guide,
+                'parent'        => $section1,
             ],
             [
                 'title'   => 'Filter pane',
@@ -843,8 +853,8 @@ Mouse over the collapsed filter pane to temporarily expand it and select a diffe
 Clicking the lock keeps the filter pane expanded.
 CONTENT,
                 'no_content'    => 0,
-                'guide_id'      => $guide->getId(),
-                'parent_id'     => 1,
+                'guide'         => $guide,
+                'parent'        => $section1,
             ],
             [
                 'title'   => 'List pane',
@@ -963,8 +973,8 @@ You can change the relative size of the list and content pane. Simply mouse over
 ![Resize-List-Pane.jpg]({{ img(5571KBQJCPHJTQ5570219D01470/Resize-List-Pane.jpg) }} =300x100)
 CONTENT,
                 'no_content'    => 0,
-                'guide_id'      => $guide->getId(),
-                'parent_id'     => 1,
+                'guide'         => $guide,
+                'parent'        => $section1,
             ],
             [
                 'title'   => 'Content pane',
@@ -1098,8 +1108,8 @@ You can change the relative size of the list and content panes. Simply mouse ove
 ![Resize-List-Pane.jpg]({{ img(5578ZNSGTZHMPG5577849369A1A/Resize-List-Pane.jpg) }} =300x100)
 CONTENT,
                 'no_content'    => 0,
-                'guide_id'      => $guide->getId(),
-                'parent_id'     => 1,
+                'guide'         => $guide,
+                'parent'        => $section1,
             ],
             [
                 'title'   => '2-column view',
@@ -1173,8 +1183,8 @@ Items that are already open are shown in gray on the list. Clicking them focuses
 ![../_images/1-col-pulldown-open.png]({{ img(883XJZXRGHCJP882395FE1BD5/1-col-pulldown-open.png) }})
 CONTENT,
                 'no_content'    => 0,
-                'guide_id'      => $guide->getId(),
-                'parent_id'     => 1,
+                'guide'         => $guide,
+                'parent'        => $section1,
             ],
             [
                 'title'   => 'Account preferences',
@@ -1338,28 +1348,37 @@ This option lets you control which {{ content_link(topic,376) }} (_Service Level
 You can hide SLAs just as you can with filters. You can also choose whether to show all the tickets for a certain SLA, or just those that are assigned to you or to your one of your teams.
 CONTENT,
                 'no_content'    => 0,
-                'guide_id'      => $guide->getId(),
-                'parent_id'     => 1,
-            ],
-            [
-                'title'            => 'Tickets',
-                'content'          => '',
-                'content_input'    => '',
-                'no_content'       => 1,
-                'guide_id'         => $guide->getId(),
-                'parent_id'        => null,
+                'guide'         => $guide,
+                'parent'        => $section1,
             ],
             [
                 'title'            => 'Elements of a ticket',
                 'content'          => '',
                 'content_input'    => '',
                 'no_content'       => 1,
-                'guide_id'         => $guide->getId(),
-                'parent_id'        => 9,
+                'guide'            => $guide,
+                'parent'           => $section2,
             ],
-            [
-                'title'   => 'Ticket Properties',
-                'content' => <<<'CONTENT'
+        ];
+        $objects = [];
+        foreach ($topics as $t) {
+            $topic = new Topic();
+            $topic->setTitle($t['title']);
+            $topic->setGuide($t['guide']);
+            $topic->setParent($t['parent']);
+            $topic->setNoContent(!!$t['no_content']);
+            $topic->setContent($t['content']);
+            $topic->setContentInput($t['content_input']);
+            $topic->setStatus(ContentAbstract::STATUS_PUBLISHED);
+            $this->manager->persist($topic);
+            array_push($objects, $topic);
+        }
+        $more = new Topic();
+        $more->setTitle('Ticket Properties');
+        $more->setGuide($guide);
+        $more->setParent($objects[count($objects) - 1]);
+        $more->setNoContent(false);
+        $more->setContent(<<<'CONTENT'
 <p>When you open an individual ticket in the content pane, you can see the information Deskpro stores about it.</p>
 <p><img src="{{ img(5554TZCXPHZWKX5553834F6F496/image.png) }}" alt="image.png"></p>
 <p>The fields you see will vary:</p>
@@ -1383,8 +1402,9 @@ CONTENT,
 </div>
 <p>You can find a particular ticket quickly by putting its ID or ref code into the search bar. Emails Deskpro sends regarding tickets will include either an ID or ref code for the relevant ticket. You can access the ref code of a ticket by clicking on the ID number of the ticket, which then reveals the ref code.</p>
 <p><img src="{{ img(1245WWNNJCPDAW1244164B1A79D/Ticket-ID.png) }}" alt="Ticket-ID.png"></p>
-CONTENT,
-                'content_input' => <<<'CONTENT'
+CONTENT
+);
+        $more->setContentInput(<<<'CONTENT'
 When you open an individual ticket in the content pane, you can see the information Deskpro stores about it.
 
 ![image.png]({{ img(5554TZCXPHZWKX5553834F6F496/image.png) }})
@@ -1422,12 +1442,10 @@ Put your mouse cursor over an ID or ref code and a yellow clipboard icon appears
 You can find a particular ticket quickly by putting its ID or ref code into the search bar. Emails Deskpro sends regarding tickets will include either an ID or ref code for the relevant ticket. You can access the ref code of a ticket by clicking on the ID number of the ticket, which then reveals the ref code.
 
 ![Ticket-ID.png]({{ img(1245WWNNJCPDAW1244164B1A79D/Ticket-ID.png) }})
-CONTENT,
-                'no_content'    => 1,
-                'guide_id'      => $guide->getId(),
-                'parent_id'     => 10,
-            ],
-        ];
-        $this->db->batchInsert('topics', $topics, true);
+CONTENT
+);
+        $more->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $this->manager->persist($more);
+        $this->manager->flush();
     }
 }
