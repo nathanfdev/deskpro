@@ -25,6 +25,14 @@ class DeskproClientModel
 
     /**
      * @JMS\Type("string")
+     * @JMS\SerializedName("channelPrefix")
+     *
+     * @var string
+     */
+    protected $channelPrefix;
+
+    /**
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -140,6 +148,26 @@ class DeskproClientModel
     public function setSecure($secure)
     {
         $this->secure = (bool) $secure;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChannelPrefix()
+    {
+        return $this->channelPrefix;
+    }
+
+    /**
+     * @param string $channelPrefix
+     *
+     * @return $this
+     */
+    public function setChannelPrefix($channelPrefix)
+    {
+        $this->channelPrefix = $channelPrefix;
 
         return $this;
     }

@@ -155,9 +155,25 @@ class NotificationController extends BaseController
                     ->setSecret($bag->get('notification.settings.deskpro_client.secret', ''))
                     ->setHost($bag->get('notification.settings.deskpro_client.host', ''))
                     ->setPort($bag->get('notification.settings.deskpro_client.port', ''))
-                    ->setSecure($bag->getBool('notification.settings.deskpro_client.secure', false)),
+                    ->setSecure($bag->getBool('notification.settings.deskpro_client.secure', false))
+                    ->setChannelPrefix($this->getChannelPrefix($bag)),
             ]
         ));
+    }
+
+    /**
+     * @param $bag
+     *
+     * @return string
+     */
+    private function getChannelPrefix($bag)
+    {
+        $prefix = $bag->get('notification.settings.deskpro_client.prefix', '');
+        if (!$prefix && $this->get('deskpro.app_env')->isQa()) {
+            $prefix = sha1($bag->get('core.deskpro_url'));
+        }
+
+        return $prefix;
     }
 
     /**

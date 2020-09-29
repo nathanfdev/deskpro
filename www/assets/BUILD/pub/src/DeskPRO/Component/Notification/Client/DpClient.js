@@ -42,10 +42,18 @@ export default class DpClient extends AbstractClient {
 
   bind(channelName, eventName) {
     const that = this;
-    this.client.on(`${channelName}-${eventName}`, (data) => {
+
+    const channelParts = channelName.split('-');
+    if (this.options.channelPrefix) {
+      channelParts.splice(1, 0, this.options.channelPrefix);
+    }
+    const prefixedChannelName = channelParts.join('-');
+
+    this.client.on(`${prefixedChannelName}-${eventName}`, (data) => {
       if (that.options.debug === true) {
         that.logMessage(eventName, data);
       }
+
       if (data.cm_strategy && data.cm_strategy !== 'deskpro') {
         if (!this.userNotified) {
           window.DeskPRO_Window.showRefreshAlert(null, 'Your connection method is out of date, you may miss notifications and messages');
