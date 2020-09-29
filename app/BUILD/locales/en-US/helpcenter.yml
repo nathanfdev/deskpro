@@ -543,6 +543,7 @@ helpcenter.guides.in_section: 'in {section}'
 helpcenter.guides.next_topic: 'next topic'
 helpcenter.guides.previous_topic: 'previous topic'
 helpcenter.guides.topics_in: 'Topics in {title}'
+helpcenter.guides.view_guide: 'View guide'
 helpcenter.knowledgebase.featured_articles: 'Featured Articles'
 helpcenter.label.search: Search
 helpcenter.members.activity_commented_on: 'Commented on'

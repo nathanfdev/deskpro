@@ -133,6 +133,46 @@
                     </div>
                 {% endif %}
 
+                {% if app.hasBeta('guides') and can_use_guides() and show_tab_guides() and has_any_guides() %}
+                    <div class="dp-po-homepage-guides">
+                        <div class="dp-po-title">
+                            <a href="" class="dp-po-title-link">
+                                <img class="dp-po-title-svg" src="{{ asset('img/page-icons/guides.svg', 'help_center') }}">
+                                <h2 class="dp-po-title-text">{{ phrase('helpcenter.general.nav_guides') }}</h2>
+                            </a>
+                        </div>
+                        <div class="dp-po-guides">
+                            <div class="row">
+                                {% for guide in helpcenter.getGuides() %}
+                                    <div class="col-sm-6">
+                                        <div class="dp-po-guides-item">
+                                            <div class="dp-po-guides-card">
+                                                <div class="dp-po-guides-left">
+                                                    {% if has_splash(guide) %}
+                                                        <figure class="dp-po-guides-image" style="background-image: url('{{ get_splash_url(guide, 360) }}')"></figure>
+                                                    {% else %}
+                                                        <div class="dp-po-guides-icon-background">
+                                                            {{ render_icon_from(guide, {as_download_url: true, is_rounded: true}) }}
+                                                        </div>
+                                                        <div class="dp-po-guides-icon dp-po-guides-icon-purple">
+                                                            {{ render_icon_from(guide, {as_download_url: true, is_rounded: true}) }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="dp-po-guides-right">
+                                                    <h2 class="dp-po-guides-title"><a href="{{ portal_path(guide) }}">{{ guide }}</a></h2>
+                                                    <p class="dp-po-guides-content">{{ guide.description }}</p>
+                                                    <a class="dp-po-guides-btn btn btn-outline-primary" href="{{ portal_path(guide) }}">{{ phrase('helpcenter.guides.view_guide') }}</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
             </div>
         </main>
     </div>

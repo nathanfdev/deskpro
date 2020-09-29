@@ -227,6 +227,13 @@ class HelpCenterData
         return $this->getGuidesDataService()->getGuideTwoLevelSection($guide);
     }
 
+    public function getGuides($limit = 4)
+    {
+        $user = $this->getUser();
+
+        return array_slice($this->getGuidesDataService()->getGuides($user), 0, $limit);
+    }
+
     /**
      * @return NewsDataService
      */

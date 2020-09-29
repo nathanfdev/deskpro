@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Translate\HasPhraseName;
@@ -16,6 +17,13 @@ use Exception;
 
 class PortalIconRenderer
 {
+    private $twig;
+
+    public function __construct($twig)
+    {
+        $this->twig = $twig;
+    }
+
     public function getIconHtml(IconProperty $icon, $object = null, $asDownloadUrl = false, $isRounded = false)
     {
         if ($icon->getUrnNs() === IconProperty::$blobNs) {
@@ -53,7 +61,15 @@ class PortalIconRenderer
                 return $icon;
             }
         }
-        $class = 'far file';
+        $class = 'far fa-file';
+        if ($object instanceof Guide) {
+            $style = '';
+            if ($object) {
+                $style = ' style="color:'.$this->getIconColor($object).'"';
+            }
+
+            return '<figure class="dp-po-icon" '.$style.' ><img class="dp-icon-svg" src="'.$this->twig->getExtension('asset')->getAssetUrl('img/page-icons/guide-default.svg', 'help_center').'" alt=""></figure>';
+        }
         if ($object instanceof CategoryAbstract) {
             $class = 'fas fa-folder';
         }
