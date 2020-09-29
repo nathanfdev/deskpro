@@ -7,6 +7,7 @@ use DeskPRO\Bundle\AppBundle\Entity\UserChatQueue;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent as ChatNotificationEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\Helper\ChatTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
@@ -117,9 +118,51 @@ class ChatAgentNotifyListener implements EventSubscriberInterface
                         $this->em->flush();
 
                         $this->dispatcher->dispatch(UserChatEvent::STARTED, new UserChatEvent($chat));
-                        $this->dispatcher->dispatch(UserChatEvent::ASSIGNED, new UserChatEvent($chat, [
-                            'name' => $chat->getAgent()->getDisplayNameUser(),
-                        ]));
+
+                        $assignedEvent = new UserChatEvent(
+                            $chat,
+                            [
+                                'name' => $chat->getAgent()->getDisplayNameUser(),
+                            ],
+                            [
+                                'chat_assigned'   => true,
+                                'assigned_to'     => $agent->getId(),
+                                'assigned_name'   => $agent->getDisplayNameUser(),
+                                'assigned_avatar' => $agent->getPictureUrl(16),
+                            ]
+                        );
+                        $this->dispatcher->dispatch(UserChatEvent::ASSIGNED, $assignedEvent);
+
+                        $joinedEvent = new UserChatEvent(
+                            $chat,
+                            [
+                                'name' => $chat->getAgent()->getDisplayNameUser(),
+                            ],
+                            [
+                                'user_joined' => true,
+                                'person_name' => $agent->getDisplayNameUser(),
+                                'person_id'   => $agent->getId(),
+                            ]
+                        );
+                        $this->dispatcher->dispatch(UserChatEvent::USER_JOINED, $joinedEvent);
+
+                        $this->dispatcher->dispatch(
+                            ChatEvent::EVENT_NAME,
+                            new ChatEvent(
+                                $chat->getId(),
+                                ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE,
+                                ['message' => $assignedEvent->getAttachedMessage()]
+                            )
+                        );
+
+                        $this->dispatcher->dispatch(
+                            ChatEvent::EVENT_NAME,
+                            new ChatEvent(
+                                $chat->getId(),
+                                ChatEvent::CHAT_USER_JOINED_EVENT_TYPE,
+                                ['message' => $joinedEvent->getAttachedMessage()]
+                            )
+                        );
                     }
                 }
             }
