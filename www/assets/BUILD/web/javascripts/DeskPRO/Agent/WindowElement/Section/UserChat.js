@@ -824,8 +824,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		};
 		var waitTimer = window.setInterval(up, 1000);
 
-		DeskPRO_Window.notifications.addMessage('chat', 'New chat by ' + alertEl.find('.label-by-name').text(), 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id, 'chat-' + conversation_id)
-
 		$('.dismiss-trigger', alertEl).on('click', function() {
 			if (audio && audio.pause) {
 				try {
@@ -917,7 +915,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
     } else {
       winTitle = titles.length + ' New chats: ' + titles.join(', ');
     }
-    DeskPRO_Window.notifications.addMessage('chat', 'New chat by ' + data.person_name, 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id, 'chat-' + conversation_id)
   },
 
 	getNewChatTitles: function() {
