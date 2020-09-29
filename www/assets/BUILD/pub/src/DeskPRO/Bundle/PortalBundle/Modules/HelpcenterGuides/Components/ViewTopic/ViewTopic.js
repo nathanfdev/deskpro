@@ -395,7 +395,7 @@ class ViewTopic extends React.Component {
         topicList={topicList}
         guideSlug={guideSlug}
         topicSlug={topicSlug}
-        flashed={flashes}
+        flashes={flashes}
         data={topic}
         sizes={this.sizes}
         loaded={loaded}

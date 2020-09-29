@@ -101,7 +101,7 @@ class CommentsBlock extends React.Component {
     }
 
     const flashMessage = this.props.flashes.length ? (
-      <div className="flashes">
+      <div className="flashes dp-po-message-bar">
         {this.props.flashes.map((flash, index) => (
           <div
             className={classNames('flash', `flash-${flash.type}`)}
