@@ -16,7 +16,7 @@ class FileCache extends \Metadata\Cache\FileCache
      */
     public function putClassMetadataInCache(ClassMetadata $metadata)
     {
-        if (!defined('DPC_IS_CLOUD')) {
+        if (!defined('DPC_IS_READ_ONLY_FS')) {
             parent::putClassMetadataInCache($metadata);
 
             return;

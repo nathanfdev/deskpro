@@ -27,7 +27,7 @@ class DoctrineMetadataCacheFactory
             return new ArrayCache();
         } else {
             // fixme: can't warm up the cache using the new stream wrapper -- quick and dirty way of doing this for now
-            if (php_sapi_name() !== 'cli' && in_array('dpfsproxy', stream_get_wrappers()) && defined('DPC_IS_CLOUD')) {
+            if (php_sapi_name() !== 'cli' && in_array('dpfsproxy', stream_get_wrappers()) && defined('DPC_IS_READ_ONLY_FS')) {
                 return new FilesystemCache('dpfsproxy://kernel_cache'.$appEnv->getAppBaseKernelCacheDir().'/'.$appEnv->getEnvId().'/'.$subDir, $extension);
             }
 

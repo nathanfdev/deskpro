@@ -257,7 +257,7 @@ abstract class BaseKernel extends Kernel
             return $this->dpBuildId;
         }
 
-        $path = class_exists('DpRun\DpFsProxyStreamWrapper') && defined('DPC_IS_CLOUD')
+        $path = class_exists('DpRun\DpFsProxyStreamWrapper') && defined('DPC_IS_READ_ONLY_FS')
             ? \DpRun\DpFsProxyStreamWrapper::realpath(__DIR__.'/../')
             : realpath(__DIR__.'/../')
         ;
@@ -331,7 +331,7 @@ CODE;
     public function getCacheDir()
     {
         // fixme: can't warm up the cache using the new stream wrapper -- quick and dirty way of doing this for now
-        if (php_sapi_name() !== 'cli' && in_array('dpfsproxy', stream_get_wrappers()) && defined('DPC_IS_CLOUD')) {
+        if (php_sapi_name() !== 'cli' && in_array('dpfsproxy', stream_get_wrappers()) && defined('DPC_IS_READ_ONLY_FS')) {
             return 'dpfsproxy://kernel_cache'.$this->dpEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$this->getEnvironment();
         }
 
@@ -344,7 +344,7 @@ CODE;
     public function getLogDir()
     {
         // fixme: can't warm up the cache using the new stream wrapper -- quick and dirty way of doing this for now
-        if (php_sapi_name() !== 'cli' && in_array('dpfsproxy', stream_get_wrappers()) && defined('DPC_IS_CLOUD')) {
+        if (php_sapi_name() !== 'cli' && in_array('dpfsproxy', stream_get_wrappers()) && defined('DPC_IS_READ_ONLY_FS')) {
             return 'dpfsproxy://log'.$this->dpEnv->getUserLogsDir();
         }
 

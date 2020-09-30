@@ -11,7 +11,7 @@ class FilesystemCache extends \Twig\Cache\FilesystemCache
 {
     public function write($key, $content)
     {
-        if (!defined('DPC_IS_CLOUD')) {
+        if (!defined('DPC_IS_READ_ONLY_FS')) {
             parent::write($key, $content);
 
             return;

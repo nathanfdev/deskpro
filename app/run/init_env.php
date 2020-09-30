@@ -263,6 +263,7 @@ if ($DP_ENV->getConfig('env.init_fn')) {
  * *********************************************************************************************************************
  */
 
+define('DPC_IS_READ_ONLY_FS', true);
 define('DPC_IS_CLOUD', true);
 define('DPC_SITE_IS_APPROVED', true);
 define('DPC_SITE_ID', 36);
@@ -285,7 +286,7 @@ define('DPC_OFF_REASON', null);
  * *********************************************************************************************************************
  */
 
-if (defined('DPC_IS_CLOUD')) {
+if (defined('DPC_IS_READ_ONLY_FS')) {
     require_once 'lib/DpRun/DpFsProxyStreamWrapper.php';
     \DpRun\DpFsProxyStreamWrapper::register();
 }
