@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
 import classNames from 'classnames';
 import { IconRenderer } from 'DeskPRO/Component/IconRenderer';
+import Isvg from 'react-inlinesvg';
+import guideDefault from '@deskpro/portal-style/dist/img/page-icons/guide-default.svg';
 import GuideDropDown from './GuideDropDown';
 
 class GuideSelector extends React.Component {
@@ -61,7 +63,13 @@ class GuideSelector extends React.Component {
     <div className={classNames('dp-po-guides-tabs-item', { active: guide.id === activeGuide.id })} key={guide.id}>
       <div className="dp-po-guides-tabs-content">
         <a href={`${baseUrl}/guides/${guide.slug}`} className="dp-po-guides-tabs-link" onClick={e => this.onClickGuide(e, guide)} title={guide.title}>
-          <IconRenderer object={guide} key={guide.icon_property ? guide.icon_property.urn_path : 'fa-user-headset'} figureStyle={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }} className="" default={<i className="fal fa-user-headset" />} /> {guide.title}
+          <IconRenderer
+            object={guide}
+            key={guide.icon_property ? guide.icon_property.urn_path : 'fa-user-headset'}
+            figureStyle={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }}
+            className=""
+            default={<Isvg src={guideDefault} />}
+          /> {guide.title}
         </a>
       </div>
     </div>

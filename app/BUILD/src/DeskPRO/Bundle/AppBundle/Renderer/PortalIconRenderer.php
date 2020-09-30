@@ -50,6 +50,29 @@ class PortalIconRenderer
 
     public function getIconHtmlFrom(HasIconProperty $object, $options = [])
     {
+        if ($object instanceof Guide) {
+            $style = ' style="background-color: var(--warning)"';
+            if ($object->getColor()) {
+                $style = ' style="background-color:'.$object->getColor().'"';
+            }
+            $figureClass = '';
+            if (isset($options['figure_class'])) {
+                $figureClass = $options['figure_class'];
+            }
+            if ($object->getIcon()) {
+                $icon = $this->getIconHtml(
+                    $object->getIcon(),
+                    $object,
+                    isset($options['as_download_url']) && $options['as_download_url'],
+                    isset($options['is_rounded']) && $options['is_rounded']
+                );
+                if ($icon) {
+                    return '<figure class="dp-po-icon '.$figureClass.'" '.$style.' >'.$icon.'</figure>';
+                }
+            }
+
+            return '<figure class="dp-po-icon '.$figureClass.'" '.$style.' ><img class="dp-icon-svg" src="'.$this->twig->getExtension('asset')->getAssetUrl('img/page-icons/guide-default.svg', 'help_center').'" alt=""></figure>';
+        }
         if ($object->getIcon()) {
             $icon = $this->getIconHtml(
                 $object->getIcon(),
@@ -62,14 +85,6 @@ class PortalIconRenderer
             }
         }
         $class = 'far fa-file';
-        if ($object instanceof Guide) {
-            $style = '';
-            if ($object) {
-                $style = ' style="color:'.$this->getIconColor($object).'"';
-            }
-
-            return '<figure class="dp-po-icon" '.$style.' ><img class="dp-icon-svg" src="'.$this->twig->getExtension('asset')->getAssetUrl('img/page-icons/guide-default.svg', 'help_center').'" alt=""></figure>';
-        }
         if ($object instanceof CategoryAbstract) {
             $class = 'fas fa-folder';
         }
