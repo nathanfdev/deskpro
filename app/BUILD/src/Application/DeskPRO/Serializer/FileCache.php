@@ -11,13 +11,18 @@ use Metadata\ClassMetadata;
  */
 class FileCache extends \Metadata\Cache\FileCache
 {
+    /**
+     * @var string
+     */
     private $directory;
 
+    /**
+     * {@inheritDoc}
+     */
     public function __construct($dir)
     {
-        $this->directory = $dir;
-
         parent::__construct($dir);
+        $this->directory = $dir;
     }
 
     /**
@@ -31,19 +36,13 @@ class FileCache extends \Metadata\Cache\FileCache
             return;
         }
 
-        $thisRef = (new \ReflectionObject($this))->getParentClass();
-        $dirRef  = $thisRef->getProperty('dir');
-        $dirRef->setAccessible(true);
-
-        $dir = $dirRef->getValue($this);
-
-        if (!is_writable($dir)) {
-            throw new \InvalidArgumentException(sprintf('The directory "%s" is not writable.', $dir));
+        if (!is_writable($this->directory)) {
+            throw new \InvalidArgumentException(sprintf('The directory "%s" is not writable.', $this->directory));
         }
 
-        $path = $dir.'/'.strtr($metadata->name, '\\', '-').'.cache.php';
+        $path = $this->directory.'/'.strtr($metadata->name, '\\', '-').'.cache.php';
 
-        $tmpFile = @tempnam($dir, 'metadata-cache');
+        $tmpFile = @tempnam($this->directory, 'metadata-cache');
         file_put_contents($tmpFile, '<?php return unserialize('.var_export(serialize($metadata), true).');');
 
         // Let's not break filesystems which do not support chmod.
