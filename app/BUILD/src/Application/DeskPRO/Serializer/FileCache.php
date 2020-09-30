@@ -11,6 +11,15 @@ use Metadata\ClassMetadata;
  */
 class FileCache extends \Metadata\Cache\FileCache
 {
+    private $directory;
+
+    public function __construct($dir)
+    {
+        $this->directory = $dir;
+
+        parent::__construct($dir);
+    }
+
     /**
      * {@inheritDoc}
      */

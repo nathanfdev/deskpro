@@ -172,15 +172,15 @@ class DpFsProxyStreamWrapper
 
         switch ($option) {
             case STREAM_META_TOUCH:
-                return \touch($resolvedPath, $value[0], $value[1]);
+                return @\touch($resolvedPath, $value[0], $value[1]);
             case STREAM_META_OWNER:
             case STREAM_META_OWNER_NAME:
-                return \chown($resolvedPath, $value);
+                return @\chown($resolvedPath, $value);
             case STREAM_META_GROUP:
             case STREAM_META_GROUP_NAME:
-                return \chgrp($resolvedPath, $value);
+                return @\chgrp($resolvedPath, $value);
             case STREAM_META_ACCESS:
-                return \chmod($resolvedPath, $value);
+                return @\chmod($resolvedPath, $value);
         }
 
         throw new \RuntimeException("Unknown option [{$option}] during ".__METHOD__." for {$path}");

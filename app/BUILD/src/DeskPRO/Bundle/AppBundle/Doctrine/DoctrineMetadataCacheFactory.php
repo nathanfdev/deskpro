@@ -6,6 +6,7 @@ use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Component\Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\CacheProvider;
+use DpSys\Kernel\BaseKernel;
 
 /**
  * Class DoctrineMetadataCacheFactory.
@@ -26,9 +27,8 @@ class DoctrineMetadataCacheFactory
         if ($appEnv->getEnvId() === 'dev') {
             return new ArrayCache();
         } else {
-            // fixme: can't warm up the cache using the new stream wrapper -- quick and dirty way of doing this for now
-            if (php_sapi_name() !== 'cli' && in_array('dpfsproxy', stream_get_wrappers()) && defined('DPC_IS_READ_ONLY_FS')) {
-                return new FilesystemCache('dpfsproxy://kernel_cache'.$appEnv->getAppBaseKernelCacheDir().'/'.$appEnv->getEnvId().'/'.$subDir, $extension);
+            if (BaseKernel::canUseVFSProxy()) {
+                return new FilesystemCache('dpfsproxy://cache'.$appEnv->getAppBaseKernelCacheDir().'/'.$appEnv->getEnvId().'/'.$subDir, $extension);
             }
 
             return new FilesystemCache($appEnv->getAppBaseKernelCacheDir().'/'.$appEnv->getEnvId().'/'.$subDir, $extension);
