@@ -54,8 +54,20 @@ class GuidesController extends AbstractPublishController
             return $this->redirectToRoute('portal_home');
         }
 
-        if ($this->isHelpCenterTheme()) {
-            return $this->redirectToRoute('user_guides', ['slug' => $guide->getSlug()]);
+        if ($this->isHelpCenterTheme() && count($guides) > 1) {
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuides();
+
+            array_unshift($guides, $guide);
+
+            $viewVars = [
+                'guides'      => $guides,
+                'breadcrumbs' => $breadcrumbs,
+            ];
+
+            return $this->renderThemeView(
+                'Theme:Guides:index.html.twig',
+                $viewVars
+            );
         }
         $activeTopics = Arrays::flattenHierarchy($guide->getActiveTopics()->toArray());
         Arrays::sortFlatHierarchyArray($activeTopics);
