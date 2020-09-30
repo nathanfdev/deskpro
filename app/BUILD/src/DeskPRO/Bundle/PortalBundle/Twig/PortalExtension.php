@@ -984,7 +984,12 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             case 'legacy_web':
                 $basePath = $DP_ENV->getAppWwwAssetDir().'/web';
                 $file     = $basePath.'/'.$path;
-                $data     = SafeFile::fileGetContents($file, $basePath);
+
+                if (file_exists($file)) {
+                    $data = SafeFile::fileGetContents($file, $basePath);
+                } else {
+                    $data = '';
+                }
 
                 break;
 
