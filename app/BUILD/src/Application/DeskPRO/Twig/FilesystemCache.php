@@ -9,6 +9,23 @@ namespace Application\DeskPRO\Twig;
  */
 class FilesystemCache extends \Twig\Cache\FilesystemCache
 {
+    /**
+     * @var int
+     */
+    private $cacheOptions;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct($directory, $options = 0)
+    {
+        parent::__construct($directory, $options);
+        $this->cacheOptions = $options;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function write($key, $content)
     {
         if (!defined('DPC_IS_READ_ONLY_FS')) {
@@ -36,12 +53,7 @@ class FilesystemCache extends \Twig\Cache\FilesystemCache
             @chmod($key, 0666 & ~umask());
             @unlink($tmpFile);
 
-            $ref = (new \ReflectionObject($this))->getParentClass();
-            $optionsRef = $ref->getProperty('options');
-            $optionsRef->setAccessible(true);
-            $options = $optionsRef->getValue($this);
-
-            if (self::FORCE_BYTECODE_INVALIDATION == ($options & self::FORCE_BYTECODE_INVALIDATION)) {
+            if (self::FORCE_BYTECODE_INVALIDATION == ($this->cacheOptions & self::FORCE_BYTECODE_INVALIDATION)) {
                 // Compile cached file into bytecode cache
                 if (\function_exists('opcache_invalidate') && filter_var(ini_get('opcache.enable'), FILTER_VALIDATE_BOOLEAN)) {
                     @opcache_invalidate($key, true);
