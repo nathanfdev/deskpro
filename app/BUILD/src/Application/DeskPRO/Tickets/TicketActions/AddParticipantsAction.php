@@ -8,6 +8,7 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
+use Orb\Util\Arrays;
 
 /**
  * Adds participants.
@@ -19,6 +20,16 @@ class AddParticipantsAction extends AbstractAction
 
     public function __construct(array $add_participants)
     {
+        if (1 === count($add_participants) && false !== strpos($add_participants[0], ',')) {
+            // provided array with 1 item and it is comma-separated list of ids instead of array
+            $add_participants = explode(',', $add_participants[0]);
+            $add_participants = array_map(function ($x) {
+                return (int) trim($x);
+            }, $add_participants);
+            $add_participants = Arrays::removeFalsey($add_participants);
+            $add_participants = array_unique($add_participants, SORT_NUMERIC);
+        }
+
         $this->add_people_ids = $add_participants;
     }
 
