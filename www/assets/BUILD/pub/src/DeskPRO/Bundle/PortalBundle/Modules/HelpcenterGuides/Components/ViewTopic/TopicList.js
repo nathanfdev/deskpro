@@ -1,12 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
+import Isvg from 'react-inlinesvg';
+import guideDefault from '@deskpro/portal-style/dist/img/page-icons/guide-default.svg';
+import { IconRenderer } from 'DeskPRO/Component/IconRenderer';
 import TopicListItem from './TopicListItem';
 
 class TopicList extends React.Component {
   static propTypes = {
     topics:           PropTypes.array,
     guideSlug:        PropTypes.string,
+    guide:            PropTypes.object,
     topicSlug:        PropTypes.string,
     grabTopicFromApi: PropTypes.func,
     sizes:            PropTypes.object,
@@ -107,7 +111,7 @@ class TopicList extends React.Component {
   }
 
   renderList() {
-    const { topics, twoLevelSection } = this.props;
+    const { guide, topics, twoLevelSection } = this.props;
     if (twoLevelSection) {
       return (
         <div className="dp-po-guides-search-content accordion" id="accordionExample">
@@ -123,6 +127,13 @@ class TopicList extends React.Component {
                     className={classNames('dp-po-guides-search-content-title', { collapsed })}
                     onClick={e => this.toggleTopic(e, topic, this.isExpandedTopic(topic))}
                   >
+                    <IconRenderer
+                      object={guide}
+                      key={guide.icon_property ? guide.icon_property.urn_path : 'fa-user-headset'}
+                      figureStyle={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }}
+                      figureClassName="guide-icon"
+                      default={<Isvg src={guideDefault} />}
+                    />
                     <span className="title">{topic.title}</span> <i className="dp-po-icon far fa-angle-down" />
                   </div>
                   {this.renderTopics(Object.values(topic.children), 1, collapsed)}

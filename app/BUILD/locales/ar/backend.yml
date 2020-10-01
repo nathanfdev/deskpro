@@ -2156,12 +2156,12 @@ agent.publish.event_time_ago_by_who_at_when: '{{ago}} بواسطة  {{name}} ف 
 agent.publish.for_ticket: للتذكرة
 agent.publish.glossary: قاموس
 agent.publish.guide_list_title:
-  zero: '{{count}} Guides'
-  one: '1 Guide'
-  two: '{{count}} Guides'
-  few: '{{count}} Guides'
-  many: '{{count}} Guides'
-  other: '{{count}} Guides'
+  zero: '{{count}} Topics'
+  one: '1 Topic'
+  two: '{{count}} Topics'
+  few: '{{count}} Topics'
+  many: '{{count}} Topics'
+  other: '{{count}} Topics'
 agent.publish.helpful: مفيد
 agent.publish.kb_list_title:
   zero: مقالات

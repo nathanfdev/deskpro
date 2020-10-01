@@ -1917,10 +1917,10 @@ agent.publish.event_time_ago_by_who_at_when: '{{ago}} przez {{name}} w dniu {{da
 agent.publish.for_ticket: 'Dla Zgłoszenia'
 agent.publish.glossary: Słownik
 agent.publish.guide_list_title:
-  one: '1 Guide'
-  few: '{{count}} Guides'
-  many: '{{count}} Guides'
-  other: '{{count}} Guides'
+  one: '1 Topic'
+  few: '{{count}} Topics'
+  many: '{{count}} Topics'
+  other: '{{count}} Topics'
 agent.publish.helpful: Pomocny
 agent.publish.kb_list_title:
   one: '1 Artykuł'

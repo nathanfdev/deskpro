@@ -489,7 +489,7 @@ class ViewTopic extends React.Component {
   }
 
   render() {
-    const { topicList, fixed, loaded, twoLevelSection } = this.state;
+    const { topicList, fixed, loaded, twoLevelSection, guide } = this.state;
     const { slug: topicSlug } = this.props.params;
     const guideSlug = this.getGuideSlug(this.props.params);
 
@@ -509,6 +509,7 @@ class ViewTopic extends React.Component {
                     topics={topicList}
                     guideSlug={guideSlug}
                     topicSlug={topicSlug}
+                    guide={guide}
                     grabTopicFromApi={this.grabTopicFromApi}
                     sizes={this.sizes}
                     twoLevelSection={twoLevelSection}

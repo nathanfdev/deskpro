@@ -7,13 +7,14 @@ export const IconRenderer = ({
   object,
   default: defaultReturn,
   className,
+  figureClassName = '',
   figureStyle,
 }) => {
   const iconProperty = object.icon_property;
 
   if (!iconProperty) {
     return (
-      <figure className="dp-po-icon" style={figureStyle}>
+      <figure className={`dp-po-icon ${figureClassName}`} style={figureStyle}>
         {defaultReturn}
       </figure>
     );
@@ -21,7 +22,7 @@ export const IconRenderer = ({
 
   if (iconProperty.urn_ns === 'urn:deskpro:local:blobs') {
     return (
-      <figure className="dp-po-icon">
+      <figure className={`dp-po-icon ${figureClassName}`}>
         <span className={className}>
           <img src={iconProperty.url} alt="icon" />
         </span>
@@ -45,7 +46,7 @@ export const IconRenderer = ({
 
     if (iconStyle) {
       return (
-        <figure className="dp-po-icon" style={figureStyle}>
+        <figure className={`dp-po-icon ${figureClassName}`} style={figureStyle}>
           <i className={`${className} ${iconStyle} ${iconProperty.urn_path}`} style={style} />
         </figure>
       );
@@ -53,18 +54,20 @@ export const IconRenderer = ({
   }
 
   return (
-    <figure className="dp-po-icon">
+    <figure className={`dp-po-icon ${figureClassName}`}>
       {defaultReturn}
     </figure>
   );
 };
 IconRenderer.propTypes = {
-  object:      PropTypes.object,
-  default:     PropTypes.node,
-  className:   PropTypes.string,
-  figureStyle: PropTypes.object,
+  object:          PropTypes.object,
+  default:         PropTypes.node,
+  className:       PropTypes.string,
+  figureClassName: PropTypes.string,
+  figureStyle:     PropTypes.object,
 };
 IconRenderer.defaultProps = {
-  className:   'dp-po-icon',
-  figureStyle: {}
+  className:       'dp-po-icon',
+  figureClassName: '',
+  figureStyle:     {}
 };
