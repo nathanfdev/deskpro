@@ -182,7 +182,7 @@ class TopicList extends React.Component {
     return (
       <div className="dp-po-guides-search" style={style}>
         <form className="dp-po-guides-search-form">
-          <input type="text" value={filter} placeholder="Search table of contents" onChange={this.handleFilterChange} />
+          <input type="search" value={filter} placeholder="Search table of contents" onChange={this.handleFilterChange} />
           <button type="submit"><i className="dp-po-icon far fa-search" /></button>
         </form>
         <div className="dp-po-guides-search-block">
