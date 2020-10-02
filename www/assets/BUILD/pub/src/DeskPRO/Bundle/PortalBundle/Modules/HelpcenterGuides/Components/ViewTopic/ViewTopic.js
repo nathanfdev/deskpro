@@ -530,7 +530,7 @@ class ViewTopic extends React.Component {
             <div className="container-fluid">
               <div className="row">
                 <div className="col-sm-3">
-                  <Scrollbars autohide>
+                  <Scrollbars autoHide>
                     <TopicList
                       topics={topicList}
                       guideSlug={guideSlug}
