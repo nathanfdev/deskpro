@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import Isvg from 'react-inlinesvg';
+import Highlighter from 'react-highlight-words';
 import guideDefault from '@deskpro/portal-style/dist/img/page-icons/guide-default.svg';
 import { IconRenderer } from 'DeskPRO/Component/IconRenderer';
 import TopicListItem from './TopicListItem';
@@ -48,16 +49,32 @@ class TopicList extends React.Component {
 
   isExpandedTopic = (topic, recursive = false) => {
     const { topicSlug } = this.props;
-    const { expanded } = this.state;
+    const { expanded, filter } = this.state;
+    if (filter) {
+      return Object.values(topic.children).find(c => this.filterTopic(c));
+    }
     if (!recursive && typeof expanded[topic.id] !== 'undefined') {
       return expanded[topic.id];
+    }
+    if (recursive && typeof expanded[topic.id] !== 'undefined' && expanded[topic.id]) {
+      return true;
     }
     return topic.slug === topicSlug || Object.values(topic.children).find(c => this.isExpandedTopic(c, true));
   };
 
+  grabTopicFromApi = (slug) => {
+    this.setState({
+      filter: ''
+    });
+    this.props.grabTopicFromApi(slug);
+  }
+
   toggleTopic = (e, topic, initial) => {
     e.preventDefault();
     e.stopPropagation();
+    this.setState({
+      filter: ''
+    });
     const { expanded } = this.state;
     if (typeof expanded[topic.id] !== 'undefined') {
       expanded[topic.id] = !expanded[topic.id];
@@ -71,7 +88,8 @@ class TopicList extends React.Component {
 
   handleFilterChange = (e) => {
     this.setState({
-      filter: e.target.value
+      filter:   e.target.value,
+      expanded: {},
     });
   };
 
@@ -82,7 +100,7 @@ class TopicList extends React.Component {
   };
 
   renderTopics(topics, depth = 0, collapse = false) {
-    const { guideSlug, topicSlug, grabTopicFromApi } = this.props;
+    const { guideSlug, topicSlug } = this.props;
     const { filter, expanded } = this.state;
     return (
       <ul className={classNames('dp-po-guides-search-content-list', { collapse })}>
@@ -97,11 +115,11 @@ class TopicList extends React.Component {
               guideSlug={guideSlug}
               topicSlug={topicSlug}
               path={this.state.path}
-              grabTopicFromApi={grabTopicFromApi}
+              grabTopicFromApi={this.grabTopicFromApi}
               filter={filter}
               filterTopic={this.filterTopic}
               toggleTopic={this.toggleTopic}
-              expanded={!!(filter !== '' || this.isExpandedTopic(topic))}
+              expanded={!!(this.isExpandedTopic(topic))}
               expandedList={expanded}
             />
             )
@@ -112,6 +130,7 @@ class TopicList extends React.Component {
 
   renderList() {
     const { guide, topics, twoLevelSection } = this.props;
+    const { filter } = this.state;
     if (twoLevelSection) {
       return (
         <div className="dp-po-guides-search-content accordion" id="accordionExample">
@@ -122,7 +141,7 @@ class TopicList extends React.Component {
             .map((topic) => {
               const collapsed = !this.isExpandedTopic(topic);
               return (
-                <div className="dp-po-guides-search-content-accordion" key={topic.slug}>
+                <div className={classNames('dp-po-guides-search-content-accordion', { collapsed })} key={topic.slug}>
                   <div
                     className={classNames('dp-po-guides-search-content-title', { collapsed })}
                     onClick={e => this.toggleTopic(e, topic, this.isExpandedTopic(topic))}
@@ -134,7 +153,13 @@ class TopicList extends React.Component {
                       figureClassName="guide-icon"
                       default={<Isvg src={guideDefault} />}
                     />
-                    <span className="title">{topic.title}</span> <i className="dp-po-icon far fa-angle-down" />
+                    <Highlighter
+                      highlightClassName="filter-highlight"
+                      className="title"
+                      searchWords={[filter]}
+                      textToHighlight={topic.title}
+                    />
+                    <i className="dp-po-icon far fa-angle-down" />
                   </div>
                   {this.renderTopics(Object.values(topic.children), 1, collapsed)}
                 </div>

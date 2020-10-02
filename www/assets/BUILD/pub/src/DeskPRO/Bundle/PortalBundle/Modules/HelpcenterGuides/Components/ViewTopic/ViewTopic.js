@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import { FormattedDate, FormattedMessage } from 'react-intl';
+import { Scrollbars } from 'react-custom-scrollbars';
 import classNames from 'classnames';
 import moment from 'moment';
 import $ from 'jquery';
@@ -452,7 +453,7 @@ class ViewTopic extends React.Component {
       if (splashImageProperty.url) {
         splashImage = (<img className="dp-po-guides-landing-splash" src={splashImageProperty.url} alt="" />);
       } else {
-        splashImage = (<img className="dp-po-guides-landing-splash" src={splashImageProperty.options.url} alt="" />);
+        splashImage = (<img className="dp-po-guides-landing-splash" src={`${splashImageProperty.options.url}&w=900`} alt="" />);
       }
     }
     const datePublished = guide.date_published ? guide.date_published.replace(/T.*/, '').replace(/-/g, '/') : null;
@@ -506,7 +507,10 @@ class ViewTopic extends React.Component {
         />
       );
     }
-    return this.renderGuideLanding();
+    if (loaded) {
+      return this.renderGuideLanding();
+    }
+    return null;
   }
 
   render() {
@@ -526,15 +530,17 @@ class ViewTopic extends React.Component {
             <div className="container-fluid">
               <div className="row">
                 <div className="col-sm-3">
-                  <TopicList
-                    topics={topicList}
-                    guideSlug={guideSlug}
-                    topicSlug={topicSlug}
-                    guide={guide}
-                    grabTopicFromApi={this.grabTopicFromApi}
-                    sizes={this.sizes}
-                    twoLevelSection={twoLevelSection}
-                  />
+                  <Scrollbars autohide>
+                    <TopicList
+                      topics={topicList}
+                      guideSlug={guideSlug}
+                      topicSlug={topicSlug}
+                      guide={guide}
+                      grabTopicFromApi={this.grabTopicFromApi}
+                      sizes={this.sizes}
+                      twoLevelSection={twoLevelSection}
+                    />
+                  </Scrollbars>
                 </div>
                 <div className="col-sm-9">
                   { loaded ||

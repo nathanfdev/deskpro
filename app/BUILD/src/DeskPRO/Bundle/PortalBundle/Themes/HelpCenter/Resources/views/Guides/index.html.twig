@@ -25,7 +25,7 @@
                                 <div class="dp-po-guides-card">
                                     <div class="dp-po-guides-left">
                                         {% if has_splash(guide) %}
-                                            <figure class="dp-po-guides-image" style="background-image: url('{{ get_splash_url(guide, 360) }}')"></figure>
+                                            <figure class="dp-po-guides-image" style="background-image: url('{{ get_splash_url(guide, 600) }}')"></figure>
                                         {% else %}
                                             {{ render_icon_from(guide, {as_download_url: true, is_rounded: true, figure_class: 'dp-po-guides-icon-background'}) }}
                                             {{ render_icon_from(guide, {as_download_url: true, is_rounded: true, figure_class: 'dp-po-guides-icon'}) }}
