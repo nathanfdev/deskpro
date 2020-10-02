@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import { FormattedDate, FormattedMessage } from 'react-intl';
-import { Scrollbars } from 'react-custom-scrollbars';
 import classNames from 'classnames';
 import moment from 'moment';
 import $ from 'jquery';
@@ -530,17 +529,15 @@ class ViewTopic extends React.Component {
             <div className="container-fluid">
               <div className="row">
                 <div className="col-sm-3">
-                  <Scrollbars autoHide>
-                    <TopicList
-                      topics={topicList}
-                      guideSlug={guideSlug}
-                      topicSlug={topicSlug}
-                      guide={guide}
-                      grabTopicFromApi={this.grabTopicFromApi}
-                      sizes={this.sizes}
-                      twoLevelSection={twoLevelSection}
-                    />
-                  </Scrollbars>
+                  <TopicList
+                    topics={topicList}
+                    guideSlug={guideSlug}
+                    topicSlug={topicSlug}
+                    guide={guide}
+                    grabTopicFromApi={this.grabTopicFromApi}
+                    sizes={this.sizes}
+                    twoLevelSection={twoLevelSection}
+                  />
                 </div>
                 <div className="col-sm-9">
                   { loaded ||

@@ -88,6 +88,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.guides.default_description_short',
             'helpcenter.guides.in_section',
             'helpcenter.guides.next_topic',
+            'helpcenter.guides.no_matching_topics',
             'helpcenter.guides.previous_topic',
             'helpcenter.guides.start_reading',
             'helpcenter.guides.topics_in',

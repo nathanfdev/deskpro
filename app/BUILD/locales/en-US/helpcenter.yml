@@ -544,6 +544,7 @@ helpcenter.guides.default_description_short: 'Welcome to the {guide_name} which 
 helpcenter.guide.filter_guides: 'Filter guides'
 helpcenter.guides.in_section: 'in {section}'
 helpcenter.guides.next_topic: 'next topic'
+helpcenter.guides.no_matching_topics: 'No matching topics.'
 helpcenter.guides.previous_topic: 'previous topic'
 helpcenter.guides.start_reading: 'Start Reading'
 helpcenter.guides.topics_in: 'Topics in {title}'

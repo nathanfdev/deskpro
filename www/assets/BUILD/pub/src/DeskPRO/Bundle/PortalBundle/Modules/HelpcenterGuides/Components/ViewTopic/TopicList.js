@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import Isvg from 'react-inlinesvg';
 import Highlighter from 'react-highlight-words';
@@ -22,6 +23,14 @@ class TopicList extends React.Component {
     router: PropTypes.object.isRequired
   };
 
+  static renderNoResults() {
+    return (
+      <div className="dp-po-guides-search-no-results">
+        <i className="dp-po-icon far fa-search" />
+        <span><FormattedMessage id="helpcenter.guides.no_matching_topics" /></span>
+      </div>
+    );
+  }
 
   constructor(props) {
     super(props);
@@ -102,28 +111,32 @@ class TopicList extends React.Component {
   renderTopics(topics, depth = 0, collapse = false) {
     const { guideSlug, topicSlug } = this.props;
     const { filter, expanded } = this.state;
+    const renderedTopics = topics
+      .filter(t => depth > 0 || t.depth === depth)
+      .filter(t => this.filterTopic(t))
+      .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
+      .map(topic => (
+        <TopicListItem
+          key={topic.slug}
+          topic={topic}
+          guideSlug={guideSlug}
+          topicSlug={topicSlug}
+          path={this.state.path}
+          grabTopicFromApi={this.grabTopicFromApi}
+          filter={filter}
+          filterTopic={this.filterTopic}
+          toggleTopic={this.toggleTopic}
+          expanded={!!(this.isExpandedTopic(topic))}
+          expandedList={expanded}
+        />
+        )
+      );
+    if (renderedTopics.length === 0) {
+      return TopicList.renderNoResults();
+    }
     return (
       <ul className={classNames('dp-po-guides-search-content-list', { collapse })}>
-        {topics
-          .filter(t => depth > 0 || t.depth === depth)
-          .filter(t => this.filterTopic(t))
-          .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
-          .map(topic => (
-            <TopicListItem
-              key={topic.slug}
-              topic={topic}
-              guideSlug={guideSlug}
-              topicSlug={topicSlug}
-              path={this.state.path}
-              grabTopicFromApi={this.grabTopicFromApi}
-              filter={filter}
-              filterTopic={this.filterTopic}
-              toggleTopic={this.toggleTopic}
-              expanded={!!(this.isExpandedTopic(topic))}
-              expandedList={expanded}
-            />
-            )
-          )}
+        {renderedTopics}
       </ul>
     );
   }
@@ -132,40 +145,44 @@ class TopicList extends React.Component {
     const { guide, topics, twoLevelSection } = this.props;
     const { filter } = this.state;
     if (twoLevelSection) {
+      const renderedTopics = topics
+        .filter(t => t.depth === 0)
+        .filter(t => this.filterTopic(t))
+        .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
+        .map((topic) => {
+          const collapsed = !this.isExpandedTopic(topic);
+          return (
+            <div className={classNames('dp-po-guides-search-content-accordion', { collapsed })} key={topic.slug}>
+              <div
+                className={classNames('dp-po-guides-search-content-title', { collapsed })}
+                onClick={e => this.toggleTopic(e, topic, this.isExpandedTopic(topic))}
+              >
+                <IconRenderer
+                  object={guide}
+                  key={guide.icon_property ? guide.icon_property.urn_path : 'fa-user-headset'}
+                  figureStyle={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }}
+                  figureClassName="guide-icon"
+                  default={<Isvg src={guideDefault} />}
+                />
+                <Highlighter
+                  highlightClassName="filter-highlight"
+                  className="title"
+                  searchWords={[filter]}
+                  textToHighlight={topic.title}
+                />
+                <i className="dp-po-icon far fa-angle-down" />
+              </div>
+              {this.renderTopics(Object.values(topic.children), 1, collapsed)}
+            </div>
+          );
+        }
+        );
+      if (renderedTopics.length === 0) {
+        return TopicList.renderNoResults();
+      }
       return (
         <div className="dp-po-guides-search-content accordion" id="accordionExample">
-          {topics
-            .filter(t => t.depth === 0)
-            .filter(t => this.filterTopic(t))
-            .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
-            .map((topic) => {
-              const collapsed = !this.isExpandedTopic(topic);
-              return (
-                <div className={classNames('dp-po-guides-search-content-accordion', { collapsed })} key={topic.slug}>
-                  <div
-                    className={classNames('dp-po-guides-search-content-title', { collapsed })}
-                    onClick={e => this.toggleTopic(e, topic, this.isExpandedTopic(topic))}
-                  >
-                    <IconRenderer
-                      object={guide}
-                      key={guide.icon_property ? guide.icon_property.urn_path : 'fa-user-headset'}
-                      figureStyle={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }}
-                      figureClassName="guide-icon"
-                      default={<Isvg src={guideDefault} />}
-                    />
-                    <Highlighter
-                      highlightClassName="filter-highlight"
-                      className="title"
-                      searchWords={[filter]}
-                      textToHighlight={topic.title}
-                    />
-                    <i className="dp-po-icon far fa-angle-down" />
-                  </div>
-                  {this.renderTopics(Object.values(topic.children), 1, collapsed)}
-                </div>
-              );
-            }
-          )}
+          {renderedTopics}
         </div>
       );
     }
