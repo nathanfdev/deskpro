@@ -8,7 +8,12 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use Doctrine\DBAL\Connection;
+use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\JobQueue\Processor\PurgeTicketsProcessor;
+use Application\DeskPRO\Tickets\Util as TicketUtil;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\LoadTwilioPriceProcessor;
 
 class TicketPurger
 {
@@ -32,84 +37,54 @@ class TicketPurger
 
     public function purgeSpamAction()
     {
-        $this->db->executeUpdate("
-            UPDATE blobs
-            LEFT JOIN tickets_attachments ON (tickets_attachments.blob_id = blobs.id)
-            LEFT JOIN tickets ON (tickets.id = tickets_attachments.ticket_id)
-            SET blobs.is_temp = 1
-            WHERE
-              tickets.status = 'hidden' AND tickets.ticket_status_id = {$this->getSpamStatusId()}
-              AND tickets_attachments.ticket_id IS NOT NULL
-        ");
-
-        $this->db->executeUpdate("
-            UPDATE blobs
-            LEFT JOIN ticket_proc_log ON (ticket_proc_log.blob_id = blobs.id)
-            LEFT JOIN tickets ON (tickets.id = ticket_proc_log.ticket_id)
-            SET blobs.is_temp = 1
-            WHERE
-              tickets.status = 'hidden' AND tickets.ticket_status_id = {$this->getSpamStatusId()}
-              AND ticket_proc_log.ticket_id IS NOT NULL
-        ");
-
-        $count = $this->db->delete(
-            'tickets',
-            ['status' => 'hidden', 'ticket_status_id' => $this->getSpamStatusId()]
-        );
-
-        return $count;
+        return $this->purgeByHiddenStatus('spam', $this->getSpamStatusId());
     }
 
     public function purgeDeletedAction()
     {
-        $this->db->executeUpdate("
-            UPDATE blobs
-            LEFT JOIN tickets_attachments ON (tickets_attachments.blob_id = blobs.id)
-            LEFT JOIN tickets ON (tickets.id = tickets_attachments.ticket_id)
-            SET blobs.is_temp = 1
-            WHERE
-              tickets.status = 'hidden' AND tickets.ticket_status_id = {$this->getDeletedStatusId()}
-              AND tickets_attachments.ticket_id IS NOT NULL
-        ");
-
-        $this->db->executeUpdate("
-            UPDATE blobs
-            LEFT JOIN ticket_proc_log ON (ticket_proc_log.blob_id = blobs.id)
-            LEFT JOIN tickets ON (tickets.id = ticket_proc_log.ticket_id)
-            SET blobs.is_temp = 1
-            WHERE
-              tickets.status = 'hidden' AND tickets.ticket_status_id = {$this->getDeletedStatusId()}
-              AND ticket_proc_log.ticket_id IS NOT NULL
-        ");
-
-        $count = $this->db->delete(
-            'tickets',
-            ['status' => 'hidden', 'ticket_status_id' => $this->getDeletedStatusId()]
-        );
-
-        return $count;
+        return $this->purgeByHiddenStatus('deleted', $this->getDeletedStatusId());
     }
 
     public function purgeAll()
     {
-        $this->db->executeUpdate('
-            UPDATE blobs
-            LEFT JOIN tickets_attachments ON (tickets_attachments.blob_id = blobs.id)
-            SET blobs.is_temp = 1
-            WHERE tickets_attachments.ticket_id IS NOT NULL
-        ');
+        do {
+            $ticketIds = $this->db->fetchAllCol(
+                'SELECT id FROM tickets WHERE id > ? LIMIT 1000',
+                [isset($ticketIds) ? max($ticketIds) : 0]
+            );
 
-        $this->db->executeUpdate('
-            UPDATE blobs
-            LEFT JOIN ticket_proc_log ON (ticket_proc_log.blob_id = blobs.id)
-            SET blobs.is_temp = 1
-            WHERE ticket_proc_log.ticket_id IS NOT NULL
-        ');
+            foreach ($ticketIds as $ticketId) {
+                TicketUtil::deleteTicketAttachments($ticketId, $this->db);
+            }
+        } while(count($ticketIds) > 0);
 
         $this->db->executeUpdate('delete from tickets');
         $this->db->executeUpdate('delete from tickets_deleted');
         $this->db->executeUpdate('delete from tickets_flagged');
         $this->db->executeUpdate('delete from tickets_sms');
+    }
+
+    /**
+     * @param string $type
+     * @param int    $statusId
+     *
+     * @throws \Exception
+     *
+     * @return int
+     */
+    protected function purgeByHiddenStatus($type, $statusId)
+    {
+        // run an async process with a cron job
+        App::$container->get('job.queue')->addJob(new Job(PurgeTicketsProcessor::JOB_TYPE, [
+            'type' => $type,
+        ]));
+
+        return $this->db->fetchColumn(<<<'SQL'
+            SELECT COUNT(*)
+            FROM tickets
+            WHERE status = "hidden" AND ticket_status_id = ?
+SQL
+            , [$statusId]);
     }
 
     /**

@@ -7,10 +7,11 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAccessCode;
-use Doctrine\DBAL\Driver\Connection;
 use Orb\Util\Arrays;
 
 class Util
@@ -124,34 +125,34 @@ class Util
      */
     public static function deleteTicketAttachments($ticket_id, Connection $db)
     {
-        $db->executeUpdate('
-            UPDATE blobs
+        $attachmentBlobIds = $db->fetchAllCol('
+            SELECT blobs.id
+            FROM blobs
             LEFT JOIN tickets_attachments ON (tickets_attachments.blob_id = blobs.id)
-            SET blobs.is_temp = 1
             WHERE tickets_attachments.ticket_id = ?
         ', [$ticket_id]);
 
-        $db->executeUpdate('
-            UPDATE blobs
+        $procLogBlobIds = $db->fetchAllCol('
+            SELECT blobs.id
+            FROM blobs
             LEFT JOIN ticket_proc_log ON (ticket_proc_log.blob_id = blobs.id)
-            SET blobs.is_temp = 1
             WHERE ticket_proc_log.ticket_id = ?
         ', [$ticket_id]);
 
-        $db->executeUpdate(<<<'SQL'
-            UPDATE blobs b
+        $customDataBlobIds = $db->fetchAllCol(<<<'SQL'
+            SELECT b.id
+            FROM blobs b
             LEFT JOIN custom_data_ticket cd ON (cd.value = b.id)
             LEFT JOIN custom_def_ticket cf ON (cd.root_field_id = cf.id)
-            SET b.is_temp = 1
             WHERE cf.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\File' AND cd.ticket_id = ?;
 SQL
         , [$ticket_id]);
 
-        $db->executeUpdate('
-            UPDATE blobs
+        $emailBlobIds = $db->fetchAllCol('
+            SELECT blobs.id
+            FROM blobs
             LEFT JOIN email_sources ON (email_sources.blob_id = blobs.id)
             LEFT JOIN tickets_messages ON (tickets_messages.email_source_id = email_sources.id)
-            SET blobs.is_temp = 1
             WHERE tickets_messages.ticket_id = ?
         ', [$ticket_id]);
 
@@ -160,5 +161,32 @@ SQL
             INNER JOIN tickets_messages ON (tickets_messages.email_source_id = email_sources.id)
             WHERE tickets_messages.ticket_id = ?
         ', [$ticket_id]);
+
+        $blobRepository = App::getEntityRepository(Blob::class);
+        $blobs          = $blobRepository->findBy([
+            'id' => array_merge($attachmentBlobIds, $procLogBlobIds, $customDataBlobIds, $emailBlobIds),
+        ]);
+
+        $toRemove = [];
+        foreach ($blobs as $blob) {
+            $originalBlob = $blob->getOriginalBlob();
+            $relatedBlobs = $blobRepository->findBy(['original_blob' => $originalBlob ?: $blob]);
+
+            $toRemove[$blob->getId()] = $blob;
+            if ($originalBlob) {
+                $toRemove[$originalBlob->getId()] = $originalBlob;
+            }
+            if ($relatedBlobs) {
+                foreach ($relatedBlobs as $relatedBlob) {
+                    $toRemove[$relatedBlob->getId()] = $relatedBlob;
+                }
+            }
+        }
+
+        foreach ($toRemove as $blob) {
+            try {
+                App::$container->get('deskpro.blob_storage')->deleteBlobRecord($blob);
+            } catch (\Exception $e) {}
+        }
     }
 }

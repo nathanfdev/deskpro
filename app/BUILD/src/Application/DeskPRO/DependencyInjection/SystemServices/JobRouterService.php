@@ -14,6 +14,7 @@ use Application\DeskPRO\JobQueue\Processor\FeatureProcessor;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
+use Application\DeskPRO\JobQueue\Processor\PurgeTicketsProcessor;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
@@ -140,6 +141,9 @@ class JobRouterService
                 $container->get('deskpro.toggle_feature_manager')
             )
         );
+
+        // cleanup processor
+        $router->addProcessor(new PurgeTicketsProcessor($conn));
 
         return $router;
     }
