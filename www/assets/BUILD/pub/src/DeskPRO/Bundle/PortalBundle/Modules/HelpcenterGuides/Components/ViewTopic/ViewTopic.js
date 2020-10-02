@@ -114,6 +114,13 @@ class ViewTopic extends React.Component {
     return params.slug;
   }
 
+  getTopicSlug = (params) => {
+    if (Object.prototype.hasOwnProperty.call(params, 'splat')) {
+      return params.slug;
+    }
+    return '';
+  }
+
   handleScroll = () => {
     if (this.state.fixed !== this.elements.guidesMain.getBoundingClientRect().top < 28) {
       this.setState({
@@ -286,15 +293,17 @@ class ViewTopic extends React.Component {
     return false;
   };
 
-  grabTopicFromApi = (slug) => {
+  grabTopicFromApi = (slug, forceScroll = false) => {
     if (this.scrolling) {
       return;
     }
 
+    let scroll = false;
     let scrollPage = false;
     if (this.elements.guidesMain.getBoundingClientRect().top <= 70) {
-      scrollPage = this.elements.guidesMain.getBoundingClientRect().top + window.document.documentElement.scrollTop;
+      scroll = true;
     }
+    scrollPage = this.elements.guidesMain.getBoundingClientRect().top + window.document.documentElement.scrollTop;
 
     this.setState({
       loaded: false
@@ -313,7 +322,7 @@ class ViewTopic extends React.Component {
         topic,
         flashes: [],
       });
-      if (scrollPage) {
+      if (forceScroll || scroll) {
         setTimeout(() => {
           window.scrollTo(0, scrollPage - 27);
         }, 200);
@@ -402,12 +411,18 @@ class ViewTopic extends React.Component {
   };
 
   renderGuideLanding() {
-    const { guide, topicList } = this.state;
+    const { guide, topicList, guideSlug } = this.state;
     let { description } = guide;
     const { splash_image_property: splashImageProperty } = guide;
+    const topics = Object.values(topicList).filter(t => t.no_content === '0' && t.content_length !== '0');
+    const topic1 = topics.shift();
+
+    let baseUrl = window.DESKPRO_BASE_URL;
+    if (baseUrl) {
+      baseUrl = baseUrl.replace(/\/+$/, '');
+    }
+
     if (!description) {
-      const topics = Object.values(topicList).filter(t => t.no_content === '0' && t.content_length !== '0');
-      const topic1 = topics.shift();
       const topic2 = topics.shift();
       if (topic2) {
         description = (
@@ -457,9 +472,15 @@ class ViewTopic extends React.Component {
             </div>
             <div className="dp-po-guides-landing-body">
               <p>{description}</p>
-              <a href="" className="dp-po-guides-btn btn btn-outline-primary">
+              <Link
+                className="dp-po-guides-btn btn btn-outline-primary"
+                to={`${baseUrl}/guides/${guideSlug}/${topic1.slug}`}
+                onClick={() => {
+                  this.grabTopicFromApi(topic1.slug);
+                }}
+              >
                 <FormattedMessage id="helpcenter.guides.start_reading" />
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -490,8 +511,8 @@ class ViewTopic extends React.Component {
 
   render() {
     const { topicList, fixed, loaded, twoLevelSection, guide } = this.state;
-    const { slug: topicSlug } = this.props.params;
     const guideSlug = this.getGuideSlug(this.props.params);
+    const topicSlug = this.getTopicSlug(this.props.params);
 
     return (
       <div className={classNames('container', { fixed })}>
