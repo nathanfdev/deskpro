@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import { FormattedDate, FormattedMessage } from 'react-intl';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import moment from 'moment';
 import $ from 'jquery';
@@ -194,16 +195,16 @@ class ViewTopic extends React.Component {
     if (block.classList.contains('info')) {
       mode = 'note';
       title = 'Note';
-      icon = 'fa-info-circle';
+      icon = 'info-circle';
     } else {
       mode = 'warning';
       title = 'Warning';
-      icon = 'fa-exclamation-circle';
+      icon = 'exclamation-circle';
     }
     const codeBlock = (
       <div className={`dp-po-post-content-${mode}`} >
         <h4 className={`dp-po-post-content-${mode}-title`}>
-          <i className={classNames('dp-po-icon', 'fal', icon)} /> {title}
+          <FontAwesomeIcon icon={['fal', icon]} className="dp-po-icon" /> {title}
         </h4>
         <p dangerouslySetInnerHTML={{ __html: block.innerHTML }} />
       </div>
@@ -544,7 +545,7 @@ class ViewTopic extends React.Component {
                     <div className="row">
                       <div className="col-sm-9">
                         <div className={classNames({ 'dp-po-guides-loading': !loaded })}>
-                          <i className="dp-icon fa-3x far fa-spinner fa-pulse" />
+                          <FontAwesomeIcon icon={['far', 'spinner']} pulse size="3x" className="dp-icon" />
                         </div>
                       </div>
                     </div>

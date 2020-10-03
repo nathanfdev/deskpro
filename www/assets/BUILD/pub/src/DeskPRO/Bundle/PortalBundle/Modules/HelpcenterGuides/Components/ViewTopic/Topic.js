@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage, FormattedDate } from 'react-intl';
 import Link from 'react-router/lib/Link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import $ from 'jquery';
 import { copyTextToClipboard } from 'DeskPRO/Component/Util/ClipBoard';
 import { TopicSummary, CommentsBlock } from '../index';
@@ -132,7 +133,7 @@ class Topic extends React.PureComponent {
             onClick={() => grabTopicFromApi(next.slug)}
           >
             <figure className="dp-po-icon">
-              <i className="fal fa-angle-right" />
+              <FontAwesomeIcon icon={['fal', 'angle-right']} />
             </figure>
             <span className="sup">
               <FormattedMessage id="helpcenter.guides.next_topic" />
@@ -155,7 +156,7 @@ class Topic extends React.PureComponent {
               {previous.title}
             </span>
             <figure className="dp-po-icon">
-              <i className="fal fa-angle-left" />
+              <FontAwesomeIcon icon={['fal', 'angle-left']} />
             </figure>
           </Link>
         }
@@ -238,7 +239,7 @@ class Topic extends React.PureComponent {
                         className="dp-po-icon dp-info" data-toggle="tooltip"
                         title={intl.formatMessage({ id: 'helpcenter.general.viewed_by_agents_only' })} data-placement="top"
                       >
-                        <i className="fal fa-info-circle text-primary" />
+                        <FontAwesomeIcon icon={['fal', 'angle-info-circle']} className="text-primary" />
                       </span>
                       : null}
                     <a

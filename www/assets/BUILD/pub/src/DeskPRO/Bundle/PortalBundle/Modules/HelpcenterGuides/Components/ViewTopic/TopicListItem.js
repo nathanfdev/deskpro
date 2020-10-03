@@ -3,6 +3,7 @@ import React from 'react';
 import Link from 'react-router/lib/Link';
 import Highlighter from 'react-highlight-words';
 import classNames from 'classnames';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class TopicListItem extends React.Component {
   static propTypes = {
@@ -135,7 +136,7 @@ class TopicListItem extends React.Component {
             searchWords={[filter]}
             textToHighlight={topic.title}
           />
-          {Object.values(topic.children).length > 0 && <figure className="dp-po-icon"><i className="fas fa-caret-down" /></figure>}
+          {Object.values(topic.children).length > 0 && <figure className="dp-po-icon"><FontAwesomeIcon icon={['fas', 'caret-down']} /></figure>}
         </Link>
         {this.renderChildren()}
       </li>

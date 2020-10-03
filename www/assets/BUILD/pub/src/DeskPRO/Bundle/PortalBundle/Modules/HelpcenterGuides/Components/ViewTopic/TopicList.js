@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import Isvg from 'react-inlinesvg';
 import Highlighter from 'react-highlight-words';
 import guideDefault from '@deskpro/portal-style/dist/img/page-icons/guide-default.svg';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconRenderer } from 'DeskPRO/Component/IconRenderer';
 import TopicListItem from './TopicListItem';
 
@@ -26,7 +27,7 @@ class TopicList extends React.Component {
   static renderNoResults() {
     return (
       <div className="dp-po-guides-search-no-results">
-        <i className="dp-po-icon far fa-search" />
+        <FontAwesomeIcon icon={['far', 'search']} className="dp-po-icon" />
         <span><FormattedMessage id="helpcenter.guides.no_matching_topics" /></span>
       </div>
     );
@@ -170,7 +171,7 @@ class TopicList extends React.Component {
                   searchWords={[filter]}
                   textToHighlight={topic.title}
                 />
-                <i className="dp-po-icon far fa-angle-down" />
+                <FontAwesomeIcon icon={['far', 'angle-down']} className="dp-po-icon" />
               </div>
               {this.renderTopics(Object.values(topic.children), 1, collapsed)}
             </div>
@@ -200,7 +201,7 @@ class TopicList extends React.Component {
       <div className="dp-po-guides-search" style={style}>
         <form className="dp-po-guides-search-form">
           <input type="search" value={filter} placeholder="Search table of contents" onChange={this.handleFilterChange} />
-          <button type="submit"><i className="dp-po-icon far fa-search" /></button>
+          <button type="submit"><FontAwesomeIcon icon={['far', 'search']} className="dp-po-icon" /></button>
         </form>
         <div className="dp-po-guides-search-block">
           {this.renderList()}

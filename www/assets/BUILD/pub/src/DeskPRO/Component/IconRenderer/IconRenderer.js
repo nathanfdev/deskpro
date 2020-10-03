@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import * as fas from '@fortawesome/pro-solid-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const IconRenderer = ({
   object,
@@ -29,16 +28,11 @@ export const IconRenderer = ({
       </figure>
     );
   } else if (iconProperty.urn_ns === 'urn:deskpro:product:icons:fontawesome') {
-    // const iconClass = iconProperty.urn_path.replace(/(-)(.)/g, function(match, $1, $2) { return $2.toUpperCase(); })
     const style = {};
     if (object.color && typeof style.backgroundColor === 'undefined') {
       style.backgroundColor = `#${object.color}`;
     }
 
-    // if (fas[iconClass]) {
-    //   return <FontAwesomeIcon className={className} icon={fas[iconClass]} />;
-    // }
-    // console.log(iconProperty.urn_path);
     let iconStyle = 'fas';
     if (typeof iconProperty.options.style !== 'undefined') {
       iconStyle = iconProperty.options.style;
@@ -47,7 +41,7 @@ export const IconRenderer = ({
     if (iconStyle) {
       return (
         <figure className={`dp-po-icon ${figureClassName}`} style={figureStyle}>
-          <i className={`${className} ${iconStyle} ${iconProperty.urn_path}`} style={style} />
+          <FontAwesomeIcon icon={[iconStyle, iconProperty.urn_path.replace(/^fa-/, '')]} style={style} className={className} />
         </figure>
       );
     }

@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { getErrorsByErrorPath } from 'DeskPRO/Component/Form/FormErrors';
 import { FormattedMessage } from 'react-intl';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class CommentForm extends React.Component {
   static propTypes = {
@@ -231,7 +232,7 @@ class CommentForm extends React.Component {
                   style={{ whiteSpace: 'nowrap' }}
                 >
                   <FormattedMessage id="helpcenter.general.comment_btn_save" />&nbsp;
-                  {this.state.loading ? <figure className="dp-po-icon"><i className="fas fa-spinner fa-pulse" /></figure> : '' }
+                  {this.state.loading ? <figure className="dp-po-icon"><FontAwesomeIcon icon={['fas', 'spinner']} pulse /></figure> : '' }
                 </button>
               </div>
             </div>

@@ -7,6 +7,10 @@ import { IntlProvider } from 'react-intl';
 import HelpCenterPage from './PageWidget/HelpCenterPage';
 import { portalPhrases } from './PortalPhrases';
 import App from './Modules/Application/Components/AppContainer';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/pro-solid-svg-icons';
+import { faAngleDown, faAngleRight, faAngleLeft, faInfoCircle, faExclamationCircle } from '@fortawesome/pro-light-svg-icons';
+import { faSearch, faAngleDown as farAngleDown, faSpinner } from '@fortawesome/pro-regular-svg-icons';
 
 // Async load FA
 import('@fortawesome/fontawesome-pro/js/all.min');
@@ -20,6 +24,7 @@ class HelpcenterApp {
     if (window.DESKPRO_PHRASES) {
       this.phrases.setPhrases(window.DESKPRO_PHRASES);
     }
+    library.add(fas, faAngleDown, faAngleRight, faAngleLeft, faInfoCircle, faExclamationCircle, faSearch, farAngleDown, faSpinner);
   }
 
   getPortalPage() {
