@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import { copyTextToClipboard } from 'DeskPRO/Component/Util/ClipBoard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class CodeBlock extends React.Component {
   static propTypes = {
@@ -33,8 +34,8 @@ class CodeBlock extends React.Component {
         <div dangerouslySetInnerHTML={{ __html: this.props.html }} />
         <a className={classNames('code-copy', { copied: this.state.copied })} onClick={this.onClick}>
           {this.state.copied ?
-            <span><i className="fas fa-check" /> copied</span> :
-            <span><i className="fas fa-clipboard" /> copy</span> }
+            <span><FontAwesomeIcon icon={['fas', 'check']} /> copied</span> :
+            <span><FontAwesomeIcon icon={['fas', 'clipboard']} /> copy</span> }
         </a>
       </span>
     );

@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
+import { Link } from 'react-scroll';
+import { FormattedMessage } from 'react-intl';
 
 const getHeading = (html) => {
   const container = document.createElement('div');
@@ -43,16 +45,22 @@ class TopicSummary extends React.Component {
     if (this.state.h1s.length === 0) {
       return null;
     }
+    const offset = 0;
     return (
       <div className={classNames('dp-po-guides-contents', className, { fixed })}>
         <div>
-          <h3 className="dp-po-guides-contents-title">Contents</h3>
+          <h3 className="dp-po-guides-contents-title"><FormattedMessage id="helpcenter.guides.topic_sections" /></h3>
           <ul className="dp-po-guides-contents-list">
             {this.state.h1s.map((h1, index) => <li className="dp-po-guides-contents-item" key={index}>
-              <a
+              <Link
                 href={`#${h1.id}`}
-                className={classNames('dp-po-guides-contents-link')}
-              ><i className="dp-po-icon fal fa-angle-right" />{h1.innerText}</a>
+                to={h1.id}
+                offset={offset}
+                className={classNames('dp-po-guides-contents-link', { active: this.state.activeId === h1.id })}
+                spy
+                smooth
+                onSetActive={this.handleSetActive}
+              >{h1.innerText}</Link>
             </li>)}
           </ul>
         </div>

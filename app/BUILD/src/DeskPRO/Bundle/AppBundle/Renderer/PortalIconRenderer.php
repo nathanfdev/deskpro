@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Translate\HasPhraseName;
@@ -16,6 +17,13 @@ use Exception;
 
 class PortalIconRenderer
 {
+    private $twig;
+
+    public function __construct($twig)
+    {
+        $this->twig = $twig;
+    }
+
     public function getIconHtml(IconProperty $icon, $object = null, $asDownloadUrl = false, $isRounded = false)
     {
         if ($icon->getUrnNs() === IconProperty::$blobNs) {
@@ -42,6 +50,29 @@ class PortalIconRenderer
 
     public function getIconHtmlFrom(HasIconProperty $object, $options = [])
     {
+        if ($object instanceof Guide) {
+            $style = ' style="background-color: var(--warning)"';
+            if ($object->getColor()) {
+                $style = ' style="background-color:'.$object->getColor().'"';
+            }
+            $figureClass = '';
+            if (isset($options['figure_class'])) {
+                $figureClass = $options['figure_class'];
+            }
+            if ($object->getIcon()) {
+                $icon = $this->getIconHtml(
+                    $object->getIcon(),
+                    $object,
+                    isset($options['as_download_url']) && $options['as_download_url'],
+                    isset($options['is_rounded']) && $options['is_rounded']
+                );
+                if ($icon) {
+                    return '<figure class="dp-po-icon '.$figureClass.'" '.$style.' >'.$icon.'</figure>';
+                }
+            }
+
+            return '<figure class="dp-po-icon '.$figureClass.'" '.$style.' ><img class="dp-icon-svg" src="'.$this->twig->getExtension('asset')->getAssetUrl('img/page-icons/guide-default.svg', 'help_center').'" alt=""></figure>';
+        }
         if ($object->getIcon()) {
             $icon = $this->getIconHtml(
                 $object->getIcon(),
@@ -53,7 +84,7 @@ class PortalIconRenderer
                 return $icon;
             }
         }
-        $class = 'far file';
+        $class = 'far fa-file';
         if ($object instanceof CategoryAbstract) {
             $class = 'fas fa-folder';
         }

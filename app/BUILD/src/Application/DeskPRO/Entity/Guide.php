@@ -412,6 +412,40 @@ class Guide extends DomainObject implements HasIconProperty, HasSplashImagePrope
     }
 
     /**
+     * @JMS\VirtualProperty()
+     *
+     * @return \DateTime
+     */
+    public function getDatePublished()
+    {
+        $date = new \DateTime();
+        foreach ($this->getActiveTopics() as $topic) {
+            if ($topic->getDatePublished() < $date) {
+                $date = $topic->getDatePublished();
+            }
+        }
+
+        return $date;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     *
+     * @return \DateTime
+     */
+    public function getDateUpdated()
+    {
+        $date = new \DateTime('2000-01-01');
+        foreach ($this->getActiveTopics() as $topic) {
+            if ($topic->getDateUpdated() > $date) {
+                $date = $topic->getDateUpdated();
+            }
+        }
+
+        return $date;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function __toString()

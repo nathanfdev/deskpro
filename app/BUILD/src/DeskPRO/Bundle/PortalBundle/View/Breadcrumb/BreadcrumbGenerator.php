@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 
@@ -139,6 +137,7 @@ class BreadcrumbGenerator
             foreach ($a->getCategories() as $cat_to_check) {
                 if ($permission_bag->hasContentCategoryAccess($cat_to_check)) {
                     $cat = $cat_to_check;
+
                     break;
                 }
             }
@@ -232,7 +231,7 @@ class BreadcrumbGenerator
 
     public function buildGuide(Guide $guide)
     {
-        return $this->createGuideBuilder($guide)->done();
+        return $this->createBuilder()->addTopics()->addGuide($guide)->done();
     }
 
     protected function createGuideBuilder(Topic $topic)
