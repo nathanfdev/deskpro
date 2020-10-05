@@ -215,6 +215,7 @@ class UserChatManager
         try {
             $convo->addParticipant($person);
             $this->em->persist($convo);
+            $this->em->flush();
 
             $message = $this->addSystemMessage(
                 $convo,
@@ -928,23 +929,14 @@ class UserChatManager
         $msg->metadata = $metadata;
 
         $convo->addMessage($msg);
-        $this->em->beginTransaction();
-
-        try {
-            $this->em->persist($msg);
-            $this->em->persist($convo);
-            $this->em->commit();
-        } catch (\Exception $e) {
-            $this->em->rollback();
-
-            throw $e;
-        }
 
         $channel = $convo->getChannelId('newmessage');
         if ($msg->is_user_hidden) {
             $channel = $convo->getChannelId('hidden_newmessage');
         }
 
+        $this->em->persist($msg);
+        $this->em->persist($convo);
         $this->em->flush();
 
         $this->dispatchLegacyEvent($channel, $msg->getInfo());
