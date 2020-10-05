@@ -160,7 +160,8 @@ class ViewTopic extends React.Component {
         if (internalLink.hash) {
           target += internalLink.hash;
         }
-        newLink.innerText = internalLink.text;
+        console.log(internalLink);
+        newLink.innerHTML = `<i class="fas fa-book"></i> ${internalLink.text}`;
         internalLink.parentNode.replaceChild(newLink, internalLink);
       } else {
         const newLink = document.createElement('span');

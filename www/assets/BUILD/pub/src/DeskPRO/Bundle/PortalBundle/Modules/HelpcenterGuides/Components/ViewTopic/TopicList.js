@@ -63,13 +63,16 @@ class TopicList extends React.Component {
     if (filter) {
       return Object.values(topic.children).find(c => this.filterTopic(c));
     }
+    if (topic.slug === topicSlug || Object.values(topic.children).find(c => this.isExpandedTopic(c, true))) {
+      return true;
+    }
     if (!recursive && typeof expanded[topic.id] !== 'undefined') {
       return expanded[topic.id];
     }
     if (recursive && typeof expanded[topic.id] !== 'undefined' && expanded[topic.id]) {
       return true;
     }
-    return topic.slug === topicSlug || Object.values(topic.children).find(c => this.isExpandedTopic(c, true));
+    return false;
   };
 
   grabTopicFromApi = (slug) => {
