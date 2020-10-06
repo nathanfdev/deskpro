@@ -22,7 +22,7 @@ class LockFactory
         $store   = new RetryTillSaveStore(new PdoStore($container->get('doctrine.dbal.default_connection')), 750, 2);
         $factory = new Factory($store);
 
-        return $factory->createLock('voice-task-router', 30);
+        return $factory->createLock('voice-task-router', 20);
     }
 
     /**
@@ -35,6 +35,6 @@ class LockFactory
         $store   = new RetryTillSaveStore(new PdoStore($container->get('doctrine.dbal.default_connection')), 500);
         $factory = new Factory($store);
 
-        return $factory->createLock('voice-task-router', 30);
+        return $factory->createLock('voice-task-router', 20);
     }
 }
