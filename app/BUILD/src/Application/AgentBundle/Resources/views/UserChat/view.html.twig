@@ -394,6 +394,9 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 				{% if not has_joined %}
 					<div class="agent-join">
+						<div class="is-loading" style="padding-top: 9px;">
+							<img src="{{ asset('images/spinners/loading-small.gif') }}"/>
+						</div>
 						<button class="clean-white small join-convo">{{ phrase('agent.chat.join_chat') }}</button>
 					</div>
 				{% endif %}
