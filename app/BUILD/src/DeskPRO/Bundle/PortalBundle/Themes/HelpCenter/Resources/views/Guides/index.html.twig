@@ -1,0 +1,54 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_content %}
+<div class="dp-po">
+    <main id="main" tabindex="-1" class="dp-po-main dp-po-guides-home">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="dp-po-title">
+                        <img class="dp-po-title-svg"
+                             src="{{ asset('img/page-icons/guides.svg', 'help_center') }}">
+                        <h1 class="dp-po-title-text">{{ phrase('helpcenter.general.nav_guides') }}</h1>
+                        <div class="dp-po-guides-filter d-none d-md-block">
+                            <input type="search" id="guide_filter_input" placeholder="{{ phrase('helpcenter.guide.filter_guides') }}" />
+                            <i class="far fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dp-po-guides">
+                <div class="row">
+                    {% for guide in guides %}
+                        <div class="col-md-6">
+                            <div class="dp-po-guides-item">
+                                <div class="dp-po-guides-card">
+                                    <div class="dp-po-guides-left">
+                                        {% if has_splash(guide) %}
+                                            <figure class="dp-po-guides-image" style="background-image: url('{{ get_splash_url(guide, 600) }}')"></figure>
+                                        {% else %}
+                                            {{ render_icon_from(guide, {as_download_url: true, is_rounded: true, figure_class: 'dp-po-guides-icon-background'}) }}
+                                            {{ render_icon_from(guide, {as_download_url: true, is_rounded: true, figure_class: 'dp-po-guides-icon'}) }}
+                                        {% endif %}
+                                    </div>
+                                    {% set topics = guide.getActiveTopics()|slice(0,2) %}
+                                    {% set topic1 = topics[0] %}
+                                    {% set topic2 = false %}
+                                    {% if topics|length > 1 %}
+                                        {% set topic2 = topics[1] %}
+                                    {% endif %}
+                                    <div class="dp-po-guides-right">
+                                        <h2 class="dp-po-guides-title"><a href="{{ portal_path(guide) }}">{{ guide }}</a></h2>
+                                        <p class="dp-po-guides-content">{{ guide.description | default(topic2 ? phrase('helpcenter.guides.default_description', {guide_name: guide, topic1: topic1.title, topic2: topic2.title}) : phrase('helpcenter.guides.default_description_short', {guide_name: guide, topic1: topic1.title})) }}</p>
+                                        <a class="dp-po-guides-btn btn btn-outline-primary" href="{{ portal_path(guide) }}">{{ phrase('helpcenter.guides.view_guide') }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock page_content %}

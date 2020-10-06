@@ -13,6 +13,7 @@ services:
 
   portal_icon.renderer:
     class: DeskPRO\Bundle\AppBundle\Renderer\PortalIconRenderer
+    arguments: ["@twig"]
 
 
   splash_image.renderer:

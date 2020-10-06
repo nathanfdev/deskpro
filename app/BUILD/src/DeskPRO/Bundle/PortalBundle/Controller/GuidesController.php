@@ -55,7 +55,23 @@ class GuidesController extends AbstractPublishController
         }
 
         if ($this->isHelpCenterTheme()) {
-            return $this->redirectToRoute('user_guides', ['slug' => $guide->getSlug()]);
+            if (count($guides) > 1) {
+                $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuides();
+
+                array_unshift($guides, $guide);
+
+                $viewVars = [
+                    'guides'      => $guides,
+                    'breadcrumbs' => $breadcrumbs,
+                ];
+
+                return $this->renderThemeView(
+                    'Theme:Guides:index.html.twig',
+                    $viewVars
+                );
+            } else {
+                return $this->redirectToRoute('user_guides', ['slug' => $guide->getSlug()]);
+            }
         }
         $activeTopics = Arrays::flattenHierarchy($guide->getActiveTopics()->toArray());
         Arrays::sortFlatHierarchyArray($activeTopics);
@@ -74,11 +90,14 @@ class GuidesController extends AbstractPublishController
      * @Security("is_granted('USE_GUIDES') and is_granted('VIEW_GUIDE', guide)")
      * @PageHttpCache()
      *
+     * @param Request $request
      * @param Guide $guide
+     *
+     * @throws \Exception
      *
      * @return Response
      */
-    public function browseAction(Guide $guide)
+    public function browseAction(Request $request, Guide $guide)
     {
         $activeTopics = Arrays::flattenHierarchy($guide->getActiveTopics()->toArray());
         Arrays::sortFlatHierarchyArray($activeTopics);
@@ -86,6 +105,33 @@ class GuidesController extends AbstractPublishController
 
         if (!$topic) {
             return $this->redirectToRoute('portal_home');
+        }
+
+        if ($this->isHelpCenterTheme()) {
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuide($guide);
+
+            $serializer = $this->get('serializer');
+
+            $person = $this->getCurrentPerson();
+
+            $guides = $this->getGuidesDataService()->getGuides($person);
+
+            $context = new SideloadSerializationContext(['icon_property', 'splash_image_property', 'blob'], $this->getContainer()->get('security.token_storage'));
+            $context->setIdsOnly(false);
+            $context->setInlineSideloads(true);
+            $context->setRequest($request);
+
+            $viewVars = [
+                'breadcrumbs' => $breadcrumbs,
+                'guide'       => $guide,
+                'guides'      => $guides,
+                'guides_json' => Strings::escapeForJson(json_encode($serializer->toArray(new ApiWrapper($guides), $context)['data'])),
+            ];
+
+            return $this->renderThemeView(
+                'Theme:Guides:view.html.twig',
+                $viewVars
+            );
         }
 
         return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $topic->getId()]);

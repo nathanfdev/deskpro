@@ -11,7 +11,6 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\HttpFoundation\Session;
@@ -1948,29 +1947,35 @@ class TemplatingExtension extends \Twig_Extension
 
     public function getManualInternalLink($type, $id, $title = '', $anchor = '', $pdf = false)
     {
-        $em = $this->getContainer()->getEm();
+        $em   = $this->getContainer()->getEm();
+        $icon = "";
         switch ($type) {
             case 'article':
             case 'knowledgebase':
             case 'knowledgebase_article':
                 $object = $em->getRepository(Article::class)->find($id);
+                $icon   = "far fa-list-alt";
 
                 break;
             case 'news':
                 $object = $em->getRepository(News::class)->find($id);
+                $icon   = "far fa-calendar-alt";
 
                 break;
             case 'community':
                 $object = $em->getRepository(CommunityTopic::class)->find($id);
+                $icon   = "fas fa-thumbs-up";
 
                 break;
             case 'download':
                 $object = $em->getRepository(Download::class)->find($id);
+                $icon   = "fas fa-download";
 
                 break;
             case 'guide':
             case 'topic':
                 $object = $em->getRepository(Topic::class)->find($id);
+                $icon   = "fas fa-book";
 
                 break;
             default:
@@ -1993,9 +1998,9 @@ class TemplatingExtension extends \Twig_Extension
                 $target .= '_'.$anchor;
             }
 
-            return '<a class="internal_link topic" href="#'.$target.'">'.$title.'</a>';
+            return '<a class="internal_link topic" href="#'.$target.'"><i class="'.$icon.'"></i> '.$title.'</a>';
         } else {
-            return '<a class="internal_link '.$type.'" href="'.$url.'">'.$title.'</a>';
+            return '<a class="internal_link '.$type.'" href="'.$url.'"><i class="'.$icon.'"></i> '.$title.'</a>';
         }
     }
 
@@ -2139,9 +2144,10 @@ class TemplatingExtension extends \Twig_Extension
     /**
      * @param array    $array
      * @param callable $arrow
+     *
      * @return array|\CallbackFilterIterator
      */
-    function safeArrayFilter($array, $arrow)
+    public function safeArrayFilter($array, $arrow)
     {
         if (is_string($arrow)) {
             throw new \RuntimeException("Arrow function cannot be a string");
