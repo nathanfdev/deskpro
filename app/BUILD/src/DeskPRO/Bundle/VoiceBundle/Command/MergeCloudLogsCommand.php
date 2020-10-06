@@ -21,6 +21,8 @@ class MergeCloudLogsCommand extends ContainerAwareCommand
         $this->addArgument('path');
         $this->addOption('output', null, InputOption::VALUE_REQUIRED);
         $this->addOption('json', null, InputOption::VALUE_NONE);
+        $this->addOption('task', null, InputOption::VALUE_REQUIRED);
+        $this->addOption('chat', null, InputOption::VALUE_REQUIRED);
     }
 
     /**
@@ -40,6 +42,31 @@ class MergeCloudLogsCommand extends ContainerAwareCommand
                 if ($log) {
                     $logs[] = $log;
                 }
+            }
+        }
+
+        // filter by chat id
+        if ($input->getOption('chat')) {
+            $newChatLogs = array_filter($logs, function ($log) use ($input) {
+                return strpos($log, 'chat_id = '.$input->getOption('chat'));
+            });
+
+            // filter by task id as well
+            // in case if there are more than one task for this chat
+            if ($input->getOption('task')) {
+                $newChatTaskIds = [$input->getOption('task')];
+            } else {
+                $newChatTaskIds = array_map(function ($log) {
+                    return preg_replace('/^.*task_id = (\d+)(,|").*$/', '$1', $log);
+                }, $newChatLogs);
+            }
+
+            if ($newChatTaskIds) {
+                $logs = array_filter($logs, function ($log) use ($newChatTaskIds) {
+                    return preg_match('/task_id = ('.implode('|', $newChatTaskIds).')(,|")/', $log);
+                });
+            } else {
+                $logs = [];
             }
         }
 
@@ -63,7 +90,18 @@ class MergeCloudLogsCommand extends ContainerAwareCommand
             return $t1 > $t2;
         });
 
-        $outputFile = $this->getContainer()->get('deskpro.app_env')->getUserLogsDir().'/voice_cloud.log';
+        if ($input->getOption('chat')) {
+            $outputName = '/voice_cloud.chat_'.$input->getOption('chat');
+            if ($input->getOption('task')) {
+                $outputName .= '.task_'.$input->getOption('task');
+            }
+
+            $outputName .= '.log';
+        } else {
+            $outputName = '/voice_cloud.log';
+        }
+
+        $outputFile = $this->getContainer()->get('deskpro.app_env')->getUserLogsDir().$outputName;
         if ($input->getOption('output')) {
             $outputFile = $input->getOption('output');
         }
