@@ -20,6 +20,7 @@ class MergeCloudLogsCommand extends ContainerAwareCommand
         $this->setName('dp:voice:merge-cloud-logs');
         $this->addArgument('path');
         $this->addOption('output', null, InputOption::VALUE_REQUIRED);
+        $this->addOption('json', null, InputOption::VALUE_NONE);
     }
 
     /**
@@ -42,14 +43,22 @@ class MergeCloudLogsCommand extends ContainerAwareCommand
             }
         }
 
-        usort($logs, function ($a, $b) {
-            $pattern = '#^\[(.*?)\].*#';
+        usort($logs, function ($a, $b) use ($input) {
+            if ($input->getOption('json')) {
+                $a = json_decode($a, true);
+                $b = json_decode($b, true);
 
-            preg_match($pattern, $a, $m1);
-            preg_match($pattern, $b, $m2);
+                $t1 = new \DateTime($a['datetime']['date']);
+                $t2 = new \DateTime($b['datetime']['date']);
+            } else {
+                $pattern = '#^\[(.*?)\].*#';
 
-            $t1 = new \DateTime($m1[1]);
-            $t2 = new \DateTime($m2[1]);
+                preg_match($pattern, $a, $m1);
+                preg_match($pattern, $b, $m2);
+
+                $t1 = new \DateTime($m1[1]);
+                $t2 = new \DateTime($m2[1]);
+            }
 
             return $t1 > $t2;
         });
