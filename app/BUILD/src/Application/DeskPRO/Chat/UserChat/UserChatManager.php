@@ -485,12 +485,6 @@ class UserChatManager
         $old_agent_id   = $convo->getAgentId();
         $old_agent_name = $convo->getAgent()->getDisplayNameUser();
 
-        App::$container->get('dp.voice.task_router')->completeTaskForWorker(
-            $convo->getTaskId(),
-            'agent',
-            $old_agent_id
-        );
-
         $convo->setAgent(null);
         $this->em->persist($convo);
 
@@ -528,6 +522,12 @@ class UserChatManager
                 array_merge($convo->getInfo(), ['old_agent_id' => $old_agent_id])
             );
         }
+
+        App::$container->get('dp.voice.task_router')->completeTaskForWorker(
+            $convo->getTaskId(),
+            'agent',
+            $old_agent_id
+        );
     }
 
     /**
@@ -675,6 +675,8 @@ class UserChatManager
             $convo->ended_by = ChatConversation::ENDED_ABANDONED;
         }
 
+        $this->em->flush();
+
         $message = null;
         if ($convo->ended_by != 'timeout' && $convo->ended_by != 'wait_timeout' && $convo->ended_by != 'abandoned') {
             if ($author) {
@@ -683,8 +685,6 @@ class UserChatManager
                 $message = $this->addSystemMessage($convo, 'message_ended', [], ['chat_ended' => true]);
             }
         }
-
-        App::$container->get('dp.voice.task_router')->endTask($convo->getTaskId());
 
         $this->dispatchLegacyEvent('chat.ended', $convo->getInfo());
         $this->eventDispatcher->dispatch(
@@ -706,6 +706,8 @@ class UserChatManager
                 );
             }
         }
+
+        App::$container->get('dp.voice.task_router')->endTask($convo->getTaskId());
     }
 
     /**
