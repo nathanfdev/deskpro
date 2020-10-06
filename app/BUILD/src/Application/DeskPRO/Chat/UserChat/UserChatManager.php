@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
@@ -229,15 +227,6 @@ class UserChatManager
                 ]
             );
 
-            $this->eventDispatcher->dispatch(
-                ChatEvent::EVENT_NAME,
-                new ChatEvent(
-                    $convo->getId(),
-                    ChatEvent::CHAT_USER_JOINED_EVENT_TYPE,
-                    ['message' => $message]
-                )
-            );
-
             $this->em->flush();
             $this->em->commit();
         } catch (UniqueConstraintViolationException $e) {
@@ -248,6 +237,16 @@ class UserChatManager
 
             throw $e;
         }
+
+        // send those only if everything is fine, otherwise people will get falsy messages in their channels
+        $this->eventDispatcher->dispatch(
+            ChatEvent::EVENT_NAME,
+            new ChatEvent(
+                $convo->getId(),
+                ChatEvent::CHAT_USER_JOINED_EVENT_TYPE,
+                ['message' => $message]
+            )
+        );
     }
 
     /**
@@ -290,15 +289,6 @@ class UserChatManager
                 ['user_left' => true, 'person_name' => $person->display_name_user, 'person_id' => $person->id]
             );
 
-            $this->eventDispatcher->dispatch(
-                ChatEvent::EVENT_NAME,
-                new ChatEvent(
-                    $convo->getId(),
-                    ChatEvent::CHAT_USER_LEFT_EVENT_TYPE,
-                    ['message' => $message]
-                )
-            );
-
             $this->em->flush();
             $this->em->commit();
         } catch (\Exception $e) {
@@ -306,6 +296,15 @@ class UserChatManager
 
             throw $e;
         }
+
+        $this->eventDispatcher->dispatch(
+            ChatEvent::EVENT_NAME,
+            new ChatEvent(
+                $convo->getId(),
+                ChatEvent::CHAT_USER_LEFT_EVENT_TYPE,
+                ['message' => $message]
+            )
+        );
     }
 
     /**
@@ -408,15 +407,6 @@ class UserChatManager
                 )
             );
 
-            $this->eventDispatcher->dispatch(
-                ChatEvent::EVENT_NAME,
-                new ChatEvent(
-                    $convo->getId(),
-                    ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE,
-                    ['message' => $message]
-                )
-            );
-
             $this->em->flush();
             $this->em->commit();
         } catch (\Exception $e) {
@@ -424,6 +414,15 @@ class UserChatManager
 
             throw $e;
         }
+
+        $this->eventDispatcher->dispatch(
+            ChatEvent::EVENT_NAME,
+            new ChatEvent(
+                $convo->getId(),
+                ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE,
+                ['message' => $message]
+            )
+        );
     }
 
     /**
