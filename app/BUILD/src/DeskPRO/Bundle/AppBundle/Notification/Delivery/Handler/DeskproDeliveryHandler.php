@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
@@ -34,18 +35,31 @@ class DeskproDeliveryHandler extends MultiplexDeliverHandler
     private $secret;
 
     /**
+     * @var string
+     */
+    private $prefix;
+
+    /**
      * @var int
      */
     private $maxMessageSize;
 
     /**
+     * @var AppEnv
+     */
+    private $appEnv;
+
+    /**
      * @param SettingsResolver $resolver
      * @param HttpClient       $client
+     * @param AppEnv           $appEnv
      */
-    public function __construct(SettingsResolver $resolver, HttpClient $client)
+    public function __construct(SettingsResolver $resolver, HttpClient $client, AppEnv $appEnv)
     {
         $settingsBag    = $resolver->getGlobalSettings();
+        $this->appEnv   = $appEnv;
         $this->secret   = $settingsBag->get('notification.settings.deskpro_client.secret', '');
+        $this->prefix   = $this->getChannelPrefix($settingsBag);
         $this->tries    = $settingsBag->get('notification.settings.deskpro_client.tries', 3);
         $maxMessageSize = $settingsBag->get('notification.settings.deskpro_client.max_message_size', static::MAX_MESSAGE_SIZE);
 
@@ -60,6 +74,16 @@ class DeskproDeliveryHandler extends MultiplexDeliverHandler
         $this->client         = $client;
     }
 
+    private function getChannelPrefix($settingsBag)
+    {
+        $prefix = $settingsBag->get('notification.settings.deskpro_client.prefix', '');
+        if (!$prefix && $this->appEnv->isQa()) {
+            $prefix = sha1($settingsBag->get('core.deskpro_url'));
+        }
+
+        return $prefix;
+    }
+
     /**
      * @param MessageInterface $message
      */
@@ -70,9 +94,18 @@ class DeskproDeliveryHandler extends MultiplexDeliverHandler
             return;
         }
 
-        $channel = 'private-'.$message->getTarget();
+        $channelParts = ['private'];
+        if ($this->prefix) {
+            $channelParts[] = $this->prefix;
+        }
+        $channelParts[] = $message->getTarget();
+        $channel        = implode('-', $channelParts);
         if ($message instanceof ActionAlert && $message->isBroadcast()) {
-            $channel = $message->getTarget() === 'agent_public' ? 'agent_public' : 'user_public';
+            $channelParts = [$message->getTarget() === 'agent_public' ? 'agent_public' : 'user_public'];
+            if ($this->prefix) {
+                array_unshift($channelParts, $this->prefix);
+            }
+            $channel = implode('-', $channelParts);
         }
 
         $data = [

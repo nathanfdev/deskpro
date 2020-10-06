@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
@@ -22,6 +23,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class NotificationService
 {
     const TARGET_BROADCAST      = 'agent_public';
+
     const TARGET_USER_BROADCAST = 'user_public';
 
     /**
@@ -40,15 +42,26 @@ class NotificationService
     protected $tokenStorage;
 
     /**
+     * @var AppEnv
+     */
+    protected $appEnv;
+
+    /**
      * @param EntityManager         $em
      * @param SettingsResolver      $settings
      * @param TokenStorageInterface $tokenStorage
+     * @param AppEnv                $appEnv
      */
-    public function __construct(EntityManager $em, SettingsResolver $settings, TokenStorageInterface $tokenStorage)
-    {
+    public function __construct(
+        EntityManager $em,
+        SettingsResolver $settings,
+        TokenStorageInterface $tokenStorage,
+        AppEnv $appEnv
+    ) {
         $this->em           = $em;
         $this->settings     = $settings->getGlobalSettings();
         $this->tokenStorage = $tokenStorage;
+        $this->appEnv       = $appEnv;
     }
 
     /**
@@ -203,17 +216,36 @@ class NotificationService
                 ]);
             case 'deskpro':
                 return new NotificationClient('deskpro', [
-                    'token'  => $this->getJwtToken($visitorId),
-                    'debug'  => $this->settings->get('notification.settings.deskpro_client.debug'),
-                    'host'   => $this->settings->get('notification.settings.deskpro_client.host'),
-                    'port'   => $this->settings->get('notification.settings.deskpro_client.port'),
-                    'secure' => $this->settings->get('notification.settings.deskpro_client.secure', false),
+                    'token'         => $this->getJwtToken($visitorId),
+                    'debug'         => $this->settings->get('notification.settings.deskpro_client.debug'),
+                    'host'          => $this->settings->get('notification.settings.deskpro_client.host'),
+                    'port'          => $this->settings->get('notification.settings.deskpro_client.port'),
+                    'secure'        => $this->settings->get('notification.settings.deskpro_client.secure', false),
+                    'channelPrefix' => $this->getChannelPrefix(),
                 ]);
             default:
                 throw new \RuntimeException(sprintf('We can\'t find settings for [ %s ] client', $handler));
         }
     }
 
+    /**
+     * @return string
+     */
+    private function getChannelPrefix()
+    {
+        $prefix = $this->settings->get('notification.settings.deskpro_client.prefix', '');
+        if (!$prefix && $this->appEnv->isQa()) {
+            $prefix = sha1($this->settings->get('core.deskpro_url'));
+        }
+
+        return $prefix;
+    }
+
+    /**
+     * @param null $visitorId
+     *
+     * @return string
+     */
     protected function getJwtToken($visitorId = null)
     {
         $user = $this->tokenStorage->getToken()->getUser();
@@ -222,6 +254,7 @@ class NotificationService
             [
                 'id'         => $visitorId ? $visitorId : ($user instanceof Person ? $user->getId() : 0),
                 'by_visitor' => (bool) $visitorId,
+                'prefix'     => $this->getChannelPrefix(),
             ],
             $this->settings->get('notification.settings.deskpro_client.secret')
         );

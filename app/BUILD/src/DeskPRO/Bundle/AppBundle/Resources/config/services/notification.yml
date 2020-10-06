@@ -6,6 +6,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@settings_resolver"
       - "@security.token_storage"
+      - "@deskpro.app_env"
 
   #
   # Strategies
@@ -68,6 +69,7 @@ services:
     arguments:
       - "@settings_resolver"
       - "@deskpro.notification.deskpro_client"
+      - "@deskpro.app_env"
 
   deskpro.notification.delivery.handler.email:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\EmailDeliveryHandler

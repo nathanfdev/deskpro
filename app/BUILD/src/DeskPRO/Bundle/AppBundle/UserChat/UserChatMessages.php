@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\UserChat;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use DeskPRO\Component\Util\RandUtils;
 
 /**
  * Class UserChatMessages.
@@ -76,9 +77,10 @@ class UserChatMessages
         $params   = $event->getData();
         $metadata = $event->getMetadata();
 
-        $phraseId = preg_replace('/^user_chat\./', '', $eventName);
-        $content  = array_merge($params, ['phrase_id' => $phraseId]);
-        $metadata = array_merge($content, $metadata);
+        $phraseId         = preg_replace('/^user_chat\./', '', $eventName);
+        $content          = array_merge($params, ['phrase_id' => $phraseId]);
+        $metadata         = array_merge($content, $metadata);
+        $metadata['uuid'] = RandUtils::uuidV4();
 
         $chatMessage = new ChatMessage();
         $chatMessage

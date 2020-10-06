@@ -39,6 +39,7 @@ class UserChatSystemListener implements EventSubscriberInterface
             UserChatEvent::END_BY_USER    => 'onChatEvent',
             UserChatEvent::SET_DEPARTMENT => 'onChatEvent',
             UserChatEvent::ASSIGNED       => 'onChatEvent',
+            UserChatEvent::USER_JOINED    => 'onChatEvent',
             UserChatEvent::UNASSIGNED     => 'onChatEvent',
         ];
     }
@@ -56,6 +57,7 @@ class UserChatSystemListener implements EventSubscriberInterface
 
         $this->em->persist($conversation);
         $this->em->flush();
+        $event->attachGeneratedMessage($chatMessage);
 
         $channelType = $chatMessage->getIsUserHidden() ? 'newmessage_hidden' : 'newmessage';
         $channel     = $conversation->getChannelId($channelType);
