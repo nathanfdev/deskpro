@@ -18,6 +18,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use DeskPRO\Component\Util\RandUtils;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -239,6 +240,9 @@ class UserChatManager
 
             $this->em->flush();
             $this->em->commit();
+        } catch (UniqueConstraintViolationException $e) {
+            // handle 'duplicate entry' errors
+            $this->em->rollback();
         } catch (\Exception $e) {
             $this->em->rollback();
 
