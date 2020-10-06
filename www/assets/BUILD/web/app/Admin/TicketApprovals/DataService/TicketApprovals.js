@@ -106,7 +106,7 @@ define(['Admin/Main/DataService/BaseListEdit'], (BaseListEdit) => {
     loadApprovalTemplates(id = null) {
       const deferred = this.$q.defer();
       const endpoint = (id == null)
-        ? '/approval_templates'
+        ? '/approval_templates?count=250'
         : `/approval_templates/${id}`;
 
       this.Api2.sendGet(endpoint).then(
