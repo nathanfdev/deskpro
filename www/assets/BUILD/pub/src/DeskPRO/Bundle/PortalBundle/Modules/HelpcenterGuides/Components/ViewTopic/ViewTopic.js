@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
+import { FormattedDate, FormattedMessage } from 'react-intl';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import moment from 'moment';
 import $ from 'jquery';
@@ -17,18 +19,28 @@ class ViewTopic extends React.Component {
   constructor(props) {
     super(props);
     let topic = {};
-    let loaded = false;
+    let loaded = true;
     if (window.topic) {
       topic = JSON.parse(window.topic);
       loaded = true;
       topic.content = this.addIdToh1(topic.content, topic.slug);
     }
     const topicList = JSON.parse(window.topicList);
+    let guides = [];
+    if (window.guides) {
+      guides = JSON.parse(window.guides);
+    }
+    if (!Array.isArray(guides)) {
+      guides = Object.values(guides);
+    }
+    const guideSlug = this.getGuideSlug(this.props.params);
+    const guide = guides.find(g => g.slug === guideSlug);
     this.state = {
       fixed:           false,
       doSpin:          false,
       flashes:         [],
-      guideSlug:       this.getGuideSlug(this.props.params.splat),
+      guide,
+      guideSlug,
       loaded,
       topic,
       topicList,
@@ -41,13 +53,6 @@ class ViewTopic extends React.Component {
         this.addGuideBlocks();
         this.addReactImageLazyload();
       }, 500);
-    }
-    let guides = [];
-    if (window.guides) {
-      guides = JSON.parse(window.guides);
-    }
-    if (!Array.isArray(guides)) {
-      guides = Object.values(guides);
     }
     this.contentChanged = false;
     this.ticking = false;
@@ -78,8 +83,8 @@ class ViewTopic extends React.Component {
     //   this.grabTopicFromApi(nextProps.params.slug);
     //   this.contentChanged = true;
     // }
-    const nextGuideSlug = this.getGuideSlug(nextProps.params.splat);
-    if (nextGuideSlug !== this.getGuideSlug(this.props.params.splat)) {
+    const nextGuideSlug = this.getGuideSlug(nextProps.params);
+    if (nextGuideSlug !== this.getGuideSlug(this.props.params)) {
       this.setState({
         guideSlug: nextGuideSlug
       });
@@ -103,7 +108,19 @@ class ViewTopic extends React.Component {
     window.addEventListener('resize', this.defineSizes);
   }
 
-  getGuideSlug = splat => splat.split('/')[0];
+  getGuideSlug = (params) => {
+    if (Object.prototype.hasOwnProperty.call(params, 'splat')) {
+      return params.splat.split('/')[0];
+    }
+    return params.slug;
+  }
+
+  getTopicSlug = (params) => {
+    if (Object.prototype.hasOwnProperty.call(params, 'splat')) {
+      return params.slug;
+    }
+    return '';
+  }
 
   handleScroll = () => {
     if (this.state.fixed !== this.elements.guidesMain.getBoundingClientRect().top < 28) {
@@ -143,7 +160,8 @@ class ViewTopic extends React.Component {
         if (internalLink.hash) {
           target += internalLink.hash;
         }
-        newLink.innerText = internalLink.text;
+        console.log(internalLink);
+        newLink.innerHTML = `<i class="fas fa-book"></i> ${internalLink.text}`;
         internalLink.parentNode.replaceChild(newLink, internalLink);
       } else {
         const newLink = document.createElement('span');
@@ -178,16 +196,16 @@ class ViewTopic extends React.Component {
     if (block.classList.contains('info')) {
       mode = 'note';
       title = 'Note';
-      icon = 'fa-info-circle';
+      icon = 'info-circle';
     } else {
       mode = 'warning';
       title = 'Warning';
-      icon = 'fa-exclamation-circle';
+      icon = 'exclamation-circle';
     }
     const codeBlock = (
       <div className={`dp-po-post-content-${mode}`} >
         <h4 className={`dp-po-post-content-${mode}-title`}>
-          <i className={classNames('dp-po-icon', 'fal', icon)} /> {title}
+          <FontAwesomeIcon icon={['fal', icon]} className="dp-po-icon" /> {title}
         </h4>
         <p dangerouslySetInnerHTML={{ __html: block.innerHTML }} />
       </div>
@@ -277,15 +295,17 @@ class ViewTopic extends React.Component {
     return false;
   };
 
-  grabTopicFromApi = (slug) => {
+  grabTopicFromApi = (slug, forceScroll = false) => {
     if (this.scrolling) {
       return;
     }
 
+    let scroll = false;
     let scrollPage = false;
     if (this.elements.guidesMain.getBoundingClientRect().top <= 70) {
-      scrollPage = this.elements.guidesMain.getBoundingClientRect().top + window.document.documentElement.scrollTop;
+      scroll = true;
     }
+    scrollPage = this.elements.guidesMain.getBoundingClientRect().top + window.document.documentElement.scrollTop;
 
     this.setState({
       loaded: false
@@ -304,7 +324,7 @@ class ViewTopic extends React.Component {
         topic,
         flashes: [],
       });
-      if (scrollPage) {
+      if (forceScroll || scroll) {
         setTimeout(() => {
           window.scrollTo(0, scrollPage - 27);
         }, 200);
@@ -363,52 +383,141 @@ class ViewTopic extends React.Component {
       const topicList = response.data.data;
       this.setState({
         topicList,
+        guide,
         guideSlug:       guide.slug,
         twoLevelSection: guide.two_level_section,
       });
-      const topic = Object.values(topicList).filter(t => t.no_content === '0' && t.content_length !== '0').shift();
-
-      this.grabTopicFromApi(topic.slug);
+      // const topic = Object.values(topicList).filter(t => t.no_content === '0' && t.content_length !== '0').shift();
+      //
+      // this.grabTopicFromApi(topic.slug);
+      this.setState({
+        topic: {}
+      });
 
       let baseUrl = window.DESKPRO_BASE_URL;
       if (baseUrl) {
         baseUrl = baseUrl.replace(/\/+$/, '');
       }
 
-      if (Object.values(topic.children).length) {
-        const child = Object.values(topic.children).sort(
-          (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
-        ).shift();
-        browserHistory.push(`${baseUrl}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
-      } else {
-        browserHistory.push(`${baseUrl}/guides/${guide.slug}/${topic.slug}`);
-      }
+      browserHistory.push(`${baseUrl}/guides/${guide.slug}`);
+      // if (Object.values(topic.children).length) {
+      //   const child = Object.values(topic.children).sort(
+      //     (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
+      //   ).shift();
+      //   browserHistory.push(`${baseUrl}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
+      // } else {
+      //   browserHistory.push(`${baseUrl}/guides/${guide.slug}/${topic.slug}`);
+      // }
       window.scrollTo(0, 0);
     });
   };
 
-  renderTopic() {
-    const { topic, guideSlug, topicSlug, loaded, topicList, flashes } = this.state;
+  renderGuideLanding() {
+    const { guide, topicList, guideSlug } = this.state;
+    let { description } = guide;
+    const { splash_image_property: splashImageProperty } = guide;
+    const topics = Object.values(topicList).filter(t => t.no_content === '0' && t.content_length !== '0');
+    const topic1 = topics.shift();
+
+    let baseUrl = window.DESKPRO_BASE_URL;
+    if (baseUrl) {
+      baseUrl = baseUrl.replace(/\/+$/, '');
+    }
+
+    if (!description) {
+      const topic2 = topics.shift();
+      if (topic2) {
+        description = (
+          <FormattedMessage
+            id="helpcenter.guides.default_description"
+            values={{
+              guide_name: guide.title,
+              topic1:     topic1.title,
+              topic2:     topic2.title,
+            }}
+          />
+        );
+      } else {
+        description = (
+          <FormattedMessage
+            id="helpcenter.guides.default_description_short"
+            values={{
+              guide_name: guide.title,
+              topic1:     topic1.title,
+            }}
+          />
+        );
+      }
+    }
+    let splashImage = null;
+    if (splashImageProperty) {
+      if (splashImageProperty.url) {
+        splashImage = (<img className="dp-po-guides-landing-splash" src={splashImageProperty.url} alt="" />);
+      } else {
+        splashImage = (<img className="dp-po-guides-landing-splash" src={`${splashImageProperty.options.url}&w=900`} alt="" />);
+      }
+    }
+    const datePublished = guide.date_published ? guide.date_published.replace(/T.*/, '').replace(/-/g, '/') : null;
+    const dateUpdated = guide.date_updated ? guide.date_updated.replace(/T.*/, '').replace(/-/g, '/') : null;
     return (
-      <Topic
-        topic={topic}
-        topicList={topicList}
-        guideSlug={guideSlug}
-        topicSlug={topicSlug}
-        flashed={flashes}
-        data={topic}
-        sizes={this.sizes}
-        loaded={loaded}
-        postComment={this.postComment}
-        grabTopicFromApi={this.grabTopicFromApi}
-      />
+      <div className="row">
+        <div className="col-sm-9">
+          <div className="dp-po-guides-landing">
+            {splashImage}
+            <div className="dp-po-guides-landing-title">
+              <h1>{guide.title}</h1>
+              <div className="dp-po-guides-meta">
+                {guide.date_published && <Fragment><FormattedMessage id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+                {guide.date_published && guide.date_updated && <span className="separator">|</span>}
+                {guide.date_updated && <Fragment><FormattedMessage id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+              </div>
+            </div>
+            <div className="dp-po-guides-landing-body">
+              <p>{description}</p>
+              <Link
+                className="dp-po-guides-btn btn btn-outline-primary"
+                to={`${baseUrl}/guides/${guideSlug}/${topic1.slug}`}
+                onClick={() => {
+                  this.grabTopicFromApi(topic1.slug);
+                }}
+              >
+                <FormattedMessage id="helpcenter.guides.start_reading" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
+  renderTopic() {
+    const { topic, guideSlug, topicSlug, loaded, topicList, flashes } = this.state;
+    if (topic.id) {
+      return (
+        <Topic
+          topic={topic}
+          topicList={topicList}
+          guideSlug={guideSlug}
+          topicSlug={topicSlug}
+          flashes={flashes}
+          data={topic}
+          sizes={this.sizes}
+          loaded={loaded}
+          postComment={this.postComment}
+          grabTopicFromApi={this.grabTopicFromApi}
+        />
+      );
+    }
+    if (loaded) {
+      return this.renderGuideLanding();
+    }
+    return null;
+  }
+
   render() {
-    const { topicList, fixed, loaded, twoLevelSection } = this.state;
-    const { splat, slug: topicSlug } = this.props.params;
-    const guideSlug = this.getGuideSlug(splat);
+    const { topicList, fixed, loaded, twoLevelSection, guide } = this.state;
+    const guideSlug = this.getGuideSlug(this.props.params);
+    const topicSlug = this.getTopicSlug(this.props.params);
 
     return (
       <div className={classNames('container', { fixed })}>
@@ -426,6 +535,7 @@ class ViewTopic extends React.Component {
                     topics={topicList}
                     guideSlug={guideSlug}
                     topicSlug={topicSlug}
+                    guide={guide}
                     grabTopicFromApi={this.grabTopicFromApi}
                     sizes={this.sizes}
                     twoLevelSection={twoLevelSection}
@@ -436,7 +546,7 @@ class ViewTopic extends React.Component {
                     <div className="row">
                       <div className="col-sm-9">
                         <div className={classNames({ 'dp-po-guides-loading': !loaded })}>
-                          <i className="dp-icon fa-3x far fa-spinner fa-pulse" />
+                          <FontAwesomeIcon icon={['far', 'spinner']} pulse size="3x" className="dp-icon" />
                         </div>
                       </div>
                     </div>

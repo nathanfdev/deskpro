@@ -1881,10 +1881,10 @@ agent.publish.event_time_ago_by_who_at_when: '{{ago}} от {{name}} в {{date}}'
 agent.publish.for_ticket: 'Для тикета'
 agent.publish.glossary: Словарь
 agent.publish.guide_list_title:
-  one: '1 Guide'
-  few: '{{count}} Guides'
-  many: '{{count}} Guides'
-  other: '{{count}} Guides'
+  one: '1 Topic'
+  few: '{{count}} Topics'
+  many: '{{count}} Topics'
+  other: '{{count}} Topics'
 agent.publish.helpful: Полезный
 agent.publish.kb_list_title:
   one: '1 Статья '

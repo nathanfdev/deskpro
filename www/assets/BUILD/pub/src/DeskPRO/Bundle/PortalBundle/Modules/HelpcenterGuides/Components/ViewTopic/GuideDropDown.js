@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { IconRenderer } from 'DeskPRO/Component/IconRenderer';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import Isvg from 'react-inlinesvg';
+import guideDefault from '@deskpro/portal-style/dist/img/page-icons/guide-default.svg';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class GuideDropDown extends React.PureComponent {
   static propTypes = {
@@ -37,7 +40,7 @@ class GuideDropDown extends React.PureComponent {
   renderDropDownGuide = (guide, baseUrl) => (
     <li key={guide.id} title={guide.title}>
       <a href={`${baseUrl}/guides/${guide.slug}`} className="dp-po-guides-dropdown-link" onClick={e => this.onClickGuide(e, guide)}>
-        <IconRenderer object={guide} className="" default={<i className="fal fa-user-headset" />} figureStyle={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }} /> {guide.title}
+        <IconRenderer object={guide} className="" default={<Isvg src={guideDefault} />} figureStyle={{ backgroundColor: guide.color ? `#${guide.color}` : 'var(--warning)' }} /> {guide.title}
       </a>
     </li>
   )
@@ -54,9 +57,9 @@ class GuideDropDown extends React.PureComponent {
     return (
       <div className={classNames('dp-po-guides-dropdown', { opened })} style={style}>
         <button className="dp-po-guides-dropdown-button" onClick={this.toggleMenu}>
-          <IconRenderer object={activeGuide} className="" default={<i className="fal fa-user-headset" />} figureStyle={{ backgroundColor: activeGuide.color ? `#${activeGuide.color}` : 'var(--warning)' }} />
+          <IconRenderer object={activeGuide} className="" default={<Isvg src={guideDefault} />} figureStyle={{ backgroundColor: activeGuide.color ? `#${activeGuide.color}` : 'var(--warning)' }} />
           <span>{activeGuide.title}</span>
-          <i className="fal fa-angle-down" />
+          <FontAwesomeIcon icon={['fal', 'angle-down']} />
         </button>
         <ClickOut onClickOut={() => this.setState({ opened: false })}>
           <div className="dp-po-guides-dropdown-menu" style={{ display: opened ? 'block' : 'none' }}>

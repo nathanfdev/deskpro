@@ -1431,7 +1431,7 @@ agent.publish.event_time_ago_by_who_at_when: '{{ago}} bởi {{name}} tại {{dat
 agent.publish.for_ticket: 'Đối với vé'
 agent.publish.glossary: 'Bảng chú giải'
 agent.publish.guide_list_title:
-  other: '{{count}} Guides'
+  other: '{{count}} Topics'
 agent.publish.helpful: 'Hữu ích'
 agent.publish.kb_list_title:
   other: '1 bài viết '

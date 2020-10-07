@@ -445,7 +445,7 @@ class ChatHandler
 
         $department = null;
         if (isset($request['department_id'])) {
-            if ($departmentRepository->findOneBy(['id' => $request['department_id'], 'is_tickets_enabled' => 1])) {
+            if ($department = $departmentRepository->findOneBy(['id' => $request['department_id'], 'is_tickets_enabled' => 1])) {
                 $ticket->setDepartment($department);
             } else {
                 $errors['department_id'] = 'Wrong id, department wasn\'t found';

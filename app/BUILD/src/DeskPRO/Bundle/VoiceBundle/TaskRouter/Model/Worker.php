@@ -234,7 +234,7 @@ class Worker extends AbstractModel
         if (!isset($this->pendingTaskIds[$task->getChannel()])) {
             $this->pendingTaskIds[$task->getChannel()] = [];
         }
-        if (!in_array($task->getId(), $this->pendingTaskIds)[$task->getChannel()]) {
+        if (!in_array($task->getId(), $this->pendingTaskIds[$task->getChannel()])) {
             $this->pendingTaskIds[$task->getChannel()][] = $task->getId();
         }
 
@@ -312,7 +312,7 @@ class Worker extends AbstractModel
         if (!isset($this->activeTaskIds[$task->getChannel()])) {
             $this->activeTaskIds[$task->getChannel()] = [];
         }
-        if (!in_array($task->getId(), $this->activeTaskIds)[$task->getChannel()]) {
+        if (!in_array($task->getId(), $this->activeTaskIds[$task->getChannel()])) {
             $this->activeTaskIds[$task->getChannel()][] = $task->getId();
         }
 

@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Link from 'react-router/lib/Link';
+import Highlighter from 'react-highlight-words';
 import classNames from 'classnames';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class TopicListItem extends React.Component {
   static propTypes = {
@@ -94,7 +96,7 @@ class TopicListItem extends React.Component {
   };
 
   render() {
-    const { topic, topicSlug, guideSlug, toggleTopic, expanded } = this.props;
+    const { topic, topicSlug, guideSlug, toggleTopic, expanded, filter } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -109,7 +111,12 @@ class TopicListItem extends React.Component {
             className={classNames(`dp-po-guides-search-content-${prefix}link chapter`, { expanded: this.isExpanded() })}
             onClick={e => toggleTopic(e, topic, expanded)}
           >
-            <span className="dp-po-guide-topic-list-item">{topic.title}</span>
+            <Highlighter
+              highlightClassName="filter-highlight"
+              className="dp-po-guide-topic-list-item"
+              searchWords={[filter]}
+              textToHighlight={topic.title}
+            />
           </div>
           {this.renderChildren()}
         </li>
@@ -123,8 +130,13 @@ class TopicListItem extends React.Component {
           activeClassName="active"
           onClick={this.handleClick}
         >
-          <span className="dp-po-guide-topic-list-item">{topic.title}</span>
-          {Object.values(topic.children).length > 0 && <figure className="dp-po-icon"><i className="fas fa-caret-down" /></figure>}
+          <Highlighter
+            highlightClassName="filter-highlight"
+            className="dp-po-guide-topic-list-item"
+            searchWords={[filter]}
+            textToHighlight={topic.title}
+          />
+          {Object.values(topic.children).length > 0 && <figure className="dp-po-icon"><FontAwesomeIcon icon={['fas', 'caret-down']} /></figure>}
         </Link>
         {this.renderChildren()}
       </li>

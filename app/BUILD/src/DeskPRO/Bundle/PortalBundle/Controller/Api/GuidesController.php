@@ -113,6 +113,8 @@ class GuidesController extends AbstractApiController
         }
 
         $formHandler = $this->get('form_handler.comment');
+        $translate   = $this->container->get('deskpro.core.translate');
+        $language    = $this->container->get('language_stack')->getActiveOrDefault();
         $comment     = new TopicComment();
         $comment->setVisitorId($visitor_id);
         $comment->setIpAddress($request->getClientIp());
@@ -143,6 +145,9 @@ class GuidesController extends AbstractApiController
         }
         if (!$formResult && $errors = $newCommentForm->getErrors(true)) {
             $response['errors'] = $errors;
+            foreach ($response['errors']->getForm()->getErrors() as $error) {
+                $response['general_errors'][] = $translate->getPhraseText('portal.forms.error_'.$error->getMessage());
+            }
         } else {
             $notify = new NewCommentNotification($comment);
             $notify->send();

@@ -4552,8 +4552,8 @@ agent.publish.event_time_ago_by_who_at_when: '{{ago}} by {{name}} at {{date}}'
 agent.publish.for_ticket: 'For Ticket'
 agent.publish.glossary: Glossary
 agent.publish.guide_list_title:
-  one: '1 Guide'
-  other: '{{count}} Guides'
+  one: '1 Topic'
+  other: '{{count}} Topics'
 agent.publish.helpful: Helpful
 agent.publish.image_browser: 'Image Browser'
 agent.publish.kb_list_title:

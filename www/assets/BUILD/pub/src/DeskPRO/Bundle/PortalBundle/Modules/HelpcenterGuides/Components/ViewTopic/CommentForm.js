@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { getErrorsByErrorPath } from 'DeskPRO/Component/Form/FormErrors';
 import { FormattedMessage } from 'react-intl';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class CommentForm extends React.Component {
   static propTypes = {
@@ -12,10 +13,11 @@ class CommentForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      comment: '',
+      comment: undefined,
       name:    '',
       email:   '',
       errors:  {},
+      flashes: {},
       loading: false,
     };
   }
@@ -49,7 +51,11 @@ class CommentForm extends React.Component {
         let errors = [];
         if (response.data) {
           errors = response.data.data.errors;
+          if (response.data.data.general_errors) {
+            errors.general_errors = response.data.data.general_errors;
+          }
         }
+        window.dp_refresh_csrf_token();
         this.setState({
           loading: false,
           errors
@@ -128,6 +134,15 @@ class CommentForm extends React.Component {
     );
   };
 
+  getGeneralError = () => {
+    if (this.state.errors.general_errors) {
+      return this.state.errors.general_errors.map(error => (
+        <div className="dp-po-message-bar-error error-large no-hover">{error}</div>
+      ));
+    }
+    return null;
+  }
+
   hasError = field => getErrorsByErrorPath(this.state.errors, ['form', 'children', field, 'errors']).length > 0;
 
   updateComment = (e) => {
@@ -191,6 +206,7 @@ class CommentForm extends React.Component {
             <strong>{window.user_name}</strong>
           </div>
 
+          {this.getGeneralError()}
           <form action="" className="dp-po-form" method="post">
             <div className="form-group">
               <label className="title title required" htmlFor="comment_content_real">
@@ -216,7 +232,7 @@ class CommentForm extends React.Component {
                   style={{ whiteSpace: 'nowrap' }}
                 >
                   <FormattedMessage id="helpcenter.general.comment_btn_save" />&nbsp;
-                  {this.state.loading ? <figure className="dp-po-icon"><i className="fas fa-spinner fa-pulse" /></figure> : '' }
+                  {this.state.loading ? <figure className="dp-po-icon"><FontAwesomeIcon icon={['fas', 'spinner']} pulse /></figure> : '' }
                 </button>
               </div>
             </div>

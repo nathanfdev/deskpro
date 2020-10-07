@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -46,6 +47,11 @@ class UserChatEvent extends Event
     protected $metadata;
 
     /**
+     * @var ChatMessage
+     */
+    protected $message;
+
+    /**
      * Constructor.
      *
      * @param ChatConversation $chat
@@ -81,5 +87,21 @@ class UserChatEvent extends Event
     public function getMetadata()
     {
         return $this->metadata;
+    }
+
+    /**
+     * @param ChatMessage $message
+     */
+    public function attachGeneratedMessage(ChatMessage $message)
+    {
+        $this->message = $message;
+    }
+
+    /**
+     * @return ChatMessage
+     */
+    public function getAttachedMessage()
+    {
+        return $this->message;
     }
 }

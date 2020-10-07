@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { copyTextToClipboard } from 'DeskPRO/Component/Util/ClipBoard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class Anchor extends React.Component {
   static propTypes = {
@@ -33,7 +34,7 @@ class Anchor extends React.Component {
         <a href={`#${this.props.anchor}`} onClick={this.onClick}>
           {this.state.copied ?
             <span>copied</span> :
-            <i className="fas fa-anchor" /> }
+            <FontAwesomeIcon icon={['fas', 'anchor']} />}
         </a>
       </span>
     );

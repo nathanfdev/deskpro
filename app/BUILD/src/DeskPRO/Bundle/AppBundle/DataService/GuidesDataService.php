@@ -8,7 +8,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
-use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -41,20 +40,7 @@ class GuidesDataService extends AbstractDataService
      */
     public function hasAny($person)
     {
-        return $this->generateAndCache(['hasAny'], function () use ($person) {
-            $allowedIds = $this->permissionsManager->getPortalPermissionsBag(
-                $person
-            )->getAllowedGuides();
-
-            if (!count($allowedIds)) {
-                return false;
-            }
-
-            return (bool) $this->em->getConnection()->fetchColumn(
-                'SELECT COUNT(*) FROM topics WHERE guide_id IN (?) AND `status` = ? LIMIT 1',
-                [$allowedIds, Topic::STATUS_PUBLISHED], 0, [Connection::PARAM_INT_ARRAY, \PDO::PARAM_STR]
-            );
-        });
+        return count($this->getGuides($person)) > 0;
     }
 
     /**

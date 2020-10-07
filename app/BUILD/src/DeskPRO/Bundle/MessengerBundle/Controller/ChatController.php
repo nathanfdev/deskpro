@@ -9,7 +9,6 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatCreateType;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
@@ -93,11 +92,6 @@ class ChatController extends AbstractMessengerController
 
         $this->em()->persist($chat);
         $this->em()->flush();
-
-        $this->get('event_dispatcher')->dispatch(
-            ClientMessageEvent::SEND,
-            new ClientMessageEvent('chat.new', $chat)
-        );
 
         // If an email validation code was generated then user needs to validate the entered email first,
         // so skip agent notify until the user validates it
@@ -236,7 +230,7 @@ class ChatController extends AbstractMessengerController
     public function evaluateTaskRouterAction($idToken)
     {
         $chat = $this->findChatByIdToken($idToken);
-        if (!$chat->getAgent()) {
+        if (!$chat->getAgent() && !$chat->isEnded()) {
             $this->get('dp.voice.task_router')->evaluate();
         }
 

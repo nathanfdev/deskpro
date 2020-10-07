@@ -272,7 +272,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->evaluateLock->release();
+            $this->releaseLock($this->evaluateLock);
         }
     }
 
@@ -358,7 +358,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->actionsLock->release();
+            $this->releaseLock($this->actionsLock);
         }
     }
 
@@ -429,7 +429,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->actionsLock->release();
+            $this->releaseLock($this->actionsLock);
         }
     }
 
@@ -503,7 +503,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->actionsLock->release();
+            $this->releaseLock($this->actionsLock);
         }
     }
 
@@ -582,7 +582,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->actionsLock->release();
+            $this->releaseLock($this->actionsLock);
         }
     }
 
@@ -651,7 +651,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->actionsLock->release();
+            $this->releaseLock($this->actionsLock);
         }
     }
 
@@ -720,7 +720,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->actionsLock->release();
+            $this->releaseLock($this->actionsLock);
         }
     }
 
@@ -787,7 +787,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->actionsLock->release();
+            $this->releaseLock($this->actionsLock);
         }
     }
 
@@ -856,7 +856,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->actionsLock->release();
+            $this->releaseLock($this->actionsLock);
         }
     }
 
@@ -934,7 +934,7 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->actionsLock->release();
+            $this->releaseLock($this->actionsLock);
         }
     }
 
@@ -985,7 +985,36 @@ class TaskRouter
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {
-            $this->actionsLock->release();
+            $this->releaseLock($this->actionsLock);
         }
+    }
+
+    /**
+     * If the lock is not released it can block all other task router processes.
+     * So if there was a connection issue then re-try the process a few times.
+     *
+     * @param LockInterface $lock
+     *
+     * @throws \Exception
+     */
+    private function releaseLock(LockInterface $lock)
+    {
+        $retry      = 0;
+        $retryCount = 5;
+        $retrySleep = 100;
+
+        $sleepRandomness = (int) ($retrySleep / 10);
+
+        do {
+            try {
+                $lock->release();
+
+                return;
+            } catch (\Exception $e) {
+                usleep(($retrySleep + random_int(-$sleepRandomness, $sleepRandomness)) * 1000);
+            }
+        } while (++$retry < $retryCount);
+
+        SystemErrorHandler::logException($e);
     }
 }
