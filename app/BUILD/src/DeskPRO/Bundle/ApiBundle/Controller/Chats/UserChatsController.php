@@ -290,8 +290,10 @@ class UserChatsController extends CrudController
      */
     protected function persistModel($model, FormInterface $form = null)
     {
-        $task = $this->get('dp.voice.task_builder')->createChatTaskForQueue($model);
-        $model->setTaskId($task->getId());
+        if (!$model->getId()) {
+            $task = $this->get('dp.voice.task_builder')->createChatTaskForQueue($model);
+            $model->setTaskId($task->getId());
+        }
 
         parent::persistModel($model);
 

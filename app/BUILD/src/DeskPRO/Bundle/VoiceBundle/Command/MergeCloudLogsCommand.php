@@ -20,6 +20,9 @@ class MergeCloudLogsCommand extends ContainerAwareCommand
         $this->setName('dp:voice:merge-cloud-logs');
         $this->addArgument('path');
         $this->addOption('output', null, InputOption::VALUE_REQUIRED);
+        $this->addOption('json', null, InputOption::VALUE_NONE);
+        $this->addOption('task', null, InputOption::VALUE_REQUIRED);
+        $this->addOption('chat', null, InputOption::VALUE_REQUIRED);
     }
 
     /**
@@ -42,19 +45,63 @@ class MergeCloudLogsCommand extends ContainerAwareCommand
             }
         }
 
-        usort($logs, function ($a, $b) {
-            $pattern = '#^\[(.*?)\].*#';
+        // filter by chat id
+        if ($input->getOption('chat')) {
+            $newChatLogs = array_filter($logs, function ($log) use ($input) {
+                return strpos($log, 'chat_id = '.$input->getOption('chat'));
+            });
 
-            preg_match($pattern, $a, $m1);
-            preg_match($pattern, $b, $m2);
+            // filter by task id as well
+            // in case if there are more than one task for this chat
+            if ($input->getOption('task')) {
+                $newChatTaskIds = [$input->getOption('task')];
+            } else {
+                $newChatTaskIds = array_map(function ($log) {
+                    return preg_replace('/^.*task_id = (\d+)(,|").*$/', '$1', $log);
+                }, $newChatLogs);
+            }
 
-            $t1 = new \DateTime($m1[1]);
-            $t2 = new \DateTime($m2[1]);
+            if ($newChatTaskIds) {
+                $logs = array_filter($logs, function ($log) use ($newChatTaskIds) {
+                    return preg_match('/task_id = ('.implode('|', $newChatTaskIds).')(,|")/', $log);
+                });
+            } else {
+                $logs = [];
+            }
+        }
+
+        usort($logs, function ($a, $b) use ($input) {
+            if ($input->getOption('json')) {
+                $a = json_decode($a, true);
+                $b = json_decode($b, true);
+
+                $t1 = new \DateTime($a['datetime']['date']);
+                $t2 = new \DateTime($b['datetime']['date']);
+            } else {
+                $pattern = '#^\[(.*?)\].*#';
+
+                preg_match($pattern, $a, $m1);
+                preg_match($pattern, $b, $m2);
+
+                $t1 = new \DateTime($m1[1]);
+                $t2 = new \DateTime($m2[1]);
+            }
 
             return $t1 > $t2;
         });
 
-        $outputFile = $this->getContainer()->get('deskpro.app_env')->getUserLogsDir().'/voice_cloud.log';
+        if ($input->getOption('chat')) {
+            $outputName = '/voice_cloud.chat_'.$input->getOption('chat');
+            if ($input->getOption('task')) {
+                $outputName .= '.task_'.$input->getOption('task');
+            }
+
+            $outputName .= '.log';
+        } else {
+            $outputName = '/voice_cloud.log';
+        }
+
+        $outputFile = $this->getContainer()->get('deskpro.app_env')->getUserLogsDir().$outputName;
         if ($input->getOption('output')) {
             $outputFile = $input->getOption('output');
         }

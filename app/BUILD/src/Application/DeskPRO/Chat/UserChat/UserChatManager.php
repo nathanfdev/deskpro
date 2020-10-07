@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
@@ -18,6 +16,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use DeskPRO\Component\Util\RandUtils;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -215,6 +214,7 @@ class UserChatManager
         try {
             $convo->addParticipant($person);
             $this->em->persist($convo);
+            $this->em->flush();
 
             $message = $this->addSystemMessage(
                 $convo,
@@ -227,22 +227,26 @@ class UserChatManager
                 ]
             );
 
-            $this->eventDispatcher->dispatch(
-                ChatEvent::EVENT_NAME,
-                new ChatEvent(
-                    $convo->getId(),
-                    ChatEvent::CHAT_USER_JOINED_EVENT_TYPE,
-                    ['message' => $message]
-                )
-            );
-
             $this->em->flush();
             $this->em->commit();
+        } catch (UniqueConstraintViolationException $e) {
+            // handle 'duplicate entry' errors
+            $this->em->rollback();
         } catch (\Exception $e) {
             $this->em->rollback();
 
             throw $e;
         }
+
+        // send those only if everything is fine, otherwise people will get falsy messages in their channels
+        $this->eventDispatcher->dispatch(
+            ChatEvent::EVENT_NAME,
+            new ChatEvent(
+                $convo->getId(),
+                ChatEvent::CHAT_USER_JOINED_EVENT_TYPE,
+                ['message' => $message]
+            )
+        );
     }
 
     /**
@@ -285,15 +289,6 @@ class UserChatManager
                 ['user_left' => true, 'person_name' => $person->display_name_user, 'person_id' => $person->id]
             );
 
-            $this->eventDispatcher->dispatch(
-                ChatEvent::EVENT_NAME,
-                new ChatEvent(
-                    $convo->getId(),
-                    ChatEvent::CHAT_USER_LEFT_EVENT_TYPE,
-                    ['message' => $message]
-                )
-            );
-
             $this->em->flush();
             $this->em->commit();
         } catch (\Exception $e) {
@@ -301,6 +296,15 @@ class UserChatManager
 
             throw $e;
         }
+
+        $this->eventDispatcher->dispatch(
+            ChatEvent::EVENT_NAME,
+            new ChatEvent(
+                $convo->getId(),
+                ChatEvent::CHAT_USER_LEFT_EVENT_TYPE,
+                ['message' => $message]
+            )
+        );
     }
 
     /**
@@ -403,15 +407,6 @@ class UserChatManager
                 )
             );
 
-            $this->eventDispatcher->dispatch(
-                ChatEvent::EVENT_NAME,
-                new ChatEvent(
-                    $convo->getId(),
-                    ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE,
-                    ['message' => $message]
-                )
-            );
-
             $this->em->flush();
             $this->em->commit();
         } catch (\Exception $e) {
@@ -419,6 +414,15 @@ class UserChatManager
 
             throw $e;
         }
+
+        $this->eventDispatcher->dispatch(
+            ChatEvent::EVENT_NAME,
+            new ChatEvent(
+                $convo->getId(),
+                ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE,
+                ['message' => $message]
+            )
+        );
     }
 
     /**
@@ -480,12 +484,6 @@ class UserChatManager
         $old_agent_id   = $convo->getAgentId();
         $old_agent_name = $convo->getAgent()->getDisplayNameUser();
 
-        App::$container->get('dp.voice.task_router')->completeTaskForWorker(
-            $convo->getTaskId(),
-            'agent',
-            $old_agent_id
-        );
-
         $convo->setAgent(null);
         $this->em->persist($convo);
 
@@ -523,6 +521,12 @@ class UserChatManager
                 array_merge($convo->getInfo(), ['old_agent_id' => $old_agent_id])
             );
         }
+
+        App::$container->get('dp.voice.task_router')->completeTaskForWorker(
+            $convo->getTaskId(),
+            'agent',
+            $old_agent_id
+        );
     }
 
     /**
@@ -670,6 +674,8 @@ class UserChatManager
             $convo->ended_by = ChatConversation::ENDED_ABANDONED;
         }
 
+        $this->em->flush();
+
         $message = null;
         if ($convo->ended_by != 'timeout' && $convo->ended_by != 'wait_timeout' && $convo->ended_by != 'abandoned') {
             if ($author) {
@@ -678,8 +684,6 @@ class UserChatManager
                 $message = $this->addSystemMessage($convo, 'message_ended', [], ['chat_ended' => true]);
             }
         }
-
-        App::$container->get('dp.voice.task_router')->endTask($convo->getTaskId());
 
         $this->dispatchLegacyEvent('chat.ended', $convo->getInfo());
         $this->eventDispatcher->dispatch(
@@ -701,6 +705,8 @@ class UserChatManager
                 );
             }
         }
+
+        App::$container->get('dp.voice.task_router')->endTask($convo->getTaskId());
     }
 
     /**
@@ -928,23 +934,14 @@ class UserChatManager
         $msg->metadata = $metadata;
 
         $convo->addMessage($msg);
-        $this->em->beginTransaction();
-
-        try {
-            $this->em->persist($msg);
-            $this->em->persist($convo);
-            $this->em->commit();
-        } catch (\Exception $e) {
-            $this->em->rollback();
-
-            throw $e;
-        }
 
         $channel = $convo->getChannelId('newmessage');
         if ($msg->is_user_hidden) {
             $channel = $convo->getChannelId('hidden_newmessage');
         }
 
+        $this->em->persist($msg);
+        $this->em->persist($convo);
         $this->em->flush();
 
         $this->dispatchLegacyEvent($channel, $msg->getInfo());

@@ -1008,6 +1008,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	},
 
 	joinConvo: function() {
+	  if ($('.chatreply .agent-join .is-loading').is(":visible")) {
+	    return;
+    }
+
+    $('.chatreply .agent-join .is-loading').show();
+    $('.chatreply .agent-join button').hide();
+
 		DeskPRO_Window.util.ajaxWithClientMessages({
 			url: BASE_URL + 'agent/chat/join/' + this.meta.conversation_id,
 			success: function(data) {
@@ -1015,7 +1022,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					$('.chatreply .input-wrap').show();
 					$('.chatreply .agent-join').hide();
 				}
-			}
+			},
+      complete: function () {
+        $('.chatreply .agent-join button').show();
+        $('.chatreply .agent-join .is-loading').hide();
+      }
 		});
 	},
 
