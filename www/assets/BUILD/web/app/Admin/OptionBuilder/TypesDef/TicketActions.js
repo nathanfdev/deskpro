@@ -654,7 +654,7 @@ define([
         const promises = [apiV1];
 
         promises.push(this.Api2.sendGet('/ticket_statuses'));
-        promises.push(this.Api2.sendGet('/approval_templates'));
+        promises.push(this.Api2.sendGet('/approval_templates?count=250'));
 
         if (window.DP_HAS_NEW_EMAILS) {
           promises.push(this.Api2.sendGet('/email_templates/info'));
