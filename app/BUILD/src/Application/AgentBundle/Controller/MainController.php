@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\AgentBundle\Controller;
 
@@ -225,7 +223,7 @@ class MainController extends AbstractController
         $clients = $this->get('deskpro.notification.service')->getClientsSetup()->getClients();
         $client  = $clients && count($clients) === 1 ? $clients[0] : false;
         /* @var NotificationClient|bool $client */
-        return !$client ?: $client->getType() === 'pusher';
+        return !$client ?: in_array($client->getType(), ['pusher', 'deskpro']);
     }
 
     /**
@@ -304,34 +302,42 @@ class MainController extends AbstractController
             switch ($name) {
                 case 'tickets_section':
                     $data[$name] = json_decode($this->forward('AgentBundle:TicketSearch:getSectionData')->getContent());
+
                     break;
 
                 case 'chat_section':
                     $data[$name] = json_decode($this->forward('AgentBundle:UserChat:getSectionData')->getContent());
+
                     break;
 
                 case 'twitter_section':
                     $data[$name] = json_decode($this->forward('AgentBundle:Twitter:getSectionData')->getContent());
+
                     break;
 
                 case 'people_section':
                     $data[$name] = json_decode($this->forward('AgentBundle:PeopleSearch:getSectionData')->getContent());
+
                     break;
 
                 case 'community_section':
                     $data[$name] = json_decode($this->forward('AgentBundle:CommunityTopics:getSectionData')->getContent());
+
                     break;
 
                 case 'publish_section':
                     $data[$name] = json_decode($this->forward('AgentBundle:Publish:getSectionData')->getContent());
+
                     break;
 
                 case 'tasks_section':
                     $data[$name] = json_decode($this->forward('AgentBundle:Task:getSectionData')->getContent());
+
                     break;
 
                 case 'agent_chat_section':
                     $data[$name] = json_decode($this->forward('AgentBundle:AgentChat:getSectionData')->getContent());
+
                     break;
             }
         }
@@ -654,6 +660,7 @@ class MainController extends AbstractController
                         $rows[] = $ticket_info;
                     }
                 }
+
                 break;
 
             case 'person':
@@ -663,6 +670,7 @@ class MainController extends AbstractController
                 foreach ($results as $r) {
                     $rows[] = $render_person($r, $counts);
                 }
+
                 break;
 
             case 'chat_conversation':
@@ -686,6 +694,7 @@ class MainController extends AbstractController
 
                     $rows[] = $chat_info;
                 }
+
                 break;
 
             case 'organization':
@@ -695,6 +704,7 @@ class MainController extends AbstractController
                 foreach ($results as $r) {
                     $rows[] = $render_org($r, $counts);
                 }
+
                 break;
 
             case 'article':
