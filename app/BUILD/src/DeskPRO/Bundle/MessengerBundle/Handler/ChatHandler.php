@@ -24,6 +24,7 @@ use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
+use DeskPRO\Bundle\MessengerBundle\Service\NewTicketService;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
@@ -40,15 +41,25 @@ class ChatHandler
     use TraitUserGet;
 
     const MESSAGE_TYPE_NEW_MESSAGE = 'chat.message';
+
     const MESSAGE_ATTAHCMENT       = 'chat.attachment';
+
     const CHAT_END                 = 'chat.end';
+
     const CHAT_SAVE_TICKET         = 'chat.ticket.save';
+
     const CHAT_USER_TIMEOUT        = 'chat.userTimeout';
+
     const CHAT_TRANSCRIPT          = 'chat.transcript';
+
     const CHAT_RATING              = 'chat.rating';
+
     const CHAT_HISTORY             = 'chat.history';
+
     const CHAT_TRACK               = 'chat.track';
+
     const TYPING_START             = 'chat.typing.start';
+
     const TYPING_END               = 'chat.typing.end';
 
     /**
@@ -99,6 +110,11 @@ class ChatHandler
     private $ticketStatuses;
 
     /**
+     * @var NewTicketService
+     */
+    private $ticketService;
+
+    /**
      * @var AttachmentHelper
      */
     private $attachmentHelper;
@@ -114,6 +130,7 @@ class ChatHandler
      * @param AttachmentHelper          $attachmentHelper
      * @param TicketStatusDataService   $ticketStatuses
      * @param ContainerInterface        $container
+     * @param NewTicketService          $ticketService
      */
     public function __construct(
         ChatMapper $mapper,
@@ -123,7 +140,8 @@ class ChatHandler
         MessengerSettingsResolver $settingsResolver,
         AttachmentHelper $attachmentHelper,
         TicketStatusDataService $ticketStatuses,
-        ContainerInterface $container
+        ContainerInterface $container,
+        NewTicketService $ticketService
     ) {
         $this->chatMapper       = $mapper;
         $this->em               = $em;
@@ -133,6 +151,7 @@ class ChatHandler
         $this->attachmentHelper = $attachmentHelper;
         $this->ticketStatuses   = $ticketStatuses;
         $this->container        = $container;
+        $this->ticketService    = $ticketService;
     }
 
     /**
@@ -151,14 +170,14 @@ class ChatHandler
         }
 
         $commandName = 'handle'.implode(
-            '',
-            array_map(
-                function ($element) {
-                    return ucfirst($element);
-                },
-                explode('.', $commandType)
-            )
-        ).'Command';
+                '',
+                array_map(
+                    function ($element) {
+                        return ucfirst($element);
+                    },
+                    explode('.', $commandType)
+                )
+            ).'Command';
 
         return $this->$commandName($chat, $request);
     }
@@ -167,9 +186,9 @@ class ChatHandler
      * @param ChatConversation $chat
      * @param array            $request
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return array
      */
@@ -227,13 +246,13 @@ class ChatHandler
     private function handleChatHistoryCommand(ChatConversation $chat, array $request)
     {
         return array_values(array_map(
-            function ($message) {
-                return $this->chatMapper->mapMessageToArray($message);
-            },
-            array_filter($chat->getMessages()->toArray(), function ($message) {
-                /* @var ChatMessage $message */
-                return !$message->getIsUserHidden();
-            }))
+                function ($message) {
+                    return $this->chatMapper->mapMessageToArray($message);
+                },
+                array_filter($chat->getMessages()->toArray(), function ($message) {
+                    /* @var ChatMessage $message */
+                    return !$message->getIsUserHidden();
+                }))
         );
     }
 
@@ -403,9 +422,9 @@ class ChatHandler
      * @param ChatConversation $chat
      * @param array            $request
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return ApiWrapper
      */
@@ -536,12 +555,7 @@ class ChatHandler
         $ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
 
         try {
-            $this->em->beginTransaction();
-            $this->em->persist($ticket);
-            $this->em->persist($message);
-            $this->em->persist($person);
-            $this->em->flush();
-            $this->em->commit();
+            $this->ticketService->acceptNewTicket($ticket, 'widget');
         } catch (\Exception $e) {
             $this->em->rollback();
 
