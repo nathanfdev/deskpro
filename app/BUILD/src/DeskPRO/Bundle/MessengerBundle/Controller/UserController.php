@@ -135,6 +135,7 @@ class UserController extends AbstractMessengerController
         $techInfo
             ->setCanUseChat(count(array_intersect($groups, $techService->getUsergroups())) > 0)
             ->setCanUseTickets($techService->canUseTickets())
+            ->setCanUseKB($techService->canUseKB())
             ->setChatDepartments($techService->getChatDepartments())
             ->setTicketDepartments($techService->getTicketDepartments())
             ->setTicketPriorities($techService->getTicketPriorities())
