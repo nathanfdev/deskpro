@@ -145,6 +145,7 @@ class MessengerSetupContainer extends React.Component {
           handleSubmit={this.handleSubmit}
           apiBaseUrl={window.DP_BASE_API_URL}
           code={code}
+          languageId={window.DP_PERSON_LANG_ID}
         >
           <Button loading={saving} onClick={this.handleSubmit} type="cta" size="large">Save</Button>
         </MessengerSetup>
