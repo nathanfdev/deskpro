@@ -97,10 +97,6 @@ class TechInfo implements MessengerModelInterface
             return $agentInfo->toArray();
         }, $this->agentsOnline);
 
-        $filter = function ($dep) {
-            return !isset($dep['children']) || empty($dep['children']);
-        };
-
         return [
             'canUseChat'         => $this->canUseChat,
             'canUseTickets'      => $this->canUseTickets,
