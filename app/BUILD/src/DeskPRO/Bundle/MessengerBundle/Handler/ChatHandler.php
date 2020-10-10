@@ -41,25 +41,15 @@ class ChatHandler
     use TraitUserGet;
 
     const MESSAGE_TYPE_NEW_MESSAGE = 'chat.message';
-
     const MESSAGE_ATTAHCMENT       = 'chat.attachment';
-
     const CHAT_END                 = 'chat.end';
-
     const CHAT_SAVE_TICKET         = 'chat.ticket.save';
-
     const CHAT_USER_TIMEOUT        = 'chat.userTimeout';
-
     const CHAT_TRANSCRIPT          = 'chat.transcript';
-
     const CHAT_RATING              = 'chat.rating';
-
     const CHAT_HISTORY             = 'chat.history';
-
     const CHAT_TRACK               = 'chat.track';
-
     const TYPING_START             = 'chat.typing.start';
-
     const TYPING_END               = 'chat.typing.end';
 
     /**
