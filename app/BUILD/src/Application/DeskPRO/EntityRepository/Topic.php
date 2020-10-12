@@ -54,6 +54,9 @@ class Topic extends AbstractEntityRepository
             if (!$person || !$person->isAgent() || !$person->hasPerm('agent_publish.use')) {
                 $qb->where('status <> ?');
                 $params[] = TopicEntity::STATUS_HIDDEN;
+            } elseif ($person->isAgent() && $person->hasPerm('agent_publish.use')) {
+                $qb->where('(hidden_status IS NULL || hidden_status <> ?)');
+                $params[] = TopicEntity::HIDDEN_STATUS_DELETED;
             }
             $qb->orderBy('display_order', 'ASC');
 
