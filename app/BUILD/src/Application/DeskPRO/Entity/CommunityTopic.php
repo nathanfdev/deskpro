@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\Labels\LabelManager;
 use Carbon\Carbon;
+use DateTime;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicListener;
@@ -302,6 +303,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
 
     public function setIsReviewed($yesno)
     {
+        $this->setDatePublished(new DateTime());
         $this->setModelField('is_reviewed', $yesno);
     }
 
