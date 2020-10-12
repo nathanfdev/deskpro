@@ -161,6 +161,7 @@ class DownloadsSubscriptions extends AbstractJob
             foreach ($allUserToDownloads as $personId => $downloads) {
                 $personUgs   = isset($userGroupMembers[$personId]) ? $userGroupMembers[$personId] : [];
                 $personUgs[] = 1; // Everyone
+                $personUgs[] = 2; // Registered (have a $personId with a sub - by definition they are registered)
 
                 /** @var Download $download */
                 foreach ($downloads as $download) {

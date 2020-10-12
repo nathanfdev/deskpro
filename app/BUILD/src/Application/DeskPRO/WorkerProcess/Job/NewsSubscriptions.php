@@ -162,6 +162,7 @@ class NewsSubscriptions extends AbstractJob
             foreach ($allUserToNews as $personId => $newsArray) {
                 $personUgs   = isset($userGroupMembers[$personId]) ? $userGroupMembers[$personId] : [];
                 $personUgs[] = 1; // Everyone
+                $personUgs[] = 2; // Registered (have a $personId with a sub - by definition they are registered)
 
                 /** @var News $news */
                 foreach ($newsArray as $news) {

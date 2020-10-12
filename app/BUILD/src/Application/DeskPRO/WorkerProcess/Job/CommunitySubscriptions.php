@@ -180,6 +180,7 @@ class CommunitySubscriptions extends AbstractJob
             foreach ($allUserToCommunityTopics as $personId => $topics) {
                 $personUgs   = isset($userGroupMembers[$personId]) ? $userGroupMembers[$personId] : [];
                 $personUgs[] = 1; // Everyone
+                $personUgs[] = 2; // Registered (have a $personId with a sub - by definition they are registered)
 
                 /** @var CommunityTopic $topic */
                 foreach ($topics as $topic) {
