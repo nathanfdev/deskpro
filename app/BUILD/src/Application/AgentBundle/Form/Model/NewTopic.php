@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\AgentBundle\Form\Model;
 
@@ -75,13 +73,25 @@ class NewTopic
         $guide = $this->_em->find(Guide::class, $this->guide_id);
         $topic->setGuide($guide);
 
-        $parent = $this->_em->find(Topic::class, $this->parent_id);
+        $parent       = $this->_em->find(Topic::class, $this->parent_id);
+        $displayOrder = 0;
         if ($parent) {
             $topic->setParent($parent);
             $topic->setNoContent($this->no_content);
+            foreach ($parent->getChildren() as $child) {
+                if ($displayOrder <= $child->getDisplayOrder()) {
+                    $displayOrder = $child->getDisplayOrder() + 1;
+                }
+            }
         } else {
             $topic->setNoContent(true);
+            foreach ($guide->getRootTopics() as $child) {
+                if ($displayOrder <= $child->getDisplayOrder()) {
+                    $displayOrder = $child->getDisplayOrder() + 1;
+                }
+            }
         }
+        $topic->setDisplayOrder($displayOrder);
 
         $this->_em->persist($topic);
         $this->_em->flush();
