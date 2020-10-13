@@ -66,7 +66,7 @@
     </div>
     <script>
     {% if topic_json is defined %}
-      var topic = '{{ topic_json|raw }}';
+      var page = '{{ topic_json|raw }}';
     {% endif %}
       var user_avatar = '{{ avatar_url(app.user, 60, false) }}';
       var user_initials = '{{ app.user ? app.user.initials : '' }}';
@@ -76,11 +76,11 @@
       var commentsCaptcha = '{{ captcha|json_encode|raw }}';
     {% endif %}
     {% if new_comment_form is defined %}
-      var topicCommentForm = {{ new_comment_form ? 'true' : 'false' }};
+      var pageCommentForm = {{ new_comment_form ? 'true' : 'false' }};
     {% endif %}
       var loggedIn = {{ app.user ? 'true' : 'false' }};
       var routePath = window.location.hash.replace(/#\//, '');
-      var topicList = '{{ helpcenter.topics(guide)|json_encode|escape('js')|raw }}';
+      var pageList = '{{ helpcenter.topics(guide)|json_encode|escape('js')|raw }}';
       var twoLevelSection = {{ helpcenter.guideTwoLevelSection(guide) ? 'true' : 'false' }};
       if (routePath[0] != '/')
         routePath = '/' + routePath;

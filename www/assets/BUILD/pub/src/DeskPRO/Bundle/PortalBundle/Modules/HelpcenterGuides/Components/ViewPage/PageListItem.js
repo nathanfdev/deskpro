@@ -5,18 +5,18 @@ import Highlighter from 'react-highlight-words';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-class TopicListItem extends React.Component {
+class PageListItem extends React.Component {
   static propTypes = {
-    topic:            PropTypes.object,
-    guideSlug:        PropTypes.string,
-    topicSlug:        PropTypes.string,
-    path:             PropTypes.string,
-    filter:           PropTypes.string,
-    expanded:         PropTypes.bool,
-    expandedList:     PropTypes.object,
-    grabTopicFromApi: PropTypes.func,
-    filterTopic:      PropTypes.func,
-    toggleTopic:      PropTypes.func,
+    page:            PropTypes.object,
+    guideSlug:       PropTypes.string,
+    pageSlug:        PropTypes.string,
+    path:            PropTypes.string,
+    filter:          PropTypes.string,
+    expanded:        PropTypes.bool,
+    expandedList:    PropTypes.object,
+    grabPageFromApi: PropTypes.func,
+    filterPage:      PropTypes.func,
+    togglePage:      PropTypes.func,
   };
 
   static defaultProps = {
@@ -24,8 +24,8 @@ class TopicListItem extends React.Component {
   };
 
   getLevelPrefix = (delta = 0) => {
-    const { topic } = this.props;
-    switch (topic.depth + delta) {
+    const { page } = this.props;
+    switch (page.depth + delta) {
       case 0:
         return '';
       case 1:
@@ -40,25 +40,25 @@ class TopicListItem extends React.Component {
   };
 
   handleClick = (e) => {
-    const { topic, expanded } = this.props;
+    const { page, expanded } = this.props;
     if (['path', 'svg', 'FIGURE'].indexOf(e.target.tagName) !== -1) {
-      this.props.toggleTopic(e, topic, expanded);
+      this.props.togglePage(e, page, expanded);
     } else {
-      this.props.grabTopicFromApi(topic.slug);
+      this.props.grabPageFromApi(page.slug);
     }
   };
 
   isExpanded = () => {
-    const { expandedList, topic, expanded } = this.props;
-    if (typeof expandedList[topic.id] !== 'undefined') {
-      return expandedList[topic.id];
+    const { expandedList, page, expanded } = this.props;
+    if (typeof expandedList[page.id] !== 'undefined') {
+      return expandedList[page.id];
     }
     return expanded;
   }
 
   renderChildren = () => {
-    const { topic, guideSlug, topicSlug, expandedList, filter, filterTopic, toggleTopic, grabTopicFromApi } = this.props;
-    if (!Object.values(topic.children).length) {
+    const { page, guideSlug, pageSlug, expandedList, filter, filterPage, togglePage, grabPageFromApi } = this.props;
+    if (!Object.values(page.children).length) {
       return null;
     }
     const prefix = this.getLevelPrefix(1);
@@ -71,22 +71,22 @@ class TopicListItem extends React.Component {
         className={classNames(`dp-po-guides-search-content-${prefix}list`)}
         style={style}
       >
-        {Object.values(topic.children)
-          .filter(t => filterTopic(t))
+        {Object.values(page.children)
+          .filter(t => filterPage(t))
           .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
           .map(child => (
-            <TopicListItem
+            <PageListItem
               key={child.slug}
-              topic={child}
+              page={child}
               guideSlug={guideSlug}
-              topicSlug={topicSlug}
+              pageSlug={pageSlug}
               path={this.props.path}
-              grabTopicFromApi={grabTopicFromApi}
+              grabPageFromApi={grabPageFromApi}
               filter={filter}
-              filterTopic={filterTopic}
-              toggleTopic={toggleTopic}
-              expanded={(filter !== '' || child.slug === topicSlug || typeof Object.values(child.children)
-                .find(c => c.slug === topicSlug ||  Object.values(c.children).find(cc => cc.slug === topicSlug)) !== 'undefined')}
+              filterPage={filterPage}
+              togglePage={togglePage}
+              expanded={(filter !== '' || child.slug === pageSlug || typeof Object.values(child.children)
+                .find(c => c.slug === pageSlug ||  Object.values(c.children).find(cc => cc.slug === pageSlug)) !== 'undefined')}
               expandedList={expandedList}
             />
             )
@@ -96,7 +96,7 @@ class TopicListItem extends React.Component {
   };
 
   render() {
-    const { topic, topicSlug, guideSlug, toggleTopic, expanded, filter } = this.props;
+    const { page, pageSlug, guideSlug, togglePage, expanded, filter } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -104,18 +104,18 @@ class TopicListItem extends React.Component {
     }
 
     const prefix = this.getLevelPrefix();
-    if (topic.no_content === '1') {
+    if (page.no_content === '1') {
       return (
-        <li className={`dp-po-guides-search-content-${prefix}item`} key={topic.slug}>
+        <li className={`dp-po-guides-search-content-${prefix}item`} key={page.slug}>
           <div
             className={classNames(`dp-po-guides-search-content-${prefix}link chapter`, { expanded: this.isExpanded() })}
-            onClick={e => toggleTopic(e, topic, expanded)}
+            onClick={e => togglePage(e, page, expanded)}
           >
             <Highlighter
               highlightClassName="filter-highlight"
               className="dp-po-guide-topic-list-item"
               searchWords={[filter]}
-              textToHighlight={topic.title}
+              textToHighlight={page.title}
             />
           </div>
           {this.renderChildren()}
@@ -123,10 +123,10 @@ class TopicListItem extends React.Component {
       );
     }
     return (
-      <li className={`dp-po-guides-search-content-${prefix}item`} key={topic.slug}>
+      <li className={`dp-po-guides-search-content-${prefix}item`} key={page.slug}>
         <Link
-          className={classNames(`dp-po-guides-search-content-${prefix}link`, { expanded: this.isExpanded(), active: topic.slug === topicSlug })}
-          to={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`}
+          className={classNames(`dp-po-guides-search-content-${prefix}link`, { expanded: this.isExpanded(), active: page.slug === pageSlug })}
+          to={`${baseUrl}/guides/${guideSlug}${page.parents_slug}/${page.slug}`}
           activeClassName="active"
           onClick={this.handleClick}
         >
@@ -134,13 +134,13 @@ class TopicListItem extends React.Component {
             highlightClassName="filter-highlight"
             className="dp-po-guide-topic-list-item"
             searchWords={[filter]}
-            textToHighlight={topic.title}
+            textToHighlight={page.title}
           />
-          {Object.values(topic.children).length > 0 && <figure className="dp-po-icon"><FontAwesomeIcon icon={['fas', 'caret-down']} /></figure>}
+          {Object.values(page.children).length > 0 && <figure className="dp-po-icon"><FontAwesomeIcon icon={['fas', 'caret-down']} /></figure>}
         </Link>
         {this.renderChildren()}
       </li>
     );
   }
 }
-export default TopicListItem;
+export default PageListItem;

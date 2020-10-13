@@ -1,20 +1,20 @@
-import ViewTopic from './ViewTopic/ViewTopic';
-import Topic from './ViewTopic/Topic';
-import TopicList from './ViewTopic/TopicList';
-import TopicListItem from './ViewTopic/TopicListItem';
-import TopicSummary from './ViewTopic/TopicSummary';
-import GuideSelector from './ViewTopic/GuideSelector';
-import Anchor from './ViewTopic/Anchor';
-import CodeBlock from './ViewTopic/CodeBlock';
-import CommentsBlock from './ViewTopic/CommentsBlock';
-import CommentForm from './ViewTopic/CommentForm';
+import ViewPage from './ViewPage/ViewPage';
+import Page from './ViewPage/Page';
+import PageList from './ViewPage/PageList';
+import PageListItem from './ViewPage/PageListItem';
+import PageSummary from './ViewPage/PageSummary';
+import GuideSelector from './ViewPage/GuideSelector';
+import Anchor from './ViewPage/Anchor';
+import CodeBlock from './ViewPage/CodeBlock';
+import CommentsBlock from './ViewPage/CommentsBlock';
+import CommentForm from './ViewPage/CommentForm';
 
 export {
-  ViewTopic,
-  Topic,
-  TopicList,
-  TopicListItem,
-  TopicSummary,
+  ViewPage,
+  Page,
+  PageList,
+  PageListItem,
+  PageSummary,
   GuideSelector,
   Anchor,
   CodeBlock,

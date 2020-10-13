@@ -5,26 +5,26 @@ import Link from 'react-router/lib/Link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import $ from 'jquery';
 import { copyTextToClipboard } from 'DeskPRO/Component/Util/ClipBoard';
-import { TopicSummary, CommentsBlock } from '../index';
+import { PageSummary, CommentsBlock } from '../index';
 import AuthorsAvatars from './AuthorsAvatars';
 
-class Topic extends React.PureComponent {
+class Page extends React.PureComponent {
   static propTypes = {
-    intl:             PropTypes.object,
-    topic:            PropTypes.object,
-    topicList:        PropTypes.array,
-    flashes:          PropTypes.array,
-    guideSlug:        PropTypes.string,
-    topicSlug:        PropTypes.string,
-    sizes:            PropTypes.object,
-    loaded:           PropTypes.bool,
-    postComment:      PropTypes.func,
-    grabTopicFromApi: PropTypes.func,
+    intl:            PropTypes.object,
+    page:            PropTypes.object,
+    pageList:        PropTypes.array,
+    flashes:         PropTypes.array,
+    guideSlug:       PropTypes.string,
+    pageSlug:        PropTypes.string,
+    sizes:           PropTypes.object,
+    loaded:          PropTypes.bool,
+    postComment:     PropTypes.func,
+    grabPageFromApi: PropTypes.func,
   };
 
   static defaultProps = {
-    topic:     {},
-    topicList: []
+    page:     {},
+    pageList: []
   };
 
   constructor(props) {
@@ -34,12 +34,12 @@ class Topic extends React.PureComponent {
 
   copyLinkToClipBoard = (e) => {
     e.preventDefault();
-    const { topic, guideSlug, intl } = this.props;
+    const { page, guideSlug, intl } = this.props;
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
-    const url = `${window.location.origin}${baseUrl}/guides/${guideSlug}/${topic.slug}`;
+    const url = `${window.location.origin}${baseUrl}/guides/${guideSlug}/${page.slug}`;
     if (copyTextToClipboard(url)) {
       $(this.anchor.current).attr('data-original-title', intl.formatMessage({ id: 'helpcenter.general.copied' })).tooltip('show');
       setTimeout(() => {
@@ -49,68 +49,68 @@ class Topic extends React.PureComponent {
     return false;
   };
 
-  renderSubTobic = (topic) => {
-    const { guideSlug, grabTopicFromApi } = this.props;
+  renderSubTobic = (page) => {
+    const { guideSlug, grabPageFromApi } = this.props;
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
-    const datePublished = topic.date_published ? topic.date_published.replace(/T.*/, '').replace(/-/g, '/') : null;
-    const dateUpdated = topic.date_updated ? topic.date_updated.replace(/T.*/, '').replace(/-/g, '/') : null;
+    const datePublished = page.date_published ? page.date_published.replace(/T.*/, '').replace(/-/g, '/') : null;
+    const dateUpdated = page.date_updated ? page.date_updated.replace(/T.*/, '').replace(/-/g, '/') : null;
 
     return (
       <div
         className="dp-po-guides-subtopic"
-        key={topic.id}
+        key={page.id}
       >
         <Link
           className="dp-po-guides-subtopic-title"
-          to={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
-          onClick={() => grabTopicFromApi(topic.slug)}
+          to={`${baseUrl}/guides/${guideSlug}/${page.slug}`}
+          onClick={() => grabPageFromApi(page.slug)}
         >
-          {topic.title}
+          {page.title}
         </Link>
-        <AuthorsAvatars authors={topic.authors} max={3} />
+        <AuthorsAvatars authors={page.authors} max={3} />
         <div className="dp-po-guides-subtopic-dates">
-          {topic.date_published && <Fragment><FormattedMessage className="title" id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong><br /></Fragment>}
-          {topic.date_updated && <Fragment><FormattedMessage className="title" id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+          {page.date_published && <Fragment><FormattedMessage className="title" id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong><br /></Fragment>}
+          {page.date_updated && <Fragment><FormattedMessage className="title" id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
         </div>
       </div>
     );
   }
 
-  renderSubtopics = () => {
-    const { topic } = this.props;
-    if (topic.children.length === 0) {
+  renderSubpages = () => {
+    const { page } = this.props;
+    if (page.children.length === 0) {
       return null;
     }
     return (
       <div className="dp-po-guides-subtopics">
-        <h3><FormattedMessage id="helpcenter.guides.topics_in" values={{ title: topic.title }} /></h3>
-        {topic.children.map(child => this.renderSubTobic(child))}
+        <h3><FormattedMessage id="helpcenter.guides.pages_in" values={{ title: page.title }} /></h3>
+        {page.children.map(child => this.renderSubTobic(child))}
       </div>
     );
   }
 
   renderPreviousNext = () => {
-    const { topicList, topic, guideSlug, grabTopicFromApi } = this.props;
-    const index = topicList.findIndex(t => t.id === topic.id);
+    const { pageList, page, guideSlug, grabPageFromApi } = this.props;
+    const index = pageList.findIndex(p => p.id === page.id);
     let previous = null;
     let previousIndex = index - 1;
     let next = null;
     let nextIndex = index + 1;
     while (!previous && previousIndex >= 0) {
-      if (topicList[previousIndex].no_content === '0' && ((topicList[previousIndex].parent_id === topic.parent.id) || (topicList[previousIndex].id === topic.parent.id))) {
-        previous = topicList[previousIndex];
+      if (pageList[previousIndex].no_content === '0' && ((pageList[previousIndex].parent_id === page.parent.id) || (pageList[previousIndex].id === page.parent.id))) {
+        previous = pageList[previousIndex];
       }
       previousIndex -= 1;
     }
     const children = [];
-    while (!next && nextIndex < topicList.length) {
-      if (topicList[nextIndex].no_content === '0' && topicList[nextIndex].parent_id !== topic.id && children.indexOf(topicList[nextIndex].parent_id) === -1) {
-        next = topicList[nextIndex];
-      } else if (topicList[nextIndex].parent_id === topic.id || children.indexOf(topicList[nextIndex].parent_id) !== -1) {
-        children.push(topicList[nextIndex].id);
+    while (!next && nextIndex < pageList.length) {
+      if (pageList[nextIndex].no_content === '0' && pageList[nextIndex].parent_id !== page.id && children.indexOf(pageList[nextIndex].parent_id) === -1) {
+        next = pageList[nextIndex];
+      } else if (pageList[nextIndex].parent_id === page.id || children.indexOf(pageList[nextIndex].parent_id) !== -1) {
+        children.push(pageList[nextIndex].id);
       }
       nextIndex += 1;
     }
@@ -130,13 +130,13 @@ class Topic extends React.PureComponent {
           <Link
             className="dp-po-guides-block-next-topic"
             to={`${baseUrl}/guides/${guideSlug}/${next.slug}`}
-            onClick={() => grabTopicFromApi(next.slug)}
+            onClick={() => grabPageFromApi(next.slug)}
           >
             <figure className="dp-po-icon">
               <FontAwesomeIcon icon={['fal', 'angle-right']} />
             </figure>
             <span className="sup">
-              <FormattedMessage id="helpcenter.guides.next_topic" />
+              <FormattedMessage id="helpcenter.guides.next_page" />
             </span>
             <span className="title">
               {next.title}
@@ -147,10 +147,10 @@ class Topic extends React.PureComponent {
           <Link
             className="dp-po-guides-block-previous-topic"
             to={`${baseUrl}/guides/${guideSlug}/${previous.slug}`}
-            onClick={() => grabTopicFromApi(previous.slug)}
+            onClick={() => grabPageFromApi(previous.slug)}
           >
             <span className="sup">
-              <FormattedMessage id="helpcenter.guides.previous_topic" />
+              <FormattedMessage id="helpcenter.guides.previous_page" />
             </span>
             <span className="title">
               {previous.title}
@@ -165,24 +165,24 @@ class Topic extends React.PureComponent {
   }
 
   renderComments() {
-    const { topic, flashes, postComment } = this.props;
+    const { page, flashes, postComment } = this.props;
     return (
       <CommentsBlock
-        count={topic.calc_num_comments}
+        count={page.calc_num_comments}
         postComment={postComment}
-        comments={topic.comments}
+        comments={page.comments}
         flashes={flashes}
       />
     );
   }
 
   renderInSection() {
-    const { topic } = this.props;
+    const { page } = this.props;
 
-    if (topic.parent) {
+    if (page.parent) {
       return (
         <div className="dp-po-guides-block-title-section">
-          <FormattedMessage id="helpcenter.guides.in_section" values={{ section: topic.parent.title }} />
+          <FormattedMessage id="helpcenter.guides.in_section" values={{ section: page.parent.title }} />
         </div>
       );
     }
@@ -190,12 +190,12 @@ class Topic extends React.PureComponent {
   }
 
   renderContent() {
-    const { topic } = this.props;
-    if (topic.content) {
+    const { page } = this.props;
+    if (page.content) {
       return (
         <div
           className="dp-po-post-content dp-po-guides-block-content"
-          dangerouslySetInnerHTML={{ __html: topic.content }}
+          dangerouslySetInnerHTML={{ __html: page.content }}
         />
       );
     }
@@ -203,7 +203,7 @@ class Topic extends React.PureComponent {
   }
 
   render() {
-    const { topic, guideSlug, topicSlug, intl, sizes, loaded } = this.props;
+    const { page, guideSlug, pageSlug, intl, sizes, loaded } = this.props;
 
     const fixed = false;
     const agentBarHeight = 0;
@@ -213,19 +213,19 @@ class Topic extends React.PureComponent {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
     const style = {};
-    if (sizes && topic.slug === topicSlug) {
+    if (sizes && page.slug === pageSlug) {
       style.width = sizes.articleWidth;
       style.position = 'fixed';
     }
-    const topicStyle = {};
+    const pageStyle = {};
     if (!loaded) {
-      topicStyle.display = 'none';
+      pageStyle.display = 'none';
     }
-    const datePublished = topic.date_published ? topic.date_published.replace(/T.*/, '').replace(/-/g, '/') : null;
-    const dateUpdated = topic.date_updated ? topic.date_updated.replace(/T.*/, '').replace(/-/g, '/') : null;
+    const datePublished = page.date_published ? page.date_published.replace(/T.*/, '').replace(/-/g, '/') : null;
+    const dateUpdated = page.date_updated ? page.date_updated.replace(/T.*/, '').replace(/-/g, '/') : null;
 
     return (
-      <div className="dp-po-guides-block-article" id={`topic_${topic.slug}`} style={topicStyle}>
+      <div className="dp-po-guides-block-article" id={`page_${page.slug}`} style={pageStyle}>
         <div className="row">
           <div className="col-sm-9">
             <div className="dp-po-guides-block-article-left">
@@ -233,8 +233,8 @@ class Topic extends React.PureComponent {
 
                 <div className="dp-po-guides-block-header">
                   <h2 className="dp-po-guides-block-title dp-po-clipboard">
-                    {topic.title}
-                    {topic.status === 'hidden' ?
+                    {page.title}
+                    {page.status === 'hidden' ?
                       <span
                         className="dp-po-icon dp-info" data-toggle="tooltip"
                         title={intl.formatMessage({ id: 'helpcenter.general.viewed_by_agents_only' })} data-placement="top"
@@ -246,7 +246,7 @@ class Topic extends React.PureComponent {
                       className="dp-po-clipboard-link"
                       data-toggle="tooltip"
                       data-placement="top"
-                      href={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
+                      href={`${baseUrl}/guides/${guideSlug}/${page.slug}`}
                       onClick={this.copyLinkToClipBoard}
                       ref={this.anchor}
                       title={intl.formatMessage({ id: 'helpcenter.general.copy_to_clipboard' })}
@@ -255,11 +255,11 @@ class Topic extends React.PureComponent {
                     </a>
                   </h2>
                   {this.renderInSection()}
-                  <AuthorsAvatars authors={topic.authors} />
+                  <AuthorsAvatars authors={page.authors} />
                   <div className="dp-po-guides-meta">
-                    {topic.date_published && <Fragment><FormattedMessage id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong></Fragment>}
-                    {topic.date_published && topic.date_updated && <span className="separator">|</span>}
-                    {topic.date_updated && <Fragment><FormattedMessage id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+                    {page.date_published && <Fragment><FormattedMessage id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+                    {page.date_published && page.date_updated && <span className="separator">|</span>}
+                    {page.date_updated && <Fragment><FormattedMessage id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
                   </div>
                   {/* <div className="dp-po-guides-block-extra">*/}
                   {/*  <ul className="dp-po-guides-block-extra-list">*/}
@@ -278,14 +278,14 @@ class Topic extends React.PureComponent {
                 </div>
                 {this.renderContent()}
               </div>
-              {this.renderSubtopics()}
+              {this.renderSubpages()}
               {this.renderPreviousNext()}
               {this.renderComments()}
             </div>
           </div>
           <div className="col-sm-3">
             <div className="dp-po-guides-block-article-right" style={style}>
-              <TopicSummary content={topic.content} fixed={fixed} agentBarHeight={agentBarHeight} />
+              <PageSummary content={page.content} fixed={fixed} agentBarHeight={agentBarHeight} />
             </div>
           </div>
         </div>
@@ -294,4 +294,4 @@ class Topic extends React.PureComponent {
   }
 }
 
-export default injectIntl(Topic);
+export default injectIntl(Page);
