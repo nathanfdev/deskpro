@@ -96,7 +96,7 @@ class CommentsBlock extends React.Component {
   }
 
   render() {
-    if (!window.topicCommentForm && !this.props.comments.length) {
+    if (!window.pageCommentForm && !this.props.comments.length) {
       return null;
     }
 

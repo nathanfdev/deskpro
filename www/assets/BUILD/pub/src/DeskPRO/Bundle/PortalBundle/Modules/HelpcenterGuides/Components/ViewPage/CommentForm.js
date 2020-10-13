@@ -177,7 +177,7 @@ class CommentForm extends React.Component {
   }
 
   render() {
-    if (!window.topicCommentForm) {
+    if (!window.pageCommentForm) {
       return null;
     }
     if (!window.loggedIn) {

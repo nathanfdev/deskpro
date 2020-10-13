@@ -11,7 +11,7 @@ const getHeading = (html) => {
   return Array.from(container.querySelectorAll('h1')).map(h1 => h1);
 };
 
-class TopicSummary extends React.Component {
+class PageSummary extends React.Component {
   static propTypes = {
     content:   PropTypes.string,
     fixed:     PropTypes.bool,
@@ -49,7 +49,7 @@ class TopicSummary extends React.Component {
     return (
       <div className={classNames('dp-po-guides-contents', className, { fixed })}>
         <div>
-          <h3 className="dp-po-guides-contents-title"><FormattedMessage id="helpcenter.guides.topic_sections" /></h3>
+          <h3 className="dp-po-guides-contents-title"><FormattedMessage id="helpcenter.guides.page_sections" /></h3>
           <ul className="dp-po-guides-contents-list">
             {this.state.h1s.map((h1, index) => <li className="dp-po-guides-contents-item" key={index}>
               <Link
@@ -68,4 +68,4 @@ class TopicSummary extends React.Component {
     );
   }
 }
-export default TopicSummary;
+export default PageSummary;

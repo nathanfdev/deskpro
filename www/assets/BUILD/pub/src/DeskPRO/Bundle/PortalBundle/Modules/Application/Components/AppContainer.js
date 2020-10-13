@@ -19,9 +19,9 @@ class AppContainer extends React.Component {
 
     return (
       <Router history={browserHistory}>
-        <Route path="/" component={Guides.ViewTopic}>
-          <Route path={`${baseUrl}/guides/:slug`} component={Guides.ViewTopic} />
-          <Route path={`${baseUrl}/guides/**/:slug`} component={Guides.ViewTopic} />
+        <Route path="/" component={Guides.ViewPage}>
+          <Route path={`${baseUrl}/guides/:slug`} component={Guides.ViewPage} />
+          <Route path={`${baseUrl}/guides/**/:slug`} component={Guides.ViewPage} />
         </Route>
       </Router>
     );

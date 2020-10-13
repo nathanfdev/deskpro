@@ -7,17 +7,17 @@ import Highlighter from 'react-highlight-words';
 import guideDefault from '@deskpro/portal-style/dist/img/page-icons/guide-default.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconRenderer } from 'DeskPRO/Component/IconRenderer';
-import TopicListItem from './TopicListItem';
+import PageListItem from './PageListItem';
 
-class TopicList extends React.Component {
+class PageList extends React.Component {
   static propTypes = {
-    topics:           PropTypes.array,
-    guideSlug:        PropTypes.string,
-    guide:            PropTypes.object,
-    topicSlug:        PropTypes.string,
-    grabTopicFromApi: PropTypes.func,
-    sizes:            PropTypes.object,
-    twoLevelSection:  PropTypes.bool,
+    pages:           PropTypes.array,
+    guideSlug:       PropTypes.string,
+    guide:           PropTypes.object,
+    pageSlug:        PropTypes.string,
+    grabPageFromApi: PropTypes.func,
+    sizes:           PropTypes.object,
+    twoLevelSection: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -28,7 +28,7 @@ class TopicList extends React.Component {
     return (
       <div className="dp-po-guides-search-no-results">
         <FontAwesomeIcon icon={['far', 'search']} className="dp-po-icon" />
-        <span><FormattedMessage id="helpcenter.guides.no_matching_topics" /></span>
+        <span><FormattedMessage id="helpcenter.guides.no_matching_pages" /></span>
       </div>
     );
   }
@@ -50,49 +50,49 @@ class TopicList extends React.Component {
     this.removeListener();
   }
 
-  filterTopic = (topic) => {
+  filterPage = (page) => {
     let { filter } = this.state;
 
     filter = filter.toLowerCase();
-    return filter === '' || topic.title.toLowerCase().match(filter) || Object.values(topic.children).find(c => this.filterTopic(c));
+    return filter === '' || page.title.toLowerCase().match(filter) || Object.values(page.children).find(c => this.filterPage(c));
   };
 
-  isExpandedTopic = (topic, recursive = false) => {
-    const { topicSlug } = this.props;
+  isExpandedPage = (page, recursive = false) => {
+    const { pageSlug } = this.props;
     const { expanded, filter } = this.state;
     if (filter) {
-      return Object.values(topic.children).find(c => this.filterTopic(c));
+      return Object.values(page.children).find(c => this.filterPage(c));
     }
-    if (topic.slug === topicSlug || Object.values(topic.children).find(c => this.isExpandedTopic(c, true))) {
+    if (page.slug === pageSlug || Object.values(page.children).find(c => this.isExpandedPage(c, true))) {
       return true;
     }
-    if (!recursive && typeof expanded[topic.id] !== 'undefined') {
-      return expanded[topic.id];
+    if (!recursive && typeof expanded[page.id] !== 'undefined') {
+      return expanded[page.id];
     }
-    if (recursive && typeof expanded[topic.id] !== 'undefined' && expanded[topic.id]) {
+    if (recursive && typeof expanded[page.id] !== 'undefined' && expanded[page.id]) {
       return true;
     }
     return false;
   };
 
-  grabTopicFromApi = (slug) => {
+  grabPageFromApi = (slug) => {
     this.setState({
       filter: ''
     });
-    this.props.grabTopicFromApi(slug);
+    this.props.grabPageFromApi(slug);
   }
 
-  toggleTopic = (e, topic, initial) => {
+  togglePage = (e, page, initial) => {
     e.preventDefault();
     e.stopPropagation();
     this.setState({
       filter: ''
     });
     const { expanded } = this.state;
-    if (typeof expanded[topic.id] !== 'undefined') {
-      expanded[topic.id] = !expanded[topic.id];
+    if (typeof expanded[page.id] !== 'undefined') {
+      expanded[page.id] = !expanded[page.id];
     } else {
-      expanded[topic.id] = !initial;
+      expanded[page.id] = !initial;
     }
     this.setState({
       expanded
@@ -112,54 +112,54 @@ class TopicList extends React.Component {
     });
   };
 
-  renderTopics(topics, depth = 0, collapse = false) {
-    const { guideSlug, topicSlug } = this.props;
+  renderPages(pages, depth = 0, collapse = false) {
+    const { guideSlug, pageSlug } = this.props;
     const { filter, expanded } = this.state;
-    const renderedTopics = topics
+    const renderedPages = pages
       .filter(t => depth > 0 || t.depth === depth)
-      .filter(t => this.filterTopic(t))
+      .filter(t => this.filterPage(t))
       .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
-      .map(topic => (
-        <TopicListItem
-          key={topic.slug}
-          topic={topic}
+      .map(page => (
+        <PageListItem
+          key={page.slug}
+          page={page}
           guideSlug={guideSlug}
-          topicSlug={topicSlug}
+          pageSlug={pageSlug}
           path={this.state.path}
-          grabTopicFromApi={this.grabTopicFromApi}
+          grabPageFromApi={this.grabPageFromApi}
           filter={filter}
-          filterTopic={this.filterTopic}
-          toggleTopic={this.toggleTopic}
-          expanded={!!(this.isExpandedTopic(topic))}
+          filterPage={this.filterPage}
+          togglePage={this.togglePage}
+          expanded={!!(this.isExpandedPage(page))}
           expandedList={expanded}
         />
         )
       );
-    if (renderedTopics.length === 0) {
-      return TopicList.renderNoResults();
+    if (renderedPages.length === 0) {
+      return PageList.renderNoResults();
     }
     return (
       <ul className={classNames('dp-po-guides-search-content-list', { collapse })}>
-        {renderedTopics}
+        {renderedPages}
       </ul>
     );
   }
 
   renderList() {
-    const { guide, topics, twoLevelSection } = this.props;
+    const { guide, pages, twoLevelSection } = this.props;
     const { filter } = this.state;
     if (twoLevelSection) {
-      const renderedTopics = topics
+      const renderedPages = pages
         .filter(t => t.depth === 0)
-        .filter(t => this.filterTopic(t))
+        .filter(t => this.filterPage(t))
         .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
-        .map((topic) => {
-          const collapsed = !this.isExpandedTopic(topic);
+        .map((page) => {
+          const collapsed = !this.isExpandedPage(page);
           return (
-            <div className={classNames('dp-po-guides-search-content-accordion', { collapsed })} key={topic.slug}>
+            <div className={classNames('dp-po-guides-search-content-accordion', { collapsed })} key={page.slug}>
               <div
                 className={classNames('dp-po-guides-search-content-title', { collapsed })}
-                onClick={e => this.toggleTopic(e, topic, this.isExpandedTopic(topic))}
+                onClick={e => this.togglePage(e, page, this.isExpandedPage(page))}
               >
                 <IconRenderer
                   object={guide}
@@ -172,25 +172,25 @@ class TopicList extends React.Component {
                   highlightClassName="filter-highlight"
                   className="title"
                   searchWords={[filter]}
-                  textToHighlight={topic.title}
+                  textToHighlight={page.title}
                 />
                 <FontAwesomeIcon icon={['far', 'angle-down']} className="dp-po-icon" />
               </div>
-              {this.renderTopics(Object.values(topic.children), 1, collapsed)}
+              {this.renderPages(Object.values(page.children), 1, collapsed)}
             </div>
           );
         }
         );
-      if (renderedTopics.length === 0) {
-        return TopicList.renderNoResults();
+      if (renderedPages.length === 0) {
+        return PageList.renderNoResults();
       }
       return (
         <div className="dp-po-guides-search-content accordion" id="accordionExample">
-          {renderedTopics}
+          {renderedPages}
         </div>
       );
     }
-    return this.renderTopics(topics);
+    return this.renderPages(pages);
   }
 
   render() {
@@ -213,4 +213,4 @@ class TopicList extends React.Component {
     );
   }
 }
-export default TopicList;
+export default PageList;

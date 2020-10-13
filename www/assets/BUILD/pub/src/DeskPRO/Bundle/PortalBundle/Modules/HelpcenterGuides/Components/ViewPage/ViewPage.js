@@ -9,23 +9,23 @@ import $ from 'jquery';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import browserHistory from 'react-router/lib/browserHistory';
 import Link from 'react-router/lib/Link';
-import { TopicList, Topic, GuideSelector, CodeBlock } from '../index';
+import { PageList, Page, GuideSelector, CodeBlock } from '../index';
 
-class ViewTopic extends React.Component {
+class ViewPage extends React.Component {
   static propTypes = {
     params: PropTypes.object
   };
 
   constructor(props) {
     super(props);
-    let topic = {};
+    let page = {};
     let loaded = true;
-    if (window.topic) {
-      topic = JSON.parse(window.topic);
+    if (window.page) {
+      page = JSON.parse(window.page);
       loaded = true;
-      topic.content = this.addIdToh1(topic.content, topic.slug);
+      page.content = this.addIdToh1(page.content, page.slug);
     }
-    const topicList = JSON.parse(window.topicList);
+    const pageList = JSON.parse(window.pageList);
     let guides = [];
     if (window.guides) {
       guides = JSON.parse(window.guides);
@@ -42,11 +42,11 @@ class ViewTopic extends React.Component {
       guide,
       guideSlug,
       loaded,
-      topic,
-      topicList,
+      page,
+      pageList,
       twoLevelSection: window.twoLevelSection,
     };
-    if (window.topic) {
+    if (window.page) {
       setTimeout(() => {
         this.changeInternalLinks();
         this.addCodeBlocksCopy();
@@ -80,7 +80,7 @@ class ViewTopic extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     // if (nextProps.params.slug !== this.props.params.slug) {
-    //   this.grabTopicFromApi(nextProps.params.slug);
+    //   this.grabPageFromApi(nextProps.params.slug);
     //   this.contentChanged = true;
     // }
     const nextGuideSlug = this.getGuideSlug(nextProps.params);
@@ -115,7 +115,7 @@ class ViewTopic extends React.Component {
     return params.slug;
   }
 
-  getTopicSlug = (params) => {
+  getPageSlug = (params) => {
     if (Object.prototype.hasOwnProperty.call(params, 'splat')) {
       return params.slug;
     }
@@ -282,20 +282,20 @@ class ViewTopic extends React.Component {
           return;
         }
 
-        const topicList = response.data.data;
+        const pageList = response.data.data;
         this.setState({
-          topicList,
+          pageList,
         });
       });
     } else {
-      const topicSlug = path.replace(/^(\/[^/]+)?\/guides\/.*\//, '');
-      this.grabTopicFromApi(topicSlug);
+      const pageSlug = path.replace(/^(\/[^/]+)?\/guides\/.*\//, '');
+      this.grabPageFromApi(pageSlug);
     }
     browserHistory.push(path);
     return false;
   };
 
-  grabTopicFromApi = (slug, forceScroll = false) => {
+  grabPageFromApi = (slug, forceScroll = false) => {
     if (this.scrolling) {
       return;
     }
@@ -317,11 +317,11 @@ class ViewTopic extends React.Component {
       }
 
 
-      const topic = response.data.data;
-      topic.content = this.addIdToh1(topic.content, topic.slug);
+      const page = response.data.data;
+      page.content = this.addIdToh1(page.content, page.slug);
       this.setState({
         loaded:  true,
-        topic,
+        page,
         flashes: [],
       });
       if (forceScroll || scroll) {
@@ -338,15 +338,15 @@ class ViewTopic extends React.Component {
 
   postComment = comment => new Promise(
     (resolve, reject) => portalHttp.sendPost(
-      `DP_URL/portal/api/guides/topic/${this.state.topic.slug}/comment`,
+      `DP_URL/portal/api/guides/topic/${this.state.page.slug}/comment`,
       comment
     ).then((response) => {
       if (response.data) {
         if (response.data.data.comment) {
-          this.state.topic.calc_num_comments = this.state.topic.calc_num_comments + 1;
-          this.state.topic.comments.push(response.data.data.comment);
+          this.state.page.calc_num_comments = this.state.page.calc_num_comments + 1;
+          this.state.page.comments.push(response.data.data.comment);
           this.setState({
-            topic: this.state.topic
+            page: this.state.page
           });
         }
         if (response.data.data.flashes) {
@@ -380,18 +380,18 @@ class ViewTopic extends React.Component {
         return;
       }
 
-      const topicList = response.data.data;
+      const pageList = response.data.data;
       this.setState({
-        topicList,
+        pageList,
         guide,
         guideSlug:       guide.slug,
         twoLevelSection: guide.two_level_section,
       });
-      // const topic = Object.values(topicList).filter(t => t.no_content === '0' && t.content_length !== '0').shift();
+      // const page = Object.values(pageList).filter(t => t.no_content === '0' && t.content_length !== '0').shift();
       //
-      // this.grabTopicFromApi(topic.slug);
+      // this.grabPageFromApi(page.slug);
       this.setState({
-        topic: {}
+        page: {}
       });
 
       let baseUrl = window.DESKPRO_BASE_URL;
@@ -400,24 +400,24 @@ class ViewTopic extends React.Component {
       }
 
       browserHistory.push(`${baseUrl}/guides/${guide.slug}`);
-      // if (Object.values(topic.children).length) {
-      //   const child = Object.values(topic.children).sort(
+      // if (Object.values(page.children).length) {
+      //   const child = Object.values(page.children).sort(
       //     (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
       //   ).shift();
-      //   browserHistory.push(`${baseUrl}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
+      //   browserHistory.push(`${baseUrl}/guides/${guide.slug}/${page.slug}/${child.slug}`);
       // } else {
-      //   browserHistory.push(`${baseUrl}/guides/${guide.slug}/${topic.slug}`);
+      //   browserHistory.push(`${baseUrl}/guides/${guide.slug}/${page.slug}`);
       // }
       window.scrollTo(0, 0);
     });
   };
 
   renderGuideLanding() {
-    const { guide, topicList, guideSlug } = this.state;
+    const { guide, pageList, guideSlug } = this.state;
     let { description } = guide;
     const { splash_image_property: splashImageProperty } = guide;
-    const topics = Object.values(topicList).filter(t => t.no_content === '0' && t.content_length !== '0');
-    const topic1 = topics.shift();
+    const pages = Object.values(pageList).filter(t => t.no_content === '0' && t.content_length !== '0');
+    const page1 = pages.shift();
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -425,15 +425,15 @@ class ViewTopic extends React.Component {
     }
 
     if (!description) {
-      const topic2 = topics.shift();
-      if (topic2) {
+      const page2 = pages.shift();
+      if (page2) {
         description = (
           <FormattedMessage
             id="helpcenter.guides.default_description"
             values={{
               guide_name: guide.title,
-              topic1:     topic1.title,
-              topic2:     topic2.title,
+              page1:      page1.title,
+              page2:      page2.title,
             }}
           />
         );
@@ -443,7 +443,7 @@ class ViewTopic extends React.Component {
             id="helpcenter.guides.default_description_short"
             values={{
               guide_name: guide.title,
-              topic1:     topic1.title,
+              page1:      page1.title,
             }}
           />
         );
@@ -476,9 +476,9 @@ class ViewTopic extends React.Component {
               <p>{description}</p>
               <Link
                 className="dp-po-guides-btn btn btn-outline-primary"
-                to={`${baseUrl}/guides/${guideSlug}/${topic1.slug}`}
+                to={`${baseUrl}/guides/${guideSlug}/${page1.slug}`}
                 onClick={() => {
-                  this.grabTopicFromApi(topic1.slug);
+                  this.grabPageFromApi(page1.slug);
                 }}
               >
                 <FormattedMessage id="helpcenter.guides.start_reading" />
@@ -490,21 +490,21 @@ class ViewTopic extends React.Component {
     );
   }
 
-  renderTopic() {
-    const { topic, guideSlug, topicSlug, loaded, topicList, flashes } = this.state;
-    if (topic.id) {
+  renderPage() {
+    const { page, guideSlug, pageSlug, loaded, pageList, flashes } = this.state;
+    if (page.id) {
       return (
-        <Topic
-          topic={topic}
-          topicList={topicList}
+        <Page
+          page={page}
+          pageList={pageList}
           guideSlug={guideSlug}
-          topicSlug={topicSlug}
+          pageSlug={pageSlug}
           flashes={flashes}
-          data={topic}
+          data={page}
           sizes={this.sizes}
           loaded={loaded}
           postComment={this.postComment}
-          grabTopicFromApi={this.grabTopicFromApi}
+          grabPageFromApi={this.grabPageFromApi}
         />
       );
     }
@@ -515,9 +515,9 @@ class ViewTopic extends React.Component {
   }
 
   render() {
-    const { topicList, fixed, loaded, twoLevelSection, guide } = this.state;
+    const { pageList, fixed, loaded, twoLevelSection, guide } = this.state;
     const guideSlug = this.getGuideSlug(this.props.params);
-    const topicSlug = this.getTopicSlug(this.props.params);
+    const pageSlug = this.getPageSlug(this.props.params);
 
     return (
       <div className={classNames('container', { fixed })}>
@@ -531,12 +531,12 @@ class ViewTopic extends React.Component {
             <div className="container-fluid">
               <div className="row">
                 <div className="col-sm-3">
-                  <TopicList
-                    topics={topicList}
+                  <PageList
+                    pages={pageList}
                     guideSlug={guideSlug}
-                    topicSlug={topicSlug}
+                    pageSlug={pageSlug}
                     guide={guide}
-                    grabTopicFromApi={this.grabTopicFromApi}
+                    grabPageFromApi={this.grabPageFromApi}
                     sizes={this.sizes}
                     twoLevelSection={twoLevelSection}
                   />
@@ -552,7 +552,7 @@ class ViewTopic extends React.Component {
                     </div>
                   }
                   <div className="dp-po-guides-block">
-                    {this.renderTopic()}
+                    {this.renderPage()}
                   </div>
                 </div>
               </div>
@@ -564,4 +564,4 @@ class ViewTopic extends React.Component {
   }
 }
 
-export default ViewTopic;
+export default ViewPage;
