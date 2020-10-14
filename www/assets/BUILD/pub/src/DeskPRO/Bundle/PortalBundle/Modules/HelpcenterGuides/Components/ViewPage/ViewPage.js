@@ -166,10 +166,7 @@ class ViewPage extends React.Component {
       const link = document.createElement('a');
       link.className = 'dp-po-Breadcrumb-link';
       link.href = '#';
-      link.dataset.toggle = 'tooltip';
-      link.dataset.placement = 'bottom';
-      link.dataset.originalTitle = item.title;
-      link.title = '';
+      link.title = item.title;
       link.text = item.title;
 
       const path = `${baseUrl}/guides/${guideSlug}/${item.slug}`;
@@ -180,9 +177,10 @@ class ViewPage extends React.Component {
           browserHistory.push(path);
           this.grabPageFromApi(item.slug);
         };
-      }
-      if (item.guide) {
-        link.href = guideSlug;
+      } else {
+        if (item.guide) {
+          link.href = guideSlug;
+        }
         link.onclick = (e) => {
           e.preventDefault();
           browserHistory.push(`${baseUrl}/guides/${guideSlug}`);
