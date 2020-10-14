@@ -10,6 +10,7 @@ use Application\DeskPRO\EventDispatcher\DataEvent;
 use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Translate\Loader\LoaderInterface;
+use Error;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -899,7 +900,12 @@ class Translate implements PersonContextInterface, TranslatorInterface
                 $text = $this->getPhraseText($phrase_name, $language, true);
                 if ($text) {
                     $fmt        = $this->getMessageFormatter($locale, $phrase_name, $text);
-                    $phraseText = $fmt->format($icuVars);
+
+                    try {
+                        $phraseText = $fmt->format($icuVars);
+                    } catch (Error $e) {
+                        $phraseText = false;
+                    }
                 } else {
                     $phraseText = false;
                 }
