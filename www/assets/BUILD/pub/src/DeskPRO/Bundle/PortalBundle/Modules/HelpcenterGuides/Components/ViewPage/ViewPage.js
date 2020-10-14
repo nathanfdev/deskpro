@@ -52,6 +52,7 @@ class ViewPage extends React.Component {
         this.addCodeBlocksCopy();
         this.addGuideBlocks();
         this.addReactImageLazyload();
+        this.setBreadCrumbs(page);
       }, 500);
     }
     this.contentChanged = false;
@@ -120,6 +121,81 @@ class ViewPage extends React.Component {
       return params.slug;
     }
     return '';
+  }
+
+  setBreadCrumbs = (page = null) => {
+    const ol = document.querySelector('ol.breadcrumb');
+    const { pageList, guideSlug, guide } = this.state;
+    const hierarchy = [];
+    if (page !== null) {
+      hierarchy.push(page);
+      let parentId = page.parent ? page.parent.id : null;
+      while (parentId !== null) {
+        // eslint-disable-next-line no-loop-func
+        const parent = pageList.find(p => p.id === parentId);
+        hierarchy.push(parent);
+        parentId = parent.parent_id;
+      }
+    }
+    let i = ol.childNodes.length;
+    while (i > 0) {
+      const el =  ol.childNodes[i - 1];
+      if (el.className && el.className.indexOf('breadcrumbs-guide-root') !== -1) {
+        el.classList.remove('active');
+        break;
+      }
+      ol.removeChild(el);
+      i -= 1;
+    }
+    hierarchy.push({
+      title: guide.title,
+      guide: true,
+    });
+    hierarchy.reverse();
+    let baseUrl = window.DESKPRO_BASE_URL;
+    if (baseUrl) {
+      baseUrl = baseUrl.replace(/\/+$/, '');
+    }
+    let li;
+    hierarchy.forEach((item) => {
+      li = document.createElement('li');
+      li.className = 'breadcrumb-item';
+      const icon = document.createElement('i');
+      icon.className = 'dp-po-icon fal fa-angle-right';
+      li.appendChild(icon);
+      const link = document.createElement('a');
+      link.className = 'dp-po-Breadcrumb-link';
+      link.href = '#';
+      link.title = item.title;
+      link.text = item.title;
+
+      const path = `${baseUrl}/guides/${guideSlug}/${item.slug}`;
+      if (item.no_content !== '1' && !item.guide) {
+        link.href = item.slug;
+        link.onclick = (e) => {
+          e.preventDefault();
+          browserHistory.push(path);
+          this.grabPageFromApi(item.slug);
+        };
+      } else {
+        if (item.guide) {
+          link.href = guideSlug;
+        }
+        link.onclick = (e) => {
+          e.preventDefault();
+          browserHistory.push(`${baseUrl}/guides/${guideSlug}`);
+          this.selectGuide(guide);
+        };
+      }
+      li.appendChild(link);
+      ol.appendChild(li);
+    });
+    li.classList.add('active');
+
+    const toolOptions = {
+      template: '<div class="tooltip dp-po-tip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
+    };
+    $('[data-toggle="tooltip"]').tooltip(toolOptions);
   }
 
   handleScroll = () => {
@@ -319,6 +395,8 @@ class ViewPage extends React.Component {
 
       const page = response.data.data;
       page.content = this.addIdToh1(page.content, page.slug);
+
+      this.setBreadCrumbs(page);
       this.setState({
         loaded:  true,
         page,
@@ -400,6 +478,7 @@ class ViewPage extends React.Component {
       }
 
       browserHistory.push(`${baseUrl}/guides/${guide.slug}`);
+      this.setBreadCrumbs();
       // if (Object.values(page.children).length) {
       //   const child = Object.values(page.children).sort(
       //     (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)

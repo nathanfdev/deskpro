@@ -126,7 +126,7 @@ class PageListItem extends React.Component {
       <li className={`dp-po-guides-search-content-${prefix}item`} key={page.slug}>
         <Link
           className={classNames(`dp-po-guides-search-content-${prefix}link`, { expanded: this.isExpanded(), active: page.slug === pageSlug })}
-          to={`${baseUrl}/guides/${guideSlug}${page.parents_slug}/${page.slug}`}
+          to={`${baseUrl}/guides/${guideSlug}/${page.slug}`}
           activeClassName="active"
           onClick={this.handleClick}
         >

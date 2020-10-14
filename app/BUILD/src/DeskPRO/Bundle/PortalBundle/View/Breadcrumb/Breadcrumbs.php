@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 
@@ -47,19 +45,20 @@ class Breadcrumbs implements \IteratorAggregate, \Countable
 
     /**
      * @param string $url
-     * @param array  $route_params
      * @param string $type
-     * @param mixed  $var
+     * @param mixed $var
+     * @param string $className
      *
      * @return $this
      */
-    public function add($url, $type, $var = null)
+    public function add($url, $type, $var = null, $className = null)
     {
         $this->breadcrumbs[] = [
-            'url'    => $url,
-            'type'   => $type,
-            'phrase' => is_array($var) && isset($var['phrase']) ? $var['phrase'] : null,
-            'var'    => $var,
+            'url'        => $url,
+            'type'       => $type,
+            'phrase'     => is_array($var) && isset($var['phrase']) ? $var['phrase'] : null,
+            'var'        => $var,
+            'class_name' => $className,
         ];
 
         return $this;
@@ -70,16 +69,18 @@ class Breadcrumbs implements \IteratorAggregate, \Countable
      * @param array  $route_params
      * @param string $type
      * @param mixed  $var
+     * @param string $className
      *
      * @return $this
      */
-    public function prepend($url, $type, $var = null)
+    public function prepend($url, $type, $var = null, $className = null)
     {
         array_unshift($this->breadcrumbs, [
-            'url'    => $url,
-            'type'   => $type,
-            'phrase' => is_array($var) && isset($var['phrase']) ? $var['phrase'] : null,
-            'var'    => $var,
+            'url'        => $url,
+            'type'       => $type,
+            'phrase'     => is_array($var) && isset($var['phrase']) ? $var['phrase'] : null,
+            'var'        => $var,
+            'class_name' => $className,
         ]);
 
         return $this;

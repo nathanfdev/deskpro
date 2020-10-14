@@ -223,7 +223,8 @@ class BreadcrumbBuilder
         $this->breadcrumbs->add(
             $this->urlGenerator->generate('portal_guides'),
             Breadcrumbs::TOPICS,
-            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_guides' : 'portal.general.nav-guides']
+            ['phrase' => $this->isHelpcenter() ? 'helpcenter.general.nav_guides' : 'portal.general.nav-guides'],
+            'breadcrumbs-guide-root'
         );
 
         return $this;

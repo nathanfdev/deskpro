@@ -55,7 +55,7 @@ class GuidesController extends AbstractPublishController
         }
 
         if ($this->isHelpCenterTheme()) {
-            if (count($guides) > 1) {
+            if (count($guides) > 0) {
                 $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuides();
 
                 array_unshift($guides, $guide);
