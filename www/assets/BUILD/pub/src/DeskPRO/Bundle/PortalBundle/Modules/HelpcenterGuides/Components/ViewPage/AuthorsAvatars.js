@@ -38,6 +38,9 @@ class AuthorsAvatars extends React.PureComponent {
 
   render() {
     let authors = this.props.authors;
+    if (!this.props.authors) {
+      return null;
+    }
     if (this.props.max !== -1) {
       authors = this.props.authors.slice(this.props.max * -1);
     }

@@ -49,31 +49,35 @@ class Page extends React.PureComponent {
     return false;
   };
 
-  renderSubTobic = (page) => {
-    const { guideSlug, grabPageFromApi } = this.props;
+  renderSubPage = (page) => {
+    const { guideSlug, grabPageFromApi, pageList } = this.props;
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
-    const datePublished = page.date_published ? page.date_published.replace(/T.*/, '').replace(/-/g, '/') : null;
-    const dateUpdated = page.date_updated ? page.date_updated.replace(/T.*/, '').replace(/-/g, '/') : null;
+    let subPage = page;
+    if (Number.isInteger(subPage)) {
+      subPage = pageList.find(p => p.id === subPage);
+    }
+    const datePublished = subPage.date_published ? subPage.date_published.replace(/T.*/, '').replace(/-/g, '/') : null;
+    const dateUpdated = subPage.date_updated ? subPage.date_updated.replace(/T.*/, '').replace(/-/g, '/') : null;
 
     return (
       <div
         className="dp-po-guides-subtopic"
-        key={page.id}
+        key={subPage.id}
       >
         <Link
           className="dp-po-guides-subtopic-title"
-          to={`${baseUrl}/guides/${guideSlug}/${page.slug}`}
-          onClick={() => grabPageFromApi(page.slug)}
+          to={`${baseUrl}/guides/${guideSlug}/${subPage.slug}`}
+          onClick={() => grabPageFromApi(subPage.slug)}
         >
-          {page.title}
+          {subPage.title}
         </Link>
-        <AuthorsAvatars authors={page.authors} max={3} />
+        {/* <AuthorsAvatars authors={subPage.authors} max={3} />*/}
         <div className="dp-po-guides-subtopic-dates">
-          {page.date_published && <Fragment><FormattedMessage className="title" id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong><br /></Fragment>}
-          {page.date_updated && <Fragment><FormattedMessage className="title" id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+          {subPage.date_published && <Fragment><FormattedMessage className="title" id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong><br /></Fragment>}
+          {subPage.date_updated && <Fragment><FormattedMessage className="title" id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
         </div>
       </div>
     );
@@ -87,7 +91,7 @@ class Page extends React.PureComponent {
     return (
       <div className="dp-po-guides-subtopics">
         <h3><FormattedMessage id="helpcenter.guides.pages_in" values={{ title: page.title }} /></h3>
-        {page.children.map(child => this.renderSubTobic(child))}
+        {page.children.map(child => this.renderSubPage(child))}
       </div>
     );
   }
@@ -99,8 +103,12 @@ class Page extends React.PureComponent {
     let previousIndex = index - 1;
     let next = null;
     let nextIndex = index + 1;
+    let parentId = page.parent;
+    if (!Number.isInteger(parentId)) {
+      parentId = page.parent.id;
+    }
     while (!previous && previousIndex >= 0) {
-      if (pageList[previousIndex].no_content === '0' && ((pageList[previousIndex].parent_id === page.parent.id) || (pageList[previousIndex].id === page.parent.id))) {
+      if (pageList[previousIndex].no_content === '0' && ((pageList[previousIndex].parent_id === parentId) || (pageList[previousIndex].id === parentId))) {
         previous = pageList[previousIndex];
       }
       previousIndex -= 1;
@@ -177,12 +185,16 @@ class Page extends React.PureComponent {
   }
 
   renderInSection() {
-    const { page } = this.props;
+    const { page, pageList } = this.props;
 
     if (page.parent) {
+      let parent = page.parent;
+      if (Number.isInteger(parent)) {
+        parent = pageList.find(p => p.id === parent);
+      }
       return (
         <div className="dp-po-guides-block-title-section">
-          <FormattedMessage id="helpcenter.guides.in_section" values={{ section: page.parent.title }} />
+          <FormattedMessage id="helpcenter.guides.in_section" values={{ section: parent.title }} />
         </div>
       );
     }
@@ -239,7 +251,7 @@ class Page extends React.PureComponent {
                         className="dp-po-icon dp-info" data-toggle="tooltip"
                         title={intl.formatMessage({ id: 'helpcenter.general.viewed_by_agents_only' })} data-placement="top"
                       >
-                        <FontAwesomeIcon icon={['fal', 'angle-info-circle']} className="text-primary" />
+                        <FontAwesomeIcon icon={['fal', 'info-circle']} className="text-primary" />
                       </span>
                       : null}
                     <a
