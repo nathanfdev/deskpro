@@ -30,6 +30,15 @@ class WidgetPerson
     private $display_name;
 
     /**
+     * Person's initials
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $initials;
+
+    /**
      * True if person is agent.
      *
      * @var bool
@@ -55,6 +64,7 @@ class WidgetPerson
     {
         $this->id           = $person->getId();
         $this->display_name = $person->getDisplayNameUser();
+        $this->initials     = $person->getInitials();
         $this->is_agent     = $person->isAgent();
         $this->avatar       = $avatar;
     }

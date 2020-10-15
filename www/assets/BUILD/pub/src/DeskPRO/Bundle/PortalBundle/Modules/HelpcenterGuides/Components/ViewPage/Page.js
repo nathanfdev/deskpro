@@ -12,6 +12,7 @@ class Page extends React.PureComponent {
   static propTypes = {
     intl:            PropTypes.object,
     page:            PropTypes.object,
+    childrenPages:   PropTypes.array,
     pageList:        PropTypes.array,
     flashes:         PropTypes.array,
     guideSlug:       PropTypes.string,
@@ -74,7 +75,7 @@ class Page extends React.PureComponent {
         >
           {subPage.title}
         </Link>
-        {/* <AuthorsAvatars authors={subPage.authors} max={3} />*/}
+        <AuthorsAvatars authors={subPage.authors} max={3} />
         <div className="dp-po-guides-subtopic-dates">
           {subPage.date_published && <Fragment><FormattedMessage className="title" id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong><br /></Fragment>}
           {subPage.date_updated && <Fragment><FormattedMessage className="title" id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
@@ -84,14 +85,14 @@ class Page extends React.PureComponent {
   }
 
   renderSubpages = () => {
-    const { page } = this.props;
-    if (page.children.length === 0) {
+    const { page, childrenPages } = this.props;
+    if (childrenPages.length === 0) {
       return null;
     }
     return (
       <div className="dp-po-guides-subtopics">
         <h3><FormattedMessage id="helpcenter.guides.pages_in" values={{ title: page.title }} /></h3>
-        {page.children.map(child => this.renderSubPage(child))}
+        {childrenPages.map(child => this.renderSubPage(child))}
       </div>
     );
   }

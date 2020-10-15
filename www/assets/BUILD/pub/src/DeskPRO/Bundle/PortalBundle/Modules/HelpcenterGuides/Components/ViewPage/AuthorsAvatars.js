@@ -5,8 +5,6 @@ import { FormattedMessage } from 'react-intl';
 const AuthorAvatar = ({
   author
 }) => {
-  const initials = author.first_name[0] + author.last_name[0];
-
   if (author.avatar.url_pattern) {
     return (
       <Fragment>
@@ -16,7 +14,7 @@ const AuthorAvatar = ({
   }
   return (
     <Fragment>
-      <span className="dp-po-post-avatars-name" aria-hidden="true">{initials}</span>
+      <span className="dp-po-post-avatars-name" aria-hidden="true">{author.initials}</span>
       <span className="sr-only">{author.display_name}</span>
     </Fragment>
   );

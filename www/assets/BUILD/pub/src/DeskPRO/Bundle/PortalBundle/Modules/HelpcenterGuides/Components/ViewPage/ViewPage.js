@@ -42,6 +42,7 @@ class ViewPage extends React.Component {
       doSpin:          false,
       menuVisible:     false,
       flashes:         [],
+      childrenPages:   page.children,
       guide,
       guideSlug,
       loaded,
@@ -430,6 +431,16 @@ class ViewPage extends React.Component {
       this.addCodeBlocksCopy();
       this.addGuideBlocks();
       this.addReactImageLazyload();
+      this.setState({
+        childrenPages: []
+      });
+      if (page.children && page.children.length) {
+        portalHttp.sendGet(`DP_URL/portal/api/guides/topic_children/${slug}`).then((childrenResponse) => {
+          this.setState({
+            childrenPages: childrenResponse.data.data
+          });
+        });
+      }
     });
   };
 
@@ -595,11 +606,12 @@ class ViewPage extends React.Component {
   }
 
   renderPage() {
-    const { page, guideSlug, pageSlug, loaded, pageList, flashes } = this.state;
+    const { page, childrenPages, guideSlug, pageSlug, loaded, pageList, flashes } = this.state;
     if (page.id) {
       return (
         <Page
           page={page}
+          childrenPages={childrenPages}
           pageList={pageList}
           guideSlug={guideSlug}
           pageSlug={pageSlug}
