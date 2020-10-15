@@ -121,6 +121,7 @@ class TicketController extends AbstractMessengerController
         $email     = $person->getPrimaryEmail();
         $person    = $this->get('data.person')->getPersonForEmail($email->getEmail());
         $guestForm = $this->createForm(TicketWithLayoutsApiType::class, $ticket, $formOptions);
+        $ticket->setCreationSystem(Ticket::CREATED_WEB_PERSON_WIDGET);
 
         if ($person) {
             $ticket->setPerson($person);

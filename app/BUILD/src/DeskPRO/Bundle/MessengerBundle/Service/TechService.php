@@ -91,11 +91,17 @@ class TechService
         return $this->getDepartments('tickets', $allowedDepartmentIds);
     }
 
+    /**
+     * @return mixed
+     */
     public function getTicketPriorities()
     {
         return $this->container->get('data.ticket_built_in_fields')->getAll('priority');
     }
 
+    /**
+     * @return array|null
+     */
     public function getUsergroups()
     {
         $user = $this->getUser();
@@ -165,7 +171,28 @@ class TechService
         return $chatConversationRepo->findOneBy(['visitor_id' => $visitorId, 'status' => ChatConversation::STATUS_OPEN]);
     }
 
+    /**
+     * @return bool
+     */
     public function canUseTickets()
+    {
+        return $this->canUse('tickets.use');
+    }
+
+    /**
+     * @return bool
+     */
+    public function canUseKb()
+    {
+        return $this->canUse('articles.use');
+    }
+
+    /**
+     * @param $perm
+     *
+     * @return bool
+     */
+    protected function canUse($perm)
     {
         $user = $this->getUser();
 
@@ -173,6 +200,6 @@ class TechService
             ? $this->portalPermissionsManager->getPermissionsBagForPerson($user)
             : $this->portalPermissionsManager->getPermissionsBagForGuest();
 
-        return $permissionsBag->get('tickets.use');
+        return $permissionsBag->get($perm);
     }
 }

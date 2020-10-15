@@ -56,6 +56,11 @@ class TechInfo implements MessengerModelInterface
     /**
      * @var boolean
      */
+    private $canUseKb = false;
+
+    /**
+     * @var boolean
+     */
     private $canUseTickets = false;
 
     /**
@@ -92,13 +97,10 @@ class TechInfo implements MessengerModelInterface
             return $agentInfo->toArray();
         }, $this->agentsOnline);
 
-        $filter = function ($dep) {
-            return !isset($dep['children']) || empty($dep['children']);
-        };
-
         return [
             'canUseChat'         => $this->canUseChat,
             'canUseTickets'      => $this->canUseTickets,
+            'canUseKb'           => $this->canUseKb,
             'chat_departments'   => array_values($chatDepartments),
             'ticket_departments' => array_values($ticketDepartments),
             'ticket_priorities'  => $this->ticketPriorities,
@@ -215,6 +217,18 @@ class TechInfo implements MessengerModelInterface
     public function setCanUseTickets($canUseTickets)
     {
         $this->canUseTickets = $canUseTickets;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $canUseKb
+     *
+     * @return $this
+     */
+    public function setCanUseKb(bool $canUseKb)
+    {
+        $this->canUseKb = $canUseKb;
 
         return $this;
     }

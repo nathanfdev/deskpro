@@ -159,7 +159,7 @@ class AdminController extends AbstractBrandAwareSettingsController
             return $assetUrl;
         };
 
-        $assetUrl = $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets');
+        $assetUrl = $this->container->get('templating.helper.assets')->getUrl('', 'messenger_loader_assets');
         $loaderJS = $this->container->get('templating.helper.assets')->getUrl('loader.js', 'messenger_loader_assets');
         $loaderJS = $correctAssetUrl($loaderJS);
         $assetUrl = $correctAssetUrl($assetUrl);
