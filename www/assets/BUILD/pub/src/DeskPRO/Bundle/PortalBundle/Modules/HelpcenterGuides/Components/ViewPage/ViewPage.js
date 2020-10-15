@@ -629,6 +629,7 @@ class ViewPage extends React.Component {
                     guideSlug={guideSlug}
                     pageSlug={pageSlug}
                     guide={guide}
+                    sizes={this.sizes}
                     grabPageFromApi={this.grabPageFromApi}
                     toggleMenu={this.toggleMenu}
                     twoLevelSection={twoLevelSection}

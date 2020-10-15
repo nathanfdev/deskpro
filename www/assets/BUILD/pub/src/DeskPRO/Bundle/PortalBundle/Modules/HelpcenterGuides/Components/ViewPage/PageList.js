@@ -16,6 +16,7 @@ class PageList extends React.Component {
     guide:           PropTypes.object,
     pageSlug:        PropTypes.string,
     grabPageFromApi: PropTypes.func,
+    sizes:           PropTypes.object,
     toggleMenu:      PropTypes.func,
     twoLevelSection: PropTypes.bool,
   };
@@ -191,10 +192,14 @@ class PageList extends React.Component {
   }
 
   render() {
-    const { toggleMenu } = this.props;
+    const { sizes, toggleMenu } = this.props;
     const { filter } = this.state;
+    const style = {};
+    if (sizes) {
+      style.width = sizes.searchWidth;
+    }
     return (
-      <div className="dp-po-guides-search">
+      <div className="dp-po-guides-search" style={style}>
         <a onClick={toggleMenu} className="d-block d-md-none close-menu"><FontAwesomeIcon icon={['fal', 'times']} className="dp-po-icon" /></a>
         <form className="dp-po-guides-search-form">
           <input type="search" value={filter} placeholder="Search table of contents" onChange={this.handleFilterChange} />
