@@ -239,14 +239,16 @@ class UserChatManager
         }
 
         // send those only if everything is fine, otherwise people will get falsy messages in their channels
-        $this->eventDispatcher->dispatch(
-            ChatEvent::EVENT_NAME,
-            new ChatEvent(
-                $convo->getId(),
-                ChatEvent::CHAT_USER_JOINED_EVENT_TYPE,
-                ['message' => $message]
-            )
-        );
+        if (isset($message)) {
+            $this->eventDispatcher->dispatch(
+                ChatEvent::EVENT_NAME,
+                new ChatEvent(
+                    $convo->getId(),
+                    ChatEvent::CHAT_USER_JOINED_EVENT_TYPE,
+                    ['message' => $message]
+                )
+            );
+        }
     }
 
     /**
@@ -297,14 +299,16 @@ class UserChatManager
             throw $e;
         }
 
-        $this->eventDispatcher->dispatch(
-            ChatEvent::EVENT_NAME,
-            new ChatEvent(
-                $convo->getId(),
-                ChatEvent::CHAT_USER_LEFT_EVENT_TYPE,
-                ['message' => $message]
-            )
-        );
+        if (isset($message)) {
+            $this->eventDispatcher->dispatch(
+                ChatEvent::EVENT_NAME,
+                new ChatEvent(
+                    $convo->getId(),
+                    ChatEvent::CHAT_USER_LEFT_EVENT_TYPE,
+                    ['message' => $message]
+                )
+            );
+        }
     }
 
     /**
@@ -415,14 +419,16 @@ class UserChatManager
             throw $e;
         }
 
-        $this->eventDispatcher->dispatch(
-            ChatEvent::EVENT_NAME,
-            new ChatEvent(
-                $convo->getId(),
-                ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE,
-                ['message' => $message]
-            )
-        );
+        if (isset($message)) {
+            $this->eventDispatcher->dispatch(
+                ChatEvent::EVENT_NAME,
+                new ChatEvent(
+                    $convo->getId(),
+                    ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE,
+                    ['message' => $message]
+                )
+            );
+        }
     }
 
     /**
