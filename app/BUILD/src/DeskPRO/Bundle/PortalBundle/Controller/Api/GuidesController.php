@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use FOS\RestBundle\View\View;
 use Orb\Util\Arrays;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -21,6 +22,10 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class GuidesController.
+ *
+ * @SerializerView(mapping={
+ *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson"
+ * })
  *
  * @Feature("guides")
  */
