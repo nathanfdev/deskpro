@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { Fragment } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { FormattedDate, FormattedMessage } from 'react-intl';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import mobileMenu from '@deskpro/portal-style/dist/img/page-icons/menu.svg';
 import classNames from 'classnames';
 import moment from 'moment';
+import Isvg from 'react-inlinesvg';
 import $ from 'jquery';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import browserHistory from 'react-router/lib/browserHistory';
@@ -38,6 +40,7 @@ class ViewPage extends React.Component {
     this.state = {
       fixed:           false,
       doSpin:          false,
+      menuVisible:     false,
       flashes:         [],
       guide,
       guideSlug,
@@ -452,6 +455,12 @@ class ViewPage extends React.Component {
     })
   );
 
+  toggleMenu = () => {
+    this.setState({
+      menuVisible: !this.state.menuVisible
+    });
+  }
+
   selectGuide = (guide) => {
     portalHttp.sendGet(`DP_URL/portal/api/guides/topics/${guide.slug}`).then((response) => {
       if (response.isError()) {
@@ -540,15 +549,15 @@ class ViewPage extends React.Component {
     const dateUpdated = guide.date_updated ? guide.date_updated.replace(/T.*/, '').replace(/-/g, '/') : null;
     return (
       <div className="row">
-        <div className="col-sm-9">
+        <div className="col-md-9">
           <div className="dp-po-guides-landing">
             {splashImage}
             <div className="dp-po-guides-landing-title">
               <h1>{guide.title}</h1>
               <div className="dp-po-guides-meta">
-                {guide.date_published && <Fragment><FormattedMessage id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+                {guide.date_published && <span><FormattedMessage id="helpcenter.general.published" />: <strong><FormattedDate value={datePublished} day="numeric" month="short" year="numeric" /></strong></span>}
                 {guide.date_published && guide.date_updated && <span className="separator">|</span>}
-                {guide.date_updated && <Fragment><FormattedMessage id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></Fragment>}
+                {guide.date_updated && <span><FormattedMessage id="helpcenter.general.last_updated" />: <strong><FormattedDate value={dateUpdated} day="numeric" month="short" year="numeric" /></strong></span>}
               </div>
             </div>
             <div className="dp-po-guides-landing-body">
@@ -594,7 +603,7 @@ class ViewPage extends React.Component {
   }
 
   render() {
-    const { pageList, fixed, loaded, twoLevelSection, guide } = this.state;
+    const { pageList, fixed, loaded, twoLevelSection, guide, menuVisible } = this.state;
     const guideSlug = this.getGuideSlug(this.props.params);
     const pageSlug = this.getPageSlug(this.props.params);
 
@@ -608,22 +617,27 @@ class ViewPage extends React.Component {
         <div className={classNames('dp-po-guides-section')}>
           <div className="dp-po-guides-wrap">
             <div className="container-fluid">
+              <div className="d-block d-md-none dp-po-guides-mobile-menu">
+                <a className="menu" onClick={this.toggleMenu}>
+                  <Isvg src={mobileMenu} />
+                </a>
+              </div>
               <div className="row">
-                <div className="col-sm-3">
+                <div className={classNames('col-md-3 d-none d-md-block page-list', { 'mobile-visible': menuVisible })}>
                   <PageList
                     pages={pageList}
                     guideSlug={guideSlug}
                     pageSlug={pageSlug}
                     guide={guide}
                     grabPageFromApi={this.grabPageFromApi}
-                    sizes={this.sizes}
+                    toggleMenu={this.toggleMenu}
                     twoLevelSection={twoLevelSection}
                   />
                 </div>
-                <div className="col-sm-9">
+                <div className="col-md-9">
                   { loaded ||
                     <div className="row">
-                      <div className="col-sm-9">
+                      <div className="col-md-9">
                         <div className={classNames({ 'dp-po-guides-loading': !loaded })}>
                           <FontAwesomeIcon icon={['far', 'spinner']} pulse size="3x" className="dp-icon" />
                         </div>

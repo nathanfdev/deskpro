@@ -227,7 +227,7 @@ class Page extends React.PureComponent {
     return (
       <div className="dp-po-guides-block-article" id={`page_${page.slug}`} style={pageStyle}>
         <div className="row">
-          <div className="col-sm-9">
+          <div className="col-md-9">
             <div className="dp-po-guides-block-article-left">
               <div className="dp-po-guides-block-main">
 
@@ -283,7 +283,7 @@ class Page extends React.PureComponent {
               {this.renderComments()}
             </div>
           </div>
-          <div className="col-sm-3">
+          <div className="col-md-3 d-none d-md-block">
             <div className="dp-po-guides-block-article-right" style={style}>
               <PageSummary content={page.content} fixed={fixed} agentBarHeight={agentBarHeight} />
             </div>

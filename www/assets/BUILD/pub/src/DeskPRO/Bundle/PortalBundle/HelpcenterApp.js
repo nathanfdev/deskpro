@@ -9,7 +9,7 @@ import { portalPhrases } from './PortalPhrases';
 import App from './Modules/Application/Components/AppContainer';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/pro-solid-svg-icons';
-import { faAngleDown, faAngleRight, faAngleLeft, faInfoCircle, faExclamationCircle } from '@fortawesome/pro-light-svg-icons';
+import { faAngleDown, faAngleRight, faAngleLeft, faInfoCircle, faExclamationCircle, faTimes } from '@fortawesome/pro-light-svg-icons';
 import { faSearch, faAngleDown as farAngleDown, faSpinner } from '@fortawesome/pro-regular-svg-icons';
 
 // Async load FA
@@ -24,7 +24,7 @@ class HelpcenterApp {
     if (window.DESKPRO_PHRASES) {
       this.phrases.setPhrases(window.DESKPRO_PHRASES);
     }
-    library.add(fas, faAngleDown, faAngleRight, faAngleLeft, faInfoCircle, faExclamationCircle, faSearch, farAngleDown, faSpinner);
+    library.add(fas, faAngleDown, faAngleRight, faAngleLeft, faInfoCircle, faExclamationCircle, faSearch, farAngleDown, faSpinner, faTimes);
   }
 
   getPortalPage() {
