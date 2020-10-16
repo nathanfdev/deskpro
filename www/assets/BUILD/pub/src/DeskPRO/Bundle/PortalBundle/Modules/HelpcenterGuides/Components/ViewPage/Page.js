@@ -86,7 +86,7 @@ class Page extends React.PureComponent {
 
   renderSubpages = () => {
     const { page, childrenPages } = this.props;
-    if (childrenPages.length === 0) {
+    if (!childrenPages || childrenPages.length === 0) {
       return null;
     }
     return (
