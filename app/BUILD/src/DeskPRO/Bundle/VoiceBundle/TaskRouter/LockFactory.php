@@ -19,7 +19,7 @@ class LockFactory
      */
     public static function createTaskRouterEvaluateLock(ContainerInterface $container)
     {
-        $store   = new RetryTillSaveStore(new PdoStore($container->get('doctrine.dbal.default_connection')), 750, 2);
+        $store   = new RetryTillSaveStore(new PdoStore($container->get('doctrine.dbal.voice_connection')), 750, 2);
         $factory = new Factory($store);
 
         return $factory->createLock('voice-task-router', 20);
@@ -32,7 +32,7 @@ class LockFactory
      */
     public static function createTaskRouterActionsLock(ContainerInterface $container)
     {
-        $store   = new RetryTillSaveStore(new PdoStore($container->get('doctrine.dbal.default_connection')), 500);
+        $store   = new RetryTillSaveStore(new PdoStore($container->get('doctrine.dbal.voice_connection')), 500);
         $factory = new Factory($store);
 
         return $factory->createLock('voice-task-router', 20);
