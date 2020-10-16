@@ -78,7 +78,15 @@ class ViewPage extends React.Component {
       }
       this.ticking = true;
     });
-    window.addEventListener('resize', this.defineSizes);
+    window.addEventListener('resize', () => {
+      if (!this.tickingResize) {
+        window.requestAnimationFrame(() => {
+          this.defineSizes();
+          this.tickingResize = false;
+        });
+      }
+      this.tickingResize = true;
+    });
     this.defineSizes();
   }
 
@@ -217,7 +225,7 @@ class ViewPage extends React.Component {
         articleRight: window.document.getElementsByClassName('dp-po-guides-block-article-right')[0],
       };
     }
-    if (!this.sizes) {
+    if (!this.state.fixed) {
       this.sizes = {
         topMargin:    this.elements.guidesMain && this.elements.guidesMain.getBoundingClientRect().top - document.documentElement.scrollTop,
         searchWidth:  this.elements.search && this.elements.search.getBoundingClientRect().width,
@@ -387,7 +395,8 @@ class ViewPage extends React.Component {
     scrollPage = this.elements.guidesMain.getBoundingClientRect().top + window.document.documentElement.scrollTop;
 
     this.setState({
-      loaded: false
+      loaded:      false,
+      menuVisible: false,
     });
 
     portalHttp.sendGet(`DP_URL/portal/api/guides/topic/${slug}?inline_sideloads=true&include=topic`).then((response) => {
@@ -630,6 +639,7 @@ class ViewPage extends React.Component {
                     pageSlug={pageSlug}
                     guide={guide}
                     sizes={this.sizes}
+                    fixed={fixed}
                     grabPageFromApi={this.grabPageFromApi}
                     toggleMenu={this.toggleMenu}
                     twoLevelSection={twoLevelSection}

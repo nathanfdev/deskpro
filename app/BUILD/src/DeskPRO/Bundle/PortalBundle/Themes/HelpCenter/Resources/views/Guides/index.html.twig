@@ -21,6 +21,9 @@
                 <div class="row">
                     {% for guide in guides %}
                         <div class="col-md-6">
+                            {% set topics = guide.getActiveTopics()|slice(0,2) %}
+                            {% set topic1 = topics[0] %}
+                            {% set topic2 = false %}
                             <div class="dp-po-guides-item d-none d-sm-block">
                                 <div class="dp-po-guides-card">
                                     <div class="dp-po-guides-left">
@@ -31,9 +34,6 @@
                                             {{ render_icon_from(guide, {as_download_url: true, is_rounded: true, figure_class: 'dp-po-guides-icon'}) }}
                                         {% endif %}
                                     </div>
-                                    {% set topics = guide.getActiveTopics()|slice(0,2) %}
-                                    {% set topic1 = topics[0] %}
-                                    {% set topic2 = false %}
                                     {% if topics|length > 1 %}
                                         {% set topic2 = topics[1] %}
                                     {% endif %}
@@ -55,9 +55,6 @@
                                                 {{ render_icon_from(guide, {as_download_url: true, is_rounded: true, figure_class: 'dp-po-guides-icon'}) }}
                                             {% endif %}
                                         </div>
-                                        {% set topics = guide.getActiveTopics()|slice(0,2) %}
-                                        {% set topic1 = topics[0] %}
-                                        {% set topic2 = false %}
                                         {% if topics|length > 1 %}
                                             {% set topic2 = topics[1] %}
                                         {% endif %}

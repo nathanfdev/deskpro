@@ -16,6 +16,7 @@ class PageList extends React.Component {
     guide:           PropTypes.object,
     pageSlug:        PropTypes.string,
     grabPageFromApi: PropTypes.func,
+    fixed:           PropTypes.bool,
     sizes:           PropTypes.object,
     toggleMenu:      PropTypes.func,
     twoLevelSection: PropTypes.bool,
@@ -192,10 +193,10 @@ class PageList extends React.Component {
   }
 
   render() {
-    const { sizes, toggleMenu } = this.props;
+    const { sizes, toggleMenu, fixed } = this.props;
     const { filter } = this.state;
     const style = {};
-    if (sizes) {
+    if (sizes && fixed) {
       style.width = sizes.searchWidth;
     }
     return (
