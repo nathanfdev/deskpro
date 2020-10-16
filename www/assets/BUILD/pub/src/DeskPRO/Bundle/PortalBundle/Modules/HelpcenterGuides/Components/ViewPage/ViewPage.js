@@ -42,6 +42,7 @@ class ViewPage extends React.Component {
       doSpin:          false,
       menuVisible:     false,
       flashes:         [],
+      childrenPages:   page.children,
       guide,
       guideSlug,
       loaded,
@@ -140,7 +141,14 @@ class ViewPage extends React.Component {
     const hierarchy = [];
     if (page !== null) {
       hierarchy.push(page);
-      let parentId = page.parent ? page.parent.id : null;
+      let parentId = null;
+      if (page.parent) {
+        if (page.parent.id) {
+          parentId = page.parent.id;
+        } else {
+          parentId = page.parent;
+        }
+      }
       while (parentId !== null) {
         // eslint-disable-next-line no-loop-func
         const parent = pageList.find(p => p.id === parentId);
@@ -399,7 +407,7 @@ class ViewPage extends React.Component {
       menuVisible: false,
     });
 
-    portalHttp.sendGet(`DP_URL/portal/api/guides/topic/${slug}?inline_sideloads=true&include=topic`).then((response) => {
+    portalHttp.sendGet(`DP_URL/portal/api/guides/topic/${slug}`).then((response) => {
       if (response.isError()) {
         return;
       }
@@ -423,6 +431,16 @@ class ViewPage extends React.Component {
       this.addCodeBlocksCopy();
       this.addGuideBlocks();
       this.addReactImageLazyload();
+      this.setState({
+        childrenPages: []
+      });
+      if (page.children && page.children.length) {
+        portalHttp.sendGet(`DP_URL/portal/api/guides/topic_children/${slug}`).then((childrenResponse) => {
+          this.setState({
+            childrenPages: childrenResponse.data.data
+          });
+        });
+      }
     });
   };
 
@@ -588,11 +606,12 @@ class ViewPage extends React.Component {
   }
 
   renderPage() {
-    const { page, guideSlug, pageSlug, loaded, pageList, flashes } = this.state;
+    const { page, childrenPages, guideSlug, pageSlug, loaded, pageList, flashes } = this.state;
     if (page.id) {
       return (
         <Page
           page={page}
+          childrenPages={childrenPages}
           pageList={pageList}
           guideSlug={guideSlug}
           pageSlug={pageSlug}

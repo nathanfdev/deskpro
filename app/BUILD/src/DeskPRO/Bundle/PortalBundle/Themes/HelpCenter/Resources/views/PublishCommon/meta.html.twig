@@ -28,7 +28,7 @@
     </table>
     {% endif %}
     {% if item['end_action'] is defined and item.end_action == 'unpublish' and app.user is not null and app.user.is_agent %}
-    <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }} <span class="dp-po-icon" data-toggle="tooltip" title="{{ phrase('helpcenter.general.viewed_by_agents_only') }}" data-placement="top">
+    <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }} <span class="dp-po-icon" data-toggle="tooltip" title="{{ phrase('helpcenter.general.field_viewed_by_agents_only') }}" data-placement="top">
             <i class="fal fa-info-circle text-primary" ></i>
         </span></dt>
     <dd>{{ phrase('helpcenter.general.date_medium', { date:item.date_end }) }}</dd>

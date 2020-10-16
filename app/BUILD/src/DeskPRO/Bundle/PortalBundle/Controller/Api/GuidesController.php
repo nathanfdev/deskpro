@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use FOS\RestBundle\View\View;
 use Orb\Util\Arrays;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -21,6 +22,10 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class GuidesController.
+ *
+ * @SerializerView(mapping={
+ *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson"
+ * })
  *
  * @Feature("guides")
  */
@@ -154,5 +159,19 @@ class GuidesController extends AbstractApiController
         }
 
         return new View($this->wrap($response), Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/portal/api/guides/topic_children/{slug}", name="portal_api_guides_topic_children")
+     * @ParamConverter(name="topic", converter="deskpro_slug")
+     * @Method({"GET"})
+     *
+     * @param Topic $topic
+     *
+     * @return View|NotFoundHttpException
+     */
+    public function getTopicChildrenAction(Topic $topic)
+    {
+        return new View($this->wrap($topic->getChildren()), Response::HTTP_OK);
     }
 }

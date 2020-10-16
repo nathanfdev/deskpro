@@ -262,6 +262,7 @@ class GuidesController extends AbstractPublishController
         $topicContext = new SideloadSerializationContext(['topic']);
         $topicContext->setIdsOnly(false);
         $topicContext->setInlineSideloads(true);
+        $topicContext->setMapping(["Application\DeskPRO\Entity\Person" => "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson"]);
         $topicJson = Strings::escapeForJson(json_encode($serializer->toArray(new ApiWrapper($topic), $topicContext)['data']));
 
         $topicData = new LazyPropObject([

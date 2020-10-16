@@ -424,6 +424,7 @@ helpcenter.general.email_address: 'Email Address'
 helpcenter.general.eula: EULA
 helpcenter.general.everything: Everything
 helpcenter.general.expand: Expand
+helpcenter.general.field_viewed_by_agents_only: 'This field is only visible to agents'
 helpcenter.general.file_type: File
 helpcenter.general.files_type: Files
 helpcenter.general.filter: Filter
@@ -532,7 +533,7 @@ helpcenter.general.user_profile: 'User Profile'
 helpcenter.general.view_all_status_changes: 'View all status changes'
 helpcenter.general.view_all_topics: 'View all topics'
 helpcenter.general.view_profile: 'View my profile'
-helpcenter.general.viewed_by_agents_only: 'This field is only visible to agents'
+helpcenter.general.viewed_by_agents_only: 'Only visible to agents'
 helpcenter.general.workflow: 'Workflow'
 helpcenter.general.x_search_results: '{num} search results for "{query}"'
 helpcenter.general.you: You
