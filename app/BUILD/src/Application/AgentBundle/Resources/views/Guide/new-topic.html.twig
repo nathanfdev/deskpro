@@ -57,6 +57,20 @@ pageMeta.baseId = '{{ baseId }}';
 				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
 			</select>
 		</div>
+		<br class="clear" />
+		<div class="col">
+			<h4>{{ phrase('agent.general.type') }}</h4>
+			{% include 'AgentBundle:Common:select-standard.html.twig' with {
+				'name': 'newtopic[type]',
+				'id': baseId ~ '_type',
+				'add_classname': 'type',
+				'add_attr': '',
+				'categories': topic_types,
+				'allow_parent_sel': true,
+				'selected': state.topic.type
+			} %}
+		</div>
+		<br class="clear" />
 		<div class="col">
 			<h4>{{ phrase('agent.general.parent') }}</h4>
             {% include 'AgentBundle:Common:select-standard.html.twig' with {
@@ -68,10 +82,6 @@ pageMeta.baseId = '{{ baseId }}';
             'allow_parent_sel': true,
             'selected': state.topic.parent_id
             } %}
-		</div>
-		<br class="clear" />
-		<div class="col">
-			<input type="radio" name="newtopic[no_content]" value="0" id="{{ baseId }}_radio_is_section" disabled /> Topic with content <input type="radio" name="newtopic[no_content]" value="1" id="{{ baseId }}_radio_not_section" checked disabled> Topic Section
 		</div>
 		<br class="clear" />
 	</div>

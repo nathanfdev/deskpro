@@ -331,6 +331,7 @@ class GuideController extends PublishController
             'state'             => $state,
             'brands'            => $brands,
             'topics'            => $topics,
+            'topic_types'       => $topics,
             'selected_brand_id' => $brands[$brandIndex - 1]->getId(),
         ]);
     }

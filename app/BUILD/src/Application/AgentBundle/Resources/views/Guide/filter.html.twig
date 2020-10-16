@@ -164,6 +164,15 @@
                                                value="{{ guide.description }}" {% if not perms.can_edit %} disabled {% endif %} />
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th width="100">{{ phrase('agent.guides.use_volumes') }}</th>
+                                    <td>
+                                        <input type="checkbox"
+                                               name="category[use_volumes]"
+                                               {% if guide.useVolumes %}checked{% endif %}
+                                               value="1" {% if not perms.can_edit %} disabled {% endif %} />
+                                    </td>
+                                </tr>
                                 <tr class="vtop">
                                     <th>{{ phrase('agent.general.permissions') }}</th>
                                     <td>

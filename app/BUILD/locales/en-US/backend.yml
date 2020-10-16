@@ -3978,6 +3978,7 @@ agent.guides.alternative_text: 'Alternative text'
 agent.guides.content_link: 'Content link'
 agent.guides.images_drop_info: 'You can also drop images directly in the editor'
 agent.guides.select_a_content: 'Select a content'
+agent.guides.use_volumes: 'Use Volumes'
 agent.interface.app-billing: Billing
 agent.interface.app-twitter: Twitter
 agent.interface.assign_to_self: 'Assign to me'

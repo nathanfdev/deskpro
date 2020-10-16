@@ -948,6 +948,7 @@ class PublishController extends AbstractController
 
         if ($type === 'topics') {
             $saveCategory['description'] = $this->in->getString('category.description') ?: '';
+            $saveCategory['use_volumes'] = $this->in->getBool('category.use_volumes');
         }
 
         $saveStructure = $this->in->getRaw('category_structure');
@@ -982,6 +983,7 @@ class PublishController extends AbstractController
                 if ($brandId && $cat->getBrand()->getId() !== $brandId) {
                     $changes['brand_id'] = $brandId;
                 }
+                $changes['use_volumes'] = $saveCategory['use_volumes'];
                 $cat->setColor($this->in->getString('category.color'));
                 $this->db->update($table, $changes, ['id' => $cat->getId()]);
             }
@@ -1206,6 +1208,7 @@ class PublishController extends AbstractController
         ];
         if ($type === 'guide') {
             $saveCategory['description'] = $this->in->getString('category.description') ?: '';
+            $saveCategory['use_volumes'] = $this->in->getBool('category.use_volumes');
         }
 
         $parentCat = null;
