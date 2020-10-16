@@ -16,7 +16,9 @@ class PageList extends React.Component {
     guide:           PropTypes.object,
     pageSlug:        PropTypes.string,
     grabPageFromApi: PropTypes.func,
+    fixed:           PropTypes.bool,
     sizes:           PropTypes.object,
+    toggleMenu:      PropTypes.func,
     twoLevelSection: PropTypes.bool,
   };
 
@@ -69,10 +71,7 @@ class PageList extends React.Component {
     if (!recursive && typeof expanded[page.id] !== 'undefined') {
       return expanded[page.id];
     }
-    if (recursive && typeof expanded[page.id] !== 'undefined' && expanded[page.id]) {
-      return true;
-    }
-    return false;
+    return !!(recursive && typeof expanded[page.id] !== 'undefined' && expanded[page.id]);
   };
 
   grabPageFromApi = (slug) => {
@@ -194,14 +193,15 @@ class PageList extends React.Component {
   }
 
   render() {
-    const { sizes } = this.props;
+    const { sizes, toggleMenu, fixed } = this.props;
     const { filter } = this.state;
     const style = {};
-    if (sizes) {
+    if (sizes && fixed) {
       style.width = sizes.searchWidth;
     }
     return (
       <div className="dp-po-guides-search" style={style}>
+        <a onClick={toggleMenu} className="d-block d-md-none close-menu"><FontAwesomeIcon icon={['fal', 'times']} className="dp-po-icon" /></a>
         <form className="dp-po-guides-search-form">
           <input type="search" value={filter} placeholder="Search table of contents" onChange={this.handleFilterChange} />
           <button type="submit"><FontAwesomeIcon icon={['far', 'search']} className="dp-po-icon" /></button>
