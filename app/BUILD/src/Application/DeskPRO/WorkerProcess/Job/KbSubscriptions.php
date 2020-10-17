@@ -164,6 +164,7 @@ class KbSubscriptions extends AbstractJob
             foreach ($allUserToArticles as $personId => $articles) {
                 $personUgs   = isset($userGroupMembers[$personId]) ? $userGroupMembers[$personId] : [];
                 $personUgs[] = 1; // Everyone
+                $personUgs[] = 2; // Registered (have a $personId with a sub - by definition they are registered)
 
                 /** @var Article $article */
                 foreach ($articles as $article) {

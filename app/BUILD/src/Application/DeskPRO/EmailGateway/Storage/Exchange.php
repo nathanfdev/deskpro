@@ -85,7 +85,7 @@ class Exchange
             $options['host'].(!empty($options['port']) && $options['port'] != 443 ? ":{$options['port']}" : ''),
             $options['user'],
             $options['password'],
-            $options['token']
+            isset($options['token']) ? $options['token'] : null
         );
     }
 
