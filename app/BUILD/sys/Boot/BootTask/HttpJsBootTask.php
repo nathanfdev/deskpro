@@ -2,6 +2,7 @@
 
 namespace DpSys\Boot\BootTask;
 
+use DeskPRO\Component\Filesystem\SafeFile;
 use DpRun\LowUtil;
 use GuzzleHttp\Psr7;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
@@ -288,6 +289,9 @@ CODE;
         // Or it just doesnt exist
         try {
             $asset = new File($assetPath);
+            SafeFile::assertValid($asset->getRealPath(), $this->env->getAppWwwAssetDir());
+        } catch (\InvalidArgumentException $e) {
+            return;
         } catch (FileNotFoundException $e) {
             return;
         }
