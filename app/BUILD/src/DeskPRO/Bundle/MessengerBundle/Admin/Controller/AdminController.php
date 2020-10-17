@@ -159,10 +159,8 @@ class AdminController extends AbstractBrandAwareSettingsController
             return $assetUrl;
         };
 
-        $assetUrl = $this->container->get('templating.helper.assets')->getUrl('', 'messenger_loader_assets');
         $loaderJS = $this->container->get('templating.helper.assets')->getUrl('loader.js', 'messenger_loader_assets');
         $loaderJS = $correctAssetUrl($loaderJS);
-        $assetUrl = $correctAssetUrl($assetUrl);
 
         $language = $this->container->get('language_stack')->getActiveOrDefault();
 
@@ -171,14 +169,12 @@ class AdminController extends AbstractBrandAwareSettingsController
         $code = <<<CODE
 <!--DESKPRO_WIDGET_LOADER::BEGIN-->
 <script type="text/javascript">
-    window.DESKPRO_MESSENGER_ASSET_URL = "{$assetUrl}";
     window.DESKPRO_MESSENGER_OPTIONS = {
       language: {
         id: "{$language->getId()}",
         locale: "{$language->getLocale()}"
       },
       helpdeskURL: "{$baseUrl}",
-      baseUrl: "{$assetUrl}",
     }
 </script>
 <script id="dp-messenger-loader" src="{$loaderJS}"></script>

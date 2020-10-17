@@ -50,7 +50,6 @@
       },
       {% endif %}
       helpdeskURL: "{{ root_url(false) }}",
-      baseUrl: "{{ asset('', 'messenger_assets') }}",
       {% if root_url(false) matches '#/b/.+/?#' %}
       brandId: {{ brand('id') }},
       {% endif %}
