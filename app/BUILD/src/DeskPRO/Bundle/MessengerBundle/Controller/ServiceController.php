@@ -103,15 +103,20 @@ class ServiceController extends AbstractMessengerController
         $manifestPath = $this->container->get('templating.helper.assets')->getUrl('asset-manifest.json', 'messenger_assets');
         $manifestPath = RegexUtils::safePregReplace($baseUrlRegex, '', $manifestPath);
 
-        $chunksPath = RegexUtils::safePregReplace(
+        $baseUrl = RegexUtils::safePregReplace(
             $baseUrlRegex,
             '',
             $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets')
         );
 
+        if ($request) {
+            $urlCorrector = $this->container->get('url_corrector_factory')->createUrlCorrector($brand);
+            $baseUrl      = $urlCorrector->forceCorrectUrlScheme($baseUrl, $request);
+        }
+
         $data['bundleUrl'] = [
             'manifest'   => $manifestPath,
-            'path'       => $chunksPath,
+            'baseUrl'    => $baseUrl,
             'isDev'      => $this->get('settings_resolver')->getGlobalSettings()->get('messenger.is_dev', false),
             'isAbsolute' => $this->isAbsoluteUrl($manifestPath),
         ];
