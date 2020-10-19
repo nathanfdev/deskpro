@@ -1,7 +1,7 @@
 id: latvian_lv
 name: Latvian
 nameLocal: Latviešu valoda
-locale: lv
+locale: lv-LV
 isRtl: false
 pluralRules:
   plurals: 3

@@ -1,7 +1,7 @@
 id: estonian_et
 name: Estonian
 nameLocal: Eesti keel
-locale: et
+locale: et-EE
 isRtl: false
 pluralRules:
   plurals: 2

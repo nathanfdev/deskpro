@@ -1,7 +1,7 @@
 id: romanian
 name: Romanian
 nameLocal: Română
-locale: ro
+locale: ro-RO
 isRtl: false
 pluralRules:
   plurals: 3
