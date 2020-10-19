@@ -1,7 +1,7 @@
 id: croatian_hr
 name: Croatian
 nameLocal: Hrvatski
-locale: hr
+locale: hr-HR
 isRtl: false
 pluralRules:
   plurals: 3
