@@ -25,7 +25,7 @@
 
                         <div class="dp-po-comments-desc">
                             <div class="dp-po-comments-content">
-                                {{ comment.content_html_plain|raw|safe_link_urls }}
+                                {{ comment.content_html_plain|raw|safe_link_urls_html }}
                             </div>
                         </div>
                         {% if not comment.is_visible and comment.person == get_user() %}
