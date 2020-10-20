@@ -34,7 +34,7 @@
             </div>
             <div class="search-result-count">
                 {% if pageinfo is not null and pageinfo.total_results %}
-                    {{ phrase('helpcenter.general.x_search_results', { num: num_results, query: label }) }}
+                    {{ phrase('helpcenter.general.count_search_results', { count: num_results, query: label }) }}
                 {% else %}
                     {{ phrase('helpcenter.general.label_search_enter_label') }}
                 {% endif %}

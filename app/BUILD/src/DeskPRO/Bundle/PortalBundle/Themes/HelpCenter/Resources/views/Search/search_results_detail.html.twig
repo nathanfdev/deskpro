@@ -83,7 +83,7 @@
                             <div class="dp-po-block dp-po-section">
                                 <div id="article_tab" class="dp-po-search-details" {% if active != 'article' %}style="display: none" {% endif %}>
                                     <div class="dp-po-search-details-title">
-                                        {{ phrase('helpcenter.search.showing_results_for', {type: phrase('helpcenter.general.nav_kb'), query: query}) }} <span class="count">({{ article_info.total_results | default(0) }})</span>
+                                        {{ phrase('helpcenter.search.showing_results_in_kb_for', {type: phrase('helpcenter.general.nav_kb'), query: query}) }} <span class="count">({{ article_info.total_results | default(0) }})</span>
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in article_results %}
@@ -93,7 +93,7 @@
                                 </div>
                                 <div id="topic_tab" class="dp-po-search-details" {% if active != 'topic' %}style="display: none" {% endif %}>
                                     <div class="dp-po-search-details-title">
-                                        {{ phrase('helpcenter.search.showing_results_for', {type: phrase('helpcenter.general.nav_guides'), query: query}) }} <span class="count">({{ guide_info.total_results | default(0) }})</span>
+                                        {{ phrase('helpcenter.search.showing_results_in_guides_for', {type: phrase('helpcenter.general.nav_guides'), query: query}) }} <span class="count">({{ guide_info.total_results | default(0) }})</span>
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in guide_results %}
@@ -103,7 +103,7 @@
                                 </div>
                                 <div id="community_tab" class="dp-po-search-details" {% if active != 'community' %}style="display: none" {% endif %}>
                                     <div class="dp-po-search-details-title">
-                                        {{ phrase('helpcenter.search.showing_results_for', {type: phrase('helpcenter.general.nav_community'), query: query}) }} <span class="count">({{ community_info.total_results | default(0) }})</span>
+                                        {{ phrase('helpcenter.search.showing_results_in_community_for', {type: phrase('helpcenter.general.nav_community'), query: query}) }} <span class="count">({{ community_info.total_results | default(0) }})</span>
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in community_results %}
@@ -113,7 +113,7 @@
                                 </div>
                                 <div id="news_tab" class="dp-po-search-details" {% if active != 'news' %}style="display: none" {% endif %}>
                                     <div class="dp-po-search-details-title">
-                                        {{ phrase('helpcenter.search.showing_results_for', {type: phrase('helpcenter.general.nav_news'), query: query}) }} <span class="count">({{ news_info.total_results | default(0) }})</span>
+                                        {{ phrase('helpcenter.search.showing_results_in_news_for', {type: phrase('helpcenter.general.nav_news'), query: query}) }} <span class="count">({{ news_info.total_results | default(0) }})</span>
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in news_results %}
@@ -123,7 +123,7 @@
                                 </div>
                                 <div id="download_tab" class="dp-po-search-details" {% if active != 'download' %}style="display: none" {% endif %}>
                                     <div class="dp-po-search-details-title">
-                                        {{ phrase('helpcenter.search.showing_results_for', {type: phrase('helpcenter.general.files_type'), query: query}) }} <span class="count">({{ download_info.total_results | default(0) }})</span>
+                                        {{ phrase('helpcenter.search.showing_results_in_files_for', {type: phrase('helpcenter.general.files_type'), query: query}) }} <span class="count">({{ download_info.total_results | default(0) }})</span>
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in download_results %}
@@ -133,7 +133,7 @@
                                 </div>
                                 <div id="ticket_tab" class="dp-po-search-details" {% if active != 'ticket' %}style="display: none" {% endif %}>
                                     <div class="dp-po-search-details-title">
-                                        {{ phrase('helpcenter.search.showing_results_for', {type: phrase('helpcenter.general.your_tickets'), query: query}) }} <span class="count">({{ ticket_info.total_results | default(0) }})</span>
+                                        {{ phrase('helpcenter.search.showing_results_in_tickets_for', {type: phrase('helpcenter.general.your_tickets'), query: query}) }} <span class="count">({{ ticket_info.total_results | default(0) }})</span>
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in ticket_results %}
