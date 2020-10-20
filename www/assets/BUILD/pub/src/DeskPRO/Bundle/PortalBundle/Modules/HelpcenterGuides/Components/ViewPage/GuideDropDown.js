@@ -60,9 +60,9 @@ class GuideDropDown extends React.PureComponent {
     const { activeGuide, guides, style, sizes } = this.props;
     const { opened } = this.state;
 
-    const dropDownStyle = { display: opened ? 'block' : 'none' };
+    const buttonStyle = {};
     if (sizes) {
-      dropDownStyle.width = sizes.searchWidth;
+      buttonStyle.width = sizes.searchWidth;
     }
 
     let baseUrl = window.DESKPRO_BASE_URL;
@@ -72,13 +72,13 @@ class GuideDropDown extends React.PureComponent {
 
     return (
       <div className={classNames('dp-po-guides-dropdown', { opened })} style={style}>
-        <button className="dp-po-guides-dropdown-button" onClick={this.toggleMenu}>
+        <button className="dp-po-guides-dropdown-button" onClick={this.toggleMenu} style={buttonStyle}>
           <IconRenderer object={activeGuide} className="" default={<Isvg src={guideDefault} />} figureStyle={{ backgroundColor: activeGuide.color ? `#${activeGuide.color}` : 'var(--warning)' }} />
           <span>{activeGuide.title}</span>
           <FontAwesomeIcon icon={['fal', 'angle-down']} />
         </button>
         <ClickOut onClickOut={this.onClickOut}>
-          <div className="dp-po-guides-dropdown-menu" style={dropDownStyle}>
+          <div className="dp-po-guides-dropdown-menu" style={{ display: opened ? 'block' : 'none' }}>
             <ul>
               {guides.map(guide => this.renderDropDownGuide(guide, baseUrl))}
             </ul>
