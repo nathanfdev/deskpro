@@ -51,7 +51,7 @@ class SuggestionMore extends React.Component {
           onClick={showAll}
           style={{ textDecoration: 'underline', cursor: 'pointer', fontWeight: 700 }}
         >
-          <FormattedMessage id="helpcenter.general.show_x_more" values={{ num: count }} />
+          <FormattedMessage id="helpcenter.general.show_count_more" values={{ count }} />
         </a>
       </span>
     );
