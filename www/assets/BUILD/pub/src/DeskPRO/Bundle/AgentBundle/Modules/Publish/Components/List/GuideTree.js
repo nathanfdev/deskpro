@@ -36,7 +36,8 @@ export class GuideTreeContainer extends React.Component {
     openTopic:       PropTypes.func,
     dispatch:        PropTypes.func.isRequired,
     displayStatuses: PropTypes.arrayOf(PropTypes.oneOf(['draft', 'unpublished', 'archived', 'NONE'])),
-    canDrag:         PropTypes.bool
+    canDrag:         PropTypes.bool,
+    useVolumes:      PropTypes.bool,
   };
 
   static defaultProps = {
@@ -70,6 +71,7 @@ export class GuideTreeContainer extends React.Component {
         reloadTree={this.reloadTree}
         displayStatuses={this.props.displayStatuses}
         canDrag={this.props.canDrag}
+        useVolumes={this.props.useVolumes}
       />
     );
   }
@@ -82,7 +84,8 @@ export class GuideTree extends React.Component {
     handleChange:    PropTypes.func,
     reloadTree:      PropTypes.func,
     displayStatuses: PropTypes.array,
-    canDrag:         PropTypes.bool
+    canDrag:         PropTypes.bool,
+    useVolumes:      PropTypes.bool,
   };
   static defaultProps = {
     height: 800,
@@ -174,7 +177,7 @@ export class GuideTree extends React.Component {
 
   render() {
     return (
-      <div style={{ height: this.props.height }}>
+      <div style={{ height: this.props.height }} className={classNames({ 'use-volumes': this.props.useVolumes })}>
         <SortableTree
           rowHeight={40}
           scaffoldBlockPxWidth={30}

@@ -31,7 +31,8 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
       900,
 			this.openTopic,
       this.meta.display_fields,
-      this.meta.canEdit
+      this.meta.canEdit,
+      this.meta.useVolumes,
 		);
 
 		this._initGuideEditor();

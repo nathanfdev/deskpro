@@ -1795,16 +1795,16 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1602851017 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2020/10/Build1602851017.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1602851017',
-        'skipPostBuild' => true,
-        'isOnlineBuild' => false,
-    ],
     1603102659 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2020/10/Build1603102659.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1603102659',
         'skipPostBuild' => false,
+        'isOnlineBuild' => false,
+    ],
+    1603202602 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2020/10/Build1603202602.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1603202602',
+        'skipPostBuild' => true,
         'isOnlineBuild' => false,
     ],
 ];
