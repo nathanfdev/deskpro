@@ -1,16 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import $ from 'jquery';
 import classNames from 'classnames';
 import { IconRenderer } from 'DeskPRO/Component/IconRenderer';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import Isvg from 'react-inlinesvg';
 import guideDefault from '@deskpro/portal-style/dist/img/page-icons/guide-default.svg';
+import allGuides from '@deskpro/portal-style/dist/img/page-icons/all-guides.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FormattedMessage } from 'react-intl';
 
 class GuideDropDown extends React.PureComponent {
   static propTypes = {
     activeGuide: PropTypes.object,
     style:       PropTypes.object,
+    sizes:       PropTypes.object,
     guides:      PropTypes.array,
     selectGuide: PropTypes.func,
   }
@@ -31,6 +35,13 @@ class GuideDropDown extends React.PureComponent {
     this.props.selectGuide(guide);
   };
 
+  onClickOut = (e) => {
+    // We only close the menu if we are not clicking on it, the next function will do it otherwise
+    if ($(e.target).parents('.dp-po-guides-dropdown-button').length === 0) {
+      this.setState({ opened: false });
+    }
+  }
+
   toggleMenu = () => {
     this.setState({
       opened: !this.state.opened
@@ -46,8 +57,13 @@ class GuideDropDown extends React.PureComponent {
   )
 
   render() {
-    const { activeGuide, guides, style } = this.props;
+    const { activeGuide, guides, style, sizes } = this.props;
     const { opened } = this.state;
+
+    const dropDownStyle = { display: opened ? 'block' : 'none' };
+    if (sizes) {
+      dropDownStyle.width = sizes.searchWidth;
+    }
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -61,11 +77,19 @@ class GuideDropDown extends React.PureComponent {
           <span>{activeGuide.title}</span>
           <FontAwesomeIcon icon={['fal', 'angle-down']} />
         </button>
-        <ClickOut onClickOut={() => this.setState({ opened: false })}>
-          <div className="dp-po-guides-dropdown-menu" style={{ display: opened ? 'block' : 'none' }}>
+        <ClickOut onClickOut={this.onClickOut}>
+          <div className="dp-po-guides-dropdown-menu" style={dropDownStyle}>
             <ul>
               {guides.map(guide => this.renderDropDownGuide(guide, baseUrl))}
             </ul>
+            <div className="all-guides">
+              <a href={`${baseUrl}/guides`} className="dp-po-guides-dropdown-link">
+                <figure className="dp-po-icon" style={{ background: 'none' }}>
+                  <Isvg src={allGuides} />
+                </figure>
+                <FormattedMessage id="helpcenter.guides.view_all_guides" />
+              </a>
+            </div>
           </div>
         </ClickOut>
       </div>
