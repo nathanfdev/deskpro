@@ -324,6 +324,12 @@ class GuideController extends PublishController
 
         $topics = $this->shortenTitles($topics);
 
+        $types = [
+          ['id' => 'volume', 'title' => 'Volume'],
+          ['id' => 'chapter', 'title' => 'Chapter'],
+          ['id' => 'page', 'title' => 'Page'],
+        ];
+
         array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
 
         return $this->render('AgentBundle:Guide:new-topic.html.twig', [
@@ -331,7 +337,7 @@ class GuideController extends PublishController
             'state'             => $state,
             'brands'            => $brands,
             'topics'            => $topics,
-            'topic_types'       => $topics,
+            'topic_types'       => $types,
             'selected_brand_id' => $brands[$brandIndex - 1]->getId(),
         ]);
     }

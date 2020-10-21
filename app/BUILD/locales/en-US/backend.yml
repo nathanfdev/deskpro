@@ -3847,7 +3847,7 @@ agent.general.timezone: Timezone
 agent.general.title: Title
 agent.general.to: To
 agent.general.to_address: 'To Address'
-agent.general.topic: Topic
+agent.general.topic: Page
 agent.general.total: Total
 agent.general.total_time_waiting: 'All Waiting Time'
 agent.general.total_user_waiting_x: 'Total user waiting time is {{time}}'
@@ -4553,8 +4553,8 @@ agent.publish.event_time_ago_by_who_at_when: '{{ago}} by {{name}} at {{date}}'
 agent.publish.for_ticket: 'For Ticket'
 agent.publish.glossary: Glossary
 agent.publish.guide_list_title:
-  one: '1 Topic'
-  other: '{{count}} Topics'
+  one: '1 Page'
+  other: '{{count}} Pages'
 agent.publish.helpful: Helpful
 agent.publish.image_browser: 'Image Browser'
 agent.publish.kb_list_title:
@@ -4572,7 +4572,7 @@ agent.publish.new_comment_on: 'New comment on {{name}}'
 agent.publish.new_comment_submitted_by: 'A new comment has been submitted by {{name}}'
 agent.publish.new_community_topic_by: 'New community_topic by {{name}}'
 agent.publish.new_post: 'New Post'
-agent.publish.new_topic: 'New Topic'
+agent.publish.new_topic: 'New Page'
 agent.publish.news_comments: 'News Comments'
 agent.publish.news_list_title:
   one: '1 Post'
