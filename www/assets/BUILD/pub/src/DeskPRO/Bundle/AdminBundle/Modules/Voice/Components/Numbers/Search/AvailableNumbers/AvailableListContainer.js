@@ -5,7 +5,7 @@ import Immutable from 'immutable';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import AvailableList from './AvailableList';
-import { loadAvailableNumbers, addAvailableNumber } from '../../../../Actions/numberActions';
+import { loadAvailableNumberTypes, loadAvailableNumbers, addAvailableNumber } from '../../../../Actions/numberActions';
 import { isAccountsLoadedSelector, allAccountsSelector } from '../../../../Selectors/account';
 import { isNumbersLoadedSelector } from '../../../../Selectors/numbers';
 import BaseSearchContainer from '../BaseSearchContainer';
@@ -29,11 +29,12 @@ class AvailableListContainer extends BaseSearchContainer {
   constructor(props) {
     super(props);
     this.state = {
-      loading:            false,
-      loadingCountries:   true,
-      numbers:            [],
-      availableCountries: [],
-      filter:             {
+      loading:               false,
+      loadingCountries:      true,
+      numbers:               [],
+      availableCountries:    [],
+      availableNumbersTypes: {},
+      filter:                {
         account:      null,
         country_code: null,
         region:       null,
@@ -78,7 +79,24 @@ class AvailableListContainer extends BaseSearchContainer {
 
   onChangeFilter = (filter) => {
     const { dispatch, accounts } = this.props;
-    if (filter.account && filter.country_code && filter.type) {
+    if (filter.account && filter.country_code !== this.state.filter.country_code
+      && !this.state.availableNumbersTypes[filter.country_code]
+    ) {
+      const account = accounts.get(filter.account);
+      this.setState({
+        filter: { ...filter, type: '' }
+      });
+
+      dispatch(loadAvailableNumberTypes(account, filter.country_code)).success((result) => {
+        const availableNumbersTypes = { ...this.state.availableNumbersTypes };
+        availableNumbersTypes[filter.country_code] = Object.keys(result.data).map(type => type.toLowerCase());
+
+        this.setState({
+          availableNumbersTypes,
+          filter: { ...filter, type: '' }
+        });
+      });
+    } else if (filter.account && filter.country_code && filter.type) {
       this.setState({
         loading: true,
         numbers: []

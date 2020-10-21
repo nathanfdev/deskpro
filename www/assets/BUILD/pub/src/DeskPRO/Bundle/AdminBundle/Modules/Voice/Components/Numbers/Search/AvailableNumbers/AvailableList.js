@@ -16,18 +16,19 @@ const numberTypes = {
 class AvailableList extends React.Component {
 
   static propTypes = {
-    filter:             PropTypes.object,
-    accounts:           PropTypes.object,
-    numbers:            PropTypes.object,
-    availableCountries: PropTypes.object,
-    loading:            PropTypes.bool,
-    onChangeFilter:     PropTypes.func,
-    onAddNumber:        PropTypes.func,
-    onClickBack:        PropTypes.func
+    filter:                PropTypes.object,
+    accounts:              PropTypes.object,
+    numbers:               PropTypes.object,
+    availableCountries:    PropTypes.object,
+    availableNumbersTypes: PropTypes.object,
+    loading:               PropTypes.bool,
+    onChangeFilter:        PropTypes.func,
+    onAddNumber:           PropTypes.func,
+    onClickBack:           PropTypes.func
   };
 
   render() {
-    const { accounts, numbers, availableCountries, filter, loading } = this.props;
+    const { accounts, numbers, availableCountries, availableNumbersTypes, filter, loading } = this.props;
     const { onChangeFilter, onAddNumber, onClickBack } = this.props;
 
     return (
@@ -39,6 +40,7 @@ class AvailableList extends React.Component {
           value={filter}
           accounts={accounts}
           availableCountries={availableCountries}
+          availableNumbersTypes={availableNumbersTypes}
           onChange={onChangeFilter}
         />
         {loading &&

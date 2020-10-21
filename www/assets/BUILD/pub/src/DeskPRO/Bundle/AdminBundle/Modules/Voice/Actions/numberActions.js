@@ -50,6 +50,16 @@ export const loadExistingNumbers = createAction(
   account => api.sendGet(`DP_API/voice_accounts/${account.get('type')}/${account.get('id')}/existing_numbers`)
 );
 
+export const loadAvailableCountries = createAction(
+  'VOICE_LOAD_AVAILABLE_COUNTRIES',
+  account => api.sendGet(`DP_API/voice_accounts/${account.get('type')}/${account.get('id')}/available_countries`)
+);
+
+export const loadAvailableNumberTypes = createAction(
+  'VOICE_LOAD_AVAILABLE_NUMBER_TYPES',
+  (account, countryCode) => api.sendGet(`DP_API/voice_accounts/${account.get('type')}/${account.get('id')}/available_number_types/${countryCode}`)
+);
+
 export const loadAvailableNumbers = createAction(
   'VOICE_LOAD_AVAILABLE_NUMBERS',
   (account, params) => api.sendGet(`DP_API/voice_accounts/${account.get('type')}/${account.get('id')}/available_numbers?${compileParams(params)}`)
