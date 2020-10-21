@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
@@ -486,27 +487,39 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
 
     private function loadGuides()
     {
-        $guide = new Guide();
-        $guide->setTitle('Test Guide');
+        $person = $this->manager->find(Person::class, 1);
+        $guide1 = new Guide();
+        $guide1->setTitle('Test Guide');
         /** @var Brand $brand */
         $brand = $this->getReference('brand');
-        $guide->setBrand($brand);
-        $guide->addUsergroup($this->getReference('usergroup.everyone'));
-        $this->manager->persist($guide);
+        $guide1->setBrand($brand);
+        $guide1->addUsergroup($this->getReference('usergroup.everyone'));
+        $guide1->setUseVolumes(false);
+        $this->manager->persist($guide1);
+        $this->manager->flush();
+
+        $guide2 = new Guide();
+        $guide2->setTitle('System Administrator Guide');
+        $guide2->setBrand($brand);
+        $guide2->addUsergroup($this->getReference('usergroup.everyone'));
+        $guide2->setUseVolumes(false);
+        $this->manager->persist($guide2);
         $this->manager->flush();
 
         $section1 = new Topic();
         $section1->setTitle('The Agent interface');
-        $section1->setGuide($guide);
+        $section1->setGuide($guide1);
         $section1->setStatus(ContentAbstract::STATUS_PUBLISHED);
         $section1->setNoContent(true);
+        $section1->setPerson($person);
         $this->manager->persist($section1);
 
         $section2 = new Topic();
         $section2->setTitle('Tickets');
-        $section2->setGuide($guide);
+        $section2->setGuide($guide1);
         $section2->setStatus(ContentAbstract::STATUS_PUBLISHED);
         $section2->setNoContent(true);
+        $section2->setPerson($person);
         $this->manager->persist($section2);
 
         $this->manager->flush();
@@ -562,7 +575,7 @@ The apps are: [Tickets]({{ content(topic,9) }})
 *   {{ content_link(topic,282) }} - keep track of any Tasks that you or your fellow Agents need to carry out.
 CONTENT,
                 'no_content'    => 0,
-                'guide'         => $guide,
+                'guide'         => $guide1,
                 'parent'        => $section1,
             ],
             [
@@ -789,7 +802,7 @@ If your organization uses Deskpro On-Premise and your Admin's have not yet insta
 :::
 CONTENT,
                 'no_content'    => 0,
-                'guide'         => $guide,
+                'guide'         => $guide1,
                 'parent'        => $section1,
             ],
             [
@@ -854,7 +867,7 @@ Mouse over the collapsed filter pane to temporarily expand it and select a diffe
 Clicking the lock keeps the filter pane expanded.
 CONTENT,
                 'no_content'    => 0,
-                'guide'         => $guide,
+                'guide'         => $guide1,
                 'parent'        => $section1,
             ],
             [
@@ -974,7 +987,7 @@ You can change the relative size of the list and content pane. Simply mouse over
 ![Resize-List-Pane.jpg]({{ img(5571KBQJCPHJTQ5570219D01470/Resize-List-Pane.jpg) }} =300x100)
 CONTENT,
                 'no_content'    => 0,
-                'guide'         => $guide,
+                'guide'         => $guide1,
                 'parent'        => $section1,
             ],
             [
@@ -1109,7 +1122,7 @@ You can change the relative size of the list and content panes. Simply mouse ove
 ![Resize-List-Pane.jpg]({{ img(5578ZNSGTZHMPG5577849369A1A/Resize-List-Pane.jpg) }} =300x100)
 CONTENT,
                 'no_content'    => 0,
-                'guide'         => $guide,
+                'guide'         => $guide1,
                 'parent'        => $section1,
             ],
             [
@@ -1184,7 +1197,7 @@ Items that are already open are shown in gray on the list. Clicking them focuses
 ![../_images/1-col-pulldown-open.png]({{ img(883XJZXRGHCJP882395FE1BD5/1-col-pulldown-open.png) }})
 CONTENT,
                 'no_content'    => 0,
-                'guide'         => $guide,
+                'guide'         => $guide1,
                 'parent'        => $section1,
             ],
             [
@@ -1349,7 +1362,7 @@ This option lets you control which {{ content_link(topic,376) }} (_Service Level
 You can hide SLAs just as you can with filters. You can also choose whether to show all the tickets for a certain SLA, or just those that are assigned to you or to your one of your teams.
 CONTENT,
                 'no_content'    => 0,
-                'guide'         => $guide,
+                'guide'         => $guide1,
                 'parent'        => $section1,
             ],
             [
@@ -1357,7 +1370,7 @@ CONTENT,
                 'content'          => '',
                 'content_input'    => '',
                 'no_content'       => 1,
-                'guide'            => $guide,
+                'guide'            => $guide1,
                 'parent'           => $section2,
             ],
         ];
@@ -1370,13 +1383,14 @@ CONTENT,
             $topic->setNoContent(!!$t['no_content']);
             $topic->setContent($t['content']);
             $topic->setContentInput($t['content_input']);
+            $topic->setPerson($person);
             $topic->setStatus(ContentAbstract::STATUS_PUBLISHED);
             $this->manager->persist($topic);
             array_push($objects, $topic);
         }
         $more = new Topic();
         $more->setTitle('Ticket Properties');
-        $more->setGuide($guide);
+        $more->setGuide($guide1);
         $more->setParent($objects[count($objects) - 1]);
         $more->setNoContent(false);
         $more->setContent(<<<'CONTENT'
@@ -1446,7 +1460,363 @@ You can find a particular ticket quickly by putting its ID or ref code into the 
 CONTENT
 );
         $more->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $more->setPerson($person);
         $this->manager->persist($more);
         $this->manager->flush();
+
+        $economics = new Topic();
+        $economics->setTitle('Economics');
+        $economics->setPerson($person);
+        $economics->setGuide($guide2);
+        $economics->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $economics->setNoContent(true);
+        $this->manager->persist($economics);
+
+        $statistics = new Topic();
+        $statistics->setTitle('Statistics');
+        $statistics->setPerson($person);
+        $statistics->setGuide($guide2);
+        $statistics->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $statistics->setNoContent(true);
+        $this->manager->persist($statistics);
+
+        $this->manager->flush();
+
+        $economics1 = new Topic();
+        $economics1->setTitle('Introduction to Microeconomics');
+        $economics1->setPerson($person);
+        $economics1->setParent($economics);
+        $economics1->setGuide($guide2);
+        $economics1->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $economics1->setContentInput(<<<'CONTENT'
+Welcome to Deskpro, the helpdesk software platform.
+
+This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an **Administrator**.
+
+For a quick overview of how to get a Deskpro helpdesk up and running, see the [Launching Your Helpdesk](https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#).
+
+There are separate manuals for some advanced Admin topics:
+
+*   the [Sysadmin Manual](https://support.deskpro.com/guides/topic/152) covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this
+*   the [Reports Manual](https://support.deskpro.com/guides/topic/19) covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk
+*   the [Developer Manual](https://manuals.deskpro.com/html/developer-apps/) is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets
+
+If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the [Deskpro Knowledgebase](https://support.deskpro.com/kb).
+
+We’ve worked hard to make Deskpro **powerful, yet simple**. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.
+
+We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.
+
+Here are some of the key benefits of Deskpro:
+
+**Flexible configuration**: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.
+
+**Scalability**: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.
+
+**Multi-channel communication**: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.
+
+**User history at a glance**: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.
+
+**Integrated publishing**: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.
+
+**Automation**: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.
+
+**Powerful reporting**: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.
+
+**Branding**: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.
+
+**Extensibility**: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.
+
+**Truly multi-lingual**: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.
+
+**Simple pricing structure**: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.
+CONTENT
+);
+        $economics1->setContent(<<<'CONTENT'
+<p>Welcome to Deskpro, the helpdesk software platform.</p>\r\n<p>This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an <strong>Administrator</strong>.</p>\r\n<p>For a quick overview of how to get a Deskpro helpdesk up and running, see the <a href=\"https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#\">Launching Your Helpdesk</a>.</p>\r\n<p>There are separate manuals for some advanced Admin topics:</p>\r\n<ul>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/152\">Sysadmin Manual</a> covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this</li>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/19\">Reports Manual</a> covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk</li>\r\n<li>the <a href=\"https://manuals.deskpro.com/html/developer-apps/\">Developer Manual</a> is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets</li>\r\n</ul>\r\n<p>If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the <a href=\"https://support.deskpro.com/kb\">Deskpro Knowledgebase</a>.</p>\r\n<p>We’ve worked hard to make Deskpro <strong>powerful, yet simple</strong>. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.</p>\r\n<p>We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.</p>\r\n<p>Here are some of the key benefits of Deskpro:</p>\r\n<p><strong>Flexible configuration</strong>: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.</p>\r\n<p><strong>Scalability</strong>: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.</p>\r\n<p><strong>Multi-channel communication</strong>: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.</p>\r\n<p><strong>User history at a glance</strong>: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.</p>\r\n<p><strong>Integrated publishing</strong>: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.</p>\r\n<p><strong>Automation</strong>: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.</p>\r\n<p><strong>Powerful reporting</strong>: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.</p>\r\n<p><strong>Branding</strong>: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.</p>\r\n<p><strong>Extensibility</strong>: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.</p>\r\n<p><strong>Truly multi-lingual</strong>: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.</p>\r\n<p><strong>Simple pricing structure</strong>: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.</p>
+CONTENT
+);
+        $this->manager->persist($economics1);
+
+        $economics2 = new Topic();
+        $economics2->setTitle('Introduction to Macroeconomics');
+        $economics2->setPerson($person);
+        $economics2->setParent($economics);
+        $economics2->setGuide($guide2);
+        $economics2->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $economics2->setContentInput(<<<'CONTENT'
+Welcome to Deskpro, the helpdesk software platform.
+
+This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an **Administrator**.
+
+For a quick overview of how to get a Deskpro helpdesk up and running, see the [Launching Your Helpdesk](https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#).
+
+There are separate manuals for some advanced Admin topics:
+
+*   the [Sysadmin Manual](https://support.deskpro.com/guides/topic/152) covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this
+*   the [Reports Manual](https://support.deskpro.com/guides/topic/19) covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk
+*   the [Developer Manual](https://manuals.deskpro.com/html/developer-apps/) is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets
+
+If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the [Deskpro Knowledgebase](https://support.deskpro.com/kb).
+
+We’ve worked hard to make Deskpro **powerful, yet simple**. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.
+
+We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.
+
+Here are some of the key benefits of Deskpro:
+
+**Flexible configuration**: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.
+
+**Scalability**: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.
+
+**Multi-channel communication**: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.
+
+**User history at a glance**: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.
+
+**Integrated publishing**: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.
+
+**Automation**: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.
+
+**Powerful reporting**: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.
+
+**Branding**: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.
+
+**Extensibility**: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.
+
+**Truly multi-lingual**: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.
+
+**Simple pricing structure**: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.
+CONTENT
+);
+        $economics2->setContent(<<<'CONTENT'
+<p>Welcome to Deskpro, the helpdesk software platform.</p>\r\n<p>This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an <strong>Administrator</strong>.</p>\r\n<p>For a quick overview of how to get a Deskpro helpdesk up and running, see the <a href=\"https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#\">Launching Your Helpdesk</a>.</p>\r\n<p>There are separate manuals for some advanced Admin topics:</p>\r\n<ul>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/152\">Sysadmin Manual</a> covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this</li>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/19\">Reports Manual</a> covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk</li>\r\n<li>the <a href=\"https://manuals.deskpro.com/html/developer-apps/\">Developer Manual</a> is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets</li>\r\n</ul>\r\n<p>If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the <a href=\"https://support.deskpro.com/kb\">Deskpro Knowledgebase</a>.</p>\r\n<p>We’ve worked hard to make Deskpro <strong>powerful, yet simple</strong>. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.</p>\r\n<p>We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.</p>\r\n<p>Here are some of the key benefits of Deskpro:</p>\r\n<p><strong>Flexible configuration</strong>: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.</p>\r\n<p><strong>Scalability</strong>: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.</p>\r\n<p><strong>Multi-channel communication</strong>: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.</p>\r\n<p><strong>User history at a glance</strong>: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.</p>\r\n<p><strong>Integrated publishing</strong>: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.</p>\r\n<p><strong>Automation</strong>: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.</p>\r\n<p><strong>Powerful reporting</strong>: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.</p>\r\n<p><strong>Branding</strong>: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.</p>\r\n<p><strong>Extensibility</strong>: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.</p>\r\n<p><strong>Truly multi-lingual</strong>: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.</p>\r\n<p><strong>Simple pricing structure</strong>: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.</p>
+CONTENT
+);
+        $this->manager->persist($economics2);
+
+        $economics3 = new Topic();
+        $economics3->setTitle('Econometrics');
+        $economics3->setPerson($person);
+        $economics3->setParent($economics);
+        $economics3->setGuide($guide2);
+        $economics3->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $economics3->setContentInput(<<<'CONTENT'
+Welcome to Deskpro, the helpdesk software platform.
+
+This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an **Administrator**.
+
+For a quick overview of how to get a Deskpro helpdesk up and running, see the [Launching Your Helpdesk](https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#).
+
+There are separate manuals for some advanced Admin topics:
+
+*   the [Sysadmin Manual](https://support.deskpro.com/guides/topic/152) covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this
+*   the [Reports Manual](https://support.deskpro.com/guides/topic/19) covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk
+*   the [Developer Manual](https://manuals.deskpro.com/html/developer-apps/) is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets
+
+If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the [Deskpro Knowledgebase](https://support.deskpro.com/kb).
+
+We’ve worked hard to make Deskpro **powerful, yet simple**. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.
+
+We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.
+
+Here are some of the key benefits of Deskpro:
+
+**Flexible configuration**: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.
+
+**Scalability**: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.
+
+**Multi-channel communication**: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.
+
+**User history at a glance**: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.
+
+**Integrated publishing**: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.
+
+**Automation**: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.
+
+**Powerful reporting**: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.
+
+**Branding**: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.
+
+**Extensibility**: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.
+
+**Truly multi-lingual**: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.
+
+**Simple pricing structure**: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.
+CONTENT
+);
+        $economics3->setContent(<<<'CONTENT'
+<p>Welcome to Deskpro, the helpdesk software platform.</p>\r\n<p>This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an <strong>Administrator</strong>.</p>\r\n<p>For a quick overview of how to get a Deskpro helpdesk up and running, see the <a href=\"https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#\">Launching Your Helpdesk</a>.</p>\r\n<p>There are separate manuals for some advanced Admin topics:</p>\r\n<ul>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/152\">Sysadmin Manual</a> covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this</li>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/19\">Reports Manual</a> covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk</li>\r\n<li>the <a href=\"https://manuals.deskpro.com/html/developer-apps/\">Developer Manual</a> is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets</li>\r\n</ul>\r\n<p>If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the <a href=\"https://support.deskpro.com/kb\">Deskpro Knowledgebase</a>.</p>\r\n<p>We’ve worked hard to make Deskpro <strong>powerful, yet simple</strong>. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.</p>\r\n<p>We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.</p>\r\n<p>Here are some of the key benefits of Deskpro:</p>\r\n<p><strong>Flexible configuration</strong>: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.</p>\r\n<p><strong>Scalability</strong>: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.</p>\r\n<p><strong>Multi-channel communication</strong>: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.</p>\r\n<p><strong>User history at a glance</strong>: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.</p>\r\n<p><strong>Integrated publishing</strong>: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.</p>\r\n<p><strong>Automation</strong>: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.</p>\r\n<p><strong>Powerful reporting</strong>: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.</p>\r\n<p><strong>Branding</strong>: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.</p>\r\n<p><strong>Extensibility</strong>: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.</p>\r\n<p><strong>Truly multi-lingual</strong>: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.</p>\r\n<p><strong>Simple pricing structure</strong>: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.</p>
+CONTENT
+);
+        $this->manager->persist($economics3);
+
+        $statistics1 = new Topic();
+        $statistics1->setTitle('Multi-linear regressions');
+        $statistics1->setPerson($person);
+        $statistics1->setParent($statistics);
+        $statistics1->setGuide($guide2);
+        $statistics1->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $statistics1->setContentInput(<<<'CONTENT'
+Welcome to Deskpro, the helpdesk software platform.
+
+This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an **Administrator**.
+
+For a quick overview of how to get a Deskpro helpdesk up and running, see the [Launching Your Helpdesk](https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#).
+
+There are separate manuals for some advanced Admin topics:
+
+*   the [Sysadmin Manual](https://support.deskpro.com/guides/topic/152) covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this
+*   the [Reports Manual](https://support.deskpro.com/guides/topic/19) covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk
+*   the [Developer Manual](https://manuals.deskpro.com/html/developer-apps/) is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets
+
+If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the [Deskpro Knowledgebase](https://support.deskpro.com/kb).
+
+We’ve worked hard to make Deskpro **powerful, yet simple**. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.
+
+We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.
+
+Here are some of the key benefits of Deskpro:
+
+**Flexible configuration**: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.
+
+**Scalability**: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.
+
+**Multi-channel communication**: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.
+
+**User history at a glance**: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.
+
+**Integrated publishing**: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.
+
+**Automation**: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.
+
+**Powerful reporting**: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.
+
+**Branding**: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.
+
+**Extensibility**: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.
+
+**Truly multi-lingual**: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.
+
+**Simple pricing structure**: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.
+CONTENT
+);
+        $statistics1->setContent(<<<'CONTENT'
+<p>Welcome to Deskpro, the helpdesk software platform.</p>\r\n<p>This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an <strong>Administrator</strong>.</p>\r\n<p>For a quick overview of how to get a Deskpro helpdesk up and running, see the <a href=\"https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#\">Launching Your Helpdesk</a>.</p>\r\n<p>There are separate manuals for some advanced Admin topics:</p>\r\n<ul>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/152\">Sysadmin Manual</a> covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this</li>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/19\">Reports Manual</a> covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk</li>\r\n<li>the <a href=\"https://manuals.deskpro.com/html/developer-apps/\">Developer Manual</a> is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets</li>\r\n</ul>\r\n<p>If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the <a href=\"https://support.deskpro.com/kb\">Deskpro Knowledgebase</a>.</p>\r\n<p>We’ve worked hard to make Deskpro <strong>powerful, yet simple</strong>. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.</p>\r\n<p>We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.</p>\r\n<p>Here are some of the key benefits of Deskpro:</p>\r\n<p><strong>Flexible configuration</strong>: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.</p>\r\n<p><strong>Scalability</strong>: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.</p>\r\n<p><strong>Multi-channel communication</strong>: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.</p>\r\n<p><strong>User history at a glance</strong>: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.</p>\r\n<p><strong>Integrated publishing</strong>: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.</p>\r\n<p><strong>Automation</strong>: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.</p>\r\n<p><strong>Powerful reporting</strong>: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.</p>\r\n<p><strong>Branding</strong>: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.</p>\r\n<p><strong>Extensibility</strong>: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.</p>\r\n<p><strong>Truly multi-lingual</strong>: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.</p>\r\n<p><strong>Simple pricing structure</strong>: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.</p>
+CONTENT
+);
+        $this->manager->persist($statistics1);
+
+        $statistics2 = new Topic();
+        $statistics2->setTitle('Confidence Intervals');
+        $statistics2->setPerson($person);
+        $statistics2->setParent($statistics);
+        $statistics2->setGuide($guide2);
+        $statistics2->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $statistics2->setContentInput(<<<'CONTENT'
+Welcome to Deskpro, the helpdesk software platform.
+
+This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an **Administrator**.
+
+For a quick overview of how to get a Deskpro helpdesk up and running, see the [Launching Your Helpdesk](https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#).
+
+There are separate manuals for some advanced Admin topics:
+
+*   the [Sysadmin Manual](https://support.deskpro.com/guides/topic/152) covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this
+*   the [Reports Manual](https://support.deskpro.com/guides/topic/19) covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk
+*   the [Developer Manual](https://manuals.deskpro.com/html/developer-apps/) is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets
+
+If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the [Deskpro Knowledgebase](https://support.deskpro.com/kb).
+
+We’ve worked hard to make Deskpro **powerful, yet simple**. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.
+
+We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.
+
+Here are some of the key benefits of Deskpro:
+
+**Flexible configuration**: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.
+
+**Scalability**: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.
+
+**Multi-channel communication**: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.
+
+**User history at a glance**: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.
+
+**Integrated publishing**: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.
+
+**Automation**: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.
+
+**Powerful reporting**: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.
+
+**Branding**: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.
+
+**Extensibility**: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.
+
+**Truly multi-lingual**: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.
+
+**Simple pricing structure**: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.
+CONTENT
+);
+        $statistics2->setContent(<<<'CONTENT'
+<p>Welcome to Deskpro, the helpdesk software platform.</p>\r\n<p>This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an <strong>Administrator</strong>.</p>\r\n<p>For a quick overview of how to get a Deskpro helpdesk up and running, see the <a href=\"https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#\">Launching Your Helpdesk</a>.</p>\r\n<p>There are separate manuals for some advanced Admin topics:</p>\r\n<ul>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/152\">Sysadmin Manual</a> covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this</li>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/19\">Reports Manual</a> covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk</li>\r\n<li>the <a href=\"https://manuals.deskpro.com/html/developer-apps/\">Developer Manual</a> is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets</li>\r\n</ul>\r\n<p>If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the <a href=\"https://support.deskpro.com/kb\">Deskpro Knowledgebase</a>.</p>\r\n<p>We’ve worked hard to make Deskpro <strong>powerful, yet simple</strong>. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.</p>\r\n<p>We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.</p>\r\n<p>Here are some of the key benefits of Deskpro:</p>\r\n<p><strong>Flexible configuration</strong>: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.</p>\r\n<p><strong>Scalability</strong>: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.</p>\r\n<p><strong>Multi-channel communication</strong>: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.</p>\r\n<p><strong>User history at a glance</strong>: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.</p>\r\n<p><strong>Integrated publishing</strong>: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.</p>\r\n<p><strong>Automation</strong>: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.</p>\r\n<p><strong>Powerful reporting</strong>: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.</p>\r\n<p><strong>Branding</strong>: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.</p>\r\n<p><strong>Extensibility</strong>: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.</p>\r\n<p><strong>Truly multi-lingual</strong>: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.</p>\r\n<p><strong>Simple pricing structure</strong>: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.</p>
+CONTENT
+);
+        $this->manager->persist($statistics2);
+        $this->manager->flush();
+
+        $statistics3 = new Topic();
+        $statistics3->setTitle('Significance Test');
+        $statistics3->setPerson($person);
+        $statistics3->setParent($statistics2);
+        $statistics3->setGuide($guide2);
+        $statistics3->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $statistics3->setContentInput(<<<'CONTENT'
+Welcome to Deskpro, the helpdesk software platform.
+
+This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an **Administrator**.
+
+For a quick overview of how to get a Deskpro helpdesk up and running, see the [Launching Your Helpdesk](https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#).
+
+There are separate manuals for some advanced Admin topics:
+
+*   the [Sysadmin Manual](https://support.deskpro.com/guides/topic/152) covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this
+*   the [Reports Manual](https://support.deskpro.com/guides/topic/19) covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk
+*   the [Developer Manual](https://manuals.deskpro.com/html/developer-apps/) is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets
+
+If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the [Deskpro Knowledgebase](https://support.deskpro.com/kb).
+
+We’ve worked hard to make Deskpro **powerful, yet simple**. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.
+
+We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.
+
+Here are some of the key benefits of Deskpro:
+
+**Flexible configuration**: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.
+
+**Scalability**: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.
+
+**Multi-channel communication**: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.
+
+**User history at a glance**: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.
+
+**Integrated publishing**: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.
+
+**Automation**: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.
+
+**Powerful reporting**: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.
+
+**Branding**: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.
+
+**Extensibility**: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.
+
+**Truly multi-lingual**: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.
+
+**Simple pricing structure**: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.
+CONTENT
+);
+        $statistics3->setContent(<<<'CONTENT'
+<p>Welcome to Deskpro, the helpdesk software platform.</p>\r\n<p>This manual explains the details of installing, configuring and managing a Deskpro helpdesk as an <strong>Administrator</strong>.</p>\r\n<p>For a quick overview of how to get a Deskpro helpdesk up and running, see the <a href=\"https://support.deskpro.com/en-GB/guides/admin-guide/getting-started/introducing-deskpro/deskpro-features-and-benefits#\">Launching Your Helpdesk</a>.</p>\r\n<p>There are separate manuals for some advanced Admin topics:</p>\r\n<ul>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/152\">Sysadmin Manual</a> covers how to install and maintain Deskpro On-Premise: the version of Deskpro that you run on your own servers; Cloud admins can skip this</li>\r\n<li>the <a href=\"https://support.deskpro.com/guides/topic/19\">Reports Manual</a> covers Deskpro’s Reports interface, which can generate detailed Custom Reports about the helpdesk</li>\r\n<li>the <a href=\"https://manuals.deskpro.com/html/developer-apps/\">Developer Manual</a> is for software developers who want to know how to modify and extend the functionality of Deskpro using the API and widgets</li>\r\n</ul>\r\n<p>If you run into a problem or a configuration challenge that’s not covered in this manual, it’s worth searching the <a href=\"https://support.deskpro.com/kb\">Deskpro Knowledgebase</a>.</p>\r\n<p>We’ve worked hard to make Deskpro <strong>powerful, yet simple</strong>. We understand that to be accepted by your Agents, our software has to be intuitive and pleasant to use, but powerful enough that it enhances their productivity rather than holding them back.</p>\r\n<p>We’ve carried the principle of “powerful, yet simple” through to the administration of the platform. You can set up a working Deskpro helpdesk in minutes, but the platform is flexible enough so you can configure it to match your business processes instead of changing the way you work.</p>\r\n<p>Here are some of the key benefits of Deskpro:</p>\r\n<p><strong>Flexible configuration</strong>: You can organize your helpdesk using Teams and Departments to reflect how your business processes work. You can add extra information to Tickets to make sure that all the information that you need is captured, and use fine-grained access permissions to control what Agents and Users can see.</p>\r\n<p><strong>Scalability</strong>: Major enterprises have used Deskpro to handle millions of Tickets in a single helpdesk.</p>\r\n<p><strong>Multi-channel communication</strong>: With Deskpro, Users can communicate with your helpdesk in a variety of ways: email, our high-quality integrated Live Chat, through the Deskpro web Portal or through our Widgets that you can embed in your website. It’s up to you which channels you offer to which of your Users.</p>\r\n<p><strong>User history at a glance</strong>: You can see all the communication between your helpdesk and each User at a glance, for all Agents and channels.</p>\r\n<p><strong>Integrated publishing</strong>: Your web Portal contains a Knowledgebase which allows your Agents to create and manage articles offering solutions to common problems. The Knowledgebase can be used to deflect Tickets before they’re submitted, by showing relevant help content as the user describes their problem. The Portal can also host file Downloads and News Articles, all created and managed from within Deskpro.</p>\r\n<p><strong>Automation</strong>: Deskpro has a range of powerful, automatic actions, which you can set up with a simple web interface. This means that your helpdesk can handle repetitive or routine tasks, freeing up your Agents to be be more productive. You can automate your business processes using the same system. Agents can speed up their own workflow by creating and sharing time-saving Macros, Snippets and Custom Filters.</p>\r\n<p><strong>Powerful reporting</strong>: Detailed information about helpdesk performance is provided by the powerful Reports interface and built-in User Satisfaction Survey. Create your own custom Reports, that show the exact performance indicators that you want to track.</p>\r\n<p><strong>Branding</strong>: You can fully customize the web Portal and embed it into your website, or integrate Deskpro features like live Chat and Ticket submission forms into your website.</p>\r\n<p><strong>Extensibility</strong>: We refer to Deskpro as a platform because it can be extended using Deskpro apps. We offer pre-made apps to integrate your helpdesk with third-party services, and to enable Single Sign-On. You can customize the Agent interface by writing simple Widgets using just HTML and Javascript, or write your own full Apps. Deskpro has a full REST API to enable you to access helpdesk data and actions.</p>\r\n<p><strong>Truly multi-lingual</strong>: We’ve designed Deskpro with international usage in mind. You can quickly install new language packs to offer a translated user experience for most major languages. If you need a language that we don’t yet offer, we have a crowdsourcing translation system so you can provide or commission a new language pack.</p>\r\n<p><strong>Simple pricing structure</strong>: We don’t lock useful features until you upgrade to a more expensive pricing plan. You just pay a simple per-Agent fee and get access to all the power of the Deskpro platform.</p>
+CONTENT
+);
+        $this->manager->persist($statistics3);
     }
 }
