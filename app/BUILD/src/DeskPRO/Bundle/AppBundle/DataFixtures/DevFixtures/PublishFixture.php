@@ -494,7 +494,7 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
         $brand = $this->getReference('brand');
         $guide1->setBrand($brand);
         $guide1->addUsergroup($this->getReference('usergroup.everyone'));
-        $guide1->setUseVolumes(false);
+        $guide1->setUseVolumes(true);
         $this->manager->persist($guide1);
         $this->manager->flush();
 
@@ -504,11 +504,25 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
         $guide2->addUsergroup($this->getReference('usergroup.everyone'));
         $guide2->setUseVolumes(false);
         $this->manager->persist($guide2);
+        $guide->setBrand($brand);
+        $guide->setUseVolumes(true);
+        $guide->addUsergroup($this->getReference('usergroup.everyone'));
+        $this->manager->persist($guide);
+        $this->manager->flush();
+
+        $volume1 = new Topic();
+        $volume1->setTitle('Volume');
+        $volume1->setGuide($guide1);
+        $volume1->setStatus(ContentAbstract::STATUS_PUBLISHED);
+        $volume1->setNoContent(true);
+        $this->manager->persist($volume1);
+
         $this->manager->flush();
 
         $section1 = new Topic();
         $section1->setTitle('The Agent interface');
         $section1->setGuide($guide1);
+        $section1->setParent($volume1);
         $section1->setStatus(ContentAbstract::STATUS_PUBLISHED);
         $section1->setNoContent(true);
         $section1->setPerson($person);
@@ -516,6 +530,7 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
 
         $section2 = new Topic();
         $section2->setTitle('Tickets');
+        $section2->setParent($volume1);
         $section2->setGuide($guide1);
         $section2->setStatus(ContentAbstract::STATUS_PUBLISHED);
         $section2->setNoContent(true);
