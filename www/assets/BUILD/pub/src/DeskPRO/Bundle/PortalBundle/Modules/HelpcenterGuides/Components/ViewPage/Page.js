@@ -193,11 +193,13 @@ class Page extends React.PureComponent {
       if (Number.isInteger(parent)) {
         parent = pageList.find(p => p.id === parent);
       }
-      return (
-        <div className="dp-po-guides-block-title-section">
-          <FormattedMessage id="helpcenter.guides.in_section" values={{ section: parent.title }} />
-        </div>
-      );
+      if (parent) {
+        return (
+          <div className="dp-po-guides-block-title-section">
+            <FormattedMessage id="helpcenter.guides.in_section" values={{ section: parent.title }} />
+          </div>
+        );
+      }
     }
     return null;
   }

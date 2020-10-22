@@ -532,7 +532,11 @@ class ViewPage extends React.Component {
     let { description } = guide;
     const { splash_image_property: splashImageProperty } = guide;
     const pages = Object.values(pageList).filter(t => t.no_content === '0' && t.content_length !== '0');
-    const page1 = pages.shift();
+    let page1 = pages.shift();
+
+    if (!page1) {
+      page1 = Object.values(pageList).filter(t => t.no_content === '0').shift();
+    }
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -552,7 +556,7 @@ class ViewPage extends React.Component {
             }}
           />
         );
-      } else {
+      } else if (page1) {
         description = (
           <FormattedMessage
             id="helpcenter.guides.default_description_short"
@@ -562,6 +566,8 @@ class ViewPage extends React.Component {
             }}
           />
         );
+      } else {
+        description = null;
       }
     }
     let splashImage = null;
