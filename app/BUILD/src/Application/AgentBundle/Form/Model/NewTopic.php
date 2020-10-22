@@ -71,7 +71,10 @@ class NewTopic
         $guide = $this->_em->find(Guide::class, $this->guide_id);
         $topic->setGuide($guide);
 
-        $parent       = $this->_em->find(Topic::class, $this->parent_id);
+        $parent = null;
+        if ($this->parent_id) {
+            $parent       = $this->_em->find(Topic::class, $this->parent_id);
+        }
         if ($this->type === 'volume' || (!$guide->isUseVolumes() && $this->type === 'chapter')) {
             $parent = null;
         }

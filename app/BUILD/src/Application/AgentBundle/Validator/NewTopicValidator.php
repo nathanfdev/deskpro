@@ -1,13 +1,12 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Guide;
+use Application\DeskPRO\Entity\Topic;
 use Orb\Validator\AbstractValidator;
 
 class NewTopicValidator extends AbstractValidator
@@ -34,6 +33,43 @@ class NewTopicValidator extends AbstractValidator
 
         if (!$topic->status) {
             $this->addError('status.invalid');
+        }
+
+        if ($this->errors) {
+            return false;
+        }
+
+        switch ($topic->type) {
+            case 'chapter':
+                if ($cat->isUseVolumes()) {
+                    if (!$topic->parent_id) {
+                        $this->addError('parent.missing');
+                    } else {
+                        $parent = App::getOrm()->find(Topic::class, $topic->parent_id);
+                        if ($parent->getParent()) {
+                            $this->addError('parent.must_be_volume');
+                        }
+                    }
+                }
+
+                break;
+            case 'page':
+                if (!$topic->parent_id) {
+                    $this->addError('parent.missing');
+                } else {
+                    $parent = App::getOrm()->find(Topic::class, $topic->parent_id);
+                    if ($cat->isUseVolumes()) {
+                        if (!$parent->getParent()) {
+                            $this->addError('parent.cannot_be_volume');
+                        }
+                    }
+                }
+
+                break;
+            default:
+                if ($topic->parent_id) {
+                    $this->addError('parent.no_parent');
+                }
         }
 
         if ($this->errors) {

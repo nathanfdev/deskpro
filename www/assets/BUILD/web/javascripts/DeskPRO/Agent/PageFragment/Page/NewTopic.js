@@ -72,7 +72,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
         self.setSection(e.val);
       } else {
         self.setTopic();
-        $('#' + this.meta.baseId + '_parent').select2('val', '')
+        $('#' + self.meta.baseId + '_parent').select2('val', '')
       }
     });
 
@@ -93,19 +93,6 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
     //     $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", true);
 		// 	}
 		// });
-
-    // $('#' + this.meta.baseId + '_radio_not_section, #' + this.meta.baseId + '_radio_is_section').on('change', function() {
-    //   var value = $(this).val();
-    //   if ($( '#' + self.meta.baseId + '_parent option:selected' ).text().match('>')) {
-    //     alert('Sections can\'t have more than one parent');
-    //     self.setTopic();
-    //   }
-    //   if (value === '0') {
-    //     self.setTopic();
-    //   } else {
-    //     self.setSection();
-    //   }
-    // });
 
 		window.setTimeout(function() {
 			if (self.OBJ_DESTROYED) return;
@@ -294,9 +281,13 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		if (!this.useVolumes) {
 		  $('#' + this.meta.baseId + '_type option[value="volume"]').attr('disabled', 'disabled');
 		  $('#' + this.meta.baseId + '_type').select2("val", 'chapter');
+      $('#' + this.meta.baseId + '_parent_section').hide();
+		  this.setSection('chapter');
 		} else {
 		  $('#' + this.meta.baseId + '_type option[value="volume"]').removeAttr('disabled');
 		  $('#' + this.meta.baseId + '_type').select2("val", 'volume');
+      $('#' + this.meta.baseId + '_parent_section').hide();
+		  this.setSection('volume');
 		}
 
 		var categories_select = $('#' + this.meta.baseId + '_parent');

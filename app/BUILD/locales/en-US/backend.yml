@@ -4586,6 +4586,8 @@ agent.publish.no_news_cats_error: 'There are no categories defined. Before you c
 agent.publish.no_related_explain: 'No related articles, downloads or news posts have been linked to this item. To add related items, view them in the list pane and click the green arrow icon.'
 agent.publish.no_uploads_yet: 'There have not been any uploads yet.,'
 agent.publish.not_helpful: 'Not Helpful'
+agent.publish.parent_must_be_volume: 'Parent must be a Volume'
+agent.publish.parent_cannot_be_volume: 'Parent cannot not be a Volume'
 agent.publish.pending_approval_content: 'Articles Pending Approval'
 agent.publish.pending_approval_list_title:
   one: '1 article pending approval'

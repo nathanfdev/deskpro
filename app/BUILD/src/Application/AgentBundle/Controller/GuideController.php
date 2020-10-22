@@ -359,7 +359,7 @@ class GuideController extends PublishController
             if (!$validator->isValid($newTopic)) {
                 return $this->createJsonResponse([
                     'error'       => true,
-                    'error_codes' => $validator->getErrorGroups(),
+                    'error_codes' => $validator->getPlainErrors(),
                 ]);
             }
             $newTopic->save();

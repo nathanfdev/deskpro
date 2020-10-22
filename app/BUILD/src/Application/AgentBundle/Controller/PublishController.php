@@ -1236,6 +1236,7 @@ class PublishController extends AbstractController
         }
         if ($type === 'guide') {
             $cat->setDescription($saveCategory['description']);
+            $cat->setUseVolumes($saveCategory['use_volumes']);
             $cat->setDisplayOrder(($repos->countAll() + 1) * 10);
         }
         $this->em->persist($cat);
