@@ -8,7 +8,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		this.parent();
 		this.TYPENAME = 'newnews';
 		this.allowDupe = true;
-    this.useVolumes = true;
+		this.useVolumes = true;
 	},
 
 	initPage: function(el) {
@@ -28,15 +28,15 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
     });
 
 		if (currentGuide) {
-      this.useVolumes = currentGuide.useVolumes;
-    }
+		  this.useVolumes = currentGuide.useVolumes;
+		}
 
 		if (!this.useVolumes) {
-      $('#' + this.meta.baseId + '_type option[value="volume"]').attr('disabled', 'disabled');
-      $('#' + this.meta.baseId + '_type').val('chapter');
-      $('#' + this.meta.baseId + '_volume_title').hide();
-      $('#' + this.meta.baseId + '_chapter_title').show();
-    }
+		  $('#' + this.meta.baseId + '_type option[value="volume"]').attr('disabled', 'disabled');
+		  $('#' + this.meta.baseId + '_type').val('chapter');
+		  $('#' + this.meta.baseId + '_volume_title').hide();
+		  $('#' + this.meta.baseId + '_chapter_title').show();
+		}
 
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
@@ -47,7 +47,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		this._initCategorySection();
 		this._initTitleSection();
 		this._initContentSection();
-    $('#' + self.meta.baseId + '_parent_section').hide();
+		$('#' + self.meta.baseId + '_parent_section').hide();
 
 		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
 			stateId: 'c',
@@ -64,7 +64,6 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		});
 
     $('#' + this.meta.baseId + '_type').on('change', function(e, f) {
-      console.log(e.val);
       $('#' + self.meta.baseId + '_parent_section').show();
       if (e.val === 'volume' || e.val === 'chapter') {
         if (e.val === 'volume' || !self.useVolumes) {
@@ -285,22 +284,20 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		var guide_id = guide_select.val();
 
 		var currentGuide = this.meta.guides.find(function(g) {
-      return g.id === parseInt(guide_id);
-    });
+		  return g.id === parseInt(guide_id);
+		});
 
-		console.log(currentGuide);
+		if (currentGuide) {
+		  this.useVolumes = currentGuide.useVolumes;
+		}
 
-    if (currentGuide) {
-      this.useVolumes = currentGuide.useVolumes;
-    }
-
-    if (!this.useVolumes) {
-      $('#' + this.meta.baseId + '_type option[value="volume"]').attr('disabled', 'disabled');
-      $('#' + this.meta.baseId + '_type').select2("val", 'chapter');
-    } else {
-      $('#' + this.meta.baseId + '_type option[value="volume"]').removeAttr('disabled');
-      $('#' + this.meta.baseId + '_type').select2("val", 'volume');
-    }
+		if (!this.useVolumes) {
+		  $('#' + this.meta.baseId + '_type option[value="volume"]').attr('disabled', 'disabled');
+		  $('#' + this.meta.baseId + '_type').select2("val", 'chapter');
+		} else {
+		  $('#' + this.meta.baseId + '_type option[value="volume"]').removeAttr('disabled');
+		  $('#' + this.meta.baseId + '_type').select2("val", 'volume');
+		}
 
 		var categories_select = $('#' + this.meta.baseId + '_parent');
 		$.ajax({
@@ -308,7 +305,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 			type: 'GET',
 			context: this,
 			success: function(result) {
-			  this.topics = result;
+				this.topics = result;
 				categories_select.children().remove();
 				categories_select.append($(result).find('option'));
 				categories_select.select2("val", '');
