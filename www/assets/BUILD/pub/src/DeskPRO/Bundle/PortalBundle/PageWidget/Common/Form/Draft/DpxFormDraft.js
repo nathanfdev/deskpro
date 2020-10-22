@@ -71,7 +71,7 @@ export default class DpxFormDraft extends PageWidget {
   }
 
   static resetForm() {
-    return confirm(portalPhrases.get('portal.forms.confirm_reset'));
+    return confirm(portalPhrases.get('helpcenter.forms.confirm_reset'));
   }
 
   renderWidget() {
