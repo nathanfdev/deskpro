@@ -25,5 +25,7 @@ class Build1603202602 extends AbstractBuild implements BlockingBuildInterface, S
                 ], ['id' => $guide['id']]);
             }
         }
+        // Set all non root pages to have content on guides without volumes
+        $db->query('UPDATE topics t INNER JOIN guides g ON g.id = t.guide_id SET t.no_content = 0 WHERE g.use_volumes = 0 AND t.parent_id <> 0');
     }
 }

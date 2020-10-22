@@ -21,6 +21,7 @@ use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\EntityRepository\AbstractCategoryRepository;
 use Application\DeskPRO\EntityRepository\CommentAbstract as CommentRepository;
@@ -36,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Component\Util\IpUtils;
 use GuzzleHttp\Client;
 use Orb\Util\Arrays;
@@ -93,7 +95,7 @@ class PublishController extends AbstractController
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
-        /** @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack */
+        /** @var BrandStack $brandStack */
         $brandStack = $this->get('brand_stack');
 
         /** @var BrandAwareSettingsResolver $brandSettingsResolver */
@@ -983,7 +985,10 @@ class PublishController extends AbstractController
                 if ($brandId && $cat->getBrand()->getId() !== $brandId) {
                     $changes['brand_id'] = $brandId;
                 }
-                $changes['use_volumes'] = $saveCategory['use_volumes'];
+                if ($saveCategory['use_volumes'] !== $cat->isUseVolumes()) {
+                    $changes['use_volumes'] = $saveCategory['use_volumes'];
+                    $this->updateTopicsVolumes($cat, $saveCategory['use_volumes']);
+                }
                 $cat->setColor($this->in->getString('category.color'));
                 $this->db->update($table, $changes, ['id' => $cat->getId()]);
             }
@@ -1630,5 +1635,37 @@ class PublishController extends AbstractController
         }
 
         return $categories;
+    }
+
+    /**
+     * @param Guide $guide
+     * @param boolean $useVolumes
+     */
+    private function updateTopicsVolumes($guide, $useVolumes)
+    {
+        $rootTopics = $guide->getRootTopics();
+        if (count($rootTopics) > 0) {
+            if ($useVolumes) {
+                $newVolume = new Topic();
+                $newVolume->setGuide($guide);
+                $newVolume->setTitle($rootTopics->first()->getTitle());
+                $newVolume->setPerson($this->getUser());
+                $newVolume->setStatus(ContentAbstract::STATUS_PUBLISHED);
+                $newVolume->setNoContent(true);
+                $this->container->getEm()->persist($newVolume);
+                foreach ($rootTopics as $topic) {
+                    $topic->setParent($newVolume);
+                }
+            } else {
+                /** @var Topic $topic */
+                foreach ($rootTopics as $topic) {
+                    foreach ($topic->getChildren() as $child) {
+                        $child->setParent(null);
+                    }
+                    $this->container->getEm()->remove($topic);
+                }
+            }
+            $this->container->getEm()->flush();
+        }
     }
 }

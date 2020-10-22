@@ -3,6 +3,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTopic';
 
 pageMeta.title = '{{ phrase('agent.publish.new_topic') }}';
 pageMeta.uploadAttachUrl = '{{ path('agent_accept_upload') }}';
+pageMeta.guides = [{% for guide in guides %}{id: {{ guide.id }}, useVolumes: {% if guide.useVolumes %}true{% else %}false{% endif %}},{% endfor %}];
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -38,7 +39,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<h4>{{ phrase('agent.general.guide') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
 				'name': 'newtopic[guide_id]',
-				'id': 'new_topic_guide_id',
+				'id': baseId ~ '_guide_id',
 				'add_classname': 'guide_id',
 				'add_attr': '',
 				'categories': guides,
@@ -71,7 +72,7 @@ pageMeta.baseId = '{{ baseId }}';
 			} %}
 		</div>
 		<br class="clear" />
-		<div class="col">
+		<div class="col" id="{{ baseId }}_parent_section">
 			<h4>{{ phrase('agent.general.parent') }}</h4>
             {% include 'AgentBundle:Common:select-standard.html.twig' with {
             'name': 'newtopic[parent_id]',
@@ -90,7 +91,8 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="content">
 		<h4 id="{{baseId}}_topic_title" style="display: none">{{ phrase('agent.general.title') }}</h4>
-		<h4 id="{{baseId}}_section_title">{{ phrase('agent.general.section_title') }}</h4>
+		<h4 id="{{baseId}}_volume_title">{{ phrase('agent.general.volume_title') }}</h4>
+		<h4 id="{{baseId}}_chapter_title" style="display: none">{{ phrase('agent.general.chapter_title') }}</h4>
 		<input type="text"
 			   name="newtopic[title]"
 			   id="{{baseId}}_title"

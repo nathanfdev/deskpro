@@ -285,7 +285,7 @@ class GuideController extends PublishController
     {
         $topics = $this->em->getRepository(Topic::class)->getInHierarchy(false, $guide_id);
 
-        array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
+//        array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
 
         return $this->render('AgentBundle:Common:select-standard.html.twig', [
             'name'             => 'newtopic[parent_id]',
@@ -330,7 +330,7 @@ class GuideController extends PublishController
           ['id' => 'page', 'title' => 'Page'],
         ];
 
-        array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
+//        array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
 
         return $this->render('AgentBundle:Guide:new-topic.html.twig', [
             'guides'            => $guides,

@@ -8,6 +8,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		this.parent();
 		this.TYPENAME = 'newnews';
 		this.allowDupe = true;
+    this.useVolumes = true;
 	},
 
 	initPage: function(el) {
@@ -15,11 +16,27 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		this.wrapper = el;
 		this.parent(el);
 
-		if (!$('#new_topic_guide_id').find('option')[0]) {
+		if (!$('#' + this.meta.baseId + '_guide_id').find('option')[0]) {
 			this.wrapper.find('.form-header-error').show();
 			this.wrapper.find('.form-outer').hide();
 			this.markForReload();
 		}
+
+		var currentGuideId = parseInt($('#' + this.meta.baseId + '_guide_id').find('option')[0].value);
+    var currentGuide = this.meta.guides.find(function(g) {
+		  return g.id === currentGuideId;
+    });
+
+		if (currentGuide) {
+      this.useVolumes = currentGuide.useVolumes;
+    }
+
+		if (!this.useVolumes) {
+      $('#' + this.meta.baseId + '_type option[value="volume"]').attr('disabled', 'disabled');
+      $('#' + this.meta.baseId + '_type').val('chapter');
+      $('#' + this.meta.baseId + '_volume_title').hide();
+      $('#' + this.meta.baseId + '_chapter_title').show();
+    }
 
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
@@ -30,6 +47,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		this._initCategorySection();
 		this._initTitleSection();
 		this._initContentSection();
+    $('#' + self.meta.baseId + '_parent_section').hide();
 
 		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
 			stateId: 'c',
@@ -41,40 +59,54 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 			self.updateGuides();
 		});
 
-		$('#new_topic_guide_id').on('change', function() {
+    $('#' + this.meta.baseId + '_guide_id').on('change', function() {
 			self.updateTopics();
 		});
 
-		$('#' + this.meta.baseId + '_parent').on('change', function() {
-			if (this.value !== '0') {
-        self.setTopic();
-        if ($( '#' + self.meta.baseId + '_parent option:selected' ).text().match('>')) {
-          // this option should stay enabled to pass it on server
-          $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", false);
-          $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", true);
-        } else {
-          $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", false);
-          $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", false);
+    $('#' + this.meta.baseId + '_type').on('change', function(e, f) {
+      console.log(e.val);
+      $('#' + self.meta.baseId + '_parent_section').show();
+      if (e.val === 'volume' || e.val === 'chapter') {
+        if (e.val === 'volume' || !self.useVolumes) {
+          $('#' + self.meta.baseId + '_parent_section').hide();
         }
-			} else {
-				self.setSection();
-        $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", true);
-        $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", true);
-			}
-		});
-
-    $('#' + this.meta.baseId + '_radio_not_section, #' + this.meta.baseId + '_radio_is_section').on('change', function() {
-      var value = $(this).val();
-      if ($( '#' + self.meta.baseId + '_parent option:selected' ).text().match('>')) {
-        alert('Sections can\'t have more than one parent');
-        self.setTopic();
-      }
-      if (value === '0') {
-        self.setTopic();
+        self.setSection(e.val);
       } else {
-        self.setSection();
+        self.setTopic();
+        $('#' + this.meta.baseId + '_parent').select2('val', '')
       }
     });
+
+		// $('#' + this.meta.baseId + '_parent').on('change', function() {
+		// 	if (this.value !== '0') {
+    //     self.setTopic();
+    //     if ($( '#' + self.meta.baseId + '_parent option:selected' ).text().match('>')) {
+    //       // this option should stay enabled to pass it on server
+    //       $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", false);
+    //       $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", true);
+    //     } else {
+    //       $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", false);
+    //       $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", false);
+    //     }
+		// 	} else {
+		// 		self.setSection();
+    //     $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", true);
+    //     $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", true);
+		// 	}
+		// });
+
+    // $('#' + this.meta.baseId + '_radio_not_section, #' + this.meta.baseId + '_radio_is_section').on('change', function() {
+    //   var value = $(this).val();
+    //   if ($( '#' + self.meta.baseId + '_parent option:selected' ).text().match('>')) {
+    //     alert('Sections can\'t have more than one parent');
+    //     self.setTopic();
+    //   }
+    //   if (value === '0') {
+    //     self.setTopic();
+    //   } else {
+    //     self.setSection();
+    //   }
+    // });
 
 		window.setTimeout(function() {
 			if (self.OBJ_DESTROYED) return;
@@ -91,12 +123,14 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		this.activate();
 	},
 
-  setSection: function() {
+  setSection: function(type) {
     $('#' + this.meta.baseId + '_content_section').hide();
     $('#' + this.meta.baseId + '_topic_submit').hide();
     $('#' + this.meta.baseId + '_section_submit').show();
     $('#' + this.meta.baseId + '_topic_title').hide();
-    $('#' + this.meta.baseId + '_section_title').show();
+    $('#' + this.meta.baseId + '_volume_title').hide();
+    $('#' + this.meta.baseId + '_chapter_title').hide();
+    $('#' + this.meta.baseId + '_' + type + '_title').show();
     $('#' + this.meta.baseId + '_radio_not_section').prop("checked", true);
   },
 
@@ -105,7 +139,8 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
     $('#' + this.meta.baseId + '_topic_submit').show();
     $('#' + this.meta.baseId + '_section_submit').hide();
     $('#' + this.meta.baseId + '_topic_title').show();
-    $('#' + this.meta.baseId + '_section_title').hide();
+    $('#' + this.meta.baseId + '_volume_title').hide();
+    $('#' + this.meta.baseId + '_chapter_title').hide();
     $('#' + this.meta.baseId + '_radio_is_section').prop("checked", true);
   },
 
@@ -226,7 +261,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 	updateGuides: function() {
 		var brand_select = $('#new_topic_brand_id');
 		var brand_id = brand_select.val();
-		var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.guide_id');
+		var categories_select = $('#' + this.meta.baseId + '_guide_id');
 		$.ajax({
 			url: BASE_URL + 'agent/guides/brand/'+brand_id,
 			type: 'GET',
@@ -246,14 +281,34 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 	},
 
   updateTopics: function() {
-		var guide_select = $('#new_topic_guide_id');
+		var guide_select = $('#' + this.meta.baseId + '_guide_id');
 		var guide_id = guide_select.val();
-		var categories_select = $(guide_select.parents('.cat-section')[0]).find('select.parent_id');
+
+		var currentGuide = this.meta.guides.find(function(g) {
+      return g.id === parseInt(guide_id);
+    });
+
+		console.log(currentGuide);
+
+    if (currentGuide) {
+      this.useVolumes = currentGuide.useVolumes;
+    }
+
+    if (!this.useVolumes) {
+      $('#' + this.meta.baseId + '_type option[value="volume"]').attr('disabled', 'disabled');
+      $('#' + this.meta.baseId + '_type').select2("val", 'chapter');
+    } else {
+      $('#' + this.meta.baseId + '_type option[value="volume"]').removeAttr('disabled');
+      $('#' + this.meta.baseId + '_type').select2("val", 'volume');
+    }
+
+		var categories_select = $('#' + this.meta.baseId + '_parent');
 		$.ajax({
 			url: BASE_URL + 'agent/guides/topics/'+guide_id,
 			type: 'GET',
 			context: this,
 			success: function(result) {
+			  this.topics = result;
 				categories_select.children().remove();
 				categories_select.append($(result).find('option'));
 				categories_select.select2("val", '');

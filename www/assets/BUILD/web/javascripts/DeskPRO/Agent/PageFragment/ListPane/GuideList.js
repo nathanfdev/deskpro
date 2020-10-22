@@ -77,6 +77,7 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
 				},
 				success: function() {
 					DeskPRO_Window.sections.publish_section.reload();
+          window.document.dispatchEvent(new CustomEvent('dpGuideReloadTree',{detail:{useVolumes: guideEl.find('input[name="category[use_volumes]"]').attr('checked') === 'checked'}}));
 				}
 			});
 		});
