@@ -294,6 +294,10 @@ LOGSTR;
 
         global $DP_ENV;
 
+        if ($DP_ENV->getConfig('paths.disable_path_validator')) {
+            return 0;
+        }
+
         $validator  = new BinariesPathValidator();
         $wrongPaths = [];
 

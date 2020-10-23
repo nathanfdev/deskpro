@@ -35,9 +35,10 @@ $CONFIG['database'] = [
 ];
 
 $CONFIG['paths'] = [
-    'php_path'       => 'php',
-    'mysqldump_path' => 'mysqldump',
-    'mysql_path'     => 'mysql',
+    'disable_path_validator' => false,
+    'php_path'               => 'php',
+    'mysqldump_path'         => 'mysqldump',
+    'mysql_path'             => 'mysql',
 ];
 
 $CONFIG['logs'] = [
