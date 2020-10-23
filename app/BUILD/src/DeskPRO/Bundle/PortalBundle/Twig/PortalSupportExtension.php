@@ -702,6 +702,8 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function date($date, $format = 'fulltime', $timezone = null)
     {
+        $activeThemeSet = $this->getActiveThemeSet();
+
         /** @var BrandContainer $brand */
         $brand = $this->container->get('brand_stack')->getActive();
         switch ($format) {
@@ -772,7 +774,9 @@ class PortalSupportExtension extends \Twig_Extension
 
         $translator = $this->container->get('language_manager')->getTranslator();
 
-        return $translator->date($format, $date, 'user.time.');
+        $translationYaml = ($activeThemeSet->getThemeId() === 'helpcenter') ? 'helpcenter.time.' : 'user.time.';
+
+        return $translator->date($format, $date, $translationYaml);
     }
 
     /**

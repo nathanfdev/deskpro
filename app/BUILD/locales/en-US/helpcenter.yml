@@ -793,3 +793,92 @@ helpcenter.tickets.view_you_created: 'Created'
 helpcenter.tickets.you_have_not_rated_support: 'You ({email}) have not rated your support yet.'
 helpcenter.tickets.you_rated_support: 'You ({email}) rated your support from'
 helpcenter.forms.confirm_reset: 'Are you sure you want to reset this form?'
+helpcenter.time.long-day_friday: Friday
+helpcenter.time.long-day_monday: Monday
+helpcenter.time.long-day_saturday: Saturday
+helpcenter.time.long-day_sunday: Sunday
+helpcenter.time.long-day_thursday: Thursday
+helpcenter.time.long-day_tuesday: Tuesday
+helpcenter.time.long-day_wednesday: Wednesday
+helpcenter.time.long-month_april: April
+helpcenter.time.long-month_august: August
+helpcenter.time.long-month_december: December
+helpcenter.time.long-month_february: February
+helpcenter.time.long-month_january: January
+helpcenter.time.long-month_july: July
+helpcenter.time.long-month_june: June
+helpcenter.time.long-month_march: March
+helpcenter.time.long-month_may: May
+helpcenter.time.long-month_november: November
+helpcenter.time.long-month_october: October
+helpcenter.time.long-month_september: September
+helpcenter.time.short-day_friday: Fri
+helpcenter.time.short-day_monday: Mon
+helpcenter.time.short-day_saturday: Sat
+helpcenter.time.short-day_sunday: Sun
+helpcenter.time.short-day_thursday: Thu
+helpcenter.time.short-day_tuesday: Tue
+helpcenter.time.short-day_wednesday: Wed
+helpcenter.time.short-month_april: Apr
+helpcenter.time.short-month_august: Aug
+helpcenter.time.short-month_december: Dec
+helpcenter.time.short-month_february: Feb
+helpcenter.time.short-month_january: Jan
+helpcenter.time.short-month_july: Jul
+helpcenter.time.short-month_june: Jun
+helpcenter.time.short-month_march: Mar
+helpcenter.time.short-month_may: May
+helpcenter.time.short-month_november: Nov
+helpcenter.time.short-month_october: Oct
+helpcenter.time.short-month_september: Sep
+helpcenter.time.time-ago_1_day: '1 day ago'
+helpcenter.time.time-ago_1_hour: '1 hour ago'
+helpcenter.time.time-ago_1_minute: '1 minute ago'
+helpcenter.time.time-ago_1_month: '1 month ago'
+helpcenter.time.time-ago_1_second: '1 second ago'
+helpcenter.time.time-ago_1_week: '1 week ago'
+helpcenter.time.time-ago_1_year: '1 year ago'
+helpcenter.time.time-ago_less_second: 'less than a second ago'
+helpcenter.time.time-ago_x_day: '{0} days ago'
+helpcenter.time.time-ago_x_hour: '{0} hours ago'
+helpcenter.time.time-ago_x_minute: '{0} minutes ago'
+helpcenter.time.time-ago_x_month: '{0} months ago'
+helpcenter.time.time-ago_x_second: '{0} seconds ago'
+helpcenter.time.time-ago_x_week: '{0} weeks ago'
+helpcenter.time.time-ago_x_year: '{0} years ago'
+helpcenter.time.time_1_day: '1 day'
+helpcenter.time.time_1_hour: '1 hour'
+helpcenter.time.time_1_minute: '1 minute'
+helpcenter.time.time_1_month: '1 month'
+helpcenter.time.time_1_second: '1 second'
+helpcenter.time.time_1_week: '1 week'
+helpcenter.time.time_1_year: '1 year'
+helpcenter.time.time_less_second: 'less than a second'
+helpcenter.time.time_x_day: '{0} days'
+helpcenter.time.time_x_hour: '{0} hours'
+helpcenter.time.time_x_minute: '{0} minutes'
+helpcenter.time.time_x_month: '{0} months'
+helpcenter.time.time_x_second: '{0} seconds'
+helpcenter.time.time_x_week: '{0} weeks'
+helpcenter.time.time_x_year: '{0} years'
+helpcenter.time.x_day:
+  one: '1 day'
+  other: '{{count}} days'
+helpcenter.time.x_hour:
+  one: '1 hour'
+  other: '{{count}} hours'
+helpcenter.time.x_minute:
+  one: '1 minute'
+  other: '{{count}} minutes'
+helpcenter.time.x_month:
+  one: '1 month'
+  other: '{{count}} months'
+helpcenter.time.x_second:
+  one: '1 second'
+  other: '{{count}} seconds'
+helpcenter.time.x_week:
+  one: '1 week'
+  other: '{{count}} weeks'
+helpcenter.time.x_year:
+  one: '1 year'
+  other: '{{count}} years'
