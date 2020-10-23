@@ -40,11 +40,12 @@ class HelpcenterApp {
   }
 
   render(props, node) {
+    const messages = portalPhrases.getPhrases();
     ReactDOM.render(
       <AppContainer>
         <IntlProvider
           locale={this.locale}
-          messages={portalPhrases.getPhrases()}
+          messages={messages}
         >
           <App {...props} />
         </IntlProvider>
