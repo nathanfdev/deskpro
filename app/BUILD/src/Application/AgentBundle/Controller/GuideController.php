@@ -285,7 +285,7 @@ class GuideController extends PublishController
     {
         $topics = $this->em->getRepository(Topic::class)->getInHierarchy(false, $guide_id);
 
-        array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
+//        array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
 
         return $this->render('AgentBundle:Common:select-standard.html.twig', [
             'name'             => 'newtopic[parent_id]',
@@ -324,13 +324,20 @@ class GuideController extends PublishController
 
         $topics = $this->shortenTitles($topics);
 
-        array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
+        $types = [
+          ['id' => 'volume', 'title' => 'Volume'],
+          ['id' => 'chapter', 'title' => 'Chapter'],
+          ['id' => 'page', 'title' => 'Page'],
+        ];
+
+//        array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
 
         return $this->render('AgentBundle:Guide:new-topic.html.twig', [
             'guides'            => $guides,
             'state'             => $state,
             'brands'            => $brands,
             'topics'            => $topics,
+            'topic_types'       => $types,
             'selected_brand_id' => $brands[$brandIndex - 1]->getId(),
         ]);
     }
@@ -352,7 +359,7 @@ class GuideController extends PublishController
             if (!$validator->isValid($newTopic)) {
                 return $this->createJsonResponse([
                     'error'       => true,
-                    'error_codes' => $validator->getErrorGroups(),
+                    'error_codes' => $validator->getPlainErrors(),
                 ]);
             }
             $newTopic->save();

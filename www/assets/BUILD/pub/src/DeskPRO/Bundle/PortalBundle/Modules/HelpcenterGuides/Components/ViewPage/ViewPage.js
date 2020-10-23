@@ -37,18 +37,18 @@ class ViewPage extends React.Component {
     }
     const guideSlug = this.getGuideSlug(this.props.params);
     const guide = guides.find(g => g.slug === guideSlug);
+    console.log(guide);
     this.state = {
-      fixed:           false,
-      doSpin:          false,
-      menuVisible:     false,
-      flashes:         [],
-      childrenPages:   page.children,
+      fixed:         false,
+      doSpin:        false,
+      menuVisible:   false,
+      flashes:       [],
+      childrenPages: page.children,
       guide,
       guideSlug,
       loaded,
       page,
-      pageList,
-      twoLevelSection: window.twoLevelSection,
+      pageList
     };
     if (window.page) {
       setTimeout(() => {
@@ -499,7 +499,7 @@ class ViewPage extends React.Component {
         pageList,
         guide,
         guideSlug:       guide.slug,
-        twoLevelSection: guide.two_level_section,
+        twoLevelSection: guide.use_volumes,
       });
       // const page = Object.values(pageList).filter(t => t.no_content === '0' && t.content_length !== '0').shift();
       //
@@ -637,7 +637,7 @@ class ViewPage extends React.Component {
   }
 
   render() {
-    const { pageList, fixed, loaded, twoLevelSection, guide, menuVisible } = this.state;
+    const { pageList, fixed, loaded, guide, menuVisible } = this.state;
     const guideSlug = this.getGuideSlug(this.props.params);
     const pageSlug = this.getPageSlug(this.props.params);
 
@@ -667,7 +667,7 @@ class ViewPage extends React.Component {
                     fixed={fixed}
                     grabPageFromApi={this.grabPageFromApi}
                     toggleMenu={this.toggleMenu}
-                    twoLevelSection={twoLevelSection}
+                    twoLevelSection={guide.use_volumes}
                   />
                 </div>
                 <div className="col-md-9">

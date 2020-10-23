@@ -36,7 +36,8 @@ export class GuideTreeContainer extends React.Component {
     openTopic:       PropTypes.func,
     dispatch:        PropTypes.func.isRequired,
     displayStatuses: PropTypes.arrayOf(PropTypes.oneOf(['draft', 'unpublished', 'archived', 'NONE'])),
-    canDrag:         PropTypes.bool
+    canDrag:         PropTypes.bool,
+    useVolumes:      PropTypes.bool,
   };
 
   static defaultProps = {
@@ -70,6 +71,7 @@ export class GuideTreeContainer extends React.Component {
         reloadTree={this.reloadTree}
         displayStatuses={this.props.displayStatuses}
         canDrag={this.props.canDrag}
+        useVolumes={this.props.useVolumes}
       />
     );
   }
@@ -82,7 +84,8 @@ export class GuideTree extends React.Component {
     handleChange:    PropTypes.func,
     reloadTree:      PropTypes.func,
     displayStatuses: PropTypes.array,
-    canDrag:         PropTypes.bool
+    canDrag:         PropTypes.bool,
+    useVolumes:      PropTypes.bool,
   };
   static defaultProps = {
     height: 800,
@@ -94,8 +97,9 @@ export class GuideTree extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      active:   null,
-      treeData: this.filterTree(this.props.tree),
+      active:     null,
+      treeData:   this.filterTree(this.props.tree),
+      useVolumes: props.useVolumes,
     };
   }
 
@@ -107,7 +111,12 @@ export class GuideTree extends React.Component {
         });
       }
     });
-    window.document.addEventListener('dpGuideReloadTree', () => {
+    window.document.addEventListener('dpGuideReloadTree', (e) => {
+      if (e.detail) {
+        this.setState({
+          useVolumes: e.detail.useVolumes
+        });
+      }
       this.props.reloadTree();
     });
   };
@@ -136,12 +145,36 @@ export class GuideTree extends React.Component {
   };
 
   onMoveNode = (topic) => {
-    if (topic.path.length === 1) {
-      alert('Topic at root have no content, the topic will keep its content but you won\'t be able to edit it');
-    }
     const params = { detail: { root: topic.path.length === 1 } };
     window.document.dispatchEvent(new CustomEvent(`dpMoveTopic${topic.node.id}`, params));
   };
+
+  canDrop = (topic) => {
+    const { useVolumes } = this.props;
+    const { nextPath, prevPath, node } = topic;
+    if (useVolumes) {
+      if (prevPath.length > 2) {
+        // Page
+        return nextPath.length > 2;
+      }
+      if (prevPath.length === 2) {
+        // Chapter
+        if (nextPath.length === 1 && node.children.length === 0) {
+          return true;
+        }
+        return nextPath.length === 2;
+      }
+      if (nextPath.length === 2 && node.children.length === 0) {
+        return true;
+      }
+      return nextPath.length === 1;
+    }
+    if (prevPath.length > 1) {
+      // Page
+      return nextPath.length > 1;
+    }
+    return nextPath.length === 1;
+  }
 
   filterTree = tree => tree.filter((element) => {
     switch (element.status) {
@@ -174,7 +207,7 @@ export class GuideTree extends React.Component {
 
   render() {
     return (
-      <div style={{ height: this.props.height }}>
+      <div style={{ height: this.props.height }} className={classNames({ 'use-volumes': this.state.useVolumes })}>
         <SortableTree
           rowHeight={40}
           scaffoldBlockPxWidth={30}
@@ -184,6 +217,7 @@ export class GuideTree extends React.Component {
           nodeContentRenderer={TopicRenderer}
           generateNodeProps={this.generateNodeProps}
           canDrag={this.props.canDrag}
+          canDrop={this.canDrop}
         />
       </div>
     );

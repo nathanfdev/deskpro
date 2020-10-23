@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
@@ -27,7 +25,7 @@ class NewTopic
     /** @var string */
     public $content_input_type = '';
     /** @var boolean */
-    public $no_content = true;
+    public $type = '';
 
     /** @var string */
     public $slug;
@@ -73,11 +71,17 @@ class NewTopic
         $guide = $this->_em->find(Guide::class, $this->guide_id);
         $topic->setGuide($guide);
 
-        $parent       = $this->_em->find(Topic::class, $this->parent_id);
+        $parent = null;
+        if ($this->parent_id) {
+            $parent       = $this->_em->find(Topic::class, $this->parent_id);
+        }
+        if ($this->type === 'volume' || (!$guide->isUseVolumes() && $this->type === 'chapter')) {
+            $parent = null;
+        }
         $displayOrder = 0;
         if ($parent) {
             $topic->setParent($parent);
-            $topic->setNoContent($this->no_content);
+            $topic->setNoContent($this->type === 'chapter');
             foreach ($parent->getChildren() as $child) {
                 if ($displayOrder <= $child->getDisplayOrder()) {
                     $displayOrder = $child->getDisplayOrder() + 1;

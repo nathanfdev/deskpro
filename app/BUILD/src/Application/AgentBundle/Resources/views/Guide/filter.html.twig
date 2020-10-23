@@ -13,6 +13,7 @@
       pageMeta.guideId = {{ guide.id }};
       pageMeta.display_fields = {{ display_fields|json_encode|raw }};
       pageMeta.canEdit = {% if not perms.can_edit %}false{% else %}true{% endif %};
+      pageMeta.useVolumes = {% if guide.isUseVolumes() %}true{% else %}false{% endif %};
     </script>
 {% endblock top %}
 
@@ -162,6 +163,15 @@
                                                name="category[description]"
                                                autocomplete="{{ "now" | date("U") }}"
                                                value="{{ guide.description }}" {% if not perms.can_edit %} disabled {% endif %} />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="100">{{ phrase('agent.guides.use_volumes') }}</th>
+                                    <td>
+                                        <input type="checkbox"
+                                               name="category[use_volumes]"
+                                               {% if guide.useVolumes %}checked{% endif %}
+                                               value="1" {% if not perms.can_edit %} disabled {% endif %} />
                                     </td>
                                 </tr>
                                 <tr class="vtop">

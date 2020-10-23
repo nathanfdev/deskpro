@@ -25,14 +25,6 @@
                 'date': '<time>' ~ topic.date_created|date('fulltime') ~ '</time>'
             }, true) }}
         </dd>
-
-        <div {% if topic.parent is null or topic.parent.parent is not null %}style="display: none"{% endif %} id="{{ baseId }}_no_content">
-            <dt>Section</dt>
-            <dd>
-                <input type="radio" name="{{ baseId }}_[no_content]" value="0" class="no_content_input content" {% if not topic.noContent %}checked{% endif %} /> Topic with content <br />
-                <input type="radio" name="{{ baseId }}_[no_content]" value="1" class="no_content_input section" {% if topic.noContent %}checked{% endif %} /> Topic Section
-            </dd>
-        </div>
     </dl>
 
     <div class="controls" id="{{baseId}}_action_buttons">

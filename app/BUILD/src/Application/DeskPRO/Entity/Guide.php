@@ -88,6 +88,15 @@ class Guide extends DomainObject implements HasIconProperty, HasSplashImagePrope
     protected $topics;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     * @JMS\Groups("details")
+     *
+     * @var boolean
+     */
+    protected $use_volumes = true;
+
+    /**
      * Usergroups that has access to this category.
      *
      * @JMS\Expose()
@@ -454,6 +463,26 @@ class Guide extends DomainObject implements HasIconProperty, HasSplashImagePrope
     }
 
     /**
+     * @return bool
+     */
+    public function isUseVolumes()
+    {
+        return $this->use_volumes;
+    }
+
+    /**
+     * @param bool $use_volumes
+     *
+     * @return Guide
+     */
+    public function setUseVolumes($use_volumes)
+    {
+        $this->setModelField('use_volumes', $use_volumes);
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function __toString()
@@ -535,6 +564,16 @@ class Guide extends DomainObject implements HasIconProperty, HasSplashImagePrope
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'color',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'use_volumes',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'use_volumes',
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

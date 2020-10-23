@@ -434,7 +434,7 @@ class AgentLegacyApp {
     return editor;
   }
 
-  renderTopicsTree(node, guideId, height, openTopic, displayStatuses, canDrag) {
+  renderTopicsTree(node, guideId, height, openTopic, displayStatuses, canDrag, useVolumes) {
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
@@ -444,6 +444,7 @@ class AgentLegacyApp {
             openTopic={openTopic}
             displayStatuses={displayStatuses}
             canDrag={canDrag}
+            useVolumes={useVolumes}
           />
         </Provider>
       </AppContainer>,

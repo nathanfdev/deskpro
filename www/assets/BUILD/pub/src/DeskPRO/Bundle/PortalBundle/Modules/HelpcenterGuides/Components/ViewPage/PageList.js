@@ -114,8 +114,8 @@ class PageList extends React.Component {
   renderPages(pages, depth = 0, collapse = false) {
     const { guideSlug, pageSlug } = this.props;
     const { filter, expanded } = this.state;
-    const renderedPages = pages
-      .filter(t => depth > 0 || t.depth === depth)
+    const unfilteredPages = pages.filter(t => depth > 0 || t.depth === depth);
+    const renderedPages = unfilteredPages
       .filter(t => this.filterPage(t))
       .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
       .map(page => (
@@ -134,7 +134,7 @@ class PageList extends React.Component {
         />
         )
       );
-    if (renderedPages.length === 0) {
+    if (renderedPages.length === 0 && unfilteredPages.length > 0) {
       return PageList.renderNoResults();
     }
     return (
@@ -184,7 +184,7 @@ class PageList extends React.Component {
         return PageList.renderNoResults();
       }
       return (
-        <div className="dp-po-guides-search-content accordion" id="accordionExample">
+        <div className="dp-po-guides-search-content accordion">
           {renderedPages}
         </div>
       );
