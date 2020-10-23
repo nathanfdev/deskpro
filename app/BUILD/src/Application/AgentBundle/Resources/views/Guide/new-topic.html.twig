@@ -27,7 +27,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content dp-control-group">
 		<div class="col">
 			<h4>{{ phrase('agent.general.brand') }}</h4>
-			<select name="newtopic[brand]" id="new_topic_brand_id">
+			<select name="newtopic[brand]" id="{{ baseId }}_brand_id">
 				{% for brand in brands %}
 					<option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
 						{{ brand.name }}
@@ -120,7 +120,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white"><span id="{{baseId}}_topic_submit" style="display: none">{{ phrase('agent.general.create_topic') }}</span><span id="{{baseId}}_section_submit">{{ phrase('agent.general.create_section') }}</span> <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
+		<button class="submit-trigger clean-white"><span id="{{baseId}}_page_submit" style="display: none">{{ phrase('agent.general.create_page') }}</span><span id="{{baseId}}_chapter_submit" style="display: none">{{ phrase('agent.general.create_chapter') }}</span><span id="{{baseId}}_volume_submit" style="display: none">{{ phrase('agent.general.create_volume') }}</span> <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

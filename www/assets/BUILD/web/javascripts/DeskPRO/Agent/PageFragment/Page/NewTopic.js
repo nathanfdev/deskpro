@@ -38,6 +38,8 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		  $('#' + this.meta.baseId + '_chapter_title').show();
 		}
 
+    this.setSection(this.useVolumes ? 'volume' : 'chapter');
+
 		this.form = $('form', this.wrapper).on('submit', function(ev) {
 			ev.preventDefault();
 		});
@@ -55,7 +57,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		});
 		this.ownObject(this.stateSaver);
 
-		$('#new_topic_brand_id').on('change', function() {
+		$('#' + this.meta.baseId + '_brand_id').on('change', function() {
 			self.updateGuides();
 		});
 
@@ -76,23 +78,9 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
       }
     });
 
-		// $('#' + this.meta.baseId + '_parent').on('change', function() {
-		// 	if (this.value !== '0') {
-    //     self.setTopic();
-    //     if ($( '#' + self.meta.baseId + '_parent option:selected' ).text().match('>')) {
-    //       // this option should stay enabled to pass it on server
-    //       $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", false);
-    //       $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", true);
-    //     } else {
-    //       $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", false);
-    //       $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", false);
-    //     }
-		// 	} else {
-		// 		self.setSection();
-    //     $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", true);
-    //     $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", true);
-		// 	}
-		// });
+		$('#' + this.meta.baseId + '_parent').on('change', function() {
+      $('.error-message-on', $('#' + self.meta.baseId + '_parent_section')).removeClass('error-message-on');
+    });
 
 		window.setTimeout(function() {
 			if (self.OBJ_DESTROYED) return;
@@ -111,8 +99,10 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 
   setSection: function(type) {
     $('#' + this.meta.baseId + '_content_section').hide();
-    $('#' + this.meta.baseId + '_topic_submit').hide();
-    $('#' + this.meta.baseId + '_section_submit').show();
+    $('#' + this.meta.baseId + '_page_submit').hide();
+    $('#' + this.meta.baseId + '_chapter_submit').hide();
+    $('#' + this.meta.baseId + '_volume_submit').hide();
+    $('#' + this.meta.baseId + '_' + type + '_submit').show();
     $('#' + this.meta.baseId + '_topic_title').hide();
     $('#' + this.meta.baseId + '_volume_title').hide();
     $('#' + this.meta.baseId + '_chapter_title').hide();
@@ -122,8 +112,9 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 
   setTopic: function() {
     $('#' + this.meta.baseId + '_content_section').show();
-    $('#' + this.meta.baseId + '_topic_submit').show();
-    $('#' + this.meta.baseId + '_section_submit').hide();
+    $('#' + this.meta.baseId + '_page_submit').show();
+    $('#' + this.meta.baseId + '_chapter_submit').hide();
+    $('#' + this.meta.baseId + '_volume_submit').hide();
     $('#' + this.meta.baseId + '_topic_title').show();
     $('#' + this.meta.baseId + '_volume_title').hide();
     $('#' + this.meta.baseId + '_chapter_title').hide();
@@ -245,7 +236,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 	},
 
 	updateGuides: function() {
-		var brand_select = $('#new_topic_brand_id');
+		var brand_select = $('#' + this.meta.baseId + '_brand_id');
 		var brand_id = brand_select.val();
 		var categories_select = $('#' + this.meta.baseId + '_guide_id');
 		$.ajax({
