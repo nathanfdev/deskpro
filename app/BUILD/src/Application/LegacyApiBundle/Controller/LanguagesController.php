@@ -1,10 +1,10 @@
 <?php
 
-
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Exception\ValidationException;
@@ -16,6 +16,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver as MSR;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
@@ -450,12 +451,16 @@ class LanguagesController extends AbstractController
             }
         }
 
-        $adds       = [];
-        $phrase_ids = [];
-
+        $adds          = [];
+        $phrase_ids    = [];
+        $updateVersion = false;
         foreach ($this->in->getArrayValue('phrases') as $phrase_info) {
             if (empty($phrase_info['name']) || !preg_match('#^[a-zA-Z0-9\.\-_]+$#', $phrase_info['name'])) {
                 continue;
+            }
+
+            if (strpos($phrase_info['name'], 'helpcenter.messenger') === 0) {
+                $updateVersion = true;
             }
 
             if (!isset($phrase_info['phrase'])) {
@@ -492,6 +497,15 @@ class LanguagesController extends AbstractController
 
             if ($adds) {
                 $this->db->batchInsert('phrases', $adds, true);
+            }
+        }
+
+        if ($updateVersion) {
+            $brands = $this->em->getRepository(Brand::class)->findAll();
+            foreach ($brands as $brand) {
+                $this
+                    ->em->getRepository(BrandSetting::class)
+                    ->updateSetting(MSR::WIDGET_LANG_VERSION, time(), $brand);
             }
         }
 
