@@ -111,6 +111,13 @@ class PackagesFactory
             ;
         }
 
+        if (empty($this->asset_paths['app_loader_assets'])) {
+            $this->asset_paths['app_loader_assets'] = PathMapInfo::create()
+                ->setDeskproPath('/dyn-assets/pub/build')
+                ->setVersion(PathMapInfo::BUILD_VERSION)
+            ;
+        }
+
         if (empty($this->asset_paths['messenger_assets'])) {
             $this->asset_paths['messenger_assets'] = PathMapInfo::create()
                 ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build/messenger')

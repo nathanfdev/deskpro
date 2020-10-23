@@ -60,8 +60,7 @@ class TicketFormWidgetController extends BaseController
     {
         $helpdeskUrl = rtrim($this->generateUrl('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL), '/');
 
-        $loaderSrc = $this->get('assets.packages')->getUrl('embed_loader.js', 'app_assets');
-        $loaderSrc = preg_replace('#/assets/.*?/pub/#', '/dyn-assets/pub/', $loaderSrc);
+        $loaderSrc = $this->get('assets.packages')->getUrl('embed_loader.js', 'app_loader_assets');
         $loaderSrc = preg_replace('#\?.*?$#', '', $loaderSrc);
 
         if (!preg_match('#^https?://#i', $loaderSrc)) {
