@@ -37,13 +37,13 @@ class ViewPage extends React.Component {
     }
     const guideSlug = this.getGuideSlug(this.props.params);
     const guide = guides.find(g => g.slug === guideSlug);
-    console.log(guide);
     this.state = {
       fixed:         false,
       doSpin:        false,
       menuVisible:   false,
       flashes:       [],
       childrenPages: page.children,
+      sizes:           {},
       guide,
       guideSlug,
       loaded,
@@ -233,12 +233,14 @@ class ViewPage extends React.Component {
         articleRight: window.document.getElementsByClassName('dp-po-guides-block-article-right')[0],
       };
     }
-    if (!this.state.fixed) {
-      this.sizes = {
-        topMargin:    this.elements.guidesMain && this.elements.guidesMain.getBoundingClientRect().top - document.documentElement.scrollTop,
-        searchWidth:  this.elements.search && this.elements.search.getBoundingClientRect().width,
-        articleWidth: this.elements.articleRight && this.elements.articleRight.getBoundingClientRect().width,
-      };
+    if (!this.state.fixed || Object.entries(this.state.sizes).length === 0) {
+      this.setState({
+        sizes: {
+          topMargin:    this.elements.guidesMain && this.elements.guidesMain.getBoundingClientRect().top - document.documentElement.scrollTop,
+          searchWidth:  this.elements.search && this.elements.search.getBoundingClientRect().width,
+          articleWidth: this.elements.articleRight && this.elements.articleRight.getBoundingClientRect().width,
+        }
+      });
     }
   };
 
@@ -612,7 +614,7 @@ class ViewPage extends React.Component {
   }
 
   renderPage() {
-    const { page, childrenPages, guideSlug, pageSlug, loaded, pageList, flashes } = this.state;
+    const { page, childrenPages, guideSlug, pageSlug, loaded, pageList, flashes, sizes } = this.state;
     if (page.id) {
       return (
         <Page
@@ -623,7 +625,7 @@ class ViewPage extends React.Component {
           pageSlug={pageSlug}
           flashes={flashes}
           data={page}
-          sizes={this.sizes}
+          sizes={sizes}
           loaded={loaded}
           postComment={this.postComment}
           grabPageFromApi={this.grabPageFromApi}
@@ -637,7 +639,7 @@ class ViewPage extends React.Component {
   }
 
   render() {
-    const { pageList, fixed, loaded, guide, menuVisible } = this.state;
+    const { pageList, fixed, loaded, guide, menuVisible, sizes } = this.state;
     const guideSlug = this.getGuideSlug(this.props.params);
     const pageSlug = this.getPageSlug(this.props.params);
 
@@ -646,6 +648,7 @@ class ViewPage extends React.Component {
         <GuideSelector
           guideSlug={this.state.guideSlug}
           selectGuide={this.selectGuide}
+          sizes={sizes}
           fixed={fixed}
         />
         <div className={classNames('dp-po-guides-section')}>
@@ -663,7 +666,7 @@ class ViewPage extends React.Component {
                     guideSlug={guideSlug}
                     pageSlug={pageSlug}
                     guide={guide}
-                    sizes={this.sizes}
+                    sizes={sizes}
                     fixed={fixed}
                     grabPageFromApi={this.grabPageFromApi}
                     toggleMenu={this.toggleMenu}

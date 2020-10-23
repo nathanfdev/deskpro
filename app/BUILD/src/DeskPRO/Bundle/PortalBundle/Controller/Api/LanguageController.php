@@ -94,6 +94,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.guides.start_reading',
             'helpcenter.guides.pages_in',
             'helpcenter.guides.page_sections',
+            'helpcenter.guides.view_all_guides',
             'helpcenter.label.search',
             'helpcenter.search.view_all_results',
             'helpcenter.search.your_tickets',

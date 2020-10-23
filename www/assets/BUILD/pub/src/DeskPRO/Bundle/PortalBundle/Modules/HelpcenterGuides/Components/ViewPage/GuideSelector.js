@@ -11,6 +11,7 @@ class GuideSelector extends React.Component {
     guideSlug:   PropTypes.string,
     selectGuide: PropTypes.func,
     fixed:       PropTypes.bool,
+    sizes:       PropTypes.object,
   };
 
   constructor(props) {
@@ -77,7 +78,7 @@ class GuideSelector extends React.Component {
 
   render() {
     const { guides, mode } = this.state;
-    const { fixed, selectGuide } = this.props;
+    const { fixed, selectGuide, sizes } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -95,7 +96,7 @@ class GuideSelector extends React.Component {
             {reverseGuides.map(guide => this.renderGuide(guide, activeGuide, baseUrl))}
           </div>
         </div>
-        <GuideDropDown activeGuide={activeGuide} guides={guides} selectGuide={selectGuide} style={{ display: mode === 'dropdown' ? 'block' : 'none' }} />
+        <GuideDropDown activeGuide={activeGuide} guides={guides} selectGuide={selectGuide} style={{ display: mode === 'dropdown' ? 'block' : 'none' }} sizes={sizes} />
       </Fragment>
     );
   }
