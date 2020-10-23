@@ -189,7 +189,7 @@
                 {# similarly, only show the "created ago" message if it has been more than 10 mins #}
             {% elseif created_in_seconds > 600 %}
                 <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_you_created') }}</dt>
-                <dd>{{ date_ago(ticket.date_created, null, false) }}</dd>
+                <dd>  {{ ticket.date_created|date('default') }}</dd>
             {% endif %}
         {% endif %}
     </dl>

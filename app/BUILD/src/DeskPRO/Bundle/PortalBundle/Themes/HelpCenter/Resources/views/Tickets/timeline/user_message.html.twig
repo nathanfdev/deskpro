@@ -4,7 +4,7 @@
   </div>
   <div class="dp-po-time">
     <i class="dp-po-icon far fa-clock"></i>
-    {{ msg.date_created|date('fulltime') }}
+    {{ date_ago(msg.date_created) }}
   </div>
   {#<div class="dp-po-ticket-block-cc">#}
   {#  <ul class="dp-po-ticket-block-cc-list">#}

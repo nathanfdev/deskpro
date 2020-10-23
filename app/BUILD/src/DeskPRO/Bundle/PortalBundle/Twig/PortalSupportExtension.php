@@ -736,6 +736,13 @@ class PortalSupportExtension extends \Twig_Extension
                 $format = $brand->getSetting('core.date_time');
 
                 break;
+
+            //TODO: Add format be added to db/settings ?
+            case 'default':
+                // M d, Y H:i A
+                $format = 'M d, Y H:i A';
+
+                break;
         }
 
         $date = $this->ensureDateTime($date);
