@@ -488,15 +488,15 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
     private function loadGuides()
     {
         $person = $this->manager->find(Person::class, 1);
-        $guide1 = new Guide();
-        $guide1->setTitle('Test Guide');
         /** @var Brand $brand */
         $brand = $this->getReference('brand');
+
+        $guide1 = new Guide();
+        $guide1->setTitle('Test Guide');
         $guide1->setBrand($brand);
         $guide1->addUsergroup($this->getReference('usergroup.everyone'));
         $guide1->setUseVolumes(true);
         $this->manager->persist($guide1);
-        $this->manager->flush();
 
         $guide2 = new Guide();
         $guide2->setTitle('System Administrator Guide');
@@ -504,10 +504,6 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
         $guide2->addUsergroup($this->getReference('usergroup.everyone'));
         $guide2->setUseVolumes(false);
         $this->manager->persist($guide2);
-        $guide->setBrand($brand);
-        $guide->setUseVolumes(true);
-        $guide->addUsergroup($this->getReference('usergroup.everyone'));
-        $this->manager->persist($guide);
         $this->manager->flush();
 
         $volume1 = new Topic();
