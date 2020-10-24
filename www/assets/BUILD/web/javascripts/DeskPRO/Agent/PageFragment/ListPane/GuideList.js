@@ -28,7 +28,7 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
     window.AgentLegacyBundle.renderTopicsTree(
       $rElement.get(0),
       this.meta.guideId,
-      900,
+      'calc(100vh - 147px)',
 			this.openTopic,
       this.meta.display_fields,
       this.meta.canEdit,
