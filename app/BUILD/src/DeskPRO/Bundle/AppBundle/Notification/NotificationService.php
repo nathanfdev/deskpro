@@ -207,7 +207,7 @@ class NotificationService
                     'appKey'        => $this->settings->get('notification.settings.pusher_client.appKey'),
                     'channelPrefix' => $this->settings->get('notification.settings.pusher_client.channel_prefix'),
                     'cluster'       => $this->settings->get('notification.settings.pusher_client.cluster'),
-                    'debug'         => $this->settings->get('notification.settings.pusher_client.debug'),
+                    'debug'         => $this->settings->get('notification.settings.pusher_client.debug', $this->appEnv->isQa()),
                 ]);
             case 'db':
                 return new NotificationClient('legacy', [
@@ -217,7 +217,7 @@ class NotificationService
             case 'deskpro':
                 return new NotificationClient('deskpro', [
                     'token'         => $this->getJwtToken($visitorId),
-                    'debug'         => $this->settings->get('notification.settings.deskpro_client.debug'),
+                    'debug'         => $this->settings->get('notification.settings.deskpro_client.debug', $this->appEnv->isQa()),
                     'host'          => $this->settings->get('notification.settings.deskpro_client.host'),
                     'port'          => $this->settings->get('notification.settings.deskpro_client.port'),
                     'secure'        => $this->settings->get('notification.settings.deskpro_client.secure', false),
