@@ -369,12 +369,19 @@ class SearchController extends AbstractController
 
         $searchResults = $results->getTypedResults();
 
+        $stickySearch->setPersonContext($person);
+        $stickyResults = $stickySearch->getResults($content, 5, [$contentType[0]]);
+
+        if ($stickyResults) {
+            $searchResults = $this->addStickyResult($stickyResults, $searchResults);
+        }
+
         // filter out the unwanted types from response and get the "words" for allowed objects
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $typedResults     = [];
         $words            = [];
         foreach ($searchResults as $result) {
-            if (isset($result['type']) && in_array($result['type'], $allowedTypes)) {
+            if (isset($result['type']) && in_array($result['type'], $allowedTypes, true)) {
                 $typedResults[] = $result;
 
                 $object = $result['object'];
@@ -462,25 +469,7 @@ class SearchController extends AbstractController
             $stickyResults = $stickySearch->getResults($q, 5, [$type]);
 
             if ($stickyResults) {
-                $gotSticky = [];
-                foreach ($stickyResults as $sItem) {
-                    ++$total;
-                    $gotSticky[get_class($sItem['object']).$sItem['object']->getId()] = true;
-                }
-                // remove results that might have matched normally
-                $results = array_filter(
-                    $results,
-                    function ($r) use ($gotSticky) {
-                        return !isset($gotSticky[get_class($r['object']).$r['object']->getId()]);
-                    }
-                );
-                // then add the sticky results to the top
-                foreach ($stickyResults as $sItem) {
-                    array_unshift($results, [
-                        'type'   => $this->getTypeKey($sItem['object']),
-                        'object' => $sItem['object'],
-                    ]);
-                }
+                $results = $this->addStickyResult($stickyResults, $results);
             }
         }
 
@@ -626,5 +615,39 @@ class SearchController extends AbstractController
         $searchResults['meta'] = [
             self::SEARCH_LOG_ID_VAR => $searchLog->getId(),
         ];
+    }
+
+    /**
+     * @param array $stickyResults
+     * @param $results
+     * @param int $total
+     * @param array $gotSticky
+     * @return array
+     */
+    private function addStickyResult(array $stickyResults, array $results, $total = 0, array $gotSticky = []){
+
+        if(count($stickyResults) < 1){
+            return [];
+        }
+
+        foreach ($stickyResults as $sItem) {
+            ++$total;
+            $gotSticky[get_class($sItem['object']).$sItem['object']->getId()] = true;
+        }
+        // remove results that might have matched normally
+        $results = array_filter(
+            $results,
+            static function ($r) use ($gotSticky) {
+                return !isset($gotSticky[get_class($r['object']).$r['object']->getId()]);
+            }
+        );
+        // then add the sticky results to the top
+        foreach ($stickyResults as $sItem) {
+            array_unshift($results, [
+                'type'   => $this->getTypeKey($sItem['object']),
+                'object' => $sItem['object'],
+            ]);
+        }
+        return $results;
     }
 }
