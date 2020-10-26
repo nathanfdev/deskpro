@@ -322,7 +322,7 @@
     {% elseif col.id == 'date_activity' %}
         <span class="date">{{ date_ago(ticket.last_activity_date) }}</span>
     {% elseif col.id == 'date_created' %}
-        <span class="date">{{ phrase('helpcenter.general.date_time_medium', { date: ticket.date_created }) }}</span>
+        <span class="date">         {{ ticket.date_created|date('default') }}</span>
     {% elseif col.id == 'date_user' %}
         {% if ticket.date_last_user_reply %}
             {% if ticket.person %}

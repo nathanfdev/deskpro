@@ -702,6 +702,8 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function date($date, $format = 'fulltime', $timezone = null)
     {
+        $activeThemeSet = $this->getActiveThemeSet();
+
         /** @var BrandContainer $brand */
         $brand = $this->container->get('brand_stack')->getActive();
         switch ($format) {
@@ -732,6 +734,13 @@ class PortalSupportExtension extends \Twig_Extension
             case 'time':
                 //g:i a
                 $format = $brand->getSetting('core.date_time');
+
+                break;
+
+            //TODO: Add format be added to db/settings ?
+            case 'default':
+                // M d, Y H:i A
+                $format = 'M d, Y H:i A';
 
                 break;
         }
@@ -772,7 +781,9 @@ class PortalSupportExtension extends \Twig_Extension
 
         $translator = $this->container->get('language_manager')->getTranslator();
 
-        return $translator->date($format, $date, 'user.time.');
+        $translationYaml = ($activeThemeSet->getThemeId() === 'helpcenter') ? 'helpcenter.time.' : 'user.time.';
+
+        return $translator->date($format, $date, $translationYaml);
     }
 
     /**
