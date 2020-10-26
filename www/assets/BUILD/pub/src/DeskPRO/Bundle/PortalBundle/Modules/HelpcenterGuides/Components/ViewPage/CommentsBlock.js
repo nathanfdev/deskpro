@@ -35,10 +35,6 @@ class Comment extends React.Component {
       const  replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
       var replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
 
-      // Change email addresses to mailto:: links.
-      const replacePattern3 = /(([a-zA-Z0-9\-\_\.])+@[a-zA-Z\_]+?(\.[a-zA-Z]{2,6})+)/gim;
-      var replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
-
       return replacedText;
     }
 
