@@ -127,7 +127,7 @@
                             </div>
                         </div>
                         <p>
-                            {{ topic.official_response.content_html_plain|raw }}
+                            {{ topic.official_response.content_html_plain|raw|safe_link_urls_html }}
                         </p>
                     </div>
                 </div>
