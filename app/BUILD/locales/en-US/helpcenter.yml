@@ -681,6 +681,7 @@ helpcenter.messenger.view_action: View
 helpcenter.messenger.view_linked_ticket_action: 'View Ticket'
 helpcenter.messenger.you: You
 helpcenter.messenger.your_chat_with: 'Your chat with {person_name}'
+helpcenter.messenger.your_chat: 'Your chat'
 helpcenter.news.all_news: 'All News'
 helpcenter.news.any_date: Any
 helpcenter.news.download_calendar_action: 'Download iCal file'
