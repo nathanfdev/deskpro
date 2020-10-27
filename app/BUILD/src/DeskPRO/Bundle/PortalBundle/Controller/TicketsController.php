@@ -763,7 +763,8 @@ class TicketsController extends AbstractController
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      *
      * @param Request $request
-     * @param string  $ticketRef
+     * @param string $ticketRef
+     * @return Response
      */
     public function pdfAction(Request $request, $ticketRef = null)
     {
@@ -794,7 +795,7 @@ class TicketsController extends AbstractController
         $fieldManager = $this->container->getTicketFieldManager();
         $customFields = $fieldManager->getDisplayArrayForObject($ticket);
 
-        $contentHtml = $this->renderThemeView('Theme:Tickets:pdf.html.twig', [
+        $contentHtml = $this->renderView('Theme:Tickets:pdf.html.twig', [
             'ticket'                => $ticket,
             'ticket_view'           => $ticketView,
             'breadcrumbs'           => $breadcrumbs,
