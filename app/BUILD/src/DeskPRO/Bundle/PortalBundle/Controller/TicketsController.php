@@ -795,14 +795,14 @@ class TicketsController extends AbstractController
         $fieldManager = $this->container->getTicketFieldManager();
         $customFields = $fieldManager->getDisplayArrayForObject($ticket);
 
-        $contentHtml = $this->renderView('Theme:Tickets:pdf.html.twig', [
+        $contentHtml = $this->renderThemeView('Theme:Tickets:pdf.html.twig', [
             'ticket'                => $ticket,
             'ticket_view'           => $ticketView,
             'breadcrumbs'           => $breadcrumbs,
             'ticket_messages_block' => $ticketMessagesBlock,
             'layout'                => $viewLayout,
             'custom_fields'         => $customFields,
-        ]);
+        ], false);
 
         /** @var PdfRendererInterface $pdfRenderer */
         $pdfRenderer = $this->get('pdf_renderer');
