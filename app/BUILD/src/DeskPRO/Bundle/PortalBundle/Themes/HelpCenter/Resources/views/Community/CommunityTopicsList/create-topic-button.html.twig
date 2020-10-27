@@ -7,7 +7,7 @@
       {% if current_forum is defined %}
         <a class="dp-po-community-create-link" href="{{ path('portal_community_topic_create', {id: current_forum.id}) }}">
           <i class="dp-po-icon fad fa-money-check-edit"></i>
-            {{ current_forum.verb_action }}
+            {{ phrase_object(current_forum, 'verb_action') }}
         </a>
       {% else %}
         <a href="javascript:void(0);" class="dp-po-community-create-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -54,7 +54,7 @@
                         {% if forum.icon_property %}
                             {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
                         {% endif %}
-                        {{ forum.noun }}
+                        {{ phrase_object(forum, 'noun') }}
                     </a>
                 {% endfor %}
             </div>

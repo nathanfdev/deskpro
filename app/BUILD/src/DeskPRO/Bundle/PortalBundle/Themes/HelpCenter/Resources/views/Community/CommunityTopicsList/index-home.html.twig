@@ -73,7 +73,7 @@
                                     <i class="dp-po-icon dp-po-icon-white fad fa-comments"></i>
                                 </div>
                             {% endif %}
-                            <h2 class="dp-po-community-row-title">{{ forum.title }} ({{ topic_count_per_forum[forum.id] }})</h2>
+                            <h2 class="dp-po-community-row-title">{{ phrase_object(forum) }} ({{ topic_count_per_forum[forum.id] }})</h2>
                             <p class="dp-po-community-row-description">{{ forum.description }}</p>
                             <a href="{{ path('portal_community_browse', {filter_uri: "type-#{forum.id}"}) }}"
                                class="dp-po-community-row-btn">

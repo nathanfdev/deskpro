@@ -60,7 +60,7 @@
 										<span
 												class="translate-button"
 												tooltip="{{ phrase('adm.general.translate') }}"
-												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_community_forum_title.' + CommunityForumsEdit.community_forum.id }"
+												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_communityforum.' + CommunityForumsEdit.community_forum.id + '_title'}"
 										></span>
 									{% endif %}
 								<span class="help-block">
@@ -132,7 +132,8 @@
 										<span
 												class="translate-button"
 												tooltip="{{ phrase('adm.general.translate') }}"
-												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_community_forum_verb_action.' + CommunityForumsEdit.community_forum.id }"
+												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_communityforum.' + CommunityForumsEdit.community_forum.id + '_verb_action'}"
+
 										></span>
 									{% endif %}
 								<span class="help-block">
