@@ -256,8 +256,8 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
             return $this->getPlural();
         }
 
-        if(isset($this->$property)){
-            return $this->$property;
+        if((null !== $property) && property_exists($this, $property)){
+                return $this->$property;
         }
 
         return parent::getPhraseDefault($property, $translate);
