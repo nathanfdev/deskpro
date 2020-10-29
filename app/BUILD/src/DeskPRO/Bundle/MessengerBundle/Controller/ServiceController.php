@@ -237,7 +237,7 @@ class ServiceController extends AbstractMessengerController
         }
 
         $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
-            return [$id, $translate->phrase($id, [], $language) ?: "!$id!"];
+            return [$id, $translate->getPhraseText($id, $language, true) ?: "!$id!"];
         });
 
         return View::create($output, Response::HTTP_OK);
