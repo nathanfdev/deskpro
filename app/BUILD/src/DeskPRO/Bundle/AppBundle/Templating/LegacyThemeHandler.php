@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class LegacyThemeHandler.
@@ -37,19 +38,26 @@ class LegacyThemeHandler
     private $brandStack;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager      $em
-     * @param AppEnvInterface    $appEnv
+     * @param EntityManager $em
+     * @param AppEnvInterface $appEnv
      * @param DeskproBlobStorage $blobStorage
-     * @param BrandStack         $brandStack
+     * @param BrandStack $brandStack
+     * @param LoggerInterface $logger
      */
-    public function __construct(EntityManager $em, AppEnvInterface $appEnv, DeskproBlobStorage $blobStorage, BrandStack $brandStack)
+    public function __construct(EntityManager $em, AppEnvInterface $appEnv, DeskproBlobStorage $blobStorage, BrandStack $brandStack, LoggerInterface $logger)
     {
         $this->em          = $em;
         $this->appEnv      = $appEnv;
         $this->blobStorage = $blobStorage;
         $this->brandStack  = $brandStack;
+        $this->logger      = $logger;
     }
 
     /**
@@ -88,9 +96,15 @@ class LegacyThemeHandler
 
             $name = $brandDir.DIRECTORY_SEPARATOR.$baseName;
 
-            if (!file_put_contents($name, $template->getTemplateCode())) {
-                throw new \RuntimeException('Unable to write template');
-            }
+           $fileWritten = file_put_contents($name, $template->getTemplateCode());
+
+           if($fileWritten === '0'){
+               $this->logger->error(sprintf('Template %s is empty', $template->getName()));
+           }
+
+           if(false === $fileWritten) {
+              throw new \RuntimeException('Unable to write template');
+           }
         }
 
         // write to archive

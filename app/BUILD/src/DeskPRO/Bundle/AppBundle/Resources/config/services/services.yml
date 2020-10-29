@@ -129,6 +129,7 @@ services:
       - "@deskpro.app_env"
       - "@blob.storage"
       - "@brand_stack"
+      - "@logger"
 
   app.environment:
     class: DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService
