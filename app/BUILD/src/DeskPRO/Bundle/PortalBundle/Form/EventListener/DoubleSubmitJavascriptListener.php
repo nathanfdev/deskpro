@@ -45,7 +45,7 @@ class DoubleSubmitJavascriptListener implements EventSubscriberInterface
         if (false !== $pos) {
             $script = <<< END
 <script>
-!function(i){i.dp_refresh_csrf_token=function(){var t="_dp_csrf_token",n=function(t){for(var n=t+"=",e=document.cookie.split(";"),r=0;r<e.length;r++){for(var o=e[r];" "==o.charAt(0);)o=o.substring(1,o.length);if(0==o.indexOf(n))return o.substring(n.length,o.length)}return null}(t),e=/.*\[_dp_csrf_token\]*./;n||(n=(Math.random()+1).toString(36).substring(2,17)+(Math.random()+1).toString(36).substring(2,17),document.cookie=t+"="+n+"; path=/; SameSite=None; Secure");for(var r=document.getElementsByTagName("input"),o=1;o<r.length;o++)"hidden"==r[o].getAttribute("type")&&r[o].getAttribute("name").match(e)&&(r[o].value=n);i.dp_get_csrf_token=function(){return n}},i.dp_refresh_csrf_token()}(window);
+!function(t){t.dp_refresh_csrf_token=function(){var n=function(t){for(var n=t+"=",e=document.cookie.split(";"),r=0;r<e.length;r++){for(var o=e[r];" "==o.charAt(0);)o=o.substring(1,o.length);if(0==o.indexOf(n))return o.substring(n.length,o.length)}return null}("_dp_csrf_token"),e=/.*\[_dp_csrf_token\]*./;n||(n=(Math.random()+1).toString(36).substring(2,17)+(Math.random()+1).toString(36).substring(2,17),document.cookie="_dp_csrf_token="+n+"; path=/; "+("https"===document.location.protocol?"Secure;":""));for(var r=document.getElementsByTagName("input"),o=1;o<r.length;o++)"hidden"==r[o].getAttribute("type")&&r[o].getAttribute("name").match(e)&&(r[o].value=n);t.dp_get_csrf_token=function(){return n}},t.dp_refresh_csrf_token()}(window);
 </script>
 END;
             $content = substr($content, 0, $pos).$script.substr($content, $pos);
@@ -85,7 +85,7 @@ win.dp_refresh_csrf_token = function() {
     // the user comes back.
     if (!token) {
         token = (Math.random()+1).toString(36).substring(2, 17)+(Math.random()+1).toString(36).substring(2, 17);
-        document.cookie = cookieName+"="+token+"; path=/; SameSite=None; Secure";
+        document.cookie = cookieName+"="+token+"; path=/; " + (document.location.protocol === 'https' ? 'Secure;' : '');
     }
 
     var inputs = document.getElementsByTagName('input');
