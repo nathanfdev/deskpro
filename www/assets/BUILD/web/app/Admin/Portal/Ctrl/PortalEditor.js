@@ -174,6 +174,11 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       });
     }
 
+    exportTheme() {
+      window.location.href = `${this.$scope.baseUrl}/portal/api/style/edit-theme-set/export/${this.$scope.brand_id}`;
+    }
+
+
     editTheme() {
       const request = this.$http({
         method: 'PUT',

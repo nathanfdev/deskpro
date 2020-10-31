@@ -236,14 +236,15 @@ class ThemeSetController extends AbstractApiController
     }
 
     /**
-     * @Route("/portal/api/style/edit-theme-set/export")
+     * @Route("/portal/api/style/edit-theme-set/export/{id}")
      * @Method({"GET"})
      *
+     * @param Brand $brand
      * @return Response
      */
-    public function exportAction()
+    public function exportAction(Brand $brand)
     {
-        $themeSet = $this->getEditThemeSet();
+        $themeSet = $brand->getEditThemeSet();
 
         $importService = $this->container->get('dp.portal.designer.theme_set_import');
         $generatedFile = $importService->exportThemeSet($themeSet);
@@ -260,10 +261,8 @@ class ThemeSetController extends AbstractApiController
     }
 
     /**
-     * @param Request  $request
-     * @param ThemeSet $overwriteTheme
-     *
-     * @throws BadRequestHttpException
+     * @param Request $request
+     * @param ThemeSet|null $overwriteTheme
      *
      * @return ThemeSet
      */
