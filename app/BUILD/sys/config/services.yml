@@ -96,6 +96,7 @@ services:
 
   hitrecord.record_factory:
     class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitRecordFactory
+    arguments: ["@deskpro.core.input_cleaner"]
 
   hitrecord.record_storage:
     class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitDbStorage
