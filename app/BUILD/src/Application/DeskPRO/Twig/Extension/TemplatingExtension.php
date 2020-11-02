@@ -1921,6 +1921,9 @@ class TemplatingExtension extends \Twig_Extension
                 '|{{\s*img\(([^/]+)/([^)]+)\)\s*}}|' => function ($match) {
                     return $this->getBlobImage(trim($match[1]), trim($match[2]));
                 },
+                '|%7B%7B%20img\(([^/]+)/([^)]+)\)%20%7D%7D|' => function ($match) {
+                    return $this->getBlobImage(trim($match[1]), trim($match[2]));
+                },
                 '|<a href="{{\s*content\(([^,]+),([^),]+)\)\s*}}">([^<]*)</a>|' => function ($match) use ($pdf) {
                     $type = trim($match[1]);
                     $id = trim($match[2]);
@@ -1928,7 +1931,21 @@ class TemplatingExtension extends \Twig_Extension
 
                     return $this->getManualInternalLink($type, $id, $title, '', $pdf);
                 },
+                '|<a href="%7B%7B%20content\(([^,]+),([^),]+)\)%20%7D%7D">([^<]*)</a>|' => function ($match) use ($pdf) {
+                    $type = trim($match[1]);
+                    $id = trim($match[2]);
+                    $title = empty($match[3]) ? '' : trim($match[3]);
+
+                    return $this->getManualInternalLink($type, $id, $title, '', $pdf);
+                },
                 '|{{\s*content_link\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}|' => function ($match) use ($pdf) {
+                    $type = trim($match[1]);
+                    $id = trim($match[2]);
+                    $anchor = empty($match[3]) ? '' : trim($match[3], ", \t\n\r\0\x0B");
+
+                    return $this->getManualInternalLink($type, $id, '', $anchor, $pdf);
+                },
+                '|%7B%7B%20content_link\(([^,]+),([^),]+)(,[^)]+)?\)%20%7D%7D|' => function ($match) use ($pdf) {
                     $type = trim($match[1]);
                     $id = trim($match[2]);
                     $anchor = empty($match[3]) ? '' : trim($match[3], ", \t\n\r\0\x0B");
