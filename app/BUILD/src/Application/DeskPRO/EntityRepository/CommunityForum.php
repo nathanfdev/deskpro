@@ -127,6 +127,7 @@ class CommunityForum extends AbstractCategoryRepository
             ->select('f.id AS forum_id, COUNT(t.id) AS topic_count')
             ->leftJoin(\Application\DeskPRO\Entity\CommunityTopic::class, 't', 'WITH', 'f.id = IDENTITY(t.forum)')
             ->andWhere('f.id IN (:forumIds)')
+            ->andWhere('t.status != :status')->setParameter('status', 'hidden')
             ->setParameter('forumIds', $forumIds)
             ->groupBy('f')
             ->getQuery()
