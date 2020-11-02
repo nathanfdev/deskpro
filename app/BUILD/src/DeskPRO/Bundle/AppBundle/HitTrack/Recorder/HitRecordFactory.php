@@ -4,11 +4,27 @@ namespace DeskPRO\Bundle\AppBundle\HitTrack\Recorder;
 
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Component\Util\StringUtils;
+use Orb\Input\Cleaner\Cleaner;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
 class HitRecordFactory
 {
+    /**
+     * Cleaner
+     */
+    private $cleaner;
+
+    /**
+     * Constructor.
+     *
+     * @param Cleaner $cleaner
+     */
+    public function __construct(Cleaner $cleaner)
+    {
+        $this->cleaner = $cleaner;
+    }
+
     /**
      * @param string      $pageType
      * @param string      $pageId
@@ -85,6 +101,30 @@ class HitRecordFactory
             if ($k !== $altK && !$bag->has($altK)) {
                 $bag->set($altK, $v);
             }
+        }
+
+        // clean xss
+        $cleanArray = function ($array) use (&$cleanArray) {
+            foreach ($array as &$item) {
+                if (is_scalar($item)) {
+                    $item = $this->cleaner->clean($item, 'string');
+                } elseif (is_array($item)) {
+                    $item = $cleanArray($item);
+                }
+            }
+
+            return $array;
+        };
+
+        foreach ($bag->all() as $k => $v) {
+            if (is_scalar($v)) {
+                $v = $this->cleaner->clean($v, 'string');
+
+                $bag->set($k, $v);
+            } elseif (is_array($v)) {
+                $bag->set($k, $cleanArray($v));
+            }
+
         }
 
         $pageType  = $bag->get('page_type', 'page');

@@ -9,6 +9,7 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@dpql.compiler"
       - "@reports.renderer_registry"
+      - "@deskpro.core.input_cleaner"
       - "@logger"
     tags:
       - { name: monolog.logger, channel: reports.widgets }
