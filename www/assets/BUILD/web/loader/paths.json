@@ -63,7 +63,7 @@
   "clipboard":                       "node_modules/clipboard/dist/clipboard.min",
   "froalaEditor":                    "node_modules/froala-editor/js/froala_editor.min",
 
-  "spectrum":                        "bower_components/spectrum/spectrum",
+  "spectrum":                        "vendor/spectrum/spectrum",
   "angularSpectrumColorpicker":      "vendor/angular-spectrum-colorpicker/dist/angular-spectrum-colorpicker",
 
   "AgentApp":                        "empty:",
