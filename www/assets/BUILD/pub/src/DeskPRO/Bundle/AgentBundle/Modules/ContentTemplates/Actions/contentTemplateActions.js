@@ -59,33 +59,36 @@ const setFormFields = contentTemplate => (page) => {
       let categoriesSelect;
       let categoryId;
       if (name === 'newnews[brand]' && value !== page.meta.selectedBrandId) {
+        categoriesSelect = $(page.form).find('[name="newarticle[category_id]"]');
         categoryId = contentTemplate.get('template').find(a => a.get('name') === 'newnews[category_id]').get('value', '');
         $.ajax({
           url:     `${window.BASE_URL}agent/news/categories/brand/${value}?_rt=${window.DP_REQUEST_TOKEN}`,
           type:    'GET',
           context: this,
           success(result) {
-            categoriesSelect = $(`#${page.meta.baseId}_cat`);
             categoriesSelect.children().remove();
             categoriesSelect.append($(result).find('option'));
             setTimeout(() => {
+              categoriesSelect = $(`#${page.meta.baseId}_cat`);
               categoriesSelect.val(`${categoryId}`).trigger('change');
-            }, 200);
+            }, 1000);
           }
         });
       }
       if (name === 'newarticle[brand]' && value !== page.meta.selectedBrandId) {
+        categoriesSelect = $(page.form).find('[name="newarticle[category_id]"]');
         categoryId = contentTemplate.get('template').find(a => a.get('name') === 'newarticle[category_id]').get('value', '');
-        console.log(categoryId);
         $.ajax({
           url:     `${window.BASE_URL}agent/kb/article/categories/brand/${value}?_rt=${window.DP_REQUEST_TOKEN}`,
           type:    'GET',
           context: this,
           success(result) {
-            categoriesSelect = $(`#${page.meta.baseId}_cat`);
             categoriesSelect.children().remove();
             categoriesSelect.append($(result).find('option'));
-            setTimeout(() => categoriesSelect.val(categoryId).trigger('change'), 200);
+            setTimeout(() => {
+              categoriesSelect = $(`#${page.meta.baseId}_cat`);
+              categoriesSelect.val(`${categoryId}`).trigger('change');
+            }, 1000);
           }
         });
       }
@@ -108,7 +111,7 @@ export const loadContentTemplates = createAction(
 );
 
 export const editContentTemplate = createAction(
-  'VAGENT_EDIT_CONTENT_TEMPLATE',
+  'AGENT_EDIT_CONTENT_TEMPLATE',
   (id, data) => dispatch => repository('ContentTemplate').update(data, id).success(() => {
     const contentTemplate = Immutable.fromJS({ ...data, id });
     dispatch(updateCollection('ContentTemplate', Immutable.List([contentTemplate]), 'merge'));
@@ -138,7 +141,7 @@ export const openNewContentPage = createAction(
 );
 
 export const openContentTemplateEditor = createAction(
-  'AGENT_OPEN_CONTENT_TEMPLATE',
+  'AGENT_OPEN_CONTENT_TEMPLATE_EDITOR',
   (contentTemplate) => {
     const id = contentTemplate.get('id');
     const type = contentTemplate.get('type');
