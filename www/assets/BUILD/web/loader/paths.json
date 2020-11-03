@@ -64,7 +64,7 @@
   "froalaEditor":                    "node_modules/froala-editor/js/froala_editor.min",
 
   "spectrum":                        "bower_components/spectrum/spectrum",
-  "angularSpectrumColorpicker":      "bower_components/angular-spectrum-colorpicker/dist/angular-spectrum-colorpicker",
+  "angularSpectrumColorpicker":      "vendor/angular-spectrum-colorpicker/dist/angular-spectrum-colorpicker",
 
   "AgentApp":                        "empty:",
   "AppPlatform":                     "empty:",
