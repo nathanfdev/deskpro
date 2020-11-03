@@ -56,6 +56,39 @@ const setFormFields = contentTemplate => (page) => {
           $el.val(value).trigger('change');
         }
       }
+      let categoriesSelect;
+      let categoryId;
+      if (name === 'newnews[brand]' && value !== page.meta.selectedBrandId) {
+        categoryId = contentTemplate.get('template').find(a => a.get('name') === 'newnews[category_id]').get('value', '');
+        $.ajax({
+          url:     `${window.BASE_URL}agent/news/categories/brand/${value}?_rt=${window.DP_REQUEST_TOKEN}`,
+          type:    'GET',
+          context: this,
+          success(result) {
+            categoriesSelect = $(`#${page.meta.baseId}_cat`);
+            categoriesSelect.children().remove();
+            categoriesSelect.append($(result).find('option'));
+            setTimeout(() => {
+              categoriesSelect.val(`${categoryId}`).trigger('change');
+            }, 200);
+          }
+        });
+      }
+      if (name === 'newarticle[brand]' && value !== page.meta.selectedBrandId) {
+        categoryId = contentTemplate.get('template').find(a => a.get('name') === 'newarticle[category_id]').get('value', '');
+        console.log(categoryId);
+        $.ajax({
+          url:     `${window.BASE_URL}agent/kb/article/categories/brand/${value}?_rt=${window.DP_REQUEST_TOKEN}`,
+          type:    'GET',
+          context: this,
+          success(result) {
+            categoriesSelect = $(`#${page.meta.baseId}_cat`);
+            categoriesSelect.children().remove();
+            categoriesSelect.append($(result).find('option'));
+            setTimeout(() => categoriesSelect.val(categoryId).trigger('change'), 200);
+          }
+        });
+      }
     } else if (Array.isArray(field.toJS())) {
       field.forEach(setField);
     }

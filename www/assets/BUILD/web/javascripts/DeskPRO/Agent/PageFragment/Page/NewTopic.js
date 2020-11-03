@@ -52,8 +52,8 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		$('#' + self.meta.baseId + '_parent_section').hide();
 
 		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
-			stateId: 'c',
-			listenOn: this.getEl('newnews')
+			stateId: 'newtopic',
+			listenOn: this.getEl('new-topic')
 		});
 		this.ownObject(this.stateSaver);
 

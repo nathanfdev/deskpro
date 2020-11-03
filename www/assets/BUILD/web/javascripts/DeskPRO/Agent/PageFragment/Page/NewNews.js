@@ -35,7 +35,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		this._initOtherSection();
 
 		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
-			stateId: 'c',
+			stateId: 'newnews',
 			listenOn: this.getEl('newnews')
 		});
 		this.ownObject(this.stateSaver);

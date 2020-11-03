@@ -1174,6 +1174,21 @@ class KbController extends AbstractController
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
 
+        if ($state && $state['newarticle'] && $state['newarticle']['brand'] && $state['newarticle']['brand'] !== $brandId) {
+            $brandId           = $state['newarticle']['brand'];
+            $articleCategories = $this->getFilteredCategory($brandId);
+
+            if (count($articleCategories) === 0) {
+                $brands = $this->em->getRepository(Brand::class)->findAll();
+                $brand  = array_shift($brands);
+                while (count($articleCategories) === 0 && $brand && $brand->getId()) {
+                    $brandId           = $brand->getId();
+                    $articleCategories = $this->getFilteredCategory($brandId);
+                    $brand             = array_shift($brands);
+                }
+            }
+        }
+
         $brands = $this->em->getRepository(Brand::class)->findAll();
         /** @var FieldManager $fieldManager */
         $fieldManager = $this->container->getSystemService('article_fields_manager');
