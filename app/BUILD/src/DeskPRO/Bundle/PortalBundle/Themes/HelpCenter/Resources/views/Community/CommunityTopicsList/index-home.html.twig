@@ -77,7 +77,7 @@
                             <p class="dp-po-community-row-description">{{ forum.description }}</p>
                             <a href="{{ path('portal_community_browse', {filter_uri: "type-#{forum.id}"}) }}"
                                class="dp-po-community-row-btn">
-                                {{ phrase('helpcenter.community.view_all_topics', {plural: forum.plural}) }}
+                                    {{ phrase('helpcenter.community.view_all_topics', {plural: phrase_object(forum, 'plural')}) }}
                             </a>
                         </div>
                         <div class="dp-po-community-row-right">
