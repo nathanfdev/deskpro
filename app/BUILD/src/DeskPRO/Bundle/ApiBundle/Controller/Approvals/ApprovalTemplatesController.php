@@ -38,7 +38,7 @@ class ApprovalTemplatesController extends CrudController
 {
     public static $entity       = ApprovalTemplate::class;
     public static $type         = ApprovalTemplateType::class;
-    public static $listPaginate = true;
+    public static $listPaginate = false;
     public static $listOrder    = 'ASC';
     public static $listSort     = 'id';
 
