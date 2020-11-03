@@ -88,6 +88,18 @@
                             </a>
                         </li>
                     {% endif %}
+                    {% if person.organization and person.organization_manager and helpcenter.getUserInfo().ticket_count_org > 0 %}
+                        <li class="dp-po-user-menu-item">
+                            <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-user-menu-link">
+                                {% if person.organization.picture %}
+                                    <img class="dp-po-user-menu-image dp-profile-svg dp-po-icon"  alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ person.organization.picture.thumbnailUrl }}" />
+                                {% else %}
+                                    <span class="dp-po-user-menu-image dp-profile-svg dp-po-icon fal fa-building"></span>
+                                {% endif %}
+                                {{ phrase('helpcenter.tickets.organization_tickets', {org_name: person.organization }) }}
+                            </a>
+                        </li>
+                    {% endif %}
                     {% if app.getSetting('portal.members_community') %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_dm') }}">
