@@ -526,7 +526,7 @@ class NewsController extends AbstractController
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newnews', $this->person->id);
 
-        if ($state && $state['newnews'] && $state['newnews']['brand'] && $state['newnews']['brand'] !== $brandId) {
+        if ($state && !empty($state['newnews']) && !empty($state['newnews']['brand']) && $state['newnews']['brand'] !== $brandId) {
             $brandId        = $state['newnews']['brand'];
             $rootCategories = $this->getFilteredCategory($brandId);
 

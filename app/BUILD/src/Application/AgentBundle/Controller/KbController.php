@@ -1174,7 +1174,7 @@ class KbController extends AbstractController
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
 
-        if ($state && $state['newarticle'] && $state['newarticle']['brand'] && $state['newarticle']['brand'] !== $brandId) {
+        if ($state && !empty($state['newarticle']) && !empty($state['newarticle']['brand']) && $state['newarticle']['brand'] !== $brandId) {
             $brandId           = $state['newarticle']['brand'];
             $articleCategories = $this->getFilteredCategory($brandId);
 
