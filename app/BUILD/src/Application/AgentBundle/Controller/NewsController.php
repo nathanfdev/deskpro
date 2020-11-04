@@ -526,6 +526,21 @@ class NewsController extends AbstractController
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newnews', $this->person->id);
 
+        if ($state && !empty($state['newnews']) && !empty($state['newnews']['brand']) && $state['newnews']['brand'] !== $brandId) {
+            $brandId        = $state['newnews']['brand'];
+            $rootCategories = $this->getFilteredCategory($brandId);
+
+            if (count($rootCategories) === 0) {
+                $brands = $this->em->getRepository(Brand::class)->findAll();
+                $brand  = array_shift($brands);
+                while (count($rootCategories) === 0 && $brand && $brand->getId()) {
+                    $brandId        = $brand->getId();
+                    $rootCategories = $this->getFilteredCategory($brandId);
+                    $brand          = array_shift($brands);
+                }
+            }
+        }
+
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
         return $this->render('AgentBundle:News:newnews.html.twig', [
