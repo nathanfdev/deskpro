@@ -105,7 +105,7 @@ class Page extends React.PureComponent {
     let next = null;
     let nextIndex = index + 1;
     let parentId = page.parent;
-    if (!Number.isInteger(parentId)) {
+    if (!Number.isInteger(parentId) && parentId) {
       parentId = page.parent.id;
     }
     while (!previous && previousIndex >= 0) {

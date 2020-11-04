@@ -43,7 +43,7 @@ class ViewPage extends React.Component {
       menuVisible:   false,
       flashes:       [],
       childrenPages: page.children,
-      sizes:           {},
+      sizes:         {},
       guide,
       guideSlug,
       loaded,
@@ -257,7 +257,6 @@ class ViewPage extends React.Component {
         if (internalLink.hash) {
           target += internalLink.hash;
         }
-        console.log(internalLink);
         newLink.innerHTML = `<i class="fas fa-book"></i> ${internalLink.text}`;
         internalLink.parentNode.replaceChild(newLink, internalLink);
       } else {
