@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Log\Event;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\AbstractPhoneNumber;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Organization;
@@ -102,33 +103,23 @@ class EntityUpdated extends Base
     public function mapObject(DomainObject $obj = null)
     {
         switch (true) {
-
             case $obj instanceof PersonContactData:
                 return array_merge(
                     ['contact_type' => $obj['contact_type']],
                     $obj->getHandler()->getApiVars($obj)
                 );
-                break;
-
             case $obj instanceof LabelPerson:
                 return $obj['label'];
-                break;
-
             case $obj instanceof PersonEmail:
                 return $obj['email'];
-                break;
-
             case $obj instanceof Blob:
                 return $obj['id'];
-                break;
-
             case $obj instanceof Organization:
                 return $obj['name'];
-                break;
-
             case $obj instanceof Usergroup:
                 return $obj['title'];
-                break;
+            case $obj instanceof AbstractPhoneNumber:
+                return $obj->getNumberFormatted();
         }
     }
 }

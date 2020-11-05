@@ -20,10 +20,11 @@ class PersonChangeLogListener extends EntityChangeLogListener
         'organization'  => true,
         'primary_email' => true,
 
-        'emails'     => true,
-        'labels'     => true,
-        'notes'      => true,
-        'usergroups' => true,
+        'emails'        => true,
+        'phone_numbers' => true,
+        'labels'        => true,
+        'notes'         => true,
+        'usergroups'    => true,
     ];
 
     /**

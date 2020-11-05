@@ -82,9 +82,15 @@ class PersonPhoneNumberType extends AbstractType
             } catch (\Exception $e) {
             }
 
+            $person = $form->getConfig()->getOption('person');
+            if (!$person instanceof Person) {
+                return;
+            }
+
             $data->setRegion($region);
             $data->setGuessedType($typeCode);
-            $data->setPerson($form->getConfig()->getOption('person'));
+
+            $person->addPhoneNumber($data);
         }
     }
 }

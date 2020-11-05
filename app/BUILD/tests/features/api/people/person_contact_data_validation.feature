@@ -19,8 +19,7 @@ Feature: /people endpoint
     "linked_in": [{}, {"url": ""}, {"url": "/linkedin.com"}, {"url": "http://linkedin.com"}],
     "instant_message": [{"username": "", "service": "unknown_service"}],
     "twitter": [{}],
-    "address": [{}],
-    "phone": [{}, {"type": "mobile", "code": 1, "number": 12345}]
+    "address": [{}]
   }
 }
     """
@@ -52,8 +51,3 @@ Feature: /people endpoint
     And the JSON node "errors.fields.contact_data.fields.address.fields.address_0.fields.address.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.contact_data.fields.address.fields.address_0.fields.city.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.contact_data.fields.address.fields.address_0.fields.country.errors[0].code" should be equal to "required"
-
-    And the JSON node "errors.fields.contact_data.fields.phone.fields.phone_0.fields.code.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.contact_data.fields.phone.fields.phone_0.fields.number.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.contact_data.fields.phone.fields.phone_0.fields.type.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.contact_data.fields.phone.fields.phone_1.fields.number.errors[0].code" should be equal to "invalid_phone_number_format"

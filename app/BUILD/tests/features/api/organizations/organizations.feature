@@ -106,13 +106,6 @@ Feature: /organizations endpoint
         "service": "skype"
       }
     ],
-    "phone": [
-      {
-        "type": "mobile",
-        "code": "+1",
-        "number": "234-534-5345"
-      }
-    ],
     "address": [
       {
         "address": "address",
@@ -138,59 +131,50 @@ Feature: /organizations endpoint
     And the JSON node "data.email_domains[0]" should be equal to "domain1.com"
     And the JSON node "data.email_domains[1]" should be equal to "domain2.com"
     And the JSON node "data.user_groups" should have 2 elements
-    And the JSON node "data.contact_data" should have 8 elements
+    And the JSON node "data.contact_data" should have 7 elements
+    And the JSON node "data.contact_data[0].contact_type" should be equal to "website"
     And the JSON node "data.contact_data[0].id" should exist
-    And the JSON node "data.contact_data[0].contact_type" should be equal to "phone"
-    And the JSON node "data.contact_data[1].id" should exist
-    And the JSON node "data.contact_data[1].contact_type" should be equal to "website"
-    And the JSON node "data.contact_data[2].id" should exist
 
     When I send a GET request to "/api/v2/organizations/{lastCreatedId}/contact_data"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data" should have 8 elements
+    And the JSON node "data" should have 7 elements
 
-    And the JSON node "data[0].contact_type" should be equal to "phone"
-    And the JSON node "data[0].code" should be equal to "+1"
-    And the JSON node "data[0].number" should be equal to "234-534-5345"
-    And the JSON node "data[0].type" should be equal to "mobile"
+    And the JSON node "data[0].contact_type" should be equal to "website"
+    And the JSON node "data[0].url" should contain "ebay.com"
     And the JSON node "data[0].comment" should be equal to 0
 
-    And the JSON node "data[1].contact_type" should be equal to "website"
-    And the JSON node "data[1].url" should contain "ebay.com"
+    And the JSON node "data[1].contact_type" should be equal to "instant_message"
+    And the JSON node "data[1].username" should be equal to "aim_user"
+    And the JSON node "data[1].service" should be equal to "aim"
     And the JSON node "data[1].comment" should be equal to 0
 
     And the JSON node "data[2].contact_type" should be equal to "instant_message"
-    And the JSON node "data[2].username" should be equal to "aim_user"
-    And the JSON node "data[2].service" should be equal to "aim"
+    And the JSON node "data[2].username" should be equal to "skype_user"
+    And the JSON node "data[2].service" should be equal to "skype"
     And the JSON node "data[2].comment" should be equal to 0
 
-    And the JSON node "data[3].contact_type" should be equal to "instant_message"
-    And the JSON node "data[3].username" should be equal to "skype_user"
-    And the JSON node "data[3].service" should be equal to "skype"
-    And the JSON node "data[3].comment" should be equal to 0
+    And the JSON node "data[3].contact_type" should be equal to "twitter"
+    And the JSON node "data[3].username" should be equal to "twitter_username"
+    And the JSON node "data[3].comment" should be equal to "some text"
 
-    And the JSON node "data[4].contact_type" should be equal to "twitter"
-    And the JSON node "data[4].username" should be equal to "twitter_username"
-    And the JSON node "data[4].comment" should be equal to "some text"
+    And the JSON node "data[4].contact_type" should be equal to "linked_in"
+    And the JSON node "data[4].url" should contain "linkedin.com"
+    And the JSON node "data[4].url" should contain "profile"
+    And the JSON node "data[4].comment" should be equal to 0
 
-    And the JSON node "data[5].contact_type" should be equal to "linked_in"
-    And the JSON node "data[5].url" should contain "linkedin.com"
+    And the JSON node "data[5].contact_type" should be equal to "facebook"
+    And the JSON node "data[5].url" should contain "facebook.com"
     And the JSON node "data[5].url" should contain "profile"
     And the JSON node "data[5].comment" should be equal to 0
 
-    And the JSON node "data[6].contact_type" should be equal to "facebook"
-    And the JSON node "data[6].url" should contain "facebook.com"
-    And the JSON node "data[6].url" should contain "profile"
+    And the JSON node "data[6].contact_type" should be equal to "address"
+    And the JSON node "data[6].address" should be equal to "address"
+    And the JSON node "data[6].city" should be equal to "city"
+    And the JSON node "data[6].state" should be equal to "state"
+    And the JSON node "data[6].zip" should be equal to "zip"
+    And the JSON node "data[6].country" should be equal to "GB"
     And the JSON node "data[6].comment" should be equal to 0
-
-    And the JSON node "data[7].contact_type" should be equal to "address"
-    And the JSON node "data[7].address" should be equal to "address"
-    And the JSON node "data[7].city" should be equal to "city"
-    And the JSON node "data[7].state" should be equal to "state"
-    And the JSON node "data[7].zip" should be equal to "zip"
-    And the JSON node "data[7].country" should be equal to "GB"
-    And the JSON node "data[7].comment" should be equal to 0
 
   Scenario: I update an organization
     Given I create blob with auth code "BBBBBBBBBBBBBBBBBB"
@@ -359,27 +343,6 @@ Feature: /organizations endpoint
     Then the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to "{u2}"
     And the JSON node "data[1].id" should be equal to "{u4}"
-
-  Scenario: I set phone number country code w/o plus char
-    When I send a POST request to "/api/v2/organizations" with body:
-    """
-{
-  "name": "Ebay",
-  "contact_data": {
-    "phone": [
-      {
-        "type": "mobile",
-        "code": "1",
-        "number": "234-534-5345"
-      }
-    ]
-  }
-}
-    """
-    Then the response status code should be 201
-    And the JSON node "data.contact_data[0].contact_type" should be equal to "phone"
-    And the JSON node "data.contact_data[0].code" should be equal to "+1"
-    And the JSON node "data.contact_data[0].number" should be equal to "234-534-5345"
 
   Scenario Outline: I set country by name
     When I send a POST request to "/api/v2/organizations" with body:
