@@ -6,8 +6,10 @@ use Application\DeskPRO\Entity\SessData;
 use Application\DeskPRO\Entity\Session;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
@@ -31,15 +33,22 @@ class LogoutHandler implements LogoutHandlerInterface, LogoutSuccessHandlerInter
     private $httpUtils;
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    private $router;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager $em
-     * @param HttpUtils     $httpUtils
+     * @param EntityManager         $em
+     * @param HttpUtils             $httpUtils
+     * @param UrlGeneratorInterface $router
      */
-    public function __construct(EntityManager $em, HttpUtils $httpUtils)
+    public function __construct(EntityManager $em, HttpUtils $httpUtils, UrlGeneratorInterface $router)
     {
         $this->em        = $em;
         $this->httpUtils = $httpUtils;
+        $this->router    = $router;
     }
 
     /**
@@ -90,7 +99,7 @@ class LogoutHandler implements LogoutHandlerInterface, LogoutSuccessHandlerInter
             case 'agent':
                 return $this->httpUtils->createRedirectResponse($request, '/agent/');
             default:
-                return $this->httpUtils->createRedirectResponse($request, '/');
+                return new RedirectResponse($this->router->generate('portal_home'));
         }
     }
 }
