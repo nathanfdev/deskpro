@@ -152,8 +152,10 @@ class ViewPage extends React.Component {
       while (parentId !== null) {
         // eslint-disable-next-line no-loop-func
         const parent = pageList.find(p => p.id === parentId);
-        hierarchy.push(parent);
-        parentId = parent.parent_id;
+        if (parent) {
+          hierarchy.push(parent);
+          parentId = parent.parent_id;
+        }
       }
     }
     let i = ol.childNodes.length;
@@ -249,7 +251,7 @@ class ViewPage extends React.Component {
     Array.prototype.forEach.call(links, (internalLink) => {
       let target = internalLink.pathname;
       const guideSlug = target.replace(/^(\/[^/]+)?\/guides\//, '').replace(/\/.*/, '');
-      if (true || guideSlug !== this.state.guideSlug) {
+      if (guideSlug !== this.state.guideSlug) {
         const newLink = document.createElement('a');
         newLink.className = 'internal_link topic';
         newLink.onclick = e => this.internalLink(e, target);
@@ -378,10 +380,25 @@ class ViewPage extends React.Component {
           return;
         }
 
-        const pageList = response.data.data;
-        this.setState({
-          pageList,
-        });
+        let guides = [];
+        if (window.guides) {
+          guides = JSON.parse(window.guides);
+        }
+        if (!Array.isArray(guides)) {
+          guides = Object.values(guides);
+        }
+        const newState = {};
+
+        const guide = guides.find(g => g.slug === guideSlug);
+
+        if (guide) {
+          newState.guide = guide;
+        }
+
+        newState.pageList = response.data.data;
+        this.setState(newState);
+        const pageSlug = path.replace(/^(\/[^/]+)?\/guides\/.*\//, '');
+        this.grabPageFromApi(pageSlug);
       });
     } else {
       const pageSlug = path.replace(/^(\/[^/]+)?\/guides\/.*\//, '');
