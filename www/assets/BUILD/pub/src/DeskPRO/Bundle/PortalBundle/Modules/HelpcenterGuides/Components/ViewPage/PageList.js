@@ -3,6 +3,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import Isvg from 'react-inlinesvg';
+import { Scrollbars } from 'react-custom-scrollbars';
 import Highlighter from 'react-highlight-words';
 import guideDefault from '@deskpro/portal-style/dist/img/page-icons/guide-default.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -111,8 +112,8 @@ class PageList extends React.Component {
     });
   };
 
-  renderPages(pages, depth = 0, collapse = false) {
-    const { guideSlug, pageSlug } = this.props;
+  renderPages(pages, depth = 0, collapse = false, delta = 0) {
+    const { guideSlug, pageSlug, pages: pageList } = this.props;
     const { filter, expanded } = this.state;
     const unfilteredPages = pages.filter(t => depth > 0 || t.depth === depth);
     const renderedPages = unfilteredPages
@@ -122,11 +123,13 @@ class PageList extends React.Component {
         <PageListItem
           key={page.slug}
           page={page}
+          pageList={pageList}
           guideSlug={guideSlug}
           pageSlug={pageSlug}
           path={this.state.path}
           grabPageFromApi={this.grabPageFromApi}
           filter={filter}
+          delta={delta}
           filterPage={this.filterPage}
           togglePage={this.togglePage}
           expanded={!!(this.isExpandedPage(page))}
@@ -184,12 +187,20 @@ class PageList extends React.Component {
         return PageList.renderNoResults();
       }
       return (
-        <div className="dp-po-guides-search-content accordion">
-          {renderedPages}
-        </div>
+        <Scrollbars autoHide>
+          <div className="dp-po-guides-search-content accordion">
+            {renderedPages}
+          </div>
+        </Scrollbars>
       );
     }
-    return this.renderPages(pages);
+    return (
+      <Scrollbars autoHide>
+        <div className="dp-po-guides-search-main">
+          {this.renderPages(pages, 0, false, 1)}
+        </div>
+      </Scrollbars>
+    );
   }
 
   render() {
