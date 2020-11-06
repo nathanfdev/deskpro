@@ -90,3 +90,4 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@deskpro.blob_storage"
+      - "@settings_resolver"
