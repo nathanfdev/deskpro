@@ -84,3 +84,9 @@ services:
     class: DeskPRO\Bundle\ApiBundle\TicketFilters\TermBuilder
     arguments:
       - "@ticketfilters.queryparser"
+
+  splash_images_service:
+    class: DeskPRO\Bundle\ApiBundle\Services\SplashImageService
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@deskpro.blob_storage"
