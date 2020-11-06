@@ -11,6 +11,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -208,6 +209,21 @@ class TicketCharge extends DomainObject
     }
 
     /**
+     * @param Collection $custom_data
+     */
+    public function setCustomData(Collection $custom_data)
+    {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
+        $this->custom_data = $custom_data;
+        foreach ($custom_data as $cd) {
+            $cd->ticket_charge = $this;
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+    }
+
+    /**
      * Find an existing data record for a field id.
      *
      * @param int $field_id
@@ -283,7 +299,7 @@ class TicketCharge extends DomainObject
      *
      * @return mixed
      */
-    public function setCustomData($field_id, $value_type, $value)
+    public function setCustomDataField($field_id, $value_type, $value)
     {
         $custom_data = $this->getCustomDataForField($field_id);
         $is_new      = false;

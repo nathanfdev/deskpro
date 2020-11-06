@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefArticle;
+use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefOrganization;
@@ -109,6 +110,14 @@ class CustomFieldManager
     public function getAvailableTicketDefs()
     {
         return $this->getAvailableCustomDefs(CustomDefTicket::class);
+    }
+
+    /**
+     * @return getAvailableBillingDefs[]
+     */
+    public function getAvailableBillingDefs()
+    {
+        return $this->getAvailableCustomDefs(CustomDefBilling::class);
     }
 
     /**
