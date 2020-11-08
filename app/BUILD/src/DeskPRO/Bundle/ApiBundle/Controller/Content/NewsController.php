@@ -8,7 +8,13 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Form\Type\Content\NewsType;
+use Doctrine\ORM\OptimisticLockException;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\Image;
 
 /**
  * Class NewsController.
@@ -58,4 +64,115 @@ class NewsController extends AbstractSingleCategoryContentController
     public static $entity   = News::class;
     public static $category = NewsCategory::class;
     public static $type     = NewsType::class;
+
+    /**
+     * @ApiDoc(
+     *     section="News",
+     *     description="Create Splash Image For News",
+     *     requirements={
+     *          {
+     *              "name"="article",
+     *              "requirement"="\d+",
+     *              "description"="the id of news",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     * @Rest\Post("/{news}/splash_image_upload")
+     * @param Request $request
+     * @param News $news
+     * @return JsonResponse
+     * @throws OptimisticLockException
+     */
+    public function uploadSplashImageAction(Request $request, News $news)
+    {
+        $file = $request->files->get('file');
+
+        $errorList = $this->get('validator')->validateValue($file, new Image());
+
+        if (count($errorList) > 0) {
+            throw new \RuntimeException($errorList[0]->getMessage());
+        }
+
+        $splashImage = $this->get('splash_images_service')->createSplashImage($request->files->get('file'));
+
+        if ($splashImage instanceof \Exception) {
+            throw new \RuntimeException($splashImage->getMessage());
+        }
+
+        $news->setSplashImage($splashImage);
+        $this->getManager()->persist($splashImage);
+        $this->getManager()->flush();
+
+        return new JsonResponse(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]);
+    }
+
+    /**
+     * Set splash image for news.
+     *
+     *
+     * @ApiDoc(
+     *     section="News",
+     *     description="set Splash Image",
+     *     requirements={
+     *          {
+     *              "name"="news",
+     *              "requirement"="\d+",
+     *              "description"="the id of news",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     input="object",
+     *     output="object",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     *
+     * @Rest\Post("/{news}/splash_image")
+     *
+     * @param Request $request
+     * @param News $news
+     * @return JsonResponse
+     *
+     * @throws OptimisticLockException
+     */
+    public function selectSplashImageAction(Request $request, News $news)
+    {
+        $image = json_decode($request->request->get('image'));
+
+        $splashImage = $this->get('splash_images_service')->setSplashImage($image);
+
+        if($splashImage instanceof \Exception){
+            throw new \RuntimeException($splashImage->getMessage());
+        }
+
+        $news->setSplashImage($splashImage);
+        $this->getManager()->flush();
+
+        return new JsonResponse($image);
+    }
+
+
+    /**
+     * @Rest\Delete("/{news}/splash_image")
+     *
+     * @param News $news
+     * @return View
+     * @throws OptimisticLockException
+     */
+    public function deleteSplashImageAction(News $news)
+    {
+        $splashImage = $news->getSplashImage();
+        if ($splashImage) {
+            $this->getManager()->remove($splashImage);
+            $news->setSplashImage(null);
+            $this->getManager()->flush();
+        }
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
 }

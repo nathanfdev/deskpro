@@ -11,9 +11,14 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Form\Type\Content\TopicType;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\Image;
 
 /**
  * Class TopicsController.
@@ -98,6 +103,117 @@ class TopicsController extends AbstractContentController
         } else {
             parent::applyListGroupBy($qb, $alias, $groupBy, $request);
         }
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Topic",
+     *     description="Create Splash Image For Topic",
+     *     requirements={
+     *          {
+     *              "name"="topic",
+     *              "requirement"="\d+",
+     *              "description"="the id of topic",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     * @Rest\Post("/{topic}/splash_image_upload")
+     * @param Request $request
+     * @param Topic $topic
+     * @return JsonResponse
+     * @throws OptimisticLockException
+     */
+    public function uploadSplashImageAction(Request $request, Topic $topic)
+    {
+        $file = $request->files->get('file');
+
+        $errorList = $this->get('validator')->validateValue($file, new Image());
+
+        if (count($errorList) > 0) {
+            throw new \RuntimeException($errorList[0]->getMessage());
+        }
+
+        $splashImage = $this->get('splash_images_service')->createSplashImage($request->files->get('file'));
+
+        if ($splashImage instanceof \Exception) {
+            throw new \RuntimeException($splashImage->getMessage());
+        }
+
+        $topic->setSplashImage($splashImage);
+        $this->getManager()->persist($splashImage);
+        $this->getManager()->flush();
+
+        return new JsonResponse(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]);
+    }
+
+    /**
+     * Set splash image for topic.
+     *
+     *
+     * @ApiDoc(
+     *     section="Topics",
+     *     description="set Splash Image",
+     *     requirements={
+     *          {
+     *              "name"="forum",
+     *              "requirement"="\d+",
+     *              "description"="the id of topic",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     input="object",
+     *     output="object",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     *
+     * @Rest\Post("/{topic}/splash_image")
+     *
+     * @param Request $request
+     * @param Topic $topic
+     * @return JsonResponse
+     *
+     * @throws OptimisticLockException
+     */
+    public function selectSplashImageAction(Request $request, Topic $topic)
+    {
+        $image = json_decode($request->request->get('image'));
+
+        $splashImage = $this->get('splash_images_service')->setSplashImage($image);
+
+        if($splashImage instanceof \Exception){
+            throw new \RuntimeException($splashImage->getMessage());
+        }
+
+        $topic->setSplashImage($splashImage);
+        $this->getManager()->flush();
+
+        return new JsonResponse($image);
+    }
+
+
+    /**
+     * @Rest\Delete("/{topic}/splash_image")
+     *
+     * @param Topic $topic
+     * @return View
+     * @throws OptimisticLockException
+     */
+    public function deleteSplashImageAction(Topic $topic)
+    {
+        $splashImage = $topic->getSplashImage();
+        if ($splashImage) {
+            $this->getManager()->remove($splashImage);
+            $topic->setSplashImage(null);
+            $this->getManager()->flush();
+        }
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

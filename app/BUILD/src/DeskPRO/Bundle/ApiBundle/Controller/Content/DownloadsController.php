@@ -8,7 +8,13 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Form\Type\Content\DownloadType;
+use Doctrine\ORM\OptimisticLockException;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\View\View;
+use Symfony\Component\Validator\Constraints\Image;
 
 /**
  * Class DownloadsController.
@@ -58,4 +64,114 @@ class DownloadsController extends AbstractSingleCategoryContentController
     public static $entity   = Download::class;
     public static $category = DownloadCategory::class;
     public static $type     = DownloadType::class;
+
+    /**
+     * @ApiDoc(
+     *     section="Downloads",
+     *     description="Upload Splash Image For Download",
+     *     requirements={
+     *          {
+     *              "name"="download",
+     *              "requirement"="\d+",
+     *              "description"="the id of download",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     * @Rest\Post("/{download}/splash_image_upload")
+     * @param Request $request
+     * @param Download $download
+     * @return JsonResponse
+     * @throws OptimisticLockException
+     */
+    public function uploadSplashImageAction(Request $request, Download $download)
+    {
+        $file = $request->files->get('file');
+
+        $errorList = $this->get('validator')->validateValue($file, new Image());
+
+        if (count($errorList) > 0) {
+            throw new \RuntimeException($errorList[0]->getMessage());
+        }
+
+        $splashImage = $this->get('splash_images_service')->createSplashImage($request->files->get('file'));
+
+        if ($splashImage instanceof \Exception) {
+            throw new \RuntimeException($splashImage->getMessage());
+        }
+
+        $download->setSplashImage($splashImage);
+        $this->getManager()->persist($splashImage);
+        $this->getManager()->flush();
+
+        return new JsonResponse(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]);
+    }
+
+    /**
+     * Set splash image for downloads.
+     *
+     *
+     * @ApiDoc(
+     *     section="Downloads",
+     *     description="set Splash Image",
+     *     requirements={
+     *          {
+     *              "name"="downloads",
+     *              "requirement"="\d+",
+     *              "description"="the id of downloads",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     input="object",
+     *     output="object",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     *
+     * @Rest\Post("/{download}/splash_image")
+     *
+     * @param Request $request
+     * @param Download $download
+     * @return JsonResponse
+     *
+     * @throws OptimisticLockException
+     */
+    public function selectSplashImageAction(Request $request, Download $download)
+    {
+        $image = json_decode($request->request->get('image'));
+
+        $splashImage = $this->get('splash_images_service')->setSplashImage($image);
+
+        if($splashImage instanceof \Exception){
+            throw new \RuntimeException($splashImage->getMessage());
+        }
+
+        $download->setSplashImage($splashImage);
+        $this->getManager()->flush();
+
+        return new JsonResponse($image);
+    }
+
+    /**
+     * @Rest\Delete("/{download}/splash_image")
+     *
+     * @param Download $download
+     * @return View
+     * @throws OptimisticLockException
+     */
+    public function deleteSplashImageAction(Download $download)
+    {
+        $splashImage = $download->getSplashImage();
+        if ($splashImage) {
+            $this->getManager()->remove($splashImage);
+            $download->setSplashImage(null);
+            $this->getManager()->flush();
+        }
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
 }

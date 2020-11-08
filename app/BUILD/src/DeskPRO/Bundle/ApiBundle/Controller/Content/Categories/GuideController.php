@@ -8,12 +8,15 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Type\Content\GuideType;
+use Doctrine\ORM\OptimisticLockException;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Orb\Util\Arrays;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\Image;
 
 /**
  * Class GuideController.
@@ -155,5 +158,117 @@ class GuideController extends AbstractCategoriesController
     public function exportAction(Guide $guide)
     {
         return $this->wrap($guide);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Guides",
+     *     description="Upload Guide Splash Image",
+     *     requirements={
+     *          {
+     *              "name"="guide",
+     *              "requirement"="\d+",
+     *              "description"="the id of guide",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     * @Rest\Post("/{guide}/splash_image_upload")
+     * @param Request $request
+     * @param Guide $guide
+     * @return JsonResponse
+     * @throws OptimisticLockException
+     */
+    public function uploadSplashImageAction(Request $request, Guide $guide)
+    {
+        $file = $request->files->get('file');
+
+        $errorList = $this->get('validator')->validateValue($file, new Image());
+
+        if (count($errorList) > 0) {
+            throw new \RuntimeException($errorList[0]->getMessage());
+        }
+
+        $splashImage = $this->get('splash_images_service')->createSplashImage($request->files->get('file'));
+
+        if ($splashImage instanceof \Exception) {
+            throw new \RuntimeException($splashImage->getMessage());
+        }
+
+        $guide->setSplashImage($splashImage);
+        $this->getManager()->persist($splashImage);
+        $this->getManager()->flush();
+
+        return new JsonResponse(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]);
+    }
+
+    /**
+     * Set splash image for guide.
+     *
+     *
+     * @ApiDoc(
+     *     section="Guides",
+     *     description="set Splash Image",
+     *     requirements={
+     *          {
+     *              "name"="forum",
+     *              "requirement"="\d+",
+     *              "description"="the id of guide",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     input="object",
+     *     output="object",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     *
+     * @Rest\Post("/{guide}/splash_image")
+     *
+     * @param Request $request
+     * @param Guide $guide
+     *
+     * @return JsonResponse
+     *
+     * @throws OptimisticLockException
+     */
+    public function selectSplashImageAction(Request $request, Guide $guide)
+    {
+        $image = json_decode($request->request->get('image'));
+
+        $splashImage = $this->get('splash_images_service')->setSplashImage($image);
+
+        if($splashImage instanceof \Exception){
+            throw new \RuntimeException($splashImage->getMessage());
+        }
+
+        $guide->setSplashImage($splashImage);
+        $this->getManager()->flush();
+
+        return new JsonResponse($image);
+    }
+
+
+    /**
+     * @Rest\Delete("/{guide}/splash_image")
+     *
+     * @param Guide $guide
+     * @return View
+     * @throws OptimisticLockException
+     */
+    public function deleteSplashImageAction(Guide $guide)
+    {
+        $splashImage = $guide->getSplashImage();
+        if ($splashImage) {
+            $this->getManager()->remove($splashImage);
+            $guide->setSplashImage(null);
+            $this->getManager()->flush();
+        }
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 }
