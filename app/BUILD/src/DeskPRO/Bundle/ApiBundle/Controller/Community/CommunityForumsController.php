@@ -2,20 +2,18 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Community;
 
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\CommunityForum;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
-use DeskPRO\Component\Util\IpUtils;
+use Doctrine\ORM\OptimisticLockException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use GuzzleHttp\Client;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use JsonException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\Image;
 
 /**
  * API access to community forums.
@@ -59,33 +57,22 @@ class CommunityForumsController extends CrudController
      * @param Request        $request
      * @param CommunityForum $forum
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     *
      * @return JsonResponse
+     *@throws OptimisticLockException|JsonException
+     *
      */
     public function selectSplashImageAction(Request $request, CommunityForum $forum)
     {
-        $splashImage = new SplashImageProperty();
-        $image       = json_decode($request->request->get('image'));
-        $splashImage->setUrn($splashImage::$unsplashNs.':'.$image->id);
-        $splashImage->setOptions(['url' => $image->urls->raw]);
-        $this->getManager()->persist($splashImage);
-        $forum->setSplashImage($splashImage);
-        $this->getManager()->flush();
-        // Trigger Download on unsplash api to register photo usage
-        $accessKey = $this->get('settings_resolver')->getGlobalSettings()->get('services.unsplash_access_key', null);
-        $client    = new Client();
+        $image = json_decode($request->request->get('image'));
 
-        if (!IpUtils::isUrlUserCallable($image->links->download_location)) {
-            throw new \InvalidArgumentException("URL is not user callable");
+        $splashImage = $this->get('splash_images_service')->setSplashImage($image);
+
+        if($splashImage instanceof \Exception){
+            throw new \RuntimeException($splashImage->getMessage());
         }
 
-        $client->requestAsync('GET', $image->links->download_location, [
-            'headers' => [
-                'Authorization' => 'Client-ID '.$accessKey,
-            ],
-        ]);
+        $forum->setSplashImage($splashImage);
+        $this->getManager()->flush();
 
         return new JsonResponse($image);
     }
@@ -96,42 +83,40 @@ class CommunityForumsController extends CrudController
      * @param Request        $request
      * @param CommunityForum $forum
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws OptimisticLockException
      *
      * @return JsonResponse
      */
     public function uploadSplashImageAction(Request $request, CommunityForum $forum)
     {
-        /** @var UploadedFile $file */
         $file = $request->files->get('file');
-        if (!$file->isValid()) {
-            throw new \RuntimeException($file->getErrorMessage());
+
+        $errorList = $this->get('validator')->validateValue($file, new Image());
+
+        if (count($errorList) > 0) {
+            throw new \RuntimeException($errorList[0]->getMessage());
         }
-        /** @var DeskproBlobStorage $blobStorage */
-        $blobStorage = $this->get('deskpro.blob_storage');
-        $blob        = $blobStorage->createBlobRecordFromFile(
-            $file->getPathname(),
-            $file->getClientOriginalName(),
-            $file->getMimeType()
-        );
 
-        $splashImage = new SplashImageProperty();
-        $splashImage->setBlob($blob);
-        $splashImage->setUrn(SplashImageProperty::$blobNs.':'.$blob->getAuthId());
+        $splashImage = $this->get('splash_images_service')->createSplashImage( $request->files->get('file'));
+
+        if($splashImage instanceof \Exception){
+            throw new \RuntimeException($splashImage->getMessage());
+        }
+
         $forum->setSplashImage($splashImage);
-
         $this->getManager()->persist($splashImage);
         $this->getManager()->flush();
 
-        return new JsonResponse(['image' => $blob->getThumbnailUrl(200, true)]);
+        return new JsonResponse(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]);
     }
 
+    
     /**
      * @Rest\Delete("/{forum}/splash_image")
      *
      * @param CommunityForum $forum
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws OptimisticLockException
      *
      * @return View
      */
