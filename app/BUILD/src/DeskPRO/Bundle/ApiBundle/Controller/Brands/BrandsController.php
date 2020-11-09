@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Brands;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\BrandSetting;
 use Cloud\LegacyApiBundle\Helper\CloudBrandHelper;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
@@ -13,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\BrandType;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -139,6 +141,14 @@ class BrandsController extends CrudController
 
         $view = View::create($this->wrap($brand), Response::HTTP_CREATED);
         $view->setLocation($this->getLocationUrl($brand, $request));
+
+        /** @var \Application\DeskPRO\EntityRepository\BrandSetting $settingsRepository */
+        $settingsRepository = $this->getRepository(BrandSetting::class);
+        $settingsRepository
+            ->updateSetting(MessengerSettingsResolver::CHAT_ENABLED, false, $brand)
+            ->updateSetting(MessengerSettingsResolver::EMBED_ENABLED_ON_PORTAL, false, $brand)
+            ->updateSetting(MessengerSettingsResolver::TICKETS_ENABLED, false, $brand)
+            ;
 
         if (defined('DPC_IS_CLOUD')) {
             CloudBrandHelper::flushBrandDomains();

@@ -72,13 +72,13 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
      * @param UrlHostChecker     $urlHostChecker
      */
     public function __construct(
-        BrandStack         $brandStack,
-        SettingsResolver   $settingsResolver,
-        BrandRepo          $brandRepository,
+        BrandStack $brandStack,
+        SettingsResolver $settingsResolver,
+        BrandRepo $brandRepository,
         DefaultBrandFinder $defaultBrandFinder,
-        PortalModeStorage  $modeStorage,
-        LoggerInterface    $logger,
-        UrlHostChecker     $urlHostChecker
+        PortalModeStorage $modeStorage,
+        LoggerInterface $logger,
+        UrlHostChecker $urlHostChecker
     ) {
         $this->brandStack         = $brandStack;
         $this->settingsResolver   = $settingsResolver;
@@ -193,8 +193,8 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
     public static function getSubscribedEvents()
     {
         return [
-            // high priority, must be called BEFORE RouterListener
-            KernelEvents::REQUEST => ['onKernelRequest', 34],
+            // high priority, must be called BEFORE RouterListener and BEFORE CorsListener
+            KernelEvents::REQUEST => ['onKernelRequest', 300],
         ];
     }
 }
