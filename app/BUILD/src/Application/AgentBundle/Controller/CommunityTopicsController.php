@@ -110,7 +110,7 @@ class CommunityTopicsController extends AbstractController
                 [
                     'counts'                    => $counts,
                     'status_counts'             => $statusCounts,
-                    'channel_counts'            => $forumCounts,
+                    'forum_counts'              => $forumCounts,
                     'community_forums'          => $communityForums,
                     'active_status_cats'        => $activeStatusCategories,
                     'closed_status_cats'        => $closedStatusCategories,
