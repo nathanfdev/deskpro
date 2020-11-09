@@ -23,7 +23,11 @@
                                             </a>
                                         </li>
                                         <li class="dp-po-post-extra-item">
+                                            {% if app.getSetting('core_tickets.use_ref') %}
                                             <a href="{{ path('portal_tickets_pdf', {ticketRef: ticket.ref }) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.download_pdf') }} - Ticket_{{ ticket.ref }}.pdf">
+                                                {% else %}
+                                                <a href="{{ path('portal_tickets_pdf', {ticketRef: ticket.id }) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.download_pdf') }} - Ticket_{{ ticket.id }}.pdf">
+                                                {% endif %}
                                                 <i class="dp-po-icon fal fa-file-pdf"></i>
                                             </a>
                                         </li>
