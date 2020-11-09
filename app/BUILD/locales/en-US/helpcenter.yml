@@ -503,6 +503,7 @@ helpcenter.general.prop_views_asc: 'Least views first'
 helpcenter.general.prop_views_desc: 'Most views first'
 helpcenter.general.published: Published
 helpcenter.general.published_by: 'Published by <strong>{person_name}</strong>'
+helpcenter.general.authored_by: 'Authored by <strong>{person_name}</strong>'
 helpcenter.general.rate_page_negative: Unhelpful
 helpcenter.general.rate_page_positive: Helpful
 helpcenter.general.rating_x_of_y_found_helpful: '{vote_up} of {vote_count} people found this page helpful'
