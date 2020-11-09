@@ -78,7 +78,7 @@ class GuideSelector extends React.Component {
 
   render() {
     const { guides, mode } = this.state;
-    const { fixed, selectGuide, sizes } = this.props;
+    const { fixed, selectGuide, sizes, guideSlug } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -87,7 +87,7 @@ class GuideSelector extends React.Component {
 
     const reverseGuides = [...guides].reverse();
 
-    const activeGuide = guides.filter(g => g.slug === this.props.guideSlug)[0];
+    const activeGuide = guides.filter(g => g.slug === guideSlug)[0];
 
     return (
       <Fragment>

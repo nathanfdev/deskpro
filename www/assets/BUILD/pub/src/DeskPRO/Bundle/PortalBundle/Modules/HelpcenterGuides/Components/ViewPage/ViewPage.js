@@ -219,6 +219,13 @@ class ViewPage extends React.Component {
     $('[data-toggle="tooltip"]').tooltip(toolOptions);
   }
 
+  handlePageLink = (e, path) => {
+    e.preventDefault();
+    browserHistory.push(path);
+    const pageSlug = path.replace(/^(\/[^/]+)?\/guides\/.*\//, '');
+    this.grabPageFromApi(pageSlug);
+  }
+
   handleScroll = () => {
     if (this.state.fixed !== this.elements.guidesMain.getBoundingClientRect().top < 28) {
       this.setState({
@@ -249,33 +256,21 @@ class ViewPage extends React.Component {
   changeInternalLinks = () => {
     const links = document.querySelectorAll('a.internal_link.topic');
     Array.prototype.forEach.call(links, (internalLink) => {
-      let target = internalLink.pathname;
+      const target = internalLink.pathname;
       const guideSlug = target.replace(/^(\/[^/]+)?\/guides\//, '').replace(/\/.*/, '');
-      if (guideSlug !== this.state.guideSlug) {
-        const newLink = document.createElement('a');
-        newLink.className = 'internal_link topic';
-        newLink.onclick = e => this.internalLink(e, target);
-        newLink.href = '#';
-        if (internalLink.hash) {
-          target += internalLink.hash;
-        }
-        newLink.innerHTML = `<i class="fas fa-book"></i> ${internalLink.text}`;
+      const newLink = document.createElement('span');
+      const link = (
+        <a
+          className="internal_link topic"
+          onClick={guideSlug !== this.state.guideSlug ? e => this.internalLink(e, target) : e => this.handlePageLink(e, target)}
+        >
+          <FontAwesomeIcon icon={['fas', 'book']} />
+          {internalLink.text}
+        </a>
+      );
+      ReactDOM.render(link, newLink, () => {
         internalLink.parentNode.replaceChild(newLink, internalLink);
-      } else {
-        const newLink = document.createElement('span');
-        const link = (
-          <Link
-            to={internalLink.pathname}
-            className="internal_link topic"
-            onClick={this.handleClick}
-          >
-            {internalLink.text}
-          </Link>
-        );
-        ReactDOM.render(link, newLink, () => {
-          internalLink.parentNode.replaceChild(newLink, internalLink);
-        });
-      }
+      });
     });
   };
 
