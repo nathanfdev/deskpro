@@ -84,7 +84,7 @@ class CommunityDataService extends AbstractDataService
 
         return $this->generateAndCache([__FUNCTION__, $topicIds, $activityCount], function () use ($topicIds, $activityCount) {
             $selects = array_map(function ($id) use ($activityCount) {
-                return sprintf('(SELECT id FROM community_topic_comments WHERE topic_id = %d ORDER BY date_created LIMIT %d)', $id, $activityCount);
+                return sprintf('(SELECT id FROM community_topic_comments WHERE topic_id = %d ORDER BY date_created DESC LIMIT %d)', $id, $activityCount);
             }, $topicIds);
 
             $commentIds = $this->em->getConnection()

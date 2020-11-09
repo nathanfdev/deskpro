@@ -91,11 +91,11 @@ export class HcMobileFilters extends React.Component {
             <input
               type="checkbox"
               className="form-check-input cursor-pointer"
-              id={`activity-${activityId}`}
+              id={`mobile-activity-${activityId}`}
               checked={includes(this.props.filter.activities, activityId)}
               onChange={() => this.props.onSetActivity(activityId)}
             />
-            <label className="form-check-label" htmlFor={`activity-${activityId}`}>{activity}</label>
+            <label className="form-check-label" htmlFor={`mobile-activity-${activityId}`}>{activity}</label>
             <i className={`dp-po-icon fad ${HcFilterFacets.activityIconMap[activityId]}`} />
           </div>)}
         <hr />

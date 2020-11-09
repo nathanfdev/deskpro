@@ -236,6 +236,8 @@ class AvatarResolver
                 $org_url = $this->getCommonAvatar($person->getOrganization(), $size);
                 if ($org_url) {
                     $url .= '&d='.urlencode($org_url);
+                } else {
+                    $url .= '&d=mp';
                 }
             }
         } elseif ($person->getOrganization()) {
