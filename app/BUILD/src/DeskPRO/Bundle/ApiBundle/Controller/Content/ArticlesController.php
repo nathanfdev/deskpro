@@ -5,9 +5,11 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Form\Type\IconPropertyType;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Form\Type\Content\ArticleType;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -16,6 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Image;
+use Exception;
 
 /**
  * Class ArticlesController.
@@ -107,6 +110,58 @@ class ArticlesController extends AbstractContentController
         } else {
             parent::applyListGroupBy($qb, $alias, $groupBy, $request);
         }
+    }
+
+    /**
+     * Set icon for article.
+     *
+     *
+     * @ApiDoc(
+     *     section="Articles",
+     *     description="set Icon",
+     *     requirements={
+     *          {
+     *              "name"="article",
+     *              "requirement"="\d+",
+     *              "description"="the id of article",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     input="DeskPRO\Bundle\ApiBundle\Form\Type\IconPropertyType",
+     *     output="object",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     *
+     * @Rest\Post("/{article}/icon")
+     *
+     * @param Request $request
+     * @param Article $article
+     * @return View|JsonResponse
+     *
+     * @throws ConnectionException
+     */
+    public function setIconAction(Request $request, Article $article)
+    {
+        $form = $this->createForm(IconPropertyType::class);
+
+        $form->submit($request->request->all());
+        $this->getManager()->getConnection()->beginTransaction();
+        try {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $icon = $this->get('images_service')->setIconBlob($form->getData());
+                $article->setIcon($icon);
+                $this->getManager()->persist($icon);
+                $this->getManager()->flush();
+                $this->getManager()->commit();
+            }
+        } catch (Exception $e) {
+            $this->getManager()->getConnection()->rollBack();
+            return new JsonResponse($e->getMessage());
+        }
+        
+        return new View($this->wrap($icon));
     }
 
     /**

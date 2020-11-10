@@ -2,12 +2,15 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
 
+use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Form\Type\IconPropertyType;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Type\Content\GuideType;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\OptimisticLockException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -17,6 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Image;
+use Exception;
 
 /**
  * Class GuideController.
@@ -100,8 +104,8 @@ class GuideController extends AbstractCategoriesController
 
         foreach ($tree as $topic) {
             $q = $em->createQuery('
-              UPDATE '.Topic::class.' t 
-              SET 
+              UPDATE '.Topic::class.' t
+              SET
                 t.display_order = :display_order, t.parent = :parent_id WHERE t.id = :id');
             $q->execute([
                 'display_order' => $topic['display_order'],
@@ -159,6 +163,59 @@ class GuideController extends AbstractCategoriesController
     {
         return $this->wrap($guide);
     }
+
+    /**
+     * Set icon  for download.
+     *
+     *
+     * @ApiDoc(
+     *     section="Guide",
+     *     description="set Icon",
+     *     requirements={
+     *          {
+     *              "name"="guide",
+     *              "requirement"="\d+",
+     *              "description"="the id of guide",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     input="DeskPRO\Bundle\ApiBundle\Form\Type\IconPropertyType",
+     *     output="object",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     *
+     * @Rest\Post("/{guide}/icon")
+     *
+     * @param Request $request
+     * @param Guide $guide
+     * @return View|JsonResponse
+     *
+     * @throws ConnectionException
+     */
+    public function setIconAction(Request $request, Guide $guide)
+    {
+        $form = $this->createForm(IconPropertyType::class);
+
+        $form->submit($request->request->all());
+        $this->getManager()->getConnection()->beginTransaction();
+        try {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $icon = $this->get('images_service')->setIconBlob($form->getData());
+                $guide->setIcon($icon);
+                $this->getManager()->persist($icon);
+                $this->getManager()->flush();
+                $this->getManager()->commit();
+            }
+        } catch (Exception $e) {
+            $this->getManager()->getConnection()->rollBack();
+            return new JsonResponse($e->getMessage());
+        }
+
+        return new View($this->wrap($icon));
+    }
+
 
     /**
      * @ApiDoc(

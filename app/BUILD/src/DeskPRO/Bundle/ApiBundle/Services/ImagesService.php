@@ -3,7 +3,9 @@
 namespace DeskPRO\Bundle\ApiBundle\Services;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Component\Util\IpUtils;
 use Doctrine\ORM\EntityManager;
@@ -110,6 +112,34 @@ class ImagesService
                 ],
             ]);
 
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+
+    /**
+     * @param IconProperty $icon
+     * @return IconProperty|Exception
+     */
+    public function setIconBlob(IconProperty $icon)
+    {
+        try {
+            if ($icon->getUrnNs() === IconProperty::$blobNs) {
+                $authId = $icon->getUrnPath();
+                $blob   = $this->em->getRepository(Blob::class)->getByAuthId($authId);
+                if ($blob) {
+                    $rawFile = $this->blobStorage->copyBlobRecordToString($blob);
+                    $blob    = $this->blobStorage->createBlobRecordFromString(
+                        $rawFile,
+                        $blob->getFilename(),
+                        $blob->getContentType()
+                    );
+                    $icon->setBlob($blob);
+                }
+            }
+
+            return $icon;
         } catch (Exception $e) {
             return $e;
         }
