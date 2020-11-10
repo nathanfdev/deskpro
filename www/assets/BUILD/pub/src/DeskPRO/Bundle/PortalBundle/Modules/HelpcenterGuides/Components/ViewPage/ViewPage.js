@@ -43,7 +43,7 @@ class ViewPage extends React.Component {
       menuVisible:   false,
       flashes:       [],
       childrenPages: page.children,
-      sizes:           {},
+      sizes:         {},
       guide,
       guideSlug,
       loaded,
@@ -152,8 +152,10 @@ class ViewPage extends React.Component {
       while (parentId !== null) {
         // eslint-disable-next-line no-loop-func
         const parent = pageList.find(p => p.id === parentId);
-        hierarchy.push(parent);
-        parentId = parent.parent_id;
+        if (parent) {
+          hierarchy.push(parent);
+          parentId = parent.parent_id;
+        }
       }
     }
     let i = ol.childNodes.length;
@@ -217,6 +219,13 @@ class ViewPage extends React.Component {
     $('[data-toggle="tooltip"]').tooltip(toolOptions);
   }
 
+  handlePageLink = (e, path) => {
+    e.preventDefault();
+    browserHistory.push(path);
+    const pageSlug = path.replace(/^(\/[^/]+)?\/guides\/.*\//, '');
+    this.grabPageFromApi(pageSlug);
+  }
+
   handleScroll = () => {
     if (this.state.fixed !== this.elements.guidesMain.getBoundingClientRect().top < 28) {
       this.setState({
@@ -247,34 +256,21 @@ class ViewPage extends React.Component {
   changeInternalLinks = () => {
     const links = document.querySelectorAll('a.internal_link.topic');
     Array.prototype.forEach.call(links, (internalLink) => {
-      let target = internalLink.pathname;
+      const target = internalLink.pathname;
       const guideSlug = target.replace(/^(\/[^/]+)?\/guides\//, '').replace(/\/.*/, '');
-      if (true || guideSlug !== this.state.guideSlug) {
-        const newLink = document.createElement('a');
-        newLink.className = 'internal_link topic';
-        newLink.onclick = e => this.internalLink(e, target);
-        newLink.href = '#';
-        if (internalLink.hash) {
-          target += internalLink.hash;
-        }
-        console.log(internalLink);
-        newLink.innerHTML = `<i class="fas fa-book"></i> ${internalLink.text}`;
+      const newLink = document.createElement('span');
+      const link = (
+        <a
+          className="internal_link topic"
+          onClick={guideSlug !== this.state.guideSlug ? e => this.internalLink(e, target) : e => this.handlePageLink(e, target)}
+        >
+          <FontAwesomeIcon icon={['fas', 'book']} />
+          {internalLink.text}
+        </a>
+      );
+      ReactDOM.render(link, newLink, () => {
         internalLink.parentNode.replaceChild(newLink, internalLink);
-      } else {
-        const newLink = document.createElement('span');
-        const link = (
-          <Link
-            to={internalLink.pathname}
-            className="internal_link topic"
-            onClick={this.handleClick}
-          >
-            {internalLink.text}
-          </Link>
-        );
-        ReactDOM.render(link, newLink, () => {
-          internalLink.parentNode.replaceChild(newLink, internalLink);
-        });
-      }
+      });
     });
   };
 
@@ -379,10 +375,25 @@ class ViewPage extends React.Component {
           return;
         }
 
-        const pageList = response.data.data;
-        this.setState({
-          pageList,
-        });
+        let guides = [];
+        if (window.guides) {
+          guides = JSON.parse(window.guides);
+        }
+        if (!Array.isArray(guides)) {
+          guides = Object.values(guides);
+        }
+        const newState = {};
+
+        const guide = guides.find(g => g.slug === guideSlug);
+
+        if (guide) {
+          newState.guide = guide;
+        }
+
+        newState.pageList = response.data.data;
+        this.setState(newState);
+        const pageSlug = path.replace(/^(\/[^/]+)?\/guides\/.*\//, '');
+        this.grabPageFromApi(pageSlug);
       });
     } else {
       const pageSlug = path.replace(/^(\/[^/]+)?\/guides\/.*\//, '');
