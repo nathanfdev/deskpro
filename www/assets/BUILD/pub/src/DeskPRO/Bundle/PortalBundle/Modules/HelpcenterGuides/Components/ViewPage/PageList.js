@@ -69,10 +69,13 @@ class PageList extends React.Component {
     if (page.slug === pageSlug || Object.values(page.children).find(c => this.isExpandedPage(c, true))) {
       return true;
     }
-    if (!recursive && typeof expanded[page.id] !== 'undefined') {
+    if (recursive) {
+      return false;
+    }
+    if (typeof expanded[page.id] !== 'undefined') {
       return expanded[page.id];
     }
-    return !!(recursive && typeof expanded[page.id] !== 'undefined' && expanded[page.id]);
+    return false;
   };
 
   grabPageFromApi = (slug) => {
@@ -187,7 +190,7 @@ class PageList extends React.Component {
         return PageList.renderNoResults();
       }
       return (
-        <Scrollbars autoHide>
+        <Scrollbars>
           <div className="dp-po-guides-search-content accordion">
             {renderedPages}
           </div>
@@ -195,7 +198,7 @@ class PageList extends React.Component {
       );
     }
     return (
-      <Scrollbars autoHide>
+      <Scrollbars>
         <div className="dp-po-guides-search-main">
           {this.renderPages(pages, 0, false, 1)}
         </div>

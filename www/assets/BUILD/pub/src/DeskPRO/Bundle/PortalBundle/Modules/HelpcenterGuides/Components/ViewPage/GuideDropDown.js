@@ -81,7 +81,6 @@ class GuideDropDown extends React.PureComponent {
         <ClickOut onClickOut={this.onClickOut}>
           <div className="dp-po-guides-dropdown-menu" style={{ display: opened ? 'block' : 'none' }}>
             <Scrollbars
-              autoHide
               autoHeight
               autoHeightMax={320}
             >
