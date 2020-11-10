@@ -13,9 +13,12 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\MessengerBundle\Form\Type\Settings\MessengerType;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatSettingsUpdatedEvent;
 use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver as MSR;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChat;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception\InvalidArgumentException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,16 +78,17 @@ class AdminController extends AbstractBrandAwareSettingsController
      * @Rest\Post("/setup")
      *
      * @param Request $request
-     * @param Brand   $brand
-     *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @param Brand $brand
      *
      * @return View
+     * @throws DBALException
+     * @throws InvalidArgumentException
      */
     public function postSettingsAction(Request $request, Brand $brand)
     {
-        $this->handleForm($request, $this->getModel($brand));
+        $brand = $this->handleForm($request, $this->getModel($brand));
+
+        $this->get('event_dispatcher')->dispatch(ChatSettingsUpdatedEvent::CHAT_SETTINGS_UPDATED, new ChatSettingsUpdatedEvent($brand));
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -203,10 +207,10 @@ CODE;
      * @param Request                    $request
      * @param AbstractBrandAwareSettings $model
      *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @return Brand
+     *@throws InvalidArgumentException
      *
-     * @return View|void
+     * @throws DBALException
      */
     protected function handleForm(Request $request, AbstractBrandAwareSettings $model)
     {
@@ -227,7 +231,7 @@ CODE;
             throw new InvalidFormException($form);
         }
 
-        $this->persistModel($model);
+        return  $this->persistModel($model);
     }
 
     private function updateTranslations($translations, AbstractBrandAwareSettings $model)
@@ -275,10 +279,11 @@ CODE;
     }
 
     /**
-     * @param MessengerSettings $model
+     * @param AbstractBrandAwareSettings $model
      *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @return Brand
+     * @throws DBALException
+     * @throws InvalidArgumentException
      */
     protected function persistModel(AbstractBrandAwareSettings $model)
     {
@@ -358,5 +363,7 @@ CODE;
         ;
 
         $this->container->get('doctrine.orm.default_entity_manager')->flush();
+
+        return $brand;
     }
 }

@@ -52,6 +52,14 @@ services:
     tags:
       - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 150}
 
+  messenger.chat_settings_subscriber:
+    class: DeskPRO\Bundle\MessengerBundle\Notification\EventListener\ChatSettingsSubscriber
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@messenger.service.settings_resolver"
+    tags:
+      - { name: 'kernel.event_subscriber' }
+
   tickets.messenger_new_ticket:
     class: DeskPRO\Bundle\MessengerBundle\Service\NewTicketService
     arguments:
