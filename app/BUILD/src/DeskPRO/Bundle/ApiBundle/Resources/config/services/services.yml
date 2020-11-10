@@ -85,8 +85,8 @@ services:
     arguments:
       - "@ticketfilters.queryparser"
 
-  splash_images_service:
-    class: DeskPRO\Bundle\ApiBundle\Services\SplashImageService
+  images_service:
+    class: DeskPRO\Bundle\ApiBundle\Services\ImagesService
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@deskpro.blob_storage"

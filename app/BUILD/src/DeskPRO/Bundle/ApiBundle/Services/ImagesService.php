@@ -13,9 +13,9 @@ use GuzzleHttp\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
- * Class SplashImageService.
+ * Class ImagesService.
  */
-class SplashImageService
+class ImagesService
 {
     /**
      * @var DeskproBlobStorage
@@ -31,7 +31,7 @@ class SplashImageService
     private SettingsResolver $settingResolver;
 
     /**
-     * SplashImageService constructor.
+     * ImagesService constructor.
      *
      * @param EntityManager $em
      * @param DeskproBlobStorage $blobStorage

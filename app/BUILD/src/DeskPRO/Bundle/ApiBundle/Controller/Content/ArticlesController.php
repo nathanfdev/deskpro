@@ -141,7 +141,7 @@ class ArticlesController extends AbstractContentController
             throw new \RuntimeException($errorList[0]->getMessage());
         }
 
-        $splashImage = $this->get('splash_images_service')->createSplashImage($request->files->get('file'));
+        $splashImage = $this->get('images_service')->createSplashImage($request->files->get('file'));
 
         if ($splashImage instanceof \Exception) {
             throw new \RuntimeException($splashImage->getMessage());
@@ -163,7 +163,7 @@ class ArticlesController extends AbstractContentController
      *     description="set Splash Image",
      *     requirements={
      *          {
-     *              "name"="forum",
+     *              "name"="article",
      *              "requirement"="\d+",
      *              "description"="the id of article",
      *              "dataType"="integer"
@@ -188,7 +188,7 @@ class ArticlesController extends AbstractContentController
     {
         $image = json_decode($request->request->get('image'));
 
-        $splashImage = $this->get('splash_images_service')->setSplashImage($image);
+        $splashImage = $this->get('images_service')->setSplashImage($image);
 
         if($splashImage instanceof \Exception){
             throw new \RuntimeException($splashImage->getMessage());

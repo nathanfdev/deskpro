@@ -65,7 +65,7 @@ class CommunityForumsController extends CrudController
     {
         $image = json_decode($request->request->get('image'));
 
-        $splashImage = $this->get('splash_images_service')->setSplashImage($image);
+        $splashImage = $this->get('images_service')->setSplashImage($image);
 
         if($splashImage instanceof \Exception){
             throw new \RuntimeException($splashImage->getMessage());
@@ -97,7 +97,7 @@ class CommunityForumsController extends CrudController
             throw new \RuntimeException($errorList[0]->getMessage());
         }
 
-        $splashImage = $this->get('splash_images_service')->createSplashImage( $request->files->get('file'));
+        $splashImage = $this->get('images_service')->createSplashImage( $request->files->get('file'));
 
         if($splashImage instanceof \Exception){
             throw new \RuntimeException($splashImage->getMessage());

@@ -192,7 +192,7 @@ class GuideController extends AbstractCategoriesController
             throw new \RuntimeException($errorList[0]->getMessage());
         }
 
-        $splashImage = $this->get('splash_images_service')->createSplashImage($request->files->get('file'));
+        $splashImage = $this->get('images_service')->createSplashImage($request->files->get('file'));
 
         if ($splashImage instanceof \Exception) {
             throw new \RuntimeException($splashImage->getMessage());
@@ -240,7 +240,7 @@ class GuideController extends AbstractCategoriesController
     {
         $image = json_decode($request->request->get('image'));
 
-        $splashImage = $this->get('splash_images_service')->setSplashImage($image);
+        $splashImage = $this->get('images_service')->setSplashImage($image);
 
         if($splashImage instanceof \Exception){
             throw new \RuntimeException($splashImage->getMessage());
