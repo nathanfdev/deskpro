@@ -763,7 +763,8 @@ class TicketsController extends AbstractController
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      *
      * @param Request $request
-     * @param string  $ticketRef
+     * @param string $ticketRef
+     * @return Response
      */
     public function pdfAction(Request $request, $ticketRef = null)
     {
@@ -801,7 +802,7 @@ class TicketsController extends AbstractController
             'ticket_messages_block' => $ticketMessagesBlock,
             'layout'                => $viewLayout,
             'custom_fields'         => $customFields,
-        ]);
+        ], false);
 
         /** @var PdfRendererInterface $pdfRenderer */
         $pdfRenderer = $this->get('pdf_renderer');

@@ -145,7 +145,13 @@ class AbstractController extends BaseController
         return $this->getThemeViewFactory()->createView($options);
     }
 
-    public function renderThemeView($template_name, array $options = [])
+    /**
+     * @param $template_name
+     * @param array $options
+     * @param bool $useRender
+     * @return string|Response|null
+     */
+    public function renderThemeView($template_name, array $options = [], $useRender = true)
     {
         $pageVars = [
             'page' => $this->createThemeView($options),
@@ -202,7 +208,7 @@ class AbstractController extends BaseController
             $pageVars['pg'] = $pg;
         }
 
-        return $this->render($template_name, $pageVars);
+        return ($useRender) ?  $this->render($template_name, $pageVars) : $this->renderView($template_name, $pageVars);
     }
 
     public function loadFlashes()
