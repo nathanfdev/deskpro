@@ -60,7 +60,7 @@
 										<span
 												class="translate-button"
 												tooltip="{{ phrase('adm.general.translate') }}"
-												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_community_forum_title.' + CommunityForumsEdit.community_forum.id }"
+												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_communityforum.' + CommunityForumsEdit.community_forum.id + '_title'}"
 										></span>
 									{% endif %}
 								<span class="help-block">
@@ -84,8 +84,9 @@
 										<span
 												class="translate-button"
 												tooltip="{{ phrase('adm.general.translate') }}"
-												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_community_forum_noun.' + CommunityForumsEdit.community_forum.id }"
-										></span>
+												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_communityforum.' + CommunityForumsEdit.community_forum.id + '_noun'}">
+
+										</span>
 									{% endif %}
 								<span class="help-block">
 									{{ phrase('adm.community_forums.noun_explain') }}
@@ -108,8 +109,7 @@
 										<span
 												class="translate-button"
 												tooltip="{{ phrase('adm.general.translate') }}"
-												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_community_forum_plural.' + CommunityForumsEdit.community_forum.id }"
-										></span>
+												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_communityforum.' + CommunityForumsEdit.community_forum.id + '_plural'}"></span>
 									{% endif %}
 								<span class="help-block">
 									{{ phrase('adm.community_forums.plural_explain') }}
@@ -132,8 +132,7 @@
 										<span
 												class="translate-button"
 												tooltip="{{ phrase('adm.general.translate') }}"
-												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_community_forum_verb_action.' + CommunityForumsEdit.community_forum.id }"
-										></span>
+												dp-open-phrase-editor="{ context: 'agent', phraseId: 'obj_communityforum.' + CommunityForumsEdit.community_forum.id + '_verb_action'}"></span>
 									{% endif %}
 								<span class="help-block">
 									{{ phrase('adm.community_forums.verb_explain') }}

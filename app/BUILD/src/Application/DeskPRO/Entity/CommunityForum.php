@@ -250,8 +250,14 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     {
         if ($property === 'noon') {
             return $this->getNoun();
-        } elseif ($property === 'plural') {
+        }
+
+        if ($property === 'plural') {
             return $this->getPlural();
+        }
+
+        if((null !== $property) && property_exists($this, $property)){
+                return $this->$property;
         }
 
         return parent::getPhraseDefault($property, $translate);

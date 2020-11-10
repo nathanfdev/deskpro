@@ -6,7 +6,7 @@
                     {{ render_icon_from(current_forum, {as_download_url: true, is_rounded: true}) }}
                 </span>
             {% endif %}
-            {{ current_forum.title }}
+            {{ phrase_object(current_forum) }}
             <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
         </a>
     {% endif %}
@@ -16,7 +16,7 @@
                 {% if forum.icon_property %}
                     {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
                 {% endif %}
-                {{ forum.title }}
+                {{ phrase_object(forum) }}
             </a>
         {% endfor %}
     </div>
