@@ -9,5 +9,8 @@
     <dd>{{ file.readable_file_size}}</dd>
     <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.downloads.total_downloads') }}</dt>
     <dd>{{ file.num_downloads }}</dd>
+    {% if custom_data | length %}
+        {% include 'Theme:PublishCommon:custom-data-sidebar-list.html.twig' %}
+    {% endif %}
 </dl>
 
