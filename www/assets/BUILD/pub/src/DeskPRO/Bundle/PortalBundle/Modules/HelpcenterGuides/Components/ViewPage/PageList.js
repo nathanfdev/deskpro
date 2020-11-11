@@ -3,6 +3,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import Isvg from 'react-inlinesvg';
+import { Scrollbars } from 'react-custom-scrollbars';
 import Highlighter from 'react-highlight-words';
 import guideDefault from '@deskpro/portal-style/dist/img/page-icons/guide-default.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -68,10 +69,13 @@ class PageList extends React.Component {
     if (page.slug === pageSlug || Object.values(page.children).find(c => this.isExpandedPage(c, true))) {
       return true;
     }
-    if (!recursive && typeof expanded[page.id] !== 'undefined') {
+    if (recursive) {
+      return false;
+    }
+    if (typeof expanded[page.id] !== 'undefined') {
       return expanded[page.id];
     }
-    return !!(recursive && typeof expanded[page.id] !== 'undefined' && expanded[page.id]);
+    return false;
   };
 
   grabPageFromApi = (slug) => {
@@ -111,8 +115,8 @@ class PageList extends React.Component {
     });
   };
 
-  renderPages(pages, depth = 0, collapse = false) {
-    const { guideSlug, pageSlug } = this.props;
+  renderPages(pages, depth = 0, collapse = false, delta = 0) {
+    const { guideSlug, pageSlug, pages: pageList } = this.props;
     const { filter, expanded } = this.state;
     const unfilteredPages = pages.filter(t => depth > 0 || t.depth === depth);
     const renderedPages = unfilteredPages
@@ -122,11 +126,13 @@ class PageList extends React.Component {
         <PageListItem
           key={page.slug}
           page={page}
+          pageList={pageList}
           guideSlug={guideSlug}
           pageSlug={pageSlug}
           path={this.state.path}
           grabPageFromApi={this.grabPageFromApi}
           filter={filter}
+          delta={delta}
           filterPage={this.filterPage}
           togglePage={this.togglePage}
           expanded={!!(this.isExpandedPage(page))}
@@ -184,12 +190,20 @@ class PageList extends React.Component {
         return PageList.renderNoResults();
       }
       return (
-        <div className="dp-po-guides-search-content accordion">
-          {renderedPages}
-        </div>
+        <Scrollbars>
+          <div className="dp-po-guides-search-content accordion">
+            {renderedPages}
+          </div>
+        </Scrollbars>
       );
     }
-    return this.renderPages(pages);
+    return (
+      <Scrollbars>
+        <div className="dp-po-guides-search-main">
+          {this.renderPages(pages, 0, false, 1)}
+        </div>
+      </Scrollbars>
+    );
   }
 
   render() {

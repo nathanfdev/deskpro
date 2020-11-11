@@ -8,10 +8,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 class PageListItem extends React.Component {
   static propTypes = {
     page:            PropTypes.object,
+    pageList:        PropTypes.array,
     guideSlug:       PropTypes.string,
     pageSlug:        PropTypes.string,
     path:            PropTypes.string,
     filter:          PropTypes.string,
+    delta:           PropTypes.number,
     expanded:        PropTypes.bool,
     expandedList:    PropTypes.object,
     grabPageFromApi: PropTypes.func,
@@ -24,8 +26,9 @@ class PageListItem extends React.Component {
   };
 
   getLevelPrefix = (delta = 0) => {
-    const { page } = this.props;
-    switch (page.depth + delta) {
+    const { page, pageList } = this.props;
+    const depthPage = pageList.find(p => p.id === page.id);
+    switch (depthPage.depth + delta) {
       case 0:
         return '';
       case 1:
@@ -57,11 +60,11 @@ class PageListItem extends React.Component {
   }
 
   renderChildren = () => {
-    const { page, guideSlug, pageSlug, expandedList, filter, filterPage, togglePage, grabPageFromApi } = this.props;
+    const { page, pageList, guideSlug, pageSlug, expandedList, filter, filterPage, togglePage, grabPageFromApi, delta } = this.props;
     if (!Object.values(page.children).length) {
       return null;
     }
-    const prefix = this.getLevelPrefix(1);
+    const prefix = this.getLevelPrefix(delta);
     const style = {};
     if (!this.isExpanded()) {
       style.display = 'none';
@@ -78,6 +81,8 @@ class PageListItem extends React.Component {
             <PageListItem
               key={child.slug}
               page={child}
+              pageList={pageList}
+              delta={delta}
               guideSlug={guideSlug}
               pageSlug={pageSlug}
               path={this.props.path}
@@ -96,14 +101,14 @@ class PageListItem extends React.Component {
   };
 
   render() {
-    const { page, pageSlug, guideSlug, togglePage, expanded, filter } = this.props;
+    const { page, pageSlug, guideSlug, togglePage, expanded, filter, delta } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
       baseUrl = baseUrl.replace(/\/+$/, '');
     }
 
-    const prefix = this.getLevelPrefix();
+    const prefix = this.getLevelPrefix(delta);
     if (page.no_content === '1') {
       return (
         <li className={`dp-po-guides-search-content-${prefix}item`} key={page.slug}>
