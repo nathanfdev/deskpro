@@ -38,7 +38,8 @@ class MarkdownEditor extends React.Component {
     return html
       .replace(/\{\{ img\(([^)]+)\) }}/g, '/file.php/$1')
       .replace(/\{\{ content\(([^)]+)\) }}/g, '#')
-      .replace(/\{\{\s*content_link\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}/g, '<a href="#">$1:$2</a>');
+      .replace(/\{\{\s*content_link\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}/g, '<a href="#">$1:$2</a>')
+      .replace(/\{\{\s*\[([^\]]*)\]content\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}/g, '<a href="#">$1</a>');
   }
 
   static toMarkdown(html) {

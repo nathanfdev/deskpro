@@ -29,6 +29,7 @@ class LinkMenu extends React.Component {
       title:   '',
       url:     '',
       content: '',
+      contentTitle: '',
     };
   }
 
@@ -90,12 +91,18 @@ class LinkMenu extends React.Component {
     });
   };
 
+  setContentTitle = (contentTitle) => {
+    this.setState({
+      contentTitle
+    });
+  };
+
   insert = () => {
-    const { title, url, content } = this.state;
+    const { title, url, content, contentTitle } = this.state;
     let link = '';
     if (content) {
-      if (title) {
-        link = `[${title}]{{ content(${content.type},${content.value}) }}`;
+      if (contentTitle) {
+        link = `{{ [${contentTitle}]content(${content.type},${content.value}) }}`;
       } else {
         link = `{{ content_link(${content.type},${content.value}) }}`;
       }
@@ -122,6 +129,8 @@ class LinkMenu extends React.Component {
           </FormattedMessage>
           <br />
           <br />
+          <label htmlFor="content_link_to_title"><FormattedMessage id="agent.general.title" />: </label><br />
+          <Input type="text" id="content_link_to_title" value={this.state.contentTitle} onChange={this.setContentTitle} /><br />
           <label htmlFor="content_link_select"><FormattedMessage id="agent.guides.content_link" />:</label><br />
           <FormattedMessage id="agent.guides.select_a_content">
             {placeholder => (
