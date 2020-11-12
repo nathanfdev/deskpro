@@ -997,6 +997,11 @@ class DeskproBlobStorage implements Loggable
         $blob = $this->getBlobFromBlobRecord($blob_entity);
 
         try {
+            $childrens = $this->em->getRepository('DeskPRO:Blob')->findBy(['original_blob' => $blob_entity->getId()]);
+            foreach ($childrens as $entity) {
+                $this->deleteBlobRecord($entity, $ex_on_error);
+            }
+
             $this->deleteBlob($blob, $blob_entity->storage_loc);
             $this->em->remove($blob_entity);
             $this->em->flush();
