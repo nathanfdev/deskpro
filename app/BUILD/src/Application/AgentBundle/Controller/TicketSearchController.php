@@ -1701,20 +1701,20 @@ class TicketSearchController extends AbstractController
         $chunkSize = 1024;
         $page      = 1;
 
-        // This behaves unexpectly. If the total number of tickets is less than the page size it will always return all
-        // of the tickets regardless of the page setting.
-        if ($vars['is_grouped_result']) {
-            $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page, $chunkSize);
-        } else {
-            $tickets = $results_helper->getTicketsForPage($page, $chunkSize);
-        }
-        $vars['ticket_display'] = new TicketResultsDisplay($tickets);
-        $vars['ticket_display']->setPersonContext($this->person);
+        do {
+            // This behaves unexpectly. If the total number of tickets is less than the page size it will always return all
+            // of the tickets regardless of the page setting.
+            if ($vars['is_grouped_result']) {
+                $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page, $chunkSize);
+            } else {
+                $tickets = $results_helper->getTicketsForPage($page, $chunkSize);
+            }
+            $vars['ticket_display'] = new TicketResultsDisplay($tickets);
+            $vars['ticket_display']->setPersonContext($this->person);
 
-        while (!empty($tickets)) {
-            $ticket         = array_shift($tickets);
-            $customTextData = $fieldManager->getRenderedToTextForObject($ticket);
-            $row            = [];
+            foreach ($tickets as $ticket) {
+                $customTextData = $fieldManager->getRenderedToTextForObject($ticket);
+                $row = [];
 
             foreach ($displayFields as $displayField) {
                 switch ($displayField) {
@@ -1729,21 +1729,21 @@ class TicketSearchController extends AbstractController
                         list(, $name) = $matches;
                         $entity       = null;
 
-                        if (isset($ticket[$name])) {
-                            $entity = $ticket->{$name};
-                        }
-
-                        if ($entity) {
-                            if ($displayField == 'email_account_id') {
-                                $row[] = $entity->id;
-                                $row[] = $entity->address;
-                            } elseif ($entity) {
-                                $row[] = $entity->id;
-                                $row[] = $entity->title;
+                            if (isset($ticket[$name])) {
+                                $entity = $ticket->{$name};
                             }
-                        } else {
-                            $row[] = $row[] = '';
-                        }
+
+                            if ($entity) {
+                                if ($displayField == 'email_account_id') {
+                                    $row[] = $entity->id;
+                                    $row[] = $entity->address;
+                                } elseif ($entity) {
+                                    $row[] = $entity->id;
+                                    $row[] = $entity->title;
+                                }
+                            } else {
+                                $row[] = $row[] = '';
+                            }
 
                         break;
                     case 'person_id':
@@ -1752,13 +1752,13 @@ class TicketSearchController extends AbstractController
                         list(, $name) = $matches;
                         $entity       = $ticket->{$name};
 
-                        if ($entity) {
-                            $row[] = $entity->id;
-                            $row[] = $entity->display_name;
-                        } else {
-                            $row[] = '';
-                            $row[] = '';
-                        }
+                            if ($entity) {
+                                $row[] = $entity->id;
+                                $row[] = $entity->display_name;
+                            } else {
+                                $row[] = '';
+                                $row[] = '';
+                            }
 
                         break;
                     case 'agent_team_id':
@@ -1767,13 +1767,13 @@ class TicketSearchController extends AbstractController
                         list(, $name) = $matches;
                         $entity       = $ticket->{$name};
 
-                        if ($entity) {
-                            $row[] = $entity->id;
-                            $row[] = $entity->name;
-                        } else {
-                            $row[] = '';
-                            $row[] = '';
-                        }
+                            if ($entity) {
+                                $row[] = $entity->id;
+                                $row[] = $entity->name;
+                            } else {
+                                $row[] = '';
+                                $row[] = '';
+                            }
 
                         break;
                     case 'person_email_id':
@@ -1781,26 +1781,26 @@ class TicketSearchController extends AbstractController
                         list(, $name) = $matches;
                         $entity       = $ticket->{$name};
 
-                        if ($entity && $this->person->canViewEmails()) {
-                            $row[] = $entity->id;
-                            $row[] = $entity->email;
-                        } else {
-                            $row[] = '';
-                            $row[] = '';
-                        }
+                            if ($entity && $this->person->canViewEmails()) {
+                                $row[] = $entity->id;
+                                $row[] = $entity->email;
+                            } else {
+                                $row[] = '';
+                                $row[] = '';
+                            }
 
-                        break;
-                    case 'labels':
-                        $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
+                            break;
+                        case 'labels':
+                            $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
 
-                        break;
-                    case 'status':
-                        $row[] = VirtualTicketStatus::getById($ticket->getStatus())->getTitle();
+                            break;
+                        case 'status':
+                            $row[] = VirtualTicketStatus::getById($ticket->getStatus())->getTitle();
 
-                        break;
-                    case 'sub_status':
-                        $ticketStatus = $ticket->getTicketStatus();
-                        $row[]        = $ticketStatus instanceof VirtualTicketStatus ? '' : $ticketStatus->getTitle();
+                            break;
+                        case 'sub_status':
+                            $ticketStatus = $ticket->getTicketStatus();
+                            $row[] = $ticketStatus instanceof VirtualTicketStatus ? '' : $ticketStatus->getTitle();
 
                         break;
                     default:
@@ -1814,42 +1814,45 @@ class TicketSearchController extends AbstractController
                             list(, $name) = $matches;
                             $entity       = $ticket->{$name};
 
-                            if ($entity) {
-                                $row[] = $entity->id;
-                            } else {
-                                $row[] = '';
-                            }
-                        } else {
-                            if (isset($ticket[$displayField])) {
-                                $value = $ticket[$displayField];
-                            } else {
-                                $value = null;
-                            }
-
-                            if (is_scalar($value)) {
-                                $row[] = $value;
-                            } elseif (is_object($value)) {
-                                if ($value instanceof \DateTime) {
-                                    $dt = clone $value;
-                                    $dt->setTimezone($this->person->getDateTimezone());
-                                    $row[] = $dt->format('c');
+                                if ($entity) {
+                                    $row[] = $entity->id;
                                 } else {
                                     $row[] = '';
                                 }
                             } else {
-                                $row[] = '';
-                            }
-                        }
+                                if (isset($ticket[$displayField])) {
+                                    $value = $ticket[$displayField];
+                                } else {
+                                    $value = null;
+                                }
 
-                        break;
+                                if (is_scalar($value)) {
+                                    $row[] = $value;
+                                } elseif (is_object($value)) {
+                                    if ($value instanceof \DateTime) {
+                                        $dt = clone $value;
+                                        $dt->setTimezone($this->person->getDateTimezone());
+                                        $row[] = $dt->format('c');
+                                    } else {
+                                        $row[] = '';
+                                    }
+                                } else {
+                                    $row[] = '';
+                                }
+                            }
+
+                            break;
+                    }
                 }
+
+                fputcsv($temp, $row);
+                rewind($temp);
+                $response->setContent($response->getContent() . fgets($temp));
+                ftruncate($temp, 0);
             }
 
-            fputcsv($temp, $row);
-            rewind($temp);
-            $response->setContent($response->getContent().fgets($temp));
-            ftruncate($temp, 0);
-        }
+            ++$page;
+        } while (count($tickets) > 0);
 
         fclose($temp);
 
