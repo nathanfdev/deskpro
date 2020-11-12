@@ -1952,6 +1952,22 @@ class TemplatingExtension extends \Twig_Extension
 
                     return $this->getManualInternalLink($type, $id, '', $anchor, $pdf);
                 },
+                '|{{\s*\[([^\]]*)\]content\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}|' => function ($match) use ($pdf) {
+                    $title = trim($match[1]);
+                    $type = trim($match[2]);
+                    $id = trim($match[3]);
+                    $anchor = empty($match[4]) ? '' : trim($match[4], ", \t\n\r\0\x0B");
+
+                    return $this->getManualInternalLink($type, $id, $title, $anchor, $pdf);
+                },
+                '|%7B%7B%20\[([^\]]*)\]content\(([^,]+),([^),]+)(,[^)]+)?\)%20%7D%7D|' => function ($match) use ($pdf) {
+                    $title = trim($match[1]);
+                    $type = trim($match[2]);
+                    $id = trim($match[3]);
+                    $anchor = empty($match[4]) ? '' : trim($match[4], ", \t\n\r\0\x0B");
+
+                    return $this->getManualInternalLink($type, $id, $title, $anchor, $pdf);
+                },
             ],
             $content
         );
