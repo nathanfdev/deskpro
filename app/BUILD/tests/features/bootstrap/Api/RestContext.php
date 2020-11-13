@@ -219,8 +219,8 @@ class RestContext extends BaseContext
 
         // intercept redirection
         $client->followRedirects(false);
-        
-        $client->request($method, $this->locatePath($url), [], $file, $this->server_params, file_get_contents($file));
+
+        $client->request($method, $this->locatePath($url), [], $file, $this->server_params, file_get_contents($file['file']));
 
         $page = $this->getSession()->getPage();
         if (strtoupper($method) === 'POST') {
