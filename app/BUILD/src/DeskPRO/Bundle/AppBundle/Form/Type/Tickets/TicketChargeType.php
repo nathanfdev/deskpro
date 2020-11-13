@@ -7,6 +7,9 @@ use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCharge;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -28,13 +31,20 @@ class TicketChargeType extends AbstractType
     private $em;
 
     /**
+     * @var CustomFieldManager
+     */
+    private $fieldManager;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager      $em
+     * @param CustomFieldManager $fieldManager
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, CustomFieldManager $fieldManager)
     {
-        $this->em = $em;
+        $this->em           = $em;
+        $this->fieldManager = $fieldManager;
     }
 
     /**
@@ -42,14 +52,7 @@ class TicketChargeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('charge_time', IntegerType::class)
-            ->add('amount', NumberType::class)
-            ->add('comment', TextareaType::class, [
-                'mapped' => false,
-            ])
-        ;
-
+        $builder->addEventListener(FormEvents::POST_SET_DATA, [$this, 'onPostSetData']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
@@ -60,7 +63,8 @@ class TicketChargeType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => TicketCharge::class,
+                'data_class'      => TicketCharge::class,
+                'agent_interface' => false,
             ])
             ->setRequired([
                 'ticket',
@@ -68,6 +72,29 @@ class TicketChargeType extends AbstractType
             ])
             ->setAllowedTypes('person', Person::class)
             ->setAllowedTypes('ticket', Ticket::class)
+        ;
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSetData(FormEvent $event)
+    {
+        $form    = $event->getForm();
+        $options = $form->getConfig()->getOptions();
+
+        $form
+            ->add('charge_time', IntegerType::class)
+            ->add('amount', NumberType::class)
+            ->add('comment', TextareaType::class, [
+                'mapped' => false,
+            ])
+            ->add('fields', CombinedType::class, [
+                'forms'          => $this->getCustomDataFields($options),
+                'error_bubbling' => false,
+            ])
         ;
     }
 
@@ -120,5 +147,36 @@ class TicketChargeType extends AbstractType
                 }
             }
         }
+    }
+
+    /**
+     * @param array  $options
+     *
+     * @return array
+     */
+    private function getCustomDataFields(array $options)
+    {
+        $defs   = $this->fieldManager->getAvailableBillingDefs();
+        $fields = [];
+
+        foreach ($defs as $def) {
+            $fields[] = [
+                'name'    => $def->getId(),
+                'type'    => CustomDataType::class,
+                'options' => [
+                    'custom_def'      => $def,
+                    'property_path'   => 'custom_data',
+                    'agent_interface' => $options['agent_interface'],
+                    'inline'          => true,
+                    'ticket'          => $options['ticket'],
+
+                    // don't validate if custom field is required
+                    // because we don't use ticket layouts here in this form
+                    'check_required' => false,
+                ],
+            ];
+        }
+
+        return $fields;
     }
 }
