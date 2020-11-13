@@ -21,6 +21,7 @@ use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
+use Orb\Input\Cleaner\Cleaner;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Log\NullLogger;
 
@@ -92,6 +93,11 @@ class DashboardWidgetManager
     private $rendererRegistry;
 
     /**
+     * @var Cleaner
+     */
+    private $cleaner;
+
+    /**
      * @var LoggerInterface|null
      */
     private $logger;
@@ -102,17 +108,20 @@ class DashboardWidgetManager
      * @param EntityManager           $em
      * @param DpqlCompiler            $compiler
      * @param ReportsRendererRegistry $rendererRegistry
+     * @param Cleaner                 $cleaner
      * @param LoggerInterface         $logger
      */
     public function __construct(
         EntityManager           $em,
         DpqlCompiler            $compiler,
         ReportsRendererRegistry $rendererRegistry,
+        Cleaner                 $cleaner,
         LoggerInterface         $logger = null
     ) {
         $this->em               = $em;
         $this->compiler         = $compiler;
         $this->rendererRegistry = $rendererRegistry;
+        $this->cleaner          = $cleaner;
         $this->logger           = $logger ?: new NullLogger();
     }
 
@@ -252,6 +261,22 @@ class DashboardWidgetManager
 
         if (empty($data) || $data === '') {
             $data = null;
+        }
+        if (!empty($data['data'])) {
+            // clean xss
+            $cleanArray = function ($array) use (&$cleanArray) {
+                foreach ($array as &$item) {
+                    if (is_scalar($item)) {
+                        $item = $this->cleaner->clean($item, 'string');
+                    } elseif (is_array($item)) {
+                        $item = $cleanArray($item);
+                    }
+                }
+
+                return $array;
+            };
+
+            $data['data'] = $cleanArray($data['data']);
         }
 
         return $data;

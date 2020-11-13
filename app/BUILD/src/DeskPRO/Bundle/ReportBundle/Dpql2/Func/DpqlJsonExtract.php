@@ -42,7 +42,7 @@ class DpqlJsonExtract extends AbstractDpqlFunc
                 return 'NULL';
             }
 
-            $extracted = $this->getValueByPropertyPath($decoded, Arrays::removeEmptyString(preg_split('/[\.\[\]]+/', $pattern->string)));
+            $extracted = htmlspecialchars($this->getValueByPropertyPath($decoded, Arrays::removeEmptyString(preg_split('/[\.\[\]]+/', $pattern->string))));
             if (!$extracted) {
                 return 'NULL';
             }
