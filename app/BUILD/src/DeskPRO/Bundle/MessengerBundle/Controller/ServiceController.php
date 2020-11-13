@@ -237,7 +237,7 @@ class ServiceController extends AbstractMessengerController
         }
 
         $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
-            return [$id, $translate->phrase($id, [], $language) ?: "!$id!"];
+            return [$id, $translate->getPhraseText($id, $language, true) ?: "!$id!"];
         });
 
         return View::create($output, Response::HTTP_OK);
@@ -292,6 +292,10 @@ class ServiceController extends AbstractMessengerController
                     if (isset($ar['data']['required'])) {
                         $ar['required'] = $ar['data']['required'];
                     }
+                } elseif ($f->getFieldType() === 'workflow') {
+                    // force workflow skip for user layout
+                    // @link: https://app.clickup.com/t/2583850/DPMSGR-82
+                    continue;
                 }
                 $layoutData['fields'][] = $ar;
             }
