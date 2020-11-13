@@ -167,6 +167,16 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $content_type = '';
 
     /**
+     * Total rating for this comment.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups("details")
+     *
+     * @var string
+     */
+    protected $rating = '';
+
+    /**
      * @var ArrayCollection
      */
     protected $attachments;
@@ -583,6 +593,23 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->getStatus() == self::STATUS_VISIBLE;
     }
+
+    /**
+     * @return string
+     */
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
+    /**
+     * @param string $rating
+     */
+    public function setRating($rating)
+    {
+        $this->setModelField('rating', $rating);
+    }
+
 
     public function setParent($parent_id)
     {

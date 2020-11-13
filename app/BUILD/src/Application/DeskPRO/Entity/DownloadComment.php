@@ -150,6 +150,17 @@ class DownloadComment extends CommentAbstract
             'nullable'   => false,
             'columnName' => 'is_reviewed',
         ]);
+        $metadata->mapField(
+            [
+                'fieldName'  => 'rating',
+                'type'       => 'string',
+                'length'     => 120,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'rating',
+            ]
+        );
         $metadata->mapField([
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
