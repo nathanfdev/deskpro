@@ -1,21 +1,22 @@
 @new
-Feature: /api/v2/downloads/{id}/splash_image_upload
+Feature: /api/v2/news/{id}/splash_image_upload
   To upload splash images to article
 
   Background:
     Given I'm authenticated as admin
-    And only the following Download records exist:
-      | #  | Title         | Slug            | Content      |
-      | t1 | Test Download | test-download   | Test         |
+    And only the following News records exist:
+      | #  | Title        | Slug           | Content              | person          |
+      | t1 | Test News   | test-news       | Test Content        | {admin}         |
     And I attach image file to my request
 
   Scenario: I upload a splash image
-    When I send a POST request to "/api/v2/downloads/{t1}/splash_image_upload" with "DummyImage"
+    When I send a POST request to "/api/v2/news/{t1}/splash_image_upload" with "DummyImage"
     Then the response status code should be 200
     And the JSON node "data.image" should exist
 
-  Scenario: I try to select a splash image for downloads
-    When I send a POST request to "/api/v2/downloads/{t1}/splash_image" with body:
+
+  Scenario: I try to select a splash image for news
+    When I send a POST request to "/api/v2/news/{t1}/splash_image" with body:
     """
 {
     "image": {
