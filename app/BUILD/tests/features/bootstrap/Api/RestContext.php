@@ -248,7 +248,9 @@ class RestContext extends BaseContext
         $content        = DataContext::replace($body->getRaw(), true);
         $encodedContent = json_encode(json_decode($content));
 
-        $client->request($method, $this->locatePath($url), [], [], $this->server_params, $encodedContent);
+        $serverParams = array_merge($this->server_params, ['CONTENT_TYPE' => 'application/form-data']);
+
+        $client->request($method, $this->locatePath($url), [], [], $serverParams, $encodedContent);
         $client->followRedirects(true);
 
         $page = $this->getSession()->getPage();

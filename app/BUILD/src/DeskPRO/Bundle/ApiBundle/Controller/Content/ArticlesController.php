@@ -160,7 +160,7 @@ class ArticlesController extends AbstractContentController
             $this->getManager()->getConnection()->rollBack();
             return new JsonResponse($e->getMessage());
         }
-        
+
         return new View($this->wrap($icon));
     }
 
@@ -235,13 +235,13 @@ class ArticlesController extends AbstractContentController
      *
      * @param Request $request
      * @param Article $article
-     * @return JsonResponse
+     * @return View
      *
      * @throws OptimisticLockException
      */
     public function selectSplashImageAction(Request $request, Article $article)
     {
-        $image = json_decode($request->request->get('image'));
+        $image = $request->request->get('image');
 
         $splashImage = $this->get('images_service')->setSplashImage($image);
 
@@ -252,7 +252,7 @@ class ArticlesController extends AbstractContentController
         $article->setSplashImage($splashImage);
         $this->getManager()->flush();
 
-        return new JsonResponse($image);
+        return new View($this->wrap($image));
     }
 
 

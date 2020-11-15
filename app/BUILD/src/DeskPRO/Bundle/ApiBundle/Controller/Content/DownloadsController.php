@@ -139,7 +139,7 @@ class DownloadsController extends AbstractSingleCategoryContentController
      * @Rest\Post("/{download}/splash_image_upload")
      * @param Request $request
      * @param Download $download
-     * @return JsonResponse
+     * @return View
      * @throws OptimisticLockException
      */
     public function uploadSplashImageAction(Request $request, Download $download)
@@ -162,7 +162,7 @@ class DownloadsController extends AbstractSingleCategoryContentController
         $this->getManager()->persist($splashImage);
         $this->getManager()->flush();
 
-        return new JsonResponse(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]);
+        return new View($this->wrap(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]));
     }
 
     /**
@@ -191,7 +191,7 @@ class DownloadsController extends AbstractSingleCategoryContentController
      *
      * @param Request $request
      * @param Download $download
-     * @return JsonResponse
+     * @return View
      *
      * @throws OptimisticLockException
      */
@@ -208,7 +208,7 @@ class DownloadsController extends AbstractSingleCategoryContentController
         $download->setSplashImage($splashImage);
         $this->getManager()->flush();
 
-        return new JsonResponse($image);
+        return new View($this->wrap($image));
     }
 
     /**

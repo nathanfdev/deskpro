@@ -80,8 +80,8 @@ class ImagesService
     {
         try {
             $splashImage = new SplashImageProperty();
-            $splashImage->setUrn($splashImage::$unsplashNs . ':' . $image->id);
-            $splashImage->setOptions(['url' => $image->urls->raw]);
+            $splashImage->setUrn($splashImage::$unsplashNs . ':' . $image['id']);
+            $splashImage->setOptions(['url' => $image['urls']['raw']]);
             $this->em->persist($splashImage);
             $this->em->flush();
 
@@ -101,11 +101,11 @@ class ImagesService
     {
         try {
             $client = new Client();
-            if (!IpUtils::isUrlUserCallable($image->links->download_location)) {
+            if (!IpUtils::isUrlUserCallable($image['links']['download_location'])) {
                 throw new \InvalidArgumentException("URL is not user callable");
             }
 
-            return $client->requestAsync('GET', $image->links->download_location, [
+            return $client->requestAsync('GET', $image['links']['download_location'], [
                 'headers' => [
                     'Authorization' => 'Client-ID ' . $this->settingResolver->getGlobalSettings()->get('services.unsplash_access_key',
                             null),

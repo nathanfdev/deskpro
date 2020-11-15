@@ -139,7 +139,7 @@ class NewsController extends AbstractSingleCategoryContentController
      * @Rest\Post("/{news}/splash_image_upload")
      * @param Request $request
      * @param News $news
-     * @return JsonResponse
+     * @return View
      * @throws OptimisticLockException
      */
     public function uploadSplashImageAction(Request $request, News $news)
@@ -162,7 +162,7 @@ class NewsController extends AbstractSingleCategoryContentController
         $this->getManager()->persist($splashImage);
         $this->getManager()->flush();
 
-        return new JsonResponse(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]);
+        return new View($this->wrap(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]));
     }
 
     /**
@@ -191,13 +191,13 @@ class NewsController extends AbstractSingleCategoryContentController
      *
      * @param Request $request
      * @param News $news
-     * @return JsonResponse
+     * @return View
      *
      * @throws OptimisticLockException
      */
     public function selectSplashImageAction(Request $request, News $news)
     {
-        $image = json_decode($request->request->get('image'));
+        $image = $request->request->get('image');
 
         $splashImage = $this->get('images_service')->setSplashImage($image);
 
@@ -208,7 +208,7 @@ class NewsController extends AbstractSingleCategoryContentController
         $news->setSplashImage($splashImage);
         $this->getManager()->flush();
 
-        return new JsonResponse($image);
+        return new View($this->wrap($image));
     }
 
 

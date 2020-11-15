@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Categories;
 
-use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -165,7 +164,7 @@ class GuideController extends AbstractCategoriesController
     }
 
     /**
-     * Set icon  for download.
+     * Set icon  for guide.
      *
      *
      * @ApiDoc(
@@ -236,7 +235,7 @@ class GuideController extends AbstractCategoriesController
      * @Rest\Post("/{guide}/splash_image_upload")
      * @param Request $request
      * @param Guide $guide
-     * @return JsonResponse
+     * @return View
      * @throws OptimisticLockException
      */
     public function uploadSplashImageAction(Request $request, Guide $guide)
@@ -249,7 +248,7 @@ class GuideController extends AbstractCategoriesController
             throw new \RuntimeException($errorList[0]->getMessage());
         }
 
-        $splashImage = $this->get('images_service')->createSplashImage($request->files->get('file'));
+        $splashImage = $this->get('images_service')->createSplashImage($file);
 
         if ($splashImage instanceof \Exception) {
             throw new \RuntimeException($splashImage->getMessage());
@@ -259,7 +258,7 @@ class GuideController extends AbstractCategoriesController
         $this->getManager()->persist($splashImage);
         $this->getManager()->flush();
 
-        return new JsonResponse(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]);
+        return new View($this->wrap(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]));
     }
 
     /**
@@ -289,13 +288,13 @@ class GuideController extends AbstractCategoriesController
      * @param Request $request
      * @param Guide $guide
      *
-     * @return JsonResponse
+     * @return View
      *
      * @throws OptimisticLockException
      */
     public function selectSplashImageAction(Request $request, Guide $guide)
     {
-        $image = json_decode($request->request->get('image'));
+        $image = $request->request->get('image');
 
         $splashImage = $this->get('images_service')->setSplashImage($image);
 
@@ -306,7 +305,7 @@ class GuideController extends AbstractCategoriesController
         $guide->setSplashImage($splashImage);
         $this->getManager()->flush();
 
-        return new JsonResponse($image);
+        return new View($this->wrap($image));
     }
 
 

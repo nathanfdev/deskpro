@@ -180,7 +180,7 @@ class TopicsController extends AbstractContentController
      * @Rest\Post("/{topic}/splash_image_upload")
      * @param Request $request
      * @param Topic $topic
-     * @return JsonResponse
+     * @return View
      * @throws OptimisticLockException
      */
     public function uploadSplashImageAction(Request $request, Topic $topic)
@@ -203,7 +203,7 @@ class TopicsController extends AbstractContentController
         $this->getManager()->persist($splashImage);
         $this->getManager()->flush();
 
-        return new JsonResponse(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]);
+        return new View($this->wrap(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]));
     }
 
     /**
@@ -232,13 +232,13 @@ class TopicsController extends AbstractContentController
      *
      * @param Request $request
      * @param Topic $topic
-     * @return JsonResponse
+     * @return View
      *
      * @throws OptimisticLockException
      */
     public function selectSplashImageAction(Request $request, Topic $topic)
     {
-        $image = json_decode($request->request->get('image'));
+        $image = $request->request->get('image');
 
         $splashImage = $this->get('images_service')->setSplashImage($image);
 
@@ -249,7 +249,7 @@ class TopicsController extends AbstractContentController
         $topic->setSplashImage($splashImage);
         $this->getManager()->flush();
 
-        return new JsonResponse($image);
+        return new View($this->wrap($image));
     }
 
 
