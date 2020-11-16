@@ -281,10 +281,10 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
             !$userInfo['email']
             && !empty($saml->getNameId())
             && StringEmail::isValueValid($saml->getNameId())
-            && $saml->getNameIdFormat() === 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
         ) {
             $userInfo['email'] = $saml->getNameId();
         }
+
 
         $id = new Identity($saml->getNameId(), $userInfo);
 
