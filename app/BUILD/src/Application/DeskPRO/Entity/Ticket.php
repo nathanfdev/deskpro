@@ -3266,7 +3266,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         if ($this->date_last_user_reply) {
             $dates[] = $this->date_last_user_reply;
         }
-
+        if ($this->date_user_waiting) {
+            $dates[] = $this->date_user_waiting;
+        }
+        if ($this->date_agent_waiting) {
+            $dates[] = $this->date_agent_waiting;
+        }
         if (!$dates) {
             return $this->date_created;
         }
