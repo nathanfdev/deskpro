@@ -104,9 +104,13 @@
                     {% endif %}
                 </div>
             {% else %}
-                <strong class="no-data">
-                    {{ phrase(filtered ? 'helpcenter.community.no_matching' : 'helpcenter.community.none') }}
-                </strong>
+                <div class="no-data">
+                    {% if filtered %}
+                        <i class="dp-po-icon far fa-search"></i> {{ phrase('helpcenter.community.no_matching') }}
+                    {% else %}
+                        {{ phrase('helpcenter.community.none') }}
+                    {% endif %}
+                </div>
             {% endfor %}
         </div>
     </div>
