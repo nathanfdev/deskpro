@@ -71,7 +71,7 @@ class SuggestionLess extends React.Component {
           onClick={this.props.showLess}
           style={{ textDecoration: 'underline', cursor: 'pointer', fontWeight: 700 }}
         >
-          {portalPhrases.get('portal.general.show_less')}
+          {portalPhrases.get('helpcenter.general.show_less')}
         </a>
       </span>
     );

@@ -796,6 +796,7 @@ helpcenter.tickets.view_you_created: 'Created'
 helpcenter.tickets.you_have_not_rated_support: 'You ({email}) have not rated your support yet.'
 helpcenter.tickets.you_rated_support: 'You ({email}) rated your support from'
 helpcenter.forms.confirm_reset: 'Are you sure you want to reset this form?'
+helpcenter.general.show_less: 'Show less'
 helpcenter.time.long-day_friday: Friday
 helpcenter.time.long-day_monday: Monday
 helpcenter.time.long-day_saturday: Saturday
