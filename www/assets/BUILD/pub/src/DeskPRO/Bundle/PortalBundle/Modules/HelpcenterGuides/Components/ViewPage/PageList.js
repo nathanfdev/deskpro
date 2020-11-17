@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import Isvg from 'react-inlinesvg';
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -12,6 +12,7 @@ import PageListItem from './PageListItem';
 
 class PageList extends React.Component {
   static propTypes = {
+    intl:            PropTypes.object,
     pages:           PropTypes.array,
     guideSlug:       PropTypes.string,
     guide:           PropTypes.object,
@@ -207,7 +208,7 @@ class PageList extends React.Component {
   }
 
   render() {
-    const { sizes, toggleMenu, fixed } = this.props;
+    const { sizes, toggleMenu, fixed, intl } = this.props;
     const { filter } = this.state;
     const style = {};
     if (sizes && fixed) {
@@ -217,7 +218,7 @@ class PageList extends React.Component {
       <div className="dp-po-guides-search" style={style}>
         <a onClick={toggleMenu} className="d-block d-md-none close-menu"><FontAwesomeIcon icon={['fal', 'times']} className="dp-po-icon" /></a>
         <form className="dp-po-guides-search-form">
-          <input type="search" value={filter} placeholder="Search table of contents" onChange={this.handleFilterChange} />
+          <input type="search" value={filter} placeholder={intl.formatMessage({ id: 'helpcenter.guides.search_table_of_contents' })} onChange={this.handleFilterChange} />
           <button type="submit"><FontAwesomeIcon icon={['far', 'search']} className="dp-po-icon" /></button>
         </form>
         <div className="dp-po-guides-search-block">
@@ -227,4 +228,5 @@ class PageList extends React.Component {
     );
   }
 }
-export default PageList;
+
+export default injectIntl(PageList);
