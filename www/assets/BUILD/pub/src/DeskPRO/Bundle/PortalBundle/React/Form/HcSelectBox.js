@@ -98,6 +98,9 @@ export class HcSelectBox extends React.Component {
 
     $el.closest('form').on('reset', () => {
       actionStore.setValue(null);
+      if (this.select) {
+        this.select.clearValue();
+      }
     });
   }
 
@@ -138,6 +141,7 @@ export class HcSelectBox extends React.Component {
             select: portalPhrases.get('helpcenter.general.select'),
           }}
           aria-label="Pick a value"
+          ref={(c) => { this.select = c; }}
         />
       </div>
     );
