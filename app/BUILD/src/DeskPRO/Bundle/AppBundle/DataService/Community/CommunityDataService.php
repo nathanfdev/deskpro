@@ -433,7 +433,7 @@ class CommunityDataService extends AbstractDataService
 
         $activitiesPerTopic = $this->getLatestActivityForEachTopicInPager(
             $pager,
-            5
+            4
         );
 
         return [
