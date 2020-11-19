@@ -16,22 +16,15 @@ if impersonation is OFF "impersonator" is the agent
     <div class="dp-po-admin-menu">
         <a class="dp-po-admin-menu-link" href="{{ path('agent') }}" data-toggle="dropdown" aria-haspopup="true"
            aria-expanded="false">
-            <span class="dp-po-icon dp-po-icon-round"><i class="fal fa-user-headset" alt="" ></i></span>
+            <img class="dp-po-icon-svg" src="{{ asset('img/page-icons/agent.svg', 'help_center') }}" />
             {{ phrase('helpcenter.general.agent') }}
             <i class="dp-po-icon far fa-angle-down" aria-hidden="true"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-left">
             <a class="dropdown-item" href="{{ path('agent') }}">
-                <span class="dp-po-icon dp-po-icon-round"><i class="fal fa-user-headset"></i></span>
+                <img class="dp-po-icon-svg" src="{{ asset('img/page-icons/agent.svg', 'help_center') }}" />
                 {{ phrase('helpcenter.general.agent_bar_agent_home') }}
             </a>
-            {% if content is defined and agent_can_edit(content) %}
-                <div class="dp-po-admin-edit">
-                    <a href="{{ agent_edit_link(content) }}" class="btn btn-icon btn-outline-secondary dp-po-admin-edit-btn" target="_blank"> <i
-                                class="dp-po-icon fal fa-pencil"></i>
-                        {{ phrase('helpcenter.general.edit_this_page') }}</a>
-                </div>
-            {% endif %}
             {% if app.user.hasPerm('agent_publish.use') %}
                 <hr />
                 <a class="dropdown-item" href="{{ path('agent') }}#app.community,ct_content">
@@ -52,18 +45,26 @@ if impersonation is OFF "impersonator" is the agent
                     {{ phrase('helpcenter.general.agent_bar_agent_dl') }}
                 </a>
             {% endif %}
+            {% if content is defined and agent_can_edit(content) %}
+                <div class="dp-po-admin-edit">
+                    <a href="{{ agent_edit_link(content) }}" class="dropdown-item" target="_blank">
+                        <img class="dp-po-icon-svg" src="{{ asset('img/page-icons/edit-page.svg', 'help_center') }}" />
+                        {{ phrase('helpcenter.general.edit_this_page') }}
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
     {% if is_admin %}
     <div class="dp-po-admin-menu">
         <a class="dp-po-admin-menu-link" href="{{ path('agent') }}#admin:/" data-toggle="dropdown" aria-haspopup="true"
            aria-expanded="false">
-            <span class="dp-po-icon dp-po-icon-round"><i class="fal fa-user-crown" alt="" ></i></span>
+            <img class="dp-po-icon-svg" src="{{ asset('img/page-icons/admin.svg', 'help_center') }}" />
             {{ phrase('helpcenter.general.admin') }}
             <i class="dp-po-icon far fa-angle-down" aria-hidden="true"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-left">
-            <a class="dropdown-item" href="{{ path('agent') }}#admin:/"><span class="dp-po-icon dp-po-icon-round"><i class="fal fa-user-crown"></i></span>
+            <a class="dropdown-item" href="{{ path('agent') }}#admin:/"><img class="dp-po-icon-svg" src="{{ asset('img/page-icons/admin.svg', 'help_center') }}" />
                 {{ phrase('helpcenter.general.admin_home') }}
             </a>
             <hr />
