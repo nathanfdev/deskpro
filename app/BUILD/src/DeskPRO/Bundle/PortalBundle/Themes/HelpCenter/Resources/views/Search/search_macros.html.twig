@@ -1,23 +1,25 @@
-{% macro search_result(result, root = "dp-po-search") %}
+{% macro search_result(result, root = "dp-po-search", query = "") %}
     {% if result['type'] == 'news' %}
-        {{ _self.article_search_result(result['object'], root) }}
+        {{ _self.article_search_result(result['object'], root, query) }}
     {% elseif result['type'] == 'ticket' %}
-        {{ _self.ticket_search_result(result['object'], root) }}
+        {{ _self.ticket_search_result(result['object'], root, query) }}
     {% elseif result['type'] == 'article' %}
-        {{ _self.article_search_result(result['object'], root) }}
+        {{ _self.article_search_result(result['object'], root, query) }}
     {% elseif result['type'] == 'community' %}
-        {{ _self.article_search_result(result['object'], root) }}
+        {{ _self.article_search_result(result['object'], root, query) }}
     {% elseif result['type'] == 'download' %}
-        {{ _self.article_search_result(result['object'], root) }}
+        {{ _self.article_search_result(result['object'], root, query) }}
     {% elseif result['type'] == 'topic' %}
-        {{ _self.article_search_result(result['object'], root) }}
+        {{ _self.article_search_result(result['object'], root, query) }}
     {% endif %}
 {% endmacro %}
 
-{% macro article_search_result(article, root = "dp-po-search") %}
+{% macro article_search_result(article, root = "dp-po-search", query = "") %}
     <li class="{{root}}-item">
         <a href="{{ portal_path(article) }}" class="{{root}}-link">
-          {{ article.title }}
+            <span class="item-title">
+                {{ highlight_text(article.title, query) }}
+            </span>
             <div class="dp-po-time">
                 <i class="dp-po-icon far fa-clock"></i>
                 {{ short_date_ago(article.date_updated) }}
@@ -26,10 +28,12 @@
   </li>
 {% endmacro %}
 
-{% macro ticket_search_result(ticket, root = "dp-po-search") %}
+{% macro ticket_search_result(ticket, root = "dp-po-search", query = "") %}
     <li class="{{root}}-item">
         <a href="{{ portal_path(ticket) }}" class="{{root}}-link">
-            {{ ticket.subject }}
+            <span class="item-title">
+                {{ highlight_text(ticket.subject, query) }}
+            </span>
             <div class="dp-po-time">
                 <i class="dp-po-icon far fa-clock"></i>
                 {{ short_date_ago(ticket.getLastActivityDate()) }}
@@ -38,23 +42,25 @@
   </li>
 {% endmacro %}
 
-{% macro dl_search_result(dl, root = "dp-po-search") %}
+{% macro dl_search_result(dl, root = "dp-po-search", query = "") %}
   <li class="{{root}}-item">
     {{ content_icon(dl) }}
     <a href="{{ portal_path(dl) }}" class="{{root}}-link">
       <span class="item-title">
-        {{ dl.title }}
+        {{ highlight_text(dl.title, query) }}
       </span>
     </a>
   </li>
 {% endmacro %}
 
-{% macro community_search_result(topic, root = "dp-po-search") %}
+{% macro community_search_result(topic, root = "dp-po-search", query = "") %}
   <li class="{{root}}-item">
     <a href="{{ portal_path(topic) }}" class="{{root}}-link">
       <span class="item-title">
           <span class="community-count"><i class="fas fa-thumbs-up"></i>{{ topic.total_rating >= 0 ? (topic.total_rating > 0 ? '+' : '') : '-' }}{{ topic.total_rating }}</span>
-          {{ topic.title }}
+          <span class="item-title">
+            {{ highlight_text(topic.title, query) }}
+          </span>
       </span>
       <p>{{ topic.getContentHtml()|html_content_preview(350) }}</p>
     </a>
@@ -62,22 +68,22 @@
 {% endmacro %}
 
 
-{% macro news_search_result(news, root = "dp-po-search") %}
+{% macro news_search_result(news, root = "dp-po-search", query = "") %}
     <li class="{{root}}-item">
         <a href="{{ portal_path(news) }}" class="{{root}}-link">
-          <span class="item-title"><span class="date-posted"><i class="far fa-calendar"></i> {{ date_ago(news.date_published) }}</span>{{ news.title }}</span>
+          <span class="item-title"><span class="date-posted"><i class="far fa-calendar"></i> {{ date_ago(news.date_published) }}</span>{{ highlight_text(news.title, query) }}</span>
           <p>{{ news.realContent|html_content_preview(350) }}</p>
         </a>
   </li>
 {% endmacro %}
 
 
-{% macro topic_search_result(topic, root = "dp-po-search") %}
+{% macro topic_search_result(topic, root = "dp-po-search", query = "") %}
     <li class="{{root}}-item">
         {{ content_icon(topic) }}
         <a href="{{ portal_path(topic) }}" class="{{root}}-link">
           <span class="item-title">
-            {{ topic.title }}
+            {{ highlight_text(topic.title, query) }}
           </span>
           <p>{{ topic.realContent|html_content_preview(350) }}</p>
         </a>

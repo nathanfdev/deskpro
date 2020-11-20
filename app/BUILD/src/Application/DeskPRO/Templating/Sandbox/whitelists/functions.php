@@ -1,8 +1,8 @@
 <?php
 
-// List of allowed twig functions
 
-return array (
+
+return [
     'max',
     'min',
     'range',
@@ -214,6 +214,7 @@ return array (
     'theme_option',
     'generate_color',
     'icon_color',
+    'highlight_text',
     'helpcenter_splash',
     'helpcenter_featured_articles',
     'agent_edit_link',
@@ -249,4 +250,4 @@ return array (
     'show_tab_feedback',
     'is_page_feedback',
     'core_deskpro_name',
-);
+];
