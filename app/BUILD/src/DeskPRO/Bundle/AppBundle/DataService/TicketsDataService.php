@@ -180,7 +180,7 @@ class TicketsDataService extends AbstractDataService
                         $qb->orderBy('t.agent', $filter->getSortDirection());
                         break;
                     case TicketFilter::SORT_ACTIVITY:
-                        $qb->select('t, GREATEST(t.date_last_user_reply, t.date_last_agent_reply, t.date_created) as HIDDEN date_activity');
+                        $qb->select('t, STRICT_GREATEST(t.date_last_user_reply, t.date_user_waiting, t.date_agent_waiting, t.date_last_agent_reply, t.date_created) as HIDDEN date_activity');
                         $qb->addOrderBy('date_activity', $filter->getSortDirection());
                         break;
                 }

@@ -271,6 +271,7 @@ $container->loadFromExtension(
                         'string_functions' => [
                             'group_concat'  => 'DoctrineExtensions\Query\Mysql\GroupConcat',
                             'greatest'      => 'DoctrineExtensions\Query\Mysql\Greatest',
+                            'strict_greatest'      => 'DeskPRO\Bundle\PortalBundle\DoctrineExtension\StrictGreatest',
                         ],
                     ],
                 ],
