@@ -520,7 +520,11 @@ abstract class AbstractBaseApproval extends AbstractApproval
                 sprintf('Cannot add more than %d approvers to an approval', self::APPROVERS_MAX)
             );
         }
-
+        // Use lightcheck to check only by id and not load all entities into memory
+        if ($this->hasApprover($approver, true)) {
+            return $this;
+        }
+        
         $this->approvers->add($approver);
 
         $this->setModelField('approvers', $this->approvers);
@@ -570,13 +574,15 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
     /**
      * @param Person $person
-     *
+     * @param false $lightCheck
      * @return bool
      */
-    public function hasApprover(Person $person)
+    public function hasApprover(Person $person, $lightCheck = false)
     {
-        return !$this->approvers->filter(function (Person $approver) use ($person) {
-            return $person->isEqualTo($approver);
+        return !$this->approvers->filter(function (Person $approver) use ($person, $lightCheck) {
+            return $lightCheck
+                ? $person->getId() == $approver->getId()
+                : $person->isEqualTo($approver);
         })->isEmpty();
     }
 
