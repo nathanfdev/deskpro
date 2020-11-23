@@ -6,12 +6,17 @@ use Application\DeskPRO\Entity\CommunityTopicComment;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
+use DeskPRO\Bundle\ApiBundle\Form\RatingType;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Comment\CommunityTopicCommentType;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Model\RatingModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * API access to community topic comments.
@@ -87,6 +92,65 @@ class CommunityTopicAllCommentsController extends AbstractCommunityController
     public function csvAction(Request $request)
     {
         return $this->listAction($request);
+    }
+
+    /**
+     * Rate article.
+     *
+     * @ApiDoc(
+     *     section="Topics",
+     *     description="rate topic comment",
+     *     requirements={
+     *          {
+     *              "name"="topics",
+     *              "requirement"="\d+",
+     *              "description"="the id of comment",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     input="DeskPRO\Bundle\ApiBundle\Form\RatingType",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     *
+     * @Rest\Post("/{comment}/rate")
+     *
+     * @param Request $request
+     * @param CommunityTopicComment $comment
+     * @param null $visitor_id
+     * @return View
+     */
+    public function rateDownloadContentAction(Request $request, CommunityTopicComment $comment, $visitor_id = null)
+    {
+        $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
+
+        $form = $this->createForm(RatingType::class, null, [
+            'allow_extra_fields' => false,
+        ]);
+
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $rating = $this->get('rating_service')->rateContent($comment->getRatingData(), $form->get('upvote')->getData(), $person, $visitor_id);
+        }
+
+        return new View($this->wrap($comment));
+    }
+
+    /**
+     * @Rest\Get("/{comment}/rate_count")
+     *
+     * @param CommunityTopicComment $comment
+     * @return View|NotFoundHttpException
+     */
+    public function getCommunityTopicCommentCountAction(CommunityTopicComment $comment)
+    {
+        return new View($this->wrap($this->get('rating_service')->ratingCount($comment->getRatingData())));
     }
 
     /**
