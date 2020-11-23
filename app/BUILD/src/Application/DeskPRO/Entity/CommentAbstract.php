@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Model\RatingModel;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
@@ -595,19 +596,31 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getRating()
+    public function getTotalRating()
     {
         return $this->rating;
     }
 
     /**
-     * @param string $rating
+     * @param init $rating
      */
-    public function setRating($rating)
+    public function setTotalRating($rating)
     {
         $this->setModelField('rating', $rating);
+    }
+    public function getRatingData(){
+
+        $totalRating = (empty($this->getTotalRating())  || (null === $this->getTotalRating())) ? '0' : $this->getTotalRating();
+        $ratingModel = new RatingModel();
+        $ratingModel
+            ->setContentType($this->getObjectCommentType())
+            ->setContentId($this->getId())
+            ->setObject($this)
+            ->setTotalRating($totalRating);
+
+        return $ratingModel;
     }
 
 

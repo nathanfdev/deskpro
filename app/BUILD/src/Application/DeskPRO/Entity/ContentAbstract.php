@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\Entity\HasIconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
+use DeskPRO\Bundle\AppBundle\Model\RatingModel;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use DpSys\LowError\SystemErrorHandler;
@@ -136,6 +137,7 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
      * @var int
      */
     protected $num_ratings = 0;
+
 
     /**
      * Status title.
@@ -570,10 +572,10 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
     public function setContentInputType($contentInputType)
     {
         if ($contentInputType && !in_array($contentInputType, [
-            self::CONTENT_TYPE_RTE,
-            self::CONTENT_TYPE_MARKDOWN,
-            self::CONTENT_TYPE_DESKPRO_EDITOR_V1,
-        ])) {
+                self::CONTENT_TYPE_RTE,
+                self::CONTENT_TYPE_MARKDOWN,
+                self::CONTENT_TYPE_DESKPRO_EDITOR_V1,
+            ])) {
             throw new \Exception('Unknown content type '.$contentInputType);
         }
         $this->setModelField('content_input_type', $contentInputType);
@@ -711,76 +713,6 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
         }
 
         return implode($sep, $names);
-    }
-
-    /**
-     * Vote stats object, like {"up": 1, "down": 1}.
-     */
-    public function getVoteStats()
-    {
-        $x = $this->num_ratings - abs($this->total_rating);
-
-        if ($x % 2 == 1) {
-            ++$x; // never happens with correct data, this just error corrects
-        }
-
-        if ($this->total_rating >= 0) {
-            $up   = ($x / 2) + $this->total_rating;
-            $down = ($x / 2);
-        } else {
-            $up   = ($x / 2);
-            $down = ($x / 2) + abs($this->total_rating);
-        }
-
-        return ['up' => $up, 'down' => $down];
-    }
-
-    public function getUpVotes()
-    {
-        $stats = $this->getVoteStats();
-
-        return $stats['up'];
-    }
-
-    public function getDownVotes()
-    {
-        $stats = $this->getVoteStats();
-
-        return $stats['down'];
-    }
-
-    public function markRatingChangedPositivly()
-    {
-        // 2 to override the -1 when the neg rating was added
-        $this['total_rating'] = $this->total_rating + 1;
-    }
-
-    public function markRatingChangedNegatively()
-    {
-        // 2 to override the -1 when the positive rating was added
-        $this['total_rating'] = $this->total_rating - 1;
-    }
-
-    public function getRatingPercent()
-    {
-        if (!$this->num_ratings) {
-            return 0;
-        }
-
-        return min(100, ceil(($this->total_rating / $this->num_ratings) * 100));
-    }
-
-    public function addRating($rating)
-    {
-        $this['num_ratings']  = $this->num_ratings + 1;
-        $this['total_rating'] = $this->total_rating + $rating->rating;
-        $rating->setContentObject($this);
-    }
-
-    public function removeRating($rating)
-    {
-        $this['num_ratings']  = $this->num_ratings - 1;
-        $this['total_rating'] = $this->total_rating - $rating->rating;
     }
 
     /**
@@ -1124,5 +1056,17 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
     public function getExcerptHtml($wordsLimit = 50)
     {
         return htmlspecialchars($this->getExcerptText($wordsLimit));
+    }
+
+    public function getRatingData(){
+        $ratingModel = new RatingModel();
+        $ratingModel
+            ->setContentType(self::getContentType())
+            ->setContentId($this->getId())
+            ->setNumRatings($this->getNumRatings())
+            ->setTotalRating($this->getTotalRating())
+            ->setObject($this);
+
+        return $ratingModel;
     }
 }
