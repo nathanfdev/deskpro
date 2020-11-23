@@ -155,6 +155,21 @@ class ArticleComment extends CommentAbstract
             ],
         ]);
         $metadata->mapManyToOne([
+            'fieldName'    => 'parent_id',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleComment',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'parent_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'mappedBy'     => null,

@@ -18,7 +18,7 @@ class TopicComment extends CommentAbstract
      * @var Topic
      */
     protected $topic;
-
+    
     /**
      * @return Topic
      */
@@ -153,6 +153,21 @@ class TopicComment extends CommentAbstract
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'parent_id',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TopicComment',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'parent_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
                     'columnDefinition'     => null,
                 ],
             ],
