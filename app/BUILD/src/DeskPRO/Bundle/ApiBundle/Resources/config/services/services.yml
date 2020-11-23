@@ -4,6 +4,16 @@ parameters:
 
 services:
 
+  ratings_helper:
+    class: DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper
+    arguments: ["@doctrine.orm.default_entity_manager", "@request_stack"]
+
+  visitor_identification.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\VisitorIdentificationListener
+    arguments: ["@visitor_identification_provider", "@logger"]
+    tags:
+      - { name: kernel.event_subscriber }
+
   deskpro.api.request_auth:
     class: Application\LegacyApiBundle\Request\RequestAuth
     scope: request
@@ -91,3 +101,9 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@deskpro.blob_storage"
       - "@settings_resolver"
+
+  rating_service:
+    class: DeskPRO\Bundle\ApiBundle\Service\RatingService
+    arguments:
+      - "@ratings_helper"
+      - "@brand_stack"

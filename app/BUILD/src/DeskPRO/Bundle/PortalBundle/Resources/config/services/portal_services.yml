@@ -35,6 +35,12 @@ services:
     arguments:
       - '@doctrine.orm.default_entity_manager'
 
+  rating_service:
+    class: DeskPRO\Bundle\ApiBundle\Service\RatingService
+    arguments:
+      - "@ratings_helper"
+      - "@brand_stack"
+
   child_comment_helper:
     class: DeskPRO\Bundle\PortalBundle\Helper\ChildCommentHelper
     arguments:
