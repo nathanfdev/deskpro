@@ -29,7 +29,7 @@ class Rating extends RatingAbstract
     public function setContentObject($obj)
     {
         $this['object_type'] = $obj->getContentType();
-        $this['object_id']   = $obj->getId();
+        $this['object_id']   = $obj->getContentId();
     }
 
     //###########################################################################

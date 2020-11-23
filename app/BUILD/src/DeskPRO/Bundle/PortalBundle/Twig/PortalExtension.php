@@ -427,13 +427,13 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         $person = $this->getPerson();
 
         if ($person instanceof Entity\Person && !$person instanceof PersonGuest) {
-            if ($rating = $this->getRatingsHelper()->findPersonRating($object, $person)) {
+            if ($rating = $this->getRatingsHelper()->findPersonRating($object->getRatingData(), $person)) {
                 return $rating;
             }
         } else {
             $visitorId = $this->getVisitorIdentificationProvider()->getVisitorIdentifier();
 
-            if ($rating = $this->getRatingsHelper()->findVisitorRating($object, $visitorId)) {
+            if ($rating = $this->getRatingsHelper()->findVisitorRating($object->getRatingData(), $visitorId)) {
                 return $rating;
             }
         }

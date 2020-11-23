@@ -13,6 +13,7 @@ use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\ShareContentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Model\RatingModel;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ShareContentVoter;
@@ -224,7 +225,7 @@ class ArticlesController extends AbstractPublishController
 
         // NUM RATINGS
 
-        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($article);
+        [$showRatingCounts, $ratingCounts] = $this->determineRatingCounts($article->getRatingData());
 
         $canShare = $this->isGranted(ShareContentVoter::SHARE_ARTICLES);
 
@@ -325,10 +326,13 @@ class ArticlesController extends AbstractPublishController
     {
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
 
+        /** @var RatingModel $ratingData */
+        $ratingData = $article->getRatingData();
+
         if ('down' === $up_or_down) {
-            $this->getRatingsHelper()->rateContentDown($article, $visitor_id, $person);
+            $this->getRatingsHelper()->rateContentDown($ratingData, $visitor_id, $person);
         } else {
-            $this->getRatingsHelper()->rateContentUp($article, $visitor_id, $person);
+            $this->getRatingsHelper()->rateContentUp($ratingData, $visitor_id, $person);
         }
 
         $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.content_rating_thanks']));
@@ -451,7 +455,7 @@ class ArticlesController extends AbstractPublishController
 
         // NUM RATINGS
 
-        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($article);
+        [$showRatingCounts, $ratingCounts] = $this->determineRatingCounts($article->getRatingData());
 
         // OTHER ARTICLE DATA
         $articleData = new LazyPropObject([

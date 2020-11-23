@@ -532,7 +532,7 @@ class CommunityTopicsController extends AbstractPublishController
 
         // NUM RATINGS
 
-        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($topic);
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($topic->getRatingData());
 
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
         $check->markAsCheckOnly();
@@ -624,7 +624,7 @@ class CommunityTopicsController extends AbstractPublishController
 
         // NUM RATINGS
 
-        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($topic);
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($topic->getRatingData());
 
         $contentHtml = $this->renderThemeView(
             'Theme:Community:pdf.html.twig',
@@ -646,10 +646,10 @@ class CommunityTopicsController extends AbstractPublishController
      * @ParamConverter(name="topic", converter="deskpro_slug")
      * @AutoPostOnGetRequest()
      *
-     * @param Request $request
+     * @param Request        $request
      * @param CommunityTopic $topic
-     * @param string $visitor_id
-     * @param string $up_or_down
+     * @param string         $visitor_id
+     * @param string         $up_or_down
      *
      * @throws \Exception
      *
@@ -689,13 +689,13 @@ class CommunityTopicsController extends AbstractPublishController
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
 
         if ('up' === $up_or_down) {
-            $rating = $this->getRatingsHelper()->rateContentUp($topic, $visitor_id, $person);
+            $rating = $this->getRatingsHelper()->rateContentUp($topic->getRatingData(), $visitor_id, $person);
 
             if (!$rating) {
                 throw $this->createAccessDeniedException($this->phrase(['helpcenter.flashes.content_double_rating']));
             }
         } else {
-            $rating = $this->getRatingsHelper()->removeContentRating($topic, $person, $visitor_id);
+            $rating = $this->getRatingsHelper()->removeContentRating($topic->getRatingData(), $person, $visitor_id);
 
             if (!$rating) {
                 throw $this->createAccessDeniedException($this->phrase(['helpcenter.flashes.content_remove_vote_error']));

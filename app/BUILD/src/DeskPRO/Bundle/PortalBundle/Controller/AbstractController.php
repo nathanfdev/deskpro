@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessageParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Model\RatingModel;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\PortalBundle\SavedForm\SavedFormView;
@@ -654,8 +655,8 @@ class AbstractController extends BaseController
      */
     protected function findContentRating(ContentAbstract $content, $visitor_id)
     {
-        if (!$rating = $this->getRatingsHelper()->getPersonRating($content, $this->getUser())) {
-            $rating = $this->getRatingsHelper()->findVisitorRating($content, $visitor_id);
+        if (!$rating = $this->getRatingsHelper()->getPersonRating($content->getRatingData(), $this->getUser())) {
+            $rating = $this->getRatingsHelper()->findVisitorRating($content->getRatingData(), $visitor_id);
             if ($rating && $this->get('portal_cache_helper')->isGuestRequest()) {
                 // this request is going to be cached for every non-session user, and so we cannot display
                 // their rating on the page. If they rated recently, they'd have a session and would see it
@@ -669,16 +670,15 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @param ContentAbstract $content
-     *
+     * @param RatingModel $ratingModel
      * @return array
      */
-    protected function determineRatingCounts(ContentAbstract $content)
+    protected function determineRatingCounts(RatingModel $ratingModel)
     {
         $show_rating_counts = false;
         $rating_counts      = ['positive' => 0, 'total' => 0];
         if ($this->getBrandSetting('user.show_ratings')) {
-            $rating_counts = $this->getRatingsHelper()->ratingCounts($content);
+            $rating_counts = $this->getRatingsHelper()->ratingCounts($ratingModel);
             if ($rating_counts['total'] >= $this->getBrandSetting('user.show_ratings_min_votes')) {
                 $show_rating_counts = true;
             }
