@@ -175,6 +175,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('category_color_css', [$this, 'categoryColorCss']),
             new \Twig_SimpleFunction('render_icon_from', [$this, 'renderIconFrom'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('render_icon', [$this, 'renderIcon'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('highlight_text', [$this, 'highlightText'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('has_splash', [$this, 'hasSplashImage']),
             new \Twig_SimpleFunction('get_splash_url', [$this, 'getSplashUrl']),
             new \Twig_SimpleFunction('get_splash_bgcss', [$this, 'getSplashBgcss'], ['is_safe' => ['html']]),
@@ -949,6 +950,15 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         }
 
         return $this->getPerson()->PermissionsManager->PublishChecker->canEdit($object);
+    }
+
+    public function highlightText($string, $word = '')
+    {
+        if (!$word) {
+            return $string;
+        }
+
+        return preg_replace("/$word/i", "<b>\$0</b>", $string);
     }
 
     public function isCategorySubscribed($type, $category = null)

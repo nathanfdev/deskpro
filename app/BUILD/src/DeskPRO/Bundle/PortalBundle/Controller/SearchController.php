@@ -134,7 +134,7 @@ class SearchController extends AbstractController
         $person  = $this->getUser() ?: new PersonGuest();
         $total   = 0;
         $curPage = $request->get('page', 1);
-        $perPage = 10;
+        $perPage = 50;
         $types   = $type === 'ticket' ? ['ticket'] : null;
 
         $isSearch = true;
@@ -622,11 +622,12 @@ class SearchController extends AbstractController
      * @param $results
      * @param int $total
      * @param array $gotSticky
+     *
      * @return array
      */
-    private function addStickyResult(array $stickyResults, array $results, $total = 0, array $gotSticky = []){
-
-        if(count($stickyResults) < 1){
+    private function addStickyResult(array $stickyResults, array $results, $total = 0, array $gotSticky = [])
+    {
+        if (count($stickyResults) < 1) {
             return [];
         }
 
@@ -648,6 +649,7 @@ class SearchController extends AbstractController
                 'object' => $sItem['object'],
             ]);
         }
+
         return $results;
     }
 }

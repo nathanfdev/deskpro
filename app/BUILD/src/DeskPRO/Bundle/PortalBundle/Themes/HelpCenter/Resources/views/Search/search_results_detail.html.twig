@@ -87,7 +87,7 @@
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in article_results %}
-                                            {{ search_macros.search_result(result_set, 'dp-po-search-details') }}
+                                            {{ search_macros.search_result(result_set, 'dp-po-search-details', query) }}
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -97,7 +97,7 @@
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in guide_results %}
-                                            {{ search_macros.search_result(result_set, 'dp-po-search-details') }}
+                                            {{ search_macros.search_result(result_set, 'dp-po-search-details', query) }}
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -107,7 +107,7 @@
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in community_results %}
-                                            {{ search_macros.search_result(result_set, 'dp-po-search-details') }}
+                                            {{ search_macros.search_result(result_set, 'dp-po-search-details', query) }}
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -117,7 +117,7 @@
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in news_results %}
-                                            {{ search_macros.search_result(result_set, 'dp-po-search-details') }}
+                                            {{ search_macros.search_result(result_set, 'dp-po-search-details', query) }}
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -127,7 +127,7 @@
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in download_results %}
-                                            {{ search_macros.search_result(result_set, 'dp-po-search-details') }}
+                                            {{ search_macros.search_result(result_set, 'dp-po-search-details', query) }}
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -137,7 +137,7 @@
                                     </div>
                                     <ul class="dp-po-search-details-list">
                                         {% for result_set in ticket_results %}
-                                            {{ search_macros.search_result(result_set, 'dp-po-search-details') }}
+                                            {{ search_macros.search_result(result_set, 'dp-po-search-details', query) }}
                                         {% endfor %}
                                     </ul>
                                 </div>
