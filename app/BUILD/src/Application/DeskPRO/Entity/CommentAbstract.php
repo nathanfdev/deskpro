@@ -170,13 +170,13 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Total rating for this comment.
      *
-     * @JMS\Type("string")
-     * @JMS\Groups("details")
+     * @JMS\Type("integer")
+     * @JMS\Groups({"list", "details"})
      *
      * @var string
      */
     protected $rating = '';
-
+    
     /**
      * @var ArrayCollection
      */
@@ -534,6 +534,16 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getObjectContentType()
     {
         return $this->getObject()->getTableName();
+    }
+
+    /**
+     * Get the "content-type" of the object on this comment for rating.
+     *
+     * @return string
+     */
+    public function getObjectCommentType()
+    {
+        return $this->getObject()->getTableName()."_comment";
     }
 
     /**
