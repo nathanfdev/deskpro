@@ -30,6 +30,11 @@ class NewsComment extends CommentAbstract
      */
     protected $news;
 
+    public function getNews()
+    {
+        return $this->news;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

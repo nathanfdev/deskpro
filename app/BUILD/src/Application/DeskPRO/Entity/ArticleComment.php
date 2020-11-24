@@ -29,6 +29,11 @@ class ArticleComment extends CommentAbstract
      */
     protected $article;
 
+    public function getArticle()
+    {
+        return $this->article;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

@@ -29,6 +29,11 @@ class DownloadComment extends CommentAbstract
      */
     protected $download;
 
+    public function getDownload()
+    {
+        return $this->download;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
