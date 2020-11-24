@@ -886,3 +886,7 @@ helpcenter.time.x_week:
 helpcenter.time.x_year:
   one: '1 year'
   other: '{{count}} years'
+
+helpcenter.flashes.reply_comment_not_active: 'Sorry, you cannot reply a comment that is not active or has not been reviewed.'
+helpcenter.flashes.reply_top_level_comment_only: 'Sorry, you can only reply to top level comments.'
+helpcenter.flashes.top_level_comment_not_found: 'Sorry, top level comment was not found.'
