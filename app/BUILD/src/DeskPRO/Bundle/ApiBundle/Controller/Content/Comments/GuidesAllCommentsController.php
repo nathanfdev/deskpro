@@ -2,19 +2,19 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Comments;
 
-use Application\DeskPRO\Entity\NewsComment;
+use Application\DeskPRO\Entity\TopicComment;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
-use DeskPRO\Bundle\AppBundle\Form\Type\Comment\NewsCommentType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Comment\GuidesCommentType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * Class NewsAllCommentsController.
+ * Class GuidesAllCommentsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/news_comments")
- * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\NewsComment")
+ * @Rest\Route("/guides_comments")
+ * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\TopicComment")
  * @ApiDoc(
  *     target="listAction,countAction",
  *     filters={
@@ -23,7 +23,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *          {"name"="period_created", "dataType"="string", "pattern"="today|yesterday|this_week|this_month|last_month|this_year|ever", "description"="filter by period"},
  *          {"name"="article", "dataType"="integer", "pattern"="\d+", "description"="select comments for article with given id"},
  *          {"name"="download", "dataType"="integer", "pattern"="\d+", "description"="select comments for download with given id"},
- *          {"name"="news", "dataType"="integer", "pattern"="\d+", "description"="select comments for news with given id"}
+ *          {"name"="guides", "dataType"="integer", "pattern"="\d+", "description"="select comments for guides with given id"}
  *     }
  * )
  * @ApiDoc(
@@ -35,16 +35,16 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiDoc(
  *     target="countAction",
  *     filters={
- *          {"name"="group_by", "dataType"="string", "pattern"="news|status|period_created", "description"="how to groups comments"}
+ *          {"name"="group_by", "dataType"="string", "pattern"="guides|status|period_created", "description"="how to groups comments"}
  *     }
  * )
  * @RequireAgentPermissions()
  */
-class NewsAllCommentsController extends AbstractAllCommentsController
+class GuidesAllCommentsController extends AbstractAllCommentsController
 {
-    public static $contentType = 'news';
-    public static $entity      = NewsComment::class;
-    public static $type        = NewsCommentType::class;
+    public static $contentType = 'topic';
+    public static $entity      = TopicComment::class;
+    public static $type        = GuidesCommentType::class;
     public static $exposeOnly  = ['put', 'post'];
 
 }

@@ -7,7 +7,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\CommunityTopicCommentType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Comment\CommunityTopicCommentType;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -63,7 +63,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class CommunityTopicAllCommentsController extends AbstractCommunityController
 {
-    public static $exposeOnly  = ['get', 'list', 'count', 'put', 'delete'];
+    public static $exposeOnly  = ['get', 'list', 'count', 'put', 'post', 'delete'];
     public static $entity      = CommunityTopicComment::class;
     public static $type        = CommunityTopicCommentType::class;
     public static $listOrder   = 'asc';
