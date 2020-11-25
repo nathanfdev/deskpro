@@ -23,11 +23,6 @@ class ContactDataType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add(ContactDataAbstract::TYPE_PHONE, ContactDataCollectionType::class, [
-                'entry_type' => PhoneType::class,
-                'owner'      => $options['owner'],
-                'required'   => false,
-            ])
             ->add(ContactDataAbstract::TYPE_WEBSITE, ContactDataCollectionType::class, [
                 'entry_type' => WebsiteType::class,
                 'owner'      => $options['owner'],
@@ -61,7 +56,7 @@ class ContactDataType extends AbstractType
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetData']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onMergeData']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'mergeData']);
 
         /** @var FormBuilderInterface $parent_builder */
         $parent_builder = $options['parent_builder'];
@@ -129,7 +124,7 @@ class ContactDataType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onMergeData(FormEvent $event)
+    public function mergeData(FormEvent $event)
     {
         $form  = $event->getForm();
         $owner = $form->getConfig()->getOption('owner');
@@ -137,26 +132,26 @@ class ContactDataType extends AbstractType
         /** @var ArrayCollection $data */
         $data = $owner->getContactData();
 
-        foreach ($form->all() as $form_group) {
-            $entry_type = $form_group->getConfig()->getOption('entry_type');
-            if (!$entry_type) {
+        foreach ($form->all() as $formGroup) {
+            $entryType = $formGroup->getConfig()->getOption('entry_type');
+            if (!$entryType) {
                 continue;
             }
 
-            /** @var ArrayCollection $group_data */
-            $group_data   = $form_group->getData();
-            $contact_type = $entry_type::getContactType();
+            /** @var ArrayCollection $groupData */
+            $groupData   = $formGroup->getData();
+            $contactType = $entryType::getContactType();
 
-            /** @var ContactDataAbstract $data_item */
-            foreach ($group_data as $data_item) {
-                if (!$data->contains($data_item)) {
-                    $data->add($data_item);
+            /** @var ContactDataAbstract $item */
+            foreach ($groupData as $item) {
+                if (!$data->contains($item)) {
+                    $data->add($item);
                 }
             }
 
-            foreach ($data as $data_item) {
-                if ($data_item->getContactType() === $contact_type && !$group_data->contains($data_item)) {
-                    $data->removeElement($data_item);
+            foreach ($data as $item) {
+                if ($item->getContactType() === $contactType && !$groupData->contains($item)) {
+                    $data->removeElement($item);
                 }
             }
         }

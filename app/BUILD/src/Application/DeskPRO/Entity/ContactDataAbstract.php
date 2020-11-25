@@ -22,7 +22,6 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  */
 abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObject implements GroupSequenceProviderInterface
 {
-    const TYPE_PHONE           = 'phone';
     const TYPE_WEBSITE         = 'website';
     const TYPE_INSTANT_MESSAGE = 'instant_message';
     const TYPE_TWITTER         = 'twitter';

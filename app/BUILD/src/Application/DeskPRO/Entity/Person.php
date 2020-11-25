@@ -4098,6 +4098,48 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param PersonPhoneNumber[] $phone_numbers
+     */
+    public function setPhoneNumbers($phone_numbers)
+    {
+        $this->setModelField('phone_numbers', $phone_numbers);
+
+        return $this;
+    }
+
+    /**
+     * @param PersonPhoneNumber $phoneNumber
+     *
+     * @return $this
+     */
+    public function addPhoneNumber(PersonPhoneNumber $phoneNumber)
+    {
+        if (!$this->phone_numbers->contains($phoneNumber)) {
+            $this->phone_numbers->add($phoneNumber);
+            $phoneNumber->setPerson($this);
+
+            $this->_onPropertyChanged('phone_numbers', $this->phone_numbers, $this->phone_numbers);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param PersonPhoneNumber $phoneNumber
+     *
+     * @return $this
+     */
+    public function removePhoneNumber(PersonPhoneNumber $phoneNumber)
+    {
+        $this->phone_numbers->removeElement($phoneNumber);
+        $phoneNumber->setPerson(null);
+
+        $this->_onPropertyChanged('phone_numbers', $this->phone_numbers, $this->phone_numbers);
+
+        return $this;
+    }
+
+    /**
      * Count of tickets person was assigned.
      *
      * @return int

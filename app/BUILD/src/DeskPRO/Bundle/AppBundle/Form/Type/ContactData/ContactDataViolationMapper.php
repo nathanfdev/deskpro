@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
+use Symfony\Component\Form\Extension\Validator\Constraints\Form;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -72,9 +73,16 @@ class ContactDataViolationMapper
         }
 
         // reset contact data errors
+        $newErrors = [];
+        foreach ($form->getErrors() as $error) {
+            if ($error->getCause() instanceof ConstraintViolation && $error->getCause()->getCode() === Form::NO_SUCH_FIELD_ERROR) {
+                $newErrors[] = $error;
+            }
+        }
+
         $property = new \ReflectionProperty($form, 'errors');
         $property->setAccessible(true);
-        $property->setValue($form, []);
+        $property->setValue($form, $newErrors);
         $property->setAccessible(false);
     }
 
