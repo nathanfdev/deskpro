@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -173,10 +169,10 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
      * @JMS\Type("integer")
      * @JMS\Groups({"list", "details"})
      *
-     * @var string
+     * @var int
      */
     protected $rating = '';
-    
+
     /**
      * @var ArrayCollection
      */
@@ -606,7 +602,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return int
+     * @return int $rating
      */
     public function getTotalRating()
     {
@@ -614,15 +610,15 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param init $rating
+     * @param int $rating
      */
     public function setTotalRating($rating)
     {
         $this->setModelField('rating', $rating);
     }
-    public function getRatingData(){
-
-        $totalRating = (empty($this->getTotalRating())  || (null === $this->getTotalRating())) ? '0' : $this->getTotalRating();
+    public function getRatingData()
+    {
+        $totalRating = (empty($this->getTotalRating()) || (null === $this->getTotalRating())) ? 0 : $this->getTotalRating();
         $ratingModel = new RatingModel();
         $ratingModel
             ->setContentType($this->getObjectCommentType())

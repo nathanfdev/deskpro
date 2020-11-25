@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -152,8 +148,7 @@ class ArticleComment extends CommentAbstract
         ]);
         $metadata->mapField([
             'fieldName'  => 'rating',
-            'type'       => 'string',
-            'length'     => 120,
+            'type'       => 'integer',
             'precision'  => 0,
             'scale'      => 0,
             'nullable'   => true,

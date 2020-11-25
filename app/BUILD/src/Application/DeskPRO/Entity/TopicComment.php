@@ -150,8 +150,7 @@ class TopicComment extends CommentAbstract
         ]);
         $metadata->mapField([
             'fieldName'  => 'rating',
-            'type'       => 'string',
-            'length'     => 120,
+            'type'       => 'integer',
             'precision'  => 0,
             'scale'      => 0,
             'nullable'   => true,
