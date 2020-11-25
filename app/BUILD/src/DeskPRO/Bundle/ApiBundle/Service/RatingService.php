@@ -16,11 +16,11 @@ class RatingService
     /**
      * @var PortalRatingsHelper
      */
-    private PortalRatingsHelper $ratingHelper;
+    private $ratingHelper;
     /**
      * @var BrandStack
      */
-    private BrandStack $bandStack;
+    private $bandStack;
 
     /**
      * RatingService constructor.
