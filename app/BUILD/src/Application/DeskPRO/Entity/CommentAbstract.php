@@ -156,6 +156,16 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
+     * Content Type for this comment.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups("details")
+     *
+     * @var string
+     */
+    protected $content_type = '';
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -559,4 +569,21 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->getStatus() == self::STATUS_VISIBLE;
     }
+    
+    /**
+     * @return string
+     */
+    public function getContentType()
+    {
+        return $this->content_type;
+    }
+
+    /**
+     * @param string $content_type
+     */
+    public function setContentType(string $content_type)
+    {
+        $this->setModelField('content_type', $content_type);
+    }
+
 }

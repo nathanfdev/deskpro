@@ -173,5 +173,16 @@ class TopicComment extends CommentAbstract
             ],
             'dpApi' => true,
         ]);
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content_type',
+                'type'       => 'string',
+                'length'     => 120,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'content_type',
+            ]
+        );
     }
 }
