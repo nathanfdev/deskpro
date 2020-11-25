@@ -6,6 +6,7 @@ use Application\DeskPRO\BlobStorage\Blob;
 use Application\DeskPRO\BlobStorage\BlobStorageException;
 use Aws\S3\S3Client;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class AmazonS3Storage extends AbstractStorageAdapter
 {
@@ -157,11 +158,12 @@ class AmazonS3Storage extends AbstractStorageAdapter
     {
         $path = $this->resolvePath($blob->getPath());
 
-        // Always pre-encode disposition filename
-        $dispositionFilename = mb_encode_mimeheader(str_replace(['\'', '"'], '-', $blob->getFilename()), 'UTF-8', 'B');
-
-        $disposition = $blob->getMeta('content_disposition') ?: 'attachment';
-        $disposition .= '; filename="'.$dispositionFilename.'"';
+        $headerBag = new ResponseHeaderBag();
+        $disposition = $headerBag->makeDisposition(
+            $blob->getMeta("content_disposition") ?: ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $blob->getFilename(),
+            $blob->getFilenameSafe(),
+        );
 
         $try = $this->attempts;
         while (--$try >= 0) {
