@@ -17,6 +17,7 @@ services:
             arguments:
                 - "@doctrine.orm.default_entity_manager"
                 - "@security.http_utils"
+                - "@router"
 
     security.authentication.failure_handler:
         class: DeskPRO\Bundle\AppBundle\Security\Handler\AuthenticationFailureHandler
