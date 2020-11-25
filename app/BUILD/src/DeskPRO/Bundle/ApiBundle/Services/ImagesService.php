@@ -22,15 +22,15 @@ class ImagesService
     /**
      * @var DeskproBlobStorage
      */
-    private DeskproBlobStorage $blobStorage;
+    private $blobStorage;
     /**
      * @var EntityManager
      */
-    private EntityManager $em;
+    private $em;
     /**
      * @var SettingsResolver
      */
-    private SettingsResolver $settingResolver;
+    private  $settingResolver;
 
     /**
      * ImagesService constructor.
