@@ -161,7 +161,7 @@ class ArticleComment extends CommentAbstract
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'parent_id',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleComment',
+            'targetEntity' => __CLASS__,
             'mappedBy'     => null,
             'inversedBy'   => null,
             'joinColumns'  => [

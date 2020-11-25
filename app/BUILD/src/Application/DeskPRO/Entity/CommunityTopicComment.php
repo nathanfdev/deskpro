@@ -160,7 +160,7 @@ class CommunityTopicComment extends CommentAbstract
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'parent_id',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityTopicComment',
+            'targetEntity' => __CLASS__,
             'mappedBy'     => null,
             'inversedBy'   => null,
             'joinColumns'  => [

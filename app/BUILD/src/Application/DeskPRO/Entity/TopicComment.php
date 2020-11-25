@@ -18,7 +18,7 @@ class TopicComment extends CommentAbstract
      * @var Topic
      */
     protected $topic;
-    
+
     /**
      * @return Topic
      */
@@ -159,7 +159,7 @@ class TopicComment extends CommentAbstract
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'parent_id',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\TopicComment',
+            'targetEntity' => __CLASS__,
             'mappedBy'     => null,
             'inversedBy'   => null,
             'joinColumns'  => [

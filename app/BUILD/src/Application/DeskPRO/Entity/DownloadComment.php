@@ -160,7 +160,7 @@ class DownloadComment extends CommentAbstract
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'parent_id',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadComment',
+            'targetEntity' => __CLASS__,
             'mappedBy'     => null,
             'inversedBy'   => null,
             'joinColumns'  => [
