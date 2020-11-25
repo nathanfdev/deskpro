@@ -101,6 +101,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.search.your_tickets',
             'helpcenter.tickets.related_articles_desc',
             'helpcenter.forms.confirm_reset',
+            'helpcenter.general.show_less',
             'portal.account.login-btn',
             'portal.account.login-disabled',
             'portal.account.login-email',
