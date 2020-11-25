@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
@@ -32,10 +33,12 @@ use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\LabelChatConversation;
 use Application\DeskPRO\Entity\LabelCommunityTopic;
@@ -47,6 +50,7 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
@@ -87,6 +91,8 @@ use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\TicketWorkflow;
+use Application\DeskPRO\Entity\Topic;
+use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Entity\Usersource;
 use Application\EmailBundle\Entity\SendmailSource;
@@ -297,6 +303,7 @@ class ObjectsManager
             'AgentTeam'                        => [Factory\CommonFactories::class, 'agentTeam'],
             'Article'                          => [Factory\SimpleFactory::class, 'create', Article::class],
             'ArticleCategory'                  => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
+            'ArticleComment'                   => [Factory\SimpleFactory::class, 'create', ArticleComment::class],
             'PendingArticle'                   => [Factory\SimpleFactory::class, 'create', ArticlePendingCreate::class],
             'ContentTemplate'                  => [Factory\SimpleFactory::class, 'create', ContentTemplate::class],
             'Chat'                             => [Factory\CommonFactories::class, 'chat'],
@@ -318,6 +325,7 @@ class ObjectsManager
             'Department'                       => [Factory\CommonFactories::class, 'department'],
             'Download'                         => [Factory\SimpleFactory::class, 'create', Download::class],
             'DownloadCategory'                 => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
+            'DownloadComment'                  => [Factory\SimpleFactory::class, 'create', DownloadComment::class],
             'EmailSource'                      => [Factory\CommonFactories::class, 'emailSource'],
             'SendmailSource'                   => [Factory\CommonFactories::class, 'sendmailSource'],
             'CommunityTopic'                   => [Factory\CommonFactories::class, 'community'],
@@ -329,6 +337,7 @@ class ObjectsManager
             'GlossaryWordDefinition'           => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
             'News'                             => [Factory\SimpleFactory::class, 'create', News::class],
             'NewsCategory'                     => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
+            'NewsComment'                      => [Factory\SimpleFactory::class, 'create', NewsComment::class],
             'Organization'                     => [Factory\SimpleFactory::class, 'create', Organization::class],
             'OrganizationNote'                 => [Factory\SimpleFactory::class, 'create', OrganizationNote::class],
             'OrganizationPhoneNumber'          => [Factory\SimpleFactory::class, 'create', OrganizationPhoneNumber::class],
@@ -425,6 +434,9 @@ class ObjectsManager
             'TicketApproval'                   => [Factory\SimpleFactory::class, 'create', TicketApproval::class],
             'ApproverSelectionCriteria'        => [Factory\SimpleFactory::class, 'create', ApproverSelectionCriteria::class],
             'SelectedApprovers'                => [Factory\SimpleFactory::class, 'create', SelectedApprovers::class],
+            'GuideCategory'                    => [Factory\SimpleFactory::class, 'create', Guide::class],
+            'Guides'                           => [Factory\SimpleFactory::class, 'create', Topic::class],
+            'GuideComment'                     => [Factory\SimpleFactory::class, 'create', TopicComment::class]
         ];
     }
 
@@ -492,8 +504,11 @@ class ObjectsManager
             'PendingArticle'                   => [$this, 'find', ArticlePendingCreate::class],
             'News'                             => [$this, 'find', News::class],
             'NewsCategory'                     => [$this, 'find', NewsCategory::class],
+            'NewsComment'                      => [$this, 'find', NewsComment::class],
             'Download'                         => [$this, 'find', Download::class],
+            'DownloadComment'                  => [$this, 'find', DownloadComment::class],
             'ArticleCategory'                  => [$this, 'find', ArticleCategory::class],
+            'ArticleComment'                   => [$this, 'find', ArticleComment::class],
             'DownloadCategory'                 => [$this, 'find', DownloadCategory::class],
             'ClientDevice'                     => [$this, 'find', ClientDevice::class],
             'Blob'                             => [$this, 'find', Blob::class],
@@ -573,6 +588,9 @@ class ObjectsManager
             'ApprovalTemplate'                 => [$this, 'find', ApprovalTemplate::class],
             'ApprovalResponse'                 => [$this, 'find', ApprovalResponse::class],
             'TicketApproval'                   => [$this, 'find', TicketApproval::class],
+            'GuideCategory'                    => [$this, 'find', Guide::class],
+            'Guides'                           => [$this, 'find', Topic::class],
+            'GuideComment'                     => [$this, 'find', TopicComment::class]
         ];
     }
 }
