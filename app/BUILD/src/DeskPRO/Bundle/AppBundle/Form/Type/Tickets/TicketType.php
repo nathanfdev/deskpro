@@ -391,6 +391,11 @@ class TicketType extends AbstractType
                 $message->setPerson($ticket->getPerson());
             }
         }
+
+        // set org from person if it wasn't set
+        if (!$ticket->getOrganization() && $ticket->getPerson() && $ticket->getPerson()->getOrganization()) {
+            $ticket->setOrganization($ticket->getPerson()->getOrganization());
+        }
     }
 
     /**
