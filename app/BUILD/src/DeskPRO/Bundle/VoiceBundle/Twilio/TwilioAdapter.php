@@ -136,18 +136,7 @@ class TwilioAdapter implements VoiceProviderInterface
             $result  = $client->availablePhoneNumbers($countryCode)->$type->page($options);
             $exclude = $this->getAccountNumbersList($account);
             $prices  = $client->pricing->phoneNumbers->countries($countryCode)->fetch();
-
-            $priceTypeMap = [
-                'local'     => 'local',
-                'national'  => 'local',
-                'mobile'    => 'mobile',
-                'toll free' => 'tollFree',
-            ];
-
-            $pricesMap = [];
-            foreach ($prices->phoneNumberPrices as $price) {
-                $pricesMap[$priceTypeMap[$price['number_type']]] = $price['current_price'];
-            }
+            $types   = $this->getAvailableNumberTypes($account, $countryCode);
 
             foreach ($result as $apiNumber) {
                 $numbers[] = new TwilioAvailableNumber(
@@ -155,7 +144,7 @@ class TwilioAdapter implements VoiceProviderInterface
                     $account,
                     isset($exclude[$apiNumber->phoneNumber]),
                     $type,
-                    isset($pricesMap[$type]) ? $pricesMap[$type] : '-',
+                    isset($types[$type]) ? $types[$type] : '-',
                     $prices->priceUnit
                 );
             }
@@ -163,6 +152,37 @@ class TwilioAdapter implements VoiceProviderInterface
         }
 
         return $numbers;
+    }
+
+    /**
+     * @param TwilioVoiceAccount $account
+     * @param string             $countryCode
+     *
+     * @return array
+     */
+    public function getAvailableNumberTypes(TwilioVoiceAccount $account, $countryCode)
+    {
+        $priceTypeMap = [
+            'local'     => 'local',
+            'national'  => 'local',
+            'mobile'    => 'mobile',
+            'toll free' => 'tollFree',
+        ];
+
+        try {
+            $client = $this->getClient($account);
+            $prices = $client->pricing->phoneNumbers->countries($countryCode)->fetch();
+
+            $pricesMap = [];
+            foreach ($prices->phoneNumberPrices as $price) {
+                $pricesMap[$priceTypeMap[$price['number_type']]] = $price['current_price'];
+            }
+
+            return $pricesMap;
+        } catch (\Exception $e) {
+        }
+
+        return [];
     }
 
     /**

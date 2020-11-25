@@ -115,6 +115,30 @@ class TwilioAccountsController extends AbstractVoiceCrudController
 
     /**
      * @ApiDoc(
+     *     description="Returns a list of available number types for specific country",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="array"
+     * )
+     *
+     * @Rest\Get("/{account}/available_number_types/{countryCode}")
+     *
+     * @param TwilioVoiceAccount $account
+     * @param string             $countryCode
+     *
+     * @return View
+     */
+    public function getAvailableNumberTypesAction(TwilioVoiceAccount $account, $countryCode)
+    {
+        $countryCode = strtoupper($countryCode);
+        $numberTypes = $this->get('twilio_adapter')->getAvailableNumberTypes($account, $countryCode);
+
+        return new View($this->wrap($numberTypes));
+    }
+
+    /**
+     * @ApiDoc(
      *     description="Returns a list of available numbers to buy",
      *     statusCodes={
      *         200="Returned if everything is ok"
