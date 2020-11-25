@@ -133,7 +133,11 @@ class SettingsProfile
         if ($this->new_picture_blob_id) {
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($this->new_picture_blob_id);
             if ($blob) {
-                $person->picture_blob = $blob;
+                if ($person->getPictureBlob()) {
+                    App::$container->getBlobStorage()->deleteBlobRecord($person->getPictureBlob());
+                }
+
+                $person->setPictureBlob($blob);
                 $this->em->persist($blob->setIsTemp(false));
             }
         }
