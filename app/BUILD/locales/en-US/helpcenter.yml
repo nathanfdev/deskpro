@@ -129,7 +129,7 @@ helpcenter.community.forum_name: 'Forum name'
 helpcenter.community.like_action: Like
 helpcenter.community.likes: Likes
 helpcenter.community.my_activity: 'My Activity'
-helpcenter.community.no_matching: 'No matching community topics'
+helpcenter.community.no_matching: 'No matching topics.'
 helpcenter.community.none: 'No community topics could be found'
 helpcenter.community.official_response: 'Official response'
 helpcenter.community.rate_forbidden: 'You are not allowed to vote'
