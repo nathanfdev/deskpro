@@ -7,6 +7,7 @@
 namespace Application\DeskPRO\Twig;
 
 use Application\DeskPRO\Twig\Loader\HybridLoader;
+use Twig\Cache\CacheInterface;
 
 class Environment extends \Twig_Environment
 {
@@ -36,6 +37,17 @@ class Environment extends \Twig_Environment
         $options['base_template_class'] = '\\Application\\DeskPRO\\Twig\\Template';
 
         parent::__construct($loader, $options);
+    }
+
+    public function setCache($cache)
+    {
+        if (\is_string($cache)) {
+            parent::setCache(new FilesystemCache($cache));
+
+            return;
+        }
+
+        parent::setCache($cache);
     }
 
     public function addExtension(\Twig_ExtensionInterface $extension)

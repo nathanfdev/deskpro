@@ -52,6 +52,7 @@ class CliKernelBootTask implements BootTaskInterface
         define('DP_INTERFACE', 'cli');
 
         switch ($cmd_ns) {
+            case 'dev':
             case 'dpdev':
             case 'debug':
                 $kernel = new Kernel\DevKernel($env->getEnvId(), $env->isDebug(), $env);
@@ -68,6 +69,10 @@ class CliKernelBootTask implements BootTaskInterface
 
             case 'api':
                 $kernel = new Kernel\ApiKernel($env->getEnvId(), $env->isDebug(), $env);
+                break;
+
+            case 'messenger':
+                $kernel = new Kernel\MessengerKernel($env->getEnvId(), $env->isDebug(), $env);
                 break;
 
             default:

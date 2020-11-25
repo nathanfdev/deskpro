@@ -6,9 +6,11 @@
 
 namespace Application\EmailBundle\Twig;
 
+use Application\DeskPRO\Twig\FilesystemCache;
 use Application\EmailBundle\Twig\Extension\TemplatingExtension;
 use Application\EmailBundle\Twig\Loader\HybridLoader;
 use DpSys\LowError\SystemErrorHandler;
+use Twig\Cache\CacheInterface;
 
 class Environment extends \Twig_Environment
 {
@@ -37,6 +39,17 @@ class Environment extends \Twig_Environment
         $options['base_template_class'] = '\\Application\\DeskPRO\\Twig\\Template';
 
         parent::__construct($loader, $options);
+    }
+
+    public function setCache($cache)
+    {
+        if (\is_string($cache)) {
+            parent::setCache(new FilesystemCache($cache));
+
+            return;
+        }
+
+        parent::setCache($cache);
     }
 
     public function addExtension(\Twig_ExtensionInterface $extension)

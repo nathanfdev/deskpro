@@ -5,9 +5,11 @@
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Twig\FilesystemCache;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateCompilationException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateNotFoundException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\PortalLoaderException;
+use Twig\Cache\CacheInterface;
 use Twig\Sandbox\SecurityError;
 
 /**
@@ -24,6 +26,17 @@ class Environment extends \Twig_Environment
     public function __construct(\Twig_LoaderInterface $loader = null, $options = [])
     {
         parent::__construct($loader, $options);
+    }
+
+    public function setCache($cache)
+    {
+        if (\is_string($cache)) {
+            parent::setCache(new FilesystemCache($cache));
+
+            return;
+        }
+
+        parent::setCache($cache);
     }
 
     /**

@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\AppBundle;
 use DeskPRO\Bundle\PortalBundle\PortalBundle;
 use DpRun\DpEnv;
 use DpSys\LowError\SystemErrorHandler;
+use GuzzleHttp\Psr7\StreamWrapper;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -256,7 +257,12 @@ abstract class BaseKernel extends Kernel
             return $this->dpBuildId;
         }
 
-        return $this->dpBuildId = basename(realpath(__DIR__.'/../'));
+        $path = class_exists('DpRun\DpFsProxyStreamWrapper') && defined('DPC_IS_READ_ONLY_FS')
+            ? \DpRun\DpFsProxyStreamWrapper::realpath(__DIR__.'/../')
+            : realpath(__DIR__.'/../')
+        ;
+
+        return $this->dpBuildId = basename($path);
     }
 
     private function getDpAppDir()
@@ -324,6 +330,10 @@ CODE;
      */
     public function getCacheDir()
     {
+        if (self::canUseVFSProxy()) {
+            return 'dpfsproxy://cache'.$this->dpEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$this->getEnvironment();
+        }
+
         return $this->dpEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$this->getEnvironment();
     }
 
@@ -332,6 +342,10 @@ CODE;
      */
     public function getLogDir()
     {
+        if (self::canUseVFSProxy()) {
+            return 'dpfsproxy://log'.$this->dpEnv->getUserLogsDir();
+        }
+
         return $this->dpEnv->getUserLogsDir();
     }
 
@@ -404,5 +418,27 @@ CODE;
             }
         }
         $servicesPropertyReflection->setValue($container, []);
+    }
+
+    /**
+     * Can we use the VFS for read-only filesystems?
+     *
+     * We cannot use the VFS proxy if we're warming up the cache, if the VFS proxy isn't available
+     * or if we're not using a read-only FS
+     *
+     * @return bool
+     */
+    public static function canUseVFSProxy()
+    {
+        $isDuringCacheWarmup = in_array(
+            'cache:warmup',
+            isset($_SERVER['argv']) && is_array($_SERVER['argv'])
+                ? $_SERVER['argv']
+                : []
+        );
+        return defined('DPC_IS_READ_ONLY_FS')
+            && in_array('dpfsproxy', stream_get_wrappers())
+            && !$isDuringCacheWarmup
+        ;
     }
 }
