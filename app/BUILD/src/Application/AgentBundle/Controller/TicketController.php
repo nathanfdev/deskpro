@@ -3035,6 +3035,12 @@ class TicketController extends AbstractController
             }
         }
 
+        $linkedChat  = null;
+        $chatChecker = $this->getPerson()->getPermissionsManager()->ChatChecker;
+        if ($ticket->linked_chat && $chatChecker->canView($ticket->linked_chat)) {
+            $linkedChat = $ticket->linked_chat;
+        }
+
         return $this->renderView(
             'AgentBundle:Ticket:view-page-display-holders.html.twig',
             [
@@ -3046,6 +3052,7 @@ class TicketController extends AbstractController
                 'new_custom_fields'    => $new_custom_fields->createView(),
                 'open_problems'        => $open_problems,
                 'incidents'            => $incidents,
+                'linked_chat'          => $linkedChat,
             ]
         );
     }
