@@ -100,7 +100,7 @@ class DashboardReportWidgetsController extends CrudController
 
         $response = new Response();
         $response->headers->set('Content-Type', $renderer->getContentType());
-        $response->headers->set('Content-Disposition', 'inline; filename='.$widget->getTitle().'.'.$renderer->getExtension());
+        $response->headers->set('Content-Disposition', 'attachment; filename='.$widget->getTitle().'.'.$renderer->getExtension());
         $response->setContent($actualResults);
 
         return $response;
