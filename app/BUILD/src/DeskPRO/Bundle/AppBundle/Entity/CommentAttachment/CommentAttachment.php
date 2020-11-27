@@ -14,7 +14,7 @@ use Orb\Util\Numbers;
 /**
  * @JMS\ExclusionPolicy("none")
  */
-abstract class CommentAttachmentAbstract
+class CommentAttachment
 {
     use NotifyPropertyChangedTrait;
 
@@ -63,7 +63,7 @@ abstract class CommentAttachmentAbstract
     protected $createdAt;
 
     /**
-     * CommentAttachmentAbstract constructor.
+     * CommentAttachment constructor.
      *
      * @throws Exception
      */
@@ -80,7 +80,7 @@ abstract class CommentAttachmentAbstract
     /**
      * @param int $id
      *
-     * @return CommentAttachmentAbstract
+     * @return CommentAttachment
      */
     public function setId(int $id)
     {
@@ -100,7 +100,7 @@ abstract class CommentAttachmentAbstract
     /**
      * @param Person $person
      *
-     * @return CommentAttachmentAbstract
+     * @return CommentAttachment
      */
     public function setPerson(Person $person)
     {

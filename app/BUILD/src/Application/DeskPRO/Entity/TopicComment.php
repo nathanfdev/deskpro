@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\EntityRepository\TopicComment as TopicCommentRepository;
+use DeskPRO\Bundle\AppBundle\Entity\CommentAttachment\TopicCommentAttachment;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -37,6 +38,20 @@ class TopicComment extends CommentAbstract
         $this->setModelField('topic', $topic);
 
         return $this;
+    }
+
+    /**
+     * Add an attachment.
+     *
+     * @param TopicCommentAttachment $attach
+     */
+    public function addAttachment(TopicCommentAttachment $attach)
+    {
+        $attach->setTopicComment($this);
+        $this->attachments->add($attach);
+
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+        $this->getStateChangeRecorder()->record('attachments', null, $attach);
     }
 
     //###########################################################################

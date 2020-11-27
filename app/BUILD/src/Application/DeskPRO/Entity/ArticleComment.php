@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\CommentAttachment\ArticleCommentAttachment;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -28,6 +29,20 @@ class ArticleComment extends CommentAbstract
      * @var Article
      */
     protected $article;
+
+    /**
+     * Add an attachment.
+     *
+     * @param ArticleCommentAttachment $attach
+     */
+    public function addAttachment(ArticleCommentAttachment $attach)
+    {
+        $this->attachments->add($attach);
+        $attach->setArticleComment($this);
+
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+        $this->getStateChangeRecorder()->record('attachments', null, $attach);
+    }
 
     public function getArticle()
     {

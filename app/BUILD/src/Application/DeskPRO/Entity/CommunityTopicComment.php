@@ -1,13 +1,10 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\CommentAttachment\CommunityTopicCommentAttachment;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -38,6 +35,20 @@ class CommunityTopicComment extends CommentAbstract
     public function getObjectContentType()
     {
         return self::CONTENT_TYPE;
+    }
+
+    /**
+     * Add an attachment.
+     *
+     * @param CommunityTopicCommentAttachment $attach
+     */
+    public function addAttachment(CommunityTopicCommentAttachment $attach)
+    {
+        $this->attachments->add($attach);
+        $attach->setCommunityTopicComment($this);
+
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+        $this->getStateChangeRecorder()->record('attachments', null, $attach);
     }
 
     //###########################################################################

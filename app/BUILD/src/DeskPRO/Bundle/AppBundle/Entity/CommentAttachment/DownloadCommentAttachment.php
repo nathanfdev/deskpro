@@ -17,14 +17,14 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @category Entities
  */
-class DownloadCommentAttachment extends CommentAttachmentAbstract
+class DownloadCommentAttachment extends CommentAttachment
 {
     /**
      * @var DownloadComment
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\DownloadComment")
      * @ORM\JoinColumn(name="download_comment_id", referencedColumnName="id", onDelete="SET NULL")
      */
-    protected $download_comment;
+    public $download_comment;
 
     /**
      * @return DownloadComment

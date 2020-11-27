@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\CommentAttachment\DownloadCommentAttachment;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -32,6 +33,20 @@ class DownloadComment extends CommentAbstract
     public function getDownload()
     {
         return $this->download;
+    }
+
+    /**
+     * Add an attachment.
+     *
+     * @param DownloadCommentAttachment $attach
+     */
+    public function addAttachment(DownloadCommentAttachment $attach)
+    {
+        $this->attachments->add($attach);
+        $attach->setDownloadComment($this);
+
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+        $this->getStateChangeRecorder()->record('attachments', null, $attach);
     }
 
     //###########################################################################
