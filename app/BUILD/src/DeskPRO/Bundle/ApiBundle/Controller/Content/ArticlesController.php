@@ -12,13 +12,13 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Content\ArticleType;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Image;
-use Exception;
 
 /**
  * Class ArticlesController.
@@ -138,9 +138,10 @@ class ArticlesController extends AbstractContentController
      *
      * @param Request $request
      * @param Article $article
-     * @return View|JsonResponse
      *
      * @throws ConnectionException
+     *
+     * @return View|JsonResponse
      */
     public function setIconAction(Request $request, Article $article)
     {
@@ -148,6 +149,7 @@ class ArticlesController extends AbstractContentController
 
         $form->submit($request->request->all());
         $this->getManager()->getConnection()->beginTransaction();
+
         try {
             if ($form->isSubmitted() && $form->isValid()) {
                 $icon = $this->get('images_service')->setIconBlob($form->getData());
@@ -158,6 +160,7 @@ class ArticlesController extends AbstractContentController
             }
         } catch (Exception $e) {
             $this->getManager()->getConnection()->rollBack();
+
             return new JsonResponse($e->getMessage());
         }
 
@@ -181,10 +184,13 @@ class ArticlesController extends AbstractContentController
      *     }
      * )
      * @Rest\Post("/{article}/splash_image_upload")
+     *
      * @param Request $request
      * @param Article $article
-     * @return JsonResponse
+     *
      * @throws OptimisticLockException
+     *
+     * @return View
      */
     public function uploadSplashImageAction(Request $request, Article $article)
     {
@@ -206,7 +212,7 @@ class ArticlesController extends AbstractContentController
         $this->getManager()->persist($splashImage);
         $this->getManager()->flush();
 
-        return new JsonResponse(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]);
+        return new View($this->wrap(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]));
     }
 
     /**
@@ -235,9 +241,10 @@ class ArticlesController extends AbstractContentController
      *
      * @param Request $request
      * @param Article $article
-     * @return View
      *
      * @throws OptimisticLockException
+     *
+     * @return View
      */
     public function selectSplashImageAction(Request $request, Article $article)
     {
@@ -245,7 +252,7 @@ class ArticlesController extends AbstractContentController
 
         $splashImage = $this->get('images_service')->setSplashImage($image);
 
-        if($splashImage instanceof \Exception){
+        if ($splashImage instanceof \Exception) {
             throw new \RuntimeException($splashImage->getMessage());
         }
 
@@ -255,13 +262,14 @@ class ArticlesController extends AbstractContentController
         return new View($this->wrap($image));
     }
 
-
     /**
      * @Rest\Delete("/{article}/splash_image")
      *
      * @param Article $article
-     * @return View
+     *
      * @throws OptimisticLockException
+     *
+     * @return View
      */
     public function deleteSplashImageAction(Article $article)
     {

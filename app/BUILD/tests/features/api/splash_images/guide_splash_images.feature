@@ -29,17 +29,17 @@ Feature: /api/v2/guides/{id}/splash_image_upload
         "description": "Peaceful park in Porto in autumn",
         "alt_description": "people walking on gray concrete road between green trees during daytime",
         "urls": {
-            "raw": "https://images.unsplash.com/photo-1585555799372-523effb3a9ba?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjkxMDYyfQ",
-            "full": "https://images.unsplash.com/photo-1585555799372-523effb3a9ba?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&ixid=eyJhcHBfaWQiOjkxMDYyfQ",
-            "regular": "https://images.unsplash.com/photo-1585555799372-523effb3a9ba?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjkxMDYyfQ",
-            "small": "https://images.unsplash.com/photo-1585555799372-523effb3a9ba?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjkxMDYyfQ",
-            "thumb": "https://images.unsplash.com/photo-1585555799372-523effb3a9ba?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjkxMDYyfQ"
+            "raw": "https://example.net/photo-1585555799372-523effb3a9ba?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjkxMDYyfQ",
+            "full": "https://example.net/photo-1585555799372-523effb3a9ba?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&ixid=eyJhcHBfaWQiOjkxMDYyfQ",
+            "regular": "https://example.net/photo-1585555799372-523effb3a9ba?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjkxMDYyfQ",
+            "small": "https://example.net/photo-1585555799372-523effb3a9ba?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjkxMDYyfQ",
+            "thumb": "https://example.net/photo-1585555799372-523effb3a9ba?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjkxMDYyfQ"
         },
         "links": {
-            "self": "https://api.unsplash.com/photos/GMgdkY1xfDA",
-            "html": "https://unsplash.com/photos/GMgdkY1xfDA",
-            "download": "https://unsplash.com/photos/GMgdkY1xfDA/download",
-            "download_location": "https://api.unsplash.com/photos/GMgdkY1xfDA/download"
+            "self": "https://example.net/photos/GMgdkY1xfDA",
+            "html": "https://example.net/photos/GMgdkY1xfDA",
+            "download": "https://example.net/photos/GMgdkY1xfDA/download",
+            "download_location": "https://example.net/photos/GMgdkY1xfDA/download"
         }
     }
 }
