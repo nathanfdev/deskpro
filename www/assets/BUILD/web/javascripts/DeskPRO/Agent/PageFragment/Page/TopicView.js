@@ -226,7 +226,14 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
 				success: function() {
 					DeskPRO_Window.sections.publish_section.reload();
           window.document.dispatchEvent(new CustomEvent('dpGuideReloadTree'));
-				}
+				},
+        error: function (xhr) {
+				  console.log(xhr.responseJSON.errors);
+				  if (xhr.responseJSON.errors) {
+            DeskPRO_Window.showAlert(xhr.responseJSON.errors[0]);
+            return false;
+          }
+        }
 			});
 		});
 	},

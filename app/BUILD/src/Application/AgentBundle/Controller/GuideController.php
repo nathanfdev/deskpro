@@ -203,20 +203,23 @@ class GuideController extends PublishController
             case 'guide':
                 $guide = $this->em->find(Guide::class, $this->in->getUInt('guide_id'));
 
+                /** @var Guide $previousGuide */
+                $previousGuide = $topic->getGuide();
+
                 $rootTopic = $topic->getParent() === null;
                 $noContent = $topic->isNoContent();
 
                 $this->moveTopic($topic, $guide);
                 $data['guide_id']  = $guide->getId();
                 $data['parent_id'] = 0;
-                if ($rootTopic) {
+                if ($rootTopic && $previousGuide->isUseVolumes()) {
                     $topic->setParent(null);
                 } elseif ($guide->isUseVolumes()) {
                     $rootTopics = $guide->getRootTopics();
                     if (count($rootTopics) === 0) {
                         $this->em->rollback();
 
-                        return $this->createNotFoundException('Target guide has no volumes');
+                        return $this->createJsonResponse(['errors' => ['Target guide has no volumes']], 400);
                     }
                     if ($noContent) {
                         $parent            = $rootTopics->first();
@@ -227,7 +230,7 @@ class GuideController extends PublishController
                         if (count($chapters) === 0) {
                             $this->em->rollback();
 
-                            return $this->createNotFoundException('Target guide has no chapters');
+                            return $this->createJsonResponse(['errors' => ['Target guide has no chapters']], 400);
                         }
                         $parent            = $chapters->first();
                         $data['parent_id'] = $parent->getId();
@@ -235,14 +238,17 @@ class GuideController extends PublishController
                     }
                 } else {
                     $rootTopics = $guide->getRootTopics();
-                    if (count($rootTopics) === 0) {
+                    if (count($rootTopics) === 0 && !$noContent) {
                         $this->em->rollback();
 
-                        return $this->createNotFoundException('Target guide has no chapters');
+                        return $this->createJsonResponse(['errors' => ['Target guide has no chapters']], 400);
+                    } elseif ($noContent) {
+                        $topic->setParent(null);
+                    } else {
+                        $parent            = $rootTopics->first();
+                        $data['parent_id'] = $parent->getId();
+                        $topic->setParent($parent);
                     }
-                    $parent            = $rootTopics->first();
-                    $data['parent_id'] = $parent->getId();
-                    $topic->setParent($parent);
                 }
 
                 break;
