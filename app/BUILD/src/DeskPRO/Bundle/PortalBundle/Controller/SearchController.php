@@ -467,7 +467,7 @@ class SearchController extends AbstractController
             $stickySearch = new StickyWordSearch($this->getEm());
             $stickySearch->setPersonContext($person);
             $stickyResults = $stickySearch->getResults($q, 5, [$type]);
-
+            $total += count($stickyResults);
             if ($stickyResults) {
                 $results = $this->addStickyResult($stickyResults, $results);
             }
