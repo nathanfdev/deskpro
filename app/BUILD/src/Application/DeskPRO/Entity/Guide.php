@@ -256,11 +256,25 @@ class Guide extends DomainObject implements HasIconProperty, HasSplashImagePrope
         return $this->topics;
     }
 
+    /**
+     * @return Topic[]|ArrayCollection
+     */
     public function getRootTopics()
     {
         /* @var Topic $topic */
         return $this->topics->filter(function ($topic) {
             return ($topic->getStatus() !== Topic::STATUS_HIDDEN) && $topic->getParent() === null;
+        });
+    }
+
+    /**
+     * @return Topic[]|ArrayCollection
+     */
+    public function getChapters()
+    {
+        return $this->topics->filter(function ($topic) {
+            /* @var Topic $topic */
+            return ($topic->isNoContent()) && $topic->getParent() !== null;
         });
     }
 
