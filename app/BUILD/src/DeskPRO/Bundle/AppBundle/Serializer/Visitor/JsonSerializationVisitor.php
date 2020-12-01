@@ -31,7 +31,24 @@ class JsonSerializationVisitor extends BaseVisitor
                             $value[$key] = $iterator($item);
                         }
                     } elseif (is_string($value)) {
-                        $value = Strings::utf8_bad_strip(utf8_encode($value));
+                        // fix german umlauts, keep this for umlauts like ä ö ü
+                        $encoding = mb_detect_encoding($value, mb_detect_order(), false);
+                        if (!$encoding) { // this might me something with umlauts in this case
+                            $value = Strings::utf8_bad_strip(utf8_encode($value));
+                        } else {
+                            $value = mb_convert_encoding($value, 'UTF-8', $encoding);
+                        }
+
+                        // fix encoding
+                        // I know it looks weird but sometimes we have ASCII encoding here, and not UTF-8
+                        // although we were converting it to UTF-8 explicitly
+                        // e.g. detected an incomplete multibyte character in input string
+                        $encoding = mb_detect_encoding($value, mb_detect_order(), false);
+                        if ($encoding === 'UTF-8') {
+                            $value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+                        }
+
+                        $value = iconv(mb_detect_encoding($value, mb_detect_order(), false), 'UTF-8//IGNORE', $value);
                     }
 
                     return $value;
