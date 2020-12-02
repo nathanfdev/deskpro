@@ -39,9 +39,13 @@ export class CommunityVoteWidget extends PageWidget {
       $.ajax({
         url:         agreed ? voteDownUrl : voteUpUrl,
         method:      'POST',
-        contentType: 'application/json'
+        contentType: 'application/json',
+        dataType:    'json',
       }).success((data) => {
         if (!data.success) {
+          if ('redirect' in data) {
+            window.location.href = data.redirect;
+          }
           $iAgreeBox.find('div').text(data.error);
           onFail();
         }
