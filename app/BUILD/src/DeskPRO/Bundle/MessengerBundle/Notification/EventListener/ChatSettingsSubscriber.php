@@ -11,7 +11,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ChatSettingsSubscriber implements EventSubscriberInterface
 {
-    private const CORE_APPS_CHAT = 'core.apps_chat';
+    const CORE_APPS_CHAT = 'core.apps_chat';
 
     /**
      * @var EntityManagerInterface

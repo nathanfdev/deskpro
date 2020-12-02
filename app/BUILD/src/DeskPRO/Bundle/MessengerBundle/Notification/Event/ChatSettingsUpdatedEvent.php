@@ -7,7 +7,7 @@ use Symfony\Component\EventDispatcher\Event;
 
 class ChatSettingsUpdatedEvent extends Event
 {
-    public const CHAT_SETTINGS_UPDATED = 'messenger.chat.settings.updated';
+    const CHAT_SETTINGS_UPDATED = 'messenger.chat.settings.updated';
 
     /**
      * @var Brand
