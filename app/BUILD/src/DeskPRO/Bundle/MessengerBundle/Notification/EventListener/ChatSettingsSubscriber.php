@@ -21,7 +21,7 @@ class ChatSettingsSubscriber implements EventSubscriberInterface
     /**
      * @var MessengerSettingsResolver
      */
-    private MessengerSettingsResolver $messengerSettingsResolver;
+    private $messengerSettingsResolver;
 
     /**
      * ChatSettingsSubscriber constructor.
