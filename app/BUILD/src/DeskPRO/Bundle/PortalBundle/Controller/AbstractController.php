@@ -6,10 +6,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessageParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\PortalBundle\SavedForm\SavedFormView;
 use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
@@ -149,6 +149,7 @@ class AbstractController extends BaseController
      * @param $template_name
      * @param array $options
      * @param bool $useRender
+     *
      * @return string|Response|null
      */
     public function renderThemeView($template_name, array $options = [], $useRender = true)
@@ -208,7 +209,7 @@ class AbstractController extends BaseController
             $pageVars['pg'] = $pg;
         }
 
-        return ($useRender) ?  $this->render($template_name, $pageVars) : $this->renderView($template_name, $pageVars);
+        return ($useRender) ? $this->render($template_name, $pageVars) : $this->renderView($template_name, $pageVars);
     }
 
     public function loadFlashes()
@@ -269,8 +270,7 @@ class AbstractController extends BaseController
         $ticketsAwaitingReply = [];
         if (!$person instanceof PersonGuest) {
             /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepo */
-            $ticketRepo           = $this->getRepo(Ticket::class);
-            $ticketsAwaitingReply = $ticketRepo->getWaitingForReplyForPerson($person, 0, $brand);
+            $ticketsAwaitingReply =  $this->get('data.tickets')->getPersonTicket($person, TicketStatus::STATUS_TYPE_AWAITING_USER);
         }
 
         $unreadDirectMessages = 0;

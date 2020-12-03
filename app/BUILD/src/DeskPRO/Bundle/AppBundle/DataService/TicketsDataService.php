@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
@@ -127,15 +125,18 @@ class TicketsDataService extends AbstractDataService
 
                     case TicketFilter::CATEGORY_AWAITING_AGENT:
                         $qb->andWhere('t.status IN (:status)')->setParameter('status', [TicketStatus::STATUS_TYPE_AWAITING_AGENT, TicketStatus::STATUS_TYPE_PENDING]);
+
                         break;
 
                     case TicketFilter::CATEGORY_RESOLVED:
                         $qb->andWhere('t.status IN (:status)')->setParameter('status', [TicketStatus::STATUS_TYPE_RESOLVED, TicketStatus::STATUS_TYPE_ARCHIVED]);
+
                         break;
 
                     case TicketFilter::CATEGORY_AWAITING_USER:
                     default:
                         $qb->andWhere('t.status = :status')->setParameter('status', TicketStatus::STATUS_TYPE_AWAITING_USER);
+
                         break;
 
                 }
@@ -154,34 +155,42 @@ class TicketsDataService extends AbstractDataService
                     case TicketFilter::SORT_DEPARTMENT:
                         $qb->join('t.department', 'd');
                         $qb->orderBy('d.title', $filter->getSortDirection());
+
                         break;
 
                     case TicketFilter::SORT_SUBJECT:
                         $qb->orderBy('t.subject', $filter->getSortDirection());
+
                         break;
 
                     case TicketFilter::SORT_CREATED:
                         $qb->orderBy('t.date_created', $filter->getSortDirection());
+
                         break;
 
                     case TicketFilter::SORT_LAST_USER:
                         $qb->addOrderBy('t.date_last_user_reply', $filter->getSortDirection());
+
                         break;
 
                     case TicketFilter::SORT_LAST_AGENT:
                         $qb->addOrderBy('t.date_last_agent_reply', $filter->getSortDirection());
+
                         break;
 
                     case TicketFilter::SORT_USER:
                         $qb->addOrderBy('p.name', $filter->getSortDirection());
+
                         break;
 
                     case TicketFilter::SORT_AGENT:
                         $qb->orderBy('t.agent', $filter->getSortDirection());
+
                         break;
                     case TicketFilter::SORT_ACTIVITY:
                         $qb->select('t, STRICT_GREATEST(t.date_last_user_reply, t.date_user_waiting, t.date_agent_waiting, t.date_last_agent_reply, t.date_created) as HIDDEN date_activity');
                         $qb->addOrderBy('date_activity', $filter->getSortDirection());
+
                         break;
                 }
 
@@ -198,8 +207,8 @@ class TicketsDataService extends AbstractDataService
      * Returns the count of tickets that can be seen by the user by default. You can optionally provide a status to count on.
      *
      * @param Person $person
-     * @param string $status          "open" [awaiting user or agent], "all" [open + resolved], or a specific status
-     * @param bool   $ignoreOnlyNotes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
+     * @param string $status "open" [awaiting user or agent], "all" [open + resolved], or a specific status
+     * @param bool $ignoreOnlyNotes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
      *
      * @return int|null
      */
@@ -217,72 +226,14 @@ class TicketsDataService extends AbstractDataService
                 $ignoreOnlyNotes,
                 $brand,
             ],
-            function () use ($em, $person, $status, $ignoreOnlyNotes, $brand) {
-                $qb = $em->createQueryBuilder();
+            function () use ($em, $person, $status, $ignoreOnlyNotes) {
+                $qb   = $em->createQueryBuilder();
                 $time = microtime(true);
                 $this->logger->debug('[TicketsDataService] Count started');
-                if ('open' === $status) {
-                    $statusList = [
-                        TicketStatus::STATUS_TYPE_AWAITING_AGENT,
-                        TicketStatus::STATUS_TYPE_PENDING,
-                        TicketStatus::STATUS_TYPE_AWAITING_USER,
-                    ];
-                } elseif ('all' !== $status) {
-                    $statusList = [$status];
-                } else {
-                    $statusList = [
-                        TicketStatus::STATUS_TYPE_AWAITING_AGENT,
-                        TicketStatus::STATUS_TYPE_PENDING,
-                        TicketStatus::STATUS_TYPE_RESOLVED,
-                        TicketStatus::STATUS_TYPE_ARCHIVED,
-                        TicketStatus::STATUS_TYPE_AWAITING_USER,
-                    ];
-                }
 
-                $qb->select($qb->expr()->countDistinct('t.id'))
-                    ->from(Ticket::class, 't')
-                    ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $statusList)
-                ;
+                $qb->select($qb->expr()->countDistinct('t.id'));
 
-                if ($brand && $brand->getId()) {
-                    $qb->andWhere('t.brand = :brand');
-                    $qb->setParameter('brand', $brand);
-                }
-
-                if ($ignoreOnlyNotes) {
-                    $this->ignoreTicketsWithOnlyAgentNotes($qb);
-                }
-
-                if ($person->isAgent()) {
-                    $this->logger->debug('[TicketsDataService] Agent tickets counting');
-                    $qb->andWhere('t.person = :person')->setParameter('person', $person);
-                } else {
-                    /** @var Connection $connection */
-                    $connection = $em->getConnection();
-                    if (!$person->getOrganization() || !$person->isOrganizationManager()) {
-                        $this->logger->debug('[TicketsDataService] No organization count, using UNION');
-
-                        $parts = [
-                            '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC)',
-                            '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)',
-                        ];
-                        $params = [$person->getId(), $person->getId()];
-                        $partsUnion = implode("\nUNION\n", $parts);
-                        $ids = $connection->fetchAllCol("SELECT DISTINCT id FROM ($partsUnion) AS t", $params);
-
-                        $qb->andWhere('t.id IN (:ids)');
-                        $qb->setParameter('ids', $ids);
-                    } else {
-                        $this->logger->debug('[TicketsDataService] Organization count, using JOIN');
-
-                        // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
-                        $qb->leftJoin('t.participants', 'part');
-                        $qb->andWhere('t.person = :person OR (part.person = :person AND (t.organization != :organization OR t.organization IS NULL))');
-                        $qb->setParameter('person', $person)->setParameter('organization', $person->getOrganization());
-                    }
-                }
-
-                $qb->distinct(true);
+                $qb = $this->getPersonTicketData($qb, $person, $status, $ignoreOnlyNotes);
 
                 $singleScalarResult = $qb->getQuery()->getSingleScalarResult();
 
@@ -293,6 +244,110 @@ class TicketsDataService extends AbstractDataService
                 return $singleScalarResult;
             }
         );
+    }
+
+    /**
+     * Returns tickets of person.
+     *
+     * @param Person $person
+     * @param string $status
+     * @param bool $ignoreOnlyNotes
+     *
+     * @return int|null
+     */
+    public function getPersonTicket(Person $person, $status, $ignoreOnlyNotes = true)
+    {
+        $time = microtime(true);
+        $this->logger->debug('[TicketsDataService] Query Person Ticket started');
+
+        $qb = $this->em->createQueryBuilder()->select('t');
+
+        $qb = $this->getPersonTicketData($qb, $person, $status, $ignoreOnlyNotes);
+
+        $result = $qb->getQuery()->getResult();
+
+        $str = '[TicketsDataService] Time taken: '.sprintf('%.5f', microtime(true) - $time);
+        $this->logger->debug($str);
+        $this->logger->debug("[TicketsDataService]  Query Person Ticket: ".count($result)."");
+
+        return $result;
+    }
+
+    /**
+     * @param $qb
+     * @param Person $person
+     * @param $status
+     * @param bool $ignoreOnlyNotes
+     *
+     * @return mixed
+     */
+    public function getPersonTicketData($qb, Person $person, $status, $ignoreOnlyNotes = true)
+    {
+        $brand = $this->brandStack->getActive()->getBrand();
+
+        if ('open' === $status) {
+            $statusList = [
+                TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                TicketStatus::STATUS_TYPE_PENDING,
+                TicketStatus::STATUS_TYPE_AWAITING_USER,
+            ];
+        } elseif ('all' !== $status) {
+            $statusList = [$status];
+        } else {
+            $statusList = [
+                TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                TicketStatus::STATUS_TYPE_PENDING,
+                TicketStatus::STATUS_TYPE_RESOLVED,
+                TicketStatus::STATUS_TYPE_ARCHIVED,
+                TicketStatus::STATUS_TYPE_AWAITING_USER,
+            ];
+        }
+
+        $qb
+            ->from(Ticket::class, 't')
+            ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $statusList);
+
+        if ($brand && $brand->getId()) {
+            $qb->andWhere('t.brand = :brand');
+            $qb->setParameter('brand', $brand);
+        }
+
+        if ($ignoreOnlyNotes) {
+            $this->ignoreTicketsWithOnlyAgentNotes($qb);
+        }
+
+        if ($person->isAgent()) {
+            $this->logger->debug('[TicketsDataService] Agent tickets counting');
+            $qb->andWhere('t.person = :person')->setParameter('person', $person);
+        } else {
+            /** @var Connection $connection */
+            $connection = $this->em->getConnection();
+            if (!$person->getOrganization() || !$person->isOrganizationManager()) {
+                $this->logger->debug('[TicketsDataService] No organization count, using UNION');
+
+                $parts      = [
+                    '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC)',
+                    '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)',
+                ];
+                $params     = [$person->getId(), $person->getId()];
+                $partsUnion = implode("\nUNION\n", $parts);
+                $ids        = $connection->fetchAllCol("SELECT DISTINCT id FROM ($partsUnion) AS t", $params);
+
+                $qb->andWhere('t.id IN (:ids)');
+                $qb->setParameter('ids', $ids);
+            } else {
+                $this->logger->debug('[TicketsDataService] Organization count, using JOIN');
+
+                // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
+                $qb->leftJoin('t.participants', 'part');
+                $qb->andWhere('t.person = :person OR (part.person = :person AND (t.organization != :organization OR t.organization IS NULL))');
+                $qb->setParameter('person', $person)->setParameter('organization', $person->getOrganization());
+            }
+        }
+
+        $qb->distinct(true);
+
+        return $qb;
     }
 
     /**
