@@ -78,7 +78,7 @@
                             <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/account.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.general.view_profile') }}
                         </a>
                     </li>
-                    {% if helpcenter.getUserInfo().ticket_count > 0 and can_use_tickets() %}
+                    {% if can_use_tickets() %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_tickets') }}">
                                 <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.tickets.my_tickets') }}
@@ -88,7 +88,7 @@
                             </a>
                         </li>
                     {% endif %}
-                    {% if app.user.organization and app.user.organization_manager and helpcenter.getUserInfo().ticket_count_org > 0 %}
+                    {% if app.user.organization and app.user.organization_manager %}
                         <li class="dp-po-user-menu-item">
                             <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-user-menu-link">
                                 {% if app.user.organization.picture %}
@@ -110,7 +110,7 @@
                             </a>
                         </li>
                     {% endif %}
-                    {% if helpcenter.getUserInfo().chat_count > 0 and can_use_chat() %}
+                    {% if can_use_chat() %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_chats') }}">
                                 <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}" role="presentation" alt=""> {{ phrase('helpcenter.chats.my_chats') }}
@@ -118,13 +118,13 @@
                         </li>
                     {% endif %}
 
-                    {% if helpcenter.getUserInfo().ticket_approval_count > 0 and app.getSetting('core_tickets.ticket_approvals') %}
+                    {% if app.getSetting('core_tickets.ticket_approvals') and pageData.alerts.is_ticket_approver %}
                         <li class="dp-po-user-menu-item">
                             <span class="disc"></span>
                             <a class="dp-po-user-menu-link" href="{{ path('ticket_approvals') }}">
                                 <img class="dp-po-user-menu-image dp-profile-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}"> {{ phrase('helpcenter.approvals.my_approvals') }}
                                 {% if pageData.alerts.pending_approvals > 0 %}
-                                    ({{ pageData.alerts.pending_approvals }})
+                                ({{ pageData.alerts.pending_approvals }})
                                 {% endif %}
                             </a>
                         </li>

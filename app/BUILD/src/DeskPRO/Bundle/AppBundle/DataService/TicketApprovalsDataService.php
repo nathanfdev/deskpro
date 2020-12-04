@@ -5,9 +5,12 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -85,6 +88,32 @@ class TicketApprovalsDataService extends AbstractDataService
             return $singleScalarResult;
         }
         );
+    }
+
+    /**
+     * @param Person|null $person
+     *
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     *
+     * @return bool
+     */
+    public function isTicketApprover(Person $person = null): bool
+    {
+        if (null === $person) {
+            return false;
+        }
+
+        $regex = '[\[,]'.$person->getId().'[,\]]';
+
+        $qb = $this->em->getRepository(ApprovalTemplate::class)->createQueryBuilder('t')
+             ->select('count(distinct t.id)')
+             ->where('REGEXP(t.selectedApprovers, :regex) = 1')
+             ->setParameter('regex', $regex);
+
+        $count = $qb->getQuery()->getSingleScalarResult();
+
+        return ($count > 0);
     }
 
     /**

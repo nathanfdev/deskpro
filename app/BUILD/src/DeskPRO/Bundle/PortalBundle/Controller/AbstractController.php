@@ -294,6 +294,7 @@ class AbstractController extends BaseController
             'tickets_awaiting_reply' => $ticketsAwaitingReply,
             'unread_direct_messages' => $unreadDirectMessages,
             'pending_approvals'      => $approvalNeedingAction,
+            'is_ticket_approver'     => $this->getTicketApprovalsDataService()->isTicketApprover($user),
         ];
     }
 
