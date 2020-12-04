@@ -54,7 +54,7 @@
                         {% if forum.icon_property %}
                             {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
                         {% endif %}
-                        {{ phrase_object(forum, 'noun') }}
+                        {{ phrase_object(forum) }}
                     </a>
                 {% endfor %}
             </div>
