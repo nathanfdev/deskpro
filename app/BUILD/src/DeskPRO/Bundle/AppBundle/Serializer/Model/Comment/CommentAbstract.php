@@ -143,6 +143,16 @@ abstract class CommentAbstract
     protected $userDisplayContact;
 
     /**
+     * The parent comment being replied to.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"list", "details"})
+     *
+     * @var string
+     */
+    protected $parent;
+
+    /**
      * Constructor.
      *
      * @param CommentAbstractEntity $entity
@@ -161,5 +171,6 @@ abstract class CommentAbstract
         $this->isReviewed         = $entity->isReviewed();
         $this->dateCreated        = $entity->getDateCreated();
         $this->userDisplayContact = $entity->getUserDisplayContact();
+        $this->parent             = ($entity->getParent()) ? $entity->getParent()->getId() : null;
     }
 }

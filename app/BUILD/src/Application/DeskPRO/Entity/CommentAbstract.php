@@ -166,6 +166,13 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $content_type = '';
 
     /**
+     * @JMS\Groups({"list", "details"})
+     *
+     * @var Topic
+     */
+    protected $parent_id;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -569,7 +576,19 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->getStatus() == self::STATUS_VISIBLE;
     }
-    
+
+    public function setParent($parent_id)
+    {
+        $this->setModelField('parent_id', $parent_id);
+
+        return $this;
+    }
+
+    public function getParent()
+    {
+        return $this->parent_id;
+    }
+
     /**
      * @return string
      */

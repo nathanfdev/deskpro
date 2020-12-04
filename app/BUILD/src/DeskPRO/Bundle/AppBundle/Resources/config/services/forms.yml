@@ -506,3 +506,41 @@ services:
       - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: form.type }
+
+  abstract_form_comment_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Comment\CommentType
+    abstract: true
+    arguments:
+      - "@child_comment_helper"
+    tags:
+      - { name: form.type }
+
+  form_comment_topic_comment_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Comment\CommunityTopicCommentType
+    parent: abstract_form_comment_type
+    tags:
+      - { name: form.type }
+
+  form_news_comment_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Comment\NewsCommentType
+    parent: abstract_form_comment_type
+    tags:
+      - { name: form.type }
+
+  form_download_comment_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Comment\DownloadCommentType
+    parent: abstract_form_comment_type
+    tags:
+      - { name: form.type }
+
+  form_article_comment_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Comment\ArticleCommentType
+    parent: abstract_form_comment_type
+    tags:
+      - { name: form.type }
+
+  form_guides_comment_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Comment\GuidesCommentType
+    parent: abstract_form_comment_type
+    tags:
+      - { name: form.type }

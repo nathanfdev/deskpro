@@ -34,3 +34,9 @@ services:
     class: DeskPRO\Bundle\PortalBundle\PageViewLog\PageViewLogService
     arguments:
       - '@doctrine.orm.default_entity_manager'
+
+  child_comment_helper:
+    class: DeskPRO\Bundle\PortalBundle\Helper\ChildCommentHelper
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@language_manager"

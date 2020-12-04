@@ -22,6 +22,7 @@ use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManage
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
+use DeskPRO\Bundle\PortalBundle\Helper\ChildCommentHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
@@ -122,24 +123,30 @@ class CommentFormHandler
     private $brandThemeLoader;
 
     /**
+     * @var ChildCommentHelper
+     */
+    private $childCommentHelper;
+
+    /**
      * Constructor.
      *
-     * @param FormSaver                  $saver
-     * @param PortalValidation           $portalValidation
-     * @param LanguageManager            $languageManager
-     * @param ObjectRouter               $objectRouter
-     * @param UrlGeneratorInterface      $urlGenerator
-     * @param PersonDataService          $personDataService
-     * @param BrandStack                 $brandStack
-     * @param PortalPermissionsManager   $permissionsManager
+     * @param FormSaver $saver
+     * @param PortalValidation $portalValidation
+     * @param LanguageManager $languageManager
+     * @param ObjectRouter $objectRouter
+     * @param UrlGeneratorInterface $urlGenerator
+     * @param PersonDataService $personDataService
+     * @param BrandStack $brandStack
+     * @param PortalPermissionsManager $permissionsManager
      * @param ContentSubscriptionsHelper $subscriptionsHelper
-     * @param EntityManager              $em
-     * @param PersonFactory              $personFactory
-     * @param FormFactory                $formFactory
-     * @param TokenStorage               $tokenStorage
-     * @param AntiAbuse                  $antiAbuse
-     * @param PortalEmailSender          $emailSender
-     * @param PortalBrandThemeLoader     $portalBrandThemeLoader
+     * @param EntityManager $em
+     * @param PersonFactory $personFactory
+     * @param FormFactory $formFactory
+     * @param TokenStorage $tokenStorage
+     * @param AntiAbuse $antiAbuse
+     * @param PortalEmailSender $emailSender
+     * @param PortalBrandThemeLoader $portalBrandThemeLoader
+     * @param ChildCommentHelper $childCommentHelper
      */
     public function __construct(
         FormSaver $saver,
@@ -157,7 +164,8 @@ class CommentFormHandler
         TokenStorage $tokenStorage,
         AntiAbuse $antiAbuse,
         PortalEmailSender $emailSender,
-        PortalBrandThemeLoader $portalBrandThemeLoader
+        PortalBrandThemeLoader $portalBrandThemeLoader,
+        ChildCommentHelper $childCommentHelper
     ) {
         $this->saver               = $saver;
         $this->em                  = $em;
@@ -175,15 +183,16 @@ class CommentFormHandler
         $this->brandStack          = $brandStack;
         $this->emailSender         = $emailSender;
         $this->brandThemeLoader    = $portalBrandThemeLoader;
+        $this->childCommentHelper  = $childCommentHelper;
     }
 
     /**
-     * @param FormInterface   $form
-     * @param Request         $request
+     * @param FormInterface $form
+     * @param Request $request
      * @param ContentAbstract $content
      * @param CommentAbstract $comment
      *
-     * @return bool|RedirectResponse
+     * @return RedirectResponse|bool
      */
     public function handle(FormInterface $form, Request $request, ContentAbstract $content, CommentAbstract $comment)
     {
@@ -192,6 +201,14 @@ class CommentFormHandler
 
         if ($form->isSubmitted() && $form->isValid()) {
             $person = $comment->getPerson();
+
+            $handleComment = $this->childCommentHelper->handleChildComment($comment);
+
+            if(!$handleComment instanceof CommentAbstract){
+                $this->addFlash($request, 'error', $handleComment->getMessage());
+              return new RedirectResponse($this->objectRouter->getPortalPath($content));
+            }
+
             if ($person instanceof PersonGuest) {
                 return $this->handleGuestSubmit($person, $form, $request, $content, $comment);
             }
@@ -383,11 +400,11 @@ class CommentFormHandler
     /**
      * @param Request $request
      * @param string  $type
-     * @param array   $phrase
+     * @param $phrase
      */
     protected function addFlash(Request $request, $type, $phrase)
     {
-        $request->getSession()->getFlashBag()->add($type, $this->phrase($phrase));
+        $request->getSession()->getFlashBag()->add($type, (is_array($phrase)) ?  $this->phrase($phrase) : $phrase);
     }
 
     /**

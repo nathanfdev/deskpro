@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\DownloadComment;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
+use DeskPRO\Bundle\AppBundle\Form\Type\Comment\DownloadCommentType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
@@ -43,4 +44,6 @@ class DownloadsAllCommentsController extends AbstractAllCommentsController
 {
     public static $contentType = 'download';
     public static $entity      = DownloadComment::class;
+    public static $type        = DownloadCommentType::class;
+    public static $exposeOnly  = ['put', 'post'];
 }

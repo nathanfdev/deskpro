@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\ArticleComment;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
+use DeskPRO\Bundle\AppBundle\Form\Type\Comment\ArticleCommentType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
@@ -43,4 +44,6 @@ class ArticleAllCommentsController extends AbstractAllCommentsController
 {
     public static $contentType = 'article';
     public static $entity      = ArticleComment::class;
+    public static $type        = ArticleCommentType::class;
+    public static $exposeOnly  = ['put', 'post'];
 }

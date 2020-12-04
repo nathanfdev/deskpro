@@ -30,6 +30,11 @@ class NewsComment extends CommentAbstract
      */
     protected $news;
 
+    public function getNews()
+    {
+        return $this->news;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -144,6 +149,21 @@ class NewsComment extends CommentAbstract
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'parent_id',
+            'targetEntity' => __CLASS__,
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'parent_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
                     'columnDefinition'     => null,
                 ],
             ],

@@ -19,3 +19,4 @@ services:
       - "@anti_abuse"
       - "@portal_email_sender"
       - "@?portal_brand_theme_loader"
+      - "@child_comment_helper"
