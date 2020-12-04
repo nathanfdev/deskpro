@@ -1779,6 +1779,16 @@ break;
     }
 
     /**
+     * @param $string
+     *
+     * @return string
+     */
+    public static function removeRightToLeftMark($string)
+    {
+        return preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $string);
+    }
+
+    /**
      * Detects "invisible" characters in strings, except for legit ones like newlines and tabs.
      *
      * @param string $string
