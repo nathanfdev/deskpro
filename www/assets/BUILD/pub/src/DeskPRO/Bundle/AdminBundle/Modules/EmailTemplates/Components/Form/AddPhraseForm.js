@@ -30,7 +30,7 @@ export class AddPhraseFormContainer extends React.Component {
       errors:          null
     });
     const phrase = {
-      name: this.form.nameInput.input.value
+      name: `custom.emails.${this.form.nameInput.input.value}`
     };
 
     for (const field of this.form.translationInputs) {
