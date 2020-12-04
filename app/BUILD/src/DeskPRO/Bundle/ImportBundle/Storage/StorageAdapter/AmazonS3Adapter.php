@@ -165,7 +165,7 @@ class AmazonS3Adapter extends AbstractStorageAdapter
     {
         $result = $this->client->listObjects([
             'Bucket' => $this->bucket,
-            'Prefix' => $this->getLogsPath(),
+            'Prefix' => $this->getLogsPath()
         ]);
 
         if (!count($result['Contents'])) {
