@@ -431,7 +431,22 @@ class Message extends \Orb\Mail\Message
      */
     public function setTo($addresses, $name = null)
     {
+        $prepareEmail = function ($email) {
+            $email = Strings::utf8_bad_strip($email);
+            $email = Strings::removeInvisibleCharacters($email);
+            $email = Strings::removeRightToLeftMark($email);
+
+            return $email;
+        };
+
         if (is_array($addresses)) {
+            $newAddresses = [];
+            foreach ($addresses as $email => $name) {
+                $newAddresses[$prepareEmail($email)] = $name;
+            }
+
+            $addresses = $newAddresses;
+
             reset($addresses);
             $this->set_to = [
                 'email' => \Orb\Util\Arrays::getFirstKey($addresses),
@@ -440,7 +455,7 @@ class Message extends \Orb\Mail\Message
         } else {
             $this->set_to = [
                 'name'  => $name,
-                'email' => $addresses,
+                'email' => $prepareEmail($addresses),
             ];
         }
 
