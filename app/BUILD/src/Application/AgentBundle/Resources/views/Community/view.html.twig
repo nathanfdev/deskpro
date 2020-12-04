@@ -120,9 +120,9 @@ pageMeta.baseId = '{{ baseId }}';
           <dd>
             <span class="link-look who-voted-trigger">
                         {% set phrase_part %}
-                        <span id="{{baseId}}_num_votes">{{ topic.num_ratings }}</span>
+                        <span id="{{baseId}}_num_votes">{{ topic.total_rating }}</span>
                         {% endset %}
-                        {{ phrase('agent.community.count_votes', {'display_count':phrase_part,'count':topic.num_ratings}, true) }}
+                        {{ phrase('agent.community.count_votes', {'display_count':phrase_part,'count':topic.total_rating}, true) }}
                     </span>
           </dd>
 

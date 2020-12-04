@@ -13,7 +13,7 @@
 			<div class="top-row">
 				<div class="top-row-left">
 					<span class="votes">
-						{{ topic.num_ratings|default(0) }}
+						{{ topic.total_rating|default(0) }}
 					</span>
 					<h3>
 						<a class="topic-title click-through"><span class="obj-title-community-topic_{{ topic.id }}">{{ topic.title }}</span></a>
