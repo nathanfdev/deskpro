@@ -5,7 +5,7 @@ Feature: /api/v2/guides/{id}/splash_image_upload
   Background:
     Given I'm authenticated as admin
     And I have only default brand
-    And only the following "Guides" records exist:
+    And only the following "GuideCategory" records exist:
       | #  | Title      | Slug         | Description  | brand          |
       | t1 | Test Guide | test-guide   | Test         | {defaultBrand} |
     And I attach image file to my request

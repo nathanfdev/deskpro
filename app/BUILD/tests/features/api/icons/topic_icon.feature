@@ -4,9 +4,9 @@ Feature:/api/v2/topics/{id}/icon
 
   Background:
     Given I'm authenticated as admin
-    And only the following Topic records exist:
+    And only the following Guides records exist:
       | #  | Title        | Slug           | Content              | person          |
-      | t1 | Test Article | test-article   | Test Content        | {admin}         |
+      | t1 | Test Topic  | test-topic      | Test Content        | {admin}         |
 
   Scenario: I check 'application/form-urlencoded' format
     When I send a POST request to "/api/v2/topics/{t1}/icon" with parameters:
