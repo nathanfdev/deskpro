@@ -1,5 +1,5 @@
 @new
-Feature: /guide_comments endpoint
+Feature: /guides_comments endpoint
   To rate guide comments
   As an API user
   I want an endpoint to guide comments
@@ -18,7 +18,7 @@ Feature: /guide_comments endpoint
     And only the following "GuideComment" records exist:
       | #    | topic   | person  | content        | is_reviewed |
       | com1 | {down1} | {admin} | comment1      | 1            |
-    When I send a GET request to "/api/v2/guide_comments/{com1}/rate_count"
+    When I send a GET request to "/api/v2/guides_comments/{com1}/rate_count"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
@@ -32,7 +32,7 @@ Feature: /guide_comments endpoint
     And only the following "GuideComment" records exist:
       | #    | topic   | person  | content        | is_reviewed |
       | com1 | {down1} | {admin} | comment1      | 1            |
-    When I send a POST request to "/api/v2/guide_comments/{com1}/rate" with body:
+    When I send a POST request to "/api/v2/guides_comments/{com1}/rate" with body:
     """
 {
   "upvote": 1
@@ -52,7 +52,7 @@ Feature: /guide_comments endpoint
     And only the following "GuideComment" records exist:
       | #    | topic   | person  | content        | is_reviewed |
       | com1 | {down1} | {admin} | comment1      | 1            |
-    When I send a POST request to "/api/v2/guide_comments/{com1}/rate" with body:
+    When I send a POST request to "/api/v2/guides_comments/{com1}/rate" with body:
     """
 {
   "upvote": 0

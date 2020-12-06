@@ -143,24 +143,24 @@ abstract class CommentAbstract
     protected $userDisplayContact;
 
     /**
-<<<<<<< HEAD
      * The parent comment being replied to.
      *
      * @JMS\Type("string")
-=======
-     * Total rating of the comment.
-     *
-     * @JMS\Type("integer")
->>>>>>> 6202073b0d (Create Rating Model to handle rating logic ( move related codes into model ))
      * @JMS\Groups({"list", "details"})
      *
      * @var string
      */
-<<<<<<< HEAD
     protected $parent;
-=======
+
+    /**
+     * Total rating of the comment.
+     *
+     * @JMS\Type("integer")
+     * @JMS\Groups({"list", "details"})
+     *
+     * @var string
+     */
     protected $total_rating;
->>>>>>> 6202073b0d (Create Rating Model to handle rating logic ( move related codes into model ))
 
     /**
      * Constructor.
@@ -181,10 +181,7 @@ abstract class CommentAbstract
         $this->isReviewed         = $entity->isReviewed();
         $this->dateCreated        = $entity->getDateCreated();
         $this->userDisplayContact = $entity->getUserDisplayContact();
-<<<<<<< HEAD
         $this->parent             = ($entity->getParent()) ? $entity->getParent()->getId() : null;
-=======
         $this->total_rating       = $entity->getTotalRating();
->>>>>>> 6202073b0d (Create Rating Model to handle rating logic ( move related codes into model ))
     }
 }

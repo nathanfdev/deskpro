@@ -50,7 +50,7 @@ Feature: /community_topic_comments endpoint
     And the response status code should be 200
     And the JSON node "data.total_rating" should exist
 
-    And the JSON node "data.total_total" be equal to "1"
+    And the JSON node "data.total_rating" should be equal to "1"
 
 
   Scenario: I downvote a community topic comment
@@ -58,8 +58,8 @@ Feature: /community_topic_comments endpoint
       | #   | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
       | ct1 | {csc1}          | {cc1} | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
     And only the following "CommunityTopicComment" records exist:
-      | #    | topic | person  | content  | is_reviewed | rating |
-      | com1 | {ct1} | {admin} | comment1 | 0           |   1    |
+      | #    | topic | person  | content  | is_reviewed |
+      | com1 | {ct1} | {admin} | comment1 | 0           | 
     When I send a POST request to "/api/v2/community_topic_comments/{com1}/rate" with body:
     """
 {

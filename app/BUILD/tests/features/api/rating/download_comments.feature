@@ -42,7 +42,7 @@ Feature: /download_comments endpoint
     And the response status code should be 200
     And the JSON node "data.total_rating" should exist
 
-    And the JSON node "data.total_total" be equal to "1"
+    And the JSON node "data.total_rating" should be equal to "1"
 
 
   Scenario: I downvote a community topic comment
