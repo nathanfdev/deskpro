@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Search
- */
+
 
 namespace Application\DeskPRO\Search;
 
@@ -120,12 +116,12 @@ class StickyWordSearch implements PersonContextInterface
 
     /**
      * @param string $query
-     * @param int    $limit
-     * @param array  $limit_types Which types to search in
+     * @param null $limit
+     * @param array $limit_types Which types to search in
      *
      * @return array
      */
-    public function getResults($query, $limit = 10, $limit_types = ['article', 'news', 'download', 'community', 'topic'])
+    public function getResults($query, $limit = null, $limit_types = ['article', 'news', 'download', 'community', 'topic'])
     {
         $words = $this->getWordsFromQuery($query);
 
@@ -251,7 +247,8 @@ class StickyWordSearch implements PersonContextInterface
 
         // If we have too many results, we have to trim them down
         // to the top $limit results
-        if (count($results_ranked) > $limit) {
+
+        if (null !== $limit && is_numeric($limit) && count($results_ranked) > $limit) {
             Arrays::sortMulti($results_ranked, 'count', \SORT_NUMERIC);
             $results_ranked = array_slice($results_ranked, 0, $limit, true);
         }
