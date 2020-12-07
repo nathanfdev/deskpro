@@ -467,9 +467,10 @@ class SearchController extends AbstractController
             $stickySearch = new StickyWordSearch($this->getEm());
             $stickySearch->setPersonContext($person);
             $stickyResults = $stickySearch->getResults($q, 5, [$type]);
-
+            $total += count($stickyResults);
+            $options =  ['currentPage' => $curPage, 'perPage' => $perPage];
             if ($stickyResults) {
-                $results = $this->addStickyResult($stickyResults, $results);
+                $results = $this->addStickyResult($stickyResults, $results, 0, [], $options, true);
             }
         }
 
@@ -619,16 +620,42 @@ class SearchController extends AbstractController
 
     /**
      * @param array $stickyResults
-     * @param $results
+     * @param array $results
      * @param int $total
      * @param array $gotSticky
+     * @param array $options
+     * @param bool $sort
      *
      * @return array
      */
-    private function addStickyResult(array $stickyResults, array $results, $total = 0, array $gotSticky = [])
-    {
+    private function addStickyResult(
+        array $stickyResults,
+        array $results,
+        $total = 0,
+        array $gotSticky = [],
+        $options = [],
+        bool $sort = false
+    ) {
         if (count($stickyResults) < 1) {
             return [];
+        }
+
+        if ($sort && $options['currentPage'] > 1) {
+            $perPage = $options['perPage'];
+
+            if (count($stickyResults) <= $perPage) {
+                //Must have shown all stickyResults  in previous pages
+                $stickyResults = [];
+            }
+
+            if (count($stickyResults) > $perPage) {
+                $renderedPageCount = $options['currentPage'] - 1;
+
+                $renderedResultCount = $perPage * $renderedPageCount;
+
+                $stickyResults = array_slice($stickyResults, $renderedResultCount,
+                    (count($stickyResults) < $perPage) ? count($stickyResults) : $perPage, true);
+            }
         }
 
         foreach ($stickyResults as $sItem) {

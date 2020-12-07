@@ -176,11 +176,10 @@ class UserSearch implements UserSearchInterface
             }
 
             $countQuery = "
-                SELECT COUNT(*)
-                FROM content_search
+              SELECT COUNT(DISTINCT content_search.object_id), content_search.object_type from
+                content_search
                 $permJoin
                 WHERE $permWhere AND $where
-                LIMIT $perPage
             ";
 
             $start       = ($page - 1) * $perPage;
