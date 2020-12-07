@@ -1339,7 +1339,7 @@ class PublishController extends AbstractController
     public function searchAction()
     {
         $type    = $this->in->getString('content_type');
-        $brandId = $this->in->getUInt('brand');
+        $brandId = $this->get('brand_stack')->getActive()->getBrand()->getId();
         switch ($type) {
             case 'articles':
                 $searcher = new ArticleSearch();
