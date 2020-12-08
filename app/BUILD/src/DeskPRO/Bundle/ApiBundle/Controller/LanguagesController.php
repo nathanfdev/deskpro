@@ -780,7 +780,13 @@ class LanguagesController extends CrudController
 
         $data = $form->getData();
 
-        $phraseName = 'custom.emails.'.$data['name'];
+        $phraseName = $data['name'];
+
+        if (strpos($data['name'], 'custom.') !== 0) {
+            $form->get('name')->addError(new FormError('Invalid name. Custom names starts with custom.'));
+
+            throw new InvalidFormException($form);
+        }
 
         if ($this->getManager()->getRepository(Phrase::class)->findOneBy(['name' => $phraseName])) {
             $form->get('name')->addError(new FormError('Duplicate entry.'));
