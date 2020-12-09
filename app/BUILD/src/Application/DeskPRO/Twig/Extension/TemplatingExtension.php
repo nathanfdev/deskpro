@@ -222,10 +222,11 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFilter('content', [$this, 'replaceContent']),
             new \Twig_SimpleFilter('content_pdf', [$this, 'replaceContentPdf']),
             new \Twig_SimpleFilter('safe_filter', [$this, 'safeArrayFilter']),
-
+            new \Twig_SimpleFilter('unique_array', [$this, 'getUniqueArray']),
             // Override for custom UTF-8 handling
             new \Twig_SimpleFilter('upper', [$this, 'strUpper']),
             new \Twig_SimpleFilter('lower', [$this, 'strLower']),
+
         ];
     }
 
@@ -2199,5 +2200,15 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         return new \CallbackFilterIterator(new \IteratorIterator($array), $arrow);
+    }
+
+    /**
+     * @param $array
+     *
+     * @return array
+     */
+    public function getUniqueArray($array): array
+    {
+        return array_unique($array);
     }
 }

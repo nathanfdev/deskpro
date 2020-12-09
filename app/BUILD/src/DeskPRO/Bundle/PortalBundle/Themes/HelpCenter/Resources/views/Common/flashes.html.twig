@@ -1,7 +1,7 @@
 {% if flashes|length > 0 %}
     <div class="dp-po">
         {% for type, flashMessages in flashes %}
-            {% for flash in flashMessages %}
+            {% for flash in flashMessages | unique_array %}
                 <div class="dp-po-message-bar dp-po-message-bar-{{ type }}">
                     <div class="container">
                         <div class="dp-po-message-bar-wrap">
