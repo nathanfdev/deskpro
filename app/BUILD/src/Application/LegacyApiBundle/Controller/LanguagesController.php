@@ -220,6 +220,18 @@ class LanguagesController extends AbstractController
                 )
             ', $_lang->getId()));
             }
+
+            $phrases =  $this->em->getRepository(Phrase::class)->findBy([
+                'language' => $this->container->getLanguageData()->getDefaultId(),
+            ]);
+
+            foreach ($phrases as $phrase) {
+                $newPhrase = clone $phrase;
+                $newPhrase->setLanguage($lang);
+                $this->em->persist($newPhrase);
+            }
+            
+            $this->em->flush();
         } catch (\Exception $e) {
             $this->db->rollback();
         }
