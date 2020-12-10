@@ -400,7 +400,7 @@ class ArticlesController extends AbstractPublishController
 
         if ($subscriptionsHelper->isSubscribedRootCategory('kb', $person)) {
             $subscriptionsHelper->unsubscribeFromRootCategory('kb', $person);
-            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.article_root_subscribe'], []));
+            $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_unsubscribe', 'helpcenter.flashes.article_root_unsubscribe'], []));
         } else {
             $subscriptionsHelper->subscribeToRootCategory('kb', $person);
             $this->addFlash('success', $this->phrase(['portal.flashes.article_cat_subscribe', 'helpcenter.flashes.article_root_subscribe']));
