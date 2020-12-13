@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\EntityRepository;
 
@@ -12,17 +8,29 @@ use Orb\Util\Arrays;
 
 class ArticlePendingCreate extends AbstractEntityRepository
 {
-    public function getPendingArticles()
+    public function getPendingArticles($limit = [], $order = 'ASC')
     {
-        $pending_articles = $this->getEntityManager()->createQuery('
-            SELECT a, t, p
-            FROM DeskPRO:ArticlePendingCreate a
-            LEFT JOIN a.ticket t
-            LEFT JOIN a.person p
-            ORDER BY a.date_created DESC
-        ')->execute();
+        $offset = (int) $limit['offset'];
+        $limit  =  $limit['max'];
 
-        return $pending_articles;
+        return $this->createQueryBuilder('a')
+            ->leftjoin('a.ticket', 't')
+            ->leftjoin('a.person', 'p')
+            ->orderBy('a.date_created', $order)
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getPendingArticlesCount()
+    {
+        return $this->createQueryBuilder('a')
+            ->select('count(distinct a.id)')
+            ->leftjoin('a.ticket', 't')
+            ->leftjoin('a.person', 'p')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function getByIds(array $ids, $keep_order = false)
