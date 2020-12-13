@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
@@ -34,8 +32,10 @@ class PortalRatingsHelper
     {
         $content_rating = $this->updatePersistedOrCreateNewRating($content, $visitor_id, $person, false);
 
-        $this->em->persist($content_rating);
-        $this->em->flush([$content_rating, $content]);
+        if ($content_rating) {
+            $this->em->persist($content_rating);
+            $this->em->flush([$content_rating, $content]);
+        }
 
         return $content_rating;
     }
@@ -44,8 +44,10 @@ class PortalRatingsHelper
     {
         $content_rating = $this->updatePersistedOrCreateNewRating($content, $visitor_id, $person, true);
 
-        $this->em->persist($content_rating);
-        $this->em->flush([$content_rating, $content]);
+        if ($content_rating) {
+            $this->em->persist($content_rating);
+            $this->em->flush([$content_rating, $content]);
+        }
 
         return $content_rating;
     }
@@ -53,6 +55,11 @@ class PortalRatingsHelper
     public function updatePersistedOrCreateNewRating(ContentAbstract $content, $visitor_id, $person, $down = false)
     {
         if ($person && $content_rating = $this->findPersonRating($content, $person)) {
+            if (null !== $content_rating && !$down) {
+                //Already voted, can't upvote
+                return false;
+            }
+
             $this->changeExistingRating($content, $content_rating, $down);
 
             return $content_rating;

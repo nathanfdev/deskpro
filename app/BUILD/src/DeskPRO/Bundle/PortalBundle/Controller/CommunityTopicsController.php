@@ -636,10 +636,10 @@ class CommunityTopicsController extends AbstractPublishController
      * @ParamConverter(name="topic", converter="deskpro_slug")
      * @AutoPostOnGetRequest()
      *
-     * @param Request        $request
+     * @param Request $request
      * @param CommunityTopic $topic
-     * @param string         $visitor_id
-     * @param string         $up_or_down
+     * @param string $visitor_id
+     * @param string $up_or_down
      *
      * @throws \Exception
      *
@@ -652,20 +652,25 @@ class CommunityTopicsController extends AbstractPublishController
         }
         if (!$this->isGranted('RATE_COMMUNITY', $topic)) {
             if ($this->getUser()) {
-                throw $this->createAccessDeniedException($this->phrase(['portal.community.rate_forbidden', 'helpcenter.community.rate_forbidden']));
+                throw $this->createAccessDeniedException($this->phrase([
+                    'portal.community.rate_forbidden',
+                    'helpcenter.community.rate_forbidden',
+                ]));
             }
-            if ($request->getContentType() == 'json') {
+            if ($request->getContentType() === 'json') {
                 return new JsonResponse(
                     [
                         'error'    => 'need login',
                         'redirect' => $this->generateUrl('portal_login', [
-                            '_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $topic->getSlug()]),
+                            '_destination' => $this->generateUrl('portal_community_topic_view',
+                                ['slug'    => $topic->getSlug()]),
                         ]),
                     ]
                 );
-            } else {
-                return $this->redirectToRoute('portal_login', ['_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $topic->getSlug()])]);
             }
+
+            return $this->redirectToRoute('portal_login',
+                ['_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $topic->getSlug()])]);
         }
         if (!$topic->isVisibleOnPortal()) {
             throw $this->createNotFoundException();
@@ -674,20 +679,28 @@ class CommunityTopicsController extends AbstractPublishController
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
 
         if ('up' === $up_or_down) {
-            $this->getRatingsHelper()->rateContentUp($topic, $visitor_id, $person);
+            $rating = $this->getRatingsHelper()->rateContentUp($topic, $visitor_id, $person);
+
+            if (!$rating) {
+                throw $this->createAccessDeniedException($this->phrase(['helpcenter.flashes.content_double_rating']));
+            }
         } else {
-            throw $this->createAccessDeniedException($this->phrase(['portal.community.rate_forbidden', 'helpcenter.community.rate_forbidden']));
+            throw $this->createAccessDeniedException($this->phrase([
+                'portal.community.rate_forbidden',
+                'helpcenter.community.rate_forbidden',
+            ]));
         }
 
-        if ($request->getContentType() == 'json') {
+        if ($request->getContentType() === 'json') {
             return new JsonResponse([
                 'success' => true,
             ]);
-        } else {
-            $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.content_rating_thanks']));
-
-            return $this->redirectToRoute('portal_community_topic_view', ['slug' => $topic->getSlug()]);
         }
+
+        $this->addFlash('success',
+            $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.content_rating_thanks']));
+
+        return $this->redirectToRoute('portal_community_topic_view', ['slug' => $topic->getSlug()]);
     }
 
     /**
