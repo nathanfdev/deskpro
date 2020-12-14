@@ -1,13 +1,12 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Rating;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class PortalRatingsHelper
@@ -50,6 +49,31 @@ class PortalRatingsHelper
         }
 
         return $content_rating;
+    }
+
+    /**
+     * @param ContentAbstract $content
+     * @param Person|null $person
+     *
+     * @throws OptimisticLockException
+     *
+     * @return ContentAbstract|false
+     */
+    public function removeContentRating(ContentAbstract $content, Person $person = null)
+    {
+        $contentRating = $this->findPersonRating($content, $person);
+
+        if (null === $contentRating) {
+            return false;
+        }
+
+        $content->removeRating($contentRating);
+
+        $this->em->remove($contentRating);
+        $this->em->persist($content);
+        $this->em->flush();
+
+        return $content;
     }
 
     public function updatePersistedOrCreateNewRating(ContentAbstract $content, $visitor_id, $person, $down = false)

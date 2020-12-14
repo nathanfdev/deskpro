@@ -685,10 +685,11 @@ class CommunityTopicsController extends AbstractPublishController
                 throw $this->createAccessDeniedException($this->phrase(['helpcenter.flashes.content_double_rating']));
             }
         } else {
-            throw $this->createAccessDeniedException($this->phrase([
-                'portal.community.rate_forbidden',
-                'helpcenter.community.rate_forbidden',
-            ]));
+            $rating = $this->getRatingsHelper()->removeContentRating($topic, $person);
+
+            if (!$rating) {
+                throw $this->createAccessDeniedException($this->phrase(['helpcenter.flashes.content_remove_vote_error']));
+            }
         }
 
         if ($request->getContentType() === 'json') {
