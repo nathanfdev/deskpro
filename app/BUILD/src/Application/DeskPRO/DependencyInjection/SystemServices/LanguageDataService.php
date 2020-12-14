@@ -1,13 +1,12 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Languages\LangPackInfo;
 use Orb\Util\Arrays;
 
 class LanguageDataService extends BaseRepositoryService
@@ -242,5 +241,69 @@ class LanguageDataService extends BaseRepositoryService
         }
 
         return $ret;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLangPack(): array
+    {
+        $this->preload();
+
+        foreach ($this->languages as $lang) {
+            $installedPacks[$lang->getSysName()] = $lang;
+        }
+
+        $langpacks       = new LangPackInfo();
+        $packTitles      = $langpacks->getLangTitles();
+        $packLocalTitles = $langpacks->getLangTitles(true);
+
+        $allPacks = [];
+        foreach ($packTitles as $id => $title) {
+            if (strpos($id, 'dev_') === 0) {
+                continue;
+            }
+
+            $lang = $installedPacks[$id] ?? null;
+            $info = $langpacks->getLangInfo($id);
+
+            $r    = [
+                'id'                    => $id,
+                'title'                 => $title,
+                'show_title'            => $lang->title ?? $packLocalTitles[$id],
+                'local_title'           => $packLocalTitles[$id],
+                'flag'                  => 'locale_'.$info['locale'].'.png',
+                'show_flag'             => 'locale_'.$info['locale'].'.png',
+                'is_installed'          => $lang ? true : false,
+                'installed_language_id' => $lang->id ?? null,
+                'has_user'              => true,
+                'has_agent'             => true,
+                'has_admin'             => true,
+            ];
+
+            $allPacks[] = $r;
+        }
+
+        return $allPacks;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLangs()
+    {
+        $this->preload();
+
+        return $this->languages;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInstalledLangs(): array
+    {
+        return array_filter($this->getLangPack(), static function ($lang) {
+            return ($lang['is_installed'] === true);
+        });
     }
 }

@@ -43,48 +43,12 @@ class LanguagesController extends AbstractController
 
     public function listAction()
     {
-        $langs = $this->em->createQuery('
-            SELECT l
-            FROM DeskPRO:Language l
-            ORDER BY l.title ASC
-        ')->execute();
+        $langData = $this->container->getLanguageData();
 
-        $installed_packs = [];
-        foreach ($langs as $l) {
-            $installed_packs[$l->getSysName()] = $l;
-        }
-
-        $langpacks         = new \Application\DeskPRO\Languages\LangPackInfo();
-        $pack_titles       = $langpacks->getLangTitles();
-        $pack_local_titles = $langpacks->getLangTitles(true);
-
-        foreach ($pack_titles as $id => $title) {
-            if (strpos($id, 'dev_') === 0) {
-                continue;
-            }
-            $lang = isset($installed_packs[$id]) ? $installed_packs[$id] : null;
-            $info = $langpacks->getLangInfo($id);
-            $r    = [
-                'id'                    => $id,
-                'title'                 => $title,
-                'show_title'            => $lang ? $lang->title : $pack_local_titles[$id],
-                'local_title'           => $pack_local_titles[$id],
-                'flag'                  => 'locale_'.$info['locale'].'.png',
-                'show_flag'             => 'locale_'.$info['locale'].'.png',
-                'is_installed'          => $lang ? true : false,
-                'installed_language_id' => $lang ? $lang->id : null,
-                'has_user'              => true,
-                'has_agent'             => true,
-                'has_admin'             => true,
-            ];
-
-            $all_packs[] = $r;
-        }
-
-        $data['languages']       = $this->getApiData($langs);
-        $data['packs']           = $all_packs;
-        $data['default_lang_id'] = $this->container->getLanguageData()->getDefaultId();
-        $data['is_multi_lang']   = $this->container->getLanguageData()->isMultiLang();
+        $data['languages']       = $this->getApiData($langData->getLangs());
+        $data['packs']           = $langData->getLangPack();
+        $data['default_lang_id'] = $langData->getDefaultId();
+        $data['is_multi_lang']   = $langData->isMultiLang();
 
         return $this->createApiResponse($data);
     }
@@ -256,6 +220,18 @@ class LanguagesController extends AbstractController
                 )
             ', $_lang->getId()));
             }
+
+            $phrases =  $this->em->getRepository(Phrase::class)->findBy([
+                'language' => $this->container->getLanguageData()->getDefaultId(),
+            ]);
+
+            foreach ($phrases as $phrase) {
+                $newPhrase = clone $phrase;
+                $newPhrase->setLanguage($lang);
+                $this->em->persist($newPhrase);
+            }
+            
+            $this->em->flush();
         } catch (\Exception $e) {
             $this->db->rollback();
         }
@@ -382,7 +358,7 @@ class LanguagesController extends AbstractController
 
         foreach ($this->in->getArrayValue('lang_phrases') as $lang_phrase) {
             $phrase_text = trim($lang_phrase['phrase']);
-            $lang_id     = intval($lang_phrase['language_id']);
+            $lang_id     = (int) $lang_phrase['language_id'];
 
             if (!isset($langs[$lang_id])) {
                 continue;
@@ -477,18 +453,26 @@ class LanguagesController extends AbstractController
                 $p->setIsManaged(false);
                 $p->phrase = $phrase;
 
-                $adds[] = [
-                    'language_id'     => $lang->id,
-                    'name'            => $p->name,
-                    'groupname'       => $p->groupname,
-                    'phrase'          => $p->phrase,
-                    'original_phrase' => $p->original_phrase,
-                    'original_hash'   => $p->original_hash,
-                    'is_outdated'     => (int) $p->is_outdated,
-                    'is_managed'      => (int) $p->isManaged(),
-                    'created_at'      => $p->created_at ? $p->created_at->format('Y-m-d H:i:s') : null,
-                    'updated_at'      => $p->updated_at ? $p->updated_at->format('Y-m-d H:i:s') : null,
-                ];
+                foreach ($this->container->getLanguageData()->getInstalledLangs() as $language) {
+                    $exist = $this->db->countWithPlaceholders('phrases', 'language_id = ? AND name = ?', [$language['installed_language_id'], $phrase_id]);
+                    //We don't want to insert phrases on other languages if it exists
+                    if ($exist > 0 && $language['installed_language_id'] !== $lang->id) {
+                        continue;
+                    }
+
+                    $adds[] = [
+                        'language_id'     => $language['installed_language_id'],
+                        'name'            => $p->name,
+                        'groupname'       => $p->groupname,
+                        'phrase'          => $p->phrase,
+                        'original_phrase' => $p->original_phrase,
+                        'original_hash'   => $p->original_hash,
+                        'is_outdated'     => (int) $p->is_outdated,
+                        'is_managed'      => (int) $p->isManaged(),
+                        'created_at'      => $p->created_at ? $p->created_at->format('Y-m-d H:i:s') : null,
+                        'updated_at'      => $p->updated_at ? $p->updated_at->format('Y-m-d H:i:s') : null,
+                    ];
+                }
             }
         }
 
