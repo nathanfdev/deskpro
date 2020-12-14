@@ -358,6 +358,7 @@ helpcenter.forms.error_password_require_num_number: '{count, plural, one {At lea
 helpcenter.forms.error_password_require_num_symbol: '{count, plural, one {At least # symbol} other {At least # symbols}}'
 helpcenter.forms.error_password_require_num_uppercase: '{count, plural, one {At least # uppercase character} other {At least # uppercase characters}}'
 helpcenter.forms.error_password_reset_required: 'You have to reset password'
+helpcenter.forms.error_mismatch_values: 'This value does not match'
 helpcenter.forms.error_required: 'This value is required'
 helpcenter.forms.error_banned_email: 'Email is banned.'
 helpcenter.forms.label_drag_overlay: 'Insert this image into your message.'

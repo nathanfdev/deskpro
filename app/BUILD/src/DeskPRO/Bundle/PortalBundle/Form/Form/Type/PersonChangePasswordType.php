@@ -55,7 +55,7 @@ class PersonChangePasswordType extends AbstractType
                 'required'    => true,
                 'constraints' => [
                     new UserPassword([
-                        'message' => 'portal.forms.error_password_current',
+                        'message' => 'helpcenter.forms.error_password_current',
                     ]),
                 ],
                 'mapped' => false, // not mapping this, just using it for validation
