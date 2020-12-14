@@ -60,7 +60,8 @@ class mPdfRenderer implements PdfRendererInterface
         );
 
         $this->object->SetBasePath($this->brandStack->getActive()->getSetting('core.deskpro_url').'/');
-        $this->object->shrink_tables_to_fit = 0;
+        $this->object->shrink_tables_to_fit   = 0;
+        $this->object->keep_table_proportions = false;
     }
 
     /**
