@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Component\Util\RegexUtils;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -166,6 +167,11 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $content_type = '';
 
     /**
+     * @var ArrayCollection
+     */
+    protected $attachments;
+
+    /**
      * @JMS\Groups({"list", "details"})
      *
      * @var Topic
@@ -178,6 +184,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
+        $this->attachments    = new ArrayCollection();
     }
 
     /**
@@ -589,6 +596,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $this->parent_id;
     }
 
+
     /**
      * @return string
      */
@@ -604,5 +612,4 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('content_type', $content_type);
     }
-
 }

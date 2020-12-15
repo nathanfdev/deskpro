@@ -6,11 +6,13 @@ use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Comments\CommentAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -60,11 +62,19 @@ class CommentType extends AbstractType
             ],
         ])
             ->add('parent_id', HiddenType::class)
-        ;
+
+            ->add('attachments', CommentAttachmentCollectionType::class, [
+                'person'  => $options['person'],
+                'comment' => $builder->getData(),
+            ])
+            ->add('more_attachments', SubmitType::class, [
+                'validation_groups' => false,
+                'label'             => $this->languageManager->phrase('portal.forms.label_add_attachment'),
+            ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $comment = $event->getData();
-            $form = $event->getForm();
+            $form    = $event->getForm();
 
             // if this is a guest, ask for more information
             if ($comment->getPerson() instanceof PersonGuest) {
@@ -99,8 +109,7 @@ class CommentType extends AbstractType
                 'data_class' => CommentAbstract::class,
             ])
             ->setRequired('person')
-            ->setAllowedTypes('person', Person::class)
-        ;
+            ->setAllowedTypes('person', Person::class);
     }
 
     /**

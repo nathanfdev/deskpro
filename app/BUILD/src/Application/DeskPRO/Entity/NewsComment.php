@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\EntityRepository\NewsComment as NewsCommentRepository;
+use DeskPRO\Bundle\AppBundle\Entity\CommentAttachment\NewsCommentAttachment;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -33,6 +34,20 @@ class NewsComment extends CommentAbstract
     public function getNews()
     {
         return $this->news;
+    }
+
+    /**
+     * Add an attachment.
+     *
+     * @param NewsCommentAttachment $attach
+     */
+    public function addAttachment(NewsCommentAttachment $attach)
+    {
+        $this->attachments->add($attach);
+        $attach->setNewsComment($this);
+
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+        $this->getStateChangeRecorder()->record('attachments', null, $attach);
     }
 
     //###########################################################################
