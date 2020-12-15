@@ -1,8 +1,6 @@
 <?php
 
-// List of allowed twig filters
-
-return array (
+return [
     'date',
     'date_modify',
     'format',
@@ -89,4 +87,5 @@ return array (
     'str_replace',
     'html_content_preview',
     'safe_filter',
-);
+    'unique_array',
+];
