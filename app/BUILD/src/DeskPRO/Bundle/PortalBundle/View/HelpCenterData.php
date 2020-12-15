@@ -18,6 +18,7 @@ use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DeskPRO\Component\Util\MapUtils;
 use Orb\Util\Arrays;
 use Pagerfanta\Pagerfanta;
+use Throwable;
 
 /**
  * Wrapper for loaders that users can call from Portal Home template.
@@ -109,6 +110,8 @@ class HelpCenterData
     /**
      * @param array $userOptions
      *
+     * @throws Throwable
+     *
      * @return Pagerfanta
      */
     public function getCommunityTopics(array $userOptions)
@@ -125,7 +128,8 @@ class HelpCenterData
                 'sort'   => $options['orderBy'],
                 'status' => 'all',
             ]),
-            $this->getUser()
+            $this->getUser(),
+            $brand = $this->container->getBrandStack()->getActive()->getBrand()
         );
     }
 

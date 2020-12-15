@@ -121,11 +121,12 @@ class CommunityDataService extends AbstractDataService
      * @param                 $page
      * @param                 $max_per_page
      * @param CommunityFilter $filter
-     * @param Person          $person
+     * @param Person|null $person
+     * @param null $brand
      *
      * @return Pagerfanta
      */
-    public function getItemsPager($page, $max_per_page, CommunityFilter $filter, Person $person = null)
+    public function getItemsPager($page, $max_per_page, CommunityFilter $filter, Person $person = null, $brand = null)
     {
         $em                  = $this->em;
         $permissions_manager = $this->permissionsManager;
@@ -138,7 +139,7 @@ class CommunityDataService extends AbstractDataService
                 $filter,
                 $person,
             ],
-            function () use ($em, $permissions_manager, $page, $max_per_page, $filter, $person) {
+            function () use ($em, $permissions_manager, $page, $max_per_page, $filter, $person, $brand) {
                 $qb = $em->createQueryBuilder();
                 $qb
                     ->select('ct')
@@ -190,6 +191,11 @@ class CommunityDataService extends AbstractDataService
                 }
 
                 $qb->where('ct.status IN (:valid_status)')->setParameter('valid_status', $valid_status);
+
+                //If brand is set
+                if (null !== $brand) {
+                    $qb->andWhere('ct.brand = :brand')->setParameter('brand', $brand);
+                }
 
                 // status_categories (community_topic->status_category)
                 // array(6,1,4)

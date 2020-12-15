@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Portal;
 
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -193,13 +192,6 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
         ;
 
         $em = $this->getManager();
-
-        $hasDomainsLimit = $this->get('portal_settings_resolver')->hasEmailLimits(true);
-
-        /** @var Usergroup $everyoneGroup */
-        $everyoneGroup = $em->getRepository(Usergroup::class)->findOneBy(['sys_name' => 'everyone']);
-        $everyoneGroup->setIsEnabled(!$hasDomainsLimit);
-
         $em->flush();
     }
 }
