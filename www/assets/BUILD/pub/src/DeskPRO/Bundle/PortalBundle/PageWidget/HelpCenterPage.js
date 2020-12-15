@@ -30,6 +30,7 @@ import { DpxFormClearDraft } from './Common/Form/Draft/DpxFormClearDraft';
 import { HelpcenterCCForm } from './HelpcenterCCForm';
 import { HelpcenterCCDelete } from './HelpcenterCCDelete';
 import { HelpcenterGuideFilter } from './HelpcenterGuideFilter';
+import { HelpcenterFileDownload } from './HelpcenterFileDownload';
 
 class HelpCenterPage extends PageWidget {
 
@@ -68,6 +69,7 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(HelpcenterCCForm, '#add-cc-user-popover form');
     this.addWidgetDef(HelpcenterCCDelete, '.dp-po-ticket-meta-cc-remove');
     this.addWidgetDef(HelpcenterGuideFilter, '#guide_filter_input');
+    this.addWidgetDef(HelpcenterFileDownload, '#file-download-link');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);
