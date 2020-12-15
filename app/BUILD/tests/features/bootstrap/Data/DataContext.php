@@ -626,6 +626,11 @@ class DataContext extends BaseContext
     private static function replacePlaceholders($content, $isJson)
     {
         foreach (self::$placeholders as $name => $value) {
+            
+            if(is_array($value)){
+                continue;
+            }
+
             if (!$isJson && !json_decode($content)) {
                 $content = str_replace('{'.$name.'}', $value, $content);
             }

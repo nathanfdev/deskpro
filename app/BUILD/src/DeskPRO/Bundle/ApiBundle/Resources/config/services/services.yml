@@ -84,3 +84,10 @@ services:
     class: DeskPRO\Bundle\ApiBundle\TicketFilters\TermBuilder
     arguments:
       - "@ticketfilters.queryparser"
+
+  images_service:
+    class: DeskPRO\Bundle\ApiBundle\Services\ImagesService
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@deskpro.blob_storage"
+      - "@settings_resolver"

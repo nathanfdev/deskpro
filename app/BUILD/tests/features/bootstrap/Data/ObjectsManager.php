@@ -436,7 +436,7 @@ class ObjectsManager
             'SelectedApprovers'                => [Factory\SimpleFactory::class, 'create', SelectedApprovers::class],
             'GuideCategory'                    => [Factory\SimpleFactory::class, 'create', Guide::class],
             'Guides'                           => [Factory\SimpleFactory::class, 'create', Topic::class],
-            'GuideComment'                     => [Factory\SimpleFactory::class, 'create', TopicComment::class]
+            'GuideComment'                     => [Factory\SimpleFactory::class, 'create', TopicComment::class],
         ];
     }
 

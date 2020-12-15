@@ -5,12 +5,20 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Form\Type\IconPropertyType;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Form\Type\Content\ArticleType;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\Image;
 
 /**
  * Class ArticlesController.
@@ -102,6 +110,177 @@ class ArticlesController extends AbstractContentController
         } else {
             parent::applyListGroupBy($qb, $alias, $groupBy, $request);
         }
+    }
+
+    /**
+     * Set icon for article.
+     *
+     *
+     * @ApiDoc(
+     *     section="Articles",
+     *     description="set Icon",
+     *     requirements={
+     *          {
+     *              "name"="article",
+     *              "requirement"="\d+",
+     *              "description"="the id of article",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     input="DeskPRO\Bundle\ApiBundle\Form\Type\IconPropertyType",
+     *     output="object",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     *
+     * @Rest\Post("/{article}/icon")
+     *
+     * @param Request $request
+     * @param Article $article
+     *
+     * @throws ConnectionException
+     *
+     * @return View|JsonResponse
+     */
+    public function setIconAction(Request $request, Article $article)
+    {
+        $form = $this->createForm(IconPropertyType::class);
+
+        $form->submit($request->request->all());
+        $this->getManager()->getConnection()->beginTransaction();
+
+        try {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $icon = $this->get('images_service')->setIconBlob($form->getData());
+                $article->setIcon($icon);
+                $this->getManager()->persist($icon);
+                $this->getManager()->flush();
+                $this->getManager()->commit();
+            }
+        } catch (Exception $e) {
+            $this->getManager()->getConnection()->rollBack();
+
+            return new JsonResponse($e->getMessage());
+        }
+
+        return new View($this->wrap($icon));
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Articles",
+     *     description="Create Splash Image For Article",
+     *     requirements={
+     *          {
+     *              "name"="article",
+     *              "requirement"="\d+",
+     *              "description"="the id of article",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     * @Rest\Post("/{article}/splash_image_upload")
+     *
+     * @param Request $request
+     * @param Article $article
+     *
+     * @throws OptimisticLockException
+     *
+     * @return View
+     */
+    public function uploadSplashImageAction(Request $request, Article $article)
+    {
+        $file = $request->files->get('file');
+
+        $errorList = $this->get('validator')->validateValue($file, new Image());
+
+        if (count($errorList) > 0) {
+            throw new \RuntimeException($errorList[0]->getMessage());
+        }
+
+        $splashImage = $this->get('images_service')->createSplashImage($request->files->get('file'));
+
+        if ($splashImage instanceof \Exception) {
+            throw new \RuntimeException($splashImage->getMessage());
+        }
+
+        $article->setSplashImage($splashImage);
+        $this->getManager()->persist($splashImage);
+        $this->getManager()->flush();
+
+        return new View($this->wrap(['image' => $splashImage->getBlob()->getThumbnailUrl(200, true)]));
+    }
+
+    /**
+     * Set splash image for article.
+     *
+     *
+     * @ApiDoc(
+     *     section="Articles",
+     *     description="set Splash Image",
+     *     requirements={
+     *          {
+     *              "name"="article",
+     *              "requirement"="\d+",
+     *              "description"="the id of article",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     input="object",
+     *     output="object",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
+     * )
+     *
+     * @Rest\Post("/{article}/splash_image")
+     *
+     * @param Request $request
+     * @param Article $article
+     *
+     * @throws OptimisticLockException
+     *
+     * @return View
+     */
+    public function selectSplashImageAction(Request $request, Article $article)
+    {
+        $image = $request->request->get('image');
+
+        $splashImage = $this->get('images_service')->setSplashImage($image);
+
+        if ($splashImage instanceof \Exception) {
+            throw new \RuntimeException($splashImage->getMessage());
+        }
+
+        $article->setSplashImage($splashImage);
+        $this->getManager()->flush();
+
+        return new View($this->wrap($image));
+    }
+
+    /**
+     * @Rest\Delete("/{article}/splash_image")
+     *
+     * @param Article $article
+     *
+     * @throws OptimisticLockException
+     *
+     * @return View
+     */
+    public function deleteSplashImageAction(Article $article)
+    {
+        $splashImage = $article->getSplashImage();
+        if ($splashImage) {
+            $this->getManager()->remove($splashImage);
+            $article->setSplashImage(null);
+            $this->getManager()->flush();
+        }
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

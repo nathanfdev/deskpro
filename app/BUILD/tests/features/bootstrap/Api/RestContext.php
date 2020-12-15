@@ -200,6 +200,37 @@ class RestContext extends BaseContext
     }
 
     /**
+     * Sends a HTTP request with a file as file.
+     *
+     * @Given I send a :method request to :url with :file
+     *
+     * @param $method
+     * @param $url
+     * @param $file
+     * @throws Exception
+     */
+    public function iSendARequestToWithFileAsFile($method, $url, $file)
+    {
+        $url      = DataContext::replace($url);
+        $file      = DataContext::getPlaceholder($file);
+
+        /** @var \Symfony\Bundle\FrameworkBundle\Client $client */
+        $client = $this->getSession()->getDriver()->getClient();
+
+        // intercept redirection
+        $client->followRedirects(false);
+
+        $client->request($method, $this->locatePath($url), [], $file, $this->server_params, file_get_contents($file['file']));
+
+        $page = $this->getSession()->getPage();
+        if (strtoupper($method) === 'POST') {
+            $this->saveLastCreatedId($page->getContent());
+        }
+
+        return $page;
+    }
+
+    /**
      * Sends a HTTP request with a body.
      *
      * @Given I send a :method request to :url with a json body:
@@ -217,7 +248,9 @@ class RestContext extends BaseContext
         $content        = DataContext::replace($body->getRaw(), true);
         $encodedContent = json_encode(json_decode($content));
 
-        $client->request($method, $this->locatePath($url), [], [], $this->server_params, $encodedContent);
+        $serverParams = array_merge($this->server_params, ['CONTENT_TYPE' => 'application/form-data']);
+
+        $client->request($method, $this->locatePath($url), [], [], $serverParams, $encodedContent);
         $client->followRedirects(true);
 
         $page = $this->getSession()->getPage();
