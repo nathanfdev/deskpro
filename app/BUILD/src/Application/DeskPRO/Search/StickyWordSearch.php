@@ -1,13 +1,11 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Search
- */
+
 
 namespace Application\DeskPRO\Search;
 
+use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Searcher\ArticleSearch;
@@ -310,6 +308,12 @@ class StickyWordSearch implements PersonContextInterface
             $type        = strtolower(str_replace('DeskPRO:', '', $entity_name));
 
             $key = $type.'.'.$r->getId();
+
+            //Filter out object if not published or visible
+            if (property_exists($r,
+                    'status') && $r->getStatus() !== ContentAbstract::STATUS_PUBLISHED && $r->getStatus() !== CommentAbstract::STATUS_VISIBLE) {
+                continue;
+            }
 
             $typed_results[$key] = [
                 'type'   => $type,
