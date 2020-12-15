@@ -370,7 +370,7 @@ class SearchController extends AbstractController
         $searchResults = $results->getTypedResults();
 
         $stickySearch->setPersonContext($person);
-        $stickyResults = $stickySearch->getResults($content, 5, [$contentType[0]]);
+        $stickyResults = $stickySearch->getResults($content, null, [$contentType[0]]);
 
         if ($stickyResults) {
             $searchResults = $this->addStickyResult($stickyResults, $searchResults);
@@ -466,7 +466,7 @@ class SearchController extends AbstractController
 
             $stickySearch = new StickyWordSearch($this->getEm());
             $stickySearch->setPersonContext($person);
-            $stickyResults = $stickySearch->getResults($q, 5, [$type]);
+            $stickyResults = $stickySearch->getResults($q, null, [$type]);
             $total += count($stickyResults);
             $options =  ['currentPage' => $curPage, 'perPage' => $perPage];
             if ($stickyResults) {
