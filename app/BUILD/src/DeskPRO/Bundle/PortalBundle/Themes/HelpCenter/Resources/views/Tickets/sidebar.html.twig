@@ -1,10 +1,12 @@
 <div class="dp-po-ticket-pages">
     <ul class="dp-po-ticket-pages-list">
+        {% if can_use_tickets() %}
         <li class="dp-po-ticket-pages-item{% if type == 'own' %} active{% endif %}">
             <a href="{{ path('portal_tickets') }}" class="dp-po-ticket-pages-link">
-                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/tickets-light.svg', 'help_center') }}" /> {{ phrase('helpcenter.tickets.my_tickets') }}
+                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/tickets-light.svg', 'help_center') }}" /> {{ phrase('helpcenter.tickets.my_tickets') }}   {%  if pageData.alerts.tickets_awaiting_reply | length > 0   %} ({{ pageData.alerts.tickets_awaiting_reply | length }}) {% endif %}
             </a>
         </li>
+        {% endif %}
         {#                                    <li class="dp-po-ticket-pages-item{% if type == 'cc' %} active{% endif %}">#}
         {#                                        <a href="{{ path('portal_tickets', {type: 'cc'}) }}" class="dp-po-ticket-pages-link">#}
         {#                                            <i class="dp-po-icon fal fa-closed-captioning"></i> {{ phrase('helpcenter.tickets.tickets_i_m_cc_on') }}#}
@@ -22,15 +24,17 @@
                 </a>
             </li>
         {% endif %}
+        {% if can_use_chat() %}
         <li class="dp-po-ticket-pages-item{% if type == 'chats' %} active{% endif %}">
             <a href="{{ path('portal_chats') }}" class="dp-po-ticket-pages-link">
                 <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/chats-light.svg', 'help_center') }}" /> {{ phrase('helpcenter.chats.my_chats') }}
             </a>
         </li>
-        {% if app.getSetting('core_tickets.ticket_approvals') %}
+        {% endif %}
+        {% if app.getSetting('core_tickets.ticket_approvals') and pageData.alerts.is_ticket_approver  %}
         <li class="dp-po-ticket-pages-item{% if type == 'approvals' %} active{% endif %}">
             <a href="{{ path('ticket_approvals') }}" class="dp-po-ticket-pages-link">
-                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my_approvals') }}
+                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/approvals.svg', 'help_center') }}" /> {{ phrase('helpcenter.approvals.my_approvals') }}  {%  if pageData.alerts.pending_approvals > 0   %}  ({{ pageData.alerts.pending_approvals }}) {% endif %}
             </a>
         </li>
         {% endif %}

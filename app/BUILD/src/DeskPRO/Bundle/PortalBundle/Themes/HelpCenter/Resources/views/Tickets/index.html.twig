@@ -14,7 +14,13 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="dp-po-title">
-                                <img class="dp-po-title-svg" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}">
+                                {% if type == 'own' %}
+                                    <img class="dp-po-title-svg" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}">
+                                {% else %}
+                                    <span style="font-size: 4px;" class="dp-po dp-po-title-svg">
+                                    <span class="dp-po-user-menu-image dp-profile-svg dp-po-icon fal fa-building fa-10x"></span>
+                            </span>
+                                {% endif %}
                                 <h1 class="dp-po-title-text">{{ page_title }}</h1>
                             </div>
                         </div>

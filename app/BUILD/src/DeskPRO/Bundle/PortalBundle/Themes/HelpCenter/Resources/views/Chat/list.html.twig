@@ -113,6 +113,9 @@
 {#                                </div>#}
 {#                            </div>#}
 
+
+                            {% if pager|length > 0 %}
+
                             <div class="dp-po-table dp-po-table-col3 dp-po-table-chat">
                                 <div class="dp-po-table-row dp-po-table-row-head">
                   <span class="dp-po-table-cell dp-po-table-cell-small">{{ phrase('helpcenter.messenger.date_label') }}
@@ -140,6 +143,11 @@
                                 {% endfor %}
                             </div>
 
+                            {% else %}
+
+                                {{ phrase('helpcenter.chats.list_no_chats') }}
+
+                            {% endif %}
                         </div>
                         {% include 'Theme:Common:pager.html.twig' %}
                     </div>
