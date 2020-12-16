@@ -274,6 +274,27 @@ class ViewPage extends React.Component {
     });
   };
 
+  openLink = () => {
+    const links = document.querySelectorAll('a.internal_link.topic');
+    Array.prototype.forEach.call(links, (internalLink) => {
+      const target = internalLink.pathname;
+      const newLink = document.createElement('span');
+      const link = (
+        <a
+          className="internal_link topic"
+          href={`${target}`}
+          target="_blank"
+        >
+          <FontAwesomeIcon icon={['fas', 'book']} />
+          {internalLink.text}
+        </a>
+      );
+      ReactDOM.render(link, newLink, () => {
+        internalLink.parentNode.replaceChild(newLink, internalLink);
+      });
+    });
+  };
+
   addGuideBlocks = () => {
     const blocks = document.querySelectorAll('.block.info,.block.warning');
     Array.prototype.forEach.call(blocks, this.addGuideBlock);
@@ -440,7 +461,7 @@ class ViewPage extends React.Component {
           window.scrollTo(0, scrollPage - 27);
         }, 200);
       }
-      this.changeInternalLinks();
+      this.openLink();
       this.addCodeBlocksCopy();
       this.addGuideBlocks();
       this.addReactImageLazyload();

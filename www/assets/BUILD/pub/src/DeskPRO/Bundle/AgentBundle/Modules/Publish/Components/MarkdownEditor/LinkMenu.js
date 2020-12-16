@@ -104,7 +104,7 @@ class LinkMenu extends React.Component {
       if (contentTitle) {
         link = `{{ [${contentTitle}]content(${content.type},${content.value}) }}`;
       } else {
-        link = `{{ content_link(${content.type},${content.value}) }}`;
+        link = `{{ [${content.label}]content(${content.type},${content.value}) }}`;
       }
     } else if (title) {
       link = `[${title}](${url})`;
