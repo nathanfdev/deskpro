@@ -162,7 +162,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
         $disposition = $headerBag->makeDisposition(
             $blob->getMeta("content_disposition") ?: ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             $blob->getFilename(),
-            $blob->getFilenameSafe(),
+            $blob->getFilenameSafe()
         );
 
         $try = $this->attempts;
