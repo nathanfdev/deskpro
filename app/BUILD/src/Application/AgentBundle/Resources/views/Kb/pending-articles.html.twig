@@ -64,10 +64,20 @@
 		<footer class="results-nav">
 			<div class="pagecontrols results-nav">
 				<div class="cursor">
-					{{ phrase('agent.publish.kb_list_title', {count: pending_articles|length|default(0)}) }}
+					{{ phrase('agent.general.page_x_of_y', {page: pageinfo.cursor, num_pages: pageinfo.last}) }}
+
 				</div>
+				{% set routeName =  'agent_kb_pending' %}
+				{% if pageinfo.last > 1 %}
+					<ul class="pagenav {% if not pageinfo.prev %}no-prev{% endif  %}{% if not pageinfo.next %}no-next{% endif  %}">
+						<li class="prev" data-route="listpane:{{ path(routeName, {page: pageinfo.prev}) }}"></li>
+						<li class="next" data-route="listpane:{{ path(routeName, {page: pageinfo.next}) }}"></li>
+					</ul>
+				{% endif %}
 			</div>
 		</footer>
 	{% endif %}
+
+
 
 {% endblock pane_content %}

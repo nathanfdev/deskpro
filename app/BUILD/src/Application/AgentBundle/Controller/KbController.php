@@ -30,6 +30,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
 use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -815,10 +816,27 @@ class KbController extends AbstractController
      */
     public function listPendingArticlesAction()
     {
-        $pending_articles = $this->em->getRepository(ArticlePendingCreate::class)->getPendingArticles();
+        $perPage = 25;
+
+        $currentPage = $this->in->getUInt('page');
+        if (!$currentPage) {
+            $currentPage = 1;
+        }
+
+        $limit = [
+            'max'    => $perPage,
+            'offset' => ($currentPage - 1) * $perPage,
+        ];
+
+        $pendingArticleRepository = $this->em->getRepository(ArticlePendingCreate::class);
+
+        $pendingArticles = $pendingArticleRepository->getPendingArticles($limit);
+
+        $total    = $pendingArticleRepository->getPendingArticlesCount();
+        $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
 
         $ticket_ids = [];
-        foreach ($pending_articles as $pa) {
+        foreach ($pendingArticles as $pa) {
             if ($pa->getTicketId()) {
                 $ticket_ids[] = $pa->getTicketId();
             }
@@ -842,8 +860,10 @@ class KbController extends AbstractController
         }
 
         return $this->render('AgentBundle:Kb:pending-articles.html.twig', [
-            'pending_articles' => $pending_articles,
-            'first_messages'   => $first_messages,
+            'pending_articles'    => $pendingArticles,
+            'first_messages'      => $first_messages,
+            'total'               => $total,
+            'pageinfo'            => $pageinfo,
         ]);
     }
 
