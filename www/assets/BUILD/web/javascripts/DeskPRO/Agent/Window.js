@@ -439,13 +439,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 					ev.preventDefault();
 
 					var clicked = $(this), li = clicked.closest('li');
-					li.slideUp('fast', function() {
-						clicked.remove();
+					
+          li.remove();
+          if (options.filesContainer.hasClass('dp-hide-empty')) {
+            options.filesContainer.hide();
+          }
 
-						if (options.filesContainer.hasClass('dp-hide-empty')) {
-							options.filesContainer.hide();
-						}
-					});
 
 					el.trigger('fileremoved', [li]);
 				}).on('fileuploadfailed', function(e, data) {
