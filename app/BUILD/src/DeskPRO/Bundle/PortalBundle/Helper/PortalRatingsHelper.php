@@ -55,13 +55,13 @@ class PortalRatingsHelper
      * @param ContentAbstract $content
      * @param Person|null $person
      *
-     * @throws OptimisticLockException
-     *
+     * @param null $visitorId
      * @return ContentAbstract|false
+     * @throws OptimisticLockException
      */
-    public function removeContentRating(ContentAbstract $content, Person $person = null)
+    public function removeContentRating(ContentAbstract $content, Person $person = null, $visitorId = null)
     {
-        $contentRating = $this->findPersonRating($content, $person);
+        $contentRating = ($this->findPersonRating($content, $person)) ?? $this->findVisitorRating($content, $visitorId);
 
         if (null === $contentRating) {
             return false;
@@ -78,26 +78,21 @@ class PortalRatingsHelper
 
     public function updatePersistedOrCreateNewRating(ContentAbstract $content, $visitor_id, $person, $down = false)
     {
-        if ($person && $content_rating = $this->findPersonRating($content, $person)) {
-            if (null !== $content_rating && !$down) {
-                //Already voted, can't upvote
-                return false;
-            }
+        $contentRating = ($this->findPersonRating($content, $person)) ?? $this->findVisitorRating($content, $visitor_id);
 
-            $this->changeExistingRating($content, $content_rating, $down);
-
-            return $content_rating;
+        //Already Upvoted
+        if (null !== $contentRating && !$down) {
+            return false;
         }
 
-        if ($content_rating = $this->findVisitorRating($content, $visitor_id)) {
-            if ($person) {
-                // if there is no "person" rating, but there IS a visitor rating for this
-                // visitor ID, then we just want to update the existing record.
-                $content_rating->setPerson($person);
+        if ($contentRating) {
+            if ($person && null === $contentRating->getPerson()) {
+                $contentRating->setPerson($person);
             }
-            $this->changeExistingRating($content, $content_rating, $down);
 
-            return $content_rating;
+            $this->changeExistingRating($content, $contentRating, $down);
+
+            return $contentRating;
         }
 
         $content_rating = new Rating();

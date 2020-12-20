@@ -685,7 +685,7 @@ class CommunityTopicsController extends AbstractPublishController
                 throw $this->createAccessDeniedException($this->phrase(['helpcenter.flashes.content_double_rating']));
             }
         } else {
-            $rating = $this->getRatingsHelper()->removeContentRating($topic, $person);
+            $rating = $this->getRatingsHelper()->removeContentRating($topic, $person, $visitor_id);
 
             if (!$rating) {
                 throw $this->createAccessDeniedException($this->phrase(['helpcenter.flashes.content_remove_vote_error']));
