@@ -274,7 +274,7 @@ class ViewPage extends React.Component {
     });
   };
 
-  openLink = () => {
+  renderLink = () => {
     const links = document.querySelectorAll('a.internal_link.topic');
     Array.prototype.forEach.call(links, (internalLink) => {
       const target = internalLink.pathname;
@@ -461,7 +461,7 @@ class ViewPage extends React.Component {
           window.scrollTo(0, scrollPage - 27);
         }, 200);
       }
-      this.openLink();
+      this.renderLink();
       this.addCodeBlocksCopy();
       this.addGuideBlocks();
       this.addReactImageLazyload();
