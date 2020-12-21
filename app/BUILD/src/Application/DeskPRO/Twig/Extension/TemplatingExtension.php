@@ -2034,7 +2034,7 @@ class TemplatingExtension extends \Twig_Extension
 
             return '<a class="internal_link topic" href="#'.$target.'"><i class="'.$icon.'"></i> '.$title.'</a>';
         } else {
-            return '<a class="internal_link '.$type.'" href="'.$url.'"><i class="'.$icon.'"></i> '.$title.'</a>';
+            return '<a class="internal_link '.$type.'" href="'.$url.'" target="_blank"><i class="'.$icon.'"></i> '.$title.'</a>';
         }
     }
 
