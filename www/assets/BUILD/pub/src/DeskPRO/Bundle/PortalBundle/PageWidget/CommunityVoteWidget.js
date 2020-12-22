@@ -18,7 +18,6 @@ export class CommunityVoteWidget extends PageWidget {
 
     $iAgreeBox.click((event) => {
       event.preventDefault();
-
       const agreed = $iAgreeBox.hasClass('agreed');
       const voteUpUrl = $iAgreeBox.data('vote-up-url');
       const voteDownUrl = $iAgreeBox.data('vote-down-url');
@@ -30,6 +29,16 @@ export class CommunityVoteWidget extends PageWidget {
       if ($iAgreeBox.hasClass('rate_forbidden')) {
         return false; // no permission
       }
+
+      if ($iAgreeBox.hasClass('isDisabled')) {
+        return false; // one request at a time
+      }
+
+      $iAgreeBox.addClass('isDisabled');
+
+      setTimeout(() => {
+        $iAgreeBox.removeClass('isDisabled');
+      }, 5000);
 
       $.ajax({
         url:         agreed ? voteDownUrl : voteUpUrl,
@@ -47,6 +56,8 @@ export class CommunityVoteWidget extends PageWidget {
         onSuccess(agreed);
       }).fail((data) => {
         $iAgreeBox.find('div').text(data.error);
+      }).done(() => {
+        $iAgreeBox.removeClass('isDisabled');
       });
 
       return false;
