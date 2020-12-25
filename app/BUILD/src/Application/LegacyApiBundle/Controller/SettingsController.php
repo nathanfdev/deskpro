@@ -587,10 +587,12 @@ class SettingsController extends AbstractController
 
             case 'guides':
                 $settings = [
-                    'enabled'       => (bool) $this->settings->get('core.apps_guides'),
-                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_guides'),
-                    'subscriptions' => (bool) $this->settings->get('user.guides_subscriptions'),
+                    'enabled'          => (bool) $this->settings->get('core.apps_guides'),
+                    'tab_enabled'      => (bool) $this->settings->get('user.portal_tab_guides'),
+                    'homepage_enabled' => (bool) $this->settings->get('user.guides_homepage'),
+                    'subscriptions'    => (bool) $this->settings->get('user.guides_subscriptions'),
                 ];
+
                 break;
 
             default:
@@ -655,6 +657,7 @@ class SettingsController extends AbstractController
                     'core.apps_guides'          => $this->in->getBoolInt('settings.enabled'),
                     'user.portal_tab_guides'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
                     'user.guides_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
+                    'user.guides_homepage' =>      (int) $this->in->getBool('settings.homepage_enabled')
                 ];
                 break;
 

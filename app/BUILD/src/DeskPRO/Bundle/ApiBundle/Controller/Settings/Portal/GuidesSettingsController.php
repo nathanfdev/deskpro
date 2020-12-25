@@ -107,6 +107,7 @@ class GuidesSettingsController extends AbstractBrandAwareSettingsController
             ->getSettingRepository()
             ->updateSetting(PortalSettingsResolver::APPS_GUIDES, $model->isEnabled(), $brand)
             ->updateSetting(PortalSettingsResolver::TAB_GUIDES, $model->isTabEnabled(), $brand)
+            ->updateSetting(PortalSettingsResolver::HOMEPAGE_GUIDES, $model->isHomepageEnabled(), $brand)
             ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_GUIDES, $model->isSubscriptions(), $brand)
         ;
     }

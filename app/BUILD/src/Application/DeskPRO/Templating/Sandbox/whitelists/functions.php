@@ -225,6 +225,7 @@ return [
     'show_tab_community',
     'can_use_guides',
     'show_tab_guides',
+    'can_view_guide_homepage',
     'has_any_guides',
     'show_tab_articles',
     'show_tab_news',
