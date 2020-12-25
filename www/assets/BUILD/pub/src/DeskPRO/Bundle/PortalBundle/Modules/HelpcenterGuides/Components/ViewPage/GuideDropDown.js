@@ -60,7 +60,6 @@ class GuideDropDown extends React.PureComponent {
   render() {
     const { activeGuide, guides, style, sizes } = this.props;
     const { opened } = this.state;
-
     const buttonStyle = {};
     if (sizes) {
       buttonStyle.width = sizes.searchWidth;
@@ -88,14 +87,20 @@ class GuideDropDown extends React.PureComponent {
                 {guides.map(guide => this.renderDropDownGuide(guide, baseUrl))}
               </ul>
             </Scrollbars>
-            <div className="all-guides">
-              <a href={`${baseUrl}/guides`} className="dp-po-guides-dropdown-link">
-                <figure className="dp-po-icon" style={{ background: 'none' }}>
-                  <Isvg src={allGuides} />
-                </figure>
-                <FormattedMessage id="helpcenter.guides.view_all_guides" />
-              </a>
-            </div>
+            {(() => {
+              if (window.can_view_guide_homepage) {
+                return (
+                  <div className="all-guides">
+                    <a href={`${baseUrl}/guides`} className="dp-po-guides-dropdown-link">
+                      <figure className="dp-po-icon" style={{ background: 'none' }}>
+                        <Isvg src={allGuides} />
+                      </figure>
+                      <FormattedMessage id="helpcenter.guides.view_all_guides" />
+                    </a>
+                  </div>
+                );
+              }
+            })()}
           </div>
         </ClickOut>
       </div>

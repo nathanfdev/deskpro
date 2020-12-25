@@ -54,6 +54,14 @@ class GuidesController extends AbstractPublishController
             return $this->redirectToRoute('portal_home');
         }
 
+        $canUseGuideHomepage = $this->get('brand_stack')->getActive()->getSetting('user.guides_homepage');
+
+        if(!$canUseGuideHomepage){
+            return $this->redirectToRoute('user_guides', [
+                'slug' => $guide->getSlug()
+            ]);
+        }
+        
         if ($this->isHelpCenterTheme()) {
             if (count($guides) > 0) {
                 $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuides();

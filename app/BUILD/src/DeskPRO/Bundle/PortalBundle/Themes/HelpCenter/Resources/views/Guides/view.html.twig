@@ -72,6 +72,7 @@
       var user_initials = '{{ app.user ? app.user.initials : '' }}';
       var user_name = '{{ app.user ? app.user.display_name : '' }}';
       var guides = '{{ guides_json|raw }}';
+      var can_view_guide_homepage = '{{ can_view_guide_homepage() }}'
     {% if captcha is defined %}
       var commentsCaptcha = '{{ captcha|json_encode|raw }}';
     {% endif %}
