@@ -69,6 +69,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 			triggerElement: sortMenuBtn,
 			menuElement: $('.order-by-menu', this.wrapper).first(),
 			onItemClicked: function(info) {
+
 				var item = $(info.itemEl);
 
 				var prop = item.data('order-by');
@@ -120,7 +121,19 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 	},
 
 	actionAppliedCallback: function(data) {
-		if(data && data.success) {
+
+	  if (data && data.success) {
+      var btn  = this.wrapper.find('.list-selection-bar .perform-actions-trigger');
+      var lines = [];
+      $('input.item-select:checked', this.wrapper).each(function() {
+        lines.push($(this).parent().get(0));
+      });
+
+      btn.hide();
+		  $(lines).fadeOut();
+      $(lines).remove();
+      this.selectionBar.checkNone();
+
 			var category = data.category;
 
 			var section = DeskPRO_Window.sections.publish_section;
