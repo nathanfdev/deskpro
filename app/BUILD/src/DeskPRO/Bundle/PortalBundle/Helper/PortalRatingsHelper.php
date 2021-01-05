@@ -1,15 +1,12 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Rating;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class PortalRatingsHelper
@@ -34,8 +31,10 @@ class PortalRatingsHelper
     {
         $content_rating = $this->updatePersistedOrCreateNewRating($content, $visitor_id, $person, false);
 
-        $this->em->persist($content_rating);
-        $this->em->flush([$content_rating, $content]);
+        if ($content_rating) {
+            $this->em->persist($content_rating);
+            $this->em->flush([$content_rating, $content]);
+        }
 
         return $content_rating;
     }
@@ -44,29 +43,56 @@ class PortalRatingsHelper
     {
         $content_rating = $this->updatePersistedOrCreateNewRating($content, $visitor_id, $person, true);
 
-        $this->em->persist($content_rating);
-        $this->em->flush([$content_rating, $content]);
+        if ($content_rating) {
+            $this->em->persist($content_rating);
+            $this->em->flush([$content_rating, $content]);
+        }
 
         return $content_rating;
     }
 
-    public function updatePersistedOrCreateNewRating(ContentAbstract $content, $visitor_id, $person, $down = false)
+    /**
+     * @param ContentAbstract $content
+     * @param Person|null $person
+     *
+     * @param null $visitorId
+     * @return ContentAbstract|false
+     * @throws OptimisticLockException
+     */
+    public function removeContentRating(ContentAbstract $content, Person $person = null, $visitorId = null)
     {
-        if ($person && $content_rating = $this->findPersonRating($content, $person)) {
-            $this->changeExistingRating($content, $content_rating, $down);
+        $contentRating = ($this->findPersonRating($content, $person)) ?? $this->findVisitorRating($content, $visitorId);
 
-            return $content_rating;
+        if (null === $contentRating) {
+            return false;
         }
 
-        if ($content_rating = $this->findVisitorRating($content, $visitor_id)) {
-            if ($person) {
-                // if there is no "person" rating, but there IS a visitor rating for this
-                // visitor ID, then we just want to update the existing record.
-                $content_rating->setPerson($person);
-            }
-            $this->changeExistingRating($content, $content_rating, $down);
+        $content->removeRating($contentRating);
 
-            return $content_rating;
+        $this->em->remove($contentRating);
+        $this->em->persist($content);
+        $this->em->flush();
+
+        return $content;
+    }
+
+    public function updatePersistedOrCreateNewRating(ContentAbstract $content, $visitor_id, $person, $down = false)
+    {
+        $contentRating = ($this->findPersonRating($content, $person)) ?? $this->findVisitorRating($content, $visitor_id);
+
+        //Already Upvoted
+        if (null !== $contentRating && !$down) {
+            return false;
+        }
+
+        if ($contentRating) {
+            if ($person && null === $contentRating->getPerson()) {
+                $contentRating->setPerson($person);
+            }
+
+            $this->changeExistingRating($content, $contentRating, $down);
+
+            return $contentRating;
         }
 
         $content_rating = new Rating();
