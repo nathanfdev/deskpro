@@ -277,6 +277,41 @@ class TaskRouter
     }
 
     /**
+     * @param int $taskId
+     *
+     * @return Task|false
+     *
+     * @throws \Exception
+     */
+    public function getTask($taskId)
+    {
+        if (!$taskId) {
+            return false;
+        }
+
+        try {
+            $this->actionsLock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf(
+                '[TaskRouter] Failed to acquire lock, action = getTask, task_id = %s, message = %s',
+                $taskId, $e->getMessage()
+            ));
+
+            return false;
+        }
+
+        try {
+            return $this->storage->getTask($taskId);
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        } finally {
+            $this->releaseLock($this->actionsLock);
+        }
+
+        return false;
+    }
+
+    /**
      * @param int    $taskId
      * @param string $workerType
      * @param int    $workerTypeId

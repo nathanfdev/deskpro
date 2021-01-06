@@ -149,7 +149,8 @@ class UserChatController extends AbstractController
         $assigned   = $this->joinConvo($convo);
         $taskRouter = $this->get('dp.voice.task_router');
 
-        if (!$convo->getAgent()) {
+        $task = $taskRouter->getTask($convo->getTaskId());
+        if ($task && $task->isPending()) {
             $taskRouter->acceptTask($convo->getTaskId(), 'agent', $this->person->getId());
         } else {
             $taskRouter->joinTask($convo->getTaskId(), 'agent', $this->person->getId());
