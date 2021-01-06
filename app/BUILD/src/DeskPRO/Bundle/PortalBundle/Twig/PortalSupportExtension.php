@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentAccessVoter;
+use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
@@ -231,7 +232,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function canViewGuideHomePage(): bool
     {
-        return (bool) $this->container->get('brand_stack')->getActive()->getSetting('user.guides_homepage');
+        return (bool) $this->container->get('brand_stack')->getActive()->getSetting(PortalSettingsResolver::HOMEPAGE_GUIDES);
     }
 
     /**
