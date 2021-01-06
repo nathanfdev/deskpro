@@ -229,9 +229,11 @@ class BreadcrumbGenerator
         return $this->createBuilder()->addTopics()->done();
     }
 
-    public function buildGuide(Guide $guide)
+    public function buildGuide(Guide $guide, $isGuideHomepageEnabled = true): Breadcrumbs
     {
-        return $this->createBuilder()->addTopics()->addGuide($guide)->done();
+        $createBuilder = $this->createBuilder();
+
+        return ($isGuideHomepageEnabled) ? $createBuilder->addTopics()->addGuide($guide)->done() : $createBuilder->addGuide($guide)->done();
     }
 
     protected function createGuideBuilder(Topic $topic)

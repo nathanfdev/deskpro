@@ -61,7 +61,7 @@ class GuidesController extends AbstractPublishController
                 'slug' => $guide->getSlug()
             ]);
         }
-        
+
         if ($this->isHelpCenterTheme()) {
             if (count($guides) > 0) {
                 $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuides();
@@ -116,7 +116,9 @@ class GuidesController extends AbstractPublishController
         }
 
         if ($this->isHelpCenterTheme()) {
-            $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuide($guide);
+
+            $isGuideHomepageEnabled = $this->get('brand_stack')->getActive()->getSetting('user.guides_homepage');
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuide($guide, $isGuideHomepageEnabled);
 
             $serializer = $this->get('serializer');
 
