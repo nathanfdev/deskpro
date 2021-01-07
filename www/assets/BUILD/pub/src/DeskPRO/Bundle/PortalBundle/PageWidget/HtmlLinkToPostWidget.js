@@ -12,6 +12,10 @@ export class HtmlLinkToPostWidget extends PageWidget {
       $link.click((e) => {
         e.preventDefault();
 
+        $postLinks.each(function () {
+          $(this).addClass('disabled');
+        });
+
         const action = $link.attr('href');
         const $form = $('<form></form>');
 
