@@ -31,6 +31,7 @@ import { HelpcenterCCForm } from './HelpcenterCCForm';
 import { HelpcenterCCDelete } from './HelpcenterCCDelete';
 import { HelpcenterGuideFilter } from './HelpcenterGuideFilter';
 import { HelpcenterFileDownload } from './HelpcenterFileDownload';
+import { HelpcenterComment } from './HelpcenterComment';
 
 class HelpCenterPage extends PageWidget {
 
@@ -70,6 +71,7 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(HelpcenterCCDelete, '.dp-po-ticket-meta-cc-remove');
     this.addWidgetDef(HelpcenterGuideFilter, '#guide_filter_input');
     this.addWidgetDef(HelpcenterFileDownload, '#file-download-link');
+    this.addWidgetDef(HelpcenterComment, '#helpcenter-comment-form');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);
