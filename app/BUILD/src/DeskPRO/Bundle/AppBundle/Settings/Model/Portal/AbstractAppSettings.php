@@ -29,6 +29,13 @@ abstract class AbstractAppSettings extends AbstractBrandAwareSettings
      *
      * @JMS\Type("boolean")
      */
+    protected $homepage_enabled;
+
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
     protected $subscriptions;
 
     /**
@@ -60,6 +67,14 @@ abstract class AbstractAppSettings extends AbstractBrandAwareSettings
     }
 
     /**
+     * @return bool
+     */
+    public function isHomepageEnabled()
+    {
+        return $this->homepage_enabled;
+    }
+
+    /**
      * @param bool $tab_enabled
      *
      * @return AbstractAppSettings
@@ -67,6 +82,18 @@ abstract class AbstractAppSettings extends AbstractBrandAwareSettings
     public function setTabEnabled($tab_enabled)
     {
         $this->tab_enabled = $tab_enabled;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $homepage_enabled
+     *
+     * @return AbstractAppSettings
+     */
+    public function setHomepageEnabled($homepage_enabled)
+    {
+        $this->homepage_enabled = $homepage_enabled;
 
         return $this;
     }

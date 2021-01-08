@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentAccessVoter;
+use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
@@ -75,6 +76,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('can_rate_*', [$this, 'canRateCheck']),
             new \Twig_SimpleFunction('can_view_tickets_link', [$this, 'canViewTicketsLink']),
             new \Twig_SimpleFunction('show_tab_*', [$this, 'showTab']),
+            new \Twig_SimpleFunction('can_view_guide_homepage', [$this, 'canViewGuideHomePage']),
             new \Twig_SimpleFunction('has_any_*', [$this, 'hasAnyCheck']),
             new \Twig_SimpleFunction('is_user', [$this, 'isUser']),
             new \Twig_SimpleFunction('is_agent', [$this, 'isAgent']),
@@ -221,6 +223,16 @@ class PortalSupportExtension extends \Twig_Extension
         $n = strtolower($name);
 
         return (bool) $this->container->get('brand_stack')->getActive()->getSetting(sprintf('user.portal_tab_%s', $n));
+    }
+
+    /**
+     * If a Guide Homepage should be displayed or not (if enabled by admin).
+     *
+     * @return bool
+     */
+    public function canViewGuideHomePage(): bool
+    {
+        return (bool) $this->container->get('brand_stack')->getActive()->getSetting(PortalSettingsResolver::HOMEPAGE_GUIDES);
     }
 
     /**

@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\LazyPropObject;
@@ -52,6 +53,14 @@ class GuidesController extends AbstractPublishController
 
         if (!$guide) {
             return $this->redirectToRoute('portal_home');
+        }
+
+        $canUseGuideHomepage = $this->get('brand_stack')->getActive()->getSetting(PortalSettingsResolver::HOMEPAGE_GUIDES);
+
+        if(!$canUseGuideHomepage){
+            return $this->redirectToRoute('user_guides', [
+                'slug' => $guide->getSlug()
+            ]);
         }
 
         if ($this->isHelpCenterTheme()) {
@@ -108,7 +117,9 @@ class GuidesController extends AbstractPublishController
         }
 
         if ($this->isHelpCenterTheme()) {
-            $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuide($guide);
+
+            $isGuideHomepageEnabled = $this->get('brand_stack')->getActive()->getSetting(PortalSettingsResolver::HOMEPAGE_GUIDES);
+            $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuide($guide, $isGuideHomepageEnabled);
 
             $serializer = $this->get('serializer');
 

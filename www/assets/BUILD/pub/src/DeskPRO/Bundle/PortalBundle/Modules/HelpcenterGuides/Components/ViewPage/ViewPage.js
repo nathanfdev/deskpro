@@ -89,6 +89,18 @@ class ViewPage extends React.Component {
       this.tickingResize = true;
     });
     this.defineSizes();
+
+    const el = document.querySelector('ol.breadcrumb').getElementsByTagName('li');
+    var hasGuideRoot = false;
+    for (let i = 0; i < el.length; ++i) {
+      if (el[i].classList.contains('breadcrumbs-guide-root')) {
+        var hasGuideRoot = true;
+        break;
+      }
+    }
+    if (!hasGuideRoot && el.length > 0) {
+      el[0].classList.add('breadcrumbs-guide-root');
+    }
   }
 
   componentWillReceiveProps(nextProps) {

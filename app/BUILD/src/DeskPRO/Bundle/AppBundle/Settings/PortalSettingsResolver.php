@@ -48,6 +48,7 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     const TAB_NEWS      = 'user.portal_tab_news';
     const TAB_DOWNLOADS = 'user.portal_tab_downloads';
     const TAB_GUIDES    = 'user.portal_tab_guides';
+    const HOMEPAGE_GUIDES  = 'user.guides_homepage';
 
     const SUBSCRIPTION_COMMUNITY = 'user.community_subscriptions';
     const SUBSCRIPTION_KB        = 'user.kb_subscriptions';
@@ -305,6 +306,7 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
         $model
             ->setEnabled($this->getSetting(self::APPS_GUIDES, $brand))
             ->setTabEnabled($this->getSetting(self::TAB_GUIDES, $brand))
+            ->setHomepageEnabled($this->getSetting(self::HOMEPAGE_GUIDES, $brand))
             ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_GUIDES, $brand))
             ->setBrand($brand)
         ;

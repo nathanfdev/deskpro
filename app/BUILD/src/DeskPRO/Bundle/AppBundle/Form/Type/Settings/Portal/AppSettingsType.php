@@ -23,6 +23,9 @@ class AppSettingsType extends AbstractType
             ->add('tab_enabled', ApiBooleanType::class, [
                 'required' => false,
             ])
+            ->add('homepage_enabled', ApiBooleanType::class, [
+                'required' => false,
+            ])
             ->add('subscriptions', ApiBooleanType::class, [
                 'required' => false,
             ])
