@@ -8,9 +8,7 @@ export class HelpcenterComment extends PageWidget {
     const button =  window.document.getElementById('helpcenter-comment-submit');
 
     submitForm.addEventListener('submit', (event) => {
-      event.preventDefault();
       button.disabled = true;
-      submitForm.submit();
     });
   }
 
