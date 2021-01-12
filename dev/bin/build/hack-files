@@ -225,6 +225,37 @@ EOF;
 
 $patchCode($f, $from, $to);
 
+echo "Patching zendframework/zend-http/src/Response/Stream.php\n";
+$f = $DP_DIR.'/app/BUILD/vendor/zendframework/zend-http/src/Response/Stream.php';
+$from = <<<'EOF'
+    public function __destruct()
+    {
+        if (is_resource($this->stream)) {
+            $this->stream = null; //Could be listened by others
+        }
+        if ($this->cleanup) {
+            ErrorHandler::start(E_WARNING);
+            unlink($this->streamName);
+            ErrorHandler::stop();
+        }
+    }
+EOF;
+$to = <<<'EOF'
+    public function __destruct()
+    {
+        if (is_resource($this->stream)) {
+            $this->stream = null; //Could be listened by others
+        }
+        if ($this->cleanup && is_string($this->streamName) && file_exists($this->streamName)) {
+            ErrorHandler::start(E_WARNING);
+            unlink($this->streamName);
+            ErrorHandler::stop();
+        }
+    }
+EOF;
+
+$patchCode($f, $from, $to);
+
 if ($failedCount) {
     $f  = $DP_DIR.'/app/BUILD/src/Application/AgentBundle/Controller/MainController.php';
 
