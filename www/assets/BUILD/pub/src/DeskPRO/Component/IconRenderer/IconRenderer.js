@@ -45,6 +45,17 @@ export const IconRenderer = ({
         </figure>
       );
     }
+  } else if (iconProperty.urn_ns === 'urn:emoji') {
+    const emoji = decodeURI(iconProperty.urn_path);
+    if (emoji) {
+      return (
+        <figure className={`dp-po-icon ${figureClassName}`}>
+          <span className={className}>
+            {emoji}
+          </span>
+        </figure>
+      );
+    }
   }
 
   return (
