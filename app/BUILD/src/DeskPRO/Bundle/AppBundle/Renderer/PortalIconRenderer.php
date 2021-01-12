@@ -44,8 +44,11 @@ class PortalIconRenderer
 
             return '<i class="dp-po-icon '.$iconStyle.' '.$icon->getUrnPath().'"'.$style.'></i>';
         }
+        if ($icon->getUrnNs() === IconProperty::$emoji) {
+            return urldecode($icon->getUrnPath());
+        }
 
-        throw new Exception(sprintf('Missing urn on icon %d', $icon->getId()));
+        throw new Exception(sprintf('Missing urn on icon %d: %s', $icon->getId(), $icon->getUrnNs()));
     }
 
     public function getIconHtmlFrom(HasIconProperty $object, $options = [])
