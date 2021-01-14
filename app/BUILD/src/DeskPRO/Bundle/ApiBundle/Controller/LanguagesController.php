@@ -592,7 +592,7 @@ class LanguagesController extends CrudController
             'helpcenter.search.*',
             'helpcenter.sidebar.*',
             'helpcenter.tickets.*',
-            'custom.emails.*',
+            'custom.*',
         ];
 
         $phrases = $translate->getArrayPhraseTexts($phrases, $language);
