@@ -116,6 +116,10 @@
     </div>
 
     <dl class="dp-po-ticket-meta">
+
+            <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_you_created') }}</dt>
+            <dd>  {{ ticket.date_created|date('default') }}</dd>
+
         <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.list_ticket_ref') }}</dt>
         <dd>
             {{ ticket_public_id(ticket) }}
@@ -191,11 +195,9 @@
                 <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_last_message') }}</dt>
                 <dd>{{ date_ago(ticket.date_last_user_reply, null, false) }}</dd>
                 {# similarly, only show the "created ago" message if it has been more than 10 mins #}
-            {% elseif created_in_seconds > 600 %}
-                <dt class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_you_created') }}</dt>
-                <dd>  {{ ticket.date_created|date('default') }}</dd>
             {% endif %}
         {% endif %}
+
     </dl>
 
     {% if ticket_view.getAttachments()|length > 0 %}
