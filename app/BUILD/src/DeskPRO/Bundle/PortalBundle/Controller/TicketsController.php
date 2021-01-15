@@ -31,6 +31,9 @@ use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\OptimisticLockException;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -591,6 +594,8 @@ class TicketsController extends AbstractController
      * @param null $message_id
      *
      * @return RedirectResponse|Response
+     * @throws OptimisticLockException
+     * @throws NonUniqueResultException|NoResultException
      */
     public function rateTicketAction(Request $request, $ticket_ref, $auth, $message_id = null)
     {
@@ -631,8 +636,15 @@ class TicketsController extends AbstractController
         $ticketFeedbackRepo = $this->getRepo(TicketFeedback::class);
         $feedback           = $ticketFeedbackRepo->getFeedback($message, $person, true);
 
-        if ($request->get('setrating') !== null) {
-            $feedback->setRating($request->get('setrating'));
+        $rating = $request->get('setrating');
+        if (null !== $rating && is_numeric($rating)) {
+            $feedback->setRating($rating);
+        }
+
+        if (null !== $rating && null === $feedback->getId() && null !== $feedback->getRating()) {
+            $this->getEm()->persist($feedback);
+            $this->getEm()->flush();
+            $this->addFlash('success', $this->phrase(['portal.flashes.ticket_feedback_thank_you', 'helpcenter.flashes.ticket_feedback_thank_you']));
         }
 
         $form = $this->createForm(TicketFeedbackType::class, $feedback);
@@ -721,6 +733,8 @@ class TicketsController extends AbstractController
             'feedback'    => $feedback,
             'setrating'   => $request->get('setrating') !== null,
             'form'        => $form->createView(),
+            'buttonPhrase' => (null !== $rating) ? $this->phrase('helpcenter.tickets.update_feedback')
+                : $this->phrase('helpcenter.tickets.submit_feedback')
         ]);
     }
 
