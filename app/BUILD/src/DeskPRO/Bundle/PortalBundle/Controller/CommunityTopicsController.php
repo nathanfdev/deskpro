@@ -69,6 +69,11 @@ class CommunityTopicsController extends AbstractPublishController
         $page   = $request->query->getInt('page', 1);
         $person = $this->getUser() ?: new PersonGuest();
 
+        $lockedOut = $request->query->get('lockout');
+        if( null !== $lockedOut && $lockedOut === 'community'){
+            $this->addFlash('error', $this->phrase(['helpcenter.community.action_not_allowed']));
+        }
+
         // RSS
 
         if ('rss' === $_format) {
