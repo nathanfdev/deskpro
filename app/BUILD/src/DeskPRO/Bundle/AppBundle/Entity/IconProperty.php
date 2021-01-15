@@ -24,8 +24,9 @@ class IconProperty implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    public static $blobNs = 'urn:deskpro:local:blobs';
-    public static $faNs   = 'urn:deskpro:product:icons:fontawesome';
+    public static $blobNs  = 'urn:deskpro:local:blobs';
+    public static $faNs    = 'urn:deskpro:product:icons:fontawesome';
+    public static $emoji   = 'urn:emoji';
 
     /**
      * @var int
