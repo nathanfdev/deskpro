@@ -391,7 +391,8 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             !($crossBrandAppSettings['core.apps_kb']
             || $crossBrandAppSettings['core.apps_downloads']
             || $crossBrandAppSettings['core.apps_news']
-            || $crossBrandAppSettings['core.apps_guides'])
+            || $crossBrandAppSettings['core.apps_guides']
+            || $crossBrandAppSettings['core.apps_community'])
         ) {
             return false;
         }
