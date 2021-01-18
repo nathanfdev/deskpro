@@ -57,9 +57,9 @@ class GuidesController extends AbstractPublishController
 
         $canUseGuideHomepage = $this->get('brand_stack')->getActive()->getSetting(PortalSettingsResolver::HOMEPAGE_GUIDES);
 
-        if(!$canUseGuideHomepage){
+        if (!$canUseGuideHomepage) {
             return $this->redirectToRoute('user_guides', [
-                'slug' => $guide->getSlug()
+                'slug' => $guide->getSlug(),
             ]);
         }
 
@@ -117,9 +117,8 @@ class GuidesController extends AbstractPublishController
         }
 
         if ($this->isHelpCenterTheme()) {
-
             $isGuideHomepageEnabled = $this->get('brand_stack')->getActive()->getSetting(PortalSettingsResolver::HOMEPAGE_GUIDES);
-            $breadcrumbs = $this->getBreadcrumbGenerator()->buildGuide($guide, $isGuideHomepageEnabled);
+            $breadcrumbs            = $this->getBreadcrumbGenerator()->buildGuide($guide, $isGuideHomepageEnabled);
 
             $serializer = $this->get('serializer');
 
@@ -136,7 +135,7 @@ class GuidesController extends AbstractPublishController
                 'breadcrumbs' => $breadcrumbs,
                 'guide'       => $guide,
                 'guides'      => $guides,
-                'guides_json' => Strings::escapeForJson(json_encode($serializer->toArray(new ApiWrapper($guides), $context)['data'])),
+                'guides_json' => Strings::escapeForJson(Strings::jsonEncode($serializer->toArray(new ApiWrapper($guides), $context)['data'])),
             ];
 
             return $this->renderThemeView(
@@ -274,7 +273,7 @@ class GuidesController extends AbstractPublishController
         $topicContext->setIdsOnly(false);
         $topicContext->setInlineSideloads(true);
         $topicContext->setMapping(["Application\DeskPRO\Entity\Person" => "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson"]);
-        $topicJson = Strings::escapeForJson(json_encode($serializer->toArray(new ApiWrapper($topic), $topicContext)['data']));
+        $topicJson = Strings::escapeForJson(Strings::jsonEncode(($serializer->toArray(new ApiWrapper($topic), $topicContext)['data'])));
 
         $topicData = new LazyPropObject([
             'comments' => function () use ($topic) {
@@ -295,7 +294,7 @@ class GuidesController extends AbstractPublishController
             'breadcrumbs'      => $breadcrumbs,
             'captcha'          => $captcha,
             'guide'            => $topic->getGuide(),
-            'guides_json'      => Strings::escapeForJson(json_encode($serializer->toArray(new ApiWrapper($guides), $context)['data'])),
+            'guides_json'      => Strings::escapeForJson(Strings::jsonEncode($serializer->toArray(new ApiWrapper($guides), $context)['data'])),
             'guides'           => $guides,
             'helpcenter'       => $this->get('helpcenter_data_helper'),
             'body_class'       => 'guides-body',
