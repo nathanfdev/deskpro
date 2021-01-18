@@ -79,7 +79,13 @@ class PortalUrlBuilder
             }
 
             if ($language) {
-                $langPart = trim($language->getUrlCode(), '/');
+
+                if($language->getSystemName() === 'default' && !$this->languageManager->getLanguage('en')){
+                    $langPart = trim($language->getUrlCode(), '/');
+                } else {
+                    $langPart = trim($language->getLocale(), '/');
+                }
+
                 if (strlen($langPart) > 0) {
                     $parts[] = $langPart;
                 }
