@@ -330,6 +330,7 @@ helpcenter.flashes.ticket_participant_cc_limit_reached: 'Maximum CC''s limit ({m
 helpcenter.flashes.ticket_participant_email_error: 'Please enter a valid email and try again.'
 helpcenter.flashes.ticket_participant_remove: 'We have removed {email} as a CC from this ticket.'
 helpcenter.flashes.ticket_participant_remove_unknown_error: 'There was a problem when trying to remove your participant. Please try again.'
+helpcenter.flashes.ticket_participant_registered_error: 'This person can not be added to a ticket because they are not a registered user.'
 helpcenter.flashes.ticket_re_opened: 'You have reopened this ticket.'
 helpcenter.flashes.ticket_replied: 'Your reply has been submitted.'
 helpcenter.flashes.ticket_resolved: 'Your ticket is now marked as resolved.'

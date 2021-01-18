@@ -445,10 +445,24 @@ class TicketsController extends AbstractController
                     return $redirectResponse;
                 }
             }
-
+            
             $personFactory = $this->get('person_factory');
             $context       = new CreatePersonContext('gateway.person');
-            $person        = $personFactory->getOrCreatePersonByEmail($email, $context);
+            $person        = $personFactory->getPersonByEmail($email);
+
+            if (null === $person) {
+                if (!$this->get('dp_authentication_manager.user')->isRegistrationFormVisible()) {
+                    if ($request->isXmlHttpRequest()) {
+                        return $this->makeJsonResponse([
+                            'error' => $this->phrase('helpcenter.flashes.ticket_participant_registered_error'),
+                        ]);
+                    }
+
+                    $this->addFlash('success', $this->phrase('helpcenter.flashes.ticket_participant_registered_error'));
+                }
+
+                $person = $personFactory->createPersonByEmail($email, $context);
+            }
 
             if ($person) {
                 // only set the name if this email doesn't have a name (a new person)
