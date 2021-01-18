@@ -273,7 +273,7 @@ class ChatHandler
         if ((bool) $request['rate'] === true) {
             $chat->setRatingOverall(10);
         } else {
-            $chat->setRatingOverall(0);
+            $chat->setRatingOverall(1);
         }
 
         $eventData['rate'] = $request['rate'];
