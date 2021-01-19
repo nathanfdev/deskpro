@@ -241,9 +241,10 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
 	_initActions: function() {
 		var self = this;
 		var actions = this.getEl('action_buttons');
+    var filterGuidePageCount = $('#filter-guide-page-count');
 
 		$('.delete', actions).on('click', function() {
-
+     filterGuidePageCount.text(filterGuidePageCount.text().replace(/[0-9]+/, parseInt(filterGuidePageCount.text()) - parseInt('1')));
 		});
 
 		$('.permalink', actions).on('click', function() {
