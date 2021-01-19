@@ -261,7 +261,7 @@ class EmailRenderer
     {
         $structure = [];
         foreach ($parsedModel as $key => $attribute) {
-            if ($attribute['subType'] && $level) {
+            if ($attribute['subType'] && $attribute['actualType'] !== 'string' && $level) {
                 continue;
             }
             $structure[$key] = [
