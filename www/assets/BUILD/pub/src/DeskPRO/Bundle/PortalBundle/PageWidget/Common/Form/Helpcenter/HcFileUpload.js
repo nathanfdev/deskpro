@@ -59,11 +59,13 @@ export default class HcFileUpload extends PageWidget {
       onChange: this.onChange,
       multiple: true,
       i18n:     {
-        dragNDrop:   portalPhrases.get('helpcenter.general.drag_and_drop'),
-        or:          portalPhrases.get('helpcenter.general.or'),
-        chooseAFile: portalPhrases.get('helpcenter.general.form_choose_file'),
-        chooseFiles: portalPhrases.get('helpcenter.general.form_choose_files'),
-        remove:      portalPhrases.get('helpcenter.general.remove'),
+        dragNDrop:    portalPhrases.get('helpcenter.general.drag_and_drop'),
+        or:           portalPhrases.get('helpcenter.general.or'),
+        chooseAFile:  portalPhrases.get('helpcenter.general.form_choose_file'),
+        chooseFiles:  portalPhrases.get('helpcenter.general.form_choose_files'),
+        remove:       portalPhrases.get('helpcenter.general.remove'),
+        error413:     portalPhrases.get('helpcenter.error.413'),
+        generalError: portalPhrases.get('helpcenter.error.upload'),
       }
     });
 

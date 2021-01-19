@@ -40,6 +40,8 @@ class LanguageController extends AbstractApiController
             'helpcenter.duration_short.seconds',
             'helpcenter.duration_short.weeks',
             'helpcenter.duration_short.years',
+            'helpcenter.error.413',
+            'helpcenter.error.upload',
             'helpcenter.forms.date_picker_next_month',
             'helpcenter.forms.date_picker_previous_month',
             'helpcenter.forms.date_picker_time',
