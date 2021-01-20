@@ -608,6 +608,11 @@ class Person extends DomainObject implements
     protected $isEmailDomainsLimited;
 
     /**
+     * @var string
+     */
+    protected $_initials = '';
+
+    /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
      * a full user.
      *
@@ -723,7 +728,14 @@ class Person extends DomainObject implements
      */
     public function getInitials()
     {
-        return strtoupper(substr($this->first_name, 0, 1).substr($this->last_name, 0, 1));
+        if ($this->_initials) {
+            return $this->_initials;
+        }
+        $firstName       = preg_replace('(\[[^\]]+\])', '', $this->first_name);
+        $lastName        = preg_replace('(\[[^\]]+\])', '', $this->last_name);
+        $this->_initials = mb_substr($firstName, 0, 1).mb_substr($lastName, 0, 1);
+
+        return $this->_initials;
     }
 
     /**

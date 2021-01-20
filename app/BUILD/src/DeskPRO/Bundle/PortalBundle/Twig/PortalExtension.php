@@ -682,7 +682,10 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             } else {
                 $className = 'class="dp-po-avatar-name"';
             }
-            $initials = substr($obj->getFirstName(), 0, 1).substr($obj->getLastName(), 0, 1);
+            $initials = $obj->getInitials();
+            if (!$initials) {
+                $initials = mb_substr($obj->getFirstName(), 0, 1).mb_substr($obj->getLastName(), 0, 1);
+            }
 
             if ($hidden) {
                 return "<span $className aria-hidden=\"true\">$initials</span>";
