@@ -180,6 +180,7 @@ class PatternCutter implements QuoteDef
 
         $body = str_replace('<br></br>', '<br />', $body);
         $body = str_replace('<br>', '<br />', $body);
+        $body = Strings::utf8_bad_strip($body);
 
         foreach ($this->patterns as $pattern) {
             $matcher = new HtmlMatcher($body, $pattern);

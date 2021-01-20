@@ -276,6 +276,10 @@ class TicketIncomingEmailMessage
             $this->body        = $txt;
             $this->body_full   = $txt;
 
+            $this->body        = Strings::utf8_bad_strip($this->body);
+            $this->body_full   = Strings::utf8_bad_strip($this->body_full);
+            $this->generic_cut = Strings::utf8_bad_strip($this->generic_cut);
+
             // Always generic cut from the DP_TOP_MARK position first
             // The PatternCutter will trim off the remaining quoted headers
             if ($do_cut) {
@@ -334,12 +338,15 @@ class TicketIncomingEmailMessage
         if (!$is_text) {
             $this->body_raw = $this->body;
             $this->body     = $cleaner->clean($this->body, 'html_email_preclean');
+            $this->body     = Strings::utf8_bad_strip($this->body);
 
             if ($did_html_trim) {
                 // We pre-trimmed, lets set the full body to the plaintext version so we always have the full message
                 $this->body_full = Strings::text2html($orig_text, 'plaintext-email');
+                $this->body_full = Strings::utf8_bad_strip($this->body_full);
             } else {
                 $this->body_full = $this->body;
+                $this->body_full = Strings::utf8_bad_strip($this->body_full);
             }
 
             // Always generic cut from the DP_TOP_MARK position first
