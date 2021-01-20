@@ -134,20 +134,7 @@ class Language extends AbstractEntityRepository
         if (!$langCode || !is_string($langCode)) {
             return;
         }
-        if (!strlen($langCode) == 2) {
-            $langCode = substr($langCode, 0, 2);
-        }
 
-        if ($langCode == 'en') {
-            $langCode = 'en-US';
-        }
-
-        if ($langCode == 'es') {
-            $langCode = 'ES_es';
-        }
-
-        $r = $this->findOneBy(['locale' => $langCode]);
-
-        return $r;
+        return $this->findOneBy(['locale' => $langCode]);
     }
 }

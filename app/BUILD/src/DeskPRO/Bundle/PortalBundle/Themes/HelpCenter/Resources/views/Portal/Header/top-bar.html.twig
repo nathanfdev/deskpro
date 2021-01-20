@@ -38,8 +38,8 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-left">
                                 {% for language in enabled_languages() %}
-                                    {% if language.url_code != current_language().url_code %}
-                                        <a href="{{ path('portal_change_language', { lang_code: language.urlCode }) }}" class="dropdown-item">
+                                    {% if language.sys_name != current_language().sys_name %}
+                                        <a href="{{ path('portal_change_language', { lang_code: language.locale }) }}" class="dropdown-item">
                                             <img class="dp-po-icon" src="{{ asset_data_url('images/flags/' ~ language.flag_image, 'legacy_web') }}" alt="">
                                             <span class="text">{{ language.title }}</span>
                                         </a>
