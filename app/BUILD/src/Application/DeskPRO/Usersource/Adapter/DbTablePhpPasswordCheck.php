@@ -91,7 +91,7 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
             if (!$userinfo) {
                 $userinfo = $adapter->getUserInfoForUsername($id_input);
             }
-            if (!$userinfo) {
+            if (!$userinfo && is_numeric($id_input)) {
                 $userinfo = $adapter->getUserInfoForId($id_input);
             }
         } catch (\Exception $e) {
