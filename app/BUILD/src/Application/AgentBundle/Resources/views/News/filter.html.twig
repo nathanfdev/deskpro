@@ -180,7 +180,10 @@
 							</td>
 						</tr>
 						<tr class="vtop">
-							<th>{{ phrase('agent.general.permissions') }}</th>
+							<th>
+								{{ phrase('agent.general.permissions') }}<br />
+								<span>{{ phrase('agent.general.permissions_desc') }}</span>
+							</th>
 							<td>
 								<ul>
 									{% for ug in app.getUsergroups().getUserUsergroups() %}

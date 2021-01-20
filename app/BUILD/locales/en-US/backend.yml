@@ -3659,6 +3659,8 @@ agent.general.perform_mass_actions: 'Perform mass actions'
 agent.general.performer: Performer
 agent.general.performing_updates: 'The helpdesk is currently performing updates.'
 agent.general.permissions: Permissions
+agent.general.permissions_desc: 'Set permissions to view this specific category'
+agent.general.permissions_guide_desc: 'Set permissions to view this specific guide'
 agent.general.person: Person
 agent.general.person_id: 'User Id'
 agent.general.phone: Phone
