@@ -83,7 +83,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                             SELECT person_id, auth
                             FROM sessions
                             WHERE id = ? AND date_last > ? AND date_last_page > ?
-                        ', [$sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')), date(time() - App::getSetting('core.sessions_lifetime'))]);
+                        ', [$sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')), date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))]);
                     } else {
                         $agent_session = App::getDb()->fetchAssoc('
                             SELECT person_id, auth
