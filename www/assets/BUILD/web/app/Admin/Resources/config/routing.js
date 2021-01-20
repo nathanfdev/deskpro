@@ -657,7 +657,8 @@ define(function() {
     id:           'tickets.triggers.create',
     url:          '/create',
     templateName: 'TicketTriggers/edit.html',
-    controller:   'Admin_TicketTriggers_Ctrl_Edit'
+    controller:   'Admin_TicketTriggers_Ctrl_Edit',
+    data:         { stateMarkId: 'tickets.triggers' }
   });
 
   routes.push({
@@ -2294,14 +2295,16 @@ define(function() {
     id:           'chat.chat_queues_new',
     url:          '/queues/new',
     templateName: 'ReactRoutes/react_component.html',
-    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent',
+    data:         { stateMarkId: 'chat.chat_queues' }
   });
 
   routes.push({
     id:           'chat.chat_queues_edit',
     url:          '/queues/{id:\\d+}',
     templateName: 'ReactRoutes/react_component.html',
-    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent',
+    data:         { stateMarkId: 'chat.chat_queues' }
   });
 
   // ##################################################################################################################
