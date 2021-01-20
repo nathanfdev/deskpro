@@ -277,6 +277,7 @@ helpcenter.error.403_desc: 'Sorry, but you do not have access to view this page.
 helpcenter.error.403_title: 'No Access'
 helpcenter.error.404_desc: 'Sorry, but we couldn''t find this page.'
 helpcenter.error.404_title: 'Not Found'
+helpcenter.error.413: 'File too large'
 helpcenter.error.an_error_occured: 'An Error Occurred'
 helpcenter.error.an_error_occured_desc: 'Sorry, but there was an error trying to load this page. Please try again later or <a href="{contact_link}">contact us</a>.'
 helpcenter.error.contact_us: 'Contact Us'
@@ -284,6 +285,7 @@ helpcenter.error.create_new_account: 'Create a new account'
 helpcenter.error.general_title: 'An Error Occurred'
 helpcenter.error.helpdesk: Helpdesk
 helpcenter.error.permission_denied_title: 'You are not allowed to perform this action'
+helpcenter.error.upload: 'Upload failed'
 helpcenter.eula.agree: I Agree
 helpcenter.flashes.article_cat_subscribe: 'You have successfully subscribed to {category} and will be notified when new articles are published.'
 helpcenter.flashes.article_cat_unsubscribe: 'You have successfully unsubscribed from {category}.'
