@@ -72,7 +72,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         /** @var \Application\DeskPRO\EntityRepository\Session $sessionRepo */
         $sessionRepo = $this->em->getRepository(Session::class);
 
-        foreach (['dpsid-admin', 'dpsid-agent'] as $cookieName) {
+        foreach (['dpsid-agent', 'dpsid-admin'] as $cookieName) {
             $sessionId = $request->cookies->get($cookieName);
             if (!$sessionId) {
                 continue;
