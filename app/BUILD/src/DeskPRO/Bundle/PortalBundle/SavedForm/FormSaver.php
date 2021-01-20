@@ -266,4 +266,24 @@ class FormSaver
 
         $this->session->set(static::SAVED_FORMS_SESSION_KEY, $existing);
     }
+
+    /**
+     * @param string $email
+     * @param string $ipAddress
+     * @return GuestEmail
+     */
+    public function storeGuestEmail(string $email, string $ipAddress) {
+
+        $guestEmail = $this->em->getRepository(GuestEmail::class)->findOneBy(['email' => $email]);
+
+        if( null === $guestEmail ){
+            $guestEmail = new GuestEmail();
+            $guestEmail->setEmail($email);
+            $guestEmail->setIpAddress($ipAddress);
+            $this->em->persist($guestEmail);
+            $this->em->flush();
+        }
+
+        return $guestEmail;
+    }
 }
