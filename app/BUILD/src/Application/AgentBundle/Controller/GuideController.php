@@ -444,7 +444,8 @@ class GuideController extends PublishController
         $results = $guide->getTopics();
 
         $totalResults = count($results);
-
+        $guidesCounts = $this->em->getRepository(Guide::class)->getAllCounts();
+        
         $tpl = 'AgentBundle:Guide:filter.html.twig';
 
         $displayFields = $this->person->getPref('agent.ui.topic-filter-display-fields.0');
@@ -484,6 +485,7 @@ class GuideController extends PublishController
             'cat_usergroups'     => $guideUserGroups,
             'cat_structure_data' => $guideStructureData,
             'total_results'      => $totalResults,
+            'guide_count'        => $guidesCounts,
             'num_pages'          => 1,
             'cur_page'           => 1,
             'showing_to'         => $totalResults,
