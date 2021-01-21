@@ -91,10 +91,10 @@ class ViewPage extends React.Component {
     this.defineSizes();
 
     const el = document.querySelector('ol.breadcrumb').getElementsByTagName('li');
-    var hasGuideRoot = false;
+    let hasGuideRoot = false;
     for (let i = 0; i < el.length; ++i) {
       if (el[i].classList.contains('breadcrumbs-guide-root')) {
-        var hasGuideRoot = true;
+        hasGuideRoot = true;
         break;
       }
     }
@@ -275,27 +275,6 @@ class ViewPage extends React.Component {
         <a
           className="internal_link topic"
           onClick={guideSlug !== this.state.guideSlug ? e => this.internalLink(e, target) : e => this.handlePageLink(e, target)}
-        >
-          <FontAwesomeIcon icon={['fas', 'book']} />
-          {internalLink.text}
-        </a>
-      );
-      ReactDOM.render(link, newLink, () => {
-        internalLink.parentNode.replaceChild(newLink, internalLink);
-      });
-    });
-  };
-
-  renderLink = () => {
-    const links = document.querySelectorAll('a.internal_link.topic');
-    Array.prototype.forEach.call(links, (internalLink) => {
-      const target = internalLink.pathname;
-      const newLink = document.createElement('span');
-      const link = (
-        <a
-          className="internal_link topic"
-          href={`${target}`}
-          target="_blank"
         >
           <FontAwesomeIcon icon={['fas', 'book']} />
           {internalLink.text}
@@ -570,6 +549,28 @@ class ViewPage extends React.Component {
       //   browserHistory.push(`${baseUrl}/guides/${guide.slug}/${page.slug}`);
       // }
       window.scrollTo(0, 0);
+    });
+  };
+
+  renderLink = () => {
+    const links = document.querySelectorAll('a.internal_link.topic');
+    Array.prototype.forEach.call(links, (internalLink) => {
+      const target = internalLink.pathname;
+      const newLink = document.createElement('span');
+      const link = (
+        <a
+          className="internal_link topic"
+          href={`${target}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <FontAwesomeIcon icon={['fas', 'book']} />
+          {internalLink.text}
+        </a>
+      );
+      ReactDOM.render(link, newLink, () => {
+        internalLink.parentNode.replaceChild(newLink, internalLink);
+      });
     });
   };
 
