@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\PortalBundle\SavedForm;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\GuestEmail;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\SavedFormRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
@@ -172,11 +173,15 @@ class FormSaver
         $route_params = $request->attributes->get('_route_params');
 
         $saved_form = new SavedForm($data_type, SavedForm::INTENTION_VERIFY_EMAIL, $person); // may or may not be a person, but if there is saved it to the form
+        
+        $guestEmailId = (null === $person) ? $this->storeGuestEmail($email, $request->getClientIp())->getId() : null;
+
         $saved_form->setFormData($data);
         $saved_form->setMetaData([
             'route'        => $route,
             'route_params' => $route_params,
             'email'        => $email,
+            'email_id'     => $guestEmailId,
             'name'         => $name,
             'brand'        => $this->brandStack->getActive()->getBrand()->getId(),
         ]);
@@ -270,13 +275,14 @@ class FormSaver
     /**
      * @param string $email
      * @param string $ipAddress
+     *
      * @return GuestEmail
      */
-    public function storeGuestEmail(string $email, string $ipAddress) {
-
+    public function storeGuestEmail(string $email, string $ipAddress)
+    {
         $guestEmail = $this->em->getRepository(GuestEmail::class)->findOneBy(['email' => $email]);
 
-        if( null === $guestEmail ){
+        if (null === $guestEmail) {
             $guestEmail = new GuestEmail();
             $guestEmail->setEmail($email);
             $guestEmail->setIpAddress($ipAddress);

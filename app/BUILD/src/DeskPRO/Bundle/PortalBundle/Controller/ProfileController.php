@@ -114,7 +114,7 @@ class ProfileController extends AbstractController
                         $this->get('portal_email_sender')->sendPasswordSetLink($personCheck, $reset);
 
                         return $this->redirectToRoute('portal_user_register_set_password', [
-                                'email' => $personCheck->getPrimaryEmailAddress(),
+                                'emailId' => $personCheck->getPrimaryEmail()->getId(),
                             ]);
                         //}
                     }
@@ -197,10 +197,18 @@ class ProfileController extends AbstractController
      */
     public function registerSetPasswordAction(Request $request)
     {
+        $emailId = $request->get('emailId');
+
+        if (null !== $emailId && $findEmail = $this->getEm()->getRepository(PersonEmail::class)->find($emailId)) {
+            $email = $findEmail->getEmail();
+        } else {
+            $email = $request->get('email', 'N/A');
+        }
+
         return $this->renderThemeView(
             'Theme:Portal:User/send-set-password-email.html.twig',
             [
-                'email'       => $request->get('email', 'N/A'),
+                'email'       => $email,
                 'breadcrumbs' => $this->getBreadcrumbGenerator()->buildRegistration(),
                 'page_title'  => $this->createPageTitle()->register(),
             ]

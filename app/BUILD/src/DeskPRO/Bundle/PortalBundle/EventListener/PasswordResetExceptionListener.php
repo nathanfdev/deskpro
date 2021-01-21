@@ -194,11 +194,11 @@ class PasswordResetExceptionListener implements EventSubscriberInterface
             } else {
                 $this->portalEmailSender->sendPasswordSetLink($person, $reset);
 
-                $response = $this->getResponseForUserInterface($event->getRequest(), $email);
+                $response = $this->getResponseForUserInterface($event->getRequest(), $person->getPrimaryEmail()->getId());
             }
         } else {
             // Reset email is already sent, just redirect.
-            $response = $this->getResponse($event->getRequest(), $email);
+            $response = $this->getResponse($event->getRequest(), $email, $person->getPrimaryEmail()->getId());
         }
 
         $response->headers->set('X-DeskPRO-RedirectReason', $exception->getMessage());
@@ -231,15 +231,15 @@ class PasswordResetExceptionListener implements EventSubscriberInterface
 
     /**
      * @param Request $request
-     * @param string  $email
+     * @param string  $emailId
      *
      * @return JsonResponse|RedirectResponse
      */
-    private function getResponseForUserInterface(Request $request, $email)
+    private function getResponseForUserInterface(Request $request, $emailId)
     {
         $redirectUrl = $this->router->generate(
             'portal_set_password_sent',
-            ['email' => $email],
+            ['emailId' => $emailId],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
@@ -251,10 +251,10 @@ class PasswordResetExceptionListener implements EventSubscriberInterface
             : new RedirectResponse($redirectUrl, Response::HTTP_FOUND);
     }
 
-    private function getResponse(Request $request, $email)
+    private function getResponse(Request $request, $email, $emailId = null)
     {
         return DP_INTERFACE === 'user'
-            ? $this->getResponseForUserInterface($request, $email)
+            ? $this->getResponseForUserInterface($request, $emailId)
             : $this->getResponseForAgentInterface($email);
     }
 }

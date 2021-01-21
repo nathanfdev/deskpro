@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Entity\GuestEmail;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
@@ -15,6 +16,7 @@ use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -190,7 +192,7 @@ class SavedFormController extends AbstractController
      * @param string  $type
      * @param string  $auth_code
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function validateAction(Request $request, $type, $auth_code)
     {
@@ -200,21 +202,36 @@ class SavedFormController extends AbstractController
         if (!$savedForm) {
             // handle the case when a user click email verification link twice
             if ($type === PortalValidation::REGISTRATION) {
-                $emailAddress = $request->query->get('email');
-                if ($emailAddress && is_string($emailAddress)) {
-                    $email = $this->getEm()->getRepository(PersonEmail::class)->findOneBy([
-                        'email' => $emailAddress,
-                    ]);
+                $emailId = $request->query->get('emailId');
 
-                    if ($email && $email->isValidated()) {
-                        $this->addFlash('success', $this->phrase(['portal.flashes.user_registered_verified', 'helpcenter.flashes.user_registered_verified']));
-
-                        return $this->redirectToRoute('portal_home');
-                    } else {
-                        return $this->renderThemeView('Theme:Error:error_custom.html.twig', [
-                            'error_title' => 'portal.account.link-expired',
+                if (null !== $emailId && is_numeric($emailId) && $findEmail = $this->getEm()->getRepository(GuestEmail::class)->find($emailId)) {
+                    if (null !== $findEmail) {
+                        $email = $this->getEm()->getRepository(PersonEmail::class)->findOneBy([
+                            'email' => $findEmail->getEmail(),
                         ]);
                     }
+                } else {
+                    $emailId = $request->query->get('email');
+                    if ($emailId && is_string($emailId)) {
+                        $email = $this->getEm()->getRepository(PersonEmail::class)->findOneBy([
+                            'email' => $emailId,
+                        ]);
+                    }
+                }
+
+                if ($emailId) {
+                    if (null !== $email && $email->isValidated()) {
+                        $this->addFlash('success', $this->phrase([
+                            'portal.flashes.user_registered_verified',
+                            'helpcenter.flashes.user_registered_verified',
+                        ]));
+
+                        return $this->redirectToRoute('portal_home');
+                    }
+
+                    return $this->renderThemeView('Theme:Error:error_custom.html.twig', [
+                        'error_title' => 'portal.account.link-expired',
+                    ]);
                 }
             }
 
