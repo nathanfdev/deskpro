@@ -51,13 +51,8 @@ class Topic extends AbstractEntityRepository
             $qb = $this->_em->getConnection()->createQueryBuilder();
             $qb->select($select);
             $qb->from($this->tableName);
-            if (!$person || !$person->isAgent() || !$person->hasPerm('agent_publish.use')) {
-                $qb->where('status = ?');
-                $params[] = TopicEntity::STATUS_PUBLISHED;
-            } elseif ($person->isAgent() && $person->hasPerm('agent_publish.use')) {
-                $qb->where('(hidden_status IS NULL || hidden_status <> ?)');
-                $params[] = TopicEntity::HIDDEN_STATUS_DELETED;
-            }
+            $qb->where('status = ?');
+            $params[] = TopicEntity::STATUS_PUBLISHED;
             $qb->orderBy('display_order', 'ASC');
 
             if ($guide) {
