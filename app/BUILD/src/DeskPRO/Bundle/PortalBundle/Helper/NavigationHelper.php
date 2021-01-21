@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
@@ -15,11 +13,12 @@ class NavigationHelper
     private $mask = null;
 
     private $routeMap = [
-        0b00001 => 'portal_new_ticket',
-        0b00010 => 'portal_kb',
-        0b00100 => 'portal_news',
-        0b01000 => 'portal_downloads',
-        0b10000 => 'portal_community',
+        0b00001  => 'portal_new_ticket',
+        0b00010  => 'portal_kb',
+        0b00100  => 'portal_news',
+        0b01000  => 'portal_downloads',
+        0b10000  => 'portal_community',
+        0b100000 => 'portal_guides',
     ];
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker)
@@ -35,9 +34,10 @@ class NavigationHelper
             $news       = ((int) $this->authorizationChecker->isGranted('USE_NEWS')) << 2;
             $downloads  = ((int) $this->authorizationChecker->isGranted('USE_DOWNLOADS')) << 3;
             $community  = ((int) $this->authorizationChecker->isGranted('USE_COMMUNITY')) << 4;
-            $this->mask = 0b00000 | $tickets | $articles | $news | $downloads | $community;
+            $guides     = ((int) $this->authorizationChecker->isGranted('USE_GUIDES')) << 5;
+            $this->mask = 0b00000 | $tickets | $articles | $news | $downloads | $community | $guides;
         }
-
+        
         return $this->mask;
     }
 
