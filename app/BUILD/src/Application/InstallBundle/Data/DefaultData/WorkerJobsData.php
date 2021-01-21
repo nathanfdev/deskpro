@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\WorkerProcess\Job;
@@ -398,6 +396,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Check if all recordings are downloaded and merge them into one file',
             'job_class'    => MergeVoiceRecordings::class,
             'run_interval' => MergeVoiceRecordings::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'delete_guest_emails',
+            'worker_group' => 'delete_guest_emails',
+            'title'        => 'Delete Guest Emails',
+            'description'  => 'Delete guest emails older than 7 days ago',
+            'job_class'    => Job\DeleteGuestEmails::class,
+            'run_interval' => Job\DeleteGuestEmails::DEFAULT_INTERVAL,
         ];
 
         //------------------------------
