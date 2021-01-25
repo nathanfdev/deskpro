@@ -31,9 +31,6 @@ use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\OptimisticLockException;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -232,7 +229,7 @@ class TicketsController extends AbstractController
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
-        [$lastUserReplyInSeconds, $createdInSeconds] = $this->getRecentTimes($ticket);
+        list($lastUserReplyInSeconds, $createdInSeconds) = $this->getRecentTimes($ticket);
 
         $canReply = $ticket->isOwner($this->getUser())
             || (!$this->getUser()->isAgent() && $ticket->isParticipant($this->getUser()))
@@ -304,7 +301,7 @@ class TicketsController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketEdit($ticket);
         $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket, $person);
 
-        [$last_user_reply_in_seconds, $created_in_seconds] = $this->getRecentTimes($ticket);
+        list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
         // Need to pass Ticket and Person to properly show/get person custom fields and values
         // Might use them in case of dependend fields in criteria
@@ -608,8 +605,6 @@ class TicketsController extends AbstractController
      * @param null $message_id
      *
      * @return RedirectResponse|Response
-     * @throws OptimisticLockException
-     * @throws NonUniqueResultException|NoResultException
      */
     public function rateTicketAction(Request $request, $ticket_ref, $auth, $message_id = null)
     {
@@ -650,15 +645,8 @@ class TicketsController extends AbstractController
         $ticketFeedbackRepo = $this->getRepo(TicketFeedback::class);
         $feedback           = $ticketFeedbackRepo->getFeedback($message, $person, true);
 
-        $rating = $request->get('setrating');
-        if (null !== $rating && is_numeric($rating)) {
-            $feedback->setRating($rating);
-        }
-
-        if (null !== $rating && null === $feedback->getId() && null !== $feedback->getRating()) {
-            $this->getEm()->persist($feedback);
-            $this->getEm()->flush();
-            $this->addFlash('success', $this->phrase(['portal.flashes.ticket_feedback_thank_you', 'helpcenter.flashes.ticket_feedback_thank_you']));
+        if ($request->get('setrating') !== null) {
+            $feedback->setRating($request->get('setrating'));
         }
 
         $form = $this->createForm(TicketFeedbackType::class, $feedback);
