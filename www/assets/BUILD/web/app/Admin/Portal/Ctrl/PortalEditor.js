@@ -542,7 +542,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     loadThemeSet() {
       return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/info`).success((data) => {
         this.theme_set = data;
-        return this.selected_theme = this.theme_set.theme_id;
+        return this.selected_theme = this.theme_set.id;
       });
     }
 
