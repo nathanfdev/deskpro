@@ -37,10 +37,8 @@ class ThemeSetController extends AbstractApiController
         $qb
             ->select('t')
             ->from(ThemeSet::class, 't')
-            ->leftJoin(Brand::class, 'b', 'WITH', 'b.edit_theme_set = t.id')
             ->where(
                 't.brand = :current_brand',
-                'b.id IS NULL',
                 'NOT (t.theme_id = \'helpcenter\' AND t.title IS NULL)'
             )
             ->setParameter('current_brand', $brand)
@@ -240,6 +238,7 @@ class ThemeSetController extends AbstractApiController
      * @Method({"GET"})
      *
      * @param Brand $brand
+     *
      * @return Response
      */
     public function exportAction(Brand $brand)
