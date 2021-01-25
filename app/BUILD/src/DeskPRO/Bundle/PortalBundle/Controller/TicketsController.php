@@ -232,7 +232,7 @@ class TicketsController extends AbstractController
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
-        list($lastUserReplyInSeconds, $createdInSeconds) = $this->getRecentTimes($ticket);
+        [$lastUserReplyInSeconds, $createdInSeconds] = $this->getRecentTimes($ticket);
 
         $canReply = $ticket->isOwner($this->getUser())
             || (!$this->getUser()->isAgent() && $ticket->isParticipant($this->getUser()))
@@ -304,7 +304,7 @@ class TicketsController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketEdit($ticket);
         $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket, $person);
 
-        list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
+        [$last_user_reply_in_seconds, $created_in_seconds] = $this->getRecentTimes($ticket);
 
         // Need to pass Ticket and Person to properly show/get person custom fields and values
         // Might use them in case of dependend fields in criteria
@@ -747,8 +747,6 @@ class TicketsController extends AbstractController
             'feedback'    => $feedback,
             'setrating'   => $request->get('setrating') !== null,
             'form'        => $form->createView(),
-            'buttonPhrase' => (null !== $rating) ? $this->phrase('helpcenter.tickets.update_feedback')
-                : $this->phrase('helpcenter.tickets.submit_feedback')
         ]);
     }
 
