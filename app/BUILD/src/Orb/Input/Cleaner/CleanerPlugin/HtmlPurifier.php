@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Orb\Input\Cleaner\CleanerPlugin;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -71,6 +69,14 @@ class HtmlPurifier implements CleanerPlugin
 
         if (!$value || strpos($value, '<') === false) {
             return Strings::convert4ByteCharsToHtmlEntities($value);
+        }
+
+        // Can't have a p inside a pre for the purifier so we replace them before processing
+        if ($type === 'html') {
+            $fn = function ($code) {
+                return '<pre>'.preg_replace('/\<p\>(.*?)\<\/p\>/is', '$1<br />', $code[1]).'</pre>';
+            };
+            $value = preg_replace_callback("/\<pre\>(.*?)\<\/pre\>/is", $fn, $value);
         }
 
         //------------------------------

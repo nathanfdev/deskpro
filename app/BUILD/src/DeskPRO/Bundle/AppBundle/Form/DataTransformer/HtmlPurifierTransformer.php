@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
@@ -16,7 +14,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 class HtmlPurifierTransformer implements DataTransformerInterface
 {
     /**
-     * @var string
+     * @var Cleaner
      */
     private $cleaner;
 
