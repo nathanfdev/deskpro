@@ -1,11 +1,8 @@
 <?php
 
-
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use DeskPRO\Bundle\AppBundle\Entity\GuestEmail;
 
 class CleanupWeekly extends AbstractJob
 {
@@ -28,22 +25,6 @@ class CleanupWeekly extends AbstractJob
 
         if ($num) {
             $this->logStatus("Cleaned up $num old login logs");
-        }
-
-        //Clean Guest Emails Older than 7 days
-        $date = new \DateTime();
-        $date->modify('-7 days');
-
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $qb = $em->getRepository(GuestEmail::class)->createQueryBuilder('x')
-            ->delete()
-            ->where('x.createdAt <= :date')
-            ->setParameter(':date', $date)
-            ->getQuery()
-            ->getResult();
-
-        if ($qb > 0) {
-            $this->logStatus('Removed '.$qb.' old guest emails');
         }
     }
 }

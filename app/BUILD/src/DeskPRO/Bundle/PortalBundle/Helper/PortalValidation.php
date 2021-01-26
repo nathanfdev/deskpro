@@ -185,18 +185,16 @@ class PortalValidation
     /**
      * @param string $type
      * @param SavedForm $savedForm
-     * @param null $emailId
      *
      * @return string
      */
-    protected function makeValidationUrl($type, SavedForm $savedForm, $emailId = null)
+    protected function makeValidationUrl($type, SavedForm $savedForm)
     {
         return $this->urlGenerator->generate(
             'portal_validation',
             [
                 'type'        => $type,
                 'auth_code'   => $savedForm->getAuthCode(),
-                'emailId'     => $emailId,
             ],
             UrlGeneratorInterface::ABSOLUTE_URL
         );

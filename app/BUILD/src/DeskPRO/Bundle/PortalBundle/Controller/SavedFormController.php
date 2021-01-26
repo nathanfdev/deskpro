@@ -5,10 +5,8 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\AppBundle\Entity\GuestEmail;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
@@ -202,37 +200,9 @@ class SavedFormController extends AbstractController
         if (!$savedForm) {
             // handle the case when a user click email verification link twice
             if ($type === PortalValidation::REGISTRATION) {
-                $emailId = $request->query->get('emailId');
-
-                if (null !== $emailId && is_numeric($emailId) && $findEmail = $this->getEm()->getRepository(GuestEmail::class)->find($emailId)) {
-                    if (null !== $findEmail) {
-                        $email = $this->getEm()->getRepository(PersonEmail::class)->findOneBy([
-                            'email' => $findEmail->getEmail(),
-                        ]);
-                    }
-                } else {
-                    $emailId = $request->query->get('email');
-                    if ($emailId && is_string($emailId)) {
-                        $email = $this->getEm()->getRepository(PersonEmail::class)->findOneBy([
-                            'email' => $emailId,
-                        ]);
-                    }
-                }
-
-                if ($emailId) {
-                    if (null !== $email && $email->isValidated()) {
-                        $this->addFlash('success', $this->phrase([
-                            'portal.flashes.user_registered_verified',
-                            'helpcenter.flashes.user_registered_verified',
-                        ]));
-
-                        return $this->redirectToRoute('portal_home');
-                    }
-
-                    return $this->renderThemeView('Theme:Error:error_custom.html.twig', [
-                        'error_title' => 'portal.account.link-expired',
+                return $this->renderThemeView('Theme:Error:error_custom.html.twig', [
+                        'error_title' => 'helpcenter.account.link_expired',
                     ]);
-                }
             }
 
             throw $this->createNotFoundException();
