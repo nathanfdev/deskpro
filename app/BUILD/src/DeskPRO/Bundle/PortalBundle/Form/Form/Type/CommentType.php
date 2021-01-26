@@ -61,16 +61,17 @@ class CommentType extends AbstractType
                 new NotBlank(),
             ],
         ])
-            ->add('parent_id', HiddenType::class)
+            ->add('parent_id', HiddenType::class);
 
-            ->add('attachments', CommentAttachmentCollectionType::class, [
-                'person'  => $options['person'],
-                'comment' => $builder->getData(),
-            ])
-            ->add('more_attachments', SubmitType::class, [
-                'validation_groups' => false,
-                'label'             => $this->languageManager->phrase('portal.forms.label_add_attachment'),
-            ]);
+        // DPHC-168 Hiding comments attachments until the FE is sorted
+//            ->add('attachments', CommentAttachmentCollectionType::class, [
+//                'person'  => $options['person'],
+//                'comment' => $builder->getData(),
+//            ])
+//            ->add('more_attachments', SubmitType::class, [
+//                'validation_groups' => false,
+//                'label'             => $this->languageManager->phrase('portal.forms.label_add_attachment'),
+//            ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $comment = $event->getData();
