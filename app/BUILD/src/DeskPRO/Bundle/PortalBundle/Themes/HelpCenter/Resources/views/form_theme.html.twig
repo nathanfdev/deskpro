@@ -100,7 +100,7 @@
     {{- form_label(form, null) -}}
     {% if field_set %}</legend>{% endif %}
     {% if (root_and_not_hidden and name != 'captcha_captcha_auto_added') or id == 'person_registration_password_password' %}
-        <small class="form-text" {% if hint is defined %}id="{{ hint }}"{% endif %}>{{ help }}</small>
+        <small class="form-text" {% if hint is defined %}id="{{ hint }}"{% endif %}>{{ help|nl2br }}</small>
     {% endif %}
     {% if errors|length > 0 %}
         {% set ariaDescribed = id ~ '_errors' %}
