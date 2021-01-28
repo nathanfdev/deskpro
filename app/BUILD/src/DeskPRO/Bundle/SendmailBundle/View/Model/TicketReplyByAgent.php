@@ -42,8 +42,8 @@ class TicketReplyByAgent extends TicketEmailType
         $ticketLink,
         $ticketMessages,
         $ticketSatisfaction,
-        TicketMessage $reply,
-        $showRatingLink
+        TicketMessage $reply = null,
+        $showRatingLink = false
     ) {
         parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $ticketSatisfaction);
 

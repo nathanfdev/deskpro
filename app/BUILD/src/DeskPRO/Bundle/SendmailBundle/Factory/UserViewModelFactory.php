@@ -602,20 +602,24 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param Ticket        $ticket
-     * @param TicketMessage $message
+     * @param Ticket             $ticket
+     * @param TicketMessage|null $message
      *
      * @return TicketReplyByAgent
      */
     public function createTicketReplyByAgentModel(
         Ticket $ticket,
-        TicketMessage $message
+        TicketMessage $message = null
     ) {
         $arguments = $this->getTicketArguments($ticket);
 
         $showRatingLink = false;
         if ($this->container->get('settings_resolver')->getGlobalSettings()->get('core_tickets.enable_feedback') && $message && $message->getPerson()->isAgent() && !$message->isAgentNote()) {
             $showRatingLink = true;
+        }
+
+        if (!$message) {
+            return;
         }
 
         $arguments = array_merge($arguments, [$message, $showRatingLink]);
