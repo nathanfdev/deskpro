@@ -128,13 +128,15 @@ class CommunityDataService extends AbstractDataService
      */
     public function getItemsPager($page, $max_per_page, CommunityFilter $filter, Person $person = null, $brand = null)
     {
+        $page = ((int) $page < 1) ? '1' : (int) $page;
+
         $em                  = $this->em;
         $permissions_manager = $this->permissionsManager;
 
         return $this->generateAndCache(
             [
                 'getItemsPager',
-                (int) $page,
+                $page,
                 (int) $max_per_page,
                 $filter,
                 $person,
