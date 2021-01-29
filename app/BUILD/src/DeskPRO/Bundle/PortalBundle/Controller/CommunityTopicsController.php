@@ -279,6 +279,11 @@ class CommunityTopicsController extends AbstractPublishController
     public function browseAction(Request $request, $filter_uri)
     {
         $page   = $request->query->getInt('page', 1);
+
+        if ($page < 1) {
+            return $this->redirectToRoute('portal_community_browse', ['filter_uri' => $filter_uri]);
+        }
+
         $person = $this->getUser() ?: new PersonGuest();
 
         try {
