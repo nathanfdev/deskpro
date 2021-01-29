@@ -67,7 +67,7 @@
     {% endset %}
     {{ _self.row('user', phrase('agent.general.user'), rowVal, true) }}
 
-    {{ _self.row('agent', phrase('agent.general.agent'), ticket.agent.display_name|default(phrase('agent.general.no_agent_assigned')) ) }}
+    {{ _self.row('agent', phrase('agent.general.agent'), ticket.agent.display_name_user|default(phrase('agent.general.no_agent_assigned')) ) }}
 
     {% for f in custom_fields if layout.has('ticket_' ~ f.name) %}
         {% set aliases %}{% for a in f.field_def.getAliases() %}ticket-prop-field-{{ a.getQualifiedName() }}{% endfor %}{% endset %}
