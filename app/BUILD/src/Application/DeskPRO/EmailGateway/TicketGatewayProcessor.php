@@ -430,6 +430,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         }
 
         //-------------------------
+        // Handle reply to hidden tickets
+        //-------------------------
+
+        if ($ticket && $person && !$person->is_agent && $ticket->status === 'hidden') {
+            $ticket     = null;
+            $replyAsNew = true;
+        }
+
+        //-------------------------
         // Detect agent reply codes
         //-------------------------
 
