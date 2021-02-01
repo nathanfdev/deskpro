@@ -1813,15 +1813,15 @@ return [
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
-    1606900297 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2020/12/Build1606900297.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1606900297',
+    1612180917 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2021/02/Build1612180917.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1612180917',
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
-    1607279847 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2020/12/Build1607279847.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1607279847',
+    1612180929 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2021/02/Build1612180929.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1612180929',
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
