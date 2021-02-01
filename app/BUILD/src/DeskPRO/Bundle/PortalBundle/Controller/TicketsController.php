@@ -254,6 +254,7 @@ class TicketsController extends AbstractController
             'form_errors'                => $form->isSubmitted() ? $form->getErrors() : [],
             'csrf_form'                  => $csrfForm->createView(),
             'add_cc_form'                => $addCcForm->createView(),
+            'is_feedback_enabled'        => $this->get('settings_resolver')->getGlobalSettings()->get('core_tickets.enable_feedback'),
         ]);
     }
 
