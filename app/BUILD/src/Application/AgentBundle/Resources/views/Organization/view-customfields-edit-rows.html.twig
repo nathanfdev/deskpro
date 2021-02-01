@@ -7,7 +7,7 @@
 
 {% for f in custom_fields_definitions %}
     <dt class="type-labels" ng-non-bindable>{{ form_label(f) }}</dt>
-    <dd ng-non-bindable>
+    <dd>
         {{ form_widget(f) }}
     </dd>
 {% endfor %}
