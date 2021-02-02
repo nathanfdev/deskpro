@@ -1,15 +1,12 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\CustomFields\Handler\Date;
 use Application\DeskPRO\CustomFields\Handler\DateTime;
+use Application\DeskPRO\CustomFields\Handler\Javascript;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 
 class FieldDisplayArray implements \ArrayAccess
@@ -58,7 +55,7 @@ class FieldDisplayArray implements \ArrayAccess
         }
 
         if ($value === null && $use_default && $default_value) {
-            if ($field_def['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
+            if ($field_def['handler_class'] === Choice::class) {
                 $value = ['children' => []];
                 if (!is_array($default_value)) {
                     $default_value = explode(',', $default_value);
@@ -66,7 +63,7 @@ class FieldDisplayArray implements \ArrayAccess
                 foreach ($default_value as $v) {
                     $value['children'][$v] = ['value' => 1];
                 }
-            } elseif ($field_def['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Javascript') {
+            } elseif ($field_def['handler_class'] === Javascript::class) {
                 $value = ['value' => @json_decode($default_value, true)];
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     $value = ['value' => ['value' => '', 'data' => []]];
@@ -79,6 +76,16 @@ class FieldDisplayArray implements \ArrayAccess
             $value = [];
         }
 
+        if (!$use_default) {
+            if (($field_def['handler_class'] === Choice::class) && isset($value['children']) && count($value['children']) > 0) {
+                $dataValue = array_key_first($value['children']);
+            } else {
+                $dataValue = (is_array($value) && isset($value['value'])) ? $value['value'] : '';
+            }
+        } else {
+            $dataValue = '';
+        }
+
         $this->data = [
             'elId'          => \Orb\Util\Util::requestUniqueIdString(),
             'hasValue'      => ($value !== null),
@@ -86,6 +93,7 @@ class FieldDisplayArray implements \ArrayAccess
             'name'          => 'field_'.$field_def->getId(),
             'title'         => $field_def->getTitle(),
             'value'         => $value,
+            'dataValue'     => $dataValue,
             'field_handler' => strtolower(\Orb\Util\Util::getBaseClassname($field_def->getHandler())),
         ];
     }
@@ -95,10 +103,12 @@ class FieldDisplayArray implements \ArrayAccess
         switch ($offset) {
             case 'field_def':
                 $this->data['field_def'] = $this->field_def;
+
                 break;
 
             case 'handler':
                 $this->data['handler'] = $this->field_def->getHandler();
+
                 break;
 
             case 'form':
@@ -133,6 +143,7 @@ class FieldDisplayArray implements \ArrayAccess
 
                 $this->data['form']     = $form;
                 $this->data['formView'] = $formView;
+
                 break;
 
             case 'formViewCriteria':
@@ -173,6 +184,7 @@ class FieldDisplayArray implements \ArrayAccess
                     $this->initValue('formView');
                     $this->data['formViewCriteria'] = $this->data['formView'];
                 }
+
                 break;
         }
     }
