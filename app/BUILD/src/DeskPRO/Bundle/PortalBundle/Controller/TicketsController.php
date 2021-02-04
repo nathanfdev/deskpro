@@ -372,18 +372,18 @@ class TicketsController extends AbstractController
             $this->saveEditedTicket($ticket, $person);
             $this->addFlash('success', $this->phrase(['portal.flashes.ticket_resolved', 'helpcenter.flashes.ticket_resolved']));
 
-            if ($this->get('settings_resolver')->getGlobalSettings()->get('core_tickets.enable_feedback')) {
+            if (false !== $ticket->getLastAgentReply() && $this->get('settings_resolver')->getGlobalSettings()->get('core_tickets.enable_feedback')) {
                 if ($request->isXmlHttpRequest()) {
                     return $this->rateTicketAction($request, $ticket->getRef(), $ticket->getAuth());
-                } else {
-                    return $this->redirectToRoute(
-                        'portal_tickets_feedback',
-                        [
-                            'auth'       => $ticket->getAuth(),
-                            'ticket_ref' => $ticket->getRef(),
-                        ]
-                    );
                 }
+
+                return $this->redirectToRoute(
+                    'portal_tickets_feedback',
+                    [
+                        'auth'       => $ticket->getAuth(),
+                        'ticket_ref' => $ticket->getRef(),
+                    ]
+                );
             }
 
             return $this->redirectToRoute('portal_tickets_view', [
@@ -442,7 +442,7 @@ class TicketsController extends AbstractController
                     return $redirectResponse;
                 }
             }
-            
+
             $personFactory = $this->get('person_factory');
             $context       = new CreatePersonContext('gateway.person');
             $person        = $personFactory->getPersonByEmail($email);
@@ -616,6 +616,14 @@ class TicketsController extends AbstractController
             throw new NotFoundHttpException('auth does not match ticket');
         }
 
+        if (false === $ticket->getLastAgentReply()) {
+            return $this->redirectToRoute('portal_tickets_feedback', [
+                    'auth'       => $ticket->getAuth(),
+                    'ticket_ref' => $ticket->getRef(),
+                ]
+            );
+        }
+
         /** @var \Application\DeskPRO\EntityRepository\TicketMessage $ticketMessageRepo */
         $ticketMessageRepo = $this->getRepo(TicketMessage::class);
         if ($message_id) {
@@ -778,6 +786,7 @@ class TicketsController extends AbstractController
      *
      * @param Request $request
      * @param string $ticketRef
+     *
      * @return Response
      */
     public function pdfAction(Request $request, $ticketRef = null)

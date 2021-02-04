@@ -40,7 +40,7 @@
       {% endif %}
   {% endfor %}
 
-  {% if not feedback and ticket.isResolved() and ticket.person.id == app.user.id %}
+  {% if not feedback and ticket.isResolved() and ticket.person.id == app.user.id  and not ticket.getLastAgentReply() == false %}
   <div class="dp-po-ticket-block dp-po-ticket-block-mine dp-po-ticket-block-rate">
     <div class="dp-po-ticket-block-header">
       <img class="dp-po-icon icon-svg" src="{{ asset('img/page-icons/ticket-rate.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.rate_support') }}
