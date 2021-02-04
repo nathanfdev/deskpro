@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
+use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
@@ -191,7 +192,18 @@ class NewTicketController extends AbstractController
                                 return $this->redirectToRoute('portal_thanks_verify');
                             }
 
-                            if ($person = $e->getPerson()) {
+                            $person = $e->getPerson();
+
+                            if (null === $person) {
+                                //if email validation is turned off, we still want to create the user
+                                $context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
+                                if ($name = $e->getName()) {
+                                    $context->setName($name);
+                                }
+                                $person = $this->getPersonFactory()->createPersonByEmail($e->getEmail(), $context);
+                            }
+
+                            if ($person) {
                                 // this user is created but can't log in 'person.is_user' is false
                                 $ticket = $this->getNewTicketService()->createNewTicket(
                                     $request,
