@@ -4868,7 +4868,7 @@ class TicketController extends AbstractController
                     $attachments
                 );
 
-            $message = $ticketEmail->prepareMailerMessage([], false);
+            $message = $ticketEmail->prepareMailerMessage($vars, false);
 
             $message = $this->getContainer()->get('email.email_sender')
                 ->prepareMessage($viewModel, [], $message);
