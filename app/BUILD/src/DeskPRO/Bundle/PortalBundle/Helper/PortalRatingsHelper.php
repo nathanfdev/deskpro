@@ -2,11 +2,11 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Rating;
 use DeskPRO\Bundle\AppBundle\Model\RatingModel;
 use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\Entity\ContentAbstract;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -36,6 +36,7 @@ class PortalRatingsHelper
             $this->em->persist($content_rating);
             $this->em->flush([$content_rating, $rating->getObject()]);
         }
+
         return $content_rating;
     }
 
@@ -44,9 +45,8 @@ class PortalRatingsHelper
         $content_rating = $this->updatePersistedOrCreateNewRating($rating, $visitor_id, $person, true);
 
         if ($content_rating) {
-        $this->em->persist($content_rating);
-        $this->em->flush([$content_rating, $rating->getObject()]);
-
+            $this->em->persist($content_rating);
+            $this->em->flush([$content_rating, $rating->getObject()]);
         }
 
         return $content_rating;
@@ -55,10 +55,11 @@ class PortalRatingsHelper
     /**
      * @param RatingModel $rating
      * @param Person|null $person
-     *
      * @param null $visitorId
-     * @return ContentAbstract|false
+     *
      * @throws OptimisticLockException
+     *
+     * @return ContentAbstract|false
      */
     public function removeContentRating(RatingModel $rating, Person $person = null, $visitorId = null)
     {
@@ -69,7 +70,7 @@ class PortalRatingsHelper
         }
 
         $content = $rating->getObject();
-        $content->removeRating($contentRating);
+        $rating->removeRating($contentRating);
 
         $this->em->remove($contentRating);
         $this->em->persist($content);
@@ -77,7 +78,6 @@ class PortalRatingsHelper
 
         return $content;
     }
-
 
     public function updatePersistedOrCreateNewRating(RatingModel $rating, $visitor_id, $person, $down = false)
     {
