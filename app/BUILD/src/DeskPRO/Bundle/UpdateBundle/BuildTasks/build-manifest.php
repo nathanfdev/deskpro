@@ -1819,15 +1819,15 @@ return [
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
-    1607275237 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2020/12/Build1607275237.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1607275237',
-        'skipPostBuild' => true,
-        'isOnlineBuild' => true,
-    ],
     1607279847 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2020/12/Build1607279847.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1607279847',
+        'skipPostBuild' => true,
+        'isOnlineBuild' => true,
+    ],
+    1612542034 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2021/02/Build1612542034.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1612542034',
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
