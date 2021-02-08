@@ -102,7 +102,7 @@
     <a href="{{ attachment.blob.download_url }}?dl=1"
        class="dp-po-post-attachments-link"
        {% if not attachment.blob.is_image %}data-content-type="{{ attachment.blob.content_type }}"{% endif %}
-    >
+       data-toggle="tooltip" data-placement="top" title="{{ attachment.blob.filename }}">
         {{ attachment.blob.filename }} <span>({{ attachment.blob.readable_filesize }})</span> <i class="dp-po-icon fal fa-arrow-to-bottom"></i>
     </a>
 {% endblock %}
