@@ -10,7 +10,7 @@
 {% endfor %}
 
 {% for f in custom_person_fields %}
-    <tbody class="col fieldprop ticket-field item-on custom-person-field person-field-{{f.field_def.id}} item-on inline-field" style="clear:both;display: none;" data-default-value="{{ f.field_def.getStringDefaultValue() }}" data-custom-field-handler="{{ f.field_handler }}">
+    <tbody class="col fieldprop ticket-field item-on custom-person-field person-field-{{f.field_def.id}} item-on inline-field" style="clear:both;display: none;" data-default-value="{{ f.dataValue }}" data-custom-field-handler="{{ f.field_handler }}">
         <th ng-non-bindable>{{f.title}}</th>
         <td>
             {{ render_custom_field_form(f) }}
