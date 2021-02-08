@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\AdminInterfaceBundle\Controller;
 
@@ -37,6 +35,16 @@ HTML;
 
     public function interfaceAction()
     {
+        $passwordValidator = $this->container->getSystemService('password_policy_validator');
+        $isPasswordExpired = $passwordValidator->isPasswordExpired($this->person);
+
+        if ($isPasswordExpired) {
+            $this->get('security.token_storage')->setToken(null);
+            $this->get('request')->getSession()->invalidate();
+
+            return $this->redirectToRoute('agent_login');
+        }
+
         $token               = new ApiToken();
         $token->scope        = ApiToken::SCOPE_SESSION;
         $token->person       = $this->person;
