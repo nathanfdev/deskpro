@@ -23,7 +23,7 @@
                                 <div class="dp-po-post-info">
                                     <ul class="dp-po-post-info-list">
                                         <li class="dp-po-post-info-item">
-                                            {{ phrase('helpcenter.general.last_update_by', {date_updated: file.date_updated, person_name: file.last_author.name}) | raw }}
+                                            {{ phrase('helpcenter.general.last_update_by', {date_updated: file.date_updated, person_name: file.last_author.display_name_user}) | raw }}
                                         </li>
                                     </ul>
                                 </div>
@@ -104,7 +104,7 @@
             </div>
         </main>
     </div>
-    
+
   {% if sd %}
     <script type="text/javascript">
       window.setTimeout(function() {

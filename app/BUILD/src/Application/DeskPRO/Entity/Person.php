@@ -733,9 +733,9 @@ class Person extends DomainObject implements
         }
 
         if ($this->is_agent && $this->override_display_name) {
-            $spiltedName = $this->spiltName($this->override_display_name);
+            $spiltedName = $this->splitName($this->override_display_name);
 
-            return $this->getIntialsFromName($spiltedName[0], $spiltedName[1] ?? '');
+            return $this->getIntialsFromName($spiltedName[0], $spiltedName[1] ?: '');
         }
 
         $this->_initials = $this->getIntialsFromName($this->first_name, $this->last_name);
@@ -3344,7 +3344,7 @@ class Person extends DomainObject implements
         $name = preg_replace('# {2,}#', ' ', $name);
         $this->setModelField('name', $name);
 
-        $parts = $this->spiltName($name);
+        $parts = $this->splitName($name);
 
         $this->setModelField('first_name', $parts[0]);
         $this->setModelField('last_name', $parts[1] ?? '');
@@ -3352,7 +3352,7 @@ class Person extends DomainObject implements
         return $this;
     }
 
-    private function spiltName(string $name)
+    private function splitName($name)
     {
         $name = preg_replace('# {2,}#', ' ', $name);
 

@@ -40,7 +40,7 @@
                         item: topic
                     } %}
                     <p>{{ phrase('helpcenter.general.published') }}: <strong>{{ topic.date_published|date('d/m/Y') }}</strong></p>
-                    <p>{{ phrase('helpcenter.general.last_update_by', {date_updated: topic.date_updated, person_name: topic.last_author.name}) | raw }}</p>
+                    <p>{{ phrase('helpcenter.general.last_update_by', {date_updated: topic.date_updated, person_name: topic.last_author.display_name_user}) | raw }}</p>
                 </div>
             </div>
         </div>
