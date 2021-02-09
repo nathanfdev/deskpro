@@ -68,7 +68,12 @@ class CustomFieldUtil
                     /** @var \Application\DeskPRO\Entity\Person $user */
                     $token    = $this->tokenStorage->getToken();
                     $user     = $token ? $token->getUser() : null;
-                    $timezone = new \DateTimeZone($user instanceof Person ? $user->getTimezone() : 'UTC');
+
+                    if ($fieldDef->getOption('ignore_timezone')) {
+                        $timezone = new \DateTimeZone('UTC');
+                    } else {
+                        $timezone = new \DateTimeZone($user instanceof Person ? $user->getTimezone() : 'UTC');
+                    }
 
                     if (is_numeric($data->getData())) {
                         $datetime = new \DateTime('@'.$data->getData());

@@ -65,7 +65,8 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           valid_date_range2:        '',
           user_validation:          '0',
           agent_validation:         '0',
-          agent_validation_resolve: false
+          agent_validation_resolve: false,
+          ignore_timezone:          false,
         },
         datetime: {
           default_mode:             (fieldModel != null ? fieldModel.default_value : undefined) ? 'date' : '0',
@@ -78,7 +79,8 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           valid_date_range2:        '',
           user_validation:          '0',
           agent_validation:         '0',
-          agent_validation_resolve: false
+          agent_validation_resolve: false,
+          ignore_timezone:          false,
         },
         display: {
           html: ''
@@ -268,6 +270,9 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
 
             if (fieldModel.options != null ? fieldModel.options.calendar : undefined) {
               formTypeOpts.calendar = fieldModel.options.calendar;
+            }
+            if (fieldModel.options != null ? fieldModel.options.ignore_timezone : undefined) {
+              formTypeOpts.ignore_timezone = !!fieldModel.options.ignore_timezone;
             }
 
             if (fieldModel.options.date_valid_type != null) {
@@ -514,6 +519,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
 
           postData.date_valid_type = formTypeOpts.valid_dates_mode;
           postData.calendar = formTypeOpts.calendar;
+          postData.ignore_timezone = !!formTypeOpts.ignore_timezone;
 
           if (formTypeOpts.valid_dates_mode === 'date') {
             postData.date_valid_date1 = '';
