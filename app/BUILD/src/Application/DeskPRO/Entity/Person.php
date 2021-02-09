@@ -731,11 +731,29 @@ class Person extends DomainObject implements
         if ($this->_initials) {
             return $this->_initials;
         }
-        $firstName       = preg_replace('(\[[^\]]+\])', '', $this->first_name);
-        $lastName        = preg_replace('(\[[^\]]+\])', '', $this->last_name);
-        $this->_initials = mb_substr($firstName, 0, 1).mb_substr($lastName, 0, 1);
+
+        if ($this->is_agent && $this->override_display_name) {
+            $spiltedName = $this->spiltName($this->override_display_name);
+
+            return $this->getIntialsFromName($spiltedName[0], $spiltedName[1] ?? '');
+        }
+
+        $this->_initials = $this->getIntialsFromName($this->first_name, $this->last_name);
 
         return $this->_initials;
+    }
+
+    private function getIntialsFromName($firstname, $lastname)
+    {
+        $first       = preg_replace('(\[[^\]]+\])', '', $firstname);
+        $last        = preg_replace('(\[[^\]]+\])', '', $lastname);
+        $initials    = mb_substr($first, 0, 1).mb_substr($last, 0, 1);
+
+        if (!$initials) {
+            $initials = mb_substr($firstname, 0, 1).mb_substr($lastname, 0, 1);
+        }
+
+        return $initials;
     }
 
     /**
@@ -3326,21 +3344,31 @@ class Person extends DomainObject implements
         $name = preg_replace('# {2,}#', ' ', $name);
         $this->setModelField('name', $name);
 
+        $parts = $this->spiltName($name);
+
+        $this->setModelField('first_name', $parts[0]);
+        $this->setModelField('last_name', $parts[1] ?? '');
+
+        return $this;
+    }
+
+    private function spiltName(string $name)
+    {
+        $name = preg_replace('# {2,}#', ' ', $name);
+
         // Split lastname from the right of name
         $parts = preg_split("/\s+/u", $name);
         $len   = count($parts);
         if ($len > 2) {
             $offset = $len - 1;
-            $parts  = array_merge(
+
+            return array_merge(
                 [implode(' ', array_slice($parts, 0, $offset))],
                 array_slice($parts, $offset)
             );
         }
 
-        $this->setModelField('first_name', $parts[0]);
-        $this->setModelField('last_name', isset($parts[1]) ? $parts[1] : '');
-
-        return $this;
+        return $parts;
     }
 
     /**
