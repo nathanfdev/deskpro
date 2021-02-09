@@ -213,6 +213,7 @@ class PasswordController extends AbstractController
             }
 
             $person->secret_string = Strings::random(40);
+            $person->is_confirmed  = true;
             $this->persistAndFlushEntity($person);
 
             $this->getPersonDataService()->clearPasswordReset($reset);
