@@ -105,7 +105,7 @@ class DownloadsController extends AbstractController
             'download_url'      => $blob->getDownloadUrl(true),
             'filename'          => $blob['filename'],
             'filesize_readable' => $blob->getReadableFilesize(),
-            'permalink'         => $this->get('object_router')->getPortalUrl($download),
+            'permalink'         => $this->get('object_router')->getPortalUrl($download, 'permalink'),
         ];
 
         return $this->createJsonResponse($data);
