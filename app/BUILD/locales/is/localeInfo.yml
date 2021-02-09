@@ -1,0 +1,11 @@
+id: icelandic
+name: Icelandic
+nameLocal: Íslenska
+locale: is
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: '(t = 0 && i % 10 = 1 && i % 100 != 11 || t != 0) ? 1 : 2'
+  categories:
+    - one
+    - other
