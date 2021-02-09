@@ -185,7 +185,7 @@ abstract class ContentAbstract
         $this->dateCreated   = $entity->getDateCreated();
         $this->dateUpdated   = $entity->getDateUpdated();
         $this->datePublished = $entity->getDatePublished();
-        $this->voteStats     = $entity->getVoteStats();
+        $this->voteStats     = $entity->getRatingData()->getVoteStats();
         $this->revisions     = $entity->getRevisions();
     }
 

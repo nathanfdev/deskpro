@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\PortalBundle\Helper;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Rating;
+use DeskPRO\Bundle\AppBundle\Model\RatingModel;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -27,47 +28,49 @@ class PortalRatingsHelper
         $this->request_stack = $request_stack;
     }
 
-    public function rateContentUp(ContentAbstract $content, $visitor_id, Person $person = null)
+    public function rateContentUp(RatingModel $rating, $visitor_id, Person $person = null)
     {
-        $content_rating = $this->updatePersistedOrCreateNewRating($content, $visitor_id, $person, false);
+        $content_rating = $this->updatePersistedOrCreateNewRating($rating, $visitor_id, $person, false);
 
         if ($content_rating) {
             $this->em->persist($content_rating);
-            $this->em->flush([$content_rating, $content]);
+            $this->em->flush([$content_rating, $rating->getObject()]);
         }
 
         return $content_rating;
     }
 
-    public function rateContentDown(ContentAbstract $content, $visitor_id, Person $person = null)
+    public function rateContentDown(RatingModel $rating, $visitor_id, Person $person = null)
     {
-        $content_rating = $this->updatePersistedOrCreateNewRating($content, $visitor_id, $person, true);
+        $content_rating = $this->updatePersistedOrCreateNewRating($rating, $visitor_id, $person, true);
 
         if ($content_rating) {
             $this->em->persist($content_rating);
-            $this->em->flush([$content_rating, $content]);
+            $this->em->flush([$content_rating, $rating->getObject()]);
         }
 
         return $content_rating;
     }
 
     /**
-     * @param ContentAbstract $content
+     * @param RatingModel $rating
      * @param Person|null $person
-     *
      * @param null $visitorId
-     * @return ContentAbstract|false
+     *
      * @throws OptimisticLockException
+     *
+     * @return ContentAbstract|false
      */
-    public function removeContentRating(ContentAbstract $content, Person $person = null, $visitorId = null)
+    public function removeContentRating(RatingModel $rating, Person $person = null, $visitorId = null)
     {
-        $contentRating = ($this->findPersonRating($content, $person)) ?? $this->findVisitorRating($content, $visitorId);
+        $contentRating = ($this->findPersonRating($rating, $person)) ?? $this->findVisitorRating($rating, $visitorId);
 
         if (null === $contentRating) {
             return false;
         }
 
-        $content->removeRating($contentRating);
+        $content = $rating->getObject();
+        $rating->removeRating($contentRating);
 
         $this->em->remove($contentRating);
         $this->em->persist($content);
@@ -76,9 +79,9 @@ class PortalRatingsHelper
         return $content;
     }
 
-    public function updatePersistedOrCreateNewRating(ContentAbstract $content, $visitor_id, $person, $down = false)
+    public function updatePersistedOrCreateNewRating(RatingModel $rating, $visitor_id, $person, $down = false)
     {
-        $contentRating = ($this->findPersonRating($content, $person)) ?? $this->findVisitorRating($content, $visitor_id);
+        $contentRating = ($this->findPersonRating($rating, $person)) ?? $this->findVisitorRating($rating, $visitor_id);
 
         //Already Upvoted
         if (null !== $contentRating && !$down) {
@@ -89,14 +92,13 @@ class PortalRatingsHelper
             if ($person && null === $contentRating->getPerson()) {
                 $contentRating->setPerson($person);
             }
-
-            $this->changeExistingRating($content, $contentRating, $down);
+            $this->changeExistingRating($rating, $contentRating, $down);
 
             return $contentRating;
         }
 
         $content_rating = new Rating();
-        $content_rating->setContentObject($content);
+        $content_rating->setContentObject($rating);
         $content_rating->setPerson($person);
         $content_rating->setVisitorId($visitor_id);
         $content_rating->setIpAddress($this->request_stack->getMasterRequest()->getClientIp());
@@ -105,7 +107,7 @@ class PortalRatingsHelper
         } else {
             $content_rating->rateUp();
         }
-        $content->addRating($content_rating);
+        $rating->addRating($content_rating);
 
         $this->em->persist($content_rating);
 
@@ -113,12 +115,12 @@ class PortalRatingsHelper
     }
 
     /**
-     * @param ContentAbstract $content
-     * @param Person          $person
+     * @param RatingModel $rating
+     * @param Person|null $person
      *
      * @return Rating|null
      */
-    public function findPersonRating(ContentAbstract $content, Person $person = null)
+    public function findPersonRating(RatingModel $rating, Person $person = null)
     {
         if (!$person) {
             return;
@@ -131,8 +133,8 @@ class PortalRatingsHelper
                     r.object_type = ?1 AND r.object_id = ?2
                     AND (r.person = ?3)
             ')
-            ->setParameter(1, $content->getContentType())
-            ->setParameter(2, $content->getId())
+            ->setParameter(1, $rating->getContentType())
+            ->setParameter(2, $rating->getContentId())
             ->setParameter(3, $person)
             ->execute();
 
@@ -144,12 +146,12 @@ class PortalRatingsHelper
     }
 
     /**
-     * @param ContentAbstract $content
+     * @param RatingModel $rating
      * @param $visitor_id
      *
      * @return Rating|null
      */
-    public function findVisitorRating(ContentAbstract $content, $visitor_id)
+    public function findVisitorRating(RatingModel $rating, $visitor_id)
     {
         if (!$visitor_id) {
             return;
@@ -162,8 +164,8 @@ class PortalRatingsHelper
                     r.object_type = ?1 AND r.object_id = ?2
                     AND (r.visitor_id = ?3)
             ')
-            ->setParameter(1, $content->getContentType())
-            ->setParameter(2, $content->getId())
+            ->setParameter(1, $rating->getContentType())
+            ->setParameter(2, $rating->getContentId())
             ->setParameter(3, $visitor_id)
             ->execute();
 
@@ -174,32 +176,32 @@ class PortalRatingsHelper
         return;
     }
 
-    public function getPersonRating(ContentAbstract $content, Person $person = null)
+    public function getPersonRating(RatingModel $rating, Person $person = null)
     {
-        return $this->findPersonRating($content, $person);
+        return $this->findPersonRating($rating, $person);
     }
 
     /**
-     * @param ContentAbstract $content
-     * @param $content_rating
+     * @param RatingModel $rating
+     * @param Rating $content_rating
      * @param $down
      */
-    private function changeExistingRating(ContentAbstract $content, Rating $content_rating, $down)
+    private function changeExistingRating(RatingModel $rating, Rating $content_rating, $down)
     {
         if ($down) {
             if ($content_rating->getRating() > 0) {
-                $content->markRatingChangedNegatively();
+                $rating->markRatingChangedNegatively();
             }
             $content_rating->rateDown();
         } else {
             if ($content_rating->getRating() < 0) {
-                $content->markRatingChangedPositivly();
+                $rating->markRatingChangedPositivly();
             }
             $content_rating->rateUp();
         }
     }
 
-    public function ratingCounts(ContentAbstract $content)
+    public function ratingCounts(RatingModel $rating)
     {
         $rating_counts = [];
 
@@ -208,8 +210,8 @@ class PortalRatingsHelper
                 FROM DeskPRO:Rating r
                 WHERE r.object_type = ?1 AND r.object_id = ?2
             ')
-            ->setParameter(1, $content->getContentType())
-            ->setParameter(2, $content->getId())
+            ->setParameter(1, $rating->getContentType())
+            ->setParameter(2, $rating->getContentId())
             ->getSingleScalarResult();
 
         $rating_counts['positive'] = $this->em->createQuery('
@@ -218,8 +220,8 @@ class PortalRatingsHelper
                 WHERE r.object_type = ?1 AND r.object_id = ?2
                 AND r.rating > 0
             ')
-            ->setParameter(1, $content->getContentType())
-            ->setParameter(2, $content->getId())
+            ->setParameter(1, $rating->getContentType())
+            ->setParameter(2, $rating->getContentId())
             ->getSingleScalarResult();
 
         return $rating_counts;

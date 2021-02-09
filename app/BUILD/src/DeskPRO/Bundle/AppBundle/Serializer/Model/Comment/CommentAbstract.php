@@ -153,6 +153,16 @@ abstract class CommentAbstract
     protected $parent;
 
     /**
+     * Total rating of the comment.
+     *
+     * @JMS\Type("integer")
+     * @JMS\Groups({"list", "details"})
+     *
+     * @var string
+     */
+    protected $total_rating;
+
+    /**
      * Constructor.
      *
      * @param CommentAbstractEntity $entity
@@ -172,5 +182,6 @@ abstract class CommentAbstract
         $this->dateCreated        = $entity->getDateCreated();
         $this->userDisplayContact = $entity->getUserDisplayContact();
         $this->parent             = ($entity->getParent()) ? $entity->getParent()->getId() : null;
+        $this->total_rating       = $entity->getTotalRating();
     }
 }

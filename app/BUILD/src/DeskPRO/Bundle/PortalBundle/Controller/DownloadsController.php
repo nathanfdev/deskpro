@@ -204,7 +204,7 @@ class DownloadsController extends AbstractController
 
         // NUM RATINGS
 
-        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($file);
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($file->getRatingData());
 
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
         $check->markAsCheckOnly();
@@ -437,9 +437,9 @@ class DownloadsController extends AbstractController
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
 
         if ('down' === $up_or_down) {
-            $this->getRatingsHelper()->rateContentDown($file, $visitor_id, $person);
+            $this->getRatingsHelper()->rateContentDown($file->getRatingData(), $visitor_id, $person);
         } else {
-            $this->getRatingsHelper()->rateContentUp($file, $visitor_id, $person);
+            $this->getRatingsHelper()->rateContentUp($file->getRatingData(), $visitor_id, $person);
         }
 
         $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.content_rating_thanks']));

@@ -146,6 +146,14 @@ class CommunityTopicComment extends CommentAbstract
             'columnName' => 'is_reviewed',
         ]);
         $metadata->mapField([
+            'fieldName'  => 'rating',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'rating',
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
             'precision'  => 0,

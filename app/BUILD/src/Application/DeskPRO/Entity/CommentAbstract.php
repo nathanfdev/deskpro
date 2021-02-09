@@ -1,13 +1,10 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Model\RatingModel;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
@@ -165,6 +162,16 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
      * @var string
      */
     protected $content_type = '';
+
+    /**
+     * Total rating for this comment.
+     *
+     * @JMS\Type("integer")
+     * @JMS\Groups({"list", "details"})
+     *
+     * @var int
+     */
+    protected $rating = '';
 
     /**
      * @var ArrayCollection
@@ -526,6 +533,16 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * Get the "content-type" of the object on this comment for rating.
+     *
+     * @return string
+     */
+    public function getObjectCommentType()
+    {
+        return $this->getObject()->getTableName()."_comment";
+    }
+
+    /**
      * Set created at.
      *
      * @param \DateTime $date_created
@@ -583,6 +600,35 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->getStatus() == self::STATUS_VISIBLE;
     }
+
+    /**
+     * @return int $rating
+     */
+    public function getTotalRating()
+    {
+        return $this->rating;
+    }
+
+    /**
+     * @param int $rating
+     */
+    public function setTotalRating($rating)
+    {
+        $this->setModelField('rating', $rating);
+    }
+    public function getRatingData()
+    {
+        $totalRating = (empty($this->getTotalRating()) || (null === $this->getTotalRating())) ? 0 : $this->getTotalRating();
+        $ratingModel = new RatingModel();
+        $ratingModel
+            ->setContentType($this->getObjectCommentType())
+            ->setContentId($this->getId())
+            ->setObject($this)
+            ->setTotalRating($totalRating);
+
+        return $ratingModel;
+    }
+
 
     public function setParent($parent_id)
     {

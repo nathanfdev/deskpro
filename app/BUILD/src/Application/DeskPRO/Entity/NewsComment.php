@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -143,6 +139,14 @@ class NewsComment extends CommentAbstract
             'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'is_reviewed',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'rating',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'rating',
         ]);
         $metadata->mapField([
             'fieldName'  => 'date_created',

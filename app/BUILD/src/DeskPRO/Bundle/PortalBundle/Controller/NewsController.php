@@ -303,7 +303,7 @@ class NewsController extends AbstractPublishController
 
         // NUM RATINGS
 
-        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($post);
+        [$showRatingCounts, $ratingCounts] = $this->determineRatingCounts($post->getRatingData());
 
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
         $check->markAsCheckOnly();
@@ -398,19 +398,20 @@ class NewsController extends AbstractPublishController
      * @AutoPostOnGetRequest()
      *
      * @param News $post
+     * @param Request $request
      * @param      $visitor_id
      * @param      $up_or_down
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function newsRateAction(News $post, $visitor_id, $up_or_down)
+    public function newsRateAction(News $post, Request $request, $visitor_id, $up_or_down)
     {
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
 
         if ('down' === $up_or_down) {
-            $this->getRatingsHelper()->rateContentDown($post, $visitor_id, $person);
+            $this->getRatingsHelper()->rateContentDown($post->getRatingData(), $visitor_id, $person);
         } else {
-            $this->getRatingsHelper()->rateContentUp($post, $visitor_id, $person);
+            $this->getRatingsHelper()->rateContentUp($post->getRatingData(), $visitor_id, $person);
         }
 
         $this->addFlash('success', $this->phrase(['portal.flashes.rating_thanks', 'helpcenter.flashes.content_rating_thanks']));
@@ -533,7 +534,7 @@ class NewsController extends AbstractPublishController
 
         // NUM RATINGS
 
-        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($post);
+        [$showRatingCounts, $ratingCounts] = $this->determineRatingCounts($post->getRatingData());
 
         // OTHER ARTICLE DATA
         $postData = new LazyPropObject([
