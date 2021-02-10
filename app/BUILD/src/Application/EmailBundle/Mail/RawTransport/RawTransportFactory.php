@@ -135,8 +135,8 @@ class RawTransportFactory
 
         if ($config->type === OutgoingAccount\GmailConfig::TYPE_OAUTH) {
             $client = new \Google_Client();
-            $client->setClientId($this->settings->get('core_email.google_oauth_client_id'));
-            $client->setClientSecret($this->settings->get('core_email.google_oauth_service'));
+            $client->setClientId($config->getClientId());
+            $client->setClientSecret($config->getClientSecret());
             $client->setScopes([\Google_Service_Gmail::MAIL_GOOGLE_COM]);
             $client->setAccessToken($config->token);
             $client->setAccessType('offline');

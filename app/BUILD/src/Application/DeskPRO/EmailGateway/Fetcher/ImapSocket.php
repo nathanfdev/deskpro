@@ -238,8 +238,8 @@ class ImapSocket extends AbstractFetcher
         $options['mode'] = $config->mode ?: self::MODE_DELETE; // delete in gmail just means archive
 
         $client = new \Google_Client();
-        $client->setClientId($settings->get('core_email.google_oauth_client_id'));
-        $client->setClientSecret($settings->get('core_email.google_oauth_secret'));
+        $client->setClientId($config->getClientId());
+        $client->setClientSecret($config->getClientSecret());
         $client->setScopes([\Google_Service_Gmail::MAIL_GOOGLE_COM]);
         $client->setAccessToken($config->token);
         $client->setAccessType('offline');
