@@ -1,0 +1,14 @@
+id: irish
+name: Irish
+nameLocal: Gaelic
+locale: ga
+isRtl: false
+pluralRules:
+  plurals: 5
+  formula: 'n == 1 ? 1 : n == 2 ? 2 : (n >= 3 && n <= 6) ? 3 : (n >= 7 && n <= 10) ? 4 : 5'
+  categories:
+    - one
+    - two
+    - few
+    - many
+    - other

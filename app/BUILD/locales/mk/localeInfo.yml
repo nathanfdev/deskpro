@@ -1,0 +1,11 @@
+id: macedonian
+name: Macedonian
+nameLocal: македонски
+locale: mk
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: '(v = 0 && i % 10 = 1 && i % 100 != 11 || f % 10 = 1 && f % 100 != 11) ? 1 : 2'
+  categories:
+    - one
+    - other
