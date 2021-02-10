@@ -639,7 +639,7 @@ class PortalController extends AbstractController
                     'error'   => [
                         'code' => 'rate_limit',
                     ],
-                ]);
+                ], Response::HTTP_UNAUTHORIZED);
             }
         }
 
