@@ -29,12 +29,12 @@ class GmailConfig implements AccountConfigInterface
     /**
      * @var string
      */
-    public $clientId;
+    public $client_id;
 
     /**
      * @var string
      */
-    public $clientSecret;
+    public $client_secret;
 
     /**
      * @var string
@@ -84,8 +84,8 @@ class GmailConfig implements AccountConfigInterface
             'read_mailbox'    => $this->read_mailbox,
             'archive_mailbox' => $this->archive_mailbox,
             'type'            => $this->type,
-            'client_id'       => $this->clientId,
-            'client_secret'   => $this->clientSecret,
+            'client_id'       => $this->client_id,
+            'client_secret'   => $this->client_secret,
             'token'           => $this->token,
             'refreshToken'    => $this->refreshToken,
         ];
@@ -127,7 +127,7 @@ class GmailConfig implements AccountConfigInterface
      */
     public function getClientId()
     {
-        return $this->clientId;
+        return $this->client_id;
     }
 
     /**
@@ -135,7 +135,7 @@ class GmailConfig implements AccountConfigInterface
      */
     public function getClientSecret()
     {
-        return $this->clientSecret;
+        return $this->client_secret;
     }
 
     /**
@@ -143,7 +143,7 @@ class GmailConfig implements AccountConfigInterface
      */
     public function setClientId($clientId)
     {
-        $this->clientId = $clientId;
+        $this->client_id = $clientId;
     }
 
     /**
@@ -151,7 +151,7 @@ class GmailConfig implements AccountConfigInterface
      */
     public function setClientSecret($clientSecret)
     {
-        $this->clientSecret = $clientSecret;
+        $this->client_secret = $clientSecret;
     }
 
     //###########################################################################
