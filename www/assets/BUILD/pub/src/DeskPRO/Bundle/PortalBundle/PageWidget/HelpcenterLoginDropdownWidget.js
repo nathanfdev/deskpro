@@ -109,7 +109,7 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
         source.href = `${portalUrlGenerator.path(`/login/authenticate/${us.id}?return=${window.location.href}`)}`;
         source.className = `btn btn-icon btn-lg btn-brand ${us.classes.join(' ')}`;
         source.innerHTML = `${us.icon !== null ? `<i class="dp-po-icon ${us.icon}"></i>` : ''}
-              <span>${us.text}</span>`;
+              ${us.text}`;
         div.appendChild(source);
       });
       this.usersources.appendChild(div);
