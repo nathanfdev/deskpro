@@ -32,6 +32,7 @@ import { HelpcenterCCDelete } from './HelpcenterCCDelete';
 import { HelpcenterGuideFilter } from './HelpcenterGuideFilter';
 import { HelpcenterFileDownload } from './HelpcenterFileDownload';
 import { HelpcenterComment } from './HelpcenterComment';
+import { HelpcenterTicketResolve } from './HelpcenterTicketResolve';
 
 class HelpCenterPage extends PageWidget {
 
@@ -72,6 +73,7 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(HelpcenterGuideFilter, '#guide_filter_input');
     this.addWidgetDef(HelpcenterFileDownload, '#file-download-link');
     this.addWidgetDef(HelpcenterComment, '#helpcenter-comment-form');
+    this.addWidgetDef(HelpcenterTicketResolve, '#helpcenter-ticket-resolve-form');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

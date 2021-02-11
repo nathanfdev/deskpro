@@ -9,10 +9,10 @@
 {% block page_specific_content %}
     <div class="dp-po-block">
         <article class="ticket-info">
-            {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+            {{ form_start(form, { attr: { novalidate: 'novalidate', id: 'helpcenter-ticket-resolve-form' } }) }}
                 <p>{{ phrase('helpcenter.tickets.resolve_ticket_explain') }}</p>
                 <br />
-                <button class="btn btn-primary">{{ phrase('helpcenter.tickets.resolve_my_ticket_action') }}</button>
+                <button class="btn btn-primary" id="helpcenter-ticket-resolve-submit">{{ phrase('helpcenter.tickets.resolve_my_ticket_action') }}</button>
                 <a class="btn btn-outline-secondary" href="{{ portal_path(ticket) }}">{{ phrase('helpcenter.general.cancel_action') }}</a>
                 {{ form_rest(form) }}
             {{ form_end(form) }}

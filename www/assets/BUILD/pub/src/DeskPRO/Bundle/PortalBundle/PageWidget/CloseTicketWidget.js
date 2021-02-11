@@ -3,7 +3,9 @@ import $ from 'jquery';
 
 export class CloseTicketWidget extends PageWidget {
   renderWidget() {
-    window.document.getElementById('closeTicketBtn').addEventListener('click', (e) => {
+    const button =  window.document.getElementById('closeTicketBtn');
+    button.addEventListener('click', (e) => {
+      button.disabled = true;
       const url = e.target.dataset.url;
       const $form = $(e.target).closest('form');
       const data = $form.serializeJSON();
