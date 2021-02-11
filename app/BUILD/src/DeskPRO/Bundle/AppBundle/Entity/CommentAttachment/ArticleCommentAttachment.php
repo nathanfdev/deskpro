@@ -29,7 +29,7 @@ class ArticleCommentAttachment extends CommentAttachment
     /**
      * @return ArticleComment
      */
-    public function getArticleComment(): ArticleComment
+    public function getArticleComment()
     {
         return $this->article_comment;
     }

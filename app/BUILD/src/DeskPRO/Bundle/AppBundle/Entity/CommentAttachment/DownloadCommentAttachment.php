@@ -29,7 +29,7 @@ class DownloadCommentAttachment extends CommentAttachment
     /**
      * @return DownloadComment
      */
-    public function getDownloadComment(): DownloadComment
+    public function getDownloadComment()
     {
         return $this->download_comment;
     }

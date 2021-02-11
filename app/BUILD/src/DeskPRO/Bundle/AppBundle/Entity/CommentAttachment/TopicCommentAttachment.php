@@ -29,7 +29,7 @@ class TopicCommentAttachment extends CommentAttachment
     /**
      * @return TopicComment
      */
-    public function getTopicComment(): TopicComment
+    public function getTopicComment()
     {
         return $this->topic_comment;
     }
