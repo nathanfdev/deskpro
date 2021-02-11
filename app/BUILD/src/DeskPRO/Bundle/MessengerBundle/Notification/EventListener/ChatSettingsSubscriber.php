@@ -8,7 +8,6 @@ use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-
 class ChatSettingsSubscriber implements EventSubscriberInterface
 {
     const CORE_APPS_CHAT = 'core.apps_chat';
@@ -25,6 +24,7 @@ class ChatSettingsSubscriber implements EventSubscriberInterface
 
     /**
      * ChatSettingsSubscriber constructor.
+     *
      * @param EntityManagerInterface $em
      * @param MessengerSettingsResolver $messengerSettingsResolver
      */
@@ -32,14 +32,14 @@ class ChatSettingsSubscriber implements EventSubscriberInterface
         EntityManagerInterface $em,
         MessengerSettingsResolver $messengerSettingsResolver
     ) {
-        $this->em = $em;
+        $this->em                        = $em;
         $this->messengerSettingsResolver = $messengerSettingsResolver;
     }
 
     /**
      * @return array|array[]
      */
-    public static function getSubscribedEvents(): array
+    public static function getSubscribedEvents()
     {
         return [
             ChatSettingsUpdatedEvent::CHAT_SETTINGS_UPDATED => ['onChatSettingsUpdate', 0],
@@ -49,14 +49,14 @@ class ChatSettingsSubscriber implements EventSubscriberInterface
     /**
      * @param ChatSettingsUpdatedEvent $chatSettingsUpdatedEvent
      */
-    public function onChatSettingsUpdate(ChatSettingsUpdatedEvent $chatSettingsUpdatedEvent): void
+    public function onChatSettingsUpdate(ChatSettingsUpdatedEvent $chatSettingsUpdatedEvent)
     {
         $brand        = $chatSettingsUpdatedEvent->getBrand();
         $brandModel   = $this->messengerSettingsResolver->getMessengerSettings($brand);
         $brandsetting = $this->em->getRepository(BrandSetting::class)->findOneBy(['brand' => $brand, 'name' => self::CORE_APPS_CHAT]);
 
         if (null === $brandsetting) {
-            $brandsetting   = new BrandSetting();
+            $brandsetting        = new BrandSetting();
             $brandsetting->name  = self::CORE_APPS_CHAT;
             $brandsetting->brand = $brand;
         }
@@ -66,5 +66,4 @@ class ChatSettingsSubscriber implements EventSubscriberInterface
 
         $this->em->flush();
     }
-
 }
