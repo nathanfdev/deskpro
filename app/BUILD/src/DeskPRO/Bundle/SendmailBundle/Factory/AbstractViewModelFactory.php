@@ -82,6 +82,12 @@ abstract class AbstractViewModelFactory
         if (!is_object($entity)) {
             return $entity;
         }
+
+        // ignore special services
+        if ($entity instanceof RouterInterface) {
+            return $entity;
+        }
+
         $serializationContext = new SideloadSerializationContext();
         $serializationContext->setInlineSideloads(true);
         $className = str_replace('Proxies\__CG__\\', '', get_class($entity));
