@@ -14,14 +14,20 @@ class ChatSettingsUpdatedEvent extends Event
      */
     protected $brand;
 
-
+    /**
+     * ChatSettingsUpdatedEvent constructor.
+     *
+     * @param Brand $brand
+     */
     public function __construct(Brand $brand)
     {
         $this->brand = $brand;
     }
 
-
-    public function getBrand(): Brand
+    /**
+     * @return Brand
+     */
+    public function getBrand()
     {
         return $this->brand;
     }
