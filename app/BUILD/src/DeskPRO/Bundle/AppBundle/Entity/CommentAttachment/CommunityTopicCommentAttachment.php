@@ -29,7 +29,7 @@ class CommunityTopicCommentAttachment extends CommentAttachment
     /**
      * @return CommunityTopicComment
      */
-    public function getCommunityTopicComment(): CommunityTopicComment
+    public function getCommunityTopicComment()
     {
         return $this->communitytopic_comment;
     }

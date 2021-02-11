@@ -29,7 +29,7 @@ class NewsCommentAttachment extends CommentAttachment
     /**
      * @return NewsComment
      */
-    public function getNewsComment(): NewsComment
+    public function getNewsComment()
     {
         return $this->news_comment;
     }
