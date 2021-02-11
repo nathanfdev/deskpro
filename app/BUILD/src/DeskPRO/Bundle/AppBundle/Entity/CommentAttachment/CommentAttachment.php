@@ -72,7 +72,10 @@ class CommentAttachment
         $this->createdAt = new DateTime();
     }
 
-    public function getId(): int
+    /**
+     * @return int
+     */
+    public function getId()
     {
         return $this->id;
     }
