@@ -1,61 +1,6 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block page_top %}
-    <div class="row align-items-end mb-4">
-        <div class="col-sm-9">
-            <div class="dp-po-title">
-                <img class="dp-po-title-svg"
-                     src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}" />
-                <h1 class="dp-po-title-text">{{ article.translated_title }}</h1>
-            </div>
-
-            <div class="row align-items-end">
-                <div class="col-sm-10">
-                    {% include 'Theme:PublishCommon:post-avatars.html.twig' with { item: article } %}
-
-                    <div class="dp-po-post-info">
-                        <ul class="dp-po-post-info-list">
-                            <li class="dp-po-post-info-item">
-                                {{ phrase('helpcenter.general.last_update_by', {date_updated: article.date_updated | default(article.date_created), person_name: article.last_author.display_name_user}) | raw }}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="col-sm-2">
-                    <div class="d-none d-sm-block">
-                        <div class="dp-po-post-extra">
-                            <ul class="dp-po-post-extra-list">
-                                <li class="dp-po-post-extra-item">
-                                    <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}">
-                                        <i class="dp-po-icon fal fa-print" title="{{ phrase('helpcenter.general.print') }}"></i>
-                                    </a>
-                                </li>
-                                <li class="dp-po-post-extra-item">
-                                    <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.download_pdf') }} - {{ article.translated_title }}.pdf">
-                                        <i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="d-none d-sm-block">
-                {% if brand_setting('user.kb_subscriptions') %}
-                    {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-                        subscriptionInfo: [
-                            { toggleUrl: portal_path(article, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.articles.article_object'), active: is_subscribed, disabled: is_subscribed_category or is_subscribed_root },
-                            category ? { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category, disabled: is_subscribed_root } : {},
-                            { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section_title'), active: is_subscribed_root },
-                        ]
-                    } %}
-                {% endif %}
-            </div>
-        </div>
-    </div>
     <div class="d-block d-sm-none">
         <div class="dp-po-post-mobile-area">
             {% if brand_setting('user.kb_subscriptions') %}
@@ -190,6 +135,51 @@
 {# Main page body #}
 {# ------------------------------------------ #}
 {% block page_body %}
+
+
+
+    <div class="row mb-4">
+        <div class="col-sm-12">
+            <div class="dp-po-title">
+                <img class="dp-po-title-svg"
+                     src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}" />
+                <h1 class="dp-po-title-text">{{ article.translated_title }}</h1>
+            </div>
+
+            <div class="row align-items-end">
+                <div class="col-sm-10">
+                    {% include 'Theme:PublishCommon:post-avatars.html.twig' with { item: article } %}
+
+                    <div class="dp-po-post-info">
+                        <ul class="dp-po-post-info-list">
+                            <li class="dp-po-post-info-item">
+                                {{ phrase('helpcenter.general.last_update_by', {date_updated: article.date_updated | default(article.date_created), person_name: article.last_author.display_name_user}) | raw }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="d-none d-sm-block">
+                        <div class="dp-po-post-extra">
+                            <ul class="dp-po-post-extra-list">
+                                <li class="dp-po-post-extra-item">
+                                    <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}">
+                                        <i class="dp-po-icon fal fa-print" title="{{ phrase('helpcenter.general.print') }}"></i>
+                                    </a>
+                                </li>
+                                <li class="dp-po-post-extra-item">
+                                    <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.download_pdf') }} - {{ article.translated_title }}.pdf">
+                                        <i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     {% if article.status != 'published' and article.status != 'archived' and app.user is not null and app.user.is_agent %}
         <div class="alert alert-icon alert-danger" role="alert">
             <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.articles.view_as_agent') }}
@@ -245,6 +235,17 @@
 {# Page sidebar #}
 {# ------------------------------------------ #}
 {% block page_sidebar %}
+
+            {% if brand_setting('user.kb_subscriptions') %}
+                {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                    subscriptionInfo: [
+                        { toggleUrl: portal_path(article, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.articles.article_object'), active: is_subscribed, disabled: is_subscribed_category or is_subscribed_root },
+                        category ? { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category, disabled: is_subscribed_root } : {},
+                        { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section_title'), active: is_subscribed_root },
+                    ]
+                } %}
+            {% endif %}
+
     {% if article.labels | length %}
         {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with { title: phrase('helpcenter.general.labels'), labels: article.labels } %}
     {% endif %}
