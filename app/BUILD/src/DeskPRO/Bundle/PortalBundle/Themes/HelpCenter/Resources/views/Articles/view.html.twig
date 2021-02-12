@@ -16,7 +16,7 @@
                     <div class="dp-po-post-info">
                         <ul class="dp-po-post-info-list">
                             <li class="dp-po-post-info-item">
-                                {{ phrase('helpcenter.general.last_update_by', {date_updated: article.date_updated | default(article.date_created), person_name: article.last_author.name}) | raw }}
+                                {{ phrase('helpcenter.general.last_update_by', {date_updated: article.date_updated | default(article.date_created), person_name: article.last_author.display_name_user}) | raw }}
                             </li>
                         </ul>
                     </div>
