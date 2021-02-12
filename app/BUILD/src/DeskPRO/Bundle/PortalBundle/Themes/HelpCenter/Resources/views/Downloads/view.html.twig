@@ -5,8 +5,7 @@
     <div class="dp-po">
         <main id="main" tabindex="-1" class="dp-po-main dp-po-knowledgebase-article">
             <div class="container">
-
-                <div class="row align-items-end mb-4">
+                <div class="row">
                     <div class="col-sm-9">
                         <div class="dp-po-title">
                             <img class="dp-po-title-svg" src="{{ asset('img/file-icons/' ~ helpcenter_content_icon(file), 'help_center') }}">
@@ -18,7 +17,7 @@
                             {{ file.person }}
                         </div>
 
-                        <div class="row align-items-center">
+                        <div class="row mb-4 align-items-center">
                             <div class="col-md-9">
                                 <div class="dp-po-post-info">
                                     <ul class="dp-po-post-info-list">
@@ -40,22 +39,6 @@
                             </div>
                         </div>
 
-                    </div>
-                    <div class="col-sm-3">
-                        {% if brand_setting('user.downloads_subscriptions') %}
-                            {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-                                subscriptionInfo: [
-                                    { toggleUrl: portal_path(file, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.general.file_type'), active: is_subscribed, disabled: is_subscribed_category or is_subscribed_root },
-                                    { toggleUrl: portal_path(file.category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category, disabled: is_subscribed_root },
-                                    { toggleUrl: path('portal_downloads_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.general.files_type'), active: is_subscribed_root },
-                                ]
-                            } %}
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-9">
                         {% if file.content %}
                             <div class="dp-po-section dp-po-post-content dp-po-block">
                                 {{ file.content|raw }}
@@ -74,19 +57,30 @@
                             {% endif %}
 
                             {% if new_comment_form %}
-                              {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+                                {% include 'Theme:PublishCommon:comments-form.html.twig' %}
                             {% endif %}
                         {% endif %}
+
                     </div>
                     <div class="col-sm-3 dp-po-sticky">
-{#                        <div class="dp-po-sidebar dp-po-download-agree">#}
-{#                            <h3 class="dp-po-sidebar-title">EULA</h3>#}
-{#                            <ul class="dp-po-download-agree-list">#}
-{#                                <li class="dp-po-download-agree-item">#}
-{#                                    <i class="dp-po-icon far fa-check text-success"></i> Agreed by you on 27 June 2019#}
-{#                                </li>#}
-{#                            </ul>#}
-{#                        </div>#}
+                        {% if brand_setting('user.downloads_subscriptions') %}
+                            {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                                subscriptionInfo: [
+                                    { toggleUrl: portal_path(file, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.general.file_type'), active: is_subscribed, disabled: is_subscribed_category or is_subscribed_root },
+                                    { toggleUrl: portal_path(file.category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.general.category'), active: is_subscribed_category, disabled: is_subscribed_root },
+                                    { toggleUrl: path('portal_downloads_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.general.files_type'), active: is_subscribed_root },
+                                ]
+                            } %}
+                        {% endif %}
+
+                        {#                        <div class="dp-po-sidebar dp-po-download-agree">#}
+                        {#                            <h3 class="dp-po-sidebar-title">EULA</h3>#}
+                        {#                            <ul class="dp-po-download-agree-list">#}
+                        {#                                <li class="dp-po-download-agree-item">#}
+                        {#                                    <i class="dp-po-icon far fa-check text-success"></i> Agreed by you on 27 June 2019#}
+                        {#                                </li>#}
+                        {#                            </ul>#}
+                        {#                        </div>#}
 
                         {% if downloadData.related_content %}
                             {% include 'Theme:PublishCommon:related-content.html.twig' with {

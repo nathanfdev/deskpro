@@ -3,9 +3,41 @@
 {% set main_class = 'dp-po-community-topic' %}
 {% block page_top %}
 
+    <div class="d-block d-sm-none">
+        <div class="dp-po-post-mobile-area">
+        {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+            current_forum: topic.forum,
+            is_sidebar: true,
+        } %}
+
+        {% if brand_setting('user.community_subscriptions') %}
+        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+            buttonId: 'subscribeDropdownMenuMobile',
+            subscriptionInfo: [
+                {
+                    toggleUrl: portal_path(topic, 'toggle_subscription'),
+                    icon: 'fal fa-file-alt',
+                    title: topic.title | truncate(20),
+                    active: is_subscribed,
+                    disabled: is_subscribed_root
+                },
+                {
+                    toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
+                    icon: 'fal fa-file-spreadsheet',
+                    title: phrase('helpcenter.community.section_title'),
+                    active: is_subscribed_root
+                }
+            ]
+        } %}
+        {% endif %}
+        </div>
+    </div>
+{% endblock page_top %}
+
+{% block page_body %}
 
     <div class="row mb-4">
-        <div class="col-sm-9">
+        <div class="col-sm-12">
             <div class="dp-po-post-like">
                 {% include 'Theme:Community:CommunityTopicsList/like-button.html.twig' with {
                     topic: topic,
@@ -50,68 +82,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-3">
-            <div class="d-none d-sm-block">
-                {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
-                    current_forum: topic.forum,
-                    is_sidebar: true,
-                    button_label: phrase('helpcenter.community.create_topic_full', {forum: topic.forum.noun}),
-                } %}
-
-                {% if brand_setting('user.community_subscriptions') %}
-                {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-                    subscriptionInfo: [
-                        {
-                            toggleUrl: portal_path(topic, 'toggle_subscription'),
-                            icon: 'fal fa-file-alt',
-                            title: topic.title | truncate(20),
-                            active: is_subscribed,
-                            disabled: is_subscribed_root
-                        },
-                        {
-                            toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
-                            icon: 'fal fa-file-spreadsheet',
-                            title: phrase('helpcenter.community.section_title'),
-                            active: is_subscribed_root
-                        }
-                    ]
-                } %}
-                {% endif %}
-            </div>
-        </div>
     </div>
-    <div class="d-block d-sm-none">
-        <div class="dp-po-post-mobile-area">
-        {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
-            current_forum: topic.forum,
-            is_sidebar: true,
-        } %}
 
-        {% if brand_setting('user.community_subscriptions') %}
-        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-            buttonId: 'subscribeDropdownMenuMobile',
-            subscriptionInfo: [
-                {
-                    toggleUrl: portal_path(topic, 'toggle_subscription'),
-                    icon: 'fal fa-file-alt',
-                    title: topic.title | truncate(20),
-                    active: is_subscribed,
-                    disabled: is_subscribed_root
-                },
-                {
-                    toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
-                    icon: 'fal fa-file-spreadsheet',
-                    title: phrase('helpcenter.community.section_title'),
-                    active: is_subscribed_root
-                }
-            ]
-        } %}
-        {% endif %}
-        </div>
-    </div>
-{% endblock page_top %}
-
-{% block page_body %}
     <div class="dp-po-section">
         {{  macros.lockout_notice(phrase('helpcenter.account.comment_lockout'), lockout, lockout_time) }}
         <div class="dp-po-post-content dp-po-block">
@@ -147,6 +119,32 @@
 {% endblock page_body %}
 
 {% block page_sidebar %}
+    
+    {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+        current_forum: topic.forum,
+        is_sidebar: true,
+        button_label: phrase('helpcenter.community.create_topic_full', {forum: topic.forum.noun}),
+    } %}
+
+    {% if brand_setting('user.community_subscriptions') %}
+        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+            subscriptionInfo: [
+                {
+                    toggleUrl: portal_path(topic, 'toggle_subscription'),
+                    icon: 'fal fa-file-alt',
+                    title: topic.title | truncate(20),
+                    active: is_subscribed,
+                    disabled: is_subscribed_root
+                },
+                {
+                    toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
+                    icon: 'fal fa-file-spreadsheet',
+                    title: phrase('helpcenter.community.section_title'),
+                    active: is_subscribed_root
+                }
+            ]
+        } %}
+    {% endif %}
     {% if related_content_data.related_content|length %}
         {% include 'Theme:PublishCommon:related-content.html.twig' with {
             related_content: related_content_data.related_content,
