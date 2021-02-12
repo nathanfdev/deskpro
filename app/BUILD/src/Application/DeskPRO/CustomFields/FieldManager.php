@@ -160,9 +160,11 @@ class FieldManager
     /**
      * Get a collection of all top-level (parent) fields.
      *
+     * @param bool $overideAgentOnlyCustomFieldsDisplay
+     *
      * @return array
      */
-    public function getFields()
+    public function getFields($overideAgentOnlyCustomFieldsDisplay = false)
     {
         if ($this->fields === null) {
             $this->fields          = [];
@@ -174,7 +176,7 @@ class FieldManager
                 return $this->fields;
             }
 
-            /** @var \Application\DeskPRO\Entity\CustomDefAbstract[] $all_fields */
+            /** @var CustomDefAbstract[] $all_fields */
             $all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 
             foreach ($all_fields as $f) {
@@ -184,8 +186,8 @@ class FieldManager
                     $this->real_fields[$f->getId()] = $f;
                 }
 
-                if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-                    if (!$f->is_agent_field && $f->is_user_enabled) {
+                if (defined('DP_INTERFACE') && DP_INTERFACE === 'user') {
+                    if ((!$f->is_agent_field && $f->is_user_enabled) || ($overideAgentOnlyCustomFieldsDisplay && $f->is_user_enabled)) {
                         $this->all_fields[$f->getId()] = $f;
                         if (!$f->getParentId()) {
                             $this->fields[$f->getId()] = $f;
@@ -226,7 +228,7 @@ class FieldManager
     /**
      * Get all defined fields, even ones that are not enabled for the current interface.
      *
-     * @return \Application\DeskPRO\Entity\CustomDefAbstract[]
+     * @return CustomDefAbstract[]
      */
     public function getDefinedFields()
     {
@@ -283,7 +285,7 @@ class FieldManager
      *
      * @param $field_id
      *
-     * @return \Application\DeskPRO\Entity\CustomDefAbstract|null
+     * @return CustomDefAbstract|null
      */
     public function getFieldFromId($field_id)
     {
@@ -541,6 +543,10 @@ class FieldManager
             $data = [];
         }
 
+        if (($object instanceof Person) && $object->isOverideAgentOnlyCustomFieldsDisplay()) {
+            return $this->createFieldDataFromArray($data, true);
+        }
+
         return $this->createFieldDataFromArray($data);
     }
 
@@ -554,10 +560,11 @@ class FieldManager
      * complex fields that have multiple levels, like a choice.
      *
      * @param $fieldDatas
+     * @param bool $overideAgentOnlyCustomFieldsDisplay
      *
      * @return array
      */
-    public function createFieldDataFromArray($fieldDatas)
+    public function createFieldDataFromArray($fieldDatas, $overideAgentOnlyCustomFieldsDisplay = false)
     {
         // Create a map of keys
         $dataKeys = [];
@@ -569,9 +576,7 @@ class FieldManager
             }
         }
 
-        $data = $this->_createDataHierarchy($dataKeys, $fieldDatas, $this->getFields());
-
-        return $data;
+        return $this->_createDataHierarchy($dataKeys, $fieldDatas, $this->getFields($overideAgentOnlyCustomFieldsDisplay));
     }
 
     protected function _createDataHierarchy($data_keys, $field_datas, $field_defs)
@@ -786,7 +791,7 @@ class FieldManager
 
     /**
      * @param                                               $object
-     * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDef
+     * @param CustomDefAbstract $fieldDef
      * @param array                                         $in_data
      *
      * @return array
@@ -932,7 +937,7 @@ class FieldManager
 
     /**
      * @param                                               $object
-     * @param \Application\DeskPRO\Entity\CustomDefAbstract $field_def
+     * @param CustomDefAbstract $field_def
      */
     public function removeCustomDataOnObject($object, CustomDefAbstract $field_def)
     {
@@ -960,11 +965,11 @@ class FieldManager
      *
      * Mainly exists because it's not clear when the entity manager is flushed.
      *
-     * @todo investigate if can be removed
-     *
      * @param                                               $object
-     * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDefinition
-     * @param \Closure                                      $customDataFilter
+     * @param CustomDefAbstract $fieldDefinition
+     * @param \Closure $customDataFilter
+     *
+     *@todo investigate if can be removed
      */
     public function removeSomeCustomDataOnObjectAndFlushChanges($object, CustomDefAbstract $fieldDefinition, \Closure $customDataFilter)
     {
@@ -977,7 +982,7 @@ class FieldManager
      * Removes only a subset of the values of a field. Mostly used for DataList fields.
      *
      * @param                                               $object
-     * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDefinition
+     * @param CustomDefAbstract $fieldDefinition
      * @param \Closure                                      $customDataFilter
      */
     public function removeSomeCustomDataOnObject($object, CustomDefAbstract $fieldDefinition, \Closure $customDataFilter)
