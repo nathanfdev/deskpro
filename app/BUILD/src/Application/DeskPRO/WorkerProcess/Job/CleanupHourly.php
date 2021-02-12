@@ -235,6 +235,7 @@ class CleanupHourly extends AbstractJob
             SELECT blob_id
             FROM email_account_logs
             WHERE num_emails = 0 AND date_created < ?
+            LIMIT 500
         ', [Carbon::now()->subHours(1)->toDateTimeString()]);
 
         if ($blob_ids) {
@@ -248,6 +249,7 @@ class CleanupHourly extends AbstractJob
             SELECT blob_id
             FROM email_account_logs
             WHERE date_created < ?
+            LIMIT 500
         ', [$timesnip]);
 
         if ($blob_ids) {
