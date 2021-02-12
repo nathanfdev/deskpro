@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -25,9 +21,11 @@ class TicketFieldManager extends FieldManager
     /**
      * Get a collection of all top-level (parent) fields.
      *
+     * @param bool $overideAgentOnlyCustomFieldsDisplay
+     *
      * @return CustomDefAbstract[]
      */
-    public function getFields()
+    public function getFields($overideAgentOnlyCustomFieldsDisplay = false)
     {
         if ($this->fields === null) {
             $this->fields = [];
@@ -194,10 +192,18 @@ class TicketFieldManager extends FieldManager
             $this->em->flush();
         } else {
             switch ($id) {
-                case 'product':  $this->setIsProductEnabled($enabled); break;
-                case 'workflow': $this->setIsWorkflowEnabled($enabled); break;
-                case 'priority': $this->setIsPriorityEnabled($enabled); break;
-                case 'category': $this->setIsCategoryEnabled($enabled); break;
+                case 'product':  $this->setIsProductEnabled($enabled);
+
+break;
+                case 'workflow': $this->setIsWorkflowEnabled($enabled);
+
+break;
+                case 'priority': $this->setIsPriorityEnabled($enabled);
+
+break;
+                case 'category': $this->setIsCategoryEnabled($enabled);
+
+break;
                 default:
                     throw new \Exception('Invalid $id');
             }

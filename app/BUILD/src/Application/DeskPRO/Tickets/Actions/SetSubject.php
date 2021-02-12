@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
-
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
@@ -43,6 +37,9 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
         }
 
         $subject = $this->getActionOption('subject');
+
+        //For set subject ticket trigger action, we want to get all enabled custom fields.
+        $ticket->getPerson()->setOverideAgentOnlyCustomFieldsDisplay(true);
 
         if ($this->getActionOption('with_formatter')) {
             $formatter = new SnippetFormatter($this->getContainer()->get('deskpro.sandboxed_twig.twig'));

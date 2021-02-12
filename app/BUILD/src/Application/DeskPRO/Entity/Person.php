@@ -613,6 +613,11 @@ class Person extends DomainObject implements
     protected $_initials = '';
 
     /**
+     * @var bool
+     */
+    protected $overideAgentOnlyCustomFieldsDisplay;
+
+    /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
      * a full user.
      *
@@ -697,6 +702,7 @@ class Person extends DomainObject implements
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
+        $this->overideAgentOnlyCustomFieldsDisplay = false;
     }
 
     /**
@@ -5205,5 +5211,25 @@ class Person extends DomainObject implements
     public function isEnabled()
     {
         return !$this->is_disabled && !$this->is_deleted;
+    }
+
+    /**
+     * @param bool $bool
+     *
+     * @return $this
+     */
+    public function setOverideAgentOnlyCustomFieldsDisplay($bool = false)
+    {
+        $this->overideAgentOnlyCustomFieldsDisplay = $bool;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOverideAgentOnlyCustomFieldsDisplay()
+    {
+        return $this->overideAgentOnlyCustomFieldsDisplay;
     }
 }
