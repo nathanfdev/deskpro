@@ -14,7 +14,7 @@
     <div class="dp-po-ticket-block-feedback">
         <div class="dp-po-avatar dp-po-avatar-round">
             {{ hc_avatar(feedback.ticket_message.person) }}
-            {{ feedback.ticket_message.person }}
+            {{ feedback.ticket_message.person.display_name_user }}
         </div>
         <div class="dp-po-ticket-block-rating-label">
             {% if feedback.rating_type == 'negative' %}
