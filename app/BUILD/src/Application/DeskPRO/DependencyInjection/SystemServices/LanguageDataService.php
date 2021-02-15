@@ -294,7 +294,7 @@ class LanguageDataService extends BaseRepositoryService
     {
         $this->preload();
 
-        return $this->languages;
+        return array_values($this->languages);
     }
 
     /**
