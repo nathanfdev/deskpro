@@ -326,7 +326,7 @@ class NewTicketController extends AbstractController
         $isConfirmedUser = $request->get('is_confirmed_user');
 
         return $this->renderThemeView('Theme:Tickets:thank_you.html.twig', [
-            'ticket_ref'        => $ticket_ref,
+            'ticket_ref'        => strip_tags($ticket_ref),
             'page_title'        => $this->createPageTitle()->newticketGuestThankYou(),
             'verify_email'      => $do_verify,
             'create_pw_link'    => $createPwLink,
