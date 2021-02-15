@@ -133,10 +133,15 @@ class Date extends HandlerAbstract
                 $date = \DateTime::createFromFormat('U', $value);
                 // +1 Fix the date shifting due to Julian calendar day starting at noon
                 $date->add(new \DateInterval('P1D'));
-                $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                if (!$this->field_def->getOption('ignore_timezone')) {
+                    $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                }
                 break;
             default:
-                $date = \DateTime::createFromFormat($this->getFormat(), $value, App::getCurrentPerson()->getDateTimezone());
+                $date = \DateTime::createFromFormat($this->getFormat(), $value);
+                if (!$this->field_def->getOption('ignore_timezone')) {
+                    $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                }
                 break;
         }
         if (!$date) {
@@ -165,7 +170,9 @@ class Date extends HandlerAbstract
                     $date = \DateTime::createFromFormat($this->getFormat(), $data['value']);
                 }
                 if ($date) {
-                    $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                    if (!$this->field_def->getOption('ignore_timezone')) {
+                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                    }
                     switch ($this->field_def->getOption('calendar')) {
                         case 'hijri':
                             $calendar      = new ArabicCalendar();
@@ -203,13 +210,17 @@ class Date extends HandlerAbstract
                 if (is_numeric($data['value'])) {
                     $date = new \DateTime('@'.$data['value']);
                     if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        if (!$this->field_def->getOption('ignore_timezone')) {
+                            $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        }
                         $setData = $date->format($this->getFormat());
                     }
                 } else {
                     $date = \DateTime::createFromFormat($this->getFormat(), $data['value']);
                     if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        if (!$this->field_def->getOption('ignore_timezone')) {
+                            $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        }
                         $setData = $date->format($this->getFormat());
                     }
                 }
@@ -265,7 +276,9 @@ class Date extends HandlerAbstract
             try {
                 $date = new \DateTime('@'.$data);
                 // data is loaded from db, we need to set correct timezone before any validation
-                $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                if (!$this->field_def->getOption('ignore_timezone')) {
+                    $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                }
             } catch (\Exception $e) {
                 try {
                     $date = new \DateTime($data);
@@ -285,8 +298,10 @@ class Date extends HandlerAbstract
             }
 
             if ($date) {
-                $adminTz = App::getCurrentPerson()->getDateTimezone();
-                $date->setTimezone($adminTz);
+                if (!$this->field_def->getOption('ignore_timezone')) {
+                    $adminTz = App::getCurrentPerson()->getDateTimezone();
+                    $date->setTimezone($adminTz);
+                }
             } else {
                 return $this->makeErrorArray(['date_invalid']);
             }

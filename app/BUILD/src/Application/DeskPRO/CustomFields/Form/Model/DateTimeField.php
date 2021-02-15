@@ -19,6 +19,11 @@ class DateTimeField extends CustomFieldAbstract
     public $date_valid_range2 = null;
     public $date_valid_dow    = null;
 
+    /**
+     * @var bool
+     */
+    public $ignore_timezone = false;
+
     public function init()
     {
         $this->default_value = $this->_field->default_value;
@@ -60,6 +65,10 @@ class DateTimeField extends CustomFieldAbstract
             } else {
                 $this->date_valid_type = null;
             }
+        }
+
+        if ($this->_field->getOption('ignore_timezone')) {
+            $this->ignore_timezone = true;
         }
     }
 
@@ -144,5 +153,6 @@ class DateTimeField extends CustomFieldAbstract
         }
 
         $field->setOption('date_valid_timezone', App::getCurrentPerson()->getTimezone());
+        $field->setOption('ignore_timezone', $this->ignore_timezone);
     }
 }

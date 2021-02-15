@@ -37,6 +37,11 @@ class DateField extends CustomFieldAbstract implements HasValidationMetadataInte
     /** @var string */
     public $calendar;
 
+    /**
+     * @var bool
+     */
+    public $ignore_timezone = false;
+
     //###########################################################################
     // Validation Metadata
     //###########################################################################
@@ -87,6 +92,10 @@ class DateField extends CustomFieldAbstract implements HasValidationMetadataInte
             } else {
                 $this->date_valid_type = null;
             }
+        }
+
+        if ($this->_field->getOption('ignore_timezone')) {
+            $this->ignore_timezone = true;
         }
 
         $this->calendar = $this->_field->getOption('calendar') ?: self::DEFAULT_CALENDAR;
@@ -174,5 +183,6 @@ class DateField extends CustomFieldAbstract implements HasValidationMetadataInte
 
         $field->setOption('date_valid_timezone', App::getCurrentPerson()->getTimezone());
         $field->setOption('calendar', $this->calendar);
+        $field->setOption('ignore_timezone', $this->ignore_timezone);
     }
 }

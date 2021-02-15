@@ -40,7 +40,11 @@ class DateTime extends Date
         }
 
         $person = App::getCurrentPerson();
-        $date   = \DateTime::createFromFormat($this->getFormat(), $value, $person ? $person->getDateTimezone() : new \DateTimeZone('UTC'));
+        $date   = \DateTime::createFromFormat($this->getFormat(), $value);
+
+        if (!$this->field_def->getOption('ignore_timezone')) {
+            $date->setTimezone($person ? $person->getDateTimezone() : new \DateTimeZone('UTC'));
+        }
         if (!$date) {
             return [];
         }
@@ -99,7 +103,9 @@ class DateTime extends Date
             try {
                 $date = new \DateTime('@'.$data);
                 // data is loaded from db, we need to set correct timezone before any validation
-                $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                if (!$this->field_def->getOption('ignore_timezone')) {
+                    $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                }
             } catch (\Exception $e) {
                 try {
                     $date = new \DateTime($data);
@@ -122,8 +128,10 @@ class DateTime extends Date
         }
 
         if ($date) {
-            $adminTz = App::getCurrentPerson()->getDateTimezone();
-            $date->setTimezone($adminTz);
+            if (!$this->field_def->getOption('ignore_timezone')) {
+                $adminTz = App::getCurrentPerson()->getDateTimezone();
+                $date->setTimezone($adminTz);
+            }
         } else {
             return $this->makeErrorArray(['date_invalid']);
         }
@@ -158,7 +166,9 @@ class DateTime extends Date
             if ($contextData && isset($contextData['exist_ticket'])) {
                 /** @var \DateTime $now */
                 $now = clone $contextData['exist_ticket']->date_created;
-                $now->setTimezone($adminTz);
+                if (!$this->field_def->getOption('ignore_timezone')) {
+                    $now->setTimezone($adminTz);
+                }
             } else {
                 $now = new \DateTime('now', $adminTz);
             }
@@ -193,13 +203,17 @@ class DateTime extends Date
                 if (is_numeric($data['value'])) {
                     $date = new \DateTime('@'.$data['value']);
                     if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        if (!$this->field_def->getOption('ignore_timezone')) {
+                            $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        }
                         $setData = $date->format('Y-m-d');
                     }
                 } else {
                     $date = \DateTime::createFromFormat('Y-m-d', $data['value']);
                     if ($date) {
-                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        if (!$this->field_def->getOption('ignore_timezone')) {
+                            $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                        }
                         $setData = $date->format('Y-m-d');
                     }
                 }

@@ -42,6 +42,8 @@ class DateFieldType extends AbstractType
             'choices_as_values' => true,
         ]);
 
+        $builder->add('ignore_timezone', 'checkbox', ['required' => false]);
+
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'preSubmit']);
     }
 

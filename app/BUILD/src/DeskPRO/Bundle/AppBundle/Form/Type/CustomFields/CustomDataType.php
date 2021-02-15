@@ -613,6 +613,10 @@ class CustomDataType extends AbstractType
                     ];
                 }
 
+                if ($def->getOption('ignore_timezone')) {
+                    $options['view_timezone'] = 'UTC';
+                }
+
                 return new FormField(DpDateType::class, $options);
 
             case CustomDefAbstract::TYPE_DATETIME:
@@ -621,8 +625,6 @@ class CustomDataType extends AbstractType
                         'input'  => 'timestamp',
                         'widget' => 'single_text',
                     ];
-
-                    return new FormField(DateTimeType::class, $options);
                 } else {
                     $options = [
                         'input'    => 'timestamp',
@@ -633,9 +635,13 @@ class CustomDataType extends AbstractType
                         'max_date' => $def->getDateMaxFormat(),
                         'help'     => $def->getRealDescription(),
                     ];
-
-                    return new FormField(DateTimeType::class, $options);
                 }
+
+                if ($def->getOption('ignore_timezone')) {
+                    $options['view_timezone'] = 'UTC';
+                }
+
+                return new FormField(DateTimeType::class, $options);
 
             case CustomDefAbstract::TYPE_HIDDEN:
                 $options = [

@@ -1,9 +1,9 @@
 {% set field_rendered %}
 	{% block field_rendered %}
 		{% if field_handler_name == 'Date' %}
-			{{ data.value|date('full') }}
+			{{ data.value|date('full', field_def.getOption('ignore_timezone') ? 'UTC' : null) }}
 		{% elseif field_handler_name == 'DateTime' %}
-			{{ data.value|date('fulltime') }}
+			{{ data.value|date('fulltime', field_def.getOption('ignore_timezone') ? 'UTC' : null) }}
 		{% elseif field_handler_name == 'Toggle' %}
 			{% if data.value == 1 %}
 				Checked
