@@ -23,7 +23,7 @@ export class HcOmniSearchWidget extends PageWidget {
           $input={this.$element.find('input[type=search]')}
           $inputSearchLogId={this.$element.find('input[type=hidden]')}
           $close={this.$element.find('.search-clear')}
-          $button={this.$element.find('button')}
+          $button={this.$element.find('input[type=submit]')}
         />
       </IntlProvider>
       ), this.$rElement.get(0));
