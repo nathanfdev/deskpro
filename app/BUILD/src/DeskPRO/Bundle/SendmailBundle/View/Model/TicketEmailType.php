@@ -60,11 +60,11 @@ abstract class TicketEmailType extends EmailBaseType
     protected $ticketLink;
 
     /**
-     * Ticket satisfactions.
+     * Ticket satisfaction.
      *
-     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketFeedback>")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketFeedback")
      *
-     * @var TicketFeedback[]
+     * @var TicketFeedback
      */
     protected $ticketSatisfaction;
 

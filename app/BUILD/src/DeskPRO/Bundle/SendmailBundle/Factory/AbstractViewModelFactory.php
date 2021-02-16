@@ -253,6 +253,9 @@ abstract class AbstractViewModelFactory
             }
 
             $ticketFeedback = $this->container->getEm()->getRepository(TicketFeedback::class)->getFeedbackForTicket($ticket);
+
+            //We only need the last ticket feedback
+            $ticketFeedback = end($ticketFeedback);
         } else {
             // When ticket needs email verification we send an email before the ticket actually exists
             $ticketMessages = $ticketMessages !== null ? $ticketMessages : $ticket->getMessages();
