@@ -192,7 +192,7 @@
         <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
             <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter_cat') }}</h3>
             <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#news_categories" role="button" aria-expanded="true" aria-controls="news_categories">
-                <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
+                <i class="dp-po-icon far fa-angle-up" title="collapse"></i>
             </a>
             <div class="collapse show" id="news_categories">
                 <ul class="dp-po-news-filter-type-list">
@@ -219,10 +219,10 @@
         </div>
 
         <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-date">
-            <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter_date') }}</h3>
-            <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#date_filter" role="button"
-            aria-expanded="false" aria-controls="date_filter">
-                <i class="dp-po-icon far fa-angle-down" title="collapse"></i>
+            <h3 class="dp-po-news-filter-title"> {{ phrase('helpcenter.news.filter_date') }}</h3>
+            <a class="dp-po-news-filter-collapse {{ filter_date ? '' :'collapsed' }}" data-toggle="collapse" href="#date_filter" role="button"
+            aria-expanded="{{ filter_date ? 'true' :'false' }}" aria-controls="date_filter">
+                <i class="dp-po-icon far fa-angle-{{ filter_date ? 'down' : 'up' }}" title="collapse"></i>
             </a>
             <div class="collapse {{ filter_date ? 'show' }}" id="date_filter">
                 <div class="dp-po-news-filter-date-option">
