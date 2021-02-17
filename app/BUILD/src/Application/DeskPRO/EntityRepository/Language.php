@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -34,6 +28,8 @@ class Language extends AbstractEntityRepository
     }
 
     /**
+     * @param null|mixed $for_ids
+     *
      * @return array
      */
     public function getTitles($for_ids = null)
@@ -107,11 +103,13 @@ class Language extends AbstractEntityRepository
         }
 
         $db->beginTransaction();
+
         try {
             $em->flush();
             $db->commit();
         } catch (\Exception $e) {
             $db->rollback();
+
             throw $e;
         }
     }
@@ -129,10 +127,30 @@ class Language extends AbstractEntityRepository
      *
      * @return null|\Application\DeskPRO\Entity\Language
      */
+    public function getLangListenerCode($langCode)
+    {
+        $locale = $this->getForLangCode($langCode);
+
+        if (null === $locale && $langCode === 'en') {
+            $locale = $this->getForLangCode('en-US');
+        }
+
+        if (null === $locale && $langCode === 'es') {
+            $locale = $this->getForLangCode('ES_es');
+        }
+
+        return $locale;
+    }
+
+    /**
+     * @param $langCode
+     *
+     * @return null|\Application\DeskPRO\Entity\Language
+     */
     public function getForLangCode($langCode)
     {
         if (!$langCode || !is_string($langCode)) {
-            return;
+            return null;
         }
 
         return $this->findOneBy(['locale' => $langCode]);
