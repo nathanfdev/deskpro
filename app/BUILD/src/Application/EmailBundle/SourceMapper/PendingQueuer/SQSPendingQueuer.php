@@ -110,9 +110,5 @@ class SQSPendingQueuer implements PendingQueuerInterface
             'Id'          => $source['uuid'],
             'MessageBody' => json_encode($data),
         ];
-
-        // in prod, seems the shutdown function is unreliable,
-        // so quickfix we're sending as soon as we get it
-//        $this->pushAll();
     }
 }
