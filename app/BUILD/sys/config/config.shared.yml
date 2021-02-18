@@ -48,6 +48,11 @@ services:
     tags:
       - { name: kernel.cache_warmer }
 
+  dp.email.outgoing.push_sqs_messages:
+    class: DeskPRO\Bundle\AppBundle\EventListener\PushOutgoingSqsEmailMessages
+    tags:
+      - { name: kernel.event_listener, event: kernel.terminate, method: pushMessages }
+
 monolog:
   channels: # you MUST also update portal_config.yml if you change these
     - "dp.tickets.filters.tengine.dbal.engine"
