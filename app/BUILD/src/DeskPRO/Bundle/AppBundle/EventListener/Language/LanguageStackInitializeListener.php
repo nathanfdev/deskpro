@@ -126,7 +126,9 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         if ($lang_code = $split['lang_url_code']) {
             $this->logger->info(sprintf('found "%s" in the uri', $lang_code));
 
-            return $this->language_manager->getLanguage($lang_code);
+            $langCode = $this->language_manager->normalizeLanguageCode($lang_code);
+
+            return $this->em->getRepository(Language::class)->getLangListenerCode($langCode);
         }
 
         return;
