@@ -29,15 +29,10 @@ class SQSPendingQueuer implements PendingQueuerInterface
      */
     public static function create($region, $queueUrl, $endpoint = null)
     {
-//        $provider = CredentialProvider::defaultProvider();
+        $provider = CredentialProvider::defaultProvider();
         $params   = [
             'version'     => '2012-11-05',
-//            'credentials' => $provider,
-            // fixme: TESTING WORKAROUND, REMOVE FOR PUSH
-            'credentials' => [
-                'key'    => 'AKIATBC54V4FRDYOFBOY',
-                'secret' => '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',
-            ],
+            'credentials' => $provider,
             'region'      => $region,
         ];
         if ($endpoint) {
