@@ -29,10 +29,15 @@ class SQSPendingQueuer implements PendingQueuerInterface
      */
     public static function create($region, $queueUrl, $endpoint = null)
     {
-        $provider = CredentialProvider::defaultProvider();
+//        $provider = CredentialProvider::defaultProvider();
         $params   = [
             'version'     => '2012-11-05',
-            'credentials' => $provider,
+//            'credentials' => $provider,
+            // fixme: TESTING WORKAROUND, REMOVE FOR PUSH
+            'credentials' => [
+                'key'    => 'AKIATBC54V4FRDYOFBOY',
+                'secret' => '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',
+            ],
             'region'      => $region,
         ];
         if ($endpoint) {
@@ -52,13 +57,22 @@ class SQSPendingQueuer implements PendingQueuerInterface
         $this->queueUrl = $queueUrl;
 
         $me = $this;
-        register_shutdown_function(function () use ($me) {
+
+        $pushAll = function () use ($me) {
             try {
                 $me->pushAll();
             } catch (\Exception $e) {
                 error_log($e->getMessage());
             }
-        });
+        };
+
+        register_shutdown_function($pushAll);
+
+        // Register new dp_push_outgoing_sqs_emails tag
+        \DpShutdown::add($pushAll, [], 'dp_push_outgoing_sqs_emails', -4096);
+
+        // Run with the existing db_done_trans_commit tag
+        \DpShutdown::add($pushAll, [], 'db_done_trans_commit', -4096);
     }
 
     /**
@@ -99,6 +113,6 @@ class SQSPendingQueuer implements PendingQueuerInterface
 
         // in prod, seems the shutdown function is unreliable,
         // so quickfix we're sending as soon as we get it
-        $this->pushAll();
+//        $this->pushAll();
     }
 }
