@@ -23,17 +23,6 @@ class Standard extends AbstractRunner
         $this->is_verbose = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function runJob(Entity\WorkerJob $workerJob)
-    {
-        parent::runJob($workerJob);
-
-        // Push pending outgoing SQS emails
-        \DpShutdown::run('dp_push_outgoing_sqs_emails');
-    }
-
     public function _initLogger(Logger $logger, Entity\WorkerJob $worker_job)
     {
         if ($this->is_verbose) {

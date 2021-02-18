@@ -170,6 +170,9 @@ abstract class AbstractRunner
         App::getContainer()->get('deskpro.notification.event_manager')->deliver();
 
         unset($GLOBALS['DP_CRON_LOGGER']);
+
+        // Push pending outgoing SQS emails
+        \DpShutdown::run('dp_push_outgoing_sqs_emails');
     }
 
     /**
