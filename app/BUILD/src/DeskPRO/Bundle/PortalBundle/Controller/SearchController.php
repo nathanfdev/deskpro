@@ -9,7 +9,6 @@ use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchEngine;
-use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\Adapter\AbstractAdapter;
 use Application\DeskPRO\Search\StickyWordSearch;
@@ -17,10 +16,13 @@ use DeskPRO\Bundle\AppBundle\Pagerfanta\Adapter\DeskproSearchAdapter;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use Doctrine\ORM\EntityManager;
+use Exception;
 use Orb\Util\Numbers;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class SearchController extends AbstractController
@@ -44,9 +46,9 @@ class SearchController extends AbstractController
      *
      * @param Request $request
      *
-     * @throws \Exception
+     * @throws Exception
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function indexAction(Request $request)
     {
@@ -77,7 +79,7 @@ class SearchController extends AbstractController
 
         $combinedCounts = ['total_results' => 0];
         foreach ($results as $result) {
-            $pageinfo = $result['pageinfo'];
+            $pageinfo                        = $result['pageinfo'];
             $combinedCounts['total_results'] += $pageinfo['total_results'];
         }
 
@@ -122,6 +124,10 @@ class SearchController extends AbstractController
      *
      * @param $type
      * @param Request $request
+     *
+     * @throws Exception
+     *
+     * @return string|RedirectResponse|Response|null
      */
     public function searchTypeAction($type, Request $request)
     {
@@ -160,9 +166,9 @@ class SearchController extends AbstractController
 
         $combinedCounts = ['total_results' => 0];
         foreach ($results as $resultType => $result) {
-            $pageinfo = $result['pageinfo'];
+            $pageinfo                        = $result['pageinfo'];
             $combinedCounts['total_results'] += $pageinfo['total_results'];
-            $results[$resultType]['pager'] = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
+            $results[$resultType]['pager']   = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
             $results[$resultType]['pager']->setMaxPerPage((int) $pageinfo['per_page']);
             if ($resultType === $type) {
                 $results[$resultType]['pager']->setCurrentPage((int) $pageinfo['curpage']);
@@ -239,7 +245,7 @@ class SearchController extends AbstractController
      * @param         $type
      * @param         $label
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function labelSearchAction(Request $request, $type, $label)
     {
@@ -329,7 +335,7 @@ class SearchController extends AbstractController
      * @Route("/search/similar/{contentType}", name="portal_search_similar", defaults={"contentType":null})
      * @Route("/search/similar/{contentType}", name="user_search_similarto", defaults={"contentType":null})
      *
-     * @param Request     $request
+     * @param Request $request
      * @param null|string $contentType
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -408,20 +414,16 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @param Request       $request
-     * @param string        $type
-     * @param mixed         $q
+     * @param string $type
+     * @param mixed $q
      * @param Entity\Person $person
-     * @param int           $curPage
-     * @param int           $perPage
-     * @param               $context
-     *
-     * @throws \Exception
+     * @param int $curPage
+     * @param int $perPage
+     * @param SearchContextInterface $context
      *
      * @return array
      */
     protected function doSearch(
-        Request $request,
         $type,
         $q,
         Entity\Person $person,
@@ -436,42 +438,56 @@ class SearchController extends AbstractController
             /** @var SearchEngine $se */
             $se = $this->get('search_engine');
 
-            /** @var UserSearchInterface $userSearch */
             $userSearch = $se->getUserSearch();
 
             if (is_numeric($q)) {
                 $context->setOption(SearchContextInterface::SEARCH_BY_ID, true);
             }
 
-            /** @var \Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet $resultSet */
-            $resultSet = $userSearch->search(
+            $stickySearch = new StickyWordSearch($this->getEm());
+            $stickySearch->setPersonContext($person);
+            $stickyResults = $stickySearch->getResults($q, null, [$type]);
+
+            $total               = count($stickyResults);
+            $pageInfo            = Numbers::getPaginationPages($total, $curPage, $perPage);
+            $stickyOptions       = ['currentPage' => $curPage, 'perPage' => $perPage, 'lastPage' => $pageInfo['last']];
+
+            $searchOptions = ['page' => 1, 'per_page' => $perPage, 'limit_types' => [$type]];
+            
+            $resultSet  = $resultSetIntial = $userSearch->search(
                 $context,
                 $q,
-                ['page' => $curPage, 'per_page' => $perPage, 'limit_types' => [$type]]
+                $searchOptions
             );
 
-            $pageInfo = Numbers::getPaginationPages($resultSet->getTotal(), $curPage, $perPage);
-            if ($pageInfo['last'] < $curPage) {
-                $curPage = $pageInfo['last'];
+            if ($curPage == 1 && ($total < $perPage)) {
+                $searchOptions['custom_perpage'] = ($perPage - $total);
 
                 $resultSet = $userSearch->search(
                     $context,
                     $q,
-                    ['page' => $curPage, 'per_page' => $perPage, 'limit_types' => [$type]]
+                    $searchOptions
                 );
             }
 
-            $total   = $resultSet->getTotal();
+            if ($curPage > 1 && ($resultSet->getTotal() > $total)) {
+                $renderedResult =  $perPage * ($curPage - 1);
+                if ($renderedResult > $total) {
+                    $searchOptions['custom_start'] = ($renderedResult - $total);
+
+                    $resultSet = $userSearch->search(
+                        $context,
+                        $q,
+                        $searchOptions
+                    );
+                }
+            }
+
+            $total = $resultSetIntial->getTotal() + $total;
+
             $results = $resultSet->getTypedResults();
 
-            $stickySearch = new StickyWordSearch($this->getEm());
-            $stickySearch->setPersonContext($person);
-            $stickyResults = $stickySearch->getResults($q, null, [$type]);
-            $total += count($stickyResults);
-            $options =  ['currentPage' => $curPage, 'perPage' => $perPage];
-            if ($stickyResults) {
-                $results = $this->addStickyResult($stickyResults, $results, 0, [], $options, true);
-            }
+            $results = $this->addStickyResult($stickyResults, $results, $stickyOptions, [], true);
         }
 
         $pageInfo = Numbers::getPaginationPages($total, $curPage, $perPage);
@@ -511,15 +527,21 @@ class SearchController extends AbstractController
      * @param         $q
      * @param         $curPage
      * @param         $perPage
-     * @param bool    $details
      * @param mixed $detailledType
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return array
      */
-    private function fetchSearchResults(Request $request, $types, $person, $q, $curPage, $perPage, $detailledType = false)
-    {
+    private function fetchSearchResults(
+        Request $request,
+        $types,
+        $person,
+        $q,
+        $curPage,
+        $perPage,
+        $detailledType = false
+    ) {
         ////////////////////////////////////////////////////////////////////////
         // search types
         $allowedSearchTypes = ['article', 'news', 'download', 'community', 'topic', 'ticket', 'chat_conversation'];
@@ -545,7 +567,7 @@ class SearchController extends AbstractController
         ];
 
         $limitTypesArray = array_filter($limitTypesArray,
-            function ($value) use ($allowedSearchTypes, $appSettings, $brandSettingsResolver) {
+            function ($value) use ($appSettings, $brandSettingsResolver) {
                 if (!isset($appSettings[$value])) {
                     return true;
                 }
@@ -559,7 +581,6 @@ class SearchController extends AbstractController
         $omnisearchResults = [];
         foreach ($limitTypesArray as $type) {
             list($pageInfo, $results) = $this->doSearch(
-                $request,
                 $type,
                 $q,
                 $person,
@@ -621,9 +642,8 @@ class SearchController extends AbstractController
     /**
      * @param array $stickyResults
      * @param array $results
-     * @param int $total
-     * @param array $gotSticky
      * @param array $options
+     * @param array $gotSticky
      * @param bool $sort
      *
      * @return array
@@ -631,37 +651,24 @@ class SearchController extends AbstractController
     private function addStickyResult(
         array $stickyResults,
         array $results,
-        $total = 0,
+        array $options = [],
         array $gotSticky = [],
-        $options = [],
-        bool $sort = false
+        $sort = false
     ) {
-        if (count($stickyResults) < 1) {
-            return [];
-        }
+        if ($sort) {
+            $perPage = isset($options['perPage']) ? $options['perPage'] : null;
 
-        if ($sort && $options['currentPage'] > 1) {
-            $perPage = $options['perPage'];
+            $stickyResults = $this->filterStickyResult($stickyResults, $options);
 
-            if (count($stickyResults) <= $perPage) {
-                //Must have shown all stickyResults  in previous pages
-                $stickyResults = [];
-            }
-
-            if (count($stickyResults) > $perPage) {
-                $renderedPageCount = $options['currentPage'] - 1;
-
-                $renderedResultCount = $perPage * $renderedPageCount;
-
-                $stickyResults = array_slice($stickyResults, $renderedResultCount,
-                    (count($stickyResults) < $perPage) ? count($stickyResults) : $perPage, true);
+            if (null !== $perPage && count($stickyResults) >= $perPage) {
+                $results = [];
             }
         }
 
         foreach ($stickyResults as $sItem) {
-            ++$total;
             $gotSticky[get_class($sItem['object']).$sItem['object']->getId()] = true;
         }
+
         // remove results that might have matched normally
         $results = array_filter(
             $results,
@@ -669,6 +676,7 @@ class SearchController extends AbstractController
                 return !isset($gotSticky[get_class($r['object']).$r['object']->getId()]);
             }
         );
+
         // then add the sticky results to the top
         foreach ($stickyResults as $sItem) {
             array_unshift($results, [
@@ -678,5 +686,36 @@ class SearchController extends AbstractController
         }
 
         return $results;
+    }
+
+    /**
+     * @param array $stickyResults
+     * @param array $options
+     *
+     * @return array
+     */
+    private function filterStickyResult(
+        array $stickyResults,
+        $options = []
+    ) {
+        if (empty($stickyResults)) {
+            return [];
+        }
+
+        $perPage     = (int) $options['perPage'];
+        $currentPage = (int) $options['currentPage'];
+
+        if ($currentPage === 1) {
+            return (count($stickyResults) > $perPage) ? array_slice($stickyResults, 0, $perPage, true) : $stickyResults;
+        }
+
+        $renderedPageCount   = --$currentPage;
+        $renderedResultCount = $perPage * $renderedPageCount;
+
+        if ($renderedResultCount >= count($stickyResults)) {
+            return [];
+        }
+
+        return array_slice($stickyResults, $renderedResultCount, $perPage, true);
     }
 }

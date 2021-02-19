@@ -183,6 +183,11 @@ class UserSearch implements UserSearchInterface
             ";
 
             $start       = ($page - 1) * $perPage;
+
+            $start =  isset($options['custom_start']) ? $options['custom_start'] : $start;
+
+            $perPage =  isset($options['custom_perpage']) ? $options['custom_perpage'] : $perPage;
+
             $selectQuery = "
                 SELECT DISTINCT(content_search.object_id), content_search.object_type
                 FROM content_search
