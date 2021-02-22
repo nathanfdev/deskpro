@@ -12,7 +12,7 @@
         </ul>
     {% endif %}
     {% include 'Theme:Downloads:DownloadList/simple.html.twig' with {
-        pager: helpcenter.getDownloads({category: category}),
+        pager: helpcenter.getDownloads({category: category, withChildren: false}),
         show_category_link: false
     } %}
 {% endfor %}

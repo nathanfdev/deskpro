@@ -155,13 +155,15 @@ class HelpCenterData
             'page'     => 1,
             'count'    => 10,
             'category' => null,
+            'child'    => true,
         ], $userOptions);
 
         return $this->getDownloadsDataService()->getDownloadsPager(
             $options['category'],
             (int) $options['page'],
             (int) $options['count'],
-            $this->getUser()
+            $this->getUser(),
+            $options['withChildren']
         );
     }
 

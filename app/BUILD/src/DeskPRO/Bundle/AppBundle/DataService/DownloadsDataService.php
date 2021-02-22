@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Download;
@@ -54,13 +50,14 @@ class DownloadsDataService extends AbstractDataService
 
     /**
      * @param DownloadCategory $category
-     * @param int              $page
-     * @param int              $max_per_page
-     * @param Person           $person
+     * @param int $page
+     * @param int $max_per_page
+     * @param Person $person
+     * @param bool $withChildren
      *
      * @return Pagerfanta
      */
-    public function getDownloadsPager(DownloadCategory $category = null, $page = 1, $max_per_page = 10, Person $person = null)
+    public function getDownloadsPager(DownloadCategory $category = null, $page = 1, $max_per_page = 10, Person $person = null, $withChildren =true)
     {
         $em                  = $this->em;
         $permissions_manager = $this->permissions_manager;
@@ -72,8 +69,9 @@ class DownloadsDataService extends AbstractDataService
                 (int) $page,
                 (int) $max_per_page,
                 $person,
+                $withChildren,
             ],
-            function () use ($em, $permissions_manager, $category, $max_per_page, $page, $person) {
+            function () use ($em, $permissions_manager, $category, $max_per_page, $page, $person, $withChildren) {
                 $qb = $em->createQueryBuilder();
                 $qb->select('d')
                     ->from(Download::class, 'd')
@@ -83,13 +81,17 @@ class DownloadsDataService extends AbstractDataService
 
                 $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedDownloadCategories();
                 if ($category) {
-                    // find allowed ids
-                    $cat_ids = $category->getTreeIds(true);
-                    $using_ids = [];
-                    foreach ($cat_ids as $cat_id) {
-                        if (in_array($cat_id, $allowed_ids)) {
-                            $using_ids[] = $cat_id;
+                    if ($withChildren) {
+                        // find allowed ids
+                        $cat_ids   = $category->getTreeIds(true);
+                        $using_ids = [];
+                        foreach ($cat_ids as $cat_id) {
+                            if (in_array($cat_id, $allowed_ids)) {
+                                $using_ids[] = $cat_id;
+                            }
                         }
+                    } else {
+                        $using_ids[] = $category->getId();
                     }
                 } else {
                     $using_ids = $allowed_ids;
