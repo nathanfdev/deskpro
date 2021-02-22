@@ -133,6 +133,16 @@ class EmailSender
             }
         } elseif (is_a($options['to'], Person::class)) {
             $recipient = $options['to'];
+        } elseif (is_array($options['to'])) {
+            //Todo: Implement swiftmailer decorator plugin to allow custom email body for different recipient
+            $peopleArray = [];
+            foreach ($options['to'] as $to) {
+                $findPerson = $personRepository->findOneByEmail($to);
+                if ($findPerson) {
+                    $peopleArray[] = $findPerson;
+                }
+            }
+            $model->setRecipients($peopleArray);
         } elseif (!$message->getTo()) {
             throw new \Exception('Missing required "to" argument');
         }

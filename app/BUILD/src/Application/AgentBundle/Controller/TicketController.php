@@ -4609,9 +4609,11 @@ class TicketController extends AbstractController
                     $messages,
                     $attachments
                 );
+            
+            $args = count($message->getTo()) > 1 ? ['to' => array_keys($message->getTo())] : ['to' => key($message->getTo())];
 
             $message = $this->getContainer()->get('email.email_sender')
-                ->prepareMessage($viewModel, [], $message);
+                ->prepareMessage($viewModel, $args, $message);
         } else {
             $message->setTemplate(
                 'DeskPRO:emails_user:ticket-fwd.html.twig',
