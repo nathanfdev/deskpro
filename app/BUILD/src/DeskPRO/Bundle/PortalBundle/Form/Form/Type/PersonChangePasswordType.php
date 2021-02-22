@@ -67,9 +67,9 @@ class PersonChangePasswordType extends AbstractType
             $person = $event->getData();
             $form->add('new_password', RepeatedType::class, [
                 'first_name'     => 'password',
-                'first_options'  => ['label' => $this->phrase('portal.forms.label_password')],
+                'first_options'  => ['label' => $this->phrase(['helpcenter.forms.label_new_password', 'portal.forms.label_password'])],
                 'second_name'    => 'confirm',
-                'second_options' => ['label' => $this->phrase('portal.forms.label_password_confirm')],
+                'second_options' => ['label' => $this->phrase(['helpcenter.forms.label_password_confirm', 'portal.forms.label_password_confirm'])],
                 'type'           => PasswordType::class,
                 'required'       => true,
                 'constraints'    => [
@@ -101,7 +101,7 @@ class PersonChangePasswordType extends AbstractType
     }
 
     /**
-     * @param string $phrase
+     * @param string|array $phrase
      * @param array  $vars
      *
      * @return string
