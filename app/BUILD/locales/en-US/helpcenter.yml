@@ -376,6 +376,8 @@ helpcenter.forms.label_password_confirm: Confirm
 helpcenter.forms.label_reset: Reset
 helpcenter.forms.label_save: Save
 helpcenter.forms.label_submit: Submit
+helpcenter.widget.label_subject: Subject
+helpcenter.forms.label_subject: Subject
 helpcenter.forms.label_timezone: Timezone
 helpcenter.forms.message_description: ''
 helpcenter.forms.password_description: ''

@@ -122,10 +122,7 @@ class WebFieldResolver extends AbstractFieldResolver
         }
 
         return new FormField(TextType::class, [
-            'label' => $context->isWidgetType()
-                ? $this->phrase('portal.widget.label_subject')
-                : $this->phrase('portal.forms.label_subject'),
-            'required'    => true,
+            'label'       => $context->isWidgetType() ? $this->phrase(['portal.widget.label_subject', 'helpcenter.widget.label_subject']) : $this->phrase(['portal.forms.label_subject', 'helpcenter.forms.label_subject']),
             'constraints' => [
                 new Assert\NotBlank(),
                 new Assert\Length(['min' => 5]),
