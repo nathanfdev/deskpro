@@ -202,6 +202,7 @@ class NewsSubscriptions extends AbstractJob
                 JOIN n.category c
                 WHERE n.status = 'published'
                   AND n.date_published > :date
+                  AND n.date_published < NOW()
                   AND c.brand = :brand
                 ORDER BY n.date_published DESC
             ")->setMaxResults(250)->execute(['date' => $lastDate, 'brand' => $brand]);
