@@ -121,7 +121,7 @@
                 </div>
 
 
-                <div ng-show="Portal.selected_theme == 'helpcenter'">
+                <div ng-show="Portal.selected_theme_id == 'helpcenter'">
                     <!-- Splash Image -->
                     <div class="panel-title">
                         <a ng-click="Portal.togglePanel('splash_image')">
@@ -161,7 +161,7 @@
                         <form>
                             <input type="checkbox" id="show_section_navigation" ng-model="theme_options.show_section_navigation" /> <label
                                     for="show_section_navigation">Show section navigation buttons on the home page</label>
-                            <div ng-show="Portal.selected_theme == 'helpcenter'">
+                            <div ng-show="Portal.selected_theme_id == 'helpcenter'">
                                 <br />
                                 <label>{{ phrase('admin.portal.kb_featured_articles') }}</label>
                                 <input type="text" ng-model="theme_options.featured_articles" />
@@ -219,7 +219,7 @@
                             <li ng-class="{active: Portal.isAdvancedTab('homepage')}">
                                 <a href ng-click="Portal.openAdvancedTab('homepage')">Home</a>
                             </li>
-                            <li ng-class="{active: Portal.isAdvancedTab('sidebar')}" ng-show="Portal.selected_theme == 'sidebar'">
+                            <li ng-class="{active: Portal.isAdvancedTab('sidebar')}" ng-show="Portal.selected_theme_id == 'sidebar'">
                                 <a href ng-click="Portal.openAdvancedTab('sidebar')">Side</a>
                             </li>
                             <li ng-class="{active: Portal.isAdvancedTab('scss')}">
@@ -237,7 +237,7 @@
                             These templates let you put HTML code at the very top or very bottom of the page.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            <div ng-show="Portal.selected_theme == 'helpcenter'">
+                            <div ng-show="Portal.selected_theme_id == 'helpcenter'">
                                 <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-header.html.twig'}") }}">
                                     Edit Header
                                 </a>
@@ -246,18 +246,18 @@
                                     Edit Footer
                                 </a>
                             </div>
-                            <div ng-hide="Portal.selected_theme == 'helpcenter'">
+                            <div ng-hide="Portal.selected_theme_id == 'helpcenter'">
                                 <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header</button>
 
                                 <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer</button>
                             </div>
                             <br />
-                            <div style="margin-top: 4px;" ng-show="Portal.selected_theme == 'helpcenter'">
+                            <div style="margin-top: 4px;" ng-show="Portal.selected_theme_id == 'helpcenter'">
                                 <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-head-include.html.twig'}") }}">
                                     Edit Head Include
                                 </a>
                             </div>
-                            <div style="margin-top: 4px;" ng-hide="Portal.selected_theme == 'helpcenter'">
+                            <div style="margin-top: 4px;" ng-hide="Portal.selected_theme_id == 'helpcenter'">
                                 <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-head-include.html.twig')">Edit Head Include</button>
                             </div>
                         </div>
@@ -269,12 +269,12 @@
                             Edit the homepage template to add or remove elements from the main portal homepage.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            <div ng-show="Portal.selected_theme == 'helpcenter'">
+                            <div ng-show="Portal.selected_theme_id == 'helpcenter'">
                                 <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:home.html.twig'}") }}">
                                     Edit Homepage Template
                                 </a>
                             </div>
-                            <div ng-hide="Portal.selected_theme == 'helpcenter'">
+                            <div ng-hide="Portal.selected_theme_id == 'helpcenter'">
                                 <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:home.html.twig')">Edit Homepage Template</button>
                             </div>
                         </div>
@@ -349,12 +349,12 @@
                 </div>
 
                 <div class="template-picker" ng-show="Portal.isOpen('expert') && !(Portal.selected_template && Portal.selected_template_info_loaded) && !(Portal.css_template_selected && Portal.css_template_info.loaded)">
-                    <div ng-show="Portal.selected_theme == 'helpcenter'">
+                    <div ng-show="Portal.selected_theme_id == 'helpcenter'">
                         <a class="btn btn-default" href="{{ ng_href('portal.templates_editor') }}">
                             Open template editor
                         </a>
                     </div>
-                    <div ng-hide="Portal.selected_theme == 'helpcenter'">
+                    <div ng-hide="Portal.selected_theme_id == 'helpcenter'">
                         <select ui-select2='{ containerCssClass : "select2-container-template-picker", dropdownCssClass : "select2-dropdown-template-picker" }'
                                 class="template-picker"
                                 style="width: 300px;"
