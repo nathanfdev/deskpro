@@ -372,7 +372,8 @@ helpcenter.forms.error_banned_email: 'Email is banned.'
 helpcenter.forms.label_drag_overlay: 'Insert this image into your message.'
 helpcenter.forms.label_email: Email
 helpcenter.forms.label_password: Password
-helpcenter.forms.label_password_confirm: Confirm
+helpcenter.forms.label_new_password: New password
+helpcenter.forms.label_password_confirm: Confirm password
 helpcenter.forms.label_reset: Reset
 helpcenter.forms.label_save: Save
 helpcenter.forms.label_submit: Submit
