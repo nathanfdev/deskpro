@@ -91,7 +91,7 @@ class PageListItem extends React.Component {
               filterPage={filterPage}
               togglePage={togglePage}
               expanded={(filter !== '' || child.slug === pageSlug || typeof Object.values(child.children)
-                .find(c => c.slug === pageSlug ||  Object.values(c.children).find(cc => cc.slug === pageSlug)) !== 'undefined')}
+                  .find(c => c.slug === pageSlug ||  Object.values(c.children).find(cc => cc.slug === pageSlug)) !== 'undefined')}
               expandedList={expandedList}
             />
             )
@@ -116,12 +116,14 @@ class PageListItem extends React.Component {
             className={classNames(`dp-po-guides-search-content-${prefix}link chapter`, { expanded: this.isExpanded() })}
             onClick={e => togglePage(e, page, expanded)}
           >
-            <Highlighter
-              highlightClassName="filter-highlight"
-              className="dp-po-guide-topic-list-item"
-              searchWords={[filter]}
-              textToHighlight={page.title}
-            />
+            <span title={page.title}>
+              <Highlighter
+                highlightClassName="filter-highlight"
+                className="dp-po-guide-topic-list-item"
+                searchWords={[filter]}
+                textToHighlight={page.title}
+              />
+            </span>
           </div>
           {this.renderChildren()}
         </li>
@@ -135,12 +137,14 @@ class PageListItem extends React.Component {
           activeClassName="active"
           onClick={this.handleClick}
         >
-          <Highlighter
-            highlightClassName="filter-highlight"
-            className="dp-po-guide-topic-list-item"
-            searchWords={[filter]}
-            textToHighlight={page.title}
-          />
+          <span title={page.title}>
+            <Highlighter
+              highlightClassName="filter-highlight"
+              className="dp-po-guide-topic-list-item"
+              searchWords={[filter]}
+              textToHighlight={page.title}
+            />
+          </span>
           {Object.values(page.children).length > 0 && <figure className="dp-po-icon"><FontAwesomeIcon icon={['fas', 'caret-down']} /></figure>}
         </Link>
         {this.renderChildren()}
