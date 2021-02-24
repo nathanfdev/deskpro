@@ -133,16 +133,6 @@ class EmailSender
             }
         } elseif (is_a($options['to'], Person::class)) {
             $recipient = $options['to'];
-        } elseif (is_array($options['to'])) {
-            //Todo: Implement swiftmailer decorator plugin to allow custom email body for different recipient
-            $peopleArray = [];
-            foreach ($options['to'] as $to) {
-                $findPerson = $personRepository->findOneByEmail($to);
-                if ($findPerson) {
-                    $peopleArray[] = $findPerson;
-                }
-            }
-            $model->setRecipients($peopleArray);
         } elseif (!$message->getTo()) {
             throw new \Exception('Missing required "to" argument');
         }
@@ -213,6 +203,10 @@ class EmailSender
         } elseif ($options['to']) {
             $message->setTo($options['to']);
         }
+        
+        if (null === $recipient) {
+            $model->setRecipient(null);
+        }
         $template = isset($options['template']) ? $options['template'] : $model->getTemplate();
 
         $language = $options['language'];
@@ -222,7 +216,6 @@ class EmailSender
             }
         }
         if ($language instanceof Language) {
-            $emailCode = null;
             $emailCode = $this->getContainer()->get('language_manager')->callWithLanguage($language, function () use ($template, $model) {
                 return $this->getRenderer()->render($template, $model);
             });

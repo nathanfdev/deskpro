@@ -18,15 +18,6 @@ abstract class EmailBaseType
      */
     protected $recipient;
 
-    /**
-     * Email recipients.
-     *
-     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person>")
-     *
-     * @var array
-     */
-    protected $recipients;
-
     protected $templateFile = '';
 
     /**
@@ -82,14 +73,9 @@ abstract class EmailBaseType
         $this->templateFile = $templateFile;
     }
 
-    public function setRecipient(Person $recipient)
+    public function setRecipient($recipient)
     {
         $this->recipient = $recipient;
-    }
-
-    public function setRecipients($recipients)
-    {
-        $this->recipients = $recipients;
     }
 
     /**
