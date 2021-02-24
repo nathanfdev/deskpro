@@ -87,7 +87,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.savingMulti = false;
       this.advanced = { main_scss: '', custom_scss: '', javascript: '' };
       this.available_themes = [
-        { id: 'helpcenter', title: 'HelpCenter' }
+        { id: 'helpcenter', theme_id: 'helpcenter', title: 'HelpCenter' }
       ];
       this.$scope.brand_id = this.$stateParams.brandId;
 
@@ -126,6 +126,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.preview_as = 'myself';
       this.preview_as_email = null;
       this.selected_theme = null;
+      this.selected_theme_id = null;
       this.theme_set = null;
 
       $('.select-theme').on('mousedown', (e) => {
@@ -138,6 +139,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
           controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) => {
             $scope.available_themes = this.available_themes;
             $scope.selected_theme = this.selected_theme;
+            $scope.selected_theme_id = this.selected_theme.theme_id;
             $scope.selectTheme = (theme) => {
               $modalInstance.close(theme);
             };
@@ -147,6 +149,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
         modalInstance.result.then((theme) => {
           this.selected_theme = theme.id;
+          this.selected_theme_id = theme.theme_id;
           this.editTheme();
         });
       });
@@ -524,7 +527,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
     loadThemeSets() {
       this.available_themes = [
-        { id: 'helpcenter', title: 'HelpCenter' }
+        { id: 'helpcenter', theme_id: 'helpcenter', title: 'HelpCenter' }
       ];
 
       return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/custom-theme-sets`).success((data) => {
@@ -542,6 +545,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     loadThemeSet() {
       return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/info`).success((data) => {
         this.theme_set = data;
+        this.selected_theme_id = this.theme_set.theme_id;
         return this.selected_theme = this.theme_set.id;
       });
     }
@@ -763,7 +767,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
         } else {
           this.selected_theme = data.theme_id;
         }
-
+        this.selected_theme_id = data.theme_id;
         this.editTheme();
         this.Growl.success('Theme is imported');
       });
