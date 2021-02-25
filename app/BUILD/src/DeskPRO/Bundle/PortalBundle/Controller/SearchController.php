@@ -432,8 +432,6 @@ class SearchController extends AbstractController
         SearchContextInterface $context
     ) {
         $total   = 0;
-        $results = [];
-
         if ($q && is_string($q)) {
             /** @var SearchEngine $se */
             $se = $this->get('search_engine');
@@ -448,48 +446,86 @@ class SearchController extends AbstractController
             $stickySearch->setPersonContext($person);
             $stickyResults = $stickySearch->getResults($q, null, [$type]);
 
-            $total               = count($stickyResults);
-            $pageInfo            = Numbers::getPaginationPages($total, $curPage, $perPage);
-            $stickyOptions       = ['currentPage' => $curPage, 'perPage' => $perPage, 'lastPage' => $pageInfo['last']];
-
-            $searchOptions = ['page' => 1, 'per_page' => $perPage, 'limit_types' => [$type]];
-            
-            $resultSet  = $resultSetIntial = $userSearch->search(
+            $searchOptions = ['page' => $curPage, 'per_page' => (int) $perPage, 'limit_types' => [$type], 'object_identifier' => true];
+            $resultSet     = $userSearch->search(
                 $context,
                 $q,
                 $searchOptions
             );
 
-            if ($curPage == 1 && ($total < $perPage)) {
-                $searchOptions['custom_perpage'] = ($perPage - $total);
+            if (count($resultSet->getObjectIdentifier()) > 0) {
+                foreach ($stickyResults as $key => $stickyResult) {
+                    if (in_array($key, $resultSet->getObjectIdentifier())) {
+                        unset($stickyResults[$key]);
+                    }
+                }
+            }
 
-                $resultSet = $userSearch->search(
+            $stickyTotal            = count($stickyResults);
+            $stickyOptions          = ['currentPage' => $curPage, 'perPage' => $perPage];
+            $resultToShow           = $perPage * $curPage;
+            $resultLeftToShow       = $resultToShow - $stickyTotal;
+            $alreadyShownPageResult = $perPage * ($curPage - 1);
+            $custom_start           = max(($alreadyShownPageResult - $stickyTotal), 0);
+
+            if ($resultSet->getTotal() > 0 && empty($resultSet->getTypedResults())) {
+                $searchOptions = ['page' => 1, 'custom_start' => $custom_start, 'per_page' => $resultLeftToShow, 'limit_types' => [$type]];
+                $resultSet     = $userSearch->search(
                     $context,
                     $q,
                     $searchOptions
                 );
             }
+            $total = $stickyTotal + $resultSet->getTotal();
 
-            if ($curPage > 1 && ($resultSet->getTotal() > $total)) {
-                $renderedResult =  $perPage * ($curPage - 1);
-                if ($renderedResult > $total) {
-                    $searchOptions['custom_start'] = ($renderedResult - $total);
+            if (empty($stickyResults)) {
+                $pageInfo = Numbers::getPaginationPages($resultSet->getTotal(), $curPage, $perPage);
 
-                    $resultSet = $userSearch->search(
+                return [$pageInfo, $resultSet->getTypedResults()];
+            }
+
+            if ($stickyTotal < $resultToShow && $stickyTotal > $alreadyShownPageResult) {
+                if ($resultLeftToShow > 0) {
+                    $searchOptions['custom_perpage'] =  $resultLeftToShow;
+                    $resultSet                       = $userSearch->search(
                         $context,
                         $q,
                         $searchOptions
                     );
                 }
+
+                $results  = $this->addStickyResult($stickyResults, $resultSet->getTypedResults(), $stickyOptions, [], true);
+                $pageInfo = Numbers::getPaginationPages($total, $curPage, $perPage);
+
+                return [$pageInfo, $results];
             }
 
-            $total = $resultSetIntial->getTotal() + $total;
+            if ($stickyTotal < $alreadyShownPageResult) {
+                $alreadyShownSearchResult =  $alreadyShownPageResult - $stickyTotal;
 
-            $results = $resultSet->getTypedResults();
+                if ($alreadyShownSearchResult > 0) {
+                    $searchOptions['custom_start'] =  $alreadyShownSearchResult;
+                    $resultSet                     = $userSearch->search(
+                        $context,
+                        $q,
+                        $searchOptions
+                    );
+                }
+                $results  = $this->addStickyResult($stickyResults, $resultSet->getTypedResults(), $stickyOptions, [], true);
+                $pageInfo = Numbers::getPaginationPages($total, $curPage, $perPage);
 
-            $results = $this->addStickyResult($stickyResults, $results, $stickyOptions, [], true);
+                return [$pageInfo, $results];
+            }
+
+            if ($stickyTotal > $perPage || ($curPage > 1 && $stickyTotal >= $resultToShow)) {
+                $results  = $this->addStickyResult($stickyResults, $resultSet->getTypedResults(), $stickyOptions, [], true);
+                $pageInfo = Numbers::getPaginationPages($total, $curPage, $perPage);
+
+                return [$pageInfo, $results];
+            }
         }
 
+        $results  = $this->addStickyResult($stickyResults, $resultSet->getTypedResults(), $stickyOptions, [], true);
         $pageInfo = Numbers::getPaginationPages($total, $curPage, $perPage);
 
         return [$pageInfo, $results];

@@ -18,7 +18,7 @@ class UserSearch implements UserSearchInterface
 {
     const MAX_WORDS = 25;
 
-    const LIMIT = 20;
+    const LIMIT = 50;
 
     /**
      * @var \Application\DeskPRO\DBAL\Connection
@@ -56,10 +56,11 @@ class UserSearch implements UserSearchInterface
      */
     public function search(SearchContextInterface $context, $query, array $options = null)
     {
-        $options     = new OptionsArray($options ?: []);
-        $perPage     = Numbers::bound($options->get('per_page', self::LIMIT), 1, self::LIMIT);
-        $page        = max($options->get('page', 1), 1);
-        $ignorePerms = $options->get('ignore_perms');
+        $options          = new OptionsArray($options ?: []);
+        $perPage          = Numbers::bound($options->get('per_page', self::LIMIT), 1, self::LIMIT);
+        $page             = max($options->get('page', 1), 1);
+        $ignorePerms      = $options->get('ignore_perms');
+        $objectIdentifier = [];
 
         $limitTypes = isset($options['limit_types']) ? $options['limit_types'] : null;
         if ($limitTypes && !is_array($limitTypes)) {
@@ -176,10 +177,11 @@ class UserSearch implements UserSearchInterface
             }
 
             $countQuery = "
-              SELECT COUNT(DISTINCT content_search.object_id), content_search.object_type from
+              SELECT DISTINCT (content_search.object_id), content_search.object_type, CONCAT(content_search.object_type, '.', content_search.object_id) as name from
                 content_search
                 $permJoin
                 WHERE $permWhere AND $where
+                LIMIT 20000
             ";
 
             $start       = ($page - 1) * $perPage;
@@ -188,17 +190,17 @@ class UserSearch implements UserSearchInterface
 
             $perPage =  isset($options['custom_perpage']) ? $options['custom_perpage'] : $perPage;
 
-            $selectQuery = "
-                SELECT DISTINCT(content_search.object_id), content_search.object_type
-                FROM content_search
-                $permJoin
-                WHERE $permWhere AND $where
-                ORDER BY content_search.object_id DESC
-                LIMIT $start, $perPage
-            ";
+            $noLimitsResult = $this->db->fetchAll($countQuery, $params);
 
-            $total   = $this->db->fetchColumn($countQuery, $params);
-            $results = $this->db->fetchAll($selectQuery, $params);
+            if (isset($options['object_identifier'])) {
+                $objectIdentifier = array_map(static function ($arr) {
+                    return $arr['name'];
+                }, $noLimitsResult);
+            }
+
+            $total   = count($noLimitsResult);
+
+            $results = ($total) > 0 ? array_slice($noLimitsResult, $start, $perPage, true) : [];
         } else {
             $total   = 0;
             $results = [];
@@ -212,7 +214,7 @@ class UserSearch implements UserSearchInterface
 
         $objects = $this->transformer->transform($results);
 
-        return new ResultSet($objects, $total);
+        return new ResultSet($objects, $total, $objectIdentifier);
     }
 
     /**
