@@ -40,18 +40,19 @@ class mPdfRenderer implements PdfRendererInterface
         $this->appEnv     = $appEnv;
 
         $this->object = new mPDF([
-            'mode'              => 'utf-8',
-            'format'            => 'A4',
-            'default_font_size' => 8,
-            'default_font'      => '',
-            'margin_left'       => 20,
-            'margin_right'      => 20,
-            'margin_top'        => 40,
-            'margin_bottom'     => 40,
-            'margin_header'     => 10,
-            'margin_footer'     => 10,
-            'orientation'       => 'P',
-            'tempDir'           => $appEnv->getUserTmpDir(),
+            'mode'                       => 'utf-8',
+            'format'                     => 'A4',
+            'default_font_size'          => 8,
+            'default_font'               => '',
+            'margin_left'                => 20,
+            'margin_right'               => 20,
+            'margin_top'                 => 40,
+            'margin_bottom'              => 40,
+            'margin_header'              => 10,
+            'margin_footer'              => 10,
+            'orientation'                => 'P',
+            'tempDir'                    => $appEnv->getUserTmpDir(),
+            'curlAllowUnsafeSslRequests' => true,
             // set two below options to properly set fonts for CJK languages
             // https://mpdf.github.io/fonts-languages/choosing-a-configuration-v7-x.html#3-languagesscripts-which-require-special-fonts
             'autoScriptToLang' => true,
