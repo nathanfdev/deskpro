@@ -191,12 +191,27 @@ class UserSearch implements UserSearchInterface
         $filteredQuery->addMust($orQuery);
         $filteredQuery->addFilter($filter);
 
-        if ($options['per_page'] && is_numeric($options['per_page'])) {
-            $from = ($options['page'] - 1) * $options['per_page'];
-            $res  = $search->search($filteredQuery, ['limit' => $options['per_page'], 'from' => $from]);
-        } else {
+        $start = ($options['page'] - 1) * $options['per_page'];
+
+        $start = isset($options['custom_start']) ? $options['custom_start'] : $start;
+
+        $perPage = isset($options['custom_perpage']) ? $options['custom_perpage'] : $options['per_page'];
+
+        $noLimitsResult = $search->search($filteredQuery, ['limit' => self::LIMIT, 'from' => 0]);
+
+        $total = $noLimitsResult->getTotalHits();
+
+        if (!isset($perPage)) {
             $res = $search->search($filteredQuery, ['limit' => self::LIMIT]);
+        } else {
+            $res = $search->search($filteredQuery, ['limit' => $perPage, 'from' => $start]);
         }
+
+        $objectIdentifier = [];
+        if (isset($options['object_identifier'])) {
+            $objectIdentifier = $this->transformer->getIdType($noLimitsResult->getResults());
+        }
+
         $objects = $this->transformer->transform($res->getResults());
 
         if ($context->getPerson() && !$context->getPerson()->is_agent) {
@@ -209,7 +224,7 @@ class UserSearch implements UserSearchInterface
             });
         }
 
-        return new ResultSet($objects, $res->getTotalHits());
+        return new ResultSet($objects, $total, $objectIdentifier);
     }
 
     /**

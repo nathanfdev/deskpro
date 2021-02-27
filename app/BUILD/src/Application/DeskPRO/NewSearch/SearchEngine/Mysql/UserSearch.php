@@ -192,15 +192,17 @@ class UserSearch implements UserSearchInterface
 
             $noLimitsResult = $this->db->fetchAll($countQuery, $params);
 
+            $total   = count($noLimitsResult);
+
+            $selectQuery = "SELECT DISTINCT(content_search.object_id), content_search.object_type FROM content_search $permJoin WHERE $permWhere AND $where ORDER BY content_search.object_id DESC LIMIT $start, $perPage";
+
+            $results = $this->db->fetchAll($selectQuery, $params);
+
             if (isset($options['object_identifier'])) {
                 $objectIdentifier = array_map(static function ($arr) {
                     return $arr['name'];
                 }, $noLimitsResult);
             }
-
-            $total   = count($noLimitsResult);
-
-            $results = ($total) > 0 ? array_slice($noLimitsResult, $start, $perPage, true) : [];
         } else {
             $total   = 0;
             $results = [];
