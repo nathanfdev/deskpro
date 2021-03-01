@@ -197,7 +197,7 @@ class UserSearch implements UserSearchInterface
 
         $perPage = isset($options['custom_perpage']) ? $options['custom_perpage'] : $options['per_page'];
 
-        $noLimitsResult = $search->search($filteredQuery, ['limit' => self::LIMIT, 'from' => 0]);
+        $noLimitsResult = $search->search($filteredQuery, ['limit' => 5000, 'from' => 0]);
 
         $total = $noLimitsResult->getTotalHits();
 
@@ -208,6 +208,7 @@ class UserSearch implements UserSearchInterface
         }
 
         $objectIdentifier = [];
+        
         if (isset($options['object_identifier'])) {
             $objectIdentifier = $this->transformer->getIdType($noLimitsResult->getResults());
         }

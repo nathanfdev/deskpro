@@ -447,11 +447,22 @@ class SearchController extends AbstractController
             $stickyResults = $stickySearch->getResults($q, null, [$type]);
 
             $searchOptions = ['page' => $curPage, 'per_page' => (int) $perPage, 'limit_types' => [$type], 'object_identifier' => true];
+
             $resultSet     = $userSearch->search(
                 $context,
                 $q,
                 $searchOptions
             );
+
+            $stickyTotal            = count($stickyResults);
+            $stickyOptions          = ['currentPage' => $curPage, 'perPage' => $perPage];
+
+            if ($resultSet->getTotal() < 1) {
+                $results  = $this->addStickyResult($stickyResults, [], $stickyOptions, [], true);
+                $pageInfo = Numbers::getPaginationPages($stickyTotal, $curPage, $perPage);
+
+                return [$pageInfo, $results];
+            }
 
             if (count($resultSet->getObjectIdentifier()) > 0) {
                 foreach ($stickyResults as $key => $stickyResult) {
@@ -459,10 +470,9 @@ class SearchController extends AbstractController
                         unset($stickyResults[$key]);
                     }
                 }
+                $stickyTotal = count($stickyResults);
             }
 
-            $stickyTotal            = count($stickyResults);
-            $stickyOptions          = ['currentPage' => $curPage, 'perPage' => $perPage];
             $resultToShow           = $perPage * $curPage;
             $resultLeftToShow       = $resultToShow - $stickyTotal;
             $alreadyShownPageResult = $perPage * ($curPage - 1);

@@ -181,7 +181,7 @@ class UserSearch implements UserSearchInterface
                 content_search
                 $permJoin
                 WHERE $permWhere AND $where
-                LIMIT 20000
+                LIMIT 5000
             ";
 
             $start       = ($page - 1) * $perPage;
