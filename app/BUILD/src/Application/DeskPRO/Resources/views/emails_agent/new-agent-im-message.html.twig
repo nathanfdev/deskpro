@@ -1,5 +1,5 @@
 {{ set_tplvar('agent_notification_footer', 'notify') }}
-<dp:subject>{{ phrase('agent.emails.new_chat_message_from', {name: message.author.getDisplayName()}) }}</dp:subject>
-{{ phrase('agent.emails.new_chat_message_from', {name: message.author.getPersonName()}) }}:
+<dp:subject>{{ phrase('agent.emails.new_chat_message_from', {name: message.person.getDisplayName()}) }}</dp:subject>
+{{ phrase('agent.emails.new_chat_message_from', {name: message.person.getDisplayName()}) }}:
 <br /><br />
-{{ message.message.getMessage()|safe_link_urls_html|link_agent_short_code_html }}
+{{ message.getMessage()|safe_link_urls_html|link_agent_short_code_html }}
