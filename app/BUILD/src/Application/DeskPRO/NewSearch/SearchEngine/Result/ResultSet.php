@@ -17,12 +17,19 @@ class ResultSet
     private $results;
 
     /**
-     * @param array $results
-     * @param int   $total
+     * @var array
      */
-    public function __construct($results = [], $total = null)
+    private $objectIdentifier;
+
+    /**
+     * @param array $results
+     * @param null $total
+     * @param array $objectIdentifier
+     */
+    public function __construct($results = [], $total = null, $objectIdentifier = [])
     {
-        $this->results = $results;
+        $this->results          = $results;
+        $this->objectIdentifier = $objectIdentifier;
 
         if ($total === null) {
             $this->total = count($results);
@@ -45,6 +52,14 @@ class ResultSet
     public function getResults()
     {
         return $this->results;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getObjectIdentifier()
+    {
+        return $this->objectIdentifier;
     }
 
     /**

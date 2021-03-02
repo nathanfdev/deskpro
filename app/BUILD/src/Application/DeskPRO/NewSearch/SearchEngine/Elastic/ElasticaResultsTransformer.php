@@ -72,6 +72,16 @@ class ElasticaResultsTransformer
         return $sorted_objects;
     }
 
+    public function getIdType(array $results)
+    {
+        $idType = [];
+        foreach ($results as $hit) {
+            $idType[] = $hit->getType().'.'.$hit->getId();
+        }
+
+        return $idType;
+    }
+
     /**
      * @param string $type
      *
