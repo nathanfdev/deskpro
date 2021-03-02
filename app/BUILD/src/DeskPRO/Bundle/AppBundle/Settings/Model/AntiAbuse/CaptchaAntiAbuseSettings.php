@@ -9,9 +9,12 @@ use JMS\Serializer\Annotation as JMS;
  */
 class CaptchaAntiAbuseSettings
 {
-    const TYPE_BASED_RATE_LIMITS = false;
-    const TYPE_GUESTS            = 'guests';
-    const TYPE_EVERYONE          = 'everyone';
+    public const TYPE_BASED_RATE_LIMITS = false;
+    public const TYPE_GUESTS            = 'guests';
+    public const TYPE_EVERYONE          = 'everyone';
+
+    public const RecaptchaVersion2 = '2';
+    public const RecaptchaVersion3 = '3';
 
     /**
      * True if set to use Google`s recaptcha.
@@ -39,6 +42,15 @@ class CaptchaAntiAbuseSettings
      * @JMS\Type("string")
      */
     private $recaptcha2SecretKey = '';
+
+    /**
+     * Recaptcha version.
+     *
+     * @var string
+     *
+     * @JMS\Type("integer")
+     */
+    private $recaptchaVersion = '';
 
     /**
      * Use it for tickets.
@@ -134,6 +146,14 @@ class CaptchaAntiAbuseSettings
     }
 
     /**
+     * @return string
+     */
+    public function getRecaptchaVersion()
+    {
+        return $this->recaptchaVersion;
+    }
+
+    /**
      * @param string $recaptcha2SecretKey
      *
      * @return $this
@@ -141,6 +161,18 @@ class CaptchaAntiAbuseSettings
     public function setRecaptcha2SecretKey($recaptcha2SecretKey)
     {
         $this->recaptcha2SecretKey = $recaptcha2SecretKey;
+
+        return $this;
+    }
+
+    /**
+     * @param string $recaptchaVersion
+     *
+     * @return $this
+     */
+    public function setRecaptchaVersion($recaptchaVersion)
+    {
+        $this->recaptchaVersion = $recaptchaVersion;
 
         return $this;
     }

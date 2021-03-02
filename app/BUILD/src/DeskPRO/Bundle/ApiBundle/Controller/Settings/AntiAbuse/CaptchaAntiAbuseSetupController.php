@@ -41,6 +41,7 @@ class CaptchaAntiAbuseSetupController extends AbstractAntiAbuseSetupController
             ->updateSetting(CaptchaSettingsResolver::USE_RECAPTCHA, $model->getUseRecaptcha2())
             ->updateSetting(CaptchaSettingsResolver::RECAPTCHA_SITE_KEY, $model->getRecaptcha2SiteKey())
             ->updateSetting(CaptchaSettingsResolver::RECAPTCHA_SECRET_KEY, $model->getRecaptcha2SecretKey())
+            ->updateSetting(CaptchaSettingsResolver::RECAPTCHA_VERSION, $model->getRecaptchaVersion())
             ->updateSetting(CaptchaSettingsResolver::TICKETS, $model->getTickets())
             ->updateSetting(CaptchaSettingsResolver::COMMENTS, $model->getComments())
             ->updateSetting(CaptchaSettingsResolver::COMMUNITY, $model->getCommunity())

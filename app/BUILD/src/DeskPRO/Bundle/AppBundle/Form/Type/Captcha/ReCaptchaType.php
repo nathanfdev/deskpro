@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Captcha;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha\HcValidRecaptcha2;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha\ValidRecaptcha2;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
@@ -24,11 +23,6 @@ class ReCaptchaType extends AbstractType
     private $settingsResolver;
 
     /**
-     * @var LanguageManager
-     */
-    private $languageManager;
-
-    /**
      * @var BrandStack
      */
     private $brandStack;
@@ -41,18 +35,15 @@ class ReCaptchaType extends AbstractType
     /**
      * Constructor.
      *
-     * @param BrandStack $brandStack
-     * @param PortalBrandThemeLoader $portalBrandThemeLoader
      * @param SettingsResolver $settingsResolver
-     * @param LanguageManager $languageManager
+     * @param BrandStack $brandStack
+     * @param PortalBrandThemeLoader|null $portalBrandThemeLoader
      */
     public function __construct(
         SettingsResolver $settingsResolver,
-        LanguageManager $languageManager,
         BrandStack $brandStack,
         PortalBrandThemeLoader $portalBrandThemeLoader = null
     ) {
-        $this->languageManager        = $languageManager;
         $this->settingsResolver       = $settingsResolver;
         $this->brandStack             = $brandStack;
         $this->portalBrandThemeLoader = $portalBrandThemeLoader;
@@ -128,6 +119,20 @@ class ReCaptchaType extends AbstractType
     }
 
     /**
+     * @return mixed
+     */
+    protected function getRecaptchaVersion()
+    {
+        $version = $this->settingsResolver->getGlobalSettings()->get('core.recaptcha_version');
+
+        if (is_numeric($version)) {
+            return $version;
+        }
+
+        return self::getCloudRecaptchaVersion();
+    }
+
+    /**
      * Returns true/false on if the cloud recaptcha is enabled. This
      * condition is NOT sufficient to use the cloud credentials, because
      * a cloud account can still install their own recaptcha app (with
@@ -166,6 +171,18 @@ class ReCaptchaType extends AbstractType
     {
         if (self::isCloudRecapchaEnabled()) {
             return defined('DP_RECAPTCHA2_SECRET_KEY') ? DP_RECAPTCHA2_SECRET_KEY : null;
+        }
+
+        return;
+    }
+
+    /**
+     * @return null|void
+     */
+    public static function getCloudRecaptchaVersion()
+    {
+        if (self::isCloudRecapchaEnabled()) {
+            return defined('DP_RECAPTCHA_VERSION') ? DP_RECAPTCHA_VERSION : null;
         }
 
         return;

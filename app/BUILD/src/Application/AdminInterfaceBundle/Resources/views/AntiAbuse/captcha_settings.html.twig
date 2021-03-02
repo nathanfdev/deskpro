@@ -36,6 +36,15 @@
                                     &nbsp;&nbsp;&nbsp;
                                     {{ phrase('admin.settings.re_captcha_secret_key') }}: <input type="text" ng-model="settings.recaptcha2_secret_key" /><br/>
                                 </span>
+
+                                <span class="help-block">
+                                {{ phrase('admin.settings.re_captcha_version') }}:
+                                    <select ng-model="settings.recaptcha_version">
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+
+                                 </span>
                             </div>
                         </div>
                     </div>
