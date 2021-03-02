@@ -15,10 +15,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractDepartmentsController extends CrudController
 {
-    public static $entity       = Department::class;
-    public static $type         = DepartmentType::class;
-    public static $listOrder    = 'asc';
-    public static $listPaginate = false;
+    public static $entity    = Department::class;
+    public static $type      = DepartmentType::class;
+    public static $listOrder = 'asc';
 
     protected static $property;
     protected static $departmentType;
