@@ -4600,6 +4600,8 @@ class TicketController extends AbstractController
             );
         }
 
+        $mailer = $this->container->getMailer();
+
         if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->container->get('email.agent_viewmodel_factory')
                 ->createAgentTicketForwardModel(
@@ -4610,8 +4612,22 @@ class TicketController extends AbstractController
                     $attachments
                 );
 
-            $message = $this->getContainer()->get('email.email_sender')
-                ->prepareMessage($viewModel, [], $message);
+            foreach (array_keys($tos) as $key =>  $sendTo) {
+
+                //Remove message headers from previous loop
+                $message->getHeaders()->removeAll('X-DP-LREF');
+                $message->getHeaders()->removeAll('X-DeskPRO-MessageRef');
+                $message->getHeaders()->removeAll('X-Deskpro-EmailSourceId');
+
+                $message = $this->getContainer()->get('email.email_sender')
+                    ->prepareMessage($viewModel, ['to' => $sendTo], $message);
+
+                if ($mailer instanceof StorageTransportInterface) {
+                    $mailer->queueMessage($message);
+                } else {
+                    $mailer->send($message);
+                }
+            }
         } else {
             $message->setTemplate(
                 'DeskPRO:emails_user:ticket-fwd.html.twig',
@@ -4624,14 +4640,14 @@ class TicketController extends AbstractController
                     'attachments'   => $attachments,
                 ]
             );
-        }
-        $mailer = $this->container->getMailer();
-        if ($mailer instanceof StorageTransportInterface) {
-            $mailer->queueMessage($message);
-        } else {
-            $mailer->send($message);
-        }
 
+            $mailer = $this->container->getMailer();
+            if ($mailer instanceof StorageTransportInterface) {
+                $mailer->queueMessage($message);
+            } else {
+                $mailer->send($message);
+            }
+        }
         $this->em->getRepository(Draft::class)->deleteDraft('ticket', $ticket->getId());
 
         foreach ($messagesIds as $messageId) {

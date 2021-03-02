@@ -270,7 +270,7 @@ class Message extends \Orb\Mail\Message
         $this->template_vars   = null;
         $this->template_engine = null;
         $this->set_to_person   = null;
-        $this->attach_blobs    = null;
+        $this->attach_blobs    = [];
         $this->embed_only      = true;
 
         $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);

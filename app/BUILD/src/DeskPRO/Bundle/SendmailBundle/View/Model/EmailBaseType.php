@@ -73,7 +73,7 @@ abstract class EmailBaseType
         $this->templateFile = $templateFile;
     }
 
-    public function setRecipient(Person $recipient)
+    public function setRecipient($recipient)
     {
         $this->recipient = $recipient;
     }
