@@ -43,13 +43,13 @@ class ValidRecaptcha2Validator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         $recaptchaVersion = $this->getRecaptchaVersion();
-        $recaptcha = new ReCaptcha($this->getSecretKey());
-        $request         = $this->request_stack->getMasterRequest();
-        $recaptcha_value = $request->get('g-recaptcha-response');
+        $recaptcha        = new ReCaptcha($this->getSecretKey());
+        $request          = $this->request_stack->getMasterRequest();
+        $recaptcha_value  = $request->get('g-recaptcha-response');
 
         $response = $recaptcha->verify($recaptcha_value, $request->getClientIp());
 
-        if($recaptchaVersion === CaptchaAntiAbuseSettings::RecaptchaVersion3 && $response->isSuccess() && $response->getScore() <= 0.5) {
+        if ($recaptchaVersion === CaptchaAntiAbuseSettings::RecaptchaVersion3 && $response->isSuccess() && $response->getScore() <= 0.5) {
             $this->context->addViolation($constraint->message);
         }
 

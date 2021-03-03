@@ -250,9 +250,9 @@ class GuidesController extends AbstractPublishController
                 if ($reCaptcha) {
                     $siteKey = $this->getBrandSetting('core.recaptcha2_site_key');
                     $captcha = [
-                        'type' => 'recaptcha',
-                        'key'  => $siteKey,
-                        'version' => $this->getBrandSetting('core.recaptcha_version')
+                        'type'    => 'recaptcha',
+                        'key'     => $siteKey,
+                        'version' => $this->getBrandSetting('core.recaptcha_version'),
                     ];
                 } else {
                     $captcha = [

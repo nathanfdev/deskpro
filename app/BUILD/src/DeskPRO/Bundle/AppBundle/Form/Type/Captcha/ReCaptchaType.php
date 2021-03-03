@@ -49,7 +49,6 @@ class ReCaptchaType extends AbstractType
         $this->portalBrandThemeLoader = $portalBrandThemeLoader;
     }
 
-    
     /**
      * {@inheritdoc}
      */

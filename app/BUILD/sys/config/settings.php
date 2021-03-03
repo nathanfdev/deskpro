@@ -519,8 +519,7 @@ return [
 
     'core_tickets.work_hours' => 'a:7:{s:8:"timezone";s:3:"UTC";s:10:"start_hour";i:9;s:9:"start_min";i:0;s:8:"end_hour";i:17;s:7:"end_min";i:0;s:8:"holidays";a:0:{}s:9:"work_days";a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}}',
 
-
-    /**
+    /*
      * How to count times when ticket in pending status
      * Check TicketStatus::PENDING_WAITING_TIME_MODE_XXX
      */
@@ -1231,23 +1230,23 @@ return [
     'services.unsplash_access_key' => '3d9c27e1cb7a6e77f038d7c8beb0759d37f7a825be8a0c79d03f0f1554407bc1',
 
     // Placeholders for auditing purposes
-    'beta_features.guides' => null,
-    'beta_features.messenger' => null,
-    'core.apps_chat' => null,
-    'core.apps_guides' => null,
-    'core.deskpro_build' => null,
-    'core.disable_csp_headers' => null,
-    'core.filestorage_dir_mode' => null,
-    'core.filestorage_disable_physical_delete' => null,
-    'core.filestorage_file_mode' => null,
-    'core.filestorage_s3_bucket' => null,
-    'core.filestorage_s3_key' => null,
-    'core.install_build' => null,
-    'core.install_key' => null,
-    'core.license' => null,
-    'core.setup_initial' => null,
-    'core.use_encryption' => null,
-    'portal.widget.enabled' => null,
-    'segment' => null,
+    'beta_features.guides'                      => null,
+    'beta_features.messenger'                   => null,
+    'core.apps_chat'                            => null,
+    'core.apps_guides'                          => null,
+    'core.deskpro_build'                        => null,
+    'core.disable_csp_headers'                  => null,
+    'core.filestorage_dir_mode'                 => null,
+    'core.filestorage_disable_physical_delete'  => null,
+    'core.filestorage_file_mode'                => null,
+    'core.filestorage_s3_bucket'                => null,
+    'core.filestorage_s3_key'                   => null,
+    'core.install_build'                        => null,
+    'core.install_key'                          => null,
+    'core.license'                              => null,
+    'core.setup_initial'                        => null,
+    'core.use_encryption'                       => null,
+    'portal.widget.enabled'                     => null,
+    'segment'                                   => null,
     'user.non_published_articles_on_helpcenter' => null,
 ];
