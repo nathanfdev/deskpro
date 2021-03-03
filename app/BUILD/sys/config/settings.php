@@ -239,6 +239,11 @@ return [
     'core.recaptcha_private_key' => '6LcWL8YSAAAAAJVZ5AEMb5Vq7wkZoGHfKfAqvB2U',
 
     /*
+     * Recaptcha version
+     */
+    'core.recaptcha_version' => '2',
+
+    /*
      * Default storage method for blobs is the db. Other values: fs
      */
     'core.filestorage_method' => 'db',

@@ -519,6 +519,7 @@
 {% endblock deskpro_display_html_widget %}
 
 {# CAPTCHA #}
+
 {% block deskpro_captcha_widget %}
     {% if form.captcha is defined %}
     {{ form_row(form.captcha) }}
@@ -527,8 +528,31 @@
 
 {% block deskpro_recaptcha_widget %}
     {% spaceless %}
+        {% if recaptcha_version == 3 %}
+            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response"/>
+            <script src="//www.google.com/recaptcha/api.js?onload=ReCaptchaCallbackV3&render={{ site_key }}" async defer></script>
+            <script>
+              ReCaptchaCallbackV3 = function() {
+                grecaptcha.ready(function() {
+                  grecaptcha.execute('{{ site_key }}')
+                    .then(function(token) {
+                      document.getElementById('g-recaptcha-response').value = token
+                    })
+                  // refresh token every minute to prevent expiration
+                  setInterval(function(){
+                    grecaptcha.execute('{{ site_key }}').then(function(token) {
+                      document.getElementById('g-recaptcha-response').value = token;
+                    });
+                  }, 60000);
+                })
+              };
+            </script>
+
+        {% else %}
         <script src="//www.google.com/recaptcha/api.js" async defer></script>
         <div class="g-recaptcha" data-sitekey="{{ site_key }}"{% if secure_token %} data-stoken="{{ secure_token }}"{% endif %}></div>
+
+        {% endif %}
     {% endspaceless %}
 {% endblock deskpro_recaptcha_widget %}
 

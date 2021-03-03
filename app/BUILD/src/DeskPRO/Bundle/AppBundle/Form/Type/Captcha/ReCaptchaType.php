@@ -49,14 +49,15 @@ class ReCaptchaType extends AbstractType
         $this->portalBrandThemeLoader = $portalBrandThemeLoader;
     }
 
+    
     /**
      * {@inheritdoc}
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $siteKey = $this->getSiteKey();
+        $view->vars['site_key'] = $this->getSiteKey();
 
-        $view->vars['site_key'] = $siteKey;
+        $view->vars['recaptcha_version'] = $this->getRecaptchaVersion();
 
         $secureToken = null;
         if (self::isCloudRecapchaEnabled()) {
