@@ -186,6 +186,7 @@ return [
     'is_category_subscribed',
     'can_use_*',
     'can_rate_*',
+    'can_rate_community',
     'can_view_tickets_link',
     'show_tab_*',
     'has_any_*',

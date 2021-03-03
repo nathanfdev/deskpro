@@ -197,9 +197,6 @@ class TicketController extends AbstractController
         $message->person          = ($this->in->getBool('message_as_agent') ? $this->person : $person);
         $message->creation_system = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
 
-        $formatter    = new SnippetFormatter(App::getContainer()->get('deskpro.sandboxed_twig.twig'));
-        $message_text = $formatter->formatText($message_text, $ticket);
-
         if ($this->in->getBool('message_is_html')) {
             $message_text     = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
             $message_text     = \Orb\Util\Strings::trimHtml($message_text);

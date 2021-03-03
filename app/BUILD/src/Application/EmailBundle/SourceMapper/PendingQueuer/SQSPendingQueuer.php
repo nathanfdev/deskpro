@@ -52,13 +52,22 @@ class SQSPendingQueuer implements PendingQueuerInterface
         $this->queueUrl = $queueUrl;
 
         $me = $this;
-        register_shutdown_function(function () use ($me) {
+
+        $pushAll = function () use ($me) {
             try {
                 $me->pushAll();
             } catch (\Exception $e) {
                 error_log($e->getMessage());
             }
-        });
+        };
+
+        register_shutdown_function($pushAll);
+
+        // Register new dp_push_outgoing_sqs_emails tag
+        \DpShutdown::add($pushAll, [], 'dp_push_outgoing_sqs_emails', -4096);
+
+        // Run with the existing db_done_trans_commit tag
+        \DpShutdown::add($pushAll, [], 'db_done_trans_commit', -4096);
     }
 
     /**
@@ -96,9 +105,5 @@ class SQSPendingQueuer implements PendingQueuerInterface
             'Id'          => $source['uuid'],
             'MessageBody' => json_encode($data),
         ];
-
-        // in prod, seems the shutdown function is unreliable,
-        // so quickfix we're sending as soon as we get it
-        $this->pushAll();
     }
 }

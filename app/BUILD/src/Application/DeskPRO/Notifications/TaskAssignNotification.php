@@ -59,6 +59,10 @@ class TaskAssignNotification extends AbstractAgentNotification
 
     public function send()
     {
+        if (!App::getCurrentPerson()) {
+            return;
+        }
+
         $this->sendBrowserNotifications('AgentBundle:Task:notify-row-assigned.html.twig', [
             'task'        => $this->task,
             'performer'   => App::getCurrentPerson(),
