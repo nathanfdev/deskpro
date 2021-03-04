@@ -452,10 +452,11 @@ class LanguagesController extends AbstractController
                 $p->phrase = $phrase;
 
                 foreach ($this->container->getLanguageData()->getInstalledLangs() as $language) {
-                    $exist = $this->db->countWithPlaceholders('phrases', 'language_id = ? AND name = ?', [$language['installed_language_id'], $phrase_id]);
-                    //We don't want to insert phrases on other languages if it exists
+                    $phraseExists = $this->get('language_phrases_helper')->isLanguagePhraseExists($phrase_id,
+                        $language['installed_language_id'], $p->groupname);
 
-                    if ($exist > 0 && $language['installed_language_id'] !== $lang->id) {
+                    //We don't want to insert phrases on other languages if it exists
+                    if ($phraseExists && $language['installed_language_id'] !== $lang->id) {
                         continue;
                     }
 
@@ -677,7 +678,7 @@ class LanguagesController extends AbstractController
     public function getPhrasesAction($id, $group_id)
     {
         $phrases =  $this->get('language_phrases_helper')->getLanguagePhrases($id, $group_id);
-        
+
         if ($phrases) {
             return $this->createJsonResponse([
                 'phrases' => $phrases,

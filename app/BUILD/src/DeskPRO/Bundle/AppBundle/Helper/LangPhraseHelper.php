@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Helper;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Languages\LangPackInfo;
 use Application\DeskPRO\Languages\PhraseData;
@@ -39,38 +40,50 @@ class LangPhraseHelper
     }
 
     /**
-     * @param $id
+     * @param $langId
+     * @param $group
+     *
+     * @return array
+     */
+    public function getPhraseIds($langId, $group)
+    {
+        $phrases = $this->getLanguagePhrases($langId, $group);
+
+        if (empty($phrases)) {
+            return [];
+        }
+
+        return array_map(static function ($arr) {
+            return $arr['id'];
+        }, $phrases);
+    }
+
+    /**
+     * @param $phraseId
+     * @param $langId
+     * @param $group
+     *
+     * @return bool
+     */
+    public function isLanguagePhraseExists($phraseId, $langId, $group)
+    {
+        $phrasesIds = $this->getPhraseIds($langId, $group);
+
+        return in_array($phraseId, $phrasesIds, true);
+    }
+
+    /**
+     * @param $langId
      * @param $group
      *
      * @return array|false
      */
-    public function getLanguagePhrases($id, $group)
+    public function getLanguagePhrases($langId, $group)
     {
-        if (Numbers::isInteger($id)) {
-            $lang = $this->container->getLanguageData()->get($id);
-            if (!$lang) {
-                return false;
-            }
-        } else {
-            $langpacks = new LangPackInfo();
-            if (!$langpacks->hasLang($id)) {
-                return false;
-            }
+        $lang = $this->getLang($langId);
 
-            $lang_info = $langpacks->getLangInfo($id);
-            $lang      = null;
-
-            foreach ($this->container->getLanguageData()->getAll() as $l) {
-                if ($l->sys_name === $lang_info['id']) {
-                    $lang = $l;
-
-                    break;
-                }
-            }
-
-            if (!$lang) {
-                $lang = null;
-            }
+        if (!$lang) {
+            return false;
         }
 
         /** @var \Application\DeskPRO\EntityRepository\Phrase $phraseRepo */
@@ -179,5 +192,42 @@ class LangPhraseHelper
         }
 
         return $phrases;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return Language|false
+     */
+    public function getLang($id)
+    {
+        if (Numbers::isInteger($id)) {
+            $lang = $this->container->getLanguageData()->get($id);
+            if (!$lang) {
+                return false;
+            }
+        } else {
+            $langpacks = new LangPackInfo();
+            if (!$langpacks->hasLang($id)) {
+                return false;
+            }
+
+            $lang_info = $langpacks->getLangInfo($id);
+            $lang      = false;
+
+            foreach ($this->container->getLanguageData()->getAll() as $l) {
+                if ($l->sys_name === $lang_info['id']) {
+                    $lang = $l;
+
+                    break;
+                }
+            }
+
+            if (!$lang) {
+                $lang = false;
+            }
+        }
+
+        return $lang;
     }
 }
