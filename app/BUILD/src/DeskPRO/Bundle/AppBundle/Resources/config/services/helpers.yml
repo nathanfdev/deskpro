@@ -30,3 +30,9 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@language_manager"
+
+  language_phrases_helper:
+    class: DeskPRO\Bundle\AppBundle\Helper\LangPhraseHelper
+    arguments:
+      - "@service_container"
+      - "@doctrine.orm.default_entity_manager"
