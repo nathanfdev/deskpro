@@ -2,14 +2,12 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Languages\LangPackInfo;
-use Application\DeskPRO\Languages\PhraseData;
 use Application\DeskPRO\ResourceScanner\LanguagePhrases;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
@@ -230,7 +228,7 @@ class LanguagesController extends AbstractController
                 $newPhrase->setLanguage($lang);
                 $this->em->persist($newPhrase);
             }
-            
+
             $this->em->flush();
         } catch (\Exception $e) {
             $this->db->rollback();
@@ -454,9 +452,11 @@ class LanguagesController extends AbstractController
                 $p->phrase = $phrase;
 
                 foreach ($this->container->getLanguageData()->getInstalledLangs() as $language) {
-                    $exist = $this->db->countWithPlaceholders('phrases', 'language_id = ? AND name = ?', [$language['installed_language_id'], $phrase_id]);
+                    $phraseExists = $this->get('language_phrases_helper')->isLanguagePhraseExists($phrase_id,
+                        $language['installed_language_id'], $p->groupname);
+
                     //We don't want to insert phrases on other languages if it exists
-                    if ($exist > 0 && $language['installed_language_id'] !== $lang->id) {
+                    if ($phraseExists && $language['installed_language_id'] !== $lang->id) {
                         continue;
                     }
 
@@ -677,142 +677,15 @@ class LanguagesController extends AbstractController
 
     public function getPhrasesAction($id, $group_id)
     {
-        if (Numbers::isInteger($id)) {
-            $lang = $this->container->getLanguageData()->get($id);
-            if (!$lang) {
-                throw $this->createNotFoundException();
-            }
-        } else {
-            $langpacks = new LangPackInfo();
-            if (!$langpacks->hasLang($id)) {
-                throw $this->createNotFoundException();
-            }
+        $phrases =  $this->get('language_phrases_helper')->getLanguagePhrases($id, $group_id);
 
-            $lang_info = $langpacks->getLangInfo($id);
-            $lang      = null;
-
-            foreach ($this->container->getLanguageData()->getAll() as $l) {
-                if ($l->sys_name == $lang_info['id']) {
-                    $lang = $l;
-
-                    break;
-                }
-            }
-
-            if (!$lang) {
-                $lang = null;
-            }
+        if ($phrases) {
+            return $this->createJsonResponse([
+                'phrases' => $phrases,
+            ]);
         }
 
-        /** @var \Application\DeskPRO\EntityRepository\Phrase $repos */
-        $repos = $this->em->getRepository(Phrase::class);
-
-        $phrase_data = new PhraseData($repos, DP_ROOT.'/locales');
-
-        switch ($group_id) {
-            case 'ticket_departments':
-                $phrases = $phrase_data->getTicketDepartmentPhrases(
-                    $this->container->getSystemService('ticket_departments'),
-                    $lang
-                );
-
-                break;
-
-            case 'ticket_categories':
-                $phrases = $phrase_data->getTicketCategoryPhrases(
-                    $this->container->getSystemService('ticket_categories'),
-                    $lang
-                );
-
-                break;
-
-            case 'ticket_priorities':
-                $phrases = $phrase_data->getTicketPriorityPhrases(
-                    $this->container->getSystemService('ticket_priorities'),
-                    $lang
-                );
-
-                break;
-
-            case 'chat_departments':
-                $phrases = $phrase_data->getChatDepartmentPhrases(
-                    $this->container->getSystemService('chat_departments'),
-                    $lang
-                );
-
-                break;
-
-            case 'products':
-                $phrases = $phrase_data->getProductPhrases(
-                    $this->container->getSystemService('products'),
-                    $lang
-                );
-
-                break;
-
-            case 'ticket_fields':
-                $phrases = $phrase_data->getFieldPhrases(
-                    $this->container->getSystemService('ticket_fields_manager'),
-                    $lang
-                );
-
-                break;
-
-            case 'person_fields':
-                $phrases = $phrase_data->getFieldPhrases(
-                    $this->container->getSystemService('person_fields_manager'),
-                    $lang
-                );
-
-                break;
-
-            case 'org_fields':
-                $phrases = $phrase_data->getFieldPhrases(
-                    $this->container->getSystemService('org_fields_manager'),
-                    $lang
-                );
-
-                break;
-
-            case 'chat_fields':
-                $phrases = $phrase_data->getFieldPhrases(
-                    $this->container->getSystemService('chat_fields_manager'),
-                    $lang
-                );
-
-                break;
-
-            case 'community_statuses':
-                $phrases = $phrase_data->getCommunityStatusPhrases($lang);
-
-                break;
-
-            case 'community_forums':
-                $phrases = $phrase_data->getCommunityForumsPhrases($lang);
-
-                break;
-
-            case 'kb_categories':
-                /** @var \Application\DeskPRO\EntityRepository\ArticleCategory $repos */
-                $repos   = $this->em->getRepository(ArticleCategory::class);
-                $phrases = $phrase_data->getKbCategoryPhrases($repos, $lang);
-
-                break;
-
-            case 'custom':
-                $phrases = $phrase_data->loadCustom($lang);
-
-                break;
-
-            default:
-                $phrases = $phrase_data->loadGroup($lang, $group_id);
-
-                break;
-        }
-
-        return $this->createJsonResponse([
-            'phrases' => $phrases,
-        ]);
+        throw $this->createNotFoundException();
     }
 
     //###########################################################################
