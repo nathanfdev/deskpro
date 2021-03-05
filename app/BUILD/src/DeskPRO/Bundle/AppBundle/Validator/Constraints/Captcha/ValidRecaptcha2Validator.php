@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use ReCaptcha\ReCaptcha;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -27,7 +28,7 @@ class ValidRecaptcha2Validator extends ConstraintValidator
     /**
      * Constructor.
      *
-     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brand_stack
+     * @param BrandStack $brand_stack
      * @param RequestStack                                 $request_stack
      */
     public function __construct(BrandStack $brand_stack, RequestStack $request_stack)
@@ -41,13 +42,17 @@ class ValidRecaptcha2Validator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        $recaptcha = new ReCaptcha($this->getSecretKey());
+        $recaptchaVersion = $this->getRecaptchaVersion();
+        $recaptcha        = new ReCaptcha($this->getSecretKey());
+        $request          = $this->request_stack->getMasterRequest();
+        $recaptcha_value  = $request->get('g-recaptcha-response');
 
-        $request         = $this->request_stack->getMasterRequest();
-        $recaptcha_value = $request->get('g-recaptcha-response');
-
-        /* @var \ReCaptcha\Response $response */
         $response = $recaptcha->verify($recaptcha_value, $request->getClientIp());
+
+        if ($recaptchaVersion === CaptchaAntiAbuseSettings::RecaptchaVersion3 && $response->isSuccess() && $response->getScore() <= 0.5) {
+            $this->context->addViolation($constraint->message);
+        }
+
         if (!$response->isSuccess()) {
             $this->context->addViolation($constraint->message);
         }
@@ -60,10 +65,24 @@ class ValidRecaptcha2Validator extends ConstraintValidator
     {
         $setting_secret = $this->brand_stack->getActive()->getSetting('core.recaptcha2_secret_key');
 
-        if (strlen($setting_secret) > 0) {
+        if (!empty($setting_secret)) {
             return $setting_secret;
         }
 
         return ReCaptchaType::getCloudRecaptchaSecret();
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getRecaptchaVersion()
+    {
+        $version = $this->brand_stack->getActive()->getSetting('core.recaptcha_version');
+
+        if (is_numeric($version)) {
+            return $version;
+        }
+
+        return ReCaptchaType::getCloudRecaptchaVersion();
     }
 }

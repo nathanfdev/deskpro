@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Form\Captcha;
 
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -11,7 +7,7 @@ use Orb\Util\Strings;
 
 class Recaptcha extends CaptchaAbstract
 {
-    const RECAPTCHA_VERIFY_URL = 'http://www.google.com/recaptcha/api/verify';
+    public const RECAPTCHA_VERIFY_URL = 'http://www.google.com/recaptcha/api/verify';
 
     /**
      * @var string

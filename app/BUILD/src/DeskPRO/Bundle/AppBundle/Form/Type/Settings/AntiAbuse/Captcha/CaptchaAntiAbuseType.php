@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Captcha;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -28,6 +29,14 @@ class CaptchaAntiAbuseType extends AbstractType
             ])
             ->add('recaptcha2_secret_key', TextType::class, [
                 'required' => false,
+            ])
+            ->add('recaptcha_version', ChoiceType::class, [
+                'required'          => false,
+                'choices_as_values' => true,
+                'choices'           => [
+                    CaptchaAntiAbuseSettings::RecaptchaVersion2,
+                    CaptchaAntiAbuseSettings::RecaptchaVersion3,
+                ],
             ])
             ->add('tickets', CaptchaSettingChoiceType::class, [
                 'required' => false,

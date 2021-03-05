@@ -368,7 +368,7 @@ services:
 
   form.recaptcha:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType
-    arguments: ["@settings_resolver", "@language_manager", "@brand_stack", "@?portal_brand_theme_loader"]
+    arguments: ["@settings_resolver", "@brand_stack", "@?portal_brand_theme_loader"]
     tags:
       - { name: form.type }
 
