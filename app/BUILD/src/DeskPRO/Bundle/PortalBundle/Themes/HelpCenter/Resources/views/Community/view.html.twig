@@ -38,7 +38,7 @@
 
     <div class="row mb-4">
         <div class="col-sm-12">
-            <div class="dp-po-post-like">
+            <div class="dp-po-post-like dp-po-like-box">
                 {% include 'Theme:Community:CommunityTopicsList/like-button.html.twig' with {
                     topic: topic,
                     is_compact: false
@@ -53,6 +53,7 @@
                                 {{ topic.statusCategory.title }}
                             </span>
                         </a>
+
                     {% endif %}
                 </h1>
             </div>
@@ -62,6 +63,12 @@
                         <ul class="dp-po-post-user-list">
                             {% include 'Theme:PublishCommon:post-user-list.html.twig' with { users: [topic.person] } %}
                         </ul>
+                        <div class=" dp-po-like-box-sm mt-2">
+                        {% include 'Theme:Community:CommunityTopicsList/like-button.html.twig' with {
+                            topic: topic,
+                            is_compact: false
+                        } %}
+                        </div>
                     </div>
                 </div>
                 <div class="col-sm-2">
@@ -119,7 +126,7 @@
 {% endblock page_body %}
 
 {% block page_sidebar %}
-    
+
     {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
         current_forum: topic.forum,
         is_sidebar: true,
