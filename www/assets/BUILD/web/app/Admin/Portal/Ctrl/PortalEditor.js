@@ -189,18 +189,33 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
         data:   {
           id: this.selected_theme
         }
+      }).then(() => {
+        this.recompiling = true;
+        request.then(
+          () => {
+            this.$q.all([
+              this.loadGroups(),
+              this.loadValues(),
+              this.loadAdvancedEdits(),
+              this.loadAssetFiles(),
+              this.loadLogo(),
+              this.loadFavicon(),
+              this.loadSplashImage(),
+              this.loadThemeOptions(),
+              this.loadTemplateOptions(),
+              this.loadThemeSets(),
+              this.loadThemeSet(),
+              this.loadWelcomeBox(),
+              this.refreshPreviewUrl()
+            ]).then(() => {
+              this.recompiling = false;
+            });
+          },
+          () => {
+            this.serverError();
+            this.recompiling = false;
+          });
       });
-      this.recompiling = true;
-      return request.then(
-        () => {
-            this.loadGroups();
-            this.refreshPreviewUrl();
-            return this.recompiling = false;
-        },
-        () => {
-          this.serverError();
-          return this.recompiling = false;
-        });
     }
 
     saveWelcomeBox() {
