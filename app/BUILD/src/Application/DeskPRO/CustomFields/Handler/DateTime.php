@@ -42,7 +42,7 @@ class DateTime extends Date
         $person = App::getCurrentPerson();
         $date   = \DateTime::createFromFormat($this->getFormat(), $value);
 
-        if (!$this->field_def->getOption('ignore_timezone')) {
+        if ($date && !$this->field_def->getOption('ignore_timezone')) {
             $date->setTimezone($person ? $person->getDateTimezone() : new \DateTimeZone('UTC'));
         }
         if (!$date) {
@@ -161,7 +161,7 @@ class DateTime extends Date
                 }
             }
 
-        // "Days from now"
+            // "Days from now"
         } elseif ($this->field_def->getOption('date_valid_type') == 'range') {
             if ($contextData && isset($contextData['exist_ticket'])) {
                 /** @var \DateTime $now */
