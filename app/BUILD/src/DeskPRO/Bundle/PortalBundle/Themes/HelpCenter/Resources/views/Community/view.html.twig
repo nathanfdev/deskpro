@@ -1,4 +1,4 @@
-{% extends 'Theme::layout.html.twig' %}
+{% extends 'Theme::community_layout.html.twig' %}
 {% import 'Theme:Portal:User/macros.html.twig' as macros %}
 {% set main_class = 'dp-po-community-topic' %}
 {% block page_top %}
@@ -34,16 +34,20 @@
     </div>
 {% endblock page_top %}
 
+{% block like_widget %}
+    <div class="dp-po-post-like">
+        {% include 'Theme:Community:CommunityTopicsList/like-button.html.twig' with {
+            topic: topic,
+            is_compact: false
+        } %}
+    </div>
+
+{% endblock like_widget %}
+
 {% block page_body %}
 
     <div class="row mb-4">
         <div class="col-sm-12">
-            <div class="dp-po-post-like dp-po-like-box">
-                {% include 'Theme:Community:CommunityTopicsList/like-button.html.twig' with {
-                    topic: topic,
-                    is_compact: false
-                } %}
-            </div>
             <div class="dp-po-title">
                 <h1 class="dp-po-title-text">
                     {{ topic.realTitle }}
@@ -63,12 +67,6 @@
                         <ul class="dp-po-post-user-list">
                             {% include 'Theme:PublishCommon:post-user-list.html.twig' with { users: [topic.person] } %}
                         </ul>
-                        <div class=" dp-po-like-box-sm mt-2">
-                        {% include 'Theme:Community:CommunityTopicsList/like-button.html.twig' with {
-                            topic: topic,
-                            is_compact: false
-                        } %}
-                        </div>
                     </div>
                 </div>
                 <div class="col-sm-2">
@@ -124,6 +122,7 @@
         {% endif %}
     {% endif %}
 {% endblock page_body %}
+
 
 {% block page_sidebar %}
 
