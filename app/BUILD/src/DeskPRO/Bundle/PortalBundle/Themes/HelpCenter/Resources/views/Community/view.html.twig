@@ -1,219 +1,237 @@
-{% extends 'Theme::community_layout.html.twig' %}
+{% extends 'Theme::layout.html.twig' %}
 {% import 'Theme:Portal:User/macros.html.twig' as macros %}
 {% set main_class = 'dp-po-community-topic' %}
-{% block page_top %}
 
-    <div class="d-block d-sm-none">
-        <div class="dp-po-post-mobile-area">
-        {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
-            current_forum: topic.forum,
-            is_sidebar: true,
-        } %}
+        {% block page_content %}
+            <div class="dp-po">
+                <main id="main" tabindex="-1"
+                      class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+                    <h1 class="aria-hide">{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</h1>
+                    <div class="container">
+                        <div class="d-block d-sm-none">
+                            <div class="dp-po-post-mobile-area">
+                                {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+                                    current_forum: topic.forum,
+                                    is_sidebar: true,
+                                } %}
 
-        {% if brand_setting('user.community_subscriptions') %}
-        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-            buttonId: 'subscribeDropdownMenuMobile',
-            subscriptionInfo: [
-                {
-                    toggleUrl: portal_path(topic, 'toggle_subscription'),
-                    icon: 'fal fa-file-alt',
-                    title: topic.title | truncate(20),
-                    active: is_subscribed,
-                    disabled: is_subscribed_root
-                },
-                {
-                    toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
-                    icon: 'fal fa-file-spreadsheet',
-                    title: phrase('helpcenter.community.section_title'),
-                    active: is_subscribed_root
-                }
-            ]
-        } %}
-        {% endif %}
-        </div>
-    </div>
-{% endblock page_top %}
-
-{% block like_widget %}
-    <div class="dp-po-post-like">
-        {% include 'Theme:Community:CommunityTopicsList/like-button.html.twig' with {
-            topic: topic,
-            is_compact: false
-        } %}
-    </div>
-
-{% endblock like_widget %}
-
-{% block page_body %}
-
-    <div class="row mb-4">
-        <div class="col-sm-12">
-            <div class="dp-po-title">
-                <h1 class="dp-po-title-text">
-                    {{ topic.realTitle }}
-                    {% if topic.statusCategory %}
-                        <a class="dp-po-post-user-category-link" href="{{ path('portal_community_browse', {filter_uri: "type-#{topic.forum.id}/#{topic.statusCategory.status_type}-#{topic.statusCategory.id}"}) }}">
-                            <span class="badge badge-secondary" style="background-color: {{ topic.statusCategory.color }};">
-                                {{ topic.statusCategory.title }}
-                            </span>
-                        </a>
-
-                    {% endif %}
-                </h1>
-            </div>
-            <div class="row align-items-end">
-                <div class="col-sm-10">
-                    <div class="dp-po-post-user">
-                        <ul class="dp-po-post-user-list">
-                            {% include 'Theme:PublishCommon:post-user-list.html.twig' with { users: [topic.person] } %}
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="dp-po-post-extra">
-                        <ul class="dp-po-post-extra-list">
-                            <li class="dp-po-post-extra-item">
-                                <a href="javascript:window.print();" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.print') }}">
-                                    <i class="dp-po-icon fal fa-print" title="{{ phrase('helpcenter.general.print') }}"></i>
-                                </a>
-                            </li>
-                            <li class="dp-po-post-extra-item">
-                                <a href="{{ path('portal_community_topic_pdf', {slug: topic.slug}) }}" class="dp-po-post-extra-link" aria-label="{{ phrase('helpcenter.general.download_pdf') }} - {{ topic.translated_title }}.pdf">
-                                    <i class="dp-po-icon fal fa-file-pdf" title="Pdf"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="dp-po-section">
-        {{  macros.lockout_notice(phrase('helpcenter.account.comment_lockout'), lockout, lockout_time) }}
-        <div class="dp-po-post-content dp-po-block">
-            {{ topic.getContentHtml()|raw }}
-            {% if topic.official_response %}
-                <div class="dp-po-post-official-response">
-                    <h3><i class="fad fa-flag-alt"></i> {{ phrase('helpcenter.community.official_response') }}</h3>
-                    <div class="dp-po-post-official-response-block">
-                        <div class="dp-po-post-official-response-avatar">
-                            <div class="dp-po-avatar">
-                                {{ hc_avatar(topic.official_response.person, '', 60) }}
-                                {{ topic.official_response.userName(true) }}
+                                {% if brand_setting('user.community_subscriptions') %}
+                                    {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                                        buttonId: 'subscribeDropdownMenuMobile',
+                                        subscriptionInfo: [
+                                            {
+                                                toggleUrl: portal_path(topic, 'toggle_subscription'),
+                                                icon: 'fal fa-file-alt',
+                                                title: topic.title | truncate(20),
+                                                active: is_subscribed,
+                                                disabled: is_subscribed_root
+                                            },
+                                            {
+                                                toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
+                                                icon: 'fal fa-file-spreadsheet',
+                                                title: phrase('helpcenter.community.section_title'),
+                                                active: is_subscribed_root
+                                            }
+                                        ]
+                                    } %}
+                                {% endif %}
                             </div>
                         </div>
-                        <p>
-                            {{ topic.official_response.content_html_plain|raw|safe_link_urls_html }}
-                        </p>
+                        <div class="row">
+                            <div class="community-container">
+                                <div class="dp-po-post-like">
+                                    {% include 'Theme:Community:CommunityTopicsList/like-button.html.twig' with {
+                                        topic: topic,
+                                        is_compact: false
+                                    } %}
+                                </div>
+
+                                <div class="community-flex-container d-flex cc_cursor">
+                                    <div class="col-lg-9">
+                                        <div class="row mb-4">
+                                            <div class="col-sm-12">
+                                                <div class="dp-po-title">
+                                                    <h1 class="dp-po-title-text">
+                                                        {{ topic.realTitle }}
+                                                        {% if topic.statusCategory %}
+                                                            <a class="dp-po-post-user-category-link"
+                                                               href="{{ path('portal_community_browse', {filter_uri: "type-#{topic.forum.id}/#{topic.statusCategory.status_type}-#{topic.statusCategory.id}"}) }}">
+                            <span class="badge badge-secondary"
+                                  style="background-color: {{ topic.statusCategory.color }};">
+                                {{ topic.statusCategory.title }}
+                            </span>
+                                                            </a>
+
+                                                        {% endif %}
+                                                    </h1>
+                                                </div>
+                                                <div class="row align-items-end">
+                                                    <div class="col-sm-10">
+                                                        <div class="dp-po-post-user">
+                                                            <ul class="dp-po-post-user-list">
+                                                                {% include 'Theme:PublishCommon:post-user-list.html.twig' with { users: [topic.person] } %}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <div class="dp-po-post-extra">
+                                                            <ul class="dp-po-post-extra-list">
+                                                                <li class="dp-po-post-extra-item">
+                                                                    <a href="javascript:window.print();"
+                                                                       class="dp-po-post-extra-link"
+                                                                       aria-label="{{ phrase('helpcenter.general.print') }}">
+                                                                        <i class="dp-po-icon fal fa-print"
+                                                                           title="{{ phrase('helpcenter.general.print') }}"></i>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="dp-po-post-extra-item">
+                                                                    <a href="{{ path('portal_community_topic_pdf', {slug: topic.slug}) }}"
+                                                                       class="dp-po-post-extra-link"
+                                                                       aria-label="{{ phrase('helpcenter.general.download_pdf') }} - {{ topic.translated_title }}.pdf">
+                                                                        <i class="dp-po-icon fal fa-file-pdf"
+                                                                           title="Pdf"></i>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="dp-po-section">
+                                            {{ macros.lockout_notice(phrase('helpcenter.account.comment_lockout'), lockout, lockout_time) }}
+                                            <div class="dp-po-post-content dp-po-block">
+                                                {{ topic.getContentHtml()|raw }}
+                                                {% if topic.official_response %}
+                                                    <div class="dp-po-post-official-response">
+                                                        <h3>
+                                                            <i class="fad fa-flag-alt"></i> {{ phrase('helpcenter.community.official_response') }}
+                                                        </h3>
+                                                        <div class="dp-po-post-official-response-block">
+                                                            <div class="dp-po-post-official-response-avatar">
+                                                                <div class="dp-po-avatar">
+                                                                    {{ hc_avatar(topic.official_response.person, '', 60) }}
+                                                                    {{ topic.official_response.userName(true) }}
+                                                                </div>
+                                                            </div>
+                                                            <p>
+                                                                {{ topic.official_response.content_html_plain|raw|safe_link_urls_html }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        {% if brand_setting('user.publish_comments') %}
+                                            {% if topic.visible_comments | length %}
+                                                {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: topic.visible_comments } %}
+                                            {% endif %}
+
+                                            {% if new_comment_form %}
+                                                {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-sm-3 dp-po-sticky">
+                                        <div class="dp-po-sidebar-spacer"></div>
+                                        {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+                                            current_forum: topic.forum,
+                                            is_sidebar: true,
+                                            button_label: phrase('helpcenter.community.create_topic_full', {forum: topic.forum.noun}),
+                                        } %}
+
+                                        {% if brand_setting('user.community_subscriptions') %}
+                                            {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                                                subscriptionInfo: [
+                                                    {
+                                                        toggleUrl: portal_path(topic, 'toggle_subscription'),
+                                                        icon: 'fal fa-file-alt',
+                                                        title: topic.title | truncate(20),
+                                                        active: is_subscribed,
+                                                        disabled: is_subscribed_root
+                                                    },
+                                                    {
+                                                        toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
+                                                        icon: 'fal fa-file-spreadsheet',
+                                                        title: phrase('helpcenter.community.section_title'),
+                                                        active: is_subscribed_root
+                                                    }
+                                                ]
+                                            } %}
+                                        {% endif %}
+                                        {% if related_content_data.related_content|length %}
+                                            {% include 'Theme:PublishCommon:related-content.html.twig' with {
+                                                related_content: related_content_data.related_content,
+                                            } %}
+                                        {% endif %}
+
+                                        {% include 'Theme:PublishCommon:share.html.twig' with {
+                                            item: topic,
+                                        } %}
+
+                                        {% if file is defined %}
+                                            {% include 'Theme:PublishCommon:share.html.twig' with {
+                                                item: file
+                                            } %}
+                                        {% endif %}
+
+                                        {% if topic.labels | length %}
+                                            {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
+                                                title: phrase('helpcenter.general.labels'),
+                                                labels: topic.labels
+                                            } %}
+                                        {% endif %}
+
+                                        {% if topic.attachments|length  > 0 %}
+                                            <div class="dp-po-sidebar dp-po-post-attachments">
+                                                <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.general.attachments') }}</h3>
+                                                <ul class="dp-po-post-attachments-list">
+                                                    {% for attachment in topic.attachments %}
+                                                        <li class="dp-po-post-attachments-item">
+                                                            {{ block('topic_attachment') }}
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+
+                                        <dl class="dp-po-post-meta">
+                                            <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.created_by') }}</dt>
+                                            <dd>{{ topic.person.display_name_user }}</dd>
+                                            {% if topic.date_published %}
+                                                <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.published') }}</dt>
+                                                <dd>{{ phrase('helpcenter.general.date_medium', { date:topic.date_published }) }}</dd>
+                                            {% endif %}
+
+                                            {% if topic.getCustomDataSelection() %}
+                                                <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.category') }}</dt>
+                                                <dd>{{ topic.getCustomDataSelection().title }}</dd>
+                                            {% endif %}
+                                            {% if topic.isClosed() %}
+                                                <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }}</dt>
+                                                <dd>{{ phrase('helpcenter.general.date_medium', { date:topic.date_updated }) }} {{ topic.status }}</dd>
+                                            {% endif %}
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    {% if brand_setting('user.publish_comments') %}
-        {% if topic.visible_comments | length %}
-            {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: topic.visible_comments } %}
-        {% endif %}
-
-        {% if new_comment_form %}
-            {% include 'Theme:PublishCommon:comments-form.html.twig' %}
-        {% endif %}
-    {% endif %}
-{% endblock page_body %}
-
-
-{% block page_sidebar %}
-
-    {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
-        current_forum: topic.forum,
-        is_sidebar: true,
-        button_label: phrase('helpcenter.community.create_topic_full', {forum: topic.forum.noun}),
-    } %}
-
-    {% if brand_setting('user.community_subscriptions') %}
-        {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
-            subscriptionInfo: [
-                {
-                    toggleUrl: portal_path(topic, 'toggle_subscription'),
-                    icon: 'fal fa-file-alt',
-                    title: topic.title | truncate(20),
-                    active: is_subscribed,
-                    disabled: is_subscribed_root
-                },
-                {
-                    toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
-                    icon: 'fal fa-file-spreadsheet',
-                    title: phrase('helpcenter.community.section_title'),
-                    active: is_subscribed_root
-                }
-            ]
-        } %}
-    {% endif %}
-    {% if related_content_data.related_content|length %}
-        {% include 'Theme:PublishCommon:related-content.html.twig' with {
-            related_content: related_content_data.related_content,
-        } %}
-    {% endif %}
-
-    {% include 'Theme:PublishCommon:share.html.twig' with {
-        item: topic,
-    } %}
-
-    {% if file is defined %}
-        {% include 'Theme:PublishCommon:share.html.twig' with {
-            item: file
-        } %}
-    {% endif %}
-
-    {% if topic.labels | length %}
-        {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
-            title: phrase('helpcenter.general.labels'),
-            labels: topic.labels
-        } %}
-    {% endif %}
-
-    {% if topic.attachments|length  > 0 %}
-        <div class="dp-po-sidebar dp-po-post-attachments">
-            <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.general.attachments') }}</h3>
-            <ul class="dp-po-post-attachments-list">
-                {% for attachment in topic.attachments %}
-                    <li class="dp-po-post-attachments-item">
-                        {{ block('topic_attachment') }}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-
-    <dl class="dp-po-post-meta">
-        <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.created_by') }}</dt>
-        <dd>{{ topic.person.display_name_user }}</dd>
-        {% if topic.date_published %}
-            <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.published') }}</dt>
-            <dd>{{ phrase('helpcenter.general.date_medium', { date:topic.date_published }) }}</dd>
-        {% endif %}
-
-        {% if topic.getCustomDataSelection() %}
-            <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.category') }}</dt>
-            <dd>{{ topic.getCustomDataSelection().title }}</dd>
-        {% endif %}
-        {% if topic.isClosed() %}
-            <dt class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }}</dt>
-            <dd>{{ phrase('helpcenter.general.date_medium', { date:topic.date_updated }) }} {{ topic.status }}</dd>
-        {% endif %}
-    </dl>
-{% endblock page_sidebar %}
+                </main>
+            </div>
+        {% endblock %}
 
 {% block topic_attachment %}
     <div class="dpx-attachment">
         <a href="{{ attachment.blob.download_url }}?dl=1"
            class="dp-po-post-attachments-link {% if attachment.blob.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
-           {% if not attachment.blob.is_image %} data-content-type="{{ attachment.blob.content_type }}"{% endif %}
-            data-no-span="1"
+                {% if not attachment.blob.is_image %} data-content-type="{{ attachment.blob.content_type }}"{% endif %}
+           data-no-span="1"
         >
-            {{ attachment.blob.filename|length > 14 ? attachment.blob.filename|slice(0, 14) ~ '...' : attachment.blob.filename  }} <span>({{ attachment.blob.getReadableFilesize() }})</span>
+            {{ attachment.blob.filename|length > 14 ? attachment.blob.filename|slice(0, 14) ~ '...' : attachment.blob.filename }}
+            <span>({{ attachment.blob.getReadableFilesize() }})</span>
             <i class="dp-po-icon fal fa-arrow-to-bottom"></i>
         </a>
     </div>
