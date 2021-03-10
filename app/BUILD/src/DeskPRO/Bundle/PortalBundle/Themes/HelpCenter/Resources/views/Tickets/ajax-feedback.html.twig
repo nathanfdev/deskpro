@@ -6,8 +6,8 @@
     <div class="dp-po-ticket-modal-agent">
         <div class="dp-po-avatar dp-po-avatar-round">
             {{ hc_avatar(message.person, '', 60) }}
-            {% set name_strong = '<strong>' ~ message.person.display_name_user ~ '</strong>&nbsp;' %}
-            {{ phrase('helpcenter.tickets.rate_intro', {name: name_strong, subject: ticket.subject}, true) }}
+            {% set name_strong = '<strong>' ~ message.person.display_name_user|e ~ '</strong>&nbsp;' %}
+            {{ phrase('helpcenter.tickets.rate_intro', {name: name_strong, subject: ticket.subject|e}, true) }}
         </div>
     </div>
 
