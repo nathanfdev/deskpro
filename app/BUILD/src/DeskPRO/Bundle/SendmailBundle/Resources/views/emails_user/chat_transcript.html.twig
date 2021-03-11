@@ -19,42 +19,44 @@
 				[{{ message.date_created|date('time') }}] *
 				{% if message.metadata.phrase_id %}
 					{% if message.is_html %}
+						{% set escapedParams = { name: message.metadata.name|e, department: message.metadata.department|e } %}
+
 						{% if message.metadata.phrase_id =='message_user-joined' %}
-							{{ phrase('helpcenter.messenger.message_user_joined', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_user_joined', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_user-left' %}
-							{{ phrase('helpcenter.messenger.message_user_left', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_user_left', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_agent-timeout' %}
-							{{ phrase('helpcenter.messenger.message_agent_timeout', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_agent_timeout', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_assigned' %}
-							{{ phrase('helpcenter.messenger.message_assigned', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_assigned', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_chatting-with' %}
-							{{ phrase('helpcenter.messenger.message_chatting_with', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_chatting_with', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_ended' %}
-							{{ phrase('helpcenter.messenger.message_ended', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_ended', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_ended-by' %}
-							{{ phrase('helpcenter.messenger.message_ended_by', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_ended_by', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_ended-by-user' %}
-							{{ phrase('helpcenter.messenger.message_ended_by_user', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_ended_by_user', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_finding-agent' %}
-							{{ phrase('helpcenter.messenger.message_finding_agent', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_finding_agent', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_long-wait' %}
-							{{ phrase('helpcenter.messenger.message_long_wait', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_long_wait', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_set-department' %}
-							{{ phrase('helpcenter.messenger.message_set_department', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_set_department', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_started' %}
-							{{ phrase('helpcenter.messenger.message_started', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_started', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_unassigned' %}
-							{{ phrase('helpcenter.messenger.message_unassigned', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_unassigned', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_uploading' %}
-							{{ phrase('helpcenter.messenger.message_uploading', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_uploading', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_user-returned' %}
-							{{ phrase('helpcenter.messenger.message_user_returned', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_user_returned', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_user-timeout' %}
-							{{ phrase('helpcenter.messenger.message_user_timeout', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_user_timeout', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_wait' %}
-							{{ phrase('helpcenter.messenger.message_wait', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_wait', escapedParams) }}
 						{% elseif message.metadata.phrase_id =='message_wait-timeout' %}
-							{{ phrase('helpcenter.messenger.message_wait_timeout', message.metadata, true) }}
+							{{ unsafePhrase('helpcenter.messenger.message_wait_timeout', escapedParams) }}
 						{% endif %}
 					{% else %}
 						{% if message.metadata.phrase_id =='message_user-joined' %}

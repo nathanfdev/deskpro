@@ -135,6 +135,7 @@ return [
     'portal_custom_favicon',
     'helpcenter_css_url',
     'phrase',
+    'unsafePhrase',
     'object_phrase',
     'dump',
     'can_login',
