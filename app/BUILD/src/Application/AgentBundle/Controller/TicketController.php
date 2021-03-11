@@ -5252,7 +5252,7 @@ class TicketController extends AbstractController
                 'custom_person_fields' => $customPersonFields,
                 'custom_org_fields'    => $customOrgFields,
                 'brands'               => $brands,
-                'default_brand'        => $this->get('brand_stack')->getDefaultBrand()->getId(),
+                'default_brand'        => ($ticket->getBrand()) ? $ticket->getBrand()->getId() : $this->get('brand_stack')->getDefaultBrand()->getId(),
                 'default_departments'  => $defaultDepartments,
                 'ticket_statuses'      => App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true),
             ]
