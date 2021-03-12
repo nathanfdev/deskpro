@@ -1337,6 +1337,18 @@ class TicketSearchController extends AbstractController
 
                 $slaGroupCounts[$groupStatus] = $groupSearcher->getCount();
             }
+
+            //Update cached version
+            $slaName         = 'ticket_sla_counts.'.$sla_id;
+            $cachedSlaExists = $this->em->getRepository(PersonPref::class)
+                ->findOneBy(['person' => $this->person->getId(), 'name' => $slaName]);
+
+            if ($cachedSlaExists) {
+                $cachedSlaExists->setValueArray($slaGroupCounts);
+                $cachedSlaExists->setDateExpire(new \DateTime('+15 minutes'));
+                $this->em->persist($cachedSlaExists);
+                $this->em->flush();
+            }
         }
 
         $results = $searcher->getMatches();
@@ -1714,10 +1726,10 @@ class TicketSearchController extends AbstractController
 
             foreach ($tickets as $ticket) {
                 $customTextData = $fieldManager->getRenderedToTextForObject($ticket);
-                $row = [];
+                $row            = [];
 
-            foreach ($displayFields as $displayField) {
-                switch ($displayField) {
+                foreach ($displayFields as $displayField) {
+                    switch ($displayField) {
                     case 'language_id':
                     case 'department_id':
                     case 'priority_id':
@@ -1800,7 +1812,7 @@ class TicketSearchController extends AbstractController
                             break;
                         case 'sub_status':
                             $ticketStatus = $ticket->getTicketStatus();
-                            $row[] = $ticketStatus instanceof VirtualTicketStatus ? '' : $ticketStatus->getTitle();
+                            $row[]        = $ticketStatus instanceof VirtualTicketStatus ? '' : $ticketStatus->getTitle();
 
                         break;
                     default:
@@ -1814,32 +1826,32 @@ class TicketSearchController extends AbstractController
                             list(, $name) = $matches;
                             $entity       = $ticket->{$name};
 
-                                if ($entity) {
-                                    $row[] = $entity->id;
+                            if ($entity) {
+                                $row[] = $entity->id;
+                            } else {
+                                $row[] = '';
+                            }
+                        } else {
+                            if (isset($ticket[$displayField])) {
+                                $value = $ticket[$displayField];
+                            } else {
+                                $value = null;
+                            }
+
+                            if (is_scalar($value)) {
+                                $row[] = $value;
+                            } elseif (is_object($value)) {
+                                if ($value instanceof \DateTime) {
+                                    $dt = clone $value;
+                                    $dt->setTimezone($this->person->getDateTimezone());
+                                    $row[] = $dt->format('c');
                                 } else {
                                     $row[] = '';
                                 }
                             } else {
-                                if (isset($ticket[$displayField])) {
-                                    $value = $ticket[$displayField];
-                                } else {
-                                    $value = null;
-                                }
-
-                                if (is_scalar($value)) {
-                                    $row[] = $value;
-                                } elseif (is_object($value)) {
-                                    if ($value instanceof \DateTime) {
-                                        $dt = clone $value;
-                                        $dt->setTimezone($this->person->getDateTimezone());
-                                        $row[] = $dt->format('c');
-                                    } else {
-                                        $row[] = '';
-                                    }
-                                } else {
-                                    $row[] = '';
-                                }
+                                $row[] = '';
                             }
+                        }
 
                             break;
                     }
@@ -1847,7 +1859,7 @@ class TicketSearchController extends AbstractController
 
                 fputcsv($temp, $row);
                 rewind($temp);
-                $response->setContent($response->getContent() . fgets($temp));
+                $response->setContent($response->getContent().fgets($temp));
                 ftruncate($temp, 0);
             }
 
