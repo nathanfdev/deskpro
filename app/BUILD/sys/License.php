@@ -294,6 +294,9 @@ final class License
      */
     public function getIsUnlimited()
     {
+        if (isset($this->options['is_unlimited']) && $this->options['is_unlimited']) {
+            return true;
+        }
         if (isset(self::$sysdata['unl_lic'][$this->license_id])) {
             return true;
         }
@@ -339,7 +342,7 @@ final class License
             return 0;
         }
 
-        if (!$this->isCloud() && $this->data['agents'] >= 100) {
+        if ($this->getIsUnlimited()) {
             return 0;
         }
 
