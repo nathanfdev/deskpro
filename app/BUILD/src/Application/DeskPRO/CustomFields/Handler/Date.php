@@ -136,12 +136,14 @@ class Date extends HandlerAbstract
                 if (!$this->field_def->getOption('ignore_timezone')) {
                     $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
                 }
+
                 break;
             default:
                 $date = \DateTime::createFromFormat($this->getFormat(), $value);
-                if (!$this->field_def->getOption('ignore_timezone')) {
+                if ($date && !$this->field_def->getOption('ignore_timezone')) {
                     $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
                 }
+
                 break;
         }
         if (!$date) {
@@ -177,9 +179,11 @@ class Date extends HandlerAbstract
                         case 'hijri':
                             $calendar      = new ArabicCalendar();
                             $data['value'] = implode('/', $calendar->jdToYmd(unixtojd($date->format('U'))));
+
                             break;
                         default:
                             $data['value'] = $date->format($this->getFormat());
+
                             break;
                     }
                 }
@@ -331,7 +335,7 @@ class Date extends HandlerAbstract
                     }
                 }
 
-            // "Days from now"
+                // "Days from now"
             } elseif ($this->field_def->getOption('date_valid_type') == 'range') {
                 if ($contextData && isset($contextData['exist_ticket'])) {
                     $now = clone $contextData['exist_ticket']->date_created;
