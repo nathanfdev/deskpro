@@ -553,7 +553,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if (!$person->disable_autoresponses) {
             if ($returnPath = $this->reader->getHeader('Return-Path')) {
-                if ($returnPath->getHeader() == '<>') {
+                if ($returnPath->getHeader() == '<>' && $this->container->getSetting('core_email.mark_null_returnpath_as_autoresponder', true)) {
                     $this->logMessage('Null return path, disabling auto-responses for this user');
                     $person->setDisableAutoresponses(
                         true,
@@ -774,7 +774,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if (!$person->disable_autoresponses) {
             if ($return_path = $this->reader->getHeader('Return-Path')) {
-                if ($return_path->getHeader() == '<>') {
+                if ($return_path->getHeader() == '<>' && $this->container->getSetting('core_email.mark_null_returnpath_as_autoresponder', true)) {
                     $this->logMessage('Null return path, disabling auto-responses for this user');
                     $person->setDisableAutoresponses(
                         true,
