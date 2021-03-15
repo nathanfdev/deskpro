@@ -173,7 +173,7 @@
                             {% endif %}
                         </div>
                         <div id="{{baseId}}_locked_message_other"{% if locked_self %} style="display:none;"{% endif %}>
-                            {{ phrase('agent.tickets.agent_has_lock', {agent: '<span>' ~ ticket.locked_by_agent.display_name ~ '</span>'}, true) }}
+                            {{ unsafePhrase('agent.tickets.agent_has_lock', {agent: '<span>' ~ ticket.locked_by_agent.display_name|e ~ '</span>'}) }}
                         </div>
                     </div>
                 </div>

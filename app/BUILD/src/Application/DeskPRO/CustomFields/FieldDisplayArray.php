@@ -8,6 +8,7 @@ use Application\DeskPRO\CustomFields\Handler\Date;
 use Application\DeskPRO\CustomFields\Handler\DateTime;
 use Application\DeskPRO\CustomFields\Handler\Javascript;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Orb\Util\Arrays;
 
 class FieldDisplayArray implements \ArrayAccess
 {
@@ -78,7 +79,7 @@ class FieldDisplayArray implements \ArrayAccess
 
         if (!$use_default) {
             if (($field_def['handler_class'] === Choice::class) && isset($value['children']) && count($value['children']) > 0) {
-                $dataValue = array_key_first($value['children']);
+                $dataValue = Arrays::getFirstKey($value['children']);
             } else {
                 $dataValue = (is_array($value) && isset($value['value'])) ? $value['value'] : '';
             }

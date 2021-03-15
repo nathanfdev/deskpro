@@ -38,6 +38,15 @@ class LanguageExtension extends \Twig_Extension
                 ]
             ),
             new \Twig_SimpleFunction(
+                'unsafePhrase',
+                [$this, 'getUnsafePhrase'],
+                [
+                    'is_safe'           => ['all'],
+                    'needs_context'     => true,
+                    'needs_environment' => true,
+                ]
+            ),
+            new \Twig_SimpleFunction(
                 'object_phrase',
                 [$this, 'getObjectPhrase'],
                 [
@@ -56,6 +65,8 @@ class LanguageExtension extends \Twig_Extension
      *
      * @throws \Twig_Error_Runtime
      *
+     * @deprecated If you need to use the $raw param then use 'getUnsafePhrase' function instead
+     *
      * @return mixed
      */
     public function getPhrase(\Twig_Environment $env, $context, $phrase_name, $vars = null, $raw = false)
@@ -68,6 +79,24 @@ class LanguageExtension extends \Twig_Extension
             foreach ($vars as &$v) {
                 $v = twig_escape_filter($env, $v, 'html');
             }
+        }
+
+        $vars['_context'] = $context;
+
+        return $this->languageManager->phrase($phrase_name, $vars);
+    }
+
+    /**
+     * @param      $context
+     * @param      $phrase_name
+     * @param null $vars
+     *
+     * @return mixed
+     */
+    public function getUnsafePhrase(\Twig_Environment $env, $context, $phrase_name, $vars = null)
+    {
+        if (!$vars || !is_array($vars)) {
+            $vars = [];
         }
 
         $vars['_context'] = $context;

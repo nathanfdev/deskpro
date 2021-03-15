@@ -90,6 +90,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         return [
             new \Twig_SimpleFunction('constant', [$this, 'getConstant'], []),
             new \Twig_SimpleFunction('phrase', [$this, 'getPhrase'], ['is_safe' => ['html'], 'needs_context' => true]),
+            new \Twig_SimpleFunction('unsafePhrase', [$this, 'getUnsafePhrase'], ['is_safe' => ['html'], 'needs_context' => true]),
             new \Twig_SimpleFunction('phrase_code', [$this, 'getPhraseText'], []),
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('phrase_object', [$this, 'getPhraseObject']),
@@ -1659,6 +1660,8 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      * @param null $vars
      * @param bool $raw
      *
+     * @deprecated If you need to use the $raw param then use 'getUnsafePhrase' function instead
+     *
      * @return mixed
      */
     public function getPhrase($context, $phrase_name, $vars = null, $raw = false)
@@ -1671,6 +1674,24 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             foreach ($vars as &$v) {
                 $v = htmlspecialchars($v, \ENT_QUOTES, 'UTF-8');
             }
+        }
+
+        $vars['_context'] = $context;
+
+        return $this->container->get('deskpro.core.translate')->phrase($phrase_name, $vars);
+    }
+
+    /**
+     * @param      $context
+     * @param      $phrase_name
+     * @param null $vars
+     *
+     * @return mixed
+     */
+    public function getUnsafePhrase($context, $phrase_name, $vars = null)
+    {
+        if (!$vars || !is_array($vars)) {
+            $vars = [];
         }
 
         $vars['_context'] = $context;

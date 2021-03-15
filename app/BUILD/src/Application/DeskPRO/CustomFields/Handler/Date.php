@@ -131,12 +131,14 @@ class Date extends HandlerAbstract
                     $value = jdtounix($jd);
                 }
                 $date = \DateTime::createFromFormat('U', $value);
-                // +1 Fix the date shifting due to Julian calendar day starting at noon
-                $date->add(new \DateInterval('P1D'));
-                if (!$this->field_def->getOption('ignore_timezone')) {
-                    $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
-                }
 
+                if ($date) {
+                    // +1 Fix the date shifting due to Julian calendar day starting at noon
+                    $date->add(new \DateInterval('P1D'));
+                    if (!$this->field_def->getOption('ignore_timezone')) {
+                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                    }
+                }
                 break;
             default:
                 $date = \DateTime::createFromFormat($this->getFormat(), $value);
@@ -335,7 +337,7 @@ class Date extends HandlerAbstract
                     }
                 }
 
-                // "Days from now"
+            // "Days from now"
             } elseif ($this->field_def->getOption('date_valid_type') == 'range') {
                 if ($contextData && isset($contextData['exist_ticket'])) {
                     $now = clone $contextData['exist_ticket']->date_created;
