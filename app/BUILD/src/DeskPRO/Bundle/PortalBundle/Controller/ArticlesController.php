@@ -225,7 +225,7 @@ class ArticlesController extends AbstractPublishController
 
         // NUM RATINGS
 
-        [$showRatingCounts, $ratingCounts] = $this->determineRatingCounts($article->getRatingData());
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($article->getRatingData());
 
         $canShare = $this->isGranted(ShareContentVoter::SHARE_ARTICLES);
 

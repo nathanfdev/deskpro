@@ -303,7 +303,7 @@ class NewsController extends AbstractPublishController
 
         // NUM RATINGS
 
-        [$showRatingCounts, $ratingCounts] = $this->determineRatingCounts($post->getRatingData());
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($post->getRatingData());
 
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
         $check->markAsCheckOnly();
@@ -534,7 +534,7 @@ class NewsController extends AbstractPublishController
 
         // NUM RATINGS
 
-        [$showRatingCounts, $ratingCounts] = $this->determineRatingCounts($post->getRatingData());
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($post->getRatingData());
 
         // OTHER ARTICLE DATA
         $postData = new LazyPropObject([
