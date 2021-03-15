@@ -1,5 +1,4 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import debounce from 'lodash/debounce';
 
 export class HelpcenterComment extends PageWidget {
 
@@ -7,7 +6,7 @@ export class HelpcenterComment extends PageWidget {
     const submitForm = document.getElementById('helpcenter-comment-form');
     const button =  window.document.getElementById('helpcenter-comment-submit');
 
-    submitForm.addEventListener('submit', (event) => {
+    submitForm.addEventListener('submit', () => {
       button.disabled = true;
     });
   }
