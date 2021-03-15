@@ -131,16 +131,21 @@ class Date extends HandlerAbstract
                     $value = jdtounix($jd);
                 }
                 $date = \DateTime::createFromFormat('U', $value);
-                // +1 Fix the date shifting due to Julian calendar day starting at noon
-                $date->add(new \DateInterval('P1D'));
-                if (!$this->field_def->getOption('ignore_timezone')) {
-                    $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+
+                if ($date) {
+                    // +1 Fix the date shifting due to Julian calendar day starting at noon
+                    $date->add(new \DateInterval('P1D'));
+                    if (!$this->field_def->getOption('ignore_timezone')) {
+                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                    }
                 }
                 break;
             default:
                 $date = \DateTime::createFromFormat($this->getFormat(), $value);
-                if (!$this->field_def->getOption('ignore_timezone')) {
-                    $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                if ($date) {
+                    if (!$this->field_def->getOption('ignore_timezone')) {
+                        $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                    }
                 }
                 break;
         }
