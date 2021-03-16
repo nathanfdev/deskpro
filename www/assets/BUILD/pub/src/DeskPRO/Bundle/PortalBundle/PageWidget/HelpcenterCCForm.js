@@ -7,6 +7,7 @@ export class HelpcenterCCForm extends PageWidget {
     const $form = this.$element;
     const $alert = $('.dp-po-ticket-meta-cc-form .alert');
     $form.on('submit', () => {
+      $('#ticket-button-add-cc').prop('disabled', true);
       const $loading = $form.find('.dp-po-ticket-meta-cc-submit .dp-po-icon');
       $loading.show();
       $alert.hide();
@@ -20,6 +21,7 @@ export class HelpcenterCCForm extends PageWidget {
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
         data:    $form.serialize(),
         success(response) {
+          $('#ticket-button-add-cc').prop('disabled', false);
           $loading.hide();
           if (response.data.success) {
             const html = response.data.html;
@@ -40,6 +42,8 @@ export class HelpcenterCCForm extends PageWidget {
             });
           }
         }
+      }).done(() => {
+        $('#ticket-button-add-cc').prop('disabled', false);
       });
       return false;
     });
