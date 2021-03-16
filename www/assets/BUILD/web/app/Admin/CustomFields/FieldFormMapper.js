@@ -677,11 +677,13 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
     '\n' +
     '\t\tdata.forEach(function (p, index) {\n' +
     '\t    \tvar $opt = $("<option />").val(p.id).text(p.title);\n' +
-    '\t    \tif (parseInt(currentData.id, 10) === p.id) {\n' +
-    '\t\t\t\t$opt.prop(\'selected\', true);\n' +
-    '\t\t\t} else if (!currentData.id && index === 0) {\n' +
-    '\t\t\t    $opt.prop(\'selected\', true);\n' +
-    '\t\t\t    setValue(p.title, { id: p.id });\n' +
+    '\t    \tif (currentData) {\n' +
+    '\t    \t\tif (parseInt(currentData.id, 10) === p.id) {\n' +
+    '\t\t\t\t\t$opt.prop(\'selected\', true);\n' +
+    '\t\t\t\t} else if (!currentData.id && index === 0) {\n' +
+    '\t\t\t\t    $opt.prop(\'selected\', true);\n' +
+    '\t\t\t\t    setValue(p.title, { id: p.id });\n' +
+    '\t\t\t\t}\n' +
     '\t\t\t}\n' +
     '\t\t\t$opt.appendTo($selectEl);\n' +
     '\t\t});\n' +
