@@ -9,8 +9,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessageParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
-use DeskPRO\Bundle\AppBundle\Model\RatingModel;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
+use DeskPRO\Bundle\AppBundle\Model\RatingModel;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\PortalBundle\SavedForm\SavedFormView;
 use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
@@ -295,7 +295,7 @@ class AbstractController extends BaseController
             'tickets_awaiting_reply' => $ticketsAwaitingReply,
             'unread_direct_messages' => $unreadDirectMessages,
             'pending_approvals'      => $approvalNeedingAction,
-            'is_ticket_approver'     => $this->getTicketApprovalsDataService()->isTicketApprover($user),
+            'is_ticket_approver'     => $user ? $this->getTicketApprovalsDataService()->getApprovalCountWhereUserIsApprover($user, $brand) : 0,
         ];
     }
 
@@ -671,6 +671,7 @@ class AbstractController extends BaseController
 
     /**
      * @param RatingModel $ratingModel
+     *
      * @return array
      */
     protected function determineRatingCounts(RatingModel $ratingModel)
