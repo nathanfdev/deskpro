@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category People
- */
+
 
 namespace Application\DeskPRO\People\PersonMerge\Property;
 
@@ -60,7 +56,7 @@ class CustomField extends PropertyAbstract
                 }
             }
 
-        // Children means we can potentially merge selections
+            // Children means we can potentially merge selections
         } else {
             $multiple      = $this->field->getOption('multiple');
             $hasValue      = false;
@@ -118,7 +114,9 @@ class CustomField extends PropertyAbstract
     {
         $newData = new CustomDataPerson();
         $newData->setValue($data->getValue());
-        $newData->setInput($data->getInput());
+        if ($data->getInput()) {
+            $newData->setInput($data->getInput());
+        }
         $newData->setField($data->getField());
         $newData->setRootField($data->getRootField());
         $newData->setPerson($this->person);
