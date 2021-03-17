@@ -174,11 +174,11 @@ class TicketSearch extends SearcherAbstract
     {
         parent::__construct();
 
-        /** @var $DP_ENV \DpRun\DpEnv */
+        /* @var $DP_ENV \DpRun\DpEnv */
         global $DP_ENV;
 
         if ($DP_ENV && $DP_ENV->getConfig('settings.ticketsearch_override_result_limit')) {
-            $this->limit = (int)$DP_ENV->getConfig('settings.ticketsearch_override_result_limit');
+            $this->limit = (int) $DP_ENV->getConfig('settings.ticketsearch_override_result_limit');
         }
     }
 
@@ -886,8 +886,8 @@ class TicketSearch extends SearcherAbstract
             $sql2 .= " AND part_perm.person_id = {$this->person->getId()} ";
         }
 
-        $sql .= ' LIMIT ' . $this->limit . ' ';
-        $sql2 .= ' LIMIT ' . $this->limit . ' ';
+        $sql .= ' LIMIT '.$this->limit.' ';
+        $sql2 .= ' LIMIT '.$this->limit.' ';
 
         if ($with_part_union) {
             $count_sql = "
@@ -2400,7 +2400,7 @@ class TicketSearch extends SearcherAbstract
                             case 'input':
                             case 'value':
 
-                                if (is_array($choice) && !$isDate) {
+                                if (is_array($choice)) {
                                     $choice = array_pop($choice);
                                 }
 
