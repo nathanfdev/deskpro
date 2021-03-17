@@ -205,7 +205,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 					merge.addClass('merge-data-lost');
 					keep.addClass('merge-data-keep');
 				} else {
-					if (getCmpVal(keep) != getCmpVal(merge)) {
+					if (getCmpVal(keep) && (getCmpVal(keep) !== getCmpVal(merge))) {
 						merge.addClass('merge-data-lost');
 						keep.addClass('merge-data-keep');
 					}
