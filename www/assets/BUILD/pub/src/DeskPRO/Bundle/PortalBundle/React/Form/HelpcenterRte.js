@@ -44,6 +44,10 @@ export default class HelpcenterRte extends React.Component {
       editor.setContent('');
     });
     $textarea.on('change', () => {
+      if ($textarea.val() === '<p><br></p>') {
+        editor.setContent('');
+        return;
+      }
       if (editor.getContent() !== $textarea.val()) {
         editor.setContent($textarea.val());
       }
