@@ -455,7 +455,7 @@ class ArticlesController extends AbstractPublishController
 
         // NUM RATINGS
 
-        [$showRatingCounts, $ratingCounts] = $this->determineRatingCounts($article->getRatingData());
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($article->getRatingData());
 
         // OTHER ARTICLE DATA
         $articleData = new LazyPropObject([
