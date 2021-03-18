@@ -13,7 +13,7 @@ export class HtmlLinkToPostWidget extends PageWidget {
         e.preventDefault();
 
         $postLinks.each(function () {
-          $(this).addClass('disabled');
+          $(this).addClass('isDisabled');
         });
 
         const action = $link.attr('href');
