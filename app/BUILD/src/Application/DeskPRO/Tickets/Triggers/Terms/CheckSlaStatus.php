@@ -1,14 +1,11 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
@@ -67,6 +64,10 @@ class CheckSlaStatus extends AbstractTriggerTerm
             if ($ticket_sla->is_completed) {
                 $any_complete = true;
             }
+
+            if ((!$any_complete && !$any_match_status) && $ticket_sla->sla_status === TicketSla::STATUS_OK && $check_status === 'passing') {
+                $any_match_status = true;
+            }
         }
 
         switch ($this->getTermOperator()) {
@@ -84,11 +85,13 @@ class CheckSlaStatus extends AbstractTriggerTerm
                 } else {
                     return false;
                 }
+
                 break;
 
             case 'not':
             case 'notcontains':
                 return !$has_any;
+
                 break;
         }
 
