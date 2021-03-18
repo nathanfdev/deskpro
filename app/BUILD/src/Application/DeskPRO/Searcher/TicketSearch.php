@@ -2400,7 +2400,7 @@ class TicketSearch extends SearcherAbstract
                             case 'input':
                             case 'value':
 
-                                if (is_array($choice)) {
+                                if (is_array($choice) && (!isset($choice['date1']) && !isset($choice['date2']))) {
                                     $choice = array_pop($choice);
                                 }
 
