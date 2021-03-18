@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
+
 
 namespace Application\DeskPRO\Tickets;
 
@@ -79,6 +75,7 @@ class TicketSplit implements PersonContextInterface
         }
 
         $this->ticket_manager->markAsManaged($this->ticket);
+
         try {
             $ticket = $this->doSplit($subject, $message_ids);
             $this->ticket_manager->markAsUnmanaged($this->ticket);
@@ -86,6 +83,7 @@ class TicketSplit implements PersonContextInterface
             return $ticket;
         } catch (\Exception $e) {
             $this->ticket_manager->markAsUnmanaged($this->ticket);
+
             throw $e;
         }
     }
@@ -154,7 +152,6 @@ class TicketSplit implements PersonContextInterface
 
         /*
          * set dates:
-         * date_feedback_rating -> copy (and make sure to copy feedback_rating as well)
          * date_created -> date_created of the first message in the ticket
          * date_first_agent_assign -> do not copy (i.e., null)
          * date_first_agent_reply -> date_created of first agent message in the ticket
@@ -166,8 +163,6 @@ class TicketSplit implements PersonContextInterface
          * total_to_first_reply should be seconds between date_created and date_first_agent_reply
          * total_user_waiting set to total_to_first_reply
          */
-        $new_ticket->date_feedback_rating    = $this->ticket->date_feedback_rating;
-        $new_ticket->feedback_rating         = $this->ticket->feedback_rating;
         $new_ticket->date_created            = $first->date_created;
         $new_ticket->date_first_agent_assign = null;
         $new_ticket->date_first_agent_reply  = $firstAgent ? $firstAgent->date_created : null;
@@ -189,6 +184,7 @@ class TicketSplit implements PersonContextInterface
         foreach ($new_ticket->messages as $message) {
             if ($message->person->id == $new_ticket->person->id) {
                 $has_owner = true;
+
                 break;
             }
         }
