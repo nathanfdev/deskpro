@@ -1801,12 +1801,6 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => false,
     ],
-    1606892389 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2020/12/Build1606892389.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1606892389',
-        'skipPostBuild' => true,
-        'isOnlineBuild' => true,
-    ],
     1606900295 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2020/12/Build1606900295.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1606900295',
