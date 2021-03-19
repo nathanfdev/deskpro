@@ -11,7 +11,7 @@
 {% if tplvars.agent_reply_above_line and app.getSetting('core_tickets.gateway_agent_require_marker') %}
 === <a class="DP_TOP_MARK dp_marker_link {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}"
         id="DP_TOP_MARK {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}"
-        name="DP_TOP_MARK {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}">&nbsp;</a>&nbsp;
+        name="DP_TOP_MARK {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}">&#8203;</a>&nbsp;
     {{ phrase('agent.emails.reply_above_line') }}
     [<a href="https://www.deskpro.com/go/reply" class="dp-reply-help-link">{{ phrase('agent.chrome.link_help') }}</a>]
 ===<br />
@@ -31,5 +31,6 @@
 <br />
 {% endif %}
 {% if not tplvars.agent_reply_above_line %}
-    <a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK">&nbsp;</a>
+    <a class="DP_TOP_MARK dp_marker_link" id="DP_TOP_MARK" name="DP_TOP_MARK">&#8203;</a>
+    <br />
 {% endif %}
