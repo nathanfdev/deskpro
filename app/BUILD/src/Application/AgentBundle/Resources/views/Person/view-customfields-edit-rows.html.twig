@@ -60,7 +60,7 @@
     {% for f in custom_fields_definitions %}
         <tr>
             <th ng-non-bindable>{{ form_label(f) }}</th>
-            <td ng-non-bindable>
+            <td>
                 {{ form_widget(f) }}
             </td>
         </tr>
