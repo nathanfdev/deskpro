@@ -123,7 +123,7 @@ class PortalValidation
         }
 
         // get the verify URL
-        $verifyUrl = $this->makeValidationUrl($type, $savedForm, $email);
+        $verifyUrl = $this->makeValidationUrl($type, $savedForm, $savedForm->getMetaDataValue('email_id'));
 
         switch ($type) {
             case self::REGISTRATION:
@@ -183,20 +183,18 @@ class PortalValidation
     }
 
     /**
-     * @param string    $type
+     * @param string $type
      * @param SavedForm $savedForm
-     * @param string    $email
      *
      * @return string
      */
-    protected function makeValidationUrl($type, SavedForm $savedForm, $email = null)
+    protected function makeValidationUrl($type, SavedForm $savedForm)
     {
         return $this->urlGenerator->generate(
             'portal_validation',
             [
-                'type'      => $type,
-                'auth_code' => $savedForm->getAuthCode(),
-                'email'     => $email,
+                'type'        => $type,
+                'auth_code'   => $savedForm->getAuthCode(),
             ],
             UrlGeneratorInterface::ABSOLUTE_URL
         );

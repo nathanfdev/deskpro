@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\DeskPRO;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
@@ -33,13 +34,21 @@ class PasswordController extends AbstractController
      */
     public function passwordResetRequestAction(Request $request, $_route)
     {
+        $emailId = $request->get('emailId');
+
+        if (null !== $emailId && $findEmail = $this->getEm()->getRepository(PersonEmail::class)->find($emailId)) {
+            $email = $findEmail->getEmail();
+        } else {
+            $email = $request->get('email', '');
+        }
+
         // Redirect to this only when reset password email sends by PasswordResetExceptionListener
         // and all what we need is show message about it.
         if ($_route === 'portal_set_password_sent') {
             return $this->renderThemeView(
                 'Theme:Password:reset-password-required.html.twig',
                 [
-                    'email'       => $request->get('email', ''),
+                    'email'       => $email,
                     'breadcrumbs' => $this->getBreadcrumbGenerator()->buildPasswordReset(false),
                     'page_title'  => $this->createPageTitle()->passwordReset(false),
                 ]
@@ -62,7 +71,7 @@ class PasswordController extends AbstractController
             return $this->redirectToRoute('portal_home');
         }
 
-        $form = $this->createForm(PasswordResetRequestType::class, ['email' => $request->get('email', '')]);
+        $form = $this->createForm(PasswordResetRequestType::class, ['email' => $email]);
         $form->handleRequest($request);
 
         $renderError = false;

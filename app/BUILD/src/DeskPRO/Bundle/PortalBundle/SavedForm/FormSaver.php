@@ -7,6 +7,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Repository\SavedFormRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -156,12 +157,14 @@ class FormSaver
      * they cannot log in yet (user registration for example) and will be dealt with outside
      * of the normal flow of forcing a user to login before submitting.
      *
-     * @param string        $data_type the type of data being saved (community topic, ticket, etc) - a const of this class
-     * @param FormInterface $form      the submitted form
-     * @param Request       $request   the request that was used to submit the form
-     * @param string|null   $name
-     * @param string|null   $email
-     * @param Person        $person    - optional, a Person object if we know it. most calls to this will be for email verification and we won't know the person directly though
+     * @param string $data_type the type of data being saved (community topic, ticket, etc) - a const of this class
+     * @param FormInterface $form the submitted form
+     * @param Request $request the request that was used to submit the form
+     * @param string|null $email
+     * @param string|null $name
+     * @param Person|null $person - optional, a Person object if we know it. most calls to this will be for email verification and we won't know the person directly though
+     *
+     * @throws OptimisticLockException
      *
      * @return SavedForm
      */
@@ -172,6 +175,7 @@ class FormSaver
         $route_params = $request->attributes->get('_route_params');
 
         $saved_form = new SavedForm($data_type, SavedForm::INTENTION_VERIFY_EMAIL, $person); // may or may not be a person, but if there is saved it to the form
+
         $saved_form->setFormData($data);
         $saved_form->setMetaData([
             'route'        => $route,

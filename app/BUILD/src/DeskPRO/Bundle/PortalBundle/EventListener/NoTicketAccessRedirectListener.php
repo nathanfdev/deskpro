@@ -116,7 +116,7 @@ class NoTicketAccessRedirectListener implements EventSubscriberInterface
             new RedirectResponse($this->router->generate(
                 'portal_set_password',
                 [
-                    'email' => $isGuestTicketView ? $ticket->getPerson()->getEmailAddress() : '',
+                    'email' => $isGuestTicketView ? $ticket->getPerson()->getPrimaryEmail()->getId() : '',
                 ],
                 RouterInterface::ABSOLUTE_PATH
             )
