@@ -654,7 +654,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 				</div>
 			</td><td valign="middle" style="vertical-align: middle;" id="{{ baseId }}_reply-controls">
 				<div style="padding-top: 1px; line-height: 100%; margin-left: 10px; float:left;">
-					<label class="hide-note">
+					<label>
 						<input type="checkbox" name="options[notify_user]" {% if app.getSetting('core_tickets.new_default_send_user_notify') %}checked="checked"{% endif %} />
 						<span class="opt-label-text">
 							{{ phrase('agent.general.email_user') }}

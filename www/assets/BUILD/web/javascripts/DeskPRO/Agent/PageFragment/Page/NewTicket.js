@@ -579,12 +579,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				replyAsState = self.getEl('note_as_type').data('type');
 				self.storedReplyText = self.textarea.getCode();
 				self.textarea.setCode(self.storedNoteText || '');
-        $input.prop('checked', false).parent().hide();
       } else {
 				$('.hide-note').show();
 				$('.hide-reply').hide();
         self.isNote = false;
-        $input.prop('checked', emailCheckboxState).parent().show();
         self.setReplyAsOptionName(replyAsState, true);
 				self.storedNoteText = self.textarea.getCode();
 				self.textarea.setCode(self.storedReplyText || '');
