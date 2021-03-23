@@ -350,6 +350,14 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
+     * @return Blob[]
+     */
+    public function getAttachedBlobs()
+    {
+        return $this->attach_blobs;
+    }
+
+    /**
      * Brings in a blob that will be embedded.
      *
      * @param string                           $src  The image src attribute that will be replaced

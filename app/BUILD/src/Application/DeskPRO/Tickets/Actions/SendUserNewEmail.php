@@ -179,16 +179,17 @@ class SendUserNewEmail extends AbstractEmailAction
         /** @var TicketEmail $ticketEmail */
         $ticketEmail = $emailBuilder->buildTicketEmail();
 
-        $vars = [];
-
-        if (isset($lastMessage)) {
-            $vars['attached_blobs'] = $this->getLastMessageAttachments($ticket, $lastMessage, $context, $isAuto);
-        }
-
-        $message = $ticketEmail->prepareMailerMessage($vars, false);
+        $message = $ticketEmail->prepareMailerMessage([], false);
 
         $message = $this->getContainer()->get('email.email_sender')
             ->prepareMessage($viewModel, $messagesArgs, $message);
+
+        if (isset($lastMessage) && !empty($message->getAttachedBlobs())) {
+            $inlineAttachments = $this->getLastMessageAttachments($ticket, $lastMessage, $context, $isAuto);
+            foreach ($inlineAttachments as $attachment) {
+                $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());
+            }
+        }
 
         try {
             if ($mailer instanceof StorageTransportInterface) {
