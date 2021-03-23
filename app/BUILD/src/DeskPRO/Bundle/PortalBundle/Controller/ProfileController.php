@@ -638,7 +638,7 @@ class ProfileController extends AbstractController
             $emailAddress = $formData['person_email']['email'];
         }
 
-        $this->addFlash('success', $this->phrase(['portal.flashes.user_add_email_verify', 'helpcenter.flashes.user_add_email_verify'], ['email' => $emailAddress]));
+        $this->addFlash('success', $this->phrase(['portal.flashes.user_removed_email', 'helpcenter.flashes.user_removed_email'], ['email' => $emailAddress]));
 
         $this->getEm()->remove($savedForm);
         $this->getEm()->flush();
