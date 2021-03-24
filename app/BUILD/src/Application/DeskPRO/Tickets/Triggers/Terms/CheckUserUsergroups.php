@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
@@ -40,6 +36,6 @@ class CheckUserUsergroups extends AbstractTriggerTerm
     {
         $options = $this->getTermOptions();
 
-        return $this->isEntityMatch($ticket, $context, 'person.usergroups[]', 'id', $options['usergroup_ids']);
+        return $this->isEntityMatch($ticket, $context, 'person.all_usergroups[]', 'id', $options['usergroup_ids']);
     }
 }

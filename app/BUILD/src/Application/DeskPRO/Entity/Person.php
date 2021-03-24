@@ -420,6 +420,13 @@ class Person extends DomainObject implements
     protected $usergroups;
 
     /**
+     * All Usergroups the user belongs to ( including user organization usergroups) .
+     *
+     * @var ArrayCollection
+     */
+    protected $all_usergroups;
+
+    /**
      * Brands the user belongs to.
      *
      * @var ArrayCollection
@@ -683,6 +690,7 @@ class Person extends DomainObject implements
 
         $this->emails                 = new ArrayCollection();
         $this->usergroups             = new ArrayCollection();
+        $this->all_usergroups         = new ArrayCollection();
         $this->brands                 = new ArrayCollection();
         $this->twitter_accounts       = new ArrayCollection();
         $this->twitter_users          = new ArrayCollection();
@@ -1231,6 +1239,26 @@ class Person extends DomainObject implements
      */
     public function getUsergroups()
     {
+        return $this->usergroups;
+    }
+
+    /**
+     * @return ArrayCollection|Usergroup[]
+     */
+    public function getAllUsergroups()
+    {
+        if ($this->getOrganization()) {
+            $organizationGroups = $this->getOrganization()->getUsergroups()->filter(function (Usergroup $group) {
+                return $group->is_enabled;
+            });
+
+            if (!$organizationGroups->isEmpty()) {
+                return new ArrayCollection(
+                    array_merge($organizationGroups->toArray(), $this->usergroups->toArray())
+                );
+            }
+        }
+
         return $this->usergroups;
     }
 
