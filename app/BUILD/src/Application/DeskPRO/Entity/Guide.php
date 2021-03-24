@@ -540,7 +540,6 @@ class Guide extends DomainObject implements HasIconProperty, HasSplashImagePrope
             [
                 'fieldName'  => 'description',
                 'type'       => 'text',
-                'length'     => 255,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
