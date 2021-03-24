@@ -312,6 +312,10 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             }
             $viewModel->setContextVars($arguments[0], $context, $mode);
 
+            $viewModel->setSiteUrl($this->getContainer()->getBrandSetting('core.site_url'));
+            $viewModel->setSiteName($this->getContainer()->getBrandSetting('core.site_name'));
+            $viewModel->setDeskproUrl($this->getContainer()->getBrandSetting('core.deskpro_url'));
+
             return $viewModel;
         }
         $templatesDesc = new EmailTemplatesDesc();
@@ -347,6 +351,10 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             $model->setActionPerformer($factory->convertParameter($context->getPersonContext()));
             $model->setContextVars($arguments[0], $context, $mode);
         }
+
+        $model->setSiteUrl($this->getContainer()->getBrandSetting('core.site_url'));
+        $model->setSiteName($this->getContainer()->getBrandSetting('core.site_name'));
+        $model->setDeskproUrl($this->getContainer()->getBrandSetting('core.deskpro_url'));
 
         return $model;
     }
