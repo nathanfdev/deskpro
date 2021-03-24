@@ -2756,15 +2756,10 @@ class TicketController extends AbstractController
                 if ($this->in->getBool('with_set_agent_parts') && ($canAssignSelf || $canAssignAgent)) {
                     $set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
                     if ($canAssignSelf && !$canAssignAgent) {
-                        $existingParticipants = $ticket->getAgentParticipants();
                         if ($this->in->getBool('add_new')) {
-                            $existingParticipants[] = $this->person;
-                            $ticket->setAgentParticipants($existingParticipants);
+                            $ticket->addParticipantPerson($this->person);
                         } else {
-                            if (($key = array_search($this->person->getId(), array_column($existingParticipants, 'id'), true)) !== false) {
-                                unset($existingParticipants[$key]);
-                            }
-                            $ticket->setAgentParticipants($existingParticipants);
+                            $ticket->removeParticipantPerson($this->person);
                         }
                     } else {
                         $agents    = $this->em->getRepository(Person::class)->getPeopleFromIds($set_parts);
