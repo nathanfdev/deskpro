@@ -2426,16 +2426,22 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       ev.stopImmediatePropagation();
 
       $(this).closest('li').remove();
-      updateFollowersList();
+      updateFollowersList(false)
     });
 
-    var updateFollowersList = function() {
+    var updateFollowersList = function(addNew) {
+      var addNew = typeof addNew === 'undefined';
       var ids = [];
       var postData = [{
         name: 'with_set_agent_parts',
         value: 1
       }];
 
+      postData.push({
+        name:  'add_new',
+        value: (addNew) ? 1 : 0
+      });
+      
       followersList.find('li').each(function() {
         postData.push({
           name: 'set_agent_part_ids[]',

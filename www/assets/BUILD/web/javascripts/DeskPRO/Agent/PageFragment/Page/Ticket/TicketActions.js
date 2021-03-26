@@ -151,11 +151,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			ev.stopImmediatePropagation();
 
 			$(this).closest('li').remove();
-			updateFollowersList();
+			updateFollowersList(false);
 		});
 
-		var updateFollowersList = function() {
-			var postData = [{
+		var updateFollowersList = function(addNew) {
+     var addNew = typeof addNew === 'undefined';
+
+      var postData = [{
 				name: 'with_set_agent_parts',
 				value: 1
 			}];
@@ -165,6 +167,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 					value: $(this).data('agent-id')
 				});
 			});
+
+      postData.push({
+        name:  'add_new',
+        value: (addNew) ? 1 : 0
+      });
 
 			callQueue.call(function() {
 				self.changeManager.saveChanges(postData, function() {

@@ -2750,10 +2750,21 @@ class TicketController extends AbstractController
                 );
                 $ticket->addPropertyChangedListener($event_listener);
 
-                if ($this->in->getBool('with_set_agent_parts') && $this->person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
+                $canAssignAgent = $this->person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent');
+                $canAssignSelf  = $this->person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self');
+
+                if ($this->in->getBool('with_set_agent_parts') && ($canAssignSelf || $canAssignAgent)) {
                     $set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
-                    $agents    = $this->em->getRepository(Person::class)->getPeopleFromIds($set_parts);
-                    $ticket->setAgentParticipants($agents);
+                    if ($canAssignSelf && !$canAssignAgent) {
+                        if ($this->in->getBool('add_new')) {
+                            $ticket->addParticipantPerson($this->person);
+                        } else {
+                            $ticket->removeParticipantPerson($this->person);
+                        }
+                    } else {
+                        $agents    = $this->em->getRepository(Person::class)->getPeopleFromIds($set_parts);
+                        $ticket->setAgentParticipants($agents);
+                    }
                 }
 
                 if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
