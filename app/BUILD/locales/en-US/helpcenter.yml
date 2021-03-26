@@ -372,6 +372,7 @@ helpcenter.forms.error_mismatch_values: 'This value does not match'
 helpcenter.forms.error_required: 'This value is required'
 helpcenter.forms.error_length_too_short: 'This value length is too short'
 helpcenter.forms.error_banned_email: 'Email is banned.'
+helpcenter.forms.error_unauthorized_department: 'Insufficient permission'
 helpcenter.forms.label_drag_overlay: 'Insert this image into your message.'
 helpcenter.forms.label_email: Email
 helpcenter.forms.label_password: Password
