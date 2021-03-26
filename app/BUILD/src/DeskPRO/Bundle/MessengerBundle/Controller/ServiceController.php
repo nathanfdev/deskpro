@@ -216,6 +216,7 @@ class ServiceController extends AbstractMessengerController
             'helpcenter.messenger.tickets_form_submit',
             'helpcenter.messenger.tickets_form_thanks',
             'helpcenter.messenger.tickets_form_thanks_header',
+            'helpcenter.widget.tickets_form_label_subject',
         ]);
 
         $translate = $this->container->get('deskpro.core.translate');
