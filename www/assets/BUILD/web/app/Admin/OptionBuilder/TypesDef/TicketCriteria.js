@@ -580,6 +580,10 @@ define([
         const promises = [apiV1];
         promises.push(this.Api2.sendGet('/ticket_statuses'));
 
+        if (window.DP_HAS_NEW_EMAILS) {
+          promises.push(this.Api2.sendGet('/email_templates/info'));
+        }
+
         this.$q.all(promises).then((result) => {
           let f;
           const { data } = result[0];
@@ -610,6 +614,11 @@ define([
 
           // ApiV2 results
           options_data['ticket_statuses'] = result[1].data.data;
+
+          if (window.DP_HAS_NEW_EMAILS) {
+            const v2data = result[2].data.data;
+            options_data.custom_email_tpls = v2data.list.custom.groups.custom.subGroups.primary.templates;
+          }
 
           this.options_data = options_data;
 
