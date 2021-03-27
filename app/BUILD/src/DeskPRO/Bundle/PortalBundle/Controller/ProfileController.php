@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha\HcValidRecaptcha2;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\LimitEmailDomains;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType;
@@ -82,17 +83,21 @@ class ProfileController extends AbstractController
 
         if ($request->isMethod('post')) {
             if ($form->isSubmitted()) {
-                $errors        = $form->getErrors(true);
-                $hasValidEmail = true;
+                $errors          = $form->getErrors(true);
+                $hasValidEmail   = true;
+                $hasCaptchaError = false;
                 foreach ($errors as $error) {
                     $cause = $error->getCause();
                     if ($cause && $cause->getCode() === LimitEmailDomains::BAD_EMAIL_DOMAIN) {
                         $hasValidEmail = false;
                     }
+                    if (($cause && $cause->getCode() === HcValidRecaptcha2::CAPTCHA_ERROR) || $error->getOrigin()->getName() === 'captcha') {
+                        $hasCaptchaError = true;
+                    }
                 }
 
                 // check if the person already has an account (or is a contact)
-                if ($hasValidEmail && ($email = $person->getEmailAddress())) {
+                if (!$hasCaptchaError && $hasValidEmail && ($email = $person->getEmailAddress())) {
                     /** @var Person $personCheck */
                     if ($personCheck = $this->get('data.person')->getPersonForEmail($email)) {
                         $this->runAntiAbuseCheck($request);

@@ -50,11 +50,17 @@ class ValidRecaptcha2Validator extends ConstraintValidator
         $response = $recaptcha->verify($recaptcha_value, $request->getClientIp());
 
         if ($recaptchaVersion === CaptchaAntiAbuseSettings::RecaptchaVersion3 && $response->isSuccess() && $response->getScore() <= 0.5) {
-            $this->context->addViolation($constraint->message);
+            $this->context
+                ->buildViolation($constraint->message)
+                ->setCode(HcValidRecaptcha2::CAPTCHA_ERROR)
+                ->addViolation();
         }
 
         if (!$response->isSuccess()) {
-            $this->context->addViolation($constraint->message);
+            $this->context
+                ->buildViolation($constraint->message)
+                ->setCode(HcValidRecaptcha2::CAPTCHA_ERROR)
+                ->addViolation();
         }
     }
 
