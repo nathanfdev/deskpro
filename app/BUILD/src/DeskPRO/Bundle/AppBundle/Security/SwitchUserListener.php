@@ -226,7 +226,12 @@ class SwitchUserListener implements ListenerInterface
         try {
             $user = $this->provider->loadUserByUsername($username);
         } catch (UsernameNotFoundException $e) {
-            return new UsernamePasswordToken('anon', 'anon', $this->provider_key, $roles);
+            if (null !== $this->dispatcher && $originalUser) {
+                $switchEvent = new SwitchUserEvent($request, $originalUser);
+                $this->dispatcher->dispatch(SecurityEvents::SWITCH_USER, $switchEvent);
+            }
+
+            return new UsernamePasswordToken('anon', 'anon', $this->provider_key, []);
         }
 
         $this->user_checker->checkPostAuth($user);
