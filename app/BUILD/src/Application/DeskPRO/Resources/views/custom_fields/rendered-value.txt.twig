@@ -1,5 +1,6 @@
 {% set field_rendered %}
 	{% block field_rendered %}
+	{% if data.value is defined %}
 		{% if field_handler_name == 'Date' %}
 			{{ data.value|date('full', field_def.getOption('ignore_timezone') ? 'UTC' : null) }}
 		{% elseif field_handler_name == 'DateTime' %}
@@ -21,6 +22,7 @@
 		{% else %}
 			{{ data.value }}
 		{% endif %}
+	{% endif %}
 	{% endblock %}
 {% endset %}
 {% block content %}
