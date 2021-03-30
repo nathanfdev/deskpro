@@ -722,6 +722,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       }
     });
 
+    this.getEl('idref_switch_ref').on('click', function() {
+      if ($(this).hasClass('refmode')) {
+        $(this).removeClass('refmode');
+        self.getEl('ref_num').show();
+        self.getEl('id_num').hide();
+      } else {
+        $(this).addClass('refmode');
+        self.getEl('id_num').show();
+        self.getEl('ref_num').hide();
+      }
+    });
+
     DeskPRO.ElementHandler_Exec(this.wrapper);
     var messageboxTabs = this.getEl('messagebox_tabs').data('simpletabs');
     if (messageboxTabs) {
