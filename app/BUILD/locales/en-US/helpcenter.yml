@@ -381,6 +381,7 @@ helpcenter.forms.label_reset: Reset
 helpcenter.forms.label_save: Save
 helpcenter.forms.label_submit: Submit
 helpcenter.widget.label_subject: Subject
+helpcenter.widget.tickets_form_label_subject: Subject
 helpcenter.forms.label_subject: Subject
 helpcenter.forms.label_timezone: Timezone
 helpcenter.forms.message_description: ''
