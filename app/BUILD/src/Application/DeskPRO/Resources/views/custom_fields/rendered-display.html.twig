@@ -38,7 +38,7 @@
 				{{ propValue|safe_link_urls_html }}
 			{% elseif field_handler_name == 'Url' %}
 				{% if propValue %}
-					<a href="{{ propValue }}" target="_blank">{{ propValue }}</a>
+					<a href="{{ propValue }}" target="_blank">{{ propValue|raw }}</a>
 				{% endif %}
 			{% elseif field_handler_name == 'Currency' %}
 				{% set currency = get_currency(field_def.getOption('currency_id')) %}

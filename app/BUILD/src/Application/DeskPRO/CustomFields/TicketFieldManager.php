@@ -84,8 +84,9 @@ class TicketFieldManager extends FieldManager
         $old_value = null;
 
         if (isset($all_display_data[$fieldDef->id])) {
-            $handler   = $all_display_data[$fieldDef->id]['handler'];
-            $old_value = $handler->renderText($all_display_data[$fieldDef->id]['value']);
+            $handler      = $all_display_data[$fieldDef->id]['handler'];
+            $displayValue =  isset($all_display_data[$fieldDef->id]['value']) ? $all_display_data[$fieldDef->id]['value'] : null;
+            $old_value    = $handler->renderText($displayValue);
 
             if ($old_value) {
                 $old_value = trim(str_replace(["\n", "\r\n"], ' ', strip_tags($old_value)));
