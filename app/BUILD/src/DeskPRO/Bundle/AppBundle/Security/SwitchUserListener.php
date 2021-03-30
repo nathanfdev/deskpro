@@ -230,8 +230,12 @@ class SwitchUserListener implements ListenerInterface
                 $switchEvent = new SwitchUserEvent($request, $originalUser);
                 $this->dispatcher->dispatch(SecurityEvents::SWITCH_USER, $switchEvent);
             }
+            $roles = [];
+            if (null !== $backToken) {
+                $roles[] = new SwitchUserRole('ROLE_PREVIOUS_ADMIN', $backToken);
+            }
 
-            return new UsernamePasswordToken('anon', 'anon', $this->provider_key, []);
+            return new UsernamePasswordToken('anon', 'anon', $this->provider_key, $roles);
         }
 
         $this->user_checker->checkPostAuth($user);
