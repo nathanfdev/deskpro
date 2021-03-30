@@ -61,7 +61,7 @@
     not meant to be completely hidden to the user (input type=hidden)
     #}
     {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
-    {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
+    {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) or form.vars.id == 'ticket_cc' %}
     {% if attr.attachments is defined and attr.attachments %}
         {% set widgetClass = '' %}
     {% else %}
