@@ -81,9 +81,10 @@ class ReCaptchaType extends AbstractType
     {
         $contraint = $this->isHelpcenter() ? new HcValidRecaptcha2() : new ValidRecaptcha2();
         $resolver->setDefaults([
-            'label'       => false,
-            'mapped'      => false,
-            'constraints' => [
+            'label'          => false,
+            'mapped'         => false,
+            'error_bubbling' => false,
+            'constraints'    => [
                 $contraint,
             ],
         ]);

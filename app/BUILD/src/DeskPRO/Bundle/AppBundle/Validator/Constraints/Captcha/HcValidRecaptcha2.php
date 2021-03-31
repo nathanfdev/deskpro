@@ -11,7 +11,7 @@ class HcValidRecaptcha2 extends Constraint
 {
     public $message = 'helpcenter.forms.error_captcha';
 
-    const CAPTCHA_ERROR = 'captcha_error';
+    const CAPTCHA_ERROR = 'captcha';
 
     public function validatedBy()
     {
