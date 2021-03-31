@@ -79,7 +79,7 @@ export const preloadData    = createAction(
       }
 
       if (window.DP_HAS_FOLLOW_UP) {
-        batchComponents.ticket_macros  = { endpoint: 'ticket_macros' };
+        batchComponents.ticket_macros  = { endpoint: 'ticket_macros', query: 'count=50' };
       }
 
       if (window.DP_HAS_APPROVALS) {
