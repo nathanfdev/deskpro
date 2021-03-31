@@ -717,11 +717,31 @@ class TicketSearchController extends AbstractController
 
     public function runCustomFilterAction()
     {
-        $result_cache = false;
+        $result_cache                   = false;
+        $group_by                       = $this->in->getString('group_by');
+        $customSelectedFlagFilterExists = $this->em->getRepository(PersonPref::class)
+            ->findOneBy(['person' => $this->person->getId(), 'name' => 'agent.ui.ticket-custom-filter-selected-flag']);
+        $customGroupByFilterExists = $this->em->getRepository(PersonPref::class)
+            ->findOneBy(['person' => $this->person->getId(), 'name' => 'agent.ui.ticket-custom-filter-group-by']);
+
+        if (!$group_by && $customSelectedFlagFilterExists && $customGroupByFilterExists) {
+            $group_by =  $customGroupByFilterExists->getValue();
+        }
+
         if ($this->in->getUInt('cache_id')) {
             $result_cache = $this->em->getRepository(ResultCache::class)->find($this->in->getUInt('cache_id'));
             if ($result_cache['person_id'] != $this->person['id']) {
                 $result_cache = false;
+            }
+
+            if ($group_by) {
+                $customGroupByFilter = ($customGroupByFilterExists) ?: new PersonPref();
+                $customGroupByFilter->setName('agent.ui.ticket-custom-filter-group-by');
+                $customGroupByFilter->setValue($group_by);
+                $customGroupByFilter->setDateExpire(new \DateTime('+15 minutes'));
+                $customGroupByFilter->setPerson($this->person);
+                $this->em->persist($customGroupByFilter);
+                $this->em->flush();
             }
         }
 
@@ -729,7 +749,6 @@ class TicketSearchController extends AbstractController
 
         $terms    = [];
         $order_by = $this->person->getPref('agent.ui.ticket-basic-order-by.general');
-        $group_by = $this->in->getString('group_by');
         $searcher = null;
 
         //------------------------------
@@ -953,6 +972,17 @@ class TicketSearchController extends AbstractController
             if (!$result_cache) {
                 $result_cache         = new \Application\DeskPRO\Entity\ResultCache();
                 $result_cache->person = $this->person;
+
+                //Flag Custom Filter
+                if (isset($terms[0]['options']['flag'])) {
+                    $customSelectedFlagFilter = ($customSelectedFlagFilterExists) ?: new PersonPref();
+                    $customSelectedFlagFilter->setName('agent.ui.ticket-custom-filter-selected-flag');
+                    $customSelectedFlagFilter->setValue($terms[0]['options']['flag']);
+                    $customSelectedFlagFilter->setDateExpire(new \DateTime('+15 minutes'));
+                    $customSelectedFlagFilter->setPerson($this->person);
+                    $this->em->persist($customSelectedFlagFilter);
+                    $this->em->flush();
+                }
             }
 
             $needs_urgency = $searcher->needsUrgency();
@@ -1714,10 +1744,10 @@ class TicketSearchController extends AbstractController
 
             foreach ($tickets as $ticket) {
                 $customTextData = $fieldManager->getRenderedToTextForObject($ticket);
-                $row = [];
+                $row            = [];
 
-            foreach ($displayFields as $displayField) {
-                switch ($displayField) {
+                foreach ($displayFields as $displayField) {
+                    switch ($displayField) {
                     case 'language_id':
                     case 'department_id':
                     case 'priority_id':
@@ -1800,7 +1830,7 @@ class TicketSearchController extends AbstractController
                             break;
                         case 'sub_status':
                             $ticketStatus = $ticket->getTicketStatus();
-                            $row[] = $ticketStatus instanceof VirtualTicketStatus ? '' : $ticketStatus->getTitle();
+                            $row[]        = $ticketStatus instanceof VirtualTicketStatus ? '' : $ticketStatus->getTitle();
 
                         break;
                     default:
@@ -1814,32 +1844,32 @@ class TicketSearchController extends AbstractController
                             list(, $name) = $matches;
                             $entity       = $ticket->{$name};
 
-                                if ($entity) {
-                                    $row[] = $entity->id;
+                            if ($entity) {
+                                $row[] = $entity->id;
+                            } else {
+                                $row[] = '';
+                            }
+                        } else {
+                            if (isset($ticket[$displayField])) {
+                                $value = $ticket[$displayField];
+                            } else {
+                                $value = null;
+                            }
+
+                            if (is_scalar($value)) {
+                                $row[] = $value;
+                            } elseif (is_object($value)) {
+                                if ($value instanceof \DateTime) {
+                                    $dt = clone $value;
+                                    $dt->setTimezone($this->person->getDateTimezone());
+                                    $row[] = $dt->format('c');
                                 } else {
                                     $row[] = '';
                                 }
                             } else {
-                                if (isset($ticket[$displayField])) {
-                                    $value = $ticket[$displayField];
-                                } else {
-                                    $value = null;
-                                }
-
-                                if (is_scalar($value)) {
-                                    $row[] = $value;
-                                } elseif (is_object($value)) {
-                                    if ($value instanceof \DateTime) {
-                                        $dt = clone $value;
-                                        $dt->setTimezone($this->person->getDateTimezone());
-                                        $row[] = $dt->format('c');
-                                    } else {
-                                        $row[] = '';
-                                    }
-                                } else {
-                                    $row[] = '';
-                                }
+                                $row[] = '';
                             }
+                        }
 
                             break;
                     }
@@ -1847,7 +1877,7 @@ class TicketSearchController extends AbstractController
 
                 fputcsv($temp, $row);
                 rewind($temp);
-                $response->setContent($response->getContent() . fgets($temp));
+                $response->setContent($response->getContent().fgets($temp));
                 ftruncate($temp, 0);
             }
 
