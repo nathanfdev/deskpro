@@ -89,6 +89,14 @@ services:
     tags:
       - { name: validator.constraint_validator, alias: 'dp_ticket_layout' }
 
+  validator.ticket_department:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketDepartmentValidator
+    arguments:
+      - "@data.departments"
+    tags:
+      - { name: validator.constraint_validator, alias: 'dp_ticket_department_validator' }
+
+
   validator.ticket_dupe:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketDupeValidator
     arguments:

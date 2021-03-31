@@ -102,6 +102,7 @@ class TicketWithLayoutsWebType extends AbstractType
             },
             'constraints' => [
                 new AppAssert\Ticket\TicketDupe(),
+                new AppAssert\Ticket\TicketDepartment(),
             ],
 
             // allow extra fields for the new ticket form to prevent inability to submit the form
