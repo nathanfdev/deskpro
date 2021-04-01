@@ -287,6 +287,7 @@ helpcenter.error.general_title: 'An Error Occurred'
 helpcenter.error.helpdesk: Helpdesk
 helpcenter.error.permission_denied_title: 'You are not allowed to perform this action'
 helpcenter.error.upload: 'Upload failed'
+helpcenter.general.delete: Delete
 helpcenter.eula.agree: I Agree
 helpcenter.flashes.article_cat_subscribe: 'You have successfully subscribed to {category} and will be notified when new articles are published.'
 helpcenter.flashes.article_cat_unsubscribe: 'You have successfully unsubscribed from {category}.'
