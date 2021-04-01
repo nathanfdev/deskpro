@@ -1239,8 +1239,9 @@ class TicketSearch extends SearcherAbstract
                 break;
 
             case 'ticket.date_created':
-                $order_by            = "ORDER BY id $dir";
-                $this->order_summary = $tr->phrase('agent.general.date_created');
+                $this->add_raw_selects[] = 'tickets.date_created AS date_created';
+                $this->order_summary     = $tr->phrase('agent.general.date_created');
+                $order_by                = "ORDER BY date_created $dir, id DESC";
 
                 break;
 
