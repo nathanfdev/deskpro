@@ -1431,11 +1431,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
                 .change();
             }
           }
-
-					if (actionsRowList.find('.with-close-tab')) {
-						this.getElById('close_tab_opt').prop('checked', true);
-					}
-
+          
 					if (this.page) {
 						this.page.updateUi();
 						if (!this.page.meta.ticket_reverse_order) {
