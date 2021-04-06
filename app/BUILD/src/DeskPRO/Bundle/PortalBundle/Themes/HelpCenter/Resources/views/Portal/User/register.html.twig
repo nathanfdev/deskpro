@@ -17,7 +17,7 @@
                     </div>
                     <div class="dp-po-section dp-po-block">
                         <section class="dp-po-loginform">
-                            {{ form_start(form) }}
+                            {{ form_start(form, { attr: { class: 'helpcenter-form' } }) }}
                             {{ form_widget(form) }}
                             {{ form_rest(form) }}
                             <button type="submit" class="btn btn-primary btn-lg">{{ phrase('helpcenter.account.register_action') }}</button>

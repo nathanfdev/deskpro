@@ -48,7 +48,7 @@ export class AttachedFile extends React.Component {
         <input type="hidden" name={formName} value={blob.authcode} />
         <span className="file-size">({blob.size})</span>
         <a href="#" className="remove-attachement" onClick={this.onDelete}>
-          <i className="fas fa-times" />{portalPhrases.get('portal.general.delete')}
+          <i className="fas fa-times" />{portalPhrases.get('helpcenter.general.delete')}
         </a>
 
         {blob.is_image && <img role="presentation" src={blob.url} ref="image" style={{ display: 'none' }} />}

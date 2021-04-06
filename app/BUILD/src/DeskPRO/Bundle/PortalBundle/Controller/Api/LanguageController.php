@@ -81,6 +81,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.general.prop_views_desc',
             'helpcenter.general.published',
             'helpcenter.general.remove',
+            'helpcenter.general.delete',
             'helpcenter.general.select',
             'helpcenter.general.show_count_more',
             'helpcenter.general.show_x_more',
