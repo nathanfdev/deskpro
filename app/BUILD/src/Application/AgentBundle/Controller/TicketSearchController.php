@@ -1179,7 +1179,17 @@ class TicketSearchController extends AbstractController
         $searcher->setPerson($this->person);
 
         $order_by = $this->in->getString('order_by');
-        if (!$order_by) {
+        if ($order_by) {
+            $customSelectedFlagFilterExists = $this->em->getRepository(PersonPref::class)
+                ->findOneBy(['person' => $this->person->getId(), 'name' => 'agent.ui.ticket-filter-order-by.'.$filter['id']]);
+
+            $customGroupByFilter = ($customSelectedFlagFilterExists) ?: new PersonPref();
+            $customGroupByFilter->setName('agent.ui.ticket-filter-order-by.'.$filter['id']);
+            $customGroupByFilter->setValue($order_by);
+            $customGroupByFilter->setPerson($this->person);
+            $this->em->persist($customGroupByFilter);
+            $this->em->flush();
+        } else {
             $order_by = $this->person->getPref('agent.ui.ticket-filter-order-by.'.$filter['id']);
         }
 
