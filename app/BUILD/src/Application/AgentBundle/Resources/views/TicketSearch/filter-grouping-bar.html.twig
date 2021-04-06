@@ -46,7 +46,7 @@
 			{% set count = grouped_info.counts[cat.id].total %}
 			{% set count_all = calcGroupedHierarchyCount(grouped_info, cat) %}
 			<li data-grouping-option="{{ cat.id }}" {% if not (grouping_option == 'DP_NOT_SET' or grouping_option == '-1') and grouping_option == cat.id %}class="on" id="{{ tplvars.baseId }}_total_grouped_count"{% endif %} {% if count_all == 0 %}style="display: none;"{% endif %}>
-				<a data-route="{{ grouping_url ~ cat.id }}"
+				<a data-route="{{ grouping_url ~ cat.id | url_encode(true)}}"
 						{% if group_by == 'urgency' %}
 							class="group-by-pill urgency-{{cat.title}}"
 						{% endif %}
