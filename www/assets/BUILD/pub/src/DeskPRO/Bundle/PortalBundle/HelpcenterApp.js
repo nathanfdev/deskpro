@@ -1,19 +1,19 @@
+import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'babel-polyfill';
+import { AppContainer } from 'react-hot-loader';
+import $ from 'jquery';
+import { IntlProvider } from 'react-intl';
+import HelpCenterPage from './PageWidget/HelpCenterPage';
+import { portalPhrases } from './PortalPhrases';
+import App from './Modules/Application/Components/AppContainer';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/pro-solid-svg-icons';
 import { faAngleDown, faAngleRight, faAngleLeft, faInfoCircle, faExclamationCircle, faTimes } from '@fortawesome/pro-light-svg-icons';
 import { faSearch, faAngleDown as farAngleDown, faSpinner } from '@fortawesome/pro-regular-svg-icons';
-import { AppContainer } from 'react-hot-loader';
-import $ from 'jquery';
-import { IntlProvider } from 'react-intl';
-import '@fortawesome/fontawesome-pro/js/all.min';
-import HelpCenterPage from './PageWidget/HelpCenterPage';
-import { portalPhrases } from './PortalPhrases';
-import App from './Modules/Application/Components/AppContainer';
 
-import { portalHttp } from './Http/PortalHttp';
+// Async load FA
+import('@fortawesome/fontawesome-pro/js/all.min');
 
 class HelpcenterApp {
   constructor() {
@@ -42,7 +42,6 @@ class HelpcenterApp {
 
   getPhraseMessages() {
     const messages = portalPhrases.getPhrases();
-
     if (Object.keys(messages).length !== 0) {
       return messages;
     }
@@ -50,22 +49,18 @@ class HelpcenterApp {
     portalHttp.sendGet(`DP_URL/portal/api/lang/widget-phrases.json?language=${this.locale}`).then((response) => {
       if (response.data.phrases) {
         portalPhrases.setPhrases(response.data.phrases);
-        return portalPhrases.getPhrases();
       }
-
-      return messages;
     });
 
-    return messages;
+    return portalPhrases.getPhrases();
   }
 
   render(props, node) {
-    const messages = this.getPhraseMessages();
     ReactDOM.render(
       <AppContainer>
         <IntlProvider
           locale={this.locale}
-          messages={messages}
+          messages={this.getPhraseMessages()}
         >
           <App {...props} />
         </IntlProvider>
