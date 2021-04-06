@@ -1,20 +1,19 @@
-import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
-import $ from 'jquery';
-import { IntlProvider } from 'react-intl';
-import HelpCenterPage from './PageWidget/HelpCenterPage';
-import { portalPhrases } from './PortalPhrases';
-import App from './Modules/Application/Components/AppContainer';
+import 'babel-polyfill';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/pro-solid-svg-icons';
 import { faAngleDown, faAngleRight, faAngleLeft, faInfoCircle, faExclamationCircle, faTimes } from '@fortawesome/pro-light-svg-icons';
 import { faSearch, faAngleDown as farAngleDown, faSpinner } from '@fortawesome/pro-regular-svg-icons';
-import {portalHttp} from "./Http/PortalHttp"
+import { AppContainer } from 'react-hot-loader';
+import $ from 'jquery';
+import { IntlProvider } from 'react-intl';
+import '@fortawesome/fontawesome-pro/js/all.min';
+import HelpCenterPage from './PageWidget/HelpCenterPage';
+import { portalPhrases } from './PortalPhrases';
+import App from './Modules/Application/Components/AppContainer';
 
-// Async load FA
-import('@fortawesome/fontawesome-pro/js/all.min');
+import { portalHttp } from './Http/PortalHttp';
 
 class HelpcenterApp {
   constructor() {
@@ -44,12 +43,12 @@ class HelpcenterApp {
   getPhraseMessages() {
     const messages = portalPhrases.getPhrases();
 
-    if(Object.keys(messages).length !== 0) {
+    if (Object.keys(messages).length !== 0) {
       return messages;
     }
 
     portalHttp.sendGet(`DP_URL/portal/api/lang/widget-phrases.json?language=${this.locale}`).then((response) => {
-      if(response.data.phrases){
+      if (response.data.phrases) {
         portalPhrases.setPhrases(response.data.phrases);
         return portalPhrases.getPhrases();
       }
@@ -58,11 +57,10 @@ class HelpcenterApp {
     });
 
     return messages;
-
   }
 
   render(props, node) {
-    const messages = this.getPhraseMessages()
+    const messages = this.getPhraseMessages();
     ReactDOM.render(
       <AppContainer>
         <IntlProvider
