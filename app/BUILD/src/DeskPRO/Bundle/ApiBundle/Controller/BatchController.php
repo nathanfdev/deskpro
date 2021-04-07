@@ -112,6 +112,25 @@ class BatchController extends BaseController
 
         // reset entity manager
         $this->getDoctrine()->getManager()->clear();
+
+        // reset lazy choices in forms
+        $container = $this->getContainer();
+
+        $reflection = new \ReflectionClass($container);
+        $property   = $reflection->getProperty('services');
+        $property->setAccessible(true);
+
+        $services = $property->getValue($container);
+        foreach ($services as $name => $service) {
+            if (strpos($name, 'form') !== false) {
+                unset($services[$name]);
+            }
+        }
+
+        $property->setValue($container, $services);
+        unset($services);
+
+        // refresh token
         if ($this->getUser() instanceof Person) {
             $token = $this->container->get('security.token_storage')->getToken();
             $token->setUser($this->getRepository(Person::class)->find($this->getUser()->getId()));
