@@ -558,6 +558,12 @@ $container->loadFromExtension(
             'deskpro' => [
                 'settings' => [
                     'analysis' => [
+                        'char_filter' => [
+                            'custom_char_filter' => [
+                                'type'              => 'mapping',
+                                'mappings'          => ["&=>and"],
+                            ],
+                        ],
                         'filter' => [
                             'ngram_filter_3' => [
                                 'type'        => 'nGram',
@@ -619,9 +625,10 @@ $container->loadFromExtension(
                         ],
                         'analyzer' => [
                             'title_content_analyzer' => [
-                                'type'      => 'custom',
-                                'tokenizer' => 'standard',
-                                'filter'    => [
+                                'type'        => 'custom',
+                                'tokenizer'   => 'standard',
+                                'char_filter' => ['custom_char_filter'],
+                                'filter'      => [
                                     'standard',
                                     'lowercase',
                                     'preserved_asciifolding',
