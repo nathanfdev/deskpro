@@ -17,7 +17,8 @@ export class HcSortWidget extends React.Component {
       pos:      {
         x: 0,
         y: 0,
-      }
+      },
+      activeItem: null
     };
   }
 
@@ -53,6 +54,11 @@ export class HcSortWidget extends React.Component {
     ev.stopPropagation();
     this.setState({ is_shown: !this.state.is_shown });
   };
+
+  toggleActiveItem(id) {
+    this.setState({ activeItem: id });
+    this.setState({ is_shown: !this.state.is_shown });
+  }
 
   render() {
     const dropdownStyle = {
@@ -92,7 +98,7 @@ export class HcSortWidget extends React.Component {
           </a>
           <div className={`dropdown-menu dropdown-menu-right ${this.state.is_shown && 'show'}`} style={dropdownStyle}>
             {map(sorts, (sort, id) =>
-              <a href="#sort" key={id} onClick={(ev) => { ev.preventDefault(); ev.stopPropagation(); this.onSort(id); }} className="dropdown-item">{sort} <i className="dp-po-icon far fa-check" /></a>
+              <a href="#sort" key={id} onClick={(ev) => { ev.preventDefault(); ev.stopPropagation(); this.toggleActiveItem(id); this.onSort(id); }} className={`dropdown-item ${id === this.state.activeItem ? 'active' : ''}`}>{sort} <i className="dp-po-icon far fa-check" /></a>
             )}
           </div>
         </ClickOut>
