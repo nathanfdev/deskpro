@@ -13,6 +13,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorUnknownFrom;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketForward;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcomeUsersource;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
@@ -146,6 +147,8 @@ class EmailSender
                 AgentWelcome::class => 1,
                 // When an agent is created via a usersource, they are not yet in the agent repository
                 AgentWelcomeUsersource::class => 1,
+                // When you send a forward email
+                AgentTicketForward::class => 1,
             ];
             $class = get_class($model);
             if (strpos($class, '\Agent') !== false && !isset($skipCheck[$class])) {
@@ -203,7 +206,7 @@ class EmailSender
         } elseif ($options['to']) {
             $message->setTo($options['to']);
         }
-        
+
         if (null === $recipient) {
             $model->setRecipient(null);
         }
