@@ -37,6 +37,7 @@ class DatabaseStats
         $this->stats['people_count']            = $this->db->fetchColumn('SELECT COUNT(*) FROM people');
         $this->stats['people_user_count']       = $this->db->fetchColumn('SELECT COUNT(*) FROM people WHERE is_user = 1');
         $this->stats['people_agent_count']      = $this->db->fetchColumn('SELECT COUNT(*) FROM people WHERE is_agent = 1');
+        $this->stats['active_agent_count']      = $this->db->fetchColumn('SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0');
         $this->stats['org_count']               = $this->db->fetchColumn('SELECT COUNT(*) FROM organizations');
         $this->stats['chat_count']              = $this->db->fetchColumn('SELECT COUNT(*) FROM chat_conversations');
         $this->stats['chat_message_count']      = $this->db->fetchColumn('SELECT COUNT(*) FROM chat_messages');

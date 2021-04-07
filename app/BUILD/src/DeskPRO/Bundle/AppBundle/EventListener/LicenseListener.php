@@ -81,9 +81,15 @@ class LicenseListener implements EventSubscriberInterface
             $installKey = $this->getSetting('core.install_key');
         }
 
+        $initialOptions = [];
+        if ($lic_grace_until = $this->getSetting('core.lic_limit_grace_until')) {
+            $initialOptions['lic_limit_grace_until'] = $lic_grace_until;
+        }
+
         return [
-            'license_code' => $licenseCode,
-            'install_key'  => $installKey,
+            'license_code'    => $licenseCode,
+            'install_key'     => $installKey,
+            'initial_options' => $initialOptions,
         ];
     }
 
