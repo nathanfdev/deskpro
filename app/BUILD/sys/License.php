@@ -103,16 +103,22 @@ final class License
     /**
      * @static
      *
-     * @param $license_code
+     * @param string $license_code
+     * @param string $install_key
+     * @param array $initialOptions
      *
      * @return \DpSys\License
      */
-    public static function create($license_code, $install_key = '')
+    public static function create($license_code, $install_key = '', $initialOptions = null)
     {
         self::getLicServer();
         self::getSecureLicServer();
 
-        $inst = new self($license_code, $install_key);
+        if (!$initialOptions || !is_array($initialOptions)) {
+            $initialOptions = [];
+        }
+
+        $inst = new self($license_code, $install_key, $initialOptions);
 
         return $inst;
     }
@@ -139,7 +145,14 @@ final class License
                 $info         = call_user_func(self::$lic_loader);
                 $license_code = $info['license_code'];
                 $install_key  = $info['install_key'];
-                self::$inst   = self::create($license_code, $install_key);
+
+                if (!empty($info['initial_options']) && is_array($info['initial_options'])) {
+                    $initialOptions = $info['initial_options'];
+                } else {
+                    $initialOptions = [];
+                }
+
+                self::$inst = self::create($license_code, $install_key, $initialOptions);
             } else {
                 // this will cause an invalid license, but without a loader that is desirable
                 self::$inst = self::create('', null);
@@ -158,10 +171,14 @@ final class License
      * The license salt is like: JKHNNSDSD90809SJHDJK (20 chars)
      * The encrypted bit is a base64 encoded string (remaining)
      *
-     * @param $license_code
+     * @param string $license_code
+     * @param string $install_key
+     * @param array $initialOptions
      */
-    private function __construct($license_code, $install_key = '')
+    private function __construct($license_code, $install_key = '', array $initialOptions = [])
     {
+        $this->options = $initialOptions;
+
         // "no license" mode
         if ($license_code === null || $license_code === false || trim($license_code) === '') {
             $this->data = ['no_license' => true];
@@ -334,6 +351,23 @@ final class License
     public function isCopyfree()
     {
         return isset($this->data['copyfree']) && $this->data['copyfree'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWithinLimitGracePeriod()
+    {
+        if (!isset($this->options['lic_limit_grace_until'])) {
+            return false;
+        }
+
+        $until = (int)$this->options['lic_limit_grace_until'];
+        if (!$until) {
+            return false;
+        }
+
+        return time() < $until;
     }
 
     public function getMaxAgents()
