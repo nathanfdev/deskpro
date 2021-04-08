@@ -120,8 +120,8 @@ class EmailSender
         /** @var PersonRepository $personRepository */
         $personRepository = $this->getEntityManager()->getRepository(Person::class);
 
-        $options = $this->optionsResolver->resolve($args);
-
+        $options   = $this->optionsResolver->resolve($args);
+        $recipient = null;
         if (is_string($options['to'])) {
             $recipient = $personRepository->findOneByEmail($options['to']);
         } elseif (is_a($options['to'], EmailTo::class)) {
@@ -210,6 +210,7 @@ class EmailSender
         if (null === $recipient) {
             $model->setRecipient(null);
         }
+
         $template = isset($options['template']) ? $options['template'] : $model->getTemplate();
 
         $language = $options['language'];
