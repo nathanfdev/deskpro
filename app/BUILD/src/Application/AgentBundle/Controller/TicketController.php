@@ -2763,7 +2763,7 @@ class TicketController extends AbstractController
                         }
                     } else {
                         $agents    = $this->em->getRepository(Person::class)->getPeopleFromIds($set_parts);
-                        
+
                         if (!$addNew) {
                             $ticket->setAgentParticipants($agents);
                         } else {
@@ -4739,6 +4739,11 @@ class TicketController extends AbstractController
         $this->em->beginTransaction();
         $doAssignAgent = array_key_exists('do_assign_agent', $options) && $options['do_assign_agent'] === 'true';
         $doAssignTeam  = array_key_exists('do_assign_team', $options) && $options['do_assign_team'] === 'true';
+
+        if ((!$doAssignAgent && !$doAssignTeam) && $this->settings->get('core_tickets.new_assign')) {
+            $doAssignAgent       = true;
+            $options['agent_id'] = $this->person->getId();
+        }
 
         $ticketManager = $this->container->getTicketManager();
 
