@@ -41,8 +41,8 @@ class MessengerSetupContainer extends React.Component {
   componentDidMount() {
     const { dispatch } = this.props;
 
-    dispatch(loadChatDepartments());
-    dispatch(loadTicketDepartments());
+    dispatch(loadChatDepartments(true));
+    dispatch(loadTicketDepartments(true));
     dispatch(loadChatCustomFieldsAction());
     dispatch(loadUserGroups());
 
