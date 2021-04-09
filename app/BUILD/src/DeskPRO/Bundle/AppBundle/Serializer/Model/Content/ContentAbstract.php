@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
 use Application\DeskPRO\Entity\ContentAbstract as ContentAbstractEntity;
+use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -164,29 +165,39 @@ abstract class ContentAbstract
     protected $revisions;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty>")
+     * @JMS\Groups({"list", "details"})
+     *
+     * @var SplashImageProperty
+     */
+    protected $splash_image_property;
+
+    /**
      * Constructor.
      *
      * @param ContentAbstractEntity $entity
      */
     public function __construct(ContentAbstractEntity $entity)
     {
-        $this->id            = $entity->getId();
-        $this->person        = $entity->getPerson();
-        $this->language      = $entity->getLanguage();
-        $this->slug          = $entity->getSlug();
-        $this->title         = $entity->getTitle();
-        $this->content       = $entity->getRealContent();
-        $this->viewCount     = $entity->getViewCount();
-        $this->totalRating   = $entity->getTotalRating();
-        $this->numComments   = $entity->getNumComments();
-        $this->numRatings    = $entity->getNumRatings();
-        $this->status        = $entity->getStatus();
-        $this->hiddenStatus  = $entity->getHiddenStatus();
-        $this->dateCreated   = $entity->getDateCreated();
-        $this->dateUpdated   = $entity->getDateUpdated();
-        $this->datePublished = $entity->getDatePublished();
-        $this->voteStats     = $entity->getRatingData()->getVoteStats();
-        $this->revisions     = $entity->getRevisions();
+        $this->id                    = $entity->getId();
+        $this->person                = $entity->getPerson();
+        $this->language              = $entity->getLanguage();
+        $this->slug                  = $entity->getSlug();
+        $this->title                 = $entity->getTitle();
+        $this->content               = $entity->getRealContent();
+        $this->viewCount             = $entity->getViewCount();
+        $this->totalRating           = $entity->getTotalRating();
+        $this->numComments           = $entity->getNumComments();
+        $this->numRatings            = $entity->getNumRatings();
+        $this->status                = $entity->getStatus();
+        $this->hiddenStatus          = $entity->getHiddenStatus();
+        $this->dateCreated           = $entity->getDateCreated();
+        $this->dateUpdated           = $entity->getDateUpdated();
+        $this->datePublished         = $entity->getDatePublished();
+        $this->voteStats             = $entity->getRatingData()->getVoteStats();
+        $this->revisions             = $entity->getRevisions();
+        $this->splash_image_property = $entity->getSplashImage();
     }
 
     /**
