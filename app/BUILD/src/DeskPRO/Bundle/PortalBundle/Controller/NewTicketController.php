@@ -62,7 +62,7 @@ class NewTicketController extends AbstractController
         }
 
         $ticket = $this->getNewTicketService()->createNewTicket(
-            $request,
+            $this->get('request_stack')->getMasterRequest(),
             $visitor_id,
             $this->getCurrentPerson(),
             $this->getBrandContainer()->getBrand(),
@@ -152,7 +152,7 @@ class NewTicketController extends AbstractController
                             }
 
                             $ticket = $this->getNewTicketService()->createNewTicket(
-                                $request,
+                                $this->get('request_stack')->getMasterRequest(),
                                 $visitor_id,
                                 $person,
                                 $this->getBrandContainer()->getBrand(),
@@ -206,7 +206,7 @@ class NewTicketController extends AbstractController
                             if ($person) {
                                 // this user is created but can't log in 'person.is_user' is false
                                 $ticket = $this->getNewTicketService()->createNewTicket(
-                                    $request,
+                                    $this->get('request_stack')->getMasterRequest(),
                                     $visitor_id,
                                     $person,
                                     $this->getBrandContainer()->getBrand(),
