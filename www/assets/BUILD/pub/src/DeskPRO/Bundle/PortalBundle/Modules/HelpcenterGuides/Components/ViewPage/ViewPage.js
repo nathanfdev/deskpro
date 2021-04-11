@@ -52,7 +52,7 @@ class ViewPage extends React.Component {
     };
     if (window.page) {
       setTimeout(() => {
-        this.changeInternalLinks();
+        this.renderLink();
         this.addCodeBlocksCopy();
         this.addGuideBlocks();
         this.addReactImageLazyload();
@@ -67,7 +67,7 @@ class ViewPage extends React.Component {
   }
 
   componentDidMount() {
-    this.changeInternalLinks();
+    this.renderLink();
     this.addCodeBlocksCopy();
     this.addGuideBlocks();
     window.addEventListener('scroll', () => {
