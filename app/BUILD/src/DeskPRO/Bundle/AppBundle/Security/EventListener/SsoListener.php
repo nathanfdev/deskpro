@@ -6,6 +6,8 @@ use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use Orb\Auth\Result;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -45,19 +47,25 @@ class SsoListener implements EventSubscriberInterface
      * @var \Psr\Log\LoggerInterface
      */
     private $logger;
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
 
     /**
      * Constructor.
      *
      * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param ContainerInterface            $container
-     * @param LoggerInterface               $logger
+     * @param ContainerInterface $container
+     * @param LoggerInterface $logger
+     * @param BrandStack $brandStack
      */
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, ContainerInterface $container, LoggerInterface $logger)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, ContainerInterface $container, LoggerInterface $logger, BrandStack $brandStack)
     {
         $this->authorizationChecker = $authorizationChecker;
         $this->container            = $container;
         $this->logger               = $logger;
+        $this->brandStack           = $brandStack;
     }
 
     /**
@@ -120,7 +128,7 @@ class SsoListener implements EventSubscriberInterface
      * @param AuthInterfaceSettings $authInterfaceSettings
      * @param Request               $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     protected function checkAuthSystemForResponse(AuthInterfaceSettings $authInterfaceSettings, Request $request)
     {
@@ -153,11 +161,18 @@ class SsoListener implements EventSubscriberInterface
 
     /**
      * @param AuthInterfaceSettings $authInterfaceSettings
+     * @param Request $request
      *
-     * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
+     * @return null|Result an auth result is returned if the sso redirect is enabled
      */
     protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings, Request $request)
     {
+        $activeBrand = $this->brandStack->getActive()->getBrand();
+
+        if ($authInterfaceSettings->getSsoUsersource() && !$authInterfaceSettings->getSsoUsersource()->isAllBrands() && !$authInterfaceSettings->getSsoUsersource()->getBrands()->contains($activeBrand)) {
+            return null;
+        }
+         
         if ($authInterfaceSettings->isAutoSsoEnabled() && !$this->isWhitelisted($request)) {
             return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
         }
