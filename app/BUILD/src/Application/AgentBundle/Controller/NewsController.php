@@ -168,6 +168,11 @@ class NewsController extends AbstractController
 
         switch ($action) {
             case 'status':
+                $status = $this->in->getString('status');
+
+                if ($status === 'hidden.draft' && $news->getStatus() === News::STATUS_PUBLISHED) {
+                    $news['date_published'] = null;
+                }
                 $news['status_code'] = $this->in->getString('status');
                 if ($news['status_code'] == 'published' && !$this->person->hasPerm('agent_publish.validate')) {
                     $news['status_code'] = 'hidden.unpublished';

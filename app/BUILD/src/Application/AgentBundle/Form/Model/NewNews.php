@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
@@ -72,6 +70,10 @@ class NewNews
             $news->setStatusCode('hidden.unpublished');
         }
 
+        if ($this->status === 'hidden.draft') {
+            $news->setDatePublished(null);
+        }
+        
         $cat            = $this->_em->find('DeskPRO:NewsCategory', $this->category_id);
         $news->category = $cat;
 
