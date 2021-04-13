@@ -1831,21 +1831,21 @@ return [
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
-    1615972090 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2021/03/Build1615972090.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1615972090',
+    1618333808 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2021/04/Build1618333808.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1618333808',
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
-    1616173766 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2021/03/Build1616173766.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1616173766',
+    1618333809 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2021/04/Build1618333809.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1618333809',
         'skipPostBuild' => true,
         'isOnlineBuild' => false,
     ],
-    1617789579 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2021/04/Build1617789579.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1617789579',
+    1618333810 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2021/04/Build1618333810.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1618333810',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],

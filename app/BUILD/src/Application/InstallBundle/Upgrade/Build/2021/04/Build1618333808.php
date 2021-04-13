@@ -2,7 +2,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1615972090 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
+class Build1618333808 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
