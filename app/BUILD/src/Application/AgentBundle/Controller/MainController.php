@@ -178,6 +178,14 @@ class MainController extends AbstractController
             $is_billing_error = true;
         }
 
+        // highlight billing icon if we are over limit
+        if ($lic->getMaxAgents() > 0) {
+            $count = $this->db->fetchColumn('SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0');
+            if ($count > $lic->getMaxAgents()) {
+                $is_billing_error = true;
+            }
+        }
+
         $collabManager = $this->get('content.collab_manager');
         if ($this->get('deskpro.feature_flags')->hasBeta('content_editor') && $collabManager->isCollabEnabled()) {
             $collabConnectionToken = $collabManager->getConnectionToken();

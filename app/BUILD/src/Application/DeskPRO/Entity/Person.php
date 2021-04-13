@@ -749,7 +749,10 @@ class Person extends DomainObject implements
         if ($this->is_agent && $this->override_display_name) {
             $spiltedName = $this->splitName($this->override_display_name);
 
-            return $this->getIntialsFromName($spiltedName[0], $spiltedName[1] ?: '');
+            $firstName = isset($spiltedName[0]) ? $spiltedName[0] : '';
+            $lastName = isset($spiltedName[1]) ? $spiltedName[1] : '';
+
+            return $this->getIntialsFromName($firstName, $lastName);
         }
 
         $this->_initials = $this->getIntialsFromName($this->first_name, $this->last_name);

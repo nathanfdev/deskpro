@@ -122,12 +122,13 @@ final class LicenseCheckListener implements EventSubscriberInterface
             $db    = $this->container->get('database_connection');
             $count = $db->fetchColumn('SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0');
 
-            if ($count > $lic->getMaxAgents()) {
+            if ($count > $lic->getMaxAgents() && !$lic->isWithinLimitGracePeriod()) {
                 $event->setResponse($this->getLicErrorPageResponse($request, "
                     Your helpdesk is using more agents than your license allows.<br/><br/>
                     - Number of agents: {$count}<br/><br/>
                     - Number of seats available: {$lic->getMaxAgents()}<br/><br/>
-                    Please contact an administrator to correct the problem.
+                    An administrator needs to update the license from
+                    <a href='{$this->container->get('router')->generate('admin_interface')}#/license'>billing settings</a>.
                 "));
                 $event->stopPropagation();
 
