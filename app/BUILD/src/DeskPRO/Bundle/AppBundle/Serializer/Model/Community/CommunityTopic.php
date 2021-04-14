@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\CustomDataCommunityTopic;
 use Application\DeskPRO\Entity\LabelCommunityTopic;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -90,6 +91,16 @@ class CommunityTopic extends ContentAbstract
     protected $attachments;
 
     /**
+     * String array of labels associated with this community topic.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("ArrayCollection<Application\DeskPRO\Entity\CustomDataCommunityTopic>")
+     *
+     * @var ArrayCollection
+     */
+    protected $customData;
+
+    /**
      * Constructor.
      *
      * @param \Application\DeskPRO\Entity\CommunityTopic $entity
@@ -99,12 +110,13 @@ class CommunityTopic extends ContentAbstract
         parent::__construct($entity);
 
         $this->statusCategory = $entity->getStatusCategory();
-        $this->forum        = $entity->getForum();
+        $this->forum          = $entity->getForum();
         $this->labels         = $entity->getLabels();
         $this->fields         = $entity->getCustomData();
         $this->popularity     = $entity->getPopularity();
         $this->isReviewed     = $entity->isReviewed();
         $this->attachments    = $entity->getAttachments();
+        $this->customData     = $entity->getCustomData();
     }
 
     /**

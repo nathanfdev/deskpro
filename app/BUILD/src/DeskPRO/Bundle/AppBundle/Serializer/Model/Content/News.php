@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
 use Application\DeskPRO\Entity\News as NewsEntity;
 use Application\DeskPRO\Entity\NewsCategory;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -30,6 +31,16 @@ class News extends ContentAbstract
     protected $attachments;
 
     /**
+     * String array of labels associated with this news.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("ArrayCollection<Application\DeskPRO\Entity\LabelNews>")
+     *
+     * @var ArrayCollection
+     */
+    protected $labels;
+
+    /**
      * Constructor.
      *
      * @param NewsEntity $entity
@@ -39,5 +50,6 @@ class News extends ContentAbstract
         parent::__construct($entity);
         $this->category    = $entity->getCategory();
         $this->attachments = $entity->getAttachments();
+        $this->labels      = $entity->getLabels();
     }
 }

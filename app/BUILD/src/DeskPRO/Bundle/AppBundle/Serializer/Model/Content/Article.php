@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 use Application\DeskPRO\Entity\Article as ArticleEntity;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ObjectLang;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -72,6 +73,26 @@ class Article extends ContentAbstract
     protected $attachments;
 
     /**
+     * String array of labels associated with this article.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("ArrayCollection<Application\DeskPRO\Entity\LabelArticle>")
+     *
+     * @var ArrayCollection
+     */
+    protected $labels;
+
+    /**
+     * String array of labels associated with this article.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("ArrayCollection<Application\DeskPRO\Entity\CustomDataArticle>")
+     *
+     * @var ArrayCollection
+     */
+    protected $customData;
+
+    /**
      * Constructor.
      *
      * @param ArticleEntity $entity
@@ -86,5 +107,7 @@ class Article extends ContentAbstract
         $this->contentInput        = $entity->content_input;
         $this->contentInputType    = $entity->content_input_type;
         $this->attachments         = $entity->getAttachments();
+        $this->labels              = $entity->getLabels();
+        $this->customData          = $entity->getCustomData();
     }
 }
