@@ -65,7 +65,7 @@ class OriginalUrlGenerator
         } else {
             $originalContext = $this->getUrlHostInfo($originalContext);
         }
-        
+
         $router->setContext($originalContext);
 
         return $router->generate($name, $parameters, $referenceType);
@@ -73,13 +73,19 @@ class OriginalUrlGenerator
 
     public function getUrlHostInfo($context)
     {
-        $deskproUrl = $this->settingsResolver->getSetting('core.deskpro_url');
-        if ($deskproUrl && $info = parse_url(rtrim($deskproUrl, '/'))) {
-            $context->setScheme($info['scheme']);
-            $context->setBaseUrl(!empty($info['path']) ? $info['path'] : $context->getBaseUrl());
-            $context->setHost(!empty($info['host']) ? $info['host'] : 'localhost');
-        }
+        $originalContext = clone $context;
+        
+        try {
+            $deskproUrl = $this->settingsResolver->getSetting('core.deskpro_url');
+            if ($deskproUrl && $info = parse_url(rtrim($deskproUrl, '/'))) {
+                $context->setScheme($info['scheme']);
+                $context->setBaseUrl(!empty($info['path']) ? $info['path'] : $context->getBaseUrl());
+                $context->setHost(!empty($info['host']) ? $info['host'] : 'localhost');
+            }
 
-        return $context;
+            return $context;
+        } catch (\Exception $e) {
+            return $originalContext;
+        }
     }
 }
