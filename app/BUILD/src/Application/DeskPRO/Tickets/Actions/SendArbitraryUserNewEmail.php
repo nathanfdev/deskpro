@@ -194,7 +194,7 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
             $vars = [];
 
             if (isset($lastMessage)) {
-                $vars['attached_blobs'] = $this->getLastMessageAttachments($ticket, $lastMessage, $context, $isAuto);
+                $vars['attached_blobs'] = $this->getLastMessageAttachments($ticket, $lastMessage, $context);
             }
 
             $message = $ticketEmail->prepareMailerMessage($vars, false);
