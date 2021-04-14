@@ -9,12 +9,12 @@ use JMS\Serializer\Annotation as JMS;
  */
 class CaptchaAntiAbuseSettings
 {
-    public const TYPE_BASED_RATE_LIMITS = false;
-    public const TYPE_GUESTS            = 'guests';
-    public const TYPE_EVERYONE          = 'everyone';
+    const TYPE_BASED_RATE_LIMITS = false;
+    const TYPE_GUESTS            = 'guests';
+    const TYPE_EVERYONE          = 'everyone';
 
-    public const RecaptchaVersion2 = '2';
-    public const RecaptchaVersion3 = '3';
+    const RecaptchaVersion2 = '2';
+    const RecaptchaVersion3 = '3';
 
     /**
      * True if set to use Google`s recaptcha.

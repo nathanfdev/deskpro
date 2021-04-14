@@ -16,7 +16,7 @@ use Orb\Util\Numbers;
  */
 class LangPhraseHelper
 {
-    public const LOCALES_LOCATION = DP_ROOT.'/locales';
+    const LOCALES_LOCATION = DP_ROOT.'/locales';
 
     /**
      * @var DeskproContainer

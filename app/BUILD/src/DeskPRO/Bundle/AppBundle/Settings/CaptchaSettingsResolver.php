@@ -9,16 +9,16 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings;
  */
 class CaptchaSettingsResolver extends AbstractBrandAwareSettingsResolver implements AntiAbuseSettingsAwareInterface
 {
-    public const TICKETS   = 'user.captcha.tickets';
-    public const COMMENTS  = 'user.captcha.comments';
-    public const COMMUNITY = 'user.captcha.community';
-    public const REGISTER  = 'user.captcha.register';
-    public const SHARING   = 'user.captcha.sharing';
+    const TICKETS   = 'user.captcha.tickets';
+    const COMMENTS  = 'user.captcha.comments';
+    const COMMUNITY = 'user.captcha.community';
+    const REGISTER  = 'user.captcha.register';
+    const SHARING   = 'user.captcha.sharing';
 
-    public const USE_RECAPTCHA        = 'core.use_recaptcha2';
-    public const RECAPTCHA_SITE_KEY   = 'core.recaptcha2_site_key';
-    public const RECAPTCHA_SECRET_KEY = 'core.recaptcha2_secret_key';
-    public const RECAPTCHA_VERSION    = 'core.recaptcha_version';
+    const USE_RECAPTCHA        = 'core.use_recaptcha2';
+    const RECAPTCHA_SITE_KEY   = 'core.recaptcha2_site_key';
+    const RECAPTCHA_SECRET_KEY = 'core.recaptcha2_secret_key';
+    const RECAPTCHA_VERSION    = 'core.recaptcha_version';
 
     /**
      * {@inheritdoc}
