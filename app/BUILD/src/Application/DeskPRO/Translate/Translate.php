@@ -887,7 +887,11 @@ class Translate implements PersonContextInterface, TranslatorInterface
                         $v = intval($v);
                     }
                     if (is_scalar($v) && preg_match('/(^date_|_date$|date)/', $k)) {
-                        $v = new \DateTime($v);
+                        try {
+                            $v = new \DateTime($v);
+                        } catch (\Exception $e) {
+                            //TODO: Convert localized date string back to english using IntlDateFormatter and then Datetime Object ?
+                        }
                     }
                     $icuVars[$k] = $v;
                 }
