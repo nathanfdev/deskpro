@@ -258,6 +258,9 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                 'order'            => 'DESC',
             ]
         );
+
+        $notes = $messageRepo->getTicketNotes($ticket);
+
         switch ($context->getEventType()) {
             case TicketTrigger::EVENT_TYPE_NEWTICKET:
                 if ($messages) {
@@ -277,6 +280,8 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                 if ($messages) {
                     $lastMessage = array_shift($messages);
                     $arguments   = [$ticket, $lastMessage];
+                } elseif ($notes) {
+                    $arguments   = [$ticket];
                 } else {
                     $context->getLogger()->info('No reply to send: '.$context->getEventType());
 

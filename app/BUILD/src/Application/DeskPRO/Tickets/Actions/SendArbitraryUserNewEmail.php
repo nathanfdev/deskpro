@@ -143,9 +143,14 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
                         'order'            => 'DESC',
                     ]
                 );
+
+                $notes = $messageRepo->getTicketNotes($ticket);
+
                 if ($messages) {
                     $lastMessage = array_shift($messages);
                     $arguments   = [$ticket, $lastMessage];
+                } elseif ($notes) {
+                    $arguments   = [$ticket];
                 } else {
                     $context->getLogger()->info('No reply to send: '.$context->getEventType());
 
