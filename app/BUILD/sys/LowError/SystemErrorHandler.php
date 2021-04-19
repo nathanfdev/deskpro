@@ -828,6 +828,9 @@ class SystemErrorHandler
         if ($errinfo['trace']) {
             $lines = explode("\n", $errinfo['trace']);
             foreach ($lines as $l) {
+                if (strlen($l) > 1000) {
+                    $l = substr($l, 0, 1000);
+                }
                 $l = trim($l);
                 if (substr($l, 0, 5) == '>>>>>') {
                     $str[] = sprintf("\t   %s\n", trim($l));
@@ -835,6 +838,10 @@ class SystemErrorHandler
                     $str[] = sprintf("\t-> %s\n", trim($l));
                 }
             }
+        }
+        if (count($str) > 1000) {
+            $str = array_slice($str, 0, 1000);
+            $str[] = '...';
         }
 
         if (!empty($errinfo['context_data'])) {

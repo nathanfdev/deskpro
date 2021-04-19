@@ -7,7 +7,7 @@ use Orb\Util\Strings;
 
 class Recaptcha extends CaptchaAbstract
 {
-    public const RECAPTCHA_VERIFY_URL = 'http://www.google.com/recaptcha/api/verify';
+    const RECAPTCHA_VERIFY_URL = 'http://www.google.com/recaptcha/api/verify';
 
     /**
      * @var string
