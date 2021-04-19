@@ -2,10 +2,13 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\TaskRouter;
 
+use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
+use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\WorkflowInterface;
+use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -21,6 +24,16 @@ class TaskRouter
      * @var ContainerInterface
      */
     private $container;
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var VoiceSettingsResolver
+     */
+    private $voiceSettings;
 
     /**
      * @var StorageAdapterInterface
@@ -56,6 +69,8 @@ class TaskRouter
      * Constructor.
      *
      * @param ContainerInterface       $container
+     * @param EntityManager            $em
+     * @param VoiceSettingsResolver    $voiceSettings
      * @param StorageAdapterInterface  $storage
      * @param EventDispatcherInterface $dispatcher
      * @param LockInterface            $evaluateLock
@@ -64,18 +79,22 @@ class TaskRouter
      */
     public function __construct(
         ContainerInterface $container,
+        EntityManager $em,
+        VoiceSettingsResolver $voiceSettings,
         StorageAdapterInterface $storage,
         EventDispatcherInterface $dispatcher,
         LockInterface $evaluateLock,
         LockInterface $actionsLock,
         LoggerInterface $logger
     ) {
-        $this->container    = $container;
-        $this->storage      = $storage;
-        $this->dispatcher   = $dispatcher;
-        $this->evaluateLock = $evaluateLock;
-        $this->actionsLock  = $actionsLock;
-        $this->logger       = $logger;
+        $this->container     = $container;
+        $this->em            = $em;
+        $this->voiceSettings = $voiceSettings;
+        $this->storage       = $storage;
+        $this->dispatcher    = $dispatcher;
+        $this->evaluateLock  = $evaluateLock;
+        $this->actionsLock   = $actionsLock;
+        $this->logger        = $logger;
     }
 
     /**
@@ -103,15 +122,29 @@ class TaskRouter
         return $date;
     }
 
+    /**
+     * @return bool
+     *
+     * @throws \Exception
+     */
     public function evaluate()
     {
+        /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
+        $settingsRepo = $this->em->getRepository(Setting::class);
+
         try {
             $this->evaluateLock->acquire(true);
         } catch (\Exception $e) {
             $this->logger->info(sprintf('[TaskRouter] Failed to acquire lock, action = evaluate, message = %s', $e->getMessage()));
+            $settingsRepo->updateSetting(
+                VoiceSettingsResolver::VOICE_FAILED_EVALUATE_ATTEMPTS,
+                (int) $this->voiceSettings->getFailedEvaluateAttempts() + 1
+            );
 
-            return;
+            return false;
         }
+
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_FAILED_EVALUATE_ATTEMPTS, 0);
 
         try {
             $tasks = $this->storage->getActiveTasks();
@@ -274,6 +307,8 @@ class TaskRouter
         } finally {
             $this->releaseLock($this->evaluateLock);
         }
+
+        return true;
     }
 
     /**

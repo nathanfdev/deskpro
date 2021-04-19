@@ -13,6 +13,20 @@ use JMS\Serializer\Annotation as JMS;
 class PendingTasksCount
 {
     /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $processed;
+
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $failedAttempts = 0;
+
+    /**
      * @JMS\Type("integer")
      *
      * @var int
@@ -44,11 +58,16 @@ class PendingTasksCount
      * Constructor.
      *
      * @param Task[]    $tasks
+     * @param bool      $processed
+     * @param int       $failedAttempts
      * @param \DateTime $lastPendingVoiceTask
      * @param \DateTime $lastPendingChatTask
      */
-    public function __construct(array $tasks, \DateTime $lastPendingVoiceTask = null, \DateTime $lastPendingChatTask = null)
+    public function __construct(array $tasks, $processed, $failedAttempts, \DateTime $lastPendingVoiceTask = null, \DateTime $lastPendingChatTask = null)
     {
+        $this->processed      = $processed;
+        $this->failedAttempts = $failedAttempts;
+
         foreach ($tasks as $task) {
             if ($task->getChannel() === VoiceWorkflow::getChannelName()) {
                 ++$this->numPendingVoiceTasks;

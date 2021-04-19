@@ -35,6 +35,7 @@ class VoiceSettingsResolver
     const VOICE_PLIVO_PROXY_HOST                  = 'voice.plivo_proxy_host';
     const VOICE_PLIVO_PROXY_USERNAME              = 'voice.plivo_proxy_username';
     const VOICE_PLIVO_PROXY_PASSWORD              = 'voice.plivo_proxy_password';
+    const VOICE_FAILED_EVALUATE_ATTEMPTS          = 'voice.failed_evaluate_attempts';
 
     const DEFAULT_FORWARDING_NUMBER  = 'default';
     const SPECIFIC_FORWARDING_NUMBER = 'specific';
@@ -270,5 +271,13 @@ class VoiceSettingsResolver
     public function getPlivoProxyPassword()
     {
         return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_PLIVO_PROXY_PASSWORD);
+    }
+
+    /**
+     * @return int
+     */
+    public function getFailedEvaluateAttempts()
+    {
+        return (int) $this->settingsResolver->getGlobalSettings()->get(self::VOICE_FAILED_EVALUATE_ATTEMPTS, 0);
     }
 }
