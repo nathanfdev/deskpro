@@ -255,6 +255,7 @@ helpcenter.emails.ticket_added_cc: 'You have been added to the ticket "{subject}
 helpcenter.emails.ticket_cc_added: '{author_name}, {author_email}, has added you to the ticket {subject}.'
 helpcenter.emails.ticket_cc_new: 'You have been included in a ticket started by {name}.'
 helpcenter.emails.ticket_flood: 'You recently sent an email to our helpdesk. We can see that you have sent many messages in rapid succession that were most likely automated.<br /><br />To protect against an auto-responder loop our helpdesk will not send any more automatic notification emails to you.'
+helpcenter.emails.ticket_flood_subject: 'Notice: You have been marked as auto-responder'
 helpcenter.emails.ticket_message_title: 'On {created_date, date, medium} at {created_date, time, short}, {author} wrote:'
 helpcenter.emails.ticket_new_participant: 'A new person has been added to your ticket'
 helpcenter.emails.ticket_no_autoresponse: 'Warning: Confirmation emails turned off'

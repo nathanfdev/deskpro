@@ -496,7 +496,7 @@ class PersonController extends AbstractController
                 $data['disable_autoresponses_log'] = $person->disable_autoresponses_log;
 
                 $this->em->persist($person);
-
+                
                 break;
 
             case 'toggle_confirmed':

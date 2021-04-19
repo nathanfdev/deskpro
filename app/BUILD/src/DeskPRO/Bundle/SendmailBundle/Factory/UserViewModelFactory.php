@@ -18,7 +18,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AccountDisabled;
-use DeskPRO\Bundle\SendmailBundle\View\Model\PasswordChangedByAgent;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AutoResponder;
 use DeskPRO\Bundle\SendmailBundle\View\Model\ChatTranscript;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentApproved;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentDeleted;
@@ -31,6 +31,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\CommunityTopicNewComment;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommunityTopicSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommunityTopicUpdated;
 use DeskPRO\Bundle\SendmailBundle\View\Model\DownloadSubscription;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailTooBig;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailValidation;
 use DeskPRO\Bundle\SendmailBundle\View\Model\GatewayAutoresponseWarn;
@@ -43,6 +44,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\NewsSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketGuest;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketRegClosed;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketValidate;
+use DeskPRO\Bundle\SendmailBundle\View\Model\PasswordChangedByAgent;
 use DeskPRO\Bundle\SendmailBundle\View\Model\RateLimitNotice;
 use DeskPRO\Bundle\SendmailBundle\View\Model\RegisterWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\RegisterWelcomeByAgent;
@@ -74,6 +76,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\TicketRate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyAutoreply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyByAgent;
 use DeskPRO\Bundle\SendmailBundle\View\TicketApprovalViewModelMapTrait;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -87,7 +90,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return AccountDisabled
      */
@@ -237,9 +240,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
     /**
      * @param CommunityTopic $communityTopic
      *
-     * @throws \Exception
+     * @throws Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return EmailBaseType
      */
     public function createCommunityTopicUpdatedModel(CommunityTopic $communityTopic)
     {
@@ -251,7 +254,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     /**
      * @param CommunityTopic[] $updatedTopics
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return CommunityTopicSubscription
      */
@@ -366,7 +369,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return NewTicketGuest
      */
@@ -381,7 +384,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     /**
      * @param string $subject
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return NewTicketRegClosed
      */
@@ -644,7 +647,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param string $verifyUrl
      * @param DateTime $expireDate
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketNewReminder
      */
@@ -681,7 +684,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param string $timeLock
      * @param string $dateLockEnd
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return RateLimitNotice
      */
@@ -712,9 +715,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param $rejectUrl
      * @param ApprovalResponse|null $approvalResponse
      *
-     * @throws \Exception
+     * @throws Exception
      *
-     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @return EmailBaseType
      */
     public function createTicketApprovalModelByApprovalEvent(
         $event,
@@ -748,7 +751,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalApproverApproved
      */
@@ -764,7 +767,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalApproverCancel
      */
@@ -780,7 +783,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalApproverCreate
      */
@@ -796,7 +799,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalApproverPartialApprovalResponse
      */
@@ -812,7 +815,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalApproverPartialRejectionResponse
      */
@@ -828,7 +831,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalApproverRejected
      */
@@ -844,7 +847,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalOwnerApproved
      */
@@ -860,7 +863,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalOwnerCancel
      */
@@ -876,7 +879,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalOwnerCreate
      */
@@ -892,7 +895,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalOwnerPartialApprovalResponse
      */
@@ -908,7 +911,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalOwnerPartialRejectionResponse
      */
@@ -924,7 +927,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param Person $recipient
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return TicketApprovalOwnerRejected
      */
@@ -934,5 +937,13 @@ class UserViewModelFactory extends AbstractViewModelFactory
             TicketApprovalOwnerRejected::class,
             $this->getTicketApprovalArguments('user', $ticket, $recipient, AbstractBaseApproval::STATUS_REJECTED)
         );
+    }
+    
+    /**
+     * @return AutoResponder
+     */
+    public function createAutoResponderModel()
+    {
+        return new AutoResponder();
     }
 }

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Tickets;
 
@@ -106,6 +102,7 @@ class TicketManager
         $this->save_actions[] = new TicketSaveActions\VerifyAgent();
         $this->save_actions[] = new TicketSaveActions\DetectAutoresponders(
             $this->em,
+            $container,
             $container->getSetting('core_email.antiflood_newtickets'),
             $container->getSetting('core_email.antiflood_newtickets_time'),
             $container->getSetting('core_email.antiflood_newreplies'),
@@ -206,6 +203,7 @@ class TicketManager
         // Generate a ref now
         // This will cause less locking if we are outside of a transaction
         $ref_gen = $this->container->getRefGenerator();
+
         try {
             $ticket->ref = $ref_gen->generateReference(Ticket::class);
         } catch (\Exception $e) {
@@ -320,6 +318,7 @@ class TicketManager
         } catch (\Exception $e) {
             $this->db->rollback();
             $this->notificationEventManager->deliver(true);
+
             throw $e;
         }
 
