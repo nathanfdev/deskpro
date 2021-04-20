@@ -1290,9 +1290,9 @@ class TicketSearch extends SearcherAbstract
                 break;
 
             case 'ticket.total_user_waiting':
-                $this->add_raw_selects[] = 'tickets.total_user_waiting AS status_order';
+                $this->add_raw_selects[] = 'tickets.total_user_waiting + (NOW() - COALESCE(UNIX_TIMESTAMP(tickets.date_user_waiting))) AS calculated_total_user_waiting';
                 $this->order_summary     = $tr->phrase('agent.general.total_time_waiting');
-                $order_by                = "ORDER BY status_order $dir, id DESC";
+                $order_by                = "ORDER BY calculated_total_user_waiting $dir, id DESC";
 
                 break;
 
