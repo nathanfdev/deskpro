@@ -10,6 +10,7 @@ use Application\DeskPRO\EventDispatcher\DataEvent;
 use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Translate\Loader\LoaderInterface;
+use DateTime;
 use Error;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -846,9 +847,11 @@ class Translate implements PersonContextInterface, TranslatorInterface
      * echo $translate->phrase('core.welcome_back_x', array('name' => 'Christopher'));
      * </code>
      *
-     * @param string       $phrase_name The phrase to fetch
-     * @param array        $vars        Variables to place into the phrase
-     * @param Language|int $language    The Language entity to use, or its id
+     * @param string $phrase_name The phrase to fetch
+     * @param array $vars Variables to place into the phrase
+     * @param Language|int $language The Language entity to use, or its id
+     *
+     * @throws \Exception
      *
      * @return string
      */
@@ -887,11 +890,9 @@ class Translate implements PersonContextInterface, TranslatorInterface
                         $v = intval($v);
                     }
                     if (is_scalar($v) && preg_match('/(^date_|_date$|date)/', $k)) {
-                        try {
-                            $v = new \DateTime($v);
-                        } catch (\Exception $e) {
-                            //TODO: Convert localized date string back to english using IntlDateFormatter and then Datetime Object ?
-                        }
+                        $v = new \DateTime($v);
+                    } elseif ($v instanceof \DateTime && isset($vars['timezone'])) {
+                        $v->setTimezone(new \DateTimeZone($vars['timezone']));
                     }
                     $icuVars[$k] = $v;
                 }
