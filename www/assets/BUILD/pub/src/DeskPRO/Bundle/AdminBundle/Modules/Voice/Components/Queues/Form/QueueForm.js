@@ -87,7 +87,7 @@ class QueueForm extends BaseForm {
     const currentDepartment = formData.value.department;
     if (currentDepartment) {
       const department = ticketDepartments.get(currentDepartment);
-      if (department.get('brands').size > 1) {
+      if (department && department.get('brands').size > 1) {
         departmentBrands = brands;
       }
     }
