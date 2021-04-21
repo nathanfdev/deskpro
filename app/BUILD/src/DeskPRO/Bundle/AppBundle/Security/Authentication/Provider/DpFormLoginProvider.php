@@ -122,11 +122,11 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 $deskproAgentsource = $this->container->get('doctrine.orm.entity_manager')->getRepository(Usersource::class)->findOneBy([
                     'title'      => 'Deskpro',
                     'type'       => Usersource::TYPE_AGENT,
-                    'is_enabled' => false,
+                    'is_enabled' => true,
                 ]);
 
-                if ($deskproAgentsource) {
-                    $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+                if (null === $deskproAgentsource) {
+                    $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.authentication_disabled' : 'portal.account.authentication-disabled';
 
                     throw new BadCredentialsException($errorMessage);
                 }
