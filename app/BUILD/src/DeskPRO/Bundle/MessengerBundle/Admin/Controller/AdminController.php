@@ -80,9 +80,10 @@ class AdminController extends AbstractBrandAwareSettingsController
      * @param Request $request
      * @param Brand $brand
      *
-     * @return View
      * @throws DBALException
      * @throws InvalidArgumentException
+     *
+     * @return View
      */
     public function postSettingsAction(Request $request, Brand $brand)
     {
@@ -207,10 +208,10 @@ CODE;
      * @param Request                    $request
      * @param AbstractBrandAwareSettings $model
      *
-     * @return Brand
      *@throws InvalidArgumentException
-     *
      * @throws DBALException
+     *
+     * @return Brand
      */
     protected function handleForm(Request $request, AbstractBrandAwareSettings $model)
     {
@@ -225,6 +226,9 @@ CODE;
         if (array_key_exists('translations', $requestData)) {
             $this->updateTranslations($requestData['translations'], $model);
             unset($requestData['translations']);
+        }
+        if (array_key_exists('copyfree', $requestData['widget'])) {
+            unset($requestData['widget']['copyfree']);
         }
         $form->submit($requestData);
         if (!$form->isValid()) {
@@ -281,9 +285,10 @@ CODE;
     /**
      * @param AbstractBrandAwareSettings $model
      *
-     * @return Brand
      * @throws DBALException
      * @throws InvalidArgumentException
+     *
+     * @return Brand
      */
     protected function persistModel(AbstractBrandAwareSettings $model)
     {

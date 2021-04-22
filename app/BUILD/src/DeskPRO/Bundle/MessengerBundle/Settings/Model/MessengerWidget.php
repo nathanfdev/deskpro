@@ -59,6 +59,15 @@ class MessengerWidget
     private $position = self::POSITION_RIGHT;
 
     /**
+     * Widget position
+     *
+     * @JMS\Type("boolean")
+     *
+     * @var string
+     */
+    private $copyfree = false;
+
+    /**
      * @return string
      */
     public function getPrimaryColor()
@@ -154,6 +163,26 @@ class MessengerWidget
     public function setIcon($icon = null)
     {
         $this->icon = $icon;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCopyfree()
+    {
+        return $this->copyfree;
+    }
+
+    /**
+     * @param string $copyfree
+     *
+     * @return $this
+     */
+    public function setCopyfree($copyfree)
+    {
+        $this->copyfree = $copyfree;
 
         return $this;
     }
