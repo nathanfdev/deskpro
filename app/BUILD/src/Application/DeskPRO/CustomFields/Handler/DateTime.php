@@ -40,7 +40,7 @@ class DateTime extends Date
         }
 
         $person = App::getCurrentPerson();
-        $date   = \DateTime::createFromFormat($this->getFormat(), $value);
+        $date   = \DateTime::createFromFormat($this->getFormat(), $value, $person ? $person->getDateTimezone() : null);
 
         if ($date && !$this->field_def->getOption('ignore_timezone')) {
             $date->setTimezone($person ? $person->getDateTimezone() : new \DateTimeZone('UTC'));
