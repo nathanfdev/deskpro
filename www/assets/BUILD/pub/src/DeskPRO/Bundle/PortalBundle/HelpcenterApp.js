@@ -25,6 +25,8 @@ class HelpcenterApp {
       this.phrases.setPhrases(window.DESKPRO_PHRASES);
     }
     library.add(fas, faAngleDown, faAngleRight, faAngleLeft, faInfoCircle, faExclamationCircle, faSearch, farAngleDown, faSpinner, faTimes);
+
+    this.locale = window.DESKPRO_LOCALE.replace(/_/, '-').split(/_/)[0] || 'en';
   }
 
   getPortalPage() {
@@ -33,24 +35,38 @@ class HelpcenterApp {
 
   run() {
     const page = new HelpCenterPage();
-    this.locale = window.DESKPRO_LOCALE.replace(/_/, '-').split(/_/)[0] || 'en';
     page.renderWhenReady();
     this.portalPage = page;
     window.DESKPRO_PORTAL_PAGE = page;
   }
 
-  render(props, node) {
+  getPhraseMessages() {
     const messages = portalPhrases.getPhrases();
+    if (Object.keys(messages).length !== 0) {
+      return messages;
+    }
+
+    portalHttp.sendGet(`DP_URL/portal/api/lang/widget-phrases.json?language=${this.locale}`).then((response) => {
+      if (response.data.phrases) {
+        portalPhrases.setPhrases(response.data.phrases);
+      }
+    });
+
+    return portalPhrases.getPhrases();
+  }
+
+  render(props, node) {
     ReactDOM.render(
       <AppContainer>
         <IntlProvider
           locale={this.locale}
-          messages={messages}
+          messages={this.getPhraseMessages()}
         >
           <App {...props} />
         </IntlProvider>
       </AppContainer>, node);
   }
+
 }
 
 if (module.hot) {
