@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category EmailGateway
- */
+
 
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
@@ -190,22 +186,26 @@ abstract class ProcessAbstract
             // Max 100 CC's to prevent mass spamming
             if ($count >= $maxCc) {
                 $this->logMessage("CC limit ({$maxCc}) reached, break");
+
                 break;
             }
 
             // Make sure its actually valid
             if (!StringEmail::isValueValid($ccEmail)) {
                 $this->logMessage('Invalid email address');
+
                 continue;
             }
 
             if ($accountManager->findAccountForEmailAddress($ccEmail)) {
                 $this->logMessage("Skipping cc: $ccEmail (matches helpdesk account address)");
+
                 continue;
             }
 
             if ($ticket->hasParticipantEmailAddress($ccEmail)) {
                 $this->logMessage("Skipping cc: $ccEmail (address already on ticket)");
+
                 continue;
             }
 
@@ -222,6 +222,7 @@ abstract class ProcessAbstract
                 // Closed helpdesk and an unknown CC means we drop it
                 if (!$personProcessor->canAssociatePersonWithAccountBrands($this->account)) {
                     $this->logMessage("Skipping cc: $ccEmail (no person match and closed helpdesk)");
+
                     continue;
                 }
 
@@ -241,17 +242,17 @@ abstract class ProcessAbstract
                     $this->logMessage("Add Person #{$ccPerson->id} to Account Brand #{$brand->id}");
                 } else {
                     $this->logMessage("Skipping cc: $ccEmail (person not associated with account brands and closed helpdesk)");
+
                     continue;
                 }
             }
 
             if ($ccPerson) {
-                if ($ccPerson->is_agent && !$this->person->is_agent) {
-                    if (!$this->person || !$this->person->getId() || !$this->person->is_agent) {
-                        if (!App::getSetting('core_tickets.add_agent_ccs')) {
-                            $this->logMessage('Skipping agent CC because core_tickets.add_agent_ccs is off');
-                            continue;
-                        }
+                if ($ccPerson->is_agent) {
+                    if (!App::getSetting('core_tickets.add_agent_ccs')) {
+                        $this->logMessage('Skipping agent CC because core_tickets.add_agent_ccs is off');
+
+                        continue;
                     }
                 }
 
@@ -306,6 +307,7 @@ abstract class ProcessAbstract
             $error = $rSet->getErrorForProperties($props);
             if ($error) {
                 $this->logMessage(sprintf('[processBlobs] %s rejected: %s %s', $attach->getFileName(), $error['error_code'], $error['error_detail']));
+
                 continue;
             }
 
