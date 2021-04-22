@@ -53,6 +53,11 @@ class TicketEmail
     /**
      * @var string
      */
+    private $emailOverride;
+
+    /**
+     * @var string
+     */
     private $sentToEmail;
 
     /**
@@ -249,6 +254,13 @@ class TicketEmail
         return $this->toPerson;
     }
 
+    public function setEmailOverride($email)
+    {
+        $this->emailOverride = $email;
+
+        return $this;
+    }
+
     /**
      * @param array $vars
      * @param bool  $doPrepare prevent message from actually rendering in case of use in SendmailBundle
@@ -271,31 +283,34 @@ class TicketEmail
             $this->brandStack->push($this->ticket->getBrand());
         }
 
-        // To user - use the selected email address on the ticket
-        if ($this->toPersonEmail && $this->toPerson->hasEmailAddress($this->toPersonEmail)) {
-            $toEmail = $this->toPersonEmail;
-        } elseif ($this->userMode == self::MODE_USER) {
-            if ($this->ticket->getTicketPersonEmail() && $this->ticket->getTicketPersonEmail()->getPerson() === $this->toPerson) {
-                $toEmail = $this->ticket->getTicketPersonEmail()->getEmail();
-                $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $toEmail));
-            } elseif ($this->toPerson->getPrimaryEmail()) {
-                $toEmail = $this->toPerson->getPrimaryEmail()->getEmail();
-                $this->logger->info(sprintf('[TicketEmail] to_email(3): %s', $toEmail));
-            } else {
-                $this->logger->info(sprintf('[TicketEmail] to_email(4): no email'));
-
-                throw new \RuntimeException('no email address');
-            }
-
-            // To agent
+        if ($this->emailOverride) {
+            $toEmail = $this->emailOverride;
         } else {
-            if (!$this->toPerson || !$this->toPerson->getPrimaryEmail()) {
-                throw new \RuntimeException('No agent email to send to');
+            // To user - use the selected email address on the ticket
+            if ($this->toPersonEmail && $this->toPerson->hasEmailAddress($this->toPersonEmail)) {
+                $toEmail = $this->toPersonEmail;
+            } elseif ($this->userMode == self::MODE_USER) {
+                if ($this->ticket->getTicketPersonEmail() && $this->ticket->getTicketPersonEmail()->getPerson() === $this->toPerson) {
+                    $toEmail = $this->ticket->getTicketPersonEmail()->getEmail();
+                    $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $toEmail));
+                } elseif ($this->toPerson->getPrimaryEmail()) {
+                    $toEmail = $this->toPerson->getPrimaryEmail()->getEmail();
+                    $this->logger->info(sprintf('[TicketEmail] to_email(3): %s', $toEmail));
+                } else {
+                    $this->logger->info(sprintf('[TicketEmail] to_email(4): no email'));
+
+                    throw new \RuntimeException('no email address');
+                }
+
+                // To agent
+            } else {
+                if (!$this->toPerson || !$this->toPerson->getPrimaryEmail()) {
+                    throw new \RuntimeException('No agent email to send to');
+                }
+
+                $toEmail = $this->toPerson->getPrimaryEmail()->getEmail();
             }
-
-            $toEmail = $this->toPerson->getPrimaryEmail()->getEmail();
         }
-
         $tac = null;
         if ($this->userMode == self::MODE_AGENT) {
             $tac = TicketUtil::getTacForPerson($this->ticket, $this->toPerson);

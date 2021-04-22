@@ -421,11 +421,12 @@ class Message extends \Orb\Mail\Message
      * A shortcut to set to and name.
      *
      * @param Person|null $person
+     * @param null $overrideEmail
      */
-    public function setToPerson($person)
+    public function setToPerson($person, $overrideEmail = null)
     {
         if ($person instanceof Person) {
-            $this->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+            $this->setTo($overrideEmail ?: $person->getPrimaryEmailAddress(), $person->getDisplayName());
         }
 
         $this->set_to_person = $person;

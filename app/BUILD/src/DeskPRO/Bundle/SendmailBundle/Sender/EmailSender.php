@@ -191,7 +191,7 @@ class EmailSender
             $person = $this->container->get('api_serializer.handler.person')
                 ->createModel($recipient, $serializationContext);
             $model->setRecipient($person);
-            $message->setToPerson($recipient);
+            $message->setToPerson($recipient, $options['override_email']);
         } elseif (is_a($options['to'], EmailTo::class)) {
             $emailTo = $options['to'];
             $message->setTo($emailTo->getEmailAddress(), $emailTo->getName());
@@ -306,9 +306,10 @@ class EmailSender
             'language',
         ]);
         $this->optionsResolver->setDefaults([
-            'to'        => null,
-            'from_name' => null,
-            'language'  => null,
+            'to'             => null,
+            'from_name'      => null,
+            'language'       => null,
+            'override_email' => null,
         ]);
         $this->optionsResolver->setAllowedTypes('attachments', 'array');
         $this->optionsResolver->setAllowedTypes('headers', 'array');

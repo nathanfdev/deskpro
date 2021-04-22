@@ -179,6 +179,13 @@ class SendUserNewEmail extends AbstractEmailAction
         /** @var TicketEmail $ticketEmail */
         $ticketEmail = $emailBuilder->buildTicketEmail();
 
+        $personPrimaryEmail = ($context->getPersonContext()->getPrimaryEmail()) ? $context->getPersonContext()->getPrimaryEmail()->getEmail() : $toEmail;
+
+        if ($personPrimaryEmail !== $toEmail) {
+            $ticketEmail->setEmailOverride($toEmail);
+            $messagesArgs['override_email'] = $toEmail;
+        }
+        
         $message = $ticketEmail->prepareMailerMessage([], false);
 
         $message = $this->getContainer()->get('email.email_sender')
