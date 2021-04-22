@@ -1377,6 +1377,18 @@ class TicketSearchController extends AbstractController
 
                 $slaGroupCounts[$groupStatus] = $groupSearcher->getCount();
             }
+
+            //Update cached version
+            $slaName         = 'ticket_sla_counts.'.$sla_id;
+            $cachedSlaExists = $this->em->getRepository(PersonPref::class)
+                ->findOneBy(['person' => $this->person->getId(), 'name' => $slaName]);
+
+            if ($cachedSlaExists) {
+                $cachedSlaExists->setValueArray($slaGroupCounts);
+                $cachedSlaExists->setDateExpire(new \DateTime('+15 minutes'));
+                $this->em->persist($cachedSlaExists);
+                $this->em->flush();
+            }
         }
 
         $results = $searcher->getMatches();
