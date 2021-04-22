@@ -907,7 +907,15 @@ class Translate implements PersonContextInterface, TranslatorInterface
                     $fmt        = $this->getMessageFormatter($locale, $phrase_name, $text);
 
                     try {
+                        $oldTimezone = null;
+                        if (isset($icuVars['timezone']) && date_default_timezone_get()) {
+                            $oldTimezone = date_default_timezone_get();
+                            date_default_timezone_set($icuVars['timezone']);
+                        }
                         $phraseText = $fmt->format($icuVars);
+                        if ($oldTimezone) {
+                            date_default_timezone_set($oldTimezone);
+                        }
                     } catch (Error $e) {
                         $phraseText = false;
                     }
