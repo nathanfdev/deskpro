@@ -13,11 +13,11 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/article_custom_fields")
- * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\CustomDefArticle")
+ * @ApiDoc(target="all", section="Articles", output="Application\DeskPRO\Entity\CustomDefArticle")
  * @ApiDoc(
  *     target="postAction, putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType",
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldDataType",
  *      "options"={
  *          "data"="Application\DeskPRO\Entity\CustomDefArticle"
  *      }

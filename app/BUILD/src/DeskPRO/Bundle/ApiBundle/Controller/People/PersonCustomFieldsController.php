@@ -17,7 +17,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType",
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldDataType",
  *      "options"={
  *          "data"="Application\DeskPRO\Entity\CustomDefPerson"
  *      }
