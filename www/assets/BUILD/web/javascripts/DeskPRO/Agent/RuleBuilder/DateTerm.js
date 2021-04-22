@@ -106,6 +106,10 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 			}
 		});
 
+    $('section.dp-overlay .close-trigger', this.el).on('click', function(ev) {
+      $('.field-overlay').hide();
+    });
+
 		var getDate = function (el) {
 			var timestamp = strtotime(el.val());
 			if (!timestamp) {
