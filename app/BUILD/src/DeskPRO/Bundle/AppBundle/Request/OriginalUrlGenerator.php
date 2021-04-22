@@ -3,7 +3,9 @@
 namespace DeskPRO\Bundle\AppBundle\Request;
 
 use DeskPRO\Bundle\AppBundle\Routing\RouterWithDynamicContext;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -17,13 +19,27 @@ class OriginalUrlGenerator
     private $baseUrlGenerator;
 
     /**
+     * @var BrandAwareSettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
      * Constructor.
      *
      * @param UrlGeneratorInterface $baseUrlGenerator
+     * @param BrandAwareSettingsResolver $settingsResolver
+     * @param RequestStack $requestStack
      */
-    public function __construct(UrlGeneratorInterface $baseUrlGenerator)
+    public function __construct(UrlGeneratorInterface $baseUrlGenerator, BrandAwareSettingsResolver $settingsResolver, RequestStack $requestStack)
     {
         $this->baseUrlGenerator = $baseUrlGenerator;
+        $this->settingsResolver = $settingsResolver;
+        $this->requestStack     = $requestStack;
     }
 
     /**
@@ -37,23 +53,39 @@ class OriginalUrlGenerator
     public function generate(Request $request, $name, $parameters = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         $router = $this->baseUrlGenerator;
-
         if ($router instanceof RouterWithDynamicContext) {
             $router = $router->getBaseRouter();
         }
 
-        try {
-            $originalContext = $router->getContext();
-            $globalContext   = clone $originalContext;
-            $globalContext->setBaseUrl($request->getBaseUrl());
+        $originalContext = $router->getContext();
+        $request         = $this->requestStack->getMasterRequest() ?: $request;
 
-            $router->setContext($globalContext);
-
-            return $router->generate($name, $parameters, $referenceType);
-        } finally {
-            $router->setContext($originalContext);
+        if ($request->getHost()) {
+            $originalContext->fromRequest($request);
+        } else {
+            $originalContext = $this->getUrlHostInfo($originalContext);
         }
 
+        $router->setContext($originalContext);
+
         return $router->generate($name, $parameters, $referenceType);
+    }
+
+    public function getUrlHostInfo($context)
+    {
+        $originalContext = clone $context;
+        
+        try {
+            $deskproUrl = $this->settingsResolver->getSetting('core.deskpro_url');
+            if ($deskproUrl && $info = parse_url(rtrim($deskproUrl, '/'))) {
+                $context->setScheme($info['scheme']);
+                $context->setBaseUrl(!empty($info['path']) ? $info['path'] : $context->getBaseUrl());
+                $context->setHost(!empty($info['host']) ? $info['host'] : 'localhost');
+            }
+
+            return $context;
+        } catch (\Exception $e) {
+            return $originalContext;
+        }
     }
 }

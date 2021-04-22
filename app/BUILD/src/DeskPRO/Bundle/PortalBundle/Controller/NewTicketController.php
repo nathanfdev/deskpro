@@ -47,6 +47,8 @@ class NewTicketController extends AbstractController
         // that means no way to submit a ticket, so don't show the page
         $authManager = $this->container->get('dp_authentication_manager.user');
 
+        $masterRequest = $this->get('request_stack')->getMasterRequest() ?: $request;
+
         $user    = $this->getUser();
         $noLogin = false;
         if (!$user instanceof Person || !$user->getId()) {
@@ -62,7 +64,7 @@ class NewTicketController extends AbstractController
         }
 
         $ticket = $this->getNewTicketService()->createNewTicket(
-            $request,
+            $masterRequest,
             $visitor_id,
             $this->getCurrentPerson(),
             $this->getBrandContainer()->getBrand(),
@@ -152,7 +154,7 @@ class NewTicketController extends AbstractController
                             }
 
                             $ticket = $this->getNewTicketService()->createNewTicket(
-                                $request,
+                                $masterRequest,
                                 $visitor_id,
                                 $person,
                                 $this->getBrandContainer()->getBrand(),
@@ -206,7 +208,7 @@ class NewTicketController extends AbstractController
                             if ($person) {
                                 // this user is created but can't log in 'person.is_user' is false
                                 $ticket = $this->getNewTicketService()->createNewTicket(
-                                    $request,
+                                    $masterRequest,
                                     $visitor_id,
                                     $person,
                                     $this->getBrandContainer()->getBrand(),

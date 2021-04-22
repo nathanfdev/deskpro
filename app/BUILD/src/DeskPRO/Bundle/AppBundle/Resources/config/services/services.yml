@@ -153,6 +153,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\Request\OriginalUrlGenerator
     arguments:
       - "@router.default"
+      - "@brand_aware_settings_resolver"
+      - "@request_stack"
 
   request_matcher:
     class: DeskPRO\Bundle\AppBundle\Routing\RequestMatcher
