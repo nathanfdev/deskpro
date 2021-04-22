@@ -77,59 +77,78 @@ class TermBuilder
                 case 'id':
                     $op          = 'IN';
                     $searchField = TermFieldIds::TICKET_ID;
+
                     break;
                 case 'label':
                 case 'labels':
                     $op          = 'IN';
                     $searchField = TermFieldIds::TICKET_LABELS;
+
                     break;
                 case 'star':
                     $searchField = TermFieldIds::TICKET_STARRED;
+
                     break;
                 case 'status':
                     $query = $this->getStatusFilterQuery($value, false);
                     if ($query) {
                         $searchQueryParts[] = $query;
                     }
+
                     break;
                 case 'not_status':
                     $query = $this->getStatusFilterQuery($value, true);
                     if ($query) {
                         $searchQueryParts[] = $query;
                     }
+
                     break;
                 case 'brand':
                     $searchField = TermFieldIds::TICKET_BRAND;
+
                     break;
                 case 'agent':
                     $searchField = TermFieldIds::TICKET_AGENT;
+
                     break;
                 case 'agent_team':
                     $searchField = TermFieldIds::TICKET_AGENT_TEAM;
+
                     break;
                 case 'person':
                 case 'email':
                     $searchField = TermFieldIds::PERSON_ID;
+
                     break;
                 case 'language':
                     $searchField = TermFieldIds::TICKET_LANGUAGE;
+
                     break;
                 case 'organization':
                     $searchField = TermFieldIds::ORG_ID;
+
                     break;
                 case 'problem':
                     $searchField = TermFieldIds::TICKET_PROBLEM_ID;
+
                     break;
                 case 'department':
                     $searchField = TermFieldIds::TICKET_DEPARTMENT;
+
+                    break;
+                case 'category':
+                    $searchField = TermFieldIds::TICKET_CATEGORY;
+
                     break;
                 case 'sla':
                     $op          = 'HAS';
                     $searchField = TermFieldIds::TICKET_SLAS;
+
                     break;
                 case 'urgency':
                     $op          = '=';
                     $searchField = TermFieldIds::TICKET_URGENCY;
+
                     break;
                 case 'sla_status':
                     if (!is_array($value)) {
@@ -142,16 +161,19 @@ class TermBuilder
                         switch ($slaStatus) {
                             case 'ok':
                                 $fn = 'passingSlas()';
+
                                 break;
                             case 'fail':
                             case 'failing':
                             case 'failed':
                                 $fn = 'failedSlas()';
+
                                 break;
                             case 'warn':
                             case 'warning':
                             case 'warned':
                                 $fn = 'warningSlas()';
+
                                 break;
                             default:
                                 throw new \InvalidArgumentException("Unknown sla_status value: $value");
@@ -167,18 +189,22 @@ class TermBuilder
                 case 'date_created':
                     list($op, $valueQuoted) = $this->parseDateField($value);
                     $searchQueryParts[]     = TermFieldIds::TICKET_DATE_CREATED." {$op} {$valueQuoted}";
+
                     break;
                 case 'date_resolved':
                     list($op, $valueQuoted) = $this->parseDateField($value);
                     $searchQueryParts[]     = TermFieldIds::TICKET_DATE_RESOLVED." {$op} {$valueQuoted}";
+
                     break;
                 case 'date_last_agent_reply':
                     list($op, $valueQuoted) = $this->parseDateField($value);
                     $searchQueryParts[]     = TermFieldIds::TICKET_DATE_LAST_AGENT_REPLY." {$op} {$valueQuoted}";
+
                     break;
                 case 'date_last_user_reply':
                     list($op, $valueQuoted) = $this->parseDateField($value);
                     $searchQueryParts[]     = TermFieldIds::TICKET_DATE_LAST_USER_REPLY." {$op} {$valueQuoted}";
+
                     break;
                 default:
 
@@ -273,27 +299,35 @@ class TermBuilder
             switch ($orderByOpt) {
                 case 'id':
                     $orderBy = TicketSearchParams::ORDER_ID;
+
                     break;
                 case 'urgency':
                     $orderBy = TicketSearchParams::ORDER_URGENCY;
+
                     break;
                 case 'date_created':
                     $orderBy = TicketSearchParams::ORDER_DATE_CREATED;
+
                     break;
                 case 'date_last_agent_reply':
                     $orderBy = TicketSearchParams::ORDER_DATE_LAST_AGENT_REPLY;
+
                     break;
                 case 'date_last_user_reply':
                     $orderBy = TicketSearchParams::ORDER_DATE_LAST_USER_REPLY;
+
                     break;
                 case 'date_last_reply':
                     $orderBy = TicketSearchParams::ORDER_DATE_LAST_REPLY;
+
                     break;
                 case 'date_user_waiting':
                     $orderBy = TicketSearchParams::ORDER_DATE_USER_WAITING;
+
                     break;
                 case 'total_user_waiting':
                     $orderBy = TicketSearchParams::ORDER_DATE_USER_WAITING;
+
                     break;
                 case 'subject':
                     $orderBy = TicketSearchParams::ORDER_ID; // removed, doesnt make sense?
@@ -306,9 +340,11 @@ class TermBuilder
                     break;
                 case 'sla':
                     $orderBy = TicketSearchParams::ORDER_SLA_SEVERITY;
+
                     break;
                 case 'sla_status':
                     $orderBy = TicketSearchParams::ORDER_SLA_SEVERITY;
+
                     break;
                 default:
                     throw new \InvalidArgumentException("Unknown order by option value: $orderByOpt");

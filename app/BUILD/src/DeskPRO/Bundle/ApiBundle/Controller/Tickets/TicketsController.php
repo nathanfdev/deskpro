@@ -165,6 +165,7 @@ class TicketsController extends AbstractTicketsController
      *          {"name"="organization", "description"="organization filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="problem", "description"="problem filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="department", "description"="department filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="category", "description"="category filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="sla", "description"="sla id filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="sla_status", "description"="sla status filter", "dataType"="integer", "pattern"="ok|warning|fail"},
      *          {
@@ -215,6 +216,7 @@ class TicketsController extends AbstractTicketsController
             }
 
             $ticketFilters = $this->container->get('ticketfilters');
+
             try {
                 $context = $ticketFilters->getAgentContext($this->getUser()->getId());
             } catch (\OutOfBoundsException $e) {
@@ -269,6 +271,7 @@ class TicketsController extends AbstractTicketsController
         }
 
         $ticketFilters = $this->container->get('ticketfilters');
+
         try {
             $context = $ticketFilters->getAgentContext($this->getUser()->getId());
         } catch (\OutOfBoundsException $e) {
@@ -423,6 +426,7 @@ class TicketsController extends AbstractTicketsController
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
+
             throw $this->createBadRequestException($e->getMessage());
         }
 
