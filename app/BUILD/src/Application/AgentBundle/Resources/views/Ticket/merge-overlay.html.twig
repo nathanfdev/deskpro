@@ -232,9 +232,9 @@
 								{% if f.hasValue or other_custom_fields[k].hasValue %}
 									<tr>
 										<th nowrap="nowrap"><div>{{ f.title }}</div></th>
-										<td width="50%">{% if f.hasValue %}{{ render_custom_field(f) }}{% endif %}</td>
+										<td width="50%" style="word-break: break-all;">{% if f.hasValue %}{{ render_custom_field(f) }}{% endif %}</td>
 										{% if other_ticket %}
-											<td width="50%">{% if other_custom_fields[k].hasValue %}{{ render_custom_field(other_custom_fields[k]) }}{% endif %}</td>
+											<td width="50%" style="word-break: break-all;"> {% if other_custom_fields[k].hasValue %}{{ render_custom_field(other_custom_fields[k]) }}{% endif %}</td>
 										{% endif %}
 									</tr>
 								{% endif %}
