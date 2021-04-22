@@ -11,7 +11,7 @@ class TicketMessage extends AbstractEntityRepository
     /**
      * @param $ticket
      *
-     * @return \Application\DeskPRO\Entity\TicketMessage|null
+     * @return Entity\TicketMessage|null
      */
     public function getLastAgentReply($ticket)
     {
@@ -68,7 +68,7 @@ class TicketMessage extends AbstractEntityRepository
      * @param int|Entity\Ticket $ticket
      * @param array             $set_options
      *
-     * @return \Application\DeskPRO\Entity\TicketMessage[]
+     * @return Entity\TicketMessage[]
      */
     public function getTicketMessages($ticket, array $set_options = [])
     {
@@ -133,11 +133,43 @@ class TicketMessage extends AbstractEntityRepository
     }
 
     /**
+     * Get all messages in a ticket.
+     *
+     * @param int|Entity\Ticket $ticket
+     * @param array             $set_options
+     *
+     * @return Entity\TicketMessage[]
+     */
+    public function getTicketNotes($ticket, array $set_options = [])
+    {
+        $options = array_merge([
+            'order'            => 'ASC',
+            'limit'            => 15,
+        ], $set_options);
+
+        $order = strtoupper($options['order']);
+        if (!in_array($order, ['ASC', 'DESC'])) {
+            $order = 'ASC';
+        }
+
+        $q = $this->getEntityManager()->createQueryBuilder();
+        $q->from(Entity\TicketMessage::class, 'm');
+        $q->select('m');
+        $q->leftJoin('m.person', 'p');
+        $q->where('m.ticket = :ticket');
+        $q->addOrderBy('m.date_created', $order);
+        $q->setParameter('ticket', $ticket);
+        $q->andWhere('m.is_agent_note = true');
+
+        return $q->getQuery()->getResult();
+    }
+
+    /**
      * Checks the database for a duplicate message.
      *
      * Returns the TicketMessage if there was one found, or false if none found.
      *
-     * @param \Application\DeskPRO\Entity\TicketMessage $message
+     * @param Entity\TicketMessage $message
      * @param int                                       $secs_ago
      * @param null|mixed $ticket
      *
