@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -203,7 +201,7 @@ class TicketMessage extends AbstractEntityRepository
                 SELECT m
                 FROM DeskPRO:TicketMessage m
                 LEFT JOIN m.person p
-                WHERE m.ticket = ?0 AND m.id < ?1
+                WHERE m.ticket = ?0 AND m.id <= ?1
                 ORDER BY m.id DESC
             ')->setMaxResults(1)->setParameters([$check->ticket->getId(), $check->getId()])->getOneOrNullResult();
 
