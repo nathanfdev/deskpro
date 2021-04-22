@@ -1,16 +1,13 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
+
 
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class DetectAutoresponders implements TicketSaveActionInterface
 {
@@ -43,17 +40,23 @@ class DetectAutoresponders implements TicketSaveActionInterface
      * @var int
      */
     private $max_replies_time;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
      * @param EntityManager $em
-     * @param int           $max_tickets
-     * @param int           $max_tickets_time
-     * @param int           $max_replies
-     * @param int           $max_replies_time
+     * @param ContainerInterface $container
+     * @param int $max_tickets
+     * @param int $max_tickets_time
+     * @param int $max_replies
+     * @param int $max_replies_time
      */
-    public function __construct(EntityManager $em, $max_tickets, $max_tickets_time, $max_replies, $max_replies_time)
+    public function __construct(EntityManager $em, ContainerInterface $container, $max_tickets, $max_tickets_time, $max_replies, $max_replies_time)
     {
         $this->em               = $em;
+        $this->container        = $container;
         $this->db               = $em->getConnection();
         $this->max_tickets      = $max_tickets;
         $this->max_tickets_time = $max_tickets_time;
@@ -100,6 +103,8 @@ class DetectAutoresponders implements TicketSaveActionInterface
                     $ticket->person->disable_autoresponses = true;
                     $ticket->person->setDisableAutoresponses(true, 'Detected via new ticket flood');
                     $this->em->persist($ticket->person);
+
+                    $this->sendAutoResponderEmail($ticket);
                 }
             }
         }
@@ -135,8 +140,27 @@ class DetectAutoresponders implements TicketSaveActionInterface
                     $message->person->disable_autoresponses = true;
                     $message->person->setDisableAutoresponses(true, 'Detected via new reply flood');
                     $this->em->persist($message->person);
+
+                    $this->sendAutoResponderEmail($ticket);
                 }
             }
         }
+    }
+
+    private function sendAutoResponderEmail($ticket)
+    {
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')->createAutoResponderModel();
+
+            return $this->container->get('mailer.utils')->sendModelWithPersonContext($ticket->getPerson(), $viewModel,
+                ['to' => $ticket->getPerson()]);
+        }
+
+        $message = $this->container->get('mailer')->createMessage();
+        $message->setToPerson($ticket->getPerson());
+        $message->setTemplate('DeskPRO:emails_user:ticket_autoresponder.html.twig', []);
+
+        return $this->container->get('mailer.utils')->sendWithPersonContext($message, $ticket->getPerson(),
+            $ticket->getBrand());
     }
 }
