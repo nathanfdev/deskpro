@@ -70,6 +70,7 @@ class LanguagesController extends CrudController
             'agent.follow_up.new_follow_up',
             'agent.follow_up.no_follow_ups',
             'agent.follow_up.you_must_add_one_action',
+            'agent.general.permissions_error',
             'agent.follow_up.you_must_select_time',
             'agent.follow_up.error_agent',
             'agent.follow_up.error_agent_team',
