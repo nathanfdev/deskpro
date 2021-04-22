@@ -88,6 +88,9 @@ class EmailDeliveryHandler extends AbstractDeliveryHandler
     {
         $em          = $this->container->get('doctrine.orm.default_entity_manager');
         $agent       = $this->getAgent($message->getTarget());
+        if ($agent->isDisabled() || $agent->isDeleted()) {
+            return;
+        }
         $chatMessage = $this->getChatMessage($message->getData()['data']['data']['id']);
         $session     = $em->getRepository(Session::class)->getSessionForPerson($agent, 30);
 
