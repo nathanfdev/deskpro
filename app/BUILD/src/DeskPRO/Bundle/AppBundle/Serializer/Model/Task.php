@@ -125,6 +125,16 @@ class Task
      */
     private $labels;
 
+    /**
+     * The associated tickets to this task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Ticket>>")
+     *
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    private $associatedTickets;
+
     public function __construct(TaskEntity $task)
     {
         $this->id                 = $task->getId();
@@ -139,5 +149,6 @@ class Task
         $this->assignedDepartment = $task->getAssignedDepartment();
         $this->assignedAgentTeam  = $task->getAssignedAgentTeam();
         $this->labels             = $task->getLabels();
+        $this->associatedTickets  = $task->getTickets();
     }
 }
