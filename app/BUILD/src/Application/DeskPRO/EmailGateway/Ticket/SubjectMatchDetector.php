@@ -3,7 +3,6 @@
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Ticket;
@@ -386,9 +385,36 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
      */
     protected function hasSameParticipants($reader, $ticket)
     {
-        $personProcessor = new PersonFromEmailProcessor();
-        $person          = $personProcessor->findPerson($reader->getFromAddress());
+        $readerAddresses = array_map(function ($email) {
+            /* @var \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress $email */
+            return $email->getEmail();
+        }, $reader->getDeliveredAddresses());
 
-        return $person && $ticket->getParticipants()->contains($person);
+        $ticketAddresses = [];
+        if ($ticket->getTicketPersonEmail()) {
+            $ticketAddresses[] = $ticket->getTicketPersonEmail()->getEmail();
+        }
+
+        foreach ($ticket->getParticipants() as $participant) {
+            if ($participant->getEmailAddress()) {
+                $ticketAddresses[] = $participant->getEmailAddress();
+            }
+        }
+
+        $this->getLogger()->logDebug('[SubjectMatchDetector] readerAddresses: '.print_r($readerAddresses, 1));
+
+        $this->getLogger()->logDebug('[SubjectMatchDetector] ticketAddresses: '.print_r($ticketAddresses, 1));
+
+        if ($readerAddresses) {
+            foreach ($ticketAddresses as $email) {
+                if (!in_array($email, $readerAddresses) && $email !== $ticket->getTicketPersonEmail()->getEmail()) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
