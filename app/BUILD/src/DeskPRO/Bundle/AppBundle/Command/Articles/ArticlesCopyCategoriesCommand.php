@@ -70,7 +70,7 @@ EOT
         $objectRouter                = $container->get('object_router');
         $mapping                     = $input->getArgument('mapping');
         foreach ($mapping as $categoriesMap) {
-            list($oldCategoryId, $newCategoryId) = array_map('intval', explode(':', $categoriesMap));
+            list($oldCategoryId, $newCategoryId) = array_map('intval', explode(':', $categoriesMap, 2));
             /** @var ArticleCategory|null $newCategory */
             if (!$newCategory = $articleCategoriesRepository->find($newCategoryId)) {
                 $output->writeln(sprintf('<error>[ERROR] Wrong new article category id: %d</error>', $newCategoryId));
