@@ -138,7 +138,6 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
      */
     protected $num_ratings = 0;
 
-
     /**
      * Status title.
      *
@@ -449,6 +448,8 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
                 $this->setModelField('date_published', new DateTime());
             }
         }
+
+        return $this;
     }
 
     public function getStatusCode()
@@ -1058,7 +1059,8 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
         return htmlspecialchars($this->getExcerptText($wordsLimit));
     }
 
-    public function getRatingData(){
+    public function getRatingData()
+    {
         $ratingModel = new RatingModel();
         $ratingModel
             ->setContentType(self::getContentType())
