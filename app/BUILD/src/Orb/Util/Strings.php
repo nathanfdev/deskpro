@@ -2786,7 +2786,7 @@ break;
     public static function getFilenameSafe($filename)
     {
         $filename_safe = self::utf8_accents_to_ascii($filename);
-        $filename_safe = RegexUtils::safePregReplace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
+        $filename_safe = RegexUtils::safePregReplace('#[^a-zA-ZА-Яа-я0-9\-_\.]#um', '-', $filename_safe);
         $filename_safe = RegexUtils::safePregReplace('#\-{2,}#', '-', $filename_safe);
 
         return $filename_safe ?: 'file';
