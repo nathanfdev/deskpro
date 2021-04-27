@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\CustomDataArticle;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepository;
 use DeskPRO\Component\Util\MatchConfig;
 use DeskPRO\Component\Util\StringUtils;
@@ -14,6 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ArticlesCopyCategoriesCommand extends ContainerAwareCommand
@@ -33,14 +35,20 @@ class ArticlesCopyCategoriesCommand extends ContainerAwareCommand
             ->setDescription('Copy articles from specified categories to other categories.')
 
             ->addArgument('mapping', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Categories mapping')
+            ->addOption('with-custom-data', 'c', InputOption::VALUE_NONE, 'Also copy custom data')
+            ->addOption('skip-existing', 'p', InputOption::VALUE_NONE, 'If slug exists just skip the article')
             ->setHelp(<<<EOT
 Use this command to copy articles from one category to another.
 
 This will create <info>new</info> articles with new attachments and inline images.
 
+Use --with-custom-data or -c to copy custom data as well
+Use --skip-existing or -s to skip existing articles (matched by slug-#BRAND_ID), otherwise a new article will be
+added with incremented #BRAND_ID
+
 Usage example is:
 
-   $>/path/to/deskpro/bin/console dp:articles:copy-categories -m 1:11 2:12 3:13
+   $>/path/to/deskpro/bin/console dp:articles:copy-categories -m 1:11 2:12 3:13 -c
 EOT
             )
         ;
@@ -63,12 +71,19 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getContainer()->get('audit_log.doctrine_listener')->disableListener();
-        $articleCategoriesRepository = $this->em->getRepository(ArticleCategory::class);
         $container                   = $this->getContainer();
+
+        $container->get('audit_log.doctrine_listener')->disableListener();
+
+        $articleCategoriesRepository = $this->em->getRepository(ArticleCategory::class);
+        /** @var \Application\DeskPRO\EntityRepository\Article $articlesRepository */
+        $articlesRepository = $this->em->getRepository(Article::class);
+
         $brandSettingsResolver       = $container->get('brand_aware_settings_resolver');
         $objectRouter                = $container->get('object_router');
+        $slugManager                 = $container->get('content_slug_manager');
         $mapping                     = $input->getArgument('mapping');
+
         foreach ($mapping as $categoriesMap) {
             list($oldCategoryId, $newCategoryId) = array_map('intval', explode(':', $categoriesMap, 2));
             /** @var ArticleCategory|null $newCategory */
@@ -105,6 +120,13 @@ EOT
             foreach ($articles as $oldArticle) {
                 $newArticle = new Article();
 
+                $newSlug = sprintf('%s-%d', $oldArticle->getSlug(), $toBrand->getId());
+                if ($input->getOption('skip-existing') && $articlesRepository->findOneBy(['slug' => $newSlug])) {
+                    $output->writeln("<fg=yellow>Skipping existing article with slug $newSlug</>");
+
+                    continue;
+                }
+
                 $content = $oldArticle->getContentHtml();
 
                 $blobAuthcodes        = StringUtils::gatherInlineAttachments($content, $matchConfig);
@@ -138,8 +160,8 @@ EOT
                     ->setContentInput($oldArticle->getContentInput())
                     ->setContentInputType($oldArticle->getContentInputType())
                     ->setIcon($oldArticle->getIcon()) // won't create new icon - must be re-uploaded if needed
-                    ->setSlug(sprintf('%s-%d', $oldArticle->getSlug(), $toBrand->getId()))
                 ;
+                $slugManager->ensureValidSlug($newArticle);
 
                 foreach ($oldArticle->getLabels() as $label) {
                     $newArticle->addLabel($label);
@@ -157,6 +179,20 @@ EOT
                     $newAttachment->setBlob($newBlob);
                     $newArticle->addAttachment($newAttachment);
                     $this->em->persist($newAttachment);
+                }
+
+                if ($input->getOption('with-custom-data')) {
+                    foreach ($oldArticle->getCustomData() as $oldCustomDatum) {
+                        $newCustomDatum = new CustomDataArticle();
+                        $newCustomDatum
+                            ->setArticle($newArticle)
+                            ->setField($oldCustomDatum->getField())
+                            ->setRootField($oldCustomDatum->getRootField())
+                            ->setInput($oldCustomDatum->getInput())
+                            ->setValue($oldCustomDatum->getValue())
+                        ;
+                        $newArticle->addCustomData($newCustomDatum);
+                    }
                 }
 
                 $this->em->persist($newArticle);
