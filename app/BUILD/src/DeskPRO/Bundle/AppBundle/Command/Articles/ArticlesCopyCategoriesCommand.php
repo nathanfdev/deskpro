@@ -116,7 +116,7 @@ EOT
                         sprintf('%s-%d', $oldInlineBlob->getFilename(), $toBrand->getId()),
                         $oldInlineBlob->getContentType()
                     );
-                    $this->em->persist($oldInlineBlob);
+                    $this->em->persist($newInlineBlob);
                     $content = preg_replace(
                         "#($fromBrandUrl|(http://.+?))/file.php/{$oldInlineBlob->getAuthcode()}/{$oldInlineBlob->getFilename()}#mi",
                         "{$toBrandUrl}/file.php/{$newInlineBlob->getAuthcode()}/{$newInlineBlob->getFilename()}",
