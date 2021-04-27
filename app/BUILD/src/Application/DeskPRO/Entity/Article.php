@@ -133,6 +133,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     }
 
     /**
+     * @return DateTime
+     */
+    public function getDateEnd()
+    {
+        return $this->date_end;
+    }
+
+    /**
      * @param DateTime $date_end
      *
      * @return $this

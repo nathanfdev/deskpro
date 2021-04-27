@@ -126,6 +126,11 @@ EOT
 
                 $newArticle
                     ->addToCategory($newCategory)
+                    ->setPerson($oldArticle->getPerson())
+                    ->setReviewInterval($oldArticle->getReviewInterval())
+                    ->setDateNextReview($oldArticle->getDateNextReview())
+                    ->setDateEnd($oldArticle->getDateEnd())
+                    ->setEndAction($oldArticle->getEndAction())
                     ->setLanguage($oldArticle->getLanguage())
                     ->setTitle($oldArticle->getTitle())
                     ->setStatusCode($oldArticle->getStatusCode())
