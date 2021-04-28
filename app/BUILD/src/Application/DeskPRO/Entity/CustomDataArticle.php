@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -54,6 +50,8 @@ class CustomDataArticle extends CustomDataAbstract
     public function setArticle(Article $article)
     {
         $this->article = $article;
+
+        return $this;
     }
 
     /**

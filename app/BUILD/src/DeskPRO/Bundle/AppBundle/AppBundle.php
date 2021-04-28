@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle;
 
+use DeskPRO\Bundle\AppBundle\Command\Articles\ArticlesCopyCategoriesCommand;
 use DeskPRO\Bundle\AppBundle\Command\Configure\ConfigElasticCommand;
 use DeskPRO\Bundle\AppBundle\Command\Configure\ToggleFeatureCommand;
 use DeskPRO\Bundle\AppBundle\Command\Debug\QuerySlaCommand;
@@ -10,11 +11,11 @@ use DeskPRO\Bundle\AppBundle\Command\ServerInfo\WebServerInfoCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\DanglingBlobsCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\DanglingBlobStorageCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\ExportBlobCommand;
-use DeskPRO\Bundle\AppBundle\Command\Utility\TicketWhWaitingTimeRecalculateCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\InvalidEmailsCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\RecompileTemplatesCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\RefreshAgentInterfaceCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\RequirePasswordResetCommand;
+use DeskPRO\Bundle\AppBundle\Command\Utility\TicketWhWaitingTimeRecalculateCommand;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
@@ -94,6 +95,7 @@ class AppBundle extends Bundle
         $application->add(new DanglingBlobStorageCommand());
         $application->add(new InvalidEmailsCommand());
         $application->add(new RequirePasswordResetCommand());
+        $application->add(new ArticlesCopyCategoriesCommand());
     }
 
     /**
