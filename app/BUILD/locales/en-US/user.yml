@@ -23,6 +23,7 @@ portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Login with an external service'
 portal.account.login-form-disabled: 'Login form is disabled'
 portal.account.login-invalid: 'You have entered the wrong email or password. Please try again.'
+portal.account.authentication-disabled: 'Authentication method disabled'
 portal.account.login-lockout: 'You have failed login too many times so you have been locked out. Please try again later.'
 portal.account.login-not-configured: 'External service is not configured.'
 portal.account.login-password: 'Your password'

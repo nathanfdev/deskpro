@@ -118,6 +118,20 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 $em->flush();
             }
 
+            if ($person->isAgent() && $usersource->getSourceType() === DeskPRO::class && $usersource->getType() === Usersource::TYPE_USER) {
+                $deskproAgentsource = $this->container->get('doctrine.orm.entity_manager')->getRepository(Usersource::class)->findOneBy([
+                    'title'      => 'Deskpro',
+                    'type'       => Usersource::TYPE_AGENT,
+                    'is_enabled' => true,
+                ]);
+
+                if (null === $deskproAgentsource) {
+                    $errorMessage = $this->isHelpcenter() ? 'helpcenter.account.authentication_disabled' : 'portal.account.authentication-disabled';
+
+                    throw new BadCredentialsException($errorMessage);
+                }
+            }
+
             $authenticatedToken = new DpFormLoginToken($person, $person->getPassword(), array_merge(['ROLE_USER'], $person->getRoles()));
             $authenticatedToken->setAttributes($token->getAttributes());
 
