@@ -7,7 +7,6 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Templating\GlobalVariables;
@@ -143,6 +142,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             new \Twig_SimpleFunction('include_php_file', [$this, 'includePhpFile'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('var_dump', [$this, 'dumpVar']),
             new \Twig_SimpleFunction('dp_copyright', [$this, 'staticGetUserCopyrightHtml'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('is_copyfree', [$this, 'isCopyfree']),
             new \Twig_SimpleFunction('dp_widgets', [$this, 'getWidgets'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('dp_widgets_raw', [$this, 'getWidgetsRaw']),
             new \Twig_SimpleFunction('dp_widget_id', [$this, 'getWidgetHtmlId']),
@@ -2670,6 +2670,14 @@ HTML;
     }
 
     /**
+     * @return bool
+     */
+    public function isCopyfree()
+    {
+        return License::getLicense()->isCopyfree();
+    }
+
+    /**
      * @param mixed $ret
      *
      * @return mixed
@@ -2726,9 +2734,10 @@ HTML;
     /**
      * @param array    $array
      * @param callable $arrow
+     *
      * @return array|\CallbackFilterIterator
      */
-    function safeArrayFilter($array, $arrow)
+    public function safeArrayFilter($array, $arrow)
     {
         if (is_string($arrow)) {
             throw new \RuntimeException("Arrow function cannot be a string");

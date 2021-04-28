@@ -901,7 +901,9 @@
 			{% block content %}{% endblock %}
 		</div>
 
-		<div class="deskpro-logo"></div>
+		{% if not is_copyfree() %}
+			<div class="deskpro-logo"></div>
+		{% endif %}
 	</div>
 </div>
 {#{% if not app.user.id %}#}

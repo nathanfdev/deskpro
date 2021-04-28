@@ -133,6 +133,7 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFunction('include_code_plugin', [$this, 'includeCodePlugin'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('var_dump', [$this, 'dumpVar']),
             new \Twig_SimpleFunction('dp_copyright', [$this, 'staticGetUserCopyrightHtml'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('is_copyfree', [$this, 'isCopyfree']),
             new \Twig_SimpleFunction('dp_widgets', [$this, 'getWidgets'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('dp_widgets_raw', [$this, 'getWidgetsRaw']),
             new \Twig_SimpleFunction('dp_widget_id', [$this, 'getWidgetHtmlId']),
@@ -1898,6 +1899,14 @@ class TemplatingExtension extends \Twig_Extension
     public function staticGetUserCopyrightHtml()
     {
         return License::staticGetUserCopyrightHtml();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCopyfree()
+    {
+        return License::getLicense()->isCopyfree();
     }
 
     /**

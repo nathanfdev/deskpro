@@ -161,6 +161,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             new \Twig_SimpleFunction('include_php_file', [$this, 'includePhpFile'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('var_dump', [$this, 'dumpVar']),
             new \Twig_SimpleFunction('dp_copyright', [$this, 'staticGetUserCopyrightHtml'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('is_copyfree', [$this, 'isCopyfree']),
             new \Twig_SimpleFunction('dp_app_loc', [$this, 'getDpAppLocation'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('dp_js_sso_loader', [$this, 'getJsSsoLoader'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('dp_js_sso_share', [$this, 'getJsSsoShare'], ['is_safe' => ['html']]),
@@ -2732,6 +2733,14 @@ HTML;
     }
 
     /**
+     * @return bool
+     */
+    public function isCopyfree()
+    {
+        return License::getLicense()->isCopyfree();
+    }
+
+    /**
      * @param mixed $ret
      *
      * @return mixed
@@ -2790,6 +2799,7 @@ HTML;
 
     /**
      * @param TicketAttachment[]  $attachments
+     *
      * @return TicketAttachment[]
      */
     public function excludeInlineAttachments($attachments)
@@ -2799,22 +2809,23 @@ HTML;
         }
 
         return array_filter($attachments, function ($attachment) {
-           if ($attachment instanceof TicketAttachment) {
-               return ! $attachment->isInline();
-           } elseif (is_array($attachment) && isset($attachment['is_inline'])) {
-               return ! $attachment['is_inline'];
-           } else {
-               return true;
-           }
+            if ($attachment instanceof TicketAttachment) {
+                return ! $attachment->isInline();
+            } elseif (is_array($attachment) && isset($attachment['is_inline'])) {
+                return ! $attachment['is_inline'];
+            } else {
+                return true;
+            }
         });
     }
 
     /**
      * @param array    $array
      * @param callable $arrow
+     *
      * @return array|\CallbackFilterIterator
      */
-    function safeArrayFilter($array, $arrow)
+    public function safeArrayFilter($array, $arrow)
     {
         if (is_string($arrow)) {
             throw new \RuntimeException("Arrow function cannot be a string");

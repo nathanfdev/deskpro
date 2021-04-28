@@ -86,10 +86,12 @@
                         <a onclick="window.scrollTo(0,0); return false;">Top <i class="fas fa-angle-double-up"></i></a>
                     </div>
 
-                    <a href="https://www.deskpro.com/" class="footer-mark">
-                        <span class="logo-wrapper"><span class="deskpro-logo"></span></span>
-                        <span class="tagline">Powered by <strong>Deskpro</strong></span>
-                    </a>
+                    {% if not is_copyfree() %}
+                        <a href="https://www.deskpro.com/" class="footer-mark">
+                            <span class="logo-wrapper"><span class="deskpro-logo"></span></span>
+                            <span class="tagline">Powered by <strong>Deskpro</strong></span>
+                        </a>
+                    {% endif %}
                 </footer>
             </div>
         </section>

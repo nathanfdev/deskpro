@@ -28,10 +28,12 @@
                     <div class="column-full">
                         <footer class="site-footer">
                             <hr>
-                            <a href="https://www.deskpro.com/" class="footer-mark">
-                                <span class="logo-wrapper"><span class="deskpro-logo"></span></span>
-                                <span class="tagline">{{ phrase('portal.general.software_provided_by') }} <strong>Deskpro</strong></span>
-                            </a>
+                            {% if not is_copyfree() %}
+                                <a href="https://www.deskpro.com/" class="footer-mark">
+                                    <span class="logo-wrapper"><span class="deskpro-logo"></span></span>
+                                    <span class="tagline">{{ phrase('portal.general.software_provided_by') }} <strong>Deskpro</strong></span>
+                                </a>
+                            {% endif %}
                         </footer>
                     </div>
                 </section>
