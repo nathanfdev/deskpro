@@ -20,6 +20,7 @@ class UseSectionVoter extends AbstractVoter
     const USE_TICKETS       = 'USE_TICKETS';
     const USE_GUIDES        = 'USE_GUIDES';
     const VIEW_TICKETS_LINK = 'VIEW_TICKETS_LINK';
+    const SUBMIT_COMMUNITY  = 'SUBMIT_COMMUNITY';
 
     /**
      * {@inheritdoc}
@@ -35,6 +36,7 @@ class UseSectionVoter extends AbstractVoter
             self::USE_NEWS,
             self::USE_TICKETS,
             self::VIEW_TICKETS_LINK,
+            self::SUBMIT_COMMUNITY,
         ]);
     }
 
@@ -59,6 +61,9 @@ class UseSectionVoter extends AbstractVoter
             case static::USE_COMMUNITY:
                 return $this->getActiveBrandSetting('core.apps_community')
                     && ($permissionBag->get('community.use') && $permissionBag->getAllowedCommunityForumIds());
+            case static::SUBMIT_COMMUNITY:
+                return $this->getActiveBrandSetting('core.apps_community')
+                       && ($permissionBag->get('community.use') && $permissionBag->get('community.submit'));
             case static::USE_GUIDES:
                 return $this->getActiveBrandSetting('core.apps_guides')
                     && ($permissionBag->get('guides.use') && $permissionBag->getAllowedGuides());

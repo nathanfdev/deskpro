@@ -70,7 +70,7 @@ class CommunityTopicsController extends AbstractPublishController
         $person = $this->getUser() ?: new PersonGuest();
 
         $lockedOut = $request->query->get('lockout');
-        if( null !== $lockedOut && $lockedOut === 'community'){
+        if (null !== $lockedOut && $lockedOut === 'community') {
             $this->addFlash('error', $this->phrase(['helpcenter.community.action_not_allowed']));
         }
 
@@ -434,7 +434,7 @@ class CommunityTopicsController extends AbstractPublishController
     /**
      * @Route("/community/{id}/create-topic", name="portal_community_topic_create")
      * @Method({"GET","POST"})
-     * @Security("is_granted('USE_COMMUNITY')")
+     * @Security("is_granted('USE_COMMUNITY') and is_granted('SUBMIT_COMMUNITY')")
      *
      * @param CommunityForum $forum
      * @param Request        $request
