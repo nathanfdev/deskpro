@@ -27,6 +27,17 @@ class Run extends React.Component {
     groupParams:                PropTypes.object.isRequired,
   };
 
+  static uniqueData(data) {
+    if (data) {
+      return Object.values(data.reduce((p, c) => {
+        p[JSON.stringify(c)] = c;
+        return p;
+      }, {}));
+    }
+
+    return data;
+  }
+
   static renderChart(renderedResult, index) {
     let options = renderedResult;
     if (!options) {
@@ -91,6 +102,9 @@ class Run extends React.Component {
         return g;
       });
     }
+    if (newOptions.dataProvider) {
+      newOptions.dataProvider = this.uniqueData(newOptions.dataProvider);
+    }
 
     switch (newOptions.chartType) {
       case 'pie':
@@ -104,7 +118,7 @@ class Run extends React.Component {
         return (<DataTable
           key={index}
           style={{ width: '100%', height: '500px' }}
-          data={options.get('data').toJS()}
+          data={this.uniqueData(options.get('data').toJS())}
           columns={options.get('columns').toJS()}
           rowsGroup={options.get('rowsGroup', Immutable.fromJS([])).toJS()}
           options={{
@@ -180,6 +194,7 @@ class Run extends React.Component {
     event.stopPropagation();
     this.setState({ deleteConfirmation: false });
   };
+
 
   clickSlice = (event) => {
     const options = this.props.report.get('rendered_result').toJS();
