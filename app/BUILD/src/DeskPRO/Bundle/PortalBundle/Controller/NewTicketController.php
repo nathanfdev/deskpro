@@ -63,11 +63,17 @@ class NewTicketController extends AbstractController
             }
         }
 
+        $brand = $this->getBrandContainer()->getBrand();
+
+        if (empty($this->get('data.departments')->getTicketDepartmentsForPerson(($user) ?: new PersonGuest(), $brand))) {
+            throw $this->createAccessDeniedException($this->phrase('helpcenter.forms.error_unauthorized_department'));
+        }
+
         $ticket = $this->getNewTicketService()->createNewTicket(
             $masterRequest,
             $visitor_id,
             $this->getCurrentPerson(),
-            $this->getBrandContainer()->getBrand(),
+            $brand,
             Ticket::CREATED_WEB_PERSON_PORTAL
         );
 
