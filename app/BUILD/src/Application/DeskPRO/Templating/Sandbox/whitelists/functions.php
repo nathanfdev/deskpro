@@ -253,4 +253,5 @@ return [
     'show_tab_feedback',
     'is_page_feedback',
     'core_deskpro_name',
+    'is_copyfree'
 ];
