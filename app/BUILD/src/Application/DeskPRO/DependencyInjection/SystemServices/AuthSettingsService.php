@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category DependencyInjection
- */
+
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
@@ -22,6 +18,8 @@ class AuthSettingsService
         /** @var \Application\DeskPRO\Usersource\UsersourceManager $um */
         $um = $container->getSystemService('usersource_manager');
 
+        $activeBrand = $container->getBrandStack()->getActive()->getBrand();
+
         ////////////////////////////////////////////////
         // User Interface Auth Settings
         $userAuthSettings = new AuthInterfaceSettings($adapterFactory);
@@ -30,8 +28,7 @@ class AuthSettingsService
             $userAuthSettings->setBackgroundSsoEnabled(true);
             $userAuthSettings->setSsoUsersource($usSsoBackground);
         }
-
-        if ($usSsoAuto = $um->getAll()->configuredForUsers()->withAutoSso()->getFirstOrNull()) {
+        if ($usSsoAuto = $um->getAll()->configuredForUsers()->withAutoSso()->forBrand($activeBrand)->getFirstOrNull()) {
             $userAuthSettings->setAutoSsoEnabled(true);
             $userAuthSettings->setSsoUsersource($usSsoAuto);
         }
