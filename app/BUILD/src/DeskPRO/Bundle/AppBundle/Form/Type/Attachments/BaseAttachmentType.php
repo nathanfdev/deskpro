@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Attachments;
 
 use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepository;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Form\AbstractType;
@@ -54,6 +53,7 @@ class BaseAttachmentType extends AbstractType
     {
         $resolver
             ->setDefaults([
+                'person'         => null,
                 'error_bubbling' => false,
                 'constraints'    => [
                     // check attachments directly via the form to prevent checking all collection
@@ -61,7 +61,6 @@ class BaseAttachmentType extends AbstractType
                 ],
             ])
             ->setRequired(['data_class', 'person'])
-            ->setAllowedTypes('person', Person::class)
         ;
     }
 

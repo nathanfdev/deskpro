@@ -5,7 +5,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\BaseAttachmentType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
@@ -116,9 +115,9 @@ class ArticleType extends AbstractType
                 'data_class'       => Article::class,
                 'agent_interface'  => false,
                 'with_review_date' => false,
+                'person'           => null,
             ])
             ->setRequired('person')
-            ->setAllowedTypes('person', Person::class)
         ;
     }
 

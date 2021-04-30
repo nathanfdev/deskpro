@@ -5,7 +5,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Community;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\LabelCommunityTopic;
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
@@ -104,8 +103,8 @@ class CommunityTopicType extends AbstractType
             ->setDefaults([
                 'data_class'      => CommunityTopic::class,
                 'agent_interface' => false,
+                'person'          => null,
             ])
-            ->setAllowedTypes('person', Person::class)
         ;
     }
 
