@@ -175,8 +175,6 @@ class PersonAssignType extends AbstractType
                     'emails' => 'email',
                 ],
             ])
-            ->setAllowedTypes('person', ['null', Person::class])
-            ->setAllowedTypes('allow_create', 'boolean')
         ;
     }
 }

@@ -59,7 +59,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Coomunity\CommunityTopicType",
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Community\CommunityTopicType",
  *      "options"={
  *          "data"="Application\DeskPRO\Entity\CommunityTopic",
  *          "person"="Application\DeskPRO\Entity\Person"
