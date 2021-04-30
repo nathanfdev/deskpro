@@ -6,6 +6,7 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchyPlugin;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\PluginInterface;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception\InvalidFieldNameException;
 
 /**
  * Class SqlSelectContext.
@@ -65,11 +66,20 @@ class SqlSelectContext
             $this->plugins[$i]->beforeQuery();
         }
 
-        $results = $this->connection->executeQuery($sql->toSql())->fetchAll(\PDO::FETCH_NUM);
+        $plainResults = $results = $this->connection->executeQuery($sql->toSql())->fetchAll(\PDO::FETCH_NUM);
 
-        for ($i = $pluginsCount - 1; $i >= 0; --$i) {
-            $results = $this->plugins[$i]->afterQuery($results, $metadata);
-            $this->plugins[$i]->resultHandlerCallback($this->handler, $results);
+        try {
+            for ($i = $pluginsCount - 1; $i >= 0; --$i) {
+                $results = $this->plugins[$i]->afterQuery($results, $metadata);
+                $this->plugins[$i]->resultHandlerCallback($this->handler, $results);
+            }
+        } catch (InvalidFieldNameException $e) {
+            if (!empty($plainResults)) {
+                //Result is not isHierarchical return actual result
+                return $plainResults;
+            }
+
+            throw new DpqlException($e->getMessage());
         }
 
         return $results;
@@ -86,6 +96,7 @@ class SqlSelectContext
             foreach ($this->plugins as $plugin) {
                 if ($plugin instanceof HierarchyPlugin) {
                     $this->hierarchyPlugin = $plugin;
+
                     break;
                 }
             }
