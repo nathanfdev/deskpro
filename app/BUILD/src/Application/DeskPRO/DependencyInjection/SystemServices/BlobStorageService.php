@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -61,23 +59,28 @@ class BlobStorageService
         }
 
         if ($settingsBag->get('core.filestorage_method') == 's3') {
+            $adaptersOrder = ['s3', 'db', 'fs', 'dav'];
             $bs->setPreferredAdapterId('s3');
             $bs->disableAdapter('fs');
             $bs->disableAdapter('dav');
         } elseif ($settingsBag->get('core.filestorage_method') == 'fs') {
+            $adaptersOrder = ['fs', 'db', 's3', 'dav'];
             $bs->setPreferredAdapterId('fs');
             $bs->disableAdapter('s3');
             $bs->disableAdapter('dav');
         } elseif ($settingsBag->get('core.filestorage_method') == 'dav') {
+            $adaptersOrder = ['dav', 'db', 's3', 'fs'];
             $bs->setPreferredAdapterId('dav');
             $bs->disableAdapter('s3');
             $bs->disableAdapter('fs');
         } else {
+            $adaptersOrder = ['db', 'fs', 's3', 'dav'];
             $bs->setPreferredAdapterId('db');
             $bs->disableAdapter('fs');
             $bs->disableAdapter('s3');
             $bs->disableAdapter('dav');
         }
+        $bs->setAdaptersOrder($adaptersOrder);
 
         // Store logs in the database if config flag is set
         if ($log_adapter_id = $settingsBag->get('core.filestorage_method_logs')) {
@@ -186,26 +189,45 @@ class BlobStorageService
         $settingsBag = $container->get('settings_resolver')->getGlobalSettings();
 
         $davAdapter = null;
-        if (($settingsBag->get('core.filestorage_dav_user')
+        if (($settingsBag->get('core.filestorage_dav_username')
             && $settingsBag->get('core.filestorage_dav_username')
             && $settingsBag->get('core.filestorage_dav_password')
             && $settingsBag->get('core.filestorage_dav_host')
             && $settingsBag->get('core.filestorage_dav_port')
         )) {
-            $uri = 'http://'
-                .$settingsBag->get('core.filestorage_dav_host')
-                .':'.$settingsBag->get('core.filestorage_dav_port')
-            ;
             $davAdapter = new WebDAVStorage([
-                'dav' => new \Sabre\DAV\Client([
-                    'userName' => $settingsBag->get('core.filestorage_dav_username'),
-                    'password' => $settingsBag->get('core.filestorage_dav_username'),
-                    'baseUri'  => $uri,
-                ]),
+                'dav' => self::createDavClient(
+                    $settingsBag->get('core.filestorage_dav_username'),
+                    $settingsBag->get('core.filestorage_dav_password'),
+                    $settingsBag->get('core.filestorage_dav_host'),
+                    $settingsBag->get('core.filestorage_dav_port')
+                ),
             ]);
         }
 
         return $davAdapter;
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
+     * @param string $host
+     * @param string $port
+     *
+     * @return \Sabre\DAV\Client
+     */
+    public static function createDavClient($username, $password, $host, $port)
+    {
+        $uri = 'http://'
+            .$host
+            .':'.$port
+        ;
+
+        return new \Sabre\DAV\Client([
+            'userName' => $username,
+            'password' => $password,
+            'baseUri'  => $uri,
+        ]);
     }
 
     /**

@@ -313,6 +313,20 @@ class DeskproBlobStorage implements Loggable
     }
 
     /**
+     * @param array $ids
+     */
+    public function setAdaptersOrder(array $ids)
+    {
+        $newAdaptersOrder = [];
+        foreach ($ids as $id) {
+            if ($this->hasAdapter($id)) {
+                $newAdaptersOrder[$id] = $this->adapters[$id];
+            }
+        }
+        $this->adapters = $newAdaptersOrder;
+    }
+
+    /**
      * @param array $blob_array
      *
      * @return array

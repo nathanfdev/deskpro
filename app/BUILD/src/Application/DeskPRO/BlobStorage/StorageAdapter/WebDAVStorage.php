@@ -3,7 +3,6 @@
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class WebDAVStorage extends AbstractStorageAdapter
 {
@@ -36,7 +35,7 @@ class WebDAVStorage extends AbstractStorageAdapter
      */
     public function checkBlobExists(Blob $blob)
     {
-        return true;
+        return $this->davClient->request('HEAD', $this->resolvePath($blob->getPath()))['statusCode'] === 200;
     }
 
     /**
@@ -47,6 +46,7 @@ class WebDAVStorage extends AbstractStorageAdapter
     public function deleteBlob(Blob $blob)
     {
         $path = $this->resolvePath($blob->getPath());
+        $this->davClient->request('DELETE', $path);
 
         return true;
     }
@@ -61,12 +61,7 @@ class WebDAVStorage extends AbstractStorageAdapter
     {
         $path = $this->resolvePath($blob->getPath());
 
-        $headerBag   = new ResponseHeaderBag();
-        $disposition = $headerBag->makeDisposition(
-            $blob->getMeta("content_disposition") ?: ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $blob->getFilename(),
-            $blob->getFilenameSafe()
-        );
+        $this->davClient->request('PUT', $path, $data);
 
         return strlen($data);
     }
@@ -102,7 +97,9 @@ class WebDAVStorage extends AbstractStorageAdapter
      */
     public function readBlobString(Blob $blob)
     {
-        return '';
+        $path = $this->resolvePath($blob->getPath());
+
+        return $this->davClient->request('GET', $path)['body'];
     }
 
     /**
