@@ -266,7 +266,21 @@ class DeskproBlobStorage implements Loggable
      */
     public function disableAdapter($id)
     {
-        $this->disabled_adapters[$id] = true;
+        if ($this->hasAdapter($id)) {
+            $this->disabled_adapters[$id] = true;
+        }
+    }
+
+    /**
+     * Mark an adapter as enabled.
+     *
+     * @param string $id
+     */
+    public function enableAdapter($id)
+    {
+        if ($this->hasAdapter($id) && isset($this->disabled_adapters[$id])) {
+            unset($this->disabled_adapters[$id]);
+        }
     }
 
     /**
