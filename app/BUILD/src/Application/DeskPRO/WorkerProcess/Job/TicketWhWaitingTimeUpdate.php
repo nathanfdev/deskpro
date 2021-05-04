@@ -102,9 +102,6 @@ class TicketWhWaitingTimeUpdate extends AbstractJob
                         + (UNIX_TIMESTAMP(:dayEnd) - UNIX_TIMESTAMP(total_user_waiting_wh_start))
                     ),
 
-                    # if agent reply exists, update total_to_first_reply_wh
-                    total_to_first_reply_wh = IF(date_first_agent_reply IS NOT NULL, total_to_first_reply_wh, 0),
-
                     # update the datettime to the next work time
                     total_user_waiting_wh_start = :nextWhStartTime
                 WHERE
