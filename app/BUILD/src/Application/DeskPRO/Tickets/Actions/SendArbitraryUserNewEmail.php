@@ -211,6 +211,10 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
 
             $message = $ticketEmail->prepareMailerMessage($vars, false);
 
+            if ($ticket->getRealLanguage()) {
+                $messagesArgs['language'] = $ticket->getRealLanguage();
+            }
+            
             $message = $this->getContainer()->get('email.email_sender')
                 ->prepareMessage($viewModel, $messagesArgs, $message);
 

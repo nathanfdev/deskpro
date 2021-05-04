@@ -190,8 +190,12 @@ class SendUserNewEmail extends AbstractEmailAction
             $ticketEmail->setEmailOverride($toEmail);
             $messagesArgs['override_email'] = $toEmail;
         }
-        
+
         $message = $ticketEmail->prepareMailerMessage([], false);
+
+        if ($ticket->getRealLanguage()) {
+            $messagesArgs['language'] = $ticket->getRealLanguage();
+        }
 
         $message = $this->getContainer()->get('email.email_sender')
             ->prepareMessage($viewModel, $messagesArgs, $message);
