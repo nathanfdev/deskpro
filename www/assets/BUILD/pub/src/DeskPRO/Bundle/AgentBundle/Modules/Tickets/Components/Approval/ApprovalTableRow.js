@@ -208,7 +208,18 @@ class ApprovalTableRow extends React.Component {
       approvalDate = approval.completed_at;
     }
 
-    const result = [
+    const result = [];
+
+    if (errors) {
+      result.push(
+        <tr>
+          <td colSpan="9">
+            {errors}
+          </td>
+        </tr>
+      );
+    }
+    result.push(
       <tr key={`approval_${approval.id}_data`}>
         <td>
           <a onClick={this.toggleVotes} style={{ width: '100%', display: 'block' }}>
@@ -233,7 +244,6 @@ class ApprovalTableRow extends React.Component {
         <td>{approval.required_approvals}</td>
         <td>{approval.required_rejections}</td>
         <td>
-          {errors}
           {controls
             ? <div>{controls}</div>
             : <div className="approval-status">
@@ -246,7 +256,7 @@ class ApprovalTableRow extends React.Component {
           }
         </td>
       </tr>
-    ];
+    );
 
     if (this.state.showResponses) {
       const voteApproverIds = approval.votes.map(vote => vote.approver.id);
