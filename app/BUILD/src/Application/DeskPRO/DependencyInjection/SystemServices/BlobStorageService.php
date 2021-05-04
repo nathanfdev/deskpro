@@ -203,6 +203,7 @@ class BlobStorageService
                     $settingsBag->get('core.filestorage_dav_port')
                 ),
             ]);
+            $davAdapter->setLogger($logger);
         }
 
         return $davAdapter;
