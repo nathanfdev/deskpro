@@ -430,6 +430,24 @@ class Ticket
     private $totalToFirstReply;
 
     /**
+     * Total user waiting in working hours.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $totalUserWaitingWh;
+
+    /**
+     * Total waiting before first reply in working hour.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $totalToFirstReplyWh;
+
+    /**
      * An agent who locked the ticket.
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
@@ -661,50 +679,52 @@ class Ticket
             $this->personEmail = $ticket->getPerson()->getPrimaryEmail();
         }
 
-        $this->contextualFields     = $ticket->getCustomPerData();
-        $this->agent                = $ticket->getAgent();
-        $this->agentTeam            = $ticket->getAgentTeam();
-        $this->organization         = $ticket->getOrganization();
-        $this->linkedChat           = $ticket->getLinkedChat();
-        $this->sentToAddress        = array_values($ticket->getSentToAddresses());
-        $this->emailAccount         = $ticket->getEmailAccount();
-        $this->emailAccountAddress  = $ticket->getEmailAccountAddress();
-        $this->creationSystem       = $ticket->getCreationSystem();
-        $this->creationSystemOption = $ticket->getCreationSystemOption();
-        $this->ticketHash           = $ticket->getTicketHash();
-        $this->status               = $ticket->getStatusCode();
-        $this->oldStatus            = $ticket->getStatus();
-        $this->hiddenStatus         = $ticket->getTicketStatus()->getSysId();
-        $this->ticketStatus         = $ticket->getStatusCode();
-        $this->isHold               = $ticket->isHold();
-        $this->urgency              = $ticket->getUrgency();
-        $this->feedbackRating       = $ticket->getFeedbackRating();
-        $this->dateFeedbackRating   = $ticket->getDateFeedbackRating();
-        $this->dateCreated          = $ticket->getDateCreated();
-        $this->dateResolved         = $ticket->getDateResolved();
-        $this->dateArchived         = $ticket->getDateArchived();
-        $this->dateFirstAgentAssign = $ticket->getDateFirstAgentAssign();
-        $this->dateFirstAgentReply  = $ticket->getDateFirstAgentReply();
-        $this->dateLastAgentReply   = $ticket->getDateLastAgentReply();
-        $this->dateLastUserReply    = $ticket->getDateLastUserReply();
-        $this->dateAgentWaiting     = $ticket->getDateAgentWaiting();
-        $this->dateUserWaiting      = $ticket->getDateUserWaiting();
-        $this->dateStatus           = $ticket->getDateStatus();
-        $this->totalUserWaiting     = $ticket->getTotalUserWaiting();
-        $this->totalToFirstReply    = $ticket->getTotalToFirstReply();
-        $this->lockedByAgent        = $ticket->getLockedByAgent();
-        $this->dateLocked           = $ticket->getDateLocked();
-        $this->dateOnHold           = $ticket->getDateOnHold();
-        $this->hasAttachments       = $ticket->hasAttachments();
-        $this->subject              = $ticket->getSubject();
-        $this->originalSubject      = $ticket->getOriginalSubject();
-        $this->properties           = $ticket->getProperties();
-        $this->problems             = $ticket->getProblems();
-        $this->countAgentReplies    = $ticket->getCountAgentReplies();
-        $this->countUserReplies     = $ticket->getCountUserReplies();
-        $this->waitingTimes         = $ticket->getWaitingTimes();
-        $this->children             = $ticket->getChildrenTickets();
-        $this->siblings             = $ticket->getSiblingsTickets();
+        $this->contextualFields      = $ticket->getCustomPerData();
+        $this->agent                 = $ticket->getAgent();
+        $this->agentTeam             = $ticket->getAgentTeam();
+        $this->organization          = $ticket->getOrganization();
+        $this->linkedChat            = $ticket->getLinkedChat();
+        $this->sentToAddress         = array_values($ticket->getSentToAddresses());
+        $this->emailAccount          = $ticket->getEmailAccount();
+        $this->emailAccountAddress   = $ticket->getEmailAccountAddress();
+        $this->creationSystem        = $ticket->getCreationSystem();
+        $this->creationSystemOption  = $ticket->getCreationSystemOption();
+        $this->ticketHash            = $ticket->getTicketHash();
+        $this->status                = $ticket->getStatusCode();
+        $this->oldStatus             = $ticket->getStatus();
+        $this->hiddenStatus          = $ticket->getTicketStatus()->getSysId();
+        $this->ticketStatus          = $ticket->getStatusCode();
+        $this->isHold                = $ticket->isHold();
+        $this->urgency               = $ticket->getUrgency();
+        $this->feedbackRating        = $ticket->getFeedbackRating();
+        $this->dateFeedbackRating    = $ticket->getDateFeedbackRating();
+        $this->dateCreated           = $ticket->getDateCreated();
+        $this->dateResolved          = $ticket->getDateResolved();
+        $this->dateArchived          = $ticket->getDateArchived();
+        $this->dateFirstAgentAssign  = $ticket->getDateFirstAgentAssign();
+        $this->dateFirstAgentReply   = $ticket->getDateFirstAgentReply();
+        $this->dateLastAgentReply    = $ticket->getDateLastAgentReply();
+        $this->dateLastUserReply     = $ticket->getDateLastUserReply();
+        $this->dateAgentWaiting      = $ticket->getDateAgentWaiting();
+        $this->dateUserWaiting       = $ticket->getDateUserWaiting();
+        $this->dateStatus            = $ticket->getDateStatus();
+        $this->totalUserWaiting      = $ticket->getTotalUserWaiting();
+        $this->totalToFirstReply     = $ticket->getTotalToFirstReply();
+        $this->totalUserWaitingWh    = $ticket->getTotalUserWaitingWh();
+        $this->totalToFirstReplyWh   = $ticket->getTotalToFirstReplyWh();
+        $this->lockedByAgent         = $ticket->getLockedByAgent();
+        $this->dateLocked            = $ticket->getDateLocked();
+        $this->dateOnHold            = $ticket->getDateOnHold();
+        $this->hasAttachments        = $ticket->hasAttachments();
+        $this->subject               = $ticket->getSubject();
+        $this->originalSubject       = $ticket->getOriginalSubject();
+        $this->properties            = $ticket->getProperties();
+        $this->problems              = $ticket->getProblems();
+        $this->countAgentReplies     = $ticket->getCountAgentReplies();
+        $this->countUserReplies      = $ticket->getCountUserReplies();
+        $this->waitingTimes          = $ticket->getWaitingTimes();
+        $this->children              = $ticket->getChildrenTickets();
+        $this->siblings              = $ticket->getSiblingsTickets();
     }
 
     /**
