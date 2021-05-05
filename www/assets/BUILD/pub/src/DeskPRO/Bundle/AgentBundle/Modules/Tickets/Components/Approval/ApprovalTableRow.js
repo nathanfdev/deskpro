@@ -21,8 +21,10 @@ class ApprovalTableRow extends React.Component {
       requestMessage: '',
       showResponses:  false,
       saving:         false,
+      errors:         [],
     };
   }
+
 
   cancelApprovalRequest = (id) => {
     window.DeskPRO_Window.showConfirm('Please confirm you want to cancel the entire Approval?', () => {
@@ -30,12 +32,22 @@ class ApprovalTableRow extends React.Component {
         saving: true
       });
 
-      this.props.cancelApprovalRequest(id)
-        .then(() => {
-          this.setState({
-            saving: false
-          });
+      this.props.cancelApprovalRequest(id).then(() => {
+        this.setState({
+          saving: false
         });
+      }).catch((error) => {
+        this.setState({
+          saving: false
+        });
+        const errors = [];
+        if (error.status === 403) {
+          errors.push(<FormattedMessage id="agent.general.permissions_error" />);
+        }
+        this.setState({
+          errors
+        });
+      });
     });
   };
 
@@ -86,7 +98,6 @@ class ApprovalTableRow extends React.Component {
   render() {
     const { me } = this.props;
     const { requestMessage } = this.state;
-
     const approvers = this.props.approval.get('people').toArray().map(approver => ({
       id:     approver.get('id'),
       name:   approver.get('display_name'),
@@ -170,6 +181,15 @@ class ApprovalTableRow extends React.Component {
       }
     }
 
+    let errors = '';
+    if (this.state.errors.length > 0) {
+      errors = (<div className="errors">
+        <ul>
+          {this.state.errors.map((error, index) => <li key={index}>{error}</li>)}
+        </ul>
+      </div>);
+    }
+
     let iconName;
     if (approval.status === 'pending') {
       iconName = faClock;
@@ -188,7 +208,18 @@ class ApprovalTableRow extends React.Component {
       approvalDate = approval.completed_at;
     }
 
-    const result = [
+    const result = [];
+
+    if (errors) {
+      result.push(
+        <tr>
+          <td colSpan="9">
+            {errors}
+          </td>
+        </tr>
+      );
+    }
+    result.push(
       <tr key={`approval_${approval.id}_data`}>
         <td>
           <a onClick={this.toggleVotes} style={{ width: '100%', display: 'block' }}>
@@ -225,7 +256,7 @@ class ApprovalTableRow extends React.Component {
           }
         </td>
       </tr>
-    ];
+    );
 
     if (this.state.showResponses) {
       const voteApproverIds = approval.votes.map(vote => vote.approver.id);

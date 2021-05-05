@@ -59,11 +59,10 @@ export const createApprovalRequest = createAction(
 
 export const cancelApprovalRequest = createAction(
   'TICKET_CANCEL_APPROVAL_REQUEST',
-  approvalRequestId => new Promise((resolve) => {
-    repository('TicketApproval').cancelApprovalRequest(approvalRequestId).then(() => {
-      resolve();
-    });
-  })
+  approvalRequestId => new Promise(
+    (resolve, reject) => repository('TicketApproval').cancelApprovalRequest(approvalRequestId).success(() => resolve())
+      .error(response => reject(response))
+  )
 );
 
 export const acceptApprovalRequest = createAction(
