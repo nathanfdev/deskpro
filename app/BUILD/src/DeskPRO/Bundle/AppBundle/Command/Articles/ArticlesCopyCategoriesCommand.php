@@ -198,10 +198,17 @@ EOT
                 $this->em->persist($newArticle);
                 $this->em->flush();
 
+                $newArticleUrl = $this->getContainer()->get('brand_stack')->pushTemporary(
+                    $toBrand,
+                    function () use ($objectRouter, $newArticle) {
+                        return $objectRouter->getPortalUrl($newArticle);
+                    }
+                );
+
                 $output->writeln([
                     '<comment>[NEW ARTICLE]</comment>',
                     sprintf('#%d %s', $oldArticle->getId(), $objectRouter->getPortalUrl($oldArticle)),
-                    sprintf('=> #%d %s', $newArticle->getId(), $objectRouter->getPortalUrl($newArticle)),
+                    sprintf('=> #%d %s', $newArticle->getId(), $newArticleUrl),
                 ]);
             }
         }
