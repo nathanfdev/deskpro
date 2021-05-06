@@ -2,6 +2,7 @@
 
 namespace DpSys\LowScript;
 
+use Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Blob;
 use DpSys\CodePlugin\DpPlugins;
@@ -996,6 +997,8 @@ class ServeFileScript extends LowScriptAbstract
 
         if ($blob['storage_loc'] == 'fs') {
             $response = $this->sendFromFilesystem($blob);
+        } elseif ($blob['storage_loc'] === 'dav') {
+            $response = $this->sendFromDav($blob);
         } else {
             $response = $this->sendFromDatabase($blob);
         }
@@ -1092,6 +1095,46 @@ class ServeFileScript extends LowScriptAbstract
         } else {
             return new BinaryFileResponse($filepath, 200, $headers);
         }
+    }
+
+    /**
+     * Send a file that is stored on the remote DAV server.
+     *
+     * @param Blob $blob
+     *
+     * @return Response
+     */
+    public function sendFromDav($blob)
+    {
+        $headers = $this->getHeaders($blob);
+
+        $etagHeader = (isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : false);
+        if ($etagHeader === $headers['ETag']) {
+            return new Response('', 304);
+        }
+        $sth = $this->getPdoRead()->prepare("SELECT name, value FROM settings WHERE name IN('core.filestorage_dav_username', 'core.filestorage_dav_password', 'core.filestorage_dav_host', 'core.filestorage_dav_port')");
+        $sth->execute();
+        $creds = $sth->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+        $davClient = BlobStorageService::createDavClient(
+            $creds['core.filestorage_dav_host'],
+            $creds['core.filestorage_dav_port'],
+            isset($creds['core.filestorage_dav_username']) ? $creds['core.filestorage_dav_username'] : null,
+            isset($creds['core.filestorage_dav_password']) ? $creds['core.filestorage_dav_password'] : null
+        );
+
+        $davResponse = $davClient->request('GET', $blob['save_path']);
+
+        $response = new Response(
+            $davResponse['body'],
+            200,
+            $headers
+        );
+        if ($this->request->headers->has('range')) {
+            $this->setRangeHeaders($response, $blob);
+        }
+
+        return $response;
     }
 
     /**
