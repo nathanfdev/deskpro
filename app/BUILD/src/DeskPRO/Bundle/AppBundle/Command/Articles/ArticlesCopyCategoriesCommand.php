@@ -84,6 +84,9 @@ EOT
         $slugManager                 = $container->get('content_slug_manager');
         $mapping                     = $input->getArgument('mapping');
 
+        $columns = ["old_article_id", "old_article_url", "new_article_id", "new_article_url"];
+        fputcsv(STDOUT, $columns);
+
         foreach ($mapping as $categoriesMap) {
             list($oldCategoryId, $newCategoryId) = array_map('intval', explode(':', $categoriesMap, 2));
             /** @var ArticleCategory|null $newCategory */
@@ -212,12 +215,16 @@ EOT
                     }
                 );
 
-                $output->writeln([
-                    '<comment>[NEW ARTICLE]</comment>',
-                    sprintf('#%d %s', $oldArticle->getId(), $oldArticleUrl),
-                    sprintf('=> #%d %s', $newArticle->getId(), $newArticleUrl),
-                ]);
+                $fields = [
+                    $oldArticle->getId(),
+                    $oldArticleUrl,
+                    $newArticle->getId(),
+                    $newArticleUrl,
+                ];
+                fputcsv(STDOUT, $fields);
             }
         }
+
+        return 0;
     }
 }
