@@ -1117,10 +1117,10 @@ class ServeFileScript extends LowScriptAbstract
         $creds = $sth->fetchAll(\PDO::FETCH_KEY_PAIR);
 
         $davClient = BlobStorageService::createDavClient(
-            $creds['core.filestorage_dav_username'],
-            $creds['core.filestorage_dav_password'],
             $creds['core.filestorage_dav_host'],
-            $creds['core.filestorage_dav_port']
+            $creds['core.filestorage_dav_port'],
+            isset($creds['core.filestorage_dav_username']) ? $creds['core.filestorage_dav_username'] : null,
+            isset($creds['core.filestorage_dav_password']) ? $creds['core.filestorage_dav_password'] : null
         );
 
         $davResponse = $davClient->request('GET', $blob['save_path']);

@@ -189,18 +189,15 @@ class BlobStorageService
         $settingsBag = $container->get('settings_resolver')->getGlobalSettings();
 
         $davAdapter = null;
-        if (($settingsBag->get('core.filestorage_dav_username')
-            && $settingsBag->get('core.filestorage_dav_username')
-            && $settingsBag->get('core.filestorage_dav_password')
-            && $settingsBag->get('core.filestorage_dav_host')
+        if ($settingsBag->get('core.filestorage_dav_host')
             && $settingsBag->get('core.filestorage_dav_port')
-        )) {
+        ) {
             $davAdapter = new WebDAVStorage([
                 'dav' => self::createDavClient(
-                    $settingsBag->get('core.filestorage_dav_username'),
-                    $settingsBag->get('core.filestorage_dav_password'),
                     $settingsBag->get('core.filestorage_dav_host'),
-                    $settingsBag->get('core.filestorage_dav_port')
+                    $settingsBag->get('core.filestorage_dav_port'),
+                    $settingsBag->get('core.filestorage_dav_username'),
+                    $settingsBag->get('core.filestorage_dav_password')
                 ),
             ]);
             $davAdapter->setLogger($logger);
@@ -210,25 +207,30 @@ class BlobStorageService
     }
 
     /**
-     * @param string $username
-     * @param string $password
      * @param string $host
      * @param string $port
+     * @param string|null $username
+     * @param string|null $password
      *
      * @return \Sabre\DAV\Client
      */
-    public static function createDavClient($username, $password, $host, $port)
+    public static function createDavClient($host, $port, $username = null, $password = null)
     {
         $uri = 'http://'
             .$host
             .':'.$port
         ;
-
-        return new \Sabre\DAV\Client([
-            'userName' => $username,
-            'password' => $password,
+        $params = [
             'baseUri'  => $uri,
-        ]);
+        ];
+        if ($username) {
+            $params = array_merge($params, [
+                'userName' => $username,
+                'password' => $password,
+            ]);
+        }
+
+        return new \Sabre\DAV\Client($params);
     }
 
     /**
