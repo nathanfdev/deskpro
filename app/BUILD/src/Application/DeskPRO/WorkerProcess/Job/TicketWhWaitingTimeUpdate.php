@@ -17,7 +17,7 @@ class TicketWhWaitingTimeUpdate extends AbstractJob
 {
     const DEFAULT_INTERVAL = 60;
 
-    CONST LAST_CALC_SETTING = 'last_wh_calc';
+    const LAST_CALC_SETTING = 'last_wh_calc';
 
     /**
      * @var WorkHoursInterface
@@ -25,7 +25,6 @@ class TicketWhWaitingTimeUpdate extends AbstractJob
     private $wh;
 
     /**
-     *
      * @var array
      */
     private $lastCalcData;
@@ -56,7 +55,7 @@ class TicketWhWaitingTimeUpdate extends AbstractJob
         $now = new \DateTime();
 
         $dayStart = new \DateTime();
-        $dayEnd = new \DateTime();
+        $dayEnd   = new \DateTime();
 
         if ($this->wh instanceof WorkHoursSetAll) {
             $dayStart->setTime(0, 0);
@@ -72,9 +71,9 @@ class TicketWhWaitingTimeUpdate extends AbstractJob
             $dayEnd->setTimezone(new \DateTimeZone('UTC'));
         }
 
-        $this->logger->logInfo('Curr day start: ' . $dayStart->format('Y-m-d H:i:s'));
-        $this->logger->logInfo('Curr day end: ' . $dayEnd->format('Y-m-d H:i:s'));
-        $this->logger->logInfo('Now: ' . $now->format('Y-m-d H:i:s'));
+        $this->logger->logInfo('Curr day start: '.$dayStart->format('Y-m-d H:i:s'));
+        $this->logger->logInfo('Curr day end: '.$dayEnd->format('Y-m-d H:i:s'));
+        $this->logger->logInfo('Now: '.$now->format('Y-m-d H:i:s'));
 
         /**
          * Get day start/end used by previous run
@@ -92,7 +91,6 @@ class TicketWhWaitingTimeUpdate extends AbstractJob
             : new \DateTime('last year');
 
         if (($lastCalcDate < $lastRunDayEnd) && ($lastRunDayEnd < $now)) {
-
             $this->logger->logInfo("Going to update end of the day calculation!");
 
             $this->getContainer()->get('doctrine')->getConnection()->executeUpdate('
@@ -104,21 +102,15 @@ class TicketWhWaitingTimeUpdate extends AbstractJob
                         + (UNIX_TIMESTAMP(:dayEnd) - UNIX_TIMESTAMP(total_user_waiting_wh_start))
                     ),
 
-                    # if there is no first reply yet, we also need to update that
-                    total_to_first_reply_wh = IF(date_first_agent_reply IS NOT NULL, total_to_first_reply_wh, (
-                        total_to_first_reply_wh
-                        + (UNIX_TIMESTAMP(:dayEnd) - UNIX_TIMESTAMP(total_user_waiting_wh_start))
-                    )),
-
                     # update the datettime to the next work time
                     total_user_waiting_wh_start = :nextWhStartTime
                 WHERE
                     status IN (\'awaiting_agent\', \'pending\')
                 AND total_user_waiting_wh_start BETWEEN :dayStart AND :dayEnd',
             [
-                'dayStart' => $lastRunDayStart->format('Y-m-d H:i:s'),
-                'dayEnd' => $lastRunDayEnd->format('Y-m-d H:i:s'),
-                'nextWhStartTime' => $this->wh->getNextWorkTimeStart($lastRunDayEnd)->format('Y-m-d H:i:s')
+                'dayStart'        => $lastRunDayStart->format('Y-m-d H:i:s'),
+                'dayEnd'          => $lastRunDayEnd->format('Y-m-d H:i:s'),
+                'nextWhStartTime' => $this->wh->getNextWorkTimeStart($lastRunDayEnd)->format('Y-m-d H:i:s'),
             ]);
 
             $this->lastCalcData['calc_date'] = $now->format('Y-m-d H:i:s');
@@ -127,7 +119,7 @@ class TicketWhWaitingTimeUpdate extends AbstractJob
         }
 
         $this->lastCalcData['day_start'] = $dayStart->format('Y-m-d H:i:s');
-        $this->lastCalcData['day_end'] = $dayEnd->format('Y-m-d H:i:s');
+        $this->lastCalcData['day_end']   = $dayEnd->format('Y-m-d H:i:s');
 
         $this->saveLastCalcData();
     }
@@ -141,15 +133,15 @@ class TicketWhWaitingTimeUpdate extends AbstractJob
     protected function printLastCalcData()
     {
         $this->logger->logInfo("Last calc time: "
-            . (isset($this->lastCalcData['calc_date'])
+            .(isset($this->lastCalcData['calc_date'])
                 ? (new \DateTime($this->lastCalcData['calc_date']))->format('Y-m-d H:i:s')
                 : 'not set'));
         $this->logger->logInfo("Last run day start: "
-            . (isset($this->lastCalcData['day_start'])
+            .(isset($this->lastCalcData['day_start'])
                 ? (new \DateTime($this->lastCalcData['day_start']))->format('Y-m-d H:i:s')
                 : 'not set'));
         $this->logger->logInfo("Last run day end: "
-            . (isset($this->lastCalcData['day_end'])
+            .(isset($this->lastCalcData['day_end'])
                 ? (new \DateTime($this->lastCalcData['day_end']))->format('Y-m-d H:i:s')
                 : 'not set'));
     }
@@ -165,7 +157,7 @@ class TicketWhWaitingTimeUpdate extends AbstractJob
                 $this->wh->getWorkStartMinute(),
                 $this->wh->getWorkEndHour(),
                 $this->wh->getWorkEndMinute(),
-                implode(',', array_map(function($day) {
+                implode(',', array_map(function ($day) {
                     return $day ? 1 : 0;
                 }, $this->wh->getWorkDays())),
                 $this->wh->getWorkTimezone()
