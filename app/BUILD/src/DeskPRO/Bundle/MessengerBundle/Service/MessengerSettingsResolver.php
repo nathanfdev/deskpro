@@ -24,6 +24,7 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
+use DpSys\License;
 use Orb\Util\Env;
 
 /**
@@ -310,6 +311,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setTextColor($this->getSettings(self::WIDGET_TEXT_COLOR, $brand, $messengerWidget->getTextColor()))
             ->setPosition($this->getSettings(self::WIDGET_POSITION, $brand, $messengerWidget->getPosition()))
             ->setIcon($this->getIcon($brand))
+            ->setCopyfree(License::getLicense()->isCopyfree())
         ;
     }
 
