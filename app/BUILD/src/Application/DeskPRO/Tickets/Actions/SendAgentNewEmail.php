@@ -267,6 +267,7 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                     $lastMessage = array_shift($messages);
                 }
             case TicketTrigger::EVENT_TYPE_UPDATE:
+            case TicketTrigger::EVENT_TYPE_SLAS:
             case 'system':
                 $arguments = [$ticket];
 

@@ -122,6 +122,7 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
         switch ($context->getEventType()) {
             case TicketTrigger::EVENT_TYPE_NEWTICKET:
             case TicketTrigger::EVENT_TYPE_UPDATE:
+            case TicketTrigger::EVENT_TYPE_SLAS:
             case 'system':
                 $arguments = [$ticket];
 

@@ -1,12 +1,11 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Application\DeskPRO\Tickets\Slas\SlaProcessor;
@@ -33,17 +32,15 @@ class TicketSlas extends AbstractJob
             return $me->isPastTimeLimit();
         });
 
-        $context_factory = function () {
-            $context = App::$container->getTicketManager()->createSystemExecutorContext('slas');
-
-            return $context;
+        $contextFactory = function () {
+            return App::$container->getTicketManager()->createSystemExecutorContext(TicketTrigger::EVENT_TYPE_SLAS);
         };
 
-        $count_failed  = $proc->processAllFailed($context_factory, App::$container->getTicketManager());
-        $count_warning = $proc->processAllWarning($context_factory, App::$container->getTicketManager());
+        $countFailed  = $proc->processAllFailed($contextFactory, App::$container->getTicketManager());
+        $countWarning = $proc->processAllWarning($contextFactory, App::$container->getTicketManager());
 
-        if ($count_warning || $count_failed) {
-            $this->getLogger()->logInfo("SLA statuses updated. Failed: $count_failed, warning: $count_warning");
+        if ($countWarning || $countFailed) {
+            $this->getLogger()->logInfo("SLA statuses updated. Failed: $countFailed, warning: $countWarning");
         }
 
         App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');

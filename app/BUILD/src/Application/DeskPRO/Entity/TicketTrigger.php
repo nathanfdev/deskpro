@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -38,6 +34,7 @@ class TicketTrigger extends DomainObject
 {
     const EVENT_TYPE_NEWTICKET = 'newticket';
     const EVENT_TYPE_NEWREPLY  = 'newreply';
+    const EVENT_TYPE_SLAS      = 'slas';
     const EVENT_TYPE_UPDATE    = 'update';
     const EVENT_TYPE_WEBHOOK   = 'webhook';
 
