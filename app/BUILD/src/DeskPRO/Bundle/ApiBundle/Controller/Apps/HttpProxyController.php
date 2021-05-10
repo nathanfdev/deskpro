@@ -101,6 +101,7 @@ class HttpProxyController extends BaseController
 
         // send proxy request
         $buildId = $this->get('deskpro.app_env')->getBuildId();
+
         try {
             $options = [
                 RequestOptions::HEADERS => array_merge(
@@ -155,7 +156,8 @@ class HttpProxyController extends BaseController
             array_merge(
                 $proxyResponse->getHeaders(),
                 [
-                    'X-Real-Http-Code' => $realStatusCode,
+                    'X-Real-Http-Code'           => $realStatusCode,
+                    'X-DeskPRO-Redirect-Offsite' => true,
                 ]
             )
         );
