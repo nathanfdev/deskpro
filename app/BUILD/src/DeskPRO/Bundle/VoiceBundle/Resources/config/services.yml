@@ -75,6 +75,8 @@ services:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskRouter
     arguments:
       - "@service_container"
+      - "@doctrine.orm.default_entity_manager"
+      - "@voice_settings_resolver"
       - "@dp.voice.task_router.storage"
       - "@dp.voice.event_dispatcher"
       - "@dp.voice.task_router_evaluate_lock"

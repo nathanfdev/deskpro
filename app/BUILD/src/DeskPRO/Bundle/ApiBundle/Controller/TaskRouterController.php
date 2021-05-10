@@ -74,7 +74,7 @@ class TaskRouterController extends BaseController
     public function callRouterAction()
     {
         // evaluate task router
-        $this->container->get('dp.voice.task_router')->evaluate();
+        $processed = $this->container->get('dp.voice.task_router')->evaluate();
 
         $voiceSettings = $this->get('voice_settings_resolver');
 
@@ -83,12 +83,16 @@ class TaskRouterController extends BaseController
 
         $pendingCounts = new PendingTasksCount(
             $this->get('dp.voice.task_router.storage')->getActiveTasks(),
+            $processed,
+            $voiceSettings->getFailedEvaluateAttempts(),
             $lastVoiceTaskTimestamp ? new \DateTime('@'.$lastVoiceTaskTimestamp) : null,
             $lastChatTaskTimestamp ? new \DateTime('@'.$lastChatTaskTimestamp) : null
         );
 
         $this->get('dp.voice.task_router.logger')->info(sprintf(
-            '[TaskRouter] Pending counts, num_pending_voice_tasks = %s, num_pending_chat_tasks = %s, last_pending_voice_task = %s, last_pending_chat_task = %s',
+            '[TaskRouter] Pending counts, processed = %s, failed_attempts = %s, num_pending_voice_tasks = %s, num_pending_chat_tasks = %s, last_pending_voice_task = %s, last_pending_chat_task = %s',
+            (int) $processed,
+            $voiceSettings->getFailedEvaluateAttempts(),
             $pendingCounts->getNumPendingVoiceTasks(),
             $pendingCounts->getNumPendingChatTasks(),
             $pendingCounts->getLastPendingVoiceTask() ? $pendingCounts->getLastPendingVoiceTask()->format('c') : null,
