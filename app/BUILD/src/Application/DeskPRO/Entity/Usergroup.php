@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -105,6 +103,9 @@ class Usergroup extends DomainObject
 
     /**
      * @var DepartmentPermission[]
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\DepartmentPermission")
      */
     protected $department_permissions;
 

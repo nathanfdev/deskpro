@@ -1,19 +1,17 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Stores who has access to departments.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -44,6 +42,8 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var \Application\DeskPRO\Entity\Department
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
      */
     protected $department = null;
 
@@ -62,12 +62,20 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
     protected $person = null;
 
     /**
+     * Application name. It's going to be either chat or tickets
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $app;
 
     /**
      * The name of the permission.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -82,6 +90,9 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @see Permission::$is_active doc
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
