@@ -56,8 +56,8 @@ FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
             'display_order' => 40,
             'query'         => '
             SELECT
-                SUM(IF(chat_conversations.rating_overall > 0,1,0)) AS Postive,
-                SUM(IF(chat_conversations.rating_overall <= 0,1,0)) AS Negative
+                SUM(IF(chat_conversations.rating_overall > 1,1,0)) AS Postive,
+                SUM(IF(chat_conversations.rating_overall <= 1,1,0)) AS Negative
             FROM chat_conversations
             WHERE chat_conversations.rating_overall <> NULL
               AND chat_conversations.agent <> NULL
