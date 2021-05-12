@@ -138,12 +138,12 @@ EOT
                 foreach ($inlineBlobsInMessage as $oldInlineBlob) {
                     $newInlineBlob = $blobStorage->createBlobRecordFromString(
                         $blobStorage->copyBlobRecordToString($oldInlineBlob),
-                        sprintf('%s-%d', $oldInlineBlob->getFilename(), $toBrand->getId()),
+                        $oldInlineBlob->getFilename(),
                         $oldInlineBlob->getContentType()
                     );
                     $this->em->persist($newInlineBlob);
                     $content = preg_replace(
-                        "#($fromBrandUrl|(http://.+?))/file.php/{$oldInlineBlob->getAuthcode()}/{$oldInlineBlob->getFilename()}#mi",
+                        "#($fromBrandUrl|(https?://.+?))/file.php/{$oldInlineBlob->getAuthcode()}/{$oldInlineBlob->getFilename()}#mi",
                         "{$toBrandUrl}/file.php/{$newInlineBlob->getAuthcode()}/{$newInlineBlob->getFilename()}",
                         $content
                     );
@@ -175,7 +175,7 @@ EOT
                     $blob          = $attachment->getBlob();
                     $newBlob       = $blobStorage->createBlobRecordFromString(
                         $blobStorage->copyBlobRecordToString($blob),
-                        sprintf('%s-%d', $blob->getFilename(), $toBrand->getId()),
+                        $blob->getFilename(),
                         $blob->getContentType()
                     );
                     $this->em->persist($blob);
