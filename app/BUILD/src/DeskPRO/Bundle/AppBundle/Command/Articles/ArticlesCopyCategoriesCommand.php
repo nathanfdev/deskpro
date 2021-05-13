@@ -17,6 +17,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ArticlesCopyCategoriesCommand extends ContainerAwareCommand
 {
@@ -110,11 +111,6 @@ EOT
             /** @var DeskproBlobStorage $blobStorage */
             $blobStorage = $container->get('blob.storage');
 
-            $matchConfig = new MatchConfig(
-                $container->get('router')->generate('serve_blob', ['blob_auth_id' => '00000', 'filename' => '11111']),
-                '00000',
-                '11111'
-            );
             $fromBrandUrl = trim($brandSettingsResolver->getSetting('core.deskpro_url', $fromBrand), '/');
             $toBrandUrl   = trim($brandSettingsResolver->getSetting('core.deskpro_url', $toBrand), '/');
             /** @var BlobRepository $blobRepository */
@@ -130,29 +126,15 @@ EOT
                     continue;
                 }
 
-                $content = $oldArticle->getContentHtml();
+                // straight
+                $content = $this->replaceInlineImages(
+                    $container, $blobRepository, $blobStorage, $oldArticle->getContentHtml(), $fromBrandUrl, $toBrandUrl
+                );
 
-                $blobAuthcodes        = StringUtils::gatherInlineAttachments($content, $matchConfig);
-                $inlineBlobsInMessage = $blobRepository->getByAuthCodes($blobAuthcodes) ?: [];
-
-                foreach ($inlineBlobsInMessage as $oldInlineBlob) {
-                    $newInlineBlob = $blobStorage->createBlobRecordFromString(
-                        $blobStorage->copyBlobRecordToString($oldInlineBlob),
-                        $oldInlineBlob->getFilename(),
-                        $oldInlineBlob->getContentType()
-                    );
-                    $this->em->persist($newInlineBlob);
-                    $content = preg_replace(
-                        "#($fromBrandUrl|(https?://.+?))/file.php/{$oldInlineBlob->getAuthcode()}/{$oldInlineBlob->getFilename()}#mi",
-                        "{$toBrandUrl}/file.php/{$newInlineBlob->getAuthcode()}/{$newInlineBlob->getFilename()}",
-                        $content
-                    );
-                    $content = preg_replace(
-                        "#($fromBrandUrl|(https?://.+?))/file.php/local/{$oldInlineBlob->getAuthcode()}/{$oldInlineBlob->getFilename()}#mi",
-                        "{$toBrandUrl}/file.php/local/{$newInlineBlob->getAuthcode()}/{$newInlineBlob->getFilename()}",
-                        $content
-                    );
-                }
+                // with /local/ part
+                $content = $this->replaceInlineImages(
+                    $container, $blobRepository, $blobStorage, $content, $fromBrandUrl, $toBrandUrl, true
+                );
 
                 $newArticle
                     ->addToCategory($newCategory)
@@ -231,5 +213,59 @@ EOT
         }
 
         return 0;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @param                    $content
+     * @param BlobRepository     $blobRepository
+     * @param DeskproBlobStorage $blobStorage
+     * @param                    $fromBrandUrl
+     * @param                    $toBrandUrl
+     * @param false              $local
+     *
+     * @throws \Application\DeskPRO\BlobStorage\BlobStorageException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return mixed|string|string[]|null
+     */
+    private function replaceInlineImages(
+        ContainerInterface $container,
+        BlobRepository $blobRepository,
+        DeskproBlobStorage $blobStorage,
+        $content,
+        $fromBrandUrl,
+        $toBrandUrl,
+        $local = false
+    ) {
+        $pattern     = $container->get('router')->generate('serve_blob', ['blob_auth_id' => '00000', 'filename' => '11111']);
+        if ($local) {
+            $pattern = str_replace('/file.php/', '/file.php/local/', $pattern);
+        }
+        $matchConfig = new MatchConfig($pattern, '00000', '11111');
+
+        $fileUrl = '/file.php/'.($local ? 'local/' : '');
+
+        $blobAuthcodes        = StringUtils::gatherInlineAttachments($content, $matchConfig);
+        $inlineBlobsInMessage = $blobRepository->getByAuthCodes($blobAuthcodes) ?: [];
+
+        foreach ($inlineBlobsInMessage as $oldInlineBlob) {
+            $newInlineBlob = $blobStorage->createBlobRecordFromString(
+                $blobStorage->copyBlobRecordToString($oldInlineBlob),
+                $oldInlineBlob->getFilename(),
+                $oldInlineBlob->getContentType()
+            );
+            $this->em->persist($newInlineBlob);
+            $content = preg_replace(
+                "#($fromBrandUrl|(https?://.+?)){$fileUrl}{$oldInlineBlob->getAuthcode()}/{$oldInlineBlob->getFilename()}#mi",
+                "{$toBrandUrl}{$fileUrl}{$newInlineBlob->getAuthcode()}/{$newInlineBlob->getFilename()}",
+                $content
+            );
+        }
+
+        return $content;
     }
 }
