@@ -147,6 +147,11 @@ EOT
                         "{$toBrandUrl}/file.php/{$newInlineBlob->getAuthcode()}/{$newInlineBlob->getFilename()}",
                         $content
                     );
+                    $content = preg_replace(
+                        "#($fromBrandUrl|(https?://.+?))/file.php/local/{$oldInlineBlob->getAuthcode()}/{$oldInlineBlob->getFilename()}#mi",
+                        "{$toBrandUrl}/file.php/local/{$newInlineBlob->getAuthcode()}/{$newInlineBlob->getFilename()}",
+                        $content
+                    );
                 }
 
                 $newArticle
