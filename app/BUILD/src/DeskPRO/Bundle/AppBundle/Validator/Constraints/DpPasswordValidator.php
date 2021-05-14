@@ -93,6 +93,8 @@ class DpPasswordValidator extends ConstraintValidator
             $this->buildViolation($errorPhrase)
                     ->setParameters($errorParams)
                     ->addViolation();
+        } else {
+            $person->setPassword($value);
         }
     }
 
