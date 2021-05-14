@@ -355,6 +355,10 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
             $message = $ticketEmail->prepareMailerMessage([], false);
 
+            if ($ticket->getRealLanguage()) {
+                $messagesArgs['language'] = $ticket->getRealLanguage();
+            }
+            
             $message = $this->getContainer()->get('email.email_sender')
                 ->prepareMessage($viewModel, $messagesArgs, $message);
 
