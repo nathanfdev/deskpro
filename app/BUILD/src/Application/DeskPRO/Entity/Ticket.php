@@ -5398,6 +5398,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             TicketStatus::STATUS_TYPE_AWAITING_USER,
             TicketStatus::STATUS_TYPE_ARCHIVED,
             TicketStatus::STATUS_TYPE_RESOLVED,
+            TicketStatus::STATUS_TYPE_PENDING,
             TicketStatus::STATUS_TYPE_HIDDEN,
             TicketStatus::STATUS_TYPE_HIDDEN.'.'.TicketStatus::SYS_ID_SPAM,
             TicketStatus::STATUS_TYPE_HIDDEN.'.'.TicketStatus::SYS_ID_DELETED,
