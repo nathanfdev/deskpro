@@ -400,9 +400,6 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
                 $ticketAddresses[] = $participant->getEmailAddress();
             }
         }
-        $this->getLogger()->logDebug('[SubjectMatchDetector] readerAddresses: '.print_r($readerAddresses, 1));
-
-        $this->getLogger()->logDebug('[SubjectMatchDetector] ticketAddresses: '.print_r($ticketAddresses, 1));
         
         if ($readerAddresses) {
             foreach ($ticketAddresses as $email) {
