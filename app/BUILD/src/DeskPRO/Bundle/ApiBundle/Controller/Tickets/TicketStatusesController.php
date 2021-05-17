@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Tickets\TicketPurger;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -88,6 +89,46 @@ class TicketStatusesController extends CrudController
         }
     }
 
+    /**
+     * @ApiDoc(
+     *      description="Purge spam tickets manually",
+     *      tags={"CRUD"="#ffa500"},
+     *      statusCodes={
+     *          200="Will return count for purged tickets",
+     *      }
+     * )
+     * @Rest\Delete("/spam/purge")
+     *
+     * @return View
+     */
+    public function purgeSpamAction()
+    {
+        $purger = new TicketPurger($this->getDoctrine()->getConnection());
+        $count  = $purger->purgeSpamAction();
+
+        return new View($this->wrap(['count' => $count]));
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Purge deleted tickets manually",
+     *      tags={"CRUD"="#ffa500"},
+     *      statusCodes={
+     *          200="Will return count for purged tickets",
+     *      }
+     * )
+     * @Rest\Delete("/deleted/purge")
+     *
+     * @return View
+     */
+    public function purgeDeletedAction()
+    {
+        $purger = new TicketPurger($this->getDoctrine()->getConnection());
+        $count  = $purger->purgeDeletedAction();
+
+        return new View($this->wrap(['count' => $count]));
+    }
+    
     /**
      * @ApiDoc(
      *      description="Delete a resource",
