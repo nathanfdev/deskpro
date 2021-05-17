@@ -79,10 +79,6 @@ class PersonChangePasswordType extends AbstractType
                 'mapped' => false,
             ]);
         });
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $event->getData()->setPassword($event->getForm()->get('new_password')->getData());
-        });
     }
 
     /**
