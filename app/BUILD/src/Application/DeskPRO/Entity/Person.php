@@ -489,6 +489,13 @@ class Person extends DomainObject implements
     protected $date_picture_check = null;
 
     /**
+     * The date at which a user was disabled
+     *
+     * @var \DateTime
+     */
+    protected $date_disabled = null;
+
+    /**
      * If we have set a password for this user, then the plaintext version will be set here.
      *
      * @var string
@@ -1002,8 +1009,13 @@ class Person extends DomainObject implements
      */
     public function setIsDisabled($yesno)
     {
-        $this->setModelField('is_disabled', $yesno);
-
+        if($yesno) {
+            $this->setModelField('is_disabled', $yesno);
+            $this->setModelField('date_disabled', new \DateTime());
+        } else {
+            $this->setModelField('is_disabled', $yesno);
+            $this->setModelField('date_disabled', null);
+        }
         return $this;
     }
 
