@@ -67,6 +67,11 @@ class LangPhraseHelper
      */
     public function isLanguagePhraseExists($phraseId, $langId, $group)
     {
+        if (strpos($group, 'obj_') === 0) {
+            //Always want to return true for Resources phrases
+            return true;
+        }
+
         $phrasesIds = $this->getPhraseIds($langId, $group);
 
         return in_array($phraseId, $phrasesIds, true);
