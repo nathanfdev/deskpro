@@ -6,17 +6,19 @@ use Application\DeskPRO\Tickets\TicketPurger;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketStatusesType;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\QueryBuilder;
 
 /**
  * Class TicketStatusesNewController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("admin", agent={"get", "delete", "list", "count", "post", "put"})
  * @Rest\Route("/ticket_statuses")
  * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Entity\TicketStatus")
  * @ApiDoc(
@@ -128,7 +130,7 @@ class TicketStatusesController extends CrudController
 
         return new View($this->wrap(['count' => $count]));
     }
-    
+
     /**
      * @ApiDoc(
      *      description="Delete a resource",
