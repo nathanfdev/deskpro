@@ -145,7 +145,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                             $sid,
                         ]
                     );
-                    if ($agent_session) {
+                    if (false) {
                         $agentSessData = @unserialize(str_replace('_sf2_attributes|', '', base64_decode($agent_session['sess_data']))) ?: [];
                         $personId      = array_key_exists('auth_person_id', $agentSessData)
                             ? $agentSessData['auth_person_id']
