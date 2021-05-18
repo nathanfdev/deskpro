@@ -224,7 +224,19 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
                 } else {
                     return $person->getDisplayNameUser();
                 }
+            case 'brand_helpdesk_name':
+                $deskproName   = $this->getContainer()->getBrandSetting('core.deskpro_name');
+                $ticketBrand   = $ticket->getBrand();
+                if ($ticketBrand) {
+                    $brandDeskproName = $this->getContainer()->get('settings_resolver')->getBrandSettings($ticketBrand->getId())->get('core.deskpro_name');
+
+                    return ($brandDeskproName) ?: $deskproName;
+                }
+
+                return $deskproName;
+
             case 'helpdesk_name':
+
                 /* Todo ensure we stacked the right brand here */
                 return $this->getContainer()->getBrandSetting('core.deskpro_name');
             case 'site_name':
