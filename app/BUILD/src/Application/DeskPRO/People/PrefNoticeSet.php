@@ -4,6 +4,7 @@ namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Orb\Util\Arrays;
 
 class PrefNoticeSet implements \IteratorAggregate, \Countable
@@ -65,7 +66,7 @@ class PrefNoticeSet implements \IteratorAggregate, \Countable
         ', [$person->getId(), $pref_id]);
 
         if ($this->pref_data) {
-            $this->pref_data = @unserialize($this->pref_data);
+            $this->pref_data = UnserializeUtil::unserializeArray($this->pref_data, []);
         }
 
         if (!$this->pref_data) {

@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use DeskPRO\Component\Util\UnserializeUtil;
 
 class PersonPref extends AbstractEntityRepository
 {
@@ -44,7 +45,7 @@ class PersonPref extends AbstractEntityRepository
             }
 
             if ($pref['value_array']) {
-                $pref['value_array'] = @unserialize($pref['value_array']);
+                $pref['value_array'] = UnserializeUtil::unserializeArray($pref['value_array'], []);
             }
 
             $ret_prefs[$pref_name] = is_array($pref['value_array']) ? $pref['value_array'] : $pref['value_str'];
@@ -110,7 +111,7 @@ class PersonPref extends AbstractEntityRepository
         $ret = [];
         foreach ($prefs as $pref_name => $pref) {
             if ($pref['value_array']) {
-                $pref['value_array'] = @unserialize($pref['value_array']);
+                $pref['value_array'] = UnserializeUtil::unserializeArray($pref['value_array'], []);
             }
 
             $pref = is_array($pref['value_array']) ? $pref['value_array'] : $pref['value_str'];

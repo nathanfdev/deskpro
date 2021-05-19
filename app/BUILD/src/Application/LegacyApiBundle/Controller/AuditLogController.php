@@ -7,6 +7,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Component\Util\UnserializeUtil;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -55,7 +56,7 @@ class AuditLogController extends AbstractController
 
             $new_val = null;
             if ($rec['op'] == 'update') {
-                $data    = unserialize($rec['data']);
+                $data    = UnserializeUtil::unserializeArray($rec['data'], []);
                 $new_val = [];
                 foreach ($data as $r) {
                     $v = $r['new_val'];

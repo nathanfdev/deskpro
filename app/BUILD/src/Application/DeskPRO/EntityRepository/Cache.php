@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use DeskPRO\Component\Util\UnserializeUtil;
 
 class Cache extends AbstractEntityRepository
 {
@@ -20,7 +21,7 @@ class Cache extends AbstractEntityRepository
             return false;
         }
 
-        $data = @unserialize($data);
+        $data = UnserializeUtil::unserializeArray($data, []);
 
         if (isset($data['VALUE'])) {
             return $data['VALUE'];

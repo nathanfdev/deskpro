@@ -17,6 +17,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Topic;
+use DeskPRO\Component\Util\UnserializeUtil;
 
 /**
  * The PermissionsBag acts like an immutable array, and also offers an API with methods like has('key') and get('key', 'default').
@@ -519,7 +520,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      */
     public function unserialize($serialized)
     {
-        $unserialized = unserialize($serialized);
+        $unserialized = UnserializeUtil::unserializeArray($serialized);
 
         $this->permissions         = $unserialized['permissions'];
         $this->communityForums   = $unserialized['community'];

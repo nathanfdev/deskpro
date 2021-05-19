@@ -10,6 +10,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatPageDisplay as ChatPageDisplayEntity;
+use DeskPRO\Component\Util\UnserializeUtil;
 
 class ChatPageDisplay extends AbstractEntityRepository
 {
@@ -141,7 +142,7 @@ class ChatPageDisplay extends AbstractEntityRepository
         }
 
         if ($data) {
-            $data = unserialize($data);
+            $data = UnserializeUtil::unserializeArray($data, []);
         }
 
         if (!$data) {

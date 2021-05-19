@@ -63,7 +63,7 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
         if (!$this->has($key)) {
             return $default;
         }
-        $arr = is_array($this->get($key)) ? $this->get($key) : @unserialize($this->get($key));
+        $arr = is_array($this->get($key)) ? $this->get($key) : UnserializeUtil::unserializeArray($this->get($key), null);
         if (!is_array($arr)) {
             return $default;
         }

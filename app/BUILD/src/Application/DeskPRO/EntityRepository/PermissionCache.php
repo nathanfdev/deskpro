@@ -8,6 +8,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use DeskPRO\Component\Util\UnserializeUtil;
+
 class PermissionCache extends AbstractEntityRepository
 {
     /**
@@ -75,7 +77,7 @@ class PermissionCache extends AbstractEntityRepository
             if (isset($r['perms_loader'])) {
                 $loaders[] = $r['perms_loader'];
             } elseif (!empty($r['perms'])) {
-                $r['perms_loader'] = @unserialize($r['perms']);
+                $r['perms_loader'] = UnserializeUtil::unserializeArray($r['perms'], []);
                 $r['perms']        = null;
                 if ($r['perms_loader']) {
                     $r['perms_loader']->loaded_key = $r['usergroup_key'];

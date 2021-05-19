@@ -5177,7 +5177,7 @@ class Person extends DomainObject implements
     public function unserialize($serialized)
     {
         try {
-            list($this->id, $this->password) = UnserializeUtil::safeUnserialize($serialized, [Person::class]);
+            list($this->id, $this->password) = UnserializeUtil::unserializeClass($serialized, [Person::class]);
         } catch (\Exception $e) {
             $this->id = null;
         }

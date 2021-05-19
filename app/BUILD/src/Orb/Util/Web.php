@@ -9,6 +9,7 @@
 namespace Orb\Util;
 
 use Composer\CaBundle\CaBundle;
+use DeskPRO\Component\Util\UnserializeUtil;
 
 /**
  * A utility class for working with HTTP/Web related tasks such as cookies or sending headers.
@@ -576,7 +577,7 @@ class Web
             $num     = $pos - $offset;
             $varname = substr($sessionData, $offset, $num);
             $offset += $num + 1;
-            $data                  = unserialize(substr($sessionData, $offset));
+            $data                  = UnserializeUtil::safeUnserialize(substr($sessionData, $offset));
             $return_data[$varname] = $data;
             $offset += strlen(serialize($data));
         }

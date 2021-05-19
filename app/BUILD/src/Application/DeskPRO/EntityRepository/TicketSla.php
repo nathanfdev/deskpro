@@ -11,6 +11,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Searcher\TicketSearch;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\DBAL\Connection;
 
 class TicketSla extends AbstractEntityRepository
@@ -52,7 +53,7 @@ class TicketSla extends AbstractEntityRepository
             $expire  = new \DateTime($value['date_expire']);
 
             if ($value && $currentTime < $expire) {
-                $r = @unserialize($value['value_array']);
+                $r = UnserializeUtil::unserializeArray($value['value_array'], []);
             } else {
                 $r = null;
             }
@@ -142,7 +143,7 @@ class TicketSla extends AbstractEntityRepository
             ts.is_completed = 0
             AND
             ts.sla_id IN ('.implode(',', $ids).')
-            AND 
+            AND
             ('.implode(' OR ', $slaQueries).')
         ';
 

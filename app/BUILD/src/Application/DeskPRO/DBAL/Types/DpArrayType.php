@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\DBAL\Types;
 
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ArrayType;
 use Doctrine\DBAL\Types\ConversionException;
@@ -28,13 +29,13 @@ class DpArrayType extends ArrayType
             }
 
             $value = (is_resource($value)) ? stream_get_contents($value) : $value;
-            $val   = @unserialize($value);
+            $val   = UnserializeUtil::unserializeArray($value);
             if ($val === false && $value != 'b:0;') {
                 throw ConversionException::conversionFailed($value, $this->getName());
             }
 
             return $val;
-        } catch (ConversionException $e) {
+        } catch (\Exception $e) {
             return [];
         }
     }

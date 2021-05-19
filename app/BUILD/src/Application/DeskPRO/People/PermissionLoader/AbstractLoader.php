@@ -10,6 +10,7 @@ namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Component\Util\UnserializeUtil;
 
 /**
  * A permission loader knows how to load permissions for a thing.
@@ -107,7 +108,7 @@ abstract class AbstractLoader implements \Serializable
 
     public function unserialize($data)
     {
-        $data = unserialize($data);
+        $data = UnserializeUtil::safeUnserialize($data);
 
         $this->usergroup_ids = $data['usergroup_ids'];
         $this->unserializeData($data);

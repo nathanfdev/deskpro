@@ -22,6 +22,7 @@ use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTranslation;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerWidget;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\PreChatForm;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Env;
@@ -238,7 +239,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         return $mChat
             ->setEnabled($this->getSettings(self::CHAT_ENABLED, $brand, $mChat->isEnabled()))
             ->setDepartment($this->getSettings(self::CHAT_DEFAULT_DEPARTMENT, $brand, $this->getDefaultDepartment('chat')))
-            ->setUsergroups(unserialize($this->getSettings(self::CHAT_USERGROUPS, $brand, serialize($mChat->getUsergroups()))))
+            ->setUsergroups(UnserializeUtil::unserializeArray($this->getSettings(self::CHAT_USERGROUPS, $brand, serialize($mChat->getUsergroups())), []))
             ->setOptions($this->getMessengerChatOptions($brand))
             ->setPreChatForm($this->getPreChatForm($brand))
             ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))

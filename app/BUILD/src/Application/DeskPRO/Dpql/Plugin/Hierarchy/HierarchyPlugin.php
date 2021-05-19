@@ -14,6 +14,7 @@ use Application\DeskPRO\Dpql\SqlSelect;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql\Statement\Part\Column;
 use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
+use DeskPRO\Component\Util\UnserializeUtil;
 
 /**
  * Class HierarchyPlugin.
@@ -146,7 +147,7 @@ class HierarchyPlugin implements PluginInterface
 
             if (strpos($this->titleFieldSql, 'custom_data_') !== false) {
                 $customFieldOptions = $result[$parentIdIndex];
-                $decodedOptions     = @unserialize($customFieldOptions);
+                $decodedOptions     = UnserializeUtil::unserializeArray($customFieldOptions, []);
 
                 if (isset($decodedOptions['parent_id'])) {
                     $result['hierarchy_parent_id'] = $decodedOptions['parent_id'];

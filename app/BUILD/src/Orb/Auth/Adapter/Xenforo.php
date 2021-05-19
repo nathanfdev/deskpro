@@ -6,6 +6,8 @@
 
 namespace Orb\Auth\Adapter;
 
+use DeskPRO\Component\Util\UnserializeUtil;
+
 class Xenforo extends DbTable
 {
     protected function initOptions()
@@ -57,7 +59,7 @@ class Xenforo extends DbTable
 
     protected function isValidPassword(array $userinfo, $password_input)
     {
-        $data = @unserialize($userinfo['data']);
+        $data = UnserializeUtil::unserializeArray($userinfo['data'], []);
         if (!$data) {
             return false;
         }

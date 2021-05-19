@@ -10,6 +10,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\DBAL\Connection;
 use Orb\Auth\Identity;
 use Orb\Log\Logger;
@@ -62,7 +63,7 @@ class LdapSyncer extends AbstractSyncer
         $total             = count($rows);
         $this->helper->log(Logger::INFO, 'counted '.$total.' left to process in phase 2, starting');
         foreach ($rows as $row) {
-            $data = unserialize($row['data']);
+            $data = UnserializeUtil::unserializeArray($row['data'], []);
             if (isset($data['raw_info'])) {
                 $raw_info = $data['raw_info'];
                 $identity = new Identity($raw_info['identity'], $raw_info);

@@ -11,6 +11,7 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Column;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -189,7 +190,7 @@ class HierarchyPlugin implements PluginInterface
 
             if (strpos($this->titleFieldSql, 'custom_data_') !== false) {
                 $customFieldOptions = $result[$optionsIndex];
-                $decodedOptions     = @unserialize($customFieldOptions);
+                $decodedOptions     = UnserializeUtil::unserializeArray($customFieldOptions, []);
                 if (isset($decodedOptions['parent_id'])) {
                     $result['hierarchy_parent_id'] = $decodedOptions['parent_id'];
                 } else {
