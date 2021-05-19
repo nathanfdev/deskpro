@@ -131,46 +131,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                         ]);
                     }
                 }
-                // can we carry over an agent session in the user interface?
-            } elseif (!empty($_COOKIE['dpsid-portal']) && (DP_INTERFACE == 'agent' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
-                $sid = $_COOKIE['dpsid-portal'];
-                if ($sid) {
-                    $agent_session = App::getDb()->fetchAssoc(
-                        '
-                            SELECT sess_data
-                            FROM sess_data
-                            WHERE sess_id = ?
-                        ',
-                        [
-                            $sid,
-                        ]
-                    );
-                    if (false) {
-                        $agentSessData = @unserialize(str_replace('_sf2_attributes|', '', base64_decode($agent_session['sess_data']))) ?: [];
-                        $personId      = array_key_exists('auth_person_id', $agentSessData)
-                            ? $agentSessData['auth_person_id']
-                            : null;
-                        $this->set(
-                            'auth_usersource_id',
-                            array_key_exists('auth_usersource_id', $agentSessData)
-                                ? $agentSessData['auth_usersource_id']
-                                : null
-                        );
-                        $this->set(
-                            'auth_usersource_type',
-                            array_key_exists('auth_usersource_type', $agentSessData)
-                                ? $agentSessData['auth_usersource_type']
-                                : null
-                        );
-
-                        if ($personId) {
-                            $person = App::getEntityRepository('DeskPRO:Person')->find($personId);
-                            if ($person && $person->is_agent) {
-                                $this->_setCurrentPerson($person);
-                            }
-                        }
-                    }
-                }
             }
         }
 
