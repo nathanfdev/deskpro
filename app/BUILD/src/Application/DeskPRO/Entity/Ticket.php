@@ -1286,14 +1286,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         if (!$person) {
             return;
         }
-
-        if ($this->person && $person->getId() == $this->person->getId() && ((defined(
-                        'DP_INTERFACE'
-                    ) && DP_INTERFACE != 'agent') || !defined('DP_INTERFACE'))
-        ) {
-            return;
-        }
-
+        
         if ($ticketPart = $this->hasParticipantPerson($person)) {
             return $ticketPart;
         }
