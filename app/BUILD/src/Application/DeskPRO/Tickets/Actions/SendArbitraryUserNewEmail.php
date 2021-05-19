@@ -205,7 +205,7 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
 
             $personPrimaryEmail = ($person->getPrimaryEmail()) ? $person->getPrimaryEmail()->getEmail() : null;
 
-            if ($personPrimaryEmail !== $email) {
+            if ($personPrimaryEmail !== $email && ($context->getPersonContext()->getId() === $ticket->getPersonId())) {
                 $ticketEmail->setEmailOverride($email);
                 $messagesArgs['override_email'] = $email;
             }
@@ -215,7 +215,7 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
             if ($ticket->getRealLanguage()) {
                 $messagesArgs['language'] = $ticket->getRealLanguage();
             }
-            
+
             $message = $this->getContainer()->get('email.email_sender')
                 ->prepareMessage($viewModel, $messagesArgs, $message);
 
