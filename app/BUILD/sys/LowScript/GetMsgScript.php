@@ -4,6 +4,7 @@ namespace DpSys\LowScript;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -41,7 +42,7 @@ class GetMsgScript extends LowScriptAbstract
                 $dismissed_notifications = $this->getDismissedNotifications();
 
                 foreach ($dismissed_notifications as $notification) {
-                    $notification['data'] = unserialize($notification['data']);
+                    $notification['data'] = UnserializeUtil::unserializeArray($notification['data'], []);
 
                     if (!empty($notification['data']['browser_rendered'])) {
                         $notifications[] = $notification['data']['browser_rendered'];
@@ -147,7 +148,7 @@ class GetMsgScript extends LowScriptAbstract
             // Polling method
             $defaultStrategy = $this->_getSetting('notification.settings.default_strategy');
             if (is_string($defaultStrategy)) {
-                $defaultStrategy = unserialize($defaultStrategy);
+                $defaultStrategy = UnserializeUtil::unserializeArray($defaultStrategy, []);
             }
             $data['cm_strategy'] = isset($defaultStrategy['delivery'][0]) ? $defaultStrategy['delivery'][0] : 'db';
 
@@ -194,7 +195,7 @@ class GetMsgScript extends LowScriptAbstract
 
                 $recent_tabs = $q->fetchColumn();
                 if ($recent_tabs) {
-                    $recent_tabs = @unserialize($recent_tabs);
+                    $recent_tabs = UnserializeUtil::unserializeArray($recent_tabs, []);
                 }
 
                 if (!$recent_tabs) {
@@ -226,12 +227,12 @@ class GetMsgScript extends LowScriptAbstract
                     array_pop($recent_tabs);
                 }
 
-                $recent_tabs = serialize($recent_tabs);
+                $recent_tabs = json_encode($recent_tabs);
                 $this->getPdo()->prepare("
                     REPLACE INTO people_prefs
                     SET
                         person_id = ?,
-                        name = 'agent.ui.recent_tabs_collection',
+                        name = 'agent.ui.recent_tabs_collection_json',
                         value_str = NULL,
                         value_array = ?,
                         date_expire = NULL
@@ -288,7 +289,7 @@ class GetMsgScript extends LowScriptAbstract
                     }
                     ++$count;
 
-                    $r['data']          = unserialize($r['data']);
+                    $r['data']          = UnserializeUtil::unserializeArray($r['data'], []);
                     $data['messages'][] = [
                         null,
                         'agent-notify.'.$r['typename'],

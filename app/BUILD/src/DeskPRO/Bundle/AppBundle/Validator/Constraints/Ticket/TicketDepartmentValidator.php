@@ -48,7 +48,7 @@ class TicketDepartmentValidator extends ConstraintValidator
 
         $allowedTicketDepartments = new ArrayCollection($this->departmentDataService->getTicketDepartmentsForPerson($person, $value->getBrand()));
 
-        if (!$allowedTicketDepartments->contains($value->getDepartment())) {
+        if ($value->getDepartment() && !$allowedTicketDepartments->contains($value->getDepartment())) {
             /** @var ExecutionContext $context */
             $context = $this->context;
             $context

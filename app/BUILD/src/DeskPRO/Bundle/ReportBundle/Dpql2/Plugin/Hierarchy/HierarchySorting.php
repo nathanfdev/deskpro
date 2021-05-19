@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy;
 
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -192,7 +193,7 @@ class HierarchySorting
 
             if (strpos($selectTableAlias, 'custom_data_')) {
                 foreach ($missing as &$item) {
-                    $decodedOptions = @unserialize($item['hierarchy_parent_options']);
+                    $decodedOptions = UnserializeUtil::unserializeArray($item['hierarchy_parent_options'], []);
 
                     if (isset($decodedOptions['parent_id'])) {
                         $item['hierarchy_parent_id'] = $decodedOptions['parent_id'];

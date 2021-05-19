@@ -8,6 +8,7 @@ namespace Application\DeskPRO\Dpql\Plugin\Hierarchy;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Exception;
+use DeskPRO\Component\Util\UnserializeUtil;
 
 /**
  * Class HierarchySorting.
@@ -178,7 +179,7 @@ class HierarchySorting
 
             if (strpos($selectTableAlias, 'custom_data_')) {
                 foreach ($missing as &$item) {
-                    $decodedOptions = @unserialize($item['hierarchy_parent_options']);
+                    $decodedOptions = UnserializeUtil::unserializeArray($item['hierarchy_parent_options'], []);
 
                     if (isset($decodedOptions['parent_id'])) {
                         $item['hierarchy_parent_id'] = $decodedOptions['parent_id'];

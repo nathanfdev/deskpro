@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Log\Serializer;
 
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -42,10 +43,10 @@ class SerializeSerializer implements SerializerInterface
      */
     public function unserialize($str)
     {
-        $data       = explode('%%%', $str);
+        $data       = explode('%%%', $str, 2);
         $request_id = $data[0];
         /** @var ApiLog $logModel */
-        $log = unserialize($data[1]);
+        $log = UnserializeUtil::unserializeClass($data[1], [ApiLog::class]);
         $this->em->merge($log);
     }
 }

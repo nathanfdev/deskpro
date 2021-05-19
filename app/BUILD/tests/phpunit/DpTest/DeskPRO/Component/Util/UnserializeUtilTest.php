@@ -36,25 +36,25 @@ class ObjUtilsTest extends DeskProTestCase
     {
         $this->assertEquals(
             $this->obj->myVal,
-            UnserializeUtil::safeUnserialize($this->objStr, [self::class, TestClass::class])->myVal,
+            UnserializeUtil::unserializeClass($this->objStr, [self::class, TestClass::class])->myVal,
             'object unserialize with allowedClasses'
         );
 
         $this->assertEquals(
             $this->obj->myVal,
-            UnserializeUtil::safeUnserialize($this->objStr, [TestClass::class, self::class])->myVal,
+            UnserializeUtil::unserializeClass($this->objStr, [TestClass::class, self::class])->myVal,
             'object unserialize with allowedClasses 2'
-        );
-
-        $this->assertEquals(
-            $this->obj->myVal,
-            UnserializeUtil::safeUnserialize($this->objStr, UnserializeUtil::ALLOW_ALL)->myVal,
-            'object unserialize with allowedClasses=ALL'
         );
     }
 
     public function testUnserializeTypes()
     {
+        $this->assertEquals(
+            $this->arr,
+            UnserializeUtil::safeUnserialize($this->arrStr),
+            'array unserialize via safeUnserialize'
+        );
+
         $this->assertEquals(
             $this->arr,
             UnserializeUtil::unserializeArray($this->arrStr),
@@ -71,6 +71,12 @@ class ObjUtilsTest extends DeskProTestCase
             $this->scalar,
             UnserializeUtil::unserializeInteger($this->scalarStr),
             'int unserialize'
+        );
+
+        $this->assertEquals(
+            123,
+            UnserializeUtil::unserializeInteger('this is invalid', 123),
+            'int unserialize default value'
         );
     }
 
@@ -95,6 +101,19 @@ class ObjUtilsTest extends DeskProTestCase
         UnserializeUtil::unserializeArray($this->scalarStr);
     }
 
+    public function testFailArrayDefault()
+    {
+        $this->assertEquals(
+            [],
+            UnserializeUtil::unserializeArray($this->scalarStr, [])
+        );
+
+        $this->assertEquals(
+            null,
+            UnserializeUtil::unserializeArray($this->scalarStr, null)
+        );
+    }
+
     /**
      * @expectedException \DomainException
      */
@@ -116,23 +135,23 @@ class ObjUtilsTest extends DeskProTestCase
      */
     public function testFailBadClass()
     {
-        UnserializeUtil::safeUnserialize($this->objStr, [self::class]);
+        UnserializeUtil::unserializeClass($this->objStr, [self::class]);
+    }
+
+    /**
+     * @expectedException \DomainException
+     */
+    public function testFailNoClass()
+    {
+        UnserializeUtil::unserializeClass($this->objStr, []);
     }
 
     /**
      * @expectedException \UnexpectedValueException
      */
-    public function testFailNoClass()
+    public function testFailSafeWithClass()
     {
-        UnserializeUtil::safeUnserialize($this->objStr, UnserializeUtil::ALLOW_NONE);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testFailParams()
-    {
-        UnserializeUtil::safeUnserialize($this->objStr, 55);
+        UnserializeUtil::safeUnserialize($this->objStr);
     }
 }
 

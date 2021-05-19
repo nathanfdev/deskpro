@@ -123,7 +123,8 @@
     "symfony/polyfill-intl-messageformatter": "^1.17",
     "lsolesen/pel": "dev-master",
     "microsoft/microsoft-graph": "^1.12",
-    "sabre/dav": "~3.2.0"
+    "sabre/dav": "~3.2.0",
+    "xkerman/restricted-unserialize": "^1.1"
   },
   "require-dev": {
     "behat/behat": "3.1.*",

@@ -361,11 +361,11 @@ class MainController extends AbstractController
         $recent_tabs = $this->db->fetchColumn("
             SELECT value_array
             FROM people_prefs
-            WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection'
+            WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection_json'
         ", [$this->person->getId()]);
 
         if ($recent_tabs) {
-            $recent_tabs = @unserialize($recent_tabs);
+            $recent_tabs = @json_decode($recent_tabs, true);
         }
 
         if (!$recent_tabs) {

@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Labels;
 
 use Application\DeskPRO\DBAL\Connection;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
@@ -354,7 +355,7 @@ class LabelDefManager
         //------------------------------
 
         $replace_label_arr = function ($actions_str, $accept_types) use ($old_label, $new_label) {
-            $actions = @unserialize($actions_str);
+            $actions = UnserializeUtil::unserializeArray($actions_str, []);
 
             if (!$actions) {
                 return $actions_str;

@@ -81,7 +81,7 @@ class DbGlobalSettingsTableLoader implements SettingsLoaderInterface
                         if (array_key_exists($key, $config)) {
                             $value = $config[$key];
                             try {
-                                $newValue = UnserializeUtil::safeUnserialize($value, UnserializeUtil::ALLOW_NONE);
+                                $newValue = UnserializeUtil::safeUnserialize($value);
                             } catch (\Exception $e) {
                                 $newValue = null;
                             }

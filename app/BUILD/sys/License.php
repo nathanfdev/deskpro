@@ -2,6 +2,8 @@
 
 namespace DpSys;
 
+use DeskPRO\Component\Util\UnserializeUtil;
+
 final class License
 {
     /**
@@ -242,7 +244,7 @@ final class License
         $enc = $this->xorString($enc, $key);
 
         $enc  = base64_decode($enc);
-        $data = @unserialize($enc);
+        $data = UnserializeUtil::unserializeArray($enc, []);
 
         $this->data = $data;
 
