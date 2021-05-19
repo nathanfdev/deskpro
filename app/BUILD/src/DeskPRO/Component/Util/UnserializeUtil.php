@@ -2,25 +2,32 @@
 
 namespace DeskPRO\Component\Util;
 
+use xKerman\Restricted;
+
 class UnserializeUtil
 {
-    const ALLOW_ALL  = 22000;
-    const ALLOW_NONE = 22001;
+    const DEFAULT_THROW = '___throw___';
 
     /**
      * Unserialize a serialized string that is expected to be an array.
      *
      * @param string $str
-     *
+     * @param mixed $default Default value if unserialize failed
      * @return array
      */
-    public static function unserializeArray($str)
+    public static function unserializeArray($str, $default = self::DEFAULT_THROW)
     {
-        $ret = self::safeUnserialize($str, self::ALLOW_NONE);
+        $ret = self::safeUnserialize($str, $default);
         if ($ret === null) {
+            if ($default !== self::DEFAULT_THROW) {
+                return $default;
+            }
             throw new \DomainException('failed to unserialize (expected array, got null)');
         }
         if (!is_array($ret)) {
+            if ($default !== self::DEFAULT_THROW) {
+                return $default;
+            }
             throw new \UnexpectedValueException('failed to unserialize (expected array)');
         }
 
@@ -31,16 +38,22 @@ class UnserializeUtil
      * Unserialize a serialized string that is expected to be a scalar.
      *
      * @param string $str
-     *
+     * @param mixed $default Default value if unserialize failed
      * @return mixed
      */
-    public static function unserializeScalar($str)
+    public static function unserializeScalar($str, $default = self::DEFAULT_THROW)
     {
-        $ret = self::safeUnserialize($str, self::ALLOW_NONE);
+        $ret = self::safeUnserialize($str, $default);
         if ($ret === null) {
+            if ($default !== self::DEFAULT_THROW) {
+                return $default;
+            }
             throw new \DomainException('failed to unserialize (expected scalar, got null)');
         }
         if (!is_scalar($ret)) {
+            if ($default !== self::DEFAULT_THROW) {
+                return $default;
+            }
             throw new \UnexpectedValueException('failed to unserialize (expected scalar)');
         }
 
@@ -63,16 +76,22 @@ class UnserializeUtil
      * Unserialize a serialized string that is expected to be a integer.
      *
      * @param string $str
-     *
+     * @param mixed $default Default value if unserialize failed
      * @return int
      */
-    public static function unserializeString($str)
+    public static function unserializeString($str, $default = self::DEFAULT_THROW)
     {
-        $ret = self::safeUnserialize($str, self::ALLOW_NONE);
+        $ret = self::safeUnserialize($str, $default);
         if ($ret === null) {
+            if ($default !== self::DEFAULT_THROW) {
+                return $default;
+            }
             throw new \DomainException('failed to unserialize (expected string, got null)');
         }
         if (!is_scalar($ret)) {
+            if ($default !== self::DEFAULT_THROW) {
+                return $default;
+            }
             throw new \UnexpectedValueException('failed to unserialize (expected string)');
         }
 
@@ -86,16 +105,22 @@ class UnserializeUtil
      *
      * @return int
      */
-    public static function unserializeInteger($str)
+    public static function unserializeInteger($str, $default = self::DEFAULT_THROW)
     {
-        $ret = self::safeUnserialize($str, self::ALLOW_NONE);
+        $ret = self::safeUnserialize($str, $default);
         if ($ret === null) {
+            if ($default !== self::DEFAULT_THROW) {
+                return $default;
+            }
             throw new \DomainException('failed to unserialize (expected integer, got null)');
         }
         if (!is_int($ret) && TypeUtils::isIntLike($ret)) {
             $ret = (int) $ret;
         }
         if (!is_int($ret)) {
+            if ($default !== self::DEFAULT_THROW) {
+                return $default;
+            }
             throw new \UnexpectedValueException('failed to unserialize (expected integer)');
         }
 
@@ -103,29 +128,48 @@ class UnserializeUtil
     }
 
     /**
-     * @param string         $str            The serialized string
-     * @param array|bool|int $allowedClasses Array of classes, or ObjUtils::ALLOW_ALL, ObjUtils::ALLOW_NONE
+     * This is a safe version of unserialize that will only unserialize arrays and scalars.
      *
+     * @param string $str The serialized string*
+     * @param mixed $default Default value if unserialize failed
      * @return mixed
      */
-    public static function safeUnserialize($str, $allowedClasses)
+    public static function safeUnserialize($str, $default = self::DEFAULT_THROW)
     {
-        if ($allowedClasses === self::ALLOW_ALL) {
-            $allowedClasses = true;
-        } elseif ($allowedClasses === self::ALLOW_NONE) {
-            $allowedClasses = false;
+        try {
+            return Restricted\unserialize($str);
+        } catch (\Exception $e) {
+            if ($default === self::DEFAULT_THROW) {
+                throw new \UnexpectedValueException('failed to unserialize', 0, $e);
+            }
+
+            return $default;
+        }
+    }
+
+    /**
+     * This unserializes a string with the given allowed classes.
+     *
+     * @param string $str
+     * @param array $allowedClasses
+     * @return mixed
+     */
+    public static function unserializeClass($str, array $allowedClasses)
+    {
+        if (empty($allowedClasses)) {
+            throw new \DomainException('failed to unserialize (no allowedClasses)');
         }
 
-        if (!is_array($allowedClasses) && $allowedClasses !== true && $allowedClasses !== false) {
-            throw new \InvalidArgumentException('allowedClasses option should be array or boolean');
-        }
-
-        if (false && version_compare(phpversion(), '7.0.0', '>=')) {
+        if (version_compare(PHP_VERSION, '7.0.0') >= 0) {
             $ret = unserialize($str, [
                 'allowed_classes' => $allowedClasses,
             ]);
 
-            if ($ret instanceof \__PHP_Incomplete_Class_Name) {
+            if (!is_object($ret)) {
+                throw new \UnexpectedValueException('failed to unserialize (did not unserialize to a class)');
+            }
+
+            if ($ret instanceof \__PHP_Incomplete_Class || get_class($ret) === '__PHP_Incomplete_Class') {
                 throw new \UnexpectedValueException('failed to unserialize (failed allowedClasses)');
             }
         } else {
@@ -138,14 +182,6 @@ class UnserializeUtil
     // based off https://github.com/dbrumann/polyfill-unserialize
     private static function unserializePolyfill($str, $allowedClasses)
     {
-        if ($allowedClasses === true) {
-            return unserialize($str);
-        }
-
-        if ($allowedClasses === false) {
-            $allowedClasses = [];
-        }
-
         $sanitizedSerialized = preg_replace_callback(
             '/(^|;)O:\d+:"([^"]*)":(\d+):{/',
             function ($match) use ($allowedClasses) {
