@@ -757,7 +757,7 @@ class Person extends DomainObject implements
             $spiltedName = $this->splitName($this->override_display_name);
 
             $firstName = isset($spiltedName[0]) ? $spiltedName[0] : '';
-            $lastName = isset($spiltedName[1]) ? $spiltedName[1] : '';
+            $lastName  = isset($spiltedName[1]) ? $spiltedName[1] : '';
 
             return $this->getIntialsFromName($firstName, $lastName);
         }
@@ -1009,13 +1009,14 @@ class Person extends DomainObject implements
      */
     public function setIsDisabled($yesno)
     {
-        if($yesno) {
+        if ($yesno) {
             $this->setModelField('is_disabled', $yesno);
             $this->setModelField('date_disabled', new \DateTime());
         } else {
             $this->setModelField('is_disabled', $yesno);
             $this->setModelField('date_disabled', null);
         }
+
         return $this;
     }
 
@@ -5189,7 +5190,7 @@ class Person extends DomainObject implements
     public function unserialize($serialized)
     {
         try {
-            list($this->id, $this->password) = UnserializeUtil::unserializeClass($serialized, [Person::class]);
+            list($this->id, $this->password) = UnserializeUtil::unserializeArray($serialized, [Person::class]);
         } catch (\Exception $e) {
             $this->id = null;
         }
