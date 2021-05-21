@@ -8,6 +8,7 @@ namespace Application\DeskPRO\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
 use Orb\Util\Strings;
+use Orb\Validator\StringUrl;
 
 class LinkedIn extends AbstractContactData
 {
@@ -20,7 +21,9 @@ class LinkedIn extends AbstractContactData
     public function applyFormData(array $input, ContactDataAbstract $contact_record)
     {
         $contact_record->comment = isset($input['comment']) ? $input['comment'] : '';
-        $contact_record->field_1 = $input['profile_url'];
+        $contact_record->field_1 = StringUrl::isValueValid($input['profile_url'])
+            ? $input['profile_url']
+            : 'https://www.linkedin.com/in/'.$input['profile_url'];
         $contact_record->field_2 = Strings::extractRegexMatch('#/in/(.*?)$#', $input['profile_url'], 1) ?: '';
     }
 
