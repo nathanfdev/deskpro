@@ -99,10 +99,12 @@ abstract class AbstractDateTimeValidator extends AbstractSingleValueValidator
         if ($value instanceof \DateTime) {
             $token    = $this->tokenStorage->getToken();
             $user     = $token ? $token->getUser() : null;
-            $timezone = new \DateTimeZone($user instanceof Person ? $user->getTimezone() : 'UTC');
 
-            $value->setTimezone($timezone);
-
+            if (!$customData->getField()->getOption('ignore_timezone')) {
+                $timezone = new \DateTimeZone($user instanceof Person ? $user->getTimezone() : 'UTC');
+                $value->setTimezone($timezone);
+            }
+            
             return $value->format($this->getFormat());
         }
 
