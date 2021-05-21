@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Person;
 
@@ -64,12 +62,12 @@ class PersonFactory
      * @param AuthenticationManager    $authManager
      */
     public function __construct(
-        EntityManager            $em,
+        EntityManager $em,
         EventDispatcherInterface $eventDispatcher,
-        BrandStack               $brandStack,
-        LanguageStack            $languageStack,
-        UserRuleProcessor        $userRuleProcessor,
-        AuthenticationManager    $authManager
+        BrandStack $brandStack,
+        LanguageStack $languageStack,
+        UserRuleProcessor $userRuleProcessor,
+        AuthenticationManager $authManager
     ) {
         $this->em                = $em;
         $this->brandStack        = $brandStack;
@@ -200,7 +198,7 @@ class PersonFactory
 
         // if user is not logged in and reg is disabled then we should redirect the user to the login form
         if (!$this->authManager->isRegistrationFormVisible()) {
-            throw new EmailValidationRequiredException($guest->getEmailAddress(), $guest->name, $person);
+            throw new HelpdeskRegistrationDisabledException($person);
         }
 
         if (!$person) {

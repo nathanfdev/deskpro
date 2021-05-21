@@ -27,6 +27,7 @@ use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
+use DeskPRO\Bundle\PortalBundle\Person\HelpdeskRegistrationDisabledException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use DeskPRO\Component\Util\LazyPropObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -938,6 +939,10 @@ class CommunityTopicsController extends AbstractPublishController
                     }
 
                     return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request, $redirectToBrowseTopic);
+                } catch (HelpdeskRegistrationDisabledException $e) {
+                    $this->addFlash('error', $this->phrase(['helpcenter.registration_closed', 'portal.registration_closed']));
+
+                    return $this->redirectToRoute('portal_login');
                 } catch (LoginRequiredException $e) {
                     $person = $e->getPerson();
                     $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
@@ -959,6 +964,10 @@ class CommunityTopicsController extends AbstractPublishController
                     $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
                     $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_COMMUNITY_TOPIC, $savedForm);
                     $this->addFlash('success', $this->phrase(['portal.flashes.guest_content_must_verify', 'helpcenter.flashes.guest_content_must_verify']));
+
+                    return $this->redirectToRoute('portal_community');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', $this->phrase(['helpcenter.error_occured', 'portal.error_occured']));
 
                     return $this->redirectToRoute('portal_community');
                 }

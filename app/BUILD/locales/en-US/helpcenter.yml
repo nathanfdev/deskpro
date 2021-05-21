@@ -30,6 +30,7 @@ helpcenter.account.new_to_brand: 'New to {brand}?'
 helpcenter.account.profile_delete_picture: 'Change or delete profile picture?'
 helpcenter.account.profile_save_action: 'Save Profile'
 helpcenter.account.register_action: Register
+helpcenter.registration_closed: 'Please, Register or login to be able to perfom this action'
 helpcenter.account.registration_set_password: 'An account with this email already exists. We have sent you an email that will allow you to set your password and login.'
 helpcenter.account.resend_registration_email: 'Resend registration email'
 helpcenter.account.reset_password_action: 'Reset Password'
@@ -911,3 +912,4 @@ helpcenter.time.x_year:
 helpcenter.flashes.reply_comment_not_active: 'Sorry, you cannot reply a comment that is not active or has not been reviewed.'
 helpcenter.flashes.reply_top_level_comment_only: 'Sorry, you can only reply to top level comments.'
 helpcenter.flashes.top_level_comment_not_found: 'Sorry, top level comment was not found.'
+helpcenter.error_occured: 'Sorry, but an error occurred. Please try again later or contact us.'

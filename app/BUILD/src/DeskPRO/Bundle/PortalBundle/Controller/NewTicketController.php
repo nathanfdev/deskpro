@@ -14,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayou
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
+use DeskPRO\Bundle\PortalBundle\Person\HelpdeskRegistrationDisabledException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -181,6 +182,10 @@ class NewTicketController extends AbstractController
                             $newTicket = $this->getNewTicketService()->acceptNewTicket($ticket, $request, 'portal');
 
                             return $this->onSavedTicket($newTicket, $request);
+                        } catch (HelpdeskRegistrationDisabledException $e) {
+                            $this->addFlash('error', $this->phrase(['helpcenter.registration_closed', 'portal.registration_closed']));
+
+                            return $this->redirectToRoute('portal_login');
                         } catch (EmailValidationRequiredException $e) {
                             // this exception just means the guest exists but does not
                             // have a valid email address
@@ -239,6 +244,10 @@ class NewTicketController extends AbstractController
                             }
 
                             return $this->onSavedTicket($newTicket, $request);
+                        } catch (\Exception $e) {
+                            $this->addFlash('error', $this->phrase(['helpcenter.error_occured', 'portal.error_occured']));
+
+                            return $this->redirectToRoute('portal_new_ticket');
                         }
                     } else {
                         $newTicket = $this->getNewTicketService()->acceptNewTicket($ticket, $request, 'portal');
