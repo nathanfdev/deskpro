@@ -261,6 +261,8 @@ class DownloadsController extends AbstractController
                     $filename = $this->in->getString('download.filename');
 
                     if (!Web::urlExists($download->fileurl)) {
+                        $this->em->rollback();
+
                         return $this->createJsonResponse([
                             'error'       => true,
                             'error_codes' => ['fileurl'],
