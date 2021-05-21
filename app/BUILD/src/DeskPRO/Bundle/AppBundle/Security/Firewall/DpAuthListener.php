@@ -149,7 +149,8 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                     ]);
                 }
 
-                $failurePath = $request->request->get('_failure_path') ?: $this->container->get('router')->generate('portal_login');
+                $failurePath = '/'.trim($request->request->get('_failure_path'), '/\\')
+                    ?: $this->container->get('router')->generate('portal_login');
                 $failurePath .= (strpos($failurePath, '?') !== false ? '&' : '?').'retry=captcha';
 
                 return new RedirectResponse($failurePath);
@@ -167,7 +168,8 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     protected function createAntiAbuseEvent(Request $request)
     {
         $request->getSession()->set('last_username', $request->get('username'));
-        $failurePath = $request->request->get('_failure_path') ?: $this->container->get('router')->generate('portal_login');
+        $failurePath = '/'.trim($request->request->get('_failure_path'), '/\\')
+            ?: $this->container->get('router')->generate('portal_login');
 
         $abuseCheck = new LoginAbuseCheck($request->get('username'), $request->getClientIp());
         $abuseCheck->markAsCheckOnly(true);
