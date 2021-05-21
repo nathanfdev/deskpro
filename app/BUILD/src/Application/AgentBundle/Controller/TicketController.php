@@ -4810,7 +4810,8 @@ class TicketController extends AbstractController
         }
 
         $account     = $this->getAccount($ticket);
-        $context     = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
+        $context     = $ticketManager->createAgentExecutorContext($this->person, 'newticket', 'web');
+
         $blobStorage = $this->get('blob.storage');
 
         foreach ($messages as $message) {
