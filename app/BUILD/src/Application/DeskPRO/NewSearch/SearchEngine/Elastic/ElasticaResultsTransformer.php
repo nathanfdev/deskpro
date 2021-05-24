@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\NewSearch\SearchEngine\Elastic;
 
+use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\EntityManager;
 
 class ElasticaResultsTransformer
@@ -51,7 +52,9 @@ class ElasticaResultsTransformer
             if ($ent_objects) {
                 foreach ($ent_objects as $o) {
                     $key           = $ent.':'.$o->id;
-                    $o->setTitle($o->getTranslatedTitle());
+                    if (!$o instanceof Ticket) {
+                        $o->setTitle($o->getTranslatedTitle());
+                    }
                     $objects[$key] = $o;
                 }
             }
