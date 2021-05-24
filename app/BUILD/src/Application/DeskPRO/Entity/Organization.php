@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -16,11 +14,14 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Numbers;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * An organization is a grouping we put similar people into (eg companies).
+ *
+ * @UniqueEntity("name")
  */
 class Organization extends DomainObject implements HighlightableModelInterface, AvatarOwner, Entity\Labels\LabelsOwner, Entity\Hierarchy\Hierarchical
 {
