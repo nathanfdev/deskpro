@@ -563,6 +563,7 @@ helpcenter.general.you: You
 helpcenter.general.your_comment_label: 'Your comment'
 helpcenter.general.your_comment_optional_label: 'Your comment (optional)'
 helpcenter.general.download_pdf: 'Download PDF'
+helpcenter.guides.section-title: 'Guides'
 helpcenter.guides.default_description: 'Welcome to the {guide_name} which covers lots of different topics like {page1} and {page2}.'
 helpcenter.guides.default_description_short: 'Welcome to the {guide_name} which covers lots of different topics like {page1}.'
 helpcenter.guide.filter_guides: 'Filter guides'

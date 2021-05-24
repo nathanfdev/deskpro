@@ -72,6 +72,7 @@ class GuidesController extends AbstractPublishController
                 $viewVars = [
                     'guides'      => $guides,
                     'breadcrumbs' => $breadcrumbs,
+                    'page_title'  => $this->createPageTitle()->guides(),
                 ];
 
                 return $this->renderThemeView(

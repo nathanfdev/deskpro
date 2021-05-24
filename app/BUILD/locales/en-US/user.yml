@@ -648,6 +648,7 @@ portal.general.nav-emails: Emails
 portal.general.nav-community: Community
 portal.general.nav-community-desc: 'Custom suggestions'
 portal.general.nav-guides: Guides
+portal.guides.section-title: Guides
 portal.general.nav-guides-desc: 'Product documentation'
 portal.general.nav-kb: Knowledgebase
 portal.general.nav-kb-desc: 'Read help articles'

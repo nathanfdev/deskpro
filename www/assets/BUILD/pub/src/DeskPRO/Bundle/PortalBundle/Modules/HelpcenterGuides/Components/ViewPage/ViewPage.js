@@ -51,6 +51,7 @@ class ViewPage extends React.Component {
       pageList
     };
     if (window.page) {
+      document.title = this.getBreadCrumbsTitle(page).join(' > ');
       setTimeout(() => {
         this.renderLink();
         this.addCodeBlocksCopy();
@@ -67,6 +68,7 @@ class ViewPage extends React.Component {
   }
 
   componentDidMount() {
+    document.title = this.getBreadCrumbsTitle().join(' > ');
     this.renderLink();
     this.addCodeBlocksCopy();
     this.addGuideBlocks();
@@ -149,27 +151,10 @@ class ViewPage extends React.Component {
 
   setBreadCrumbs = (page = null) => {
     const ol = document.querySelector('ol.breadcrumb');
-    const { pageList, guideSlug, guide } = this.state;
-    const hierarchy = [];
-    if (page !== null) {
-      hierarchy.push(page);
-      let parentId = null;
-      if (page.parent) {
-        if (page.parent.id) {
-          parentId = page.parent.id;
-        } else {
-          parentId = page.parent;
-        }
-      }
-      while (parentId !== null) {
-        // eslint-disable-next-line no-loop-func
-        const parent = pageList.find(p => p.id === parentId);
-        if (parent) {
-          hierarchy.push(parent);
-          parentId = parent.parent_id;
-        }
-      }
-    }
+    const { guideSlug, guide } = this.state;
+
+    const hierarchy = this.getBreadCrumbs(page);
+
     let i = ol.childNodes.length;
     while (i > 0) {
       const el =  ol.childNodes[i - 1];
@@ -180,11 +165,7 @@ class ViewPage extends React.Component {
       ol.removeChild(el);
       i -= 1;
     }
-    hierarchy.push({
-      title: guide.title,
-      guide: true,
-    });
-    hierarchy.reverse();
+
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
       baseUrl = baseUrl.replace(/\/+$/, '');
@@ -229,6 +210,39 @@ class ViewPage extends React.Component {
       template: '<div class="tooltip dp-po-tip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
     };
     $('[data-toggle="tooltip"]').tooltip(toolOptions);
+  }
+
+  getBreadCrumbsTitle = (page = null) => this.getBreadCrumbs(page).map(value => value.title)
+
+  getBreadCrumbs = (page = null) => {
+    const { pageList, guide } = this.state;
+    const hierarchy = [];
+    if (page !== null) {
+      hierarchy.push(page);
+      let parentId = null;
+      if (page.parent) {
+        if (page.parent.id) {
+          parentId = page.parent.id;
+        } else {
+          parentId = page.parent;
+        }
+      }
+      if (parentId !== null) {
+        // eslint-disable-next-line no-loop-func
+        const parent = pageList.find(p => p.id === parentId);
+        if (parent) {
+          hierarchy.push(parent);
+          parentId = parent.parent_id;
+        }
+      }
+    }
+
+    hierarchy.push({
+      title: guide.title,
+      guide: true,
+    });
+
+    return hierarchy.reverse();
   }
 
   handlePageLink = (e, path) => {
@@ -441,6 +455,7 @@ class ViewPage extends React.Component {
       const page = response.data.data;
       page.content = this.addIdToh1(page.content, page.slug);
 
+      document.title = this.getBreadCrumbsTitle(page).join(' > ');
       this.setBreadCrumbs(page);
       this.setState({
         loaded:  true,
@@ -539,6 +554,7 @@ class ViewPage extends React.Component {
       }
 
       browserHistory.push(`${baseUrl}/guides/${guide.slug}`);
+      document.title = this.getBreadCrumbsTitle().join(' > ');
       this.setBreadCrumbs();
       // if (Object.values(page.children).length) {
       //   const child = Object.values(page.children).sort(
