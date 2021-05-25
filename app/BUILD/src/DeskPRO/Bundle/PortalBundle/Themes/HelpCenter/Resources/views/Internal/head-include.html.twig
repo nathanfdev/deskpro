@@ -70,7 +70,7 @@
     window.DESKPRO_CAN_USE_GUIDES = {{ can_use_guides() ? 'true' : 'false' }};
     window.DESKPRO_CAN_USE_CHAT = {{ can_use_chat() ? 'true' : 'false' }};
     window.PORTAL_MODE = '{{ portal_mode() }}';
-
+    window.BRAND_HELPDESK_NAME       = '{{ brand_setting('core.deskpro_name') }}';
     window.DESKPRO_PHRASES = {};
     window.DP_SET_PHRASES = function(p) {
       window.DESKPRO_PHRASES = p;

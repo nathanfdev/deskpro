@@ -51,7 +51,7 @@ class ViewPage extends React.Component {
       pageList
     };
     if (window.page) {
-      document.title = this.getBreadCrumbsTitle(page).join(' > ');
+      document.title = `${this.getBreadCrumbsTitle(page).pop()} - ${window.BRAND_HELPDESK_NAME}`;
       setTimeout(() => {
         this.renderLink();
         this.addCodeBlocksCopy();
@@ -68,7 +68,7 @@ class ViewPage extends React.Component {
   }
 
   componentDidMount() {
-    document.title = this.getBreadCrumbsTitle().join(' > ');
+    document.title = `${this.getBreadCrumbsTitle().pop()} - ${window.BRAND_HELPDESK_NAME}`;
     this.renderLink();
     this.addCodeBlocksCopy();
     this.addGuideBlocks();
@@ -455,7 +455,7 @@ class ViewPage extends React.Component {
       const page = response.data.data;
       page.content = this.addIdToh1(page.content, page.slug);
 
-      document.title = this.getBreadCrumbsTitle(page).join(' > ');
+      document.title = `${this.getBreadCrumbsTitle(page).pop()} - ${window.BRAND_HELPDESK_NAME}`;
       this.setBreadCrumbs(page);
       this.setState({
         loaded:  true,
@@ -554,7 +554,7 @@ class ViewPage extends React.Component {
       }
 
       browserHistory.push(`${baseUrl}/guides/${guide.slug}`);
-      document.title = this.getBreadCrumbsTitle().join(' > ');
+      document.title = `${this.getBreadCrumbsTitle().pop()} - ${window.BRAND_HELPDESK_NAME}`;
       this.setBreadCrumbs();
       // if (Object.values(page.children).length) {
       //   const child = Object.values(page.children).sort(
