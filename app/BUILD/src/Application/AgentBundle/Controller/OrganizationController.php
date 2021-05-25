@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewOrganization;
@@ -240,7 +238,21 @@ class OrganizationController extends AbstractController
 
         switch ($action) {
             case 'name':
-                if ($this->in->getString('name')) {
+                $orgName = $this->in->getString('name');
+                if ($orgName) {
+                    $organizationsWithName = App::$container->get('doctrine.orm.default_entity_manager')->getRepository(Organization::class)
+                        ->createQueryBuilder('a')
+                        ->where('upper(a.name) = upper(:name)')
+                        ->andWhere('a.id != :id')
+                        ->setParameter('name', $orgName)
+                        ->setParameter('id', $org->getId())
+                        ->getQuery()
+                        ->execute();
+
+                    if (!empty($organizationsWithName)) {
+                        return $this->createJsonResponse(['error' => true, 'code' => 'organization.exist', 'message' => 'Organization with same name already exists'], 400);
+                    }
+
                     $org->setName($this->in->getString('name'));
                     $this->em->persist($org);
                 }

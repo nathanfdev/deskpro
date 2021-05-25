@@ -143,7 +143,11 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				baseElement: this.wrapper,
 				editableClass: 'person-name-editable',
 				ajax: {
-					url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
+					url: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save',
+          error: function(error) {
+					 if(error.responseJSON.code === 'organization.exist')
+            DeskPRO_Window.showAlert(error.responseJSON.message);
+          }
 				},
 				triggers: '.edit-name-gear'
 			});
