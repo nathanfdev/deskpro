@@ -24,7 +24,7 @@ class DpArrayType extends ArrayType
     public function convertToPHPValue($value, \Doctrine\DBAL\Platforms\AbstractPlatform $platform)
     {
         try {
-            if ($value === null) {
+            if ($value === null || $value === 'N;') {
                 return;
             }
 
