@@ -330,7 +330,7 @@ class HtmlPurifier implements CleanerPlugin
                     strong,b,em,i,strike,u,
                     p[align],ol[type|compact],ul,li,br,img[src|width|height|alt|title],
                     sub,sup,blockquote,
-                    table[border|cellspacing|cellpadding|align|summary|style|width],
+                    table[border|cellspacing|cellpadding|align|summary|style|width|rules],
                     tr,tbody,thead,tfoot,
                     td[colspan|rowspan|width|height|align|valign|scope|height|bgcolor|valign],
                     th[colspan|rowspan|width|height|align|valign|scope|height|bgcolor|valign],
