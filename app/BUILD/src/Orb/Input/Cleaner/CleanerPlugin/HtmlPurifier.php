@@ -323,13 +323,14 @@ class HtmlPurifier implements CleanerPlugin
                 break;
 
             case 'html_email':
+                $config->set('HTML.Doctype', 'HTML 4.01 Transitional');
                 $config->set('HTML.Allowed', '
                     *[style|title|class|id],
                     a[rel|rev|name|href|target|title|class]
                     strong,b,em,i,strike,u,
                     p[align],ol[type|compact],ul,li,br,img[src|width|height|alt|title],
                     sub,sup,blockquote,
-                    table[border|cellspacing|cellpadding|align|summary|style],
+                    table[border|cellspacing|cellpadding|align|summary|style|width],
                     tr,tbody,thead,tfoot,
                     td[colspan|rowspan|width|height|align|valign|scope|height|bgcolor|valign],
                     th[colspan|rowspan|width|height|align|valign|scope|height|bgcolor|valign],
@@ -343,27 +344,22 @@ class HtmlPurifier implements CleanerPlugin
                 $config->set('Attr.AllowedClasses', 'MsoNormal,dp_div_from_pre');
                 $config->set('URI.DisableExternalResources', true);
                 $config->set('AutoFormat.RemoveEmpty', false);
-                $config->set('CSS.AllowTricky', true);
                 $config->set('CSS.AllowedProperties', [
                     'font',
+                    'font-family',
                     'font-weight',
                     'font-style',
                     'font-size',
                     'color',
                     'background-color',
-//                    'background-size',
                     'background-image',
                     'background',
                     'width',
                     'height',
                     'border',
-//                    'border-radius',
-//                    '-moz-border-radius',
-//                    '-webkit-border-radius',
                     'display',
                     'text-decoration',
                 ]);
-                $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
                 $config->set('HTML.TidyLevel', 'medium');
 
                 break;
