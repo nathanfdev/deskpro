@@ -21,6 +21,15 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  brand_impersonation_access.listener:
+    class: DeskPRO\Bundle\BrandBundle\EventListener\BrandImpersonationAccessListener
+    arguments:
+      - "@brand_stack"
+      - "@security.token_storage"
+    tags:
+      - { name: kernel.event_subscriber }
+
+
   brand_slug.listener:
     class: DeskPRO\Bundle\BrandBundle\EventListener\BrandSlugListener
     arguments:
