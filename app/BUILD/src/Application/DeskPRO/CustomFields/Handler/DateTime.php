@@ -99,12 +99,14 @@ class DateTime extends Date
             }
         }
 
+        $person = App::getCurrentPerson();
+
         if ($data) {
             try {
                 $date = new \DateTime('@'.$data);
                 // data is loaded from db, we need to set correct timezone before any validation
                 if (!$this->field_def->getOption('ignore_timezone')) {
-                    $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                    $date->setTimezone($person ? $person->getDateTimezone() : new \DateTimeZone('UTC'));
                 }
             } catch (\Exception $e) {
                 try {
@@ -129,7 +131,7 @@ class DateTime extends Date
 
         if ($date) {
             if (!$this->field_def->getOption('ignore_timezone')) {
-                $adminTz = App::getCurrentPerson()->getDateTimezone();
+                $adminTz = $person ? $person->getDateTimezone() : new \DateTimeZone('UTC');
                 $date->setTimezone($adminTz);
             }
         } else {
@@ -200,11 +202,13 @@ class DateTime extends Date
         $setData = null;
         if ($data and !empty($data['value'])) {
             try {
+                $person = App::getCurrentPerson();
+
                 if (is_numeric($data['value'])) {
                     $date = new \DateTime('@'.$data['value']);
                     if ($date) {
                         if (!$this->field_def->getOption('ignore_timezone')) {
-                            $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                            $date->setTimezone($person ? $person->getDateTimezone() : new \DateTimeZone('UTC'));
                         }
                         $setData = $date->format('Y-m-d');
                     }
@@ -212,7 +216,7 @@ class DateTime extends Date
                     $date = \DateTime::createFromFormat('Y-m-d', $data['value']);
                     if ($date) {
                         if (!$this->field_def->getOption('ignore_timezone')) {
-                            $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
+                            $date->setTimezone($person ? $person->getDateTimezone() : new \DateTimeZone('UTC'));
                         }
                         $setData = $date->format('Y-m-d');
                     }
