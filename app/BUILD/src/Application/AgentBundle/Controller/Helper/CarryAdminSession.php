@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\AgentBundle\Controller\Helper;
 
@@ -10,7 +8,7 @@ use Application\DeskPRO\App;
 
 class CarryAdminSession
 {
-    /** @var string */
+    /** @var \Application\AgentBundle\Controller\AbstractController $controller */
     protected $controller;
     /** @var string */
     protected $cookie_name;
@@ -33,6 +31,13 @@ class CarryAdminSession
                 }
 
                 if ($admin_session) {
+                    if ($this->controller->getContainer()->getSettingsResolver()->getGlobalSettings()->get('core.session_keepalive_require_page')) {
+                        $sessionsLifetime = time() - $this->controller->getContainer()->getSettingsResolver()->getGlobalSettings()->get('core.sessions_lifetime');
+
+                        if ($admin_session['date_last_page']->getTimestamp() < $sessionsLifetime) {
+                            return;
+                        }
+                    }
                     $this->controller->session->set('auth_person_id', $admin_session->person->id);
                     \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
                     $this->controller->session->set('dp_interface', DP_INTERFACE);
