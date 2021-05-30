@@ -250,7 +250,7 @@ class OrganizationController extends AbstractController
                         ->execute();
 
                     if (!empty($organizationsWithName)) {
-                        return $this->createJsonResponse(['error' => true, 'code' => 'organization.exist', 'message' => 'Organization with same name already exists'], 400);
+                        return $this->createJsonResponse(['error' => true, 'code' => 'organization.exist', 'message' => 'Organization with same name already exists']);
                     }
 
                     $org->setName($this->in->getString('name'));
