@@ -180,8 +180,10 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
     var forum_select = this.getEl('forum');
     var forum_id = forum_select.val();
     var status_select = this.getEl('status');
+    var brand_select = $('#new_topic_brand_id');
+    var brand_id = brand_select.val();
     $.ajax({
-      url: BASE_URL + 'agent/community/statuses/forum/'+forum_id,
+      url: BASE_URL + 'agent/community/statuses/forum/' + forum_id + '/' + brand_id,
       type: 'GET',
       context: this,
       success: function(result) {

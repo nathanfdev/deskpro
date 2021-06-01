@@ -338,12 +338,12 @@ class CommunityTopicsController extends AbstractController
         ]);
     }
 
-    public function ajaxGetStatusesByForumAction($forum_id)
+    public function ajaxGetStatusesByForumAction($forum_id, $brand = null)
     {
         $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
-        $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategoriesByForum($forum_id);
-        $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategoriesByForum($forum_id);
+        $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategoriesByForum($forum_id, $brand);
+        $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategoriesByForum($forum_id, $brand);
 
         return $this->render('AgentBundle:Common:select-community-topic-status.html.twig', [
             'name'               => 'newcommunitytopic[status_code]',

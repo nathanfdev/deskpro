@@ -2089,7 +2089,7 @@ $collection->create('agent_community_ajax_get_statuses', [
 ]);
 
 $collection->create('agent_community_ajax_get_statuses_by_forum', [
-    'path'         => '/community/statuses/forum/{forum_id}',
+    'path'         => '/community/statuses/forum/{forum_id}/{brand_id}',
     'controller'   => 'AgentBundle:CommunityTopics:ajaxGetStatusesByForum',
     'requirements' => ['forum_id' => '\\d+'],
 ]);
