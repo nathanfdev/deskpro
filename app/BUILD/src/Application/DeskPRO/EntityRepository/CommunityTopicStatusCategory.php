@@ -24,12 +24,13 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
 
     /**
      * @param int|CommunityForumEntity $forum
+     * @param null|mixed $brand
      *
      * @return CommunityTopicStatusCategoryEntity[]
      */
-    public function getActiveCategoriesByForum($forum = null)
+    public function getActiveCategoriesByForum($forum = null, $brand = null)
     {
-        return $this->getCategoriesForType('active', null, $forum);
+        return $this->getCategoriesForType('active', $brand, $forum);
     }
 
     /**
@@ -44,12 +45,13 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
 
     /**
      * @param int|CommunityForumEntity $forum
+     * @param null|mixed $brand
      *
      * @return CommunityTopicStatusCategoryEntity[]
      */
-    public function getClosedCategoriesByForum($forum = null)
+    public function getClosedCategoriesByForum($forum = null, $brand = null)
     {
-        return $this->getCategoriesForType('closed', null, $forum);
+        return $this->getCategoriesForType('closed', $brand, $forum);
     }
 
     public function getNames(array $for_ids = null)

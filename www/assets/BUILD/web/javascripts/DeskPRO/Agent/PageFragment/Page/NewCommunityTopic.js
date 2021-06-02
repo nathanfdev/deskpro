@@ -152,7 +152,6 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
     var brand_select = $('#new_topic_brand_id');
     var brand_id = brand_select.val();
     var forums_select = this.getEl('forum');
-    console.log(this.getEl('forum'));
     $.ajax({
       url: BASE_URL + 'agent/community/forums/brand/'+brand_id,
       type: 'GET',
@@ -163,14 +162,28 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
         forums_select.select2("val", '');
       }
     });
+
+    var status_select = this.getEl('status');
+    $.ajax({
+      url: BASE_URL + 'agent/community/statuses/brand/'+brand_id,
+      type: 'GET',
+      context: this,
+      success: function(result) {
+        status_select.children().remove();
+        status_select.append($(result).find('option'));
+        status_select.select2("val", '');
+      }
+    });
   },
 
   updateStatusCategories: function() {
     var forum_select = this.getEl('forum');
     var forum_id = forum_select.val();
     var status_select = this.getEl('status');
+    var brand_select = $('#new_topic_brand_id');
+    var brand_id = brand_select.val();
     $.ajax({
-      url: BASE_URL + 'agent/community/statuses/forum/'+forum_id,
+      url: BASE_URL + 'agent/community/statuses/forum/' + forum_id + '/' + brand_id,
       type: 'GET',
       context: this,
       success: function(result) {
