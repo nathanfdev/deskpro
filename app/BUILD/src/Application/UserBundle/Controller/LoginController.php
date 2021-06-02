@@ -615,7 +615,8 @@ class LoginController extends AbstractController
      */
     protected function handleIpSecurityCheck(Person $person)
     {
-        if (!CheckWhitelistedIP::checkIP($this->getRequest(), $this->container, $person)) {
+        $request = $this->get('request_stack')->getMasterRequest() ?: $this->getRequest();
+        if (!CheckWhitelistedIP::checkIP($request, $this->container, $person)) {
             return $this->render('AgentBundle:Login:whitelist-ip.html.twig', [
                 'ip' => $this->getRequest()->getClientIp(),
             ]);
