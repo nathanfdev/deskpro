@@ -39,6 +39,15 @@ abstract class EmailBaseType
     protected $siteName;
 
     /**
+     * Deskpro ticket email address.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $emailTo;
+
+    /**
      * DeskPro Url.
      *
      * @JMS\Type("string")
@@ -100,6 +109,14 @@ abstract class EmailBaseType
     public function setDeskproUrl($deskproUrl)
     {
         $this->deskproUrl = $deskproUrl;
+    }
+
+    /**
+     * @param string $emailTo
+     */
+    public function setEmailTo($emailTo)
+    {
+        $this->emailTo = $emailTo;
     }
 
     /**
