@@ -171,6 +171,7 @@ class ChatAgentNotifyListener implements EventSubscriberInterface
         $data = array_merge(
             $this->serializer->toArray($chat, new SideloadSerializationContext()),
             [
+                'expire_timeout'  => $task->getExpireTimeout(),
                 'conversation_id' => $chat->getId(),
                 'target'          => array_map(function (Worker $worker) {
                     return $worker->getTypeId();
