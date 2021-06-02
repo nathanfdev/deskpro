@@ -343,6 +343,7 @@ class HtmlPurifier implements CleanerPlugin
                 ');
                 $config->set('Attr.AllowedClasses', 'MsoNormal,dp_div_from_pre');
                 $config->set('URI.DisableExternalResources', true);
+                $config->set('CSS.AllowTricky', true);
                 $config->set('AutoFormat.RemoveEmpty', false);
                 $config->set('CSS.AllowedProperties', [
                     'font',
