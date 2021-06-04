@@ -34,6 +34,8 @@ class SendUserNewEmail extends AbstractEmailAction
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
@@ -185,7 +187,7 @@ class SendUserNewEmail extends AbstractEmailAction
         /** @var TicketEmail $ticketEmail */
         $ticketEmail = $emailBuilder->buildTicketEmail();
 
-        $personPrimaryEmail = ($context->getPersonContext()->getPrimaryEmail()) ? $context->getPersonContext()->getPrimaryEmail()->getEmail() : $toEmail;
+        $personPrimaryEmail = ($context->getPersonContext() && $context->getPersonContext()->getPrimaryEmail()) ? $context->getPersonContext()->getPrimaryEmail()->getEmail() : $toEmail;
 
         if ($personPrimaryEmail !== $toEmail && ($context->getPersonContext()->getId() === $ticket->getPersonId())) {
             $ticketEmail->setEmailOverride($toEmail);
