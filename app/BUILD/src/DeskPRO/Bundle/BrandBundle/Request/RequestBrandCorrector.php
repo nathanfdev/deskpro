@@ -52,7 +52,7 @@ class RequestBrandCorrector
         }
 
         $originalPathInfo = $request->getPathInfo();
-        $brandPathInfo    = preg_replace("#^$slugPath#", '', $originalPathInfo);
+        $brandPathInfo    = preg_replace("#^".preg_quote($slugPath, '#')."#", '', $originalPathInfo);
         if (!$brandPathInfo) {
             $brandPathInfo = '/';
         }
