@@ -685,7 +685,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
                 $className = 'class="dp-po-avatar-name"';
             }
             $initials = $obj->getInitials();
-            
+
             if ($hidden) {
                 return "<span $className aria-hidden=\"true\">$initials</span>";
             }
@@ -959,6 +959,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         if (!$word) {
             return $string;
         }
+
+        $word = preg_quote($word, '/');
 
         return preg_replace("/$word/i", "<b>\$0</b>", $string);
     }
