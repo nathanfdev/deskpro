@@ -364,9 +364,11 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             $model->setContextVars($arguments[0], $context, $mode);
         }
 
-        $model->setSiteUrl($this->getContainer()->getBrandSetting('core.site_url'));
-        $model->setSiteName($this->getContainer()->getBrandSetting('core.site_name'));
-        $model->setDeskproUrl($this->getContainer()->getBrandSetting('core.deskpro_url'));
+        if ($model) {
+            $model->setSiteUrl($this->getContainer()->getBrandSetting('core.site_url'));
+            $model->setSiteName($this->getContainer()->getBrandSetting('core.site_name'));
+            $model->setDeskproUrl($this->getContainer()->getBrandSetting('core.deskpro_url'));
+        }
 
         return $model;
     }

@@ -203,7 +203,7 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
                 $vars['attached_blobs'] = $this->getLastMessageAttachments($ticket, $lastMessage, $context);
             }
 
-            $personPrimaryEmail = ($person->getPrimaryEmail()) ? $person->getPrimaryEmail()->getEmail() : null;
+            $personPrimaryEmail = ($context->getPersonContext() && $context->getPersonContext()->getPrimaryEmail()) ? $context->getPersonContext()->getPrimaryEmail()->getEmail() : $email;
 
             if ($personPrimaryEmail !== $email && ($context->getPersonContext()->getId() === $ticket->getPersonId())) {
                 $ticketEmail->setEmailOverride($email);
