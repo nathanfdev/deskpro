@@ -9,6 +9,7 @@ namespace Application\DeskPRO\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Composer\CaBundle\CaBundle;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 
 class WidgetController extends AbstractController
 {
@@ -35,7 +36,7 @@ class WidgetController extends AbstractController
             return $this->createResponse('Bad url', 400);
         }
 
-        $ch     = curl_init($url);
+        $ch     = HttpClient::curlInit($url);
         $cainfo = CaBundle::getBundledCaBundlePath();
         if (file_exists($cainfo)) {
             @curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);

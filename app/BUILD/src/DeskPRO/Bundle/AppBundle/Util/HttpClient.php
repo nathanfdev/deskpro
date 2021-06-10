@@ -38,4 +38,26 @@ class HttpClient extends Client
 
         parent::__construct($config);
     }
+
+    /**
+     * Wraps curl_init to add default proxy.
+     *
+     * @depreated you should probably be using HttpClient itself
+     *
+     * @param string|null $url
+     * @return false|resource
+     */
+    public static function curlInit($url = null)
+    {
+        global $DP_ENV;
+
+        $ch = curl_init($url);
+
+        $proxy = $DP_ENV->getConfig('settings.http_client.proxy');
+        if ($proxy) {
+            curl_setopt($ch, CURLOPT_PROXY, $proxy);
+        }
+
+        return $ch;
+    }
 }
