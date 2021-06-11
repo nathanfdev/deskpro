@@ -377,7 +377,7 @@ define([
         this.loadDataPromise = this.$q.defer();
 
         const apiV1 = this.Api.sendDataGet({
-          agents:          '/agents',
+          agents:          '/agents?basic=1',
           agent_teams:     '/agent_teams',
           ticket_brands:   '/ticket_brands',
           ticket_deps:     '/ticket_deps',
