@@ -11,6 +11,7 @@ use Application\EmailBundle\Twig\Extension\TemplatingExtension;
 use Application\EmailBundle\Twig\Loader\HybridLoader;
 use DpSys\LowError\SystemErrorHandler;
 use Twig\Cache\CacheInterface;
+use Application\DeskPRO\Templating\TemplateUtils;
 
 class Environment extends \Twig_Environment
 {
@@ -92,6 +93,10 @@ class Environment extends \Twig_Environment
 
     public function loadTemplate($name, $index = null)
     {
+        if (!TemplateUtils::isAllowedTemplateFilepath($name)) {
+            throw new \RuntimeException("Not allowed to load template {$name}");
+        }
+
         $name_str = (string) $name;
         if (!$this->isCustomTemplate($name_str)) {
             return $this->doLoadTemplate($name, $index);
