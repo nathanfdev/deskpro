@@ -20,6 +20,7 @@ use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Component\Util\IpUtils;
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Client;
@@ -313,7 +314,7 @@ class NewsController extends AbstractController
                 $news->setSplashImage($splashImage);
                 // Trigger Download on unsplash api to register photo usage
                 $accessKey = $this->get('settings_resolver')->getGlobalSettings()->get('services.unsplash_access_key', null);
-                $client    = new Client();
+                $client    = new HttpClient();
 
                 if (!IpUtils::isUrlUserCallable($image->links->download_location)) {
                     throw new \InvalidArgumentException("URL is not user callable");
