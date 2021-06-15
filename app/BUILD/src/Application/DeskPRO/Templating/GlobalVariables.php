@@ -46,6 +46,15 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function getSetting($name)
     {
+        if (
+            strpos('core.filestorage_', $name) !== false
+            || $name === 'elastica.clients.default.url'
+            || $name === 'notification.settings.pusher_client.appKey'
+            || $name === 'notification.settings.pusher_client.secret'
+        ) {
+            return null;
+        }
+
         return App::getSetting($name);
     }
 

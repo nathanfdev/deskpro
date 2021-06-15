@@ -45,6 +45,15 @@ class SettingsController extends AbstractController
 
     public function getValueAction($name)
     {
+        if (
+            strpos('core.filestorage_', $name) !== false
+            || $name === 'elastica.clients.default.url'
+            || $name === 'notification.settings.pusher_client.appKey'
+            || $name === 'notification.settings.pusher_client.secret'
+        ) {
+            return null;
+        }
+
         $value = $this->settings->get($name);
 
         return $this->createApiResponse([
