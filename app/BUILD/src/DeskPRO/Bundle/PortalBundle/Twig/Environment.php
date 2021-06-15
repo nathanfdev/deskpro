@@ -11,6 +11,7 @@ use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateNotFoundException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\PortalLoaderException;
 use Twig\Cache\CacheInterface;
 use Twig\Sandbox\SecurityError;
+use Application\DeskPRO\Templating\TemplateUtils;
 
 /**
  * Class Environment.
@@ -78,17 +79,20 @@ class Environment extends \Twig_Environment
         } catch (CustomTemplateCompilationException $e) {
             // should mark it as crashed
             // falling back to render default template
+
             $this->markCustomTemplateAsCrashed($name);
         } catch (SecurityError $e) {
             // twig sandbox security exception -- should mark it as crashed
             // falling back to render default template
             $this->markCustomTemplateAsCrashed($name);
         } catch (CustomTemplateNotFoundException $e) {
+
             // falling back to render default template
             // we wont mark it as crashed template, since we are not even found it
         } catch (PortalLoaderException $e) {
             // fallback to simple loading from filesystem with parent class, since we don't have PortalLoader and know
             // nothing about theming
+
             return parent::loadTemplate($name, $index);
         } finally {
             // should be initialized if not yet initialized any way
@@ -134,6 +138,10 @@ class Environment extends \Twig_Environment
      */
     private function doLoadTemplate($name, $index = null)
     {
+        if (!TemplateUtils::isAllowedTemplateFilepath($name)) {
+            throw new \RuntimeException("Not allowed to load template {$name}");
+        }
+
         $cls = $this->getTemplateClass($name, $index);
 
         if (isset($this->loadedTemplates[$cls])) {

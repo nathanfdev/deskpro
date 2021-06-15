@@ -98,7 +98,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function getFunctions()
     {
-        return [
+        $fns = [
             new \Twig_SimpleFunction('constant', [$this, 'getConstant'], []),
             new \Twig_SimpleFunction('phrase', [$this, 'getPhrase'], ['is_safe' => ['html'], 'needs_context' => true]),
             new \Twig_SimpleFunction('unsafePhrase', [$this, 'getUnsafePhrase'], ['is_safe' => ['html'], 'needs_context' => true]),
@@ -189,6 +189,15 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             new \Twig_SimpleFunction('show_email_address', [$this, 'showEmailAddress'], []),
             new \Twig_SimpleFunction('can_login', [$this, 'canLogin'], []),
         ];
+
+        if (!$this->container->isDebug()) {
+            $fns[] = new \Twig_SimpleFunction('var_dump', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('debug_var', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('dump', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('profiler_dump', [$this, 'noop']);
+        }
+
+        return $fns;
     }
 
     /**

@@ -11,7 +11,6 @@ return [
     'random',
     'date',
     'include',
-    'source',
     'serialization_context',
     'portal_path',
     'portal_url',
