@@ -27,10 +27,6 @@
 			{% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use')  %}
 				<li id="tasks_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tasks"></li>
 			{% endif %}
-
-			{% if (app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length) %}
-				<li id="twitter_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Twitter"></li>
-			{% endif %}
 		</ul>
 	</div>
 </div>

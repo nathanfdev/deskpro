@@ -49,7 +49,7 @@ class HttpClient extends Client
     /**
      * Wraps curl_init to add default proxy.
      *
-     * @depreated you should probably be using HttpClient itself
+     * @deprecated you should probably be using HttpClient itself
      *
      * @param string|null $url
      * @return false|resource

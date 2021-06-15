@@ -49,7 +49,7 @@ class Template extends AbstractEntityRepository
      * @param null $style
      *
      * @return mixed|null
-     * @depreated - still in use so cant delete, but styles dont exist anymore so will always return null
+     * @deprecated - still in use so cant delete, but styles dont exist anymore so will always return null
      */
     public function getTemplateForStyle($template_name, $style = null)
     {
