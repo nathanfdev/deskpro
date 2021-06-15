@@ -77,7 +77,7 @@ class TemplatingExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return [
+        $fns = [
             new \Twig_SimpleFunction('constant', [$this, 'getConstant'], []),
             new \Twig_SimpleFunction('phrase_code', [$this, 'getPhraseText'], []),
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -173,6 +173,20 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFunction('can_view_email_addresses', [$this, 'canViewEmailAddresses'], []),
             new \Twig_SimpleFunction('show_email_address', [$this, 'showEmailAddress'], []),
         ];
+
+        if (!$this->container->isDebug()) {
+            $fns[] = new \Twig_SimpleFunction('var_dump', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('debug_var', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('dump', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('profiler_dump', [$this, 'noop']);
+        }
+
+        return $fns;
+    }
+
+    public function noop()
+    {
+        return '';
     }
 
     /**
