@@ -625,7 +625,7 @@ define([
     loadDataOptions() {
       if (!this.loadDataPromise) {
         const apiV1 = this.Api.sendDataGet({
-          agents:             '/agents',
+          agents:             '/agents?with_perms=1&basic=1',
           agent_teams:        '/agent_teams',
           ticket_brands:      '/ticket_brands',
           ticket_deps:        '/ticket_deps',
@@ -644,7 +644,7 @@ define([
           email_tpls:         '/email-templates-info',
           round_robin:        '/round_robin/settings',
           round_robins:       '/round_robin',
-          tasks:              '/tasks/settings',
+          tasks:              '/tasks/settings?settings_only=1',
           contextual_fields:  '/custom_fields',
           jira_settings:      '/apps/jira'
         });
@@ -2477,7 +2477,7 @@ define([
               if (value == null) { value = {}; }
               options = value.options || {};
               const agents = [{ id: -1, display_name: 'Current Agent' }];
-              data.tasks.agents.map((agent) => { if (__guard__(agent.perms != null ? agent.perms.tasks : undefined, x => x.use)) { return agents.push(agent); } });
+              data.agents.map((agent) => { if (__guard__(agent.perms != null ? agent.perms.tasks : undefined, x => x.use)) { return agents.push(agent); } });
               let _public = options.public;
               if ((_public == null)) { _public = true; }
               const timezones = [];

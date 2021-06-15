@@ -56,7 +56,7 @@ define([
       });
 
       const data_promise = this.Api.sendDataGet({
-        agents: '/agents',
+        agents: '/agents?basic=1',
         teams:  '/agent_teams'
       }).then((res) => {
         this.agents = res.data.agents.agents;
