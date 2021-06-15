@@ -32,6 +32,7 @@ class TemplateUtils
             return false;
         }
 
+        // If the template file is not found on disk, let the proceeding logic run
         return true;
     }
 }
