@@ -948,13 +948,20 @@ class ServeFileScript extends LowScriptAbstract
                     }
                 }
 
-                $buf = '';
-                HttpClient::streamFile($blob['file_url'], function ($dat) use (&$buf) {
-                    $buf .= $dat;
-                });
+                $response = new StreamedResponse(
+                    function () use ($blob) {
+                        HttpClient::streamFile($blob['file_url'], function ($dat) {
+                            echo $dat;
+                            flush();
+                        });
+                    },
+                    200,
+                    $this->getHeaders($blob)
+                );
 
-                $headers  = $this->getHeaders($blob);
-                $response = new Response($buf, 200, $headers);
+                if ($this->request->headers->has('range')) {
+                    $this->setRangeHeaders($response, $blob);
+                }
 
                 $response->send();
                 exit;
