@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Util;
 
 use Composer\CaBundle\CaBundle;
+use DeskPRO\Component\Filesystem\SafeFile;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
@@ -49,6 +50,11 @@ class HttpClient extends Client
      */
     public static function curlInit($url = null)
     {
+        $url = strtolower($url);
+        if (!preg_match('/^https?:\/\//', $url)) {
+            throw new \InvalidArgumentException();
+        }
+
         global $DP_ENV;
 
         $ch = curl_init($url);
@@ -59,5 +65,67 @@ class HttpClient extends Client
         }
 
         return $ch;
+    }
+
+    /**
+     * Like copy() but uses the proxy. Also adds $options to limit max file size.
+     *
+     * @param string $fromUrl         The URL to download
+     * @param string $toPath          The target file to write
+     * @param string $expectBasePath  Verify the base path that $toPath shuold reside in (security precaution)
+     * @param array $options          Options
+     * @return int
+     */
+    public static function downloadFile($fromUrl, $toPath, $expectBasePath, array $options = [])
+    {
+        $fromUrl = strtolower($fromUrl);
+        if (!preg_match('/^https?:\/\//', $fromUrl)) {
+            throw new \InvalidArgumentException();
+        }
+
+        $options = array_merge([
+            'timeout' => 40,
+            'connect_timeout' => 10,
+            'maxSize' => 26214400
+        ], $options);
+
+        SafeFile::assertValid($toPath, $expectBasePath);
+
+        $clientOptions = [
+            'timeout' => $options['timeout'],
+            'connect_timeout' => $options['connect_timeout'],
+        ];
+
+        $client = new self($clientOptions);
+        $response = $client->get($fromUrl, [
+            'stream' => true,
+        ]);
+        $body = $response->getBody();
+
+        $fp = @fopen($toPath, 'w');
+        if (!$fp) {
+            throw new \RuntimeException('Could not open file for writing');
+        }
+
+        $bytesRead = 0;
+        while (!$body->eof()) {
+            $dat = $body->read(1024);
+            @fwrite($fp, $dat);
+            $bytesRead += strlen($dat);
+
+            if($bytesRead > $options['maxSize']) {
+                $body->close();
+                throw new \RuntimeException("exceeded maxSize");
+            }
+        }
+
+        $body->close();
+        fclose($fp);
+
+        if (!$bytesRead) {
+            throw new \RuntimeException("nothing read");
+        }
+
+        return $bytesRead;
     }
 }
