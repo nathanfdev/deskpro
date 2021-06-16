@@ -5,6 +5,7 @@ namespace DpSys\LowScript;
 use Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Blob;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DpSys\CodePlugin\DpPlugins;
 use Imagine\Exception\InvalidArgumentException;
 use Imagine\Exception\RuntimeException;
@@ -947,36 +948,16 @@ class ServeFileScript extends LowScriptAbstract
                     }
                 }
 
-                $context = stream_context_create([
-                    'http' => ['timeout' => 10.0], // read timeout. we do it in chunks, so this is rather low
-                ]);
+                $buf = '';
+                HttpClient::streamFile($blob['file_url'], function ($dat) use (&$buf) {
+                    $buf .= $dat;
+                });
 
-                $timeStart = time();
-                $maxTime   = 30;
+                $headers  = $this->getHeaders($blob);
+                $response = new Response($buf, 200, $headers);
 
-                $buf  = '';
-                $fail = false;
-
-                $fp = @fopen($blob['file_url'], 'r', false, $context);
-                while (!@feof($fp)) {
-                    $buf .= @fread($fp, 1024);
-                    if ((time() - $timeStart) > $maxTime) {
-                        $fail = true;
-
-                        break;
-                    }
-                }
-                @fclose($fp);
-
-                if (!$fail) {
-                    $headers  = $this->getHeaders($blob);
-                    $response = new Response($buf, 200, $headers);
-
-                    $response->send();
-                    exit;
-                }
-
-                $buf = null;
+                $response->send();
+                exit;
             }
 
             if ($urlRewrites = $this->dpEnv->getConfig('settings.remote_blobs_redirect_urlrewrite')) {
