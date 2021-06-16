@@ -25,8 +25,14 @@ class HttpClient extends Client
         global $DP_ENV;
 
         $proxy = $DP_ENV->getConfig('settings.http_client.proxy');
+        $noProxy = $DP_ENV->getConfig('settings.http_client.no_proxy');
+
         if ($proxy && empty($config[RequestOptions::PROXY])) {
-            $config[RequestOptions::PROXY] = $proxy;
+            $config[RequestOptions::PROXY] = [
+                'http' => $proxy,
+                'https' => $proxy,
+                'no' => $noProxy ?: null
+            ];
         }
 
         $usSysCABundle = (bool) $DP_ENV->getConfig('settings.http_client.use_sys_ca_bundle');
@@ -60,6 +66,13 @@ class HttpClient extends Client
         $ch = curl_init($url);
 
         $proxy = $DP_ENV->getConfig('settings.http_client.proxy');
+        $noProxy = $DP_ENV->getConfig('settings.http_client.no_proxy');
+
+        if ($proxy && $noProxy) {
+            if (\GuzzleHttp\is_host_in_noproxy(parse_url($url, PHP_URL_HOST), $noProxy)) {
+                $proxy = null;
+            }
+        }
         if ($proxy) {
             curl_setopt($ch, CURLOPT_PROXY, $proxy);
         }
