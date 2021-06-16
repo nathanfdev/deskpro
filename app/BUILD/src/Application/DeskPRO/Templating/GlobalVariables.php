@@ -10,6 +10,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
+use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DpSys\License;
@@ -81,7 +82,11 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
     {
         $jira = App::$container->get(JIRA::NAME);
         if (!$jira) {
-            return null;
+            return [
+                'isEnabled' => function() {
+                    return false;
+                }
+            ];
         }
 
         return [
