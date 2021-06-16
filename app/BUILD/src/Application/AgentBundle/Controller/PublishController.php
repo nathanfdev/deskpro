@@ -40,7 +40,6 @@ use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Component\Util\IpUtils;
-use GuzzleHttp\Client;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;

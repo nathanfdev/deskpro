@@ -6,7 +6,7 @@
 
 namespace Application\DeskPRO\Service;
 
-use GuzzleHttp\Client;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 
@@ -87,7 +87,7 @@ class LicenseService
         $news = [];
 
         try {
-            $client = new Client([
+            $client = new HttpClient([
                 'base_uri'             => \DpSys\License::getSupportUrl(),
                 RequestOptions::VERIFY => false,
             ]);
@@ -131,7 +131,7 @@ class LicenseService
     public static function fetchServiceResult($endpoint, array $post_data = [])
     {
         try {
-            $client = new Client([
+            $client = new HttpClient([
                 'base_uri'                      => \DpSys\License::getSecureLicServer(),
                 RequestOptions::VERIFY          => false,
                 RequestOptions::ALLOW_REDIRECTS => ['strict' => true],

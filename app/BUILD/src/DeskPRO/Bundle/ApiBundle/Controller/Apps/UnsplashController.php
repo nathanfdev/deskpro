@@ -5,8 +5,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,7 +93,7 @@ class UnsplashController extends BaseController
     private function requestApi($path, $params = [])
     {
         $accessKey = $this->get('settings_resolver')->getGlobalSettings()->get('services.unsplash_access_key', null);
-        $client    = new Client();
+        $client    = new HttpClient();
         $res       = $client->request('GET', 'https://api.unsplash.com/'.$path, [
             'headers' => [
                 'Authorization' => 'Client-ID '.$accessKey,

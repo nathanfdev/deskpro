@@ -11,7 +11,6 @@ use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Component\Util\IpUtils;
 use Doctrine\ORM\EntityManager;
 use Exception;
-use GuzzleHttp\Client;
 use GuzzleHttp\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

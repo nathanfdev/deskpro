@@ -13,10 +13,10 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceProviderHelper;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
-use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -195,7 +195,7 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
      */
     private function getBlob($filename, AbstractVoiceRecording $recording)
     {
-        $client = new Client();
+        $client = new HttpClient();
         $data   = $client->send(new Request('GET', $recording->getRecordingUrl()))->getBody()->getContents();
         $blob   = $this->blobStorage->createBlobRecordFromString($data, $filename.'.wav', 'wav');
 

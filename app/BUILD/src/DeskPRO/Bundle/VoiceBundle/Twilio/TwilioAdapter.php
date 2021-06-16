@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Bundle\VoiceBundle\Exception\BlacklistException;
 use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Model\BillingSummary\ProviderBillingSummaryRecord;
@@ -21,7 +22,6 @@ use DeskPRO\Bundle\VoiceBundle\Twilio\Rest\Proxy\CallContextProxy;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Rest\Proxy\ClientProxy;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
 use Doctrine\ORM\EntityManager;
-use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Psr7\Request as GuzzleHttpRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -328,7 +328,7 @@ class TwilioAdapter implements VoiceProviderInterface
         }
 
         if ($this->voiceSettingsResolver->getTwilioProxyClientUrl()) {
-            $client = new GuzzleHttpClient();
+            $client = new HttpClient();
             $token  = $client->send(new GuzzleHttpRequest('GET', $this->voiceSettingsResolver->getTwilioProxyClientUrl()."/{$twimlAppSid}/{$clientName}"))->getBody()->getContents();
         } else {
             $capability = new ClientToken($account->getAccountId(), $account->getAuthToken());
