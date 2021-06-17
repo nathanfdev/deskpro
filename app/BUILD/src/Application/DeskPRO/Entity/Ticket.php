@@ -118,7 +118,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @AppAssert\Ticket\TicketLink()
  * @AppAssert\Ticket\TicketDupe()
- * @AppAssert\Ticket\TicketDepartment()
  */
 class Ticket extends DomainObject implements HighlightableModelInterface, LabelsOwner, CustomPerDataOwnerInterface
 {
@@ -1286,7 +1285,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         if (!$person) {
             return;
         }
-        
+
         if ($ticketPart = $this->hasParticipantPerson($person)) {
             return $ticketPart;
         }
