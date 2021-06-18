@@ -8,6 +8,7 @@ namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\Entity\AppPackage;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
@@ -36,6 +37,7 @@ class AppsController extends AbstractController
         }
 
         $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$package['name'].'-'.mt_rand(1000, 9999);
+        SafeFile::assertValid($tmpdir, dp_get_tmp_dir());
         if (!@mkdir($tmpdir)) {
             throw new \Exception('Failed to create extraction directory');
         }

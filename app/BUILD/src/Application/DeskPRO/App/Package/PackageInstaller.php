@@ -420,6 +420,8 @@ class PackageInstaller
                     $filename = $path.'/'.$asset->name;
             }
 
+            SafeFile::assertValid($filename, $path);
+
             $dir = pathinfo($filename, PATHINFO_DIRNAME);
             if (!file_exists($dir)) {
                 mkdir($dir, 0777, true);
