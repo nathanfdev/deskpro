@@ -8,6 +8,7 @@ namespace DeskPRO\Bundle\BrandBundle\Brand;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsBag;
+use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 
 /**
  * The BrandContainer is a hub that holds all of the information that might be needed in the system that relate to a
@@ -47,6 +48,21 @@ class BrandContainer
      */
     public function getSetting($setting_name, $default = null)
     {
+        // fixme: re-enable this once all legit HC settings have been added to the whitelist
+//        if (!in_array($setting_name, AdvancedSettings::getAcceptableSettingIds())) {
+//            return null;
+//        }
+
+        // fixme: this is a temporary fix, see comment above
+        if (
+            strpos($setting_name, 'core.filestorage_') !== false
+            || $setting_name === 'elastica.clients.default.url'
+            || $setting_name === 'notification.settings.pusher_client.appKey'
+            || $setting_name === 'notification.settings.pusher_client.secret'
+        ) {
+            return null;
+        }
+
         return $this->getSettings()->get($setting_name, $default);
     }
 
