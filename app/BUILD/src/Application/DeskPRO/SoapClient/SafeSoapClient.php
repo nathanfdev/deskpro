@@ -6,6 +6,8 @@
 
 namespace Application\DeskPRO\SoapClient;
 
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+
 if (!class_exists('\SoapClient', false)) {
     class SafeSoapClient
     {
@@ -37,7 +39,7 @@ if (!class_exists('\SoapClient', false)) {
 
         private function _verifyWsdlFile($wsdl)
         {
-            $raw = @file_get_contents($wsdl, null, stream_context_create(['http' => ['timeout' => 10]]));
+            $raw = HttpClient::downloadToString($wsdl);
             if (!$raw) {
                 throw new SafeSoapClientException('Server', 'dp_bad_response');
             }

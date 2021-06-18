@@ -1103,6 +1103,8 @@ class AppsController extends AbstractController
             $appEnv   = $this->container->get('deskpro.app_env');
             $blobPath = $appEnv->getUserTmpDir().'/'.$blob->getFilename();
 
+            SafeFile::assertValid($blobPath, $appEnv->getUserTmpDir());
+
             $this->container->get('blob.storage')->copyBlobRecordToFile($blobPath, $blob);
         } elseif (!file_exists($blobPath)) {
             return;

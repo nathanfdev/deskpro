@@ -488,6 +488,8 @@ class BlobsController extends CrudController
         $tmpDir      = $this->get('deskpro.app_env')->getUserTmpDir();
         $archive     = $tmpDir.'/'.$fileId.$blob->getFilename();
 
+        SafeFile::assertValid($archive, $tmpDir);
+
         $blobStorage->copyBlobRecordToFile($archive, $blob);
 
         return $archive;

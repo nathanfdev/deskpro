@@ -216,4 +216,19 @@ class HttpClient extends Client
 
         return $bytesRead;
     }
+
+    /**
+     * @param $fromUrl
+     * @param array $options
+     * @return string
+     */
+    public static function downloadToString($fromUrl, array $options = [])
+    {
+        $buf = '';
+        self::streamFile($fromUrl, function ($dat) use (&$buf) {
+            $buf .= $dat;
+        }, $options);
+
+        return $buf;
+    }
 }
