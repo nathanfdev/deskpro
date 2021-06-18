@@ -48,21 +48,6 @@ class BrandContainer
      */
     public function getSetting($setting_name, $default = null)
     {
-        // fixme: re-enable this once all legit HC settings have been added to the whitelist
-//        if (!in_array($setting_name, AdvancedSettings::getAcceptableSettingIds())) {
-//            return null;
-//        }
-
-        // fixme: this is a temporary fix, see comment above
-        if (
-            strpos($setting_name, 'core.filestorage_') !== false
-            || $setting_name === 'elastica.clients.default.url'
-            || $setting_name === 'notification.settings.pusher_client.appKey'
-            || $setting_name === 'notification.settings.pusher_client.secret'
-        ) {
-            return null;
-        }
-
         return $this->getSettings()->get($setting_name, $default);
     }
 
