@@ -229,6 +229,11 @@ class AgentTeam extends AbstractEntityRepository
         if (!$agent_ids) {
             return [];
         }
+
+        $agent_ids = array_map(function ($id) {
+            return (int) $id;
+        }, $agent_ids);
+
         $agent_ids = implode(',', $agent_ids);
 
         $agent_teams = App::getDb()->fetchAllGrouped("
