@@ -36,8 +36,8 @@ class AppsController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$package['name'].'-'.mt_rand(1000, 9999);
-        SafeFile::assertValid($tmpdir, dp_get_tmp_dir());
+        $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.time().'-'.uniqid('');
+
         if (!@mkdir($tmpdir)) {
             throw new \Exception('Failed to create extraction directory');
         }
@@ -54,7 +54,7 @@ class AppsController extends AbstractController
         // compress
         /** @var \Orb\Zip\Zip $zipper */
         $zipper = $this->container->getSystemService('zipper');
-        $file   = $path.'/'.$package['name'].'.zip';
+        $file   = $path.'/app.zip';
         $zipper->compressPath($path, $file);
         $response = new BinaryFileResponse($file);
 
