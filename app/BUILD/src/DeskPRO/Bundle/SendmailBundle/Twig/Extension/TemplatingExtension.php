@@ -2836,8 +2836,8 @@ HTML;
      */
     public function safeArrayFilter($array, $arrow)
     {
-        if (is_string($arrow)) {
-            throw new \RuntimeException("Arrow function cannot be a string");
+        if (!($arrow instanceof \Closure)) {
+            throw new \RuntimeException("Invalid arrow function");
         }
 
         if (empty($array)) {
