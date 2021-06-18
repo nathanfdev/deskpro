@@ -45,6 +45,10 @@ class ElasticSearchController extends AbstractController
             'tika_port'      => $this->settings->get('elastic_settings.tika_port'),
         ];
 
+        if (defined('DPC_IS_CLOUD')) {
+            $values['url'] = '';
+        }
+
         return $this->createApiResponse(['elastic_settings' => $values]);
     }
 
@@ -54,6 +58,10 @@ class ElasticSearchController extends AbstractController
 
     public function saveSettingsAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            return $this->createApiErrorResponse('invalid_cloud', 'Disabled on cloud', 401);
+        }
+
         $wasEnabled = $this->settings->get('elastic_settings.enabled');
 
         $url = $this->in->getString('elastic_settings.url');
@@ -100,6 +108,10 @@ class ElasticSearchController extends AbstractController
 
     public function testSettingsAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            return $this->createApiErrorResponse('invalid_cloud', 'Disabled on cloud', 401);
+        }
+
         //------------------------------
         // Configure logger
         //------------------------------
@@ -198,6 +210,10 @@ class ElasticSearchController extends AbstractController
 
     public function indexStatusAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            return $this->createApiErrorResponse('invalid_cloud', 'Disabled on cloud', 401);
+        }
+
         $esStatus = $this->em->getRepository(DataStore::class)->getByName('sys.es_indexer', false);
 
         $statusData = $esStatus ? $esStatus->data : [];

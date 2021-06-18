@@ -6,7 +6,6 @@ use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Component\Util\IpUtils;
 use DpSys\LowError\SystemErrorHandler;
-use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Orb\Log\Logger;
 use Orb\Util\Strings;

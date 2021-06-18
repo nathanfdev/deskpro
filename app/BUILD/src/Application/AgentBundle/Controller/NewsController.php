@@ -23,7 +23,6 @@ use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Component\Util\IpUtils;
 use Doctrine\DBAL\Connection;
-use GuzzleHttp\Client;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;

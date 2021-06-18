@@ -19,8 +19,6 @@
 			{% endfor %}
 		{% endif %}
 
-		{% set use_local_twitter = app.getConfig('enable_twitter') and app.user.getTwitterAccounts()|length %}
-
 		{% if not show_only or show_only.twitter %}
 			{% for contact in contact_data.twitter %}
 				<li class="twitter {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">

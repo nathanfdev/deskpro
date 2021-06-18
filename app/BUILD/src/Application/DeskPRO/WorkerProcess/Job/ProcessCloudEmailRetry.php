@@ -3,8 +3,8 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DpSys\LowError\SystemErrorHandler;
-use GuzzleHttp\Client;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -32,7 +32,7 @@ class ProcessCloudEmailRetry extends AbstractJob
         }
 
         $start  = time();
-        $client = new Client();
+        $client = new HttpClient();
         $router = $this->getContainer()->get('router');
 
         $sources = App::getDb()->executeQuery("

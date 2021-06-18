@@ -142,7 +142,7 @@
 </div>
 {% endif %}
 
-{% if 'person_username' not in no_show_fields and app.getUsersourceManager().getUsersources() %}
+{% if 'person_username' not in no_show_fields %}
 <div class="builder-type" title="Username" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_username" data-term-type="GenericInputTerm" data-term-triggers="username">
 	<div class="builder-op">
 		<select name="op">

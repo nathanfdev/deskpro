@@ -49,7 +49,7 @@ class HttpClient extends Client
     /**
      * Wraps curl_init to add default proxy.
      *
-     * @depreated you should probably be using HttpClient itself
+     * @deprecated you should probably be using HttpClient itself
      *
      * @param string|null $url
      * @return false|resource
@@ -97,7 +97,7 @@ class HttpClient extends Client
         }
 
         $options = array_merge([
-            'timeout' => 40,
+            'read_timeout' => 10,
             'connect_timeout' => 10,
             'maxSize' => 26214400
         ], $options);
@@ -105,7 +105,7 @@ class HttpClient extends Client
         SafeFile::assertValid($toPath, $expectBasePath);
 
         $clientOptions = [
-            'timeout' => $options['timeout'],
+            'read_timeout' => $options['read_timeout'],
             'connect_timeout' => $options['connect_timeout'],
         ];
 
@@ -138,6 +138,56 @@ class HttpClient extends Client
         if (!$bytesRead) {
             throw new \RuntimeException("nothing read");
         }
+
+        return $bytesRead;
+    }
+
+    /**
+     * @param string $fromUrl         The URL to download
+     * @param $handler                Callback to call for each block of data read. Return false to abort reading.
+     * @param array $options
+     */
+    public static function streamFile($fromUrl, $handler, array $options = [])
+    {
+        $fromUrl = strtolower($fromUrl);
+        if (!preg_match('/^https?:\/\//', $fromUrl)) {
+            throw new \InvalidArgumentException();
+        }
+
+        $options = array_merge([
+            'read_timeout' => 10,
+            'connect_timeout' => 10,
+            'maxSize' => 26214400,
+            'chunkSize' => 2048
+        ], $options);
+
+        $clientOptions = [
+            'read_timeout' => $options['read_timeout'],
+            'connect_timeout' => $options['connect_timeout'],
+        ];
+
+        $client = new self($clientOptions);
+        $response = $client->get($fromUrl, [
+            'stream' => true,
+        ]);
+        $body = $response->getBody();
+
+        $bytesRead = 0;
+        while (!$body->eof()) {
+            $dat = $body->read($options['chunkSize']);
+            $bytesRead += strlen($dat);
+
+            if($bytesRead > $options['maxSize']) {
+                $body->close();
+                throw new \RuntimeException("exceeded maxSize");
+            }
+
+            if (call_user_func($handler, $dat) === false) {
+                return $bytesRead;
+            }
+        }
+
+        $body->close();
 
         return $bytesRead;
     }

@@ -5,9 +5,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Languages;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 
 /**
@@ -50,7 +50,7 @@ class CrowdinController extends BaseController
         $resource = fopen($path, 'w');
 
         try {
-            $client = new Client();
+            $client = new HttpClient();
             $client->get($url, ['save_to' => $resource]);
         } catch (ClientException $e) {
             $this

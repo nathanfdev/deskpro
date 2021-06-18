@@ -8,12 +8,10 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\ExternalEvent\PopupType;
-use DeskPRO\Bundle\AppBundle\Form\Type\ExternalEvent\WebhookType;
 use DeskPRO\Bundle\AppBundle\Model\PopupModel;
 use DeskPRO\Bundle\AppBundle\Notification\Event\ExternalEvent\PopupEvent;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Guzzle\Http\Client;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -98,15 +96,8 @@ class PopupController extends BaseController
      */
     public function webhookAction(Request $request)
     {
-        $form = $this->container->get('form.factory')->create(WebhookType::class);
-        $data = $request->request->all();
-        $form->submit($data);
-        if ($form->isValid()) {
-            $httpClient = new Client();
-            $httpClient->send([
-                $httpClient->createRequest($data['type'], $data['url'], ['X-Request-Performer: DeskPRO'], $data),
-            ]);
-        }
+        // NOOP
+        // this feature needs re-working; for time being, removing this open webhook action
 
         return View::create(null, Response::HTTP_NO_CONTENT);
     }
