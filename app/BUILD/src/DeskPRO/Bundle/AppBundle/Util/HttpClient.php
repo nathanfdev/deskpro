@@ -56,8 +56,7 @@ class HttpClient extends Client
      */
     public static function curlInit($url = null)
     {
-        $url = strtolower($url);
-        if (!preg_match('/^https?:\/\//', $url)) {
+        if (!preg_match('/^https?:\/\//i', $url)) {
             throw new \InvalidArgumentException();
         }
 
@@ -91,8 +90,7 @@ class HttpClient extends Client
      */
     public static function downloadFile($fromUrl, $toPath, $expectBasePath, array $options = [])
     {
-        $fromUrl = strtolower($fromUrl);
-        if (!preg_match('/^https?:\/\//', $fromUrl)) {
+        if (!preg_match('/^https?:\/\//i', $fromUrl)) {
             throw new \InvalidArgumentException();
         }
 
@@ -149,8 +147,7 @@ class HttpClient extends Client
      */
     public static function streamFile($fromUrl, $handler, array $options = [])
     {
-        $fromUrl = strtolower($fromUrl);
-        if (!preg_match('/^https?:\/\//', $fromUrl)) {
+        if (!preg_match('/^https?:\/\//i', $fromUrl)) {
             throw new \InvalidArgumentException();
         }
 
