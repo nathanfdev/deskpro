@@ -100,13 +100,14 @@ class DateTime extends Date
         }
 
         $person = App::getCurrentPerson();
+        $adminTz = $person ? $person->getDateTimezone() : new \DateTimeZone('UTC');
 
         if ($data) {
             try {
                 $date = new \DateTime('@'.$data);
                 // data is loaded from db, we need to set correct timezone before any validation
                 if (!$this->field_def->getOption('ignore_timezone')) {
-                    $date->setTimezone($person ? $person->getDateTimezone() : new \DateTimeZone('UTC'));
+                    $date->setTimezone($adminTz);
                 }
             } catch (\Exception $e) {
                 try {
@@ -131,7 +132,6 @@ class DateTime extends Date
 
         if ($date) {
             if (!$this->field_def->getOption('ignore_timezone')) {
-                $adminTz = $person ? $person->getDateTimezone() : new \DateTimeZone('UTC');
                 $date->setTimezone($adminTz);
             }
         } else {
