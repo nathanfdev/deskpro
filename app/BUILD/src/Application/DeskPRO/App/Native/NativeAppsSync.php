@@ -215,6 +215,11 @@ class NativeAppsSync
                 continue;
             }
 
+            if (in_array(AppPackage::TAG_ONPREM_ONLY, $app_package->getManifest()->getTags()) && defined('DPC_IS_CLOUD')) {
+                $this->logger->debug("onprem only app -- skipping {$f}");
+                continue;
+            }
+
             $this->logger->debug("installing new native app {$f}");
             try {
                 $this->package_installer->installPackage($app_package);
