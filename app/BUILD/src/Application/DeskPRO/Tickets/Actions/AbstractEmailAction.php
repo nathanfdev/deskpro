@@ -368,7 +368,6 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             $model->setSiteUrl($this->getContainer()->getBrandSetting('core.site_url'));
             $model->setSiteName($this->getContainer()->getBrandSetting('core.site_name'));
             $model->setDeskproUrl($this->getContainer()->getBrandSetting('core.deskpro_url'));
-            $model->setEmailTo($this->serviceContainer->getEmailAccountManager()->getPrimaryTicketAccountWithFallback());
         }
 
         return $model;
