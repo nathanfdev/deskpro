@@ -59,11 +59,8 @@ class DpKernel extends BaseKernel
         $bundle_dirs = [
             'Application' => DP_ROOT.'/src/Application',
             'Bundle'      => DP_ROOT.'/src/Bundle',
+            'Cloud'       => DP_ROOT.'/src/Cloud'
         ];
-
-        if (defined('DPC_IS_CLOUD')) {
-            $bundle_dirs['Cloud'] = DP_ROOT.'/src/Cloud';
-        }
 
         return $bundle_dirs;
     }
@@ -119,15 +116,11 @@ class DpKernel extends BaseKernel
             new \DeskPRO\Bundle\UpdateBundle\UpdateBundle(),
             new \DeskPRO\Bundle\MessengerBundle\MessengerBundle(),
             new \Application\DeskPRO\DeskPROBundle(),
-        ];
 
-        if (defined('DPC_IS_CLOUD')) {
-            $bundles = array_merge($bundles, [
-                new \Cloud\LegacyApiBundle\CloudLegacyApiBundle(),
-                new \Cloud\AdminInterfaceBundle\CloudAdminInterfaceBundle(),
-                new \DeskPROCloud\Bundle\CloudBillingBundle\CloudBillingBundle(),
-            ]);
-        }
+            new \Cloud\LegacyApiBundle\CloudLegacyApiBundle(),
+            new \Cloud\AdminInterfaceBundle\CloudAdminInterfaceBundle(),
+            new \DeskPROCloud\Bundle\CloudBillingBundle\CloudBillingBundle(),
+        ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'])) {
             $bundles[] = new \Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
