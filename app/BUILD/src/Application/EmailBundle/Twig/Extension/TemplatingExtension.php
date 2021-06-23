@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\HttpFoundation\Session;
+use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Templating\GlobalVariables;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
@@ -1446,6 +1447,10 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function getBrandSetting($setting, $default = null)
     {
+        if (!in_array($setting, AdvancedSettings::getAcceptableSettingIds())) {
+            return $default;
+        }
+        
         return $this->getBrandStack()->getActive()->getSetting($setting, $default);
     }
 

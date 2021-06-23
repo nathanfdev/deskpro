@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Publish\GlossaryHandler;
+use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use DeskPRO\Bundle\AppBundle\Entity\HasIconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
@@ -564,6 +565,10 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getBrandSetting($setting, $default = null)
     {
+        if (!in_array($setting, AdvancedSettings::getAcceptableSettingIds())) {
+            return $default;
+        }
+
         return $this->getBrandStack()->getActive()->getSetting($setting, $default);
     }
 
