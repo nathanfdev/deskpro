@@ -38,6 +38,11 @@ class TicketViewProperty
     private $linkify;
 
     /**
+     * @var array
+     */
+    private $metaData;
+
+    /**
      * Constructor.
      *
      * @param int    $id
@@ -49,7 +54,7 @@ class TicketViewProperty
      *
      * @throws \Exception
      */
-    public function __construct($id, $type, $label, $value, $alwaysVisible = false, $linkify = false)
+    public function __construct($id, $type, $label, $value, $alwaysVisible = false, $linkify = false, $metaData = [])
     {
         if (!$id) {
             throw new \InvalidArgumentException('a TicketViewProperty cannot be instantiated without an ID');
@@ -61,6 +66,7 @@ class TicketViewProperty
         $this->value         = $value;
         $this->alwaysVisible = (bool) $alwaysVisible;
         $this->linkify       = (bool) $linkify;
+        $this->metaData      = $metaData;
     }
 
     /**
@@ -125,5 +131,13 @@ class TicketViewProperty
     public function isLinkify()
     {
         return $this->linkify;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMetaData()
+    {
+        return $this->metaData;
     }
 }

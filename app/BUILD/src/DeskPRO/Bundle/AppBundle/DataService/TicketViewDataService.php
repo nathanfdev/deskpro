@@ -308,7 +308,8 @@ class TicketViewDataService extends AbstractDataService
             $def->getTitle(),
             is_array($value) ? $value : (string) $value,
             $isAlwaysVisible,
-            $def->getOption('clickable_links')
+            $def->getOption('clickable_links'),
+            $def->getOptions()
         );
 
         return $value;
