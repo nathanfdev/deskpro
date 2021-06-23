@@ -84,6 +84,9 @@ class AppManagerService
             if ($p->isCloudOnly()) {
                 return defined('DPC_IS_CLOUD') || $DP_ENV->getConfig('env.server_id') === 'builder.deskprodemo.com';
             }
+            if ($p->isOnpremOnly()) {
+                return !defined('DPC_IS_CLOUD');
+            }
 
             return true;
         });

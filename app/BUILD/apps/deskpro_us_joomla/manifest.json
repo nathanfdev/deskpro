@@ -3,7 +3,7 @@
 	"is_native": true,
 	"title": "Joomla Authentication",
 	"description": "Enables the Joomla usersource option for single-signon with Joomla.",
-	"tags": ["usersources"],
+	"tags": ["usersources", "onprem_only"],
 	"api_version": 1,
 	"version": 1,
 	"version_name": "1.0.0",
