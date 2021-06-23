@@ -893,16 +893,8 @@ class DeskproBlobStorage implements Loggable
             $this->logger->logDebug('URL rewritten to: '.$url);
         }
 
-        $client = new HttpClient([
-            GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true,
-            GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 10,
-            GuzzleHttp\RequestOptions::TIMEOUT         => 10,
-        ]);
-
         try {
-            $response = $client->request('GET', $url);
-
-            return Psr7\copy_to_string($response->getBody());
+            return HttpClient::downloadToString($url);
         } catch (\Exception $e) {
             $this->logger->logError(sprintf('Download file failed: [%s:%s] %s', get_class($e), $e->getCode(), substr($e->getMessage(), 0, 1000)));
 
@@ -944,9 +936,13 @@ class DeskproBlobStorage implements Loggable
             $this->logger->logDebug("[DeskproBlobStorage] (saveBlobStringToFile) Attempting to fetch via URL: {$blob_entity->file_url}");
 
             $failed = false;
-            if (!@copy($blob_entity->file_url, $target_path)) {
+
+            try {
+                HttpClient::downloadFile($blob_entity->file_url, $target_path, dirname($target_path));
+            } catch (\Exception $e) {
                 $failed = true;
             }
+
             if (!$failed && filesize($target_path) != $blob_entity->filesize) {
                 $failed = true;
             }

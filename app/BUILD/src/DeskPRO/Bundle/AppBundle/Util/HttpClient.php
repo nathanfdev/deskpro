@@ -5,7 +5,9 @@ namespace DeskPRO\Bundle\AppBundle\Util;
 use Composer\CaBundle\CaBundle;
 use DeskPRO\Component\Filesystem\SafeFile;
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -43,6 +45,25 @@ class HttpClient extends Client
             $config[RequestOptions::VERIFY] = CaBundle::getBundledCaBundlePath();
         }
 
+        $handler = isset($config['handler']) ? $config['handler'] : HandlerStack::create();
+
+        // this forces http/https protocols
+        // this shouldnt actually be necessary because guzzle sets CURLOPT_PROTOCOLS,
+        // but we're double-checking here as a precaution
+        $handler->push(function (callable $handler) {
+                return function (RequestInterface $request, array $options) use ($handler) {
+                    $scheme = $request->getUri()->getScheme();
+                    if ($scheme !== 'http' && $scheme !== 'https') {
+                        throw new \InvalidArgumentException('unsupported scheme');
+                    }
+
+                    return $handler($request, $options);
+                };
+            }
+        );
+
+        $config['handler'] = $handler;
+
         parent::__construct($config);
     }
 
@@ -74,6 +95,10 @@ class HttpClient extends Client
         }
         if ($proxy) {
             curl_setopt($ch, CURLOPT_PROXY, $proxy);
+        }
+
+        if (defined('CURLOPT_PROTOCOLS')) {
+            curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
         }
 
         return $ch;
@@ -187,5 +212,20 @@ class HttpClient extends Client
         $body->close();
 
         return $bytesRead;
+    }
+
+    /**
+     * @param $fromUrl
+     * @param array $options
+     * @return string
+     */
+    public static function downloadToString($fromUrl, array $options = [])
+    {
+        $buf = '';
+        self::streamFile($fromUrl, function ($dat) use (&$buf) {
+            $buf .= $dat;
+        }, $options);
+
+        return $buf;
     }
 }
