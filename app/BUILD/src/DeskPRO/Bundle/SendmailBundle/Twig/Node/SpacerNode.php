@@ -13,7 +13,7 @@ class SpacerNode extends \Twig_Node
 {
     public function compile(\Twig_Compiler $compiler)
     {
-        $size = $this->getNode('size')->getAttribute('value');
+        $size = (int) $this->getNode('size')->getAttribute('value');
         $compiler
             ->addDebugInfo($this)
             ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<table class="spacer">', 0), 1))

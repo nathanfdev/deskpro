@@ -11,11 +11,11 @@ class WrapperNode extends \Twig_Node
     {
         $class = '';
         if ($this->hasNode('class')) {
-            $class = ' '.$this->getNode('class');
+            $class = ' '.addslashes($this->getNode('class'));
         }
         $bgColor = '';
         if ($this->hasNode('bgcolor')) {
-            $bgColor = 'bgcolor="'.$this->getNode('bgcolor').'" ';
+            $bgColor = 'bgcolor="'.addslashes($this->getNode('bgcolor')).'" ';
         }
         $compiler
             ->addDebugInfo($this)

@@ -12,7 +12,7 @@ class CalloutNode extends \Twig_Node
         $compiler->addDebugInfo($this);
         $class = '';
         if ($this->hasNode('class')) {
-            $class = ' '.$this->getNode('class')->getAttribute('value');
+            $class = ' '.addslashes($this->getNode('class')->getAttribute('value'));
         }
         $compiler
             ->subcompile(new Twig_Node_Print(new Twig_Node_Expression_Constant('<table class="callout">', 0), 1))
