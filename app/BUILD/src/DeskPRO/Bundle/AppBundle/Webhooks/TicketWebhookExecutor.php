@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\TicketSearch;
+use Application\DeskPRO\Templating\SandboxSecurityPolicy;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\TicketManager;
@@ -31,16 +32,20 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     /** @var SearchTermsAliasResolver */
     private $searchTermsAliasResolver;
 
+    /** @var SandboxSecurityPolicy */
+    private $sandboxSecurityPolicy;
+
     /**
      * TicketWebhookExecutor constructor.
      *
      * @param PayloadConvertersRegistry $convertersRegistry
      * @param TicketManager             $ticketManager
      */
-    public function __construct(PayloadConvertersRegistry $convertersRegistry, TicketManager $ticketManager)
+    public function __construct(PayloadConvertersRegistry $convertersRegistry, TicketManager $ticketManager, SandboxSecurityPolicy $sandboxSecurityPolicy)
     {
-        $this->convertersRegistry = $convertersRegistry;
-        $this->ticketManager      = $ticketManager;
+        $this->convertersRegistry    = $convertersRegistry;
+        $this->ticketManager         = $ticketManager;
+        $this->sandboxSecurityPolicy = $sandboxSecurityPolicy;
     }
 
     /**
@@ -178,7 +183,10 @@ class TicketWebhookExecutor implements ContainerAwareInterface
             return $term['op'] != 'ignore';
         });
 
-        $evaluators  = [new TwigScriptEvaluator()];
+        $twigEvaluator = new TwigScriptEvaluator();
+        $twigEvaluator->setTwigSandboxSecurityPolicy($this->sandboxSecurityPolicy);
+
+        $evaluators  = [$twigEvaluator];
         $searchTerms = array_map(function ($term) use ($evaluators, $webhookInvocation) {
             if (SearchTermVars::hasVars($term, $evaluators)) {
                 return SearchTermVars::evaluate($term, $evaluators, $webhookInvocation);

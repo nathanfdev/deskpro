@@ -2,8 +2,22 @@
 
 namespace DeskPRO\Bundle\AppBundle\Webhooks;
 
+use Application\DeskPRO\Templating\SandboxSecurityPolicy;
+use Twig\Extension\SandboxExtension;
+
 class TwigScriptEvaluator implements ScriptEvaluator
 {
+    /** @var SandboxSecurityPolicy */
+    private $sandboxSecurityPolicy;
+
+    /**
+     * @param SandboxSecurityPolicy $sandboxSecurityPolicy
+     */
+    public function setTwigSandboxSecurityPolicy(SandboxSecurityPolicy $sandboxSecurityPolicy)
+    {
+        $this->sandboxSecurityPolicy = $sandboxSecurityPolicy;
+    }
+
     /**
      * @param string $script
      *
@@ -40,6 +54,10 @@ class TwigScriptEvaluator implements ScriptEvaluator
         $loader         = new \Twig_Loader_Array(['script.html' => $preparedScript]);
         $twig           = new \Twig_Environment($loader);
 
+        if ($this->sandboxSecurityPolicy) {
+            $twig->addExtension(new SandboxExtension($this->sandboxSecurityPolicy, true));
+        }
+
         try {
             // hold any sandboxing for now
             // $sandbox = new \Twig_Extension_Sandbox($policy, true);
@@ -69,6 +87,11 @@ class TwigScriptEvaluator implements ScriptEvaluator
         $preparedScript = $this->prepareScript($script);
         $loader         = new \Twig_Loader_Array(['script.html' => $preparedScript]);
         $twig           = new \Twig_Environment($loader);
+
+        if ($this->sandboxSecurityPolicy) {
+            $twig->addExtension(new SandboxExtension($this->sandboxSecurityPolicy, true));
+        }
+
         try {
             $nodeTree = $twig->parse($twig->tokenize($script, 'script.html'));
             $twig->compile($nodeTree);
