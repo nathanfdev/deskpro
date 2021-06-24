@@ -15,12 +15,23 @@ class FilesystemCache extends \Twig\Cache\FilesystemCache
     private $cacheOptions;
 
     /**
+     * @var string
+     */
+    private $directory;
+
+    /**
      * {@inheritDoc}
      */
     public function __construct($directory, $options = 0)
     {
+        if ($directory instanceof self) {
+            $directory = $directory->getDirectory();
+        }
+
         parent::__construct($directory, $options);
+
         $this->cacheOptions = $options;
+        $this->directory = $directory;
     }
 
     /**
@@ -66,5 +77,13 @@ class FilesystemCache extends \Twig\Cache\FilesystemCache
         }
 
         throw new \RuntimeException(sprintf('Failed to write cache file "%s".', $key));
+    }
+
+    /**
+     * @return string
+     */
+    public function getDirectory()
+    {
+        return $this->directory;
     }
 }
