@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use JMS\Serializer\Annotation as JMS;
+
 class NewReplyRejectResolved extends TicketEmailType
 {
     protected $templateFile = 'emails_user:new_reply_reject_resolved.html.twig';
