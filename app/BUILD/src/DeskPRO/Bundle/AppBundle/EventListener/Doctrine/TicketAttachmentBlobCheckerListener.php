@@ -82,6 +82,10 @@ class TicketAttachmentBlobCheckerListener
         }
 
         if ($newBlob) {
+            //set old blob as original blob
+            $newBlob->setOriginalBlob($blob);
+            $this->em->persist($newBlob);
+            
             $entity->setBlob($newBlob);
             $blob->setIsTemp(true);
             $this->em->persist($blob);
