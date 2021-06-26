@@ -39,55 +39,6 @@ use Symfony\Component\Security\Core\Security;
 class PortalController extends AbstractController
 {
     /**
-     * @Route("/template_editor", name="portal_temp")
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function tempAction(Request $request)
-    {
-        $t_repo        = $this->getRepo(Template::class);
-        $themeset      = $this->getPortalBrandTheme()->getActiveThemeSet();
-        $template_name = $request->get('template_name');
-
-        if ($request->getMethod() === 'POST') {
-            $template_name = $request->get('template_name');
-            $code          = $request->get('template_code');
-
-            if (!$tem = $t_repo->findOneBy(['theme_set' => $themeset, 'name' => $template_name])) {
-                $tem               = new Template();
-                $tem->name         = $template_name;
-                $tem->date_created = new \DateTime();
-            }
-
-            $tem->theme_set     = $themeset;
-            $tem->template_code = $code;
-            $tem->date_updated  = new \DateTime();
-
-            $tem->template_compiled = $this->get('twig')->compileSource($code, $template_name);
-
-            $this->persistAndFlushEntity($tem);
-
-            $this->addFlash('success', 'saved');
-
-            $this->redirectToRoute('portal_temp', ['template_name' => $template_name]);
-        }
-
-        $tem = null;
-        if ($template_name) {
-            $tem = $t_repo->findOneBy(['theme_set' => $themeset, 'name' => $template_name]);
-        }
-
-        $theme = $this->getPortalBrandTheme()->getActiveTheme();
-
-        return $this->renderThemeView('Theme:Temp:customTemplate.html.twig', [
-            'template_map' => $theme->getTemplateMap(),
-            'template'     => $tem,
-        ]);
-    }
-
-    /**
      * @Route("/", name="portal_home")
      * @Route("/", name="user")
      * @PageHttpCache()
