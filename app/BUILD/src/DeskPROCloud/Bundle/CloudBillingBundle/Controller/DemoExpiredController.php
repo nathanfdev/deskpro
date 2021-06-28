@@ -15,7 +15,7 @@ class DemoExpiredController extends BaseController
      */
     public function indexAction()
     {
-        if (!defined('DPC_DEMO_EXPIRE') || !DPC_DEMO_EXPIRE) {
+        if (!defined('DPC_IS_CLOUD') || !defined('DPC_DEMO_EXPIRE') || !DPC_DEMO_EXPIRE) {
             return $this->redirectToRoute('agent');
         }
 

@@ -9,9 +9,19 @@ namespace Cloud\LegacyApiBundle\Controller;
 use Application\DeskPRO\Entity\Person;
 use Application\LegacyApiBundle\Controller\AgentsController as BaseAgentsController;
 use DpSys\License;
+use Symfony\Component\HttpFoundation\Request;
 
 class AgentsController extends BaseAgentsController
 {
+    public function preActionHandler(Request $request, $action, $arguments = null)
+    {
+        if (!defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+
+        return parent::preActionHandler($request, $action, $arguments);
+    }
+
     /**
      * @param int $num
      *

@@ -54,15 +54,11 @@ class DevKernel extends BaseKernel
             new \DeskPRO\Bundle\ReportBundle\ReportBundle(),
             new \DeskPRO\Bundle\VoiceBundle\VoiceBundle(),
             new \DeskPRO\Bundle\MessengerBundle\MessengerBundle(),
-        ];
 
-        if (defined('DPC_IS_CLOUD')) {
-            $bundles = array_merge($bundles, [
-                new \Cloud\LegacyApiBundle\CloudLegacyApiBundle(),
-                new \Cloud\AdminInterfaceBundle\CloudAdminInterfaceBundle(),
-                new \DeskPROCloud\Bundle\CloudBillingBundle\CloudBillingBundle(),
-            ]);
-        }
+            new \Cloud\LegacyApiBundle\CloudLegacyApiBundle(),
+            new \Cloud\AdminInterfaceBundle\CloudAdminInterfaceBundle(),
+            new \DeskPROCloud\Bundle\CloudBillingBundle\CloudBillingBundle(),
+        ];
 
         return $bundles;
     }
