@@ -113,8 +113,12 @@ class ChatAgentNotifyListener implements EventSubscriberInterface
                     $agent = $this->em->getRepository(Person::class)->find($worker->getTypeId());
                     if ($agent) {
                         $task->setStatus(Task::STATUS_ACCEPTED);
-                        $chat->setAgent($agent);
+                        $worker->addActiveTask($task);
 
+                        $this->storage->saveWorker($worker);
+                        $this->storage->saveTask($task);
+
+                        $chat->setAgent($agent);
                         $this->em->flush();
 
                         $this->dispatcher->dispatch(UserChatEvent::STARTED, new UserChatEvent($chat));
