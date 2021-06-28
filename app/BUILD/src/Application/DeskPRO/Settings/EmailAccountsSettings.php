@@ -7,8 +7,7 @@ namespace Application\DeskPRO\Settings;
  */
 class EmailAccountsSettings
 {
-    const PREFIX = 'core.emails';
-
+    const PREFIX                 = 'core.emails';
     const DEFAULT_RATE_COUNT     = 15;
     const DEFAULT_RATE_TIME      = 600;
     const DEFAULT_RATE_LOCK_TIME = 900;
@@ -43,14 +42,15 @@ class EmailAccountsSettings
      * @var array
      */
     protected $otherValues = [
-        'core_tickets.enable_dupe_checking'                 => true,
-        'core_tickets.enable_email_preview'                 => true,
-        'core_tickets.gateway_enable_subject_match'         => true,
-        'core_tickets.enable_same_account_subject_matching' => false,
-        'core_tickets.enable_exact_subject_matching'        => false,
-        'core_tickets.reject_spf_level'                     => false,
-        'core_tickets.reject_dkim_level'                    => false,
-        'core_tickets.disable_attachments_list'             => false,
+        'core_tickets.enable_dupe_checking'                    => true,
+        'core_tickets.enable_email_preview'                    => true,
+        'core_tickets.gateway_enable_subject_match'            => true,
+        'core_tickets.enable_same_account_subject_matching'    => false,
+        'core_tickets.enable_exact_subject_matching'           => false,
+        'core_tickets.ignore_participants_in_subject_matching' => false,
+        'core_tickets.reject_spf_level'                        => false,
+        'core_tickets.reject_dkim_level'                       => false,
+        'core_tickets.disable_attachments_list'                => false,
     ];
 
     /**

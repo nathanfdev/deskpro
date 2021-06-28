@@ -867,6 +867,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             if ($this->container->getSetting('core_tickets.enable_exact_subject_matching')) {
                 $m->enableExactSubjectMatching();
             }
+            if ($this->container->getSetting('core_tickets.ignore_participants_in_subject_matching')) {
+                $m->enableParticipantIgnore();
+            }
 
             $ticketDetect->addDetector($m);
         }
