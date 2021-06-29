@@ -151,6 +151,11 @@ class TicketSearch extends SearcherAbstract
     protected $add_raw_selects = [];
 
     /**
+     * @var array
+     */
+    protected $ticketSubStatus = [];
+
+    /**
      * @var bool
      */
     protected $is_filter_search = false;
@@ -1410,6 +1415,7 @@ class TicketSearch extends SearcherAbstract
         // exclude 'hidden' tickets
         $set_status = false;
 
+        $ticketSubStatus = [];
         foreach ([['all', $this->terms], ['any', $this->terms_any]] as $term_set) {
             if ($term_set[0] == 'all') {
                 $wheres = &$wheres_all;
@@ -2048,6 +2054,7 @@ class TicketSearch extends SearcherAbstract
                                     $this->enableArchiveSearch();
                                 }
                             }
+                            $ticketSubStatus = $sub_statuses;
                         }
 
                         $w = '';
@@ -2787,6 +2794,8 @@ class TicketSearch extends SearcherAbstract
             }
         }
 
+        $this->ticketSubStatus = $ticketSubStatus;
+
         if (!$set_status) {
             $wheres_all[] = $this->_choiceMatch("$tickets_table.status", self::OP_NOT, 'hidden');
         }
@@ -3477,5 +3486,10 @@ class TicketSearch extends SearcherAbstract
         }
 
         return $status;
+    }
+
+    public function getTicketSubStatuses()
+    {
+        return $this->ticketSubStatus;
     }
 }
