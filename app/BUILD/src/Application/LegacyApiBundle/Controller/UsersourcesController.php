@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
+use Application\DeskPRO\Usersource\Adapter\DeskproOauth2Proxy;
 use Application\DeskPRO\Usersource\Sync\SyncException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
@@ -341,11 +342,11 @@ class UsersourcesController extends AbstractController
             );
         }
 
-        if ($adapter instanceof CallbackInterface) {
+        if ($adapter instanceof CallbackInterface && $source->getSourceType() !== DeskproOauth2Proxy::class) {
             // append noredirect so that the callback url knows not to refresh the page on success
             $url                      = Url::createFromUrl($adapter->getCallbackUrl());
             $query                    = $url->getQuery();
-            $query['usersource_test'] = true;
+            $query['usersource_test'] = $this->container->generateStaticSecurityToken('usersource_test:' . $source->getId(), 600);
             $adapter->setCallbackUrl((string) $url);
         }
 

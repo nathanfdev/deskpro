@@ -37,9 +37,9 @@ use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Component\Util\IpUtils;
-use GuzzleHttp\Client;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -1511,7 +1511,7 @@ class PublishController extends AbstractController
             $guide->setSplashImage($splashImage);
             // Trigger Download on unsplash api to register photo usage
             $accessKey = $this->get('settings_resolver')->getGlobalSettings()->get('services.unsplash_access_key', null);
-            $client    = new Client();
+            $client    = new HttpClient();
 
             if (!IpUtils::isUrlUserCallable($image->links->download_location)) {
                 throw new \InvalidArgumentException("URL is not user callable");

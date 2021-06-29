@@ -14,6 +14,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\HttpFoundation\Session;
+use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
@@ -77,7 +78,7 @@ class TemplatingExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return [
+        $fns = [
             new \Twig_SimpleFunction('constant', [$this, 'getConstant'], []),
             new \Twig_SimpleFunction('phrase_code', [$this, 'getPhraseText'], []),
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -173,6 +174,20 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFunction('can_view_email_addresses', [$this, 'canViewEmailAddresses'], []),
             new \Twig_SimpleFunction('show_email_address', [$this, 'showEmailAddress'], []),
         ];
+
+        if (!$this->container->isDebug()) {
+            $fns[] = new \Twig_SimpleFunction('var_dump', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('debug_var', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('dump', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('profiler_dump', [$this, 'noop']);
+        }
+
+        return $fns;
+    }
+
+    public function noop()
+    {
+        return '';
     }
 
     /**
@@ -1033,6 +1048,10 @@ class TemplatingExtension extends \Twig_Extension
      */
     public function getBrandSetting($setting, $default = null)
     {
+        if (!in_array($setting, AdvancedSettings::getAcceptableSettingIds())) {
+            return $default;
+        }
+
         return $this->getBrandStack()->getActive()->getSetting($setting, $default);
     }
 
@@ -2192,8 +2211,8 @@ class TemplatingExtension extends \Twig_Extension
      */
     public function safeArrayFilter($array, $arrow)
     {
-        if (is_string($arrow)) {
-            throw new \RuntimeException("Arrow function cannot be a string");
+        if (!($arrow instanceof \Closure)) {
+            throw new \RuntimeException("Invalid arrow function");
         }
 
         if (empty($array)) {

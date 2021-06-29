@@ -168,6 +168,10 @@ class DpFsProxyStreamWrapper
     {
         $this->log('CALL '.__METHOD__);
 
+        if (strpos($path, self::$protocol) === 0) {
+            return true;
+        }
+
         $resolvedPath = self::getPath($path);
 
         switch ($option) {
@@ -383,6 +387,10 @@ class DpFsProxyStreamWrapper
     public function stream_seek($offset, $whence)
     {
         $this->log('CALL '.__METHOD__);
+
+        if (!$this->handle) {
+            return 0;
+        }
 
         return \fseek($this->handle, $offset, $whence);
     }

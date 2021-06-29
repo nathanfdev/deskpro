@@ -37,6 +37,7 @@ class AppPackage extends DomainObject
     const SCOPE_AGENT               = 'agent';
     const TAG_USERSOURCES           = 'usersources';
     const TAG_CLOUD_ONLY            = 'cloud_only';
+    const TAG_ONPREM_ONLY           = 'onprem_only';
     const TAG_USERSOURCE_AGENT_ONLY = 'usersource_agent_only';
 
     /**
@@ -162,6 +163,11 @@ class AppPackage extends DomainObject
     public function isCloudOnly()
     {
         return $this->hasTag(self::TAG_CLOUD_ONLY);
+    }
+
+    public function isOnpremOnly()
+    {
+        return $this->hasTag(self::TAG_ONPREM_ONLY);
     }
 
     public function isAgentOnlyUsersource()

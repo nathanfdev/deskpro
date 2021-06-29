@@ -81,6 +81,9 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('templating.globals')->getVariable($name);
     }
 
+    /**
+     * @deprecated
+     */
     public function getSetting($name)
     {
         if (!isset($this->cache[__METHOD__][$name])) {
@@ -90,9 +93,12 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->cache[__METHOD__][$name];
     }
 
+    /**
+     * @removed
+     */
     public function getSettingDefaultGroup($id)
     {
-        return $this->container->get('templating.globals')->getSettingDefaultGroup($id);
+        return [];
     }
 
     public function isPortalEnabled()
@@ -100,19 +106,28 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('templating.globals')->isPortalEnabled();
     }
 
+    /**
+     * @deprecated
+     */
     public function getJira()
     {
         return $this->container->get('templating.globals')->getJira();
     }
 
+    /**
+     * @removed
+     */
     public function getSettingGroup($group)
     {
-        return $this->container->get('templating.globals')->getSettingGroup($group);
+        return [];
     }
 
+    /**
+     * @removed
+     */
     public function getConfig($name, $default = null)
     {
-        return $this->container->get('templating.globals')->getConfig($name, $default);
+        return $default;
     }
 
     public function getLanguage()
@@ -165,9 +180,12 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('templating.globals')->getLogoBlob();
     }
 
+    /**
+     * @removed
+     */
     public function getUsersourceManager()
     {
-        return $this->container->get('templating.globals')->getUsersourceManager();
+        return null;
     }
 
     public function getAuthenticationManager()
@@ -196,15 +214,16 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     }
 
     /**
-     * Used only for backwards comptat.
-     *
-     * @deprecated
+     * @removed
      */
     public function getDataRepository($ent)
     {
-        return $this->container->get('templating.globals')->getDataRepository($ent);
+        return null;
     }
 
+    /**
+     * @deprecated
+     */
     public function getDataService($ent)
     {
         return $this->container->get('templating.globals')->getDataService($ent);
@@ -230,6 +249,9 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('templating.globals')->getAgentTeams();
     }
 
+    /**
+     * @removed
+     */
     public function getUsersources()
     {
         return $this->container->get('templating.globals')->getUsersources();
@@ -299,9 +321,12 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->cache[__METHOD__][$name];
     }
 
+    /**
+     * @removed
+     */
     public function getAppService($name)
     {
-        return $this->container->get('templating.globals')->getAppService($name);
+        return null;
     }
 
     public function getFullAssetUrl()

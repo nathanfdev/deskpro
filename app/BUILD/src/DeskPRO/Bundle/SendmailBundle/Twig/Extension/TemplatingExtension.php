@@ -14,6 +14,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\HttpFoundation\Session;
+use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Templating\GlobalVariables;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
@@ -98,7 +99,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function getFunctions()
     {
-        return [
+        $fns = [
             new \Twig_SimpleFunction('constant', [$this, 'getConstant'], []),
             new \Twig_SimpleFunction('phrase', [$this, 'getPhrase'], ['is_safe' => ['html'], 'needs_context' => true]),
             new \Twig_SimpleFunction('unsafePhrase', [$this, 'getUnsafePhrase'], ['is_safe' => ['html'], 'needs_context' => true]),
@@ -189,6 +190,15 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             new \Twig_SimpleFunction('show_email_address', [$this, 'showEmailAddress'], []),
             new \Twig_SimpleFunction('can_login', [$this, 'canLogin'], []),
         ];
+
+        if (!$this->container->isDebug()) {
+            $fns[] = new \Twig_SimpleFunction('var_dump', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('debug_var', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('dump', [$this, 'noop']);
+            $fns[] = new \Twig_SimpleFunction('profiler_dump', [$this, 'noop']);
+        }
+
+        return $fns;
     }
 
     /**
@@ -1481,6 +1491,10 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function getBrandSetting($setting, $default = null)
     {
+        if (!in_array($setting, AdvancedSettings::getAcceptableSettingIds())) {
+            return $default;
+        }
+
         return $this->getBrandStack()->getActive()->getSetting($setting, $default);
     }
 
@@ -2827,8 +2841,8 @@ HTML;
      */
     public function safeArrayFilter($array, $arrow)
     {
-        if (is_string($arrow)) {
-            throw new \RuntimeException("Arrow function cannot be a string");
+        if (!($arrow instanceof \Closure)) {
+            throw new \RuntimeException("Invalid arrow function");
         }
 
         if (empty($array)) {

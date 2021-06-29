@@ -43,8 +43,15 @@ class SettingsController extends AbstractController
     // get-value
     //###################################################################################################################
 
+    /**
+     * @deprecated dont use this - use a specific feature endpoint for whatever usecase your setting is for
+     */
     public function getValueAction($name)
     {
+        if (!in_array($name, AdvancedSettings::getAcceptableSettingIds())) {
+            return $this->createApiErrorResponse('invalid_setting', 'Cannot get that setting', 401);
+        }
+
         $value = $this->settings->get($name);
 
         return $this->createApiResponse([
@@ -57,8 +64,15 @@ class SettingsController extends AbstractController
     // set-value
     //###################################################################################################################
 
+    /**
+     * @deprecated dont use this - use a specific feature endpoint for whatever usecase your setting is for
+     */
     public function setValueAction($name)
     {
+        if (!in_array($name, AdvancedSettings::getAcceptableSettingIds())) {
+            return $this->createApiErrorResponse('invalid_setting', 'Cannot set that setting', 401);
+        }
+
         $value = $this->settings->setSetting($name, $this->in->getString('value'));
 
         return $this->createSuccessResponse([

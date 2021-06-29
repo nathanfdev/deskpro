@@ -21,6 +21,7 @@ use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\IpUtils;
 use DeskPRO\Component\Util\RegexUtils;
@@ -450,7 +451,7 @@ JS;
             $url .= (strpos($url, '?') ? '&' : '?').http_build_query($passData);
         }
 
-        $ch     = curl_init($url);
+        $ch     = HttpClient::curlInit($url);
         $cainfo = CaBundle::getBundledCaBundlePath();
         if (file_exists($cainfo)) {
             @curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);

@@ -12,18 +12,35 @@ interface GlobalVariablesInterface
 
     public function getUser();
 
+    /**
+     * @deprecated please add a specific templating extension for whatever setting you need
+     *            because this is limited to AdvancedSettings::getAcceptableSettingIds
+     */
     public function getSetting($name);
 
+    /**
+     * @deprecated
+     */
     public function getSettingDefaultGroup($id);
 
     public function getRequest();
 
     public function isPortalEnabled();
 
+    /**
+     * @deprecated
+     */
     public function getJira();
 
+
+    /**
+     * @deprecated
+     */
     public function getSettingGroup($group);
 
+    /**
+     * @deprecated
+     */
     public function getConfig($name, $default = null);
 
     public function getSession();
@@ -45,10 +62,6 @@ interface GlobalVariablesInterface
 
     public function getLogoBlob();
 
-    public function getUsersourceManager();
-
-    public function getAuthenticationManager();
-
     public function getTicketFieldManager();
 
     public function getPersonFieldManager();
@@ -58,12 +71,13 @@ interface GlobalVariablesInterface
     public function getEmailAccounts();
 
     /**
-     * Used only for backwards comptat.
-     *
      * @deprecated
      */
     public function getDataRepository($ent);
 
+    /**
+     * @deprecated
+     */
     public function getDataService($ent);
 
     public function getDepartments();
@@ -98,6 +112,9 @@ interface GlobalVariablesInterface
 
     public function isAppInstalled($name);
 
+    /**
+     * @deprecated
+     */
     public function getAppService($name);
 
     public function getFullAssetUrl();

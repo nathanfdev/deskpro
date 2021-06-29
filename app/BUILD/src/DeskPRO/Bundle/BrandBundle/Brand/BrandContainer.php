@@ -8,6 +8,7 @@ namespace DeskPRO\Bundle\BrandBundle\Brand;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsBag;
+use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 
 /**
  * The BrandContainer is a hub that holds all of the information that might be needed in the system that relate to a

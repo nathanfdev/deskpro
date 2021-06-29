@@ -27,6 +27,7 @@ use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Application\DeskPRO\Translate\SystemLanguage;
 use Application\DeskPRO\Twig\AppVariable;
 use Application\DeskPRO\Usersource\Adapter\ActiveDirectory;
+use Application\DeskPRO\Usersource\Adapter\DeskproOauth2Proxy;
 use Application\DeskPRO\Usersource\Adapter\Ldap;
 use Application\DeskPRO\Usersource\Adapter\Saml;
 use Application\DeskPRO\Usersource\UsersourceInfo;
@@ -669,8 +670,12 @@ class LoginController extends AbstractController
     {
         $return = LegacyRequestUtils::readReturnParam($this->request);
 
-        if ($usersource_test = $this->in->getBool(self::USERSOURCE_TEST)) {
-            $this->session->setFlash(self::USERSOURCE_TEST, 1);
+        if ($usersource_test = $this->in->getString(self::USERSOURCE_TEST)) {
+            if (!$this->container->checkStaticSecurityToken('usersource_test:' . $usersource_id, $usersource_test)) {
+                throw $this->createNotFoundException('test is not enabled');
+            }
+
+            $this->session->setFlash(self::USERSOURCE_TEST, $usersource_test);
         }
 
         $usersource = $this->em()->find(Usersource::class, $usersource_id);
@@ -895,9 +900,13 @@ class LoginController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $usersource_test = $this->session->getFlash(self::USERSOURCE_TEST, []);
+        $usersource_test = current($this->session->getFlash(self::USERSOURCE_TEST, []));
         if (!$usersource_test) {
-            $usersource_test = $this->in->getBool(self::USERSOURCE_TEST);
+            $usersource_test = $this->in->getString(self::USERSOURCE_TEST);
+        }
+
+        if ($usersource_test && !$this->container->checkStaticSecurityToken('usersource_test:' . $usersource_id, $usersource_test)) {
+            throw $this->createNotFoundException('test is not enabled');
         }
 
         $adapter = $this->_initUserSourceAdapter($usersource);
@@ -1368,9 +1377,13 @@ class LoginController extends AbstractController
      */
     public function usersourceSsoAction($usersource_id)
     {
-        $usersourceTest = $this->session->getFlash(self::USERSOURCE_TEST, []);
+        $usersourceTest = current($this->session->getFlash(self::USERSOURCE_TEST, []));
         if (!$usersourceTest) {
-            $usersourceTest = $this->in->getBool(self::USERSOURCE_TEST);
+            $usersourceTest = $this->in->getString(self::USERSOURCE_TEST);
+        }
+
+        if ($usersourceTest && !$this->container->checkStaticSecurityToken('usersource_test:' . $usersource_id, $usersourceTest)) {
+            throw $this->createNotFoundException('test is not enabled');
         }
 
         // TODO: user auth_manager for this
@@ -1588,6 +1601,10 @@ class LoginController extends AbstractController
      */
     private function getAdapterLog($adapter)
     {
+        if ($adapter instanceof DeskproOauth2Proxy) {
+            return '';
+        }
+
         if ($adapter instanceof Loggable) {
             if (!$logger = $adapter->getLogger()) {
                 return '';
@@ -1596,7 +1613,7 @@ class LoginController extends AbstractController
                 return '';
             }
             $writers = $writer_chain->getWriters();
-            $log     = '';
+            $log     = get_class($adapter) . "\n\n";
             foreach ($writers as $writer) {
                 if ($writer instanceof ArrayWriter) {
                     $log .= $writer->getMessagesAsString();

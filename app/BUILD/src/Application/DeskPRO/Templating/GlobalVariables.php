@@ -9,6 +9,7 @@ namespace Application\DeskPRO\Templating;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
+use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
@@ -44,14 +45,24 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return App::getCurrentPerson();
     }
 
+    /**
+     * @deprecated
+     */
     public function getSetting($name)
     {
+        if (!in_array($name, AdvancedSettings::getAcceptableSettingIds())) {
+            return null;
+        }
+
         return App::getSetting($name);
     }
 
+    /**
+     * @deprecated
+     */
     public function getSettingDefaultGroup($id)
     {
-        return App::get('deskpro.core.settings')->getDefaultGroup($id);
+        return [];
     }
 
     public function getRequest()
@@ -64,21 +75,43 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return App::$container->getBrandSetting('core.iface_portal');
     }
 
+    /**
+     * @deprecated
+     */
     public function getJira()
     {
-        return App::$container->get(JIRA::NAME);
+        $jira = App::$container->get(JIRA::NAME);
+        if (!$jira) {
+            return [
+                'isEnabled' => function() {
+                    return false;
+                }
+            ];
+        }
+
+        return [
+            'isEnabled' => function() use ($jira) {
+                return $jira->isEnabled();
+            }
+        ];
     }
 
+    /**
+     * @deprecated
+     */
     public function getSettingGroup($group)
     {
-        $group_vars = App::get('deskpro.core.settings')->getGroup($group);
-
-        return $group_vars;
+        // unused
+        return [];
     }
 
+    /**
+     * @deprecated
+     */
     public function getConfig($name, $default = null)
     {
-        return App::getConfig($name, $default);
+        // unused
+        return $default;
     }
 
     public function getSession()
@@ -136,11 +169,17 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return App::getSystemService('logo_blob');
     }
 
+    /**
+     * @removed
+     */
     public function getUsersourceManager()
     {
-        return App::getSystemService('UsersourceManager');
+        return null;
     }
 
+    /**
+     * @deprecated
+     */
     public function getAuthenticationManager()
     {
         return App::getSystemService('authentication_manager');
@@ -183,17 +222,34 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
     }
 
     /**
-     * Used only for backwards comptat.
-     *
-     * @deprecated
+     * @removed
      */
     public function getDataRepository($ent)
     {
-        return App::getSystemService("{$ent}Data");
+        return null;
     }
 
+    /**
+     * @deprecated
+     */
     public function getDataService($ent)
     {
+        $validNames = [
+            'CommunityForum',
+            'Language',
+            'Organization',
+            'Sla',
+            'TicketCategory',
+            'TicketPriority',
+            'TicketWorkflow',
+            'Usergroup',
+            'AgentData'
+        ];
+
+        if (!in_array($ent, $validNames)) {
+            return null;
+        }
+
         return App::getDataService($ent);
     }
 
@@ -217,9 +273,12 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return App::getDataService('AgentTeam');
     }
 
+    /**
+     * @removed
+     */
     public function getUsersources()
     {
-        return App::getDataService('Usersource');
+        return null;
     }
 
     public function getUsergroups()
@@ -297,7 +356,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         }
 
         if ($ent = Strings::extractRegexMatch('#^(.*?)Data$#', $name, 1)) {
-            return App::getContainer()->getSystemService(ucfirst($ent).'Data');
+            return $this->getDataService(ucfirst($ent).'Data');
         }
 
         return;
@@ -378,9 +437,30 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return $this->app_allowed_checks[$k] = $perms->checkPersonPermission($app, $person);
     }
 
+    public function getMsTranslatorService()
+    {
+        /** @var \Orb\Service\Microsoft\Translate\Translate $ms */
+        $ms = App::getContainer()->getAppManager()->getService('ms_translator');
+        if (!$ms) {
+            return null;
+        }
+
+        return [
+            'getLanguagesForTranslate' => function() use ($ms) {
+                return $ms->getLanguagesForTranslate();
+            },
+            'getSingleLanguageName' => function($code) use ($ms) {
+                return $ms->getSingleLanguageName($code);
+            },
+        ];
+    }
+
+    /**
+     * @deprecated
+     */
     public function getAppService($name)
     {
-        return App::getContainer()->getAppManager()->getService($name);
+        return null;
     }
 
     public function getFullAssetUrl()

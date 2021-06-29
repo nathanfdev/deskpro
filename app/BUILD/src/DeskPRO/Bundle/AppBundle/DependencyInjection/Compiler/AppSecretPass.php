@@ -33,6 +33,41 @@ class AppSecretPass implements CompilerPassInterface
                 $def->replaceArgument(1, $exp);
             }
 
+            $providers = [
+                'security.authentication.provider.anonymous.default',
+                'security.authentication.provider.anonymous.api_anonymous_home',
+                'security.authentication.provider.anonymous.api_oauth_anonymous',
+                'security.authentication.provider.anonymous.api_oauth_access',
+                'security.authentication.provider.anonymous.api_anonymous_usersources',
+                'security.authentication.provider.anonymous.api_anonymous_dashboard_view',
+                'security.authentication.provider.anonymous.api_anonymous_voice',
+                'security.authentication.provider.anonymous.api_anonymous',
+                'security.authentication.provider.anonymous.api_messenger_anonymous_home',
+                'security.authentication.provider.anonymous.api_messenger_anonymous_setup',
+            ];
+
+            $listeners = [
+                'security.authentication.listener.anonymous.default',
+                'security.authentication.listener.anonymous.api_anonymous_home',
+                'security.authentication.listener.anonymous.api_oauth_anonymous',
+                'security.authentication.listener.anonymous.api_oauth_access',
+                'security.authentication.listener.anonymous.api_anonymous_usersources',
+                'security.authentication.listener.anonymous.api_anonymous_dashboard_view',
+                'security.authentication.listener.anonymous.api_anonymous_voice',
+                'security.authentication.listener.anonymous.api_anonymous',
+                'security.authentication.listener.anonymous.api_messenger_anonymous_home',
+                'security.authentication.listener.anonymous.api_messenger_anonymous_setup',
+                'security.authentication.listener.anonymous.portal',
+            ];
+
+            if (in_array($service_id, $providers)) {
+                $def->replaceArgument(0, $exp);
+            }
+
+            if (in_array($service_id, $listeners)) {
+                $def->replaceArgument(1, $exp);
+            }
+
             foreach ($def->getArguments() as $arg_num => $argument) {
                 if ('%kernel.secret%' === $argument || '%secret%' === $argument) {
                     $def->replaceArgument($arg_num, $exp);

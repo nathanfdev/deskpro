@@ -13,9 +13,19 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\NotAgentEmail;
 use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\Request;
 
 class EmailAccountsController extends BaseEmailAccountsController
 {
+    public function preActionHandler(Request $request, $action, $arguments = null)
+    {
+        if (!defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+
+        return parent::preActionHandler($request, $action, $arguments);
+    }
+
     /**
      * @param EmailAccount $account
      *

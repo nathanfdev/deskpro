@@ -308,6 +308,7 @@ class PackageInstaller
     private function compileHtmlTemplate(Package $package, array $asset_info)
     {
         SafeFile::assertValid($asset_info['real_path'], SafeFile::UNSPECIFIED);
+
         $content = file_get_contents($asset_info['real_path']);
         $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($package) {
             $path = @realpath($package->getPath().'/html/'.$m[1]);
@@ -317,7 +318,7 @@ class PackageInstaller
                 return '<!-- Invalid include file: '.$m[1].' -->';
             }
 
-            $inc_content = @SafeFile::fileGetContents($path, dirname($path));
+            $inc_content = @SafeFile::fileGetContents($path, $package->getPath());
 
             return $inc_content;
         }, $content);
@@ -419,6 +420,8 @@ class PackageInstaller
                 default:
                     $filename = $path.'/'.$asset->name;
             }
+
+            SafeFile::assertValid($filename, $path);
 
             $dir = pathinfo($filename, PATHINFO_DIRNAME);
             if (!file_exists($dir)) {

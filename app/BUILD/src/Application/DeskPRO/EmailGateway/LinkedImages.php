@@ -3,9 +3,9 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Component\Util\IpUtils;
 use DpSys\LowError\SystemErrorHandler;
-use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
@@ -47,7 +47,7 @@ class LinkedImages
         static $cache;
         $m      = null;
         $tmpDir = App::$container->get('deskpro.app_env')->getUserTmpDir();
-        $client = new Client([
+        $client = new HttpClient([
             RequestOptions::ALLOW_REDIRECTS => true,
             RequestOptions::CONNECT_TIMEOUT => 4,
             RequestOptions::TIMEOUT         => 10,

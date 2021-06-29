@@ -1,0 +1,6 @@
+services:
+  handle_cloud_mode:
+    class: Cloud\LegacyApiBundle\HttpKernel\EventListener\HandleCloudMode
+    arguments: ["@logger"]
+    tags:
+      - { name: kernel.event_subscriber }

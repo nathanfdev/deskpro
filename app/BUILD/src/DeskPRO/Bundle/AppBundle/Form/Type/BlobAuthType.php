@@ -5,10 +5,10 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\BlobAuthTransformer;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Component\Util\IpUtils;
 use Doctrine\ORM\EntityManager;
 use Guzzle\Http\Mimetypes;
-use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -86,7 +86,7 @@ class BlobAuthType extends AbstractType
                 $event->setData($data['blob_auth']);
             } elseif (isset($data['url'])) {
                 try {
-                    $client  = new Client();
+                    $client  = new HttpClient();
                     $request = new Request('GET', $data['url']);
 
                     if (!IpUtils::isUrlUserCallable($data['url'])) {

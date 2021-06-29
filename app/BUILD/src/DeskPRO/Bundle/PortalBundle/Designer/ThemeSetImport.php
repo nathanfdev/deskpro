@@ -8,6 +8,7 @@ use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\Filesystem\Filesystem;
@@ -198,6 +199,9 @@ class ThemeSetImport
             $blob = $asset->getBlob();
 
             $assetPath = $assetsDir.$asset->getId().'-'.$blob->getFilename();
+
+            SafeFile::assertValid($assetPath, $assetsDir);
+
             $this->blobStorage->copyBlobRecordToFile($assetPath, $blob);
 
             $jsonData['assets'][] = [

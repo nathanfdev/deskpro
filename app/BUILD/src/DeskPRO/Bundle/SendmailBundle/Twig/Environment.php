@@ -9,6 +9,7 @@ use Application\EmailBundle\Twig\Extension\TemplatingExtension;
 use DeskPRO\Bundle\SendmailBundle\Twig\Loader\HybridLoader;
 use DpSys\LowError\SystemErrorHandler;
 use Twig\Cache\CacheInterface;
+use Application\DeskPRO\Templating\TemplateUtils;
 
 class Environment extends \Twig_Environment
 {
@@ -111,6 +112,10 @@ class Environment extends \Twig_Environment
 
     private function doLoadTemplate($name, $index = null)
     {
+        if (!TemplateUtils::isAllowedTemplateFilepath($name)) {
+            throw new \RuntimeException("Not allowed to load template {$name}");
+        }
+
         if (!isset($GLOBALS['DP_RENDERED_TEMPLATES'])) {
             $GLOBALS['DP_RENDERED_TEMPLATES'] = [];
         }

@@ -4,6 +4,7 @@ services:
     arguments:
       - "@DeskPRO\\Bundle\\AppBundle\\Webhooks\\PayloadConvertersRegistry"
       - "@ticket_manager"
+      - "@deskpro.sandboxed_twig.security_policy"
     calls:
       - [ setContainer, [ @service_container ] ]
 

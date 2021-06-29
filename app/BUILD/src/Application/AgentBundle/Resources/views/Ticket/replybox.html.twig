@@ -115,8 +115,8 @@
 						</a>
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle">
 							<select class="language_id">
-								{% for code in app.getAppService('ms_translator').getLanguagesForTranslate() %}
-									{% set name = app.getAppService('ms_translator').getSingleLanguageName(code) %}
+								{% for code in app.getMsTranslatorService().getLanguagesForTranslate() %}
+									{% set name = app.getMsTranslatorService().getSingleLanguageName(code) %}
 									<option value="{{ code }}">{{ name }}</option>
 								{% endfor %}
 							</select>

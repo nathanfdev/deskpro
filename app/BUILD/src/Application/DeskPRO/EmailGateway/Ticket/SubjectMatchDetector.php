@@ -49,7 +49,15 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
      */
     protected $enable_exact_subject = false;
 
+    /**
+     * @var mixed
+     */
     protected $enable_same_account = null;
+
+    /**
+     * @var bool
+     */
+    protected $ignore_participants = false;
 
     /**
      * Enable bounce mode if the message is or is suspected ot be a bounced message.
@@ -85,6 +93,17 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
     public function enableExactSubjectMatching()
     {
         $this->enable_exact_subject = true;
+    }
+
+    /**
+     * When enabled this will skip participants check
+     * That's added especially for the Bitdefender customer
+     *
+     * @link https://app.clubhouse.io/deskpro-bugs/story/30453/subject-matching-failing-for-bitdefender
+     */
+    public function enableParticipantIgnore()
+    {
+        $this->ignore_participants = true;
     }
 
     /**
@@ -385,6 +404,11 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
      */
     protected function hasSameParticipants($reader, $ticket)
     {
+        // return early
+        if ($this->ignore_participants) {
+            return true;
+        }
+
         $readerAddresses = array_map(function ($email) {
             /* @var \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress $email */
             return $email->getEmail();

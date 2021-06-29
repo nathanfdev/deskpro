@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Command;
 
-use GuzzleHttp\Client;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,7 +27,7 @@ class EvaluateTaskRouterCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $client  = new Client();
+        $client  = new HttpClient();
         $baseUrl = $input->getOption('base_url') ?: $this->getContainer()->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
         $baseUrl = rtrim($baseUrl, '/');
 

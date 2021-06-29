@@ -26,6 +26,10 @@ class CloudCallController extends AbstractController
      */
     public function preActionHandler(Request $request, $action, $arguments = null)
     {
+        if (!defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
 

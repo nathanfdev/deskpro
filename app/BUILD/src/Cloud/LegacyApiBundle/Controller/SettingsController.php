@@ -10,9 +10,19 @@ use Application\DeskPRO\Entity\BrandSetting;
 use Application\LegacyApiBundle\Controller\SettingsController as BaseSettingsController;
 use Cloud\LegacyApiBundle\Helper\CloudBrandHelper;
 use Orb\Util\OptionsArray;
+use Symfony\Component\HttpFoundation\Request;
 
 class SettingsController extends BaseSettingsController
 {
+    public function preActionHandler(Request $request, $action, $arguments = null)
+    {
+        if (!defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+
+        return parent::preActionHandler($request, $action, $arguments);
+    }
+
     //###################################################################################################################
     // get-url-settings
     //###################################################################################################################

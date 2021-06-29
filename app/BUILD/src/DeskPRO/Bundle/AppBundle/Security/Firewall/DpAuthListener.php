@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
@@ -192,9 +193,9 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         $authManager = $this->container->get('dp_authentication_manager.user');
 
         $usersource     = $this->getUsersource($request);
-        $usersourceTest = $this->isUsersourceTest($request);
+        $usersourceTest = $this->isUsersourceTest($request, $usersource);
         if ($usersourceTest) {
-            $session->getFlashBag()->set(self::USERSOURCE_TEST, 1);
+            $session->getFlashBag()->set(self::USERSOURCE_TEST, $usersourceTest);
         }
 
         if (!$usersourceTest && !$authManager->isUsableUsersource($usersource)) {
@@ -281,7 +282,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         $authManager = $this->container->get('dp_authentication_manager.user');
 
         $usersource     = $this->getUsersource($request);
-        $usersourceTest = $this->isUsersourceTest($request);
+        $usersourceTest = $this->isUsersourceTest($request, $usersource);
 
         if (!$usersourceTest && !$authManager->isUsableUsersource($usersource)) {
             throw new NotFoundHttpException('it is illegal to use this usersource in this context');
@@ -355,7 +356,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     {
         $authManager    = $this->container->get('dp_authentication_manager.user');
         $usersource     = $this->getUsersource($request);
-        $usersourceTest = $this->isUsersourceTest($request);
+        $usersourceTest = $this->isUsersourceTest($request, $usersource);
 
         $adapter = $authManager->getAuthAdapterFactory()->getAuthAdapter($usersource, $request->get('context'));
         if (!$adapter instanceof SsoLoginActionInterface) {
@@ -549,14 +550,28 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     /**
      * @param Request $request
      *
-     * @return bool
+     * @return string
      */
-    protected function isUsersourceTest(Request $request)
+    protected function isUsersourceTest(Request $request, Usersource $usersource = null)
     {
+        if (!$usersource) {
+            return false;
+        }
+
         /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
         $session = $request->getSession();
 
-        return $session->getFlashBag()->get(self::USERSOURCE_TEST, []) || $request->get(self::USERSOURCE_TEST);
+        $usersourceTest = current($session->getFlashBag()->get(self::USERSOURCE_TEST, [])) ?: $request->get(self::USERSOURCE_TEST);
+
+        if (!$usersourceTest) {
+            return false;
+        }
+
+        if (!App::getContainer()->checkStaticSecurityToken('usersource_test:' . $usersource->getId(), $usersourceTest)) {
+            return false;
+        }
+
+        return $usersourceTest;
     }
 
     /**

@@ -10,9 +10,19 @@ use Application\DeskPRO\Entity\TmpData;
 use Application\LegacyApiBundle\Controller\LicenseController as BaseLicenseController;
 use DpSys\License;
 use Orb\Util\Dates;
+use Symfony\Component\HttpFoundation\Request;
 
 class LicenseController extends BaseLicenseController
 {
+    public function preActionHandler(Request $request, $action, $arguments = null)
+    {
+        if (!defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+
+        return parent::preActionHandler($request, $action, $arguments);
+    }
+
     //###################################################################################################################
     // get-license
     //###################################################################################################################

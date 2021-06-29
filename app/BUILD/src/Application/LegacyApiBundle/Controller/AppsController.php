@@ -21,6 +21,7 @@ use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator;
 use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstance;
 use DeskPRO\Bundle\AppStoreBundle\EventsSystem;
@@ -917,7 +918,13 @@ class AppsController extends AbstractController
                 return $this->createApiErrorResponse('copy_error', 'Failed to copy file to temp directory');
             }
 
-            if (!@copy($upload_url, $temp_name)) {
+            try {
+                HttpClient::downloadFile(
+                    $upload_url,
+                    $temp_name,
+                    dp_get_tmp_dir()
+                );
+            } catch (\Exception $e) {
                 return $this->createApiErrorResponse('invalid_upload', 'Invalid file upload');
             }
         } else {
@@ -1095,6 +1102,8 @@ class AppsController extends AbstractController
         if ($blob) {
             $appEnv   = $this->container->get('deskpro.app_env');
             $blobPath = $appEnv->getUserTmpDir().'/'.$blob->getFilename();
+
+            SafeFile::assertValid($blobPath, $appEnv->getUserTmpDir());
 
             $this->container->get('blob.storage')->copyBlobRecordToFile($blobPath, $blob);
         } elseif (!file_exists($blobPath)) {

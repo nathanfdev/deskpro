@@ -3,7 +3,7 @@
 	"is_native": true,
 	"title": "Database Authentication",
 	"description": "Allows users to log in using credentials from a standard database (with custom PHP password checking).",
-	"tags": ["usersources"],
+	"tags": ["usersources", "onprem_only"],
 	"api_version": 1,
 	"version": 1,
 	"version_name": "1.0.0",

@@ -21,6 +21,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\TokenExchangeAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use DeskPRO\Bundle\AppBundle\Limits\LimitsService;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
@@ -377,6 +378,8 @@ class MiscController extends AbstractController
             if (!$path || !is_file($path) || strpos($path, DP_WEB_ROOT) !== 0 || Strings::getExtension($path) != 'png') {
                 throw $this->createNotFoundException();
             }
+
+            SafeFile::assertValid($path, DP_WEB_ROOT);
 
             $blob = $this->container->getBlobStorage()->createBlobRecordFromFile($path, pathinfo($path, PATHINFO_BASENAME), 'image/png', $props);
         } else {

@@ -7,10 +7,10 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Component\Util\IpUtils;
 use Doctrine\ORM\EntityManager;
 use Exception;
-use GuzzleHttp\Client;
 use GuzzleHttp\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -100,7 +100,7 @@ class ImagesService
     public function triggerSplashImageDownload($image)
     {
         try {
-            $client = new Client();
+            $client = new HttpClient();
             if (!IpUtils::isUrlUserCallable($image['links']['download_location'])) {
                 throw new \InvalidArgumentException("URL is not user callable");
             }

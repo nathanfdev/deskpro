@@ -24,6 +24,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Bundle\VoiceBundle\Exception\BlacklistException;
 use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
@@ -1400,7 +1401,7 @@ class TwilioCallbacksController extends BaseController
         $addOns     = json_decode($request->request->get('AddOns'), true);
         $payloadUrL = $addOns['results']['voicebase_transcription']['payload'][0]['url'];
 
-        $client   = new \GuzzleHttp\Client();
+        $client   = new HttpClient();
         $response = $client->request('GET', $payloadUrL, ['auth' => [$account->getAccountId(), $account->getAuthToken()]]);
 
         $results = json_decode((string) $response->getBody(), true);

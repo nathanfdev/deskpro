@@ -147,12 +147,14 @@ security:
                 domain:   ~ # the current domain from $_SERVER
                 remember_me_parameter: remember_me
 
+    # do NOT anchor these (i.e. preceded with ^) unless you are very careful
+    # to also include the option lang code prefix (e.g. /en/) AND brand (e.g. /b/foo/)
+    # AND both (e.g. /en/b/foo/). Easier to just let it match anywhere;
+    # theyre unique enough not to appear in other types of routes so its ok.
+    # (failing to handle this would be bypassing role requirements by just adding a prefix.)
     access_control:
-        - { path: ^/admin-preview-[0-9]+/, roles: [ROLE_ADMIN, ROLE_PREVIOUS_ADMIN] }
-        - { path: ^/(b/[\w\d-]+/[a-z]+)?portal/api/style/(edit-theme-set|variable-groups), roles: [ROLE_ADMIN] }
-        - { path: template_editor, roles: [ROLE_ADMIN] }
-        - { path: ^/_internal/, roles: [ROLE_ADMIN] }
-
+        - { path: /admin-preview-[0-9]+/, roles: [ROLE_ADMIN, ROLE_PREVIOUS_ADMIN] }
+        - { path: /portal/api/style/(edit-theme-set|variable-groups), roles: [ROLE_ADMIN] }
 
 # Twig Configuration
 twig:
