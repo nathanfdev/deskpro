@@ -263,9 +263,9 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      *
      * @return AgentWhitelistIp
      */
-    public function createAgentWhitelistIpModel($url)
+    public function createAgentWhitelistIpModel($url, $ip)
     {
-        return $this->convertParameters(AgentWhitelistIp::class, [$url]);
+        return $this->convertParameters(AgentWhitelistIp::class, [$url, $ip]);
     }
 
     /**

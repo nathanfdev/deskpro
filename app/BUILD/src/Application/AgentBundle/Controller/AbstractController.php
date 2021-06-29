@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\AgentBundle\Controller;
 
@@ -33,6 +31,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
     /**
      * Check if the global request token check is required for the request.
+     *
+     * @param mixed $action
+     * @param null|mixed $arguments
      */
     protected function requireRequestToken($action, $arguments = null)
     {
@@ -88,6 +89,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             }
         }
 
+        $request = $this->get('request_stack')->getMasterRequest() ?: $request;
         if (!CheckWhitelistedIP::checkIP($request, $this->container, $this->person, $this)) {
             return $this->render('AgentBundle:Login:whitelist-ip.html.twig', [
                 'ip' => $request->getClientIp(),
