@@ -133,9 +133,7 @@ class HttpClient extends Client
         ];
 
         $client = new self($clientOptions);
-        $response = $client->get($fromUrl, [
-            'stream' => true,
-        ]);
+        $response = $client->get($fromUrl);
         $body = $response->getBody();
 
         $fp = @fopen($toPath, 'w');
@@ -189,9 +187,7 @@ class HttpClient extends Client
         ];
 
         $client = new self($clientOptions);
-        $response = $client->get($fromUrl, [
-            'stream' => true,
-        ]);
+        $response = $client->get($fromUrl);
         $body = $response->getBody();
 
         $bytesRead = 0;
