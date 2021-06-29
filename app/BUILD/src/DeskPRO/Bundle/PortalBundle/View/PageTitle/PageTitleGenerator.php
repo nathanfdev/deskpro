@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\View\PageTitle;
 
@@ -234,6 +232,7 @@ class PageTitleGenerator
                 foreach ($contentOrCat->getCategories() as $cat_to_check) {
                     if ($permission_bag->hasContentCategoryAccess($cat_to_check)) {
                         $cat = $cat_to_check;
+
                         break;
                     }
                 }
@@ -262,7 +261,7 @@ class PageTitleGenerator
     {
         $builder = $this->createHelpdeskTitleBuilder();
 
-        $sectionTitle = $this->phrase('portal.guides.section-title');
+        $sectionTitle = $this->phrase(['portal.guides.section-title', 'helpcenter.guides.section-title']);
 
         if ($topicOrGuide instanceof Guide) {
             $builder->prependSection(
@@ -378,7 +377,7 @@ class PageTitleGenerator
 
     protected function phrase($phrase)
     {
-        return $this->language_manager->getTranslator()->phrase($phrase);
+        return $this->language_manager->phrase($phrase);
     }
 
     protected function setting($name, $default = null)
