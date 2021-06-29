@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewOrganization;
@@ -242,18 +238,35 @@ class OrganizationController extends AbstractController
 
         switch ($action) {
             case 'name':
-                if ($this->in->getString('name')) {
+                $orgName = $this->in->getString('name');
+                if ($orgName) {
+                    $organizationsWithName = App::$container->get('doctrine.orm.default_entity_manager')->getRepository(Organization::class)
+                        ->createQueryBuilder('a')
+                        ->where('upper(a.name) = upper(:name)')
+                        ->andWhere('a.id != :id')
+                        ->setParameter('name', $orgName)
+                        ->setParameter('id', $org->getId())
+                        ->getQuery()
+                        ->execute();
+
+                    if (!empty($organizationsWithName)) {
+                        return $this->createJsonResponse(['error' => true, 'code' => 'organization.exist', 'message' => 'Organization with same name already exists']);
+                    }
+
                     $org->setName($this->in->getString('name'));
                     $this->em->persist($org);
                 }
+
                 break;
             case 'set-summary':
                 $org->setSummary($this->in->getString('summary'));
                 $this->em->persist($org);
+
                 break;
             case 'delete-picture':
                 $org->setPicture(null);
                 $this->em->persist($org);
+
                 break;
             case 'set-picture':
                 $blob = $this->em->find(Blob::class, $this->in->getUInt('blob_id'));
@@ -261,6 +274,7 @@ class OrganizationController extends AbstractController
                     $org->setPicture($blob);
                     $this->em->persist($org);
                 }
+
                 break;
             case 'add-person':
                 if (!$this->person->hasPerm('agent_people.edit')) {
@@ -276,6 +290,7 @@ class OrganizationController extends AbstractController
                     $data['add_person_id'] = $person['id'];
                     $data['row_html']      = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', ['person' => $person, 'org' => $org]);
                 }
+
                 break;
             case 'get-person-row':
                 $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
@@ -285,6 +300,7 @@ class OrganizationController extends AbstractController
                         ['person' => $person, 'org' => $org]
                     );
                 }
+
                 break;
             case 'remove-person':
                 if (!$this->person->hasPerm('agent_people.edit')) {
@@ -296,6 +312,7 @@ class OrganizationController extends AbstractController
                     $this->em->persist($person);
                     $data['remove_person_id'] = $person['id'];
                 }
+
                 break;
             case 'set-usergroups':
                 $usergroupIds = $this->in->getCleanValueArray('usergroup_ids', 'uint', 'discard');
@@ -321,6 +338,7 @@ class OrganizationController extends AbstractController
 
                     $this->container->getDb()->batchInsert('organization2usergroups', $inserts);
                 }
+
                 break;
             case 'remove-file':
                 $file = $this->em->find(OrganizationFile::class, $this->in->getUInt('file_id'));
@@ -328,6 +346,7 @@ class OrganizationController extends AbstractController
                     $this->em->remove($file);
                     $data['removed_file_id'] = $file['id'];
                 }
+
                 break;
             default:
                 return $this->createJsonResponse(['error' => true, 'message' => 'Unknown action']);
@@ -958,7 +977,9 @@ class OrganizationController extends AbstractController
             if (!$validator->isValid($newOrg)) {
                 $free = [];
                 foreach ($validator->getErrorsInfo() as $info) {
-                    $free[] = $info['message'];
+                    if ($info) {
+                        $free[] = $info['message'];
+                    }
                 }
 
                 return $this->createJsonResponse(
