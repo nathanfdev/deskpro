@@ -7,6 +7,7 @@
 namespace Application\DeskPRO\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
+use Orb\Validator\StringUrl;
 
 class Website extends AbstractContactData
 {
@@ -22,11 +23,9 @@ class Website extends AbstractContactData
 
         $input['url'] = isset($input['url']) ? $input['url'] : '';
 
-        if (!preg_match('#^(.*?)://#', $input['url'])) {
-            $input['url'] = 'http://'.$input['url'];
-        }
-
-        $contact_record->field_1 = $input['url'];
+        $contact_record->field_1 = StringUrl::isValueValid($input['url'])
+            ? $input['url']
+            : 'https://'.$input['url'];
     }
 
     /**
