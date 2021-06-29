@@ -232,6 +232,26 @@
                               </span>
                           </div>
                         </div>
+                        <div class="inner-group">
+                          <label>
+                            <h4>
+                              <label>
+                                <input type="checkbox" ng-model="settings.core_tickets_ignore_participants_in_subject_matching">
+                                Ignore participants matching for subject for ALL emails
+                              </label>
+                            </h4>
+                          </label>
+                          <div>
+                            <span class="help-block">
+                              Usually, this subject-matching algorithm matches only those tickets which have the
+                              same participants collection like in the email message.
+                              That prevents replies to be added to the tickets which accidentally have same subjects.
+                              </span>
+                            <span class="help-block">
+                                Enable this option if you want to stop checking participants matching
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                 </div>
