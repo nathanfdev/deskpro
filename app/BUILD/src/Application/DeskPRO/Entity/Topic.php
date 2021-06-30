@@ -22,6 +22,8 @@ class Topic extends ContentAbstract implements HighlightableModelInterface
 {
     const CONTENT_TYPE = 'topic';
 
+    const DISPLAY_FIELDS = ['draft', 'unpublished', 'archived', 'NONE', 'hidden'];
+
     /**
      * @var Guide
      */
