@@ -123,7 +123,7 @@ nelmio_api_doc:
         type: bearer
         custom_endpoint: true
 
-      enabled:  true
+      enabled:  false
       accept_type: application/json
       body_format:
         formats: [ form ]

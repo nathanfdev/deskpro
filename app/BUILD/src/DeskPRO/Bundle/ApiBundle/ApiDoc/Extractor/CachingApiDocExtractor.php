@@ -80,23 +80,7 @@ class CachingApiDocExtractor extends ApiDocExtractor
                 $serialized = serialize($data);
                 $cache->write($serialized, $resources);
             } catch (\Exception $dataException) {
-                // unable to serialize
-                // return as is as fallback
-                SystemErrorHandler::logException($dataException);
-
-                foreach ($data as $route) {
-                    try {
-                        serialize($route);
-                    } catch (\Exception $routeException) {
-                        /** @var ApiDoc $annotation */
-                        $annotation = $route['annotation'];
-
-                        $methods   = implode(',', $annotation->getRoute()->getMethods());
-                        $routePath = $annotation->getRoute()->getPath();
-
-                        SystemErrorHandler::logException(new \RuntimeException("Unable to serialize api doc for $methods $routePath"));
-                    }
-                }
+                // cant serialize / cant cache
             }
 
             return $data;

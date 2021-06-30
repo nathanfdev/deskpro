@@ -41,6 +41,18 @@ class DefaultBrandFinder
      */
     public function getDefaultBrand()
     {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
+        // bit of a hack to get warmup of api docs working properly
+        // brand stack used a lot in forms, and forms are read for api docs,
+        // so we need a value here
+        if ($DP_ENV && $DP_ENV->getRuntimeVar('is_building', false)) {
+            $b = new Brand();
+            $this->em->persist($b);
+            return $b;
+        }
+
         $brand = null;
 
         try {

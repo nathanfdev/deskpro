@@ -62,6 +62,7 @@ dp_build_runcmd('bin/console cache:warmup --kernel install --env prod --no-debug
 
 echo "Cache warmup: api\n";
 dp_build_runcmd('bin/console cache:warmup --kernel api --env prod --no-debug --verbose --barg is-building');
+dp_build_runcmd('bin/console api:doc:dump --format json --kernel api --env prod --no-debug --verbose --barg is-building > /dev/null');
 
 echo "Cache warmup: messenger\n";
 dp_build_runcmd('bin/console cache:warmup --kernel messenger --env prod --no-debug --verbose --barg is-building');
