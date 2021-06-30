@@ -5,7 +5,7 @@
 </div>
 <!-- DP_MESSAGE_END -->
 <a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end dp_marker_link"></a>
-{% if app.isPortalEnabled() and message.attachments.count and not app.getSetting('core_tickets.disable_attachments_list') and can_login(person) %}
+{% if app.isPortalEnabled() and message.attachments.count and can_login(person) %}
 	{%- set attachmentsList -%}
 		{% for attach in message.attachments %}
 			{% if not attach.is_inline  %}
@@ -19,7 +19,7 @@
 		{% endfor %}
 	{%- endset -%}
 	{% if attachmentsList %}
-	<div style="font-size:11px">
+		<div style="{{ app.getSetting('core_tickets.disable_attachments_list') ? "display:none !important;" : "font-size:11px;" }}">
 		<br/>
 		<strong>{{ phrase('user.emails.attachments') }}</strong>
 		{{ attachmentsList }}

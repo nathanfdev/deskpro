@@ -1,7 +1,7 @@
 <!-- DP_MESSAGE_BEGIN --><div {{ language_html_attr(ticket ? ticket.language : false) }} name="dp_message_{{ message.id }}_begin" class="dp_message_{{ message.id }}_begin">{% if message.primary_translation %}{{ message.primary_translation.message|raw }}{% else %}{{ message.message|raw }}{% endif %}</div><!-- DP_MESSAGE_END -->
 <a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end dp_marker_link"></a>
-{% if app.isPortalEnabled() and message.attachments | safe_filter(a => not a.is_inline)  | length > 0 and not app.getSetting('core_tickets.disable_attachments_list') and can_login(recipient.id) %}
-	<div style="font-size:11px">
+{% if app.isPortalEnabled() and message.attachments | safe_filter(a => not a.is_inline)  | length > 0  and can_login(recipient.id) %}
+	<div style="{{ app.getSetting('core_tickets.disable_attachments_list') ? "display:none !important;" : "font-size:11px;" }}">
 		<br />
 		<strong>{{ phrase('helpcenter.general.attachments') }}</strong>
 		{% for attach in message.attachments %}
