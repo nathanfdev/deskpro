@@ -48,7 +48,7 @@ class DefaultBrandFinder
         // brand stack used a lot in forms, and forms are read for api docs,
         // so we need a value here
         if ($DP_ENV && $DP_ENV->getRuntimeVar('is_building', false)) {
-            $b = new Brand();
+            $b = $this->makeEmptyBrandModel();
             $this->em->persist($b);
             return $b;
         }
@@ -81,13 +81,20 @@ class DefaultBrandFinder
 
         // if somehow we don't have a database or brand entity, just return a brand that represents a "standard theme"
         if (!$brand) {
-            $brand     = new Brand();
-            $brand->id = 1;
-            $theme_set = new ThemeSet();
-            $theme_set->setThemeId(StandardTheme::THEME_ID);
-            $theme_set->setBrand($brand);
-            $brand->setThemeSet($theme_set);
+            $brand = $this->makeEmptyBrandModel();
         }
+
+        return $brand;
+    }
+
+    private function makeEmptyBrandModel()
+    {
+        $brand     = new Brand();
+        $brand->id = 1;
+        $theme_set = new ThemeSet();
+        $theme_set->setThemeId(StandardTheme::THEME_ID);
+        $theme_set->setBrand($brand);
+        $brand->setThemeSet($theme_set);
 
         return $brand;
     }
