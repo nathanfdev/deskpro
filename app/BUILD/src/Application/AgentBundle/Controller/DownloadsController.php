@@ -20,6 +20,7 @@ use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Web;
+use Orb\Validator\StringUrl;
 use Symfony\Component\HttpFoundation\Request;
 
 class DownloadsController extends AbstractController
@@ -260,7 +261,7 @@ class DownloadsController extends AbstractController
                     $filesize = $this->in->getString('download.filesize');
                     $filename = $this->in->getString('download.filename');
 
-                    if (!Web::urlExists($download->fileurl)) {
+                    if (!StringUrl::isValueValid($download->fileurl)) {
                         $this->em->rollback();
 
                         return $this->createJsonResponse([

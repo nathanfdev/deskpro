@@ -8,8 +8,8 @@ namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
-use Orb\Util\Web;
 use Orb\Validator\AbstractValidator;
+use Orb\Validator\StringUrl;
 
 class NewDownloadValidator extends AbstractValidator
 {
@@ -41,7 +41,7 @@ class NewDownloadValidator extends AbstractValidator
             $this->addError('attach.invalid');
         }
 
-        if ($download->fileurl && !Web::urlExists($download->fileurl)) {
+        if ($download->fileurl && !StringUrl::isValueValid($download->fileurl)) {
             $this->addError('fileurl.invalid');
         }
 
