@@ -182,7 +182,8 @@ class AdvancedSettings extends SettingFiles
             'voice.email_attach_recording',
             'voice.email_attach_transcription',
             'voice.transcribe_voicemail',
-
+            'voice.disable_local_polling',
+            'voice.use_local_polling',
             'messenger.widget.lang_version',
             'messenger.widget.primary_color',
             'messenger.widget.bg_color',

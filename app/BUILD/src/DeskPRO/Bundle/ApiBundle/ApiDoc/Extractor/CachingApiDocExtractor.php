@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -65,6 +66,15 @@ class CachingApiDocExtractor extends ApiDocExtractor
         $cache = $this->getViewCache($view);
 
         if (!$cache->isFresh()) {
+
+            global $DP_ENV;
+            if (php_sapi_name() !== 'cli' && $DP_ENV && $DP_ENV->getEnvId() === 'prod') {
+                // prod should have apidocs generated at build-time
+                // this is a very expensive operation so we want to make sure
+                // we never re-gen them in prod
+                throw new NotFoundHttpException("API docs are unavilable");
+            }
+
             $resources = [];
             foreach ($this->getRoutes() as $route) {
                 if (null !== ($method = $this->getReflectionMethod($route->getDefault('_controller')))
@@ -80,23 +90,7 @@ class CachingApiDocExtractor extends ApiDocExtractor
                 $serialized = serialize($data);
                 $cache->write($serialized, $resources);
             } catch (\Exception $dataException) {
-                // unable to serialize
-                // return as is as fallback
-                SystemErrorHandler::logException($dataException);
-
-                foreach ($data as $route) {
-                    try {
-                        serialize($route);
-                    } catch (\Exception $routeException) {
-                        /** @var ApiDoc $annotation */
-                        $annotation = $route['annotation'];
-
-                        $methods   = implode(',', $annotation->getRoute()->getMethods());
-                        $routePath = $annotation->getRoute()->getPath();
-
-                        SystemErrorHandler::logException(new \RuntimeException("Unable to serialize api doc for $methods $routePath"));
-                    }
-                }
+                // cant serialize / cant cache
             }
 
             return $data;
