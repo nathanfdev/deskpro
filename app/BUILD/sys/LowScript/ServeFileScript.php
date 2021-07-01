@@ -953,7 +953,7 @@ class ServeFileScript extends LowScriptAbstract
                         HttpClient::streamFile($blob['file_url'], function ($dat) {
                             echo $dat;
                             flush();
-                        });
+                        }, ['maxSize' => 104857600]);
                     },
                     200,
                     $this->getHeaders($blob)
