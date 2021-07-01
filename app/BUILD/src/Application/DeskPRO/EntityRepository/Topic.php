@@ -35,7 +35,7 @@ class Topic extends AbstractEntityRepository
      *
      * @return array|null
      */
-    public function getInHierarchy($reset = false, $guide = null, $person = null)
+    public function getInHierarchy($reset = false, $guide = null, $person = null, $withHidden = false)
     {
         if (!$reset && $this->topicHierarchy !== null) {
             return $this->topicHierarchy;
@@ -53,6 +53,10 @@ class Topic extends AbstractEntityRepository
             $qb->from($this->tableName);
             $qb->where('status = ?');
             $params[] = TopicEntity::STATUS_PUBLISHED;
+            if($withHidden) {
+                $qb->orWhere('hidden_status = ?');
+                $params[] = TopicEntity::HIDDEN_STATUS_UNPUBLISHED;
+            }
             $qb->orderBy('display_order', 'ASC');
 
             if ($guide) {
