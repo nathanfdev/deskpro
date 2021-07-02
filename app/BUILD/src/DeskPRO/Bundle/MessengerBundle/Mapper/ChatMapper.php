@@ -12,6 +12,7 @@ use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 use Orb\Input\Cleaner\Cleaner;
+use Orb\Validator\StringUrl;
 
 /**
  * Class ChatMapper.
@@ -57,8 +58,10 @@ class ChatMapper
      *
      * @return ChatMessage
      */
-    public function createChatMessage($data, ChatConversation $chat)
+    public function createChatMessage($data, ChatConversation $chat, $origin = ChatMessage::ORIGIN_USER)
     {
+        $data['origin'] = $origin;
+
         $message = $this->getBasicMessage($chat);
         $errors  = [];
 
@@ -258,7 +261,7 @@ class ChatMapper
     public function createUserTrackMessage($chat, array $request)
     {
         $errors = [];
-        if (!isset($request['page_url']) || !trim($request['page_url'])) {
+        if (!isset($request['page_url']) || !trim($request['page_url']) && StringUrl::isValueValid($request['page_url'])) {
             $errors['page_url'] = 'page_url can\'t be blank';
         }
         if (!isset($request['page_title']) || !trim($request['page_title'])) {

@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\HitTrack\Recorder;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Component\Util\StringUtils;
 use Orb\Input\Cleaner\Cleaner;
+use Orb\Validator\StringUrl;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -160,7 +161,7 @@ class HitRecordFactory
             $url = $request->headers->get('Referer', null);
         }
 
-        if (!$url) {
+        if (!$url || !StringUrl::isValueValid($url)) {
             throw new \InvalidArgumentException('Missing URL');
         }
 

@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\UserChat;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Component\Util\RandUtils;
+use Orb\Validator\StringUrl;
 
 /**
  * Class UserChatMessages.
@@ -103,6 +104,10 @@ class UserChatMessages
      */
     public static function createUserTrackMessage(ChatConversation $chat, $url, $title = null)
     {
+        if (!StringUrl::isValueValid($url)) {
+            throw new \InvalidArgumentException();
+        }
+
         $phraseId = 'msg_new_user_track';
 
         $urlShow = preg_replace('#^https?://(www\.)?#i', '', $url);
@@ -114,6 +119,7 @@ class UserChatMessages
         $urlShow = htmlspecialchars($urlShow);
 
         if ($title) {
+            $title = htmlspecialchars($title);
             $urlShow = sprintf('%s, %s', $urlShow, $title);
         }
 
