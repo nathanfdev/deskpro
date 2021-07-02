@@ -58,8 +58,10 @@ class ChatMapper
      *
      * @return ChatMessage
      */
-    public function createChatMessage($data, ChatConversation $chat)
+    public function createChatMessage($data, ChatConversation $chat, $origin = ChatMessage::ORIGIN_USER)
     {
+        $data['origin'] = $origin;
+
         $message = $this->getBasicMessage($chat);
         $errors  = [];
 
