@@ -63,7 +63,10 @@ class PortalRatingsHelper
      */
     public function removeContentRating(RatingModel $rating, Person $person = null, $visitorId = null)
     {
-        $contentRating = ($this->findPersonRating($rating, $person)) ?? $this->findVisitorRating($rating, $visitorId);
+        $contentRating = $this->findPersonRating($rating, $person);
+        if (!$contentRating) {
+            $contentRating = $this->findVisitorRating($rating, $visitorId);
+        }
 
         if (null === $contentRating) {
             return false;
@@ -81,7 +84,10 @@ class PortalRatingsHelper
 
     public function updatePersistedOrCreateNewRating(RatingModel $rating, $visitor_id, $person, $down = false)
     {
-        $contentRating = ($this->findPersonRating($rating, $person)) ?? $this->findVisitorRating($rating, $visitor_id);
+        $contentRating = $this->findPersonRating($rating, $person);
+        if (!$contentRating) {
+            $contentRating = $this->findVisitorRating($rating, $visitor_id);
+        }
 
         //Already Upvoted
         if (null !== $contentRating && !$down) {
