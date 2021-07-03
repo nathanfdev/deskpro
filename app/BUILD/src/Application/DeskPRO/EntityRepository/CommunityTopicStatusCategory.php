@@ -76,7 +76,7 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
      *
      * @return array
      */
-    private function getCategoriesForType($type, $brand = null, $forum = null)
+    public function getCategoriesForType($type, $brand = null, $forum = null)
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb
