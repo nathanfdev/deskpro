@@ -145,7 +145,7 @@ export class GuideTree extends React.Component {
   };
 
   onMoveNode = (topic) => {
-    const params = { detail: { root: topic.path.length === 1 } };
+    const params = { detail: { root: topic.path.length === 1 || topic.node.no_content == 1 } };
     window.document.dispatchEvent(new CustomEvent(`dpMoveTopic${topic.node.id}`, params));
   };
 
