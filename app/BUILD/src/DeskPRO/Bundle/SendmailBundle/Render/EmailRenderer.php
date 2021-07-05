@@ -212,7 +212,7 @@ class EmailRenderer
         $model->setSiteUrl($this->serviceContainer->getBrandSetting('core.site_url'));
         $model->setSiteName($this->serviceContainer->getBrandSetting('core.site_name'));
         $model->setDeskproUrl($this->serviceContainer->getBrandSetting('core.deskpro_url'));
-
+        
         $preProcessor = new EmailPreProcessor();
         $code         = $preProcessor->process($code, $tplName);
 

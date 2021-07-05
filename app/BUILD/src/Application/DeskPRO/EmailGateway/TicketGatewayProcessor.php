@@ -390,9 +390,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                             $self      = $this;
                             $viewModel = $this->container->get('brand_stack')->pushTemporary(
                                 $person->getBrands()->first(),
-                                function () use ($self, $ticket) {
+                                function () use ($self, $ticket, $emailTo) {
                                     return $self->container->get('email.user_viewmodel_factory')
-                                        ->createNewReplyRejectResolvedModel($ticket);
+                                        ->createNewReplyRejectResolvedModel($ticket, $emailTo);
                                 }
                             );
                             $this->container->get('mailer.utils')->sendModelWithPersonContext(

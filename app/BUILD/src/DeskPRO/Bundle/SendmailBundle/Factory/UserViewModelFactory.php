@@ -341,13 +341,15 @@ class UserViewModelFactory extends AbstractViewModelFactory
 
     /**
      * @param Ticket $ticket
-     *
-     * @return NewReplyRejectResolved
+     * @param null $emailTo
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType|\DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalType
+     * @throws \Exception
      */
     public function createNewReplyRejectResolvedModel(
-        Ticket $ticket
+        Ticket $ticket, $emailTo = null
     ) {
         $arguments = $this->getTicketArguments($ticket);
+        $arguments = ($emailTo) ? array_merge($arguments, [$emailTo]) : $arguments;
 
         return $this->convertParameters(NewReplyRejectResolved::class, $arguments);
     }
@@ -938,7 +940,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
             $this->getTicketApprovalArguments('user', $ticket, $recipient, AbstractBaseApproval::STATUS_REJECTED)
         );
     }
-    
+
     /**
      * @return AutoResponder
      */
