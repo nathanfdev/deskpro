@@ -109,7 +109,6 @@ return [
     'path',
     'render',
     'render_*',
-    'controller',
     'absolute_url',
     'relative_path',
     'form_enctype',
@@ -252,5 +251,6 @@ return [
     'show_tab_feedback',
     'is_page_feedback',
     'core_deskpro_name',
-    'is_copyfree'
+    'is_copyfree',
+    'widget_phrases_json',
 ];

@@ -186,6 +186,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('asset_data_url', [$this, 'getAssetDataUrl']),
             new \Twig_SimpleFunction('is_category_subscribed', [$this, 'isCategorySubscribed']),
             new \Twig_SimpleFunction('core_deskpro_name', [$this, 'getDeskproName']),
+            new \Twig_SimpleFunction('widget_phrases_json', [$this, 'getWidgetPhrasesJson']),
 
             // Copied from legacy templating, used to render notification rows
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -1076,5 +1077,15 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function getName()
     {
         return 'portal_extension';
+    }
+
+    /**
+     * @return string
+     */
+    public function getWidgetPhrasesJson()
+    {
+        $phrases = $this->container->get('dp.portal.languages.widget_phrase_translator')->translatePhrases();
+
+        return json_encode($phrases);
     }
 }
