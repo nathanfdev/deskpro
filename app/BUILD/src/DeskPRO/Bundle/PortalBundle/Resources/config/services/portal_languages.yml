@@ -1,0 +1,4 @@
+services:
+  dp.portal.languages.widget_phrase_translator:
+    class: DeskPRO\Bundle\PortalBundle\Language\WidgetPhraseTranslator
+    arguments: [ "@service_container" ]
