@@ -97,7 +97,7 @@ class UseSectionVoter extends AbstractVoter
                     array_values(array_intersect($personUserGroupIds, $brandUserGroups))
                 );
 
-                return $brandPermissionBag->get('chat.use');
+                return $brandPermissionBag->get('chat.use') || $permissionBag->get('chat.use');
             case static::USE_DOWNLOADS:
                 return $this->getActiveBrandSetting('core.apps_downloads')
                     && ($permissionBag->get('downloads.use') && $permissionBag->getAllowedDownloadCategories());
