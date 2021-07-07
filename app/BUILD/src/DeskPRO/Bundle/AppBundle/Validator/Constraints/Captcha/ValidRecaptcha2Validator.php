@@ -6,6 +6,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use ReCaptcha\ReCaptcha;
+use ReCaptcha\RequestMethod\CurlPost;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -43,7 +44,7 @@ class ValidRecaptcha2Validator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         $recaptchaVersion = $this->getRecaptchaVersion();
-        $recaptcha        = new ReCaptcha($this->getSecretKey());
+        $recaptcha        = new ReCaptcha($this->getSecretKey(), new CurlPost());
         $request          = $this->request_stack->getMasterRequest();
         $recaptcha_value  = $request->get('g-recaptcha-response');
 

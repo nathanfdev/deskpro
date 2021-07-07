@@ -27,6 +27,8 @@ class EmailsController extends AbstractApiController
      */
     public function searchEmailsAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $term   = $request->get('term');
         $target = $request->get('target');
 

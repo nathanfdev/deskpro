@@ -366,7 +366,7 @@ class ChatHandler
             ChatEvent::TYPING_START_EVENT_TYPE,
             [
                 'message' => $message,
-                'origin'  => $request['origin'],
+                'origin'  => ChatMessage::ORIGIN_USER,
             ]
         ));
 

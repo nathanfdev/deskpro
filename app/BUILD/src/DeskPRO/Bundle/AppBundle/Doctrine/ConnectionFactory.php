@@ -28,12 +28,18 @@ class ConnectionFactory extends BaseConnectionFactory
             $mock->shouldReceive('commit')->andReturn();
             $mock->shouldReceive('rollback')->andReturn();
             $mock->shouldReceive('rollback')->andReturn();
+            $mock->shouldReceive('quote')->andReturnUsing(function() { return 'xxx'; });
 
             $makeStatement = function () {
                 $s = \Mockery::mock('Doctrine\DBAL\Driver\PDOStatement');
                 $s->shouldDeferMissing();
                 $s->shouldReceive('setFetchMode');
                 $s->shouldReceive('bindValue');
+                $s->shouldReceive('fetchAll')->andReturnUsing(function () { return []; });
+                $s->shouldReceive('fetchObject')->andReturnUsing(function () { return false; });
+                $s->shouldReceive('fetchColumn')->andReturnUsing(function () { return false; });
+                $s->shouldReceive('fetch')->andReturnUsing(function () { return false; });
+                $s->shouldReceive('rowCount')->andReturnUsing(function () { return 0; });
 
                 return $s;
             };

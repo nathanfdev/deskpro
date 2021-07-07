@@ -1,6 +1,6 @@
 <script>
-  (function() {
-    var dat = {{ render(controller('DeskPRO\\Bundle\\PortalBundle\\Controller\\Api\\LanguageController::widgetPhrasesAction', { _format: 'json' })) | raw }};
-    window.DP_SET_PHRASES(dat);
-  })();
+    (function() {
+        var dat = {{ widget_phrases_json() | raw }};
+        window.DP_SET_PHRASES(dat);
+    })();
 </script>
