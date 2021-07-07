@@ -15,23 +15,26 @@ class CommunityForumToStatus extends AbstractEntityRepository
      */
     public function getForumStatus($statuses = [], $forum = null)
     {
-        $forumStatus = [];
+        $forumStatuses = [];
 
         if (empty($statuses) || !$forum) {
-            return $forumStatus;
+            return $forumStatuses;
         }
 
         foreach ($statuses as $status) {
             $foundStatus = $this->findOneBy([
                 'forum'  => $forum,
-                'status' => $status->getId(),
+                'status' => $status,
             ]);
 
             if ($foundStatus) {
-                $forumStatus[] = $status;
+                $forumStatuses[] = $status;
             }
         }
 
-        return $forumStatus;
+        // if no specific statuses are set for this forum
+        // then use all statuses as fallback
+
+        return $forumStatuses ?: $statuses;
     }
 }
