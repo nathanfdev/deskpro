@@ -1405,11 +1405,9 @@ class CommunityTopicsController extends AbstractController
         if (!empty($communityForums)) {
             $renderedCommunityForum = current($communityForums);
             $activeStatusCategories = $communityTopicStatusCategoryRepository->getCategoriesForType(CommunityTopicStatusCategory::STATUS_ACTIVE, $selectedBrandId, $renderedCommunityForum['id']);
-
             $activeStatusCategories = $communityForumStatusRepo->getForumStatus($activeStatusCategories, $renderedCommunityForum['id']);
 
             $closedStatusCategories = $communityTopicStatusCategoryRepository->getCategoriesForType(CommunityTopicStatusCategory::STATUS_CLOSED, $selectedBrandId, $renderedCommunityForum['id']);
-
             $closedStatusCategories = $communityForumStatusRepo->getForumStatus($closedStatusCategories, $renderedCommunityForum['id']);
         }
 
