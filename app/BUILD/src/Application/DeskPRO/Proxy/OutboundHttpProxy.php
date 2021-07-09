@@ -15,7 +15,7 @@ use Firebase\JWT\JWT;
 class OutboundHttpProxy
 {
     /**
-     * Local var cache of token TTL
+     * Local var cache of token TTL in seconds
      */
     const TOKEN_CACHE_TTL = 10;
 
