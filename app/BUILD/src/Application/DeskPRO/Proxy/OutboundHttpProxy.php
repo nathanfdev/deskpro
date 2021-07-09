@@ -15,9 +15,19 @@ use Firebase\JWT\JWT;
 class OutboundHttpProxy
 {
     /**
+     * Local var cache of token TTL
+     */
+    const TOKEN_CACHE_TTL = 10;
+
+    /**
      * @var AppSecret
      */
     private $appSecret;
+
+    /**
+     * @var array
+     */
+    private $cache = [];
 
     /**
      * Constructor.
@@ -41,7 +51,7 @@ class OutboundHttpProxy
     public function generatePusherServiceToken($siteId, $appId, $authKey)
     {
         return $this->fetchServiceToken($siteId, 'pusher', [
-            'app_id' => (string) $appId,
+            'app_id'   => (string) $appId,
             'auth_key' => (string) $authKey,
         ]);
     }
@@ -58,6 +68,12 @@ class OutboundHttpProxy
     protected function fetchServiceToken($siteId, $service, $payload = [])
     {
         global $DP_ENV;
+
+        $tokenKey = md5($siteId.$service.\json_encode($payload));
+
+        if ($cachedToken = $this->cacheGet($tokenKey)) {
+            return $cachedToken;
+        }
 
         $tokenExchangeUrl = $DP_ENV->getConfig('env.proxy_token_exchange_url');
 
@@ -86,9 +102,9 @@ class OutboundHttpProxy
             $response = $this->retry(function () use ($client, $requestToken) {
                 return $client->post('/exchange', [
                     'headers' => [
-                        'Accept' => 'application/jwt',
+                        'Accept'        => 'application/jwt',
                         'Cache-Control' => 'no-cache',
-                        'Content-Type' => 'application/json',
+                        'Content-Type'  => 'application/json',
                         'Authorization' => 'Bearer '.$requestToken,
                     ],
                 ]);
@@ -104,7 +120,11 @@ class OutboundHttpProxy
             ));
         }
 
-        return (string) $response->getBody();
+        $token = (string) $response->getBody();
+
+        $this->cacheStore($tokenKey, $token);
+
+        return $token;
     }
 
     /**
@@ -137,5 +157,33 @@ class OutboundHttpProxy
 
             throw $e;
         }
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     */
+    private function cacheStore($key, $value)
+    {
+        $this->cache[$key] = [
+            $value,
+            time() + self::TOKEN_CACHE_TTL
+        ];
+    }
+
+    /**
+     * @param $key
+     * @return mixed|null
+     */
+    private function cacheGet($key)
+    {
+        $unexpiredValues = array_filter($this->cache, function ($v) {
+            return time() <= $v[1];
+        });
+
+        return isset($unexpiredValues[$key])
+            ? $unexpiredValues[$key][0]
+            : null
+        ;
     }
 }
