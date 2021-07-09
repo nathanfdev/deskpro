@@ -83,14 +83,16 @@ class OutboundHttpProxy
         ]);
 
         try {
-            $response = $client->post('/exchange', [
-                'headers' => [
-                    'Accept' => 'application/jwt',
-                    'Cache-Control' => 'no-cache',
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer '.$requestToken,
-                ],
-            ]);
+            $response = $this->retry(function () use ($client, $requestToken) {
+                return $client->post('/exchange', [
+                    'headers' => [
+                        'Accept' => 'application/jwt',
+                        'Cache-Control' => 'no-cache',
+                        'Content-Type' => 'application/json',
+                        'Authorization' => 'Bearer '.$requestToken,
+                    ],
+                ]);
+            });
         } catch (\Exception $e) {
             throw new FailedToExchangeRequestTokenException('Failed to get service token from token exchange', 0, $e);
         }
@@ -111,5 +113,29 @@ class OutboundHttpProxy
     public static function isUsingProxy()
     {
         return (defined('DPC_IS_CLOUD') && defined('DPC_IS_USING_OUTBOUND_PROXY'));
+    }
+
+    /**
+     * Retry with exponential back-off
+     *
+     * @param callable $try
+     * @param int $maxRetries
+     * @param float $exponent
+     * @param int $wait
+     * @return mixed
+     * @throws \Exception
+     */
+    private function retry(callable $try, $maxRetries = 5, $exponent = 1.5, $wait = 1)
+    {
+        try {
+            return $try();
+        } catch (\Exception $e) {
+            if ($maxRetries > 0) {
+                sleep($wait);
+                return $this->retry($try, $maxRetries - 1, $exponent, $wait * $exponent);
+            }
+
+            throw $e;
+        }
     }
 }
