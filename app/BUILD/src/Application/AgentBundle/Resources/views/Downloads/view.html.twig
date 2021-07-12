@@ -120,6 +120,7 @@ pageMeta.baseId = '{{ baseId }}';
 						</dd>
 					</dl>
 				{% else %}
+					<div class="error-message fileurl">{{ phrase('api.error_codes.invalid_url') }}</div>
 					<dl class="info-list">
 						<dt>{{ phrase('agent.general.fileurl') }}:</dt>
 						<dd>
