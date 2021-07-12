@@ -36,8 +36,12 @@ class mPdfRenderer implements PdfRendererInterface
      */
     public function __construct(BrandStack $brandStack, AppEnv $appEnv)
     {
+        global $DP_ENV;
+
         $this->brandStack = $brandStack;
         $this->appEnv     = $appEnv;
+
+        $proxy = $DP_ENV->getConfig('settings.http_client.proxy');
 
         $this->object = new mPDF([
             'mode'                       => 'utf-8',
@@ -57,8 +61,10 @@ class mPdfRenderer implements PdfRendererInterface
             // https://mpdf.github.io/fonts-languages/choosing-a-configuration-v7-x.html#3-languagesscripts-which-require-special-fonts
             'autoScriptToLang' => true,
             'autoLangToFont'   => true,
-            ]
-        );
+
+            'curlProxy' => $proxy,
+            'curlTimeout' => 3
+        ]);
 
         $this->object->SetBasePath($this->brandStack->getActive()->getSetting('core.deskpro_url').'/');
         $this->object->shrink_tables_to_fit   = 0;
