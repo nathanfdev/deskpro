@@ -201,9 +201,10 @@ class PortalController extends AbstractController
      */
     public function loginMagicLinkController($authId)
     {
-        $tmpData = $this->getRepo(TmpData::class)->findOneBy([
-            'auth' => $authId,
-        ]);
+        $tmpData = $this->getRepo(TmpData::class)->getByCode(
+            $authId,
+            'magic_link'
+        );
 
         if (!$tmpData instanceof TmpData || !$tmpData->getData('email')) {
             return $this->renderThemeView('Theme:Error:error_custom.html.twig', [
