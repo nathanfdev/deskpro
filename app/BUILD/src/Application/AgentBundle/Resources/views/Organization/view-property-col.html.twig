@@ -50,7 +50,7 @@
     <section>
         <div id="{{ baseId }}_properties_body">
             {{ dp_app_loc(baseId, 'properties.body.before') }}
-
+            <div class="error-message">An error occured please check data carefully</div>
             <dl class="table-list" id="{{ baseId }}_custom_fields_rendered">
                 {% include 'AgentBundle:Organization:view-customfields-rendered-rows.html.twig' %}
             </dl>

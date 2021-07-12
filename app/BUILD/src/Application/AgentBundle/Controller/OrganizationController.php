@@ -370,12 +370,23 @@ class OrganizationController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $org = $this->getOrgOr404($organization_id);
+        $org         = $this->getOrgOr404($organization_id);
+        $fieldErrors = [];
 
         $fieldManager     = $this->container->getSystemService('org_fields_manager');
+
         $postCustomFields = $request->request->get('custom_fields', []);
         if (!empty($postCustomFields)) {
-            $fieldManager->saveFormToObject($postCustomFields, $org);
+            $this->validateCustomFields($fieldErrors, $postCustomFields, $fieldManager);
+
+            if (empty($fieldErrors)) {
+                $fieldManager->saveFormToObject($postCustomFields, $org);
+            } else {
+                return $this->createJsonResponse([
+                    'error'                 => true,
+                    'invalid_custom_fields' => $fieldErrors,
+                ], 400);
+            }
         }
 
         // specific org custom fields definitions
@@ -390,7 +401,7 @@ class OrganizationController extends AbstractController
             return $this->createJsonResponse([
                 'error'                 => true,
                 'invalid_custom_fields' => $form->getErrors(true, true)->current(),
-            ]);
+            ], 400);
         }
 
         $manager->flush($form);

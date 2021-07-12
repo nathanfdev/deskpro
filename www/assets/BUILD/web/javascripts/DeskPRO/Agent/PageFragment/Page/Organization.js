@@ -449,6 +449,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				$('.is-loading', box).hide();
 				$('.save', box).hide();
 				$('.cancel', box).hide();
+        $('.error-message', box).removeClass('error-message-on');
 				fieldsForm.hide();
 				fieldsRendered.show();
 			} else {
@@ -541,20 +542,26 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 			$('.is-loading', box).show();
 			$('.save', box).hide();
-			$('.cancel', box).hide();
+			$('.cancel', box).hide()
+      $('.error-message', box).removeClass('error-message-on');
 
 			$.ajax({
 				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save-custom-fields',
 				type: 'POST',
 				data: formData,
-				dataType: 'html',
 				success: function(rendered) {
 					fieldsRendered.empty().html(rendered);
 					propToggle('display');
           $('section', box).on('click', function() {
             propToggle('form');
           });
-				}
+				},
+        error: function() {
+          $('.error-message', box).addClass('error-message-on');
+          $('.is-loading', box).hide();
+          $('.save', box).show();
+          $('.cancel', box).show();
+        }
 			});
 		});
 		$('.cancel', box).on('click', function() {
