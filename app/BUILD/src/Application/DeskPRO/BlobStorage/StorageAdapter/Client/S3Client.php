@@ -90,12 +90,12 @@ class S3Client extends \Aws\S3\S3Client
                     )
                 ;
 
-                $resignedUrl = $this
+                $reSignedUrl = $this
                     ->outboundHttpProxy
                     ->getPreSignedS3Url($serviceToken)
                 ;
 
-                $request->withUri(new Uri($resignedUrl));
+                $request->withUri(new Uri($reSignedUrl));
 
                 foreach (self::STALE_HEADERS as $staleHeader) {
                     $request->withoutHeader($staleHeader);
@@ -103,7 +103,7 @@ class S3Client extends \Aws\S3\S3Client
 
                 return $request;
             }),
-            'resign-'.strtolower($commandName)
+            're-sign-'.strtolower($commandName)
         );
 
         return $this->execute($command);
