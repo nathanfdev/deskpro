@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\BlobStorage;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Application\DeskPRO\Proxy\OutboundHttpProxy;
 use Aws\DoctrineCacheAdapter;
 use Aws\S3\S3Client;
 use Doctrine\Common\Cache\FilesystemCache;
@@ -18,7 +19,7 @@ class AmazonS3ClientFactory
      *
      * @return S3Client
      */
-    public static function create(SettingsResolver $settingsResolver, $tmpDir)
+    public static function create(SettingsResolver $settingsResolver, $tmpDir, OutboundHttpProxy $outboundHttpProxy)
     {
         if (!defined('CURLOPT_CONNECTTIMEOUT')) {
             define(CURLOPT_CONNECTTIMEOUT, 78);
@@ -66,6 +67,13 @@ class AmazonS3ClientFactory
                 'key'    => $settingsBag->get('core.filestorage_s3_key'),
                 'secret' => $settingsBag->get('core.filestorage_s3_secret'),
             ];
+        }
+
+        if (OutboundHttpProxy::isUsingProxy()) {
+            return new \Application\DeskPRO\BlobStorage\StorageAdapter\Client\S3Client(
+                $s3Config,
+                $outboundHttpProxy
+            );
         }
 
         return new S3Client($s3Config);

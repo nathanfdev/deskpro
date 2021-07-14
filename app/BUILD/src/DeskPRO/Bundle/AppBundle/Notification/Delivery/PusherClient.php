@@ -120,7 +120,7 @@ class PusherClient extends \Pusher
         // Set cURL opts and execute request
         curl_setopt($ch, CURLOPT_URL, $full_url);
 
-        $proxyServiceToken = $this->proxy->generatePusherServiceToken(
+        $proxyServiceToken = $this->proxy->getPusherServiceToken(
             DPC_SITE_ID,
             $settings['app_id'],
             $settings['auth_key']
