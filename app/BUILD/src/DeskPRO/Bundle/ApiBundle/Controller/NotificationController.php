@@ -15,6 +15,8 @@ use DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherLogger;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Component\Util\IpUtils;
+use DeskPRO\Component\Util\StringUtils;
+use DeskPRO\Component\Util\TypeUtils;
 use Firebase\JWT\JWT;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -84,6 +86,26 @@ class NotificationController extends BaseController
         $pusher = $this->get('deskpro.notification.pusher');
         $user   = $this->getUser();
         if ($user->getId() === (int) $submitted['user_id'] && $submitted['channel_name'] && $submitted['socket_id']) {
+            if (StringUtils::startsWith('private-', $submitted['channel_name'])) {
+                $channelName = substr($submitted['channel_name'], strlen('private-'));
+                $channelPrefix = $this->get('settings_resolver')->getGlobalSettings()->get('notification.settings.pusher_client.channel_prefix', '');
+
+                // if we have a channel prefix, it must be set
+                if ($channelPrefix && strpos($channelName, $channelPrefix) !== 0) {
+                    throw $this->createAccessDeniedException();
+                }
+
+                // private-agent_public is the agent broadcast channel
+                if ($channelName === 'agent_public' && (!$user->getId() || !$user->isAgent())) {
+                    throw $this->createAccessDeniedException();
+                }
+
+                // private-123 are per-user private channels
+                if (TypeUtils::isIntLike($channelName) && $channelName != $user->getId()) {
+                    throw $this->createAccessDeniedException();
+                }
+            }
+
             try {
                 $status = Response::HTTP_OK;
                 $data   = json_decode($pusher->socket_auth($submitted['channel_name'], $submitted['socket_id']), true);
