@@ -18,13 +18,20 @@ class PusherFactory
     private $proxy;
 
     /**
+     * @var SettingsResolver
+     */
+    private $settings;
+
+    /**
      * PusherFactory constructor.
      *
      * @param OutboundHttpProxy $proxy
+     * @param SettingsResolver $settings
      */
-    public function __construct(OutboundHttpProxy $proxy)
+    public function __construct(OutboundHttpProxy $proxy, SettingsResolver $settings)
     {
         $this->proxy = $proxy;
+        $this->settings = $settings;
     }
 
     /**
@@ -38,6 +45,7 @@ class PusherFactory
         if (OutboundHttpProxy::isUsingProxy()) {
             return new PusherClient(
                 $this->proxy,
+                $this->settings,
                 $settings->get('notification.settings.pusher_client.appKey'),
                 $settings->get('notification.settings.pusher_client.secret'),
                 $settings->get('notification.settings.pusher_client.appId'),

@@ -48,11 +48,12 @@ class OutboundHttpProxy
      * @return string
      * @throws FailedToExchangeRequestTokenException
      */
-    public function generatePusherServiceToken($siteId, $appId, $authKey)
+    public function generatePusherServiceToken($siteId, $appId, $authKey, $channelPrefix)
     {
         return $this->fetchServiceToken($siteId, 'pusher', [
-            'app_id'   => (string) $appId,
-            'auth_key' => (string) $authKey,
+            'appId'   => (string) $appId,
+            'authKey' => (string) $authKey,
+            'channelPrefix' => (string) $channelPrefix,
         ]);
     }
 
