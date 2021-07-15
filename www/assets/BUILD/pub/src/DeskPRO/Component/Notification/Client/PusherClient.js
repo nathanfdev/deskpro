@@ -50,7 +50,7 @@ export default class PusherClient extends AbstractClient {
 
     const prefixedChannelName = channelParts.join('-');
 
-    Pusher.authorizers.rest = (socketId, callback) => {
+    Pusher.authorizers.rest = function (socketId, callback) {
       let xhr;
 
       if (Pusher.XHR) {
@@ -87,7 +87,7 @@ export default class PusherClient extends AbstractClient {
         }
       };
 
-      xhr.send(JSON.stringify({ socket_id: socketId, channel_name: prefixedChannelName, user_id: that.options.me }));
+      xhr.send(JSON.stringify({ socket_id: socketId, channel_name: this.channel.name, user_id: that.options.me }));
       return xhr;
     };
 
