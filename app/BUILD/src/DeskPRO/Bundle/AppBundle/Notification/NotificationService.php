@@ -249,11 +249,12 @@ class NotificationService
     protected function getJwtToken($visitorId = null)
     {
         $user = $this->tokenStorage->getToken()->getUser();
+        $id   = $visitorId ?: ($user instanceof Person && $user->isAgent() ? $user->getId() : 0);
 
         return JWT::encode(
             [
-                'id'         => $visitorId ? $visitorId : ($user instanceof Person ? $user->getId() : 0),
-                'by_visitor' => (bool) $visitorId,
+                'id'         => $id,
+                'by_visitor' => ($visitorId || $id === 0),
                 'prefix'     => $this->getChannelPrefix(),
             ],
             $this->settings->get('notification.settings.deskpro_client.secret')
