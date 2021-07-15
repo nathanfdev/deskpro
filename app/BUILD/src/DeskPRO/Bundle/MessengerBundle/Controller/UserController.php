@@ -176,8 +176,6 @@ class UserController extends AbstractMessengerController
         $submitted = $request->request->all();
         /** @var \Pusher $pusher */
         $pusher = $this->get('deskpro.notification.pusher');
-        $status = Response::HTTP_OK;
-        $data   = json_decode($pusher->socket_auth($submitted['channel_name'], $submitted['socket_id']), true);
 
         if (StringUtils::startsWith('private-', $submitted['channel_name'])) {
             $channelName   = substr($submitted['channel_name'], strlen('private-'));
@@ -201,6 +199,14 @@ class UserController extends AbstractMessengerController
             if ($channelName !== $this->getVisitorId($request)) {
                 throw $this->createAccessDeniedException();
             }
+        }
+
+        try {
+            $status = Response::HTTP_OK;
+            $data   = json_decode($pusher->socket_auth($submitted['channel_name'], $submitted['socket_id']), true);
+        } catch (\Exception $e) {
+            $data   = [];
+            $status = Response::HTTP_FORBIDDEN;
         }
 
         return View::create($data, $status);
