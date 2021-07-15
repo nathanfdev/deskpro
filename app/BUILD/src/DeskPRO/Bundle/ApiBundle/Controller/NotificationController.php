@@ -91,8 +91,11 @@ class NotificationController extends BaseController
                 $channelPrefix = $this->get('settings_resolver')->getGlobalSettings()->get('notification.settings.pusher_client.channel_prefix', '');
 
                 // if we have a channel prefix, it must be set
-                if ($channelPrefix && strpos($channelName, $channelPrefix) !== 0) {
-                    throw $this->createAccessDeniedException();
+                if ($channelPrefix) {
+                    if (strpos($channelName, $channelPrefix) !== 0) {
+                        throw $this->createAccessDeniedException();
+                    }
+                    $channelName = substr($channelName, strlen($channelPrefix) + 1); //+1 is because we append a dash. e.g. private-foo-
                 }
 
                 // private-agent_public is the agent broadcast channel

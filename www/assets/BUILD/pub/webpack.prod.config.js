@@ -185,9 +185,6 @@ const config = {
     new webpack.ProvidePlugin({
       $:      'jquery',
       jQuery: 'jquery',
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      exclude: [/(node_modules|bower_components)/]
     })
   ],
 
