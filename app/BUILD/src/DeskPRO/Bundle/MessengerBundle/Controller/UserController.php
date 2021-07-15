@@ -12,6 +12,8 @@ use DeskPRO\Bundle\MessengerBundle\Security\EventListener\VisitorIdListener;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\TechInfo;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\UserInfo;
 use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver as MSR;
+use DeskPRO\Component\Util\StringUtils;
+use DeskPRO\Component\Util\TypeUtils;
 use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -176,6 +178,30 @@ class UserController extends AbstractMessengerController
         $pusher = $this->get('deskpro.notification.pusher');
         $status = Response::HTTP_OK;
         $data   = json_decode($pusher->socket_auth($submitted['channel_name'], $submitted['socket_id']), true);
+
+        if (StringUtils::startsWith('private-', $submitted['channel_name'])) {
+            $channelName   = substr($submitted['channel_name'], strlen('private-'));
+            $channelPrefix = $this->get('settings_resolver')->getGlobalSettings()->get('notification.settings.pusher_client.channel_prefix', '');
+
+            // if we have a channel prefix, it must be set
+            if ($channelPrefix) {
+                if (strpos($channelName, $channelPrefix) !== 0) {
+                    throw $this->createAccessDeniedException();
+                }
+                $channelName = substr($channelName, strlen($channelPrefix) + 1); //+1 is because we append a dash. e.g. private-foo-
+            }
+
+            // private-agent_public is the agent broadcast channel, private-123 are per-user private channels can't
+            // listen them on the portal
+            if ($channelName === 'agent_public' || TypeUtils::isIntLike($channelName)) {
+                throw $this->createAccessDeniedException();
+            }
+
+            // you can't listen other channel with different visitor_id, only yours
+            if ($channelName !== $this->getVisitorId($request)) {
+                throw $this->createAccessDeniedException();
+            }
+        }
 
         return View::create($data, $status);
     }
