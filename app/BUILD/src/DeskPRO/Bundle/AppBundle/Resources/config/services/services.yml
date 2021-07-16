@@ -163,7 +163,7 @@ services:
   amazon_s3_client:
     class: Aws\S3\S3Client
     factory: ['DeskPRO\Bundle\AppBundle\BlobStorage\AmazonS3ClientFactory', create]
-    arguments: ["@settings_resolver", "@=service('deskpro.app_env').getUserTmpDir()"]
+    arguments: ["@settings_resolver", "@=service('deskpro.app_env').getUserTmpDir()", "@deskpro.proxy.outbound_http_proxy"]
 
   ticketfilters.env_loader:
     class: DeskPRO\Bundle\AppBundle\TicketFilters\EnvLoader
