@@ -19,7 +19,7 @@ class S3Client extends \Aws\S3\S3Client
 {
     /**
      * Stale headers contain either the old request signature or headers that may conflict
-     * with the newly resigned URL
+     * with the newly re-signed URL
      */
     const STALE_HEADERS = [
         'Authorization',
