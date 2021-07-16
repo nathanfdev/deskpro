@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\Proxy\OutboundHttpProxy;
 
 class PusherClient extends \Pusher
@@ -17,9 +18,15 @@ class PusherClient extends \Pusher
     private $ch;
 
     /**
-     * Constructor
+     * @var SettingsResolver
+     */
+    private $settings;
+
+    /**
+     * PusherClient constructor.
      *
      * @param OutboundHttpProxy $proxy
+     * @param SettingsResolver $settings
      * @param $auth_key
      * @param $secret
      * @param $app_id
@@ -28,10 +35,11 @@ class PusherClient extends \Pusher
      * @param null $port
      * @param null $timeout
      */
-    public function __construct(OutboundHttpProxy $proxy, $auth_key, $secret, $app_id, $options = array(), $host = null, $port = null, $timeout = null)
+    public function __construct(OutboundHttpProxy $proxy, SettingsResolver $settings, $auth_key, $secret, $app_id, $options = array(), $host = null, $port = null, $timeout = null)
     {
         parent::__construct($auth_key, $secret, $app_id, $options, $host, $port, $timeout);
         $this->proxy = $proxy;
+        $this->settings = $settings;
     }
 
     /**
@@ -123,7 +131,8 @@ class PusherClient extends \Pusher
         $proxyServiceToken = $this->proxy->getPusherServiceToken(
             DPC_SITE_ID,
             $settings['app_id'],
-            $settings['auth_key']
+            $settings['auth_key'],
+            $this->settings->getGlobalSettings()->get('notification.settings.pusher_client.channel_prefix')
         );
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
