@@ -65,14 +65,14 @@ class OutboundHttpProxy
      * @return mixed|string|null
      * @throws FailedToExchangeRequestTokenException
      */
-    public function getS3ServiceToken($siteId, $region, $bucket, $key, $method, $acl)
+    public function getS3ServiceToken($siteId, $region, $bucket, $key, $method, $acl = null)
     {
         return $this->fetchServiceToken($siteId, 's3', [
             's3Region' => (string) $region,
             's3Bucket' => (string) $bucket,
             's3Key'    => (string) $key,
             's3Method' => (string) $method,
-            's3Acl'    => (string) $acl,
+            's3Acl'    => $acl === null ? null : (string) $acl,
         ]);
     }
 

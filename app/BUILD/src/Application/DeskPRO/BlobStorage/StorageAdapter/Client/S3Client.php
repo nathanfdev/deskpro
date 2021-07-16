@@ -49,6 +49,17 @@ class S3Client extends \Aws\S3\S3Client
     }
 
     /**
+     * Overloaded GetObject command so that request is resigned
+     *
+     * @param array $args
+     * @return \Aws\Result
+     */
+    public function getObject(array $args)
+    {
+        return $this->reSignRequest('GetObject', 'GET', $args);
+    }
+
+    /**
      * Overloaded PutObject command so that request is resigned
      *
      * @param array $args
@@ -57,6 +68,17 @@ class S3Client extends \Aws\S3\S3Client
     public function putObject(array $args)
     {
         return $this->reSignRequest('PutObject', 'PUT', $args);
+    }
+
+    /**
+     * Overloaded DeleteObject command so that request is resigned
+     *
+     * @param array $args
+     * @return \Aws\Result
+     */
+    public function deleteObject(array $args)
+    {
+        return $this->reSignRequest('DeleteObject', 'DELETE', $args);
     }
 
     /**
@@ -78,6 +100,8 @@ class S3Client extends \Aws\S3\S3Client
         // replace it as the final step
         $list->appendSign(
             Middleware::mapRequest(function (RequestInterface $request) use ($args, $region, $method) {
+                $aclHeaders = $request->getHeader('x-amz-acl');
+
                 $serviceToken = $this
                     ->outboundHttpProxy
                     ->getS3ServiceToken(
@@ -86,7 +110,7 @@ class S3Client extends \Aws\S3\S3Client
                         $args['Bucket'],
                         $args['Key'],
                         $method,
-                        $request->getHeader('x-amz-acl')[0]
+                        isset($aclHeaders[0]) ? $aclHeaders[0] : null
                     )
                 ;
 
