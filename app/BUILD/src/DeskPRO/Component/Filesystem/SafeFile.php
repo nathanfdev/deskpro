@@ -123,11 +123,15 @@ class SafeFile
         } else {
             $p = str_replace('\\', '/', $path);
 
-            self::assertValidPathPrefix($p);
+            if (!self::isValidPathPrefix($p)) {
+                return null;
+            }
 
             // If we're not using a stream, resolve the realpath
-            if (!preg_match('~^[a-z0-9\-]*://~', $p)) {
-                $p = realpath($p);
+            if (!preg_match('~^[a-z0-9\-]*://~', trim($p))) {
+                if (@is_dir($p) || @is_file($p)) {
+                    $p = realpath($p);
+                }
             }
 
             if (@is_dir($p)) {
@@ -265,7 +269,7 @@ class SafeFile
      */
     public static function isValid($path, $whitelist)
     {
-        return !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist) && self::isValidPathPrefix($path);
+        return !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist);
     }
 
     /**
@@ -407,6 +411,7 @@ class SafeFile
     public static function file($path, $whitelist)
     {
         $orig_path = $path;
+        $orig_path = $path;
         $path      = self::tryResolvePath($path);
 
         if (!$path || !self::isValid($path, $whitelist)) {
@@ -465,17 +470,25 @@ class SafeFile
      */
     public static function isValidPathPrefix($path)
     {
-        $prefixBlacklist = [
-            'phar://',
+        // If this is a path (not a stream) then allow
+        if (!preg_match('~^[a-z0-9\-]*://~i', $path)) {
+            return true;
+        }
+
+        $prefixWhitelist = [
+            'http://',
+            'https://',
+            'data://',
+            'file://',
         ];
 
-        foreach ($prefixBlacklist as $prefix) {
+        foreach ($prefixWhitelist as $prefix) {
             if (stripos($path, $prefix) === 0) {
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     /**

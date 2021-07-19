@@ -89,4 +89,17 @@ class SafeFileTest extends DeskProTestCase
         $testFile = 'data:text/plain;charset=utf-8;base64,VEVTVA==';
         $this->assertEquals($testFile, SafeFile::tryResolvePath($testFile));
     }
+
+    public function testIsValidPathPrefix()
+    {
+        $this->assertTrue(SafeFile::isValidPathPrefix('/foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('http://foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('https://foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('file://foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('data://foo'));
+
+        $this->assertFalse(SafeFile::isValidPathPrefix('phar://foo'));
+        $this->assertFalse(SafeFile::isValidPathPrefix('zip://foo'));
+    }
 }
