@@ -926,10 +926,8 @@ JS;
         }
 
         $fields = \Application\DeskPRO\Reader\VCard::parseVCard($content);
-
-        //var_dump($fields); die;
-
-        $res = $this->createJsonResponse([['fields' => $fields]]);
+        $fields = $this->cleaner->cleanArray($fields, 'str', 'raw', ['recursive' => true]);
+        $res    = $this->createJsonResponse([['fields' => $fields]]);
 
         // Required for iframe transport on IE to prevent 'download' popup
         $res->headers->set('Content-Type', 'text/plain');
