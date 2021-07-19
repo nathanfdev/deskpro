@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
+use Application\DeskPRO\Attachments\RestrictionSet;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Symfony\Component\Validator\Constraint;
 
@@ -25,6 +26,12 @@ class BlobRestrictionSet extends Constraint
      * @var CustomDefAbstract
      */
     public $customDef;
+
+
+    /**
+     * @var RestrictionSet
+     */
+    public $imagesOnly;
 
     /**
      * @var string

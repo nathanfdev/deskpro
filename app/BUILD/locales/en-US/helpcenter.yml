@@ -377,6 +377,8 @@ helpcenter.forms.error_required: 'This value is required'
 helpcenter.forms.error_length_too_short: 'This value length is too short'
 helpcenter.forms.error_banned_email: 'Email is banned.'
 helpcenter.forms.error_unauthorized_department: 'Insufficient permission'
+helpcenter.forms.error_accept_not_allowed_exts: 'You cannot upload a file with any of the following file extensions: {detail}'
+helpcenter.forms.error_accept_not_in_allowed_exts: 'You can only upload a file with any of the following file extensions: {detail}'
 helpcenter.forms.label_drag_overlay: 'Insert this image into your message.'
 helpcenter.forms.label_email: Email
 helpcenter.forms.label_password: Password
