@@ -122,6 +122,9 @@ class SafeFile
             return $res;
         } else {
             $p = str_replace('\\', '/', $path);
+
+            self::assertValidPathPrefix($p);
+
             if (@is_dir($p)) {
                 $p = rtrim($p, '/').'/';
             }
@@ -257,7 +260,7 @@ class SafeFile
      */
     public static function isValid($path, $whitelist)
     {
-        return !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist);
+        return !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist) && self::isValidPathPrefix($path);
     }
 
     /**
@@ -284,6 +287,8 @@ class SafeFile
      */
     public static function tryResolvePath($path)
     {
+        self::assertValidPathPrefix($path);
+
         // Not a local file, nothing to do
         if (
             preg_match('/^(https?:\/\/|data:)/i', $path)
@@ -448,4 +453,37 @@ class SafeFile
     {
         return self::fileOpen($path, $mode, $whitelist);
     }
+
+    /**
+     * @param string $path
+     * @return bool
+     */
+    public static function isValidPathPrefix($path)
+    {
+        $prefixBlacklist = [
+            'phar://',
+            '../',
+        ];
+
+        foreach ($prefixBlacklist as $prefix) {
+            if (stripos($path, $prefix) === 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @see isValidPathPrefix
+     * @param string $path
+     * @thorws \InvalidArgumentException
+     */
+    public static function assertValidPathPrefix($path)
+    {
+        if (!self::isValidPathPrefix($path)) {
+            throw new \InvalidArgumentException("Invalid file path prefix [{$path}]");
+        }
+    }
 }
+
