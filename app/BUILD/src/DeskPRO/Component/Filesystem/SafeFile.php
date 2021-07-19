@@ -125,6 +125,11 @@ class SafeFile
 
             self::assertValidPathPrefix($p);
 
+            // If we're not using a stream, resolve the realpath
+            if (!preg_match('~^[a-z0-9\-]*://~', $p)) {
+                $p = realpath($p);
+            }
+
             if (@is_dir($p)) {
                 $p = rtrim($p, '/').'/';
             }
@@ -462,7 +467,6 @@ class SafeFile
     {
         $prefixBlacklist = [
             'phar://',
-            '../',
         ];
 
         foreach ($prefixBlacklist as $prefix) {

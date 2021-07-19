@@ -120,9 +120,9 @@ class ThemeSetImport
         // paste assets
         if (isset($jsonData['assets'])) {
             foreach ($jsonData['assets'] as $assetInfo) {
-                SafeFile::assertValidPathPrefix($assetInfo['path']);
-
                 $assetPath = $this->tmpDir.DIRECTORY_SEPARATOR.$assetInfo['path'];
+
+                SafeFile::assertValid($assetPath, $this->tmpDir);
 
                 if (!file_exists($assetPath)) {
                     continue;
@@ -148,9 +148,9 @@ class ThemeSetImport
         // paste templates
         if (isset($jsonData['templates'])) {
             foreach ($jsonData['templates'] as $templateInfo) {
-                SafeFile::assertValidPathPrefix($templateInfo['source_path']);
+                $sourcePath = $this->tmpDir.DIRECTORY_SEPARATOR.$templateInfo['source_path'];
 
-                $sourcePath   = $this->tmpDir.DIRECTORY_SEPARATOR.$templateInfo['source_path'];
+                SafeFile::assertValid($sourcePath, $this->tmpDir);
 
                 if (!file_exists($sourcePath)) {
                     continue;
