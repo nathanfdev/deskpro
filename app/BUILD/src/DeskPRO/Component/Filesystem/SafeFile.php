@@ -471,7 +471,7 @@ class SafeFile
     public static function isValidPathPrefix($path)
     {
         // If this is a path (not a stream) then allow
-        if (!preg_match('~^[a-z0-9\-]*://~i', trim($path))) {
+        if (!preg_match('~^[a-z0-9\-]*://~i', trim(urldecode($path)))) {
             return true;
         }
 
