@@ -96,6 +96,7 @@ class SafeFileTest extends DeskProTestCase
         $this->assertTrue(SafeFile::isValidPathPrefix('/foo/bar'));
         $this->assertTrue(SafeFile::isValidPathPrefix('./foo/bar'));
         $this->assertTrue(SafeFile::isValidPathPrefix('../foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('C:/foo/bar'));
         $this->assertTrue(SafeFile::isValidPathPrefix('foo/bar'));
         $this->assertTrue(SafeFile::isValidPathPrefix('http://foo'));
         $this->assertTrue(SafeFile::isValidPathPrefix('https://foo'));
