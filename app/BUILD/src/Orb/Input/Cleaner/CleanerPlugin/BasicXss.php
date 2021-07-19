@@ -1,10 +1,6 @@
 <?php
 
-/**
- * Orb.
- *
- * @category Input
- */
+
 
 namespace Orb\Input\Cleaner\CleanerPlugin;
 
@@ -57,6 +53,23 @@ class BasicXss implements CleanerPlugin
             return $value;
         }
 
+        if (isset($options['recursive']) && $options['recursive']) {
+            if (is_array($value)) {
+                foreach ($value as &$val) {
+                    $val = $this->cleanValue($val, $type, $options, $cleaner);
+                }
+
+                return $value;
+            } else {
+                return $this->doCleanValue($value);
+            }
+        } else {
+            return $this->doCleanValue($value);
+        }
+    }
+
+    protected function doCleanValue($value)
+    {
         if (ctype_alnum($value) || !preg_match('#(\'|"|&|<|>)#', $value)) {
             return $value;
         }

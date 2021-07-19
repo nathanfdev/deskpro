@@ -1,10 +1,6 @@
 <?php
 
-/**
- * Orb.
- *
- * @category Input
- */
+
 
 namespace Orb\Input\Reader;
 
@@ -176,6 +172,8 @@ class Reader
     {
         $value = $this->getValue($name, $source_name);
 
+        $clean_val_options = array_merge($clean_val_options ?: [], ['recursive' => true]);
+
         return $this->cleaner->cleanArray($value, $clean_val_type, $clean_key_type, $clean_val_options, $clean_key_options);
     }
 
@@ -328,7 +326,7 @@ class Reader
                     $options = $method_args[1];
                 }
 
-            // getType
+                // getType
             } else {
                 $name = $method_args[0];
                 $type = $call_info['type'];
@@ -340,7 +338,7 @@ class Reader
                 }
             }
 
-        //----------------------------------------
+            //----------------------------------------
         // First time calling this method
         //----------------------------------------
         } else {

@@ -1,10 +1,6 @@
 <?php
 
-/**
- * Orb.
- *
- * @category Input
- */
+
 
 namespace Orb\Input\Cleaner\CleanerPlugin;
 
@@ -79,19 +75,39 @@ class Basic implements CleanerPlugin
         // Do the cleaning
         //----------------------------------------
 
+        if (isset($options['recursive']) && $options['recursive']) {
+            if (is_array($value)) {
+                foreach ($value as &$val) {
+                    $val = $this->cleanValue($val, $type, $options, $cleaner);
+                }
+
+                return $value;
+            } else {
+                return $this->doCleanValue($value, $type);
+            }
+        }
+
+        return $this->doCleanValue($value, $type);
+    }
+
+    public function doCleanValue($value, $type)
+    {
         switch ($type) {
             case 'bool':
                 $value = (bool) $value;
+
                 break;
 
             case 'bool_int':
             case 'ibool':
                 $value = (int) ((bool) $value);
+
                 break;
 
             case 'int':
             case 'integer':
                 $value = (int) $value;
+
                 break;
 
             case 'uint':
@@ -100,11 +116,13 @@ class Basic implements CleanerPlugin
                 if ($value < 0) {
                     $value = 0;
                 }
+
                 break;
 
             case 'num':
             case 'number':
                 $value = ((string) $value) + 0;
+
                 break;
 
             case 'unum':
@@ -113,10 +131,12 @@ class Basic implements CleanerPlugin
                 if ($value < 0) {
                     $value = 0;
                 }
+
                 break;
 
             case 'float':
                 $value = (float) $value;
+
                 break;
 
             case 'ufloat':
@@ -124,6 +144,7 @@ class Basic implements CleanerPlugin
                 if ($value < 0) {
                     $value = 0.0;
                 }
+
                 break;
 
             case 'str':
@@ -144,6 +165,7 @@ class Basic implements CleanerPlugin
                     $value = '';
                 }
                 $value = (string) $this->cleanString($value);
+
                 break;
 
             case 'str_nohtml':
@@ -152,6 +174,7 @@ class Basic implements CleanerPlugin
                     $value = '';
                 }
                 $value = htmlspecialchars(trim($this->cleanString($value)));
+
                 break;
 
             case 'str_striphtml':
@@ -160,6 +183,7 @@ class Basic implements CleanerPlugin
                     $value = '';
                 }
                 $value = strip_tags(trim($this->cleanString($value)));
+
                 break;
 
             case 'str_simple':
@@ -168,6 +192,7 @@ class Basic implements CleanerPlugin
                     $value = '';
                 }
                 $value = preg_replace('#[^a-zA-Z0-9 _\-\.:]#', '', trim($this->cleanString($value)));
+
                 break;
 
             case 'str_raw':
@@ -175,10 +200,12 @@ class Basic implements CleanerPlugin
                     $value = '';
                 }
                 $value = (string) $value;
+
                 break;
 
             case 'array':
                 $value = (array) $value;
+
                 break;
         }
 
