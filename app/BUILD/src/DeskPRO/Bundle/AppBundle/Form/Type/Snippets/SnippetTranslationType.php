@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
+use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -42,7 +43,7 @@ class SnippetTranslationType extends AbstractType
             ->add('language', EntityType::class, [
                 'class' => Language::class,
             ])
-            ->add('content', TextType::class)
+            ->add('content', HtmlTextareaType::class)
             ->add('blobs', EntityType::class, [
                 'class'    => Blob::class,
                 'multiple' => true,
