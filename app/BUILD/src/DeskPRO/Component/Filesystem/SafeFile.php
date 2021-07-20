@@ -55,6 +55,17 @@ class SafeFile
     const DATA = 'data://';
 
     /**
+     * List of stream types that are considered "allowable" before
+     * further checks are made
+     */
+    const STREAM_WHITELIST = [
+        'http://',
+        'https://',
+        'data://',
+        'file://',
+    ];
+
+    /**
      * @var array
      */
     private static $blacklist = [];
@@ -122,6 +133,18 @@ class SafeFile
             return $res;
         } else {
             $p = str_replace('\\', '/', $path);
+
+            if (!self::isValidPathPrefix($p)) {
+                return null;
+            }
+
+            // If we're not using a stream, resolve the realpath
+            if (!preg_match('~^[a-z0-9\-]*://~', trim($p))) {
+                if (@is_dir($p) || @is_file($p)) {
+                    $p = realpath($p);
+                }
+            }
+
             if (@is_dir($p)) {
                 $p = rtrim($p, '/').'/';
             }
@@ -257,7 +280,7 @@ class SafeFile
      */
     public static function isValid($path, $whitelist)
     {
-        return !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist);
+        return !empty($path) && !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist);
     }
 
     /**
@@ -284,6 +307,8 @@ class SafeFile
      */
     public static function tryResolvePath($path)
     {
+        self::assertValidPathPrefix($path);
+
         // Not a local file, nothing to do
         if (
             preg_match('/^(https?:\/\/|data:)/i', $path)
@@ -397,6 +422,7 @@ class SafeFile
     public static function file($path, $whitelist)
     {
         $orig_path = $path;
+        $orig_path = $path;
         $path      = self::tryResolvePath($path);
 
         if (!$path || !self::isValid($path, $whitelist)) {
@@ -448,4 +474,37 @@ class SafeFile
     {
         return self::fileOpen($path, $mode, $whitelist);
     }
+
+    /**
+     * @param string $path
+     * @return bool
+     */
+    public static function isValidPathPrefix($path)
+    {
+        // If this is a path (not a stream) then allow
+        if (!preg_match('~^[a-z0-9\-]*://~i', trim(urldecode($path)))) {
+            return true;
+        }
+
+        foreach (self::STREAM_WHITELIST as $prefix) {
+            if (stripos($path, $prefix) === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @see isValidPathPrefix
+     * @param string $path
+     * @thorws \InvalidArgumentException
+     */
+    public static function assertValidPathPrefix($path)
+    {
+        if (!self::isValidPathPrefix($path)) {
+            throw new \InvalidArgumentException("Invalid file path prefix [{$path}]");
+        }
+    }
 }
+
