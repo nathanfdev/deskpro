@@ -865,6 +865,14 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 //				DeskPRO_Window.setPaneVis('tabs', true);
 //			}
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id + '/join');
+
+    if (data.expire_timeout) {
+      setTimeout(function () {
+        alertEl.remove();
+        self.newChats[data.conversation_id] = false;
+        window.clearTimeout(waitTimer);
+      }, data.expire_timeout * 1000);
+    }
 	},
 
   showNewChatRoundRobinAlert: function(data) {
