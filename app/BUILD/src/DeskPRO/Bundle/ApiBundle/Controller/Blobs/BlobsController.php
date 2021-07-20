@@ -12,11 +12,11 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AcceptAttachmentType;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Component\Filesystem\DataUri;
 use DeskPRO\Component\Filesystem\SafeFile;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Data\ContentTypes;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -76,15 +76,16 @@ class BlobsController extends CrudController
             $dataUri = $request->request->get('file');
 
             // must be a data url
-            if (!SafeFile::isValid($dataUri, SafeFile::DATA)) {
+            if (!DataUri::isDataUri($dataUri)) {
                 throw $this->createBadRequestException();
             }
 
+            $dataValue = DataUri::decode($dataUri);
             $filename = $request->request->get('name') ?: 'file';
-            $mimeType = ContentTypes::getContentTypeFromDataUrl($dataUri) ?: 'application/octet-stream';
+            $mimeType = $dataValue->mediaType ?: 'application/octet-stream';
 
             $blob = $this->get('blob.storage')->createBlobRecordFromString(
-                file_get_contents($dataUri),
+                $dataValue->data,
                 $filename,
                 $mimeType
             );
@@ -126,15 +127,17 @@ class BlobsController extends CrudController
         foreach ($images as &$image) {
 
             // must be a data url
-            if (!SafeFile::isValid($image['source'], SafeFile::DATA)) {
+            if (!DataUri::isDataUri($image['source'])) {
                 throw $this->createBadRequestException();
             }
 
+            $dataValue = DataUri::decode($image['source']);
+
             $filename = 'file';
-            $mimeType = ContentTypes::getContentTypeFromDataUrl($image['source']) ?: 'application/octet-stream';
+            $mimeType = $dataValue->mediaType ?: 'application/octet-stream';
 
             $blob = $this->get('blob.storage')->createBlobRecordFromString(
-                file_get_contents($image['source']),
+                $dataValue->data,
                 $filename,
                 $mimeType
             );

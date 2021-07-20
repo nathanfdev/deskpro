@@ -9,6 +9,7 @@ namespace Application\AdminInterfaceBundle\Controller;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\Entity\AppPackage;
 use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
@@ -36,11 +37,7 @@ class AppsController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.time().'-'.uniqid('');
-
-        if (!@mkdir($tmpdir)) {
-            throw new \Exception('Failed to create extraction directory');
-        }
+        $tmpdir = TmpDir::makeTmpDir();
 
         $path      = realpath($tmpdir);
         $installer = new PackageInstaller(
@@ -56,34 +53,6 @@ class AppsController extends AbstractController
         $zipper = $this->container->getSystemService('zipper');
         $file   = $path.'/app.zip';
         $zipper->compressPath($path, $file);
-        $response = new BinaryFileResponse($file);
-
-        // cleanup
-        $this->container->getEventDispatcher()->addListener(
-            KernelEvents::TERMINATE,
-            function (PostResponseEvent $event) use ($path, $file) {
-                function rrmdir($dir)
-                {
-                    if (is_dir($dir)) {
-                        $objects = scandir($dir);
-                        foreach ($objects as $object) {
-                            if ($object != '.' && $object != '..') {
-                                if (filetype($dir.'/'.$object) == 'dir') {
-                                    rrmdir($dir.'/'.$object);
-                                } else {
-                                    unlink($dir.'/'.$object);
-                                }
-                            }
-                        }
-                        reset($objects);
-                        rmdir($dir);
-                    }
-                }
-                rmdir($path);
-                unlink($file);
-            }
-        );
-
-        return $response;
+        return new BinaryFileResponse($file);
     }
 }

@@ -931,7 +931,7 @@ class AppsController extends AbstractController
             return $this->createApiErrorResponse('invalid_upload', 'Invalid file upload');
         }
 
-        $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.time().'-'.mt_rand(1000, 9999);
+        $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.time().'-'.uniqid('', true);
         if (!@mkdir($tmpdir)) {
             return $this->createApiErrorResponse('copy_error', 'Failed to create extraction directory');
         }
@@ -960,18 +960,6 @@ class AppsController extends AbstractController
         }
 
         $app_dir = $tmpdir;
-
-        // See if we should go one level deep (sometimes the zip is a zip of a dir)
-        if (!is_file($app_dir.'/manifest.json')) {
-            $dir = dir($tmpdir);
-            while (($f = $dir->read()) !== null) {
-                if ($f != '.' && $f != '..' && is_dir($dir->path.'/'.$f)) {
-                    $app_dir = $dir->path.'/'.$f;
-                    break;
-                }
-            }
-            $dir->close();
-        }
 
         if (!is_file($app_dir.'/manifest.json')) {
             return $this->createApiErrorResponse('missing_manifest', 'Missing manifest.json');

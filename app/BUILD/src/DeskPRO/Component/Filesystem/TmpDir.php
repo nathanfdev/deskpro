@@ -22,7 +22,7 @@ class TmpDir
      *
      * @return string
      */
-    public static function makeTmpDir($base_path)
+    public static function makeTmpDir($base_path = null)
     {
         $tmp = new self($base_path);
 
@@ -35,7 +35,12 @@ class TmpDir
     public function __construct($base_path = null)
     {
         if (!$base_path) {
-            $base_path = sys_get_temp_dir();
+            global $DP_ENV;
+            if ($DP_ENV) {
+                $base_path = $DP_ENV->getUserTmpDir();
+            } else {
+                $base_path = sys_get_temp_dir();
+            }
         }
 
         $base_path = @realpath($base_path);
@@ -45,7 +50,7 @@ class TmpDir
         }
 
         do {
-            $path = $base_path.DIRECTORY_SEPARATOR.'tmp_'.date('YmdHis').'_'.RandUtils::randomString(10, 'alpha_iu');
+            $path = $base_path.DIRECTORY_SEPARATOR.'tmp_'.date('YmdHis').'_'.RandUtils::randomString(20, 'alpha_iu');
         } while (file_exists($path));
 
         @mkdir($path);
