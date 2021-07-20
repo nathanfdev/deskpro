@@ -25,6 +25,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Class PersonType.
@@ -37,13 +38,20 @@ class PersonType extends AbstractType
     private $fieldManager;
 
     /**
+     * @var TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * PersonType constructor.
      *
      * @param CustomFieldManager $fieldManager
+     * @param TokenStorage       $tokenStorage
      */
-    public function __construct(CustomFieldManager $fieldManager)
+    public function __construct(CustomFieldManager $fieldManager, TokenStorage $tokenStorage)
     {
         $this->fieldManager = $fieldManager;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -52,9 +60,6 @@ class PersonType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('password', TextType::class, [
-                'required' => false,
-            ])
             ->add('title_prefix', TextType::class, [
                 'required' => false,
             ])
@@ -195,8 +200,10 @@ class PersonType extends AbstractType
      */
     public function onPreSubmit(FormEvent $event)
     {
+        $form = $event->getForm();
+
         /** @var Person $person */
-        $person = $event->getForm()->getData();
+        $person = $form->getData();
         $data   = $event->getData();
 
         if (!empty($data['name'])) {
@@ -205,6 +212,20 @@ class PersonType extends AbstractType
                 'first_name' => $person->getFirstName(),
                 'last_name'  => $person->getLastName(),
             ]));
+        }
+
+        /** @var \Application\DeskPRO\Entity\Person $user */
+        $token = $this->tokenStorage->getToken();
+        $sessionPerson  = $token ? $token->getUser() : null;
+        $formPerson = $form->getData();
+
+        if ($sessionPerson instanceof Person
+            && $formPerson instanceof Person
+            && (!$formPerson->isAgent() || $sessionPerson->isAdmin() || $sessionPerson === $formPerson)
+        ) {
+            $form->add('password', TextType::class, [
+                'required' => false,
+            ]);
         }
     }
 

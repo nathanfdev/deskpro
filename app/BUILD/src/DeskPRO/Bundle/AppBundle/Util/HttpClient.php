@@ -50,7 +50,8 @@ class HttpClient extends Client
         // this forces http/https protocols
         // this shouldnt actually be necessary because guzzle sets CURLOPT_PROTOCOLS,
         // but we're double-checking here as a precaution
-        $handler->push(function (callable $handler) {
+        if (method_exists($handler, 'push')) {
+            $handler->push(function (callable $handler) {
                 return function (RequestInterface $request, array $options) use ($handler) {
                     $scheme = $request->getUri()->getScheme();
                     if ($scheme !== 'http' && $scheme !== 'https') {
@@ -60,7 +61,8 @@ class HttpClient extends Client
                     return $handler($request, $options);
                 };
             }
-        );
+            );
+        }
 
         $config['handler'] = $handler;
 
