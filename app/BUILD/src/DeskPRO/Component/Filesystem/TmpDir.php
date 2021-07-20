@@ -7,6 +7,8 @@
 namespace DeskPRO\Component\Filesystem;
 
 use DeskPRO\Component\Util\RandUtils;
+use DpSys\LowError\SystemErrorHandler;
+use Symfony\Component\Filesystem\Filesystem;
 
 class TmpDir
 {
@@ -22,38 +24,36 @@ class TmpDir
      *
      * @return string
      */
-    public static function makeTmpDir($base_path = null)
+    public static function makeTmpDir()
     {
-        $tmp = new self($base_path);
+        $tmp = new self();
 
         return $tmp->getPath();
     }
 
     /**
+     * Create a new tmp file name
+     *
+     * @return string
+     */
+    public static function makeTmpFile()
+    {
+        $tmp = new self();
+        $name = uniqid('f', true);
+
+        return $tmp->getPath() . DIRECTORY_SEPARATOR . $name;
+    }
+
+    /**
      * @param string|null $base_path
      */
-    public function __construct($base_path = null)
+    public function __construct()
     {
-        if (!$base_path) {
-            global $DP_ENV;
-            if ($DP_ENV) {
-                $base_path = $DP_ENV->getUserTmpDir();
-            } else {
-                $base_path = sys_get_temp_dir();
-            }
-        }
-
-        $base_path = @realpath($base_path);
-
-        if (!$base_path || !is_writable($base_path)) {
-            throw new \RuntimeException("Base tmp dir is not writable: $base_path");
-        }
-
         do {
-            $path = $base_path.DIRECTORY_SEPARATOR.'tmp_'.date('YmdHis').'_'.RandUtils::randomString(20, 'alpha_iu');
+            $path = sys_get_temp_dir().DIRECTORY_SEPARATOR.'tmp_'.date('YmdHis').'_'.RandUtils::randomString(20, 'alpha_iu');
         } while (file_exists($path));
 
-        @mkdir($path);
+        @mkdir($path, 0600, true);
         if (!is_dir($path)) {
             throw new \RuntimeException('Could not create tmp dir: '.$path.' ('.error_get_last().')');
         }
@@ -72,19 +72,15 @@ class TmpDir
             return;
         }
 
-        $rm = function ($files) use (&$rm) {
-            foreach ($files as $p) {
-                if (is_dir($p) && !is_link($p)) {
-                    $rm(new \FilesystemIterator($p));
-                    @rmdir($p);
-                } else {
-                    @unlink($p);
-                }
-            }
-        };
-        if (is_dir($this->path)) {
-            $rm(new \FilesystemIterator($this->path));
-            @rmdir($this->path);
+        $fs = new Filesystem();
+
+        try {
+            $fs->remove($this->path);
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+
+            // fallback to just making it unreadable
+            @chmod($this->path, 0);
         }
 
         $this->path = null;

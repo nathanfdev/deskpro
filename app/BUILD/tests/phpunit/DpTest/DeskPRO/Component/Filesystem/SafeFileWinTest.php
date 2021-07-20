@@ -63,24 +63,4 @@ class SafeFileWinTest extends DeskProTestCase
 
         $this->assertTrue(SafeFile::isValid('C:\\var\\log\\nginx\\access.log', 'C:\\var\\log\\nginx\\'));
     }
-
-    public function testSafeFileHttp()
-    {
-        $this->assertFalse(SafeFile::isValid('C:\\var\\log\\mail.log', SafeFile::HTTP));
-        $this->assertFalse(SafeFile::isValid('file://var/log/mail.log', SafeFile::HTTP));
-        $this->assertFalse(SafeFile::isValid('ftp://var/log/mail.log', SafeFile::HTTP));
-        $this->assertTrue(SafeFile::isValid('http://google.com/', SafeFile::HTTP));
-        $this->assertTrue(SafeFile::isValid('https://google.com/', SafeFile::HTTP));
-        $this->assertTrue(SafeFile::isValid('HTTPS://google.com/', SafeFile::HTTP));
-    }
-
-    public function testSafeFileData()
-    {
-        $testFile = 'data:text\\plain;charset=utf-8;base64,VEVTVA==';
-
-        $this->assertFalse(SafeFile::isValid('C:\\var\\log\\mail.log', SafeFile::DATA));
-        $this->assertFalse(SafeFile::isValid('file://var/log/mail.log', SafeFile::DATA));
-        $this->assertFalse(SafeFile::isValid('ftp://var/log/mail.log', SafeFile::DATA));
-        $this->assertTrue(SafeFile::isValid($testFile, SafeFile::DATA));
-    }
 }

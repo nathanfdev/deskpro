@@ -62,42 +62,17 @@ class SafeFileTest extends DeskProTestCase
         $this->assertTrue(SafeFile::isValid('/var/log/nginx/access.log', '/var/log/nginx/'));
     }
 
-    public function testSafeFileHttp()
-    {
-        $this->assertFalse(SafeFile::isValid('/var/log/mail.log', SafeFile::HTTP));
-        $this->assertFalse(SafeFile::isValid('file://var/log/mail.log', SafeFile::HTTP));
-        $this->assertFalse(SafeFile::isValid('ftp://var/log/mail.log', SafeFile::HTTP));
-        $this->assertTrue(SafeFile::isValid('http://google.com/', SafeFile::HTTP));
-        $this->assertTrue(SafeFile::isValid('https://google.com/', SafeFile::HTTP));
-        $this->assertTrue(SafeFile::isValid('HTTPS://google.com/', SafeFile::HTTP));
-    }
-
     public function testSafeFileFile()
     {
-        $this->assertFalse(SafeFile::isValid('/var/log/mail.log', SafeFile::FILE));
-        $this->assertFalse(SafeFile::isValid('ftp://var/log/mail.log', SafeFile::FILE));
-        $this->assertTrue(SafeFile::isValid('file://var/log/mail.log', SafeFile::FILE));
+        $this->assertFalse(SafeFile::isValid('/var/log/mail.log', SafeFile::UNSPECIFIED));
+        $this->assertFalse(SafeFile::isValid('ftp://var/log/mail.log', SafeFile::UNSPECIFIED));
+        $this->assertTrue(SafeFile::isValid('file://var/log/mail.log', SafeFile::UNSPECIFIED));
     }
 
     public function testSafeFileData()
     {
         $testFile = 'data:text/plain;charset=utf-8;base64,VEVTVA==';
-
-        $this->assertFalse(SafeFile::isValid('/var/log/mail.log', SafeFile::DATA));
-        $this->assertFalse(SafeFile::isValid('file://var/log/mail.log', SafeFile::DATA));
-        $this->assertFalse(SafeFile::isValid('ftp://var/log/mail.log', SafeFile::DATA));
-        $this->assertTrue(SafeFile::isValid($testFile, SafeFile::DATA));
-    }
-
-    public function testResolve()
-    {
-        $this->assertEquals('/x/var/log/mail.log', SafeFile::tryResolvePath('/x/var/./log/nginx/../mail.log'));
-        $this->assertEquals('C:/x/Windows/etc/hosts', SafeFile::tryResolvePath('C:\\x\\Windows\\etc\\..\\etc\\hosts'));
-
-        $this->assertEquals('http://foo.com/', SafeFile::tryResolvePath('http://foo.com/'));
-
-        $testFile = 'data:text/plain;charset=utf-8;base64,VEVTVA==';
-        $this->assertEquals($testFile, SafeFile::tryResolvePath($testFile));
+        $this->assertFalse(SafeFile::isValid($testFile, SafeFile::UNSPECIFIED));
     }
 
     public function testIsValidResolvedRealpath()
@@ -107,35 +82,13 @@ class SafeFileTest extends DeskProTestCase
         ];
 
         // Valid
-        $this->assertTrue(SafeFile::isValid(__DIR__.'/resources/example.txt', $whitelist));
-        $this->assertTrue(SafeFile::isValid(__DIR__.'/../../Component/Filesystem/resources/example.txt', $whitelist));
-        $this->assertTrue(SafeFile::isValid('file://'.__DIR__.'/resources/example.txt', SafeFile::FILE));
-        $this->assertTrue(SafeFile::isValid('file://'.__DIR__.'/../../Component/Filesystem/resources/example.txt', SafeFile::FILE));
+        $this->assertTrue(SafeFile::isValid(__DIR__.'/resources/example.txt', __DIR__));
+        $this->assertTrue(SafeFile::isValid(__DIR__.'/../../Component/Filesystem/resources/example.txt', __DIR__));
+        $this->assertTrue(SafeFile::isValid('file://'.__DIR__.'/resources/example.txt', __DIR__));
+        $this->assertTrue(SafeFile::isValid('file://'.__DIR__.'/../../Component/Filesystem/resources/example.txt', __DIR__));
 
         // Invalid
         $this->assertFalse(SafeFile::isValid('phar://'.__DIR__.'/resources/example.phar', $whitelist));
         $this->assertFalse(SafeFile::isValid('phar://'.__DIR__.'/../../Component/Filesystem/resources/example.phar', $whitelist));
-    }
-
-    public function testIsValidPathPrefix()
-    {
-        // Valid
-        $this->assertTrue(SafeFile::isValidPathPrefix('/foo/bar'));
-        $this->assertTrue(SafeFile::isValidPathPrefix('./foo/bar'));
-        $this->assertTrue(SafeFile::isValidPathPrefix('../foo/bar'));
-        $this->assertTrue(SafeFile::isValidPathPrefix('C:/foo/bar'));
-        $this->assertTrue(SafeFile::isValidPathPrefix('foo/bar'));
-        $this->assertTrue(SafeFile::isValidPathPrefix('http://foo'));
-        $this->assertTrue(SafeFile::isValidPathPrefix('https://foo'));
-        $this->assertTrue(SafeFile::isValidPathPrefix('file://foo'));
-        $this->assertTrue(SafeFile::isValidPathPrefix('data://foo'));
-
-        // Invalid
-        $this->assertFalse(SafeFile::isValidPathPrefix('phar:///foo'));
-        $this->assertFalse(SafeFile::isValidPathPrefix('zip:///foo'));
-        $this->assertFalse(SafeFile::isValidPathPrefix('ftp:///foo'));
-        $this->assertFalse(SafeFile::isValidPathPrefix(' phar:///foo'));
-        $this->assertFalse(SafeFile::isValidPathPrefix('  phar:///foo'));
-        $this->assertFalse(SafeFile::isValidPathPrefix('phar%3A%2F%2Ffoo'));
     }
 }
