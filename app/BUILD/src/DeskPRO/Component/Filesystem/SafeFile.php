@@ -432,7 +432,7 @@ class SafeFile
      */
     public static function fileOpen($path, $mode, $whitelist)
     {
-        if (!$path || !self::isValid($path, $whitelist)) {
+        if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
                 trigger_error("SafeFile::fileOpen($path) is not valid", E_USER_WARNING);
             }
@@ -455,6 +455,558 @@ class SafeFile
     public static function fopen($path, $mode, $whitelist)
     {
         return self::fileOpen($path, $mode, $whitelist);
+    }
+
+
+    /**
+     * @param string          $path
+     * @param string          $to
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function copy($path, $to, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::copy($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        if (!self::isValid($to, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::copy(*, $to) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return copy(self::normalizePath($path), self::normalizePath($to));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function file_exists($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::file_exists($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return file_exists(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param mixed           $data
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function file_put_contents($path, $data, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::file_put_contents($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return file_put_contents(self::normalizePath($path), $data);
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function fileatime($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::fileatime($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return fileatime(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function filectime($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::filectime($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return filectime(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return false|int
+     */
+    public static function filegroup($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::filegroup($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return filegroup(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function fileinode($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::fileinode($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return fileinode(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function filemtime($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::filemtime($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return filemtime(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return false|int
+     */
+    public static function fileowner($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::fileowner($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return fileowner(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function fileperms($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::fileperms($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return fileperms(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function filesize($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::filesize($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return filesize(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return string|false
+     */
+    public static function filetype($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::filetype($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return filetype(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_dir($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::is_dir($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return is_dir(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_executable($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::is_executable($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return is_executable(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_file($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::is_file($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return is_file(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_link($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::is_link($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return is_link(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_readable($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::is_readable($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return is_readable(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_writable($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::is_writable($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return is_writable(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return array|false
+     */
+    public static function lstat($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::lstat($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return lstat(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     * @param int             $permissions
+     * @param bool            $recursive
+     * @param resource|null   $context
+     *
+     * @return bool
+     */
+    public static function mkdir($path, $whitelist, $permissions = 0777, $recursive = false, $context = null)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::mkdir($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return mkdir(
+            self::normalizePath($path),
+            $permissions,
+            $recursive,
+            $context
+        );
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     * @param bool            $process_sections
+     * @param int             $scanner_mode
+     *
+     * @return bool
+     */
+    public static function parse_ini_file($path, $whitelist, $process_sections = false, $scanner_mode = \INI_SCANNER_NORMAL)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::parse_ini_file($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return parse_ini_file(
+            self::normalizePath($path),
+            $process_sections,
+            $scanner_mode
+        );
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function readfile($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::readfile($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return readfile(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $from
+     * @param string          $to
+     * @param string|string[] $whitelist
+     * @param resource|null   $context
+     *
+     * @return bool
+     */
+    public static function rename($from, $to, $whitelist, $context = null)
+    {
+        if (!self::isValid($from, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::rename($from) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        if (!self::isValid($to, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::rename(*, $to) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return rename(self::normalizePath($from), self::normalizePath($to), $context);
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     * @param resource|null   $context
+     *
+     * @return bool
+     */
+    public static function rmdir($path, $whitelist, $context = null)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::rmdir($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return rmdir(self::normalizePath($path), $context);
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return array|false
+     */
+    public static function stat($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::stat($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return stat(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     * @param int|null        $mtime
+     * @param int|null        $atime
+     *
+     * @return bool
+     */
+    public static function touch($path, $whitelist, $mtime = null, $atime = null)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::touch($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return touch(self::normalizePath($path), $mtime, $atime);
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     * @param resource|null   $context
+     *
+     * @return bool
+     */
+    public static function unlink($path, $whitelist, $context)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::unlink($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return unlink(self::normalizePath($path), $context);
     }
 }
 
