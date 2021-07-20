@@ -496,7 +496,7 @@ class PersonController extends AbstractController
                 $data['disable_autoresponses_log'] = $person->disable_autoresponses_log;
 
                 $this->em->persist($person);
-                
+
                 break;
 
             case 'toggle_confirmed':
@@ -1596,7 +1596,7 @@ class PersonController extends AbstractController
 
             $vCardReader = new VCard($this->em);
 
-            $fields = $vCardReader->parseVCard($content);
+            $fields = VCard::parseVCard($content);
 
             if (!isset($fields['emails']) || !count($fields['emails'])) {
                 return $this->createJsonResponse([

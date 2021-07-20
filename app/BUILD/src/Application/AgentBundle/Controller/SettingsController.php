@@ -239,12 +239,14 @@ class SettingsController extends AbstractController
         $this->person->timezone = $tz;
 
         $this->db->beginTransaction();
+
         try {
             $this->em->persist($this->person);
             $this->em->flush();
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+
             throw $e;
         }
 
@@ -372,6 +374,8 @@ class SettingsController extends AbstractController
 
     /**
      * Edit a filter.
+     *
+     * @param mixed $filter_id
      */
     public function ticketFilterEditAction($filter_id)
     {
@@ -426,7 +430,7 @@ class SettingsController extends AbstractController
         $filter['order_by'] = $this->in->getString('filter.order_by');
 
         $term_rules      = RuleBuilder::newTermsBuilder();
-        $filter['terms'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
+        $filter['terms'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'str', 'discard'));
 
         $filter['is_global']  = false;
         $filter['is_enabled'] = true;
@@ -527,7 +531,7 @@ class SettingsController extends AbstractController
         }
 
         $action_rules = RuleBuilder::newActionsBuilder();
-        $actions      = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw', 'str_simple'));
+        $actions      = $action_rules->readForm($this->in->getCleanValueArray('actions', 'str', 'str_simple'));
 
         $macro['actions'] = $actions;
 
@@ -600,6 +604,7 @@ class SettingsController extends AbstractController
             foreach ($departments as $department) {
                 if ($department->hasBrand($brand)) {
                     $department_found = true;
+
                     break;
                 }
             }
