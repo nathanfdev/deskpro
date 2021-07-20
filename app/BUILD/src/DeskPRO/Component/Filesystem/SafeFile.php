@@ -55,6 +55,17 @@ class SafeFile
     const DATA = 'data://';
 
     /**
+     * List of stream types that are considered "allowable" before
+     * further checks are made
+     */
+    const STREAM_WHITELIST = [
+        'http://',
+        'https://',
+        'data://',
+        'file://',
+    ];
+
+    /**
      * @var array
      */
     private static $blacklist = [];
@@ -475,14 +486,7 @@ class SafeFile
             return true;
         }
 
-        $prefixWhitelist = [
-            'http://',
-            'https://',
-            'data://',
-            'file://',
-        ];
-
-        foreach ($prefixWhitelist as $prefix) {
+        foreach (self::STREAM_WHITELIST as $prefix) {
             if (stripos($path, $prefix) === 0) {
                 return true;
             }
