@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\App\Package;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\ORM\EntityManager;
 
 class NativePackages
@@ -63,7 +64,7 @@ class NativePackages
 
         while (($f = $dir->read()) !== false) {
             $manifest_path = $this->root_path.'/'.$f.'/manifest.json';
-            if (file_exists($manifest_path)) {
+            if (SafeFile::file_exists($manifest_path, $this->root_path)) {
                 $this->native_names[] = $f;
             }
         }

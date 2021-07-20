@@ -29,6 +29,7 @@ use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters\BundleFileHan
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestReader;
 use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DpSys\LowError\SystemErrorHandler;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
@@ -909,10 +910,7 @@ class AppsController extends AbstractController
 
             $temp_name = $file->getRealPath();
         } elseif ($upload_url = $this->in->getString('file_url')) {
-            $temp_name = @tempnam(dp_get_tmp_dir(), 'app_upload');
-            register_shutdown_function(function () use ($temp_name) {
-                @unlink($temp_name);
-            });
+            $temp_name = TmpDir::makeTmpFile();
 
             if (!$temp_name) {
                 return $this->createApiErrorResponse('copy_error', 'Failed to copy file to temp directory');
@@ -922,7 +920,7 @@ class AppsController extends AbstractController
                 HttpClient::downloadFile(
                     $upload_url,
                     $temp_name,
-                    dp_get_tmp_dir()
+                    TmpDir::getSysTempDir()
                 );
             } catch (\Exception $e) {
                 return $this->createApiErrorResponse('invalid_upload', 'Invalid file upload');
@@ -931,20 +929,7 @@ class AppsController extends AbstractController
             return $this->createApiErrorResponse('invalid_upload', 'Invalid file upload');
         }
 
-        $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.time().'-'.uniqid('', true);
-        if (!@mkdir($tmpdir)) {
-            return $this->createApiErrorResponse('copy_error', 'Failed to create extraction directory');
-        }
-
-        register_shutdown_function(function () use ($tmpdir) {
-            if (!is_dir($tmpdir)) {
-                return;
-            }
-            foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($tmpdir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
-                $path->isFile() ? @unlink($path->getPathname()) : @rmdir($path->getPathname());
-            }
-            @rmdir($tmpdir);
-        });
+        $tmpdir = TmpDir::makeTmpDir();
 
         /** @var \Orb\Zip\Zip $zipper */
         $zipper = $this->container->getSystemService('zipper');
@@ -1088,14 +1073,11 @@ class AppsController extends AbstractController
         ]);
 
         if ($blob) {
-            $appEnv   = $this->container->get('deskpro.app_env');
-            $blobPath = $appEnv->getUserTmpDir().'/'.$blob->getFilename();
-
-            SafeFile::assertValid($blobPath, $appEnv->getUserTmpDir());
+            SafeFile::assertValid($blobPath, $assetDir);
 
             $this->container->get('blob.storage')->copyBlobRecordToFile($blobPath, $blob);
-        } elseif (!file_exists($blobPath)) {
-            return;
+        } else {
+            throw $this->createNotFoundException();
         }
 
         /** @var BundleFileHandlingStrategyZip $bundleReader */

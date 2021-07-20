@@ -15,6 +15,7 @@ use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver as MSR;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
@@ -332,7 +333,7 @@ class LanguagesController extends AbstractController
         $lang->locale     = $this->in->getString('language.locale') ?: $lang['locale'];
         $lang->flag_image = $this->in->getString('language.flag_image') ?: $lang['flag_image'];
 
-        if (!file_exists(DP_WEB_ROOT.'/web/images/flags/'.$lang->flag_image)) {
+        if (!SafeFile::file_exists(DP_WEB_ROOT.'/web/images/flags/'.$lang->flag_image, DP_WEB_ROOT)) {
             $lang->flag_image = $lang['flag_image'];
         }
 

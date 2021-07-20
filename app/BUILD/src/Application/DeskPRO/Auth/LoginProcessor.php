@@ -16,6 +16,7 @@ use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 use Orb\Util\Arrays;
@@ -400,7 +401,7 @@ class LoginProcessor
     protected function updatePictureData($mapped_fields, $em)
     {
         if ($mapped_fields->has('picture_data')) {
-            $filename = tempnam(dp_get_tmp_dir(), 'picture');
+            $filename = TmpDir::makeTmpFile();
             $fp       = @fopen($filename, 'w');
             if ($fp) {
                 @fwrite($fp, $mapped_fields->get('picture_data'));
@@ -428,7 +429,6 @@ class LoginProcessor
                     $this->person->setPictureBlob($blob);
                 }
             }
-            @unlink($filename);
         }
 
         $this->persist($em, $this->person);

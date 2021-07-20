@@ -57,7 +57,7 @@ class TemplateLocator extends BaseTemplateLocator
                 $file_name   = $parts[1];
 
                 $path = DP_ROOT.'/apps/'.$native_name.'/native/Resources/views/'.ltrim($file_name, '/');
-                if (file_exists($path)) {
+                if (SafeFuke::file_exists($path, DP_ROOT.'/apps/'.$native_name.'/native/Resources/views/')) {
                     $this->cache[$key] = ['path' => $path];
 
                     return $path;

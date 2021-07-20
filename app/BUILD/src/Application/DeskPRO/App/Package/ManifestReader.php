@@ -55,7 +55,7 @@ class ManifestReader
      */
     public static function newFromFile($path)
     {
-        if (!is_file($path)) {
+        if (!SafeFile::is_file($path, SafeFile::UNSPECIFIED)) {
             return new self([], self::ERR_INVALID_FILE, ['file', 'missing_path']);
         }
 

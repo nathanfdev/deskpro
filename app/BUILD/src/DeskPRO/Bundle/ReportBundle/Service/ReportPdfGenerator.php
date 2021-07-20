@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ReportBundle\Service;
 use Application\DeskPRO\Entity\SavedDashboardReport;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -69,7 +70,7 @@ class ReportPdfGenerator
     public function __construct(AppEnvInterface $appEnv, SettingsResolver $settingsResolver)
     {
         $build            = $appEnv->getBuildId() > 0 ? $appEnv->getBuildId() : 'BUILD';
-        $this->pdfDir     = $appEnv->getUserTmpDir();
+        $this->pdfDir     = TmpDir::makeTmpDir();
         $this->binaryPath =
             $appEnv->getWwwRoot().DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR
             .$build.DIRECTORY_SEPARATOR.'pub'.DIRECTORY_SEPARATOR.'bin';
@@ -111,7 +112,7 @@ class ReportPdfGenerator
 
     protected function getPdfName(SavedDashboardReport $report)
     {
-        $name = sprintf('%s-%s.pdf', $report->getDateCreated()->format('Y-m-d_h:i:s'), $report->getTitle());
+        $name = sprintf('%s-Report-%s.pdf', $report->getDateCreated()->format('Y-m-d_h:i:s'), $report->getId());
 
         return $this->pdfDir.DIRECTORY_SEPARATOR.$name;
     }

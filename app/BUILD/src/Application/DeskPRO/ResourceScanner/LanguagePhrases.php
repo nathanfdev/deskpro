@@ -4,6 +4,7 @@
 
 namespace Application\DeskPRO\ResourceScanner;
 
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\MapUtils;
 use Symfony\Component\Yaml\Yaml;
 
@@ -41,7 +42,7 @@ class LanguagePhrases
 
         $lang_dir = dir($this->lang_root);
         while (($file = $lang_dir->read()) != false) {
-            if ($file == '.' || $file == '..' || $file == 'export' || !is_file($lang_dir->path.'/'.$file)) {
+            if ($file == '.' || $file == '..' || $file == 'export' || !SafeFile::is_file($lang_dir->path.'/'.$file, DP_ROOT)) {
                 continue;
             }
 

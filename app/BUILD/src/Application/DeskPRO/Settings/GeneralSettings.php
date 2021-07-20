@@ -320,8 +320,6 @@ class GeneralSettings
             $this->globalSettings->setSetting('core.deskpro_url_autocorrect', (bool) $this->deskpro_url_autocorrect);
             $this->globalSettings->setSetting('core.helpdesk_disabled', (bool) $this->helpdesk_disabled);
             $this->globalSettings->setSetting('core.helpdesk_disabled_message', $this->helpdesk_disabled_message);
-
-            @file_put_contents(App::$container->getParameter('dp.user.cache_dir').'/helpdesk-offline-message.txt', $this->helpdesk_disabled_message);
         }
 
         $this->site_url = App::$container->get('url_host_checker')->simplifyUrl($this->site_url, true, false, true);

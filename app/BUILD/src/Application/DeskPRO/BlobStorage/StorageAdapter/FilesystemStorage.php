@@ -4,6 +4,7 @@ namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
 use Application\DeskPRO\BlobStorage\BlobStorageException;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Numbers;
 
 class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInterface, WriteStreamInterface
@@ -46,7 +47,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     {
         $path = $this->resolvePath($blob->getPath());
 
-        $exists = is_file($path);
+        $exists = SafeFile::is_file($path, $this->base_path);
 
         $this->logger->logInfo("[FilesystemStorage] (checkBlobExists) $path ".($exists ? 'exists' : 'no exist'));
 
@@ -62,13 +63,13 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     {
         $path = $this->resolvePath($blob->getPath());
 
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, $this->base_path)) {
             $this->logger->logInfo("[FilesystemStorage] (deleteBlob) Path does not exist, nothing to delete: $path");
 
             return true;
         }
 
-        $res = @unlink($path);
+        $res = @SafeFile::unlink($path, $this->base_path);
 
         if ($res) {
             $this->logger->logInfo("[FilesystemStorage] (deleteBlob) Deleted path: $path");
@@ -77,8 +78,8 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         }
 
         $metaPath = $path.'.meta.json';
-        if (file_exists($metaPath)) {
-            $res = @unlink($metaPath);
+        if (SafeFile::file_exists($metaPath, $this->base_path)) {
+            $res = @SafeFile::unlink($metaPath, $this->base_path);
 
             if ($res) {
                 $this->logger->logInfo("[FilesystemStorage] (deleteBlob) Deleted path: $metaPath");
@@ -128,7 +129,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
      */
     public function writeBlobFromFile(Blob $blob, $sourcePath)
     {
-        $fp_source = @fopen($sourcePath, 'r');
+        $fp_source = @SafeFile::fopen($sourcePath, 'r', $this->base_path);
 
         if (!$fp_source) {
             @fclose($fp_source);
@@ -170,7 +171,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         $this->logger->logInfo('[FilesystemStorage] (writeBlobFromStream) Wrote '.Numbers::filesizeDisplay($ret).' from stream to '.$this->resolvePath($blob->getPath()));
 
         $path = $this->resolvePath($blob->getPath());
-        if (file_exists($path)) {
+        if (SafeFile::file_exists($path, $this->base_path)) {
             $this->_chmod($path, $this->file_mode);
         }
 
@@ -181,7 +182,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
             'filename' => $blob->getFilename(),
         ];
 
-        if (!@file_put_contents($metaPath, json_encode($metadata))) {
+        if (!@SafeFile::file_put_contents($metaPath, json_encode($metadata), $this->base_path)) {
             $this->logger->logError("[FilesystemStorage] (writeBlobFromStream) Could not write $metaPath for writing");
         }
 
@@ -222,7 +223,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
      */
     public function readBlobToFile(Blob $blob, $targetPath)
     {
-        $fpTarget = @fopen($targetPath, 'w');
+        $fpTarget = @SafeFile::fopen($targetPath, 'w', SafeFile::UNSPECIFIED);
 
         if (!$fpTarget) {
             @fclose($fpTarget);
@@ -269,12 +270,12 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         $path = $this->resolvePath($blob->getPath());
         $dir  = dirname($path);
 
-        if (!is_dir($dir)) {
-            @mkdir($dir, 0777, true);
+        if (!SafeFile::is_dir($dir, $this->base_path)) {
+            @SafeFile::mkdir($dir, $this->base_path, 0777, true);
             $this->_chmod($dir, $this->dir_mode);
         }
 
-        $fp = fopen($path, 'w');
+        $fp = SafeFile::fopen($path, 'w', $this->base_path);
 
         if (!$fp) {
             $this->logger->logError("[FilesystemStorage] (getBlobWriteStream) Failed to open path for writing: $path");
@@ -292,7 +293,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     {
         $path = $this->resolvePath($blob->getPath());
 
-        $fp = fopen($path, 'r');
+        $fp = SafeFile::fopen($path, 'r', $this->base_path);
 
         if (!$fp) {
             $this->logger->logError("[FilesystemStorage] (getBlobReadStream) Failed to open path for reading: $path");
@@ -383,11 +384,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
      */
     private function _fileSeemsOkay($path)
     {
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, $this->base_path)) {
             return false;
         }
 
-        $size = @filesize($path);
+        $size = @SafeFile::filesize($path, $this->base_path);
         if (!$size || $size < 1) {
             return false;
         }

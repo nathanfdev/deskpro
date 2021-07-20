@@ -745,6 +745,25 @@ class SafeFile
      * @param string          $path
      * @param string|string[] $whitelist
      *
+     * @return string|false
+     */
+    public static function realpath($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist, true)) {
+            if (self::$emit_warnings) {
+                trigger_error("SafeFile::realpath($path) is not valid", E_USER_WARNING);
+            }
+
+            return false;
+        }
+
+        return realpath(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
      * @return bool
      */
     public static function is_executable($path, $whitelist)
@@ -1022,7 +1041,7 @@ class SafeFile
      *
      * @return bool
      */
-    public static function unlink($path, $whitelist, $context)
+    public static function unlink($path, $whitelist, $context = null)
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {

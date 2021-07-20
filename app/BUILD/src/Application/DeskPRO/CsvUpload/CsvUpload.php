@@ -7,6 +7,8 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\TaskQueue;
 use Application\DeskPRO\TaskQueueJob\CsvImport;
 use Application\DeskPRO\Util;
+use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -41,23 +43,23 @@ class CsvUpload
             return ['error' => 'no_file'];
         }
 
-        if (!is_uploaded_file($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename())) {
+        if (!is_uploaded_file($file->getRealPath())) {
             return ['error' => 'no_move'];
         }
 
-        $encoded = Util::jsonEncode(file_get_contents($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename()));
+        $encoded = Util::jsonEncode(file_get_contents($file->getRealPath()));
         if (!$encoded) {
             return ['error' => 'mailformed_data'];
         }
 
         $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
-            $file->getPath().DIRECTORY_SEPARATOR.$file->getFilename(),
+            $file->getRealPath(),
             $file->getClientOriginalName(),
             'text/csv'
         );
 
-        $csv_path = dp_get_tmp_dir().'/blob-'.$blob->getId().'.csv';
-        copy($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename(), $csv_path);
+        $csv_path = TmpDir::makeTmpFile();
+        SafeFile::copy($file->getRealPath(), $csv_path, SafeFile::UNSPECIFIED);
 
         return $this->_returnUploadFileResponse($blob->getId(), $file->getClientOriginalName(), $options);
     }
@@ -180,20 +182,20 @@ class CsvUpload
      */
     protected function _returnUploadFileResponse($filename, $user_filename, array $options = [])
     {
-        $csv_path = dp_get_tmp_dir().'/blob-'.$filename.'.csv';
+        $csv_path = TmpDir::makeTmpFile();
         $blob     = App::getOrm()->find('DeskPRO:Blob', $filename);
 
         if (!$blob) {
             return ['error' => 'no_move'];
         }
 
-        if (!is_file($csv_path)) {
+        if (!SafeFile::is_file($csv_path, SafeFile::UNSPECIFIED)) {
             App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
         }
 
         $originalOptions = $options;
         $options         = CsvImport::getOptions($options);
-        $fp              = fopen($csv_path, 'r');
+        $fp              = SafeFile::fopen($csv_path, 'r', SafeFile::UNSPECIFIED);
         $columns         = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
         $column_count    = count($columns);
 

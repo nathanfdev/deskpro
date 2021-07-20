@@ -14,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Component\Filesystem\DataUri;
 use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Filesystem\TmpDir;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Data\ContentTypes;
@@ -487,11 +488,9 @@ class BlobsController extends CrudController
     {
         /** @var DeskproBlobStorage $blobStorage */
         $blobStorage = $this->get('deskpro.blob_storage');
-        $fileId      = uniqid('archive', true);
-        $tmpDir      = $this->get('deskpro.app_env')->getUserTmpDir();
-        $archive     = $tmpDir.'/'.$fileId.$blob->getFilename();
+        $archive     = TmpDir::makeTmpFile();
 
-        SafeFile::assertValid($archive, $tmpDir);
+        SafeFile::assertValid($archive, TmpDir::getSysTempDir());
 
         $blobStorage->copyBlobRecordToFile($archive, $blob);
 

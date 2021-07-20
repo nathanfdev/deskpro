@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -422,8 +423,9 @@ class Guide extends DomainObject implements HasIconProperty, HasSplashImagePrope
      */
     public function getGuidePdf()
     {
-        $filename = DP_DIR.'/attachments/guides/pdf/'.$this->getSlug().'.pdf';
-        if (file_exists($filename)) {
+        $dir = DP_DIR.'/attachments/guides/pdf/';
+        $filename = $dir.$this->getSlug().'.pdf';
+        if (SafeFile::file_exists($filename, $dir)) {
             return App::get('router')->generate(
                 'guides_pdf',
                 ['slug' => $this->getSlug()]);

@@ -10,6 +10,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DpSys\LowError\SystemErrorHandler;
 
 /**
@@ -426,7 +427,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
         } else {
             if ($memoryProtection) {
                 $this->logger->log('Memory protected enabled', 'info');
-                $contentFile = dp_get_backup_dir().'/eml-'.uniqid('', true).'.eml';
+                $contentFile = TmpDir::makeTmpFile();
                 $fp          = fopen($contentFile, 'w');
                 if ($fp) {
                     $this->getStorage()->getProtocol()->retrieveToStream($messageNum, $fp);

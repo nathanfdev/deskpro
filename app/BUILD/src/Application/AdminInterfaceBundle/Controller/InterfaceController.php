@@ -182,30 +182,6 @@ class InterfaceController extends AbstractController
      */
     public function downloadExportFileAction($code)
     {
-        if (!$data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code)) {
-            throw new NotFoundHttpException();
-        }
-
-        $file = $data->getData('file');
-
-        if ($data->getData('url')) {
-            $response = new RedirectResponse($data->getData('url'));
-
-            return $response;
-        }
-
-        if (!file_exists($file)) {
-            throw new NotFoundHttpException();
-        }
-
-        $response = new BinaryFileResponse($file);
-        $response->trustXSendfileTypeHeader();
-        $response->setContentDisposition(
-            ResponseHeaderBag::DISPOSITION_INLINE,
-            pathinfo($file, PATHINFO_BASENAME),
-            iconv('UTF-8', 'ASCII//TRANSLIT', 'DP_Export.csv')
-        );
-
-        return $response;
+        throw $this->createNotFoundException();
     }
 }

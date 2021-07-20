@@ -1450,7 +1450,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         if (!in_array($setting, AdvancedSettings::getAcceptableSettingIds())) {
             return $default;
         }
-        
+
         return $this->getBrandStack()->getActive()->getSetting($setting, $default);
     }
 
@@ -1850,6 +1850,9 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function includeFile($path)
     {
+        if (defined('DPC_IS_CLOUD')) {
+            return '';
+        }
         if (!$this->container->get('deskpro.app_env')->getConfig('sys.tpl.enable_include_file')) {
             return '';
         }
@@ -1872,6 +1875,9 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function includePhpFile($path, array $with = null)
     {
+        if (defined('DPC_IS_CLOUD')) {
+            return '';
+        }
         if (!$this->container->get('deskpro.app_env')->getConfig('sys.tpl.enable_include_file')) {
             return '';
         }

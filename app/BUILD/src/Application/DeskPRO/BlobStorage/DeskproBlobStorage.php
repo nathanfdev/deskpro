@@ -6,6 +6,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter;
 use Application\DeskPRO\Entity\Blob as BlobEntity;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
@@ -78,7 +80,7 @@ class DeskproBlobStorage implements Loggable
     protected $enable_physical_delete = true;
 
     /**
-     * @var string
+     * @var TmpDir
      */
     protected $tmpDir = '';
 
@@ -89,10 +91,10 @@ class DeskproBlobStorage implements Loggable
 
     /**
      * @param EntityManager $em
-     * @param string        $tmpDir
+     * @param TmpDir        $tmpDir
      * @param array         $options
      */
-    public function __construct(EntityManager $em, $tmpDir, array $options = [])
+    public function __construct(EntityManager $em, TmpDir $tmpDir, array $options = [])
     {
         $this->adapters = [];
         $this->em       = $em;
@@ -371,10 +373,10 @@ class DeskproBlobStorage implements Loggable
         if ((ContentTypes::isImageContentType($contentType) || ContentTypes::isTiffContentType($contentType))
             && (!isset($props['tag']) || $props['tag'] !== DeskproBlobStorage::TAG_TICKET_ATTACHMENT)
         ) {
-            $sourceData    = @file_get_contents($sourcePath);
+            $sourceData    = @SafeFile::file_get_contents($sourcePath, SafeFile::UNSPECIFIED);
             $newSourceData = App::$container->get('dp.image.image_cleaner')->stripImage($sourceData);
 
-            if ($sourceData !== $newSourceData && @file_put_contents($sourcePath, $newSourceData)) {
+            if ($sourceData !== $newSourceData && @SafeFile::file_put_contents($sourcePath, $newSourceData, SafeFile::UNSPECIFIED)) {
                 // https://www.php.net/manual/en/function.filesize.php#refsect1-function.filesize-notes
                 // reset stat cache to get proper filesize()
                 clearstatcache();
@@ -384,7 +386,7 @@ class DeskproBlobStorage implements Loggable
         }
 
         $blob_entity_tmp = $this->_createBlobEntity($filename, $contentType, $props);
-        $blob_entity_tmp->setFilesize(filesize($sourcePath))->setBlobHash(md5_file($sourcePath));
+        $blob_entity_tmp->setFilesize(SafeFile::filesize($sourcePath, SafeFile::UNSPECIFIED))->setBlobHash(md5_file($sourcePath));
 
         if (ContentTypes::isImageContentType($contentType) && $imageinfo = @getimagesize($sourcePath)) {
             $blob_entity_tmp->setDimensions($imageinfo);
@@ -451,7 +453,7 @@ class DeskproBlobStorage implements Loggable
                 $blob_entity_tmp->storage_loc = $adapter_id;
 
                 if ($adapter->requiresTempCache() && $blob_entity_tmp->getFilesize()) {
-                    $this->createCache($blob_entity_tmp, file_get_contents($sourcePath));
+                    $this->createCache($blob_entity_tmp, SafeFile::file_get_contents($sourcePath, SafeFile::UNSPECIFIED));
                 }
 
                 // Success, dont try others
@@ -568,15 +570,14 @@ class DeskproBlobStorage implements Loggable
         $blob_entity_tmp->setBlobHash(md5($sourceData));
 
         if (ContentTypes::isImageContentType($contentType)) {
-            $tmpfname = @tempnam(sys_get_temp_dir(), 'dpblob_');
-            if ($tmpfname && @file_put_contents($tmpfname, $sourceData)) {
+            $tmpfname = TmpDir::makeTmpFile();
+            if ($tmpfname && @SafeFile::file_put_contents($tmpfname, $sourceData, SafeFile::UNSPECIFIED)) {
                 $imageinfo = @getimagesize($tmpfname);
                 if ($imageinfo) {
                     $blob_entity_tmp->dim_w = $imageinfo[0];
                     $blob_entity_tmp->dim_h = $imageinfo[1];
                 }
             }
-            @unlink($tmpfname);
         }
 
         if ($blob_entity_tmp->getFilesize() === 0 && $this->hasAdapter('db')) {
@@ -943,7 +944,7 @@ class DeskproBlobStorage implements Loggable
                 $failed = true;
             }
 
-            if (!$failed && filesize($target_path) != $blob_entity->filesize) {
+            if (!$failed && SafeFile::filesize($target_path, SafeFile::UNSPECIFIED) != $blob_entity->filesize) {
                 $failed = true;
             }
 
@@ -1232,7 +1233,7 @@ class DeskproBlobStorage implements Loggable
 
         $cache               = $this->getCachePath($blob);
         $this->cachedFiles[] = $cache;
-        $result              = @file_put_contents($cache, $fileData);
+        $result              = @SafeFile::file_put_contents($cache, $fileData, SafeFile::UNSPECIFIED);
         if (!$result) {
             $this->logger->logWarn(sprintf(
                 '[DeskproBlobStorage] (createCache) Failed to create cache Filename: %s Adapter: %s',
@@ -1256,7 +1257,7 @@ class DeskproBlobStorage implements Loggable
         $data = null;
         if (isset($this->cachedFiles[$this->getCachePath($blob)])) {
             $filename = $this->cachedFiles[$this->getCachePath($blob)];
-            $data     = is_file($filename) ? @file_get_contents($filename) : null;
+            $data     = SafeFile::is_file($filename, SafeFile::UNSPECIFIED) ? @SafeFile::file_get_contents($filename, SafeFile::UNSPECIFIED) : null;
 
             if ($data) {
                 $this->logger->logDebug(sprintf(
@@ -1280,8 +1281,8 @@ class DeskproBlobStorage implements Loggable
     public function clearCache()
     {
         foreach ($this->cachedFiles as $file) {
-            if (is_file($file)) {
-                if (!$result = unlink($file)) {
+            if (SafeFile::is_file($file, $this->tmpDir->getPath())) {
+                if (!$result = SafeFile::unlink($file, $this->tmpDir->getPath())) {
                     $this->logger->logWarn(sprintf(
                         '[DeskproBlobStorage] (clearCache) Failed to unlink file! Filename: %s Adapter: %s',
                         $file, $this->getPreferredAdapterId()
@@ -1302,6 +1303,6 @@ class DeskproBlobStorage implements Loggable
             ? $blob->getId()
             : $blob['id'];
 
-        return $this->tmpDir.DIRECTORY_SEPARATOR.$filenameSafe.'.blob';
+        return $this->tmpDir->getPath().DIRECTORY_SEPARATOR.$filenameSafe.'.blob';
     }
 }

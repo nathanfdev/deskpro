@@ -12,6 +12,8 @@ use Application\DeskPRO\EmailGateway\Reader\Item\AuthenticationResults;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\EmailAccount;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
+use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Filesystem\TmpDir;
 use ezcMailMultipartMixed;
 use Orb\Util\Strings;
 
@@ -71,7 +73,7 @@ class EzcReader extends AbstractReader
         $opt = new \ezcMailParserOptions();
 
         $this->parser = new \ezcMailParser($opt);
-        \ezcMailParser::setTmpDir(dp_get_tmp_dir().DIRECTORY_SEPARATOR);
+        \ezcMailParser::setTmpDir(TmpDir::makeTmpDir().DIRECTORY_SEPARATOR);
 
         // Dont have ezc try and convert charsets, we'll handle that ourselves tyvm
         static $hasSetConvert = false;
@@ -447,8 +449,8 @@ class EzcReader extends AbstractReader
                 $attach = new Item\Attachment();
 
                 if ($part instanceof \ezcMailText) {
-                    $attach->tmp_file = tempnam(dp_get_tmp_dir(), 'dpm');
-                    file_put_contents($attach->tmp_file, $part->text);
+                    $attach->tmp_file = TmpDir::makeTmpFile();
+                    SafeFile::file_put_contents($attach->tmp_file, $part->text, TmpDir::getSysTempDir());
 
                     if (isset($part->contentDisposition) && isset($part->contentDisposition->displayFileName)) {
                         try {
@@ -475,8 +477,8 @@ class EzcReader extends AbstractReader
                     // - We have hacked ezc to keep track of the raw mail source
                     // so we can just use that
                     if (!empty($part->dp_raw_source)) {
-                        $attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
-                        file_put_contents($attach->tmp_file, $part->dp_raw_source);
+                        $attach->tmp_file = TmpDir::makeTmpFile();
+                        SafeFile::file_put_contents($attach->tmp_file, $part->dp_raw_source, TmpDir::getSysTempDir());
 
                         // If for some reason we dont have the raw source, this is the original way to read the mail
                         // based on the parsed source. I dont think this sholud ever happen though.
@@ -488,8 +490,8 @@ class EzcReader extends AbstractReader
                             $attach->original_charset = $bodyCharset;
                         }
 
-                        $attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
-                        file_put_contents($attach->tmp_file, $part->generateBody());
+                        $attach->tmp_file = TmpDir::makeTmpFile();
+                        SafeFile::file_put_contents($attach->tmp_file, $part->generateBody(), TmpDir::getSysTempDir());
                     }
 
                     if (isset($part->mail->headers) && !empty($part->mail->headers['subject'])) {
@@ -791,7 +793,7 @@ class EzcReader extends AbstractReader
 
         $tnef = new \tnef();
 
-        $tnefArr = $tnef->decompress(file_get_contents($part->fileName));
+        $tnefArr = $tnef->decompress(SafeFile::file_get_contents($part->fileName, SafeFile::UNSPECIFIED));
         if (!$tnefArr || !is_array($tnefArr)) {
             return [];
         }
@@ -832,16 +834,16 @@ class EzcReader extends AbstractReader
                 $public    = $this->blobStorage->copyBlobRecordToString($certBlob);
                 $private   = $this->blobStorage->copyBlobRecordToString($keyBlob);
                 $fileId    = uniqid('encMails', true);
-                $tmpDir    = $this->getEnv()->getUserTmpDir();
+                $tmpDir    = TmpDir::makeTmpDir();
                 $encrypted = $tmpDir.'/'.$fileId.'encrypted.txt';
-                file_put_contents($encrypted, $this->raw_source);
+                SafeFile::file_put_contents($encrypted, $this->raw_source, TmpDir::getSysTempDir());
                 $outfile = $tmpDir.'/'.$fileId.'decrypted.txt';
                 try {
                     $key = $account->getKeyPassPhrase() ?
                         [$private, $account->getKeyPassPhrase()] :
                         $private;
                     if (openssl_pkcs7_decrypt($encrypted, $outfile, $public, $key)) {
-                        $set                 = new \ezcMailVariableSet(file_get_contents($outfile));
+                        $set                 = new \ezcMailVariableSet(SafeFile::file_get_contents($outfile, SafeFile::UNSPECIFIED));
                         $this->decryptedMail = $this->parser->parseMail($set);
 
                         if (!$this->decryptedMail || !isset($this->decryptedMail[0])) {
@@ -858,9 +860,8 @@ class EzcReader extends AbstractReader
                     } else {
                         $this->decryptionError = self::DECRYPT_FAILURE;
                     }
-                } finally {
-                    @unlink($encrypted);
-                    @unlink($outfile);
+                } catch (\Exception $e) {
+
                 }
             } else {
                 $this->decryptionError = self::DECRYPT_NO_KEY_FOR_ACCOUNT;
@@ -871,15 +872,15 @@ class EzcReader extends AbstractReader
     public function validateSignature($file = null)
     {
         if (!$file) {
-            $tmpDir = $this->getEnv()->getUserTmpDir();
+            $tmpDir = TmpDir::makeTmpDir();
             $fileId = uniqid('sigMails', true);
             $file   = $tmpDir.'/'.$fileId.'encrypted.txt';
-            file_put_contents($file, $this->raw_source);
+            SafeFile::file_put_contents($file, $this->raw_source, TmpDir::getSysTempDir());
         }
         try {
             $this->isSigned = openssl_pkcs7_verify($file, 0);
-        } finally {
-            @unlink($file);
+        } catch (\Exception $e) {
+
         }
     }
 

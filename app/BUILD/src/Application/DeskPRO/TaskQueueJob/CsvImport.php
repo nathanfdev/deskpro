@@ -15,6 +15,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\TaskQueue;
 use DeskPRO\Bundle\ImportBundle\CsvImport\CsvImporter;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DeskPRO\Component\Util\MapUtils;
 use Monolog\Logger;
 use Orb\Logger\Handler\ArrayHandler;
@@ -87,7 +88,6 @@ class CsvImport extends AbstractJob
     {
         $max_time = 300;
         $em       = App::getOrm();
-        $tmpDir   = App::$container->get('deskpro.app_env')->getUserTmpDir();
         $logger   = App::$container->get('dp.importer_logger');
         $handler  = new ArrayHandler(0, Logger::ERROR);
         $logger->pushHandler($handler);
@@ -102,7 +102,7 @@ class CsvImport extends AbstractJob
             return self::TASK_COMPLETED;
         }
 
-        $csvFile = $tmpDir.'/blob-'.$blob->getId().'.csv';
+        $csvFile = TmpDir::makeTmpFile();
 
         if (!file_exists($csvFile) || !is_readable($csvFile)) {
             file_put_contents($csvFile, App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob));
@@ -175,7 +175,7 @@ class CsvImport extends AbstractJob
 
         if ($complete) {
             $logStore->setData('finished', time());
-            $tmpFile = $tmpDir.'/blob-import-log-'.$task->getId().'.csv';
+            $tmpFile = TmpDir::makeTmpFile();
 
             $taskData = $task->getTaskData();
             $taskLog  = $taskData['log'];

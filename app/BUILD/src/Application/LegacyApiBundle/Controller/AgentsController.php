@@ -28,6 +28,7 @@ use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DpSys\License;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -1414,7 +1415,7 @@ class AgentsController extends AbstractController
                 return $this->createApiErrorResponse('file_not_found', 'File not found');
             }
 
-            $csv_file = dp_get_tmp_dir().'/blob-'.$blob->getId().'.csv';
+            $csv_file = TmpDir::makeTmpFile();
 
             if (!file_exists($csv_file) || !is_readable($csv_file)) {
                 file_put_contents($csv_file, $this->container->getBlobStorage()->copyBlobRecordToString($blob));
@@ -1511,7 +1512,7 @@ class AgentsController extends AbstractController
             return $this->createApiErrorResponse('file_not_found', 'File not found');
         }
 
-        $csv_file = dp_get_tmp_dir().'/blob-'.$blob->getId().'.csv';
+        $csv_file = TmpDir::makeTmpFile();
 
         if (!file_exists($csv_file) || !is_readable($csv_file)) {
             file_put_contents($csv_file, $this->container->getBlobStorage()->copyBlobRecordToString($blob));

@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\Languages;
 
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MapUtils;
 use Symfony\Component\Finder\Finder;
@@ -74,6 +75,7 @@ class LangPackInfo
     private function readLocaleDataFile($locale, $name)
     {
         $base = $this->langDir.DIRECTORY_SEPARATOR.$locale.DIRECTORY_SEPARATOR.$name;
+        SafeFile::assertValid($base, $this->langDir);
 
         if (is_file("$base.php")) {
             return require "$base.php";

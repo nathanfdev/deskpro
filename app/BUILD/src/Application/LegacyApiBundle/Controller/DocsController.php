@@ -112,7 +112,7 @@ class DocsController extends AbstractController
     private function serveResource($res)
     {
         $path = $this->getResourcePath($res);
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, DP_ROOT.'/src/Application/LegacyApiBundle/Resources/views/SwaggerDocs/')) {
             throw $this->createNotFoundException();
         }
 

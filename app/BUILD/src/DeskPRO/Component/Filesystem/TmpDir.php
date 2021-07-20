@@ -18,9 +18,30 @@ class TmpDir
     private $path;
 
     /**
-     * Create a tmp dir and return the path.
+     * @var bool
+     */
+    private $isInit = false;
+
+    /**
+     * A shared tmp dir for the current process. This is a small performance
+     * thing; random uses of temp files (e.g. tempName) can use the same
+     * dir and we can avoid lots of io.
      *
-     * @param $base_path
+     * @return TmpDir
+     */
+    public static function getSharedTempNameDir()
+    {
+        static $tmpdir;
+
+        if (!$tmpdir) {
+            $tmpdir = new self(false);
+        }
+
+        return $tmpdir;
+    }
+
+    /**
+     * Create a tmp dir and return the path.
      *
      * @return string
      */
@@ -34,33 +55,68 @@ class TmpDir
     /**
      * Create a new tmp file name
      *
+     * @param string $ext Optionally specify a file ext
      * @return string
      */
-    public static function makeTmpFile()
+    public static function makeTmpFile($ext = null)
     {
-        $tmp = new self();
-        $name = uniqid('f', true);
-
-        return $tmp->getPath() . DIRECTORY_SEPARATOR . $name;
+        return self::getSharedTempNameDir()->tempName($ext);
     }
 
     /**
-     * @param string|null $base_path
+     * @return string
      */
-    public function __construct()
+    public static function getSysTempDir()
+    {
+        return sys_get_temp_dir();
+    }
+
+    /**
+     * @param bool $initNow True to create the directory immediately, false will wait until a method is called
+     */
+    public function __construct($initNow = true)
     {
         do {
-            $path = sys_get_temp_dir().DIRECTORY_SEPARATOR.'tmp_'.date('YmdHis').'_'.RandUtils::randomString(20, 'alpha_iu');
+            $path = self::getSysTempDir().DIRECTORY_SEPARATOR.'tmp_'.date('YmdHis').'_'.RandUtils::randomString(20, 'alpha_iu');
         } while (file_exists($path));
-
-        @mkdir($path, 0600, true);
-        if (!is_dir($path)) {
-            throw new \RuntimeException('Could not create tmp dir: '.$path.' ('.error_get_last().')');
-        }
 
         $this->path = $path;
 
+        if ($initNow) {
+            $this->initNow();
+        }
+
         register_shutdown_function([$this, 'cleanup']);
+    }
+
+    private function initNow()
+    {
+        if ($this->isInit) {
+            return;
+        }
+
+        $this->isInit = true;
+
+        @mkdir($this->path, 0600, true);
+        if (!is_dir($this->path)) {
+            throw new \RuntimeException('Could not create tmp dir ('.error_get_last().')');
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function tempName($ext)
+    {
+        $this->initNow();
+
+        $tmp = new self();
+        $name = uniqid('f', true);
+        $path = $tmp->getPath() . DIRECTORY_SEPARATOR . $name . ($ext ? '.'.$ext : '');
+        @touch($path);
+        @chmod($path, 0600);
+
+        return $path;
     }
 
     /**
@@ -91,6 +147,8 @@ class TmpDir
      */
     public function getPath()
     {
+        $this->initNow();
+
         return $this->path;
     }
 }

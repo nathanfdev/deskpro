@@ -37,6 +37,15 @@ class PlainMailDir extends AbstractFetcher
      */
     protected $readCount = 0;
 
+    protected function init()
+    {
+        if (defined('DPC_IS_CLOUD')) {
+            throw new \RuntimeException();
+        }
+
+        parent::init();
+    }
+
     /**
      * Initiates the connection.
      */

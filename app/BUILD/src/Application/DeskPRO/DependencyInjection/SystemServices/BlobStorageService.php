@@ -8,6 +8,7 @@ use Application\DeskPRO\BlobStorage\StorageAdapter\DatabaseStorage;
 use Application\DeskPRO\BlobStorage\StorageAdapter\FilesystemStorage;
 use Application\DeskPRO\BlobStorage\StorageAdapter\WebDAVStorage;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Logger;
 
@@ -38,7 +39,7 @@ class BlobStorageService
         //------------------------------
         $settingsBag = $container->get('settings_resolver')->getGlobalSettings();
 
-        $bs = new DeskproBlobStorage($container->getEm(), $env->getUserTmpDir(), [
+        $bs = new DeskproBlobStorage($container->getEm(), new TmpDir(false), [
             'disable_physical_delete' => $settingsBag->get('core.filestorage_disable_physical_delete'),
         ]);
         $bs->setLogger($logger);

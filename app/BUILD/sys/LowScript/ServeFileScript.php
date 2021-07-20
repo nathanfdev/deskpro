@@ -6,6 +6,7 @@ use Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DpSys\CodePlugin\DpPlugins;
 use Imagine\Exception\InvalidArgumentException;
 use Imagine\Exception\RuntimeException;
@@ -1333,7 +1334,7 @@ class ServeFileScript extends LowScriptAbstract
             // where the GD handler tries to save a temp file and the default
             // temp dir is not writable.
         } catch (RuntimeException $e) {
-            $tmp = $this->dpEnv->getUserTmpDir().DIRECTORY_SEPARATOR.uniqid('img', true).'.'.Strings::getExtension($blob->filename);
+            $tmp = TmpDir::makeTmpFile(Strings::getExtension($blob->filename));
             $image->save($tmp);
             $file = file_get_contents($tmp);
             @unlink($tmp);

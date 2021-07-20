@@ -15,6 +15,7 @@ use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Monolog\NullLogger;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Psr\Log\LoggerInterface;
 
 class NativeAppsSync
@@ -166,7 +167,7 @@ class NativeAppsSync
     {
         $this->logger->debug("syncing apps dir: $path");
 
-        if (!is_dir($path)) {
+        if (!SafeFile::is_dir($path, SafeFile::UNSPECIFIED)) {
             $this->logger->debug('(no dir)');
 
             return;

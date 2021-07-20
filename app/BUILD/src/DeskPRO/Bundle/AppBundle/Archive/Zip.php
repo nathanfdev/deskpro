@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Archive;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Orb\Util\Numbers;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -74,9 +75,7 @@ class Zip implements ArchiveInterface
      */
     public function extractMembers($members)
     {
-        $tmpDir          = $this->environment->getUserTmpDir();
-        $fileId          = uniqid('archive', true);
-        $this->tmpFolder = $tmpDir.DIRECTORY_SEPARATOR.'archive'.DIRECTORY_SEPARATOR.$fileId.DIRECTORY_SEPARATOR;
+        $this->tmpFolder = TmpDir::makeTmpDir();
         $files           = [];
         if ($this->zip->extractTo($this->tmpFolder, $members)) {
             if (!is_array($members)) {

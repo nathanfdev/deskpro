@@ -8,6 +8,7 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use Application\DeskPRO\Entity\Ticket;
 use DateTime;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Strings;
 
 class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector implements PublicTacAware
@@ -58,7 +59,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector im
 
                     $headers = [];
 
-                    $fp = @fopen($attach->tmp_file, 'r');
+                    $fp = @SafeFile::fopen($attach->tmp_file, 'r', SafeFile::UNSPECIFIED);
                     if (!$fp) {
                         continue;
                     }

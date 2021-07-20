@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DpRun\DpEnv;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
@@ -15,33 +16,19 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
 {
     public static function createFromGlobals()
     {
-        /** @var DpEnv $deskproEnv */
-        $deskproEnv = $GLOBALS['DP_ENV'];
-
-        return self::createFromDeskproEnv($deskproEnv);
+        return self::createFromDeskproEnv();
     }
 
     public static function createFromDeskproEnv(DpEnv $env)
     {
-        $tmpDir = $env->getUserTmpDir();
-        if (empty($tmpDir)) {
-            $tmpDir = sys_get_temp_dir();
-        }
-
-        return new static($tmpDir);
+        return new static();
     }
-
-    /** @var string */
-    private $tmpDir;
 
     /**
      * RequestBodyToTemporaryFileConverter constructor.
-     *
-     * @param string $tmpDir
      */
-    public function __construct($tmpDir)
+    public function __construct()
     {
-        $this->tmpDir = $tmpDir;
     }
 
     public function apply(Request $request, ParamConverter $configuration)
@@ -68,7 +55,7 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
 
     private function writeRequestContentToFile(Request $request)
     {
-        $file = tempnam($this->tmpDir, 'deskpro_');
+        $file = TmpDir::makeTmpFile();
         file_put_contents($file, $request->getContent());
 
         return $file;
@@ -79,7 +66,7 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
      */
     private function writeInputStreamToFile()
     {
-        $file = tempnam($this->tmpDir, 'deskpro_');
+        $file = TmpDir::makeTmpFile();
         file_put_contents($file, file_get_contents('php://input'));
 
         return $file;
