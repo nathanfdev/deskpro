@@ -147,8 +147,12 @@ class LogoutHandler implements LogoutHandlerInterface, LogoutSuccessHandlerInter
      *
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    private function endUserChatBySession(Session $session)
+    private function endUserChatBySession(Session $session = null)
     {
+        if(!$session){
+            return;
+        }
+        
         /** @var ChatConversationRepository $chatRepo */
         $chatRepo = $this->em->getRepository(ChatConversation::class);
         if ($conversation = $chatRepo->getLatestChatForSession($session->getId())) {
