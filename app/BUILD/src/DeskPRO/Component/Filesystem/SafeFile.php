@@ -367,6 +367,32 @@ class SafeFile
     }
 
     /**
+     * @param string          $path
+     * @param string[]|string $whitelist
+     *
+     * @return \SplFileInfo
+     */
+    public static function makeSplFileInfo($path, $whitelist)
+    {
+        self::assertValid($path, $whitelist);
+
+        return new \SplFileInfo(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string[]|string $whitelist
+     *
+     * @return \SplFileInfo
+     */
+    public static function makeSfFile($path, $whitelist)
+    {
+        self::assertValid($path, $whitelist);
+
+        return new \Symfony\Component\HttpFoundation\File\File(self::normalizePath($path));
+    }
+
+    /**
      * Wrapper for file_get_contents().
      *
      * @param string          $path
