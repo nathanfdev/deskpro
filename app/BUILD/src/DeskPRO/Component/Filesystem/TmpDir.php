@@ -68,7 +68,7 @@ class TmpDir
      */
     public static function getSysTempDir()
     {
-        return sys_get_temp_dir();
+        return realpath(sys_get_temp_dir());
     }
 
     /**
@@ -77,7 +77,7 @@ class TmpDir
     public function __construct($initNow = true)
     {
         do {
-            $path = self::getSysTempDir().DIRECTORY_SEPARATOR.'tmp_'.date('YmdHis').'_'.RandUtils::randomString(20, 'alpha_iu');
+            $path = self::getSysTempDir().DIRECTORY_SEPARATOR.'tmp_'.time().'_'.RandUtils::randomString(25, 'alpha_iu');
         } while (file_exists($path));
 
         $this->path = $path;
@@ -86,7 +86,7 @@ class TmpDir
             $this->initNow();
         }
 
-        register_shutdown_function([$this, 'cleanup']);
+//        register_shutdown_function([$this, 'cleanup']);
     }
 
     private function initNow()
@@ -97,7 +97,7 @@ class TmpDir
 
         $this->isInit = true;
 
-        @mkdir($this->path, 0600, true);
+        @mkdir($this->path, 0700, true);
         if (!is_dir($this->path)) {
             throw new \RuntimeException('Could not create tmp dir ('.error_get_last().')');
         }

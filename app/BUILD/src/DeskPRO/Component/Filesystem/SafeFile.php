@@ -58,7 +58,7 @@ class SafeFile
     /**
      * @var array
      */
-    public static $blacklist = [];
+    private static $blacklist = [];
 
     /**
      * @var bool
@@ -106,11 +106,11 @@ class SafeFile
     }
 
     /**
-     * @param string|string[] $path
+     * @param string $path
      *
-     * @return string|string[]
+     * @return string
      */
-    public static function normalizePath($path)
+    private static function normalizePath($path)
     {
         if (empty($path) || !is_string($path)) {
             return null;
