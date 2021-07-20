@@ -72,6 +72,13 @@ class SafeFileTest extends DeskProTestCase
         $this->assertTrue(SafeFile::isValid('HTTPS://google.com/', SafeFile::HTTP));
     }
 
+    public function testSafeFileFile()
+    {
+        $this->assertFalse(SafeFile::isValid('/var/log/mail.log', SafeFile::FILE));
+        $this->assertFalse(SafeFile::isValid('ftp://var/log/mail.log', SafeFile::FILE));
+        $this->assertTrue(SafeFile::isValid('file://var/log/mail.log', SafeFile::FILE));
+    }
+
     public function testSafeFileData()
     {
         $testFile = 'data:text/plain;charset=utf-8;base64,VEVTVA==';
@@ -91,6 +98,23 @@ class SafeFileTest extends DeskProTestCase
 
         $testFile = 'data:text/plain;charset=utf-8;base64,VEVTVA==';
         $this->assertEquals($testFile, SafeFile::tryResolvePath($testFile));
+    }
+
+    public function testIsValidResolvedRealpath()
+    {
+        $whitelist = [
+            __DIR__.'/resources',
+        ];
+
+        // Valid
+        $this->assertTrue(SafeFile::isValid(__DIR__.'/resources/example.txt', $whitelist));
+        $this->assertTrue(SafeFile::isValid(__DIR__.'/../../Component/Filesystem/resources/example.txt', $whitelist));
+        $this->assertTrue(SafeFile::isValid('file://'.__DIR__.'/resources/example.txt', SafeFile::FILE));
+        $this->assertTrue(SafeFile::isValid('file://'.__DIR__.'/../../Component/Filesystem/resources/example.txt', SafeFile::FILE));
+
+        // Invalid
+        $this->assertFalse(SafeFile::isValid('phar://'.__DIR__.'/resources/example.phar', $whitelist));
+        $this->assertFalse(SafeFile::isValid('phar://'.__DIR__.'/../../Component/Filesystem/resources/example.phar', $whitelist));
     }
 
     public function testIsValidPathPrefix()

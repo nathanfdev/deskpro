@@ -55,6 +55,11 @@ class SafeFile
     const DATA = 'data://';
 
     /**
+     * Use as a whitelist to indicate the path is expected to be a data path.
+     */
+    const FILE = 'file://';
+
+    /**
      * List of stream types that are considered "allowable" before
      * further checks are made
      */
@@ -194,6 +199,11 @@ class SafeFile
                     return true;
                 }
             }
+            if ($p === self::FILE) {
+                if (preg_match('/^file:\/\//i', $path_test)) {
+                    return true;
+                }
+            }
             if ($p === self::DATA) {
                 if (preg_match('/^data:/', $path_test)) {
                     return true;
@@ -253,6 +263,7 @@ class SafeFile
                     if (
                         $wp !== self::UNSPECIFIED
                         && $wp !== self::HTTP
+                        && $wp !== self::FILE
                         && $wp !== self::DATA
                         && substr($p, -1, 1) === '/'
                         && substr($wp, -1, 1) === '/'
