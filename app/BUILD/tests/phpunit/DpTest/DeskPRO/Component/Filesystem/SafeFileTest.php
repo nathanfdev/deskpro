@@ -31,6 +31,9 @@ class SafeFileTest extends DeskProTestCase
         $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/example.txt', SafeFile::UNSPECIFIED));
         $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/dontexist', SafeFile::UNSPECIFIED));
         $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/../attachments/dontexist', SafeFile::UNSPECIFIED));
+
+        // realpath() will resolve empty strings to the pwd, @see https://www.php.net/manual/en/function.realpath.php
+        $this->assertFalse(SafeFile::isValid('', SafeFile::UNSPECIFIED));
     }
 
     public function testException()

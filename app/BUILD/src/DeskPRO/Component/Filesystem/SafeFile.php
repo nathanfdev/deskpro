@@ -269,7 +269,7 @@ class SafeFile
      */
     public static function isValid($path, $whitelist)
     {
-        return !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist);
+        return !empty($path) && !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist);
     }
 
     /**
