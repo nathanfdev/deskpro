@@ -91,4 +91,31 @@ class SafeFileTest extends DeskProTestCase
         $this->assertFalse(SafeFile::isValid('phar://'.__DIR__.'/resources/example.phar', $whitelist));
         $this->assertFalse(SafeFile::isValid('phar://'.__DIR__.'/../../Component/Filesystem/resources/example.phar', $whitelist));
     }
+
+    public function testIsValidPathPrefix()
+    {
+        // Valid
+        $this->assertTrue(SafeFile::isValidPathPrefix('/foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('./foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('../foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('FooBundle:Bar:baz/foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('FooBundle::baz/foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('BarBundle:foof7e12a477350.58295937'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('@FooProfiler/Baz/bar.svg'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('::baz/foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('C:/foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('http://foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('https://foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('file://foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('data://foo'));
+
+        // Invalid
+        $this->assertFalse(SafeFile::isValidPathPrefix('phar:///foo'));
+        $this->assertFalse(SafeFile::isValidPathPrefix('zip:///foo'));
+        $this->assertFalse(SafeFile::isValidPathPrefix('ftp:///foo'));
+        $this->assertFalse(SafeFile::isValidPathPrefix(' phar:///foo'));
+        $this->assertFalse(SafeFile::isValidPathPrefix('  phar:///foo'));
+        $this->assertFalse(SafeFile::isValidPathPrefix('phar%3A%2F%2Ffoo'));
+    }
 }
