@@ -18,6 +18,12 @@ class TemplateUtils
 
         $templateName = (string) $name;
 
+        // a bogus path input
+        if (!SafeFile::isValidPathString($templateName)) {
+            // explicit return false
+            return false;
+        }
+
         if (SafeFile::file_exists($templateName, $DP_ENV->getAppDir())) {
             $isInBuildPath = strpos($templateName, $DP_ENV->getAppDir()) === 0;
             $isInVendorPath = strpos($templateName, $DP_ENV->getAppDir().'/vendor') === 0;
@@ -34,7 +40,7 @@ class TemplateUtils
             return false;
         }
 
-        // If the template file is not found on disk, let the proceeding logic run
+        // If the template file is not found on disk, let the proceeding logic run (e.g. database lookup)
         return true;
     }
 }

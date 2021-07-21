@@ -116,8 +116,10 @@ class SafeFile
             return null;
         }
 
+        $path = urldecode($path);
+
         // remove 'file://' prefix if its there
-        if (stripos($path, 'file://') === 0) {
+        if (stripos($path, 'file://') === 0 || stripos($path, 'file:\\') === 0) {
             $path = substr($path, 7);
         }
 
@@ -350,6 +352,17 @@ class SafeFile
         }
 
         return !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist);
+    }
+
+    /**
+     * Checks if a path is a valid looking filesystem path
+     *
+     * @param string $path
+     * @return bool
+     */
+    public static function isValidPathString($path)
+    {
+        return self::normalizePath($path) !== null;
     }
 
     /**
