@@ -36,6 +36,13 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class NotificationController extends BaseController
 {
+    public function __construct()
+    {
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+    }
+
     /**
      * You can use this endpoint to gather information about clients you need to obtain notifications and alerts.
      *
