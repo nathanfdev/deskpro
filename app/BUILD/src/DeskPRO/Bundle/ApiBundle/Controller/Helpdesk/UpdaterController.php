@@ -25,6 +25,13 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class UpdaterController extends BaseController
 {
+    public function __construct()
+    {
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+    }
+
     /**
      * @ApiDoc(
      *     description="Get the updater settings",

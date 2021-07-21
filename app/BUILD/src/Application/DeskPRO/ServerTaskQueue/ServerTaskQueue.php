@@ -30,7 +30,6 @@ class ServerTaskQueue
 
         return [
             'show_task_status' => $show_task_status,
-            'tasks'            => $this->em->getRepository('DeskPRO:TaskQueue')->getAllTasks(),
         ];
     }
 }
