@@ -92,6 +92,7 @@ class FileResolver implements ResolverInterface
             throw new \LogicException('There is no response to restore body');
         }
 
+        /* DISABLE - what is this? looks unsafe
         if ($response->headers->has('X-Body-File')) {
             $response->setContent(file_get_contents($response->headers->get('X-Body-File')));
         } else {
@@ -99,6 +100,7 @@ class FileResolver implements ResolverInterface
         }
 
         $response->headers->remove('X-Body-File');
+        */
 
         return $response;
     }
@@ -108,6 +110,6 @@ class FileResolver implements ResolverInterface
      */
     protected function isEnabled()
     {
-        return $this->settingsResolver->getGlobalSettings()->get('response.cache.enabled', false);
+        return false;
     }
 }
