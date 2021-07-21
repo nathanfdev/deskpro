@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 use Application\DeskPRO\EntityRepository\Template;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Twig_Error_Loader;
 
 /**
@@ -67,7 +68,7 @@ class PortalLoader implements \Twig_LoaderInterface
     public function getSource($name)
     {
         if ($path = $this->getBrandTheme()->resolveTemplatePath((string) $name)) {
-            return file_get_contents($path);
+            return SafeFile::file_get_contents($path, DP_ROOT);
         }
 
         throw new Twig_Error_Loader('could not find theme template "'.$name.'"');
@@ -101,7 +102,7 @@ class PortalLoader implements \Twig_LoaderInterface
             false;
         }
 
-        return filemtime($this->getBrandTheme()->resolveTemplatePath((string) $name)) <= $time;
+        return SafeFile::filemtime($this->getBrandTheme()->resolveTemplatePath((string) $name), DP_ROOT) <= $time;
     }
 
     /**

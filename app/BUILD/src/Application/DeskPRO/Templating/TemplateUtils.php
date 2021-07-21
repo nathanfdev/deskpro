@@ -2,6 +2,8 @@
 
 namespace Application\DeskPRO\Templating;
 
+use DeskPRO\Component\Filesystem\SafeFile;
+
 class TemplateUtils
 {
     /**
@@ -16,7 +18,7 @@ class TemplateUtils
 
         $templateName = (string) $name;
 
-        if (file_exists($templateName)) {
+        if (SafeFile::file_exists($templateName, $DP_ENV->getAppDir())) {
             $isInBuildPath = strpos($templateName, $DP_ENV->getAppDir()) === 0;
             $isInVendorPath = strpos($templateName, $DP_ENV->getAppDir().'/vendor') === 0;
             $hasTwigFileExt = pathinfo($templateName, PATHINFO_EXTENSION) === 'twig';

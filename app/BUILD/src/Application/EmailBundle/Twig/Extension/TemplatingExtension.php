@@ -15,6 +15,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\RegexUtils;
 use DpSys\License;
 use Orb\Auth\Adapter\IframeSsoInterface;
@@ -1857,14 +1858,14 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             return '';
         }
 
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, SafeFile::UNSPECIFIED)) {
             $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException('File does not exist: '.$path);
             \DpSys\LowError\SystemErrorHandler::logErrorInfo($e);
 
             return '';
         }
 
-        return file_get_contents($path);
+        return SafeFile::file_get_contents($path, SafeFile::UNSPECIFIED);
     }
 
     /**
@@ -1886,7 +1887,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             extract($with, \EXTR_SKIP);
         }
 
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, SafeFile::UNSPECIFIED)) {
             $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException('File does not exist: '.$path);
             \DpSys\LowError\SystemErrorHandler::logException($e, false, 'tpl_include_php_file');
 

@@ -35,7 +35,7 @@ class TemplateFiles
     {
         $map_file_path = DP_ROOT.'/sys/config/template-map.php';
 
-        if (!$this->use_map_file || !is_file($map_file_path)) {
+        if (!$this->use_map_file || !SafeFile::is_file($map_file_path, DP_ROOT)) {
             return $this->genTemplateMap();
         }
 

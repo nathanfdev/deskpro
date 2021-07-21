@@ -776,7 +776,7 @@ class DeskproBlobStorage implements Loggable
 
         try {
             if ($data = $this->pickFromCache($blob)) {
-                $data = file_put_contents($target_path, $data);
+                $data = SafeFile::file_put_contents($target_path, $data, SafeFile::UNSPECIFIED);
             } else {
                 $data = $adapter->readBlobToFile($blob, $target_path);
             }

@@ -1332,7 +1332,7 @@ class TemplatingExtension extends \Twig_Extension
             return '';
         }
 
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, SafeFile::UNSPECIFIED)) {
             $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException('File does not exist: '.$path);
             \DpSys\LowError\SystemErrorHandler::logErrorInfo($e);
 
@@ -1355,7 +1355,7 @@ class TemplatingExtension extends \Twig_Extension
             extract($with, \EXTR_SKIP);
         }
 
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, SafeFile::UNSPECIFIED)) {
             $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException('File does not exist: '.$path);
             \DpSys\LowError\SystemErrorHandler::logException($e, false, 'tpl_include_php_file');
 

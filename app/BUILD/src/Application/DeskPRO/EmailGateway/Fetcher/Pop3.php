@@ -10,6 +10,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Filesystem\TmpDir;
 use DpSys\LowError\SystemErrorHandler;
 
@@ -428,7 +429,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
             if ($memoryProtection) {
                 $this->logger->log('Memory protected enabled', 'info');
                 $contentFile = TmpDir::makeTmpFile();
-                $fp          = fopen($contentFile, 'w');
+                $fp          = SafeFile::fopen($contentFile, 'w', TmpDir::getSysTempDir());
                 if ($fp) {
                     $this->getStorage()->getProtocol()->retrieveToStream($messageNum, $fp);
                     fclose($fp);
@@ -445,7 +446,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 }
 
                 $this->logger->log('Message source saved to: '.$contentFile, 'debug');
-                $rawMessage->content = file_get_contents($contentFile);
+                $rawMessage->content = SafeFile::file_get_contents($contentFile, TmpDir::getSysTempDir());
                 $this->backupFile    = $contentFile;
             }
 
@@ -498,7 +499,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
     protected function _doneRead(RawMessage $rawMessage)
     {
         if ($this->backupFile) {
-            unlink($this->backupFile);
+            SafeFile::unlink($this->backupFile, SafeFile::UNSPECIFIED);
             $this->backupFile = null;
         }
 

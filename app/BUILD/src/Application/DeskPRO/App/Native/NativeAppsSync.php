@@ -176,7 +176,7 @@ class NativeAppsSync
         $dir = dir($path);
         while (($f = $dir->read()) !== false) {
             $f_path = $path.'/'.$f;
-            if ($f == '.' || $f == '..' || !is_dir($f_path)) {
+            if ($f == '.' || $f == '..' || !SafeFile::is_dir($f_path, SafeFile::UNSPECIFIED)) {
                 continue;
             }
 

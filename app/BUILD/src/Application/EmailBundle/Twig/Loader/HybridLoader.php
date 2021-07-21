@@ -9,6 +9,7 @@
 namespace Application\EmailBundle\Twig\Loader;
 
 use Application\DeskPRO\App;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Symfony\Bundle\TwigBundle\Loader\FilesystemLoader;
 
 /**
@@ -80,7 +81,7 @@ class HybridLoader extends FilesystemLoader
             );
         }
 
-        $source = file_get_contents($this->findTemplate($name));
+        $source = SafeFile::file_get_contents($this->findTemplate($name), DP_ROOT);
 
         if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'EmailBundle:') !== false) {
             $proc   = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
@@ -131,6 +132,8 @@ class HybridLoader extends FilesystemLoader
                         $path_name = preg_replace('#^.*?:(.*?)$#', '$2', $logicalName);
                         $path_name = str_replace(':', '/', $path_name);
                         $path      = DP_ROOT.'/apps/'.$package->native_name.'/native/Resources/views/'.$path_name;
+
+                        SafeFile::assertValid($path, DP_ROOT);
 
                         return $path;
                     }

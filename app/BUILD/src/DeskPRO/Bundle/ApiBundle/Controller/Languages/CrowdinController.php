@@ -6,6 +6,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use DeskPRO\Component\Filesystem\TmpDir;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use GuzzleHttp\Exception\ClientException;
@@ -45,9 +46,9 @@ class CrowdinController extends BaseController
     public function getPhrasesAction($locale, $type)
     {
         $url  = self::DPCS_BASE_URL."/content/develop/$locale/$type";
-        $path = rtrim($this->get('deskpro.app_env')->getUserFilesDir(), '/')."/crowdin.$locale.$type.yml";
+        $tmpPath = TmpDir::makeTmpFile('yml');
 
-        $resource = fopen($path, 'w');
+        $resource = fopen($tmpPath, 'w');
 
         try {
             $client = new HttpClient();
@@ -62,7 +63,7 @@ class CrowdinController extends BaseController
             $client->get($url, ['save_to' => $resource]);
         }
 
-        $data    = explode("\n", file_get_contents($path));
+        $data    = explode("\n", file_get_contents($tmpPath));
         $phrases = [];
         foreach ($data as $item) {
             if (strpos($item, 'helpcenter.') !== false && strpos($item, ':') !== false) {
@@ -71,8 +72,6 @@ class CrowdinController extends BaseController
                 $phrases[$phrase] = trim($content, '\' ');
             }
         }
-
-        unlink($path);
 
         return new View($this->wrap($phrases));
     }

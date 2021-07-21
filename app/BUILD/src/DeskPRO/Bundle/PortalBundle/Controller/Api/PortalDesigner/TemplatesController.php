@@ -6,6 +6,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -129,7 +130,7 @@ class TemplatesController extends AbstractApiController
             $isCustom = true;
         } else {
             $theme    = $this->getTheme();
-            $source   = file_get_contents($this->getThemeResolver()->templatePath($theme, $templateName));
+            $source   = SafeFile::file_get_contents($this->getThemeResolver()->templatePath($theme, $templateName), DP_ROOT);
             $isCustom = false;
         }
 

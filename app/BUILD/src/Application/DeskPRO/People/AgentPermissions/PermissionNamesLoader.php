@@ -10,6 +10,7 @@ namespace Application\DeskPRO\People\AgentPermissions;
 
 use Application\DeskPRO\Entity\Usergroup;
 use Application\InstallBundle\Data\AgentGroupPermScanner;
+use DeskPRO\Component\Filesystem\SafeFile;
 
 class PermissionNamesLoader
 {
@@ -31,7 +32,7 @@ class PermissionNamesLoader
     private function load()
     {
         $cache_path = DP_ROOT.'/sys/Resources/agent-perm-names.php';
-        if ($this->debug || !file_exists($cache_path)) {
+        if ($this->debug || !SafeFile::file_exists($cache_path, DP_ROOT)) {
             $scanner    = new AgentGroupPermScanner();
             $perm_names = [
                 'all'  => $scanner->getNames(),

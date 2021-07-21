@@ -25,6 +25,7 @@ use DeskPRO\Bundle\SendmailBundle\Twig\TokenParser\ContainerParser;
 use DeskPRO\Bundle\SendmailBundle\Twig\TokenParser\RowParser;
 use DeskPRO\Bundle\SendmailBundle\Twig\TokenParser\SpacerParser;
 use DeskPRO\Bundle\SendmailBundle\Twig\TokenParser\WrapperParser;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\RegexUtils;
 use DpSys\License;
 use Orb\Auth\Adapter\IframeSsoInterface;
@@ -2093,18 +2094,22 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function includeFile($path)
     {
+        if (defined('DPC_IS_CLOUD')) {
+            return '';
+        }
+
         if (!$this->container->get('deskpro.app_env')->getConfig('sys.tpl.enable_include_file')) {
             return '';
         }
 
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, SafeFile::UNSPECIFIED)) {
             $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException('File does not exist: '.$path);
             \DpSys\LowError\SystemErrorHandler::logErrorInfo($e);
 
             return '';
         }
 
-        return file_get_contents($path);
+        return SafeFile::file_get_contents($path, SafeFile::UNSPECIFIED);
     }
 
     /**

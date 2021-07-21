@@ -449,7 +449,7 @@ class BlobsController extends CrudController
             $files = $zip->getMembers();
             foreach ($files as $file) {
                 if ($file['name'] === $path) {
-                    if ($file['size'] < 100000000) {
+                    if ($file['size'] < 20000000) {
                         $content = $zip->extractMembers($path);
                         $found   = true;
                     } else {

@@ -10,6 +10,7 @@ use Application\DeskPRO\Templating\Templates\Template;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor\EmailPreProcessor;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\ORM\EntityManager;
 use InvalidArgumentException;
 use Orb\Util\Strings;
@@ -50,7 +51,7 @@ class TemplateSet
             $template = TemplateCustom::createFromEntity($custom);
         } else {
             $template = new TemplateFile($name);
-            if (!file_exists($template->getFilePath())) {
+            if (!SafeFile::file_exists($template->getFilePath(), DP_ROOT)) {
                 throw new InvalidArgumentException('File does not exists');
             }
         }

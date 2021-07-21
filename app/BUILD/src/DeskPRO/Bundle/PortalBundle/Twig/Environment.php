@@ -9,6 +9,7 @@ use Application\DeskPRO\Twig\FilesystemCache;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateCompilationException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateNotFoundException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\PortalLoaderException;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Twig\Cache\CacheInterface;
 use Twig\Sandbox\SecurityError;
 use Application\DeskPRO\Templating\TemplateUtils;
@@ -166,7 +167,7 @@ class Environment extends \Twig_Environment
         if (false === $cache = $this->getCachePath($name)) {
             eval('?>'.$this->compileSource($this->loader->getSource($name), $name));
         } else {
-            if (!is_file($cache) || ($this->isAutoReload() && !$this->isTemplateFresh($name, filemtime($cache)))) {
+            if (!SafeFile::is_file($cache, SafeFile::UNSPECIFIED) || ($this->isAutoReload() && !$this->isTemplateFresh($name, SafeFile::filemtime($cache, SafeFile::UNSPECIFIED)))) {
                 try {
                     $this->writeCacheFile($cache, $this->compileSource($this->loader->getSourceContext($name), $name));
                     require_once $cache;

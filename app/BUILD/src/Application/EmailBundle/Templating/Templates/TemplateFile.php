@@ -6,6 +6,8 @@
 
 namespace Application\EmailBundle\Templating\Templates;
 
+use DeskPRO\Component\Filesystem\SafeFile;
+
 class TemplateFile extends Template
 {
     /**
@@ -54,7 +56,7 @@ class TemplateFile extends Template
      */
     public function exists()
     {
-        return file_exists($this->file_path);
+        return SafeFile::file_exists($this->file_path, DP_ROOT);
     }
 
     /**
@@ -83,7 +85,7 @@ class TemplateFile extends Template
         }
 
         if ($this->content === null) {
-            $this->content = file_get_contents($this->file_path);
+            $this->content = SafeFile::file_get_contents($this->file_path, DP_ROOT);
         }
 
         return $this->content;

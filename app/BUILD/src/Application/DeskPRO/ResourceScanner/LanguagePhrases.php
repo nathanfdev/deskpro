@@ -49,7 +49,7 @@ class LanguagePhrases
             if (strpos($file, '.php')) {
                 $phrases = require $lang_dir->path.'/'.$file;
             } elseif (strpos($file, '.yml')) {
-                $phrases = MapUtils::flattenKeys(Yaml::parse(file_get_contents($lang_dir->path.'/'.$file)));
+                $phrases = MapUtils::flattenKeys(Yaml::parse(SafeFile::file_get_contents($lang_dir->path.'/'.$file, $this->lang_root)));
             } else {
                 continue;
             }

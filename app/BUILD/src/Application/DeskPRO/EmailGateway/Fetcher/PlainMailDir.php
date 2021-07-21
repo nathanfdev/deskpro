@@ -6,6 +6,8 @@
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
+use DeskPRO\Component\Filesystem\SafeFile;
+
 /**
  * Reads all files in a directory as mail.
  *
@@ -55,7 +57,7 @@ class PlainMailDir extends AbstractFetcher
 
         $this->logger->log("Reading from: {$this->maildir}", 'debug');
 
-        if (is_dir($this->maildir)) {
+        if (SafeFile::is_dir($this->maildir, SafeFile::UNSPECIFIED)) {
             $this->dir = dir($this->maildir);
         } else {
             $this->logger->log('Directory does not exist', 'debug');
@@ -143,14 +145,14 @@ class PlainMailDir extends AbstractFetcher
 
         $mailfile = $this->maildir.'/'.$next;
 
-        if (!is_writable($mailfile)) {
+        if (!SafeFile::is_writable($mailfile, $this->maildir)) {
             error_log("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
             $this->logger->log("Skipping mailfile $mailfile because it is not writable so we cant delete it after", 'error');
 
             return $this->_readNext();
         }
 
-        $messageSize = filesize($mailfile);
+        $messageSize = SafeFile::filesize($mailfile, $this->maildir);
 
         $startTime = microtime(true);
 
@@ -160,7 +162,7 @@ class PlainMailDir extends AbstractFetcher
         $rawMessage->id   = $next;
         $rawMessage->size = $messageSize;
 
-        $rawMessage->content = file_get_contents($mailfile);
+        $rawMessage->content = SafeFile::file_get_contents($mailfile, $this->maildir);
         $headers             = null;
 
         $EOL = "\n";
@@ -197,9 +199,9 @@ class PlainMailDir extends AbstractFetcher
     {
         $this->logger->log("Marking message as deleted: {$rawMessage->id}", 'debug');
 
-        if (is_file($this->maildir.'/'.$rawMessage->id) && !@unlink($this->maildir.'/'.$rawMessage->id)) {
+        if (SafeFile::is_file($this->maildir.'/'.$rawMessage->id, $this->maildir) && !@SafeFile::unlink($this->maildir.'/'.$rawMessage->id, $this->maildir)) {
             sleep(1);
-            if (is_file($this->maildir.'/'.$rawMessage->id) && !unlink($this->maildir.'/'.$rawMessage->id)) {
+            if (SafeFile::is_file($this->maildir.'/'.$rawMessage->id, $this->maildir) && !SafeFile::unlink($this->maildir.'/'.$rawMessage->id, $this->maildir)) {
                 $this->logger->log('Failed to delete source file: '.$this->maildir.'/'.$rawMessage->id, 'error');
             }
         }
@@ -214,7 +216,7 @@ class PlainMailDir extends AbstractFetcher
      */
     public function test()
     {
-        if (!is_dir($this->maildir)) {
+        if (!SafeFile::is_dir($this->maildir, SafeFile::UNSPECIFIED)) {
             throw new \InvalidArgumentException('Mail directory does not exist');
         }
 

@@ -229,10 +229,10 @@ class ThemeSetImport
             $sourcePath   = $templatesDir.$template->getId().'-'.$baseName;
             $compiledPath = $templatesDir.$template->getId().'-compiled-'.$baseName;
 
-            if (false === file_put_contents($sourcePath, $template->getTemplateCode())) {
+            if (false === SafeFile::file_put_contents($sourcePath, $template->getTemplateCode(), $templatesDir)) {
                 throw new \RuntimeException('Unable to write a template '.$sourcePath);
             }
-            if (false === file_put_contents($compiledPath, $template->getTemplateCompiled())) {
+            if (false === SafeFile::file_put_contents($compiledPath, $template->getTemplateCompiled(), $templatesDir)) {
                 throw new \RuntimeException('Unable to write a template '.$compiledPath);
             }
 

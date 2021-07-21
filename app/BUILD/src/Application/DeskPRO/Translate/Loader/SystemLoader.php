@@ -6,6 +6,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\MapUtils;
 use DpSys\CodePlugin\DpPlugins;
 use Orb\Util\Arrays;
@@ -143,10 +144,10 @@ class SystemLoader implements LoaderInterface
 
         $relFile = basename($localeDir)."/$name.php";
 
-        if (is_file("$base.php")) {
+        if (SafeFile::is_file("$base.php", $localeDir)) {
             $filePhrases = require "$base.php";
-        } elseif (is_file("$base.yml")) {
-            $filePhrases = Yaml::parse(file_get_contents("$base.yml"));
+        } elseif (SafeFile::is_file("$base.yml", $localeDir)) {
+            $filePhrases = Yaml::parse(SafeFile::file_get_contents("$base.yml", $localeDir));
         } else {
             $filePhrases = null;
         }

@@ -47,7 +47,7 @@ class CsvUpload
             return ['error' => 'no_move'];
         }
 
-        $encoded = Util::jsonEncode(file_get_contents($file->getRealPath()));
+        $encoded = Util::jsonEncode(SafeFile::file_get_contents($file->getRealPath(), SafeFile::UNSPECIFIED));
         if (!$encoded) {
             return ['error' => 'mailformed_data'];
         }

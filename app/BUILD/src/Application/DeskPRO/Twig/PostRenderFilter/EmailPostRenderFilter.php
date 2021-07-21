@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\Twig\PostRenderFilter;
 
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Strings;
 use Pelago\Emogrifier;
 
@@ -51,7 +52,7 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
             $code = $emog->emogrify();
         } catch (\Exception $e) {
             // In case of error with css with failover on default css
-            $css  = file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/views/emails_common/email-css.css.twig');
+            $css  = SafeFile::file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/views/emails_common/email-css.css.twig', DP_ROOT);
             $emog = new Emogrifier($code, $css);
             $code = $emog->emogrify();
         }
