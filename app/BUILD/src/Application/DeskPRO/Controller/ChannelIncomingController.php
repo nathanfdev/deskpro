@@ -19,7 +19,7 @@ class ChannelIncomingController extends AbstractController
 {
     public function facebookAction()
     {
-        throw $this->createNotFoundException(;)
+        throw $this->createNotFoundException();
     }
 
     public function twilioSmsAction()
