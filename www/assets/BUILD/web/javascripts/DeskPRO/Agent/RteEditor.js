@@ -341,6 +341,10 @@ DeskPRO.Agent.RteEditor = {
 				return false;
 			}
 
+			if (options.page) {
+        options.page.pauseSend = true;
+      }
+
 			$.ajax({
 				url: BASE_URL + 'agent/misc/accept-redactor-image-upload',
 				type: 'POST',
@@ -367,7 +371,15 @@ DeskPRO.Agent.RteEditor = {
 					}
 
 					textarea.data('redactor').insertHtml('');
-				}
+          if (options.page) {
+            options.page.pauseSend = false;
+          }
+				},
+        error: function () {
+          if (options.page) {
+            options.page.pauseSend = false;
+          }
+        }
 			});
 
 			return true;
