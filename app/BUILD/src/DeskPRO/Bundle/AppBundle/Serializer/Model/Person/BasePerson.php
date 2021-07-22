@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Person;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use DateTime;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use JMS\Serializer\Annotation as JMS;
@@ -47,6 +48,15 @@ class BasePerson
      * @var string
      */
     protected $lastName;
+
+    /**
+     * The users title.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $titlePrefix;
 
     /**
      * The users name (best guess from other sources etc).
@@ -107,7 +117,7 @@ class BasePerson
      *
      * @JMS\Type("deferred<DateTime>")
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $lastSeen;
 
