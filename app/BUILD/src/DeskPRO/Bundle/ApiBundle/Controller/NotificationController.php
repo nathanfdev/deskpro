@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class NotificationController.
  *
  * @ApiModes("all")
- * @ApiUserContext("agent", admin={"savePusherCredentialsAction", "getPusherCredentialsAction", "testPusherCredentialsAction"})
+ * @ApiUserContext("agent", admin={"getClientCredentialsAction", "saveClientsCredentialsAction", "testPusherCredentialsAction", "testDeskproCredentialsAction"})
  */
 class NotificationController extends BaseController
 {
