@@ -59,6 +59,24 @@ class OutboundHttpProxy
     }
 
     /**
+     * Get a service token for Elasticsearch
+     *
+     * @param string $siteId
+     * @param string $path
+     * @return string
+     * @throws FailedToExchangeRequestTokenException
+     */
+    public function getElasticsearchServiceToken($siteId, $proto, $path, $port, $method)
+    {
+        return $this->fetchServiceToken($siteId, 'elasticsearch', [
+            'proto'  => (string) $proto,
+            'path'   => (string) $path,
+            'port'   => (string) $port,
+            'method' => (string) $method,
+        ]);
+    }
+
+    /**
      * Get a service token for AWS S3
      *
      * @param string $siteId
