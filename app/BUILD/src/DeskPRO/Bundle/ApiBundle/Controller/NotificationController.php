@@ -36,13 +36,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class NotificationController extends BaseController
 {
-    public function __construct()
-    {
-        if (defined('DPC_IS_CLOUD')) {
-            exit;
-        }
-    }
-
     /**
      * You can use this endpoint to gather information about clients you need to obtain notifications and alerts.
      *
@@ -155,6 +148,10 @@ class NotificationController extends BaseController
      */
     public function getClientCredentialsAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException('Action not allowed');
+        }
+
         $config = $this->get('deskpro.notification.service')->getClientsSetup($this->getUser()->getId());
 
         $pusherEnabled  = count($config->getClients()) === 1 && $config->getClients()[0]->getType() === 'pusher';
@@ -239,6 +236,10 @@ class NotificationController extends BaseController
      */
     public function saveClientsCredentialsAction(Request $request)
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException('Action not allowed');
+        }
+
         $mode = $request->request->get('mode');
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepo */
@@ -313,6 +314,10 @@ class NotificationController extends BaseController
      */
     public function testPusherCredentialsAction(Request $request)
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException('Action not allowed');
+        }
+
         $form = $this->createForm(PusherType::class);
         $form->submit($request->request->all());
 
@@ -352,6 +357,10 @@ class NotificationController extends BaseController
      */
     public function testDeskproCredentialsAction(Request $request)
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException('Action not allowed');
+        }
+
         $form = $this->createForm(DeskproClientType::class);
         $form->submit($request->request->all());
 
