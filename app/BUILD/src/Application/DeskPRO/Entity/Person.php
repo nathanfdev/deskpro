@@ -3397,7 +3397,7 @@ class Person extends DomainObject implements
         $parts = $this->splitName($name);
 
         $this->setModelField('first_name', $parts[0]);
-        $this->setModelField('last_name', $parts[1] ?? '');
+        $this->setModelField('last_name', !empty($parts[1]) ? $parts[1] : '');
 
         return $this;
     }

@@ -119,41 +119,22 @@ class HttpClient extends Client
             throw new \InvalidArgumentException();
         }
 
-        $options = array_merge([
-            'read_timeout' => 10,
-            'connect_timeout' => 10,
-            'maxSize' => 26214400
-        ], $options);
-
         SafeFile::assertValid($toPath, $expectBasePath);
-
-        $clientOptions = [
-            'read_timeout' => $options['read_timeout'],
-            'connect_timeout' => $options['connect_timeout'],
-        ];
-
-        $client = new self($clientOptions);
-        $response = $client->get($fromUrl);
-        $body = $response->getBody();
 
         $fp = @fopen($toPath, 'w');
         if (!$fp) {
             throw new \RuntimeException('Could not open file for writing');
         }
 
-        $bytesRead = 0;
-        while (!$body->eof()) {
-            $dat = $body->read(1024);
-            @fwrite($fp, $dat);
-            $bytesRead += strlen($dat);
-
-            if($bytesRead > $options['maxSize']) {
-                $body->close();
-                throw new \RuntimeException("exceeded maxSize");
-            }
+        try {
+            $bytesRead = self::streamFile($fromUrl, function ($chunk) use ($fp) {
+                @fwrite($fp, $chunk);
+            });
+        } catch (\Exception $e) {
+            @fclose($fp);
+            throw $e;
         }
 
-        $body->close();
         fclose($fp);
 
         if (!$bytesRead) {
@@ -167,6 +148,7 @@ class HttpClient extends Client
      * @param string $fromUrl         The URL to download
      * @param $handler                Callback to call for each block of data read. Return false to abort reading.
      * @param array $options
+     * @return int bytes read
      */
     public static function streamFile($fromUrl, $handler, array $options = [])
     {
@@ -175,37 +157,29 @@ class HttpClient extends Client
         }
 
         $options = array_merge([
-            'read_timeout' => 10,
-            'connect_timeout' => 10,
+            'timeout' => 6,
             'maxSize' => 26214400,
-            'chunkSize' => 2048
         ], $options);
 
-        $clientOptions = [
-            'read_timeout' => $options['read_timeout'],
-            'connect_timeout' => $options['connect_timeout'],
-        ];
-
-        $client = new self($clientOptions);
-        $response = $client->get($fromUrl);
-        $body = $response->getBody();
+        $ch = self::curlInit($fromUrl);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $options['timeout']);
 
         $bytesRead = 0;
-        while (!$body->eof()) {
-            $dat = $body->read($options['chunkSize']);
-            $bytesRead += strlen($dat);
+        curl_setopt($ch, CURLOPT_WRITEFUNCTION, function($curl, $body) use ($handler, $options, &$bytesRead) {
+            $len = strlen($body);
 
-            if($bytesRead > $options['maxSize']) {
-                $body->close();
-                throw new \RuntimeException("exceeded maxSize");
+            if(($bytesRead+$len) > $options['maxSize']) {
+                throw new \RuntimeException('maxSize exceeded');
             }
 
-            if (call_user_func($handler, $dat) === false) {
-                return $bytesRead;
-            }
-        }
+            $handler($body);
+            $bytesRead += $len;
 
-        $body->close();
+            return $len;
+        });
+
+        curl_exec($ch);
+        curl_close($ch);
 
         return $bytesRead;
     }

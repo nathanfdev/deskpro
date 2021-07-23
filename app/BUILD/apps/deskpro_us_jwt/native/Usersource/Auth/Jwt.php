@@ -205,7 +205,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
         } catch (\Exception $e) {
             if ($this->logger) {
                 $this->logger->log(
-                    "Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR
+                    "Exception: {$e->getCode()} {$e->getMessage()}", Logger::ERR
                 );
             }
             $exception_messages = [Result::MSG_EXCEPTION => $e];

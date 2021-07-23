@@ -347,21 +347,37 @@ class ApiTokensController extends BaseController
         }
 
         $email  = $form->get('email')->getData();
-        $target = $form->get('target')->getData();
+
+        switch ($form->get('target')->getData()) {
+            case 'iOSDeskPro://':
+                $target = 'iOSDeskPro://';
+                break;
+            case 'AndroidDeskPRO://':
+                $target = 'AndroidDeskPRO://';
+                break;
+            default:
+                $target = '/agent';
+        }
 
         /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
-        $personRepo = $person = $this->getManager()->getRepository(Person::class);
+        $personRepo = $this->getManager()->getRepository(Person::class);
         $person     = $personRepo->findOneByEmail($email);
 
         if (!$person || !$person->isAgent()) {
             $this->throwUnauthorized();
         }
 
+        $tmpDataName = 'magic_link:' . $person->getId();
+        if ($this->getManager()->getRepository(TmpData::class)->getByName($tmpDataName, false)) {
+            // one already sent, dont create another
+            return View::create(null, Response::HTTP_NO_CONTENT);
+        }
+
         // generate tmp token
-        $tmpData = new TmpData();
-        $tmpData->setData('email', $email);
-        $tmpData->setData('target', $target);
-        $tmpData->setDateExpire(new \DateTime('+5 hours'));
+        $tmpData = TmpData::create('magic_link', [
+            'email' => $email,
+            'target' => $target
+        ], '+1 hour', $tmpDataName);
 
         $this->getManager()->persist($tmpData);
         $this->getManager()->flush();
@@ -374,7 +390,7 @@ class ApiTokensController extends BaseController
                 'login_magic_link_url' => $this->get('router')->generate(
                     'portal_magic_link_login',
                     [
-                        'authId' => $tmpData->getAuth(),
+                        'authId' => $tmpData->getCode(),
                     ],
                     UrlGeneratorInterface::ABSOLUTE_URL),
             ]

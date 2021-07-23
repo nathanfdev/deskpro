@@ -98,7 +98,7 @@ Loggable
             }
         } catch (\Exception $e) {
             if ($this->logger) {
-                $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
+                $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}", Logger::ERR);
 
                 return new Result(Result::FAILURE_EXCEPTION, null, ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]);
             }
