@@ -14,6 +14,7 @@ use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DpSys\License;
+use Orb\Service\Microsoft\Translate\TwigTranslate;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
 
@@ -445,14 +446,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
             return null;
         }
 
-        return [
-            'getLanguagesForTranslate' => function() use ($ms) {
-                return $ms->getLanguagesForTranslate();
-            },
-            'getSingleLanguageName' => function($code) use ($ms) {
-                return $ms->getSingleLanguageName($code);
-            },
-        ];
+        return new TwigTranslate($ms);
     }
 
     /**
