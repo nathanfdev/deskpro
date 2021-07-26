@@ -21,13 +21,11 @@ class CommentAbstract extends AbstractEntityRepository
             return [];
         }
 
-        $ids = implode(',', $ids);
-
         return $this->getEntityManager()->createQuery('
             SELECT c
             FROM '.$this->_entityName." c INDEX BY c.id
-            WHERE c.id IN ($ids)
-        ")->execute();
+            WHERE c.id IN (:ids)
+        ")->execute(['ids' => $ids]);
     }
 
     public function getComments($object, $show_validating = true)
