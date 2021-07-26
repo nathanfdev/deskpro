@@ -51,6 +51,10 @@ class ServerController extends AbstractController
 
     public function getServerReqsAction(Request $request)
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /* @var DpEnv $DP_ENV */
         global $DP_ENV;
 
@@ -66,6 +70,10 @@ class ServerController extends AbstractController
 
     public function getPhpInfoAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerPhpInfo $serverPhpInfo */
         $serverPhpInfo = $this->container->getSystemService('server_php_info');
 
@@ -82,6 +90,10 @@ class ServerController extends AbstractController
 
     public function getMysqlInfoAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerMysqlInfo $mysqlInfo */
         $mysqlInfo = new ServerMysqlInfo($this->db, [
             'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
@@ -93,6 +105,10 @@ class ServerController extends AbstractController
 
     public function getMysqlSchemaDiffAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerMysqlInfo $mysqlInfo */
         $mysqlInfo = new ServerMysqlInfo($this->db, [
             'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
@@ -108,6 +124,10 @@ class ServerController extends AbstractController
 
     public function getMysqlStatusAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerMysqlStatus $serverMysqlStatus */
         $serverMysqlStatus = $this->container->getSystemService('server_mysql_status');
 
@@ -124,6 +144,10 @@ class ServerController extends AbstractController
 
     public function getMysqlSortOrderAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $serverMysqlSortOrder = new ServerMysqlSortOrder($this->settings);
 
         return $this->createApiResponse(
@@ -140,6 +164,10 @@ class ServerController extends AbstractController
 
     public function saveMysqlSortOrderAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $serverMysqlSortOrder = new ServerMysqlSortOrder($this->settings);
         $serverMysqlSortOrder->setArray($this->in->getCleanValueArray('server_mysql_sort_order'));
         $serverMysqlSortOrder->save();
@@ -153,6 +181,10 @@ class ServerController extends AbstractController
 
     public function getMysqlSortOrderStatusAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $serverMysqlSortOrder = new ServerMysqlSortOrder($this->settings);
 
         return $this->createApiResponse($serverMysqlSortOrder->getUpdateStatus());
@@ -164,6 +196,10 @@ class ServerController extends AbstractController
 
     public function listErrorLogsAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerErrorLogs $serverErrorLogs */
         $serverErrorLogs = $this->container->getSystemService('server_error_logs');
 
@@ -181,6 +217,10 @@ class ServerController extends AbstractController
 
     public function getErrorLogsAction($id)
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerErrorLogs $serverErrorLogs */
         $serverErrorLogs = $this->container->getSystemService('server_error_logs');
         $serverErrorLog  = $serverErrorLogs->getById($id);
@@ -202,6 +242,10 @@ class ServerController extends AbstractController
 
     public function removeErrorLogsAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerErrorLogs $serverErrorLogs */
         $serverErrorLogs = $this->container->getSystemService('server_error_logs');
 
@@ -234,6 +278,10 @@ class ServerController extends AbstractController
 
     public function listCronAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerCron $serverCron */
         $serverCron = $this->container->getSystemService('server_cron');
 
@@ -253,6 +301,10 @@ class ServerController extends AbstractController
 
     public function getFileUploadsAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerFileUploads $serverFileUploads */
         $serverFileUploads = $this->container->getSystemService('server_file_uploads');
 
@@ -288,6 +340,10 @@ class ServerController extends AbstractController
 
     public function testFileUploadAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerFileUploads $serverFileUploads */
         $serverFileUploads = $this->container->getSystemService('server_file_uploads');
 
@@ -304,6 +360,10 @@ class ServerController extends AbstractController
 
     public function switchFileStorageAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerFileUploads $serverFileUploads */
         $serverFileUploads = $this->container->getSystemService('server_file_uploads');
 
@@ -337,6 +397,10 @@ class ServerController extends AbstractController
 
     public function switchFileStorageStatusAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         /** @var ServerFileUploads $serverFileUploads */
         $serverFileUploads = $this->container->getSystemService('server_file_uploads');
 
@@ -363,6 +427,10 @@ class ServerController extends AbstractController
 
     public function listFileCheckAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $serverFileCheck = new ServerFileCheck($this->em);
 
         return $this->createApiResponse(
@@ -378,6 +446,10 @@ class ServerController extends AbstractController
 
     public function getFileCheckAction($id)
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $serverFileCheck = new ServerFileCheck($this->em);
 
         return $this->createApiResponse(
@@ -393,6 +465,10 @@ class ServerController extends AbstractController
 
     public function getReportFileAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $serverReportFile = new ServerReportFile($this->em, null, $this->get('deskpro.app_env'));
         $serverReportFile->setSystemEntityManager($this->get('doctrine.orm.system_entity_manager'));
         $serverReportFile->setInstructionGenerator($this->get('dp_sys.alerts.instructions_generator'));
@@ -406,6 +482,10 @@ class ServerController extends AbstractController
 
     public function saveFileCheckResultsAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $serverReportFile = new ServerReportFile($this->em, null, $this->get('deskpro.app_env'));
         $fileCheckResults = $this->in->getValue('file_check_results', 'post');
 
@@ -422,6 +502,10 @@ class ServerController extends AbstractController
 
     public function cronStatusAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $status = new CronStatus($this->db);
 
         return $this->createJsonResponse([
@@ -439,6 +523,10 @@ class ServerController extends AbstractController
 
     public function errorStatusAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $errorLogFile = $this->get('deskpro.app_env')->getUserLogsDir().'/error.log';
         $errReader    = new ErrorLogReader($errorLogFile);
         $errorLogSize = false;
@@ -469,6 +557,10 @@ class ServerController extends AbstractController
 
     public function apcStatusAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $status = new ApcStatus();
         $data   = [
             'is_enabled'         => $status->isEnabled(),
@@ -500,6 +592,10 @@ class ServerController extends AbstractController
 
     public function beginAutomaticUpdateAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $updateTime = $this->container->getSetting('core.upgrade_time');
         if ($updateTime) {
             return $this->createApiErrorResponse('already_scheduled', 'An automatic update has already been scheduled. To rescheduled, abort the update first.');
@@ -536,6 +632,10 @@ class ServerController extends AbstractController
 
     public function getAutomaticUpdateStatusAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $updateTime = $this->container->getSetting('core.upgrade_time');
         if (!$updateTime) {
             return $this->createApiResponse(['is_scheduled' => false]);
@@ -558,6 +658,10 @@ class ServerController extends AbstractController
 
     public function abortAutomaticUpdateAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $waiting = $this->container->getSetting('core.upgrade_time');
         if ($waiting) {
             return $this->createApiErrorResponse('already_started', 'The upgrade has already started, it cannot be aborted from here.');

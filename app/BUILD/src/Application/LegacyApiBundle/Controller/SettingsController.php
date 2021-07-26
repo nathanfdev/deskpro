@@ -149,6 +149,10 @@ class SettingsController extends AbstractController
 
     public function serverSettingsAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $serverSettings = new ServerSettings($this->settings);
 
         return $this->createApiResponse([
@@ -162,6 +166,10 @@ class SettingsController extends AbstractController
 
     public function saveServerSettingsAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $serverSettings = new ServerSettings($this->settings);
         $serverSettings->setArray($this->in->getArrayValue('server_settings'));
         $serverSettings->saveSettings();
@@ -319,6 +327,10 @@ class SettingsController extends AbstractController
 
     public function allSettingsRawAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $settings_files = new AdvancedSettings();
         $all_settings   = [];
 
@@ -388,6 +400,10 @@ class SettingsController extends AbstractController
 
     public function saveAllSettingsRawAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $settings_files = new AdvancedSettings();
         $set_settings   = $this->in->getArrayValue('all_settings');
 

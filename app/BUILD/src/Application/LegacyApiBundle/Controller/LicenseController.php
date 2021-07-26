@@ -113,6 +113,10 @@ class LicenseController extends AbstractController
 
     public function setLicenseAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $license_code = $this->in->getString('license_code');
 
         $lic = License::create($license_code, $this->settings->get('core.install_key'));
@@ -140,6 +144,10 @@ class LicenseController extends AbstractController
 
     public function downloadKeyfileAction($_format = 'txt')
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $email_address = $this->in->getString('email_address');
         if (!$email_address) {
             $email_address = $this->person->getPrimaryEmailAddress();
@@ -212,6 +220,10 @@ FILE;
 
     public function getVersionInfoAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         $appEnv = $this->get('deskpro.app_env');
 
         return $this->createJsonResponse([
@@ -226,6 +238,10 @@ FILE;
 
     public function getLatestVersionAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         try {
             $instanceReader = $this->getContainer()->get('dp.updater.instance_reader');
             $distroLoader   = $this->getContainer()->get('dp.updater.distro.manifest_loader');
@@ -255,6 +271,10 @@ FILE;
 
     public function getNewsAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createAccessDeniedException();
+        }
+
         try {
             $news = LicenseService::getNews();
         } catch (\Exception $e) {
