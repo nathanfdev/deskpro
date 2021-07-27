@@ -24,7 +24,11 @@ class TemplateUtils
             return false;
         }
 
-        if (SafeFile::file_exists($templateName, $DP_ENV->getAppDir())) {
+        $x = SafeFile::setEmitWarningsOption(false);
+        $fileExists = SafeFile::file_exists($templateName, $DP_ENV->getAppDir());
+        SafeFile::setEmitWarningsOption($x);
+
+        if ($fileExists) {
             $isInBuildPath = strpos($templateName, $DP_ENV->getAppDir()) === 0;
             $isInVendorPath = strpos($templateName, $DP_ENV->getAppDir().'/vendor') === 0;
             $hasTwigFileExt = pathinfo($templateName, PATHINFO_EXTENSION) === 'twig';

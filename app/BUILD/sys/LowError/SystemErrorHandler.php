@@ -1365,6 +1365,10 @@ class SystemErrorHandler
      */
     public static function stripPathPrefix($content)
     {
+        if (!defined('DPC_IS_CLOUD')) {
+            return $content;
+        }
+
         $content = str_replace('\\', '/', $content);
 
         $prefix  = str_replace('\\', '/', DP_ROOT).'/';

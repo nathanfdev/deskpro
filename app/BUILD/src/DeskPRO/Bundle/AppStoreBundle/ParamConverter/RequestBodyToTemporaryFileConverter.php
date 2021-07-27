@@ -19,7 +19,7 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
         return self::createFromDeskproEnv();
     }
 
-    public static function createFromDeskproEnv(DpEnv $env)
+    public static function createFromDeskproEnv()
     {
         return new static();
     }

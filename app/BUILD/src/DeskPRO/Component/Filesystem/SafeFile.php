@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Component\Filesystem;
 
+use DpSys\LowError\SystemErrorHandler;
+
 /**
  * Simple wrapper around common file ops that force the caller
  * to explicitly list expected directory of the file,
@@ -99,10 +101,13 @@ class SafeFile
 
     /**
      * @param bool $onoff
+     * @return bool The original value
      */
     public static function setEmitWarningsOption($onoff)
     {
+        $prev = self::$emit_warnings;
         self::$emit_warnings = (bool) $onoff;
+        return $prev;
     }
 
     /**
@@ -415,9 +420,9 @@ class SafeFile
      */
     public static function fileGetContents($path, $whitelist)
     {
-        if (!self::isValid($path, $whitelist, true)) {
+        if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::fileGetContents($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileGetContents($path) is not valid"));
             }
 
             return false;
@@ -449,9 +454,9 @@ class SafeFile
      */
     public static function file($path, $whitelist)
     {
-        if (!self::isValid($path, $whitelist, true)) {
+        if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::file($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::file($path) is not valid"));
             }
 
             return false;
@@ -473,7 +478,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::fileOpen($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileOpen($path) is not valid"));
             }
 
             return false;
@@ -508,7 +513,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::copy($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::copy($path) is not valid"));
             }
 
             return false;
@@ -516,7 +521,7 @@ class SafeFile
 
         if (!self::isValid($to, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::copy(*, $to) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::copy(*, $to) is not valid"));
             }
 
             return false;
@@ -535,7 +540,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::file_exists($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::file_exists($path) is not valid"));
             }
 
             return false;
@@ -555,7 +560,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::file_put_contents($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::file_put_contents($path) is not valid"));
             }
 
             return false;
@@ -574,7 +579,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::fileatime($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileatime($path) is not valid"));
             }
 
             return false;
@@ -593,7 +598,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::filectime($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::filectime($path) is not valid"));
             }
 
             return false;
@@ -612,7 +617,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::filegroup($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::filegroup($path) is not valid"));
             }
 
             return false;
@@ -631,7 +636,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::fileinode($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileinode($path) is not valid"));
             }
 
             return false;
@@ -650,7 +655,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::filemtime($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::filemtime($path) is not valid"));
             }
 
             return false;
@@ -669,7 +674,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::fileowner($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileowner($path) is not valid"));
             }
 
             return false;
@@ -688,7 +693,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::fileperms($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileperms($path) is not valid"));
             }
 
             return false;
@@ -707,7 +712,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::filesize($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::filesize($path) is not valid"));
             }
 
             return false;
@@ -726,7 +731,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::filetype($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::filetype($path) is not valid"));
             }
 
             return false;
@@ -745,7 +750,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::is_dir($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_dir($path) is not valid"));
             }
 
             return false;
@@ -762,9 +767,9 @@ class SafeFile
      */
     public static function realpath($path, $whitelist)
     {
-        if (!self::isValid($path, $whitelist, true)) {
+        if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::realpath($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::realpath($path) is not valid"));
             }
 
             return false;
@@ -783,7 +788,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::is_executable($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_executable($path) is not valid"));
             }
 
             return false;
@@ -802,7 +807,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::is_file($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_file($path) is not valid"));
             }
 
             return false;
@@ -821,7 +826,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::is_link($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_link($path) is not valid"));
             }
 
             return false;
@@ -840,7 +845,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::is_readable($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_readable($path) is not valid"));
             }
 
             return false;
@@ -859,7 +864,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::is_writable($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_writable($path) is not valid"));
             }
 
             return false;
@@ -878,7 +883,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::lstat($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::lstat($path) is not valid"));
             }
 
             return false;
@@ -900,7 +905,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::mkdir($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::mkdir($path) is not valid"));
             }
 
             return false;
@@ -926,7 +931,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::parse_ini_file($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::parse_ini_file($path) is not valid"));
             }
 
             return false;
@@ -949,7 +954,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::readfile($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::readfile($path) is not valid"));
             }
 
             return false;
@@ -970,7 +975,7 @@ class SafeFile
     {
         if (!self::isValid($from, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::rename($from) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::rename($from) is not valid"));
             }
 
             return false;
@@ -978,7 +983,7 @@ class SafeFile
 
         if (!self::isValid($to, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::rename(*, $to) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::rename(*, $to) is not valid"));
             }
 
             return false;
@@ -998,7 +1003,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::rmdir($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::rmdir($path) is not valid"));
             }
 
             return false;
@@ -1017,7 +1022,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::stat($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::stat($path) is not valid"));
             }
 
             return false;
@@ -1038,7 +1043,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::touch($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::touch($path) is not valid"));
             }
 
             return false;
@@ -1058,7 +1063,7 @@ class SafeFile
     {
         if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::unlink($path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::unlink($path) is not valid"));
             }
 
             return false;

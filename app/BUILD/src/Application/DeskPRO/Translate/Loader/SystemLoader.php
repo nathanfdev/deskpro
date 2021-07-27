@@ -82,7 +82,7 @@ class SystemLoader implements LoaderInterface
         // Always read from the default because it has the core phrases
         $lang_packs[] = DP_ROOT.'/locales/en-US';
 
-        if ($language && $language->base_filepath) {
+        if ($language && $language->base_filepath && strpos($language->sys_name ?: '', 'dev_') !== 0) {
             $lang_packs[] = str_replace('%DP_ROOT%', DP_ROOT, $language->base_filepath);
         }
 

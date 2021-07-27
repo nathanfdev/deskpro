@@ -8,6 +8,8 @@
 
 namespace Application\DeskPRO\ResourceScanner;
 
+use DeskPRO\Component\Filesystem\SafeFile;
+
 /**
  * Scans the filesystem for an array of all templates.
  *

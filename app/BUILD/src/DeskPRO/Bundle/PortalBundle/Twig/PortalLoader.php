@@ -97,12 +97,11 @@ class PortalLoader implements \Twig_LoaderInterface
      */
     public function isFresh($name, $time)
     {
-        // If a DB template exists, it should not be fresh
-        if ($template = $this->getDbTemplate($name)) {
-            false;
+        $path = $this->getBrandTheme()->resolveTemplatePath((string) $name);
+        if (!$path) {
+            return false;
         }
-
-        return SafeFile::filemtime($this->getBrandTheme()->resolveTemplatePath((string) $name), DP_ROOT) <= $time;
+        return SafeFile::filemtime($path, DP_ROOT) <= $time;
     }
 
     /**
