@@ -35,6 +35,14 @@ class IncidentController extends CrudController
     public static $exposeOnly   = ['get', 'list', 'count', 'put', 'delete'];
     public static $listPaginate = false;
 
+    public function __construct()
+    {
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+    }
+
+
     /**
      * {@inheritdoc}
      */

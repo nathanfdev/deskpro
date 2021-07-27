@@ -20,7 +20,7 @@ class TwitterSetupController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new AdminManagePermission();
+        return null;
     }
 
     //###################################################################################################################

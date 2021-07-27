@@ -24,7 +24,10 @@ class CsvExportController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new AdminManagePermission();
+        // this feature was removed because it relied on fs access, which doesnt work on cloud
+        // but this controller and route still exist.
+        // returning null here effectively disables it completely
+        return null;
     }
 
     /**

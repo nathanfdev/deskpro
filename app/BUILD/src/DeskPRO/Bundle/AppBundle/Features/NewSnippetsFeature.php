@@ -40,7 +40,7 @@ class NewSnippetsFeature extends AbstractBetaFeature
     public function getEnableDescription()
     {
         return <<<'HTML'
-New Snippets replaces the current interface in chat and tickets with a new and improved version more modern and more 
+New Snippets replaces the current interface in chat and tickets with a new and improved version more modern and more
 reactive.<br/><br/>
 Installing New Snippets will copy your current snippets over to the new system, snippets categories will be replaced
 by snippets labels allowing you to assign several labels to the same snippet.
@@ -55,7 +55,7 @@ HTML;
     {
         return <<<'HTML'
 Disabling New Snippets will revert your helpdesk back to using the previous snippet system.<br/><br/>
-Edits to the snippets and snippets added will be <string>lost</string> forever 
+Edits to the snippets and snippets added will be <string>lost</string> forever
 HTML;
     }
 
@@ -82,7 +82,7 @@ HTML;
     {
         return new \DateTime('2020-01-01');
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -147,7 +147,7 @@ HTML;
         try {
             $connection->query(
                 "INSERT INTO snippets
-                      (id, person_id, shortcut_code, title, types, is_draft, ownership_global, visible_global, usage_count, positive_ratings, neutral_ratings, negative_ratings, is_split, date_created) 
+                      (id, person_id, shortcut_code, title, types, is_draft, ownership_global, visible_global, usage_count, positive_ratings, neutral_ratings, negative_ratings, is_split, date_created)
                       SELECT
                           ts.id,
                           IFNULL(ts.person_id, tcs.person_id) as person_id,
@@ -169,30 +169,31 @@ HTML;
                     LEFT JOIN text_snippet_categories tcs ON ts.category_id = tcs.id
                     WHERE ol_content.id IS NOT NULL
                     GROUP BY ts.id, ol_title.id;");
-            $connection->query(
-                "INSERT INTO snippet_labels
+            $labelsQuery = "
+                    INSERT INTO snippet_labels
                       (
                         snippet_id,
                         label
-                      ) 
-                      SELECT 
-                        ts.id, 
+                      )
+                      SELECT
+                        ts.id,
                         ol_category.value
                     FROM text_snippet_categories tsc
                       LEFT JOIN text_snippets ts ON tsc.id = ts.category_id
-                      LEFT JOIN object_lang ol_category ON ol_category.ref = CONCAT('text_snippet_categories.', tsc.id) AND ol_category.language_id = $langId
+                      LEFT JOIN object_lang ol_category ON ol_category.ref = CONCAT('text_snippet_categories.', tsc.id) AND ol_category.language_id = :langId
                       LEFT JOIN object_lang ol_content ON ol_content.ref = CONCAT('text_snippets.', ts.id) AND ol_content.prop_name = 'snippet'
                     WHERE ol_content.id IS NOT NULL
                     AND ts.id IS NOT NULL
-                    GROUP BY ts.id, ol_category.id");
+                    GROUP BY ts.id, ol_category.id";
+            $connection->executeQuery($labelsQuery, ['langId' => $langId]);
             $connection->query(
                 'INSERT INTO snippet_translations
                     (
-                      snippet_id, 
-                      language_id, 
-                      content, 
+                      snippet_id,
+                      language_id,
+                      content,
                       title
-                    ) 
+                    )
                     SELECT
                       ts.id as snippet_id,
                       ol_title.language_id,
