@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
+use DeskPRO\Component\Filesystem\SafeFile;
 
 class PclzipBundleWriter
 {
@@ -30,6 +31,8 @@ class PclzipBundleWriter
      */
     public static function fromFile($file)
     {
+        SafeFile::assertValid($file, SafeFile::UNSPECIFIED);
+
         $fileInfo = new \SplFileInfo($file);
         if (!$fileInfo->isWritable()) {
             $exMsg = sprintf('trying to write an application zip bundle file to a non-writable location: %s', $file);

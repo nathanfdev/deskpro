@@ -142,6 +142,8 @@ class PackageInstaller
                 }
             }
 
+            SafeFile::assertValid($largest[0], SafeFile::UNSPECIFIED);
+
             $image = $this->imagine->open($largest[0]);
             $image->resize(new ImageBox($size, $size));
 

@@ -368,6 +368,8 @@ class DeskproBlobStorage implements Loggable
     {
         $this->logger->logDebug("[DeskproBlobStorage] BEGIN (saveBlobRecordFromFile) From path: $sourcePath");
 
+        SafeFile::assertValid($sourcePath, SafeFile::UNSPECIFIED);
+
         // remove the source data before any manipulations
         // to ensure the content length is correct
         if ((ContentTypes::isImageContentType($contentType) || ContentTypes::isTiffContentType($contentType))

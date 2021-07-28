@@ -694,6 +694,8 @@ class AppsController extends AbstractController
                 continue;
             }
 
+            SafeFile::assertValid($largest[0], SafeFile::UNSPECIFIED);
+
             $image = $this->container->getImagine()->open($largest[0]);
             $image->resize(new ImageBox($size, $size));
 
@@ -908,6 +910,8 @@ class AppsController extends AbstractController
         $file = $request->files->get('file');
 
         if ($file) {
+            SafeFile::assertValid($file->getRealPath(), SafeFile::UNSPECIFIED);
+
             if (!$file->isValid()) {
                 return $this->createApiErrorResponse('invalid_upload', 'Invalid file upload');
             }

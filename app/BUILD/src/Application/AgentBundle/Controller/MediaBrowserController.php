@@ -6,6 +6,8 @@
 
 namespace Application\AgentBundle\Controller;
 
+use DeskPRO\Component\Filesystem\SafeFile;
+
 /**
  * The mediabrowser does everything via ajax.
  */
@@ -23,6 +25,8 @@ class MediaBrowserController extends AbstractController
 
         foreach ($files as $file) {
             /* @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
+
+            SafeFile::assertValid($file->getRealPath(), SafeFile::UNSPECIFIED);
 
             $blob = $this->container->getBlobStorage()->createBlobRecordFromFile(
                 $file->getRealPath(),
