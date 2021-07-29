@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
@@ -61,19 +59,35 @@ class ChatPingTimeout extends AbstractJob
         // User timeouts
         //------------------------------
 
-        $cutoff = time() - 1200;
+        $cutoff = time() - 330;
 
-        $chat_ids = App::getDb()->fetchAllCol("
+        $chatsToTimeout = App::getDb()->fetchAllCol("
             SELECT DISTINCT c.id
             FROM chat_conversations c
             LEFT JOIN chat_conversation_pings AS p ON (p.chat_id = c.id AND p.ping_time > ?)
-            WHERE c.status = 'open' AND c.is_agent = 0 AND p.id IS NULL
+            WHERE c.status = 'open' AND c.ended_by != 'timeout' AND c.is_agent = 0 AND p.id IS NULL
+        ", [$cutoff]);
+
+        // restore default open state for chats where user has returned
+        $chatsToRestore = App::getDb()->fetchAllCol("
+            SELECT DISTINCT c.id
+            FROM chat_conversations c
+            LEFT JOIN chat_conversation_pings AS p ON (p.chat_id = c.id AND p.ping_time > ?)
+            WHERE c.status = 'open' AND c.ended_by = 'timeout' AND c.is_agent = 0 AND p.id IS NOT NULL
         ", [$cutoff]);
 
         $count_users = 0;
-        while ($chat_id = array_pop($chat_ids)) {
+        while ($chat_id = array_pop($chatsToTimeout)) {
             $chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
             $chat_manager->userTimeout($chat);
+
+            ++$count_users;
+            $this->logger->log("User timed out in chat {$chat->id}", Logger::INFO);
+        }
+
+        while ($chat_id = array_pop($chatsToRestore)) {
+            $chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
+            $chat_manager->reopenTimeoutChat($chat);
 
             ++$count_users;
             $this->logger->log("User timed out in chat {$chat->id}", Logger::INFO);
@@ -116,7 +130,7 @@ class ChatPingTimeout extends AbstractJob
             $chat_ids = App::getDb()->fetchAllCol("
                 SELECT id
                 FROM chat_conversations c
-                WHERE c.status = 'ended' AND c.ended_by = 'timeout' AND c.date_ended < ?
+                WHERE c.status = 'open' AND c.ended_by = 'timeout' AND c.date_ended < ?
             ", [$timesnip]);
 
             while ($chat_id = array_pop($chat_ids)) {

@@ -46,6 +46,7 @@ class NewUserChatMessageGenerator extends SystemEventGenerator
         AvatarResolver $avatarResolver
     ) {
         parent::__construct($em, $tokenStorage, $agentDataService);
+        $this->avatarResolver = $avatarResolver;
     }
 
     /**
@@ -80,11 +81,13 @@ class NewUserChatMessageGenerator extends SystemEventGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        if ($event instanceof UserChatEvent && $event->getEventType() === ClientMessageEvent::CHANNEL_CHAT_NEW) {
-            return true;
-        }
+        $data = $event->getData();
 
-        return false;
+        return
+            $event instanceof UserChatEvent
+            && $event->getEventType() === ClientMessageEvent::CHANNEL_CHAT_NEW
+            && (!isset($data['restarted']) || !$data['restarted'])
+        ;
     }
 
     /**
