@@ -77,11 +77,21 @@ class FilesystemCache extends BaseFilesystemCache
     }
 
     /**
-     * Sets the private properties of @see \Doctrine\Common\Cache\FileCache
+     * Sets the private properties of @throws \Exception
+     * @see \Doctrine\Common\Cache\FileCache
      */
     protected function setFileCacheProp(\ReflectionClass $ref, $propName, $value)
     {
         $prop = $ref->getProperty($propName);
+
+        if (!$prop->isPrivate()) {
+            throw new \Exception(sprintf(
+                'Cannot modify property "%s" on "%s" as scope must be private',
+                $propName,
+                $ref->getName()
+            ));
+        }
+
         $prop->setAccessible(true);
         $prop->setValue($this, $value);
         $prop->setAccessible(false);
