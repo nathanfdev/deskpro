@@ -3,6 +3,7 @@
 namespace DeskPRO\Component\Doctrine\Common\Cache;
 
 use Doctrine\Common\Cache\FilesystemCache as BaseFilesystemCache;
+use DpRun\DpFsProxyStreamWrapper;
 
 class FilesystemCache extends BaseFilesystemCache
 {
@@ -11,7 +12,60 @@ class FilesystemCache extends BaseFilesystemCache
      */
     public function __construct($directory, $extension = self::EXTENSION)
     {
-        parent::__construct($directory, $extension, umask());
+        if (!defined('DPC_IS_READ_ONLY_FS')) {
+            return parent::__construct($directory, $extension, umask());
+        }
+
+        $ref = (new \ReflectionObject($this))
+            ->getParentClass()
+            ->getParentClass()
+        ;
+
+        $umask = umask();
+
+        if ( ! is_int($umask)) {
+            throw new \InvalidArgumentException(sprintf(
+                'The umask parameter is required to be integer, was: %s',
+                gettype($umask)
+            ));
+        }
+
+        $this->setFileCacheProp($ref, 'umask', $umask);
+
+        if ( ! $this->createPathIfNeeded($directory, $umask)) {
+            throw new \InvalidArgumentException(sprintf(
+                'The directory "%s" does not exist and could not be created.',
+                $directory
+            ));
+        }
+
+        if ( ! is_writable($directory)) {
+            throw new \InvalidArgumentException(sprintf(
+                'The directory "%s" is not writable.',
+                $directory
+            ));
+        }
+
+        $this->directory = DpFsProxyStreamWrapper::realpath($directory);
+
+        $this->setFileCacheProp($ref, 'extension', (string) $extension);
+        $this->setFileCacheProp($ref, 'directoryStringLength', strlen($this->directory));
+        $this->setFileCacheProp($ref, 'extensionStringLength', strlen((string) $extension));
+        $this->setFileCacheProp($ref, 'isRunningOnWindows', defined('PHP_WINDOWS_VERSION_BUILD'));
+    }
+
+    /**
+     * @see \Doctrine\Common\Cache\FileCache::createPathIfNeeded()
+     */
+    private function createPathIfNeeded($path, $umask)
+    {
+        if ( ! is_dir($path)) {
+            if (false === @mkdir($path, 0777 & (~$umask), true) && !is_dir($path)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -20,5 +74,16 @@ class FilesystemCache extends BaseFilesystemCache
     protected function getFilename($id)
     {
         return FileCacheUtil::getFilename($id, $this->getDirectory(), $this->getExtension());
+    }
+
+    /**
+     * Sets the private properties of @see \Doctrine\Common\Cache\FileCache
+     */
+    protected function setFileCacheProp(\ReflectionClass $ref, $propName, $value)
+    {
+        $prop = $ref->getProperty($propName);
+        $prop->setAccessible(true);
+        $prop->setValue($this, $value);
+        $prop->setAccessible(false);
     }
 }
