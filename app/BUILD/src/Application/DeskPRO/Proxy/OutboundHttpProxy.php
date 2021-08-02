@@ -2,9 +2,9 @@
 
 namespace Application\DeskPRO\Proxy;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\Proxy\Exception\FailedToExchangeRequestTokenException;
 use Application\DeskPRO\Proxy\Exception\FailedToResignS3UrlException;
-use DeskPRO\Bundle\AppBundle\AppSecret\AppSecret;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use Firebase\JWT\JWT;
 
@@ -21,23 +21,21 @@ class OutboundHttpProxy
     const TOKEN_CACHE_TTL = 10;
 
     /**
-     * @var AppSecret
-     */
-    private $appSecret;
-
-    /**
      * @var array
      */
     private $cache = [];
 
     /**
-     * Constructor.
-     *
-     * @param AppSecret $appSecret
+     * @var SettingsResolver
      */
-    public function __construct(AppSecret $appSecret)
+    private $settingsResolver;
+
+    /**
+     * @param SettingsResolver $settingsResolver
+     */
+    public function __construct(SettingsResolver $settingsResolver)
     {
-        $this->appSecret = $appSecret;
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -167,7 +165,12 @@ class OutboundHttpProxy
             'srv' => $service,
         ]);
 
-        $requestToken = JWT::encode($payload, $this->appSecret->getAppSecret());
+        $key = $this->settingsResolver
+            ->getGlobalSettings()
+            ->get('api_auth.outbound_proxy_key')
+        ;
+
+        $requestToken = JWT::encode($payload, $key);
 
         $client = new HttpClient([
             'base_uri' => $tokenExchangeUrl,

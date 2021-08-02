@@ -132,7 +132,7 @@ services:
 
   deskpro.proxy.outbound_http_proxy:
     class: Application\DeskPRO\Proxy\OutboundHttpProxy
-    arguments: [ "@app_secret" ]
+    arguments: [ "@settings_resolver" ]
 
   ######################################################################################################################
   # Sandboxed Twig
