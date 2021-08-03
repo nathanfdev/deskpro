@@ -5,15 +5,16 @@ namespace DeskPRO\Bundle\BrandBundle\EventListener;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * Class BrandAccessListener.
+ * Class BrandImpersonationAccessListener.
  */
-class BrandAccessListener implements EventSubscriberInterface
+class BrandImpersonationAccessListener implements EventSubscriberInterface
 {
     /**
      * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
@@ -29,12 +30,12 @@ class BrandAccessListener implements EventSubscriberInterface
      * Constructor.
      *
      * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
-     * @param TokenStorageInterface                        $tokenStorage
+     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(BrandStack $brandStack, TokenStorageInterface $tokenStorage)
     {
-        $this->brandStack   = $brandStack;
-        $this->tokenStorage = $tokenStorage;
+        $this->brandStack     = $brandStack;
+        $this->tokenStorage   = $tokenStorage;
     }
 
     /**
@@ -43,18 +44,24 @@ class BrandAccessListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::REQUEST => ['onKernelRequest', -1],
+            KernelEvents::REQUEST => ['onKernelRequest', -5],
         ];
     }
 
     /**
-     * @internal
-     *
      * @param GetResponseEvent $event
+     *
+     * @internal
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
+            return;
+        }
+
+        $impersonationMode = $event->getRequest()->getSession() && $event->getRequest()->getSession()->get('is_impersonating', false);
+
+        if (!$impersonationMode) {
             return;
         }
 
@@ -70,14 +77,19 @@ class BrandAccessListener implements EventSubscriberInterface
             return;
         }
 
-        // user doesn't have access to this brand
-        // unset authorised token
         if (!$person->isAdmin() && !$person->hasBrand($brand)) {
-            if ((null !== $event->getRequest()->getSession()) && $event->getRequest()->getSession()->has('is_impersonating')) {
-                return;
-            }
 
-            $this->tokenStorage->setToken(new AnonymousToken('anon.', 'anon.'));
+            //if user is being impersonated, check if user has access to other brand and redirect user to the brand's portal home
+            if (!$person->getBrands()->isEmpty()) {
+                $brand = $person->getBrands()->first();
+                $this->brandStack->push($brand);
+
+                //TODO: Better way to generate url for custom brand
+                $event->setResponse(new RedirectResponse('/b/'.$brand->getSlug()));
+            } else {
+                // user doesn't have access to brand unset authorised token
+                $this->tokenStorage->setToken(new AnonymousToken('anon.', 'anon.'));
+            }
         }
     }
 }

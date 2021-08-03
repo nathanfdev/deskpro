@@ -77,6 +77,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			autosaveContent: 'ticket',
 			minHeight: 120,
 			autosaveContentId: (this.page ? this.page.meta.ticket_id : false),
+      page: this.page,
 			preAutosaveCallback: function(textarea, data) {
 
 				if (self.getElById('reply_is_trans').val() != "") {
@@ -1020,85 +1021,100 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.el.find('.fwd-trigger').on('click', function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-
-      var api = textarea.data('redactor');
-      if (api) {
-        api.$editor.linkify();
-        api.syncCode();
+      if (self.hasFwdRequest) {
+        return;
       }
 
-      var options = {
-				fwd_new_ticket:  self.getElById('fwd_new_ticket_check').prop('checked'),
-				do_assign_agent: self.getElById('agent_sel_check').prop('checked'),
-				agent_id:        self.getElById('agent_sel').val(),
-				do_assign_team:  self.getElById('agent_team_sel_check').prop('checked'),
-				agent_team_id:   self.getElById('agent_team_sel').val(),
-				close_tab:       self.getElById('close_tab_opt').prop('checked')
-			};
+		  var doSendForward = function () {
+        self.hasFwdRequest = true;
 
-      var formData = {
-      	custom_message: api.getCode(),
-				messages_ids:   self.fwdMessages,
-				info: self.fwdInfo,
-				to: {},
-				to_type: {},
-			  from: self.getElById('fwd_from').val(),
-				subject: self.getElById('fwd_subject').val(),
-        attachments: self.fwdAttachments,
-				options: options
+        if (self.page.pauseSend) {
+          window.setTimeout(doSendForward.bind(this), 250);
+          return;
+        }
+
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        var api = textarea.data('redactor');
+        if (api) {
+          api.$editor.linkify();
+          api.syncCode();
+        }
+
+        var options = {
+          fwd_new_ticket:  self.getElById('fwd_new_ticket_check').prop('checked'),
+          do_assign_agent: self.getElById('agent_sel_check').prop('checked'),
+          agent_id:        self.getElById('agent_sel').val(),
+          do_assign_team:  self.getElById('agent_team_sel_check').prop('checked'),
+          agent_team_id:   self.getElById('agent_team_sel').val(),
+          close_tab:       self.getElById('close_tab_opt').prop('checked')
+        };
+
+        var formData = {
+          custom_message: api.getCode(),
+          messages_ids:   self.fwdMessages,
+          info: self.fwdInfo,
+          to: {},
+          to_type: {},
+          from: self.getElById('fwd_from').val(),
+          subject: self.getElById('fwd_subject').val(),
+          attachments: self.fwdAttachments,
+          options: options
+        };
+
+        $.each(self.getElById('fwd_to_container').find('.email-address-input'), (function(index, item){
+          var $item = $(item);
+          formData.to[$item.attr('id')] = $item.val();
+          formData.to_type[$item.attr('id')] = $item.data('type');
+        }));
+
+        var loadingEl = self.el.find('.ticket-sending-overlay');
+        loadingEl.fadeIn();
+
+        $.ajax({
+          url: BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/forward/send',
+          data: formData,
+          type: 'POST',
+          dataType: 'json',
+          success: function(data) {
+            if (data && data.error) {
+              switch (data.error) {
+                case 'to_helpdesk_address':
+                  DeskPRO_Window.showAlert('The following addresses are helpdesk email accounts and cannot be used: ' + data.addresses.join(', '), 'error');
+                  break;
+                case 'invalid_address':
+                  DeskPRO_Window.showAlert('The following email addresses are invalid: ' + data.addresses.join(', '), 'error');
+                  break;
+                case 'missing_to':
+                  DeskPRO_Window.showAlert('At least one recipient is required', 'error');
+                  break;
+                default:
+                  DeskPRO_Window.showAlert('There was a problem trying to send your message.', 'error');
+              }
+              return;
+            }
+            self.page.doTicketUpdate(true);
+            // Reload message page to show `message forwarded` mark
+            // need to call this manually because doTicketUpdate will not update page without new messages
+            self.page.loadMessagePage(0, true);
+            if (data.close_tab) {
+              self.page.closeSelf();
+              if (data.new_ticket_url) {
+                DeskPRO_Window.runPageRoute('page:' + data.new_ticket_url);
+              }
+            }
+            DeskPRO_Window.showAlert('Your forwarded message was successfully sent.');
+            self.getElById('replybox_replytab_btn').click();
+          },
+          complete: function() {
+            loadingEl.hide();
+            self.hasFwdRequest = false;
+          }
+        });
       };
 
-      $.each(self.getElById('fwd_to_container').find('.email-address-input'), (function(index, item){
-      	var $item = $(item);
-				formData.to[$item.attr('id')] = $item.val();
-				formData.to_type[$item.attr('id')] = $item.data('type');
-			}));
-
-      var loadingEl = self.el.find('.ticket-sending-overlay');
-      loadingEl.fadeIn();
-
-      $.ajax({
-        url: BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/forward/send',
-        data: formData,
-        type: 'POST',
-        dataType: 'json',
-        success: function(data) {
-        	if (data && data.error) {
-						switch (data.error) {
-							case 'to_helpdesk_address':
-								DeskPRO_Window.showAlert('The following addresses are helpdesk email accounts and cannot be used: ' + data.addresses.join(', '), 'error');
-								break;
-              case 'invalid_address':
-                DeskPRO_Window.showAlert('The following email addresses are invalid: ' + data.addresses.join(', '), 'error');
-                break;
-							case 'missing_to':
-                DeskPRO_Window.showAlert('At least one recipient is required', 'error');
-								break;
-							default:
-                DeskPRO_Window.showAlert('There was a problem trying to send your message.', 'error');
-						}
-						return;
-					}
-          self.page.doTicketUpdate(true);
-          // Reload message page to show `message forwarded` mark
-          // need to call this manually because doTicketUpdate will not update page without new messages
-          self.page.loadMessagePage(0, true);
-          if (data.close_tab) {
-						self.page.closeSelf();
-          	if (data.new_ticket_url) {
-							DeskPRO_Window.runPageRoute('page:' + data.new_ticket_url);
-						}
-					}
-          DeskPRO_Window.showAlert('Your forwarded message was successfully sent.');
-          self.getElById('replybox_replytab_btn').click();
-        },
-				complete: function() {
-          loadingEl.hide();
-				}
-      });
-
+      doSendForward();
 		});
 
 		this.el.find('.fwd-control-add').on('click', function (ev) {
@@ -1431,7 +1447,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
                 .change();
             }
           }
-          
+
 					if (this.page) {
 						this.page.updateUi();
 						if (!this.page.meta.ticket_reverse_order) {

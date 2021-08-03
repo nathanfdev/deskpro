@@ -18,6 +18,9 @@ services:
                 - "@doctrine.orm.default_entity_manager"
                 - "@security.http_utils"
                 - "@router"
+                - "@event_dispatcher"
+                - "@dp.voice.task_router"
+                - "@security.token_storage"
 
     security.authentication.failure_handler:
         class: DeskPRO\Bundle\AppBundle\Security\Handler\AuthenticationFailureHandler

@@ -17,11 +17,21 @@ class AgentWhitelistIp extends EmailBaseType
      */
     protected $url;
 
+    /**
+     * Ip Address.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $ip;
+
     protected $templateFile = 'emails_agent:whitelist_ip.html.twig';
 
-    public function __construct($url)
+    public function __construct($url, $ip)
     {
         $this->url = $url;
+        $this->ip = $ip;
     }
 
     /**

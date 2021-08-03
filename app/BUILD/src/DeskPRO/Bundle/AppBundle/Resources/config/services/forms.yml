@@ -156,13 +156,13 @@ services:
 
   form.base_person:
     class: DeskPRO\Bundle\AppBundle\Form\Type\People\BasePersonType
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage"]
     tags:
       - { name: form.type }
 
   form.person:
     class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
-    arguments: ["@custom_field_manager"]
+    arguments: ["@custom_field_manager", "@security.token_storage"]
     tags:
       - { name: form.type }
 

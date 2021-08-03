@@ -30,6 +30,7 @@ portal.account.login-password: 'Your password'
 portal.account.login-password-reminder: 'Need a password reminder?'
 portal.account.login-register-btn: Register
 portal.account.login-register-header: Register
+portal.registration_closed: 'Please, Register or login to be able to perfom this action'
 portal.account.login-remember: 'Stay Logged In?'
 portal.account.login-saved-add_email: 'Your add email has not been submitted yet. Please login to continue.'
 portal.account.login-saved-comment: 'Your comment has not been submitted yet. Please login to continue.'
@@ -648,6 +649,7 @@ portal.general.nav-emails: Emails
 portal.general.nav-community: Community
 portal.general.nav-community-desc: 'Custom suggestions'
 portal.general.nav-guides: Guides
+portal.guides.section-title: Guides
 portal.general.nav-guides-desc: 'Product documentation'
 portal.general.nav-kb: Knowledgebase
 portal.general.nav-kb-desc: 'Read help articles'
@@ -1309,4 +1311,4 @@ user.time.x_week:
 user.time.x_year:
   one: '1 year'
   other: '{{count}} years'
-
+portal.error_occured: 'Sorry, but an error occurred. Please try again later or contact us.'

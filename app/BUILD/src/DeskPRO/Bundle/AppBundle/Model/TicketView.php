@@ -91,9 +91,9 @@ class TicketView
      * @param bool   $isAlwaysVisible
      * @param bool   $linkify
      */
-    public function addProperty($id, $type, $label, $value, $isAlwaysVisible = false, $linkify = false)
+    public function addProperty($id, $type, $label, $value, $isAlwaysVisible = false, $linkify = false, $metaData = [])
     {
-        $this->appendProperty(new TicketViewProperty($id, $type, $label, $value, $isAlwaysVisible, $linkify));
+        $this->appendProperty(new TicketViewProperty($id, $type, $label, $value, $isAlwaysVisible, $linkify, $metaData));
     }
 
     /**

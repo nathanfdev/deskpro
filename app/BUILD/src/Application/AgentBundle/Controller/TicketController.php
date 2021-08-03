@@ -2702,7 +2702,7 @@ class TicketController extends AbstractController
                 );
                 $validator->setLayout($layout);
 
-                $actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
+                $actions = $this->in->getCleanValueArray('actions', 'str', 'raw');
 
                 if (count($actions) == 1 && (isset($actions['department_id']) || isset($actions['urgency']))) {
                     // skip validation for realtime updates
@@ -4811,7 +4811,8 @@ class TicketController extends AbstractController
         }
 
         $account     = $this->getAccount($ticket);
-        $context     = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
+        $context     = $ticketManager->createAgentExecutorContext($this->person, 'newticket', 'web');
+
         $blobStorage = $this->get('blob.storage');
 
         foreach ($messages as $message) {

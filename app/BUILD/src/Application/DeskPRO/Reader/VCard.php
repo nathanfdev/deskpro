@@ -1,26 +1,38 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\Reader;
 
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\PersonEmail;
+use Doctrine\ORM\EntityManager;
+use Orb\Input\Cleaner\Cleaner;
+
 class VCard extends \File_IMC
 {
-    /** @var \Doctrine\ORM\EntityManager */
+    /**
+     * @var EntityManager
+     */
     protected $em;
 
-    public function __construct(\Doctrine\ORM\EntityManager $em)
+    /**
+     * @var Cleaner
+     */
+    protected $cleaner;
+
+    public function __construct(EntityManager $em, Cleaner $cleaner)
     {
-        $this->em = $em;
+        $this->em      = $em;
+        $this->cleaner = $cleaner;
     }
 
-    public function applyToPerson($content, \Application\DeskPRO\Entity\Person $person)
+    public function applyToPerson($content, Person $person)
     {
         $fields = self::parseVCard($content);
-
-        //var_dump($fields); die;
+        $fields = $this->cleaner->cleanArray($fields, 'str', 'raw', ['recursive' => true]);
 
         if (isset($fields['name'])) {
             if (isset($fields['name']['firstname'])) {
@@ -36,7 +48,7 @@ class VCard extends \File_IMC
 
         if (isset($fields['emails']) && is_array($fields['emails'])) {
             foreach ($fields['emails'] as $email) {
-                $emailExists = \Application\DeskPRO\Entity\PersonEmail::getRepository()->findOneBy([
+                $emailExists = $this->em->getRepository(PersonEmail::class)->findOneBy([
                     'email' => $email,
                 ]);
 
@@ -44,7 +56,7 @@ class VCard extends \File_IMC
                     continue;
                 }
 
-                $newEmail = new \Application\DeskPRO\Entity\PersonEmail();
+                $newEmail = new PersonEmail();
 
                 $newEmail->email = $email;
 
@@ -69,7 +81,7 @@ class VCard extends \File_IMC
                 continue;
             }
             foreach ($value as $contactData) {
-                $contact_data = new \Application\DeskPRO\Entity\PersonContactData();
+                $contact_data = new PersonContactData();
 
                 $contact_data->person = $person;
 
@@ -111,13 +123,7 @@ class VCard extends \File_IMC
                     $fields['name']['lastname']  = @$vc['N'][0]['value'][0][0];
                 }
 
-//                if(isset($vc['FN'])
-//                && isset($vc['FN'][0]['value'])) {
-//                    $fields['name']['fullname'] = $vc['FN'][0]['value'][0][0];
-//                }
-
                 if (isset($vc['IMPP'])) {
-                    //print_r($vc['IMPP']); die;
                     $fields['instant_message'] = [];
                     foreach ($vc['IMPP'] as $IM) {
                         if (isset($IM['value'])) {
@@ -146,7 +152,6 @@ class VCard extends \File_IMC
                 }
 
                 if (isset($vc['TEL'])) {
-                    //print_r($vc['TEL']); die;
                     $fields['phone'] = [];
                     foreach ($vc['TEL'] as $TEL) {
                         if (isset($TEL['value'][0][0])) {
@@ -203,13 +208,15 @@ class VCard extends \File_IMC
 
     protected function _lookupOrganizationByName($name)
     {
-        return \Application\DeskPRO\Entity\Organization::getRepository()->findOneBy([
+        return $this->em->getRepository(Organization::class)->findOneBy([
             'name' => $name,
         ]);
     }
 
-    protected function _checkMatchingContactAccounts(\Application\DeskPRO\Entity\PersonContactData $contactData, \Application\DeskPRO\Entity\Person $person)
-    {
+    protected function _checkMatchingContactAccounts(
+        PersonContactData $contactData,
+        Person $person
+    ) {
         $existingContactDatas = $person->contact_data;
 
         $type = $contactData->contact_type;
@@ -218,19 +225,21 @@ class VCard extends \File_IMC
             case 'instant_message':
                 foreach ($existingContactDatas as $existingContactData) {
                     if ($existingContactData->field_1 === $contactData->field_1 &&
-                            $existingContactData->field_2 === $contactData->field_2) {
+                        $existingContactData->field_2 === $contactData->field_2) {
                         return true;
                     }
                 }
+
                 break;
 
             case 'phone':
                 foreach ($existingContactDatas as $existingContactData) {
                     if ($existingContactData->field_1 === $contactData->field_1 &&
-                            $existingContactData->field_2 === $contactData->field_2) {
+                        $existingContactData->field_2 === $contactData->field_2) {
                         return true;
                     }
                 }
+
                 break;
 
             case 'facebook':
@@ -239,6 +248,7 @@ class VCard extends \File_IMC
                         return true;
                     }
                 }
+
                 break;
 
             case 'website':
@@ -247,6 +257,7 @@ class VCard extends \File_IMC
                         return true;
                     }
                 }
+
                 break;
 
             default:

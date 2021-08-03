@@ -76,7 +76,7 @@ class CheckWhitelistedIP
 
             if ($container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = $container->get('email.agent_viewmodel_factory')
-                    ->createAgentWhitelistIpModel($url);
+                    ->createAgentWhitelistIpModel($url, $ip);
                 $container->get('email.email_sender')
                     ->send($viewModel, ['to' => $person]);
             } else {

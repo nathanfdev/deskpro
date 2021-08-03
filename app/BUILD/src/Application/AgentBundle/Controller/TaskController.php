@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO AgentBubdle's Task Controller.
- *
- * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
- */
+
 
 namespace Application\AgentBundle\Controller;
 
@@ -110,7 +106,7 @@ class TaskController extends AbstractController
      */
     public function createAction()
     {
-        $allTaskData = $this->in->getCleanValueArray('newtask', 'raw', 'discard');
+        $allTaskData = $this->in->getCleanValueArray('newtask', 'str', 'discard');
         $tasks       = [];
 
         foreach ($allTaskData as $taskData) {
@@ -198,18 +194,22 @@ class TaskController extends AbstractController
         switch ($search_type) {
             case 'own':
                 $filterMethod = 'filterTasksForPerson';
+
                 break;
 
             case 'team':
                 $filterMethod = 'filterTaksForPersonTeams';
+
                 break;
 
             case 'delegate':
                 $filterMethod = 'filterDelegatedTasksForPerson';
+
                 break;
 
             case 'all':
                 $filterMethod = 'filterAllPendingTasks';
+
                 break;
         }
 
@@ -520,6 +520,7 @@ class TaskController extends AbstractController
                         $task->setDateDue($date);
                     }
                 }
+
                 break;
 
             case 'visibility':
@@ -547,6 +548,7 @@ class TaskController extends AbstractController
                     $notify = new \Application\DeskPRO\Notifications\TaskCompleteNotification($task);
                     $notify->send();
                 }
+
                 break;
 
             case 'assigned':
@@ -572,12 +574,14 @@ class TaskController extends AbstractController
         }
 
         $this->db->beginTransaction();
+
         try {
             $this->em->persist($task);
             $this->em->flush();
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+
             throw $e;
         }
 
@@ -602,12 +606,14 @@ class TaskController extends AbstractController
         }
 
         $this->db->beginTransaction();
+
         try {
             $this->em->remove($task);
             $this->em->flush();
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+
             throw $e;
         }
 
@@ -615,6 +621,8 @@ class TaskController extends AbstractController
     }
 
     /**
+     * @param mixed $task_id
+     *
      * @return \Application\DeskPRO\Entity\Task
      */
     protected function getTaskOr404($task_id)
@@ -647,14 +655,17 @@ class TaskController extends AbstractController
         switch ($filter) {
             case 'all':
                 $tasks = $this->em->getRepository(Task::class)->filterAllPendingTasks($person);
+
                 break;
 
             case 'assigned':
                 $tasks = $this->em->getRepository(Task::class)->filterTasksForPerson($person);
+
                 break;
 
             case 'delegated':
                 $tasks = $this->em->getRepository(Task::class)->filterDelegatedTasksForPerson($person);
+
                 break;
 
             default:

@@ -327,7 +327,7 @@ class GuideController extends PublishController
 
     public function ajaxGetTopicsByGuideAction($guide_id)
     {
-        $topics = $this->em->getRepository(Topic::class)->getInHierarchy(false, $guide_id);
+        $topics = $this->em->getRepository(Topic::class)->getInHierarchy(false, $guide_id, null, true);
 
 //        array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
 
@@ -363,7 +363,7 @@ class GuideController extends PublishController
 
         $topics = [];
         if (count($guides) > 0) {
-            $topics = $this->em->getRepository(Topic::class)->getInHierarchy(false, $guides[0]);
+            $topics = $this->em->getRepository(Topic::class)->getInHierarchy(false, $guides[0], null, true);
         }
 
         $topics = $this->shortenTitles($topics);
@@ -445,12 +445,12 @@ class GuideController extends PublishController
 
         $totalResults = count($results);
         $guidesCounts = $this->em->getRepository(Guide::class)->getAllCounts();
-        
+
         $tpl = 'AgentBundle:Guide:filter.html.twig';
 
         $displayFields = $this->person->getPref('agent.ui.topic-filter-display-fields.0');
         if (!$displayFields) {
-            $displayFields = [];
+            $displayFields = Topic::DISPLAY_FIELDS;
         }
 
         $guideUserGroups    = [];

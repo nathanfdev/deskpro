@@ -424,10 +424,10 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
                 $ticketAddresses[] = $participant->getEmailAddress();
             }
         }
-
+        
         if ($readerAddresses) {
             foreach ($ticketAddresses as $email) {
-                if (!in_array($email, $readerAddresses)) {
+                if (!in_array($email, $readerAddresses) && $email !== $ticket->getTicketPersonEmail()->getEmail()) {
                     return false;
                 }
             }

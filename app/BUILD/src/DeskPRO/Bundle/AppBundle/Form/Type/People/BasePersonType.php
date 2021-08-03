@@ -12,6 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Class BasePersonType.
@@ -24,13 +25,19 @@ class BasePersonType extends AbstractType
     private $em;
 
     /**
+     * @var TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * Constructor.
      *
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
     {
         $this->em = $em;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -38,20 +45,7 @@ class BasePersonType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('name', TextType::class)
-            ->add('primary_email', new PersonEmailType($builder->getData(), $this->em))
-            ->add('emails', CollectionType::class, [
-                'type'           => new PersonEmailType($builder->getData(), $this->em),
-                'allow_add'      => true,
-                'allow_delete'   => true,
-                'delete_empty'   => true,
-                'by_reference'   => false,
-                'error_bubbling' => false,
-            ])
-        ;
-
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncEmails']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
     /**
@@ -71,11 +65,34 @@ class BasePersonType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSyncEmails(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         /** @var Person $person */
-        $person = $event->getForm()->getData();
+        $form   = $event->getForm();
+        $person = $form->getData();
         $data   = $event->getData();
+
+        /** @var \Application\DeskPRO\Entity\Person $user */
+        $token = $this->tokenStorage->getToken();
+        $sessionPerson = $token ? $token->getUser() : null;
+
+        if ($sessionPerson instanceof Person
+            && $person instanceof Person
+            && (!$person->isAgent() || $sessionPerson->isAdmin() || $sessionPerson === $person)
+        ) {
+            $form
+                ->add('name', TextType::class)
+                ->add('primary_email', new PersonEmailType($person, $this->em))
+                ->add('emails', CollectionType::class, [
+                    'type'           => new PersonEmailType($person, $this->em),
+                    'allow_add'      => true,
+                    'allow_delete'   => true,
+                    'delete_empty'   => true,
+                    'by_reference'   => false,
+                    'error_bubbling' => false,
+                ])
+            ;
+        }
 
         if (!empty($data['primary_email'])) {
             if (!isset($data['emails'])) {

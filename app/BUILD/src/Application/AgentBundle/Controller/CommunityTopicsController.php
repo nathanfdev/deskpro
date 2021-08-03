@@ -14,6 +14,7 @@ use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\CustomFields\FieldDisplayArray;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommunityForum;
+use Application\DeskPRO\Entity\CommunityForumToStatus;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
@@ -226,8 +227,18 @@ class CommunityTopicsController extends AbstractController
         $relatedContent          = $relatedFinder->getRelatedEntities(true);
         $communityTopicRevisions = $communityTopic->getRevisions();
         $stickySearchWords       = $searchStickyResultRepository->getWordsForObject($communityTopic);
-        $activeStatusCategories  = $communityTopicStatusCategoryRepository->getActiveCategories($communityTopic->getBrand());
-        $closedStatusCategories  = $communityTopicStatusCategoryRepository->getClosedCategories($communityTopic->getBrand());
+
+        $activeStatusCategories = $communityTopicStatusCategoryRepository->getCategoriesForType(CommunityTopicStatusCategory::STATUS_ACTIVE,
+            $communityTopic->getBrand(), $forum->getId());
+
+        $communityForumStatusRepo = $this->em->getRepository(CommunityForumToStatus::class);
+        $activeStatusCategories   = $communityForumStatusRepo->getForumStatus($activeStatusCategories, $forum->getId());
+
+        $closedStatusCategories = $communityTopicStatusCategoryRepository->getCategoriesForType(CommunityTopicStatusCategory::STATUS_CLOSED,
+            $communityTopic->getBrand(), $forum->getId());
+
+        $closedStatusCategories = $communityForumStatusRepo->getForumStatus($closedStatusCategories, $forum->getId());
+
         $communityForums         = array_filter($CommunityChannelRepository->getInHierarchy(), function ($forum) use ($communityTopic) {
             return $communityTopic->getBrand() && $forum['brand_id'] === $communityTopic->getBrand()->getId();
         });
@@ -338,12 +349,23 @@ class CommunityTopicsController extends AbstractController
         ]);
     }
 
-    public function ajaxGetStatusesByForumAction($forum_id)
+    public function ajaxGetStatusesByForumAction($forum_id, $brand = null)
     {
         $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
-        $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategoriesByForum($forum_id);
-        $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategoriesByForum($forum_id);
+        $activeStatusCategories = $closedStatusCategories = [];
+
+        $communityForumStatusRepo = $this->em->getRepository(CommunityForumToStatus::class);
+
+        $activeStatusCategories = $communityTopicStatusCategoryRepository->getCategoriesForType(CommunityTopicStatusCategory::STATUS_ACTIVE,
+            $brand, $forum_id);
+
+        $activeStatusCategories = $communityForumStatusRepo->getForumStatus($activeStatusCategories, $forum_id);
+
+        $closedStatusCategories = $communityTopicStatusCategoryRepository->getCategoriesForType(CommunityTopicStatusCategory::STATUS_CLOSED,
+            $brand, $forum_id);
+
+        $closedStatusCategories = $communityForumStatusRepo->getForumStatus($closedStatusCategories, $forum_id);
 
         return $this->render('AgentBundle:Common:select-community-topic-status.html.twig', [
             'name'               => 'newcommunitytopic[status_code]',
@@ -1372,11 +1394,22 @@ class CommunityTopicsController extends AbstractController
         $CommunityChannelRepository             = $this->em->getRepository(CommunityForum::class);
         $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
-        $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($selectedBrandId);
-        $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($selectedBrandId);
         $communityForums        = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($forum) use ($selectedBrandId) {
             return $forum['brand_id'] === $selectedBrandId;
         });
+
+        $activeStatusCategories = $closedStatusCategories = [];
+
+        $communityForumStatusRepo = $this->em->getRepository(CommunityForumToStatus::class);
+
+        if (!empty($communityForums)) {
+            $renderedCommunityForum = current($communityForums);
+            $activeStatusCategories = $communityTopicStatusCategoryRepository->getCategoriesForType(CommunityTopicStatusCategory::STATUS_ACTIVE, $selectedBrandId, $renderedCommunityForum['id']);
+            $activeStatusCategories = $communityForumStatusRepo->getForumStatus($activeStatusCategories, $renderedCommunityForum['id']);
+
+            $closedStatusCategories = $communityTopicStatusCategoryRepository->getCategoriesForType(CommunityTopicStatusCategory::STATUS_CLOSED, $selectedBrandId, $renderedCommunityForum['id']);
+            $closedStatusCategories = $communityForumStatusRepo->getForumStatus($closedStatusCategories, $renderedCommunityForum['id']);
+        }
 
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();

@@ -26,6 +26,7 @@ use DeskPRO\Bundle\PortalBundle\Helper\ChildCommentHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
+use DeskPRO\Bundle\PortalBundle\Person\HelpdeskRegistrationDisabledException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use DeskPRO\Bundle\PortalBundle\SavedForm\FormSaver;
@@ -204,9 +205,10 @@ class CommentFormHandler
 
             $handleComment = $this->childCommentHelper->handleChildComment($comment);
 
-            if(!$handleComment instanceof CommentAbstract){
+            if (!$handleComment instanceof CommentAbstract) {
                 $this->addFlash($request, 'error', $handleComment->getMessage());
-              return new RedirectResponse($this->objectRouter->getPortalPath($content));
+
+                return new RedirectResponse($this->objectRouter->getPortalPath($content));
             }
 
             if ($person instanceof PersonGuest) {
@@ -320,6 +322,10 @@ class CommentFormHandler
             } else {
                 return $this->saver->saveFormForPersonLogin(SavedForm::TYPE_COMMENT, $person, $form, $request);
             }
+        } catch (HelpdeskRegistrationDisabledException $e) {
+            $this->addFlash($request, 'error', ['helpcenter.registration_closed', 'portal.registration_closed']);
+
+            return new RedirectResponse($this->objectRouter->getPortalPath($content));
         } catch (EmailValidationRequiredException $e) {
             $this->informAntiAbuse($person, $request, $content);
 
@@ -332,6 +338,10 @@ class CommentFormHandler
             );
             $this->portalValidation->sendVerificationEmail(PortalValidation::COMMENT, $saved_form);
             $this->addFlash($request, 'success', ['portal.flashes.guest_content_must_verify', 'helpcenter.flashes.guest_content_must_verify']);
+
+            return new RedirectResponse($this->objectRouter->getPortalPath($content));
+        } catch (\Exception $e) {
+            $this->addFlash($request, 'error', ['helpcenter.error_occured', 'portal.error_occured']);
 
             return new RedirectResponse($this->objectRouter->getPortalPath($content));
         }
@@ -404,7 +414,7 @@ class CommentFormHandler
      */
     protected function addFlash(Request $request, $type, $phrase)
     {
-        $request->getSession()->getFlashBag()->add($type, (is_array($phrase)) ?  $this->phrase($phrase) : $phrase);
+        $request->getSession()->getFlashBag()->add($type, (is_array($phrase)) ? $this->phrase($phrase) : $phrase);
     }
 
     /**

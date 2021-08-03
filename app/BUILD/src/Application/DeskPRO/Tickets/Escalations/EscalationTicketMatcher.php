@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\TicketSearchActive;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\TicketSearch;
+use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use DeskPRO\Component\Util\DebugUtils;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\ORM\EntityManager;
@@ -74,18 +75,26 @@ class EscalationTicketMatcher
         $this->logger->debug(sprintf('[EscalationTicketMatcher] Getting matches for %d %s -- limit(%d)', $esc->id, $esc->title, $limit));
 
         $ms_start = microtime(true);
-
         $searcher = $this->_getSearcherForEscalation($esc);
         $searcher->setLimit($limit);
 
         $this->logger->debug(sprintf('[EscalationTicketMatcher] --> SQL: %s', $searcher->getSql()));
         $ticket_ids = $searcher->getMatches();
+
         $tickets    = [];
         if ($ticket_ids) {
-            $tickets = $this->em->getRepository(Ticket::class)->getByIds($ticket_ids);
+            $tickets         = $this->em->getRepository(Ticket::class)->getByIds($ticket_ids);
+            $ticketSubStatus = $searcher->getTicketSubStatuses();
+            if (empty($ticketSubStatus)) {
+                foreach ($tickets as $key => $ticket) {
+                    if (!$ticket->getTicketStatus() instanceof VirtualTicketStatus) {
+                        unset($tickets[$key]);
+                    }
+                }
+            }
         }
-        if ($ticket_ids) {
-            $this->logger->debug(sprintf('[EscalationTicketMatcher] --> TicketIDs: %s', implode(', ', $ticket_ids)));
+        if (!empty($tickets)) {
+            $this->logger->debug(sprintf('[EscalationTicketMatcher] --> TicketIDs: %s', implode(', ', array_keys($tickets))));
         }
         $this->logger->debug(sprintf('[EscalationTicketMatcher] --> Number of results: %d', count($tickets)));
         $this->logger->debug(sprintf('[EscalationTicketMatcher] --> Took %.4fs', microtime(true) - $ms_start));

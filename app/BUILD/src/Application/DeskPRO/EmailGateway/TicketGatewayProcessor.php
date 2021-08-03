@@ -390,9 +390,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                             $self      = $this;
                             $viewModel = $this->container->get('brand_stack')->pushTemporary(
                                 $person->getBrands()->first(),
-                                function () use ($self, $ticket) {
+                                function () use ($self, $ticket, $emailTo) {
                                     return $self->container->get('email.user_viewmodel_factory')
-                                        ->createNewReplyRejectResolvedModel($ticket);
+                                        ->createNewReplyRejectResolvedModel($ticket, $emailTo);
                                 }
                             );
                             $this->container->get('mailer.utils')->sendModelWithPersonContext(
@@ -553,7 +553,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if (!$person->disable_autoresponses) {
             if ($returnPath = $this->reader->getHeader('Return-Path')) {
-                if ($returnPath->getHeader() == '<>' && $this->container->getSetting('core_email.mark_null_returnpath_as_autoresponder', true)) {
+                if ($returnPath->getHeader() == '<>' && $this->container->getSetting('core_email.mark_null_returnpath_as_autoresponder')) {
                     $this->logMessage('Null return path, disabling auto-responses for this user');
                     $person->setDisableAutoresponses(
                         true,

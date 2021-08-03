@@ -60,7 +60,7 @@ class GuideController extends AbstractCategoriesController
     public function getTreeAction(Guide $guide)
     {
         $results = $this->getManager()->getConnection()->fetchAllKeyed('
-                SELECT t.id, t.title, IFNULL(t.parent_id, 0) as parent_id, status, hidden_status
+                SELECT t.id, t.title, IFNULL(t.parent_id, 0) as parent_id, status, hidden_status, no_content
                 FROM topics t
                 WHERE t.guide_id = ?
                 ORDER BY display_order ASC

@@ -106,7 +106,9 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
                 // check if user has this brand
                 $brand = $this->container->get('brand_stack')->getActive()->getBrand();
-                if ($brand && !$person->hasBrand($brand)) {
+
+                $impersonationMode = $request->getSession() && $request->getSession()->has('is_impersonating');
+                if (!$impersonationMode && ($brand && !$person->hasBrand($brand))) {
                     $person->addBrand($brand);
 
                     $em = $this->container->get('doctrine.orm.default_entity_manager');

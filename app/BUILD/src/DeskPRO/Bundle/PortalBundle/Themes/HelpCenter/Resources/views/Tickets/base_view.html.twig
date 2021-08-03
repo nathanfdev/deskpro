@@ -246,7 +246,11 @@
                 {% elseif property.isLinkify %}
                     <dd>{{ propValue|safe_link_urls }}</dd>
                 {% elseif property.type == 'date' %}
-                    <dd>{{ propValue|date('day') }}</dd>
+                    {% if property.metaData.ignore_timezone is defined and property.metaData.ignore_timezone == true %}
+                        <dd>{{   propValue|date('day', 'UTC') }}</dd>
+                    {% else %}
+                        <dd>{{ propValue|date('day') }}</dd>
+                    {% endif %}
                 {% else %}
                     <dd>{{ propValue }}</dd>
                 {% endif %}

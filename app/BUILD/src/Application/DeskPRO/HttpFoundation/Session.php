@@ -6,6 +6,7 @@ namespace Application\DeskPRO\HttpFoundation;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Orb\Util\Web;
 
 /**
  * Session is able to load up a user, their language etc.
@@ -80,13 +81,13 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 if ($sid) {
                     if (App::getSetting('core.session_keepalive_require_page')) {
                         $agent_session = App::getDb()->fetchAssoc('
-                            SELECT person_id, auth
+                            SELECT person_id, auth, data
                             FROM sessions
                             WHERE id = ? AND date_last > ? AND date_last_page > ?
                         ', [$sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')), date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))]);
                     } else {
                         $agent_session = App::getDb()->fetchAssoc('
-                            SELECT person_id, auth
+                            SELECT person_id, auth, data
                             FROM sessions
                             WHERE id = ? AND date_last > ?
                         ', [$sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))]);
@@ -98,6 +99,18 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                         $person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id']);
                         if ($person && $person->is_agent) {
                             $this->_setCurrentPerson($person);
+
+                            try {
+                                $agentSessionData = Web::unserializeSesisonData($agent_session['data']);
+
+                                if (isset($agentSessionData['_sf2_attributes']['auth_usersource_id'])) {
+                                    $this->set('auth_usersource_id', $agentSessionData['_sf2_attributes']['auth_usersource_id']);
+                                }
+                                if (isset($agentSessionData['_sf2_attributes']['auth_usersource_type'])) {
+                                    $this->set('auth_usersource_type', $agentSessionData['_sf2_attributes']['auth_usersource_type']);
+                                }
+                            } catch (\Exception $e) {
+                            }
                         }
                     }
                 }
