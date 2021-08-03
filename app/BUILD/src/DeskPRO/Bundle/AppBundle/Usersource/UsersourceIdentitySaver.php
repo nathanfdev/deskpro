@@ -84,7 +84,7 @@ class UsersourceIdentitySaver
      */
     private function getTmpByAuth($auth)
     {
-        return $this->tmpDataRepo()->findOneBy(['auth' => $auth]);
+        return $this->tmpDataRepo()->findOneBy(['auth' => $auth], ['id' => 'DESC']);
     }
 
     /**
