@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Service\CheckWhitelistedIP;
@@ -22,10 +20,29 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         parent::init();
 
         $this->person = $this->session->getPerson();
+        $input        = $this->request->request->all();
+        $xssCleaner   = $this->cleaner->getCleaner('basic_xss')->getXssCleaner();
+        foreach ($input as $k => &$v) {
+            $v = $this->doBasicXssClean($v, $xssCleaner);
+            $this->request->request->set($k, $v);
+        }
 
         if (!$this->person->id) {
             $cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
             $cas->process();
+        }
+    }
+
+    protected function doBasicXssClean($value, $xssCleaner)
+    {
+        if (is_array($value)) {
+            foreach ($value as &$val) {
+                $val = $this->doBasicXssClean($val, $xssCleaner);
+            }
+
+            return $value;
+        } else {
+            return $xssCleaner->xss_clean($value);
         }
     }
 
