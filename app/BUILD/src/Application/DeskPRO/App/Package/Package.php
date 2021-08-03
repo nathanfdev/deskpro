@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\App\Package;
 
 use Application\DeskPRO\Entity\AppPackage;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Symfony\Component\Finder\Finder;
 
 class Package
@@ -94,7 +95,7 @@ class Package
     public function getIconFilePath($size)
     {
         $path = $this->path.'/res/icons/app_'.$size.'.png';
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, $this->path)) {
             return;
         }
 
@@ -107,7 +108,7 @@ class Package
     public function getReadmeFilePath()
     {
         $path = $this->path.'/README';
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, $this->path)) {
             return;
         }
 
@@ -120,7 +121,7 @@ class Package
     public function getAppJsFilePath()
     {
         $path = $this->path.'/app.js';
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, $this->path)) {
             return;
         }
 
@@ -133,7 +134,7 @@ class Package
     public function getModuleJsFilePath()
     {
         $path = $this->path.'/module.js';
-        if (!file_exists($path)) {
+        if (!SafeFile::file_exists($path, $this->path)) {
             return;
         }
 
@@ -180,10 +181,10 @@ class Package
     private function readAssetPath($path_name)
     {
         $assets   = [];
-        $path     = @realpath($this->path.'/'.$path_name);
+        $path     = SafeFile::realpath($this->path.'/'.$path_name, $this->path);
         $path_std = str_replace('\\', '/', $path);
 
-        if (!$path || !is_dir($path)) {
+        if (!$path || !SafeFile::is_dir($path, $this->path)) {
             return [];
         }
 

@@ -58,7 +58,7 @@ class TemplateFile extends Template
      */
     public function exists()
     {
-        return file_exists($this->file_path);
+        return SafeFile::file_exists($this->file_path, DP_ROOT.'/src');
     }
 
     /**

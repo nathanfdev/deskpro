@@ -76,6 +76,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -6065,13 +6066,7 @@ class TicketController extends AbstractController
 
         $ticket = $this->getTicketOr404($ticket_id);
 
-        $tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'ticket-debug-'.$ticket->id.'_'.date(
-                'YmdHis'
-            ).'_'.DpStrings::random(4, Strings::CHARS_ALPHANUM_IU);
-        if (!mkdir($tmpdir, 0777, true)) {
-            echo 'Could not create temp dir: '.$tmpdir;
-            exit;
-        }
+        $tmpdir = TmpDir::makeTmpDir();
 
         $emailSettings = new EmailAccountsSettings($this->get('deskpro.core.settings'));
         file_put_contents($tmpdir.'/email_accounts_settings.json', json_encode($emailSettings->toArray()));
@@ -6269,8 +6264,6 @@ CSS;
         fclose($fp);
 
         unlink($outfile);
-        $fs = new Filesystem();
-        $fs->remove($tmpdir);
         exit;
     }
 

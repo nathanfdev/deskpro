@@ -13,6 +13,7 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\TmpData;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Symfony\Component\Process\Process;
 
 /**
@@ -41,10 +42,7 @@ class CsvExport extends AbstractJob
         $enclosure  = '"';
 
         if (!$file) {
-            if (!is_dir(dp_get_tmp_dir().'/export')) {
-                mkdir(dp_get_tmp_dir().'/export');
-            }
-            $file = dp_get_tmp_dir().'/export/DP-export-'.date('Ymd-His').'.csv';
+            $file = TmpDir::makeTmpFile();
         }
 
         $this->getContactDataHeaders();

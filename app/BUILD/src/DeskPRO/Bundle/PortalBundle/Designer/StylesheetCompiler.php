@@ -6,6 +6,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\SassCompiler\Compiler\ScssPhpCompiler;
 use DeskPRO\Component\SassCompiler\SassProject;
 
@@ -36,7 +37,7 @@ class StylesheetCompiler
         // Can't simply set source file and need to retrieve source as string to hack it so that scssphp can compile
         $sourceFile = realpath($style_path);
         $sourceDir  = dirname($sourceFile);
-        $source     = file_get_contents($sourceFile);
+        $source     = SafeFile::file_get_contents($sourceFile, SafeFile::UNSPECIFIED);
         $source     = $this->hackScss($source, $sourceDir, $variables);
         $project->addIncludePath($sourceDir);
         $project->addIncludePath(DP_WEB_ROOT.'/pub/src');

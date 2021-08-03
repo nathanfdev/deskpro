@@ -4,6 +4,7 @@ namespace DeskPRO\Component\Pdf;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,7 +56,7 @@ class mPdfRenderer implements PdfRendererInterface
             'margin_header'              => 10,
             'margin_footer'              => 10,
             'orientation'                => 'P',
-            'tempDir'                    => $appEnv->getUserTmpDir(),
+            'tempDir'                    => TmpDir::makeTmpDir(),
             'curlAllowUnsafeSslRequests' => true,
             // set two below options to properly set fonts for CJK languages
             // https://mpdf.github.io/fonts-languages/choosing-a-configuration-v7-x.html#3-languagesscripts-which-require-special-fonts

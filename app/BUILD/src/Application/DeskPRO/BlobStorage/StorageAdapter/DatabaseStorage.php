@@ -4,6 +4,7 @@ namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
 use Application\DeskPRO\BlobStorage\BlobStorageException;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Numbers;
 
 class DatabaseStorage extends AbstractStorageAdapter
@@ -178,7 +179,7 @@ class DatabaseStorage extends AbstractStorageAdapter
      */
     public function writeBlobFromFile(Blob $blob, $sourcePath)
     {
-        return $this->writeBlobString($blob, file_get_contents($sourcePath));
+        return $this->writeBlobString($blob, SafeFile::file_get_contents($sourcePath, SafeFile::UNSPECIFIED));
     }
 
     /**
@@ -222,7 +223,7 @@ class DatabaseStorage extends AbstractStorageAdapter
      */
     public function readBlobToFile(Blob $blob, $targetPath)
     {
-        return file_put_contents($targetPath, $this->readBlobString($blob));
+        return SafeFile::file_put_contents($targetPath, $this->readBlobString($blob), SafeFile::UNSPECIFIED);
     }
 
     /**

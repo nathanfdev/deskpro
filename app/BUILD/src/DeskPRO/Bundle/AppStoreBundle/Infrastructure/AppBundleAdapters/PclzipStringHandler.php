@@ -2,6 +2,9 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters;
 
+use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Filesystem\TmpDir;
+
 class PclzipStringHandler
 {
     public function read( \PclZip $from, array $fileEntry)
@@ -15,12 +18,11 @@ class PclzipStringHandler
         $from->extractByIndex($fileEntry['index'], $tmpPath);
 
 
-        if (is_dir($filename)) {
+        if (SafeFile::is_dir($filename, $tmpPath)) {
             throw new \DomainException('extracted entry is a folder not a file');
         }
 
-        $contents = file_get_contents($filename);
-        $this->removeDir($tmpPath);
+        $contents = SafeFile::file_get_contents($filename, $tmpPath);
         return $contents;
     }
 
@@ -36,26 +38,11 @@ class PclzipStringHandler
 
         $contentDir = pathinfo($actualPath, PATHINFO_DIRNAME);
         if ($contentDir !== $tempDir) {
-            mkdir($contentDir, 0777, true);
+            SafeFile::mkdir($content, $tempDir, 0777, true);
         }
 
-        file_put_contents($actualPath, $content);
+        SafeFile::file_put_contents($actualPath, $content, $tempDir);
         $into->add($actualPath, "", $tempDir);
-        $this->removeDir($tempDir);
-    }
-
-    private function removeDir($dir)
-    {
-        $files = array_diff(scandir($dir), array('.','..'));
-        foreach ($files as $file) {
-            $path = $dir . DIRECTORY_SEPARATOR. $file;
-            if (is_dir($path)) {
-                $this->removeDir($path);
-            } else {
-                unlink($path);
-            }
-        }
-        return rmdir($dir);
     }
 
     /**
@@ -63,14 +50,6 @@ class PclzipStringHandler
      */
     private function createTempDir()
     {
-        $tmpFile = tempnam(sys_get_temp_dir(),'');
-        if (file_exists($tmpFile)) {
-            unlink($tmpFile);
-        }
-        mkdir($tmpFile);
-        if (is_dir($tmpFile)) {
-            return $tmpFile;
-        }
-        return null;
+        return TmpDir::makeTmpDir();
     }
 }

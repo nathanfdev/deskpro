@@ -142,6 +142,8 @@ class PackageInstaller
                 }
             }
 
+            SafeFile::assertValid($largest[0], SafeFile::UNSPECIFIED);
+
             $image = $this->imagine->open($largest[0]);
             $image->resize(new ImageBox($size, $size));
 
@@ -309,12 +311,12 @@ class PackageInstaller
     {
         SafeFile::assertValid($asset_info['real_path'], SafeFile::UNSPECIFIED);
 
-        $content = file_get_contents($asset_info['real_path']);
+        $content = SafeFile::file_get_contents($asset_info['real_path'], SafeFile::UNSPECIFIED);
         $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($package) {
             $path = @realpath($package->getPath().'/html/'.$m[1]);
             $path_std = str_replace('\\', '/', $path);
 
-            if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
+            if (!$path || !SafeFile::is_file($path, SafeFile::UNSPECIFIED) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
                 return '<!-- Invalid include file: '.$m[1].' -->';
             }
 
@@ -396,7 +398,11 @@ class PackageInstaller
 
     public function dumpPackage(AppPackage $package, $path)
     {
-        file_put_contents($path.'/manifest.json', json_encode($package->getManifest()));
+        SafeFile::file_put_contents(
+            $path.'/manifest.json',
+            json_encode($package->getManifest()),
+            $path
+        );
 
         foreach ($package->assets as $asset) {
             $parts = explode('.', $asset->tag);
@@ -424,8 +430,8 @@ class PackageInstaller
             SafeFile::assertValid($filename, $path);
 
             $dir = pathinfo($filename, PATHINFO_DIRNAME);
-            if (!file_exists($dir)) {
-                mkdir($dir, 0777, true);
+            if (!SafeFile::file_exists($dir, $path)) {
+                SafeFile::mkdir($dir, $path, 0755, true);
             }
             $this->blob_storage->copyBlobRecordToFile($filename, $asset->blob);
         }

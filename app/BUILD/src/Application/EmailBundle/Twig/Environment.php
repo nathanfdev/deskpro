@@ -9,6 +9,7 @@ namespace Application\EmailBundle\Twig;
 use Application\DeskPRO\Twig\FilesystemCache;
 use Application\EmailBundle\Twig\Extension\TemplatingExtension;
 use Application\EmailBundle\Twig\Loader\HybridLoader;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DpSys\LowError\SystemErrorHandler;
 use Twig\Cache\CacheInterface;
 use Application\DeskPRO\Templating\TemplateUtils;
@@ -166,7 +167,7 @@ class Environment extends \Twig_Environment
                     $tplinfo = \Application\DeskPRO\Twig\Loader\DbStreamWrapper::getTemplateInfo(str_replace('dptpl://load/', '', $cache));
                     eval('?>'.$tplinfo['template_compiled']);
                 } else {
-                    if (!is_file($cache) || ($this->isAutoReload() && !$this->isTemplateFresh($name, filemtime($cache)))) {
+                    if (!SafeFile::is_file($cache, SafeFile::UNSPECIFIED) || ($this->isAutoReload() && !$this->isTemplateFresh($name, SafeFile::filemtime($cache, SafeFile::UNSPECIFIED)))) {
                         $fallback = false;
                         $e        = null;
                         try {

@@ -8,6 +8,8 @@
 
 namespace Application\DeskPRO\ResourceScanner;
 
+use DeskPRO\Component\Filesystem\SafeFile;
+
 /**
  * Scans the filesystem for an array of all templates.
  *
@@ -35,7 +37,7 @@ class TemplateFiles
     {
         $map_file_path = DP_ROOT.'/sys/config/template-map.php';
 
-        if (!$this->use_map_file || !is_file($map_file_path)) {
+        if (!$this->use_map_file || !SafeFile::is_file($map_file_path, DP_ROOT)) {
             return $this->genTemplateMap();
         }
 

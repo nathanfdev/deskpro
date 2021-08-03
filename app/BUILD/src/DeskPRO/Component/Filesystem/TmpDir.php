@@ -7,6 +7,8 @@
 namespace DeskPRO\Component\Filesystem;
 
 use DeskPRO\Component\Util\RandUtils;
+use DpSys\LowError\SystemErrorHandler;
+use Symfony\Component\Filesystem\Filesystem;
 
 class TmpDir
 {
@@ -16,46 +18,105 @@ class TmpDir
     private $path;
 
     /**
-     * Create a tmp dir and return the path.
+     * @var bool
+     */
+    private $isInit = false;
+
+    /**
+     * A shared tmp dir for the current process. This is a small performance
+     * thing; random uses of temp files (e.g. tempName) can use the same
+     * dir and we can avoid lots of io.
      *
-     * @param $base_path
+     * @return TmpDir
+     */
+    public static function getSharedTempNameDir()
+    {
+        static $tmpdir;
+
+        if (!$tmpdir) {
+            $tmpdir = new self(false);
+        }
+
+        return $tmpdir;
+    }
+
+    /**
+     * Create a tmp dir and return the path.
      *
      * @return string
      */
-    public static function makeTmpDir($base_path)
+    public static function makeTmpDir()
     {
-        $tmp = new self($base_path);
+        $tmp = new self();
 
         return $tmp->getPath();
     }
 
     /**
-     * @param string|null $base_path
+     * Create a new tmp file name
+     *
+     * @param string $ext Optionally specify a file ext
+     * @return string
      */
-    public function __construct($base_path = null)
+    public static function makeTmpFile($ext = null)
     {
-        if (!$base_path) {
-            $base_path = sys_get_temp_dir();
-        }
+        return self::getSharedTempNameDir()->tempName($ext);
+    }
 
-        $base_path = @realpath($base_path);
+    /**
+     * @return string
+     */
+    public static function getSysTempDir()
+    {
+        return realpath(sys_get_temp_dir());
+    }
 
-        if (!$base_path || !is_writable($base_path)) {
-            throw new \RuntimeException("Base tmp dir is not writable: $base_path");
-        }
-
+    /**
+     * @param bool $initNow True to create the directory immediately, false will wait until a method is called
+     */
+    public function __construct($initNow = true)
+    {
         do {
-            $path = $base_path.DIRECTORY_SEPARATOR.'tmp_'.date('YmdHis').'_'.RandUtils::randomString(10, 'alpha_iu');
+            $path = self::getSysTempDir().DIRECTORY_SEPARATOR.'tmp_'.time().'_'.RandUtils::randomString(25, 'alpha_iu');
         } while (file_exists($path));
-
-        @mkdir($path);
-        if (!is_dir($path)) {
-            throw new \RuntimeException('Could not create tmp dir: '.$path.' ('.error_get_last().')');
-        }
 
         $this->path = $path;
 
-        register_shutdown_function([$this, 'cleanup']);
+        if ($initNow) {
+            $this->initNow();
+        }
+
+//        register_shutdown_function([$this, 'cleanup']);
+    }
+
+    private function initNow()
+    {
+        if ($this->isInit) {
+            return;
+        }
+
+        $this->isInit = true;
+
+        @mkdir($this->path, 0700, true);
+        if (!is_dir($this->path)) {
+            throw new \RuntimeException('Could not create tmp dir ('.error_get_last().')');
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function tempName($ext)
+    {
+        $this->initNow();
+
+        $tmp = new self();
+        $name = uniqid('f', true);
+        $path = $tmp->getPath() . DIRECTORY_SEPARATOR . $name . ($ext ? '.'.$ext : '');
+        @touch($path);
+        @chmod($path, 0600);
+
+        return $path;
     }
 
     /**
@@ -67,19 +128,15 @@ class TmpDir
             return;
         }
 
-        $rm = function ($files) use (&$rm) {
-            foreach ($files as $p) {
-                if (is_dir($p) && !is_link($p)) {
-                    $rm(new \FilesystemIterator($p));
-                    @rmdir($p);
-                } else {
-                    @unlink($p);
-                }
-            }
-        };
-        if (is_dir($this->path)) {
-            $rm(new \FilesystemIterator($this->path));
-            @rmdir($this->path);
+        $fs = new Filesystem();
+
+        try {
+            $fs->remove($this->path);
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+
+            // fallback to just making it unreadable
+            @chmod($this->path, 0);
         }
 
         $this->path = null;
@@ -90,6 +147,8 @@ class TmpDir
      */
     public function getPath()
     {
+        $this->initNow();
+
         return $this->path;
     }
 }

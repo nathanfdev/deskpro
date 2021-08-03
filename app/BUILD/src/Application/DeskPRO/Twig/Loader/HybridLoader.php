@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Twig\Loader;
 
 use Application\DeskPRO\App;
+use DeskPRO\Component\Filesystem\SafeFile;
 
 /**
  * This hybrid loader loads templates from the filesystem first, and then from the
@@ -85,7 +86,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
             );
         }
 
-        $source = file_get_contents($this->findTemplate($name));
+        $source = SafeFile::file_get_contents($this->findTemplate($name), DP_ROOT);
 
         if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'EmailBundle:') !== false) {
             $proc   = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();

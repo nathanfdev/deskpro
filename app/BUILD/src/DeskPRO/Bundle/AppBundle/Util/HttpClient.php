@@ -47,23 +47,6 @@ class HttpClient extends Client
 
         $handler = isset($config['handler']) ? $config['handler'] : HandlerStack::create();
 
-        // this forces http/https protocols
-        // this shouldnt actually be necessary because guzzle sets CURLOPT_PROTOCOLS,
-        // but we're double-checking here as a precaution
-        if (method_exists($handler, 'push')) {
-            $handler->push(function (callable $handler) {
-                return function (RequestInterface $request, array $options) use ($handler) {
-                    $scheme = $request->getUri()->getScheme();
-                    if ($scheme !== 'http' && $scheme !== 'https') {
-                        throw new \InvalidArgumentException('unsupported scheme');
-                    }
-
-                    return $handler($request, $options);
-                };
-            }
-            );
-        }
-
         $config['handler'] = $handler;
 
         parent::__construct($config);

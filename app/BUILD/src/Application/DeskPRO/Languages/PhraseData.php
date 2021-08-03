@@ -16,6 +16,7 @@ use Application\DeskPRO\Products\Products;
 use Application\DeskPRO\Tickets\TicketCategories;
 use Application\DeskPRO\Tickets\TicketPriorities;
 use Application\DeskPRO\Tickets\TicketWorkflows;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\MapUtils;
 use Symfony\Component\Yaml\Yaml;
 
@@ -713,10 +714,10 @@ class PhraseData
             .DIRECTORY_SEPARATOR
             .self::$groupFileMap[$parts[0]];
 
-        if (file_exists("$path.php")) {
+        if (SafeFile::file_exists("$path.php", $this->lang_dir)) {
             $phrases = require "$path.php";
-        } elseif (file_exists("$path.yml")) {
-            $phrases = MapUtils::flattenKeys(Yaml::parse(file_get_contents("$path.yml")));
+        } elseif (SafeFile::file_exists("$path.yml", $this->lang_dir)) {
+            $phrases = MapUtils::flattenKeys(Yaml::parse(SafeFile::file_get_contents("$path.yml", $this->lang_dir)));
         } else {
             return [];
         }

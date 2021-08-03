@@ -7,6 +7,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Component\Filesystem\SafeFile;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,7 +66,7 @@ class EmailAccountsController extends CrudController
         $certificate = $request->files->get('cert');
         $key         = $request->files->get('key');
         $passPhrase  = $request->get('pass_phrase');
-        $certString  = file_get_contents($certificate->getPathname());
+        $certString  = SafeFile::file_get_contents($certificate->getPathname(), SafeFile::UNSPECIFIED);
 
         $info = openssl_x509_parse($certString);
         if (!$info) {

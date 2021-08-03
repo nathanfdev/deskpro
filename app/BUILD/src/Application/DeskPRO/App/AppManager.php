@@ -12,6 +12,7 @@ use Application\DeskPRO\App\Native\NativeApp;
 use Application\DeskPRO\App\Native\NativePackageConfig;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
+use DeskPRO\Component\Filesystem\SafeFile;
 
 class AppManager implements AppManagerInterface
 {
@@ -357,7 +358,7 @@ class AppManager implements AppManagerInterface
         if ($check_exists) {
             foreach ($this->app_paths as $path) {
                 $p = $path.'/'.$app_name;
-                if (file_exists($p)) {
+                if (SafeFile::file_exists($p, $path)) {
                     return $p;
                 }
             }

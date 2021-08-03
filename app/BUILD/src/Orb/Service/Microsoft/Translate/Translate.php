@@ -337,6 +337,7 @@ class Translate
         $this->oauth_http_client = new Client([
             'base_uri'             => self::OAUTH_AUTH,
             RequestOptions::VERIFY => false,
+            RequestOptions::TIMEOUT => 3,
         ]);
 
         return $this->oauth_http_client;
@@ -368,6 +369,7 @@ class Translate
             'base_uri'              => self::API_URL,
             'handler'               => $stack,
             RequestOptions::VERIFY  => false,
+            RequestOptions::TIMEOUT  => 5,
             RequestOptions::HEADERS => [
                 'Authorization' => 'Bearer '.$this->getAccessToken(),
                 'Content-Type'  => 'application/json',

@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 
@@ -65,13 +66,10 @@ class LegacyThemeHandler
      */
     public function refreshLegacyTemplatesBackup()
     {
-        $tmpDir = $this->appEnv->getUserTmpDir().DIRECTORY_SEPARATOR.uniqid('dpd', true);
-        if (!mkdir($tmpDir, 0777, true)) {
-            throw new \RuntimeException('Unable to make a tmp dir');
-        }
+        $tmpDir = TmpDir::makeTmpDir();
 
         $templatesDir = $tmpDir.DIRECTORY_SEPARATOR.'deskpro-templates';
-        if (!is_dir($templatesDir) && !mkdir($templatesDir, 0777, true)) {
+        if (!is_dir($templatesDir) && !mkdir($templatesDir, 0600, true)) {
             throw new \RuntimeException('Unable to make the templates dir');
         }
 

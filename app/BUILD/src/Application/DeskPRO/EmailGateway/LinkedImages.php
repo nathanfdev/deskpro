@@ -4,6 +4,8 @@ namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DeskPRO\Component\Util\IpUtils;
 use DpSys\LowError\SystemErrorHandler;
 use GuzzleHttp\RequestOptions;
@@ -46,7 +48,6 @@ class LinkedImages
 
         static $cache;
         $m      = null;
-        $tmpDir = App::$container->get('deskpro.app_env')->getUserTmpDir();
         $client = new HttpClient([
             RequestOptions::ALLOW_REDIRECTS => true,
             RequestOptions::CONNECT_TIMEOUT => 4,
@@ -70,8 +71,8 @@ class LinkedImages
                     if (isset($cache[$src])) {
                         $body = str_replace($match[0], $cache[$src], $body);
                     } else {
-                        $tmpFile  = $tmpDir.'/email-image-'.mt_rand(1000, 9999);
-                        $resource = fopen($tmpFile, 'w');
+                        $tmpFile  = TmpDir::makeTmpFile();
+                        $resource = SafeFile::fopen($tmpFile, 'w', TmpDir::getSysTempDir());
                         $errors   = [];
 
                         try {
@@ -97,13 +98,13 @@ class LinkedImages
                             continue;
                         }
                         @fclose($resource);
-                        if (!file_exists($tmpFile)) {
+                        if (!SafeFile::file_exists($tmpFile, TmpDir::getSysTempDir())) {
                             continue;
                         }
-                        $imageSize = filesize($tmpFile);
+                        $imageSize = SafeFile::filesize($tmpFile, TmpDir::getSysTempDir());
                         // We don't import images over 10 MB and more than 25MB of images in total
                         if ($imageSize > $maxImageSize || $totalImageSize + $imageSize > $maxTotalSize) {
-                            unlink($tmpFile);
+                            SafeFile::unlink($tmpFile, TmpDir::getSysTempDir());
                             $tag  = "<a href=\"$src\" target=\"_blank\">$src</a>";
                             $body = str_replace($match[0], $tag, $body);
 
@@ -113,14 +114,14 @@ class LinkedImages
                         if (function_exists('exif_imagetype')) {
                             if (!$type = @exif_imagetype($tmpFile)) {
                                 // The downloaded file is not an image
-                                unlink($tmpFile);
+                                SafeFile::unlink($tmpFile, TmpDir::getSysTempDir());
 
                                 continue;
                             }
                         } else {
                             if (!$size = @getimagesize($tmpFile)) {
                                 // The downloaded file is not an image
-                                unlink($tmpFile);
+                                SafeFile::unlink($tmpFile, TmpDir::getSysTempDir());
 
                                 continue;
                             }
@@ -133,7 +134,7 @@ class LinkedImages
                             $name[0],
                             $name[1]
                         );
-                        unlink($tmpFile);
+                        SafeFile::unlink($tmpFile, TmpDir::getSysTempDir());
                         $tag         = '[attach:image:'.$blob->getAuthcode().':'.$name[0].']';
                         $body        = str_replace($match[0], $tag, $body);
                         $cache[$src] = $tag;

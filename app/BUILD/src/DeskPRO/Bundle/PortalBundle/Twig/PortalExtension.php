@@ -1005,7 +1005,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
                 $basePath = $DP_ENV->getAppWwwAssetDir().'/web';
                 $file     = $basePath.'/'.$path;
 
-                if (file_exists($file)) {
+                if (SafeFile::file_exists($file, $basePath)) {
                     $data = SafeFile::fileGetContents($file, $basePath);
                 } else {
                     $data = '';

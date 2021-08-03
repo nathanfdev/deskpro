@@ -374,8 +374,8 @@ class MiscController extends AbstractController
             $path = preg_replace('#^dp_file:icons:(\.\./){4}#', DP_WEB_ROOT.'/web/', $path);
             $path = preg_replace('#^dp_file:icons:/?ASSET_DIR#', DP_WEB_ROOT.'/web/', $path);
             $path = str_replace('\\', '/', $path);
-            $path = realpath($path);
-            if (!$path || !is_file($path) || strpos($path, DP_WEB_ROOT) !== 0 || Strings::getExtension($path) != 'png') {
+            $path = SafeFile::realpath($path, DP_WEB_ROOT);
+            if (!$path || !SafeFile::is_file($path, DP_WEB_ROOT) || strpos($path, DP_WEB_ROOT) !== 0 || Strings::getExtension($path) != 'png') {
                 throw $this->createNotFoundException();
             }
 

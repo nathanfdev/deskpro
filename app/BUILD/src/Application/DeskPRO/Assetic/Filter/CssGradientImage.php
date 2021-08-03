@@ -30,46 +30,7 @@ class CssGradientImage implements FilterInterface
 
     public function filterLoad(AssetInterface $asset)
     {
-        if ($this->options->get('ignore')) {
-            return;
-        }
 
-        $save_dir = realpath($asset->getSourceRoot().'/../').'/images/gradients';
-        if (!is_dir($save_dir)) {
-            mkdir($save_dir, 0755, true);
-        }
-
-        $lines = explode("\n", $asset->getContent());
-        foreach ($lines as &$l) {
-            $m = null;
-            if (!preg_match('#/\*gradient_(h|v):([0-9]+)(?:px)?:(.*?):(.*?)\*/#', $l, $m)) {
-                continue;
-            }
-
-            $direction       = $m[1] == 'v' ? 'vertical' : 'horizontal';
-            $size            = $m[2];
-            $start_color     = $m[3];
-            $end_color       = $m[4];
-            $start_color_rgb = self::normalizeColorToRgbString($start_color);
-            $end_color_rgb   = self::normalizeColorToRgbString($end_color);
-
-            $desc = implode('-', $start_color_rgb).'_'.implode('-', $end_color_rgb).'_'.$direction.'_'.$size.'.png';
-            $path = $save_dir.'/'.$desc;
-
-            if (!is_file($path)) {
-                $im = ImageUtil::getGradientImage($size, $start_color_rgb, $end_color_rgb, $direction);
-                imagepng($im, $path);
-            }
-
-            $l = preg_replace(
-                '#url\("?(.*?)"?\)#',
-                'url(../images/gradients/'.$desc.')',
-                $l
-            );
-        }
-
-        $lines = implode("\n", $lines);
-        $asset->setContent($lines);
     }
 
     public static function normalizeColorToRgbString($color)

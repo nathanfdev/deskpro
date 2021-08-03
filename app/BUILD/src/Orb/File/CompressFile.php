@@ -35,6 +35,13 @@ class CompressFile
         $this->file_contents = $file_contents;
     }
 
+    public function __destruct()
+    {
+        if ($this->tmpfile) {
+            @unlink($this->tmpfile);
+        }
+    }
+
     /**
      * Get the temp file that the contents were saved into.
      *

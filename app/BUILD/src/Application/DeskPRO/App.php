@@ -5,6 +5,7 @@ namespace Application\DeskPRO;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -478,7 +479,7 @@ class App
 
         $filepath = DP_ROOT."/sys/config/$filename";
 
-        if (!file_exists($filepath)) {
+        if (!SafeFile::file_exists($filepath, DP_ROOT)) {
             throw new \RuntimeException("$filename does not exist");
         }
 

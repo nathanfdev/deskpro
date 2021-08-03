@@ -6,6 +6,8 @@ use Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DpSys\CodePlugin\DpPlugins;
 use Imagine\Exception\InvalidArgumentException;
 use Imagine\Exception\RuntimeException;
@@ -641,7 +643,7 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         // Check if we have a record of it being moved
-        if (!file_exists($filepath)) {
+        if (!SafeFile::file_exists($filepath, $basePath)) {
             $movedBlob = $this->findMovedAuthBlob($authcode.$blob_id.$namehash);
             if ($movedBlob) {
                 $this->showBlob($movedBlob, $size);
@@ -704,7 +706,7 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         $metaFilepath = $filepath.'.meta.json';
-        if (file_exists($metaFilepath)) {
+        if (SafeFile::file_exists($metaFilepath, $basePath)) {
             $metadata = @json_decode(file_get_contents($metaFilepath), true);
             if (isset($metadata['filename'])) {
                 $filename = $metadata['filename'];
@@ -1067,7 +1069,7 @@ class ServeFileScript extends LowScriptAbstract
 
         $this->addLogMessage('Expecting file path: %s', $filepath);
 
-        if (!file_exists($filepath)) {
+        if (!SafeFile::file_exists($filepath, SafeFile::UNSPECIFIED)) {
             if ($this->errorMode == 'exception') {
                 throw new \Exception('File not found. (4)', 400);
             }
@@ -1333,7 +1335,7 @@ class ServeFileScript extends LowScriptAbstract
             // where the GD handler tries to save a temp file and the default
             // temp dir is not writable.
         } catch (RuntimeException $e) {
-            $tmp = $this->dpEnv->getUserTmpDir().DIRECTORY_SEPARATOR.uniqid('img', true).'.'.Strings::getExtension($blob->filename);
+            $tmp = TmpDir::makeTmpFile(Strings::getExtension($blob->filename));
             $image->save($tmp);
             $file = file_get_contents($tmp);
             @unlink($tmp);
@@ -1495,7 +1497,7 @@ class ServeFileScript extends LowScriptAbstract
         foreach ($paths as $prefix => $basePath) {
             if ($prefix === 'default' || (is_string($prefix) && strpos($appName, $prefix) === 0)) {
                 $path = $basePath.'/'.$appName.'/'.$typeF.$filename;
-                if (file_exists($path)) {
+                if (SafeFile::file_exists($path, $basePath)) {
                     return [
                         'filepath' => $path,
                         'basepath' => $basePath.'/'.$appName.'/'.$typeF,
@@ -1507,7 +1509,7 @@ class ServeFileScript extends LowScriptAbstract
         // Second path is doing dumb-check on every path
         foreach ($paths as $prefix => $basePath) {
             $path = $basePath.'/'.$appName.'/'.$typeF.$filename;
-            if (file_exists($path)) {
+            if (SafeFile::file_exists($path, $basePath)) {
                 return [
                     'filepath' => $path,
                     'basepath' => $basePath.'/'.$appName.'/'.$typeF,

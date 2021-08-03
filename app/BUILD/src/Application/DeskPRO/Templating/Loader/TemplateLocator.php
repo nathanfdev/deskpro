@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\Templating\Loader;
 
+use DeskPRO\Component\Filesystem\SafeFile;
 use Symfony\Bundle\FrameworkBundle\Templating\Loader\TemplateLocator as BaseTemplateLocator;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Templating\TemplateReferenceInterface;
@@ -22,7 +23,7 @@ class TemplateLocator extends BaseTemplateLocator
     public function __construct(FileLocatorInterface $locator, $cacheDir = null)
     {
         $cache_file = DP_ROOT.'/sys/template-map.php';
-        if (is_file($cache_file)) {
+        if (SafeFile::is_file($cache_file, DP_ROOT)) {
             $this->cache = require $cache_file;
         }
 
@@ -57,7 +58,7 @@ class TemplateLocator extends BaseTemplateLocator
                 $file_name   = $parts[1];
 
                 $path = DP_ROOT.'/apps/'.$native_name.'/native/Resources/views/'.ltrim($file_name, '/');
-                if (file_exists($path)) {
+                if (SafeFile::file_exists($path, DP_ROOT.'/apps/'.$native_name.'/native/Resources/views/')) {
                     $this->cache[$key] = ['path' => $path];
 
                     return $path;

@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Component\Filesystem;
 
+use DpSys\LowError\SystemErrorHandler;
+
 /**
  * Simple wrapper around common file ops that force the caller
  * to explicitly list expected directory of the file,
@@ -43,21 +45,6 @@ class SafeFile
      * cache directory; if it's a temp file, you know it should come from the temp directory; etc.
      */
     const UNSPECIFIED = '?';
-
-    /**
-     * Use as whitelist to indicate the path is expected to be an http path.
-     */
-    const HTTP = 'http://';
-
-    /**
-     * Use as a whitelist to indicate the path is expected to be a data path.
-     */
-    const DATA = 'data://';
-
-    /**
-     * Use as a whitelist to indicate the path is expected to be a data path.
-     */
-    const FILE = 'file://';
 
     /**
      * List of stream types that are considered "allowable" before
@@ -114,50 +101,133 @@ class SafeFile
 
     /**
      * @param bool $onoff
+     * @return bool The original value
      */
     public static function setEmitWarningsOption($onoff)
     {
+        $prev = self::$emit_warnings;
         self::$emit_warnings = (bool) $onoff;
+        return $prev;
     }
 
     /**
      * @param string $path
      *
-     * @return string|string[]
+     * @return string
      */
     private static function normalizePath($path)
     {
-        if (is_array($path)) {
-            $res = [];
-            foreach ($path as $p) {
-                if (is_string($p) && $p !== '') {
-                    $res[] = self::normalizePath($p);
-                }
-            }
-
-            return $res;
-        } else {
-            $p = str_replace('\\', '/', $path);
-
-            if (!self::isValidPathPrefix($p)) {
-                return null;
-            }
-
-            // If we're not using a stream, resolve the realpath
-            if (!preg_match('~^[a-z0-9\-]*://~', trim($p))) {
-                if (@is_dir($p) || @is_file($p)) {
-                    $p = realpath($p);
-                }
-            }
-
-            if (@is_dir($p)) {
-                $p = rtrim($p, '/').'/';
-            }
-
-            $p = strtolower($p);
-
-            return $p;
+        if (empty($path) || !is_string($path)) {
+            return null;
         }
+
+        $path = urldecode($path);
+
+        // remove 'file://' prefix if its there
+        if (stripos($path, 'file://') === 0 || stripos($path, 'file:\\') === 0) {
+            $path = substr($path, 7);
+        }
+
+        $trailingSlash = substr($path, -1, 1) === '/' || substr($path, -1, 1) === '\\';
+
+        // Drive letter
+        $drive = '';
+        if (\strlen($path) > 2 && ':' === $path[1] && ('/' === $path[2] || '\\' === $path[2]) && ctype_alpha($path[0])) {
+            $drive = substr($path, 0, 2);
+            $path  = substr($path, 2);
+        }
+
+        $isAbsolute = $path[0] === '/' || $path[0] === '\\';
+
+        $p = str_replace('\\', '/', trim($path));
+
+        // if its got any protocol, its not a local file so reject it
+        if (strpos($p, '://') !== false) {
+            return null;
+        }
+
+        // 'data:' is special in php in that it doesnt need to be data://
+        if (stripos($p, 'data:') === 0) {
+            return null;
+        }
+
+        $p = rtrim($p, '/');
+
+        if (!$isAbsolute) {
+            $p = self::normalizePath(getcwd()) . '/' . $p;
+        }
+
+        $fileInfo = new \SplFileInfo($drive.$p);
+        if ($fileInfo->getRealPath()) {
+            return $fileInfo->getRealPath() . ($fileInfo->isDir() ? '/' : '');
+        }
+
+        return self::expandLinksHelper(self::resolveRelPathHelper($drive.$p))
+            . ($trailingSlash ? '/' : '');
+    }
+
+    private static function expandLinksHelper($path)
+    {
+        // Drive letter
+        $drive = '';
+        if (\strlen($path) > 2 && ':' === $path[1] && '/' === $path[2] && ctype_alpha($path[0])) {
+            $drive = substr($path, 0, 2);
+            $path  = substr($path, 2);
+        }
+
+        $pathSegments = explode('/', trim($path, '/'));
+        $noExistSegments = [];
+
+        while (count($pathSegments)) {
+            array_unshift($noExistSegments, array_pop($pathSegments));
+            $current = self::normalizePath($drive . '/' . implode('/', $pathSegments));
+
+            $dirInfo = new \SplFileInfo($current);
+            if ($dirInfo->getRealPath()) {
+
+                // part of the path isnt a dir, so this cant be a valid path
+                if (!$dirInfo->isDir()) {
+                    return null;
+                }
+
+                return $dirInfo->getRealPath() . '/' . implode('/', $noExistSegments);
+            }
+        }
+
+        // no parts of the path exist, so can only return it asis
+        return $drive.$path;
+    }
+
+    /**
+     * Get the real canonicalized path to a file.
+     *
+     * @internal
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    private static function resolveRelPathHelper($path)
+    {
+        // Drive letter
+        $drive = '';
+        if (\strlen($path) > 2 && ':' === $path[1] && '/' === $path[2] && ctype_alpha($path[0])) {
+            $drive = substr($path, 0, 2);
+            $path  = substr($path, 2);
+        }
+
+        $pathSegments = explode('/', trim($path, '/'));
+        $result       = [''];
+
+        foreach ($pathSegments as $segment) {
+            if ('..' === $segment) {
+                array_pop($result);
+            } elseif ('.' !== $segment) {
+                $result[] = $segment;
+            }
+        }
+
+        return $drive.implode('/', $result);
     }
 
     /**
@@ -168,7 +238,7 @@ class SafeFile
      *
      * @return bool
      */
-    public static function matchesList($path, $list)
+    private static function matchesList($normalPath, $list)
     {
         if ($list === self::UNSPECIFIED) {
             return true;
@@ -186,37 +256,18 @@ class SafeFile
             return true;
         }
 
-        $list = self::normalizePath($list);
-
-        $path_test = self::normalizePath($path);
-
         foreach ($list as $p) {
-            if ($p === $path_test) {
+            if ($p === $normalPath) {
                 return true;
             }
-            if ($p === self::HTTP) {
-                if (preg_match('/^https?:\/\//i', $path_test)) {
-                    return true;
-                }
-            }
-            if ($p === self::FILE) {
-                if (preg_match('/^file:\/\//i', $path_test)) {
-                    return true;
-                }
-            }
-            if ($p === self::DATA) {
-                if (preg_match('/^data:/', $path_test)) {
-                    return true;
-                }
-            }
             if (substr($p, -1, 1) === '/') {
-                if ($path_test === $p || $path_test.'/' === $p || strpos($path_test, $p) === 0) {
+                if ($normalPath === $p || $normalPath.'/' === $p || strpos($normalPath, $p) === 0) {
                     return true;
                 }
             }
             if (substr($p, 0, 6) === 'regex:') {
                 $pattern = substr($p, 7);
-                if (preg_match($pattern, $path_test)) {
+                if (preg_match($pattern, $normalPath)) {
                     return true;
                 }
             }
@@ -228,21 +279,18 @@ class SafeFile
     /**
      * Check if a string is in the blacklist.
      *
-     * @param string          $path
+     * @param string          $normalPath
      * @param string|string[] $whitelist
      *
      * @return bool
      */
-    public static function matchesBlacklist($path, $whitelist = [])
+    private static function matchesBlacklist($normalPath, $whitelist = [])
     {
         $bl = self::$blacklist;
         if ($whitelist) {
             if (!is_array($whitelist)) {
                 $whitelist = [$whitelist];
             }
-
-            $whitelist  = self::normalizePath($whitelist);
-            $normalPath = self::normalizePath($path);
 
             // Exact match whitelist filename
             foreach ($whitelist as $wp) {
@@ -262,9 +310,6 @@ class SafeFile
                     // overwrites the blacklisted one
                     if (
                         $wp !== self::UNSPECIFIED
-                        && $wp !== self::HTTP
-                        && $wp !== self::FILE
-                        && $wp !== self::DATA
                         && substr($p, -1, 1) === '/'
                         && substr($wp, -1, 1) === '/'
                         && strpos($wp, $p) === 0
@@ -278,7 +323,7 @@ class SafeFile
             });
         }
 
-        return self::matchesList($path, $bl);
+        return self::matchesList($normalPath, $bl);
     }
 
     /**
@@ -286,12 +331,43 @@ class SafeFile
      *
      * @param string          $path
      * @param string[]|string $whitelist
+     * @param boolean         $expectExist True if to check that it actually exists
      *
      * @return bool
      */
-    public static function isValid($path, $whitelist)
+    public static function isValid($path, $whitelist, $expectExist = false)
     {
-        return !empty($path) && !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist);
+        $path = self::normalizePath($path);
+
+        if (empty($path) || !is_string($path)) {
+            return false;
+        }
+
+        if ($expectExist && !file_exists($path)) {
+            return false;
+        }
+
+        if ($whitelist) {
+            if (!is_array($whitelist)) {
+                $whitelist = [$whitelist];
+            }
+            $whitelist = array_map(function ($p) {
+                return $p === '?' ? '?' : self::normalizePath($p);
+            }, $whitelist);
+        }
+
+        return !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist);
+    }
+
+    /**
+     * Checks if a path is a valid looking filesystem path
+     *
+     * @param string $path
+     * @return bool
+     */
+    public static function isValidPathString($path)
+    {
+        return self::normalizePath($path) !== null;
     }
 
     /**
@@ -299,90 +375,39 @@ class SafeFile
      *
      * @param string          $path
      * @param string[]|string $whitelist
+     * @param boolean         $expectExist True if to check that it actually exists
      */
-    public static function assertValid($path, $whitelist)
+    public static function assertValid($path, $whitelist, $expectExist = false)
     {
-        if (!self::isValid($path, $whitelist)) {
+        if (!self::isValid($path, $whitelist, $expectExist)) {
             throw new \InvalidArgumentException('Invalid file path');
         }
     }
 
     /**
-     * Get the real canonicalized path to a file.
+     * @param string          $path
+     * @param string[]|string $whitelist
      *
-     * @internal
-     *
-     * @param string $path
-     *
-     * @return string
+     * @return \SplFileInfo
      */
-    public static function tryResolvePath($path)
+    public static function makeSplFileInfo($path, $whitelist)
     {
-        self::assertValidPathPrefix($path);
+        self::assertValid($path, $whitelist);
 
-        // Not a local file, nothing to do
-        if (
-            preg_match('/^(https?:\/\/|data:)/i', $path)
-            || (
-                // must not be a windows path
-                !(\strlen($path) > 2 && ':' === $path[1] && '\\' === $path[2] && ctype_alpha($path[0]))
-                // must not be a protocol
-                && null !== parse_url($path, PHP_URL_SCHEME)
-            )
-        ) {
-            return $path;
-        }
+        return new \SplFileInfo(self::normalizePath($path));
+    }
 
-        // Normalise slashes
-        $path = str_replace('\\', '/', $path);
+    /**
+     * @param string          $path
+     * @param string[]|string $whitelist
+     *
+     * @return \SplFileInfo
+     */
+    public static function makeSfFile($path, $whitelist)
+    {
+        self::assertValid($path, $whitelist);
 
-        // Existing file, can use realpath
-        $real = realpath($path);
-        if ($real !== false) {
-            return str_replace('\\', '/', $real);
-        }
-
-        // At least dir exists, return that
-        $dirname  = dirname($path);
-        $filename = basename($path);
-
-        if ($dirname && $dirname !== '.') {
-            $realDir = realpath($dirname);
-            if ($realDir !== false) {
-                return str_replace('\\', '/', $realDir.DIRECTORY_SEPARATOR.$filename);
-            }
-        }
-
-        // Otherwise we can try to unwind it...
-        $isAbsolute = strspn($path, '/\\', 0, 1)
-            || (\strlen($path) > 3 && ctype_alpha($path[0])
-                && ':' === substr($path, 1, 1)
-                && strspn($path, '/\\', 2, 1)
-            );
-
-        // Drive letter
-        $drive = '';
-        if (\strlen($path) > 2 && ':' === $path[1] && '/' === $path[2] && ctype_alpha($path[0])) {
-            $drive = substr($path, 0, 2);
-            $path  = substr($path, 2);
-        }
-
-        $pathSegments = explode('/', trim($path, '/'));
-        $result       = [];
-
-        if ($isAbsolute) {
-            $result[] = '';
-        }
-
-        foreach ($pathSegments as $segment) {
-            if ('..' === $segment && ($isAbsolute || \count($result))) {
-                array_pop($result);
-            } elseif ('.' !== $segment) {
-                $result[] = $segment;
-            }
-        }
-
-        return $drive.implode('/', $result);
+        return new \Symfony\Component\HttpFoundation\File\File(self::normalizePath($path));
     }
 
     /**
@@ -395,18 +420,15 @@ class SafeFile
      */
     public static function fileGetContents($path, $whitelist)
     {
-        $orig_path = $path;
-        $path      = self::tryResolvePath($path);
-
-        if (!$path || !self::isValid($path, $whitelist)) {
+        if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::fileGetContents($orig_path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileGetContents($path) is not valid"));
             }
 
             return false;
         }
 
-        return file_get_contents($path);
+        return file_get_contents(self::normalizePath($path));
     }
 
     /**
@@ -432,19 +454,15 @@ class SafeFile
      */
     public static function file($path, $whitelist)
     {
-        $orig_path = $path;
-        $orig_path = $path;
-        $path      = self::tryResolvePath($path);
-
-        if (!$path || !self::isValid($path, $whitelist)) {
+        if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::file($orig_path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::file($path) is not valid"));
             }
 
             return false;
         }
 
-        return file($path);
+        return file(self::normalizePath($path));
     }
 
     /**
@@ -458,18 +476,15 @@ class SafeFile
      */
     public static function fileOpen($path, $mode, $whitelist)
     {
-        $orig_path = $path;
-        $path      = self::tryResolvePath($path);
-
-        if (!$path || !self::isValid($path, $whitelist)) {
+        if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
-                trigger_error("SafeFile::fileOpen($orig_path) is not valid", E_USER_WARNING);
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileOpen($path) is not valid"));
             }
 
             return false;
         }
 
-        return fopen($path, $mode);
+        return fopen(self::normalizePath($path), $mode);
     }
 
     /**
@@ -486,36 +501,575 @@ class SafeFile
         return self::fileOpen($path, $mode, $whitelist);
     }
 
+
     /**
-     * @param string $path
+     * @param string          $path
+     * @param string          $to
+     * @param string|string[] $whitelist
+     *
      * @return bool
      */
-    public static function isValidPathPrefix($path)
+    public static function copy($path, $to, $whitelist)
     {
-        // If this is a path (not a stream) then allow
-        if (!preg_match('~^[a-z0-9\-]*://~i', trim(urldecode($path)))) {
-            return true;
-        }
-
-        foreach (self::STREAM_WHITELIST as $prefix) {
-            if (stripos($path, $prefix) === 0) {
-                return true;
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::copy($path) is not valid"));
             }
+
+            return false;
         }
 
-        return false;
+        if (!self::isValid($to, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::copy(*, $to) is not valid"));
+            }
+
+            return false;
+        }
+
+        return copy(self::normalizePath($path), self::normalizePath($to));
     }
 
     /**
-     * @see isValidPathPrefix
-     * @param string $path
-     * @thorws \InvalidArgumentException
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
      */
-    public static function assertValidPathPrefix($path)
+    public static function file_exists($path, $whitelist)
     {
-        if (!self::isValidPathPrefix($path)) {
-            throw new \InvalidArgumentException("Invalid file path prefix [{$path}]");
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::file_exists($path) is not valid"));
+            }
+
+            return false;
         }
+
+        return file_exists(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param mixed           $data
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function file_put_contents($path, $data, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::file_put_contents($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return file_put_contents(self::normalizePath($path), $data);
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function fileatime($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileatime($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return fileatime(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function filectime($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::filectime($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return filectime(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return false|int
+     */
+    public static function filegroup($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::filegroup($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return filegroup(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function fileinode($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileinode($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return fileinode(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function filemtime($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::filemtime($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return filemtime(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return false|int
+     */
+    public static function fileowner($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileowner($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return fileowner(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function fileperms($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::fileperms($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return fileperms(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function filesize($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::filesize($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return filesize(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return string|false
+     */
+    public static function filetype($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::filetype($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return filetype(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_dir($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_dir($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return is_dir(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return string|false
+     */
+    public static function realpath($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::realpath($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return realpath(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_executable($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_executable($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return is_executable(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_file($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_file($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return is_file(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_link($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_link($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return is_link(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_readable($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_readable($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return is_readable(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return bool
+     */
+    public static function is_writable($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::is_writable($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return is_writable(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return array|false
+     */
+    public static function lstat($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::lstat($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return lstat(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     * @param int             $permissions
+     * @param bool            $recursive
+     * @param resource|null   $context
+     *
+     * @return bool
+     */
+    public static function mkdir($path, $whitelist, $permissions = 0777, $recursive = false, $context = null)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::mkdir($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return mkdir(
+            self::normalizePath($path),
+            $permissions,
+            $recursive,
+            $context
+        );
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     * @param bool            $process_sections
+     * @param int             $scanner_mode
+     *
+     * @return bool
+     */
+    public static function parse_ini_file($path, $whitelist, $process_sections = false, $scanner_mode = \INI_SCANNER_NORMAL)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::parse_ini_file($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return parse_ini_file(
+            self::normalizePath($path),
+            $process_sections,
+            $scanner_mode
+        );
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return int|false
+     */
+    public static function readfile($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::readfile($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return readfile(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $from
+     * @param string          $to
+     * @param string|string[] $whitelist
+     * @param resource|null   $context
+     *
+     * @return bool
+     */
+    public static function rename($from, $to, $whitelist, $context = null)
+    {
+        if (!self::isValid($from, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::rename($from) is not valid"));
+            }
+
+            return false;
+        }
+
+        if (!self::isValid($to, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::rename(*, $to) is not valid"));
+            }
+
+            return false;
+        }
+
+        return rename(self::normalizePath($from), self::normalizePath($to), $context);
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     * @param resource|null   $context
+     *
+     * @return bool
+     */
+    public static function rmdir($path, $whitelist, $context = null)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::rmdir($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return rmdir(self::normalizePath($path), $context);
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     *
+     * @return array|false
+     */
+    public static function stat($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::stat($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return stat(self::normalizePath($path));
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     * @param int|null        $mtime
+     * @param int|null        $atime
+     *
+     * @return bool
+     */
+    public static function touch($path, $whitelist, $mtime = null, $atime = null)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::touch($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return touch(self::normalizePath($path), $mtime, $atime);
+    }
+
+    /**
+     * @param string          $path
+     * @param string|string[] $whitelist
+     * @param resource|null   $context
+     *
+     * @return bool
+     */
+    public static function unlink($path, $whitelist, $context = null)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            if (self::$emit_warnings) {
+                SystemErrorHandler::logException(new \RuntimeException("SafeFile::unlink($path) is not valid"));
+            }
+
+            return false;
+        }
+
+        return unlink(self::normalizePath($path), $context);
     }
 }
 

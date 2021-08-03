@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\Languages;
 
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MapUtils;
 use Symfony\Component\Finder\Finder;
@@ -30,7 +31,7 @@ class LangPackInfo
         $this->langDir = DP_ROOT.DIRECTORY_SEPARATOR.'/locales';
 
         // in prod, manifest is compiled to fs
-        if (is_file($this->langDir.DIRECTORY_SEPARATOR.'manifest.php')) {
+        if (SafeFile::is_file($this->langDir.DIRECTORY_SEPARATOR.'manifest.php', $this->langDir)) {
             $this->manifest = require $this->langDir.DIRECTORY_SEPARATOR.'manifest.php';
 
         // otherwise read from each dir
@@ -39,8 +40,8 @@ class LangPackInfo
                 Finder::create()->directories()->in($this->langDir)->exclude(1),
                 function (\SplFileInfo $d) {
                     if (
-                        file_exists($d->getPathname().DIRECTORY_SEPARATOR.'localeInfo.yml')
-                        || file_exists($d->getPathname().DIRECTORY_SEPARATOR.'localeInfo.php')
+                        SafeFile::file_exists($d->getPathname().DIRECTORY_SEPARATOR.'localeInfo.yml', $this->langDir)
+                        || SafeFile::file_exists($d->getPathname().DIRECTORY_SEPARATOR.'localeInfo.php', $this->langDir)
                     ) {
                         return $d->getFilename();
                     } else {
@@ -74,11 +75,12 @@ class LangPackInfo
     private function readLocaleDataFile($locale, $name)
     {
         $base = $this->langDir.DIRECTORY_SEPARATOR.$locale.DIRECTORY_SEPARATOR.$name;
+        SafeFile::assertValid($base, $this->langDir);
 
-        if (is_file("$base.php")) {
+        if (SafeFile::is_file("$base.php", $this->langDir)) {
             return require "$base.php";
-        } elseif (is_file("$base.yml")) {
-            return Yaml::parse(file_get_contents("$base.yml"));
+        } elseif (SafeFile::is_file("$base.yml", $this->langDir)) {
+            return Yaml::parse(SafeFile::file_get_contents("$base.yml", $this->langDir));
         } else {
             throw new \RuntimeException("Cant load file: $locale/$name");
         }

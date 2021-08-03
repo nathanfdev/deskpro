@@ -6,6 +6,8 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader\Item;
 
+use DeskPRO\Component\Filesystem\SafeFile;
+
 /**
  * Class Attachment.
  */
@@ -81,7 +83,7 @@ class Attachment
         } elseif ($this->file_contents_callback) {
             return call_user_func($this->file_contents_callback, $this);
         } elseif ($this->tmp_file) {
-            return file_get_contents($this->tmp_file);
+            return SafeFile::file_get_contents($this->tmp_file, SafeFile::UNSPECIFIED);
         } else {
             return '';
         }

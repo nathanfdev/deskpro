@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\EntityRepository\TmpData as TmpDataRepo;
 use Application\DeskPRO\People\UserRuleProcessor;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 use Orb\Log\Logger;
@@ -203,7 +204,7 @@ class SyncerHelper
      */
     protected function updatePictureData(Person $person, $pictureData)
     {
-        $filename = tempnam(dp_get_tmp_dir(), 'picture');
+        $filename = TmpDir::makeTmpFile();
         $fp       = @fopen($filename, 'w');
 
         if (!$fp) {

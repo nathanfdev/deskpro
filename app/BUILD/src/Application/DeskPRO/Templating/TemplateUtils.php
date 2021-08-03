@@ -18,11 +18,17 @@ class TemplateUtils
 
         $templateName = (string) $name;
 
-        if (!SafeFile::isValidPathPrefix($templateName)) {
+        // a bogus path input
+        if (!SafeFile::isValidPathString($templateName)) {
+            // explicit return false
             return false;
         }
 
-        if (SafeFile::isValid($templateName, $DP_ENV->getAppDir()) && file_exists($templateName)) {
+        $x = SafeFile::setEmitWarningsOption(false);
+        $fileExists = SafeFile::file_exists($templateName, $DP_ENV->getAppDir());
+        SafeFile::setEmitWarningsOption($x);
+
+        if ($fileExists) {
             $isInBuildPath = strpos($templateName, $DP_ENV->getAppDir()) === 0;
             $isInVendorPath = strpos($templateName, $DP_ENV->getAppDir().'/vendor') === 0;
             $hasTwigFileExt = pathinfo($templateName, PATHINFO_EXTENSION) === 'twig';
@@ -38,7 +44,7 @@ class TemplateUtils
             return false;
         }
 
-        // If the template file is not found on disk, let the proceeding logic run
+        // If the template file is not found on disk, let the proceeding logic run (e.g. database lookup)
         return true;
     }
 }

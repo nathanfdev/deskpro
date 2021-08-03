@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ImportBundle\Writer\Mapper;
 
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DeskPRO\Component\Filesystem\SafeFile;
 
 /**
@@ -33,7 +34,7 @@ class BlobDataMapper
             }
         }
         if (!empty($criteria['url']) && preg_match('/^https?:\/\//', $criteria['url'])) {
-            $data = @file_get_contents($criteria['url']);
+            $data = HttpClient::downloadToString($criteria['url']);
         }
 
         return $data;

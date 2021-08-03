@@ -9,6 +9,7 @@ namespace Application\EmailBundle\Templating;
 use Application\DeskPRO\App;
 use Application\DeskPRO\ResourceScanner\TemplateFiles;
 use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine as BaseEngine;
 
 class Engine extends BaseEngine
@@ -107,7 +108,7 @@ class Engine extends BaseEngine
             return '';
         }
 
-        return file_get_contents($path);
+        return SafeFile::file_get_contents($path, DP_ROOT);
     }
 
     /**

@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\Filesystem\Filesystem;
@@ -62,8 +63,6 @@ class ThemeSetImport
         $this->appEnv      = $appEnv;
         $this->blobStorage = $blobStorage;
         $this->brandStack  = $brandStack;
-
-        register_shutdown_function([$this, 'cleanTmpFiles']);
     }
 
     /**
@@ -230,10 +229,10 @@ class ThemeSetImport
             $sourcePath   = $templatesDir.$template->getId().'-'.$baseName;
             $compiledPath = $templatesDir.$template->getId().'-compiled-'.$baseName;
 
-            if (false === file_put_contents($sourcePath, $template->getTemplateCode())) {
+            if (false === SafeFile::file_put_contents($sourcePath, $template->getTemplateCode(), $templatesDir)) {
                 throw new \RuntimeException('Unable to write a template '.$sourcePath);
             }
-            if (false === file_put_contents($compiledPath, $template->getTemplateCompiled())) {
+            if (false === SafeFile::file_put_contents($compiledPath, $template->getTemplateCompiled(), $templatesDir)) {
                 throw new \RuntimeException('Unable to write a template '.$compiledPath);
             }
 
@@ -266,27 +265,16 @@ class ThemeSetImport
     }
 
     /**
-     *
-     */
-    public function cleanTmpFiles()
-    {
-        $fs = new Filesystem();
-        $fs->remove($this->tmpDir);
-    }
-
-    /**
      * @throws \RuntimeException
      */
     private function generateTmpDir()
     {
-        $this->tmpDir = $this->appEnv->getUserTmpDir().DIRECTORY_SEPARATOR.uniqid('dpd', true);
-        if (!mkdir($this->tmpDir, 0777, true)) {
+        $this->tmpDir = TmpDir::makeTmpDir();
+
+        if (!mkdir($this->tmpDir.DIRECTORY_SEPARATOR.'assets', 0600, true)) {
             throw new \RuntimeException('Unable to make a tmp dir');
         }
-        if (!mkdir($this->tmpDir.DIRECTORY_SEPARATOR.'assets', 0777, true)) {
-            throw new \RuntimeException('Unable to make a tmp dir');
-        }
-        if (!mkdir($this->tmpDir.DIRECTORY_SEPARATOR.'templates', 0777, true)) {
+        if (!mkdir($this->tmpDir.DIRECTORY_SEPARATOR.'templates', 0600, true)) {
             throw new \RuntimeException('Unable to make a tmp dir');
         }
     }
@@ -300,7 +288,7 @@ class ThemeSetImport
         $content = trim($content)."\n";
         $content = Strings::standardEol($content, "\r\n");
 
-        @file_put_contents($this->tmpDir.DIRECTORY_SEPARATOR.$fileName, $content);
+        @SafeFile::file_put_contents($this->tmpDir.DIRECTORY_SEPARATOR.$fileName, $content, $this->tmpDir);
     }
 
     /**

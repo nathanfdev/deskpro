@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\App\Native;
 
 use Application\DeskPRO\Entity\AppPackage;
+use DeskPRO\Component\Filesystem\SafeFile;
 
 class NativePackageConfig
 {
@@ -42,7 +43,7 @@ class NativePackageConfig
     {
         $path = $app_dir.'/native/native_config.php';
 
-        if (file_exists($path)) {
+        if (SafeFile::file_exists($path, $app_dir)) {
             $config = require $path;
         } else {
             $config = [];

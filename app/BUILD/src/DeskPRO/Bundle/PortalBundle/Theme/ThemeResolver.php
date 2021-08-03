@@ -8,6 +8,7 @@ namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -172,7 +173,7 @@ class ThemeResolver
         if (isset($map[$theme->getId()])
             && isset($map[$theme->getId()][$name])
         ) {
-            return realpath(DP_ROOT.$map[$theme->getId()][$name]);
+            return SafeFile::realpath(DP_ROOT.$map[$theme->getId()][$name], DP_ROOT);
         }
 
         return;

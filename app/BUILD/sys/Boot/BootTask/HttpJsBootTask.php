@@ -283,13 +283,12 @@ CODE;
             exit;
         }
 
-        $assetPath = realpath($this->env->getAppWwwAssetDir().'/'.$asset);
+        $assetPath = $this->env->getAppWwwAssetDir().'/'.$asset;
 
         // Invalid path, not in the dir we expected (maybe user supplied ..'s in the url)
         // Or it just doesnt exist
         try {
-            $asset = new File($assetPath);
-            SafeFile::assertValid($asset->getRealPath(), $this->env->getAppWwwAssetDir());
+            $asset = SafeFile::makeSfFile($assetPath, $this->env->getAppWwwAssetDir());
         } catch (\InvalidArgumentException $e) {
             return;
         } catch (FileNotFoundException $e) {

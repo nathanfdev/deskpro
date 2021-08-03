@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
+use DeskPRO\Component\Filesystem\SafeFile;
 
 class ZipArchiveAdapter implements Domain\AppBundle
 {
@@ -25,6 +26,8 @@ class ZipArchiveAdapter implements Domain\AppBundle
      */
     public static function fromFile($file)
     {
+        SafeFile::assertValid($file, SafeFile::UNSPECIFIED);
+
         $fileInfo = $file instanceof \SplFileInfo ? $file : new \SplFileInfo($file);
 
         if (!$fileInfo->isReadable()) {
