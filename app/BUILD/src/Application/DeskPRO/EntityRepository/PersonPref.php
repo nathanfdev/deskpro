@@ -48,7 +48,7 @@ class PersonPref extends AbstractEntityRepository
                 $pref['value_array'] = UnserializeUtil::unserializeArray($pref['value_array'], []);
             }
 
-            $ret_prefs[$pref_name] = is_array($pref['value_array']) ? $pref['value_array'] : $pref['value_str'];
+            $ret_prefs[$pref_name] = is_array($pref['value_array']) && $pref['value_array'] ? $pref['value_array'] : $pref['value_str'];
         }
 
         return $ret_prefs;
