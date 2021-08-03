@@ -139,7 +139,7 @@ class PusherClient extends \Pusher
             'Content-Type: application/json',
             'Expect:',
             'X-Pusher-Library: pusher-http-php '.self::$VERSION,
-            'Proxy-Authorization: Bearer '.$proxyServiceToken,
+            'ProxyAuthorization: Bearer '.$proxyServiceToken,
             'X-Forward-To: '.$originalHost,
         ));
 

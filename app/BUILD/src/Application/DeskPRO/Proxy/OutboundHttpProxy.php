@@ -113,10 +113,10 @@ class OutboundHttpProxy
             $response = $this->retry(function () use ($client, $serviceToken) {
                 return $client->get('/s3/signed-url', [
                     'headers' => [
-                        'Accept'              => 'application/json',
-                        'Cache-Control'       => 'no-cache',
-                        'Content-Type'        => 'application/json',
-                        'Proxy-Authorization' => 'Bearer '.$serviceToken,
+                        'Accept'             => 'application/json',
+                        'Cache-Control'      => 'no-cache',
+                        'Content-Type'       => 'application/json',
+                        'ProxyAuthorization' => 'Bearer '.$serviceToken,
                     ],
                 ]);
             });

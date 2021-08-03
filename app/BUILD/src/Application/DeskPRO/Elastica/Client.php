@@ -67,7 +67,7 @@ class Client extends BaseClient
             $conn->setTransport(ucfirst($proxyUrlParts['scheme']));
             $conn->setPort((int) $proxyUrlParts['port']);
             $conn->addConfig('headers', [
-                'Proxy-Authorization' => 'Bearer '.$serviceToken,
+                'ProxyAuthorization' => 'Bearer '.$serviceToken,
                 'X-Forward-To' => $conn->getHost(),
             ]);
 
