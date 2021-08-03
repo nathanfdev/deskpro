@@ -78,11 +78,11 @@ class PusherDeliveryHandler extends MultiplexDeliverHandler
             ] + $message->getData();
 
         if ($message instanceof ActionAlert && $message->isBroadcast()) {
-            $channelParts = [
-                $message->getTarget() === 'agent_public'
-                    ? NotificationService::TARGET_BROADCAST
-                    : NotificationService::TARGET_USER_BROADCAST,
-            ];
+            if ($message->getTarget() === 'agent_public') {
+                $channelParts = ['private', 'agent_public'];
+            } else {
+                $channelParts = ['user_public'];
+            }
         } else {
             $channelParts = ['private', $message->getTarget()];
         }

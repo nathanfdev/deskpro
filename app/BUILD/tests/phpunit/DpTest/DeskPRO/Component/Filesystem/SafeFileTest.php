@@ -31,6 +31,9 @@ class SafeFileTest extends DeskProTestCase
         $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/example.txt', SafeFile::UNSPECIFIED));
         $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/dontexist', SafeFile::UNSPECIFIED));
         $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/../attachments/dontexist', SafeFile::UNSPECIFIED));
+
+        // realpath() will resolve empty strings to the pwd, @see https://www.php.net/manual/en/function.realpath.php
+        $this->assertFalse(SafeFile::isValid('', SafeFile::UNSPECIFIED));
     }
 
     public function testException()
@@ -69,6 +72,13 @@ class SafeFileTest extends DeskProTestCase
         $this->assertTrue(SafeFile::isValid('HTTPS://google.com/', SafeFile::HTTP));
     }
 
+    public function testSafeFileFile()
+    {
+        $this->assertFalse(SafeFile::isValid('/var/log/mail.log', SafeFile::FILE));
+        $this->assertFalse(SafeFile::isValid('ftp://var/log/mail.log', SafeFile::FILE));
+        $this->assertTrue(SafeFile::isValid('file://var/log/mail.log', SafeFile::FILE));
+    }
+
     public function testSafeFileData()
     {
         $testFile = 'data:text/plain;charset=utf-8;base64,VEVTVA==';
@@ -88,5 +98,49 @@ class SafeFileTest extends DeskProTestCase
 
         $testFile = 'data:text/plain;charset=utf-8;base64,VEVTVA==';
         $this->assertEquals($testFile, SafeFile::tryResolvePath($testFile));
+    }
+
+    public function testIsValidResolvedRealpath()
+    {
+        $whitelist = [
+            __DIR__.'/resources',
+        ];
+
+        // Valid
+        $this->assertTrue(SafeFile::isValid(__DIR__.'/resources/example.txt', $whitelist));
+        $this->assertTrue(SafeFile::isValid(__DIR__.'/../../Component/Filesystem/resources/example.txt', $whitelist));
+        $this->assertTrue(SafeFile::isValid('file://'.__DIR__.'/resources/example.txt', SafeFile::FILE));
+        $this->assertTrue(SafeFile::isValid('file://'.__DIR__.'/../../Component/Filesystem/resources/example.txt', SafeFile::FILE));
+
+        // Invalid
+        $this->assertFalse(SafeFile::isValid('phar://'.__DIR__.'/resources/example.phar', $whitelist));
+        $this->assertFalse(SafeFile::isValid('phar://'.__DIR__.'/../../Component/Filesystem/resources/example.phar', $whitelist));
+    }
+
+    public function testIsValidPathPrefix()
+    {
+        // Valid
+        $this->assertTrue(SafeFile::isValidPathPrefix('/foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('./foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('../foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('FooBundle:Bar:baz/foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('FooBundle::baz/foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('BarBundle:foof7e12a477350.58295937'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('@FooProfiler/Baz/bar.svg'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('::baz/foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('C:/foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('foo/bar'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('http://foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('https://foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('file://foo'));
+        $this->assertTrue(SafeFile::isValidPathPrefix('data://foo'));
+
+        // Invalid
+        $this->assertFalse(SafeFile::isValidPathPrefix('phar:///foo'));
+        $this->assertFalse(SafeFile::isValidPathPrefix('zip:///foo'));
+        $this->assertFalse(SafeFile::isValidPathPrefix('ftp:///foo'));
+        $this->assertFalse(SafeFile::isValidPathPrefix(' phar:///foo'));
+        $this->assertFalse(SafeFile::isValidPathPrefix('  phar:///foo'));
+        $this->assertFalse(SafeFile::isValidPathPrefix('phar%3A%2F%2Ffoo'));
     }
 }

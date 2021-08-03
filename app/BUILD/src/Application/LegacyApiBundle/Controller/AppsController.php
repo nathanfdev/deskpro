@@ -861,6 +861,10 @@ class AppsController extends AbstractController
 
     public function resyncPackagesAction()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createNotFoundException();
+        }
+
         $logger = new Logger('apps');
         $logger->enableSavedMessages();
 

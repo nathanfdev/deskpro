@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
@@ -61,6 +62,8 @@ class ThemeSetImport
         $this->appEnv      = $appEnv;
         $this->blobStorage = $blobStorage;
         $this->brandStack  = $brandStack;
+
+        register_shutdown_function([$this, 'cleanTmpFiles']);
     }
 
     /**
@@ -87,7 +90,7 @@ class ThemeSetImport
             throw new \RuntimeException('Unable to import theme set from this archive');
         }
 
-        $jsonData = json_decode(file_get_contents($infoPath), true);
+        $jsonData = json_decode(SafeFile::file_get_contents($infoPath, $this->tmpDir), true);
         if (!isset($jsonData['theme_id'])) {
             throw new \RuntimeException('Unable to get theme_id');
         }
@@ -118,6 +121,9 @@ class ThemeSetImport
         if (isset($jsonData['assets'])) {
             foreach ($jsonData['assets'] as $assetInfo) {
                 $assetPath = $this->tmpDir.DIRECTORY_SEPARATOR.$assetInfo['path'];
+
+                SafeFile::assertValid($assetPath, $this->tmpDir);
+
                 if (!file_exists($assetPath)) {
                     continue;
                 }
@@ -142,15 +148,16 @@ class ThemeSetImport
         // paste templates
         if (isset($jsonData['templates'])) {
             foreach ($jsonData['templates'] as $templateInfo) {
-                $sourcePath   = $this->tmpDir.DIRECTORY_SEPARATOR.$templateInfo['source_path'];
-                $compiledPath = $this->tmpDir.DIRECTORY_SEPARATOR.$templateInfo['compiled_path'];
+                $sourcePath = $this->tmpDir.DIRECTORY_SEPARATOR.$templateInfo['source_path'];
 
-                if (!file_exists($sourcePath) || !file_exists($compiledPath)) {
+                SafeFile::assertValid($sourcePath, $this->tmpDir);
+
+                if (!file_exists($sourcePath)) {
                     continue;
                 }
 
-                $templateCode     = file_get_contents($sourcePath);
-                $templateCompiled = file_get_contents($compiledPath);
+                $templateCode     = SafeFile::file_get_contents($sourcePath, $this->tmpDir);
+                $templateCompiled = App::get('twig')->compileSource($templateCode);
 
                 // replace custom blob auth codes
                 foreach ($oldToNewBlobRefs as $oldAuthcode => $newAuthcode) {

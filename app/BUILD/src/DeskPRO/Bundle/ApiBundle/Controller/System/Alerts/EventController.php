@@ -23,6 +23,13 @@ class EventController extends CrudController
     public static $exposeOnly   = ['get'];
     public static $listPaginate = false;
 
+    public function __construct()
+    {
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
