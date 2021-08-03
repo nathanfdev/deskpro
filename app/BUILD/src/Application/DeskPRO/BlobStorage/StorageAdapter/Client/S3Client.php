@@ -119,10 +119,10 @@ class S3Client extends \Aws\S3\S3Client
                     ->getPreSignedS3Url($serviceToken)
                 ;
 
-                $request->withUri(new Uri($reSignedUrl));
+                $request = $request->withUri(new Uri($reSignedUrl));
 
                 foreach (self::STALE_HEADERS as $staleHeader) {
-                    $request->withoutHeader($staleHeader);
+                    $request = $request->withoutHeader($staleHeader);
                 }
 
                 return $request;
