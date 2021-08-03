@@ -89,6 +89,12 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
             return;
         }
 
+        $approvalView = $this->getContainer()->get('router')->generate(
+            'ticket_approvals_view',
+            ['id' => $approval->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
         $vars = [
             'ticket'            => $ticket,
             'approval'          => $approval,
@@ -97,12 +103,12 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
                 'ticket_approvals_approve',
                 ['id' => $approval->getId()],
                 UrlGeneratorInterface::ABSOLUTE_URL
-            ),
+            ). '?return='. $approvalView,
             'reject_url' => $this->getContainer()->get('router')->generate(
                 'ticket_approvals_reject',
                 ['id' => $approval->getId()],
                 UrlGeneratorInterface::ABSOLUTE_URL
-            ),
+            ). '?return='. $approvalView,
         ];
 
         foreach ($recipients as $recipient) {
