@@ -26,7 +26,11 @@ class ZipArchiveAdapter implements Domain\AppBundle
      */
     public static function fromFile($file)
     {
-        SafeFile::assertValid($file, SafeFile::UNSPECIFIED);
+        if ($file instanceof \SplFileInfo) {
+            SafeFile::assertValid($file->getRealPath(), SafeFile::UNSPECIFIED);
+        } else {
+            SafeFile::assertValid($file, SafeFile::UNSPECIFIED);
+        }
 
         $fileInfo = $file instanceof \SplFileInfo ? $file : new \SplFileInfo($file);
 

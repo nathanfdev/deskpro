@@ -81,7 +81,6 @@ class LibBootTask implements BootTaskInterface
         SafeFile::setEmitWarningsOption(true);
         SafeFile::addBlacklistDir($env->getDpRoot().DIRECTORY_SEPARATOR.'config');
         SafeFile::addBlacklistDir($env->getUserBackupsDir());
-        SafeFile::addBlacklistDir($env->getUserFilesDir());
         SafeFile::addBlacklistDir('/etc');
         SafeFile::addBlacklistDir('/dev');
         SafeFile::addBlacklistDir('/proc');
