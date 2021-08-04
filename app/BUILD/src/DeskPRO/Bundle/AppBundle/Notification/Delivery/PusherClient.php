@@ -161,6 +161,23 @@ class PusherClient extends \Pusher
         return $ch;
     }
 
+    public function socket_auth($channel, $socket_id, $custom_data = null)
+    {
+        if ($custom_data) {
+            throw new \InvalidArgumentException(
+                '$custom_data must not be used when fetching signature from cloud proxy'
+            );
+        }
+
+        $token = $this->proxy->getPusherServiceTokenSocketAuthSignature(
+            DPC_SITE_ID,
+            $channel,
+            $socket_id
+        );
+
+        return $this->proxy->getPusherSocketAuthSignature($token);
+    }
+
     private function exec_curl($ch)
     {
         $response = array();
