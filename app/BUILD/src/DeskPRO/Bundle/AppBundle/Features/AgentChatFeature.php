@@ -48,7 +48,7 @@ class AgentChatFeature extends AbstractBetaFeature
         return <<<'HTML'
 Agent IM v2 replaces the current agent instant messaging feature with a new and improved version that is more powerful
  and easier to use.<br/><br/>
-Installing Agent IM v2 beta will copy your old conversations over to the new system and then disable the old 
+Installing Agent IM v2 beta will copy your old conversations over to the new system and then disable the old
 messaging system. If you later decide you wish to go back to the old system, you can disable IM v2.
 
 HTML;
@@ -89,7 +89,7 @@ HTML;
     {
         return new \DateTime('2020-01-01');
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -187,7 +187,7 @@ SQL;
         /** @var \Application\DeskPRO\DBAL\Connection $connection */
         $connection = $em->getConnection();
         $sql        = <<<'SQL'
-SELECT `person_id` FROM `agent_chat_message` WHERE `agent_chat_id` = ? GROUP BY `person_id` ORDER BY `date_created` 
+SELECT `person_id` FROM `agent_chat_message` WHERE `agent_chat_id` = ? GROUP BY `person_id` ORDER BY `date_created`
 SQL;
         $personIds = $connection->fetchAllCol($sql, [$chatId]);
         $person    = null;
@@ -237,7 +237,7 @@ SQL;
     private function getMessages(EntityManager $em, $chat)
     {
         $sql = <<<'SQL'
-SELECT `author_id`, `person_name`, `content`, `date_created`, `date_received` 
+SELECT `author_id`, `person_name`, `content`, `date_created`, `date_received`
   FROM `chat_messages`
  WHERE `conversation_id` = ?
  ORDER BY `date_created` ASC
@@ -349,12 +349,12 @@ SQL;
         $connection->batchInsert('agent_chat_message', $newMessages);
         // note here we are explicitly using that $message var contains last from $messages
         $update = <<<SQL
-UPDATE `agent_chat` 
-   SET `date_last_message` = IF(`date_last_message` > '{$message['date_created']}', `date_last_message`, '{$message['date_created']}')
- WHERE `id` = {$newChatId}
+UPDATE `agent_chat`
+   SET `date_last_message` = IF(`date_last_message` > :dateCreated, `date_last_message`, :dateCreated)
+ WHERE `id` = :newChatId
 SQL;
 
-        $connection->executeQuery($update);
+        $connection->executeQuery($update, ['dateCreated' => $message['date_created'], 'newChatId' => $newChatId]);
     }
 
     private function createOnboardings(EntityManager $em, $finished = false)

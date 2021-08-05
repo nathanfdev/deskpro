@@ -45,6 +45,11 @@ services:
   deskpro.logging.line_formatter:
     class: DeskPRO\Bundle\AppBundle\Logging\Formatter\CleanLineFormatter
 
+  deskpro.twig.cache.dpfs_proxy_filecache:
+    class: Application\DeskPRO\Twig\FilesystemCache
+    arguments:
+      - "%kernel.cache_dir%"
+
   ######################################################################################################################
   # Apps
   ######################################################################################################################

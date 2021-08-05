@@ -59,7 +59,14 @@ class WebDAVStorage extends AbstractStorageAdapter
      */
     public function writeBlobString(Blob $blob, $data)
     {
-        $path = $this->resolvePath($blob->getPath());
+        $path      = $this->resolvePath($blob->getPath());
+        $pathArray = explode('/', $path);
+        array_pop($pathArray);
+        $segments = [];
+        foreach ($pathArray as $segment) {
+            array_push($segments, $segment);
+            $this->davClient->request('MKCOL', sprintf('/%s', implode('/', $segments)));
+        }
 
         $this->davClient->request('PUT', $path, $data);
 
