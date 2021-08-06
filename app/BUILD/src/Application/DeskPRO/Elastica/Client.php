@@ -63,17 +63,24 @@ class Client extends BaseClient
                 $method
             );
 
-            $conn->setHost($proxyUrlParts['host']);
-            $conn->setTransport(ucfirst($proxyUrlParts['scheme']));
-            $conn->setPort((int) $proxyUrlParts['port']);
+            if (empty($proxyUrlParts["port"])) {
+                $port = $proxyUrlParts["scheme"] == "https" ? 443 : 80;
+            } else {
+                $port = $proxyUrlParts["scheme"];
+            }
+
             $conn->addConfig('headers', [
                 'ProxyAuthorization' => 'Bearer '.$serviceToken,
                 'X-Forward-To' => $conn->getHost(),
             ]);
+            $conn->setHost($proxyUrlParts['host']);
+            $conn->setTransport(ucfirst($proxyUrlParts['scheme']));
+            $conn->setPort((int) $port);
 
             $method = "POST"; // API Gateway excludes a GET body, so change it to a post @see https://github.com/elastic/elasticsearch/issues/16024#issuecomment-172491501
             $path   = "elasticsearch/{$path}";
         }
+
 
         return parent::request($path, $method, $data, $query);
     }
