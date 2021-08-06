@@ -15,6 +15,11 @@ use FOS\ElasticaBundle\Elastica\Client as BaseClient;
 class Client extends BaseClient
 {
     /**
+     * @var string
+     */
+    private $host;
+
+    /**
      * @var OutboundHttpProxy
      */
     private $proxy;
@@ -55,6 +60,10 @@ class Client extends BaseClient
 
             $conn = $this->getConnection();
 
+            if (!$this->host) {
+                $this->host = $conn->getHost();
+            }
+
             $serviceToken = $this->proxy->getElasticsearchServiceToken(
                 DPC_SITE_ID,
                 strtolower($conn->getTransport()),
@@ -70,8 +79,8 @@ class Client extends BaseClient
             }
 
             $conn->addConfig('headers', [
-                'ProxyAuthorization' => 'Bearer '.$serviceToken,
-                'X-Forward-To' => $conn->getHost(),
+                'ProxyAuthorization' => 'Bearer ' . $serviceToken,
+                'X-Forward-To' => $this->host,
             ]);
             $conn->setHost($proxyUrlParts['host']);
             $conn->setTransport(ucfirst($proxyUrlParts['scheme']));
