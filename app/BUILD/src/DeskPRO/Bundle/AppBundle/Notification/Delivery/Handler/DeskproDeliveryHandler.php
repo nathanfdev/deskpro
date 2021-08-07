@@ -105,6 +105,7 @@ class DeskproDeliveryHandler extends MultiplexDeliverHandler
             if ($this->prefix) {
                 array_unshift($channelParts, $this->prefix);
             }
+            array_unshift($channelParts, 'private');
             $channel = implode('-', $channelParts);
         }
 
