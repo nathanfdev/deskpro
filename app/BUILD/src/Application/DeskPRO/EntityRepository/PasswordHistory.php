@@ -19,6 +19,8 @@ class PasswordHistory extends AbstractEntityRepository
             SELECT password, password_scheme
             FROM password_history
             WHERE person_id = ?
+            ORDER BY id DESC
+            LIMIT 50
         ', [$person->id]);
 
         if (!$recs) {
