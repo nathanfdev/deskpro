@@ -105,10 +105,12 @@ class TicketController extends AbstractMessengerController
 
         try {
             $abuseCheck = new SubmitTicketAbuseCheck($person, $request->getClientIp());
+            $this->get('anti_abuse')->check($abuseCheck);
             // @TODO: even though we have a captcha - that generate an exception and thus the form shall be locked
             // @TODO: we can't use captcha on the messenger cause we don't have a user session
-            $abuseCheck->markResponseRequired();
-            $this->get('anti_abuse')->check($abuseCheck);
+            if ($abuseCheck->isCaptchaRecommended()) {
+                throw new AntiAbuseException($abuseCheck);
+            }
         } catch (AntiAbuseException $e) {
             $form->addError(new FormError('You\'re trying to submit a ticket too frequently.'));
 
