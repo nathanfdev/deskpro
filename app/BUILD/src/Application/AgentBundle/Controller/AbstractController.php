@@ -2,7 +2,10 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\CustomFields\FieldManager;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
+use Application\DeskPRO\Translate\Translate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -149,5 +152,50 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     public function getPerson()
     {
         return $this->person;
+    }
+
+    /**
+     * @param array $fieldErrors
+     * @param array $postCustomFields
+     */
+    protected function validateCustomFields(&$fieldErrors, $postCustomFields, FieldManager $fieldManager)
+    {
+        /** @var Translate $trans */
+        $trans        = $this->container->getTranslator();
+        $customFields = $fieldManager->getDefinedFields();
+
+        foreach ($customFields as $field) {
+            $errors = $field->getHandler()->validateFormData(
+                $postCustomFields ?: [],
+                HandlerAbstract::CONTEXT_AGENT
+            );
+
+            foreach ($errors as $code) {
+                $code = preg_replace('#^(.*?)\.#', '', $code);
+                switch ($code) {
+                    case 'min_length':
+                        $code  = 'text_min';
+                        $count = $field->getOption('agent_min_length');
+                        $msg   = $trans->transChoice('user.error.form_'.$code, $count, ['count' => $count]);
+
+                        break;
+                    case 'max_length':
+                        $code  = 'text_max';
+                        $count = $field->getOption('agent_max_length');
+                        $msg   = $trans->transChoice('user.error.form_'.$code, $count, ['count' => $count]);
+
+                        break;
+                    case 'regex_fail':
+                        $code = 'text_regex';
+                        $msg  = $trans->getPhraseText('user.error.form_'.$code);
+
+                        break;
+                    default:
+                        $msg = $trans->getPhraseText('user.error.form_'.$code);
+                }
+
+                $fieldErrors['field_'.$field->getId()][] = $msg;
+            }
+        }
     }
 }

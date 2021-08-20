@@ -261,7 +261,7 @@ class DownloadsController extends AbstractController
                     $filesize = $this->in->getString('download.filesize');
                     $filename = $this->in->getString('download.filename');
 
-                    if (!StringUrl::isValueValid($download->fileurl)) {
+                    if (!StringUrl::isValueValid($fileurl)) {
                         $this->em->rollback();
 
                         return $this->createJsonResponse([

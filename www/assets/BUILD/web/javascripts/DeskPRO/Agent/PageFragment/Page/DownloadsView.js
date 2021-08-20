@@ -17,6 +17,10 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		);
 	},
 
+  showErrorCode: function(code) {
+    $('.' + code + '.error-message', this.wrapper).addClass('error-message-on');
+  },
+
 	initPage: function(el) {
 
 		var self = this;
@@ -142,16 +146,22 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			$.ajax({
 				url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
 				data: formData,
-				error: function() {
+				error: function(data) {
 					loadingBtn.hide();
 					cancelBtn.show();
 					saveBtn.show();
+					if(data.responseJSON && data.responseJSON.error) {
+            data.responseJSON.error_codes.forEach(function(code) {
+              this.showErrorCode(code);
+            }, self);
+          }
 				},
 				success: function(data) {
 					loadingBtn.hide();
 					cancelBtn.hide();
 					saveBtn.hide();
 					editBtn.show();
+          $('.error-message-on', this.wrapper).removeClass('error-message-on');
 
 					self.handleUnloadRevisions(data.revision_id);
 					editArea.hide();
