@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
@@ -30,7 +28,7 @@ class CleanupAlways extends AbstractJob
         // cleanup chat pings
         //------------------------------
 
-        $cutoff = time() - 180;
+        $cutoff = time() - 300;
 
         App::getDb()->executeUpdate("
             DELETE FROM chat_conversation_pings
@@ -152,6 +150,7 @@ class CleanupAlways extends AbstractJob
 
             if (!$check) {
                 $missedFkFound = true;
+
                 break;
             }
         }

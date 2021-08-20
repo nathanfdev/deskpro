@@ -147,7 +147,7 @@ class UserChatManager
     /**
      * @param $chat
      */
-    public function reopenTimoutChat(ChatConversation $convo)
+    public function reopenTimeoutChat(ChatConversation $convo)
     {
         $convo['status']     = 'open';
         $convo['date_ended'] = null;
@@ -165,7 +165,7 @@ class UserChatManager
             throw $e;
         }
 
-        $this->addSystemMessage(
+        $message = $this->addSystemMessage(
             $convo,
             'message_user-returned'
         );
@@ -177,6 +177,14 @@ class UserChatManager
         $this->eventDispatcher->dispatch(
             UserChatEvent::EVENT_NAME,
             new UserChatEvent('chat.new', $newchat_cm_data)
+        );
+        $this->eventDispatcher->dispatch(
+            ChatEvent::EVENT_NAME,
+            new ChatEvent(
+                $convo->getId(),
+                ChatEvent::CHAT_USER_RETURNED_EVENT_TYPE,
+                ['message' => $message]
+            )
         );
     }
 
@@ -668,25 +676,28 @@ class UserChatManager
         if ($author) {
             $convo->ended_by = ChatConversation::ENDED_AGENT;
         } elseif ($reason == 'timeout') {
-            $reason          = '';
+            /*
+             we don't want to introduce new status here, so we'll just have it open, but
+             with ended_by = 'timeout'
+            */
+            $convo->status   = 'open';
+            $convo->setDateEnded(new \DateTime());
             $convo->ended_by = ChatConversation::ENDED_TIMEOUT;
             $eventType       = ChatEvent::CHAT_USER_TIMEOUT_EVENT_TYPE;
         } elseif ($reason == 'wait_timeout') {
-            $reason          = '';
             $convo->ended_by = ChatConversation::ENDED_WAIT_TIMEOUT;
             $eventType       = ChatEvent::CHAT_WAIT_TIMEOUT_EVENT_TYPE;
         } elseif ($reason == 'abandoned') {
-            $reason          = '';
             $convo->ended_by = ChatConversation::ENDED_ABANDONED;
         }
 
         $this->em->flush();
 
         $message = null;
-        if ($convo->ended_by != 'timeout' && $convo->ended_by != 'wait_timeout' && $convo->ended_by != 'abandoned') {
+        if ($convo->ended_by != 'wait_timeout' && $convo->ended_by != 'abandoned') {
             if ($author) {
                 $message = $this->addSystemMessage($convo, 'message_ended-by', ['name' => $author->getDisplayNameUser()], ['chat_ended' => true]);
-            } else {
+            } elseif ($convo->status === 'ended') {
                 $message = $this->addSystemMessage($convo, 'message_ended', [], ['chat_ended' => true]);
             }
         }

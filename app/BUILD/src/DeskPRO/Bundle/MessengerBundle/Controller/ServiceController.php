@@ -193,6 +193,8 @@ class ServiceController extends AbstractMessengerController
             'helpcenter.messenger.message_unassigned',
             'helpcenter.messenger.message_user_joined',
             'helpcenter.messenger.message_user_left',
+            'helpcenter.messenger.message_user_timeout',
+            'helpcenter.messenger.message_user_returned',
             'helpcenter.messenger.powered_by',
             'helpcenter.messenger.tickets_form_add_attachment',
             'helpcenter.messenger.tickets_form_back',

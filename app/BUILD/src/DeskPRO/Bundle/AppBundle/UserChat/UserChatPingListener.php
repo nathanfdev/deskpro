@@ -60,9 +60,24 @@ class UserChatPingListener implements EventSubscriberInterface
      */
     public function onMessengerPing(ChatEvent $event)
     {
-        $this->em->getConnection()->insert('chat_conversation_pings', [
-            'chat_id'   => $event->getChatId(),
-            'ping_time' => time(),
-        ]);
+        if ($this->shouldPingOnMessenger($event)) {
+            $this->em->getConnection()->insert('chat_conversation_pings', [
+                'chat_id'   => $event->getChatId(),
+                'ping_time' => time(),
+            ]);
+        }
+    }
+
+    protected function shouldPingOnMessenger(ChatEvent $event)
+    {
+        return
+            $event->getType() === ChatMessageEvent::CHAT_MESSAGE_EVENT_TYPE
+            || $event->getType() === ChatEvent::TYPING_END_EVENT_TYPE
+            || $event->getType() === ChatEvent::TYPING_START_EVENT_TYPE
+            || $event->getType() === ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE
+            || $event->getType() === ChatEvent::CHAT_USER_JOINED_EVENT_TYPE
+            || $event->getType() === ChatEvent::CHAT_STARTED_EVENT_TYPE
+            || $event->getType() === ChatEvent::CHAT_USER_LEFT_EVENT_TYPE
+        ;
     }
 }
