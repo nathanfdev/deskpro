@@ -137,6 +137,8 @@ class ClientFactory
 
         $client = new Client($client_options);
 
+        $client->setOutboundProxy($this->container->get('deskpro.proxy.outbound_http_proxy'));
+
         if ($config->get('logger')) {
             $client->setLogger($config->get('logger'));
         }

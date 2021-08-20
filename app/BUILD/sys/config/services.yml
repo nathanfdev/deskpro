@@ -45,6 +45,11 @@ services:
   deskpro.logging.line_formatter:
     class: DeskPRO\Bundle\AppBundle\Logging\Formatter\CleanLineFormatter
 
+  deskpro.twig.cache.dpfs_proxy_filecache:
+    class: Application\DeskPRO\Twig\FilesystemCache
+    arguments:
+      - "%kernel.cache_dir%"
+
   ######################################################################################################################
   # Apps
   ######################################################################################################################
@@ -125,6 +130,14 @@ services:
   portal_validation:
     class: DeskPRO\Bundle\PortalBundle\Helper\PortalValidation
     arguments: ["@portal_email_sender", "@brand_stack", "@router", "@data.person"]
+
+  ######################################################################################################################
+  # Outbound HTTP Proxy
+  ######################################################################################################################
+
+  deskpro.proxy.outbound_http_proxy:
+    class: Application\DeskPRO\Proxy\OutboundHttpProxy
+    arguments: [ "@settings_resolver" ]
 
   ######################################################################################################################
   # Sandboxed Twig

@@ -34,7 +34,7 @@ class Event implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var SystemEventInterface
-     * @ORM\Column(type="object")
+     * @ORM\Column(type="json_array")
      */
     protected $event;
 
@@ -80,7 +80,7 @@ class Event implements EntityInterface, NotifyPropertyChanged
      */
     public function setEvent(SystemEventInterface $event)
     {
-        $this->setModelField('event', $event);
+        // no-op this as this is redundant functionality
 
         return $this;
     }

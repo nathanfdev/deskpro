@@ -17,18 +17,6 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function downloadCatAction()
     {
-        $id = isset($_GET['id']) ? $_GET['id'] : 0;
-
-        if ($id) {
-            $newId = $this->getNewId('dp3_file_cat_'.$id);
-            if ($newId) {
-                $obj = $this->getEm()->find('DeskPRO:DownloadCategory', $newId);
-                if ($obj) {
-                    return $this->redirectToRoute('portal_downloads_view', ['slug' => $obj->getUrlSlug()], 301);
-                }
-            }
-        }
-
         return $this->redirectToRoute('portal_downloads', [], 301);
     }
 
@@ -37,18 +25,6 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function downloadViewAction()
     {
-        $id = isset($_GET['id']) ? $_GET['id'] : 0;
-
-        if ($id) {
-            $newId = $this->getNewId('dp3_filescat_'.$id);
-            if ($newId) {
-                $obj = $this->getEm()->find('DeskPRO:Download', $newId);
-                if ($obj) {
-                    return $this->redirectToRoute('portal_downloads_view', ['slug' => $obj->getUrlSlug()], 301);
-                }
-            }
-        }
-
         return $this->redirectToRoute('portal_downloads', [], 301);
     }
 
@@ -63,23 +39,6 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function communityAction()
     {
-        $catId   = isset($_GET['cat']) ? $_GET['cat'] : 0;
-        $ideaStr = Arrays::getFirstKey($_GET);
-
-        if ($catId) {
-            // Ignore (go to home)
-            // We dont filter on cats anymore
-        } elseif ($ideaStr) {
-            $id    = Strings::extractRegexMatch('#^([0-9]+)#', $ideaStr);
-            $newId = $this->getNewId('dp3_ideaid_'.$id);
-            if ($newId) {
-                $obj = $this->getEm()->find('DeskPRO:CommunityTopic', $newId);
-                if ($obj) {
-                    return $this->redirectToRoute('portal_community_topic_view', ['slug' => $obj->getUrlSlug()], 301);
-                }
-            }
-        }
-
         return $this->redirectToRoute('portal_community', [], 301);
     }
 
@@ -92,18 +51,6 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function articleViewAction()
     {
-        $id = isset($_GET['ref']) ? $_GET['ref'] : 0;
-
-        if ($id) {
-            $newId = $this->getNewId('dp3_kbref_'.$id);
-            if ($newId) {
-                $obj = $this->getEm()->find('DeskPRO:Article', $newId);
-                if ($obj) {
-                    return $this->redirectToRoute('portal_kb_view', ['slug' => $obj->getUrlSlug()], 301);
-                }
-            }
-        }
-
         return $this->redirectToRoute('portal_kb', [], 301);
     }
 
@@ -112,18 +59,6 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function articleCatAction()
     {
-        $id = isset($_GET['id']) ? $_GET['id'] : 0;
-
-        if ($id) {
-            $newId = $this->getNewId('dp3_kbcatid_'.$id);
-            if ($newId) {
-                $obj = $this->getEm()->find('DeskPRO:ArticleCategory', $newId);
-                if ($obj) {
-                    return $this->redirectToRoute('portal_kb_browse', ['slug' => $obj->getUrlSlug()], 301);
-                }
-            }
-        }
-
         return $this->redirectToRoute('portal_kb', [], 301);
     }
 
@@ -145,18 +80,6 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function newsViewAction()
     {
-        $id = isset($_GET['id']) ? $_GET['id'] : 0;
-
-        if ($id) {
-            $newId = $this->getNewId('dp3_newsid_'.$id);
-            if ($newId) {
-                $obj = $this->getEm()->find('DeskPRO:News', $newId);
-                if ($obj) {
-                    return $this->redirectToRoute('portal_news_view', ['slug' => $obj->getUrlSlug()], 301);
-                }
-            }
-        }
-
         return $this->redirectToRoute('portal_news', [], 301);
     }
 
@@ -195,19 +118,6 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function ticketViewAction()
     {
-        $id = isset($_GET['ticketref']) ? $_GET['ticketref'] : 0;
-
-        if ($id) {
-            $newId = $this->getNewId('dp3_ticketref_'.$id);
-            if ($newId) {
-                $newId = $newId['new_id'];
-                $obj   = $this->getEm()->find('DeskPRO:Ticket', $newId);
-                if ($obj) {
-                    return $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $obj->getRef()], 301);
-                }
-            }
-        }
-
         return $this->redirectToRoute('portal_tickets', [], 301);
     }
 
@@ -250,12 +160,6 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function getNewId($lookupId)
     {
-        $data = $this->getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', [$lookupId]);
-
-        if (preg_match('#^a:[0-9]+:\{#', $data)) {
-            $data = unserialize($data);
-        }
-
-        return $data;
+        return null;
     }
 }
