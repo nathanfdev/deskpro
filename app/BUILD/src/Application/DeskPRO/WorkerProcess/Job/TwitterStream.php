@@ -49,62 +49,6 @@ class TwitterStream extends AbstractJob
 
     public function run()
     {
-        if (!App::getConfig('enable_twitter')) {
-            return;
-        }
-
-        $this->db              = App::getDb();
-        $this->em              = App::getOrm();
-        $this->twitter_service = new \Application\DeskPRO\Service\Twitter();
-
-        $events = $this->db->fetchAll(sprintf("
-            SELECT *
-            FROM twitter_stream
-            WHERE account_id IS NOT NULL AND event != 'unknown'
-            ORDER BY date_created ASC, id ASC
-            LIMIT %d
-        ", self::EVENT_LIMIT));
-
-        $processed = 0;
-        foreach ($events as $event) {
-            $method = 'process'.ucfirst($event['event']);
-            if (!method_exists($this, $method)) {
-                $this->logStatus('unknown event type', $event);
-                continue;
-            }
-
-            $account = $this->getAccount($event['account_id']);
-            if ($account) {
-                $data = @unserialize($event['data']);
-                if ($data) {
-                    try {
-                        $success = call_user_func(
-                            [$this, $method],
-                            $this->getAccount($event['account_id']),
-                            $data
-                        );
-                    } catch (\Exception $e) {
-                        $this->logStatus('exception caught: '.$e->getMessage().' '.$e->getFile().':'.$e->getLine());
-                        $success = false;
-                        \DpSys\LowError\SystemErrorHandler::logException($e);
-                    }
-                } else {
-                    // couldn't unserialize the data, so just get rid of this
-                    $success = true;
-                }
-            } else {
-                // account isn't being processed anymore, just discard them
-                $success = true;
-            }
-
-            if ($success) {
-                $this->db->delete('twitter_stream', [
-                    'id' => $event['id'],
-                ]);
-
-                ++$processed;
-            }
-        }
     }
 
     /**
