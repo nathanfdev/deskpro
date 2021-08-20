@@ -81,7 +81,7 @@ class TwitterStream extends \Application\DeskPRO\Domain\DomainObject
         ]);
         $metadata->mapField([
             'fieldName'  => 'data',
-            'type'       => 'object',
+            'type'       => 'json_array',
             'precision'  => 0,
             'scale'      => 0,
             'nullable'   => false,
