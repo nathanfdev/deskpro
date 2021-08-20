@@ -78,54 +78,7 @@ class Dp3Detector implements TicketDetectorInterface
      */
     public function userMatchSubject($subject_text)
     {
-        //------------------------------
-        // Match ref
-        //------------------------------
-
-        if (!preg_match('#\[([0-9]{4}-[A-Za-z]{4}-[0-9]{4})\]#', $subject_text, $m)) {
-            return;
-        }
-        $old_ref = $m[1];
-
-        //------------------------------
-        // Match authcode after ref
-        //------------------------------
-
-        $pos = strpos($subject_text, $m[0]);
-
-        if (!preg_match('#\[([a-zA-Z0-9]{8})\]#', $subject_text, $m, null, $pos)) {
-            return;
-        }
-        $old_auth = $m[1];
-
-        //------------------------------
-        // Fetch map info
-        //------------------------------
-
-        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_ticketref_'.$old_ref]);
-        if ($map_info) {
-            $map_info = @unserialize($map_info);
-
-        // Might have a merge record
-        } else {
-            $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_ticketmerge_'.$old_ref]);
-            if ($map_info) {
-                $map_info = @unserialize($map_info);
-            }
-        }
-        if (!$map_info) {
-            return;
-        }
-
-        //------------------------------
-        // Check and return ticket
-        //------------------------------
-
-        if ($old_auth != $map_info['old_auth']) {
-            return;
-        }
-
-        return App::getOrm()->getRepository('DeskPRO:Ticket')->find($map_info['new_id']);
+        return;
     }
 
     /**
@@ -138,41 +91,7 @@ class Dp3Detector implements TicketDetectorInterface
      */
     public function userMatchBody($body_text)
     {
-        if (!preg_match('#<=== ([0-9]{4}-[A-Za-z]{4}-[0-9]{4}) --- ([a-zA-Z0-9]{8}) ===>#', $body_text, $m)) {
-            return;
-        }
-
-        $old_ref  = $m[1];
-        $old_auth = $m[2];
-
-        //------------------------------
-        // Fetch map info
-        //------------------------------
-
-        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_ticketref_'.$old_ref]);
-        if ($map_info) {
-            $map_info = @unserialize($map_info);
-
-        // Might have a merge record
-        } else {
-            $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_ticketmerge_'.$old_ref]);
-            if ($map_info) {
-                $map_info = @unserialize($map_info);
-            }
-        }
-        if (!$map_info) {
-            return;
-        }
-
-        //------------------------------
-        // Check and return ticket
-        //------------------------------
-
-        if ($old_auth != $map_info['old_auth']) {
-            return;
-        }
-
-        return App::getOrm()->getRepository('DeskPRO:Ticket')->find($map_info['new_id']);
+        return;
     }
 
     /**
@@ -185,51 +104,7 @@ class Dp3Detector implements TicketDetectorInterface
      */
     public function techMatchSubject($subject_text)
     {
-        if (!preg_match('#\[([0-9]{4}-[A-Za-z]{4}-[0-9]{4})-([0-9]+)-([a-zA-Z0-9]{8})\]#', $subject_text, $m)) {
-            return;
-        }
-
-        $old_ref       = $m[1];
-        $old_tech_id   = $m[2];
-        $old_tech_auth = $m[3];
-
-        //------------------------------
-        // Fetch map info
-        //------------------------------
-
-        $map_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_ticketref_'.$old_ref]);
-        if ($map_info) {
-            $map_info = @unserialize($map_info);
-        }
-        if (!$map_info) {
-            return;
-        }
-
-        $techmap_info = App::getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', ['dp3_techpass_'.$old_tech_id]);
-        if ($techmap_info) {
-            $techmap_info = @unserialize($techmap_info);
-        }
-        if (!$techmap_info) {
-            return;
-        }
-
-        //------------------------------
-        // Check and return ticket
-        //------------------------------
-
-        $check_tech_auth = substr(md5($techmap_info['old_pass'].$map_info['old_auth']), 0, 8);
-        if ($check_tech_auth != $old_tech_auth) {
-            return;
-        }
-
-        $agent = App::getOrm()->getRepository('DeskPRO:Person')->find($techmap_info['new_id']);
-        if (!$agent) {
-            return;
-        }
-
-        $this->_found_person = $agent;
-
-        return App::getOrm()->getRepository('DeskPRO:Ticket')->find($map_info['new_id']);
+        return;
     }
 
     /**
