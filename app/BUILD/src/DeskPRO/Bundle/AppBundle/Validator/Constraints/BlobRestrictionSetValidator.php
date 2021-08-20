@@ -46,12 +46,19 @@ class BlobRestrictionSetValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, Blob::class);
         }
 
-        $setId = $constraint->context;
-        if ($constraint->customDef) {
-            $setId = RestrictionSet::getSetIdForCustomField($constraint->customDef, $constraint->context);
+        if ($constraint->imagesOnly) {
+            $set = new RestrictionSet();
+            $set->setAllowedExts(['gif', 'png', 'jpg', 'jpeg']);
+        } else {
+            $setId = $constraint->context;
+            if ($constraint->customDef) {
+                $setId = RestrictionSet::getSetIdForCustomField($constraint->customDef, $constraint->context);
+            }
+
+            $set = $this->acceptAttachment->getRestrictionSet($setId);
         }
 
-        $set   = $this->acceptAttachment->getRestrictionSet($setId);
+
         $props = [
             'size' => $value->getFilesize(),
             'ext'  => $value->getExtension(),

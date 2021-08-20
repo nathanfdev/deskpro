@@ -71,7 +71,12 @@ services:
 
   form.person_profile:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType
-    arguments: ["@custom_field_manager", "@language_manager", "@blob.storage", "@doctrine.orm.default_entity_manager"]
+    arguments:
+      - "@custom_field_manager"
+      - "@language_manager"
+      - "@blob.storage"
+      - "@doctrine.orm.default_entity_manager"
+      - "@validator"
     tags:
       - { name: form.type }
 

@@ -11,6 +11,7 @@ use Application\DeskPRO\NewSettings\SettingsBag;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonProfileImageType;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -18,10 +19,12 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class PersonEditProfileType.
@@ -49,19 +52,31 @@ class PersonEditProfileType extends AbstractType
     private $em;
 
     /**
+     * @var ValidatorInterface
+     */
+    private ValidatorInterface $validator;
+
+    /**
      * Constructor.
      *
      * @param CustomFieldManager $fieldManager
      * @param LanguageManager    $languageManager
      * @param DeskproBlobStorage $blobStorage
      * @param EntityManager      $em
+     * @param ValidatorInterface $validator
      */
-    public function __construct(CustomFieldManager $fieldManager, LanguageManager $languageManager, DeskproBlobStorage $blobStorage, EntityManager $em)
-    {
+    public function __construct(
+        CustomFieldManager $fieldManager,
+        LanguageManager $languageManager,
+        DeskproBlobStorage $blobStorage,
+        EntityManager $em,
+        ValidatorInterface $validator
+    ) {
         $this->fieldManager    = $fieldManager;
         $this->languageManager = $languageManager;
         $this->blobStorage     = $blobStorage;
         $this->em              = $em;
+        $this->validator       = $validator;
     }
 
     /**
@@ -99,6 +114,7 @@ class PersonEditProfileType extends AbstractType
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
         $builder->addEventListener(FormEvents::POST_SET_DATA, [$this, 'onPostSetData']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -252,6 +268,35 @@ class PersonEditProfileType extends AbstractType
                 'allow_edit'          => isset($def['options']['allow_edit']) ? $def['options']['allow_edit'] : false,
                 'mapped'              => false,
             ]);
+        }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        if ($data instanceof Person) {
+            if ($data->getPictureBlob()) {
+                $violations = $this->validator->validate($data->getPictureBlob(), [
+                    new AppAssert\BlobRestrictionSet([
+                        'imagesOnly' => true,
+                    ]),
+                ]);
+
+                foreach ($violations as $violation) {
+                    $event->getForm()->get('delete_picture')->addError(new FormError(
+                        $violation->getMessage(),
+                        $violation->getMessageTemplate(),
+                        $violation->getParameters(),
+                        $violation->getPlural(),
+                        $violation
+                    ));
+                }
+            }
         }
     }
 
