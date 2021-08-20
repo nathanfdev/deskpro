@@ -86,6 +86,9 @@ services:
 
   deskpro.notification.pusher_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherFactory
+    arguments:
+      - "@deskpro.proxy.outbound_http_proxy"
+      - "@settings_resolver"
   deskpro.notification.pusher:
     class: Pusher
     factory: ["@deskpro.notification.pusher_factory", createPusher]

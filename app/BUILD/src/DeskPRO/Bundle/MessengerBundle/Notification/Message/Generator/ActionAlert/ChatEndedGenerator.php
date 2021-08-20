@@ -22,7 +22,6 @@ class ChatEndedGenerator extends ChatGenerator
         return $event instanceof ChatEvent && (
             $event->getType() === ChatEvent::CHAT_ENDED_EVENT_TYPE
             || $event->getType() === ChatEvent::CHAT_WAIT_TIMEOUT_EVENT_TYPE
-            || $event->getType() === ChatEvent::CHAT_USER_TIMEOUT_EVENT_TYPE
         );
     }
 
@@ -40,13 +39,16 @@ class ChatEndedGenerator extends ChatGenerator
             case ChatConversation::ENDED_TIMEOUT:
             case ChatConversation::ENDED_WAIT_TIMEOUT:
                 $origin = 'system';
+
                 break;
             case ChatConversation::ENDED_ABANDONED:
             case ChatConversation::ENDED_AGENT:
                 $origin = 'agent';
+
                 break;
             case ChatConversation::ENDED_USER:
                 $origin = 'user';
+
                 break;
             default:
                 $origin = 'system';
@@ -57,9 +59,11 @@ class ChatEndedGenerator extends ChatGenerator
                 $avatar = $chat->getAgent()
                     ? $this->avatarResolver->getAvatar($chat->getAgent())
                     : $this->avatarResolver->getDefaultPersonAvatar();
+
                 break;
             case 'user':
                 $avatar = $chat->getPersonPictureUrl();
+
                 break;
             default:
                 $avatar = $this->avatarResolver->getDefaultCommonAvatar();

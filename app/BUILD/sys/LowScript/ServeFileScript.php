@@ -1104,7 +1104,16 @@ class ServeFileScript extends LowScriptAbstract
         }
         $sth = $this->getPdoRead()->prepare("SELECT name, value FROM settings WHERE name IN('core.filestorage_dav_username', 'core.filestorage_dav_password', 'core.filestorage_dav_host', 'core.filestorage_dav_port')");
         $sth->execute();
-        $creds = $sth->fetchAll(\PDO::FETCH_KEY_PAIR);
+        $dbCreds = $sth->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+        $creds = [
+            'core.filestorage_dav_host'     => $this->_getSetting('core.filestorage_dav_host'),
+            'core.filestorage_dav_port'     => $this->_getSetting('core.filestorage_dav_port'),
+            'core.filestorage_dav_username' => $this->_getSetting('core.filestorage_dav_username'),
+            'core.filestorage_dav_password' => $this->_getSetting('core.filestorage_dav_password'),
+        ];
+        $dbCreds = array_filter($dbCreds);
+        $creds   = array_replace($creds, $dbCreds);
 
         $davClient = BlobStorageService::createDavClient(
             $creds['core.filestorage_dav_host'],

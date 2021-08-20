@@ -86,14 +86,29 @@ class DpFsProxyStreamWrapper
     public static function realpath($path)
     {
         if (!self::$protocol) {
-            throw new \RuntimeException(__CLASS__.'::register() must be called before realpath() can be invoked');
+            throw new \RuntimeException(__CLASS__.'::register() must be called before '.__METHOD__.' can be invoked');
         }
 
-        if (self::isProxyFsPath($path)) {
-            return \realpath(str_replace(self::$protocol.'://'.self::getNamespace($path), '', $path));
+        return \realpath(self::extractPathFromStreamUri($path));
+    }
+
+    /**
+     * Idempotently extracts the path from the DPFS stream URI
+     *
+     * @param string $streamUri
+     * @return string
+     */
+    public static function extractPathFromStreamUri($streamUri)
+    {
+        if (!self::$protocol) {
+            throw new \RuntimeException(__CLASS__.'::register() must be called before '.__METHOD__.' can be invoked');
         }
 
-        return \realpath($path);
+        if (self::isProxyFsPath($streamUri)) {
+            return str_replace(self::$protocol.'://'.self::getNamespace($streamUri), '', $streamUri);
+        }
+
+        return $streamUri;
     }
 
     /**

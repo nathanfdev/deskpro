@@ -230,6 +230,7 @@ class MainController extends AbstractController
     {
         $clients = $this->get('deskpro.notification.service')->getClientsSetup()->getClients();
         $client  = $clients && count($clients) === 1 ? $clients[0] : false;
+
         /* @var NotificationClient|bool $client */
         return !$client ?: in_array($client->getType(), ['pusher', 'deskpro']);
     }

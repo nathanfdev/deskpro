@@ -1722,16 +1722,40 @@ class TicketController extends AbstractController
         $fields = json_decode($request->getContent(), 1);
         $vals   = [];
 
-        foreach ($fields as $k => $v) {
-            $v      = 0 === strpos($k, 'date_') ? date('Y-m-d H:i:s', strtotime($v)) : (int) $v;
-            $vals[] = sprintf('%s = "%s"', $k, $v);
-        }
+        $validFields = [
+            'date_feedback_rating',
+            'date_created',
+            'date_resolved',
+            'date_archived',
+            'date_first_agent_assign',
+            'date_first_agent_reply',
+            'date_last_agent_reply',
+            'date_last_user_reply',
+            'date_agent_waiting',
+            'date_user_waiting',
+            'date_status',
+            'date_on_hold',
+            'total_user_waiting',
+            'total_to_first_reply',
+            'total_user_waiting_wh_start',
+            'total_user_waiting_wh',
+            'total_to_first_reply_wh',
+            'date_locked',
+        ];
 
-        if ($vals) {
-            $this->em->getConnection()->executeQuery(sprintf(
-                'update tickets set %s where id = %d',
-                implode(',', $vals), $ticket_id
-            ));
+        foreach ($fields as $k => $v) {
+            if (!is_scalar($v)) {
+                continue;
+            }
+            if (!in_array($k, $validFields, true)) {
+                continue;
+            }
+            $value = 0 === strpos($k, 'date_') ? date('Y-m-d H:i:s', strtotime($v)) : (int) $v;
+
+            $this->em->getConnection()->executeQuery(
+                'UPDATE tickets SET `%s` = ? WHERE id = ?',
+                [$value, $ticket_id]
+            );
         }
 
         return $this->createJsonResponse($vals);
