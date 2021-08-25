@@ -78,11 +78,12 @@ class ThemeSetImport
     {
         $this->generateTmpDir();
 
-        require_once DP_ROOT.'/vendor-src/pclzip/pclzip.lib.php';
-
-        $archive = new \PclZip($archivePath);
-        if ($archive->extract(PCLZIP_OPT_PATH, $this->tmpDir) == 0) {
-            throw new \RuntimeException('Unable to extract theme set archive');
+        try {
+            /** @var \DeskPRO\Bundle\AppBundle\Zippy\Zippy $zippy */
+            $zippy = App::get('deskpro.zippy');
+            $zippy->open($archivePath)->extract($this->tmpDir);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Unable to extract theme set archive', 0, $e);
         }
 
         $infoPath = $this->tmpDir.DIRECTORY_SEPARATOR.'theme.json';
@@ -246,21 +247,12 @@ class ThemeSetImport
 
         $this->createTmpFile('theme.json', json_encode($jsonData));
 
-        // write to archive
-        require_once DP_ROOT.'/vendor-src/pclzip/pclzip.lib.php';
-
         $archivePath = $this->tmpDir.DIRECTORY_SEPARATOR.'theme-set-'.$themeSet->getId().'.zip';
-        $archive     = new \PclZip($archivePath);
 
-        $list = $archive->add(
-            $this->tmpDir,
-            \PCLZIP_OPT_REMOVE_PATH,
-            $this->tmpDir
-        );
+        /** @var \DeskPRO\Bundle\AppBundle\Zippy\Zippy $zippy */
+        $zippy = App::get('deskpro.zippy');
 
-        if ($list == 0) {
-            throw new \RuntimeException('Unable to create an archive file of this theme set');
-        }
+        $zippy->createFromDir($archivePath, $this->tmpDir);
 
         return $archivePath;
     }

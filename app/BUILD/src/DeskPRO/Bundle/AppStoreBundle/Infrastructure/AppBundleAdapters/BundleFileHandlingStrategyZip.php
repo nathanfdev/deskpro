@@ -57,9 +57,10 @@ class BundleFileHandlingStrategyZip
             return ZipArchiveAdapter::fromFile($file);
         }
 
-        // fallback strategy to pclzip
-        ZipperService::requirePclzip();
-        return PclzipAdapter::fromFile($file);
+        throw new \BadMethodCallException(sprintf(
+            'Tried to call %s using decommissioned PclZip library adapter - make sure that PHP "zip" extension is installed',
+            __METHOD__
+        ));
     }
 
     /**
@@ -75,8 +76,9 @@ class BundleFileHandlingStrategyZip
             return ZipArchiveBundleWriter::fromFile($file);
         }
 
-        // fallback strategy to pclzip
-        ZipperService::requirePclzip();
-        return PclzipBundleWriter::fromFile($file);
+        throw new \BadMethodCallException(sprintf(
+            'Tried to call %s using decommissioned PclZip library adapter - make sure that PHP "zip" extension is installed',
+            __METHOD__
+        ));
     }
 }
