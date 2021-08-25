@@ -160,10 +160,7 @@ class ServerReportFile
 
         /** @var \DeskPRO\Bundle\AppBundle\Zippy\Zippy $zippy */
         $zippy = App::get('deskpro.zippy');
-
-        $zippy->create($this->archiveFile, [
-             $this->tmpdir,
-        ]);
+        $zippy->createFromDir($this->archiveFile, $this->tmpdir);
     }
 
     /**
