@@ -62,7 +62,7 @@ class Zippy extends \Alchemy\Zippy\Zippy
         }
 
         $files = array_map(function ($d) use ($sourceDir) {
-            return "{$sourceDir}/{$d}";
+            return $sourceDir.DIRECTORY_SEPARATOR.$d;
         }, array_filter(scandir($sourceDir), function ($d) {
             return !($d === '.' || $d === '..');
         }));
