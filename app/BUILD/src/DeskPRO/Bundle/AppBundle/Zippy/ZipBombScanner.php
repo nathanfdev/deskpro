@@ -5,11 +5,6 @@ namespace DeskPRO\Bundle\AppBundle\Zippy;
 class ZipBombScanner
 {
     /**
-     * Max allowable items in archive
-     */
-    const MAX_ARCHIVE_CONTENTS = 4096;
-
-    /**
      * Returns TRUE of the "true" size of the zip is within a limit
      *
      * @param string $filepath
@@ -25,21 +20,16 @@ class ZipBombScanner
         $size = 0;
 
         while ($idx = $zip->statIndex($i++)) {
-            if ($i > self::MAX_ARCHIVE_CONTENTS) {
+            $size += $idx['size'] ? ($idx['size'] / 1024) / 1024 : 0;
+
+            if ($size > $limitInMb) {
+                $zip->close();
                 return false;
             }
-
-            $size += $idx['size'];
         }
 
         $zip->close();
 
-        if ($size === 0) {
-            return true;
-        }
-
-        $sizeMb = ($size / 1024) / 1024;
-
-        return ($sizeMb <= $limitInMb);
+        return true;
     }
 }
