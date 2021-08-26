@@ -16,6 +16,12 @@ class PclzipStringHandlerTest  extends DeskProTestCase
 
     public function testWriteAndRead()
     {
+        // Notice: PclZip has been decommissioned and so we must look for the bad method call exception on legacy tests to prove this
+        $this->setExpectedException(
+            \BadMethodCallException::class,
+            'Tried to call PclZip::__construct, PclZip has been decommissioned for security reasons - use PHP "zip" extension instead'
+        );
+
         $zipFilePath = tempnam("/tmp", "FOO");
         $archive = new \PclZip($zipFilePath);
         $content = 'varooum';

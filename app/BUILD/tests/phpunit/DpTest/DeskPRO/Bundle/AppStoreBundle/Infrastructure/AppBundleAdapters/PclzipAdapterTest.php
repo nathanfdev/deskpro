@@ -19,6 +19,12 @@ class PclzipAdapterTest extends DeskProTestCase
      */
     public function retrieve_contents_of_manifest()
     {
+        // Notice: PclZip has been decommissioned and so we must look for the bad method call exception on legacy tests to prove this
+        $this->setExpectedException(
+            \BadMethodCallException::class,
+            'Tried to call PclZip::__construct, PclZip has been decommissioned for security reasons - use PHP "zip" extension instead'
+        );
+
         $manifestContents = 'dummy manifest contents';
         $zipArchiveBundle = PclzipBundleWriter::fromTmp()->setManifest($manifestContents)->build();
 
@@ -31,6 +37,12 @@ class PclzipAdapterTest extends DeskProTestCase
      */
     public function retrieve_the_contents_of_a_missing_manifest_should_return_null()
     {
+        // Notice: PclZip has been decommissioned and so we must look for the bad method call exception on legacy tests to prove this
+        $this->setExpectedException(
+            \BadMethodCallException::class,
+            'Tried to call PclZip::__construct, PclZip has been decommissioned for security reasons - use PHP "zip" extension instead'
+        );
+
         $zipArchiveBundle = PclzipBundleWriter::fromTmp()->addFile(__FILE__)->build();
 
         $manifestString = $zipArchiveBundle->getManifestAsString();
@@ -45,6 +57,12 @@ class PclzipAdapterTest extends DeskProTestCase
      */
     public function returns_a_list_of_all_the_bundled_files()
     {
+        // Notice: PclZip has been decommissioned and so we must look for the bad method call exception on legacy tests to prove this
+        $this->setExpectedException(
+            \BadMethodCallException::class,
+            'Tried to call PclZip::__construct, PclZip has been decommissioned for security reasons - use PHP "zip" extension instead'
+        );
+
         global $DP_ENV;
         $wwwRoot = $DP_ENV->getWwwRoot();
 

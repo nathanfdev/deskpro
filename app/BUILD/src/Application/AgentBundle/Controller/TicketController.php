@@ -76,6 +76,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\AppBundle\Zippy\Zippy;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -6249,13 +6250,9 @@ CSS;
 
         $outfile = $tmpdir.'/zip';
 
-        require_once DP_ROOT.'/vendor-src/pclzip/pclzip.lib.php';
-        $zip = new \PclZip($outfile);
-        $zip->add(
-            $tmpdir,
-            \PCLZIP_OPT_REMOVE_PATH,
-            dirname($tmpdir)
-        );
+        /** @var Zippy $zippy */
+        $zippy = $this->get('deskpro.zippy');
+        $zippy->createFromDir($outfile, $tmpdir);
 
         header('Content-Type: application/zip; filename=ticket-debug-'.$ticket->id.'.zip');
         header('Content-Length: '.filesize($outfile));

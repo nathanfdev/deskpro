@@ -950,12 +950,13 @@ class AppsController extends AbstractController
             @rmdir($tmpdir);
         });
 
-        /** @var \Orb\Zip\Zip $zipper */
-        $zipper = $this->container->getSystemService('zipper');
-
         try {
-            $zipper->decompressZip($temp_name, $tmpdir);
-        } catch (ZipException $e) {
+            /** @var \DeskPRO\Bundle\AppBundle\Zippy\Zippy $zippy */
+            $zippy = \Application\DeskPRO\App::get('deskpro.zippy');
+
+            // Assert that zip size is within 50Mb limit
+            $zippy->openWithSizeAssertion($temp_name, 50)->extract($tmpdir);
+        } catch (\Exception $e) {
             if ($e->getCode() == ZipException::BAD_FORMAT) {
                 return $this->createApiErrorResponse('invalid_file', 'Invalid ZIP file -- Invalid format -- Details: '.$e->getMessage());
             } else {
