@@ -9,6 +9,19 @@ use Alchemy\Zippy\Exception\NoAdapterOnPlatformException;
 class Zippy extends \Alchemy\Zippy\Zippy
 {
     /**
+     * @var ZipBombScanner
+     */
+    private $zipBombScanner;
+
+    /**
+     * @param ZipBombScanner $zipBombScanner
+     */
+    public function setZipBombScanner($zipBombScanner)
+    {
+        $this->zipBombScanner = $zipBombScanner;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public static function load()
@@ -21,6 +34,27 @@ class Zippy extends \Alchemy\Zippy\Zippy
         $factory->addStrategy(new ZipFileNoExtStrategy($adapters));
 
         return $factory;
+    }
+
+    /**
+     * Open a zip archive and assert that it is below a certain size limit
+     *
+     * @param string $path
+     * @param int $sizeLimitMb
+     * @param mixed|null $type
+     * @return \Alchemy\Zippy\Archive\ArchiveInterface
+     */
+    public function openWithSizeAssertion($path, $sizeLimitMb = 10, $type = null)
+    {
+        if (!$this->zipBombScanner) {
+            throw new \RuntimeException("Zip bomb scanner must be set");
+        }
+
+        if (!$this->zipBombScanner->isUnderSizeLimit($path, $sizeLimitMb)) {
+            throw new \RuntimeException('Zip file is either corrupt or too large, error code E1983');
+        }
+
+        return parent::open($path, $type);
     }
 
     /**

@@ -51,11 +51,12 @@ class AppsController extends AbstractController
 
         $installer->dumpPackage($package, $path);
 
-        // compress
-        /** @var \Orb\Zip\Zip $zipper */
-        $zipper = $this->container->getSystemService('zipper');
-        $file   = $path.'/app.zip';
-        $zipper->compressPath($path, $file);
+        $file = $path.'/app.zip';
+
+        /** @var \DeskPRO\Bundle\AppBundle\Zippy\Zippy $zippy */
+        $zippy = \Application\DeskPRO\App::get('deskpro.zippy');
+        $zippy->createFromDir($file, $path);
+
         $response = new BinaryFileResponse($file);
 
         // cleanup

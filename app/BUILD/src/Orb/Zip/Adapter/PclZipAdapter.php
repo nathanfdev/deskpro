@@ -10,6 +10,14 @@ use Orb\Zip\ZipException;
 
 class PclZipAdapter implements ZipAdapterInterface
 {
+    public function __construct()
+    {
+        throw new \BadMethodCallException(sprintf(
+            'Tried to call %s, PclZip has been decommissioned for security reasons - use PHP "zip" extension instead',
+            __METHOD__
+        ));
+    }
+
     /**
      * Compress a file or directory of files.
      *

@@ -81,7 +81,9 @@ class ThemeSetImport
         try {
             /** @var \DeskPRO\Bundle\AppBundle\Zippy\Zippy $zippy */
             $zippy = App::get('deskpro.zippy');
-            $zippy->open($archivePath)->extract($this->tmpDir);
+
+            // Assert that zip size is within 50Mb limit
+            $zippy->openWithSizeAssertion($archivePath, 50)->extract($this->tmpDir);
         } catch (\Exception $e) {
             throw new \RuntimeException('Unable to extract theme set archive', 0, $e);
         }
