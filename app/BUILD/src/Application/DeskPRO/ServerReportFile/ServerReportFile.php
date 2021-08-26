@@ -158,20 +158,9 @@ class ServerReportFile
     {
         $this->_addFilesToArchive();
 
-        require_once DP_ROOT.'/vendor-src/pclzip/pclzip.lib.php';
-
-        $archive = new \PclZip($this->archiveFile);
-
-        $list = $archive->add(
-            $this->tmpdir,
-            \PCLZIP_OPT_REMOVE_ALL_PATH
-        );
-
-        if ($list == 0) {
-            die('Error : '.$archive->errorInfo(true));
-        }
-
-        return $this->archiveFile;
+        /** @var \DeskPRO\Bundle\AppBundle\Zippy\Zippy $zippy */
+        $zippy = App::get('deskpro.zippy');
+        $zippy->createFromDir($this->archiveFile, $this->tmpdir);
     }
 
     /**

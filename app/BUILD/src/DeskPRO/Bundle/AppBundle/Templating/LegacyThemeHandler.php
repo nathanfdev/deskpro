@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Templating;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Template;
@@ -106,14 +107,9 @@ class LegacyThemeHandler
         }
 
         // write to archive
-        require_once DP_ROOT.'/vendor-src/pclzip/pclzip.lib.php';
-
-        $archive = new \PclZip($archivePath);
-        $list    = $archive->add($tmpDir, \PCLZIP_OPT_REMOVE_PATH, $tmpDir);
-
-        if ($list == 0) {
-            throw new \RuntimeException('Unable to create an archive file of legacy templates');
-        }
+        /** @var \DeskPRO\Bundle\AppBundle\Zippy\Zippy $zippy */
+        $zippy = App::get('deskpro.zippy');
+        $zippy->createFromDir($archivePath, $tmpDir);
 
         // create new blob file
         $this->em

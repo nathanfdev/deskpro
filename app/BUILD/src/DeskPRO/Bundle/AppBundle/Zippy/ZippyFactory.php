@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Zippy;
 
-use Alchemy\Zippy;
 use Symfony\Component\DependencyInjection\Container;
 
 class ZippyFactory
@@ -10,11 +9,16 @@ class ZippyFactory
     /**
      * @param Container $container
      *
-     * @return Zippy\Zippy
+     * @return Zippy
+     * @throws \Exception
      */
     public static function getZippy(Container $container)
     {
-        $zippy = Zippy\Zippy::load();
+        $zippy = Zippy::load();
+
+        /** @var ZipBombScanner $zipBombScanner */
+        $zipBombScanner = $container->get('deskpro.zip_bomb_scanner');
+        $zippy->setZipBombScanner($zipBombScanner);
 
         return $zippy;
     }

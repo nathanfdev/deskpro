@@ -37,6 +37,9 @@ services:
     tags:
       - { name: kernel.cache_warmer, priority: 100 }
 
+  deskpro.zip_bomb_scanner:
+    class: DeskPRO\Bundle\AppBundle\Zippy\ZipBombScanner
+
   deskpro.zippy:
     class: "Alchemy\\Zippy\\Zippy"
     factory: ["DeskPRO\\Bundle\\AppBundle\\Zippy\\ZippyFactory", "getZippy"]
