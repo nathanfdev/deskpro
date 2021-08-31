@@ -50,7 +50,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}, 11000);
 
 		this.limited_getUpdatedSlaCounts = _.throttle(function() {
-      if (_.get(self, 'listPage.$scope.realtime', false)) {
+      if (self.listPage.$scope && self.listPage.$scope.realtime) {
         self.getUpdatedSlaCounts();
       }
 		}, 35000);
