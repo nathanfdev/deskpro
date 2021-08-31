@@ -205,33 +205,60 @@
                     <header>
                         <h3>Features</h3>
                     </header>
-                    <article>
-                        <div class="dp-mpadded">
-                            <div style="padding-bottom: 20px; display: flex; align-items: flex-start;" ng-repeat="(featureId, feature) in Home.features">
-                                <div ng-style="(!feature.processing && ((feature.enabled && feature.can_be_disabled) || !feature.enabled)) && {'padding-top':'5px'}" style="white-space: nowrap">
-                                    <strong>{{ ng_var('feature.title') }}: </strong>
-                                </div>
-                                <div style="margin-left: 5px">
-                                    <span ng-bind-html="feature.short_description"></span>
-                                    <a ng-show="!feature.enabled && !feature.processing" class="btn btn-success" href="{{ ng_href('features.enable', '{id: feature.id}') }}">Enable</a>
-                                    <a ng-show="feature.enabled && feature.can_be_disabled && !feature.processing"  class="btn btn-danger" href="{{ ng_href('features.disable', '{id: feature.id}') }}">Disable</a>
-                                    <span ng-show="feature.enabled && !feature.can_be_disabled && !feature.processing" style="color: green">Enabled</span>
-                                    <span ng-show="feature.enabled && feature.processing">
-                                        <br/>
-                                        Please wait while the feature is <span style='color: red'>disabled</span>. This may take a few minutes
-                                    </span>
-                                    <span ng-show="!feature.enabled && feature.processing">
-                                        Please wait while the feature is <span style='color: green'>enabled</span>. This may take a few minutes
-                                    </span>
-                                    <i ng-show="feature.processing" class="spinner-flat"></i>
-                                    <div ng-show="feature.extra_info_content" ng-bind-html="feature.extra_info_content"></div>
-                                    <div ng-show="!feature.enabled && !feature.processing && feature.due_date" style="color: red;">
-                                        This feature will be automatically enabled after {{ ng_var('feature.due_date | date : "longDate"') }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
+					<article>
+						<div class="dp-mpadded">
+							<div style="border: 2px solid #d0d9e6; border-radius: 3px; margin-bottom: 10px; padding: 10px; background-color: #f7faff; " ng-repeat="(featureId, feature) in Home.features" ng-if="featureId === 'helpcenter' || featureId === 'email_templates'">
+								<div style="float:right">
+									<a ng-show="!feature.enabled && !feature.processing" class="btn btn-success" href="{{ ng_href('features.enable', '{id: feature.id}') }}">Enable</a>
+									<a ng-show="feature.enabled && feature.can_be_disabled && !feature.processing"  class="btn btn-danger" href="{{ ng_href('features.disable', '{id: feature.id}') }}">Disable</a>
+									<span ng-show="feature.enabled && !feature.can_be_disabled && !feature.processing" style="color: green">Enabled</span>
+									<i ng-show="feature.processing" class="spinner-flat"></i>
+								</div>
+								<div>
+									<strong>{{ ng_var('feature.title') }}</strong>
+								</div>
+								<div>
+									<div ng-if="feature.short_description" ng-bind-html="feature.short_description"></div>
+									<div ng-show="feature.enabled && feature.processing">
+										Please wait while the feature is <span style='color: red'>disabled</span>. This may take a few minutes
+									</div>
+									<div ng-show="!feature.enabled && feature.processing">
+										Please wait while the feature is <span style='color: green'>enabled</span>. This may take a few minutes
+									</div>
+									<div ng-show="feature.extra_info_content" ng-bind-html="feature.extra_info_content"></div>
+									<div ng-show="featureId == 'helpcenter'">
+										The new Help Center theme more modern and accessible than the old portal.
+										<a href="https://support.deskpro.com/kb/articles/775">Learn more here</a>.
+									</div>
+									<div ng-show="featureId == 'email_templates'">
+										Upgrading to the new email templates system is easy.
+										<a href="https://support.deskpro.com/en/kb/articles/updating-to-the-new-email-templates-editor">Learn more here</a>.
+									</div>
+								</div>
+							</div>
+							<div style="border: 1px solid #e1e6ee; border-radius: 3px; margin-bottom: 10px; padding: 10px;" ng-repeat="(featureId, feature) in Home.features" ng-if="featureId !== 'helpcenter' && featureId !== 'email_templates'">
+								<div style="float:right">
+									<a ng-show="!feature.enabled && !feature.processing" class="btn btn-success" href="{{ ng_href('features.enable', '{id: feature.id}') }}">Enable</a>
+									<a ng-show="feature.enabled && feature.can_be_disabled && !feature.processing"  class="btn btn-danger" href="{{ ng_href('features.disable', '{id: feature.id}') }}">Disable</a>
+									<span ng-show="feature.enabled && !feature.can_be_disabled && !feature.processing" style="color: green">Enabled</span>
+									<i ng-show="feature.processing" class="spinner-flat"></i>
+								</div>
+								<div>
+									<strong>{{ ng_var('feature.title') }}</strong>
+								</div>
+								<div>
+									<div ng-if="feature.short_description" ng-bind-html="feature.short_description"></div>
+									<div ng-show="feature.enabled && feature.processing">
+										Please wait while the feature is <span style='color: red'>disabled</span>. This may take a few minutes
+									</div>
+									<div ng-show="!feature.enabled && feature.processing">
+										Please wait while the feature is <span style='color: green'>enabled</span>. This may take a few minutes
+									</div>
+									<div ng-show="feature.extra_info_content" ng-bind-html="feature.extra_info_content"></div>
+								</div>
+							</div>
+						</div>
+					</article>
 				</td>
 				<td class="dp-item" ng-class="{'with-error':Home.cron_status.is_problem}">
 					<header>
