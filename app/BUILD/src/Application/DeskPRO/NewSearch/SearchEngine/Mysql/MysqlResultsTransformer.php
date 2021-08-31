@@ -52,9 +52,6 @@ class MysqlResultsTransformer
             if ($ent_objects) {
                 foreach ($ent_objects as $o) {
                     $key           = $ent.':'.$o->id;
-                    if (!$o instanceof Ticket) {
-                        $o->setTitle($o->getTranslatedTitle());
-                    }
                     $objects[$key] = $o;
                 }
             }
