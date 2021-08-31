@@ -81,6 +81,10 @@ class NewUserChatMessageGenerator extends SystemEventGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
+        if (!($event instanceof UserChatEvent)) {
+            return false;
+        }
+
         $data = $event->getData();
 
         return
