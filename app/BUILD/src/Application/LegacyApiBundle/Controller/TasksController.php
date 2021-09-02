@@ -88,7 +88,7 @@ class TasksController extends AbstractController
     /**
      * update tasks settings.
      */
-    public function updateSettingsAction()
+    public function updateSettingsAction(Request $request)
     {
         $enabled = $this->in->getUInt('enabled');
         $this->settings->setSetting(self::KEY_ENABLED, $enabled);
@@ -122,6 +122,6 @@ class TasksController extends AbstractController
             $persister->saveOverridePerms($agent, $perms);
         }
 
-        return $this->settingsAction();
+        return $this->settingsAction($request);
     }
 }
