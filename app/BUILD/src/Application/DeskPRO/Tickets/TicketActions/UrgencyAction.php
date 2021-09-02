@@ -20,7 +20,7 @@ class UrgencyAction extends AbstractAction implements PermissionableAction
 
     public function __construct($num)
     {
-        $this->num = $num;
+        $this->num = (int)$num ?: 0;
     }
 
     /**
