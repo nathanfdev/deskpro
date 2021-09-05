@@ -1,13 +1,13 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\EntityRepository\LabelDef;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -21,7 +21,9 @@ class LabelsController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new AgentPermission();
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new AgentPermission(), 'listDefinitionsAction');
     }
 
     public function listDefinitionsAction($type = null)
@@ -100,6 +102,7 @@ class LabelsController extends AbstractController
     {
         $label = $this->in->getString('label');
         $type  = $this->in->getString('label_type');
+
         try {
             if (!$definition = $this->rep()->getDefinition($type, $label)) {
                 throw $this->createNotFoundException();
