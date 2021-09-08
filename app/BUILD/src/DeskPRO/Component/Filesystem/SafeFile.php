@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Component\Filesystem;
 
+use DpSys\Kernel\BaseKernel;
 use DpSys\LowError\SystemErrorHandler;
 
 /**
@@ -126,6 +127,11 @@ class SafeFile
         // remove 'file://' prefix if its there
         if (stripos($path, 'file://') === 0 || stripos($path, 'file:\\') === 0) {
             $path = substr($path, 7);
+        }
+
+        // remove 'dpfsproxy://cache' prefix if its there
+        if (stripos($path, BaseKernel::DPFS_PROXY_PREFIX_CACHE) === 0) {
+            $path = substr($path, strlen(BaseKernel::DPFS_PROXY_PREFIX_CACHE));
         }
 
         $trailingSlash = substr($path, -1, 1) === '/' || substr($path, -1, 1) === '\\';

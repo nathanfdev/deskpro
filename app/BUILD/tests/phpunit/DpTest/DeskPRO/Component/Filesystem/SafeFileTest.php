@@ -9,6 +9,7 @@ namespace DpTest\DeskPRO\Component\Filesystem;
 require __DIR__.'/ExamplePharExploitClass.php';
 
 use DeskPRO\Component\Filesystem\SafeFile;
+use DpSys\Kernel\BaseKernel;
 use DpTest\DeskProTestCase;
 use ExamplePharExploitClass;
 
@@ -21,6 +22,7 @@ class SafeFileTest extends DeskProTestCase
         SafeFile::addBlacklistDir('/var/log/');
         SafeFile::addBlacklistDir('/var/www/deskpro/attachments/');
         SafeFile::addBlacklistDir('/var/www/deskpro/backups/');
+        SafeFile::setEmitWarningsOption(false);
     }
 
     public function testSafeFileAny()
@@ -89,6 +91,9 @@ class SafeFileTest extends DeskProTestCase
         $this->assertTrue(SafeFile::isValid(__DIR__.'/../../Component/Filesystem/resources/example.txt', __DIR__));
         $this->assertTrue(SafeFile::isValid('file://'.__DIR__.'/resources/example.txt', __DIR__));
         $this->assertTrue(SafeFile::isValid('file://'.__DIR__.'/../../Component/Filesystem/resources/example.txt', __DIR__));
+
+        // Assert tha DPFS proxy stream wrappers are allowed and qualified paths are valid
+        $this->assertTrue(SafeFile::isValid(BaseKernel::DPFS_PROXY_PREFIX_CACHE.__DIR__.'/../../Component/Filesystem/resources/example.txt', __DIR__));
 
         // Invalid
         $this->assertFalse(SafeFile::isValid('phar://'.__DIR__.'/resources/example.phar', $whitelist));
