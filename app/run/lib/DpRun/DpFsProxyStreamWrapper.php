@@ -22,6 +22,15 @@ class DpFsProxyStreamWrapper
     const IS_LOGGING = false;
 
     /**
+     * List of known cache files that are always written, these include core Symfony templates. This is so we can ignore
+     * logging them as attempted write operations
+     */
+    const KNOWN_CACHE_WRITE_FILES = [
+        '4b481743a3a2b473e7cf0cee547bf9a6e3412e0d5fd47e078f42aef133217225.php',
+        '0ebb1e319fb2ff3f17720b1c4de8f5a46afb9adbf94a15fdd2b7fb7282d79f63.php',
+    ];
+
+    /**
      * Default dummy file size
      */
     const DEFAULT_DUMMY_FILE_SIZE = (4096 * 4096);
@@ -233,6 +242,11 @@ class DpFsProxyStreamWrapper
      */
     public function stream_open($path, $mode, $options, &$opened_path)
     {
+        // Always log attempted writes, i.e. this means the cache file wasn't warmed (if using cache namespace)
+        if (self::isWriteMode($mode) && !self::isKnownCacheWriteFile($path)) {
+            syslog(LOG_INFO, \json_encode(['msg' => 'dpfs-write', 'path' => $path, 'mode' => $mode]));
+        }
+
         $this->log('CALL: '.__METHOD__." MODE: $mode, PATH: ".$path);
 
         $resolvedPath = self::getPath($path);
@@ -611,6 +625,17 @@ class DpFsProxyStreamWrapper
         }
 
         return \strpos($path, self::$protocol.'://') !== false;
+    }
+
+    /**
+     * @param string $path
+     * @return bool
+     */
+    private static function isKnownCacheWriteFile($path)
+    {
+        return (bool) count(array_filter(self::KNOWN_CACHE_WRITE_FILES, function ($f) use ($path) {
+            return strpos($path, $f) !== false;
+        }));
     }
 
     /**
