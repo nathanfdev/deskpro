@@ -137,7 +137,17 @@ class ChatController extends AbstractMessengerController
     {
         $chat = $this->findChatByIdToken($idToken);
 
-        return View::create($this->get('messenger.handlers.chat')->handle($chat, $request->request->all()), Response::HTTP_OK);
+        $visitorId = $request->headers->get(VisitorIdListener::VISITOR_HEADER_NAME);
+        /** @var \Application\DeskPRO\EntityRepository\ChatBlock $repo */
+        $repo  = $this->getDoctrine()->getRepository(ChatBlock::class);
+        $block = $repo->getBlockForVisitor($visitorId, $request->getClientIp());
+
+        if ($block) {
+            throw new AccessDeniedHttpException('banned');
+        }
+
+        return View::create($this->get('messenger.handlers.chat')->handle($chat, $request->request->all()),
+            Response::HTTP_OK);
     }
 
     /**
