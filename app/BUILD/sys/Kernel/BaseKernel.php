@@ -22,6 +22,12 @@ use Symfony\Component\HttpKernel\Kernel;
 abstract class BaseKernel extends Kernel
 {
     /**
+     * Readonly filesystem stream wrapper and namespace prefixes
+     */
+    const DPFS_PROXY_PREFIX_CACHE = 'dpfsproxy://cache';
+    const DPFS_PROXY_PREFIX_LOG   = 'dpfsproxy://log';
+
+    /**
      * @var \DpRun\DpEnv
      */
     private $dpEnv;
@@ -331,7 +337,7 @@ CODE;
     public function getCacheDir()
     {
         if (self::canUseVFSProxy()) {
-            return 'dpfsproxy://cache'.$this->dpEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$this->getEnvironment();
+            return self::DPFS_PROXY_PREFIX_CACHE.$this->dpEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$this->getEnvironment();
         }
 
         return $this->dpEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$this->getEnvironment();
@@ -343,7 +349,7 @@ CODE;
     public function getLogDir()
     {
         if (self::canUseVFSProxy()) {
-            return 'dpfsproxy://log'.$this->dpEnv->getUserLogsDir();
+            return self::DPFS_PROXY_PREFIX_LOG.$this->dpEnv->getUserLogsDir();
         }
 
         return $this->dpEnv->getUserLogsDir();
