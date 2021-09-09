@@ -249,7 +249,7 @@ class DpFsProxyStreamWrapper
                 'path' => $path,
                 'mode' => $mode,
                 'method' => @$_SERVER['REQUEST_METHOD'],
-                'rpath' => @$_SERVER['REQUEST_URI'],
+                'uri' => @$_SERVER['REQUEST_URI'],
                 'q' => @$_SERVER['QUERY_STRING'],
             ]));
         }
