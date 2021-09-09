@@ -244,7 +244,14 @@ class DpFsProxyStreamWrapper
     {
         // Always log attempted writes, i.e. this means the cache file wasn't warmed (if using cache namespace)
         if (self::isWriteMode($mode) && !self::isKnownCacheWriteFile($path)) {
-            syslog(LOG_INFO, \json_encode(['msg' => 'dpfs-write', 'path' => $path, 'mode' => $mode]));
+            syslog(LOG_INFO, \json_encode([
+                'msg' => 'dpfs-write',
+                'path' => $path,
+                'mode' => $mode,
+                'method' => @$_SERVER['REQUEST_METHOD'],
+                'rpath' => @$_SERVER['REQUEST_URI'],
+                'q' => @$_SERVER['QUERY_STRING'],
+            ]));
         }
 
         $this->log('CALL: '.__METHOD__." MODE: $mode, PATH: ".$path);
