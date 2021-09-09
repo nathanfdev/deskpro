@@ -424,6 +424,7 @@ class Runner
         // Mark as processing now
         $sourceLogger->logDebug('Marking source as processing');
         $source->setStatus(EmailSource::STATUS_PROCESSING);
+        $source->setExecCount($source->exec_count + 1);
         App::getOrm()->persist($source);
         App::getOrm()->flush();
 
@@ -438,8 +439,6 @@ class Runner
             } catch (\Exception $e) {
             }
         }
-
-        ++$source->exec_count;
 
         $sourceLogger->logDebug('Executing Source '.$source->getId());
         if ($source->uid) {

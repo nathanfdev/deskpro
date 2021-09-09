@@ -489,7 +489,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setExecCount($exec_count)
     {
-        $this->exec_count = $exec_count;
+        $this->setModelField('exec_count', $exec_count);
     }
 
     /**
