@@ -36,37 +36,6 @@ class ProcessEmailGateways extends AbstractJob
         @ini_set('memory_limit', DP_MAX_MEMSIZE);
 
         //------------------------------
-        // Mark error sources
-        //------------------------------
-
-        // If a source has been in the 'processing' state for more than 15 mintues,
-        // then it means it's probably an error
-        $d = date('Y-m-d H:i:s', time() - 900);
-
-        // Retry those that havent been retried
-        $num = App::getDb()->executeUpdate("
-            UPDATE email_sources
-            SET status = 'retry', error_code = NULL
-            WHERE status = 'processing' AND date_created < ? AND exec_count <= 2
-        ", [$d]);
-
-        if ($num) {
-            $this->getLogger()->logNotice("$num email sources(s) marked as timeout and will be retried");
-        }
-
-        $num = App::getDb()->executeUpdate("
-            UPDATE email_sources
-            SET status = 'error', error_code = 'timeout'
-            WHERE status = 'processing' AND date_created < ? AND exec_count >= 2
-        ", [$d]);
-
-        if ($num) {
-            $e = new \Exception("$num email source(s) marked as timeout and will not be retried because they are over the retry threshold");
-            SystemErrorHandler::logException($e);
-            $this->getLogger()->log("$num sources marked as timeout and will not be retried", 'ERR');
-        }
-
-        //------------------------------
         // Run the gateways
         //------------------------------
 
@@ -111,5 +80,36 @@ class ProcessEmailGateways extends AbstractJob
         // reset it to disabled so other cron tasks can finish in this same execution
         @set_time_limit(0);
         @ini_set('memory_limit', DP_USE_MEMSIZE);
+
+        //------------------------------
+        // Mark error sources
+        //------------------------------
+
+        // If a source has been in the 'processing' state for more than 15 mintues,
+        // then it means it's probably an error
+        $d = date('Y-m-d H:i:s', time() - 900);
+
+        // Retry those that havent been retried - they will retry on the next run
+        $num = App::getDb()->executeUpdate("
+            UPDATE email_sources
+            SET status = 'retry', error_code = NULL
+            WHERE status = 'processing' AND date_created < ? AND exec_count <= 2
+        ", [$d]);
+
+        if ($num) {
+            $this->getLogger()->logNotice("$num email sources(s) marked as timeout and will be retried");
+        }
+
+        $num = App::getDb()->executeUpdate("
+            UPDATE email_sources
+            SET status = 'error', error_code = 'timeout'
+            WHERE status = 'processing' AND date_created < ? AND exec_count >= 2
+        ", [$d]);
+
+        if ($num) {
+            $e = new \Exception("$num email source(s) marked as timeout and will not be retried because they are over the retry threshold");
+            SystemErrorHandler::logException($e);
+            $this->getLogger()->log("$num sources marked as timeout and will not be retried", 'ERR');
+        }
     }
 }
