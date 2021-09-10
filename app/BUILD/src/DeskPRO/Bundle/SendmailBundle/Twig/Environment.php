@@ -247,7 +247,7 @@ class Environment extends \Twig_Environment
     public function getTemplateClass($name, $index = null)
     {
         $key = $this->getLoader()->getCacheKey($name);
-        $key = str_replace(DP_DIR.DIRECTORY_SEPARATOR, '', $key);
+        $key = substr($key, (int) strpos($key, '/src/'), strlen($key));
 
         $extensions = array_keys($this->extensions);
         sort($extensions);
