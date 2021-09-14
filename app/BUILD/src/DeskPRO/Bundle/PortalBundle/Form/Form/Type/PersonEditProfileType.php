@@ -54,7 +54,7 @@ class PersonEditProfileType extends AbstractType
     /**
      * @var ValidatorInterface
      */
-    private ValidatorInterface $validator;
+    private $validator;
 
     /**
      * Constructor.
