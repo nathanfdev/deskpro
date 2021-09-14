@@ -63,4 +63,21 @@ class SafeFileWinTest extends DeskProTestCase
 
         $this->assertTrue(SafeFile::isValid('C:\\var\\log\\nginx\\access.log', 'C:\\var\\log\\nginx\\'));
     }
+
+    public function testSafeFileMixedSlash()
+    {
+        $this->assertTrue(SafeFile::isValid('C:\\Windows\\Temp\\tmp_1631624849_CHUCBTXZNDXVWHDIWTSQCBHPH\\2429088.blob', 'C:\\Windows\\Temp\\tmp_1631624849_CHUCBTXZNDXVWHDIWTSQCBHPH'));
+        $this->assertTrue(SafeFile::isValid('C:\\Windows\\Temp/tmp_1631624849_CHUCBTXZNDXVWHDIWTSQCBHPH\\2429088.blob', 'C:\\Windows\\Temp\\tmp_1631624849_CHUCBTXZNDXVWHDIWTSQCBHPH'));
+        $this->assertTrue(SafeFile::isValid('C:\\Windows\\Temp/tmp_1631624849_CHUCBTXZNDXVWHDIWTSQCBHPH\\2429088.blob', 'C:\\Windows\\Temp\\/tmp_1631624849_CHUCBTXZNDXVWHDIWTSQCBHPH'));
+
+        // mixed slash
+        $this->assertEquals('C:/var/log/mail.log', SafeFile::normalizePath('C:\\var/log\\mail.log'));
+
+        // double slash
+        $this->assertEquals('C:/DeskPRO/DeskPRO/app/52602/locales/de/localeInfo.yml', SafeFile::normalizePath('C:\DeskPRO\DeskPRO\app\52602\/locales\de\localeInfo.yml'));
+        $this->assertEquals('C:/DeskPRO/DeskPRO/app/52602/locales/de/localeInfo.yml', SafeFile::normalizePath('C:\DeskPRO\DeskPRO\app\52602//locales\de\localeInfo.yml'));
+        $this->assertEquals('C:/DeskPRO/DeskPRO/app/52602/locales/de/localeInfo.yml', SafeFile::normalizePath('C:\DeskPRO\DeskPRO\app\52602\\\\locales\de\localeInfo.yml'));
+
+        $this->assertTrue(SafeFile::isValid('C:\\var\\log\\mail.log', 'C:\\var\\log\\'));
+    }
 }
