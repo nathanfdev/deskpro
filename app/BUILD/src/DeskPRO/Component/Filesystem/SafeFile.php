@@ -267,6 +267,10 @@ class SafeFile
             return true;
         }
 
+        $list = array_map(function ($p) {
+            return rtrim($p, '/');
+        }, $list);
+
         foreach ($list as $p) {
             // quick early check - exact match
             if ($p === $normalPath) {
