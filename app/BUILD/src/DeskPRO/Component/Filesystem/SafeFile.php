@@ -262,6 +262,10 @@ class SafeFile
             return true;
         }
 
+        $list = array_map(function ($p) {
+            return rtrim($p, '/');
+        }, $list);
+
         foreach ($list as $p) {
             if ($p === $normalPath) {
                 return true;
