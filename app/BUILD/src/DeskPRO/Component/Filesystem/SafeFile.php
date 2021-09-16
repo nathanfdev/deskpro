@@ -930,12 +930,20 @@ class SafeFile
             return false;
         }
 
-        return mkdir(
-            self::normalizePath($path),
-            $permissions,
-            $recursive,
-            $context
-        );
+        if ($context) {
+            return mkdir(
+                self::normalizePath($path),
+                $permissions,
+                $recursive,
+                $context
+            );
+        } else {
+            return mkdir(
+                self::normalizePath($path),
+                $permissions,
+                $recursive
+            );
+        }
     }
 
     /**
@@ -1008,7 +1016,11 @@ class SafeFile
             return false;
         }
 
-        return rename(self::normalizePath($from), self::normalizePath($to), $context);
+        if ($context) {
+            return rename(self::normalizePath($from), self::normalizePath($to), $context);
+        } else {
+            return rename(self::normalizePath($from), self::normalizePath($to));
+        }
     }
 
     /**
@@ -1028,7 +1040,11 @@ class SafeFile
             return false;
         }
 
-        return rmdir(self::normalizePath($path), $context);
+        if ($context) {
+            return rmdir(self::normalizePath($path), $context);
+        } else {
+            return rmdir(self::normalizePath($path));
+        }
     }
 
     /**
@@ -1088,7 +1104,11 @@ class SafeFile
             return false;
         }
 
-        return unlink(self::normalizePath($path), $context);
+        if ($context) {
+            return unlink(self::normalizePath($path), $context);
+        } else {
+            return unlink(self::normalizePath($path));
+        }
     }
 }
 
