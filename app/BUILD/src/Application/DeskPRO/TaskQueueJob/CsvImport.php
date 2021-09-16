@@ -15,6 +15,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\TaskQueue;
 use DeskPRO\Bundle\ImportBundle\CsvImport\CsvImporter;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Filesystem\TmpDir;
 use DeskPRO\Component\Util\MapUtils;
 use Monolog\Logger;
@@ -104,7 +105,7 @@ class CsvImport extends AbstractJob
 
         $csvFile = TmpDir::makeTmpFile();
 
-        if (!file_exists($csvFile) || !is_readable($csvFile)) {
+        if (SafeFile::is_file($csvFile, SafeFile::UNSPECIFIED)) {
             file_put_contents($csvFile, App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob));
         }
         if (!file_exists($csvFile) || !is_readable($csvFile)) {

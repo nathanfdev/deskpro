@@ -189,7 +189,7 @@ class CsvUpload
             return ['error' => 'no_move'];
         }
 
-        if (!SafeFile::is_file($csv_path, SafeFile::UNSPECIFIED)) {
+        if (SafeFile::is_file($csv_path, SafeFile::UNSPECIFIED)) {
             App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
         }
 
