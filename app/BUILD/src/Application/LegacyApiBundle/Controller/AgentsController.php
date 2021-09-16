@@ -28,6 +28,7 @@ use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Filesystem\TmpDir;
 use DpSys\License;
 use Orb\Util\Arrays;
@@ -1417,8 +1418,10 @@ class AgentsController extends AbstractController
 
             $csv_file = TmpDir::makeTmpFile();
 
-            if (!file_exists($csv_file) || !is_readable($csv_file)) {
+            if (SafeFile::is_file($csv_file, SafeFile::UNSPECIFIED)) {
                 file_put_contents($csv_file, $this->container->getBlobStorage()->copyBlobRecordToString($blob));
+            } else {
+                return $this->createApiErrorResponse('file_not_readable', 'Can\'t read file');
             }
 
             if (!file_exists($csv_file) || !is_readable($csv_file)) {
@@ -1514,7 +1517,7 @@ class AgentsController extends AbstractController
 
         $csv_file = TmpDir::makeTmpFile();
 
-        if (!file_exists($csv_file) || !is_readable($csv_file)) {
+        if (SafeFile::is_file($csv_file, SafeFile::UNSPECIFIED)) {
             file_put_contents($csv_file, $this->container->getBlobStorage()->copyBlobRecordToString($blob));
         }
 
