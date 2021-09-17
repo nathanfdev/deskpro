@@ -129,7 +129,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
      */
     public function writeBlobFromFile(Blob $blob, $sourcePath)
     {
-        $fp_source = @SafeFile::fopen($sourcePath, 'r', $this->base_path);
+        $fp_source = @SafeFile::fopen($sourcePath, 'r', SafeFile::UNSPECIFIED);
 
         if (!$fp_source) {
             @fclose($fp_source);
