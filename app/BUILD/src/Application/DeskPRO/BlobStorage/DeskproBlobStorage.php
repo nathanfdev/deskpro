@@ -1282,6 +1282,8 @@ class DeskproBlobStorage implements Loggable
      */
     public function clearCache()
     {
+        $wasEmittingWarnings = SafeFile::setEmitWarningsOption(false);
+
         foreach ($this->cachedFiles as $file) {
             if (SafeFile::is_file($file, $this->tmpDir->getPath())) {
                 if (!$result = SafeFile::unlink($file, $this->tmpDir->getPath())) {
@@ -1292,6 +1294,8 @@ class DeskproBlobStorage implements Loggable
                 }
             }
         }
+
+        SafeFile::setEmitWarningsOption($wasEmittingWarnings);
     }
 
     /**
