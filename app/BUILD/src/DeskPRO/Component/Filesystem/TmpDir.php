@@ -68,7 +68,7 @@ class TmpDir
      */
     public static function getSysTempDir()
     {
-        return realpath(sys_get_temp_dir());
+        return realpath(dp_get_tmp_dir());
     }
 
     /**
@@ -86,7 +86,7 @@ class TmpDir
             $this->initNow();
         }
 
-//        register_shutdown_function([$this, 'cleanup']);
+        register_shutdown_function([$this, 'cleanup']);
     }
 
     private function initNow()

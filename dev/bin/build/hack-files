@@ -256,6 +256,13 @@ EOF;
 
 $patchCode($f, $from, $to);
 
+echo "Patching alchemy/zippy/src/Resource/ResourceManager.php\n";
+$f = $DP_DIR.'/app/BUILD/vendor/alchemy/zippy/src/Resource/ResourceManager.php';
+$from = '$context = sprintf(\'%s/%s\', sys_get_temp_dir(), uniqid(\'zippy_\'));';
+$to = '$context = sprintf(\'%s/%s\', dp_get_tmp_dir(), uniqid(\'zippy_\'));';
+
+$patchCode($f, $from, $to);
+
 if ($failedCount) {
     $f  = $DP_DIR.'/app/BUILD/src/Application/AgentBundle/Controller/MainController.php';
 

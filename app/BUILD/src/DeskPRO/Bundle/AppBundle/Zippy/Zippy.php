@@ -27,7 +27,8 @@ class Zippy extends \Alchemy\Zippy\Zippy
     public static function load()
     {
         $adapters = AdapterContainer::load();
-        $factory = new Zippy($adapters);
+
+        $factory = new self($adapters);
 
         // Only support zip archives
         $factory->addStrategy(new ZipFileStrategy($adapters));

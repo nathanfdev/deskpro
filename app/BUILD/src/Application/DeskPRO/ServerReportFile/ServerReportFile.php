@@ -11,13 +11,12 @@ use Application\DeskPRO\ORM\Util\Util;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Instructions\InstructionsGenerator;
+use DeskPRO\Component\Filesystem\TmpDir;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Files;
 use Orb\Util\Strings;
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Filesystem;
 
 class ServerReportFile
 {
@@ -99,11 +98,7 @@ class ServerReportFile
         $this->em = $em;
         $this->oi = $output;
 
-        $this->tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.uniqid('dpd', true);
-
-        if (!mkdir($this->tmpdir, 0777, true)) {
-            die('Could not create temp dir: '.$this->tmpdir);
-        }
+        $this->tmpdir = TmpDir::makeTmpDir();
 
         $this->archiveFile = $this->tmpdir.'/deskpro-report.zip';
         $this->appEnv      = $appEnv;
@@ -144,9 +139,6 @@ class ServerReportFile
         fclose($fp);
 
         unlink($this->archiveFile);
-
-        $fs = new Filesystem();
-        $fs->remove($this->tmpdir);
 
         exit;
     }
