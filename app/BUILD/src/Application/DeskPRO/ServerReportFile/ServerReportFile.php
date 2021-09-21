@@ -99,8 +99,8 @@ class ServerReportFile
         $this->oi = $output;
 
         $this->tmpdir = TmpDir::makeTmpDir();
+        $this->archiveFile = TmpDir::makeTmpDir().'/deskpro-report.zip';
 
-        $this->archiveFile = $this->tmpdir.'/deskpro-report.zip';
         $this->appEnv      = $appEnv;
     }
 
