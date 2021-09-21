@@ -1284,6 +1284,10 @@ class DeskproBlobStorage implements Loggable
     {
         $wasEmittingWarnings = SafeFile::setEmitWarningsOption(false);
 
+        if ($this->tmpDir->getPath() === null) {
+            return;
+        }
+
         foreach ($this->cachedFiles as $file) {
             if (SafeFile::is_file($file, $this->tmpDir->getPath())) {
                 if (!$result = SafeFile::unlink($file, $this->tmpDir->getPath())) {
@@ -1294,6 +1298,8 @@ class DeskproBlobStorage implements Loggable
                 }
             }
         }
+
+        $this->cachedFiles = [];
 
         SafeFile::setEmitWarningsOption($wasEmittingWarnings);
     }
