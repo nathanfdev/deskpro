@@ -280,14 +280,6 @@ EOF;
 
 $patchCode($f, $from, $to);
 
-
-
-
-
-
-
-
-
 echo "Patching alchemy/zippy/src/Resource/Writer/StreamWriter.php\n";
 $f = $DP_DIR.'/app/BUILD/vendor/alchemy/zippy/src/Resource/Writer/StreamWriter.php';
 $from = <<<'EOF'
@@ -327,15 +319,6 @@ $to = <<<'EOF'
 EOF;
 
 $patchCode($f, $from, $to);
-
-
-
-
-
-
-
-
-
 
 if ($failedCount) {
     $f  = $DP_DIR.'/app/BUILD/src/Application/AgentBundle/Controller/MainController.php';
