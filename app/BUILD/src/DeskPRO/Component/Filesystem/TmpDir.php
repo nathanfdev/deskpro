@@ -68,7 +68,11 @@ class TmpDir
      */
     public static function getSysTempDir()
     {
-        return realpath(dp_get_tmp_dir());
+        $dir = dp_get_tmp_dir();
+        if (!$dir || !is_writable($dir)) {
+            $dir = sys_get_temp_dir();
+        }
+        return realpath($dir);
     }
 
     /**
