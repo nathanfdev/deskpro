@@ -96,12 +96,27 @@ class Zippy extends \Alchemy\Zippy\Zippy
             throw new \InvalidArgumentException(sprintf('%s must be a directory', $sourceDir));
         }
 
-        $files = array_map(function ($d) use ($sourceDir) {
-            return $sourceDir.DIRECTORY_SEPARATOR.$d;
-        }, array_filter(scandir($sourceDir), function ($d) {
-            return !($d === '.' || $d === '..');
-        }));
+        $files = [];
+        foreach ($this->getDirContents($sourceDir) as $path) {
+            $files[ltrim(str_replace('\\', '/', str_replace($sourceDir, '', $path)), '\\/')] = $path;
+        }
 
-        return $this->create($archivePath, $files, $isRecursive);
+        return $this->create($archivePath, $files, false);
+    }
+
+    private function getDirContents($dir, &$results = array()) {
+        $files = scandir($dir);
+
+        foreach ($files as $value) {
+            $path = realpath($dir . DIRECTORY_SEPARATOR . $value);
+            if (!is_dir($path)) {
+                $results[] = $path;
+            } else if ($value != "." && $value != "..") {
+                $this->getDirContents($path, $results);
+                $results[] = $path;
+            }
+        }
+
+        return $results;
     }
 }
