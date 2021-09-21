@@ -263,6 +263,23 @@ $to = '$context = sprintf(\'%s/%s\', dp_get_tmp_dir(), uniqid(\'zippy_\'));';
 
 $patchCode($f, $from, $to);
 
+echo "Patching alchemy/zippy/src/Adapter/ZipExtensionAdapter.php\n";
+$f = $DP_DIR.'/app/BUILD/vendor/alchemy/zippy/src/Adapter/ZipExtensionAdapter.php';
+$from = <<<'EOF'
+            $this->flush($zipResource->getResource());
+
+            $this->manager->cleanup($collection);
+EOF;
+$to = <<<'EOF'
+            $this->flush($zipResource->getResource());
+
+            register_shutdown_function(function () use ($collection) {
+                $this->manager->cleanup($collection);
+            });
+EOF;
+
+$patchCode($f, $from, $to);
+
 if ($failedCount) {
     $f  = $DP_DIR.'/app/BUILD/src/Application/AgentBundle/Controller/MainController.php';
 
