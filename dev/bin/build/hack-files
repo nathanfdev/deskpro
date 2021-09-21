@@ -280,6 +280,63 @@ EOF;
 
 $patchCode($f, $from, $to);
 
+
+
+
+
+
+
+
+
+echo "Patching alchemy/zippy/src/Resource/Writer/StreamWriter.php\n";
+$f = $DP_DIR.'/app/BUILD/vendor/alchemy/zippy/src/Resource/Writer/StreamWriter.php';
+$from = <<<'EOF'
+    public function writeFromReader(ResourceReader $reader, $target)
+    {
+        $directory = dirname($target);
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
+        $targetResource = fopen($target, 'w+');
+        $sourceResource = $reader->getContentsAsStream();
+
+        stream_copy_to_stream($sourceResource, $targetResource);
+        fclose($targetResource);
+    }
+EOF;
+$to = <<<'EOF'
+    public function writeFromReader(ResourceReader $reader, $target)
+    {
+        $directory = dirname($target);
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
+        $targetResource = @fopen($target, 'w+');
+        $sourceResource = $reader->getContentsAsStream();
+
+        if ($sourceResource) {
+            stream_copy_to_stream($sourceResource, $targetResource);
+        }
+
+        if ($targetResource) {
+            fclose($targetResource);
+        }
+    }
+EOF;
+
+$patchCode($f, $from, $to);
+
+
+
+
+
+
+
+
+
+
 if ($failedCount) {
     $f  = $DP_DIR.'/app/BUILD/src/Application/AgentBundle/Controller/MainController.php';
 
