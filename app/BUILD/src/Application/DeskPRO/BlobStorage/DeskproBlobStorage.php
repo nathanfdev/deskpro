@@ -1285,15 +1285,19 @@ class DeskproBlobStorage implements Loggable
         $wasEmittingWarnings = SafeFile::setEmitWarningsOption(false);
 
         foreach ($this->cachedFiles as $file) {
-            if (SafeFile::is_file($file, $this->tmpDir->getPath())) {
-                if (!$result = SafeFile::unlink($file, $this->tmpDir->getPath())) {
-                    $this->logger->logWarn(sprintf(
-                        '[DeskproBlobStorage] (clearCache) Failed to unlink file! Filename: %s Adapter: %s',
-                        $file, $this->getPreferredAdapterId()
-                    ));
+            if ($this->tmpDir->getPath() !== null) {
+                if (SafeFile::is_file($file, $this->tmpDir->getPath())) {
+                    if (!$result = SafeFile::unlink($file, $this->tmpDir->getPath())) {
+                        $this->logger->logWarn(sprintf(
+                            '[DeskproBlobStorage] (clearCache) Failed to unlink file! Filename: %s Adapter: %s',
+                            $file, $this->getPreferredAdapterId()
+                        ));
+                    }
                 }
             }
         }
+
+        $this->cachedFiles = [];
 
         SafeFile::setEmitWarningsOption($wasEmittingWarnings);
     }
