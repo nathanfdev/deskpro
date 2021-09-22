@@ -103,7 +103,9 @@ class TmpDir
 
         @mkdir($this->path, 0700, true);
         if (!is_dir($this->path)) {
-            throw new \RuntimeException('Could not create tmp dir ('.error_get_last().')');
+            $last = error_get_last();
+            $message = !empty($last['message']) ? $last['message'] : 'unknown';
+            throw new \RuntimeException('Could not create tmp dir (' . $message . ')');
         }
     }
 
@@ -154,5 +156,15 @@ class TmpDir
         $this->initNow();
 
         return $this->path;
+    }
+
+    /**
+     * If the TmpDir has been initialised and not cleaned up.
+     *
+     * @return bool
+     */
+    public function isOpen()
+    {
+        return $this->isInit && $this->path;
     }
 }
