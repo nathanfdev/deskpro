@@ -145,7 +145,9 @@ class SandboxSecurityPolicy extends SecurityPolicy
      */
     private function isSandboxDisabled()
     {
-        if ($this->settings->getGlobalSettings()->get('templating.disable_sandbox', false)) {
+        global $DP_ENV;
+
+        if ($DP_ENV && $DP_ENV->getConfig('settings.templating.disable_sandbox')) {
             return true;
         }
 
