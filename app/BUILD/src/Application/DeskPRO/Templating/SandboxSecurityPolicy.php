@@ -221,7 +221,7 @@ class SandboxSecurityPolicy extends SecurityPolicy
     {
         global $DP_ENV;
 
-        return $DP_ENV->getConfig('settings.templating.disable_sandbox', false);
+        return $DP_ENV->getConfig('templating.enable_sandbox_learning', false);
     }
 
     /**
