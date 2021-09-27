@@ -7,12 +7,14 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ApiController.
  *
- * @ApiModes({"master_key", "key"})
+ * @ApiModes({"master_key"})
  * @ApiUserContext("open")
  * @Rest\Route("/cloudsite-ma-services")
  */
@@ -97,16 +99,63 @@ class CloudServicesApiController extends BaseController
      *
      * @param Request $request
      *
-     * @return array|null
+     * @return array|null|View
      */
     public function saveTmpDataAction(Request $request)
     {
-        $input   = json_decode($request->getContent(), true);
+        $input = \json_decode($request->getContent(), true);
+        $type  = strtolower($input['type']);
+
+        switch ($type) {
+            case 'dpc_billing_access':
+                if (!is_array(@$input['data'])) {
+                    return new View(
+                        ['message' => '[data] must be an object'],
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+
+                if (!isset($input['expire'])) {
+                    return new View(
+                        ['message' => '[expire] is missing'],
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+
+                if (!isset($input['data']['person_info'])) {
+                    return new View(
+                        ['message' => '[data.person_info] is missing'],
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+
+                $dataFields = [
+                    'helpdesk_url',
+                    'asset_url',
+                    'person_id',
+                    'name',
+                    'email',
+                ];
+
+                foreach ($dataFields as $dataField) {
+                    if (!isset($input['data']['person_info'][$dataField])) {
+                        return new View(
+                            ['message' => "[data.person_info.{$dataField}] is missing"],
+                            Response::HTTP_BAD_REQUEST
+                        );
+                    }
+                }
+                break;
+            default:
+                throw new \RuntimeException("Unexpected tmp data type [{$input['type']}]");
+        }
+
         $tmpdata = TmpData::create(
             @$input['type'] ?: 'UNSET',
             @$input['data'] ?: [],
             @$input['expire'] ?: null
         );
+
         $this->get('doctrine.orm.default_entity_manager')->persist($tmpdata);
         $this->get('doctrine.orm.default_entity_manager')->flush();
 
@@ -165,7 +214,7 @@ AND
     p.is_deleted = 0
 ;
 EOL
-);
+        );
 
         $stats = $conn->fetchAssoc(<<<EOL
 SELECT
