@@ -425,6 +425,8 @@ class ChatHandler
             ->setTicketPersonEmail(null)
         ;
 
+        $this->em->detach($ticket);
+
         return $ticket;
     }
 
