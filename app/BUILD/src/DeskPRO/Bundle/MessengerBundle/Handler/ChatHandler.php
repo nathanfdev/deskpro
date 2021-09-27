@@ -409,6 +409,26 @@ class ChatHandler
     }
 
     /**
+     * Remove sensitive details from a ticket before sending as a request
+     *
+     * WARNING: DO NOT PERSIST THE TICKET AFTER DOING THIS OTHERWISE DATA WILL BE LOST
+     *
+     * @param Ticket $ticket
+     * @return Ticket
+     */
+    private function redactTicket(Ticket $ticket)
+    {
+        $ticket
+            ->setPerson(null)
+            ->setSubject("")
+            ->setRef("")
+            ->setTicketPersonEmail(null)
+        ;
+
+        return $ticket;
+    }
+
+    /**
      * @param ChatConversation $chat
      * @param array            $request
      *
@@ -421,11 +441,13 @@ class ChatHandler
     private function handleChatTicketSaveCommand(ChatConversation $chat, array $request)
     {
         $ticketRepository = $this->em->getRepository(Ticket::class);
+
+        /** @var Ticket $ticket */
         $ticket           = $ticketRepository->findOneBy(['linked_chat' => $chat]);
         if ($ticket) {
             $this->endChatTimeout($chat);
 
-            return new ApiWrapper($ticket);
+            return new ApiWrapper($this->redactTicket($ticket));
         }
 
         $ticket = new Ticket();
@@ -554,7 +576,7 @@ class ChatHandler
 
         $this->endChatTimeout($chat);
 
-        return new ApiWrapper($ticket);
+        return new ApiWrapper($this->redactTicket($ticket));
     }
 
     /**
