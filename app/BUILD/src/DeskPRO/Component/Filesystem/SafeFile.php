@@ -114,9 +114,10 @@ class SafeFile
     /**
      * @param string $path
      *
+     * @internal Public so it can be tested but should not be used directly outside of SafeFile
      * @return string
      */
-    private static function normalizePath($path)
+    public static function normalizePath($path)
     {
         if (empty($path) || !is_string($path)) {
             return null;
@@ -125,7 +126,7 @@ class SafeFile
         $path = urldecode($path);
 
         // remove 'file://' prefix if its there
-        if (stripos($path, 'file://') === 0 || stripos($path, 'file:\\') === 0) {
+        if (stripos($path, 'file://') === 0 || stripos($path, 'file:\\\\') === 0) {
             $path = substr($path, 7);
         }
 
@@ -157,10 +158,14 @@ class SafeFile
             return null;
         }
 
+        // double slashes are common mistake made when concatenating parts.
+        // php accepts it, but will break our list matching
+        $p = str_replace('//', '/', $p);
+
         $p = rtrim($p, '/');
 
         if (!$isAbsolute) {
-            $p = self::normalizePath(getcwd()) . '/' . $p;
+            $p = rtrim(self::normalizePath(getcwd()), '/') . '/' . ltrim($p, '/');
         }
 
         $fileInfo = new \SplFileInfo($drive.$p);
@@ -262,18 +267,26 @@ class SafeFile
             return true;
         }
 
+        $list = array_map(function ($p) {
+            return rtrim($p, '/');
+        }, $list);
+
         foreach ($list as $p) {
+            // quick early check - exact match
             if ($p === $normalPath) {
                 return true;
             }
-            if (substr($p, -1, 1) === '/') {
-                if ($normalPath === $p || $normalPath.'/' === $p || strpos($normalPath, $p) === 0) {
-                    return true;
-                }
-            }
+
+            // regex
             if (substr($p, 0, 6) === 'regex:') {
                 $pattern = substr($p, 7);
                 if (preg_match($pattern, $normalPath)) {
+                    return true;
+                }
+
+            // otherwise test as a partial path
+            } else {
+                if ($normalPath.'/' === $p || strpos($normalPath, $p) === 0) {
                     return true;
                 }
             }
@@ -917,12 +930,20 @@ class SafeFile
             return false;
         }
 
-        return mkdir(
-            self::normalizePath($path),
-            $permissions,
-            $recursive,
-            $context
-        );
+        if ($context) {
+            return mkdir(
+                self::normalizePath($path),
+                $permissions,
+                $recursive,
+                $context
+            );
+        } else {
+            return mkdir(
+                self::normalizePath($path),
+                $permissions,
+                $recursive
+            );
+        }
     }
 
     /**
@@ -995,7 +1016,11 @@ class SafeFile
             return false;
         }
 
-        return rename(self::normalizePath($from), self::normalizePath($to), $context);
+        if ($context) {
+            return rename(self::normalizePath($from), self::normalizePath($to), $context);
+        } else {
+            return rename(self::normalizePath($from), self::normalizePath($to));
+        }
     }
 
     /**
@@ -1015,7 +1040,11 @@ class SafeFile
             return false;
         }
 
-        return rmdir(self::normalizePath($path), $context);
+        if ($context) {
+            return rmdir(self::normalizePath($path), $context);
+        } else {
+            return rmdir(self::normalizePath($path));
+        }
     }
 
     /**
@@ -1075,7 +1104,11 @@ class SafeFile
             return false;
         }
 
-        return unlink(self::normalizePath($path), $context);
+        if ($context) {
+            return unlink(self::normalizePath($path), $context);
+        } else {
+            return unlink(self::normalizePath($path));
+        }
     }
 }
 

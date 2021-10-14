@@ -68,7 +68,11 @@ class TmpDir
      */
     public static function getSysTempDir()
     {
-        return realpath(sys_get_temp_dir());
+        $dir = dp_get_tmp_dir();
+        if (!$dir || !is_writable($dir)) {
+            $dir = sys_get_temp_dir();
+        }
+        return realpath($dir);
     }
 
     /**
@@ -86,7 +90,7 @@ class TmpDir
             $this->initNow();
         }
 
-//        register_shutdown_function([$this, 'cleanup']);
+        register_shutdown_function([$this, 'cleanup']);
     }
 
     private function initNow()
@@ -99,7 +103,9 @@ class TmpDir
 
         @mkdir($this->path, 0700, true);
         if (!is_dir($this->path)) {
-            throw new \RuntimeException('Could not create tmp dir ('.error_get_last().')');
+            $last = error_get_last();
+            $message = !empty($last['message']) ? $last['message'] : 'unknown';
+            throw new \RuntimeException('Could not create tmp dir (' . $message . ')');
         }
     }
 
@@ -150,5 +156,15 @@ class TmpDir
         $this->initNow();
 
         return $this->path;
+    }
+
+    /**
+     * If the TmpDir has been initialised and not cleaned up.
+     *
+     * @return bool
+     */
+    public function isOpen()
+    {
+        return $this->isInit && $this->path;
     }
 }

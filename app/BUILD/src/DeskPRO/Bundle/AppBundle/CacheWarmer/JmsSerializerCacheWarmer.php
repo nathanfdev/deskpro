@@ -61,6 +61,12 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
             'DeskPRO\\Bundle\\AppStoreBundle\\Domain',
             'DeskPRO\\Bundle\\SystemBundle\\Form\\Type\\SystemAlerts',
             'DeskPRO\\Bundle\\AppBundle\\DataService\\Tickets\\LegacyFilterSet',
+            'Application\\EmailBundle\\Entity',
+            'Application\\DeskPRO\\Templating\\Templates',
+            'Application\\EmailBundle\\Templating\\Templates',
+            'DeskPRO\\Bundle\\ApiBundle\\Controller\\Apps',
+            'DeskPRO\\Bundle\\AuditBundle',
+            'DeskPRO\\Bundle\\VoiceBundle',
         ];
 
         $namespaces = array_unique($namespaces);

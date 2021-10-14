@@ -82,7 +82,7 @@ class DeskproBlobStorage implements Loggable
     /**
      * @var TmpDir
      */
-    protected $tmpDir = '';
+    protected $tmpDir;
 
     /**
      * @var array
@@ -1282,9 +1282,15 @@ class DeskproBlobStorage implements Loggable
      */
     public function clearCache()
     {
+        $wasEmittingWarnings = SafeFile::setEmitWarningsOption(false);
+
+        if (!$this->tmpDir->isOpen()) {
+            return;
+        }
+
         foreach ($this->cachedFiles as $file) {
             if (SafeFile::is_file($file, $this->tmpDir->getPath())) {
-                if (!$result = SafeFile::unlink($file, $this->tmpDir->getPath())) {
+                if (!SafeFile::unlink($file, $this->tmpDir->getPath())) {
                     $this->logger->logWarn(sprintf(
                         '[DeskproBlobStorage] (clearCache) Failed to unlink file! Filename: %s Adapter: %s',
                         $file, $this->getPreferredAdapterId()
@@ -1292,6 +1298,10 @@ class DeskproBlobStorage implements Loggable
                 }
             }
         }
+
+        $this->cachedFiles = [];
+
+        SafeFile::setEmitWarningsOption($wasEmittingWarnings);
     }
 
     /**

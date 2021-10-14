@@ -96,7 +96,7 @@ class __DP_CI_Security
         'document.write'  => 'document,write',
         '.parentNode'     => ',parentNode',
         '.innerHTML'      => ',innerHTML',
-        '-moz-binding'    => '',
+        '-moz-binding'    => '.', // e.g. will escape as <-moz-bi.n.ding ...>
         '<!--'            => '&lt;!--',
         '-->'             => '--&gt;',
         '<![CDATA['       => '&lt;![CDATA[',
