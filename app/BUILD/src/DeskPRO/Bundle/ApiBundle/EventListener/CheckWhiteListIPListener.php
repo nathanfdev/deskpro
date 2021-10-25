@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\ApiBundle\EventListener;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
+use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -58,6 +59,9 @@ class CheckWhiteListIPListener implements EventSubscriberInterface
         $person  = $token->getUser();
 
         if (!$person instanceof Person) {
+            return;
+        }
+        if ($token instanceof ApiKeySecurityToken) {
             return;
         }
 
