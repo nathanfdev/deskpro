@@ -49,6 +49,7 @@ class ChatHandler
     const CHAT_RATING              = 'chat.rating';
     const CHAT_HISTORY             = 'chat.history';
     const CHAT_TRACK               = 'chat.track';
+    const CHAT_ACK                 = 'chat.ack';
     const TYPING_START             = 'chat.typing.start';
     const TYPING_END               = 'chat.typing.end';
 
@@ -66,6 +67,7 @@ class ChatHandler
         self::TYPING_END,
         self::CHAT_HISTORY,
         self::CHAT_TRACK,
+        self::CHAT_ACK,
         self::CHAT_SAVE_TICKET,
     ];
 
@@ -414,6 +416,7 @@ class ChatHandler
      * WARNING: DO NOT PERSIST THE TICKET AFTER DOING THIS OTHERWISE DATA WILL BE LOST
      *
      * @param Ticket $ticket
+     *
      * @return Ticket
      */
     private function redactTicket(Ticket $ticket)
@@ -593,6 +596,24 @@ class ChatHandler
             /** @var UserChatManager $chatManager */
             $chatManager = $this->container->getSystemObject('user_chat_manager');
             $chatManager->endChat($chat, $chat->getPerson(), 'user');
+        }
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @throws \Exception
+     */
+    private function handleChatAckCommand(ChatConversation $chat, array $request = [])
+    {
+        if (!$chat->isEnded()) {
+            $messageIds = array_map(function ($messageId) {
+                return (int) $messageId;
+            }, $request['messageIds']);
+            /** @var UserChatManager $chatManager */
+            $chatManager = $this->container->getSystemObject('user_chat_manager');
+            $chatManager->ackMessages($chat, $messageIds);
         }
     }
 
