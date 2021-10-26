@@ -205,9 +205,6 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
 
             $vars = [];
 
-            if (isset($lastMessage)) {
-                $vars['attached_blobs'] = $this->getLastMessageAttachments($ticket, $lastMessage, $context);
-            }
 
             if ($person->getPrimaryEmailAddress() !== $email) {
                 $ticketEmail->setEmailOverride($email);
@@ -218,6 +215,13 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
 
             if ($ticket->getRealLanguage()) {
                 $messagesArgs['language'] = $ticket->getRealLanguage();
+            }
+
+            if (isset($lastMessage) && !empty($lastMessage->getAttachments())) {
+                $inlineAttachments = $this->getLastMessageAttachments($ticket, $lastMessage, $context);
+                foreach ($inlineAttachments as $attachment) {
+                    $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());
+                }
             }
 
             $message = $this->getContainer()->get('email.email_sender')

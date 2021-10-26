@@ -198,15 +198,15 @@ class SendUserNewEmail extends AbstractEmailAction
             $messagesArgs['language'] = $ticket->getRealLanguage();
         }
 
-        $message = $this->getContainer()->get('email.email_sender')
-            ->prepareMessage($viewModel, $messagesArgs, $message);
-
-        if (isset($lastMessage) && !empty($message->getAttachedBlobs())) {
+        if (isset($lastMessage) && !empty($lastMessage->getAttachments())) {
             $inlineAttachments = $this->getLastMessageAttachments($ticket, $lastMessage, $context, $isAuto);
             foreach ($inlineAttachments as $attachment) {
                 $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());
             }
         }
+
+        $message = $this->getContainer()->get('email.email_sender')
+            ->prepareMessage($viewModel, $messagesArgs, $message);
 
         try {
             if ($mailer instanceof StorageTransportInterface) {
