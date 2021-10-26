@@ -226,6 +226,10 @@ class ApiFieldResolver extends AbstractFieldResolver
      */
     protected function getSubmittedField(TicketWithLayoutsContext $context, $field)
     {
+        if ($context->isMessengerType() && $field === 'person') {
+            return $context->getTicket()->getPerson();
+        }
+
         if (!$context->getForm()->has($field)) {
             return;
         }
