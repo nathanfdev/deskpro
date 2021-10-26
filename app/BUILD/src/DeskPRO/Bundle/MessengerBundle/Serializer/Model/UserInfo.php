@@ -37,6 +37,11 @@ class UserInfo implements MessengerModelInterface
     private $personId;
 
     /**
+     * @var int
+     */
+    private $orgId;
+
+    /**
      * UserInfo constructor.
      *
      * @param string $visitorId
@@ -50,6 +55,7 @@ class UserInfo implements MessengerModelInterface
             $this->name     = $person->getDisplayName();
             $this->personId = $person->getId();
             $this->email    = $person->getEmailAddress();
+            $this->orgId    = $person->getOrganizationId();
         }
     }
 
@@ -59,6 +65,7 @@ class UserInfo implements MessengerModelInterface
             'visitor_id' => $this->visitorId,
             'chats'      => $this->chats->toArray(),
             'person_id'  => $this->personId,
+            'org_id'     => $this->orgId,
             'email'      => $this->email,
             'name'       => $this->name,
         ];
