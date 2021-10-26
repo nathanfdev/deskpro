@@ -4,6 +4,8 @@ namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
@@ -267,7 +269,11 @@ class ServiceController extends AbstractMessengerController
         /** @var LayoutCollection $layouts */
         $layouts = $this->container->getTicketLayoutManager()->getUserLayouts(true);
 
-        $customTicketFields = $em->getRepository(CustomDefTicket::class)->getTopFields();
+        $customFieldsMap = [
+            'ticket_field' => $em->getRepository(CustomDefTicket::class)->getEnabledTopFields(),
+            'user_field'   => $em->getRepository(CustomDefPerson::class)->getEnabledTopFields(),
+            'org_field'    => $em->getRepository(CustomDefOrganization::class)->getEnabledTopFields(),
+        ];
         $ticketCategories   = $this->container->getSystemService('ticket_categories')->getRoots();
         $ticketProducts     = $this->container->getSystemService('products')->getRoots();
 
@@ -290,8 +296,8 @@ class ServiceController extends AbstractMessengerController
                     $ar['data'] = ['choices' => $this->getTicketFieldHierarchy($ticketProducts)];
                 } elseif ($f->getId() === 'subject') {
                     $ar['is_hidden'] = $ticketsSettings->getSubjectOption() === MessengerTickets::TICKET_SUBJECT_OPTION_PRESET;
-                } elseif ($f->getFieldType() === 'ticket_field') {
-                    $ar['data'] = $this->get('serializer')->toArray($customTicketFields[$f->getFieldId()], new SideloadSerializationContext());
+                } elseif (in_array($f->getFieldType(), array_keys($customFieldsMap), true)) {
+                    $ar['data'] = $this->get('serializer')->toArray($customFieldsMap[$f->getFieldType()][$f->getFieldId()], new SideloadSerializationContext());
                     if (isset($ar['data']['required'])) {
                         $ar['required'] = $ar['data']['required'];
                     }
