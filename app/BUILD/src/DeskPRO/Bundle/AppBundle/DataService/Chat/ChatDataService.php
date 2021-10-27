@@ -1,11 +1,10 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -39,16 +38,17 @@ class ChatDataService
      *
      * @param Person $person
      * @param string $type
+     * @param Brand  $brand
      *
      * @return int
      */
-    public function countUserChats(Person $person, $type)
+    public function countUserChats(Person $person, $type, $brand = null)
     {
         $qb = $this->em->createQueryBuilder();
         $qb->select($qb->expr()->countDistinct('c.id'))
             ->from('DeskPRO:ChatConversation', 'c');
 
-        $this->configureQbForQueryChats($qb, $person, $type);
+        $this->configureQbForQueryChats($qb, $person, $type, $brand);
         $qb->distinct(true);
 
         return $qb->getQuery()->getSingleScalarResult();
@@ -61,16 +61,17 @@ class ChatDataService
      * @param        $page
      * @param        $max_per_page
      * @param        $type
+     * @param Brand  $brand
      *
      * @return Pagerfanta
      */
-    public function getUserChatPager(Person $person, $page, $max_per_page, $type)
+    public function getUserChatPager(Person $person, $page, $max_per_page, $type, $brand = null)
     {
         $qb = $this->em->createQueryBuilder();
         $qb->select('c')
             ->from('DeskPRO:ChatConversation', 'c');
 
-        $this->configureQbForQueryChats($qb, $person, $type);
+        $this->configureQbForQueryChats($qb, $person, $type, $brand);
 
         $qb->orderBy('c.id', 'DESC');
 
@@ -106,27 +107,37 @@ class ChatDataService
      * @param QueryBuilder $qb
      * @param Person       $person
      * @param string       $type
+     * @param Brand        $brand
      *
      * @throws \Exception
      *
      * @return QueryBuilder
      */
-    private function configureQbForQueryChats(QueryBuilder $qb, Person $person, $type)
+    private function configureQbForQueryChats(QueryBuilder $qb, Person $person, $type, $brand = null)
     {
         $qb->andWhere('c.is_agent = 0');
         $qb->andWhere('c.status = :status')->setParameter('status', ChatConversation::STATUS_ENDED);
         switch ($type) {
             case 'own':
                 $qb->andWhere('c.person = :person')->setParameter('person', $person);
+
                 break;
             case 'organization':
                 $qb->innerJoin('c.person', 'person')
                     ->innerJoin('person.organization', 'organization')
                     ->andWhere('organization.id = :organization')
                     ->setParameter('organization', $person->getOrganizationId());
+
                 break;
             default:
                 throw new \Exception('Invalid type');
+        }
+        if ($brand && $brand->getId()) {
+            $qb->leftJoin('c.department', 'd');
+            $qb->join('d.brands', 'b');
+            $qb->andWhere('b.id = :brand');
+            $qb->andWhere('c.brand IS NULL OR c.brand = :brand');
+            $qb->setParameter('brand', $brand);
         }
     }
 }
