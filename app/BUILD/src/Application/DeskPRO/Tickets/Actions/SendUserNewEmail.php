@@ -187,9 +187,7 @@ class SendUserNewEmail extends AbstractEmailAction
         /** @var TicketEmail $ticketEmail */
         $ticketEmail = $emailBuilder->buildTicketEmail();
 
-        $personPrimaryEmail = ($context->getPersonContext() && $context->getPersonContext()->getPrimaryEmail()) ? $context->getPersonContext()->getPrimaryEmail()->getEmail() : $toEmail;
-
-        if ($personPrimaryEmail !== $toEmail && ($context->getPersonContext()->getId() === $ticket->getPersonId())) {
+        if ($ticket->getPerson()->getPrimaryEmailAddress() !== $toEmail) {
             $ticketEmail->setEmailOverride($toEmail);
             $messagesArgs['override_email'] = $toEmail;
         }

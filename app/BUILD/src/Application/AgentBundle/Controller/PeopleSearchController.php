@@ -687,7 +687,7 @@ class PeopleSearchController extends AbstractController
                     'id'         => $person->getId(),
                     'first_name' => $person->getFirstName(),
                     'last_name'  => $person->getLastName(),
-                    'email'      => $person->getPrimaryEmailAddress(),
+                    'email'      => $q,
                 ];
             }
         }
