@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
@@ -297,9 +298,14 @@ class ServiceController extends AbstractMessengerController
                 } elseif ($f->getId() === 'subject') {
                     $ar['is_hidden'] = $ticketsSettings->getSubjectOption() === MessengerTickets::TICKET_SUBJECT_OPTION_PRESET;
                 } elseif (in_array($f->getFieldType(), array_keys($customFieldsMap), true)) {
-                    $ar['data'] = $this->get('serializer')->toArray($customFieldsMap[$f->getFieldType()][$f->getFieldId()], new SideloadSerializationContext());
+                    /** @var CustomDefAbstract $customDef */
+                    $customDef       = $customFieldsMap[$f->getFieldType()][$f->getFieldId()];
+                    $ar['data']      = $this->get('serializer')->toArray($customDef, new SideloadSerializationContext());
                     if (isset($ar['data']['required'])) {
                         $ar['required'] = $ar['data']['required'];
+                    }
+                    if ($customDef->getType() === 'choice') {
+                        $ar['data']['options']['closeOnBlur'] = false;
                     }
                 } elseif ($f->getFieldType() === 'workflow') {
                     // force workflow skip for user layout
