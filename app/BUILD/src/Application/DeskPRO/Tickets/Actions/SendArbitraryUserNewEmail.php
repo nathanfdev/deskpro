@@ -164,6 +164,12 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
 
                 return;
         }
+
+        $brandStack = $this->getContainer()->getBrandStack();
+        if ($ticket->getBrand()) {
+            $brandStack->push($ticket->getBrand());
+        }
+
         $viewModel = $this->createViewModelFromTemplate($template, $arguments, $context);
 
         if (!$viewModel) {
