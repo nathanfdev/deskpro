@@ -723,7 +723,6 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
     {
         if ($comment->getStatus() === CommentAbstract::STATUS_VISIBLE) {
             $this->setModelField('num_comments', $this->num_comments + 1);
-            $this->setDateUpdated();
         }
 
         $this->setModelField('date_last_comment', new DateTime());
