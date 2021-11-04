@@ -18,7 +18,7 @@
     <li class="{{root}}-item">
         <a href="{{ portal_path(article) }}" class="{{root}}-link">
             <span class="item-title">
-                {{ highlight_text(article.title, query) }}
+                {{ highlight_text(article.translatedTitle, query) }}
             </span>
             <div class="dp-po-time">
                 <i class="dp-po-icon far fa-clock"></i>
@@ -47,7 +47,7 @@
     {{ content_icon(dl) }}
     <a href="{{ portal_path(dl) }}" class="{{root}}-link">
       <span class="item-title">
-        {{ highlight_text(dl.title, query) }}
+        {{ highlight_text(dl.translatedTitle, query) }}
       </span>
     </a>
   </li>
@@ -59,7 +59,7 @@
       <span class="item-title">
           <span class="community-count"><i class="fas fa-thumbs-up"></i>{{ topic.total_rating >= 0 ? (topic.total_rating > 0 ? '+' : '') : '-' }}{{ topic.total_rating }}</span>
           <span class="item-title">
-            {{ highlight_text(topic.title, query) }}
+            {{ highlight_text(topic.translatedTitle, query) }}
           </span>
       </span>
       <p>{{ topic.getContentHtml()|html_content_preview(350) }}</p>
@@ -71,7 +71,7 @@
 {% macro news_search_result(news, root = "dp-po-search", query = "") %}
     <li class="{{root}}-item">
         <a href="{{ portal_path(news) }}" class="{{root}}-link">
-          <span class="item-title"><span class="date-posted"><i class="far fa-calendar"></i> {{ date_ago(news.date_published) }}</span>{{ highlight_text(news.title, query) }}</span>
+          <span class="item-title"><span class="date-posted"><i class="far fa-calendar"></i> {{ date_ago(news.date_published) }}</span>{{ highlight_text(news.translatedTitle, query) }}</span>
           <p>{{ news.realContent|html_content_preview(350) }}</p>
         </a>
   </li>
@@ -83,7 +83,7 @@
         {{ content_icon(topic) }}
         <a href="{{ portal_path(topic) }}" class="{{root}}-link">
           <span class="item-title">
-            {{ highlight_text(topic.title, query) }}
+            {{ highlight_text(topic.translatedTitle, query) }}
           </span>
           <p>{{ topic.realContent|html_content_preview(350) }}</p>
         </a>
