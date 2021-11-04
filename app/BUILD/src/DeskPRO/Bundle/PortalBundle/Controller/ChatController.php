@@ -24,6 +24,7 @@ class ChatController extends AbstractController
      * @Security("is_granted('ROLE_USER') and is_granted('USE_CHAT')")
      *
      * @param Request $request
+     * @param mixed $type
      *
      * @return Response
      */
@@ -39,7 +40,7 @@ class ChatController extends AbstractController
         $max_per_page = $this->getBrandSetting('portal.per_page_chat', 50);
         $page         = $request->get('page', 1);
 
-        $chats       = $this->getChatDataService()->getUserChatPager($this->getUser(), $page, $max_per_page, $type);
+        $chats       = $this->getChatDataService()->getUserChatPager($this->getUser(), $page, $max_per_page, $type, $this->get('brand_stack')->getActive()->getBrand());
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildChat();
 
         return $this->renderThemeView('Theme:Chat:list.html.twig', [

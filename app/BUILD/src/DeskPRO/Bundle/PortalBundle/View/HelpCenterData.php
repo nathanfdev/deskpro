@@ -198,7 +198,7 @@ class HelpCenterData
 
         $userInfo = [
             'display_registration_link'     => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
-            'chat_count'                    => $user ? $this->getChatDataService()->countUserChats($user, 'own') : 0,
+            'chat_count'                    => $user ? $this->getChatDataService()->countUserChats($user, 'own', $brand) : 0,
             'ticket_count'                  => $user ? $this->getTicketsDataService()->getTicketCount($user, 'all') : 0,
             'ticket_count_org'              => $user ? $this->getTicketsDataService()->getOrganizationTicketCount($user, 'all') : 0,
             'ticket_approval_count'         => $user ? $this->getTicketApprovalsDataService()->getApprovalCountWhereUserIsApprover($user, $brand) : 0,
