@@ -395,6 +395,7 @@ class ChatCreateType extends AbstractType
         $jwtPayload = $form->get('jwt')->getData();
         $person     = $conversation->getPerson();
         $session    = $conversation->getSession();
+        $conversation->setBrand($this->getBrand());
 
         if ($person && $session && $decodedJwt = $this->jwtDecoder->decodeJwtPayload($jwtPayload)) {
             $matched = false;
