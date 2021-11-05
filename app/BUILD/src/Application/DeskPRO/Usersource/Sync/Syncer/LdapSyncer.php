@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\Usersource\Sync\Syncer;
 
@@ -142,10 +140,12 @@ class LdapSyncer extends AbstractSyncer
                     // log the time it takes for every 100 skipped records
                     $this->helper->log(Logger::INFO, 'at record '.$i.', but skipping to record '.$start_location);
                 }
+
                 continue; // save us from hitting the LDAP server if we've already visited this record before
             }
             if (!$raw_info = $records->current()) {
                 $this->helper->log(Logger::INFO, 'finished iterating over the LDAP rows, exiting loop');
+
                 break;
             }
 
@@ -166,6 +166,7 @@ class LdapSyncer extends AbstractSyncer
                 if ($pause_check($cursor)) {
                     return;
                 }
+
                 continue;
             }
 
@@ -192,6 +193,7 @@ class LdapSyncer extends AbstractSyncer
 
                     return;
                 }
+
                 continue;
             }
 
@@ -363,7 +365,14 @@ class LdapSyncer extends AbstractSyncer
         }
         if (isset($raw_info['mail'])) {
             $raw_info['email_address'] = Arrays::getFirstItem($raw_info['mail']);
+        } elseif (
+            isset($raw_info['userprincipalname'])
+            && is_array($raw_info['userprincipalname'])
+            && ($principal = Arrays::getFirstItem($raw_info['userprincipalname']))
+            && \Orb\Validator\StringEmail::isValueValid($principal)) {
+            $raw_info['email_address'] = $principal;
         }
+
         if (isset($raw_info['jpegphoto'])) {
             $raw_info['picture_data'] = Arrays::getFirstItem($raw_info['jpegphoto']);
         } elseif (isset($raw_info['thumbnailphoto'])) {
