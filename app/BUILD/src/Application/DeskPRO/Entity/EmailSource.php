@@ -338,7 +338,9 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             return $this->_raw;
         }
 
-        $this->_raw = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob);
+        $this->_raw = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob, [
+            'maxSize' => 100 * 1024 * 1024,
+        ]);
 
         return $this->_raw;
     }
