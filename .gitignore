@@ -301,3 +301,4 @@ www/assets/BUILD/pub/nightwatch.conf.js
 /Vagrantfile
 /.hab/
 /.vagrant/
+/www/assets/BUILD/pub/.nvmrc
