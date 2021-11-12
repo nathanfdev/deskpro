@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\People\PersonMerge;
 
@@ -77,21 +75,26 @@ class PersonMerge implements PersonContextInterface
     public function merge()
     {
         $this->em->beginTransaction();
+
         try {
             $this->_logMergeAndBackup();
 
             // todo: organizations cc?
             $standard_prop_names = [
-                'language',
-                'organization',
-                'organization_position',
-                'picture_blob',
-                'summary',
+                'language'              => Property\StandardProperty::STRATEGY_COMBINE,
+                'organization'          => Property\StandardProperty::STRATEGY_COMBINE,
+                'organization_position' => Property\StandardProperty::STRATEGY_COMBINE,
+                'picture_blob'          => Property\StandardProperty::STRATEGY_COMBINE,
+                'summary'               => Property\StandardProperty::STRATEGY_COMBINE,
+                // @see https://app.shortcut.com/deskpro-bugs/story/19861/is-disabled-when-merging-with-agent
+                // however an agent won't be deleted or disabled if you merge with interface, we shall use both strategy
+                'is_disabled' => Property\StandardProperty::STRATEGY_BOOLEAN_BOTH,
+                'is_deleted'  => Property\StandardProperty::STRATEGY_BOOLEAN_BOTH,
             ];
-            foreach ($standard_prop_names as $prop_name) {
+            foreach ($standard_prop_names as $prop_name => $strategy) {
                 $prop_standard = new Property\StandardProperty($this->person, $this->other_person);
                 $prop_standard->setProperty($prop_name);
-                $prop_standard->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
+                $prop_standard->setStrategy($strategy);
                 $prop_standard->merge();
             }
 

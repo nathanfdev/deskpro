@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
+
 
 namespace Application\DeskPRO\People\PersonMerge\Property;
 
@@ -35,9 +31,10 @@ abstract class PropertyAbstract
      */
     protected $strategy_options = [];
 
-    const STRATEGY_LEFT    = 'left';
-    const STRATEGY_RIGHT   = 'right';
-    const STRATEGY_COMBINE = 'merge';
+    const STRATEGY_LEFT         = 'left';
+    const STRATEGY_RIGHT        = 'right';
+    const STRATEGY_COMBINE      = 'merge';
+    const STRATEGY_BOOLEAN_BOTH = 'both';
 
     public function __construct(Person $person, Person $other_person)
     {
