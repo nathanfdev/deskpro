@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Orb\Html;
 
@@ -90,13 +88,14 @@ class Html2Text
      * Convert a DOMNode/DOMDocument into plaintext.
      *
      * @param DOMNode $node
+     * @param mixed $_depth
      *
      * @return string
      */
     public function convertNode(DOMNode $node, $_depth = 0)
     {
         if ($node instanceof DOMText) {
-            return trim($node->wholeText);
+            return !empty($node->wholeText) ? trim($node->wholeText) : '';
         }
         if ($node instanceof DOMDocumentType) {
             return '';
@@ -133,18 +132,22 @@ class Html2Text
             case 'h5':
             case 'h6':
                 $output = '<DP_BR>';
+
                 break;
 
             case 'tr':
                 $output = '<DP_BR_P>';
+
                 break;
 
             case 'p':
                 $output = '<DP_BR>';
+
                 break;
 
             case 'div':
                 $output = '<DP_BR_P>';
+
                 break;
         }
 
@@ -176,15 +179,18 @@ class Html2Text
             case 'h5':
             case 'h6':
                 $output .= '<DP_BR>';
+
                 break;
 
             case 'p':
             case 'br':
                     $output .= '<DP_BR>';
+
                 break;
 
             case 'div':
                 $output .= '<DP_BR_P>';
+
                 break;
 
             case 'a':
@@ -210,9 +216,11 @@ class Html2Text
                     switch ($nextName) {
                         case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6':
                             $output .= '<DP_BR>';
+
                             break;
                     }
                 }
+
                 break;
         }
 
