@@ -2851,4 +2851,15 @@ break;
                 );
         }
     }
+
+    public static function mbBasename($path)
+    {
+        if (preg_match('@^.*[\\\\/]([^\\\\/]+)$@s', $path, $matches)) {
+            return $matches[1];
+        } else if (preg_match('@^([^\\\\/]+)$@s', $path, $matches)) {
+            return $matches[1];
+        }
+
+        return '';
+    }
 }

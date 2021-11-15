@@ -454,7 +454,7 @@ class EzcReader extends AbstractReader
 
                     if (isset($part->contentDisposition) && isset($part->contentDisposition->displayFileName)) {
                         try {
-                            $attach->file_name = basename($part->contentDisposition->displayFileName);
+                            $attach->file_name = Strings::mbBasename($part->contentDisposition->displayFileName);
                             $attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
                         } catch (\Exception $e) {
                         }
@@ -520,7 +520,7 @@ class EzcReader extends AbstractReader
                         foreach (['displayFileName', 'fileName'] as $field) {
                             if (!empty($part->contentDisposition->$field)) {
                                 try {
-                                    $attach->file_name = basename($part->contentDisposition->$field);
+                                    $attach->file_name = Strings::mbBasename($part->contentDisposition->$field);
                                     if (strpos($attach->file_name, '=?iso-') !== false) {
                                         $decodedFilename = iconv_mime_decode($attach->file_name);
                                         if ($decodedFilename !== false) {
@@ -539,7 +539,7 @@ class EzcReader extends AbstractReader
                         }
                     } elseif (!empty($part->fileName)) {
                         try {
-                            $attach->file_name = basename($part->fileName);
+                            $attach->file_name = Strings::mbBasename($part->fileName);
                             $attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->fileName);
                         } catch (\Exception $e) {
                         }
