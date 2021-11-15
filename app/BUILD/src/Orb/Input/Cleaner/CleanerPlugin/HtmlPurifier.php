@@ -327,7 +327,7 @@ class HtmlPurifier implements CleanerPlugin
                 $config->set('HTML.Allowed', '
                     *[style|title|class|id],
                     a[rel|rev|name|href|target|title|class]
-                    strong,b,em,i,strike,s,u,
+                    strong,b,em,i,strike,s,u,center,
                     p[align],ol[type|compact],ul,li,br,img[src|width|height|alt|title],
                     sub,sup,blockquote,
                     table[border|cellspacing|cellpadding|align|summary|style|width|rules],
@@ -356,6 +356,9 @@ class HtmlPurifier implements CleanerPlugin
                     'background-color',
                     'background-image',
                     'background',
+                    'max-width',
+                    'line-height',
+                    'padding',
                     'width',
                     'height',
                     'border',
