@@ -31,6 +31,7 @@ class SsoListener implements EventSubscriberInterface
         'portal_set_password_process',
         'gregwar_captcha.generate_captcha',
         'goto',
+        'portal_tickets_feedback',
     ];
 
     /**
@@ -172,7 +173,7 @@ class SsoListener implements EventSubscriberInterface
         if ($authInterfaceSettings->getSsoUsersource() && !$authInterfaceSettings->getSsoUsersource()->isAllBrands() && !$authInterfaceSettings->getSsoUsersource()->getBrands()->contains($activeBrand)) {
             return null;
         }
-         
+
         if ($authInterfaceSettings->isAutoSsoEnabled() && !$this->isWhitelisted($request)) {
             return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
         }
