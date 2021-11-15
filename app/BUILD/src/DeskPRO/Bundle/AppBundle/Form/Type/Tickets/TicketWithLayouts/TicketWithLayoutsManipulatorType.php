@@ -5,10 +5,9 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\DeskPRO\TicketLayout\LayoutUtil;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
@@ -165,8 +164,8 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $person   = $options['person'];
         $org      = $person->getOrganization();
 
-        $copyUserCustomFieldIds = [];
-        $copyOrgCustomFieldIds = [];
+        $copyUserCustomFieldIds   = [];
+        $copyOrgCustomFieldIds    = [];
         $copyTicketCustomFieldIds = [];
 
         $notInLayoutFields = LayoutUtil::getFieldsFromCriteriaNotInLayout($mainFormLayout);
@@ -174,24 +173,31 @@ class TicketWithLayoutsManipulatorType extends AbstractType
             switch ($f->getFieldType()) {
                 case FormFields::CATEGORY:
                     $stubTicket->setCategory($ticket->getCategory());
+
                     break;
                 case FormFields::PRIORITY:
                     $stubTicket->setPriority($ticket->getPriority());
+
                     break;
                 case FormFields::PRODUCT:
                     $stubTicket->setProduct($ticket->getProduct());
+
                     break;
                 case FormFields::WORKFLOW:
                     $stubTicket->setWorkflow($ticket->getWorkflow());
+
                     break;
                 case FormFields::USER_FIELD:
                     $copyUserCustomFieldIds[] = $f->getFieldId();
+
                     break;
                 case FormFields::TICKET_FIELD:
                     $copyTicketCustomFieldIds[] = $f->getFieldId();
+
                     break;
                 case FormFields::ORG_FIELD:
                     $copyOrgCustomFieldIds[] = $f->getFieldId();
+
                     break;
             }
         }
@@ -218,7 +224,7 @@ class TicketWithLayoutsManipulatorType extends AbstractType
             }
         }
 
-        if ($copyOrgCustomFieldIds) {
+        if ($copyOrgCustomFieldIds && $org) {
             foreach ($org->getCustomData() as $customData) {
                 if (in_array($customData->getField()->getId(), $copyOrgCustomFieldIds)
                     || in_array($customData->getRootField()->getId(), $copyOrgCustomFieldIds)
