@@ -1246,7 +1246,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
 			$.ajax({
 				type: 'GET',
-				url: BASE_URL + 'agent/tickets/new/get-person-row/' + personId,
+				url: BASE_URL + 'agent/tickets/new/get-person-row/' + personId+'?email='+email,
 				dataType: 'html',
 				context: this,
 				success: function(html) {
@@ -2441,7 +2441,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         name:  'add_new',
         value: (addNew) ? 1 : 0
       });
-      
+
       followersList.find('li').each(function() {
         postData.push({
           name: 'set_agent_part_ids[]',

@@ -11,11 +11,11 @@
                         {% if person.emails|length > 1 %}
                             <select name="newticket[person][email_address]">
                                 <optgroup label="Primary Email Address">
-                                    <option value="{{ person.primary_email.email }}" selected="selected">{{ person.primary_email.email }}</option>
+                                    <option value="{{ person.primary_email.email }}" {% if email == person.primary_email.email or not email %}selected="selected"{% endif %}>{{ person.primary_email.email }}</option>
                                 </optgroup>
                                 <optgroup label="Secondary Email Addresses">
                                     {% for email in person.emails if email.id != person.primary_email.id %}
-                                        <option value="{{ email.email }}">{{ email.email }}</option>
+                                        <option value="{{ email.email }}" {% if email == email.email or not email %}selected="selected"{% endif %}>{{ email.email }}</option>
                                     {% endfor %}
                                 </optgroup>
                             </select>

@@ -5847,6 +5847,7 @@ class TicketController extends AbstractController
             'AgentBundle:Ticket:newticket-person-row.html.twig',
             [
                 'person'   => $person,
+                'email'    => $this->in->getString('email'),
                 'api_data' => $api_data,
             ]
         );
