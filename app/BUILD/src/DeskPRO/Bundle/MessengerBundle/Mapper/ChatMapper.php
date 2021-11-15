@@ -51,6 +51,7 @@ class ChatMapper
     /**
      * @param array $data
      * @param ChatConversation $chat
+     * @param mixed $origin
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -174,14 +175,15 @@ class ChatMapper
             'avatar' => $message->getAuthor()
                 ? $this->avatarResolver->getAvatar($message->getAuthor())
                 : $this->avatarResolver->getDefaultPersonAvatar(),
-            'message'      => $message->isHtml() ? $message->getContentHtml() : $message->getContent(),
-            'origin'       => $message->getIsSys() ? 'system' : $message->getOrigin(),
-            'date_created' => $message->getDateCreated()->format(\DateTime::ISO8601),
-            'is_user'      => $message->getIsUser(),
-            'is_sys'       => $message->getIsSys(),
-            'is_html'      => $message->isHtml(),
-            'uuid'         => $uuid,
-            'meta'         => $this->transformMeta($metadata),
+            'message'       => $message->isHtml() ? $message->getContentHtml() : $message->getContent(),
+            'origin'        => $message->getIsSys() ? 'system' : $message->getOrigin(),
+            'date_created'  => $message->getDateCreated()->format(\DateTime::ISO8601),
+            'date_received' => $message->getDateReceived() ? $message->getDateReceived()->format(\DateTime::ISO8601) : null,
+            'is_user'       => $message->getIsUser(),
+            'is_sys'        => $message->getIsSys(),
+            'is_html'       => $message->isHtml(),
+            'uuid'          => $uuid,
+            'meta'          => $this->transformMeta($metadata),
         ];
     }
 
