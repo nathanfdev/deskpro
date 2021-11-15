@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
+
 
 namespace Application\DeskPRO\Tickets\Actions;
 
@@ -56,7 +52,7 @@ class AddAgentNote extends AbstractContainerAwareAction implements ActionInterfa
         }
 
         $em = $this->getContainer()->getEm();
-        $context->setPersonContext($agent);
+        
         $message                  = new TicketMessage();
         $message->person          = $agent;
         $message->date_created    = new \DateTime('+1 second');
