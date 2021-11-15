@@ -388,14 +388,20 @@ abstract class ProcessAbstract
 
             if ($blob->isImage()) {
                 $this->inlineBlobs[$blob->getId()] = $blob;
-                $replace                           = '[attach:image:'.$blob->getAuthId().':'.$blob->getFilenameSafe().']';
-            } else {
-                $replace = '[attach:file:'.$blob->getAuthId().':'.$blob->getFilenameSafe().']';
             }
 
-            $body = $inlineImages->replaceToken($cid, $replace, $body);
+            $body = $inlineImages->replaceToken($cid, $this->getInlineBlobTag($blob), $body);
         }
 
         return $body;
+    }
+
+    protected function getInlineBlobTag(Blob $blob)
+    {
+        if ($blob->isImage()) {
+            return '[attach:image:'.$blob->getAuthId().':'.$blob->getFilenameSafe().']';
+        }
+
+        return '[attach:file:'.$blob->getAuthId().':'.$blob->getFilenameSafe().']';
     }
 }

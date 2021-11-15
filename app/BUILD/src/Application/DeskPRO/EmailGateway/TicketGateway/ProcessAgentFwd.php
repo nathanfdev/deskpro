@@ -11,6 +11,7 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
+use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\EmailGateway\LinkedImages;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\Attachment;
@@ -71,20 +72,30 @@ class ProcessAgentFwd extends ProcessAbstract
         $executorContext->setEmailContext($this->reader);
         $executorContext->getVars()->set('ticket_email', $this->ticket_email);
 
+        $this->processBlobs();
+
         //------------------------------
         // Read in email props and create cutter
         //------------------------------
 
         $emailInfo            = [];
         $emailInfo['subject'] = $this->reader->getSubject()->subject;
-        if ($emailInfo['body'] = $this->ticket_email->email_body_text) {
-            $emailInfo['body_is_html'] = false;
-            $fromHtml                  = false;
-        } else {
+        if ($this->ticket_email->email_body_html) {
             $emailInfo['body']         = $this->ticket_email->email_body_html;
             $emailInfo['body_is_html'] = false;
-            $emailInfo['body']         = Strings::html2Text($emailInfo['body']);
-            $fromHtml                  = true;
+
+            $inlineImages = new InlineImageTokens($this->reader);
+            $emailInfo['body'] = $inlineImages->processTokens($emailInfo['body']);
+
+            $linkedImages      = new LinkedImages($this->logger);
+            $emailInfo['body'] = $linkedImages->importReplaceLinkedImages($emailInfo['body']);
+            $emailInfo['body'] = Strings::html2Text($emailInfo['body']);
+            $emailInfo['body'] = $this->replaceInlineAttachTokens($emailInfo['body'], $inlineImages);
+            $fromHtml          = true;
+        } else {
+            $emailInfo['body'] = $this->ticket_email->email_body_text;
+            $emailInfo['body_is_html'] = false;
+            $fromHtml                  = false;
         }
 
         $cutter    = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
@@ -273,12 +284,18 @@ class ProcessAgentFwd extends ProcessAbstract
 
             if (isset($this->inlineBlobs[$blob->id])) {
                 $attach->is_inline = true;
-            }
 
-            if ($agentTicketMessage) {
-                $agentTicketMessage->addAttachment($attach);
+                if ($agentTicketMessage && strpos($agentTicketMessage->getMessage(), $this->getInlineBlobTag($blob)) !== false) {
+                    $agentTicketMessage->addAttachment($attach);
+                } else {
+                    $ticketMessage->addAttachment($attach);
+                }
             } else {
-                $ticketMessage->addAttachment($attach);
+                if ($agentTicketMessage) {
+                    $agentTicketMessage->addAttachment($attach);
+                } else {
+                    $ticketMessage->addAttachment($attach);
+                }
             }
 
             $blob->is_temp = false;
