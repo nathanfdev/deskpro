@@ -1128,7 +1128,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 			var h = 425;
 			// Means the whole thing is visible at once, lets try and max out the viewport
-			if (this.wrapper.find('> .layout-content > .scrollbar.disabled')) {
+			if (this.wrapper.find('> .layout-content > .scrollbar.disabled').length > 0) {
 				h = $(window).height() - 170 - txt.offset().top;
 			}
 

@@ -6,7 +6,7 @@ import 'DeskPRO/Bundle/AppBundle/moment-locales';
 import ReactDatePicker from '@deskpro/react-datepicker-hijri';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import moment from 'moment';
-import $ from '../../../../../../../../../web/bower_components/oclazyload/examples/requireJSExample/js/jquery';
+import $ from 'jquery';
 
 class HcDateInput extends React.Component {
   static propTypes = {
@@ -38,7 +38,7 @@ class HcDateInput extends React.Component {
   };
 
   render() {
-    const { startDate, onChange, ...props } = this.props;
+    const { ...props } = this.props;
     const { date } = this.state;
 
     return (
