@@ -327,7 +327,7 @@ class HtmlPurifier implements CleanerPlugin
                 $config->set('HTML.Allowed', '
                     *[style|title|class|id],
                     a[rel|rev|name|href|target|title|class]
-                    strong,b,em,i,strike,u,
+                    strong,b,em,i,strike,s,u,
                     p[align],ol[type|compact],ul,li,br,img[src|width|height|alt|title],
                     sub,sup,blockquote,
                     table[border|cellspacing|cellpadding|align|summary|style|width|rules],
@@ -348,6 +348,7 @@ class HtmlPurifier implements CleanerPlugin
                 $config->set('CSS.AllowedProperties', [
                     'font',
                     'font-family',
+                    'font-variant',
                     'font-weight',
                     'font-style',
                     'font-size',
@@ -360,6 +361,7 @@ class HtmlPurifier implements CleanerPlugin
                     'border',
                     'display',
                     'text-decoration',
+                    'text-transform',
                 ]);
                 $config->set('HTML.TidyLevel', 'medium');
 
