@@ -164,6 +164,20 @@ require DP_APP_DIR.'/vendor/swiftmailer/swiftmailer/lib/swift_required.php';
     'Orb\\Mail\\KeyCache\\DiskKeyCache'
 )->withDependencies(['cache.inputstream', 'tempdir']);
 
+Swift_DependencyContainer::getInstance()
+    ->register('mime.qheaderencoder')
+    ->asNewInstanceOf('Orb\\Mail\\Encoder\\QHeaderEncoder');
+
+Swift_DependencyContainer::getInstance()
+    ->register('mime.headerfactory')
+    ->asNewInstanceOf('Swift_Mime_SimpleHeaderFactory')
+    ->withDependencies(array(
+        'mime.qpheaderencoder',
+        'mime.qheaderencoder',
+        'mime.grammar',
+        'properties.charset',
+    ));
+
 //#######################################################################################################################
 // Misc
 //#######################################################################################################################
