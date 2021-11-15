@@ -189,13 +189,28 @@ class GetMsgScript extends LowScriptAbstract
                 $q = $this->getPdoRead()->prepare("
                     SELECT value_array
                     FROM people_prefs
-                    WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection'
+                    WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection_json'
                 ");
                 $q->execute([$this->_person_id]);
 
                 $recent_tabs = $q->fetchColumn();
                 if ($recent_tabs) {
-                    $recent_tabs = UnserializeUtil::unserializeArray($recent_tabs, []);
+                    $recent_tabs = @json_decode($recent_tabs, true);
+                }
+
+                // load from the legacy prop as fallback
+                if (!$recent_tabs) {
+                    $q = $this->getPdoRead()->prepare("
+                    SELECT value_array
+                    FROM people_prefs
+                    WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection'
+                ");
+                    $q->execute([$this->_person_id]);
+
+                    $recent_tabs = $q->fetchColumn();
+                    if ($recent_tabs) {
+                        $recent_tabs = UnserializeUtil::unserializeArray($recent_tabs, []);
+                    }
                 }
 
                 if (!$recent_tabs) {
