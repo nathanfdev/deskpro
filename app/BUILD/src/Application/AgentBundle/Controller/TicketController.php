@@ -4811,8 +4811,7 @@ class TicketController extends AbstractController
             $ticket->setAgentTeam(null);
         }
 
-        $account     = $this->getAccount($ticket);
-        $context     = $ticketManager->createAgentExecutorContext($this->person, 'newticket', 'web');
+        $context = $ticketManager->createAgentExecutorContext($this->person, 'newticket', 'forwarding');
 
         $blobStorage = $this->get('blob.storage');
 
@@ -4872,62 +4871,6 @@ class TicketController extends AbstractController
         $this->em->persist($ticket);
 
         $this->em->flush();
-
-        $emailBuilder = TicketEmailBuilder::createFromContainer($this->container)
-            ->setTicket($ticket)
-            ->setToPerson($person)
-            ->setUserMode()
-            ->setTemplateName('DeskPRO:emails_user:ticket-fwd.html.twig')
-            ->setFromName($fromName)
-            ->setFromEmailAccount($account)
-            ->setMaxAttachSize($this->container->getSetting('core.sendemail_attach_maxsize'))
-            ->setLogger($context->getLogger());
-
-        if (count($ccs) > 0) {
-            $emailBuilder->enableUserCc();
-        }
-
-        /** @var TicketEmail $ticketEmail */
-        $ticketEmail = $emailBuilder->buildTicketEmail();
-
-        $vars = [
-            'ticket'         => $ticket,
-            'subject'        => $this->in->getString('subject'),
-            'messages'       => $messages,
-            'person'         => $this->getPerson(),
-            'agent_message'  => $customMessage,
-            'attachments'    => $attachments,
-            'attached_blobs' => $ticketMessage->getAttachments(),
-        ];
-
-        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-            $viewModel = $this->container->get('email.agent_viewmodel_factory')
-                ->createAgentTicketForwardModel(
-                    $ticket,
-                    $customMessage,
-                    $this->in->getString('subject'),
-                    $messages,
-                    $attachments
-                );
-
-            $message = $ticketEmail->prepareMailerMessage($vars, false);
-
-            $message = $this->getContainer()->get('email.email_sender')
-                ->prepareMessage($viewModel, [], $message);
-
-            foreach ($bccs as $k => $x) {
-                $message->addBcc($k, $x);
-            }
-
-            $mailer = $this->container->getMailer();
-            if ($mailer instanceof StorageTransportInterface) {
-                $mailer->queueMessage($message);
-            } else {
-                $mailer->send($message);
-            }
-        } else {
-            $ticketEmail->send($vars);
-        }
 
         $this->em->getRepository(Draft::class)->deleteDraft('ticket', $oldTicket->getId());
 
