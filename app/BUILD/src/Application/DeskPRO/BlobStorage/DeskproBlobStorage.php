@@ -884,7 +884,7 @@ class DeskproBlobStorage implements Loggable
      *
      * @return null|string
      */
-    private function downloadFileUrl($url, array $options = [])
+    private function downloadFileUrl($url, array $http_client_options = [])
     {
         global $DP_ENV;
 
@@ -897,7 +897,7 @@ class DeskproBlobStorage implements Loggable
         }
 
         try {
-            return HttpClient::downloadToString($url, $options);
+            return HttpClient::downloadToString($url, $http_client_options);
         } catch (\Exception $e) {
             $this->logger->logError(sprintf('Download file failed: [%s:%s] %s', get_class($e), $e->getCode(), substr($e->getMessage(), 0, 1000)));
 
