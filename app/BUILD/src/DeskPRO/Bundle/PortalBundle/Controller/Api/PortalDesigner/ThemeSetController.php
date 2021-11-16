@@ -254,8 +254,6 @@ class ThemeSetController extends AbstractApiController
         $response->headers->set('Content-disposition', 'attachment;filename="deskpro-theme-set-'.$themeSet->getId().'-export.zip"');
         $response->headers->set('Content-Length', filesize($generatedFile));
 
-        $importService->cleanTmpFiles();
-
         return $response;
     }
 
@@ -278,7 +276,6 @@ class ThemeSetController extends AbstractApiController
         $importService = $this->container->get('dp.portal.designer.theme_set_import');
 
         $themeSet = $importService->importThemeSet($uploadedFile->getRealPath(), $overwriteTheme);
-        $importService->cleanTmpFiles();
 
         $fs = new Filesystem();
         $fs->remove($uploadedFile->getRealPath());

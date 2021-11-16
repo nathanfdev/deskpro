@@ -13,7 +13,6 @@ use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Filesystem\TmpDir;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class ThemeSetImport.
@@ -265,10 +264,11 @@ class ThemeSetImport
     {
         $this->tmpDir = TmpDir::makeTmpDir();
 
-        if (!mkdir($this->tmpDir.DIRECTORY_SEPARATOR.'assets', 0600, true)) {
+        // Execute permission is needed to enter the directory (i.e., cd into it), and to access any of its files.
+        if (!mkdir($this->tmpDir.DIRECTORY_SEPARATOR.'assets', 0700, true)) {
             throw new \RuntimeException('Unable to make a tmp dir');
         }
-        if (!mkdir($this->tmpDir.DIRECTORY_SEPARATOR.'templates', 0600, true)) {
+        if (!mkdir($this->tmpDir.DIRECTORY_SEPARATOR.'templates', 0700, true)) {
             throw new \RuntimeException('Unable to make a tmp dir');
         }
     }
