@@ -355,15 +355,15 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
             $message = $ticketEmail->prepareMailerMessage([], false);
 
-            $message = $this->getContainer()->get('email.email_sender')
-                ->prepareMessage($viewModel, $messagesArgs, $message);
-
-            if (isset($lastMessage) && !empty($message->getAttachedBlobs())) {
+            if (isset($lastMessage) && !empty($lastMessage->getAttachments())) {
                 $inlineAttachments = $this->getLastMessageAttachments($ticket, $lastMessage, $context);
                 foreach ($inlineAttachments as $attachment) {
                     $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());
                 }
             }
+
+            $message = $this->getContainer()->get('email.email_sender')
+                ->prepareMessage($viewModel, $messagesArgs, $message);
 
             try {
                 if ($mailer instanceof StorageTransportInterface) {

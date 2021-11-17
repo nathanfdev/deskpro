@@ -293,7 +293,7 @@ class Message extends \Orb\Mail\Message
                 continue;
             }
 
-            $regex = '#(<img[^>]+src=")'.preg_quote($src, '#').'(?:\?(?:sc=[^&]+&)?s=\d+)?("[^>]*>)#i';
+            $regex = '#(<img[^>]+src=")'.preg_quote($src, '#').'(?:\?(?:sc=[^&]+)?(?:&?s=\d+)?)?("[^>]*>)#i';
             $body  = preg_replace_callback($regex, function ($match) use ($self, &$embedMap, $src, $blob) {
                 if (!isset($embedMap[$src])) {
                     // in case the src is referenced twice
