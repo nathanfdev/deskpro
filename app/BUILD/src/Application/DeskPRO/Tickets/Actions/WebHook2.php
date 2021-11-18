@@ -93,7 +93,13 @@ class WebHook2 extends AbstractContainerAwareAction implements ActionInterface, 
                 'status'  => $response->getStatusCode(),
                 'content' => (string) $response->getBody(),
             ];
+
             $ticket->getStateChangeRecorder()->recordData('webhook', $data);
+
+            $dataFromResponse = @json_decode($data['content'], true);
+            if ($dataFromResponse) {
+                $context->getUserVars()->set('webhook', array_merge($context->getUserVars()->get('webhook', []), $dataFromResponse));
+            }
         } catch (\Exception $e) {
             $exception = new \Exception('Trigger WebHook failed: '.$e->getMessage(), 0, $e);
             $this->getContainer()->get('dp_sys.alerts.event_logger')->log($exception);
