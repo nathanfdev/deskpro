@@ -400,13 +400,15 @@
                     </form>
                 </div>
                 <div class="col-sm-1 text-right">
-                    <div class="dp-po-columnfilter">
-                        <a href="javascript:void(0)" class="dp-po-columnfilter-link" aria-label="Choose columns">
-                            <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/column-filter.svg', 'help_center') }}" />
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right dp-po-columnfilter-dropdown">
+                    {% if brand_setting('portal.tickets_disable_custom_columns') %}
+                        <div class="dp-po-columnfilter">
+                            <a href="javascript:void(0)" class="dp-po-columnfilter-link" aria-label="Choose columns">
+                                <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/column-filter.svg', 'help_center') }}" />
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right dp-po-columnfilter-dropdown">
+                            </div>
                         </div>
-                    </div>
+                    {%  endif %}
                 </div>
             </div>
         {% else %}
@@ -422,8 +424,10 @@
 
         <div class="dp-po-table dp-po-table-col{{ activeColumns|length + 1}} dp-po-table-ticket dp-po-table-ticket-{{ type }} mb-4">
             <div class="dp-po-table-row dp-po-table-row-head">
-                <span class="dp-po-table-cell dp-po-table-cell-indicator"></span>
-                <span class="dp-po-table-cell">{{ phrase('helpcenter.tickets.list_ticket_ref') }}</span>
+                    <span class="dp-po-table-cell dp-po-table-cell-indicator"></span>
+                {%  if brand_setting('portal.tickets_hide_ref_field', 0) == 0 %}
+                    <span class="dp-po-table-cell">{{ phrase('helpcenter.tickets.list_ticket_ref') }}</span>
+                {% endif  %}
                 {% for col in ticket_table.columns %}
                     <span class="dp-po-table-cell" data-col="{{ col.id }}"{% if not ticket_table.isActive(col)  %} style="display:none;"{% endif %}>
                         {{ _self.col_header(ticket_table, col) }}
@@ -435,9 +439,11 @@
                 {% set ticket_excerpt = ticket_excerpts[ticket.id] is defined ? ticket_excerpts[ticket.id] : null %}
                 <div class="dp-po-table-row">
                     <span class="dp-po-table-cell dp-po-table-cell-indicator"><i class="dp-po-icon fas fa-circle"></i></span>
-                    <span class="dp-po-table-cell">
-                        <a href="{{ portal_path(ticket) }}" class="dp-po-table-cell-link">{{ ticket_public_id(ticket) }}</a>
-                    </span>
+                    {%  if brand_setting('portal.tickets_hide_ref_field', 0) == 0 %}
+                        <span class="dp-po-table-cell">
+                            <a href="{{ portal_path(ticket) }}" class="dp-po-table-cell-link">{{ ticket_public_id(ticket) }}</a>
+                        </span>
+                    {% endif %}
                     {% for col in ticket_table.columns %}
                         <span class="dp-po-table-cell" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
                             <a href="{{ portal_path(ticket) }}" class="dp-po-table-cell-link">{{ _self.col_data(ticket, ticket_view, ticket_excerpt, ticket_table, col) }}</a>
@@ -468,5 +474,10 @@
     <!-- DESKPRO_TICKET_DISPLAY -->
     <script type="text/javascript">
         {{ ticket_list_js|raw }}
+        {% if brand_setting('portal.tickets_auto_refresh', 0) %}
+            window.setTimeout(function () {
+              window.location.reload();
+            }, 60000 * {{ brand_setting('portal.tickets_auto_refresh', 0) }});
+        {% endif %}
     </script>
 {% endblock doc_end %}

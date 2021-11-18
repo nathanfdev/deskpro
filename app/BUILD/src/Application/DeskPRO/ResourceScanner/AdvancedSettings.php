@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Controller
- */
+
 
 namespace Application\DeskPRO\ResourceScanner;
 
@@ -168,6 +164,9 @@ class AdvancedSettings extends SettingFiles
             'internal.disable_email_editing.new',
             'portal.members_community',
             'portal.profile_directory_fields',
+            'portal.tickets_auto_refresh',
+            'portal.tickets_disable_custom_columns',
+            'portal.tickets_hide_ref_field',
             'rdns_ticket_messages',
             'services.language_sync_api',
             'user.community_subscriptions',

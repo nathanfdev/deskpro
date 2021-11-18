@@ -23,6 +23,8 @@ class TicketListTable
     protected $sortDirectionName;
     protected $title;
     protected $withDepartment;
+    protected $defaultColumns;
+    protected $defaultSort;
     /**
      * @var TicketColumns
      */
@@ -30,7 +32,7 @@ class TicketListTable
     protected $activeColumns;
     protected $activeColumnsName;
 
-    public function __construct($ticketCategory, $ticketType, $title, TicketColumns $columns, Request $request, $perPage, $withDepartment = true)
+    public function __construct($ticketCategory, $ticketType, $title, TicketColumns $columns, Request $request, $perPage, $withDepartment = true, $defaultColumns = [], $defaultSort = '')
     {
         $this->ticketCategory    = $ticketCategory;
         $this->ticketType        = $ticketType;
@@ -45,6 +47,8 @@ class TicketListTable
         $this->withDepartment    = $withDepartment;
         $this->columns           = $columns;
         $this->perPage           = $perPage;
+        $this->defaultColumns    = $defaultColumns;
+        $this->defaultSort       = $defaultSort ? $defaultSort : 'activity';
         $this->makeFilterWithRequest($request, $perPage);
     }
 
@@ -93,7 +97,7 @@ class TicketListTable
         $this->ticketFilter = new TicketFilter(
             $this->ticketType,
             $this->ticketCategory,
-            $request->query->get($this->sortName, 'activity'),
+            $request->query->get($this->sortName, $this->defaultSort),
             $request->query->get($this->sortDirectionName, 'desc'),
             $request->query->get('q')
         );
@@ -113,7 +117,7 @@ class TicketListTable
     public function makePagerUsingDataService(TicketsDataService $data_service, Person $person)
     {
         if (!$this->ticketFilter) {
-            throw new RuntimeException('TicketListTable::makrPagerUsingDataService requires that a filter be present');
+            throw new RuntimeException('TicketListTable::makePagerUsingDataService requires that a filter be present');
         }
 
         $this->pager = $data_service->getPager($person, $this->ticketFilter, $this->page, $this->perPage);
@@ -129,6 +133,9 @@ class TicketListTable
     public function getDefaultColumnsIds()
     {
         // get the initial columns to show by default
+        if (!empty($this->defaultColumns)) {
+            return $this->defaultColumns;
+        }
 
         if ($this->ticketType === TicketFilter::TYPE_ORGANIZATION) {
             $columns = [

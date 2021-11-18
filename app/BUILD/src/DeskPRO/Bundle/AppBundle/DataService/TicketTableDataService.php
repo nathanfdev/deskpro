@@ -13,6 +13,7 @@ use DeskPRO\Bundle\AppBundle\Model\TicketColumns;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -71,10 +72,16 @@ class TicketTableDataService extends AbstractDataService
 
     public function makeTicketTable(Person $person, Request $request, $ticketType, $category, $categoryTitle)
     {
-        $columns     = $this->makeColumnControl($person);
-        $perPage     = $this->brand_aware_settings->getSetting('portal.per_page_tickets', null, 50);
-        $departments = $this->department_data_service->getTicketDepartmentsForPerson($person);
-        $table       = new TicketListTable($category, $ticketType, $categoryTitle, $columns, $request, $perPage, count($departments) > 1);
+        $columns        = $this->makeColumnControl($person);
+        $perPage        = $this->brand_aware_settings->getSetting('portal.per_page_tickets', null, 50);
+        $defaultColumns = $this->brand_aware_settings->getSetting('portal.tickets_default_columns', null, []);
+        $defaultSort    = $this->brand_aware_settings->getSetting('portal.tickets_default_sort', null, '');
+
+        if (!empty($defaultColumns)) {
+            $defaultColumns = UnserializeUtil::unserializeArray($defaultColumns, []);
+        }
+        $departments    = $this->department_data_service->getTicketDepartmentsForPerson($person);
+        $table          = new TicketListTable($category, $ticketType, $categoryTitle, $columns, $request, $perPage, count($departments) > 1, $defaultColumns, $defaultSort);
         $table->makePagerUsingDataService($this->ticket_data_service, $person);
 
         return $table;
