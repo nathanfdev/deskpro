@@ -45,7 +45,7 @@ class CheckPerformer extends AbstractTriggerTerm
 
         // Assigned Agent
         if (in_array('-1', $check)) {
-            $check[] = $performer->getId();
+            $check[] = $ticket->getAgentId();
         }
 
         // Member of assigned team
