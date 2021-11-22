@@ -58,8 +58,6 @@ use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use Application\DeskPRO\Tickets\TicketDisplay;
-use Application\DeskPRO\Tickets\TicketEmail;
-use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSaveActions\SaveTicketLogs;
@@ -76,19 +74,17 @@ use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
-use DeskPRO\Component\Filesystem\TmpDir;
 use DeskPRO\Bundle\AppBundle\Zippy\Zippy;
+use DeskPRO\Component\Filesystem\TmpDir;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
-use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -6232,6 +6228,8 @@ CSS;
 
         if ($message->email_source && $message->email_source->getBlob()) {
             $fileString = $this->container->getBlobStorage()->copyBlobRecordToString($message->email_source->getBlob());
+            // Outlook needs Windows Carriage Return [sc-51825]
+            $fileString = preg_replace("/([^\r])\n/m", "$1\r\n", $fileString);
             $response   = new Response();
             $response->headers->set('Content-Type', 'message/rfc822');
             $response->headers->set('Content-Disposition', 'inline; filename=email_source_'.$message->getId().'.eml');
