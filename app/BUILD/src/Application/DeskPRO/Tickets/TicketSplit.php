@@ -173,6 +173,10 @@ class TicketSplit implements PersonContextInterface
         $new_ticket->date_user_waiting       = TicketStatus::STATUS_TYPE_AWAITING_AGENT === $this->ticket->status ? new \DateTime() : null;
         $new_ticket->total_to_first_reply    = $firstAgent ? $firstAgent->date_created->getTimestamp() - $first->date_created->getTimestamp() : 0;
         $new_ticket->total_user_waiting      = $new_ticket->total_to_first_reply ?: 0;
+        $new_ticket->total_to_first_reply_wh = $new_ticket->getWorkHoursSet()->getWorkTimeBetween(
+            $new_ticket->date_created,
+            $new_ticket->date_first_agent_reply
+        );
 
         $new_ticket->creation_system = Ticket::CREATED_WEB_AGENT;
 

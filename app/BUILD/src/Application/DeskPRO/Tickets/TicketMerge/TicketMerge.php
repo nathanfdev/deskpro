@@ -198,6 +198,7 @@ class TicketMerge implements PersonContextInterface
         $md('date_user_waiting', 'max');
 
         $md('total_to_first_reply', 'max');
+        $md('total_to_first_reply_wh', 'max');
         $md('total_user_waiting', 'max');
 
         // merge waiting times
