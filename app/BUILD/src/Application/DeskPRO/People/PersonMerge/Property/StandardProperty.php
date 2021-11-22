@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
+
 
 namespace Application\DeskPRO\People\PersonMerge\Property;
 
@@ -37,6 +33,10 @@ class StandardProperty extends PropertyAbstract
 
         if ($do_set) {
             $this->person[$this->property] = $this->other_person[$this->property];
+        }
+
+        if ($this->strategy === self::STRATEGY_BOOLEAN_BOTH) {
+            $this->person[$this->property] = $this->person[$this->property] && $this->other_person[$this->property];
         }
     }
 }
