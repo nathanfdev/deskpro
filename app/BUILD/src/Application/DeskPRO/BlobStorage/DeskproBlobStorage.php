@@ -798,7 +798,7 @@ class DeskproBlobStorage implements Loggable
      *
      * @return null|string
      */
-    public function copyBlobRecordToString(BlobEntity $blob_entity)
+    public function copyBlobRecordToString(BlobEntity $blob_entity, array $http_client_options = [])
     {
         $this->logger->logDebug("[DeskproBlobStorage] (readBlobStringFromRecord) Read blob record {$blob_entity->id} from {$blob_entity->storage_loc}");
 
@@ -807,7 +807,7 @@ class DeskproBlobStorage implements Loggable
         // Can just use the public URL
         if (!$data && $blob_entity->file_url) {
             $this->logger->logDebug("[DeskproBlobStorage] (readBlobStringFromRecord) Attempting to fetch via URL: {$blob_entity->file_url}");
-            $data = $this->downloadFileUrl($blob_entity->file_url);
+            $data = $this->downloadFileUrl($blob_entity->file_url, $http_client_options);
             if (!$data || strlen($data) != $blob_entity->filesize) {
                 $this->logger->logDebug('[DeskproBlobStorage] (readBlobStringFromRecord) Failed');
                 $data = null;
@@ -884,7 +884,7 @@ class DeskproBlobStorage implements Loggable
      *
      * @return null|string
      */
-    private function downloadFileUrl($url)
+    private function downloadFileUrl($url, array $http_client_options = [])
     {
         global $DP_ENV;
 
@@ -897,7 +897,7 @@ class DeskproBlobStorage implements Loggable
         }
 
         try {
-            return HttpClient::downloadToString($url);
+            return HttpClient::downloadToString($url, $http_client_options);
         } catch (\Exception $e) {
             $this->logger->logError(sprintf('Download file failed: [%s:%s] %s', get_class($e), $e->getCode(), substr($e->getMessage(), 0, 1000)));
 

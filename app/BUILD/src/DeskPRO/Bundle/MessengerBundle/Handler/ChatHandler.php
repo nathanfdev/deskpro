@@ -425,6 +425,7 @@ class ChatHandler
             ->setPerson(null)
             ->setSubject("")
             ->setRef("")
+            ->setAuth("")
             ->setTicketPersonEmail(null)
         ;
 
