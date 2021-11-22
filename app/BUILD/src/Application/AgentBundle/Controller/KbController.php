@@ -1266,6 +1266,12 @@ class KbController extends AbstractController
         );
 
         if ($request->getMethod() == 'POST') {
+            $article            = $this->request->request->get('newarticle');
+            $article['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
+                ? $this->in->getCleanValue('newarticle.content', 'string', null, ['noclean' => true])
+                : $this->in->getCleanValue('newarticle.content', 'html');
+
+            $request->request->set('newarticle', $article);
             $form->handleRequest($request);
             $form->isValid();
 

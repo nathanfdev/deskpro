@@ -564,6 +564,12 @@ class NewsController extends AbstractController
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newnews' AND person_id = ?", [$this->person->id]);
 
         if ($request->getMethod() == 'POST') {
+            $news            = $this->request->request->get('newnews');
+            $news['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
+                ? $this->in->getCleanValue('newnews.content', 'string', null, ['noclean' => true])
+                : $this->in->getCleanValue('newnews.content', 'html');
+
+            $request->request->set('newnews', $news);
             $form->handleRequest($request);
             $form->isValid();
 
