@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category EmailGateway
- */
+
 
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
@@ -84,7 +80,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $emailInfo['body']         = $this->ticket_email->email_body_html;
             $emailInfo['body_is_html'] = false;
 
-            $inlineImages = new InlineImageTokens($this->reader);
+            $inlineImages      = new InlineImageTokens($this->reader);
             $emailInfo['body'] = $inlineImages->processTokens($emailInfo['body']);
 
             $linkedImages      = new LinkedImages($this->logger);
@@ -93,7 +89,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $emailInfo['body'] = $this->replaceInlineAttachTokens($emailInfo['body'], $inlineImages);
             $fromHtml          = true;
         } else {
-            $emailInfo['body'] = $this->ticket_email->email_body_text;
+            $emailInfo['body']         = $this->ticket_email->email_body_text;
             $emailInfo['body_is_html'] = false;
             $fromHtml                  = false;
         }
@@ -115,6 +111,12 @@ class ProcessAgentFwd extends ProcessAbstract
             foreach ($this->reader->getAttachments() as $attach) {
                 if ($attach->mime_type == 'message/rfc822') {
                     $hasEmlAttach = $attach;
+
+                    break;
+                } elseif ($attach->mime_type == 'application/octet-stream' && preg_match('/\.eml$/', $attach->getFileName())) {
+                    // We found a .eml attachment looking like a forwarded email cf [sc-52900]
+                    $hasEmlAttach = $attach;
+
                     break;
                 }
             }
@@ -388,6 +390,7 @@ class ProcessAgentFwd extends ProcessAbstract
             App::getDb()->commit();
         } catch (\Exception $e) {
             App::getDb()->rollback();
+
             throw $e;
         }
 
@@ -732,6 +735,7 @@ class ProcessAgentFwd extends ProcessAbstract
             App::getDb()->commit();
         } catch (\Exception $e) {
             App::getDb()->rollback();
+
             throw $e;
         }
 
