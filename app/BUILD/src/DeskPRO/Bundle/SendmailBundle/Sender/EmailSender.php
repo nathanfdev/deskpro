@@ -203,6 +203,7 @@ class EmailSender
             $person = $this->container->get('api_serializer.handler.person')
                 ->createModel($tempPerson, $serializationContext);
             $model->setRecipient($person);
+            $recipient = $person;
         } elseif ($options['to']) {
             $message->setTo($options['to']);
         }
@@ -215,7 +216,7 @@ class EmailSender
 
         $language = $options['language'];
         if (!$language) {
-            if (!empty($recipient)) {
+            if (!empty($recipient) && method_exists($recipient, 'getLanguage')) {
                 $language = $recipient->getLanguage();
             }
         }
