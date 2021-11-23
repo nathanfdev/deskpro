@@ -107,3 +107,10 @@ services:
     arguments:
       - "@ratings_helper"
       - "@brand_stack"
+
+  deskpro_apiv2_cors_config_provider:
+    class: DeskPRO\Bundle\ApiBundle\Cors\Options\DeskproConfigProvider
+    arguments:
+      - "@deskpro.app_env"
+    tags:
+      - { name: 'nelmio_cors.options_provider' }
