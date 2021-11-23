@@ -654,6 +654,13 @@ class Ticket
     private $ticketPermissions;
 
     /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $accessCode;
+
+    /**
      * Constructor.
      *
      * @param TicketEntity $ticket
@@ -725,6 +732,7 @@ class Ticket
         $this->waitingTimes          = $ticket->getWaitingTimes();
         $this->children              = $ticket->getChildrenTickets();
         $this->siblings              = $ticket->getSiblingsTickets();
+        $this->accessCode            = $ticket->getAccessCode();
     }
 
     /**
