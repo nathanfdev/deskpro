@@ -86,7 +86,7 @@
     "markdown-it": "^8.2.2",
     "markdown-it-container": "^2.0.0",
     "markdown-it-emoji": "^1.3.0",
-    "medium-editor": "^5.23.2",
+    "medium-editor": "github:deskpro/medium-editor#26fab7d934ddf75dfc39466a33cecd93c1891cb9",
     "mime-types": "2.1.9",
     "moment": "^2.22.2",
     "moment-hijri": "^2.0.1",
