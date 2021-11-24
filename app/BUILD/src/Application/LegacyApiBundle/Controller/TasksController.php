@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 class TasksController extends AbstractController
 {
     const KEY_ENABLED  = 'core.apps_tasks';
-    const KEY_REMINDER = 'task_reminder_time';
+    const KEY_REMINDER = 'core.task_reminder_time';
 
     /**
      * {@inheritdoc}
