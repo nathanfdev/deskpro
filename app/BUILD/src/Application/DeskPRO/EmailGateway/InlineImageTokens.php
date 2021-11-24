@@ -27,6 +27,11 @@ class InlineImageTokens
      */
     protected $tokens = [];
 
+    /**
+     * @var array
+     */
+    protected $dimensions = [];
+
     public function __construct(AbstractReader $reader)
     {
         $this->reader = $reader;
@@ -67,6 +72,16 @@ class InlineImageTokens
                 $cid = Strings::extractRegexMatch('#src=("|\')cid:(.*?)(\1)#iu', $match[0], 2);
                 if (!$cid || !isset($haveCids[$cid])) {
                     continue;
+                }
+
+                $width = Strings::extractRegexMatch('#width=("|\'|)(\d+)("|\'|)#iu', $match[0], 2);
+                $height = Strings::extractRegexMatch('#height=("|\'|)(\d+)("|\'|)#iu', $match[0], 2);
+
+                if ($width) {
+                    $this->dimensions[$cid]['width'] = $width;
+                }
+                if ($height) {
+                    $this->dimensions[$cid]['height'] = $height;
                 }
 
                 $token = $this->generateToken();
@@ -175,6 +190,14 @@ class InlineImageTokens
         }
 
         return $body;
+    }
+
+    /**
+     * @param string $cid
+     */
+    public function getTokenDimensions($cid)
+    {
+        return isset($this->dimensions[$cid]) ? $this->dimensions[$cid] : null;
     }
 
     /**
