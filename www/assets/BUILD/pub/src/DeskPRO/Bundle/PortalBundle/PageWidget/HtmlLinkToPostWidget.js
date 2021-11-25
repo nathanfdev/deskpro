@@ -18,9 +18,11 @@ export class HtmlLinkToPostWidget extends PageWidget {
 
         const action = $link.attr('href');
         const $form = $('<form></form>');
+        const $input = $('<input name="_dp_csrf_token" />').val(window.dp_get_csrf_token());
 
         $form.attr('action', action);
         $form.attr('method', 'POST');
+        $form.append($input);
         $('body').append($form);
         $form.submit();
 

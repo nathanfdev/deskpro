@@ -10,16 +10,17 @@ use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Notifications\NewCommentNotification;
-use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\ShareContentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Model\RatingModel;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ShareContentVoter;
+use DeskPRO\Bundle\PortalBundle\Annotation\VerifyCsrf;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\LazyPropObject;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -312,9 +313,10 @@ class ArticlesController extends AbstractPublishController
     /**
      * @Route("/kb/articles/{slug}/vote-up", name="portal_kb_article_vote_up", defaults={"up_or_down":"up"})
      * @Route("/kb/articles/{slug}/vote-down", name="portal_kb_article_vote_down", defaults={"up_or_down":"down"})
+     * @Method("POST")
      * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('RATE_ARTICLE', article)")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param Article $article
      * @param         $visitor_id
@@ -342,9 +344,10 @@ class ArticlesController extends AbstractPublishController
 
     /**
      * @Route("/kb/articles/{slug}/toggle-subscription", name="portal_kb_article_toggle_subscription")
+     * @Method("POST")
      * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE', article)")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param Article $article
      *
@@ -368,9 +371,10 @@ class ArticlesController extends AbstractPublishController
 
     /**
      * @Route("/kb/category/toggle-subscription/{slug}", name="portal_kb_article_category_toggle_subscription")
+     * @Method("POST")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE_CATEGORY', category)")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param ArticleCategory $category
      *
@@ -394,8 +398,9 @@ class ArticlesController extends AbstractPublishController
 
     /**
      * @Route("/kb/root/toggle-subscription", name="portal_kb_article_root_category_toggle_subscription")
+     * @Method("POST")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_ARTICLES')")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      */
     public function articleRootCategorySubscriptionAction()
     {
@@ -415,11 +420,12 @@ class ArticlesController extends AbstractPublishController
 
     /**
      * @Route("/kb/articles/subscriptions/unsubscribe", name="portal_kb_unsubscribe_all")
+     * @Method("POST")
      * NOTE: we don't check if they have access to this content, because we might
      *       let someone UN-subscribe from all even if they don't have access to some
      *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_ARTICLES')")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      */
     public function articleUnsubscribeAllAction()
     {

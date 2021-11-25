@@ -8,14 +8,15 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Notifications\NewCommentNotification;
-use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\PortalBundle\Annotation\VerifyCsrf;
 use DeskPRO\Bundle\PortalBundle\Form\Handler\CommentFormHandler;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\LazyPropObject;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -393,9 +394,10 @@ class NewsController extends AbstractPublishController
     /**
      * @Route("/news/posts/{slug}/vote-up", name="portal_news_post_vote_up", defaults={"up_or_down":"up"})
      * @Route("/news/posts/{slug}/vote-down", name="portal_news_post_vote_down", defaults={"up_or_down":"down"})
+     * @Method("POST")
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('RATE_NEWS', post)")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param News $post
      * @param Request $request
@@ -421,9 +423,10 @@ class NewsController extends AbstractPublishController
 
     /**
      * @Route("/news/posts/{slug}/toggle-subscription", name="portal_news_post_toggle_subscription")
+     * @Method("POST")
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('SUBSCRIBE_NEWS', post)")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param News $post
      *
@@ -447,9 +450,10 @@ class NewsController extends AbstractPublishController
 
     /**
      * @Route("/news/category/toggle-subscription/{slug}", name="portal_news_category_toggle_subscription")
+     * @Method("POST")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('SUBSCRIBE_NEWS_CATEGORY', category)")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param NewsCategory $category
      *
@@ -473,8 +477,9 @@ class NewsController extends AbstractPublishController
 
     /**
      * @Route("/news/root/toggle-subscription", name="portal_news_root_category_toggle_subscription")
+     * @Method("POST")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_NEWS')")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      */
     public function newsRootCategorySubscriptionAction()
     {
@@ -494,11 +499,12 @@ class NewsController extends AbstractPublishController
 
     /**
      * @Route("/news/posts/subscriptions/unsubscribe", name="portal_news_unsubscribe_all")
+     * @Method("POST")
      * NOTE: we don't check if they have access to this content, because we might
      *       let someone UN-subscribe from all even if they don't have access to some
      *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_NEWS')")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      */
     public function newsUnsubscribeAllAction()
     {

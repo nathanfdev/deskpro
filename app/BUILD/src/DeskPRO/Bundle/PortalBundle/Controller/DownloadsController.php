@@ -9,11 +9,11 @@ use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Notifications\NewCommentNotification;
-use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\PortalBundle\Annotation\VerifyCsrf;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Util\LazyPropObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -422,9 +422,10 @@ class DownloadsController extends AbstractController
     /**
      * @Route("/downloads/files/{slug}/vote-up", name="portal_downloads_vote_up", defaults={"up_or_down":"up"})
      * @Route("/downloads/files/{slug}/vote-down", name="portal_downloads_vote_down", defaults={"up_or_down":"down"})
+     * @Method("POST")
      * @ParamConverter(name="file", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('RATE_DOWNLOAD', file)")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param Download $file
      * @param string   $visitor_id
@@ -449,9 +450,10 @@ class DownloadsController extends AbstractController
 
     /**
      * @Route("/downloads/files/{slug}/toggle-subscription", name="portal_downloads_files_toggle_subscription")
+     * @Method("POST")
      * @ParamConverter(name="file", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOAD', file)")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param Download $file
      *
@@ -475,9 +477,10 @@ class DownloadsController extends AbstractController
 
     /**
      * @Route("/downloads/category/toggle-subscription/{slug}", name="portal_downloads_category_toggle_subscription")
+     * @Method("POST")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOAD_CATEGORY', category)")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param DownloadCategory $category
      *
@@ -501,8 +504,9 @@ class DownloadsController extends AbstractController
 
     /**
      * @Route("/downloads/root/toggle-subscription", name="portal_downloads_root_category_toggle_subscription")
+     * @Method("POST")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_DOWNLOADS')")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @return Response
      */
@@ -524,11 +528,12 @@ class DownloadsController extends AbstractController
 
     /**
      * @Route("/downloads/files/subscriptions/unsubscribe", name="portal_downloads_unsubscribe_all")
+     * @Method("POST")
      * NOTE: we don't check if they have access to this content, because we might
      *       let someone UN-subscribe from all even if they don't have access to some
      *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_DOWNLOADS')")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      */
     public function downloadsUnsubscribeAllAction()
     {

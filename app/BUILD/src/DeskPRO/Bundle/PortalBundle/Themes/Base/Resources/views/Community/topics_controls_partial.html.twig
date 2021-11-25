@@ -6,7 +6,7 @@
         data-vote-down-url="{{ portal_path(topic, 'vote_down') }}"
         title="{{ phrase('portal.community.btn-vote') }}"
         {% endif %}
-       class="i-agree {% if user_up_voted(topic) %} agreed{% endif %}{% if topic.isClosed %} closed{% endif %}{% if not topic.can_rate %} rate_forbidden{% endif %}"
+       class="i-agree {% if user_up_voted(topic) %} agreed{% endif %}{% if topic.isClosed %} closed{% endif %}{% if not topic.can_rate %} rate_forbidden{% endif %} post-link"
        rel="noindex, nofollow"
     >
         <i class="fas fa-thumbs-up"></i>
