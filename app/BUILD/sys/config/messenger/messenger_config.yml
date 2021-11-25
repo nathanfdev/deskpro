@@ -124,10 +124,6 @@ security:
       pattern: ^/api/messenger/?$
       stateless: true
       anonymous: ~
-    api_messenger_anonymous_setup:
-      pattern: ^/api/messenger/service/(setup|translation)/?$
-      stateless: true
-      anonymous: ~
     # we need a transfer session listener for it to make it more correct
     portal:
       pattern: ^/api/messenger
