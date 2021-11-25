@@ -517,6 +517,21 @@ class TicketMessage extends DomainObject
             $marker_class_a   = 'dp-embed-blob-a-'.$m[2];
             $marker_class_img = 'dp-embed-blob-img-'.$m[2];
 
+            $dimensions = '';
+            if (isset($m[4])) {
+                if (preg_match('/^:w=(\d+)/', $m[4], $matches)) {
+                    $dimensions .= ' width="'.$matches[1].'"';
+                }
+                if (preg_match('/^:h=(\d+)/', $m[4], $matches)) {
+                    $dimensions .= ' height="'.$matches[1].'"';
+                }
+            }
+            if (isset($m[5])) {
+                if (preg_match('/^:h=(\d+)/', $m[5], $matches)) {
+                    $dimensions .= ' height="'.$matches[1].'"';
+                }
+            }
+
             // Add a sign code for fs-saved files
             // If the auto-code contains the '0' digit it means it was originally in the db
             // It's possible it's been moved (e.g., to fs or s3) which means the auth will have changed
@@ -542,7 +557,7 @@ class TicketMessage extends DomainObject
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
 
-                $replace = sprintf('<img src="%s" title="%s" />', $url, $m[3]);
+                $replace = sprintf('<img src="%s" title="%s" %s />', $url, $m[3], $dimensions);
             } elseif ($m[1] === 'image') {
                 $_p = ['blob_auth_id' => $m[2], 'filename' => $m[3], 'sc' => $sc_code];
                 if ($resizeInlines) {
@@ -564,18 +579,20 @@ class TicketMessage extends DomainObject
 
                 if (!$do_link) {
                     $replace = sprintf(
-                        '<img src="%s" title="%s" class="dragout '.$marker_class_img.'" %s/>',
+                        '<img src="%s" title="%s" class="dragout '.$marker_class_img.'" %s %s />',
                         $url,
                         $m[3],
-                        $extra
+                        $extra,
+                        $dimensions
                     );
                 } else {
                     $replace = sprintf(
-                        '<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s><img src="%s" title="%s" class="'.$marker_class_img.'" /></a>',
+                        '<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s><img src="%s" title="%s" class="'.$marker_class_img.'" %s /></a>',
                         $download_url,
                         $extra,
                         $url,
-                        $m[3]
+                        $m[3],
+                        $dimensions
                     );
                 }
             } else {
@@ -596,7 +613,7 @@ class TicketMessage extends DomainObject
             $changed = false;
 
             // [attach:type:auth_id:filename]
-            if (RegexUtils::safePregMatch('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', $message, $m)) {
+            if (RegexUtils::safePregMatch('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)(:w=\d+)?(:h=\d+)?\]#', $message, $m)) {
                 $changed = true;
                 $pos     = strpos($message, $m[0]);
                 $before  = substr($message, 0, $pos);

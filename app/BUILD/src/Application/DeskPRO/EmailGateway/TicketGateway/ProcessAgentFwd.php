@@ -287,7 +287,7 @@ class ProcessAgentFwd extends ProcessAbstract
             if (isset($this->inlineBlobs[$blob->id])) {
                 $attach->is_inline = true;
 
-                if ($agentTicketMessage && strpos($agentTicketMessage->getMessage(), $this->getInlineBlobTag($blob)) !== false) {
+                if ($agentTicketMessage && $this->hasInlineBlobTag($agentTicketMessage->getMessage(), $blob)) {
                     $agentTicketMessage->addAttachment($attach);
                 } else {
                     $ticketMessage->addAttachment($attach);

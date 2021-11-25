@@ -390,18 +390,38 @@ abstract class ProcessAbstract
                 $this->inlineBlobs[$blob->getId()] = $blob;
             }
 
-            $body = $inlineImages->replaceToken($cid, $this->getInlineBlobTag($blob), $body);
+            $body = $inlineImages->replaceToken($cid, $this->getInlineBlobTag($blob, $inlineImages->getTokenDimensions($cid)), $body);
         }
 
         return $body;
     }
 
-    protected function getInlineBlobTag(Blob $blob)
+    /**
+     * @param Blob       $blob
+     * @param array|null $dimensions
+     *
+     * @return string
+     */
+    protected function getInlineBlobTag(Blob $blob, array $dimensions = null)
     {
         if ($blob->isImage()) {
-            return '[attach:image:'.$blob->getAuthId().':'.$blob->getFilenameSafe().']';
+            return '[attach:image:'.$blob->getAuthId().':'.$blob->getFilenameSafe()
+                .(isset($dimensions['width']) ? ':w='.$dimensions['width'] : '')
+                .(isset($dimensions['height']) ? ':h='.$dimensions['height'] : '')
+            .']';
         }
 
         return '[attach:file:'.$blob->getAuthId().':'.$blob->getFilenameSafe().']';
+    }
+
+    /**
+     * @param string $message
+     * @param Blob   $blob
+     *
+     * @return bool
+     */
+    protected function hasInlineBlobTag($message, Blob $blob)
+    {
+        return strpos($message, '[attach:image:'.$blob->getAuthId().':'.$blob->getFilenameSafe()) !== false;
     }
 }
