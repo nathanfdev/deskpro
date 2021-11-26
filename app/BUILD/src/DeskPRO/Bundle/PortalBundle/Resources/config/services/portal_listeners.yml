@@ -168,3 +168,9 @@ services:
     arguments: ["@session"]
     tags:
       - { name: kernel.event_subscriber }
+
+  verify_csrf.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\VerifyCsrfListener
+    arguments: ["@service_container"]
+    tags:
+      - { name: kernel.event_subscriber }

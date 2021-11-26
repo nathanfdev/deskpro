@@ -12,7 +12,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Notifications\NewCommentNotification;
 use Application\DeskPRO\Notifications\NewCommunityTopicNotification;
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommunityTopicAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
@@ -21,6 +20,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
+use DeskPRO\Bundle\PortalBundle\Annotation\VerifyCsrf;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewCommunityTopicType;
 use DeskPRO\Bundle\PortalBundle\Helper\CommunityFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
@@ -644,8 +644,9 @@ class CommunityTopicsController extends AbstractPublishController
     /**
      * @Route("/community/view/{slug}/vote-up", name="portal_community_topic_vote_up", defaults={"up_or_down":"up"})
      * @Route("/community/view/{slug}/vote-down", name="portal_community_topic_vote_down", defaults={"up_or_down":"down"})
+     * @Method("POST")
      * @ParamConverter(name="topic", converter="deskpro_slug")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param Request        $request
      * @param CommunityTopic $topic
@@ -717,9 +718,10 @@ class CommunityTopicsController extends AbstractPublishController
 
     /**
      * @Route("/community/view/{slug}/toggle-subscription", name="portal_community_topic_toggle_subscription")
+     * @Method("POST")
      * @ParamConverter(name="topic", converter="deskpro_slug")
      * @Security("is_granted('USE_COMMUNITY') and is_granted('SUBSCRIBE_COMMUNITY', topic)")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param CommunityTopic $topic
      *
@@ -749,8 +751,9 @@ class CommunityTopicsController extends AbstractPublishController
 
     /**
      * @Route("/community/root/toggle-subscription", name="portal_community_root_toggle_subscription")
+     * @Method("POST")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_COMMUNITY')")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param Request $request
      *
@@ -778,11 +781,12 @@ class CommunityTopicsController extends AbstractPublishController
 
     /**
      * @Route("/community/items/subscriptions/unsubscribe", name="portal_community_unsubscribe_all")
+     * @Method("POST")
      * NOTE: we don't check if they have access to this content, because we might
      *       let someone UN-subscribe from all even if they don't have access to some
      *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_COMMUNITY')")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      */
     public function communityUnsubscribeAllAction()
     {

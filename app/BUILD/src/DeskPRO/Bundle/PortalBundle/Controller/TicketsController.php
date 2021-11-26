@@ -21,6 +21,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayou
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimelinePagerfantaAdapter;
+use DeskPRO\Bundle\PortalBundle\Annotation\VerifyCsrf;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketAddCcType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketFeedbackType;
@@ -32,6 +33,7 @@ use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTablesCollection;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Pagerfanta;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -532,8 +534,9 @@ class TicketsController extends AbstractController
 
     /**
      * @Route("/tickets/{ticket_ref}/remove-cc/{cc_id}", name="portal_tickets_cc_remove")
+     * @Method("POST")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param mixed $ticket_ref
      * @param mixed $cc_id
@@ -749,8 +752,9 @@ class TicketsController extends AbstractController
 
     /**
      * @Route("/tickets/{ticket_ref}/unresolve", name="portal_tickets_unresolve")
+     * @Method("POST")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
-     * @AutoPostOnGetRequest()
+     * @VerifyCsrf()
      *
      * @param mixed $ticket_ref
      */
