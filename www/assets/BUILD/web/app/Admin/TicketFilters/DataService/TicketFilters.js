@@ -11,7 +11,7 @@ define([
     _doLoadList() {
       const deferred = this.$q.defer();
 
-      this.Api.sendGet('/ticket_filters').success((data) => {
+      this.Api.sendGet('/ticket_filters?basic=1').success((data) => {
         const models = data.filters;
         return deferred.resolve(models);
       }
@@ -67,7 +67,7 @@ define([
         types.filter = `/ticket_filters/${id}`;
       }
 
-      types.agents = '/agents';
+      types.agents = '/agents?basic=1';
       types.teams = '/agent_teams';
 
       this.Api.sendDataGet(types).then((res) => {

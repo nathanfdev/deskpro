@@ -13,6 +13,7 @@ use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\CheckedOptionsException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -38,7 +39,7 @@ class TicketFiltersController extends AbstractController
     /**
      * @return Response
      */
-    public function listAction()
+    public function listAction(Request $request)
     {
         /** @var LegacyTicketFilterRepository $legacyTicketFilterRepository */
         $legacyTicketFilterRepository = $this->em->getRepository('DeskPRO:LegacyTicketFilter');
@@ -54,9 +55,18 @@ class TicketFiltersController extends AbstractController
                 'sys_name'      => $filter->sys_name,
                 'display_order' => $filter->display_order,
                 'is_global'     => $filter->is_global,
-                'person'        => $filter->person ? $filter->person->toApiData(true) : null,
                 'agent_team'    => $filter->agent_team ? $filter->agent_team->toApiData(true) : null,
             ];
+
+            if ($filter->person) {
+                if ($request->query->get('basic')) {
+                    $row['person'] = $filter->person->toBasicApiData();
+                } else {
+                    $row['person'] = $filter->person->toApiData(true);
+                }
+            } else {
+                $row['person'] = null;
+            }
 
             $data[] = $row;
         }
