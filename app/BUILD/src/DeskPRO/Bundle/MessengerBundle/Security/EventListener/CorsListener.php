@@ -37,10 +37,15 @@ class CorsListener extends NelmioCorsListener
         }
 
         if ($origins = $this->settingsResolver->getSetting(MessengerSettingsResolver::EMBED_AUTHORIZE_DOMAINS)) {
-            $settingsUrls = array_map('trim', explode(',', $origins));
+            $options['origin_regex'] = (strpos($origins, '*') !== false);
+            $settingsUrls            = array_map('trim', explode(',', $origins));
         }
 
-        $options['allow_origin'] = array_merge($brandUrls, $settingsUrls);
+        if ($options['origin_regex']) {
+            $options['allow_origin'] = str_replace(['.', '*'], ['\.', '(.+)'], array_merge($brandUrls, $settingsUrls));
+        } else {
+            $options['allow_origin'] = array_merge($brandUrls, $settingsUrls);
+        }
 
         return parent::checkOrigin($request, $options);
     }
