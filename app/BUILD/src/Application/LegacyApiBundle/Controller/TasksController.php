@@ -41,8 +41,8 @@ class TasksController extends AbstractController
     public function settingsAction(Request $request)
     {
         $response = [
-            'enabled'          => $this->settings->get(self::KEY_ENABLED, 0),
-            self::KEY_REMINDER => $this->settings->get(self::KEY_REMINDER, '09:00'),
+            'enabled'            => $this->settings->get(self::KEY_ENABLED, 0),
+            'task_reminder_time' => $this->settings->get(self::KEY_REMINDER, '09:00'),
         ];
 
         if (!$request->query->get('settings_only')) {
@@ -92,7 +92,7 @@ class TasksController extends AbstractController
     {
         $enabled = $this->in->getUInt('enabled');
         $this->settings->setSetting(self::KEY_ENABLED, $enabled);
-        $this->settings->setSetting(self::KEY_REMINDER, $this->in->getString(self::KEY_REMINDER));
+        $this->settings->setSetting(self::KEY_REMINDER, $this->in->getString('task_reminder_time'));
 
         if (!$enabled) {
             return $this->settingsAction();

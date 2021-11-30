@@ -9,7 +9,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     init() {
       this.settings = {
         default_timezone:       'UTC',
-        task_reminder_time:     '09:30',
+        task_reminder_time:     '09:00',
         attach_agent_must_exts: [],
         attach_agent_not_exts:  [],
         attach_user_must_exts:  [],
