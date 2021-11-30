@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\EntityRepository\LabelDef;
@@ -24,6 +22,8 @@ class LabelsController extends AbstractController
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
         $multi->addPermissionStrategy(new AgentPermission(), 'listDefinitionsAction');
+
+        return $multi;
     }
 
     public function listDefinitionsAction($type = null)
