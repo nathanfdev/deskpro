@@ -338,7 +338,7 @@ class GeneralSettings
         }
 
         $this->globalSettings->setSetting('core.default_timezone', $this->default_timezone ?: 'UTC');
-        $this->globalSettings->setSetting('core.task_reminder_time', $this->task_reminder_time ?: '09:30');
+        $this->globalSettings->setSetting('core.task_reminder_time', $this->task_reminder_time ?: '09:00');
 
         $db    = App::$container->get('database_connection');
         $brand = App::$container->getBrandStack()->getDefaultBrand();
