@@ -292,6 +292,9 @@
             {% set label = phrase('helpcenter.tickets.list_date_last_user') %}
         {% elseif col.id == 'date_agent' %}
             {% set label = phrase('helpcenter.tickets.list_date_last_agent') %}
+        {% elseif col.id starts with 'ticket_field' %}
+            {% set label = col.label %}
+            {% set make_link = true %}
         {% else  %}
             {% set label = col.label %}
             {% set make_link = false %}
@@ -400,7 +403,7 @@
                     </form>
                 </div>
                 <div class="col-sm-1 text-right">
-                    {% if brand_setting('portal.tickets_disable_custom_columns') %}
+                    {% if brand_setting('portal.tickets_disable_custom_columns') != '1' %}
                         <div class="dp-po-columnfilter">
                             <a href="javascript:void(0)" class="dp-po-columnfilter-link" aria-label="Choose columns">
                                 <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/column-filter.svg', 'help_center') }}" />

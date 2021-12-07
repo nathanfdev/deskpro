@@ -72,16 +72,17 @@ class TicketTableDataService extends AbstractDataService
 
     public function makeTicketTable(Person $person, Request $request, $ticketType, $category, $categoryTitle)
     {
-        $columns        = $this->makeColumnControl($person);
-        $perPage        = $this->brand_aware_settings->getSetting('portal.per_page_tickets', null, 50);
-        $defaultColumns = $this->brand_aware_settings->getSetting('portal.tickets_default_columns', null, []);
-        $defaultSort    = $this->brand_aware_settings->getSetting('portal.tickets_default_sort', null, '');
+        $columns              = $this->makeColumnControl($person);
+        $perPage              = $this->brand_aware_settings->getSetting('portal.per_page_tickets', null, 50);
+        $defaultColumns       = $this->brand_aware_settings->getSetting('portal.tickets_default_columns', null, []);
+        $defaultSort          = $this->brand_aware_settings->getSetting('portal.tickets_default_sort', null, '');
+        $defaultSortDirection = $this->brand_aware_settings->getSetting('portal.tickets_default_sort_direction', null, '');
 
         if (!empty($defaultColumns)) {
             $defaultColumns = UnserializeUtil::unserializeArray($defaultColumns, []);
         }
         $departments    = $this->department_data_service->getTicketDepartmentsForPerson($person);
-        $table          = new TicketListTable($category, $ticketType, $categoryTitle, $columns, $request, $perPage, count($departments) > 1, $defaultColumns, $defaultSort);
+        $table          = new TicketListTable($category, $ticketType, $categoryTitle, $columns, $request, $perPage, count($departments) > 1, $defaultColumns, $defaultSort, $defaultSortDirection);
         $table->makePagerUsingDataService($this->ticket_data_service, $person);
 
         return $table;
