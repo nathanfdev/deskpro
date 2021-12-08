@@ -25,6 +25,7 @@ class TicketListTable
     protected $withDepartment;
     protected $defaultColumns;
     protected $defaultSort;
+    protected $defaultSortDirection;
     /**
      * @var TicketColumns
      */
@@ -32,23 +33,24 @@ class TicketListTable
     protected $activeColumns;
     protected $activeColumnsName;
 
-    public function __construct($ticketCategory, $ticketType, $title, TicketColumns $columns, Request $request, $perPage, $withDepartment = true, $defaultColumns = [], $defaultSort = '')
+    public function __construct($ticketCategory, $ticketType, $title, TicketColumns $columns, Request $request, $perPage, $withDepartment = true, $defaultColumns = [], $defaultSort = '', $defaultSortDirection = '')
     {
-        $this->ticketCategory    = $ticketCategory;
-        $this->ticketType        = $ticketType;
-        $this->title             = $title;
-        $this->pageName          = $ticketCategory.'_page';
-        $this->sortName          = $ticketCategory.'_sort';
-        $this->sortDirectionName = $ticketCategory.'_sort_direction';
-        $this->activeColumnsName = $ticketCategory.'_cols';
-        $this->ticketFilter      = null;
-        $this->pager             = null;
-        $this->activeColumns     = [];
-        $this->withDepartment    = $withDepartment;
-        $this->columns           = $columns;
-        $this->perPage           = $perPage;
-        $this->defaultColumns    = $defaultColumns;
-        $this->defaultSort       = $defaultSort ? $defaultSort : 'activity';
+        $this->ticketCategory       = $ticketCategory;
+        $this->ticketType           = $ticketType;
+        $this->title                = $title;
+        $this->pageName             = $ticketCategory.'_page';
+        $this->sortName             = $ticketCategory.'_sort';
+        $this->sortDirectionName    = $ticketCategory.'_sort_direction';
+        $this->activeColumnsName    = $ticketCategory.'_cols';
+        $this->ticketFilter         = null;
+        $this->pager                = null;
+        $this->activeColumns        = [];
+        $this->withDepartment       = $withDepartment;
+        $this->columns              = $columns;
+        $this->perPage              = $perPage;
+        $this->defaultColumns       = $defaultColumns;
+        $this->defaultSort          = $defaultSort ? $defaultSort : 'activity';
+        $this->defaultSortDirection = $defaultSortDirection ? $defaultSortDirection : 'desc';
         $this->makeFilterWithRequest($request, $perPage);
     }
 
@@ -98,7 +100,7 @@ class TicketListTable
             $this->ticketType,
             $this->ticketCategory,
             $request->query->get($this->sortName, $this->defaultSort),
-            $request->query->get($this->sortDirectionName, 'desc'),
+            $request->query->get($this->sortDirectionName, $this->defaultSortDirection),
             $request->query->get('q')
         );
         $this->page          = $request->query->get($this->pageName, 1);

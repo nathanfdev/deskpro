@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\PortalBundle\Model;
 
@@ -131,7 +129,9 @@ class TicketFilter
     public function setSort($sort)
     {
         if (!in_array($sort, [self::SORT_ACTIVITY, self::SORT_CREATED, self::SORT_DEPARTMENT, self::SORT_SUBJECT, self::SORT_AGENT, self::SORT_LAST_AGENT, self::SORT_LAST_USER, self::SORT_USER])) {
-            $sort = self::SORT_ACTIVITY;
+            if (strpos($sort, 'ticket_field_') !== 0) {
+                $sort = self::SORT_ACTIVITY;
+            }
         }
 
         $this->sort = $sort;
