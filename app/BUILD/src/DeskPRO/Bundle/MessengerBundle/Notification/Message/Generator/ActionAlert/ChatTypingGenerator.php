@@ -35,9 +35,11 @@ class ChatTypingGenerator extends ChatGenerator
         $isAgent = $data['origin'] === 'agent';
 
         if ($isAgent) {
-            $agent  = $chat->getAgent();
-            $avatar = $this->avatarResolver->getAvatar($agent);
-            $name   = null !== $agent ? $agent->getDisplayNameUser() : 'agent';
+            $agent         = $chat->getAgent();
+            $defaultAvatar = false;
+            $avatar        = $this->avatarResolver->getAvatar($agent, 80, $defaultAvatar);
+            $avatar        = $defaultAvatar ? null : $avatar;
+            $name          = null !== $agent ? $agent->getDisplayNameUser() : 'agent';
         } else {
             $avatar = $chat->getPersonPictureUrl();
             $name   = $chat->getPersonName() ?: $chat->getPersonEmail() ?: 'user';

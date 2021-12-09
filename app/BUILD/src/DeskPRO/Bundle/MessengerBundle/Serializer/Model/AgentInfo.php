@@ -37,10 +37,13 @@ class AgentInfo implements MessengerModelInterface
      */
     public function toArray()
     {
+        $defaultAvatar = false;
+        $avatar        = $this->avatarResolver->getAvatar($this->person, 80, $defaultAvatar);
+
         return [
             'name'             => $this->person->getDisplayNameUser(),
             'id'               => $this->person->getId(),
-            'avatar'           => $this->avatarResolver->getAvatar($this->person),
+            'avatar'           => $defaultAvatar ? null : $avatar,
             'chat_departments' => array_map('intval', $this->person->getAllowedDepartments('chat')),
         ];
     }
