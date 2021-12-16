@@ -116,10 +116,9 @@ class UsersourcesHelper
             $info['css_classes'][] = 'auth-facebook';
             $info['text']          = $this->usersourceBtnPhrase('Facebook');
         } elseif ('googleplus' === $type) {
-            $text                  = $us->getOption('login_custom_text', $this->usersourceBtnPhrase('Google'));
             $info['icon']          = 'fab fa-google';
             $info['css_classes'][] = 'auth-google';
-            $info['text']          = $text ? $text : $this->usersourceBtnPhrase('Google');
+            $info['text']          = $us->getOption('login_custom_text') ?: $this->usersourceBtnPhrase('Google');
         } elseif ('google' === $type) {
             $info['icon']          = 'fab fa-google';
             $info['css_classes'][] = 'auth-google';
@@ -129,7 +128,7 @@ class UsersourcesHelper
             $info['css_classes'][] = 'auth-twitter';
             $info['text']          = $this->usersourceBtnPhrase('Twitter');
         } else {
-            $info['text']          = $us->getOption('login_custom_text', 'Login');
+            $info['text']          = $us->getOption('login_custom_text') ?: 'Login';
             $info['css_classes'][] = 'auth-one';
         }
 
