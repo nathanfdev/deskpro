@@ -165,16 +165,25 @@ class ChatMapper
     {
         $metadata = $message->getMetadata();
 
-        $uuid = isset($metadata['uuid']) ? $metadata['uuid'] : '';
+        $uuid          = isset($metadata['uuid']) ? $metadata['uuid'] : '';
+        $defaultAvatar = false;
+        if ($message->getAuthor()) {
+            $avatar = $this->avatarResolver->getAvatar(
+                $message->getAuthor(),
+                80,
+                $defaultAvatar
+            );
+            $avatar = $defaultAvatar ? null : $avatar;
+        } else {
+            $avatar = $this->avatarResolver->getDefaultPersonAvatar();
+        }
 
         return [
-            'id'     => $message->getId() ?: 0,
-            'chat'   => $message->getConversationId(),
-            'name'   => $message->getPersonName(),
-            'author' => $message->getAuthorId(),
-            'avatar' => $message->getAuthor()
-                ? $this->avatarResolver->getAvatar($message->getAuthor())
-                : $this->avatarResolver->getDefaultPersonAvatar(),
+            'id'            => $message->getId() ?: 0,
+            'chat'          => $message->getConversationId(),
+            'name'          => $message->getPersonName(),
+            'author'        => $message->getAuthorId(),
+            'avatar'        => $avatar,
             'message'       => $message->isHtml() ? $message->getContentHtml() : $message->getContent(),
             'origin'        => $message->getIsSys() ? 'system' : $message->getOrigin(),
             'date_created'  => $message->getDateCreated()->format(\DateTime::ISO8601),
