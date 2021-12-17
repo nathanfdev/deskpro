@@ -232,6 +232,7 @@ class CustomDataHelper
 
         switch ($customDef->getTypeName()) {
             case CustomDefAbstract::TYPE_TEXT:
+            case CustomDefAbstract::TYPE_EXT_UNIQUE_KEY:
             case CustomDefAbstract::TYPE_TEXTAREA:
                 $customData->setInput($fieldModel->getValue());
 

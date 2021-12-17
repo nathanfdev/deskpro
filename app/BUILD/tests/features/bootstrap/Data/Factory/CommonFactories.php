@@ -162,6 +162,7 @@ class CommonFactories
             'url'            => CustomDefAbstract::HANDLER_CLASS_URL,
             'currency'       => CustomDefAbstract::HANDLER_CLASS_CURRENCY,
             'file'           => CustomDefAbstract::HANDLER_CLASS_FILE,
+            'externalid'     => CustomDefAbstract::HANDLER_CLASS_EXT_UNIQUE_KEY,
         ];
 
         $def = new $types[$type]();
