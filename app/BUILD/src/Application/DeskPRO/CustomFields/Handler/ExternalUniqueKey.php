@@ -2,7 +2,8 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Orb\Util\Strings;
+use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 
 /**
  * Handles the external id fields.
@@ -47,37 +48,30 @@ class ExternalUniqueKey extends HandlerAbstract
      */
     public function validateFormData(array $formData, $context = self::CONTEXT_USER, $contextData = null)
     {
-        $valueIfNotPresent = new \stdClass();
-        $data              = $this->findValue($formData, $valueIfNotPresent);
-        if ($data === $valueIfNotPresent) {
+        $data = $this->findValue($formData);
+        if (!is_scalar($data)) {
             $data = '';
         }
 
-        if (!is_scalar($data)) {
-            return $this->makeErrorArray(['invalid_input']);
-        }
+        $customData = $this->field_def->createCustomData();
+        $customData->setField($this->field_def);
+        $customData->setRootField($this->field_def);
+        $customData->setValue($data);
 
-        //------------------------------
-        // Validate options
-        //------------------------------
+        $errors = App::$container->get('validator')->validate($customData, [
+            new AppAssert\CustomField\UniqueKey([
+                'custom_def' => $this->field_def,
+                'context'    => 'agent',
+            ]),
+        ]);
 
-        $opt_prefix = '';
-        if ($context == self::CONTEXT_AGENT) {
-            $opt_prefix = 'agent_';
-        }
-
-        $options = [
-            'min_length' => $this->field_def->getOption($opt_prefix.'min_length', 1),
-        ];
-
-        $len = Strings::utf8_strlen($data);
-
-        if ($len < $options['min_length']) {
-            if ($options['min_length'] == 1 || $len === 0) {
-                return $this->makeErrorArray(['required']);
-            } else {
-                return $this->makeErrorArray(['min_length']);
+        if ($errors->count() > 0) {
+            $errorCodes = [];
+            foreach ($errors as $error) {
+                $errorCodes[] = $error->getCode();
             }
+
+            return $this->makeErrorArray($errorCodes);
         }
 
         return [];

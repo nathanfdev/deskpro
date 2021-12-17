@@ -168,7 +168,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
     tags:
-      - { name: validator.constraint_validator }
+      - { name: validator.constraint_validator, alias: 'unique_key_validator' }
 
   validator.object_alias:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\ObjectAliasValidator

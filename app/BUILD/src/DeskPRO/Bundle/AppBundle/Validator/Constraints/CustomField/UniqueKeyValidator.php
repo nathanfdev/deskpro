@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
+use Application\DeskPRO\Entity\CustomDataAbstract;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -50,6 +52,33 @@ class UniqueKeyValidator extends AbstractSingleValueValidator
 
     public function validate($value, Constraint $constraint)
     {
-        parent::validate($value, $constraint);
+        $collection = new ArrayCollection();
+        $collection->add($value);
+        /* @var CustomDataAbstract $value */
+        parent::validate($collection, $constraint);
+
+        if (!$value instanceof CustomDataAbstract) {
+            $this->createViolation($value, $constraint);
+        }
+
+        if ($this->em->getRepository(get_class($value))->findOneBy([
+            'input' => $value->getInput(),
+            'root_field' => $value->getRootField(),
+        ])) {
+            $this->createViolation($value, $constraint);
+        }
+    }
+
+    protected function createViolation($value, Constraint $constraint)
+    {
+        /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+        $context = $this->context;
+        $context
+            ->buildViolation($constraint->message)
+            ->setParameter('key', $value->getInput())
+            ->setCode($constraint->getErrorCode())
+            ->atPath('['.$value->getRootField()->getId().']')
+            ->addViolation()
+        ;
     }
 }
