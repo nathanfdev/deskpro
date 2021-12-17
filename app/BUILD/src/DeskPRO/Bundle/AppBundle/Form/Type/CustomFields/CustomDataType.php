@@ -553,6 +553,7 @@ class CustomDataType extends AbstractType
                 return new FormField(JavascriptType::class, $options);
             case CustomDefAbstract::TYPE_DATA:
             case CustomDefAbstract::TYPE_TEXT:
+            case CustomDefAbstract::TYPE_EXT_UNIQUE_KEY:
                 return new FormField(TextType::class, [
                     'help' => $def->getRealDescription(),
                 ]);

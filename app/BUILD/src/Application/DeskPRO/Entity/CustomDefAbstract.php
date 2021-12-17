@@ -55,7 +55,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const TYPE_CURRENCY       = 'currency';
     const TYPE_FILE           = 'file';
     const TYPE_JAVASCRIPT     = 'javascript';
-    const TYPE_EXT_UNIQUE_KEY = 'externaluk';
+    const TYPE_EXT_UNIQUE_KEY = 'externaluniquekey';
 
     /**
      * The unique ID.

@@ -2,6 +2,7 @@
 
 namespace DpBehat\Data\Factory;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use DpBehat\Data\DataNormalizer;
 use Symfony\Component\PropertyAccess\StringUtil;
 
@@ -63,7 +64,11 @@ class SimpleFactory
             // Try setter
             $setter = DataNormalizer::underscoreToSetter($prop);
             if (method_exists($object, $setter)) {
+                if ($value instanceof ArrayCollection) {
+                    $value = $value->toArray();
+                }
                 call_user_func([$object, $setter], $value);
+
                 continue;
             }
 
@@ -79,12 +84,14 @@ class SimpleFactory
             $camelCaseProp = DataNormalizer::underscoreToCamelCase($prop);
             if (property_exists($class, $camelCaseProp)) {
                 DataNormalizer::setProperty($object, $camelCaseProp, $value);
+
                 continue;
             }
 
             // Try underscore_property
             if (property_exists($class, $prop)) {
                 DataNormalizer::setProperty($object, $prop, $value);
+
                 continue;
             }
 

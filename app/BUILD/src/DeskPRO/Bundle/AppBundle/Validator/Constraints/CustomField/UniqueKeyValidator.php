@@ -52,20 +52,27 @@ class UniqueKeyValidator extends AbstractSingleValueValidator
 
     public function validate($value, Constraint $constraint)
     {
-        $collection = new ArrayCollection();
-        $collection->add($value);
+        if (!$value instanceof ArrayCollection) {
+            $collection = new ArrayCollection();
+            $collection->add($value);
+        } else {
+            $collection = $value;
+        }
+
         /* @var CustomDataAbstract $value */
         parent::validate($collection, $constraint);
 
-        if (!$value instanceof CustomDataAbstract) {
-            $this->createViolation($value, $constraint);
+        $valueToCheck = $collection->first();
+
+        if (!$valueToCheck instanceof CustomDataAbstract) {
+            $this->createViolation($valueToCheck, $constraint);
         }
 
-        if ($this->em->getRepository(get_class($value))->findOneBy([
-            'input' => $value->getInput(),
-            'root_field' => $value->getRootField(),
+        if ($this->em->getRepository(get_class($valueToCheck))->findOneBy([
+            'input' => $valueToCheck->getInput(),
+            'root_field' => $valueToCheck->getRootField(),
         ])) {
-            $this->createViolation($value, $constraint);
+            $this->createViolation($valueToCheck, $constraint);
         }
     }
 
