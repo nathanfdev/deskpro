@@ -116,6 +116,15 @@
 							</div>
 						</div>
 
+						<div class="form-group">
+							<div class="col-lg-12">
+								<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="external_unique_key" /> External Unique Key</label></h3>
+								<p>
+									That one allows you to put the mandatory external unique key for the object. You may have multiple.
+								</p>
+							</div>
+						</div>
+
 
 						{% block extra_types_choose %}{% endblock %}
 					</div>
@@ -142,6 +151,7 @@
 										<span ng-switch-when="currency">Currency</span>
 										<span ng-switch-when="file">File</span>
 										<span ng-switch-when="javascript">Smart Field</span>
+										<span ng-switch-when="external_unique_key">External Unique Key</span>
 										{% block extra_types_titleswitch %}{% endblock %}
 									</p>
 								</div>
@@ -196,6 +206,38 @@
 						{% endblock %}
 
 						{% block post_topdefault_fields %}{% endblock %}
+
+						{###############################################################################################}
+						{# External Unique Key #}
+						<div ng-show="EditCtrl.field_type == 'external_unique_key'">
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3>User Validation</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.external_unique_key.user_validation" disabled="disabled" value="required" /> Require the user to provide a value</label>
+										<p ng-show="EditCtrl.form.external_unique_key.user_validation == 'required'">
+											Min characters: <input type="text" class="form-control" ng-model="EditCtrl.form.external_unique_key.min_length" style="width: 50px;" disabled="disabled" />
+										</p>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group with-border">
+								<div class="col-lg-3">
+									<h3>Agent Validation</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.external_unique_key.agent_validation" disabled="disabled" value="required" /> Require the agent to provide a value</label>
+										<p ng-show="EditCtrl.form.external_unique_key.agent_validation == 'required'">
+											Min characters: <input type="text" class="form-control" ng-model="EditCtrl.form.external_unique_key.agent_min_length" style="width: 50px;" disabled="disabled"/>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
 
 						{###############################################################################################}
 						{# Text Field #}

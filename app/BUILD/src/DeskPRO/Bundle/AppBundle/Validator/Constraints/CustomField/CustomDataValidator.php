@@ -47,27 +47,39 @@ class CustomDataValidator extends ConstraintValidator
             case CustomDefAbstract::TYPE_TEXTAREA:
             case CustomDefAbstract::TYPE_HIDDEN:
                 $validators[] = new AppAssert\CustomField\Text($handlerOptions);
+
+                break;
+            case CustomDefAbstract::TYPE_EXT_UNIQUE_KEY:
+                $validators[] = new AppAssert\CustomField\UniqueKey($handlerOptions);
+
                 break;
             case CustomDefAbstract::TYPE_TOGGLE:
                 $validators[] = new AppAssert\CustomField\Toggle($handlerOptions);
+
                 break;
             case CustomDefAbstract::TYPE_DATE:
                 $validators[] = new AppAssert\CustomField\Date($handlerOptions);
+
                 break;
             case CustomDefAbstract::TYPE_DATETIME:
                 $validators[] = new AppAssert\CustomField\DateTime($handlerOptions);
+
                 break;
             case CustomDefAbstract::TYPE_CHOICE:
                 $validators[] = new AppAssert\CustomField\Choice($handlerOptions);
+
                 break;
             case CustomDefAbstract::TYPE_URL:
                 $validators[] = new AppAssert\CustomField\Url($handlerOptions);
+
                 break;
             case CustomDefAbstract::TYPE_CURRENCY:
                 $validators[] = new AppAssert\CustomField\Currency($handlerOptions);
+
                 break;
             case CustomDefAbstract::TYPE_FILE:
                 $validators[] = new AppAssert\CustomField\File($handlerOptions);
+
                 break;
         }
 

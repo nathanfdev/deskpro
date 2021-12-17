@@ -412,6 +412,17 @@ class DataContext extends BaseContext
                     }
 
                     $value = new ArrayCollection($arrayValue);
+                } elseif (self::isJsonArray($value) && ($jsonArray = json_decode($value, true))) {
+                    $arrayValue = [];
+                    foreach ($jsonArray as $key => $item) {
+                        if (self::isReference($item)) {
+                            $arrayValue[$key] = self::resolveReference($item);
+                        } else {
+                            $arrayValue[$key] = $item;
+                        }
+                    }
+
+                    $value = new ArrayCollection($arrayValue);
                 } elseif (self::isReference($value)) {
                     $value = self::resolveReference($value);
                 } elseif (is_string($value)) {
@@ -600,6 +611,16 @@ class DataContext extends BaseContext
      *
      * @return bool
      */
+    private static function isJsonArray($string)
+    {
+        return is_string($string) && preg_match('/^\\{|\\[.+\\]|\\}$/', $string);
+    }
+
+    /**
+     * @param $string
+     *
+     * @return bool
+     */
     private static function isArray($string)
     {
         return is_string($string) && preg_match('/^\\[.+\\]$/', $string);
@@ -626,8 +647,7 @@ class DataContext extends BaseContext
     private static function replacePlaceholders($content, $isJson)
     {
         foreach (self::$placeholders as $name => $value) {
-            
-            if(is_array($value)){
+            if (is_array($value)) {
                 continue;
             }
 

@@ -11,8 +11,6 @@ use DeskPRO\Component\Filesystem\TmpDir;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
-use GuzzleHttp;
-use GuzzleHttp\Psr7;
 use Orb\Data\ContentTypes;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
@@ -1284,7 +1282,7 @@ class DeskproBlobStorage implements Loggable
     {
         $wasEmittingWarnings = SafeFile::setEmitWarningsOption(false);
 
-        if (!$this->tmpDir->isOpen()) {
+        if (!$this->tmpDir || !$this->tmpDir->isOpen()) {
             return;
         }
 

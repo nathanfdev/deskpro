@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -25,37 +23,39 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName, Hierarchical
 {
-    const HANDLER_CLASS_TEXT       = Handler\Text::class;
-    const HANDLER_CLASS_TEXTAREA   = Handler\Textarea::class;
-    const HANDLER_CLASS_CHOICE     = Handler\Choice::class;
-    const HANDLER_CLASS_TOGGLE     = Handler\Toggle::class;
-    const HANDLER_CLASS_DATE       = Handler\Date::class;
-    const HANDLER_CLASS_DATETIME   = Handler\DateTime::class;
-    const HANDLER_CLASS_DISPLAY    = Handler\Display::class;
-    const HANDLER_CLASS_HIDDEN     = Handler\Hidden::class;
-    const HANDLER_CLASS_DATA       = Handler\Data::class;
-    const HANDLER_CLASS_DATAJSON   = Handler\DataJson::class;
-    const HANDLER_CLASS_JAVASCRIPT = Handler\Javascript::class;
-    const HANDLER_CLASS_DATALIST   = Handler\DataList::class;
-    const HANDLER_CLASS_URL        = Handler\Url::class;
-    const HANDLER_CLASS_CURRENCY   = Handler\Currency::class;
-    const HANDLER_CLASS_FILE       = Handler\File::class;
+    const HANDLER_CLASS_TEXT           = Handler\Text::class;
+    const HANDLER_CLASS_TEXTAREA       = Handler\Textarea::class;
+    const HANDLER_CLASS_CHOICE         = Handler\Choice::class;
+    const HANDLER_CLASS_TOGGLE         = Handler\Toggle::class;
+    const HANDLER_CLASS_DATE           = Handler\Date::class;
+    const HANDLER_CLASS_DATETIME       = Handler\DateTime::class;
+    const HANDLER_CLASS_DISPLAY        = Handler\Display::class;
+    const HANDLER_CLASS_HIDDEN         = Handler\Hidden::class;
+    const HANDLER_CLASS_DATA           = Handler\Data::class;
+    const HANDLER_CLASS_DATAJSON       = Handler\DataJson::class;
+    const HANDLER_CLASS_JAVASCRIPT     = Handler\Javascript::class;
+    const HANDLER_CLASS_DATALIST       = Handler\DataList::class;
+    const HANDLER_CLASS_URL            = Handler\Url::class;
+    const HANDLER_CLASS_CURRENCY       = Handler\Currency::class;
+    const HANDLER_CLASS_FILE           = Handler\File::class;
+    const HANDLER_CLASS_EXT_UNIQUE_KEY = Handler\ExternalUniqueKey::class;
 
-    const TYPE_TEXT       = 'text';
-    const TYPE_TEXTAREA   = 'textarea';
-    const TYPE_CHOICE     = 'choice';
-    const TYPE_TOGGLE     = 'toggle';
-    const TYPE_DATE       = 'date';
-    const TYPE_DATETIME   = 'datetime';
-    const TYPE_DISPLAY    = 'display';
-    const TYPE_HIDDEN     = 'hidden';
-    const TYPE_DATA       = 'data';
-    const TYPE_DATA_JSON  = 'datajson';
-    const TYPE_DATA_LIST  = 'datalist';
-    const TYPE_URL        = 'url';
-    const TYPE_CURRENCY   = 'currency';
-    const TYPE_FILE       = 'file';
-    const TYPE_JAVASCRIPT = 'javascript';
+    const TYPE_TEXT           = 'text';
+    const TYPE_TEXTAREA       = 'textarea';
+    const TYPE_CHOICE         = 'choice';
+    const TYPE_TOGGLE         = 'toggle';
+    const TYPE_DATE           = 'date';
+    const TYPE_DATETIME       = 'datetime';
+    const TYPE_DISPLAY        = 'display';
+    const TYPE_HIDDEN         = 'hidden';
+    const TYPE_DATA           = 'data';
+    const TYPE_DATA_JSON      = 'datajson';
+    const TYPE_DATA_LIST      = 'datalist';
+    const TYPE_URL            = 'url';
+    const TYPE_CURRENCY       = 'currency';
+    const TYPE_FILE           = 'file';
+    const TYPE_JAVASCRIPT     = 'javascript';
+    const TYPE_EXT_UNIQUE_KEY = 'externaluniquekey';
 
     /**
      * The unique ID.

@@ -127,6 +127,12 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           agent_validation:            false,
           agent_validation_resolve:    false,
           agent_max_file_size:         0
+        },
+        external_unique_key: {
+          agent_min_length: 1,
+          min_length:       1,
+          user_validation:  'required',
+          agent_validation: 'required',
         }
       };
 
@@ -597,6 +603,16 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           if (formTypeOpts.agent_validation) {
             postData.agent_required = true;
           }
+          break;
+
+        case 'external_unique_key':
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\ExternalUniqueKey';
+          // these are mandatory
+          postData.min_length = 1;
+          postData.agent_min_length = 1;
+          postData.required = true;
+          postData.agent_required = true;
+
           break;
       }
 
