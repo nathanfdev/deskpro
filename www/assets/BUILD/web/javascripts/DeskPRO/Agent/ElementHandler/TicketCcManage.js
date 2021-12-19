@@ -20,10 +20,11 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 			addRow.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(addRow);
 
 			addRow.on('click', '.cc-saverow-trigger', function(ev) {
-				var btn = $(this);
-				var email = $.trim($('input', addRow).val());
-
-				if (!email) {
+				var btn    = $(this);
+        var $input = $('input', addRow);
+        var email = $.trim($input.val());
+        var personId = $input.data('personId');
+				if (!email && !personId) {
 					return;
 				}
 
@@ -32,7 +33,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 				$.ajax({
 					url: addUrl,
 					type: 'POST',
-					data: { email_address: email },
+					data: { 'person_id': personId, email_address: email },
 					dataType: 'json',
 					complete: function() {
 						addRow.removeClass('loading');
