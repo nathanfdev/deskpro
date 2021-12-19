@@ -124,8 +124,10 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
     this.resultsList.on('click', 'li', function (ev) {
       ev.preventDefault();
       var email = $.trim($('.user-email', this).text());
+      var personId = $(this).attr('person-id');
 
       self.termInput.val(email);
+      self.termInput.data('personId', personId);
       self.addButton.click();
       self.close();
     });
