@@ -94,6 +94,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@custom_field_manager"
     tags:
       - { name: form.type }
 
