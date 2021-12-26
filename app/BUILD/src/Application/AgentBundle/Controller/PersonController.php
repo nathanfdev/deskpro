@@ -982,7 +982,7 @@ class PersonController extends AbstractController
                     if ($check) {
                         if ($check->person->id == $person->id) {
                             // silent discard
-                        } else {
+                        } elseif ($this->container->getSetting('user.require_unique_email', true)) {
                             $errors[] = "\"$email\" was not saved because it is already added to another user";
                         }
 
@@ -1614,7 +1614,7 @@ class PersonController extends AbstractController
 
         // if email address is set
         // then check for dupe email address
-        if ($newEmail) {
+        if ($newEmail && $this->container->getSetting('user.require_unique_email', true)) {
             $accountManager = App::$container->getEmailAccountManager();
 
             if (!StringEmail::isValueValid($newEmail)) {

@@ -1249,4 +1249,5 @@ return [
     'portal.widget.enabled'                     => null,
     'segment'                                   => null,
     'user.non_published_articles_on_helpcenter' => null,
+    'user.require_unique_email'                 => true,
 ];
