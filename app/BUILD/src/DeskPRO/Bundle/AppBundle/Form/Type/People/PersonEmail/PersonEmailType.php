@@ -26,13 +26,20 @@ class PersonEmailType extends AbstractType
     private $em;
 
     /**
+     * @var bool
+     */
+    private $useUniqueEmail;
+
+    /**
      * @param Person        $person
      * @param EntityManager $em
+     * @param bool          $useUniqueEmail
      */
-    public function __construct(Person $person, EntityManager $em)
+    public function __construct(Person $person, EntityManager $em, $useUniqueEmail)
     {
-        $this->person = $person;
-        $this->em     = $em;
+        $this->person         = $person;
+        $this->em             = $em;
+        $this->useUniqueEmail = $useUniqueEmail;
     }
 
     /**
@@ -40,7 +47,7 @@ class PersonEmailType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addViewTransformer(new PersonEmailTransformer($this->person, $this->em));
+        $builder->addViewTransformer(new PersonEmailTransformer($this->person, $this->em, $this->useUniqueEmail));
     }
 
     /**

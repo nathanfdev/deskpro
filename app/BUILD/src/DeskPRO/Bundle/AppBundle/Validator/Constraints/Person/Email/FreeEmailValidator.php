@@ -17,13 +17,20 @@ class FreeEmailValidator extends AbstractEmailValidator
     protected $em;
 
     /**
+     * @var bool
+     */
+    protected $useUniqueEmail;
+
+    /**
      * Constructor.
      *
      * @param EntityManager $em
+     * @param bool          $useUniqueEmail
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, $useUniqueEmail)
     {
-        $this->em = $em;
+        $this->em             = $em;
+        $this->useUniqueEmail = $useUniqueEmail;
     }
 
     /**
@@ -31,6 +38,9 @@ class FreeEmailValidator extends AbstractEmailValidator
      */
     protected function isValidEmail(PersonEmail $value)
     {
+        if (!$this->useUniqueEmail) {
+            return true;
+        }
         $existEmail = $this->em->getRepository(PersonEmail::class)->findOneBy([
             'email' => $value->getEmail(),
         ]);

@@ -32,6 +32,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\FreeEmailValidator
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@=service('service_container').getSetting('user.require_unique_email', true)"
     tags:
       - { name: validator.constraint_validator, alias: 'free_email_validator' }
 

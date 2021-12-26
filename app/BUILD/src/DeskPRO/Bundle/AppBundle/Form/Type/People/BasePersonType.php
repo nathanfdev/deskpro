@@ -30,14 +30,22 @@ class BasePersonType extends AbstractType
     private $tokenStorage;
 
     /**
+     * @var bool
+     */
+    private $useUniqueEmail;
+
+    /**
      * Constructor.
      *
      * @param EntityManager $em
+     * @param TokenStorage $tokenStorage
+     * @param bool $useUniqueEmail
      */
-    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage, $useUniqueEmail)
     {
-        $this->em = $em;
-        $this->tokenStorage = $tokenStorage;
+        $this->em             = $em;
+        $this->tokenStorage   = $tokenStorage;
+        $this->useUniqueEmail = $useUniqueEmail;
     }
 
     /**
@@ -73,7 +81,7 @@ class BasePersonType extends AbstractType
         $data   = $event->getData();
 
         /** @var \Application\DeskPRO\Entity\Person $user */
-        $token = $this->tokenStorage->getToken();
+        $token         = $this->tokenStorage->getToken();
         $sessionPerson = $token ? $token->getUser() : null;
 
         if ($sessionPerson instanceof Person
@@ -82,9 +90,9 @@ class BasePersonType extends AbstractType
         ) {
             $form
                 ->add('name', TextType::class)
-                ->add('primary_email', new PersonEmailType($person, $this->em))
+                ->add('primary_email', new PersonEmailType($person, $this->em, $this->useUniqueEmail))
                 ->add('emails', CollectionType::class, [
-                    'type'           => new PersonEmailType($person, $this->em),
+                    'type'           => new PersonEmailType($person, $this->em, $this->useUniqueEmail),
                     'allow_add'      => true,
                     'allow_delete'   => true,
                     'delete_empty'   => true,
