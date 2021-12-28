@@ -67,6 +67,11 @@
                 + Ticket
             </span>
 		</div>
+		<div ng-if="result.ext_keys">
+			<div ng-repeat="ext_key in result.ext_keys">
+				<span class="email">{{ ng_var('ext_key.title') }}: {{ ng_var('ext_key.value') }}</span>
+			</div>
+		</div>
 	</div>
 </article>
 <div ng-if="expandedPerson && result === expandedPerson && expandedPerson.tickets && expandedPerson.tickets.length">

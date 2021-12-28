@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -10,6 +8,8 @@ use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
 use Application\DeskPRO\DependencyInjection\SystemServices\OrganizationDataService;
 use Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService;
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -24,13 +24,12 @@ use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\NewSearch\Manager\Doctrine;
 use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use Application\DeskPRO\People\PrefNoticeSet;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
-use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\DBAL\Connection;
 use DpSys\License;
 use DpSys\LowError\SystemErrorHandler;
-use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -564,8 +563,17 @@ class MainController extends AbstractController
     private function renderSearchResults($type, array $results)
     {
         $rows = [];
-
-        $render_person = function (Person $person, array $counts = []) {
+        /** @var CustomFieldManager $customFieldManager */
+        $customFieldManager = $this->container->get('custom_field_manager');
+        $extKeyDefs         = [];
+        foreach ($customFieldManager->getAvailablePersonDefs() as $personDef) {
+            if ($personDef->getType() === CustomDefAbstract::TYPE_EXT_UNIQUE_KEY) {
+                $extKeyDefs[] = $personDef;
+            }
+        }
+        $useUniqueEmail       = $this->container->getSetting('user.require_unique_email');
+        $customDataPersonRepo = $this->em->getRepository(CustomDataPerson::class);
+        $render_person        = function (Person $person, array $counts = []) use ($customDataPersonRepo, $useUniqueEmail, $extKeyDefs) {
             $data                   = [];
             $data['picture_url']    = $person->getPictureUrl();
             $data['picture_url_80'] = $person->getPictureUrl(80);
@@ -590,6 +598,25 @@ class MainController extends AbstractController
 
             if (isset($counts[$person['id']])) {
                 $data['tickets_count'] = $counts[$person['id']];
+            }
+
+            if (!$useUniqueEmail && count($extKeyDefs) > 0) {
+                $data['ext_keys'] = [];
+                foreach ($extKeyDefs as $extKeyDef) {
+                    $customDataPerson     = $customDataPersonRepo->findOneBy(
+                        [
+                            'field'      => $extKeyDef->getId(),
+                            'root_field' => $extKeyDef->getId(),
+                            'person'     => $person['id'],
+                        ]
+                    );
+                    if ($customDataPerson) {
+                        $data['ext_keys'][$extKeyDef->getId()] = [
+                            'title' => $extKeyDef->getTitle(),
+                            'value' => $customDataPerson->getInput(),
+                        ];
+                    }
+                }
             }
 
             return $data;
