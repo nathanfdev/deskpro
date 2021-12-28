@@ -27,6 +27,7 @@ foreach ($people_list as $person) {
 		'value' => $person['id'],
 		'name' =>  $name,
 		'email' => $person['email'],
-		'label' => $name . ($person['email'] ? " <{$person['email']}>" : '')
+		'label' => $name . ($person['email'] ? " <{$person['email']}>" : ''),
+		'ext_keys' => $person['ext_keys'],
 	);
 }

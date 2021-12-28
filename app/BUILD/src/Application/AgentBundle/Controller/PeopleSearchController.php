@@ -6,6 +6,8 @@ use Application\AgentBundle\Controller\Helper\PeopleResults;
 use Application\AgentBundle\Controller\JsonRenderer\PeopleListRenderer;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\BanEmail;
+use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -22,6 +24,7 @@ use Application\DeskPRO\People\PeopleResultsDisplay;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 use Application\DeskPRO\UI\TagCloud;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -35,6 +38,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class PeopleSearchController extends AbstractController
 {
+    /**
+     * @var array|null
+     */
+    private $extKeyDefs = null;
+
     public function getSectionDataAction()
     {
         $data = [];
@@ -691,6 +699,7 @@ class PeopleSearchController extends AbstractController
                 ];
             }
         }
+
         if (!count($peopleList)) {
             if ($this->container->getSetting('elastica.enabled')) {
                 try {
@@ -722,6 +731,7 @@ class PeopleSearchController extends AbstractController
                             'first_name' => $p->first_name,
                             'last_name'  => $p->last_name,
                             'email'      => $p->getPrimaryEmailAddress(),
+                            'ext_keys'   => $this->getExtKeys($p->id),
                         ];
                     }
 
@@ -731,11 +741,17 @@ class PeopleSearchController extends AbstractController
                     /** @var PersonRepository $rep */
                     $rep        = $this->em->getRepository(Person::class);
                     $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $withAgents, $excludeOrg, $limit);
+                    foreach ($peopleList as &$p) {
+                        $p['ext_keys'] = $this->getExtKeys($p['id']);
+                    }
                 }
             } else {
                 /** @var PersonRepository $rep */
                 $rep        = $this->em->getRepository(Person::class);
                 $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $withAgents, $excludeOrg, $limit);
+                foreach ($peopleList as &$p) {
+                    $p['ext_keys'] = $this->getExtKeys($p['id']);
+                }
             }
         }
 
@@ -768,5 +784,60 @@ class PeopleSearchController extends AbstractController
             'people_list' => $peopleList,
         ],
         $response);
+    }
+
+    /**
+     * @param int $p person id
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
+    private function getExtKeys($p)
+    {
+        $useUniqueEmail       = $this->container->getSetting('user.require_unique_email');
+        $customDataPersonRepo = $this->em->getRepository(CustomDataPerson::class);
+        $extKeys              = [];
+        $extKeyDefs           = $this->getExtKeyDefs();
+        if (!$useUniqueEmail && count($extKeyDefs) > 0) {
+            foreach ($extKeyDefs as $extKeyDef) {
+                $customDataPerson     = $customDataPersonRepo->findOneBy(
+                    [
+                        'field'      => $extKeyDef->getId(),
+                        'root_field' => $extKeyDef->getId(),
+                        'person'     => $p,
+                    ]
+                );
+                if ($customDataPerson) {
+                    $extKeys[] = [
+                        'title' => $extKeyDef->getTitle(),
+                        'value' => $customDataPerson->getInput(),
+                    ];
+                }
+            }
+        }
+
+        return $extKeys;
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return array|null
+     */
+    private function getExtKeyDefs()
+    {
+        if (null === $this->extKeyDefs) {
+            /** @var CustomFieldManager $customFieldManager */
+            $customFieldManager = $this->container->get('custom_field_manager');
+            $this->extKeyDefs   = [];
+            foreach ($customFieldManager->getAvailablePersonDefs() as $personDef) {
+                if ($personDef->getType() === CustomDefAbstract::TYPE_EXT_UNIQUE_KEY) {
+                    $this->extKeyDefs[] = $personDef;
+                }
+            }
+        }
+
+        return $this->extKeyDefs;
     }
 }
