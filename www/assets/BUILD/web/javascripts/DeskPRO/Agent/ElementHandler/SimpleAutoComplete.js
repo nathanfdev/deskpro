@@ -235,6 +235,13 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
             $('address', row).hide();
           }
 
+          if(user.ext_keys && user.ext_keys.length > 0) {
+            user.ext_keys.forEach(function(ext_key) {
+              var extKeyRow = '<address>' + ext_key.title + ': ' + ext_key.value + '</address>';
+              $('.user-ext-keys', row).append(extKeyRow);
+            });
+          }
+
           this.resultsList.append(row);
         }, this);
 
