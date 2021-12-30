@@ -64,15 +64,18 @@ class UniqueKeyValidator extends AbstractSingleValueValidator
 
         $valueToCheck = $collection->first();
 
-        if (!$valueToCheck instanceof CustomDataAbstract) {
-            $this->createViolation($valueToCheck, $constraint);
-        }
+        if ($valueToCheck) { // there's no value to check, means no unique key is set
+            if (!$valueToCheck instanceof CustomDataAbstract) {
+                $this->createViolation($valueToCheck, $constraint);
+            }
 
-        if ($this->em->getRepository(get_class($valueToCheck))->findOneBy([
-            'input' => $valueToCheck->getInput(),
-            'root_field' => $valueToCheck->getRootField(),
-        ])) {
-            $this->createViolation($valueToCheck, $constraint);
+            $customPersonData = $this->em->getRepository(get_class($valueToCheck))->findOneBy([
+                'input'      => $valueToCheck->getInput(),
+                'root_field' => $valueToCheck->getRootField(),
+            ]);
+            if ($customPersonData->getId() !== $valueToCheck->getId()) {
+                $this->createViolation($valueToCheck, $constraint);
+            }
         }
     }
 
