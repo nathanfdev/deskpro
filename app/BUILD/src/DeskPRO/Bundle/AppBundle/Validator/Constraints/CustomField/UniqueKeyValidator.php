@@ -73,7 +73,7 @@ class UniqueKeyValidator extends AbstractSingleValueValidator
                 'input'      => $valueToCheck->getInput(),
                 'root_field' => $valueToCheck->getRootField(),
             ]);
-            if ($customPersonData->getId() !== $valueToCheck->getId()) {
+            if ($customPersonData && $customPersonData->getId() !== $valueToCheck->getId()) {
                 $this->createViolation($valueToCheck, $constraint);
             }
         }
