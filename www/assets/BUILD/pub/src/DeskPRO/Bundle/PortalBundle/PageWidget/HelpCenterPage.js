@@ -11,6 +11,7 @@ import { ClickAwayDropdownWidget } from './ClickAwayDropdownWidget';
 import { HtmlLinkToPostWidget } from './HtmlLinkToPostWidget';
 import { HcOmniSearchWidget } from './HcOmniSearchWidget';
 import { HelpcenterLoginDropdownWidget } from './HelpcenterLoginDropdownWidget';
+import { LoginPage } from './LoginPage';
 import { HelpcenterSidebarFilters } from './HelpcenterSidebarFilters';
 import { LogoutButtonWidget } from './LogoutButtonWidget';
 import { MobileMenuWidget } from './MobileMenuWidget';
@@ -49,6 +50,7 @@ class HelpCenterPage extends PageWidget {
     this.addWidgetDef(HcCommunityTopicPage, '#hc_community_page');
     // this is specifically on the view page, because the vote widget is managed
     // manually via the react component on the filter page
+    this.addWidgetDef(LoginPage, '#login-page');
     this.addWidgetDef(CommunityVoteWidget, 'a.dp-po-like');
     this.addWidgetDef(HtmlLinkToPostWidget, 'body');
     this.addWidgetDef(CustomPerFieldEdit, '.form-custom-per-field');

@@ -7,7 +7,6 @@ use Application\DeskPRO\DependencyInjection\SystemServices\UsersourceAuthAdapter
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\People\PersonGuest;
@@ -15,6 +14,7 @@ use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
+use DeskPRO\Bundle\AppBundle\Security\Authentication\Exception\MultipleMatchesException;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Extension\CsrfDoubleSubmitExtension;
@@ -163,8 +163,12 @@ class PortalController extends AbstractController
             }
         }
 
+        $identities = [];
         if ($error = $request->getSession()->get(Security::AUTHENTICATION_ERROR)) {
             $defaultMessage = $this->isHelpCenterTheme() ? 'helpcenter.account.login_invalid' : 'portal.account.login-invalid';
+            if ($error instanceof MultipleMatchesException) {
+                $identities = $error->getIdentities();
+            }
             $error          = $error instanceof AuthenticationException
                 ? $error->getMessage()
                 : $defaultMessage;
@@ -176,6 +180,7 @@ class PortalController extends AbstractController
                 'auth_manager'         => $this->get('dp_authentication_manager.user'),
                 'login_captcha_failed' => $request->get('retry') == 'captcha',
                 'login_error'          => $error,
+                'identities'           => $identities,
                 'lockout_error'        => $abuse_check->isLockoutRecommended(),
                 'lockout_time'         => $abuse_check->getLockoutTime(true),
                 'saved_form'           => $saved_form,

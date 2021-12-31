@@ -12,7 +12,7 @@ class MultipleMatchesException extends BadCredentialsException
     protected $identities;
 
     /**
-     * @return array
+     * @return array|string
      */
     public function getIdentities()
     {
@@ -20,7 +20,7 @@ class MultipleMatchesException extends BadCredentialsException
     }
 
     /**
-     * @param array $identities
+     * @param array|string $identities
      *
      * @return $this
      */
@@ -29,5 +29,29 @@ class MultipleMatchesException extends BadCredentialsException
         $this->identities = $identities;
 
         return $this;
+    }
+
+    public function serialize()
+    {
+        return serialize([
+            $this->token,
+            $this->code,
+            $this->message,
+            $this->file,
+            $this->line,
+            $this->identities,
+        ]);
+    }
+
+    public function unserialize($str)
+    {
+        list(
+            $this->token,
+            $this->code,
+            $this->message,
+            $this->file,
+            $this->line,
+            $this->identities
+            ) = unserialize($str);
     }
 }
