@@ -2,6 +2,9 @@
 
 namespace Application\DeskPRO\Auth\Adapter;
 
+use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PasswordPolicyValidator;
 use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
@@ -163,13 +166,43 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
                 throw new PasswordResetException($person);
             }
         } else {
+            /** @var \Application\DeskPRO\EntityRepository\CustomDefPerson $repo */
+            $repo   = $this->em->getRepository(CustomDefPerson::class);
+            $fields = array_filter(
+                $repo->getEnabledTopFields(),
+                function ($field) {
+                    /* @var CustomDefPerson $field */
+                    return $field->getType() === CustomDefAbstract::TYPE_EXT_UNIQUE_KEY;
+                }
+            );
+            $customDataRepo = $this->em->getRepository(CustomDataPerson::class);
+
             return new Result(Result::MULTIPLE_MATCHES, null, [
                 Result::MSG_IDENTITIES => array_map(
-                    function ($p) {
+                    function ($p) use ($customDataRepo, $fields) {
+                        /** @var Person $p */
+                        $customDataPerson = $customDataRepo->findBy(
+                            [
+                                'root_field' => array_map(function ($f) {
+                                    return $f->getId();
+                                }, $fields),
+                                'person' => $p->getId(),
+                            ]
+                        );
+                        $keys = [];
+                        foreach ($customDataPerson as $cdp) {
+                            /* @var CustomDataPerson $cdp */
+                            $keys[] = [
+                                'title' => $cdp->getRootField()->getTitle($p->getLanguage()),
+                                'value' => $cdp->getInput(),
+                            ];
+                        }
+
                         return [
                             'id'    => $p->getId(),
                             'email' => $p->getEmail(),
-                            'keys'  => [],
+                            'name'  => $p->getName(),
+                            'keys'  => $keys,
                         ];
                     },
                     $matchedPeople
