@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
@@ -95,7 +93,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
             ];
 
             if ($exception instanceof MultipleMatchesException) {
-                $data['reason']     = 'multiple_matches';
+                $data['reason']     = 'helpcenter.account.multiple_matches';
                 $data['identities'] = $exception->getIdentities();
             }
 

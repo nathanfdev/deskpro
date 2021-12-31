@@ -70,6 +70,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         $tokenOrResponse = null;
 
         $username = $request->get('username', '');
+        $userkey  = $request->get('userkey', '');
         $route    = $request->attributes->get('_route');
 
         if ('portal_login_submit' == $route && is_scalar($username)) {
@@ -82,6 +83,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             }
 
             $tokenOrResponse = new DpFormLoginToken($username, $request->get('password', ''));
+            $tokenOrResponse->setUserkey($userkey);
         } elseif ('portal_agent_login' == $route) {
             $tokenOrResponse = new AgentImpersonateToken($request->attributes->get('code'));
             $request->getSession()->set('is_impersonating', true);
@@ -567,7 +569,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             return false;
         }
 
-        if (!App::getContainer()->checkStaticSecurityToken('usersource_test:' . $usersource->getId(), $usersourceTest)) {
+        if (!App::getContainer()->checkStaticSecurityToken('usersource_test:'.$usersource->getId(), $usersourceTest)) {
             return false;
         }
 

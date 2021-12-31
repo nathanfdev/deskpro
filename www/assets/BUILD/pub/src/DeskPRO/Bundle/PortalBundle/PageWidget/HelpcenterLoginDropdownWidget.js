@@ -28,6 +28,8 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
     this.failedReason = window.document.getElementById('login-form-failed-reason');
     this.resetPassword = window.document.getElementById('login-form-reset-password');
     this.usersources = window.document.getElementById('login-form-usersources');
+    this.userList = window.document.getElementById('login-form-userlist');
+    this.userKey = window.document.getElementById('login-form-userkey');
   };
 
   onEmailBlur = () => {
@@ -66,7 +68,8 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
       {
         username:    this.username.value,
         password:    this.password.value,
-        remember_me: this.rememberMe.checked
+        remember_me: this.rememberMe.checked,
+        userkey:     this.userKey.value
       },
       {
         jsonPayload: false
@@ -84,6 +87,27 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
         this.usernameLabel.classList.add('error');
         this.passwordLabel.classList.add('error');
         this.username.focus();
+        const userKey = this.userKey;
+        if (
+          r.data.reason === 'helpcenter.account.multiple_matches'
+          && r.data.identities
+          && r.data.identities.length > 0
+        ) {
+          this.userList.inntHTML = '';
+          r.data.identities.forEach((identity) => {
+            const li = window.document.createElement('li');
+            li.innerText = `${identity.email}: ${identity.id}`;
+            li.addEventListener(
+              'click',
+              (e) => {
+                e.preventDefault();
+                userKey.value = identity.id;
+              }
+            );
+            li.className = `${li.className} active`;
+            this.userList.appendChild(li);
+          });
+        }
         HelpcenterLoginDropdownWidget.addCaptchaIfNecessary();
       }
     });

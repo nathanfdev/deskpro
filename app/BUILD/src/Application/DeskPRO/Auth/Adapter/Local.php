@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\Auth\Adapter;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PasswordPolicyValidator;
 use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
 use DeskPRO\Bundle\PortalBundle\Routing\PasswordResetException;
@@ -39,6 +40,8 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
     protected $email = '';
     /** @var string */
     protected $password = '';
+    /** @var string */
+    protected $userkey = '';
 
     public function __construct(EntityManager $em, $useUniqueEmail = true)
     {
@@ -59,6 +62,10 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
             $identifier = $form_data['email'];
         } else {
             $identifier = '';
+        }
+
+        if (isset($form_data['userkey']) && !$this->useUniqueEmail) {
+            $this->userkey = $form_data['userkey'];
         }
 
         $password = isset($form_data['password']) ? $form_data['password'] : '';
@@ -96,6 +103,13 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
             ->andWhere('e.email = ?2')
             ->setParameter(2, $this->email)
         ;
+
+        if ($this->userkey) {
+            $qb
+               ->andWhere('p.id = ?3')
+               ->setParameter(3, $this->userkey)
+           ;
+        }
 
         $matchedPeople = [];
 
@@ -163,10 +177,12 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
             ]);
         }
 
+        /** @var Person $person */
         $identity = new Identity(
-            $person['id'],
+            $person->getId(),
             [
-                'email'           => $person->primary_email->email,
+                'id'              => $person->getId(),
+                'email'           => $person->getPrimaryEmailAddress(),
                 'email_confirmed' => true,
             ]
         );

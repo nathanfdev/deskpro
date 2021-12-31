@@ -179,12 +179,14 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             $adapter = $auth_manager->getAuthAdapterFactory()->getAuthAdapter($us);
 
             if ($adapter instanceof FormLoginInterface) {
-                $adapter->setFormData(
-                    [
-                        'username' => $token->getUsername(),
-                        'password' => $token->getCredentials(),
-                    ]
-                );
+                $formData = [
+                    'username' => $token->getUsername(),
+                    'password' => $token->getCredentials(),
+                ];
+                if ($token instanceof DpFormLoginToken) {
+                    $formData['userkey'] = $token->getUserkey();
+                }
+                $adapter->setFormData($formData);
 
                 try {
                     $authResult = $adapter->authenticate();

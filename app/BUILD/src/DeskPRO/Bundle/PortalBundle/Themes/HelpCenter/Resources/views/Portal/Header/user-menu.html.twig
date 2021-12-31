@@ -21,9 +21,12 @@
                                 aria-describedby="emailHelp"
                                 placeholder="{{ phrase('helpcenter.general.email_address') }}"
                             >
+                            <input type="hidden" name="user_key" value="" id="login-form-userkey" />
                         </div>
                         <div class="form-group">
                             <div id="login-form-failed-reason"></div>
+                            <ul class="dp-po-social-login" id="login-form-userlist">
+                            </ul>
                             <input
                                 type="password"
                                 class="form-control"
