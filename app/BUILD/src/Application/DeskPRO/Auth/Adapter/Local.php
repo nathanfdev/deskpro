@@ -75,7 +75,10 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
     /**
      * Authenticate a user.
      *
-     * @return
+     * @throws PasswordResetException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return Result
      */
     public function doAuthenticate()
     {
@@ -126,6 +129,13 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
         return $this->processMatchedPeopleAuthentication($matchedPeople);
     }
 
+    /**
+     * @param array $matchedPeople
+     *
+     * @throws PasswordResetException
+     *
+     * @return Result
+     */
     protected function processMatchedPeopleAuthentication(array $matchedPeople)
     {
         // means no people with matching email and password
@@ -139,7 +149,18 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
                 throw new PasswordResetException($person);
             }
         } else {
-            return new Result(Result::FAILURE_INVALID_CREDS);
+            return new Result(Result::MULTIPLE_MATCHES, null, [
+                Result::MSG_IDENTITIES => array_map(
+                    function ($p) {
+                        return [
+                            'id'    => $p->getId(),
+                            'email' => $p->getEmail(),
+                            'keys'  => [],
+                        ];
+                    },
+                    $matchedPeople
+                ),
+            ]);
         }
 
         $identity = new Identity(

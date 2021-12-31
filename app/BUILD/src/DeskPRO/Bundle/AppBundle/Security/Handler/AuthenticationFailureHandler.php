@@ -1,14 +1,13 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Security\Authentication\Exception\MultipleMatchesException;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use Doctrine\DBAL\Driver\Connection;
 use Psr\Log\LoggerInterface;
@@ -89,13 +88,18 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
         $this->anti_abuse->check($check);
 
         if ($request->isXmlHttpRequest()) {
-            return new JsonResponse(
-                [
-                    'success' => false,
-                    'captcha' => $check->isCaptchaRecommended(),
-                    'reason'  => $exception instanceof AuthenticationException ? $exception->getMessage() : null,
-                ]
-            );
+            $data = [
+                'success' => false,
+                'captcha' => $check->isCaptchaRecommended(),
+                'reason'  => $exception instanceof AuthenticationException ? $exception->getMessage() : null,
+            ];
+
+            if ($exception instanceof MultipleMatchesException) {
+                $data['reason']     = 'multiple_matches';
+                $data['identities'] = $exception->getIdentities();
+            }
+
+            return new JsonResponse($data);
         }
 
         return parent::onAuthenticationFailure($request, $exception);
