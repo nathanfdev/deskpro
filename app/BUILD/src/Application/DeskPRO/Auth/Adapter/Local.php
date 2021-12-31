@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Auth\Adapter;
 
 use Application\DeskPRO\People\PasswordPolicyValidator;
@@ -28,6 +26,11 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
     protected $em;
 
     /**
+     * @var bool
+     */
+    protected $useUniqueEmail;
+
+    /**
      * @var Logger
      */
     protected $logger;
@@ -37,9 +40,10 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
     /** @var string */
     protected $password = '';
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, $useUniqueEmail = true)
     {
-        $this->em = $em;
+        $this->em             = $em;
+        $this->useUniqueEmail = $useUniqueEmail;
     }
 
     /**
@@ -75,7 +79,7 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
      */
     public function doAuthenticate()
     {
-        $time_start = microtime(true);
+        $timeStart = microtime(true);
         if ($this->logger) {
             $this->logger->log('START Local::authenticate', Logger::DEBUG);
             $this->logger->log("Request: {$this->email}:{$this->password}", Logger::DEBUG);
@@ -86,37 +90,56 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
             ->from('DeskPRO:Person', 'p')
             ->leftJoin('p.emails', 'e')
             ->where('p.is_user = 1 AND p.is_deleted = 0')
-            ->setMaxResults(1);
+            ->andWhere('e.email = ?2')
+            ->setParameter(2, $this->email)
+        ;
 
-        $qb->andWhere('e.email = ?2');
-        $qb->setParameter(2, $this->email);
+        $matchedPeople = [];
 
-        $person = null;
+        if ($this->useUniqueEmail) {
+            $qb->setMaxResults(1);
 
-        try {
-            /** @var \Application\DeskPRO\Entity\Person $person */
-            $person = $qb->getQuery()->getSingleResult();
-        } catch (\Doctrine\ORM\NoResultException $e) {
-        }
+            $person = null;
 
-        if ($this->logger) {
-            if ($person) {
-                $this->logger->log('Found user '.$person->getId(), Logger::DEBUG);
-            } else {
-                $this->logger->log('No user found', Logger::DEBUG);
+            try {
+                /** @var \Application\DeskPRO\Entity\Person $person */
+                $person = $qb->getQuery()->getSingleResult();
+            } catch (\Doctrine\ORM\NoResultException $e) {
             }
+            $this->logPeopleFound([$person], $timeStart);
 
-            $this->logger->log(
-                sprintf('END Local::authenticate (took %.4fs)', microtime(true) - $time_start), Logger::DEBUG
-            );
+            if ($person && $person->checkPassword($this->password)) {
+                $matchedPeople[] = $person;
+            }
+        } else {
+            $people = $qb->getQuery()->getResult();
+            $this->logPeopleFound($people, $timeStart);
+
+            foreach ($people as $checkPerson) {
+                /** @var \Application\DeskPRO\Entity\Person $checkPerson */
+                if ($checkPerson->checkPassword($this->password)) {
+                    $matchedPeople[] = $checkPerson;
+                }
+            }
         }
 
-        if (!$person or !$person->checkPassword($this->password)) {
+        return $this->processMatchedPeopleAuthentication($matchedPeople);
+    }
+
+    protected function processMatchedPeopleAuthentication(array $matchedPeople)
+    {
+        // means no people with matching email and password
+        $matchedPeopleCount = count($matchedPeople);
+        if ($matchedPeopleCount < 1) {
             return new Result(Result::FAILURE_INVALID_CREDS);
-        }
+        } elseif ($matchedPeopleCount === 1) {
+            $person = $matchedPeople[0];
 
-        if ($person->date_password_set && $person->date_password_set->format('Y-m-d H:i:s') === PasswordPolicyValidator::MAGIC_PASSWORD_RESET_REQUIRED) {
-            throw new PasswordResetException($person);
+            if ($person->date_password_set && $person->date_password_set->format('Y-m-d H:i:s') === PasswordPolicyValidator::MAGIC_PASSWORD_RESET_REQUIRED) {
+                throw new PasswordResetException($person);
+            }
+        } else {
+            return new Result(Result::FAILURE_INVALID_CREDS);
         }
 
         $identity = new Identity(
@@ -129,6 +152,34 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
         $identity->setFriendlyIdentity($person->primary_email->email);
 
         return new Result(Result::SUCCESS, $identity);
+    }
+
+    protected function logPeopleFound(array $people, $timeStart)
+    {
+        if ($this->logger) {
+            $peopleCount = count($people);
+            if ($peopleCount > 1) {
+                $this->logger->log(
+                    sprintf(
+                        'Found %d people. IDs are: %s',
+                        $peopleCount,
+                        implode(',', array_map(function ($p) {
+                            return $p->getId();
+                        }, $people))
+                    ),
+                    Logger::DEBUG
+                );
+            } elseif ($peopleCount === 1) {
+                $person = $people[0];
+                $this->logger->log('Found user '.$person->getId(), Logger::DEBUG);
+            } else {
+                $this->logger->log('No user found', Logger::DEBUG);
+            }
+
+            $this->logger->log(
+                sprintf('END Local::authenticate (took %.4fs)', microtime(true) - $timeStart), Logger::DEBUG
+            );
+        }
     }
 
     /**
