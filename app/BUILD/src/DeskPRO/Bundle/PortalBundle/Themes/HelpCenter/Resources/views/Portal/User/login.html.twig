@@ -67,7 +67,8 @@
 
                                             {% if identities %}
                                                 <div class="dp-po-page-login-multi">
-                                                    <ul class="dp-po-page-login-multi-list" id="user-multi-list">
+                                                    <div class="dp-po">{{ phrase('helpcenter.account.multiple_matches') }}</div>
+                                                    <ul class="dp-po dp-po-page-login-multi-list" id="user-multi-list">
                                                         {% for identity in identities %}
                                                             <li data-person="{{ identity.id }}">
                                                                 {{ identity.name }}
