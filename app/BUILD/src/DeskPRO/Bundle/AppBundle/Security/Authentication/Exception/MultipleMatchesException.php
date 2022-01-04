@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Authentication\Exception;
 
+use DeskPRO\Component\Util\UnserializeUtil;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
 class MultipleMatchesException extends BadCredentialsException
@@ -52,6 +53,6 @@ class MultipleMatchesException extends BadCredentialsException
             $this->file,
             $this->line,
             $this->identities
-            ) = unserialize($str);
+            ) = UnserializeUtil::unserializeArray($str);
     }
 }

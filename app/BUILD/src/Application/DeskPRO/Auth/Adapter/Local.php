@@ -46,7 +46,11 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
     /** @var string */
     protected $userkey = '';
 
-    public function __construct(EntityManager $em, $useUniqueEmail = true)
+    /**
+     * @param EntityManager $em
+     * @param bool          $useUniqueEmail
+     */
+    public function __construct(EntityManager $em, $useUniqueEmail)
     {
         $this->em             = $em;
         $this->useUniqueEmail = $useUniqueEmail;
