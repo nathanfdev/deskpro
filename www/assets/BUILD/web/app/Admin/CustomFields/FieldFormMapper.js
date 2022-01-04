@@ -160,6 +160,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           case 'text':
           case 'textarea':
           case 'javascript':
+          case 'externaluniquekey':
             if (fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.options.regex) {
               if (fieldModel.options.min_length) {
                 formTypeOpts.user_validation = 'required';
