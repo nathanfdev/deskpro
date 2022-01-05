@@ -1,13 +1,13 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\Usersource\Sync\Syncer;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
+use Orb\Auth\Adapter\DbTable;
 use Orb\Auth\Identity;
 use Orb\Log\Logger;
 use Orb\Validator\StringEmail;
@@ -48,9 +48,9 @@ class DbTableSyncer extends AbstractSyncer
                 $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
 
                 $cursor->incrementCounter();
-                if ($pause_check($cursor)) {
-                    return;
-                }
+//                if ($pause_check($cursor)) {
+//                    return;
+//                }
             }
 
             $offset += $limit;
@@ -131,17 +131,40 @@ class DbTableSyncer extends AbstractSyncer
     protected function syncIdentityWithUsersource(Usersource $usersource, Identity $identity, $email)
     {
         // get an array of info passed to us from remote usersource
-        $user_info = $this->getAdapter($usersource)->getFieldsFromIdentity($identity);
-
+        $adapter   = $this->getAdapter($usersource);
+        $user_info = $adapter->getFieldsFromIdentity($identity);
+        /** @var DbTable $authAdapter  */
+        $authAdapter = $adapter->getAuthAdapter();
         // some adapters REMOVE data in the getFieldFromIdentity call above. We want be sure
         // we use the data it returns, but any extra data from the identity should still be present
         // for user filtering and custom fields.
-        $user_info = array_merge($identity->getRawData(), $user_info);
+        $rawData   = $identity->getRawData();
+        $user_info = array_merge(
+            $rawData,
+            $user_info,
+            ['identity' => $rawData[$authAdapter->getOption(DbTable::OPT_FIELD_ID)]]
+        );
 
         if ($assoc = $this->helper->getAssociation($usersource, $identity->getIdentity())) {
             $person = $assoc->person;
         } else {
-            $person = $this->helper->getPersonFromEmail($email);
+            if (!App::getSetting('user.require_unique_email', true)) {
+                $people      = $this->helper->getPeopleFromEmail($user_info['email']);
+                $peopleCount = count($people);
+                if ($peopleCount > 0) {
+                    if (!isset($user_info['identity'])) {
+                        $this->helper->log(Logger::DEBUG, 'Ambiguity with email: "'.$user_info['email'].'", no additional identity to solve it');
+                    }
+                    foreach ($people as $possiblePerson) {
+                        $assoc = $this->helper->getAssociation($usersource, $possiblePerson);
+                        if ($assoc->getIdentity() == /* (sic!) */ $user_info['identity']) {
+                            $person = $possiblePerson;
+                        }
+                    }
+                }
+            } else {
+                $person = $this->helper->getPersonFromEmail($user_info['email']);
+            }
             // its ok that this might be null, because our helper deals with null person
         }
 

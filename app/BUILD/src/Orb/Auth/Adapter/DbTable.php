@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Orb\Auth\Adapter;
 
@@ -256,14 +254,17 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
         switch ($this->options[self::OPT_PASSWORD_HASH]) {
             case 'md5':
                 $password_compare = md5($password_input);
+
                 break;
 
             case 'sha1':
                 $password_compare = sha1($password_input);
+
                 break;
 
             default:
                 $password_compare = $password_input;
+
                 break;
         }
 
@@ -327,6 +328,8 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
     /**
      * Get user info from an email address.
      *
+     * @param mixed $email
+     *
      * @return array
      */
     public function getUserInfoForEmail($email)
@@ -361,6 +364,8 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
     /**
      * Get user info from an email address.
      *
+     * @param mixed $id
+     *
      * @return array
      */
     public function getUserInfoForId($id)
@@ -390,6 +395,9 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
     }
 
     /**
+     * @param mixed $id
+     * @param null|mixed $id_type
+     *
      * @return array
      */
     public function getUserInfoFromIdentity($id, $id_type = null)
@@ -432,5 +440,15 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
     public function getLogger()
     {
         return $this->logger;
+    }
+
+    /**
+     * @param $option
+     *
+     * @return mixed
+     */
+    public function getOption($option)
+    {
+        return $this->options->get($option);
     }
 }

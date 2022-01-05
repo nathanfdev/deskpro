@@ -6,6 +6,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Usersource;
@@ -108,7 +109,24 @@ class SyncerHelper
         }
 
         if (!$person) {
-            if (!$person = $this->getPersonFromEmail($user_info['email'])) {
+            if (!App::getSetting('user.require_unique_email', true)) {
+                $people      = $this->getPeopleFromEmail($user_info['email']);
+                $peopleCount = count($people);
+                if ($peopleCount > 0) {
+                    if (!isset($user_info['identity'])) {
+                        $this->log(Logger::DEBUG, 'Ambiguity with email: "'.$user_info['email'].'", no additional identity to solve it');
+                    }
+                    foreach ($people as $possiblePerson) {
+                        $assoc = $this->getAssociation($usersource, $possiblePerson);
+                        if ($assoc->getIdentity() == /* (sic!) */ $user_info['identity']) {
+                            $person = $possiblePerson;
+                        }
+                    }
+                }
+            } else {
+                $person = $this->getPersonFromEmail($user_info['email']);
+            }
+            if (!$person) {
                 $this->log(Logger::DEBUG, 'could not find a person with the email "'.$user_info['email'].'"');
                 $this->log(Logger::INFO, 'creating a new person with email "'.$user_info['email'].'"', $user_info);
                 $person = Person::newContactPerson(['email' => $user_info['email'], 'creation_system' => Person::CREATED_USERSOURCE_SYNC]);
@@ -329,9 +347,26 @@ class SyncerHelper
     }
 
     /**
+     * @param $email_string
+     *
+     * @return Person[]
+     */
+    public function getPeopleFromEmail($email_string)
+    {
+        return array_map(
+            function ($e) {
+                /* @var PersonEmail $e */
+                return $e->getPerson();
+            },
+            $this->em->getRepository(PersonEmail::class)->findBy(['email' => $email_string])
+        );
+    }
+
+    /**
      * Saves a person.
      *
      * @param Person $person
+     * @param mixed $flush
      */
     public function savePerson(Person $person, $flush = true)
     {
@@ -346,6 +381,7 @@ class SyncerHelper
      * Saves the association.
      *
      * @param PersonUsersourceAssoc $association
+     * @param mixed $flush
      */
     public function saveAssociation(PersonUsersourceAssoc $association, $flush = true)
     {
