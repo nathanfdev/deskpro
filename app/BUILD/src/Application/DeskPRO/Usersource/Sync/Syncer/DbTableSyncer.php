@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Usersource\Sync\Syncer;
 
 use Application\DeskPRO\App;
@@ -48,9 +46,9 @@ class DbTableSyncer extends AbstractSyncer
                 $this->syncIdentityWithUsersource($usersource, $identity, $identity->getIdentity());
 
                 $cursor->incrementCounter();
-//                if ($pause_check($cursor)) {
-//                    return;
-//                }
+                if ($pause_check($cursor)) {
+                    return;
+                }
             }
 
             $offset += $limit;
