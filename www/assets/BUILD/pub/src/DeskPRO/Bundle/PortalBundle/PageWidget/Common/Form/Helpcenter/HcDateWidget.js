@@ -38,16 +38,17 @@ class HcDateInput extends React.Component {
   };
 
   render() {
-    const { ...props } = this.props;
+    // startDate is removed on purpose to not be passed to ReactDatePicker
+    const { startDate, ...props } = this.props; // eslint-disable-line no-unused-vars
     const { date } = this.state;
 
     return (
       <ReactDatePicker
-        onChange={newDate => this.setDate(newDate)}
-        onChangeRaw={event => this.handleChangeRaw(event.target.value)}
         selected={date}
         adjustDateOnChange
+        onChangeRaw={event => this.handleChangeRaw(event.target.value)}
         {...props}
+        onChange={newDate => this.setDate(newDate)}
       />
     );
   }
