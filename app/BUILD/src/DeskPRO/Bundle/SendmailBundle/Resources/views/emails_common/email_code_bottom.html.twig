@@ -7,9 +7,9 @@
 {% endif %}
 
 {% if tac %}
-    {{ layout.replycode(tac.access_code) }}
+    <span class="dp-replycode">{{ tac.access_code }}</span>
 {% elseif ticket %}
-    {{ layout.replycode(ticket.access_code) }}
+    <span class="dp-replycode">{{ ticket.access_code }}</span>
 {% endif %}
 
 {% if tplvars.agent_reply_above_line %}
