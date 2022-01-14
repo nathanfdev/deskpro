@@ -19,17 +19,18 @@ class PropertyMapper
     public function __construct(EmailAccountManager $accountManager, EzcReaderFactory $readerFactory)
     {
         $this->accountManager = $accountManager;
-        $this->readerFactory = $readerFactory;
+        $this->readerFactory  = $readerFactory;
     }
 
     /**
      * @param $rawSource
+     *
      * @return EzcReader
      */
-    function createReader($rawSource)
+    public function createReader($rawSource)
     {
         $normalized = Strings::standardEol($rawSource);
-        $reader = $this->readerFactory->create();
+        $reader     = $this->readerFactory->create();
         $reader->setRawSource($normalized);
 
         return $reader;
@@ -38,19 +39,20 @@ class PropertyMapper
     /**
      * @param EzcReader $reader
      * @param EmailSource $source
+     *
      * @return EmailSource
      */
-    function read( EzcReader $reader, EmailSource $source)
+    public function read(EzcReader $reader, EmailSource $source)
     {
         $rawSource = $reader->getRawSource();
 
-        $this->mapHeaderProperties($rawSource, $source);
+        $this->mapHeaderProperties($rawSource, $source, $reader);
         $this->mapEmailProperties($reader, $source);
 
         return $source;
     }
 
-    private function mapHeaderProperties($rawSource, EmailSource $source)
+    private function mapHeaderProperties($rawSource, EmailSource $source, EzcReader $reader)
     {
         $normalized = Strings::standardEol($rawSource);
 
@@ -67,10 +69,14 @@ class PropertyMapper
         }
         $source->fromArray([
             'headers'        => $rawHeaders,
-            'header_to'      => Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $rawHeaders) ?: '',
-            'header_cc'      => Strings::extractRegexMatch('#^Cc:\s*(.*?)$#m', $rawHeaders) ?: '',
-            'header_from'    => Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $rawHeaders) ?: '',
-            'header_subject' => Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $rawHeaders) ?: '',
+            'header_to'      => $reader->getHeader('To')->getAllParts()
+                ? implode(',', $reader->getHeader('To')->getAllParts()) : '',
+            'header_cc'      => $reader->getHeader('Cc')->getAllParts()
+                ? implode(',', $reader->getHeader('Cc')->getAllParts()) : '',
+            'header_from'    => $reader->getHeader('From')
+                ? implode(',', $reader->getHeader('From')->getAllParts()) : '',
+            'header_subject' => $reader->getHeader('Subject')
+                ? implode(',', $reader->getHeader('Subject')->getAllParts()) : '',
         ]);
     }
 
@@ -78,7 +84,7 @@ class PropertyMapper
      * @param EzcReader $reader
      * @param EmailSource $source
      */
-    private function mapEmailProperties( EzcReader $reader, EmailSource $source)
+    private function mapEmailProperties(EzcReader $reader, EmailSource $source)
     {
         $account = null;
         foreach ($reader->getReceivedAddresses() as $email) {
@@ -91,8 +97,7 @@ class PropertyMapper
         $fromEmail = $reader->getFromAddress();
         $source->fromArray([
             'email_account'  => $account,
-            'from_email'     => $fromEmail ? $fromEmail->getEmail() : null
+            'from_email'     => $fromEmail ? $fromEmail->getEmail() : null,
         ]);
-
     }
 }
