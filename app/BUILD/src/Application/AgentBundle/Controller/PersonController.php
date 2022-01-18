@@ -1614,7 +1614,7 @@ class PersonController extends AbstractController
 
         // if email address is set
         // then check for dupe email address
-        if ($newEmail && $this->container->getSetting('user.require_unique_email', true)) {
+        if ($newEmail) {
             $accountManager = App::$container->getEmailAccountManager();
 
             if (!StringEmail::isValueValid($newEmail)) {
@@ -1627,7 +1627,7 @@ class PersonController extends AbstractController
                     'success'        => false,
                     'error_messages' => ['That email address is in use by a ticket account'],
                 ]);
-            } else {
+            } elseif ($this->container->getSetting('user.require_unique_email', true)) {
                 /** @var PersonRepository $personRepository */
                 $personRepository = $this->em->getRepository(Person::class);
                 $check_exists     = $personRepository->findOneByEmail($newEmail);

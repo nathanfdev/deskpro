@@ -97,7 +97,12 @@ class ProfileController extends AbstractController
                 }
 
                 // check if the person already has an account (or is a contact)
-                if (!$hasCaptchaError && $hasValidEmail && ($email = $person->getEmailAddress())) {
+                if (
+                    $this->getContainer()->getSetting('user.require_unique_email', true)
+                    && !$hasCaptchaError
+                    && $hasValidEmail
+                    && ($email = $person->getEmailAddress())
+                ) {
                     /** @var Person $personCheck */
                     if ($personCheck = $this->get('data.person')->getPersonForEmail($email)) {
                         $this->runAntiAbuseCheck($request);
