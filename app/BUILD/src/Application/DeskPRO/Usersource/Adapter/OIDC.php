@@ -56,16 +56,11 @@ class OIDC extends AbstractAdapter implements ContainerAwareInterface
      */
     public function getCapabilities()
     {
-        $capabilities = [
+        return [
             UsersourceInfo::CAPABILITY_SSO,
             UsersourceInfo::CAPABILITY_SSO_JS,
+            UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN,
         ];
-
-        if (isset($this->usersource->options['login_custom_text']) && $custom_button_text = $this->usersource->options['login_custom_text']) {
-            $capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN;
-        }
-
-        return $capabilities;
     }
 
     /**

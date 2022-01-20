@@ -49,15 +49,10 @@ class Saml extends AbstractAdapter
      */
     public function getCapabilities()
     {
-        $capabilities = [
+        return [
             UsersourceInfo::CAPABILITY_SSO,
             UsersourceInfo::CAPABILITY_SSO_JS,
+            UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN,
         ];
-
-        if (isset($this->usersource->options['login_custom_text']) && $customButtonText = $this->usersource->options['login_custom_text']) {
-            $capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN;
-        }
-
-        return $capabilities;
     }
 }
