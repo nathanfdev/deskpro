@@ -127,6 +127,12 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           agent_validation:            false,
           agent_validation_resolve:    false,
           agent_max_file_size:         0
+        },
+        externaluniquekey: {
+          agent_min_length: 1,
+          min_length:       1,
+          user_validation:  'required',
+          agent_validation: 'required',
         }
       };
 
@@ -154,6 +160,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           case 'text':
           case 'textarea':
           case 'javascript':
+          case 'externaluniquekey':
             if (fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.options.regex) {
               if (fieldModel.options.min_length) {
                 formTypeOpts.user_validation = 'required';
@@ -597,6 +604,26 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           if (formTypeOpts.agent_validation) {
             postData.agent_required = true;
           }
+          break;
+
+        case 'externaluniquekey':
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\ExternalUniqueKey';
+          // these are mandatory
+          let minLength = parseInt(formTypeOpts.min_length, 10);
+          if(!minLength || minLength < 1) {
+            minLength = 1;
+          }
+          let agentMinLength = parseInt(formTypeOpts.agent_min_length, 10);
+          if(!agentMinLength || agentMinLength < 1) {
+            agentMinLength = 1;
+          }
+          postData.min_length = minLength;
+          postData.agent_min_length = agentMinLength;
+          // These are mandatory, we don't care if someone will hack the UI with devtools and set it to false.
+          postData.required = true;
+          postData.agent_required = true;
+
+
           break;
       }
 

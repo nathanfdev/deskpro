@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\App;
@@ -50,11 +48,11 @@ class DeskPRO extends AbstractAdapter implements EntityManagerAwareInterface
     }
 
     /**
-     * @return \Orb\Auth\Adapter\Local
+     * @return \Application\DeskPRO\Auth\Adapter\Local
      */
     protected function _createAuthAdapterObject()
     {
-        return new Local($this->getEm());
+        return new Local($this->getEm(), App::getContainer()->getSetting('user.require_unique_email', true));
     }
 
     /**

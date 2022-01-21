@@ -2,7 +2,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -27,13 +30,20 @@ class PersonAssignType extends AbstractType
     private $em;
 
     /**
+     * @var CustomFieldManager
+     */
+    private $customFieldManager;
+
+    /**
      * Constructor.
      *
      * @param EntityManager $em
+     * @param CustomFieldManager $customFieldManager
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, CustomFieldManager $customFieldManager)
     {
-        $this->em = $em;
+        $this->em                 = $em;
+        $this->customFieldManager = $customFieldManager;
     }
 
     /**
@@ -57,6 +67,14 @@ class PersonAssignType extends AbstractType
                 'constraints' => [
                     new Assert\Email(['strict' => true]),
                 ],
+            ])
+            ->add('fieldId', TextType::class, [
+                'required'    => false,
+                'mapped'      => false,
+            ])
+            ->add('key', TextType::class, [
+                'required'    => false,
+                'mapped'      => false,
             ])
         ;
 
@@ -90,8 +108,22 @@ class PersonAssignType extends AbstractType
 
         // Set person entity from request fields (id or email)
         // Creates a new person if no person found by provided email
-
-        if (!empty($data['email'])) {
+        if (!empty($data['fieldId']) && !empty($data['key'])) {
+            $customDefPerson = $this->customFieldManager->getCustomPersonFieldById($data['fieldId']);
+            if ($customDefPerson->getType() === CustomDefAbstract::TYPE_EXT_UNIQUE_KEY) {
+                $customDataPersonRepo = $this->em->getRepository(CustomDataPerson::class);
+                $customDataPerson     = $customDataPersonRepo->findOneBy(
+                    [
+                        'field'      => $data['fieldId'],
+                        'root_field' => $data['fieldId'],
+                        'input'      => $data['key'],
+                    ]
+                );
+                if ($customDataPerson) {
+                    $form->setData($customDataPerson->getPerson());
+                }
+            }
+        } elseif (!empty($data['email'])) {
             $person = $personRepository->findOneByEmail($data['email']);
             if (!$person) {
                 $allowCreate = $form->getConfig()->getOption('allow_create');

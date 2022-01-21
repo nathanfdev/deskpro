@@ -28,6 +28,8 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
     this.failedReason = window.document.getElementById('login-form-failed-reason');
     this.resetPassword = window.document.getElementById('login-form-reset-password');
     this.usersources = window.document.getElementById('login-form-usersources');
+    this.userList = window.document.getElementById('login-form-userlist');
+    this.userKey = window.document.getElementById('login-form-userkey');
   };
 
   onEmailBlur = () => {
@@ -66,7 +68,8 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
       {
         username:    this.username.value,
         password:    this.password.value,
-        remember_me: this.rememberMe.checked
+        remember_me: this.rememberMe.checked,
+        userkey:     this.userKey.value
       },
       {
         jsonPayload: false
@@ -84,6 +87,46 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
         this.usernameLabel.classList.add('error');
         this.passwordLabel.classList.add('error');
         this.username.focus();
+        const userKey = this.userKey;
+        const userList = this.userList;
+        if (
+          r.data.reason === 'helpcenter.account.multiple_matches'
+          && r.data.identities
+          && r.data.identities.length > 0
+        ) {
+          userList.innerHTML = '';
+          r.data.identities.forEach((identity) => {
+            const li = window.document.createElement('li');
+            const span = window.document.createElement('span');
+            span.innerText = `${identity.name}`;
+            span.className = 'dp-po-multi-name';
+            li.appendChild(span);
+            const div = window.document.createElement('div');
+            div.className = 'dp-po-multi-keys';
+            const textArr = [];
+            identity.keys.forEach((k) => {
+              textArr.push(`${k.title}: ${k.value}`);
+            });
+            if (textArr.length > 0) {
+              div.innerText = textArr.join(',');
+              li.appendChild(div);
+            }
+            li.addEventListener(
+              'click',
+              (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                userKey.value = identity.id;
+                const kids = userList.getElementsByTagName('li');
+                for (let i = 0; i < kids.length; i++) {
+                  kids[i].className = kids[i].className.replace(' active', '');
+                }
+                li.className = `${li.className} active`;
+              }
+            );
+            userList.appendChild(li);
+          });
+        }
         HelpcenterLoginDropdownWidget.addCaptchaIfNecessary();
       }
     });
@@ -116,9 +159,9 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
     }
 
 
-    const loginSiderbar = window.document.getElementById('login-sidebar');
-    if (loginSiderbar) {
-      loginSiderbar.addEventListener('submit', this.onSubmit);
+    const loginSidebar = window.document.getElementById('login-sidebar');
+    if (loginSidebar) {
+      loginSidebar.addEventListener('submit', this.onSubmit);
     }
     if (this.username) {
       this.username.addEventListener('blur', this.onEmailBlur);

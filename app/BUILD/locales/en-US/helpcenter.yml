@@ -15,6 +15,7 @@ helpcenter.account.login_email: 'Your email'
 helpcenter.account.login_email_placeholder: email@example.com
 helpcenter.account.login_external: 'Login with an external service'
 helpcenter.account.login_invalid: 'Login invalid'
+helpcenter.account.multiple_matches: 'Multiple users found. Please pick up one.'
 helpcenter.account.authentication_disabled: 'Authentication method disabled'
 helpcenter.account.login_lockout: 'You have failed login too many times so you have been locked out. Please try again later.'
 helpcenter.account.login_not_configured: 'External service is not configured.'

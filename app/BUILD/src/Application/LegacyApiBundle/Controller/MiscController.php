@@ -1,14 +1,11 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
-use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
@@ -118,7 +115,10 @@ class MiscController extends AbstractController
         // Auth local
         //------------------------------
 
-        $adapter = new \Application\DeskPRO\Auth\Adapter\Local($this->container->getEm());
+        $adapter = new \Application\DeskPRO\Auth\Adapter\Local(
+            $this->container->getEm(),
+            $this->container->getSetting('user.require_unique_email', true)
+        );
         $adapter->setCredentials($email, $password);
         $result = $adapter->authenticate();
 
@@ -486,6 +486,7 @@ class MiscController extends AbstractController
                     foreach ($this->container->getAgentData()->getAgents() as $agent) {
                         if ($agent->can_admin) {
                             $agent_id = $agent->id;
+
                             break;
                         }
                     }

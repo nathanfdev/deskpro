@@ -94,6 +94,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@custom_field_manager"
     tags:
       - { name: form.type }
 
@@ -156,7 +157,10 @@ services:
 
   form.base_person:
     class: DeskPRO\Bundle\AppBundle\Form\Type\People\BasePersonType
-    arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+      - "@=service('service_container').getSetting('user.require_unique_email', true)"
     tags:
       - { name: form.type }
 

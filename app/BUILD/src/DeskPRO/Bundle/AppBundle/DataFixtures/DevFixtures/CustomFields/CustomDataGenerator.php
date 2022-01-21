@@ -36,6 +36,7 @@ class CustomDataGenerator
 
         switch ($customDef->getTypeName()) {
             case CustomDefAbstract::TYPE_TEXT:
+            case CustomDefAbstract::TYPE_EXT_UNIQUE_KEY:
             case CustomDefAbstract::TYPE_CURRENCY:
             case CustomDefAbstract::TYPE_URL:
                 $formKey = 'input';

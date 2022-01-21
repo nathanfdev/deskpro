@@ -56,6 +56,7 @@
                                             <input type="text" placeholder="{{ phrase('helpcenter.account.login_email') }}" name="username"
                                                    id="login_username" value="{{ last_username }}" class="form-control"
                                             >
+                                            <input type="hidden" name="userkey" value=""/>
                                         </div>
 
                                         <div class="form-group">
@@ -63,6 +64,29 @@
                                             <input type="password" placeholder="{{ phrase('helpcenter.account.login_password') }}"
                                                    name="password" id="login_password" class="form-control"
                                             >
+
+                                            {% if identities %}
+                                                <div class="dp-po-page-login-multi">
+                                                    <div class="dp-po">{{ phrase('helpcenter.account.multiple_matches') }}</div>
+                                                    <ul class="dp-po dp-po-page-login-multi-list" id="user-multi-list">
+                                                        {% for identity in identities %}
+                                                            <li data-person="{{ identity.id }}">
+                                                                {{ identity.name }}
+                                                                {% if identity.keys %}
+                                                                    <ul class="dp-po-page-login-multi-list-keys">
+                                                                        {% for key in identity.keys  %}
+                                                                            <li>
+                                                                                {{ key.title }}: {{ key.value }}
+                                                                            </li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                {% endif %}
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            {% endif %}
+
                                             {% if auth_manager.isForgotPasswordVisible %}
                                                 <div class="form-meta form-meta-grey form-meta-top">
                                                     <a href="{{ path('portal_reset_password', {'email': last_username}) }}">

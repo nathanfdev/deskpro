@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail;
 
@@ -33,13 +31,20 @@ class PersonEmailTransformer implements DataTransformerInterface
     private $em;
 
     /**
+     * @var bool
+     */
+    private $useUniqueEmail;
+
+    /**
      * @param Person        $person
      * @param EntityManager $em
+     * @param bool          $useUniqueEmail
      */
-    public function __construct(Person $person, EntityManager $em)
+    public function __construct(Person $person, EntityManager $em, $useUniqueEmail)
     {
-        $this->person = $person;
-        $this->em     = $em;
+        $this->person         = $person;
+        $this->em             = $em;
+        $this->useUniqueEmail = $useUniqueEmail;
     }
 
     /**
@@ -70,7 +75,8 @@ class PersonEmailTransformer implements DataTransformerInterface
             return self::$instances[$person_hash][$value];
         }
 
-        if (!$email = $this->em->getRepository(PersonEmail::class)->findOneBy(['email' => $value])) {
+        $personEmailRepo = $this->em->getRepository(PersonEmail::class);
+        if (!$this->useUniqueEmail || (!$email = $personEmailRepo->findOneBy(['email' => $value]))) {
             $email = new PersonEmail();
             $email->setEmail($value);
             $email->setPerson($this->person);

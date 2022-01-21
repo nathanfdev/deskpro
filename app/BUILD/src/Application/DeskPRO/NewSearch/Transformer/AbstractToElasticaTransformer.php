@@ -24,7 +24,14 @@ abstract class AbstractToElasticaTransformer implements ModelToElasticaTransform
         if ($object->getCustomData()) {
             /** @var CustomDataAbstract $value */
             foreach ($object->getCustomData() as $value) {
-                if (in_array($value->getRootField()->getType(), [CustomDefAbstract::TYPE_TEXT, CustomDefAbstract::TYPE_TEXTAREA])) {
+                if (in_array(
+                    $value->getRootField()->getType(),
+                    [
+                        CustomDefAbstract::TYPE_TEXT,
+                        CustomDefAbstract::TYPE_TEXTAREA,
+                        CustomDefAbstract::TYPE_EXT_UNIQUE_KEY,
+                    ]
+                )) {
                     $customData[] = ['value' => $value->getData(), 'id' => $value->getFieldId()];
                 }
             }

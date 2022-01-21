@@ -47,7 +47,7 @@
 		</div>
 	</div>
   {% if app.getSetting('portal.members_community') %}
-    <div class="form-group">
+    <div class="form-group" ng-show="EditCtrl.field_type != 'externaluniquekey'">
       <div class="col-lg-3">
         <h3>Show on public profile</h3>
       </div>

@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace DeskPRO\Bundle\AppBundle\Security;
 
@@ -15,6 +13,8 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 class DpFormLoginToken extends AbstractToken
 {
     protected $credentials;
+
+    protected $userkey;
 
     /**
      * DpFormLoginToken constructor.
@@ -40,5 +40,25 @@ class DpFormLoginToken extends AbstractToken
     public function getCredentials()
     {
         return $this->credentials;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserkey()
+    {
+        return $this->userkey;
+    }
+
+    /**
+     * @param mixed $userkey
+     *
+     * @return $this
+     */
+    public function setUserkey($userkey)
+    {
+        $this->userkey = $userkey;
+
+        return $this;
     }
 }

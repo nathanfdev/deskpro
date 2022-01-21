@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\DeskPRO\Auth;
 
@@ -118,8 +116,9 @@ class LoginProcessor
 
             $existEmail = null;
 
-            // I removed the "email_confirmed" requirement below; after new validation rules, all emails from a usersource are considered valid
-            if ($mappedFields->has('email') || $use_email_address) {
+            if (!App::getContainer()->getSetting('user.require_unique_email', true) && $mappedFields->has('id')) {
+                $this->person = App::getEntityRepository(Person::class)->findOneBy(['id' => $mappedFields->get('id')]);
+            } elseif ($mappedFields->has('email') || $use_email_address) {
                 $setEmail   = $mappedFields->get('email', $use_email_address);
                 $existEmail = App::getEntityRepository(PersonEmail::class)->getEmail($mappedFields->get('email'));
                 /** @var PersonEmail $existEmail */
@@ -144,7 +143,7 @@ class LoginProcessor
                 }
                 $this->new_person = true;
                 $this->person     = new Person();
-                 // always validate people sent from a usersource
+                // always validate people sent from a usersource
                 $this->person->is_user         = true;
                 $this->person->creation_system = 'web.usersource';
             }

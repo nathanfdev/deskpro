@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Orb\Auth;
 
 /**
@@ -38,6 +36,13 @@ class Result
     const REQUIRES_REDIRECT = 2;
 
     /**
+     * Not a login success, but not a failure either. This indicates we found a match
+     * for several user records and a user must choose which one to pick up
+     * The list will be under the 'identities' key in the messages array
+     */
+    const MULTIPLE_MATCHES = 3;
+
+    /**
      * The key that an Exception is stored under for FAILURE_EXCEPTION codes.
      */
     const MSG_EXCEPTION = 'exception';
@@ -46,6 +51,11 @@ class Result
      * The key that the redirect URL is stored under in the REQUIRES_REDIRECT code.
      */
     const MSG_REDIRECT = 'redirect_url';
+
+    /**
+     * The ky that the identities stored under in the MULTIPLE_MATCHES code.
+     */
+    const MSG_IDENTITIES = 'identities';
 
     /**
      * Array of info (ie debug info etc) from the adapter.
@@ -101,6 +111,11 @@ class Result
     public function isRedirectRequired()
     {
         return $this->_code == self::REQUIRES_REDIRECT;
+    }
+
+    public function isMultipleMatches()
+    {
+        return $this->_code === self::MULTIPLE_MATCHES;
     }
 
     /**

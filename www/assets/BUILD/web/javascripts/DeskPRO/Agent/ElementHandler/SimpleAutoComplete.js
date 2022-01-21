@@ -124,8 +124,10 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
     this.resultsList.on('click', 'li', function (ev) {
       ev.preventDefault();
       var email = $.trim($('.user-email', this).text());
+      var personId = $(this).attr('person-id');
 
       self.termInput.val(email);
+      self.termInput.data('personId', personId);
       self.addButton.click();
       self.close();
     });
@@ -231,6 +233,13 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
 
           if (!user.email || user.name == user.email) {
             $('address', row).hide();
+          }
+
+          if(user.ext_keys && user.ext_keys.length > 0) {
+            user.ext_keys.forEach(function(ext_key) {
+              var extKeyRow = '<address>' + ext_key.title + ': ' + ext_key.value + '</address>';
+              $('.user-ext-keys', row).append(extKeyRow);
+            });
           }
 
           this.resultsList.append(row);

@@ -7,6 +7,7 @@ use Application\DeskPRO\Auth\AuthenticationManager as DpAuthManager;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\DeskPRO;
+use DeskPRO\Bundle\AppBundle\Security\Authentication\Exception\MultipleMatchesException;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
 use DeskPRO\Bundle\PortalBundle\Routing\PasswordResetException;
@@ -79,6 +80,13 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
 
         if ($authResult->isRedirectRequired()) {
             // there currently are not any cases in form login where a redirect is required
+        }
+
+        if ($authResult->isMultipleMatches()) {
+            $exception = new MultipleMatchesException();
+            $exception->setIdentities($authResult->getMessages(Result::MSG_IDENTITIES));
+
+            throw $exception;
         }
 
         if ($authResult->isValid()) {
@@ -171,12 +179,14 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             $adapter = $auth_manager->getAuthAdapterFactory()->getAuthAdapter($us);
 
             if ($adapter instanceof FormLoginInterface) {
-                $adapter->setFormData(
-                    [
-                        'username' => $token->getUsername(),
-                        'password' => $token->getCredentials(),
-                    ]
-                );
+                $formData = [
+                    'username' => $token->getUsername(),
+                    'password' => $token->getCredentials(),
+                ];
+                if ($token instanceof DpFormLoginToken) {
+                    $formData['userkey'] = $token->getUserkey();
+                }
+                $adapter->setFormData($formData);
 
                 try {
                     $authResult = $adapter->authenticate();
@@ -198,7 +208,16 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             }
         }
 
-        return [new Result(Result::FAILURE_INVALID_CREDS), isset($us) ? $us : null];
+        return [
+            new Result(
+            isset($authResult) && $authResult->isMultipleMatches()
+                ? Result::MULTIPLE_MATCHES
+                : Result::FAILURE_INVALID_CREDS,
+                null,
+                isset($authResult) ? $authResult->getMessages() : []
+                ),
+            isset($us) ? $us : null,
+        ];
     }
 
     protected function isHelpcenter()

@@ -1049,7 +1049,7 @@ JS;
         // Auth local
         //------------------------------
 
-        $adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
+        $adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm(), App::getContainer()->getSetting('user.require_unique_email', true));
         $adapter->setCredentials($this->person->getPrimaryEmailAddress(), $password);
         $result = $adapter->authenticate();
 

@@ -9,13 +9,14 @@ Feature: /person_custom_fields endpoint
 
   Scenario: I retrieve a list of custom fields
     Given only the following "CustomDefPerson" records exist:
-      | #     | parent | title       | description         | is_enabled | is_user_enabled | type          |
-      | cfp1  |        | Field1      | Field with children | 1          | 1               | single_choice |
-      | cfpc1 | {cfp1} | ChildField1 | Child for Field1    | 1          | 1               |               |
-      | cfpc2 | {cfp1} | ChildField2 | Child for Field1    | 1          | 1               |               |
-      | cfpc3 | {cfp1} | ChildField3 | Child for Field1    | 1          | 1               |               |
-      | cfp2  |        | Field2      | Text field          | 1          | 1               | text          |
-      | cfp3  |        | Field3      | Datetime field      | 1          | 1               | datetime      |
+      | #     | parent | title       | description         | is_enabled | is_user_enabled | type                |
+      | cfp1  |        | Field1      | Field with children | 1          | 1               | single_choice       |
+      | cfpc1 | {cfp1} | ChildField1 | Child for Field1    | 1          | 1               |                     |
+      | cfpc2 | {cfp1} | ChildField2 | Child for Field1    | 1          | 1               |                     |
+      | cfpc3 | {cfp1} | ChildField3 | Child for Field1    | 1          | 1               |                     |
+      | cfp2  |        | Field2      | Text field          | 1          | 1               | text                |
+      | cfp3  |        | Field3      | Datetime field      | 1          | 1               | datetime            |
+      | cfp4  |        | EUK         | External Unique Key | 1          | 1               | external_unique_key |
 
     When I send a GET request to "/api/v2/person_custom_fields?order_by=id"
     Then the response should be in JSON
@@ -46,6 +47,13 @@ Feature: /person_custom_fields endpoint
     And the JSON node "data[2].description" should be equal to "Datetime field"
     And the JSON node "data[2].parent" should be equal to 0
     And the JSON node "data[2].choices" should have 0 elements
+
+    And the JSON node "data[3].id" should be equal to "{cfp4}"
+    And the JSON node "data[3].widget_type" should be equal to "external_unique_key"
+    And the JSON node "data[3].title" should be equal to "EUK"
+    And the JSON node "data[3].description" should be equal to "External Unique Key"
+    And the JSON node "data[3].parent" should be equal to 0
+    And the JSON node "data[3].choices" should have 0 elements
 
   Scenario: I get child field
     Given only the following "CustomDefPerson" records exist:

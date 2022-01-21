@@ -2,16 +2,17 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Language;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use DeskPRO\Component\Util\MapUtils;
-use DeskPRO\Bundle\PortalBundle\Model\WidgetPhrases;
 use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\PortalBundle\Model\WidgetPhrases;
+use DeskPRO\Component\Util\MapUtils;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class WidgetPhraseTranslator
 {
     const PHRASES = [
         'helpcenter.account.authentication_disabled',
         'helpcenter.account.login_invalid',
+        'helpcenter.account.multiple_matches',
         'helpcenter.account.logout_confirm',
         'helpcenter.account.profile_delete_picture',
         'helpcenter.community.filters',
@@ -287,6 +288,7 @@ class WidgetPhraseTranslator
 
     /**
      * @param null|string $languageId
+     *
      * @return array
      */
     public function translatePhrases($languageId = null)
@@ -319,6 +321,7 @@ class WidgetPhraseTranslator
 
     /**
      * @param string $phrase
+     *
      * @return string
      */
     private function convertToIcu($phrase)

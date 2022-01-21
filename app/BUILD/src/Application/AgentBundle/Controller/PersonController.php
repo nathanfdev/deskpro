@@ -982,7 +982,7 @@ class PersonController extends AbstractController
                     if ($check) {
                         if ($check->person->id == $person->id) {
                             // silent discard
-                        } else {
+                        } elseif ($this->container->getSetting('user.require_unique_email', true)) {
                             $errors[] = "\"$email\" was not saved because it is already added to another user";
                         }
 
@@ -1627,7 +1627,7 @@ class PersonController extends AbstractController
                     'success'        => false,
                     'error_messages' => ['That email address is in use by a ticket account'],
                 ]);
-            } else {
+            } elseif ($this->container->getSetting('user.require_unique_email', true)) {
                 /** @var PersonRepository $personRepository */
                 $personRepository = $this->em->getRepository(Person::class);
                 $check_exists     = $personRepository->findOneByEmail($newEmail);

@@ -1,8 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- */
+
 
 namespace Application\LegacyApiBundle\Controller;
 
@@ -180,6 +178,7 @@ class PersonController extends AbstractController
 
             $contact_data               = new \Application\DeskPRO\Entity\PersonContactData();
             $contact_data->contact_type = $contact_type;
+
             try {
                 $contact_data->applyFormData($data);
             } catch (\InvalidArgumentException $e) {
@@ -191,6 +190,7 @@ class PersonController extends AbstractController
             for ($i = 1; $i <= 10; ++$i) {
                 if ($contact_data->{'field_'.$i}) {
                     $all_empty = false;
+
                     break;
                 }
             }
@@ -217,8 +217,8 @@ class PersonController extends AbstractController
         if (!$email || !\Orb\Validator\StringEmail::isValueValid($email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($email)) {
             $errors['email'] = ['required_field.email', 'email is empty or invalid'];
         } else {
-            $check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
-            if ($check_exists) {
+            $checkExists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+            if ($checkExists) {
                 $errors['email'] = ['invalid_argument.email', 'email already exists'];
             } else {
                 $person->setEmail($email);
@@ -229,8 +229,8 @@ class PersonController extends AbstractController
             if (!$secondary_email || !\Orb\Validator\StringEmail::isValueValid($secondary_email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($secondary_email)) {
                 $errors['secondary_email'] = ['invalid_argument.secondary_email', 'secondary_email is empty or invalid'];
             } else {
-                $check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($secondary_email);
-                if ($check_exists) {
+                $checkExists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($secondary_email);
+                if ($checkExists) {
                     $errors['secondary_email'] = ['invalid_argument.secondary_email', 'secondary_email already exists'];
                 } else {
                     $person->addEmailAddressString($secondary_email);
@@ -268,6 +268,7 @@ class PersonController extends AbstractController
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+
             throw $e;
         }
 
@@ -311,6 +312,8 @@ class PersonController extends AbstractController
     }
 
     /**
+     * @param mixed $person_id
+     *
      * @return Response
      */
     public function getPersonAction($person_id)
@@ -348,9 +351,12 @@ class PersonController extends AbstractController
         if ($this->in->checkIsset('primary_email') && $this->person->hasPerm('agent_people.manage_emails')) {
             $email = $this->in->getString('primary_email');
 
-            $check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
-            if ($check_exists) {
-                if ($check_exists->id != $person->id) {
+            $checkExists = false;
+            if ($this->container->getSetting('user.require_unique_email', true)) {
+                $checkExists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+            }
+            if ($checkExists) {
+                if ($checkExists->id != $person->id) {
                     $errors['primary_email'] = ['invalid_argument.primary_email', 'email already exists'];
                 }
             } else {
@@ -380,6 +386,7 @@ class PersonController extends AbstractController
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+
             throw $e;
         }
 
@@ -647,7 +654,7 @@ class PersonController extends AbstractController
         if ($check) {
             if ($check->person->id == $person->id) {
                 return $this->createApiErrorResponse('invalid_argument.email', 'email in use by self');
-            } else {
+            } elseif ($this->container->getSetting('user.require_unique_email', true)) {
                 return $this->createApiErrorResponse('invalid_argument.email', 'email in use');
             }
         }
@@ -691,6 +698,7 @@ class PersonController extends AbstractController
         foreach ($person->emails as $test_email) {
             if ($test_email->id == $email_id) {
                 $email = $test_email;
+
                 break;
             }
         }
@@ -718,6 +726,7 @@ class PersonController extends AbstractController
         foreach ($person->emails as $test_email) {
             if ($test_email->id == $email_id) {
                 $email = $test_email;
+
                 break;
             }
         }
@@ -761,6 +770,7 @@ class PersonController extends AbstractController
         foreach ($person->emails as $test_email) {
             if ($test_email->id == $email_id) {
                 $email = $test_email;
+
                 break;
             }
         }
@@ -787,6 +797,7 @@ class PersonController extends AbstractController
             foreach ($person->emails as $new_primary) {
                 $person->primary_email = $new_primary;
                 $this->em->persist($person);
+
                 break;
             }
         }
@@ -863,10 +874,12 @@ class PersonController extends AbstractController
                     $tel .= $data['number'];
 
                     $vcard->addTelephone($tel);
+
                     break;
 
                 case 'website':
                     $vcard->setURL($data['url']);
+
                     break;
 
                 case 'address':
@@ -879,6 +892,7 @@ class PersonController extends AbstractController
                         $data['zip'],
                         $data['country']
                     );
+
                     break;
             }
         }
@@ -1209,6 +1223,7 @@ class PersonController extends AbstractController
 
         $contact_data               = new \Application\DeskPRO\Entity\PersonContactData();
         $contact_data->contact_type = $type;
+
         try {
             $contact_data->applyFormData($data);
         } catch (\InvalidArgumentException $e) {
@@ -1219,6 +1234,7 @@ class PersonController extends AbstractController
         for ($i = 1; $i <= 10; ++$i) {
             if ($contact_data->{'field_'.$i}) {
                 $all_empty = false;
+
                 break;
             }
         }
@@ -1390,6 +1406,7 @@ class PersonController extends AbstractController
                 unset($person->usergroups[$key]);
                 $this->em->persist($person);
                 $this->em->flush();
+
                 break;
             }
         }
@@ -1485,6 +1502,7 @@ class PersonController extends AbstractController
 
                 $this->em->persist($person);
                 $this->em->flush();
+
                 break;
             }
         }
@@ -1671,6 +1689,7 @@ class PersonController extends AbstractController
                     if (!$this->person->hasPerm('agent_people.'.$check_perm)) {
                         throw $this->createAccessDeniedException('Insufficient permission. Required: agent_people.'.$check_perm);
                     }
+
                     break;
 
                 default:
