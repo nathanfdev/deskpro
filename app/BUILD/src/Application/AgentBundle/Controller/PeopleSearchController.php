@@ -686,7 +686,7 @@ class PeopleSearchController extends AbstractController
         $excludeOrg = $this->in->getUint('exclude_org');
         $peopleList = [];
 
-        if (StringEmail::isValueValid($q)) {
+        if (StringEmail::isValueValid($q) && $this->getContainer()->getSetting('user.require_unique_email', true)) {
             // if the string is an exact email, we can try and find the user in usersources just by email
             /** @var Person $person */
             $person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
