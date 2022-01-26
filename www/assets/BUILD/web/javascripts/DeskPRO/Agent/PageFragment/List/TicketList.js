@@ -1157,7 +1157,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
           }
           groupingBar.find('li').each(function() {
             var el = $(this), num = data.group_display.counts[k].total || 0;
-            if (parseInt(el.data('grouping-option'), 10) === parseInt(k, 10)) {
+            if (isNaN(k) && (el.data('grouping-option') === k)) {
               touched.push(this);
               el.find('span').text(num);
               if (num === 0) {
@@ -1165,6 +1165,16 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
               } else {
                 el.show();
               }
+              return false;
+            } else if (parseInt(el.data('grouping-option'), 10) === parseInt(k, 10)) {
+              touched.push(this);
+              el.find('span').text(num);
+              if (num === 0) {
+                el.hide();
+              } else {
+                el.show();
+              }
+              return false;
             }
           });
         }
