@@ -151,7 +151,10 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
                     if ($entity instanceof Person) {
                         $this->handleResult($object, $entity);
                     }
-                } elseif (StringEmail::isValueValid($query)) {
+                } elseif (
+                    StringEmail::isValueValid($query)
+                    && $this->settings->get('user.require_unique_email', true)
+                ) {
                     $entity = $this->container->getSystemService('UsersourceManager')
                         ->findPersonByEmail($query);
 
