@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -217,7 +215,11 @@ class PersonController extends AbstractController
         if (!$email || !\Orb\Validator\StringEmail::isValueValid($email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($email)) {
             $errors['email'] = ['required_field.email', 'email is empty or invalid'];
         } else {
-            $checkExists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+            if ($this->getContainer()->getSetting('user.require_unique_email', true)) {
+                $checkExists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+            } else {
+                $checkExists = null;
+            }
             if ($checkExists) {
                 $errors['email'] = ['invalid_argument.email', 'email already exists'];
             } else {
