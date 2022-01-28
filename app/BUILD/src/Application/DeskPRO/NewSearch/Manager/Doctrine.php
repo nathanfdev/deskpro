@@ -8,6 +8,7 @@ use Application\DeskPRO\NewSearch\Manager\Traits\ExtractsMatchersFromQuery;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Orb\Validator\StringEmail;
 
 /**
  * Doctrine Search Manager.
@@ -259,7 +260,10 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
                         $people     = [];
 
                         // Complete email address
-                        if (\Orb\Validator\StringEmail::isValueValid($q)) {
+                        if (
+                            StringEmail::isValueValid($q)
+                            && $this->settings->get('user.require_unique_email', true)
+                        ) {
                             $p      = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
                             $people = [];
                             if ($p) {
