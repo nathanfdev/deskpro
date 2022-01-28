@@ -636,7 +636,7 @@ $container->loadFromExtension(
                             ],
                             'text_content_analyzer' => [
                                 'type'      => 'custom',
-                                'tokenizer' => 'standard',
+                                'tokenizer' => 'uax_url_email',
                                 'filter'    => ['standard', 'lowercase', 'preserved_asciifolding'],
                             ],
                             'name_analyzer' => [

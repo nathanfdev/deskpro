@@ -20,7 +20,7 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
      */
     protected function getQueryFields()
     {
-        return ['name', 'first_name', 'last_name', 'emails', 'email_domains', 'phone_numbers', 'custom_data'];
+        return ['name', 'first_name', 'last_name', 'email_domains', 'phone_numbers', 'custom_data'];
     }
 
     /**
@@ -35,6 +35,11 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
         $baseQuery->setAnalyzer('text_content_analyzer');
         $baseQuery->setOperator('AND');
 
+        $emailQuery = new Query\QueryString();
+        $emailQuery->setQuery(ElasticaUtil::escapeTerm($q));
+        $emailQuery->setFields(['emails']);
+        $emailQuery->setAnalyzer('text_content_analyzer');
+
         // prepare phone number query
         $phoneQuery = new Query\QueryString();
         $phoneQuery->setQuery(preg_replace('#[^0-9]#', '', ElasticaUtil::escapeTerm($q)));
@@ -44,6 +49,7 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
 
         $boolQuery = new Query\BoolQuery();
         $boolQuery->addShould($baseQuery);
+        $boolQuery->addShould($emailQuery);
         $boolQuery->addShould($phoneQuery);
 
         return $boolQuery;
