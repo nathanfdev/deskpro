@@ -262,7 +262,7 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
                         // Complete email address
                         if (
                             StringEmail::isValueValid($q)
-                            && $this->settings->get('user.require_unique_email', true)
+                            && $this->getSettings()->get('user.require_unique_email', true)
                         ) {
                             $p      = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
                             $people = [];
@@ -274,7 +274,7 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
                                 $email = substr($q, 1);
                                 $email = str_replace(['%', '_'], ['\\\\%', '\\\\_'], $email).'%';
 
-                                if ($this->settings->get('core_tablecounts.people') < 150000) {
+                                if ($this->getSettings()->get('core_tablecounts.people') < 150000) {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol('
                                         SELECT people.id
                                         FROM people
@@ -299,7 +299,7 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
                             } else {
                                 $email = str_replace(['%', '_'], ['\\\\%', '\\\\_'], $q).'%';
 
-                                if ($this->settings->get('core_tablecounts.people') < 150000) {
+                                if ($this->getSettings()->get('core_tablecounts.people') < 150000) {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol('
                                         SELECT people.id
                                         FROM people
@@ -345,7 +345,7 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
                         $q        = preg_replace('#\s+#', ' ', $q);
                         $q_search = '%'.str_replace(['%', '_'], ['\\\\%', '\\\\_'], $q).'%';
 
-                        if ($this->settings->get('core_tablecounts.people') < 150000) {
+                        if ($this->getSettings()->get('core_tablecounts.people') < 150000) {
                             $people_ids = $this->container->getDbRead()->fetchAllCol("
                                 SELECT people.id
                                 FROM people
