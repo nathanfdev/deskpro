@@ -144,22 +144,38 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
                 $this->handleResult($object, $result);
             } elseif ($object === 'person') {
                 // Custom logic for person
-
                 if (Numbers::isInteger($query)) {
                     $entity = $entityRepository->find($query);
 
                     if ($entity instanceof Person) {
                         $this->handleResult($object, $entity);
                     }
-                } elseif (
-                    StringEmail::isValueValid($query)
-                    && $this->getSettings()->get('user.require_unique_email', true)
-                ) {
-                    $entity = $this->container->getSystemService('UsersourceManager')
-                        ->findPersonByEmail($query);
+                } elseif (StringEmail::isValueValid($query)) {
+                    if ($this->getSettings()->get('user.require_unique_email', true)) {
+                        // we're going to use standard usersource search when we consider a user email unique
+                        $entity = $this->container->getSystemService('UsersourceManager')
+                            ->findPersonByEmail($query);
 
-                    if ($entity instanceof Person) {
-                        $this->handleResult($object, $entity);
+                        if ($entity instanceof Person) {
+                            $this->handleResult($object, $entity);
+                        }
+                    } else {
+                        // otherwise - we're going to do a DB search for several people
+                        $email = str_replace(['%', '_'], ['\\\\%', '\\\\_'], $query).'%';
+                        if ($people_ids = $this->container->getDbRead()->fetchAllCol('
+                            SELECT people.id
+                            FROM people
+                            JOIN people_emails ON (people_emails.person_id = people.id)
+                            WHERE people_emails.email LIKE ?
+                            ORDER BY people.id DESC
+                        ', [$email])) {
+                            $people = $this
+                                ->getEntityManager()
+                                ->getRepository(Person::class)
+                                ->getByIds($people_ids, true)
+                            ;
+                            $this->handleResult($object, $people);
+                        }
                     }
                 }
 
