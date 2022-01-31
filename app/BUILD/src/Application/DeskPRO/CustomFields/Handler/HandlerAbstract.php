@@ -6,6 +6,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
 use Orb\Util\Util;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * A custom field handler knows how to render an HTML form field as well as
@@ -468,5 +469,18 @@ abstract class HandlerAbstract
     public function getSearchCriteriaForm($data = null)
     {
         // todo
+    }
+
+    protected function transformErrorCodes($errors)
+    {
+        $codeFactory = App::getContainer()->get('form_error.code_factory');
+        $errorCodes  = [];
+        foreach ($errors as $error) {
+            if ($error instanceof ConstraintViolation) {
+                $errorCodes[] = $codeFactory->getErrorCodeForConstraintViolation($error);
+            }
+        }
+
+        return $errorCodes;
     }
 }
