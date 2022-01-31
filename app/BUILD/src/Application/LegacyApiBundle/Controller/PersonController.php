@@ -3,6 +3,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\Handler\ExternalUniqueKey;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Organization;
@@ -246,9 +247,12 @@ class PersonController extends AbstractController
 
         $invalid_custom_fields = [];
         foreach ($field_manager->getDefinedFields() as $field) {
-            $fieldErrors = $field->getHandler()->validateFormData($post_custom_fields, HandlerAbstract::CONTEXT_AGENT);
-            foreach ($fieldErrors as $code) {
-                $invalid_custom_fields['field_'.$field->getId()] = preg_replace('#^(.*?)\.#', '', $code);
+            $handler     = $field->getHandler();
+            if ($handler instanceof ExternalUniqueKey) {
+                $fieldErrors = $handler->validateFormData($post_custom_fields, HandlerAbstract::CONTEXT_AGENT);
+                foreach ($fieldErrors as $code) {
+                    $invalid_custom_fields['field_'.$field->getId()] = preg_replace('#^(.*?)\.#', '', $code);
+                }
             }
         }
 
