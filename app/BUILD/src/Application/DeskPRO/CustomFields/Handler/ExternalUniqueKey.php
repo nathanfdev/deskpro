@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 
 /**
@@ -53,9 +54,22 @@ class ExternalUniqueKey extends HandlerAbstract
             $data = '';
         }
 
-        $customData = $this->field_def->createCustomData();
-        $customData->setField($this->field_def);
-        $customData->setRootField($this->field_def);
+        $customData = null;
+        if ($contextData instanceof Person) {
+            // we need to find an existing value or create a new one if the one doesn't exist
+            $customData = App::$container->getEm()->getRepository($this->field_def->getCustomDataClass())->findOneBy([
+                'root_field' => $this->field_def,
+                'person'     => $contextData,
+            ]);
+        }
+
+        if (!$customData) {
+            $customData = $this->field_def->createCustomData();
+            $customData->setField($this->field_def);
+            $customData->setRootField($this->field_def);
+            $customData->setPerson($contextData);
+        }
+
         $customData->setValue($data);
 
         $errors = App::$container->get('validator')->validate($customData, [

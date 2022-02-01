@@ -73,7 +73,8 @@ class UniqueKeyValidator extends AbstractSingleValueValidator
                 'input'      => $valueToCheck->getInput(),
                 'root_field' => $valueToCheck->getRootField(),
             ]);
-            if ($customPersonData && $customPersonData->getId() !== $valueToCheck->getId()) {
+            // that validator is also used in legacy bundles, and valueToCheck is created on the fly, s
+            if ($customPersonData && ($customPersonData->getId() !== $valueToCheck->getId())) {
                 $this->createViolation($valueToCheck, $constraint);
             }
         }
