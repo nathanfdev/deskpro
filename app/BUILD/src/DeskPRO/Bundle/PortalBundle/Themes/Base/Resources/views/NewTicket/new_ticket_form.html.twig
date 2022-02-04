@@ -3,7 +3,7 @@
     <!-- BEGIN NEW TICKET FORM -->
     <div class="dp_ticket_form dpx-form{% if show_ticket_suggestions %} dpx-with-ticket-deflection{% endif %}">
         {# avoid putting an absolute action the GET query is significant for defaults #}
-        <form method="POST" class="form-ticket" novalidate data-save-draft="new_ticket{{ app.user ? '-' ~ app.user.id : '' }}" name="ticket" enctype="multipart/form-data" data-visibility="{{ form.vars.visibility }}">
+        <form method="POST" class="form-ticket" novalidate data-save-draft="new_ticket{{ app.user ? '-' ~ app.user.id : '' }}" name="ticket" enctype="multipart/form-data" data-visibility="{{ form.vars.visibility }}" data-upload-tag="ticket_attachment">
 
         {% if form_errors|length > 0 %}
             <div class="column-full">

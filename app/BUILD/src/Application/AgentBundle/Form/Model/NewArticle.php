@@ -124,7 +124,7 @@ class NewArticle
             $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
             if ($blob) {
                 $attach = new ArticleAttachment();
-                $attach->setPerson($this->_person_context)->setBlob($blob->setIsTemp(false));
+                $attach->setPerson($this->_person_context)->setBlob($blob->setIsTemp(false)->setSourceRef('publish.article.'.$article->getId()));
                 $this->_em->persist($attach);
                 $this->_em->persist($blob);
                 $article->addAttachment($attach);

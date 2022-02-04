@@ -27,7 +27,7 @@
             {% endif %}
         </div>
         {{ form_errors(form) }}
-        {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
+        {{ form_start(form, { attr: { class: 'form-ticket', 'data-upload-tag': 'ticket_attachment' } }) }}
         {% if form_errors|length > 0 %}
             <div class="column-full">
                 <div class="bucket">

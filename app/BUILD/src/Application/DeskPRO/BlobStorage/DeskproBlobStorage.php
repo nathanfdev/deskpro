@@ -307,6 +307,9 @@ class DeskproBlobStorage implements Loggable
             if (isset($props['sys_name']) && $props['sys_name']) {
                 $blob_entity->setSysName($props['sys_name']);
             }
+            if (isset($props['source_ref']) && $props['source_ref']) {
+                $blob_entity->setSourceRef($props['source_ref']);
+            }
         }
 
         return $blob_entity;
@@ -334,6 +337,18 @@ class DeskproBlobStorage implements Loggable
     private function _getOrderedAdaptersForBlobArray(array $blob_array)
     {
         $ret = [];
+
+        // is_temp blobs without a source_ref are ones uploaded via
+        // a buggy upload call, and we cant be sure that they're actually safe to remove on cron.
+        // to prevent abuse on these though, we prevent them from being publicly visible after some time.
+        // but the only way to enforce that time check is if its a db blob (other adapters can bypass our ServeFile).
+        // therefore: force db storage for these source-less blobs.
+        if (isset($blob_array['is_temp'])
+            && $blob_array['is_temp']
+            && !empty($blob_array['source_ref'])
+        ) {
+            return ['db' => $this->adapters['db']];
+        }
 
         foreach ($this->adapters as $id => $ad) {
             if (isset($this->disabled_adapters[$id])) {

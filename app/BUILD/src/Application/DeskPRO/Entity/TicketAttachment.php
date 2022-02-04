@@ -142,6 +142,10 @@ class TicketAttachment extends DomainObject
     public function setBlob(Blob $blob = null)
     {
         $this->setModelField('blob', $blob);
+        $blob->setIsTemp(false);
+        if ($this->ticket) {
+            $blob->setSourceRef('ticket_attachment.'.$this->ticket->getId());
+        }
 
         return $this;
     }

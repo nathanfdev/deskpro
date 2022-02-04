@@ -437,7 +437,7 @@ class NewTicket
                     );
                 }
 
-                $blob->setIsTemp(false);
+                $blob->setIsTemp(false)->setSourceRef('publish.news.'.$ticket->getId());;
 
                 $attach = new TicketAttachment();
                 $attach->setBlob($blob);

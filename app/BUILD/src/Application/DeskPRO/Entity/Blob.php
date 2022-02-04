@@ -36,6 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property int       $dim_h
  * @property \DateTime $date_created
  * @property bool      $is_temp
+ * @property string    $source_ref
  */
 class Blob extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -185,6 +186,11 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      * @var bool
      */
     protected $is_temp = false;
+
+    /**
+     * @var bool
+     */
+    protected $source_ref = null;
 
     /**
      * @Assert\Valid()
@@ -868,6 +874,24 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getSourceRef()
+    {
+        return $this->source_ref;
+    }
+
+    /**
+     * @param string|null $source_ref
+     * @return Blob
+     */
+    public function setSourceRef($source_ref)
+    {
+        $this->source_ref = $source_ref;
+        return $this;
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $is_image = $this->isImage();
@@ -921,6 +945,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'dim_w'                => $this->dim_w,
             'dim_h'                => $this->dim_h,
             'is_temp'              => $this->is_temp ? 1 : 0,
+            'source_ref'           => $this->source_ref,
         ];
     }
 
@@ -986,7 +1011,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
                 'storage_loc_idx'      => ['columns' => ['storage_loc', 'storage_loc_pref']],
                 'storage_loc_pref_idx' => ['columns' => ['storage_loc_pref']],
                 'sys_name_idx'         => ['columns' => ['sys_name']],
-                'date_created_idx'     => ['columns' => ['date_created', 'is_temp']],
+                'date_created_idx'     => ['columns' => ['date_created', 'is_temp', 'source_ref']],
+                'source_ref_idx'       => ['columns' => ['source_ref']],
             ],
         ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -1145,6 +1171,15 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'is_temp',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'source_ref',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'source_ref',
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([

@@ -9,7 +9,7 @@
         </div>
         <div class="comment-content">
             <div class="blurb">
-                {{ form_start(new_comment_form) }}
+                {{ form_start(new_comment_form, {attr: {'data-upload-tag': 'ticket_attachment'}}) }}
                 {{ form_rest(new_comment_form) }}
                 <div class="bucket form-widget">
                     <button type="submit">{{ phrase('portal.general.comment_btn_save') }}</button>

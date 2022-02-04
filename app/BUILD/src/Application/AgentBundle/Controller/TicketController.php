@@ -1833,7 +1833,7 @@ class TicketController extends AbstractController
                     );
                 }
 
-                $blob->setIsTemp(false);
+                $blob->setIsTemp(false)->setSourceRef('ticket_attachment.'.$ticket->getId());
 
                 $attach = new Entity\TicketAttachment();
                 $attach->setBlob($blob);
@@ -4832,7 +4832,7 @@ class TicketController extends AbstractController
                         $blob->getContentType(),
                         ['tag' => DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
                     )
-                    ->setIsTemp(false);
+                    ->setIsTemp(false)->setSourceRef('ticket_attachment.'.$ticket->getId());
 
                 $attachmentCopy
                     ->setId(null)

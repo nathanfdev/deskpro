@@ -446,6 +446,9 @@ class PortalController extends AbstractController
         if ($request->query->get('tag', '')) {
             $props['tag'] = trim($request->query->get('tag', ''));
         }
+        if (!empty($props['tag']) && empty($props['source_ref'])) {
+            $props['source_ref'] = $props['tag'];
+        }
 
         /** @var Blob $blob */
         $blob = $this->get('attachment_accepter')->accept($file, true, $props);

@@ -85,7 +85,7 @@ class NewDownload
         if ($this->attach) {
             /** @var Blob $blob */
             $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
-            $blob->setIsTemp(false);
+            $blob->setIsTemp(false)->setSourceRef('publish.download.'.$download->getId());;
             $download->setBlob($blob);
             $download->setFilename($blob->getFilename());
 
@@ -126,7 +126,7 @@ class NewDownload
         if ($this->blob_inline_ids) {
             $inlineBlobs = $this->_em->getRepository(Blob::class)->findBy(['id' => $this->blob_inline_ids]);
             foreach ($inlineBlobs as $blob) {
-                $this->_em->persist($blob->setIsTemp(false));
+                $this->_em->persist($blob->setIsTemp(false)->setSourceRef('publish.download.'.$download->getId()));
             }
         }
 

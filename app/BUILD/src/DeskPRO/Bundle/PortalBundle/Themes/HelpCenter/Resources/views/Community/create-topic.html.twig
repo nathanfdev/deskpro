@@ -16,7 +16,7 @@
                             {{  macros.lockout_notice(phrase('portal.account.community-lockout'), lockout, lockout_time) }}
                             <div class="dp-po-community-form dpx-form helpcenter-form">
                                 {{ form_errors(form) }}
-                                {{ form_start(form, {attr: {class: 'do-po-form'}}) }}
+                                {{ form_start(form, {attr: {class: 'do-po-form', 'data-upload-tag': 'community_topic'}}) }}
 
                                     {% if form.name is defined and form.email is defined %}
                                         <div class="row">

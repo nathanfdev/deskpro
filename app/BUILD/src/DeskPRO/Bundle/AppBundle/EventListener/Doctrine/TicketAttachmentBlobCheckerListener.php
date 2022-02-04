@@ -74,6 +74,7 @@ class TicketAttachmentBlobCheckerListener
                 $blob->getContentType(),
                 ['tag' => DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
             );
+            $newBlob->setIsTemp(false)->setSourceRef('ticket_attachment.'.$entity->getId());
         } catch (BlobStorageException $ex) {
             $this->logger->error(sprintf(
                 '[TicketAttachmentBlobCheckerListener] Catch the BlobStorageException: %s.',
@@ -85,9 +86,9 @@ class TicketAttachmentBlobCheckerListener
             //set old blob as original blob
             $newBlob->setOriginalBlob($blob);
             $this->em->persist($newBlob);
-            
+
             $entity->setBlob($newBlob);
-            $blob->setIsTemp(true);
+            $blob->setIsTemp(true)->setSourceRef('ticket_attachment.'.$entity->getId());
             $this->em->persist($blob);
         }
     }

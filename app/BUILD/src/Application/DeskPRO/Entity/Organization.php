@@ -563,6 +563,8 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     public function setPicture(Blob $blob = null)
     {
         $this->setModelField('picture_blob', $blob);
+        $blob->setIsTemp(false);
+        $blob->setSourceRef('org_avatar.'.$this->id);
 
         return $this;
     }
