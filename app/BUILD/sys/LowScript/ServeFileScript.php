@@ -743,10 +743,13 @@ class ServeFileScript extends LowScriptAbstract
     {
         $authcode = $blob_id.$authseg;
 
+        $skipTmpCheck = false;
         if (substr($authcode, -1) === Blob::SUFFIX_TICKET_ATTACHMENT) {
             $this->checkTicketAttachmentAccessTokenOrRedirect($authcode);
+            $skipTmpCheck = true;
         } elseif (substr($authcode, -2) === Blob::SUFFIX_DOWNLOAD_ATTACHMENT) {
             $this->checkDownloadAttachmentAccessTokenOrRedirect($authcode);
+            $skipTmpCheck = true;
         }
 
         $size = null;
@@ -754,7 +757,7 @@ class ServeFileScript extends LowScriptAbstract
             $size = $_GET['s'];
         }
 
-        $this->showBlob($blob_id, $size, $authcode);
+        $this->showBlob($blob_id, $size, $authcode, $skipTmpCheck);
     }
 
     /**
@@ -766,7 +769,7 @@ class ServeFileScript extends LowScriptAbstract
      *
      * @throws \Exception
      */
-    protected function showBlob($blob, $size = null, $blobAuth = null)
+    protected function showBlob($blob, $size = null, $blobAuth = null, $skipTmpCheck = true)
     {
         if ($this->userDoesAcceptGzip() && isset($_GET['g'])) {
             if (preg_match('#^([0-9]+)([A-Z]+0)$#', $_GET['g'], $m)) {
@@ -835,6 +838,25 @@ class ServeFileScript extends LowScriptAbstract
             echo 'File not found. (3.1)';
 
             return;
+        }
+
+        // is_temp abuse check
+        // if the file is too old then we wont render it
+        if (!$skipTmpCheck
+            && $blob['is_temp']
+            && !$blob['source_ref']
+        ) {
+            $ts = strtotime($blob['date_created']);
+            $tsCut = time() - (60 * 60 * 10); //10hrs
+            if ($ts < $tsCut) {
+                if ($this->errorMode == 'exception') {
+                    throw new \Exception('File not found. (3.2)', 404);
+                }
+                header('HTTP/1.0 404 Not Found');
+                echo 'File not found. (3.2)';
+
+                return;
+            }
         }
 
         $blobId = $blob['id'];
