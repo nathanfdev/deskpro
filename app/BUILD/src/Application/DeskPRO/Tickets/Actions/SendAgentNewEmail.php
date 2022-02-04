@@ -263,9 +263,6 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
         switch ($context->getEventType()) {
             case TicketTrigger::EVENT_TYPE_NEWTICKET:
-                if ($messages) {
-                    $lastMessage = array_shift($messages);
-                }
             case TicketTrigger::EVENT_TYPE_UPDATE:
             case TicketTrigger::EVENT_TYPE_SLAS:
             case 'system':
@@ -279,7 +276,6 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                 break;
             case TicketTrigger::EVENT_TYPE_NEWREPLY:
                 if ($messages) {
-                    $lastMessage = array_shift($messages);
                     $arguments   = [$ticket, $lastMessage];
                 } elseif ($notes) {
                     $arguments   = [$ticket];
@@ -355,7 +351,7 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
             $message = $ticketEmail->prepareMailerMessage([], false);
 
-            if (isset($lastMessage) && !empty($lastMessage->getAttachments())) {
+            if (isset($lastMessage) && is_a($lastMessage, TicketMessage::class) && !empty($lastMessage->getAttachments())) {
                 $inlineAttachments = $this->getLastMessageAttachments($ticket, $lastMessage, $context);
                 foreach ($inlineAttachments as $attachment) {
                     $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());
