@@ -2,6 +2,9 @@
 
 namespace Application\DeskPRO\People\PersonMerge\Backup;
 
+use Application\DeskPRO\CustomFields\Handler\ExternalUniqueKey;
+use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 
@@ -26,6 +29,7 @@ class PersonRestore
     /**
      * @param Person $person
      * @param array  $data
+     * @param mixed $restoreId
      *
      * @return bool
      */
@@ -165,6 +169,8 @@ class PersonRestore
             return;
         }
 
+        $this->validateCustomDataBeforeRestore($person, $data['custom_data']);
+
         $this->em->getConnection()->executeUpdate(
             'DELETE FROM custom_data_person WHERE person_id = :person_id',
             ['person_id' => $person->getId()],
@@ -183,6 +189,30 @@ class PersonRestore
                 'value'         => $customData['value'],
                 'input'         => $customData['input'],
             ]);
+        }
+    }
+
+    protected function validateCustomDataBeforeRestore(Person $person, $data)
+    {
+        $customDefRepository  = $this->em->getRepository(CustomDefPerson::class);
+        $customDataRepository = $this->em->getRepository(CustomDataPerson::class);
+        foreach ($data as $customDataToValidate) {
+            $customDef = $customDefRepository->find($customDataToValidate['root_field_id']);
+            if ($customDef->getHandler() instanceof ExternalUniqueKey) {
+                $customPersonData = $customDataRepository->findOneBy([
+                    'input'      => $customDataToValidate['input'],
+                    'root_field' => $customDataToValidate['root_field_id'],
+                ]);
+                if ($customPersonData && $customPersonData->getPerson()->getId() !== $person->getId()) {
+                    throw new \RuntimeException(
+                        sprintf(
+                            'Can\'t perform undo merge - duplicate custom external unique key [%s] for custom field [%d]',
+                            $customDataToValidate['input'],
+                            $customDataToValidate['root_field_id']
+                        )
+                    );
+                }
+            }
         }
     }
 
