@@ -101,7 +101,7 @@ class TmpDir
 
         $this->isInit = true;
 
-        @mkdir($this->path, 0700, true);
+        @mkdir($this->path, 0770, true);
         if (!is_dir($this->path)) {
             $last = error_get_last();
             $message = !empty($last['message']) ? $last['message'] : 'unknown';
