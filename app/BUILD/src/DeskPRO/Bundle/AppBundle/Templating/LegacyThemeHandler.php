@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Filesystem\TmpDir;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
@@ -70,7 +71,7 @@ class LegacyThemeHandler
         $tmpDir = TmpDir::makeTmpDir();
 
         $templatesDir = $tmpDir.DIRECTORY_SEPARATOR.'deskpro-templates';
-        if (!is_dir($templatesDir) && !mkdir($templatesDir, 0600, true)) {
+        if (!is_dir($templatesDir) && !mkdir($templatesDir, 0770, true)) {
             throw new \RuntimeException('Unable to make the templates dir');
         }
 
@@ -89,21 +90,22 @@ class LegacyThemeHandler
             $brandId  = $template->getThemeSet()->getBrand()->getId();
             $brandDir = $templatesDir.DIRECTORY_SEPARATOR.'brand_'.$brandId;
 
-            if (!is_dir($brandDir) && !mkdir($brandDir, 0777, true)) {
+            SafeFile::assertValid($brandDir, $tmpDir);
+
+            if (!is_dir($brandDir) && !mkdir($brandDir, 0770, true)) {
                 throw new \RuntimeException('Unable to make the brand dir');
             }
 
             $name = $brandDir.DIRECTORY_SEPARATOR.$baseName;
+            SafeFile::assertValid($name, $tmpDir);
 
-           $fileWritten = file_put_contents($name, $template->getTemplateCode());
-
-           if($fileWritten === '0'){
-               $this->logger->error(sprintf('Template %s is empty', $template->getName()));
-           }
-
-           if(false === $fileWritten) {
-              throw new \RuntimeException('Unable to write template');
-           }
+            $fileWritten = file_put_contents($name, $template->getTemplateCode());
+            if ($fileWritten === 0) {
+                $this->logger->error(sprintf('Template %s is empty', $template->getName()));
+            }
+            if (false === $fileWritten) {
+                throw new \RuntimeException('Unable to write template');
+            }
         }
 
         // write to archive
