@@ -345,7 +345,7 @@ class DeskproBlobStorage implements Loggable
         // therefore: force db storage for these source-less blobs.
         if (isset($blob_array['is_temp'])
             && $blob_array['is_temp']
-            && !empty($blob_array['source_ref'])
+            && empty($blob_array['source_ref'])
         ) {
             return ['db' => $this->adapters['db']];
         }

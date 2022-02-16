@@ -547,6 +547,7 @@ class PersonController extends AbstractController
                         $this->container->getBlobStorage()->deleteBlobRecord($blobCurr);
                     }
                     $person->setPictureBlob($blob);
+                    $this->em->persist($blob);
                     $this->em->persist($person);
                 }
 
@@ -1280,7 +1281,7 @@ class PersonController extends AbstractController
 
             $file['agent']  = $this->person;
             $file['person'] = $person;
-            $file['blob']   = $blob->setIsTemp(false)->setSourceRef('publish.download.'.$person->getId());;
+            $file['blob']   = $blob->setIsTemp(false)->setSourceRef('publish.download.'.$person->getId());
         }
 
         $file['note'] = $note_txt;

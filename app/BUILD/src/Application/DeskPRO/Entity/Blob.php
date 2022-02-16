@@ -884,11 +884,13 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param string|null $source_ref
+     *
      * @return Blob
      */
     public function setSourceRef($source_ref)
     {
-        $this->source_ref = $source_ref;
+        $this->setModelField('source_ref', $source_ref);
+
         return $this;
     }
 
