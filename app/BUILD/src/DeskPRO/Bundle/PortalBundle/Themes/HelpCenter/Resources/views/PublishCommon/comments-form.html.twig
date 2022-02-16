@@ -14,7 +14,7 @@
                 {{ hc_avatar(app.user, '', 60) }}
                 <strong>{{ app.user.display_name }}</strong>
             </div>
-            {{ form_start(new_comment_form, { attr: { class: 'dp-po-form', id: 'helpcenter-comment-form' } }) }}
+            {{ form_start(new_comment_form, { attr: { class: 'dp-po-form', id: 'helpcenter-comment-form', 'data-upload-tag': 'comment' } }) }}
                 <div class="form-group">
                     <label for="comment_content_real">{{ phrase('helpcenter.general.your_comment_label') }} *</label>
                     {{ form_widget(new_comment_form.content_real, { attr: { class: 'form-control' }}) }}

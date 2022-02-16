@@ -120,7 +120,7 @@ class NewCommunityTopic
             $attachBlobs = $this->em->getRepository(Blob::class)->findBy(['id' => $this->attach_ids]);
             foreach ($attachBlobs as $blob) {
                 $attach = new CommunityTopicAttachment();
-                $attach->setPerson($communityTopic->getPerson())->setTopic($communityTopic)->setBlob($blob->setIsTemp(false));
+                $attach->setPerson($communityTopic->getPerson())->setTopic($communityTopic)->setBlob($blob->setIsTemp(false)->setSourceRef('community_topic.'.$communityTopic->getId()));
                 $communityTopic->addAttachment($attach);
                 $this->em->persist($attach);
                 $this->em->persist($blob);
@@ -130,7 +130,7 @@ class NewCommunityTopic
         if ($this->blob_inline_ids) {
             $inlineBlobs = $this->em->getRepository(Blob::class)->findBy(['id' => $this->blob_inline_ids]);
             foreach ($inlineBlobs as $blob) {
-                $this->em->persist($blob->setIsTemp(false));
+                $this->em->persist($blob->setIsTemp(false)->setSourceRef('community_topic.'.$communityTopic->getId()));
             }
         }
 

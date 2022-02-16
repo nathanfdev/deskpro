@@ -74,6 +74,7 @@ class DownloadAttachmentBlobCheckerListener
                 $blob->getContentType(),
                 ['tag' => DeskproBlobStorage::TAG_DOWNLOAD_ATTACHMENT]
             );
+            $newBlob->setIsTemp(false)->setSourceRef('publish.download.'.$entity->getId());
         } catch (BlobStorageException $ex) {
             $this->logger->error(sprintf(
                 '[DownloadAttachmentBlobCheckerListener] Catch the BlobStorageException: %s.',
@@ -83,7 +84,7 @@ class DownloadAttachmentBlobCheckerListener
 
         if ($newBlob) {
             $entity->setBlob($newBlob);
-            $blob->setIsTemp(true);
+            $blob->setIsTemp(true)->setSourceRef('publish.download.'.$entity->getId());
             $this->em->persist($blob);
         }
     }

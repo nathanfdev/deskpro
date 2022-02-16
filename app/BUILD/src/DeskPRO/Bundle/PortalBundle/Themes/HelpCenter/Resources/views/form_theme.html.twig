@@ -503,7 +503,7 @@
         <ul>
             {{- block('form_rows') -}}
         </ul>
-        <div class="dp-po-form-upload-wrap helpcenter-file-upload" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="/dpblob">
+        <div class="dp-po-form-upload-wrap helpcenter-file-upload" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="/dpblob?tag=community_topic">
             {%- if form.parent is empty -%}
                 {{ form_errors(form) }}
             {%- endif -%}

@@ -138,7 +138,7 @@ class SettingsProfile
                 }
 
                 $person->setPictureBlob($blob);
-                $this->em->persist($blob->setIsTemp(false));
+                $this->em->persist($blob->setIsTemp(false)->setSourceRef('person_avatar.'.$person->getId()));
             }
         }
 

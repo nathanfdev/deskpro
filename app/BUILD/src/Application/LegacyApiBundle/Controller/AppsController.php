@@ -89,6 +89,7 @@ class AppsController extends AbstractController
                     if ($p['tags'] && in_array($t, $p['tags'])) {
                         $has = true;
                         $package_ids[$p['name']] = true;
+
                         break;
                     }
                 }
@@ -153,7 +154,6 @@ class AppsController extends AbstractController
                     'image/png'
                 );
 
-                $iconBlob->setIsTemp(true);
                 $this->em->persist($iconBlob);
                 $this->em->flush();
             } elseif ($app) {
@@ -1051,6 +1051,7 @@ class AppsController extends AbstractController
         /** @var JIRA $js */
         $js   = $this->get(JIRA::NAME);
         $meta = null;
+
         try {
             $meta = $js->getMeta();
         } catch (\Exception $e) {

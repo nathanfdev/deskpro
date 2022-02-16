@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\Entity;
 
@@ -142,6 +138,12 @@ class TicketAttachment extends DomainObject
     public function setBlob(Blob $blob = null)
     {
         $this->setModelField('blob', $blob);
+        if ($blob) {
+            $blob->setIsTemp(false);
+            if ($this->ticket) {
+                $blob->setSourceRef('ticket_attachment.'.$this->ticket->getId());
+            }
+        }
 
         return $this;
     }

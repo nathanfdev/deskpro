@@ -42,10 +42,11 @@ class AttachmentHelper
     /**
      * @param string $content
      * @param array  $blobIds
+     * @param mixed $sourceRef
      *
      * @return Blob[]
      */
-    public function processInlineBlobs($content, $blobIds = [])
+    public function processInlineBlobs($content, $blobIds = [], $sourceRef = '')
     {
         $allBlobs = [];
 
@@ -61,7 +62,11 @@ class AttachmentHelper
         // these we found via html
         $inlineBlobsInMessage = $blobRepository->getByAuthCodes($blobAuthcodes) ?: [];
         foreach ($inlineBlobsInMessage as $blob) {
-            $this->em->persist($blob->setIsTemp(false));
+            $blob->setIsTemp(false);
+            if ($sourceRef) {
+                $blob->setSourceRef($sourceRef);
+            }
+            $this->em->persist($blob);
             $allBlobs[$blob->getId()] = $blob;
         }
 
@@ -71,7 +76,11 @@ class AttachmentHelper
             foreach ($inlineBlobs as $blob) {
                 /** @var Blob $blob */
                 if (StringUtils::ensureAttachment($blob, $content)) {
-                    $this->em->persist($blob->setIsTemp(false));
+                    $blob->setIsTemp(false);
+                    if ($sourceRef) {
+                        $blob->setSourceRef($sourceRef);
+                    }
+                    $this->em->persist($blob);
                     $allBlobs[$blob->getId()] = $blob;
                 }
             }
@@ -85,15 +94,22 @@ class AttachmentHelper
      */
     public function verifyBlobs($entity)
     {
-        $content = null;
+        $content   = null;
+        $sourceRef = '';
         if ($entity instanceof TicketMessage) {
             $content = $entity->getMessageHtml();
+            $ticket  = $entity->getTicket();
+            if ($ticket) {
+                $sourceRef = 'ticket_attachment.'.$ticket->getId();
+            } else {
+                $sourceRef = 'ticket_attachment';
+            }
         } elseif ($entity instanceof ContentAbstract) {
             $content = $entity->getContentHtml();
         }
 
         if ($content) {
-            $this->processInlineBlobs($content);
+            $this->processInlineBlobs($content, [], $sourceRef);
         }
     }
 }

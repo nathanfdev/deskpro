@@ -670,7 +670,7 @@ class UserChatController extends AbstractController
 
         /** @var $chatManager \Application\DeskPRO\Chat\UserChat\UserChatManager */
         $chatManager = $this->container->getSystemObject('user_chat_manager', ['session' => $this->session->getEntity()]);
-        $blob->setIsTemp(false);
+        $blob->setIsTemp(false)->setSourceRef('chat.'.$convo->getId());
         $chatManager->addMessage(
             $convo,
             $this->person,

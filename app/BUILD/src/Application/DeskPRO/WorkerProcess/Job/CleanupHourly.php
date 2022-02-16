@@ -99,16 +99,15 @@ class CleanupHourly extends AbstractJob
 
     private function _cleanupTempAttachments()
     {
-        // this is temporary return until we will find why blobs are still is_temp = 1
+        $datetime = date('Y-m-d H:i:s', strtotime('-3 hours'));
 
-        return;
-
-        $datetime = date('Y-m-d H:i:s', strtotime('-6 hours'));
-
+        // we can only clean up is_temp blobs with a source_ref set
+        // is_temp without a source_ref means it was uploaded via a buggy
+        // input and we cant reliably clean it up because we cant know if its in-use
         $blob_ids = App::getDb()->fetchAllCol('
             SELECT id
             FROM blobs
-            WHERE is_temp = 1 AND date_created < ?
+            WHERE is_temp = 1 AND date_created < ? AND source_ref IS NOT NULL
             LIMIT 1000
         ', [$datetime]);
 

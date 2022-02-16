@@ -22,6 +22,12 @@ export default class DropZone extends AbstractFileUpload {
     const overlayNode = getDropZoneNode ? getDropZoneNode() : this.node;
 
     const $input = $(this.getInput());
+    const $form = $input.closest('form');
+    const fileTag = $form.attr('data-upload-tag') || '';
+    if (fileTag && !uploadParams.tag) {
+      uploadParams.tag = fileTag;
+    }
+
     $input.fileupload({
       fileInput:   $input,
       url:         uploadUrl,

@@ -48,7 +48,7 @@
 
                                 <div class="collapse {% if mode == 'account' %}show{% endif %}" id="account" aria-labelledby="account_heading" data-parent="#profile_accordion">
                                     <section class="dp-po-account-form">
-                                        {{ form_start(profile_form, { attr: { class: 'do-po-form helpcenter-form' } }) }}
+                                        {{ form_start(profile_form, { attr: { class: 'do-po-form helpcenter-form', 'data-upload-tag': 'person_avatar' } }) }}
                                         {{ form_errors(profile_form) }}
                                         {{ form_row(profile_form.name) }}
                                         {% if app.getSetting('portal.members_community') %}

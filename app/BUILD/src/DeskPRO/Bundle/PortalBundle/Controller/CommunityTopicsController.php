@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
@@ -223,6 +224,15 @@ class CommunityTopicsController extends AbstractPublishController
             $this->addFlash('success', $this->phrase(['portal.flashes.new_community_topic_awaiting_review', 'helpcenter.flashes.new_community_topic_awaiting_review']));
             $destination = $this->generateUrl('portal_community');
         }
+
+        $sourceRef = "community_topic.".$newCommunityTopic->getId();
+        foreach ($newCommunityTopic->getAttachments() as $attachment) {
+            /** @var Blob $blob */
+            $blob = $attachment->getBlob();
+            $blob->setSourceRef($sourceRef)->setIsTemp(false);
+            $this->getEm()->persist($blob);
+        }
+        $this->getEm()->flush();
 
         $notify = new NewCommunityTopicNotification($newCommunityTopic);
         $notify->send();

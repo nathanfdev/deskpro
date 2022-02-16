@@ -352,7 +352,7 @@ class NewsController extends AbstractController
         $this->em->persist($news);
 
         foreach ($news->getAttachments() as $attachment) {
-            $this->em->persist($attachment->getBlob()->setIsTemp(true));
+            $this->em->persist($attachment->getBlob());
         }
 
         if ($rev) {

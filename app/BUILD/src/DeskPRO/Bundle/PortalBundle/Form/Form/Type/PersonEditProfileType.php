@@ -158,7 +158,7 @@ class PersonEditProfileType extends AbstractType
                     $blobStorage->deleteBlobRecord($person->getPictureBlob());
                 }
                 $person->setPictureBlob($file);
-                $file->setIsTemp(false);
+                $file->setIsTemp(false)->setSourceRef('person_avatar.'.$person->getId());
                 $em->persist($file);
 
                 $form->remove('upload_picture');

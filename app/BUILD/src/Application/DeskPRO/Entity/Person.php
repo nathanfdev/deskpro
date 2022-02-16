@@ -3169,6 +3169,10 @@ class Person extends DomainObject implements
     public function setPictureBlob(Blob $blob = null)
     {
         $this->setModelField('picture_blob', $blob);
+        if ($blob) {
+            $blob->setIsTemp(false);
+            $blob->setSourceRef('person_avatar.'.$this->id);
+        }
 
         return $this;
     }
