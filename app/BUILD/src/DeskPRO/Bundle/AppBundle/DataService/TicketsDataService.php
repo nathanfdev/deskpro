@@ -1,16 +1,16 @@
 <?php
 
-
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -192,6 +192,33 @@ class TicketsDataService extends AbstractDataService
                         $qb->addOrderBy('date_activity', $filter->getSortDirection());
 
                         break;
+                    default:
+                        if (strpos($filter->getSort(), 'ticket_field') === 0) {
+                            if (preg_match('/(\d+)$/', $filter->getSort(), $matches)) {
+                                $termId = $matches[1];
+                                $field = $em->getRepository(CustomDefTicket::class)->find($termId);
+                                if ($field) {
+                                    $searchType = $field->getHandler()->getSearchType();
+
+                                    switch ($searchType) {
+                                        case 'input':
+                                        case 'value':
+                                            $qb->leftJoin('t.custom_data', 'cd', Join::WITH, 'cd.root_field = :root_field');
+                                            $qb->setParameter('root_field', $termId);
+                                            $qb->orderBy('cd.'.$searchType, $filter->getSortDirection());
+
+                                            break;
+                                        case 'id':
+                                            $qb->leftJoin('t.custom_data', 'cd', Join::WITH, 'cd.root_field = :root_field');
+                                            $qb->setParameter('root_field', $termId);
+                                            $qb->leftJoin('cd.field', 'f');
+                                            $qb->orderBy('f.title', $filter->getSortDirection());
+
+                                            break;
+                                    }
+                                }
+                            }
+                        }
                 }
 
                 $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
