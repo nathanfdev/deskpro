@@ -58,6 +58,10 @@ $page-bg: #F7F7F7;
 /// @type font
 $font-family-sans-serif: Lato, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
+  /// @group fonts
+/// @type font
+$font-family-heading: Rubik, sans-serif;
+
 /// @group fonts
 /// @type font
 $font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -71,6 +75,7 @@ $text-color: #4C4F50;
 $text-color-lighter: #8B9293;
 
 $font-family-sans-serif: Lato, "Helvetica Neue", Arial, Helvetica, sans-serif !default;
+$font-family-heading: Rubik, sans-serif;
 $font-family-serif: Georgia, "Times New Roman", Times, serif !default;
 $font-family-monospace: Menlo, Monaco, Consolas, "Courier New", monospace !default;
 $font-family-base: $font-family-sans-serif !default;
