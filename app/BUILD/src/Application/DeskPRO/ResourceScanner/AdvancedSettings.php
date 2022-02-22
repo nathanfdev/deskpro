@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\ResourceScanner;
 
 /**
@@ -167,6 +165,7 @@ class AdvancedSettings extends SettingFiles
             'portal.tickets_auto_refresh',
             'portal.tickets_disable_custom_columns',
             'portal.tickets_hide_ref_field',
+            'portal.tickets_disable_google_fonts',
             'rdns_ticket_messages',
             'services.language_sync_api',
             'user.community_subscriptions',
