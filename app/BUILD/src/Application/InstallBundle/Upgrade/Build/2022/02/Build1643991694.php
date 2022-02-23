@@ -9,7 +9,7 @@ class Build1643991694 extends AbstractBuild implements BlockingBuildInterface, S
 
     public function runAlters()
     {
-        $this->execSlowAlterTable('default', "
+        $this->execDbQuery("default", "
             ALTER TABLE `blobs`
             ADD COLUMN `source_ref` varchar(255) NULL,
             DROP INDEX `date_created_idx`,
