@@ -13,7 +13,7 @@ class Build1643991694 extends AbstractBuild implements BlockingBuildInterface, S
             ALTER TABLE `blobs`
             ADD COLUMN `source_ref` varchar(255) NULL,
             DROP INDEX `date_created_idx`,
-            ADD INDEX `date_created_idx` (`date_created`,`is_temp`,`source_ref`) USING BTREE
+            ADD INDEX `date_created_idx` (`date_created`,`is_temp`,`source_ref`)
         ");
     }
 
