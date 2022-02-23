@@ -1014,7 +1014,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
                 'storage_loc_pref_idx' => ['columns' => ['storage_loc_pref']],
                 'sys_name_idx'         => ['columns' => ['sys_name']],
                 'date_created_idx'     => ['columns' => ['date_created', 'is_temp', 'source_ref']],
-                'source_ref_idx'       => ['columns' => ['source_ref']],
             ],
         ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

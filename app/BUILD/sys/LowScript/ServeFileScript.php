@@ -743,13 +743,10 @@ class ServeFileScript extends LowScriptAbstract
     {
         $authcode = $blob_id.$authseg;
 
-        $skipTmpCheck = false;
         if (substr($authcode, -1) === Blob::SUFFIX_TICKET_ATTACHMENT) {
             $this->checkTicketAttachmentAccessTokenOrRedirect($authcode);
-            $skipTmpCheck = true;
         } elseif (substr($authcode, -2) === Blob::SUFFIX_DOWNLOAD_ATTACHMENT) {
             $this->checkDownloadAttachmentAccessTokenOrRedirect($authcode);
-            $skipTmpCheck = true;
         }
 
         $size = null;
@@ -757,7 +754,7 @@ class ServeFileScript extends LowScriptAbstract
             $size = $_GET['s'];
         }
 
-        $this->showBlob($blob_id, $size, $authcode, $skipTmpCheck);
+        $this->showBlob($blob_id, $size, $authcode, false);
     }
 
     /**
