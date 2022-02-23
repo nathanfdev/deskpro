@@ -3,6 +3,8 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\Handler\ExternalUniqueKey;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -240,7 +242,25 @@ class PersonController extends AbstractController
             }
         }
 
-        if ($errors) {
+        $field_manager      = $this->container->getSystemService('person_fields_manager');
+        $post_custom_fields = $this->getCustomFieldInput();
+
+        $invalid_custom_fields = [];
+        foreach ($field_manager->getDefinedFields() as $field) {
+            $handler     = $field->getHandler();
+            if ($handler instanceof ExternalUniqueKey) {
+                $fieldErrors = $handler->validateFormData($post_custom_fields, HandlerAbstract::CONTEXT_AGENT);
+                foreach ($fieldErrors as $code) {
+                    $invalid_custom_fields['field_'.$field->getId()] = preg_replace('#^(.*?)\.#', '', $code);
+                }
+            }
+        }
+
+        if ($errors || $invalid_custom_fields) {
+            if ($invalid_custom_fields) {
+                $errors = array_merge($invalid_custom_fields);
+            }
+
             return $this->createApiMultipleErrorResponse($errors);
         }
 
@@ -254,8 +274,6 @@ class PersonController extends AbstractController
             $this->em->persist($person);
             $this->em->flush();
 
-            $field_manager      = $this->container->getSystemService('person_fields_manager');
-            $post_custom_fields = $this->getCustomFieldInput();
             if (!empty($post_custom_fields)) {
                 $field_manager->saveFormToObject($post_custom_fields, $person, true);
                 $this->em->flush();

@@ -107,7 +107,7 @@ class ReplyAction extends AbstractReplyAction
                     $attach['blob']   = $blob;
                     $attach['person'] = $this->person_context;
 
-                    $blob->setIsTemp(false);
+                    $blob->setIsTemp(false)->setSourceRef('ticket_attachment.'.$ticket->getId());;
                     App::getOrm()->persist($blob);
 
                     $message->addAttachment($attach);

@@ -136,7 +136,7 @@ class SettingsController extends AbstractController
             $blob = $this->em->getRepository(Entity\Blob::class)->getByAuthId($blob_id);
             if ($blob) {
                 $this->person->picture_blob = $blob;
-                $this->em->persist($blob->setIsTemp(false));
+                $this->em->persist($blob->setIsTemp(false)->setSourceRef('person.'.$this->person->getId()));
             }
         }
 
@@ -189,7 +189,7 @@ class SettingsController extends AbstractController
                 $blob = App::getEntityRepository(Entity\Blob::class)->find($blob_id);
                 if ($blob) {
                     if (StringUtils::ensureAttachment($blob, $signature_html)) {
-                        $this->em->persist($blob->setIsTemp(false));
+                        $this->em->persist($blob->setIsTemp(false)->setSourceRef('person.signature.'.$this->person->getId()));
                     }
                     $regex          = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
                     $replace        = $blob->getEmbedCode(true, 'signature_image');

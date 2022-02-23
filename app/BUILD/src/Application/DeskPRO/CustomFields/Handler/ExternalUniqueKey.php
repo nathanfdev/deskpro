@@ -80,12 +80,7 @@ class ExternalUniqueKey extends HandlerAbstract
         ]);
 
         if ($errors->count() > 0) {
-            $errorCodes = [];
-            foreach ($errors as $error) {
-                $errorCodes[] = $error->getCode();
-            }
-
-            return $this->makeErrorArray($errorCodes);
+            return $this->makeErrorArray($this->transformErrorCodes($errors));
         }
 
         return [];

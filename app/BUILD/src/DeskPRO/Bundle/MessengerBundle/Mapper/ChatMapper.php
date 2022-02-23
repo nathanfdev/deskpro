@@ -116,6 +116,7 @@ class ChatMapper
             throw new MessengerApiException('Wrong blob id!');
         }
         $blob->setIsTemp(false);
+        $blob->setSourceRef('chat.'.$chat->getId());
 
         if (isset($data['blob']) && !is_array($data['blob'])) {
             $errors['blob'] = 'Blob should be an array';

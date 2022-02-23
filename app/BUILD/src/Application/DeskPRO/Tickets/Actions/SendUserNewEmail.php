@@ -198,7 +198,7 @@ class SendUserNewEmail extends AbstractEmailAction
             $messagesArgs['language'] = $ticket->getRealLanguage();
         }
 
-        if (isset($lastMessage) && !empty($lastMessage->getAttachments())) {
+        if (isset($lastMessage) && is_a($lastMessage, TicketMessage::class) && !empty($lastMessage->getAttachments())) {
             $inlineAttachments = $this->getLastMessageAttachments($ticket, $lastMessage, $context, $isAuto);
             foreach ($inlineAttachments as $attachment) {
                 $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());

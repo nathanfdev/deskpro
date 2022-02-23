@@ -157,7 +157,7 @@ class ContentTemplatesController extends CrudController
                 $attach = new ContentTemplateAttachment();
                 $attach
                     ->setPerson($this->getUser())
-                    ->setBlob($blob->setIsTemp(false));
+                    ->setBlob($blob->setIsTemp(false)->setSourceRef('content_template.'.$contentTemplate->getId()));
                 $em->persist($attach);
                 $contentTemplate->addAttachment($attach);
             }

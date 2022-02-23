@@ -32,7 +32,7 @@
                     </ul>
                 </div>
                 {% endif %}
-                {{ form_start(form, { attr: { class: 'dp-po-form', id: 'ticket-reply-form'} }) }}
+                {{ form_start(form, { attr: { class: 'dp-po-form', id: 'ticket-reply-form', 'data-upload-tag': 'ticket_attachment'} }) }}
                     {% if form_errors|length > 0 %}
                         <div class="column-full">
                             <div class="bucket">

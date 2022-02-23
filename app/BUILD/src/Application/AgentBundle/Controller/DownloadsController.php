@@ -251,7 +251,7 @@ class DownloadsController extends AbstractController
                     $title = $this->in->getString('download.title') ?: $title = $blob->getFilename();
                     $download->setBlob($blob)->setTitle($title);
                     /* @var Blob $blob */
-                    $blob->setIsTemp(false)->setFilename($title);
+                    $blob->setIsTemp(false)->setFilename($title)->setSourceRef('publish.download.'.$download->getId());
                     $this->em->persist($blob);
 
                     $rev['title'] = $title;

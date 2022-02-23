@@ -191,7 +191,7 @@ class ThemeSetCopyingService
 
         // the old blob was changed and overwritten, mark it as temp to remove by a clean job later
         if ($oldBlob && $clonedAsset->getBlob() !== $oldBlob) {
-            $blob->setIsTemp(true);
+            $blob->setIsTemp(true)->setSourceRef('old_theme_set_asset');
             $this->em->persist($oldBlob);
         }
 

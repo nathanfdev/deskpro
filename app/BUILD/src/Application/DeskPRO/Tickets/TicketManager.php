@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -119,6 +117,7 @@ class TicketManager
             $container->getTicketDepartments(),
             $container->get('brand_form_helper')
         );
+        $this->post_save_actions[] = new TicketSaveActions\AssignSourceRefToBlobs($this->em);
         $this->post_save_actions[] = new TicketSaveActions\SetActionTimes();
         $this->post_save_actions[] = new TicketSaveActions\ApplySlas(
             $this->em->getRepository(Sla::class)->getAutoSlas(),
