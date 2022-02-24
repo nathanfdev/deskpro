@@ -638,7 +638,8 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 
       this.rte = window.LegacyRteTextarea.init($('.edit-content-field', this.getEl('content_ed')), {
         height: h,
-        inlineHiddenPosition: $('.content-tab-item', this.wrapper)
+        inlineHiddenPosition: $('.content-tab-item', this.wrapper),
+        sourceRef:            'community_topic.inline_image'
 			});
 
       this.rte.on('froalaEditor.keypress', function () {

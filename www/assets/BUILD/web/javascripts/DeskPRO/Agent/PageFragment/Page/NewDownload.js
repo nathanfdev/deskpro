@@ -292,7 +292,8 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
     this.rte = window.LegacyRteTextarea.init(txt, {
 			height: 250,
       inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
-      formname:							'newdownload'
+      formname:							'newdownload',
+      sourceRef:            'new_download.inline_image'
 		});
 
     this.rte.on('froalaEditor.keypress', function () {

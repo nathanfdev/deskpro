@@ -327,7 +327,8 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
     this.rte = window.LegacyRteTextarea.init(txt, {
 			height: Math.max(h - 500, 200),
       inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
-      formname:							'newnews'
+      formname:							'newnews',
+      sourceRef:            'new_news_post.inline_image'
 		});
 
     this.rte.on('froalaEditor.keypress', function () {

@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -87,6 +88,14 @@ class AcceptAttachmentType extends AbstractType
             ]);
         }
 
+        if ($options['with_source_ref']) {
+            $builder->add('source_ref', TextType::class, [
+                'mapped'            => false,
+                'required'          => false,
+                'label'             => false,
+            ]);
+        }
+
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
@@ -97,11 +106,12 @@ class AcceptAttachmentType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'   => Blob::class,
-                'field_name'   => 'file',
-                'required'     => false,
-                'with_context' => false,
-                'with_tag'     => false,
+                'data_class'      => Blob::class,
+                'field_name'      => 'file',
+                'required'        => false,
+                'with_context'    => false,
+                'with_tag'        => false,
+                'with_source_ref' => false,
             ])
             ->setRequired(['upload_context'])
             ->setAllowedValues('upload_context', ['agent', 'user'])
@@ -141,6 +151,9 @@ class AcceptAttachmentType extends AbstractType
                 if ($options['with_tag'] && isset($data['tag'])) {
                     $this->fillTagProps($props, $data['tag']);
                 }
+                if ($options['with_source_ref'] && isset($data['source_ref'])) {
+                    $this->fillSourceRefProps($props, $data['source_ref']);
+                }
                 $form->setData($this->acceptAttachment->accept($file, true, $props));
             }
         }
@@ -174,6 +187,17 @@ class AcceptAttachmentType extends AbstractType
     {
         if ($tagFormData) {
             $props['tag'] = $tagFormData;
+        }
+    }
+
+    /**
+     * @param array  $props
+     * @param string $tagFormData `tag` form field value
+     */
+    protected function fillSourceRefProps(&$props, $tagFormData)
+    {
+        if ($tagFormData) {
+            $props['source_ref'] = $tagFormData;
         }
     }
 }

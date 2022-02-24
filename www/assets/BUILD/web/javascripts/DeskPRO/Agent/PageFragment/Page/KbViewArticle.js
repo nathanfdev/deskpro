@@ -988,7 +988,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
     }
 
 		DeskPRO_Window.util.fileupload(this.getEl('content_ed').find('.article-editor'), {
-			url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=article&object_id=' + this.meta.article_id,
+			url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=article&tag=article.attachments&object_id=' + this.meta.article_id,
 			page: this
 		});
 
@@ -1203,7 +1203,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			} else {
 				this.rte = window.LegacyRteTextarea.init(txt, {
 					height: h,
-				  inlineHiddenPosition: $('.content-tab-item', this.wrapper)
+					inlineHiddenPosition: $('.content-tab-item', this.wrapper),
+					sourceRef: 'article.inline_image'
 				});
 
         this.rte.on('froalaEditor.keypress', function () {

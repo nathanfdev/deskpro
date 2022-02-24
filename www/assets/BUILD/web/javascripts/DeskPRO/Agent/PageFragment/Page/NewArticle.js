@@ -425,7 +425,8 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
       self.rte = window.LegacyRteTextarea.init(txt, {
 				height: 							Math.max(h - 500, 200),
 				inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
-				formname:							'newarticle'
+				formname:							'newarticle',
+				sourceRef:						'new_article.inline_image'
 			});
 
       self.rte.on('froalaEditor.keypress', function () {
