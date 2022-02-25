@@ -2,7 +2,6 @@ Orb.createNamespace('DeskPRO.Agent.PageHelper');
 
 DeskPRO.Agent.PageHelper.CustomFieldUpload = new Orb.Class({
   initialize: function (page) {
-    console.log('CustomFieldUpload initialize');
     this.page = page;
     this.updateVisibility();
   },
