@@ -635,7 +635,8 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
       this.rte = window.LegacyRteTextarea.init(txt, {
         height: h,
-        inlineHiddenPosition: $('.content-tab-item', this.wrapper)
+        inlineHiddenPosition: $('.content-tab-item', this.wrapper),
+        sourceRef:            'download.inline_image'
 			});
 
       this.rte.on('froalaEditor.keypress', function () {

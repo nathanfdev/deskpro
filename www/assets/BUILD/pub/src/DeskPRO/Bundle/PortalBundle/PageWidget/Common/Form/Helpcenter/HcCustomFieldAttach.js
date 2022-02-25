@@ -46,6 +46,9 @@ export default class HcCustomFieldAttach extends PageWidget {
       widgetOptions: this.options,
       customField:   true,
       uploadUrl:     `dpblob/${restrictionSet}`,
+      extraParams:   {
+        tag: 'ticket.custom_field_file'
+      },
       files,
       $input,
       inputName,

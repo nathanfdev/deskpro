@@ -59,7 +59,7 @@ class RteTextarea {
       },
       imageUploadMethod: 'POST',
       imageUploadParams: { _rt: window.DP_REQUEST_TOKEN, json: true },
-      imageUploadURL:    `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
+      imageUploadURL:    `${BASE_URL}agent/misc/accept-redactor-image-upload?source_ref=${localOptions.sourceRef ? localOptions.sourceRef : 'content.inline_image'}`, // eslint-disable-line no-undef
       imageEditButtons:  ['imageReplace', 'imageAlign', 'imageVAlign', 'imageCaption', 'imageRemove', '|', 'imageLink', 'linkOpen', 'linkEdit', 'linkRemove', '-', 'imageDisplay', 'imageStyle', 'imageAlt', 'imageSize'],
       imageDefaultWidth: 0,
     };

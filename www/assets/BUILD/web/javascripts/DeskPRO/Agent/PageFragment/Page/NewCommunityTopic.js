@@ -286,7 +286,8 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
     this.rte = window.LegacyRteTextarea.init(txt, {
 			height: Math.max(h - contentHeight, 150),
       inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
-      formname:							'newcommunitytopic'
+      formname:							'newcommunitytopic',
+      sourceRef:            'new_community_topic.inline_image'
 		});
 
     this.rte.on('froalaEditor.keypress', function () {

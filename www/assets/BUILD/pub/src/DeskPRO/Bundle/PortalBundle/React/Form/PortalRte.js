@@ -131,7 +131,7 @@ export default class PortalRte extends React.Component {
     const ownerDocument = $textarea.context.ownerDocument;
     const contentWindow = ownerDocument.defaultView;
 
-    const params = {};
+    const params = { source_ref: 'portal.inline_image' };
     if (window.dp_get_csrf_token) {
       params['file[_dp_csrf_token]'] = window.dp_get_csrf_token();
     }

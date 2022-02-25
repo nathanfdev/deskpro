@@ -17,7 +17,6 @@ use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Filesystem\TmpDir;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Orb\Data\ContentTypes;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -50,10 +49,11 @@ class BlobsController extends CrudController
     public function postTempAction(Request $request)
     {
         $form = $this->createForm(AcceptAttachmentType::class, null, [
-            'upload_context' => 'agent',
-            'required'       => true,
-            'with_context'   => true,
-            'with_tag'       => true,
+            'upload_context'  => 'agent',
+            'required'        => true,
+            'with_context'    => true,
+            'with_tag'        => true,
+            'with_source_ref' => true,
         ]);
         $form->submit($this->getRequestData($request));
 
@@ -82,8 +82,8 @@ class BlobsController extends CrudController
             }
 
             $dataValue = DataUri::decode($dataUri);
-            $filename = $request->request->get('name') ?: 'file';
-            $mimeType = $dataValue->mediaType ?: 'application/octet-stream';
+            $filename  = $request->request->get('name') ?: 'file';
+            $mimeType  = $dataValue->mediaType ?: 'application/octet-stream';
 
             $blob = $this->get('blob.storage')->createBlobRecordFromString(
                 $dataValue->data,

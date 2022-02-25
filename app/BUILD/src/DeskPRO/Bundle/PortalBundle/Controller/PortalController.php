@@ -445,6 +445,8 @@ class PortalController extends AbstractController
         $props = [];
         if ($request->query->get('tag', '')) {
             $props['tag'] = trim($request->query->get('tag', ''));
+        } elseif ($request->get('tag', '')) {
+            $props['tag'] = trim($request->get('tag', ''));
         }
         if (!empty($props['tag']) && empty($props['source_ref'])) {
             $props['source_ref'] = $props['tag'];

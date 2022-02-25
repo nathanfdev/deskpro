@@ -2,6 +2,7 @@ Orb.createNamespace('DeskPRO.Agent.PageHelper');
 
 DeskPRO.Agent.PageHelper.CustomFieldUpload = new Orb.Class({
   initialize: function (page) {
+    console.log('CustomFieldUpload initialize');
     this.page = page;
     this.updateVisibility();
   },
@@ -25,7 +26,10 @@ DeskPRO.Agent.PageHelper.CustomFieldUpload = new Orb.Class({
     DeskPRO_Window.util.fileupload($uploadBtn, {
       dropZone: $dropzone,
       uploadTemplate: $('.template-upload'),
-      downloadTemplate: $('.template-download')
+      downloadTemplate: $('.template-download'),
+      uploadUrlParameters: {
+        tag: 'ticket.custom_field_file'
+      }
     });
     $customFieldForm.bind('fileuploaddone', function(e, data) {
       $customFieldForm.find('.uploading').remove();

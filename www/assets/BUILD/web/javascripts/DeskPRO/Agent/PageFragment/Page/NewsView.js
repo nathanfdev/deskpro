@@ -829,7 +829,8 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
       this.rte = window.LegacyRteTextarea.init(txt, {
 				height: h,
-        inlineHiddenPosition: $('.content-tab-item', this.wrapper)
+				inlineHiddenPosition: $('.content-tab-item', this.wrapper),
+				sourceRef:            'news_post.inline_image'
 			});
 
       this.rte.on('froalaEditor.keypress', function () {

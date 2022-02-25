@@ -449,14 +449,14 @@ class Container extends React.Component {
     const froalaConfig = {
       imageUploadMethod:         'POST',
       imageUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
-      imageUploadURL:            `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
+      imageUploadURL:            `${BASE_URL}agent/misc/accept-redactor-image-upload?source_ref=agent_im.image`, // eslint-disable-line no-undef
       imageDefaultWidth:         0,
       fileUploadMethod:          'POST',
       fileUploadParams:          { _rt: window.DP_REQUEST_TOKEN, json: true },
-      fileUploadURL:             `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
+      fileUploadURL:             `${BASE_URL}agent/misc/accept-redactor-file-upload?source_ref=agent_im.attachment`, // eslint-disable-line no-undef
       videoUploadMethod:         'POST',
       videoUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
-      videoUploadURL:            `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
+      videoUploadURL:            `${BASE_URL}agent/misc/accept-redactor-file-upload?source_ref=agent_im.video`, // eslint-disable-line no-undef
       videoDefaultWidth:         0,
       videoResize:               false,
       videoDefaultDisplay:       'block',

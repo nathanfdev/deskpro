@@ -17,12 +17,14 @@ export default class PortalAttach extends React.Component {
     $form:         PropTypes.object,
     multiple:      PropTypes.bool,
     customField:   PropTypes.bool,
-    uploadUrl:     PropTypes.string
+    uploadUrl:     PropTypes.string,
+    extraParams:   PropTypes.object,
   };
 
   static defaultProps = {
-    uploadUrl: 'dpblob',
-    multiple:  true
+    uploadUrl:   'dpblob',
+    multiple:    true,
+    extraParams: {},
   };
 
   constructor(props) {
@@ -166,13 +168,20 @@ export default class PortalAttach extends React.Component {
   }
 
   render() {
-    const { widgetOptions, inputName, multiple, uploadUrl } = this.props;
+    const { widgetOptions, inputName, multiple, uploadUrl, extraParams } = this.props;
     const { files, lastError } = this.state;
     const context = widgetOptions.context || document;
 
     const params = {};
     if (window.dp_get_csrf_token) {
       params['file[_dp_csrf_token]'] = window.dp_get_csrf_token();
+    }
+    if (Object.keys(extraParams).length > 0) {
+      for (const key in extraParams) {
+        if (Object.prototype.hasOwnProperty.call(extraParams, key)) {
+          params[key] = extraParams[key];
+        }
+      }
     }
 
     return (

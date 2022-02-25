@@ -613,6 +613,8 @@ JS;
             $props['tag'] = trim($this->in->getString('tag'));
         }
 
+        $sourceRef = $props['tag'] ?? '';
+
         if ($copy_blobauth) {
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($copy_blobauth);
             if (!$blob) {
@@ -636,7 +638,7 @@ JS;
             $bs       = $this->container->getBlobStorage();
             $raw_file = $bs->copyBlobRecordToString($blob);
 
-            $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type, array_merge($props, ['is_temp' => true]));
+            $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type, array_merge($props, ['is_temp' => true, 'source_ref' => $sourceRef]));
             unset($raw_file);
         } else {
             $file   = $this->request->files->get('file-upload');
@@ -656,7 +658,7 @@ JS;
                 return $this->createJsonResponse([$error]);
             }
 
-            $blob = $accept->accept($file, true, $props);
+            $blob = $accept->accept($file, true, array_merge($props, ['source_ref' => $sourceRef]));
         }
 
         if ($this->in->getString('attach_to_object')) {
@@ -760,6 +762,8 @@ JS;
     {
         $copy_blobauth = $this->in->getString('copy_blob');
 
+        $sourceRef = $this->in->getString('source_ref') ?: 'ticket.redactor_image';
+
         if ($copy_blobauth) {
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($copy_blobauth);
             if (!$blob) {
@@ -816,7 +820,7 @@ JS;
 
                 return $this->createJsonResponse($error);
             } else {
-                $blob = $accept->accept($file, true);
+                $blob = $accept->accept($file, true, ['source_ref' => $sourceRef]);
             }
         }
 
