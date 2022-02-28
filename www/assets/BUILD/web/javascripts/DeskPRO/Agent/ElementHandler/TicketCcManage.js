@@ -66,6 +66,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 						}
 
 						addRow.find('input').val('');
+            addRow.autoCompleteElement.reset();
 
 						self.el.find('ul.cc-row-list').each(function() {
 							$(this).empty().html(data.cc_list || '');

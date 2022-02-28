@@ -145,6 +145,7 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
       this.runningAjax = null;
     }
     this.termInput.val('');
+    this.termInput.data('personId', '');
     this.resultsList.empty();
   },
 
