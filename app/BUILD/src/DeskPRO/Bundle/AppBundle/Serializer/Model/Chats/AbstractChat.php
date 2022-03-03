@@ -191,7 +191,7 @@ abstract class AbstractChat
         $this->endedBy              = $chat->getEndedBy();
         $this->shouldSendTranscript = $chat->getShouldSendTranscript();
         $this->dateTranscriptSent   = $chat->getDateTranscriptSent();
-        $this->needValidateEmail    = $chat->getEmailValidationCode() && !$chat->getEmailValidated();
+        $this->needValidateEmail    = $chat->getNeedValidateEmail();
         $this->ratingOverall        = $chat->getRatingOverall() !== null ? $chat->getRatingOverall() === 10 : null;
         $this->ratingComment        = $chat->getRatingComment();
     }
