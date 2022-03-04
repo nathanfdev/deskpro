@@ -414,6 +414,7 @@ class ChatCreateType extends AbstractType
 
             if ($matched) {
                 $session->setPerson($person);
+                $conversation->setEmailValidated(true);
             }
         }
     }
