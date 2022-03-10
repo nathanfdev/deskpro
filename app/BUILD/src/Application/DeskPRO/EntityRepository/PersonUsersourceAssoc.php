@@ -1,10 +1,6 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+
 
 namespace Application\DeskPRO\EntityRepository;
 
@@ -15,6 +11,9 @@ class PersonUsersourceAssoc extends AbstractEntityRepository
     /**
      * Finds the PersonUsersourceAssoc for a given identity.
      * If no association exists, null is returend.
+     *
+     * @param mixed $usersource
+     * @param mixed $identity
      */
     public function getIdentityAssociation($usersource, $identity)
     {
@@ -79,6 +78,7 @@ class PersonUsersourceAssoc extends AbstractEntityRepository
         ')
             ->setParameter('last_updated', $last_updated)
             ->setParameter('usersource', $usersource)
+            ->setMaxResults(1000)
             ->execute();
     }
 }
