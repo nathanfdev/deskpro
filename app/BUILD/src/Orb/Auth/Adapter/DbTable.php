@@ -275,25 +275,9 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
             return [];
         }
 
-        $select = array_map(
-            function ($fieldName) {
-                return $this->options[$fieldName];
-            },
-            [
-                self::OPT_FIELD_ID,
-                self::OPT_FIELD_USERNAME,
-                self::OPT_FIELD_EMAIL,
-                self::OPT_FIELD_PASSWORD,
-                self::OPT_FIELD_FIRST_NAME,
-                self::OPT_FIELD_LAST_NAME,
-                self::OPT_FIELD_NAME,
-            ]
-        );
-        $select = implode(',', $select);
-
         $table  = $this->options[self::OPT_TABLE];
         $result = $this->db
-            ->executeQuery(sprintf('SELECT %s FROM %s LIMIT %d, %d', $select, $table, $offset, $limit))
+            ->executeQuery(sprintf('SELECT * FROM %s LIMIT %d, %d', $table, $offset, $limit))
             ->fetchAll();
 
         if (!$result) {

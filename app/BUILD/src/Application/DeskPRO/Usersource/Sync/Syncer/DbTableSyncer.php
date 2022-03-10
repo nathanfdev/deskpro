@@ -22,7 +22,7 @@ class DbTableSyncer extends AbstractSyncer
         $adapter = $this->getAdapter($usersource);
         /* @var \Orb\Auth\Identity[] $identities */
         $offset = $cursor->getLocation() - 1; // location starts at 1, but offset starts at 0
-        $limit  = 1000;
+        $limit  = 100;
 
         /** @var $authAdapter \Orb\Auth\Adapter\DbTable.php */
         $authAdapter = $adapter->getAuthAdapter();
