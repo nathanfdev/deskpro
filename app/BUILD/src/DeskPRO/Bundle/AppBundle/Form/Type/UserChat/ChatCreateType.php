@@ -280,10 +280,13 @@ class ChatCreateType extends AbstractType
                 'data_class'                    => ChatConversation::class,
                 'csrf_protection'               => false,
                 'csrf_double_submit_protection' => false,
+                'validated'                     => false,
             ])
             ->setRequired(['person', 'visitor_id'])
+            ->setDefined(['validated'])
             ->setAllowedTypes('person', ['null', Person::class])
-            ->setAllowedTypes('visitor_id', ['null', 'string']);
+            ->setAllowedTypes('visitor_id', ['null', 'string'])
+            ->setAllowedTypes('validated', ['null', 'bool']);
     }
 
     /**
@@ -395,27 +398,27 @@ class ChatCreateType extends AbstractType
         $jwtPayload = $form->get('jwt')->getData();
         $person     = $conversation->getPerson();
         $session    = $conversation->getSession();
+        $validated  = $form->getConfig()->getOption('validated', false);
         $conversation->setBrand($this->getBrand());
 
-        if ($person && $session && $decodedJwt = $this->jwtDecoder->decodeJwtPayload($jwtPayload)) {
-            $matched = false;
+        if (!$validated && $person && $session && $decodedJwt = $this->jwtDecoder->decodeJwtPayload($jwtPayload)) {
 
             // check payload by person id
             if (isset($decodedJwt['person_id']) && (int) $decodedJwt['person_id'] === $person->getId()) {
-                $matched = true;
+                $validated = true;
             }
 
             // check payload by person email
             foreach (['email', 'user_email'] as $option) {
                 if (isset($decodedJwt[$option]) && $person->hasEmailAddress($decodedJwt[$option])) {
-                    $matched = true;
+                    $validated = true;
                 }
             }
+        }
 
-            if ($matched) {
-                $session->setPerson($person);
-                $conversation->setEmailValidated(true);
-            }
+        if ($validated) {
+            $session->setPerson($person);
+            $conversation->setEmailValidated(true);
         }
     }
 

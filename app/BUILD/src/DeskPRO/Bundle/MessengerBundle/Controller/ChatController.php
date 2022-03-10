@@ -80,6 +80,7 @@ class ChatController extends AbstractMessengerController
             [
                 'visitor_id' => $this->getVisitorId($request),
                 'person'     => $person && $person->getId() ? $person : null,
+                'validated'  => $person && $person->getId(),
             ]
         );
 
