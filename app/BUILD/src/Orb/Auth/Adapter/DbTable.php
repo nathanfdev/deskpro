@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Orb\Auth\Adapter;
 
 use Doctrine\DBAL\Connection;

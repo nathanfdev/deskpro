@@ -130,10 +130,11 @@ class Local extends PluginAdapter implements FormLoginInterface, Loggable, Entit
                 $person = $qb->getQuery()->getSingleResult();
             } catch (\Doctrine\ORM\NoResultException $e) {
             }
-            $this->logPeopleFound([$person], $timeStart);
-
-            if ($person && $person->checkPassword($this->password)) {
-                $matchedPeople[] = $person;
+            if ($person) {
+                $this->logPeopleFound([$person], $timeStart);
+                if ($person->checkPassword($this->password)) {
+                    $matchedPeople[] = $person;
+                }
             }
         } else {
             $people = $qb->getQuery()->getResult();
