@@ -60,6 +60,11 @@ export default class DpxFormDraft extends PageWidget {
   }
 
   getFormDrafts() {
+    if (this.getFormName() === 'new_ticket' && window.location.href.match(/new-ticket\/\d+/)) {
+      if (getDrafts()[this.getFormName()] && (getDrafts()[this.getFormName()]['ticket[department]'] === window.location.href.match(/new-ticket\/(\d+)/)[1])) {
+        return {};
+      }
+    }
     return getDrafts()[this.getFormName()] || {};
   }
 
