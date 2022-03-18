@@ -44,7 +44,10 @@ export class CommunityVoteWidget extends PageWidget {
         url:         agreed ? voteDownUrl : voteUpUrl,
         method:      'POST',
         contentType: 'application/json',
-        dataType:    'json',
+        data:        JSON.stringify({
+          _dp_csrf_token: window.dp_get_csrf_token()
+        }),
+        dataType: 'json',
       }).success((data) => {
         $iAgreeBox.find('div').text(data.error);
         if (!data.success) {
