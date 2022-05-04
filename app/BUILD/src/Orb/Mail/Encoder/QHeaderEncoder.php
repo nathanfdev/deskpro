@@ -2,6 +2,9 @@
 
 namespace Orb\Mail\Encoder;
 
+/**
+ * @see https://github.com/PHPMailer/PHPMailer/blob/master/src/PHPMailer.php#L3611
+ */
 class QHeaderEncoder implements \Swift_Mime_HeaderEncoder
 {
     /**
@@ -35,7 +38,7 @@ class QHeaderEncoder implements \Swift_Mime_HeaderEncoder
                 array_unshift($matches[0], '=');
             }
             foreach (array_unique($matches[0]) as $char) {
-                $encoded = str_replace($char, '=' . sprintf('%02X', ord($char)), $encoded);
+                $encoded = str_replace($char, '%' . sprintf('%02X', ord($char)), $encoded);
             }
         }
         //Replace spaces with _ (more readable than =20)

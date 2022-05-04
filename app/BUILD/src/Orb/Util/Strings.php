@@ -2785,11 +2785,17 @@ break;
      */
     public static function getFilenameSafe($filename)
     {
-        $filename_safe = self::utf8_accents_to_ascii($filename);
-        $filename_safe = RegexUtils::safePregReplace('#[^a-zA-ZА-Яа-яα-ωΑ-Ω0-9\-_\.]#um', '-', $filename_safe);
-        $filename_safe = RegexUtils::safePregReplace('#\-{2,}#', '-', $filename_safe);
+        $special_chars = ['?', '[', ']', '/', '\\', '=', '<', '>', ':', ';', ',', "'", '"', '&', '$', '#', '*', '(', ')', '|', '~', '`', '!', '{', '}', '%', '+', chr(0)];
 
-        return $filename_safe ?: 'file';
+        $filename = Strings::utf8_bad_strip($filename);
+        $filename = preg_replace("#\x{00a0}#siu", ' ', $filename);
+        $filename = preg_replace('/[\x{10000}-\x{10FFFF}]/u', '-', $filename);
+        $filename = str_replace($special_chars, '', $filename);
+        $filename = str_replace([ '%20', '+' ], '-', $filename);
+        $filename = preg_replace('/[\r\n\t -]+/', '-', $filename);
+        $filename = trim($filename, '.-');
+
+        return $filename ?: 'file';
     }
 
     public static function escapeForJson($string)
